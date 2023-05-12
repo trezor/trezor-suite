@@ -162,8 +162,17 @@ const postMessage = (message: CoreMessage) => {
     if (usingPopup && shouldUiEventBeSentToPopup(message)) {
         if (_popupMessagePort) {
             _popupMessagePort.postMessage(message);
+        
         }
+        console.log('=====connect-iframe src content window')
+        // @ts-ignore
+
+        window?.parent?.document?.getElementById('connectpopup')?.contentWindow!.postMessage(message, 'http://localhost:8088');
+        console.log('=====connect-iframe src content window ALL GOOD')
+
     } else {
+        window?.parent?.document?.getElementById('connectpopup')?.contentWindow!.postMessage(message, 'http://localhost:8088');
+
         let origin = DataManager.getSettings('origin');
         if (!origin || origin.indexOf('file://') >= 0) origin = '*';
         window.parent.postMessage(message, origin);
@@ -213,18 +222,18 @@ const init = async (payload: IFrameInit['payload'], origin: string) => {
         origin,
     );
 
-    if (parsedSettings.popup && typeof BroadcastChannel !== 'undefined') {
-        // && parsedSettings.env !== 'web'
-        const broadcastID = `${parsedSettings.env}-${parsedSettings.timestamp}`;
-        try {
-            // Firefox > Privacy & Security > block cookies from unvisited websites
-            // throws DOMException: The operation is insecure.
-            _popupMessagePort = new BroadcastChannel(broadcastID);
-            _popupMessagePort.onmessage = message => handleMessage(message);
-        } catch (error) {
-            // tell the popup to use MessageChannel fallback communication (thru IFRAME.LOADED > POPUP.INIT)
-        }
-    }
+    // if (parsedSettings.popup && typeof BroadcastChannel !== 'undefined') {
+    //     // && parsedSettings.env !== 'web'
+    //     const broadcastID = `${parsedSettings.env}-${parsedSettings.timestamp}`;
+    //     try {
+    //         // Firefox > Privacy & Security > block cookies from unvisited websites
+    //         // throws DOMException: The operation is insecure.
+    //         _popupMessagePort = new BroadcastChannel(broadcastID);
+    //         _popupMessagePort.onmessage = message => handleMessage(message);
+    //     } catch (error) {
+    //         // tell the popup to use MessageChannel fallback communication (thru IFRAME.LOADED > POPUP.INIT)
+    //     }
+    // }
 
     _log.enabled = !!parsedSettings.debug;
 
@@ -237,7 +246,7 @@ const init = async (payload: IFrameInit['payload'], origin: string) => {
         await initTransport(parsedSettings);
         postMessage(
             createIFrameMessage(IFRAME.LOADED, {
-                useBroadcastChannel: !!_popupMessagePort,
+                useBroadcastChannel: false,
                 systemInfo: getSystemInfo(config.supportedBrowsers),
             }),
         );

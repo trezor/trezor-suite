@@ -27,6 +27,7 @@ import { initLog } from '@trezor/connect/lib/utils/debug';
 import { config } from '@trezor/connect/lib/data/config';
 
 import * as iframe from './iframe';
+import * as iframePopup from './iframe/popup';
 import * as popup from './popup';
 import webUSBButton from './webusb/button';
 import { parseConnectSettings } from './connectSettings';
@@ -76,6 +77,7 @@ const cancel = (error?: string) => {
 
 // handle message received from iframe
 const handleMessage = (messageEvent: PostMessageEvent) => {
+    console.log('connect/web handle message', messageEvent)
     // ignore messages from domain other then iframe origin
     if (messageEvent.origin !== iframe.origin) return;
 
@@ -168,6 +170,8 @@ const init = async (settings: Partial<ConnectSettings> = {}): Promise<void> => {
     window.addEventListener('message', handleMessage);
     window.addEventListener('unload', dispose);
 
+    iframePopup.init('');
+
     await iframe.init(_settings);
 };
 
@@ -183,7 +187,7 @@ const call: CallMethod = async params => {
         if (!_popupManager) {
             _popupManager = initPopupManager();
         }
-        _popupManager.request(true);
+        // _popupManager.request(true);
 
         // auto init with default settings
         try {
@@ -212,9 +216,20 @@ const call: CallMethod = async params => {
 
     // request popup window it might be used in the future
     if (_settings.popup && _popupManager) {
-        _popupManager.request();
+        // _popupManager.request();
     }
 
+    console.log('iframePopup', iframePopup);
+    if (iframePopup.instance) {
+        iframePopup.instance.style.width = '80vw';
+        iframePopup.instance.style.marginLeft = '10vw';
+        iframePopup.instance.style.height = '80vh';
+        iframePopup.instance.style.display = 'block';
+        iframePopup.instance.style.position = 'absolute';
+        iframePopup.instance.style.top = '10vh';
+        iframePopup.instance.style.left = '0';
+        iframePopup.instance.style.border = '5px dashed red';
+    }
     // post message to iframe
     try {
         const response = await iframe.postMessage({ type: IFRAME.CALL, payload: params });
@@ -224,18 +239,18 @@ const call: CallMethod = async params => {
                 response.payload.code !== 'Device_CallInProgress' &&
                 _popupManager
             ) {
-                _popupManager.unlock();
+                // _popupManager.unlock();
             }
             return response;
         }
         if (_popupManager) {
-            _popupManager.unlock();
+            // _popupManager.unlock();
         }
         return createErrorMessage(ERRORS.TypedError('Method_NoResponse'));
     } catch (error) {
         _log.error('__call error', error);
         if (_popupManager) {
-            _popupManager.close();
+            // _popupManager.close();
         }
         return createErrorMessage(error);
     }

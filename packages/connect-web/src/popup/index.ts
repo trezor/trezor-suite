@@ -62,6 +62,9 @@ export class PopupManager extends EventEmitter {
         }
 
         window.addEventListener('message', this.handleMessage, false);
+
+        // @ts-ignore
+     
     }
 
     request(lazyLoad = false) {
@@ -248,10 +251,16 @@ export class PopupManager extends EventEmitter {
         // ignore messages from domain other then popup origin and without data
         // const data: CoreMessage = message.data;
         const { data } = message;
+
+        console.log('popup manager handle message', data);
         if (getOrigin(message.origin) !== this.origin || !data || typeof data !== 'object') return;
 
         if (data.type === IFRAME.LOADED) {
-            this.iframeHandshake.resolve(data.payload);
+            setTimeout(() => {
+                console.log('popup manager resolveing iframe handshake after timeout')
+                this.iframeHandshake.resolve(data.payload);
+
+            }, 3000);
         } else if (data.type === POPUP.BOOTSTRAP) {
             // popup is opened properly, now wait for POPUP.LOADED message
             if (this.openTimeout) clearTimeout(this.openTimeout);
@@ -266,16 +275,25 @@ export class PopupManager extends EventEmitter {
             }
             // popup is successfully loaded
             this.iframeHandshake.promise.then(payload => {
-                this._window.postMessage(
-                    {
-                        type: POPUP.INIT,
-                        payload: {
-                            ...payload,
-                            settings: this.settings,
-                        },
+                const m ={
+                    type: POPUP.INIT,
+                    payload: {
+                        ...payload,
+                        settings: this.settings,
                     },
-                    this.origin,
-                );
+                }
+
+                console.log('======== sending popopup init from pm to popup iframe!!')
+                // this._window.postMessage(
+                //     m,
+                //     this.origin,
+                // );
+                const popupIframe =window?.document?.getElementById('connectpopup');
+                console.log('popupIframe', popupIframe);
+                    // @ts-ignore
+                ///////
+                popupIframe?.contentWindow!.postMessage(m, 'http://localhost:8088');
+
             });
             // send ConnectSettings to popup
             // note this settings and iframe.ConnectSettings could be different (especially: origin, popup, webusb, debug)
@@ -327,6 +345,9 @@ export class PopupManager extends EventEmitter {
             }
             this._window = null;
         }
+
+        window?.document?.getElementById('connectpopup')?.remove();
+
     }
 
     async postMessage(message: CoreMessage) {

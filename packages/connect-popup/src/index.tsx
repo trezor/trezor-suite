@@ -43,6 +43,7 @@ const escapeHtml = (payload: any) => {
 const handleMessage = (event: MessageEvent<PopupEvent | UiEvent>) => {
     const { data } = event;
 
+    console.log('connect-popup= === handle message', event);
     if (!data) return;
 
     // This is message from the window.opener

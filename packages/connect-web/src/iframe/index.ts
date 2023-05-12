@@ -22,7 +22,7 @@ export const dispose = () => {
         try {
             instance.parentNode.removeChild(instance);
         } catch (e) {
-            // do nothing
+            // do
         }
     }
     instance = null;
@@ -176,6 +176,7 @@ export const postMessage = (message: any, usePromise = true) => {
     if (!instance) {
         throw ERRORS.TypedError('Init_IframeBlocked');
     }
+    console.log('iframe postmessage origin', origin);
     if (usePromise) {
         _messageID++;
         message.id = _messageID;

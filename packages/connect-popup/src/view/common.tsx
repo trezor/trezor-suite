@@ -74,22 +74,27 @@ export const showView = (component: string) => {
 };
 
 export const getIframeElement = () => {
+    console.log('======= get Iframe element');
+    // @ts-ignore
+    return window?.parent?.document?.getElementById('trezorconnect').contentWindow
+    // ?.contentWindow!.postMessage(message, 'http://localhost:8088');
+
     // try find iframe in opener window
-    if (!window.opener) return;
-    const { frames } = window.opener;
-    if (!frames) return; // electron will return undefined
-    let iframe: Window | undefined;
-    for (let i = 0; i < frames.length; i++) {
-        try {
-            // try to get iframe origin, this action will not fail ONLY if the origins of iframe and popup are the same
-            if (frames[i].location.host === window.location.host) {
-                iframe = frames[i];
-            }
-        } catch (error) {
-            // do nothing, try next entry
-        }
-    }
-    return iframe;
+    // if (!window.opener) return;
+    // const { frames } = window.opener;
+    // if (!frames) return; // electron will return undefined
+    // let iframe: Window | undefined;
+    // for (let i = 0; i < frames.length; i++) {
+    //     try {
+    //         // try to get iframe origin, this action will not fail ONLY if the origins of iframe and popup are the same
+    //         if (frames[i].location.host === window.location.host) {
+    //             iframe = frames[i];
+    //         }
+    //     } catch (error) {
+    //         // do nothing, try next entry
+    //     }
+    // }
+    // return iframe;
 };
 
 // initialize message channel with iframe element
@@ -176,6 +181,8 @@ export const initMessageChannel = async (
 // this method can be used from anywhere
 export const postMessage = (message: CoreMessage) => {
     const { broadcast, iframe } = getState();
+
+    
     if (broadcast) {
         broadcast.postMessage(message);
         return;
@@ -189,17 +196,19 @@ export const postMessage = (message: CoreMessage) => {
 };
 
 export const postMessageToParent = (message: CoreMessage) => {
-    if (window.opener) {
-        // post message to parent and wait for POPUP.INIT message
-        window.opener.postMessage(message, '*');
-    } else {
-        // webextensions doesn't have "window.opener" reference and expect this message in "content-script" above popup [see: ./src/plugins/webextension/trezor-content-script.js]
-        // future communication channel with webextension iframe will be "ChromePort"
+    console.log('connect-popup postMessageToParent', window.parent);
+    window.parent?.postMessage(message, 'http://localhost:8088');
+    // if (window.opener) {
+    //     // post message to parent and wait for POPUP.INIT message
+    //     window.opener.postMessage(message, '*');
+    // } else {
+    //     // webextensions doesn't have "window.opener" reference and expect this message in "content-script" above popup [see: ./src/plugins/webextension/trezor-content-script.js]
+    //     // future communication channel with webextension iframe will be "ChromePort"
 
-        // and electron (electron which uses connect hosted outside)
-        // https://github.com/electron/electron/issues/7228
-        window.postMessage(message, window.location.origin);
-    }
+    //     // and electron (electron which uses connect hosted outside)
+    //     // https://github.com/electron/electron/issues/7228
+    //     window.postMessage(message, window.location.origin);
+    // }
 };
 
 let reactRenderIn;
