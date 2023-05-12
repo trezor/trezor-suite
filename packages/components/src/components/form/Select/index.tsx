@@ -305,7 +305,7 @@ export const Select = ({
     }, []);
 
     const closeMenuOnScroll = useCallback(
-        (e: Event) => !(e.target as Element)?.className.startsWith(reactSelectClassNamePrefix),
+        (e: Event) => !(e.target as Element)?.className?.startsWith(reactSelectClassNamePrefix),
         [],
     );
 
