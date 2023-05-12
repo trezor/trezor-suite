@@ -57,6 +57,7 @@
         "update-coins": "./scripts/update-coins.sh",
         "update-protobuf": "yarn workspace @trezor/transport update:protobuf",
         "update-coinjoin-middleware": "yarn workspace @trezor/suite-data update-coinjoin-middleware",
+        "prepare-release": "./scripts/prepare-release.sh",
         "_______ Aliases _______": "Aliases for longer commands which we often have to run manually. Names don't have to be pretty or make total sense.",
         "refs": "yarn update-project-references",
         "types": "yarn type-check",
