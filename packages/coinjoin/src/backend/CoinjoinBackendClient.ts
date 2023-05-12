@@ -73,9 +73,13 @@ export class CoinjoinBackendClient {
     }
 
     fetchMempoolFilters(timestamp?: number, options?: RequestOptions) {
-        return this.fetchFromBlockbook(options, 'getMempoolFilters', timestamp).then(
-            ({ entries }) => entries ?? {},
-        );
+        this.logger?.info('fetchMempoolFilters START');
+        return this.fetchFromBlockbook(options, 'getMempoolFilters', timestamp)
+            .then(({ entries }) => entries ?? {})
+            .then(res => {
+                this.logger?.info('fetchMempoolFilters END');
+                return res;
+            });
     }
 
     private reconnect = async () => {

@@ -22,11 +22,14 @@ export const COINJOIN_NETWORKS: PartialRecord<NetworkSymbol, ServerEnvironment> 
             coordinatorUrl: 'https://wasabiwallet.io/wabisabi/',
             wabisabiBackendUrl: 'https://wasabiwallet.io/',
             blockbookUrls: [
+                /*
                 'https://btc1.trezor.io',
                 'https://btc2.trezor.io',
                 'https://btc3.trezor.io',
                 'https://btc4.trezor.io',
                 'https://btc5.trezor.io',
+                */
+                'https://staging-btc.trezor.io',
             ],
             /* 28.02.2023 */
             baseBlockHeight: 778666,
