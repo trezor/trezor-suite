@@ -1,34 +1,8 @@
 {
     "version": 1,
-    "timestamp": "2023-05-09T00:00:00+00:00",
-    "sequence": 32,
+    "timestamp": "2023-05-12T00:00:00+00:00",
+    "sequence": 33,
     "actions": [
-        {
-            "conditions": [
-                {
-                    "settings": [
-                        {
-                            "btc": true
-                        }
-                    ]
-                }
-            ],
-            "message": {
-                "id": "57934104-14e4-413f-8da1-7c7dki6s9313",
-                "priority": 85,
-                "dismissible": true,
-                "variant": "warning",
-                "category": "banner",
-                "content": {
-                    "en-GB": "Sending and receiving of bitcoin is delayed due to high network activity",
-                    "en": "Sending and receiving of bitcoin is delayed due to high network activity",
-                    "es": "El envío y recepción de bitcoins se retrasa debido a la gran actividad de la red",
-                    "cs": "Odesílání a přijímání bitcoinu je zpomalené z důvodu vysoké aktivity sítě.",
-                    "ru": "Отправка и получение биткоина задерживается из-за высокой сетевой активности",
-                    "ja": "ネットワークが活発なため、ビットコインの送受信が遅れる"
-                }
-            }
-        },
         {
             "conditions": [
                 {
@@ -76,14 +50,53 @@
             "conditions": [
                 {
                     "environment": {
-                        "desktop": ">=23.4.1",
+                        "desktop": ">=23.5.1",
                         "mobile": "!",
-                        "web": ">=23.4.1"
+                        "web": "!"
                     }
                 }
             ],
             "message": {
-                "id": "c4196202-b796-4c67-abcb-ac38c15ae343",
+                "id": "cjdnfj62-b796-4c67-abcb-ac38c15ae343",
+                "priority": 50,
+                "dismissible": false,
+                "variant": "warning",
+                "category": "context",
+                "content": {
+                    "en-GB": "Coinjoin is in public beta. Your feedback is appreciated",
+                    "en": "Coinjoin is in public beta. Your feedback is appreciated",
+                    "es": "Coinjoin está en fase beta pública. Agradecemos tus comentarios.",
+                    "cs": "Coinjoin je ve veřejné beta verzi. Vaše zpětná vazba je vítána.",
+                    "ru": "Coinjoin находится в стадии публичной бета-версии. Мы будем признательны за ваши отзывы.",
+                    "ja": "Coinjoinはパブリックベータ版です。あなたのフィードバックをお待ちしています。"
+                },
+                "context": { "domain": "accounts.coinjoin" },
+                "cta": {
+                    "action": "external-link",
+                    "link": "https://satoshilabs.typeform.com/coinjoin",
+                    "label": {
+                        "en-GB": "Give Feedback",
+                        "en": "Give Feedback",
+                        "es": "Envía tus comentarios",
+                        "cs": "Ohodnotit",
+                        "ru": "Оставить отзыв",
+                        "ja": "フィードバックをする"
+                    }
+                }
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "environment": {
+                        "desktop": ">=23.5.1",
+                        "mobile": "!",
+                        "web": ">=23.5.1"
+                    }
+                }
+            ],
+            "message": {
+                "id": "cdkf9j02-b796-4c67-abcb-ac38c15ae343",
                 "priority": 90,
                 "dismissible": false,
                 "variant": "info",
@@ -99,11 +112,44 @@
                 "feature": [
                     {
                         "domain": "coinjoin",
-                        "flag": false,
+                        "flag": true,
                         "isPublic": true,
                         "averageAnonymityGainPerRound": 0.34,
                         "roundsFailRateBuffer": 10,
                         "roundsDurationInHours": 3
+                    }
+                ]
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "environment": {
+                        "desktop": ">=23.4.1",
+                        "mobile": "!",
+                        "web": ">=23.4.1"
+                    }
+                }
+            ],
+            "message": {
+                "id": "c4196202-b796-4c67-abcb-ac38c15ae343",
+                "priority": 89,
+                "dismissible": false,
+                "variant": "info",
+                "category": ["feature"],
+                "content": {
+                    "en-GB": "Coinjoin is temporarily unavailable due to technical issues",
+                    "en": "Coinjoin is temporarily unavailable due to technical issues",
+                    "es": "Coinjoin no está disponible temporalmente por problemas técnicos",
+                    "cs": "Coinjoin je z technických důvodů dočasně nedostupný",
+                    "ru": "Coinjoin временно недоступен по техническим причинам",
+                    "ja": "Coinjoinは技術的な問題により、一時的に利用できません。"
+                },
+                "feature": [
+                    {
+                        "domain": "coinjoin",
+                        "flag": false,
+                        "isPublic": true
                     }
                 ]
             }
