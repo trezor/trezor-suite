@@ -26,6 +26,7 @@ if (!packages.includes(packageName)) {
 const ROOT = path.join(__dirname, '..', '..');
 
 const updateNeeded = [];
+const errors = [];
 
 const checkPackageDependencies = packageName => {
     const rawPackageJSON = fs.readFileSync(
@@ -48,7 +49,6 @@ const checkPackageDependencies = packageName => {
 
         const [_prefix, name] = dependency.split('/');
         const PACKAGE_PATH = path.join(ROOT, 'packages', name);
-
         // check local package
         const packResultRaw = child_process.spawnSync('npm', ['pack', '--dry-run', '--json'], {
             encoding: 'utf-8',
@@ -56,38 +56,39 @@ const checkPackageDependencies = packageName => {
         }).stdout;
 
         const packResultJSON = JSON.parse(packResultRaw);
-
         const localChecksum = packResultJSON[0].shasum;
 
         // check remote package
-        const viewResultRaw = child_process.spawnSync('npm', ['view', '--json'], {
-            encoding: 'utf-8',
-            cwd: PACKAGE_PATH,
-        }).stdout;
+        const { stderr, stdout: viewResultRaw } = child_process.spawnSync(
+            'npm',
+            ['view', '--json'],
+            {
+                encoding: 'utf-8',
+                cwd: PACKAGE_PATH,
+            },
+        );
 
-        // means that this package is new and has never been released
-        if (!viewResultRaw) {
+        if (stderr) {
+            errors.push(name);
+            return;
+        }
+
+        const viewResultJSON = JSON.parse(viewResultRaw);
+        if (viewResultJSON.error) {
+            return;
+        }
+
+        const remoteChecksum = viewResultJSON[dependency].dist.shasum;
+
+        if (localChecksum !== remoteChecksum) {
+            // if the checked dependency is already in the array, remove it and push it to the end of array
+            // this way, the final array should be sorted in order in which that dependencies listed there
+            // should be released from the last to the first
+            const index = updateNeeded.findIndex(lib => lib === dependency);
+            if (index > -1) {
+                updateNeeded.splice(index, 1);
+            }
             updateNeeded.push(dependency);
-        } else {
-            const viewResultJSON = JSON.parse(viewResultRaw);
-
-            if (viewResultJSON.error) {
-                console.log(viewResultJSON);
-                return;
-            }
-
-            const remoteChecksum = viewResultJSON[dependency].dist.shasum;
-
-            if (localChecksum !== remoteChecksum) {
-                // if the checked dependency is already in the array, remove it and push it to the end of array
-                // this way, the final array should be sorted in order in which that dependencies listed there
-                // should be released from the last to the first
-                const index = updateNeeded.findIndex(lib => lib === dependency);
-                if (index > -1) {
-                    updateNeeded.splice(index, 1);
-                }
-                updateNeeded.push(dependency);
-            }
         }
 
         checkPackageDependencies(name);
@@ -102,4 +103,9 @@ const formattedDeps = updateNeeded
     })
     .join(',');
 
-process.stdout.write(formattedDeps);
+process.stdout.write(
+    JSON.stringify({
+        deps: formattedDeps,
+        errors,
+    }),
+);
