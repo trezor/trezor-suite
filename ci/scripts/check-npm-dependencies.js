@@ -26,6 +26,7 @@ if (!packages.includes(packageName)) {
 const ROOT = path.join(__dirname, '..', '..');
 
 const updateNeeded = [];
+const errors = [];
 
 const checkPackageDependencies = packageName => {
     const rawPackageJSON = fs.readFileSync(
@@ -60,10 +61,19 @@ const checkPackageDependencies = packageName => {
         const localChecksum = packResultJSON[0].shasum;
 
         // check remote package
-        const viewResultRaw = child_process.spawnSync('npm', ['view', '--json'], {
-            encoding: 'utf-8',
-            cwd: PACKAGE_PATH,
-        }).stdout;
+        const { stderr, stdout: viewResultRaw } = child_process.spawnSync(
+            'npm',
+            ['view', '--json'],
+            {
+                encoding: 'utf-8',
+                cwd: PACKAGE_PATH,
+            },
+        );
+
+        if (stderr) {
+            errors.push(name);
+            return;
+        }
 
         // means that this package is new and has never been released
         if (!viewResultRaw) {
@@ -102,4 +112,8 @@ const formattedDeps = updateNeeded
     })
     .join(',');
 
-process.stdout.write(formattedDeps);
+
+    process.stdout.write(JSON.stringify({
+        deps: formattedDeps,
+        errors,
+    }));

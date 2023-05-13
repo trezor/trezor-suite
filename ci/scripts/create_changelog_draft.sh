@@ -11,8 +11,7 @@ git log --oneline -- ./packages/"$1" | (
             echo "${changelog}"
             exit 0
         fi
-        changelog="${changelog}${commit}'\n'"
+        line_break=$'\n'
+        changelog="${changelog}${commit}${line_break}"
     done
-
-    # "commit message containing something like 'release: @trezor/$1' in 'git log --oneline -- ./packages/$1' was not found  "
 )
