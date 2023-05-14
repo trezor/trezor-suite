@@ -1,3 +1,7 @@
+# 1.0.6
+
+-   b2e8fb9 hmm
+
 # 1.0.5
 
 chore(utxo-lib): update deps, update bs58check bitcoin lib
