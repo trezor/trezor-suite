@@ -372,4 +372,11 @@ export type SuiteAnalyticsEvent =
       }
     | {
           type: EventType.FirmwareValidateHashMismatch;
+      }
+    | { type: EventType.GetDesktopApp }
+    | {
+          type: EventType.GetMobileApp;
+          payload: {
+              platform: 'ios' | 'android';
+          };
       };
