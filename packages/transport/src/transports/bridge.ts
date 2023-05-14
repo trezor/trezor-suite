@@ -143,10 +143,12 @@ export class BridgeTransport extends AbstractTransport {
         return this.scheduleAction(async signal => {
             const previous = input.previous == null ? 'null' : input.previous;
 
-            // listenPromise is resolved on next listen
-            this.listenPromise = createDeferred<string>();
-            // acquire promise is resolved after acquire returns
-            this.acquirePromise = createDeferred<undefined>();
+            if (this.listening) {
+                // listenPromise is resolved on next listen
+                this.listenPromise = createDeferred<string>();
+                // acquire promise is resolved after acquire returns
+                this.acquirePromise = createDeferred<undefined>();
+            }
 
             const response = await this._post('/acquire', {
                 params: `${input.path}/${previous}`,
@@ -164,7 +166,7 @@ export class BridgeTransport extends AbstractTransport {
             this.acquiringSession = response.payload;
             this.acquiringPath = input.path;
 
-            if (!this.listening) {
+            if (!this.listenPromise) {
                 return this.success(this.acquiringSession);
             }
 
@@ -385,6 +387,7 @@ export class BridgeTransport extends AbstractTransport {
                 case '/read':
                 case '/call':
                     return this.unknownError(response.error, [
+                        ERRORS.SESSION_NOT_FOUND,
                         ERRORS.DEVICE_DISCONNECTED_DURING_ACTION,
                         ERRORS.OTHER_CALL_IN_PROGRESS,
                     ]);

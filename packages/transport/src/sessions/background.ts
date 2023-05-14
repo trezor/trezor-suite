@@ -16,7 +16,7 @@ import { TypedEmitter } from '../types/typed-emitter';
 import type {
     EnumerateDoneRequest,
     AcquireIntentRequest,
-    // AcquireDoneRequest,
+    AcquireDoneRequest,
     ReleaseIntentRequest,
     ReleaseDoneRequest,
     GetPathBySessionRequest,
@@ -32,6 +32,10 @@ import * as ERRORS from '../errors';
 const lockDuration = 1000 * 4;
 
 export class SessionsBackground extends TypedEmitter<{
+    /**
+     * updated descriptors (session has changed)
+     * note: we can't send diff from here (see abtract transport) altough it would make sense, because we need to support also bridge which  does not use this sessions background.
+     */
     ['descriptors']: Descriptor[];
 }> {
     /**
@@ -43,18 +47,25 @@ export class SessionsBackground extends TypedEmitter<{
     private locksQueue: Deferred<any>[] = [];
     private locksTimeoutQueue: ReturnType<typeof setTimeout>[] = [];
 
-    private lastSession = 1;
+    private lastSession = 0;
 
     public async handleMessage<M extends HandleMessageParams>(
         message: M,
     ): Promise<HandleMessageResponse<M>> {
+        let result;
+
         try {
             // future:
             // once we decide that we want to have sessions synchronization also between browser tabs and
             // desktop application, here should go code that will check if some "master" sessions background
             // is alive (websocket server in suite desktop). If yes, it will simply forward request
 
-            let result;
+            // console.log(
+            //     'request ',
+            //     `${message.id}-${message.caller}`,
+            //     message.type,
+            // );
+            // console.time(`${message.id}-${message.caller}-${message.type}`);
 
             switch (message.type) {
                 case 'handshake':
@@ -70,7 +81,7 @@ export class SessionsBackground extends TypedEmitter<{
                     result = await this.acquireIntent(message.payload);
                     break;
                 case 'acquireDone':
-                    result = await this.acquireDone();
+                    result = await this.acquireDone(message.payload);
                     break;
                 case 'getSessions':
                     result = await this.getSessions();
@@ -88,9 +99,8 @@ export class SessionsBackground extends TypedEmitter<{
                     throw new Error(ERRORS.UNEXPECTED_ERROR);
             }
 
-            if (result.success && result.payload && 'descriptors' in result.payload) {
-                this.emit('descriptors', result.payload.descriptors);
-            }
+            // console.log('result ', `${message.id}-${message.caller}`, message.type, result);
+            // console.timeEnd(`${message.id}-${message.caller}-${message.type}`);
 
             return { ...result, id: message.id } as HandleMessageResponse<M>;
         } catch (err) {
@@ -100,6 +110,11 @@ export class SessionsBackground extends TypedEmitter<{
                 ...this.error(ERRORS.UNEXPECTED_ERROR),
                 id: message.type,
             } as HandleMessageResponse<M>;
+        } finally {
+            if (result && result.success && result.payload && 'descriptors' in result.payload) {
+                const { descriptors } = result.payload;
+                setTimeout(() => this.emit('descriptors', descriptors), 0);
+            }
         }
     }
 
@@ -138,67 +153,65 @@ export class SessionsBackground extends TypedEmitter<{
             }
         });
 
+        const descriptors = this.sessionsToDescriptors();
+
         return Promise.resolve(
             this.success({
                 sessions: this.sessions,
-                descriptors: this.sessionsToDescriptors(),
+                descriptors,
             }),
         );
     }
 
     /**
      * acquire intent
-     * - I would like to claim this device for myself
-     * - a] there is another session
-     * - b] there is no another session
      */
     private async acquireIntent(payload: AcquireIntentRequest) {
-        await this.waitInQueue();
-
-        let error = false;
-
         const previous = this.sessions[payload.path];
 
-        if (previous == null) {
-            error = payload.previous != null;
-        } else {
-            error = payload.previous !== previous;
-        }
-
-        if (payload.previous == null) {
-            error = false;
-        }
-
-        if (error) {
+        if (payload.previous && payload.previous !== previous) {
             return this.error(ERRORS.SESSION_WRONG_PREVIOUS);
         }
 
-        const id = `${this.getNewSessionId()}`;
-        this.sessions[payload.path] = id;
+        await this.waitInQueue();
 
-        return Promise.resolve(
-            this.success({
-                session: this.sessions[payload.path] as string,
-                descriptors: this.sessionsToDescriptors(),
-            }),
-        );
+        // in case there are 2 simultaneous acquireIntents, one goes through, the other one waits and gets error here
+        if (previous !== this.sessions[payload.path]) {
+            this.clearLock();
+            return this.error(ERRORS.SESSION_WRONG_PREVIOUS);
+        }
+
+        // new "unconfirmed" descriptors are  broadcasted. we can't yet update this.sessions object as it needs
+        // to stay as it is. we can not allow 2 clients sending session:null to proceed. this way only one gets through
+        const unconfirmedSessions = JSON.parse(JSON.stringify(this.sessions));
+        const id = `${this.getNewSessionId()}`;
+        unconfirmedSessions[payload.path] = id;
+
+        const descriptors = this.sessionsToDescriptors(unconfirmedSessions);
+
+        return this.success({
+            session: id,
+            descriptors,
+        });
     }
 
     /**
      * client notified backend that he is able to talk to device
      * - assign client a new "session". this session will be used in all subsequent communication
      */
-    private acquireDone() {
+    private acquireDone(payload: AcquireDoneRequest) {
         this.clearLock();
-        return this.success(undefined);
+        this.sessions[payload.path] = `${this.lastSession}`;
+
+        const descriptors = this.sessionsToDescriptors();
+
+        return Promise.resolve(
+            this.success({
+                descriptors,
+            }),
+        );
     }
 
-    /**
-     * call intent - I have session
-     * - I am going to send something to device and I want to use this session.
-     * - a] it is ok, no other session was issued
-     * - b] it is not ok, other session was issued
-     */
     private async releaseIntent(payload: ReleaseIntentRequest) {
         const path = this._getPathBySession({ session: payload.session });
 
@@ -215,8 +228,8 @@ export class SessionsBackground extends TypedEmitter<{
         this.sessions[payload.path] = null;
 
         this.clearLock();
-
-        return Promise.resolve(this.success({ descriptors: this.sessionsToDescriptors() }));
+        const descriptors = this.sessionsToDescriptors();
+        return Promise.resolve(this.success({ descriptors }));
     }
 
     private getSessions() {
@@ -250,7 +263,6 @@ export class SessionsBackground extends TypedEmitter<{
         // - if cleared by client (enumerateIntent, enumerateDone)
         // - after n second automatically
         const timeout = setTimeout(() => {
-            console.error('[backend]: resolving lock after timeout! should not happen');
             dfd.resolve(undefined);
         }, lockDuration);
 
@@ -288,11 +300,12 @@ export class SessionsBackground extends TypedEmitter<{
     }
 
     private getNewSessionId() {
-        return this.lastSession++;
+        this.lastSession++;
+        return this.lastSession;
     }
 
-    private sessionsToDescriptors(): Descriptor[] {
-        return Object.entries(this.sessions).map(obj => ({
+    private sessionsToDescriptors(sessions?: Sessions): Descriptor[] {
+        return Object.entries(sessions || this.sessions).map(obj => ({
             path: obj[0],
             session: obj[1],
         }));

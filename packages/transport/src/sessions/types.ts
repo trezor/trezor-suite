@@ -27,11 +27,18 @@ export type EnumerateDoneResponse = BackgroundResponse<{
 export type AcquireIntentRequest = AcquireInput;
 
 export type AcquireIntentResponse = BackgroundResponseWithError<
-    { session: string; descriptors: Descriptor[] },
+    { session: string },
     typeof ERRORS.SESSION_WRONG_PREVIOUS
 >;
 
-export type AcquireDoneResponse = BackgroundResponse<undefined>;
+export type AcquireDoneRequest = {
+    path: string;
+};
+
+export type AcquireDoneResponse = BackgroundResponse<{
+    session: string;
+    descriptors: Descriptor[];
+}>;
 export interface ReleaseIntentRequest {
     session: string;
 }
@@ -76,7 +83,7 @@ export interface HandleMessageApi {
     enumerateIntent: () => EnumerateIntentResponse;
     enumerateDone: (payload: EnumerateDoneRequest) => EnumerateDoneResponse;
     acquireIntent: (payload: AcquireIntentRequest) => AcquireIntentResponse;
-    acquireDone: () => AcquireDoneResponse;
+    acquireDone: (payload: AcquireDoneRequest) => AcquireDoneResponse;
     releaseIntent: (payload: ReleaseIntentRequest) => ReleaseIntentResponse;
     releaseDone: (payload: ReleaseDoneRequest) => ReleaseDoneResponse;
     getSessions: () => GetSessionsResponse;
@@ -100,3 +107,7 @@ export type HandleMessageResponse<P> = P extends { type: infer T }
         ? ReturnType<HandleMessageApi[T]>
         : never
     : never;
+
+export type RegisterBackgroundCallbacks = (
+    onDescriptorsCallback: (args: Descriptor[]) => void,
+) => void;

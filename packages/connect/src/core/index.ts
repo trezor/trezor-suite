@@ -638,6 +638,7 @@ export const onCall = async (message: CoreMessage) => {
                 await resolveAfter(1000).promise;
                 // call Device.run with empty function to fetch new Features
                 // (acquire > Initialize > nothing > release)
+                console.log('core finally -> device.run');
                 await device.run(() => Promise.resolve(), { skipFinalReload: true });
             }
             await device.cleanup();

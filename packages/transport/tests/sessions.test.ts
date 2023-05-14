@@ -13,15 +13,15 @@ describe('sessions', () => {
     test('concurrent enumerate', async () => {
         const client1 = new SessionsClient({
             requestFn,
-            registerCallbackOnDescriptorsChange: () => {},
+            registerBackgroundCallbacks: () => {},
         });
         const client2 = new SessionsClient({
             requestFn,
-            registerCallbackOnDescriptorsChange: () => {},
+            registerBackgroundCallbacks: () => {},
         });
         const client3 = new SessionsClient({
             requestFn,
-            registerCallbackOnDescriptorsChange: () => {},
+            registerBackgroundCallbacks: () => {},
         });
 
         await client1.handshake();
@@ -71,8 +71,12 @@ describe('sessions', () => {
     test('acquire', async () => {
         const client1 = new SessionsClient({ requestFn });
         await client1.handshake();
-        expect(client1.acquireIntent({ path: '1', previous: null })).resolves.toMatchObject({
+
+        const acquireIntent = await client1.acquireIntent({ path: '1', previous: null });
+
+        expect(acquireIntent).toEqual({
             success: true,
+            id: 1,
             payload: {
                 session: '1',
                 descriptors: [
@@ -83,9 +87,18 @@ describe('sessions', () => {
                 ],
             },
         });
-        expect(client1.acquireDone()).resolves.toEqual({
+        const acquireDone = await client1.acquireDone({ path: '1' });
+        expect(acquireDone).toEqual({
             success: true,
             id: 2,
+            payload: {
+                descriptors: [
+                    {
+                        path: '1',
+                        session: '1',
+                    },
+                ],
+            },
         });
     });
 
@@ -103,17 +116,17 @@ describe('sessions', () => {
             success: true,
             id: 1,
             payload: {
+                session: '1',
                 descriptors: [
                     {
                         path: '1',
                         session: '1',
                     },
                 ],
-                session: '1',
             },
         });
 
-        await client1.acquireDone();
+        await client1.acquireDone({ path: '1' });
 
         const acquire2 = await client1.acquireIntent({
             path: '1',
@@ -123,17 +136,17 @@ describe('sessions', () => {
             success: true,
             id: 3,
             payload: {
+                session: '2',
                 descriptors: [
                     {
                         path: '1',
                         session: '2',
                     },
                 ],
-                session: '2',
             },
         });
 
-        await client1.acquireDone();
+        await client1.acquireDone({ path: '1' });
 
         const acquire3 = await client1.acquireIntent({
             path: '1',
@@ -146,7 +159,7 @@ describe('sessions', () => {
             error: 'wrong previous session',
         });
 
-        await client1.acquireDone();
+        await client1.acquireDone({ path: '1' });
     });
 
     test('acquire - release - acquire', async () => {
@@ -168,10 +181,18 @@ describe('sessions', () => {
             },
         });
 
-        const acquire1Done = await client1.acquireDone();
+        const acquire1Done = await client1.acquireDone({ path: '1' });
         expect(acquire1Done).toEqual({
             success: true,
             id: 2,
+            payload: {
+                descriptors: [
+                    {
+                        path: '1',
+                        session: '1',
+                    },
+                ],
+            },
         });
 
         const sessions1 = await client1.getSessions();

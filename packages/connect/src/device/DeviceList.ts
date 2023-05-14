@@ -160,7 +160,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> {
                     const penalty = this.getAuthPenalty();
 
                     if (priority || penalty) {
-                        await resolveAfter(501 + penalty + 100 * priority, null);
+                        await resolveAfter(501 + penalty + 100 * priority, null).promise;
                     }
                     if (descriptor.session == null) {
                         await this._createAndSaveDevice(descriptor);
@@ -188,11 +188,12 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> {
                     }
                 });
 
-                // todo: not sure if this part is needed.
                 diff.released.forEach(descriptor => {
                     const path = descriptor.path.toString();
                     const device = this.devices[path];
-                    if (device) {
+                    const methodStillRunning = !device?.commands?.disposed;
+
+                    if (methodStillRunning) {
                         device.keepSession = false;
                     }
                 });
@@ -201,9 +202,11 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> {
                     const path = descriptor.path.toString();
                     const device = this.devices[path];
                     if (device) {
-                        if (device.isUnacquired() && !device.isInconsistent()) {
-                            // wait for publish changes
-                            await resolveAfter(501, null);
+                        // after device was released in another window wait for a while (the other window might
+                        // have the intention of acquiring it again)
+                        await resolveAfter(1000, null).promise;
+                        // and if the device is still reelased and has never been acquired before, acquire it here.
+                        if (!device.isUsed() && device.isUnacquired() && !device.isInconsistent()) {
                             _log.debug('Create device from unacquired', device);
                             await this._createAndSaveDevice(descriptor);
                         }
@@ -274,6 +277,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> {
             // enumerating for the first time. we intentionally postpone emitting TRANSPORT_START
             // event until we read descriptors for the first time
             const enumerateResult = await this.transport.enumerate().promise;
+
             if (!enumerateResult.success) {
                 this.emit(TRANSPORT.ERROR, enumerateResult.error);
                 return;
@@ -288,7 +292,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> {
                 this.on(DEVICE.CONNECT_UNACQUIRED, this.resolveTransportEvent.bind(this));
                 autoResolveTransportEventTimeout = setTimeout(() => {
                     this.emit(TRANSPORT.START, this.getTransportInfo());
-                });
+                }, 10000);
             } else {
                 this.emit(TRANSPORT.START, this.getTransportInfo());
             }
@@ -302,7 +306,9 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> {
 
     private resolveTransportEvent() {
         this.transportStartPending--;
-
+        if (autoResolveTransportEventTimeout) {
+            clearTimeout(autoResolveTransportEventTimeout);
+        }
         if (this.transportStartPending === 0) {
             this.emit(TRANSPORT.START, this.getTransportInfo());
         }
@@ -449,18 +455,16 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> {
 
             if (
                 error.code === 'Device_NotFound' ||
-                error.message === 'device not found' ||
+                error.message === TRANSPORT_ERROR.DEVICE_NOT_FOUND ||
                 error.message === TRANSPORT_ERROR.DEVICE_DISCONNECTED_DURING_ACTION ||
-                error.message === TRANSPORT_ERROR.UNEXPECTED_ERROR
+                error.message === TRANSPORT_ERROR.UNEXPECTED_ERROR ||
+                error.message === TRANSPORT_ERROR.INTERFACE_UNABLE_TO_OPEN_DEVICE
             ) {
                 // do nothing
                 // it's a race condition between "device_changed" and "device_disconnected"
                 // todo: emit device.disconnect from here? otherwise there stays a pending device
                 // that can't be worked with
-            } else if (
-                error.message === TRANSPORT_ERROR.SESSION_WRONG_PREVIOUS ||
-                error.message === TRANSPORT_ERROR.INTERFACE_UNABLE_TO_OPEN_DEVICE
-            ) {
+            } else if (error.message === TRANSPORT_ERROR.SESSION_WRONG_PREVIOUS) {
                 this.enumerate();
                 this._handleUsedElsewhere(descriptor);
             } else if (error.message?.indexOf(ERRORS.LIBUSB_ERROR_MESSAGE) >= 0) {

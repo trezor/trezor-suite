@@ -150,21 +150,19 @@ export class Device extends TypedEmitter<DeviceEvents> {
     }
 
     async acquire() {
-        const acquireResult = await this.transport.acquire({
+        const { promise } = this.transport.acquire({
             input: {
                 path: this.originalDescriptor.path,
                 previous: this.originalDescriptor.session,
             },
-        }).promise;
-
+        });
+        const acquireResult = await promise;
         if (!acquireResult.success) {
             if (this.runPromise) {
                 this.runPromise.reject(new Error(acquireResult.error));
-            } else {
-                throw acquireResult.error;
+                this.runPromise = null;
             }
-            this.runPromise = null;
-            return;
+            throw acquireResult.error;
         }
 
         const sessionID = acquireResult.payload;
@@ -218,7 +216,6 @@ export class Device extends TypedEmitter<DeviceEvents> {
         }
 
         options = parseRunOptions(options);
-
         this.runPromise = createDeferred(this._runInner.bind(this, fn, options));
 
         return this.runPromise.promise;
@@ -286,6 +283,8 @@ export class Device extends TypedEmitter<DeviceEvents> {
                     ]);
                 }
             } catch (error) {
+                // note: this happens on t1 with webusb if there was "select wallet dialog" and user reloads page.
+                // note this happens even before transport-refactor-2 branch
                 if (!this.inconsistent && error.message === 'GetFeatures timeout') {
                     // handling corner-case T1 + bootloader < 1.4.0 (above)
                     // if GetFeatures fails try again
@@ -298,7 +297,9 @@ export class Device extends TypedEmitter<DeviceEvents> {
                 return Promise.reject(
                     ERRORS.TypedError(
                         'Device_InitializeFailed',
-                        `Initialize failed: ${error.message}, code: ${error.code}`,
+                        `Initialize failed: ${error.message} ${
+                            error.code ? `, code: ${error.code}` : ''
+                        }`,
                     ),
                 );
             }

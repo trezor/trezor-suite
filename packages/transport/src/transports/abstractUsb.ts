@@ -1,4 +1,4 @@
-import { createDeferred } from '@trezor/utils';
+import { createDeferred, Deferred } from '@trezor/utils';
 
 import { AbstractTransport, AcquireInput } from './abstract';
 import { buildAndSend } from '../lowlevel/send';
@@ -20,6 +20,7 @@ export abstract class AbstractUsbTransport extends AbstractTransport {
     // which can live in couple of context (shared worker, local module, websocket server etc)
     private sessionsClient: UsbTransportConstructorParams['sessionsClient'];
     private transportInterface: UsbInterface;
+    protected acquirePromise?: Deferred<any>;
 
     constructor({ messages, usbInterface, sessionsClient, signal }: UsbTransportConstructorParams) {
         super({ messages, signal });
@@ -51,8 +52,11 @@ export abstract class AbstractUsbTransport extends AbstractTransport {
             });
         });
         // 3. based on 2.sessions background distributes information about descriptors change to all clients
-        this.sessionsClient.on('descriptors', descriptors => {
+        this.sessionsClient.on('descriptors', async descriptors => {
             // 4. we propagate new descriptors to higher levels
+            if (this.acquirePromise?.promise) {
+                await this.acquirePromise.promise;
+            }
             this.handleDescriptorsChange(descriptors);
         });
 
@@ -82,34 +86,38 @@ export abstract class AbstractUsbTransport extends AbstractTransport {
 
     public acquire({ input }: { input: AcquireInput }) {
         return this.scheduleAction(async () => {
-            // listenPromise is resolved on next listen
-            this.listenPromise = createDeferred();
+            if (this.listening) {
+                this.listenPromise = createDeferred<string>();
+                this.acquirePromise = createDeferred<undefined>();
+            }
 
             const { path } = input;
-
-            const reset = !!input.previous;
-
-            const openDevicePromise = this.transportInterface.openDevice(path, reset);
-
+            this.acquiringPath = path;
             const acquireIntentResponse = await this.sessionsClient.acquireIntent(input);
 
             if (!acquireIntentResponse.success) {
                 return this.error({ error: acquireIntentResponse.error });
             }
-
             this.acquiringSession = acquireIntentResponse.payload.session;
-            this.acquiringPath = input.path;
 
-            const openDeviceResult = await openDevicePromise;
+            const reset = !!input.previous;
+            const openDeviceResult = await this.transportInterface.openDevice(path, reset);
 
             if (!openDeviceResult.success) {
+                if (this.listenPromise) {
+                    this.listenPromise.reject(new Error(openDeviceResult.error));
+                }
                 return openDeviceResult;
             }
 
-            await this.sessionsClient.acquireDone();
+            this.sessionsClient.acquireDone({ path });
 
-            if (!this.listening) {
-                return this.success(this.acquiringSession);
+            if (this.acquirePromise) {
+                this.acquirePromise.resolve(undefined);
+            }
+
+            if (!this.listenPromise) {
+                return this.success(acquireIntentResponse.payload.session);
             }
 
             return this.listenPromise.promise
@@ -122,6 +130,8 @@ export abstract class AbstractUsbTransport extends AbstractTransport {
                     return this.unknownError(err, [
                         ERRORS.DEVICE_DISCONNECTED_DURING_ACTION,
                         ERRORS.SESSION_WRONG_PREVIOUS,
+                        ERRORS.DEVICE_NOT_FOUND,
+                        ERRORS.INTERFACE_UNABLE_TO_OPEN_DEVICE,
                     ]);
                 });
         });
@@ -143,7 +153,6 @@ export abstract class AbstractUsbTransport extends AbstractTransport {
             }
 
             await this.releaseDevice(releaseIntentResponse.payload.path);
-
             await this.sessionsClient.releaseDone({
                 path: releaseIntentResponse.payload.path,
             });
@@ -173,10 +182,9 @@ export abstract class AbstractUsbTransport extends AbstractTransport {
                 if (!getPathBySessionResponse.success) {
                     // session not found means that device was disconnected
                     if (getPathBySessionResponse.error === 'session not found') {
-                        return this.error({ error: 'device disconnected during action' });
+                        return this.error({ error: ERRORS.DEVICE_DISCONNECTED_DURING_ACTION });
                     }
-                    // should never happen
-                    return this.error({ error: 'unexpected error' });
+                    return this.error({ error: ERRORS.UNEXPECTED_ERROR });
                 }
                 const { path } = getPathBySessionResponse.payload;
 
@@ -199,7 +207,6 @@ export abstract class AbstractUsbTransport extends AbstractTransport {
                             if (result.success) {
                                 return result.payload;
                             }
-                            // todo:
                             throw new Error(result.error);
                         }),
                     );
@@ -211,7 +218,12 @@ export abstract class AbstractUsbTransport extends AbstractTransport {
                         this.enumerate();
                     }
 
-                    return this.unknownError(err, [ERRORS.DEVICE_DISCONNECTED_DURING_ACTION]);
+                    return this.unknownError(err, [
+                        ERRORS.DEVICE_DISCONNECTED_DURING_ACTION,
+                        ERRORS.DEVICE_NOT_FOUND,
+                        ERRORS.INTERFACE_UNABLE_TO_OPEN_DEVICE,
+                        ERRORS.INTERFACE_DATA_TRANSFER,
+                    ]);
                 }
             },
             { timeout: undefined },

@@ -206,13 +206,14 @@ export class UsbInterface extends AbstractInterface<USBDevice> {
             return this.error({ error: ERRORS.DEVICE_NOT_FOUND });
         }
 
-        try {
-            const interfaceId = INTERFACE_ID;
-            await device.releaseInterface(interfaceId);
-        } catch (err) {
-            // ignore
+        if (device.opened) {
+            try {
+                const interfaceId = INTERFACE_ID;
+                await device.releaseInterface(interfaceId);
+            } catch (err) {
+                // ignore
+            }
         }
-
         if (device.opened) {
             try {
                 await device.close();
