@@ -26,6 +26,7 @@ jobs:
         with:
           node-version-file: ".nvmrc"
       - name: Run @trezor/connect create release branch
+        shell: bash
         run: |
           npm install -g yarn && yarn install
           git config --global user.name "trezor-ci"

@@ -2,6 +2,8 @@
 
 set -x -o pipefail
 
+bash --version
+
 DEPS_CHECK_RESULT=$(node ./ci/scripts/check-npm-dependencies.js connect)
 DEPS_CHECKLIST=""
 line_break=$'\n'
@@ -9,7 +11,7 @@ line_break=$'\n'
 DEPS=$(echo "${DEPS_CHECK_RESULT}" | jq -r '.deps')
 DEPS_ERRORS=$(echo "${DEPS_CHECK_RESULT}" | jq -r '.errors')
 
-echo "preparing ${i} connect release..."
+echo "preparing ${1} connect release..."
 
 if [ -z "$DEPS" ]; then
   echo "no relevant dependencies to be released"
@@ -29,7 +31,9 @@ else
       echo "changelog draft for ${i}:"
       touch -a "./packages/${i}/CHANGELOG.md"
       PACKAGE_NEXT_V=$(jq -r '.version' < "packages/${i}/package.json")
-      echo "# ${PACKAGE_NEXT_V} ${line_break} ${CHANGELOG_DRAFT}  " | cat - "packages/${i}/CHANGELOG.md" > /tmp/out
+      IFS='*' read -a CHANGELOG_ARRAY <<< "${CHANGELOG_DRAFT}"
+      CHANGELOG_FORMATTED=$(for i in "${CHANGELOG_ARRAY[@]}"; do echo "-   ${i}"; done)
+      echo "# ${PACKAGE_NEXT_V} ${line_break} ${CHANGELOG_FORMATTED}" | cat - "packages/${i}/CHANGELOG.md" > /tmp/out
       mv "/tmp/out" "packages/${i}/CHANGELOG.md"
       yarn prettier --write "packages/${i}/CHANGELOG.md"
     else
