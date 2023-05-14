@@ -1,3 +1,7 @@
+# 2.1.12
+
+-   b2e8fb9 hmm
+
 # 2.1.11
 
 -   chore(blockchain-link): fix ripple blocktime
