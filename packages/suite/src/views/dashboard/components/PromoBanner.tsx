@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import styled, { css } from 'styled-components';
 import { SUITE_MOBILE_APP_STORE, SUITE_MOBILE_PLAY_STORE, SUITE_URL } from '@trezor/urls';
+import { EventType, analytics } from '@trezor/suite-analytics';
 import { Button, Icon, Image, Tooltip, variables } from '@trezor/components';
 import { Translation, QrCode, TrezorLink } from '@suite-components';
 import { isWeb } from '@suite-utils/env';
@@ -127,10 +128,17 @@ interface StoreBadgeProps {
     url: string;
     image: 'APP_STORE' | 'PLAY_STORE';
     type: QrType;
+    analyticsPayload: 'ios' | 'android';
     shownQRState: [QrType | undefined, (type: QrType | undefined) => void];
 }
 
-const StoreBadge = ({ url, image, type, shownQRState: [showQR, setShowQr] }: StoreBadgeProps) => {
+const StoreBadge = ({
+    url,
+    image,
+    type,
+    analyticsPayload,
+    shownQRState: [showQR, setShowQr],
+}: StoreBadgeProps) => {
     const { isMobileLayout } = useLayoutSize();
 
     return (
@@ -145,7 +153,18 @@ const StoreBadge = ({ url, image, type, shownQRState: [showQR, setShowQr] }: Sto
             onShow={() => setShowQr(type)}
             onHide={() => setShowQr(undefined)}
         >
-            <TrezorLink href={url} variant="nostyle">
+            <TrezorLink
+                href={url}
+                variant="nostyle"
+                onClick={() =>
+                    analytics.report({
+                        type: EventType.GetMobileApp,
+                        payload: {
+                            platform: analyticsPayload,
+                        },
+                    })
+                }
+            >
                 <Badge image={`${image}_BADGE`} height={35} isHighlighted={showQR === type} />
             </TrezorLink>
         </StyledTooltip>
@@ -173,7 +192,15 @@ export const PromoBanner = () => {
                         </OSIcons>
                     </div>
 
-                    <StyledLink href={SUITE_URL} variant="nostyle">
+                    <StyledLink
+                        href={SUITE_URL}
+                        variant="nostyle"
+                        onClick={() =>
+                            analytics.report({
+                                type: EventType.GetDesktopApp,
+                            })
+                        }
+                    >
                         <DesktopLinkButton>
                             <Translation id="TR_DESKTOP_APP_PROMO_GET" />
                         </DesktopLinkButton>
@@ -192,12 +219,14 @@ export const PromoBanner = () => {
                         url={SUITE_MOBILE_APP_STORE}
                         image="APP_STORE"
                         type="app-store"
+                        analyticsPayload="ios"
                         shownQRState={shownQRState}
                     />
                     <StoreBadge
                         url={SUITE_MOBILE_PLAY_STORE}
                         image="PLAY_STORE"
                         type="play-store"
+                        analyticsPayload="android"
                         shownQRState={shownQRState}
                     />
                 </BadgeContainer>
