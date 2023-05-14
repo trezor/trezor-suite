@@ -1,7 +1,5 @@
 # TODOs:
 # - add release_to_npm section (now in gitlab). should be triggered after release_trezor-io is done
-# - read new version from yarn workspace @trezor/connect version:<semver> and use it in commit messages etc
-# - consider generation of changelog etc
 # - in release/connect-v9 branch PR, post info about changed files only for connect?
 
 name: release - connect v9 - init

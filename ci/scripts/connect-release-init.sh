@@ -8,6 +8,8 @@ DEPS_CHECKLIST=""
 DEPS=$(echo "${DEPS_CHECK_RESULT}" | jq -r '.deps')
 DEPS_ERRORS=$(echo "${DEPS_CHECK_RESULT}" | jq -r '.errors')
 
+echo "preparing ${i} connect release..."
+
 if [ -z "$DEPS" ]; then
   echo "no relevant dependencies to be released"
 else
@@ -18,9 +20,12 @@ else
   # prepare one commit for each dependency with version bump and changelog 
   for i in "${DEPS_ARRAY[@]}";
   do
+    echo "processing ${i} package"
     yarn bump patch "./packages/${i}/package.json"
     touch -a "./packages/${i}/CHANGELOG.md"
-    echo "# $(jq -r '.version' < "packages/${i}/package.json")  $(./ci/scripts/create_changelog_draft.sh "${i}")  "|cat - "packages/${i}/CHANGELOG.md" > /tmp/out 
+    CHANGELOG_DRAFT=$(./ci/scripts/create_changelog_draft.sh "${i}")
+    echo "${CHANGELOG_DRAFT}"
+    echo "# $(jq -r '.version' < "packages/${i}/package.json")  ${CHANGELOG_DRAFT}  "|cat - "packages/${i}/CHANGELOG.md" > /tmp/out 
     mv "/tmp/out" "packages/${i}/CHANGELOG.md"
     yarn prettier --write "packages/${i}/CHANGELOG.md"
     git add "./packages/${i}" yarn.lock
