@@ -2,6 +2,8 @@
 
 set -x -o pipefail
 
+bash --version
+
 DEPS_CHECK_RESULT=$(node ./ci/scripts/check-npm-dependencies.js connect)
 DEPS_CHECKLIST=""
 line_break=$'\n'
