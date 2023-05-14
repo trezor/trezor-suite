@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Button, H2, Icon, Image, P, motionEasing } from '@trezor/components';
+import { analytics, EventType } from '@trezor/suite-analytics';
 import { SUITE_URL } from '@trezor/urls';
 import { useDispatch } from '@suite-hooks/useDispatch';
 import TrezorLink from '@suite-components/TrezorLink';
@@ -135,7 +136,15 @@ export const DesktopSuiteBanner = () => {
                             </P>
                         </TextContainer>
 
-                        <TrezorLink href={SUITE_URL} variant="nostyle">
+                        <TrezorLink
+                            href={SUITE_URL}
+                            variant="nostyle"
+                            onClick={() =>
+                                analytics.report({
+                                    type: EventType.GetDesktopApp,
+                                })
+                            }
+                        >
                             <StyledButton>
                                 <Translation id="TR_DESKTOP_APP_PROMO_GET" />
                             </StyledButton>
