@@ -1,6 +1,6 @@
 # @trezor/connect
 
-API version 9.0.9
+API version 9.0.10-beta.1
 
 [![Build Status](https://github.com/trezor/trezor-suite/actions/workflows/connect-test.yml/badge.svg)](https://github.com/trezor/trezor-suite/actions/workflows/connect-test.yml)
 [![NPM](https://img.shields.io/npm/v/@trezor/connect.svg)](https://www.npmjs.org/package/@trezor/connect)
