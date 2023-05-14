@@ -31,7 +31,7 @@ else
       echo "changelog draft for ${i}:"
       touch -a "./packages/${i}/CHANGELOG.md"
       PACKAGE_NEXT_V=$(jq -r '.version' < "packages/${i}/package.json")
-      IFS='*' read -a CHANGELOG_ARRAY <<< "${CHANGELOG_DRAFT}"
+      IFS='§' read -a CHANGELOG_ARRAY <<< "${CHANGELOG_DRAFT}"
       CHANGELOG_FORMATTED=$(for i in "${CHANGELOG_ARRAY[@]}"; do echo "-   ${i}"; done)
       echo "# ${PACKAGE_NEXT_V} ${line_break} ${CHANGELOG_FORMATTED}" | cat - "packages/${i}/CHANGELOG.md" > /tmp/out
       mv "/tmp/out" "packages/${i}/CHANGELOG.md"
