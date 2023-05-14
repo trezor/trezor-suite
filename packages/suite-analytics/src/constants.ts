@@ -77,4 +77,7 @@ export enum EventType {
     SettingsTorOnionLinks = 'settings/tor/onion-links',
 
     SettingsAnalytics = 'settings/analytics',
+
+    GetDesktopApp = 'promo/desktop',
+    GetMobileApp = 'promo/mobile',
 }
