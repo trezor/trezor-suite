@@ -1,3 +1,7 @@
+# 1.1.11
+
+-   b2e8fb9 hmm
+
 # 1.1.10
 
 -   fix(transport): update encoded_network to ArrayBuffer
