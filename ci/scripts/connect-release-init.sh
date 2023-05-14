@@ -46,26 +46,26 @@ else
 fi
 
 # no yarn.lock change should be needed
-# yarn --immutable
+yarn --immutable
 
-# yarn workspace @trezor/connect version:"${1}"
-# VERSION=$(jq -r '.version' < packages/connect/package.json)
-# BRANCH_NAME="test-npm-release/connect-${VERSION}"
-# git checkout -B "${BRANCH_NAME}"
-# git add . && git commit -m "npm-release: @trezor/connect ${VERSION}" && git push origin "${BRANCH_NAME}" -f
-# PR_TITLE="npm-release @trezor/connect ${VERSION}"
-# gh pr create --repo trezor/trezor-suite --title "${PR_TITLE}" --body-file "docs/releases/connect-release.md" --base develop
-# PR_NUM=$(gh pr list --repo trezor/trezor-suite --head "${BRANCH_NAME}" --json number | jq .[0].number)
+yarn workspace @trezor/connect version:"${1}"
+VERSION=$(jq -r '.version' < packages/connect/package.json)
+BRANCH_NAME="test-npm-release/connect-${VERSION}"
+git checkout -B "${BRANCH_NAME}"
+git add . && git commit -m "npm-release: @trezor/connect ${VERSION}" && git push origin "${BRANCH_NAME}" -f
+PR_TITLE="npm-release @trezor/connect ${VERSION}"
+gh pr create --repo trezor/trezor-suite --title "${PR_TITLE}" --body-file "docs/releases/connect-release.md" --base develop
+PR_NUM=$(gh pr list --repo trezor/trezor-suite --head "${BRANCH_NAME}" --json number | jq .[0].number)
 
-# if [[ -n "${DEPS_ERRORS}" ]]; then
-#   echo "deps error. one of the dependencies likely needs to be published for the first time" 
-#   echo "deps errors: ${DEPS_ERRORS}"
-#   gh pr comment "${PR_NUM}" --body "Deps error. one of the dependencies likely needs to be published for the first time: ${DEPS_ERRORS}"
-# fi
+if [[ -n "${DEPS_ERRORS}" ]]; then
+  echo "deps error. one of the dependencies likely needs to be published for the first time" 
+  echo "deps errors: ${DEPS_ERRORS}"
+  gh pr comment "${PR_NUM}" --body "Deps error. one of the dependencies likely needs to be published for the first time: ${DEPS_ERRORS}"
+fi
 
-# if [[ -n "${DEPS_CHECKLIST}" ]]; then
-#   echo "deps checklist: ${DEPS_CHECKLIST}"
-#   gh pr comment "${PR_NUM}" --body "${DEPS_CHECKLIST}"
-# fi
+if [[ -n "${DEPS_CHECKLIST}" ]]; then
+  echo "deps checklist: ${DEPS_CHECKLIST}"
+  gh pr comment "${PR_NUM}" --body "${DEPS_CHECKLIST}"
+fi
 
-# echo "DONE"
+echo "DONE"
