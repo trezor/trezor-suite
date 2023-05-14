@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -e -o pipefail
+set -x -o pipefail
 
 DEPS_CHECK_RESULT=$(node ./ci/scripts/check-npm-dependencies.js connect)
 DEPS_CHECKLIST=""
@@ -23,12 +23,11 @@ else
   do
     echo "processing ${i} package"
     yarn bump patch "./packages/${i}/package.json"
-    touch -a "./packages/${i}/CHANGELOG.md"
     CHANGELOG_DRAFT=$(./ci/scripts/create_changelog_draft.sh "${i}")
 
     if [[ -n "${CHANGELOG_DRAFT}" ]]; then
       echo "changelog draft for ${i}:"
-      echo "${CHANGELOG_DRAFT}"
+      touch -a "./packages/${i}/CHANGELOG.md"
       PACKAGE_NEXT_V=$(jq -r '.version' < "packages/${i}/package.json")
       echo "# ${PACKAGE_NEXT_V} ${line_break} ${CHANGELOG_DRAFT}  " | cat - "packages/${i}/CHANGELOG.md" > /tmp/out
       mv "/tmp/out" "packages/${i}/CHANGELOG.md"
