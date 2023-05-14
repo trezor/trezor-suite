@@ -20,6 +20,32 @@ const legacyResults: Record<string, LegacyResult[]> = {
             success: false,
         },
     ],
+    // old testnests now return firmware outdated. disabling these tests is not a big deal
+    // see followup issue: https://github.com/trezor/trezor-suite/issues/8440
+    Rinkeby: [
+        {
+            rules: ['<2.5.2', '<1.11.2'],
+            success: false,
+        },
+    ],
+    Ropsten: [
+        {
+            rules: ['<2.5.2', '<1.11.2'],
+            success: false,
+        },
+    ],
+    max_chain_id: [
+        {
+            rules: ['<2.5.2', '<1.11.2'],
+            success: false,
+        },
+    ],
+    max_chain_plus_one: [
+        {
+            rules: ['<2.5.2', '<1.11.2'],
+            success: false,
+        },
+    ],
 };
 
 export default {
