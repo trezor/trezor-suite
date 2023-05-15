@@ -61,19 +61,15 @@ export class CoinjoinMempoolController implements MempoolController {
     async init(addresses: string[]) {
         const filters = await this.client.fetchMempoolFilters();
         const scripts = addresses.map(addr => getMempoolAddressScript(addr, this.network));
-        this.logger?.info(`mempool filtering ${Object.keys(filters).length} txs START`);
         const txids = Object.entries(filters)
             .filter(([txid, filter]) => {
                 const isMatch = getMempoolFilter(filter, txid);
                 return scripts.some(isMatch);
             })
             .map(([txid]) => txid);
-        this.logger?.info('mempool filtering END');
-        this.logger?.info(`init fetching ${txids.length} txs START`);
         await promiseAllSequence(
             txids.map(txid => () => this.client.fetchTransaction(txid).then(this.onTx)),
         );
-        this.logger?.info('init fetching txs END');
         this.lastPurge = new Date().getTime();
     }
 
