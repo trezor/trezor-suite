@@ -50,7 +50,7 @@ yarn --immutable
 
 yarn workspace @trezor/connect version:"${1}"
 VERSION=$(jq -r '.version' < packages/connect/package.json)
-BRANCH_NAME="test-npm-release/connect-${VERSION}"
+BRANCH_NAME="npm-release/connect-${VERSION}"
 git checkout -B "${BRANCH_NAME}"
 git add . && git commit -m "npm-release: @trezor/connect ${VERSION}" && git push origin "${BRANCH_NAME}" -f
 PR_TITLE="npm-release @trezor/connect ${VERSION}"
