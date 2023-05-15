@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { BottomSheet, Button, Card, Pictogram, VStack } from '@suite-native/atoms';
+import { Button } from '@suite-native/atoms';
 import {
     accountsActions,
     AccountsRootState,
@@ -19,16 +19,11 @@ import {
     RootStackRoutes,
     StackNavigationProps,
 } from '@suite-native/navigation';
-
-const AccountSettingsRemoveCoinButton = ({ onPress }: { onPress: () => void }) => (
-    <Button onPress={onPress} colorScheme="dangerElevation0">
-        Remove coin
-    </Button>
-);
+import { useAlert } from '@suite-native/alerts';
 
 export const AccountSettingsRemoveCoin = ({ accountKey }: { accountKey: AccountKey }) => {
     const dispatch = useDispatch();
-    const [isWarningSheetVisible, setIsWarningSheetVisible] = useState<boolean>(false);
+    const { showAlert, hideAlert } = useAlert();
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
@@ -57,27 +52,24 @@ export const AccountSettingsRemoveCoin = ({ accountKey }: { accountKey: AccountK
         }
     };
 
-    const handleToggleBottomSheet = () => setIsWarningSheetVisible(!isWarningSheetVisible);
+    const handleShowAlert = () => {
+        showAlert({
+            icon: 'shieldWarning',
+            pictogramVariant: 'red',
+            title: 'Do you really want to remove this coin from Trezor Suite Lite?',
+            description:
+                'Your coins remain intact and safe. Import this coin again with Trezor Suite Lite using your public key (XPUB) at any time.',
+            primaryButtonTitle: 'Remove coin',
+            primaryButtonVariant: 'dangerElevation0',
+            onPressPrimaryButton: handleRemoveAccount,
+            secondaryButtonTitle: 'Cancel',
+            onPressSecondaryButton: () => hideAlert(),
+        });
+    };
 
     return (
-        <>
-            <BottomSheet isVisible={isWarningSheetVisible} onClose={handleToggleBottomSheet}>
-                <Card>
-                    <VStack spacing="medium">
-                        <Pictogram
-                            variant="red"
-                            icon="shieldWarning"
-                            title="Do you really want to remove this coin from Trezor Suite Lite?"
-                            subtitle="Your coins remain intact and safe. Import this coin again with Trezor Suite Lite using your public key (XPUB) at any time."
-                        />
-                        <AccountSettingsRemoveCoinButton onPress={handleRemoveAccount} />
-                        <Button colorScheme="tertiaryElevation0" onPress={handleToggleBottomSheet}>
-                            Cancel
-                        </Button>
-                    </VStack>
-                </Card>
-            </BottomSheet>
-            <AccountSettingsRemoveCoinButton onPress={handleToggleBottomSheet} />
-        </>
+        <Button onPress={handleShowAlert} colorScheme="dangerElevation0">
+            Remove coin
+        </Button>
     );
 };

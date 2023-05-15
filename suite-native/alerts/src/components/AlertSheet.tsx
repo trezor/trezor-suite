@@ -62,6 +62,7 @@ export const AlertSheet = ({ alert }: AlertSheetProps) => {
         primaryButtonTitle,
         onPressSecondaryButton,
         secondaryButtonTitle,
+        primaryButtonVariant = 'primary',
     } = alert;
 
     const handlePressPrimaryButton = async () => {
@@ -93,7 +94,7 @@ export const AlertSheet = ({ alert }: AlertSheetProps) => {
 
                                 <VStack spacing="medium">
                                     <Button
-                                        colorScheme="primary"
+                                        colorScheme={primaryButtonVariant}
                                         onPress={handlePressPrimaryButton}
                                     >
                                         {primaryButtonTitle}
