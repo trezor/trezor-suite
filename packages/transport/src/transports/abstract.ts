@@ -441,9 +441,13 @@ export abstract class AbstractTransport extends TypedEmitter<{
                 signal,
                 timeout: ACTION_TIMEOUT,
                 ...params,
-            }).catch(err =>
-                unknownError(err, [ERRORS.ABORTED_BY_TIMEOUT, ERRORS.ABORTED_BY_SIGNAL]),
-            ),
+            })
+                .catch(err =>
+                    unknownError(err, [ERRORS.ABORTED_BY_TIMEOUT, ERRORS.ABORTED_BY_SIGNAL]),
+                )
+                .finally(() => {
+                    this.abortController.signal.removeEventListener('abort', abort);
+                }),
             abort,
         };
     };
