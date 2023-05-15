@@ -19,6 +19,7 @@ const Container = styled(motion.div)`
     padding: 12px 20px;
     border-radius: 12px;
     background: ${({ theme }) => theme.BG_GREEN};
+    overflow: hidden;
 `;
 
 const CloseButton = styled(Icon)`
@@ -33,7 +34,7 @@ const CloseButton = styled(Icon)`
     cursor: pointer;
 
     path {
-        fill: ${({ theme }) => theme.STROKE_GREY_ALT};
+        fill: ${({ theme }) => theme.BG_WHITE};
     }
 
     :hover {
