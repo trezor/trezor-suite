@@ -1,5 +1,6 @@
 import { Alice } from '../../src/client/Alice';
 import { ROUND_SELECTION_MAX_OUTPUTS } from '../../src/constants';
+import { SessionPhase, WabiSabiProtocolErrorCode } from '../../src/enums';
 import { CoinjoinRound } from '../../src/client/CoinjoinRound';
 import { CoinjoinPrison } from '../../src/client/CoinjoinPrison';
 import {
@@ -480,6 +481,69 @@ describe('selectRound', () => {
             id: '02',
             blameOf,
             inputs: [{ outpoint: 'AA' }, { outpoint: 'AB' }],
+        });
+    });
+
+    it('too many blocked utxos', async () => {
+        prison.detain('A0', { errorCode: WabiSabiProtocolErrorCode.InputBanned });
+        prison.detain('A1', { errorCode: WabiSabiProtocolErrorCode.InputBanned });
+        prison.detain('A9', { errorCode: WabiSabiProtocolErrorCode.InputLongBanned });
+
+        const setSessionPhaseMock = jest.fn();
+
+        // most of utxos are banned
+        const result = await selectRound({
+            roundGenerator,
+            aliceGenerator,
+            accounts: [
+                {
+                    ...ACCOUNT,
+                    utxos: [
+                        { outpoint: 'A0', amount: 10000 },
+                        { outpoint: 'A1', amount: 10000 },
+                        { outpoint: 'AC', amount: 60000 },
+                        { outpoint: 'A9', amount: 60000000 },
+                    ],
+                },
+            ],
+            statusRounds: [DEFAULT_ROUND],
+            coinjoinRounds: [],
+            prison,
+            options: { ...server?.requestOptions, setSessionPhase: setSessionPhaseMock },
+            runningAffiliateServer: true,
+        });
+        expect(result).toBeUndefined();
+        expect(setSessionPhaseMock).toHaveBeenLastCalledWith({
+            accountKeys: ['account-A'],
+            phase: SessionPhase.BlockedUtxos,
+        });
+
+        // most of amount is banned
+        const result2 = await selectRound({
+            roundGenerator,
+            aliceGenerator,
+            accounts: [
+                {
+                    ...ACCOUNT,
+                    accountKey: 'account-B',
+                    utxos: [
+                        { outpoint: 'A0', amount: 10000 },
+                        { outpoint: 'AB', amount: 6000 },
+                        { outpoint: 'AC', amount: 6000 },
+                        { outpoint: 'A9', amount: 60000000 },
+                    ],
+                },
+            ],
+            statusRounds: [DEFAULT_ROUND],
+            coinjoinRounds: [],
+            prison,
+            options: { ...server?.requestOptions, setSessionPhase: setSessionPhaseMock },
+            runningAffiliateServer: true,
+        });
+        expect(result2).toBeUndefined();
+        expect(setSessionPhaseMock).toHaveBeenLastCalledWith({
+            accountKeys: ['account-B'],
+            phase: SessionPhase.BlockedUtxos,
         });
     });
 
