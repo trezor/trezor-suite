@@ -7786,6 +7786,11 @@ export default defineMessages({
         defaultMessage: 'Critical error, stopping coinjoin.',
         description: '29 symbols max',
     },
+    TR_SESSION_ERROR_PHASE_BLOCKED_UTXOS: {
+        id: 'TR_SESSION_ERROR_PHASE_BLOCKED_UTXOS',
+        defaultMessage: 'Coinjoin temporarily unavailable',
+        description: 'Some of utxos are temporary banned, disable session for a while',
+    },
     TR_SESSION_PHASE_AWAITING_CONFIRMATION: {
         id: 'TR_SESSION_PHASE_AWAITING_CONFIRMATION',
         defaultMessage: 'Confirming availability',
