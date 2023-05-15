@@ -1,3 +1,9 @@
+# 2.1.12
+
+-   5711aa998 feat(blockchain-link): add getMempoolFilters method
+-   819c019d1 chore: use workspace:\* everywhere
+-   3e072b11f chore(blockchain-link): use `@trezor/e2e-utils` in tests
+
 # 2.1.11
 
 -   chore(blockchain-link): fix ripple blocktime
