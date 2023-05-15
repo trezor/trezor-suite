@@ -19,6 +19,7 @@ export const SESSION_PHASE_MESSAGES: Record<SessionPhase, TranslationKey> = {
     [SessionPhase.RetryingRoundPairing]: 'TR_SESSION_ERROR_PHASE_RETRYING_PAIRING',
     [SessionPhase.AffiliateServerOffline]: 'TR_SESSION_ERROR_PHASE_AFFILIATE_SERVERS_OFFLINE',
     [SessionPhase.CriticalError]: 'TR_SESSION_ERROR_PHASE_CRITICAL_ERROR',
+    [SessionPhase.BlockedUtxos]: 'TR_SESSION_ERROR_PHASE_BLOCKED_UTXOS',
     [SessionPhase.AwaitingConfirmation]: 'TR_SESSION_PHASE_AWAITING_CONFIRMATION',
     [SessionPhase.AwaitingOthersConfirmation]: 'TR_SESSION_PHASE_WAITING_FOR_OTHERS',
     [SessionPhase.RegisteringOutputs]: 'TR_SESSION_PHASE_REGISTERING_OUTPUTS',
