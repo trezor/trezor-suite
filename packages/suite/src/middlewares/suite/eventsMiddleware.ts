@@ -1,14 +1,10 @@
 import { MiddlewareAPI } from 'redux';
 import { DEVICE } from '@trezor/connect';
 import { SUITE } from '@suite-actions/constants';
-import {
-    notificationsActions,
-    removeAccountEventsThunk,
-    removeTransactionEventsThunk,
-} from '@suite-common/toast-notifications';
+import { notificationsActions, removeAccountEventsThunk } from '@suite-common/toast-notifications';
 import * as deviceUtils from '@suite-utils/device';
 import { AppState, Action, Dispatch } from '@suite-types';
-import { accountsActions, transactionsActions } from '@suite-common/wallet-core';
+import { accountsActions } from '@suite-common/wallet-core';
 
 /*
  * Middleware for event notifications.
@@ -93,11 +89,6 @@ const eventsMiddleware =
                     api.dispatch(notificationsActions.remove(toRemove));
                 }
             });
-        }
-
-        if (transactionsActions.removeTransaction.match(action)) {
-            const { txs } = action.payload;
-            api.dispatch(removeTransactionEventsThunk(txs));
         }
 
         if (accountsActions.removeAccount.match(action)) {
