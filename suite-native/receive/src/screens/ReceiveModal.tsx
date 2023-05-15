@@ -10,7 +10,7 @@ import {
     StackNavigationProps,
 } from '@suite-native/navigation';
 import { AccountsList } from '@suite-native/accounts';
-import { AccountKey, TokenSymbol } from '@suite-common/wallet-types';
+import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 
 import { ReceiveAccount } from '../components/ReceiveAccount';
 
@@ -20,9 +20,9 @@ export const ReceiveModal = () => {
     const navigation =
         useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes.ReceiveModal>>();
 
-    const handleSelectAccount = (accountKey: AccountKey, tokenSymbol?: TokenSymbol) => {
+    const handleSelectAccount = (accountKey: AccountKey, tokenContract?: TokenAddress) => {
         navigation.dispatch({
-            ...CommonActions.setParams({ accountKey, tokenSymbol }),
+            ...CommonActions.setParams({ accountKey, tokenContract }),
         });
     };
 
@@ -31,7 +31,7 @@ export const ReceiveModal = () => {
             {route.params?.accountKey ? (
                 <ReceiveAccount
                     accountKey={route.params.accountKey}
-                    tokenSymbol={route.params?.tokenSymbol}
+                    tokenContract={route.params?.tokenContract}
                 />
             ) : (
                 <AccountsList onSelectAccount={handleSelectAccount} />

@@ -13,8 +13,7 @@ import {
 } from '@suite-native/navigation';
 import { networks, NetworkSymbol } from '@suite-common/wallet-config';
 import { AccountsListGroup } from '@suite-native/accounts';
-import { AccountKey } from '@suite-common/wallet-types';
-import { EthereumTokenSymbol } from '@suite-native/ethereum-tokens';
+import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 
 import { AssetItem } from './AssetItem';
 import { selectAssetsWithBalances } from '../assetsSelectors';
@@ -37,13 +36,10 @@ export const Assets = () => {
         [assetsData],
     );
 
-    const handleSelectAssetsAccount = (
-        accountKey: AccountKey,
-        tokenSymbol?: EthereumTokenSymbol,
-    ) => {
+    const handleSelectAssetsAccount = (accountKey: AccountKey, tokenContract?: TokenAddress) => {
         navigation.navigate(RootStackRoutes.AccountDetail, {
             accountKey,
-            tokenSymbol,
+            tokenContract,
         });
         setSelectedAssetSymbol(null);
     };

@@ -4,14 +4,13 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import { Box, Button, Divider, Text } from '@suite-native/atoms';
-import { AccountKey } from '@suite-common/wallet-types';
+import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import {
     AccountsRootState,
     selectIsTestnetAccount,
     selectHasAccountTransactions,
     selectAccountByKey,
 } from '@suite-common/wallet-core';
-import { EthereumTokenSymbol } from '@suite-native/ethereum-tokens';
 import { isEthereumAccountSymbol } from '@suite-common/wallet-utils';
 import {
     AppTabsParamList,
@@ -30,12 +29,12 @@ type AccountDetailHeaderProps = {
     accountKey: AccountKey;
     areTokensIncluded: boolean;
     toggleIncludeTokenTransactions: () => void;
-    tokenSymbol?: EthereumTokenSymbol;
+    tokenContract?: TokenAddress;
 };
 
 type TransactionListHeaderContentProps = {
     accountKey: AccountKey;
-    tokenSymbol?: EthereumTokenSymbol;
+    tokenContract?: TokenAddress;
 };
 
 type AccountsNavigationProps = TabToStackCompositeNavigationProp<
@@ -46,7 +45,7 @@ type AccountsNavigationProps = TabToStackCompositeNavigationProp<
 
 const TransactionListHeaderContent = ({
     accountKey,
-    tokenSymbol,
+    tokenContract,
 }: TransactionListHeaderContentProps) => {
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
@@ -60,7 +59,7 @@ const TransactionListHeaderContent = ({
 
     if (!account) return null;
 
-    const isTokenAccount = !!tokenSymbol;
+    const isTokenAccount = !!tokenContract;
 
     // Graph is temporarily hidden also for ERC20 tokens.
     // Will be solved in issue: https://github.com/trezor/trezor-suite/issues/7839
@@ -75,7 +74,7 @@ const TransactionListHeaderContent = ({
         );
     }
     if (isTokenAccount) {
-        return <AccountDetailTokenHeader accountKey={accountKey} tokenSymbol={tokenSymbol} />;
+        return <AccountDetailTokenHeader accountKey={accountKey} tokenContract={tokenContract} />;
     }
 
     if (isTestnetAccount) {
@@ -96,7 +95,7 @@ export const TransactionListHeader = memo(
         accountKey,
         areTokensIncluded,
         toggleIncludeTokenTransactions,
-        tokenSymbol,
+        tokenContract,
     }: AccountDetailHeaderProps) => {
         const navigation = useNavigation<AccountsNavigationProps>();
 
@@ -112,16 +111,19 @@ export const TransactionListHeader = memo(
         const handleReceive = () => {
             navigation.navigate(RootStackRoutes.ReceiveModal, {
                 accountKey,
-                tokenSymbol,
+                tokenContract,
             });
         };
 
-        const isTokenDetail = !!tokenSymbol;
+        const isTokenDetail = !!tokenContract;
         const isEthereumAccountDetail = !isTokenDetail && isEthereumAccountSymbol(account.symbol);
 
         return (
             <>
-                <TransactionListHeaderContent accountKey={accountKey} tokenSymbol={tokenSymbol} />
+                <TransactionListHeaderContent
+                    accountKey={accountKey}
+                    tokenContract={tokenContract}
+                />
                 {accountHasTransactions && (
                     <>
                         <Divider />

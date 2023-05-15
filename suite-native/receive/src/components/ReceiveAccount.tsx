@@ -9,7 +9,7 @@ import { getEthereumTokenName, selectEthereumAccountToken } from '@suite-native/
 import { AccountListItem } from '@suite-native/accounts';
 import { analytics, EventType } from '@suite-native/analytics';
 import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
-import { AccountKey, TokenSymbol } from '@suite-common/wallet-types';
+import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 
 import { TokenReceiveCard } from './TokenReceiveCard';
 import { ReceiveAddress } from './ReceiveAddress';
@@ -17,10 +17,10 @@ import { ReceiveTextHint } from './ReceiveTextHint';
 
 type AccountReceiveProps = {
     accountKey: AccountKey;
-    tokenSymbol?: TokenSymbol;
+    tokenContract?: TokenAddress;
 };
 
-export const ReceiveAccount = ({ accountKey, tokenSymbol }: AccountReceiveProps) => {
+export const ReceiveAccount = ({ accountKey, tokenContract }: AccountReceiveProps) => {
     const navigation = useNavigation();
     const [isAddressVisible, setIsAddressVisible] = useState(false);
 
@@ -29,7 +29,7 @@ export const ReceiveAccount = ({ accountKey, tokenSymbol }: AccountReceiveProps)
     );
 
     const token = useSelector((state: AccountsRootState) =>
-        selectEthereumAccountToken(state, accountKey, tokenSymbol),
+        selectEthereumAccountToken(state, accountKey, tokenContract),
     );
 
     if (G.isNullable(account))

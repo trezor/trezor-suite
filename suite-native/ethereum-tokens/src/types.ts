@@ -5,11 +5,8 @@ import {
     WalletAccountTransaction as CommonWalletAccountTransaction,
 } from '@suite-common/wallet-types';
 
-// TODO: merge this type with @suite-common/wallet-types and use only one of them
-export type EthereumTokenSymbol = TokenSymbol;
-
 export type EthereumTokenTransfer = Omit<TokenTransfer, 'symbol' | 'contract'> & {
-    symbol: EthereumTokenSymbol;
+    symbol: TokenSymbol;
     contract: TokenAddress;
 };
 

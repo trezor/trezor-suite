@@ -1,6 +1,6 @@
 import { NavigatorScreenParams } from '@react-navigation/native';
 
-import { AccountKey, TokenSymbol, XpubAddress } from '@suite-common/wallet-types';
+import { AccountKey, TokenAddress, XpubAddress } from '@suite-common/wallet-types';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { AccountInfo, TokenTransfer } from '@trezor/connect';
 
@@ -18,7 +18,7 @@ import {
 
 type ReceiveAccountsParams = {
     accountKey?: AccountKey;
-    tokenSymbol?: TokenSymbol;
+    tokenContract?: TokenAddress;
 };
 
 export type AccountsStackParamList = {
@@ -47,7 +47,7 @@ export type ReceiveStackParamList = {
     [ReceiveStackRoutes.ReceiveAccounts]: undefined;
     [ReceiveStackRoutes.Receive]: {
         accountKey: AccountKey;
-        tokenSymbol?: TokenSymbol;
+        tokenContract?: TokenAddress;
     };
 };
 
@@ -99,6 +99,6 @@ export type RootStackParamList = {
     [RootStackRoutes.DevUtilsStack]: undefined;
     [RootStackRoutes.AccountDetail]: {
         accountKey: AccountKey;
-        tokenSymbol?: TokenSymbol;
+        tokenContract?: TokenAddress;
     };
 };

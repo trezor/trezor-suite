@@ -26,7 +26,7 @@ import { TokenAccountDetailScreenHeader } from '../components/TokenAccountDetail
 
 export const AccountDetailScreen = memo(() => {
     const route = useRoute<RouteProp<RootStackParamList, RootStackRoutes.AccountDetail>>();
-    const { accountKey, tokenSymbol } = route.params;
+    const { accountKey, tokenContract } = route.params;
     const dispatch = useDispatch();
     const [areTokensIncluded, setAreTokensIncluded] = useState(false);
     const account = useSelector((state: AccountsRootState) =>
@@ -40,12 +40,12 @@ export const AccountDetailScreen = memo(() => {
             selectAccountOrTokenAccountTransactions(
                 state,
                 accountKey,
-                tokenSymbol ?? null,
+                tokenContract ?? null,
                 areTokensIncluded,
             ),
     );
     const token = useSelector((state: AccountsRootState) =>
-        selectEthereumAccountToken(state, accountKey, tokenSymbol),
+        selectEthereumAccountToken(state, accountKey, tokenContract),
     );
 
     const fetchMoreTransactions = useCallback(
@@ -65,10 +65,10 @@ export const AccountDetailScreen = memo(() => {
         if (account) {
             analytics.report({
                 type: EventType.AssetDetail,
-                payload: { assetSymbol: account.symbol, tokenSymbol },
+                payload: { assetSymbol: account.symbol, tokenSymbol: token?.symbol },
             });
         }
-    }, [account, tokenSymbol]);
+    }, [account, token?.symbol]);
 
     const toggleIncludeTokenTransactions = useCallback(() => {
         setAreTokensIncluded(prev => !prev);
@@ -99,13 +99,13 @@ export const AccountDetailScreen = memo(() => {
             <TransactionList
                 areTokensIncluded={areTokensIncluded}
                 accountKey={accountKey}
-                tokenSymbol={tokenSymbol}
+                tokenSymbol={token?.symbol}
                 transactions={accountTransactions}
                 fetchMoreTransactions={fetchMoreTransactions}
                 listHeaderComponent={
                     <TransactionListHeader
                         accountKey={accountKey}
-                        tokenSymbol={tokenSymbol}
+                        tokenContract={tokenContract}
                         areTokensIncluded={areTokensIncluded}
                         toggleIncludeTokenTransactions={toggleIncludeTokenTransactions}
                     />

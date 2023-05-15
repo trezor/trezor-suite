@@ -2,8 +2,8 @@ import React from 'react';
 
 import { networks, NetworkSymbol } from '@suite-common/wallet-config';
 import { CryptoIcon, CryptoIconSize, EthereumTokenIcon } from '@trezor/icons';
+import { TokenSymbol } from '@suite-common/wallet-types';
 
-import { EthereumTokenSymbol } from '../types';
 import { getEthereumTokenIconName } from '../utils';
 
 // FIXME: This is only a temporary solution. Icon components should be defined only inside @trezor/icons package.
@@ -12,14 +12,14 @@ export const CoinIcon = ({
     symbol,
     size,
 }: {
-    symbol: NetworkSymbol | EthereumTokenSymbol;
+    symbol: NetworkSymbol | TokenSymbol;
     size: CryptoIconSize;
 }) => {
     if (symbol in networks) {
         return <CryptoIcon name={symbol as NetworkSymbol} size={size} />;
     }
 
-    const ethereumTokenIcon = getEthereumTokenIconName(symbol as EthereumTokenSymbol);
+    const ethereumTokenIcon = getEthereumTokenIconName(symbol as TokenSymbol);
 
     return <EthereumTokenIcon name={ethereumTokenIcon} size={size} />;
 };

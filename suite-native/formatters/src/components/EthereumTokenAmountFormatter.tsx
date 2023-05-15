@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { TextProps } from '@suite-native/atoms';
-import { EthereumTokenSymbol } from '@suite-native/ethereum-tokens';
+import { TokenSymbol } from '@suite-common/wallet-types';
 import { localizeNumber } from '@suite-common/wallet-utils';
 
 import { FormatterProps } from '../types';
@@ -9,7 +9,7 @@ import { AmountText } from './AmountText';
 import { convertTokenValueToDecimal } from '../utils';
 
 type EthereumTokenAmountFormatterProps = {
-    ethereumToken: EthereumTokenSymbol;
+    ethereumToken: TokenSymbol;
     isDiscreetText?: boolean;
     decimals?: number;
 } & FormatterProps<number | string> &

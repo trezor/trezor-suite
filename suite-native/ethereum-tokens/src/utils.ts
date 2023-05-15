@@ -1,10 +1,9 @@
 import { G, S } from '@mobily/ts-belt';
 
 import { ethereumTokenIcons, EthereumTokenIconName } from '@trezor/icons';
+import { TokenSymbol } from '@suite-common/wallet-types';
 
-import { EthereumTokenSymbol } from './types';
-
-export const getEthereumTokenIconName = (symbol: EthereumTokenSymbol) => {
+export const getEthereumTokenIconName = (symbol: TokenSymbol) => {
     if (!symbol) return 'erc20';
 
     const lowerCaseSymbol = symbol.toLowerCase();

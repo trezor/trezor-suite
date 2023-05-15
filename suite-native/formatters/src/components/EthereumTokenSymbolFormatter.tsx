@@ -1,10 +1,10 @@
 import React from 'react';
 
 import { Text, TextProps } from '@suite-native/atoms';
-import { EthereumTokenSymbol } from '@suite-native/ethereum-tokens';
+import { TokenSymbol } from '@suite-common/wallet-types';
 
 type EthereumTokenSymbolFormatterProps = {
-    ethereumSymbol: EthereumTokenSymbol;
+    ethereumSymbol: TokenSymbol;
 } & TextProps;
 
 export const EthereumTokenSymbolFormatter = ({

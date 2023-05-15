@@ -2,11 +2,11 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { SectionList } from 'react-native';
 import { useSelector } from 'react-redux';
 
-import { AccountKey } from '@suite-common/wallet-types';
+import { TokenSymbol, AccountKey } from '@suite-common/wallet-types';
 import { groupTransactionsByDate, MonthKey } from '@suite-common/wallet-utils';
 import { selectIsLoadingTransactions } from '@suite-common/wallet-core';
 import { Loader } from '@suite-native/atoms';
-import { EthereumTokenSymbol, WalletAccountTransaction } from '@suite-native/ethereum-tokens';
+import { WalletAccountTransaction } from '@suite-native/ethereum-tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { TransactionListGroupTitle } from './TransactionListGroupTitle';
@@ -20,7 +20,7 @@ type AccountTransactionProps = {
     fetchMoreTransactions: (pageToFetch: number, perPage: number) => void;
     listHeaderComponent: JSX.Element;
     accountKey: string;
-    tokenSymbol?: EthereumTokenSymbol;
+    tokenSymbol?: TokenSymbol;
 };
 
 type RenderSectionHeaderParams = {
@@ -38,7 +38,7 @@ type RenderTransactionItemParams = {
 };
 
 type RenderTokenTranferItemParams = Omit<RenderTransactionItemParams, 'areTokensIncluded'> & {
-    tokenSymbol: EthereumTokenSymbol;
+    tokenSymbol: TokenSymbol;
 };
 
 const sectionListStyle = prepareNativeStyle(utils => ({
