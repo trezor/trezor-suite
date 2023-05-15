@@ -18,7 +18,7 @@ const fontWeightStyle = css`
 
 const baseStyles = css`
     -webkit-font-smoothing: antialiased;
-    text-rendering: optimizeLegibility;
+    text-rendering: optimizelegibility;
     margin: 0;
     padding: 0;
     ${(props: Props) => props.textAlign && textAlignStyle}

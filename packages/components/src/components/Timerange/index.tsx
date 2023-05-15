@@ -78,7 +78,7 @@ const Calendar = styled.div`
     }
 
     .rdrDateDisplayItem + .rdrDateDisplayItem {
-        &:after {
+        &::after {
             color: ${props => props.theme.TYPE_LIGHTER_GREY};
         }
     }
@@ -125,19 +125,19 @@ const Calendar = styled.div`
         color: ${props => props.theme.TYPE_LIGHT_GREY};
     }
 
-    .rdrDayToday .rdrDayNumber span:after {
+    .rdrDayToday .rdrDayNumber span::after {
         background: ${props => props.theme.TYPE_DARK_GREY};
     }
 
-    .rdrDayToday .rdrStartEdge .rdrDayNumber span:after,
-    .rdrDayToday .rdrEndEdge .rdrDayNumber span:after {
+    .rdrDayToday .rdrStartEdge .rdrDayNumber span::after,
+    .rdrDayToday .rdrEndEdge .rdrDayNumber span::after {
         background: ${props => props.theme.BG_WHITE};
     }
 
-    .rdrDayToday:not(.rdrDayPassive) .rdrInRange ~ .rdrDayNumber span:after,
-    .rdrDayToday:not(.rdrDayPassive) .rdrStartEdge ~ .rdrDayNumber span:after,
-    .rdrDayToday:not(.rdrDayPassive) .rdrEndEdge ~ .rdrDayNumber span:after,
-    .rdrDayToday:not(.rdrDayPassive) .rdrSelected ~ .rdrDayNumber span:after {
+    .rdrDayToday:not(.rdrDayPassive) .rdrInRange ~ .rdrDayNumber span::after,
+    .rdrDayToday:not(.rdrDayPassive) .rdrStartEdge ~ .rdrDayNumber span::after,
+    .rdrDayToday:not(.rdrDayPassive) .rdrEndEdge ~ .rdrDayNumber span::after,
+    .rdrDayToday:not(.rdrDayPassive) .rdrSelected ~ .rdrDayNumber span::after {
         background: ${props => props.theme.BG_WHITE};
     }
 
@@ -177,7 +177,7 @@ const Calendar = styled.div`
     .rdrEndEdge {
         background: ${props => props.theme.BG_GREEN};
         color: ${props => props.theme.TYPE_WHITE};
-        box-shadow: ${props => props.theme.BG_GREEN} 0px 0px 0px 2px;
+        box-shadow: ${props => props.theme.BG_GREEN} 0 0 0 2px;
         border-radius: 4px;
         z-index: ${variables.Z_INDEX.BASE};
     }

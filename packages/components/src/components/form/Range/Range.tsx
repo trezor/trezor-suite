@@ -48,12 +48,15 @@ const Input = styled.input<Pick<RangeProps, 'disabled' | 'thumbStyle' | 'trackSt
     ::-webkit-slider-runnable-track {
         ${track};
     }
+
     ::-webkit-slider-thumb {
         ${thumb};
     }
+
     ::-moz-range-track {
         ${track}
     }
+
     ::-moz-range-thumb {
         ${thumb};
     }
@@ -62,6 +65,7 @@ const Input = styled.input<Pick<RangeProps, 'disabled' | 'thumbStyle' | 'trackSt
         ::-webkit-slider-thumb {
             ${largeBoxShadow};
         }
+
         ::-moz-range-thumb {
             ${largeBoxShadow};
         }

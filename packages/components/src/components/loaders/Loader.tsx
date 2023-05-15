@@ -21,8 +21,9 @@ const StyledLoader = styled.div<{ size: number; strokeWidth: number }>`
     border-left: ${props => `${props.strokeWidth}px`} solid transparent;
     transform: translateZ(0);
     animation: ${SPIN} 1s infinite linear;
+
     &,
-    &:after {
+    &::after {
         border-radius: 50%;
         width: ${props => `${props.size}px`};
         height: ${props => `${props.size}px`};

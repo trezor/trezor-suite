@@ -35,6 +35,7 @@ const A = styled.a<Props>`
         css`
             color: inherit;
             font-weight: inherit;
+
             &:visited,
             &:active,
             &:hover {

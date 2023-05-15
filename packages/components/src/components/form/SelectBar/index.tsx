@@ -60,7 +60,7 @@ const Option = styled.div<{ isSelected: boolean }>`
         isSelected &&
         css`
             background: ${({ theme }) => theme.BG_WHITE};
-            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2);
+            box-shadow: 0 1px 2px 0 rgb(0 0 0 / 20%);
             color: ${({ theme }) => theme.TYPE_DARK_GREY};
             font-weight: ${FONT_WEIGHT.DEMI_BOLD};
         `}
