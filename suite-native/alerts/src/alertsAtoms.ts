@@ -2,7 +2,7 @@ import { atom } from 'jotai';
 import { RequireAllOrNone } from 'type-fest';
 
 import { IconName } from '@trezor/icons';
-import { PictogramVariant } from '@suite-native/atoms';
+import { ButtonColorScheme, PictogramVariant } from '@suite-native/atoms';
 
 export type Alert = RequireAllOrNone<
     {
@@ -11,6 +11,7 @@ export type Alert = RequireAllOrNone<
         icon: IconName;
         pictogramVariant: PictogramVariant;
         primaryButtonTitle: string;
+        primaryButtonVariant?: ButtonColorScheme;
         onPressPrimaryButton: () => void;
         secondaryButtonTitle?: string;
         onPressSecondaryButton?: () => void;

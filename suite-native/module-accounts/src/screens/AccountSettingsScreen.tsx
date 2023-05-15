@@ -19,7 +19,8 @@ import {
 import { CryptoIcon } from '@trezor/icons';
 
 import { AccountRenameButton } from '../components/AccountRenameButton';
-import { AccountSettingsButtons } from '../components/AccountSettingsButtons';
+import { AccountSettingsShowXpub } from '../components/AccountSettingsShowXpub';
+import { AccountSettingsRemoveCoin } from '../components/AccountSettingsRemoveCoin';
 
 const AccountDetailSettingsRow = ({ title, children }: { title: string; children: ReactNode }) => (
     <Box flexDirection="row" alignItems="center" justifyContent="space-between">
@@ -81,7 +82,10 @@ export const AccountSettingsScreen = ({
                         )}
                     </VStack>
                 </Card>
-                <AccountSettingsButtons accountKey={account.key} />
+                <VStack spacing="small">
+                    <AccountSettingsShowXpub accountKey={account.key} />
+                    <AccountSettingsRemoveCoin accountKey={account.key} />
+                </VStack>
             </Box>
         </Screen>
     );
