@@ -1,3 +1,7 @@
+# 1.0.6
+
+-   819c019d1 chore: use workspace:\* everywhere
+
 # 1.0.5
 
 chore(utxo-lib): update deps, update bs58check bitcoin lib
