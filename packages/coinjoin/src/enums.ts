@@ -10,6 +10,7 @@ export enum SessionPhase {
     RetryingRoundPairing = 153,
     AffiliateServerOffline = 154,
     CriticalError = 155,
+    BlockedUtxos = 156,
 
     // RoundPhase.ConnectionConfirmation
     AwaitingConfirmation = 201,

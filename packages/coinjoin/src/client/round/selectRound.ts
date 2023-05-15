@@ -7,7 +7,7 @@ import { CoinjoinPrison } from '../CoinjoinPrison';
 import * as middleware from '../middleware';
 import { Round } from '../coordinator';
 import { ROUND_SELECTION_REGISTRATION_OFFSET, ROUND_SELECTION_MAX_OUTPUTS } from '../../constants';
-import { RoundPhase, SessionPhase } from '../../enums';
+import { RoundPhase, SessionPhase, WabiSabiProtocolErrorCode } from '../../enums';
 
 export type CoinjoinRoundGenerator = (
     ...args: ConstructorParameters<typeof CoinjoinRound>
@@ -135,8 +135,46 @@ export const getAccountCandidates = ({
             return [];
         }
 
+        // filter out InputLongBanned utxos until we know how to deal with them...
+        const [_, whitelistedUtxos] = arrayPartition(
+            account.utxos,
+            utxo =>
+                prison.isDetained(utxo.outpoint)?.errorCode ===
+                WabiSabiProtocolErrorCode.InputLongBanned,
+        );
+
+        // collect known InputBanned
+        const bannedUtxos = whitelistedUtxos.filter(
+            utxo =>
+                prison.isDetained(utxo.outpoint)?.errorCode ===
+                WabiSabiProtocolErrorCode.InputBanned,
+        );
+
+        if (bannedUtxos.length > 0) {
+            let tooManyBannedUtxos = false;
+            if (bannedUtxos.length > whitelistedUtxos.length * 0.4) {
+                // most of utxos are temporary banned
+                tooManyBannedUtxos = true;
+            }
+            const bannedAmount = bannedUtxos.reduce((sum, utxo) => sum + utxo.amount, 0);
+            const totalAmount = whitelistedUtxos.reduce((sum, utxo) => sum + utxo.amount, 0);
+            if (bannedAmount > totalAmount * 0.4) {
+                // most of amount is temporary banned
+                tooManyBannedUtxos = true;
+            }
+
+            if (tooManyBannedUtxos) {
+                logger.error(`Skip candidate. Too many unavailable utxos`);
+                skippedAccounts.push({
+                    key: account.accountKey,
+                    reason: SessionPhase.BlockedUtxos,
+                });
+                return [];
+            }
+        }
+
         // exclude account utxos which are unavailable
-        const utxos = account.utxos.filter(utxo => !registeredOutpoints.includes(utxo.outpoint));
+        const utxos = whitelistedUtxos.filter(utxo => !registeredOutpoints.includes(utxo.outpoint));
         if (utxos.length > 0) {
             if (account.skipRounds) {
                 const [low, high] = account.skipRounds;
@@ -198,7 +236,7 @@ export const getAccountCandidates = ({
             return groups;
         }, {} as Record<SessionPhase, Parameters<typeof setSessionPhase>[0]>);
 
-        Object.values(eventGroups).forEach(setSessionPhase);
+        Object.values(eventGroups).forEach(group => setSessionPhase(group));
     }
 
     return candidates;
