@@ -39,6 +39,7 @@ const ButtonsWrapper = styled.div`
     margin-top: 20px;
     display: flex;
     justify-content: space-between;
+
     & > * + * {
         margin-left: 12px;
     }

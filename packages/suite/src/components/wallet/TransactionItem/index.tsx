@@ -39,7 +39,7 @@ const Wrapper = styled(Card)<{
     opacity: ${({ isZeroValuePhishing }) => isZeroValuePhishing && 0.6};
 
     @media (max-width: ${variables.SCREEN_SIZE.SM}) {
-        padding: 0px 16px;
+        padding: 0 16px;
     }
 
     ${props =>
@@ -49,7 +49,7 @@ const Wrapper = styled(Card)<{
             padding-left: 16px;
 
             @media (max-width: ${variables.SCREEN_SIZE.SM}) {
-                padding: 0px 8px;
+                padding: 0 8px;
             }
         `}
 

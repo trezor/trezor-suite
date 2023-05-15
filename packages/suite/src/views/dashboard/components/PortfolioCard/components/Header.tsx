@@ -12,8 +12,7 @@ import { GraphRange } from '../../../../../types/wallet/graph';
 
 const Wrapper = styled.div<{ hideBorder: boolean }>`
     display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
+    flex-flow: row wrap;
     padding: 20px;
     ${props =>
         !props.hideBorder &&

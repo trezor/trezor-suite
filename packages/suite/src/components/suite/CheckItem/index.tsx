@@ -6,7 +6,7 @@ import { Checkbox, variables } from '@trezor/components';
 const { FONT_SIZE } = variables;
 
 const StyledCheckbox = styled(Checkbox)`
-    padding-left: 0px;
+    padding-left: 0;
     align-items: flex-start;
 
     & + & {

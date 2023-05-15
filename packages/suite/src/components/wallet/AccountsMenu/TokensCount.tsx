@@ -4,7 +4,7 @@ import { Button, variables, useTheme } from '@trezor/components';
 import { Translation } from '@suite-components/Translation';
 
 const ButtonBadge = styled(Button)`
-    margin: 0px 8px;
+    margin: 0 8px;
     padding: 3px 4px;
     font-size: 10px;
     line-height: 1;

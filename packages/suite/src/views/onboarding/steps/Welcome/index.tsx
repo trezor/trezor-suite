@@ -12,8 +12,9 @@ const Wrapper = styled.div`
     @media all and (max-height: ${variables.SCREEN_SIZE.MD}) {
         margin-top: 5vh;
     }
+
     @media all and (max-height: ${variables.SCREEN_SIZE.SM}) {
-        margin-top: 0vh;
+        margin-top: 0;
     }
 `;
 

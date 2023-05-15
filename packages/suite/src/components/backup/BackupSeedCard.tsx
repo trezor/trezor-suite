@@ -50,7 +50,7 @@ const Content = styled.div`
     flex: 1;
 
     ${variables.SCREEN_QUERY.BELOW_TABLET} {
-        margin-top: 0px;
+        margin-top: 0;
     }
 `;
 

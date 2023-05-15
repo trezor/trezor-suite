@@ -49,8 +49,7 @@ const Right = styled.div`
 
 const HeaderBlock = styled.div`
     display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
+    flex-flow: row nowrap;
     justify-content: space-between;
     align-items: stretch;
     align-content: stretch;
@@ -109,6 +108,7 @@ const Disclaimer = styled.div`
 
 const StyledIcon = styled(Icon)`
     cursor: pointer;
+
     & div {
         width: 26px;
         height: 26px;

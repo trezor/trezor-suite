@@ -56,6 +56,7 @@ const Wrapper = styled.div`
 
 const Body = styled.div`
     flex-grow: 1;
+
     /* prevent overflow if contents (e.g. label) are too long */
     min-width: 0;
 `;

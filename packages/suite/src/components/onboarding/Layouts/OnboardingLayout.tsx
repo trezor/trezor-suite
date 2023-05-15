@@ -53,7 +53,7 @@ const Header = styled.div`
     max-width: ${MAX_WIDTH};
 
     ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
-        padding: 0px 20px;
+        padding: 0 20px;
     }
 
     ${variables.SCREEN_QUERY.MOBILE} {
@@ -63,7 +63,7 @@ const Header = styled.div`
 
     @media all and (max-height: ${variables.SCREEN_SIZE.SM}) {
         /* low height screen */
-        padding: 0px 20px;
+        padding: 0 20px;
         margin-bottom: 26px;
     }
 `;

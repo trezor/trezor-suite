@@ -14,7 +14,7 @@ import { Account } from '@wallet-types';
 const Wrapper = styled.div`
     display: flex;
     justify-content: center;
-    margin: 24px 0px;
+    margin: 24px 0;
 `;
 
 interface AddTokenProps {

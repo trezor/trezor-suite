@@ -10,7 +10,7 @@ const Container = styled.div`
     display: flex;
     align-items: center;
     flex-wrap: wrap;
-    margin: -2px -12px -2px -12px;
+    margin: -2px -12px;
     padding: 2px 12px;
     border-radius: 6px;
     transition: background 0.1s ease-in;

@@ -26,7 +26,7 @@ const InputWrapper = styled.div`
     }
 
     @media (max-width: ${SCREEN_SIZE.SM}) {
-        margin: 0px 0 10px;
+        margin: 0 0 10px;
         width: 100%;
     }
 `;
@@ -40,9 +40,11 @@ export const ActionInput = (props: InputProps) => (
 export const ActionSelect = styled(Select)`
     width: 170px;
     margin: 4px 0 4px 4px;
+
     &:not(:first-child) {
         margin-left: 8px;
     }
+
     @media all and (max-width: ${SCREEN_SIZE.SM}) {
         min-width: 100%;
         margin: 5px 0;
@@ -52,6 +54,7 @@ export const ActionSelect = styled(Select)`
 export const ActionButton = styled(Button)<{ isDisabled?: boolean }>`
     min-width: 170px;
     margin: 4px 0 4px 4px;
+
     &:not(:first-child) {
         margin-left: 8px;
 

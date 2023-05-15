@@ -17,8 +17,7 @@ const Label = styled.div`
     line-height: 22px;
     font-weight: 600;
     display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
+    flex-flow: row nowrap;
     align-items: center;
     align-content: stretch;
     margin-bottom: 13px;
@@ -32,8 +31,7 @@ const PaymentItem = styled.div`
     border: 1px solid ${props => props.theme.STROKE_GREY};
     border-radius: 8px;
     display: flex;
-    flex-direction: column;
-    flex-wrap: nowrap;
+    flex-flow: column nowrap;
     align-items: stretch;
     align-content: stretch;
     justify-content: space-between;
@@ -69,6 +67,7 @@ const PaymentItemStatusIconReactSVG = styled(Image)<{ isNextUp: boolean }>`
     & div {
         display: flex;
     }
+
     & path {
         fill: ${props => (props.isNextUp ? props.theme.TYPE_ORANGE : props.theme.TYPE_LIGHT_GREY)};
     }

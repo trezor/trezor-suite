@@ -24,6 +24,7 @@ const SettingsWrapper = styled.div<{ disabled: boolean }>`
     padding: 10px;
     transition: 0.3s ease;
     cursor: pointer;
+
     ${props =>
         props.disabled &&
         css`
@@ -36,6 +37,7 @@ const SettingsWrapper = styled.div<{ disabled: boolean }>`
                 props.theme.HOVER_PRIMER_COLOR,
             )};
     }
+
     @media (hover: hover) {
         display: none;
     }

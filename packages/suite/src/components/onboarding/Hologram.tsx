@@ -26,7 +26,7 @@ const HologramSubHeading = styled.span`
 `;
 
 const AnimationWrapper = styled.div`
-    margin: 8px 0px;
+    margin: 8px 0;
 `;
 
 const StyledWarning = styled(Warning)`

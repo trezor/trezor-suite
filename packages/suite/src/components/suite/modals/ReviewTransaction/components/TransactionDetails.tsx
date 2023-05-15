@@ -17,6 +17,7 @@ const TransactionDetailsWrapper = styled.div`
     left: -20px;
     border-radius: 8px;
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+
     /* stay above OutputElement_MultiIndicatorWrapper */
     z-index: ${variables.Z_INDEX.EXPANDABLE_NAVIGATION};
 `;
@@ -40,12 +41,12 @@ const DetailsBody = styled.div`
 `;
 
 const DetailsBodyInner = styled.div`
-    margin: 0 0 20px 0;
+    margin: 0 0 20px;
 `;
 
 const HeadSection = styled(Box)`
     text-align: left;
-    margin: 0 0 12px 0;
+    margin: 0 0 12px;
     border: 0;
     background: ${({ theme }) => theme.BG_GREY};
 `;
@@ -53,8 +54,9 @@ const HeadSection = styled(Box)`
 const HeadSectionLine = styled.div`
     display: flex;
     font-size: ${variables.FONT_SIZE.SMALL};
+
     & + & {
-        margin: 5px 0 0 0;
+        margin: 5px 0 0;
     }
 `;
 
@@ -91,7 +93,7 @@ const SectionDivider = styled.div`
 `;
 
 const StyledBox = styled(Box)`
-    border: 0px;
+    border: 0;
     background: ${({ theme }) => theme.BG_GREY};
     flex-direction: column;
     align-items: start;

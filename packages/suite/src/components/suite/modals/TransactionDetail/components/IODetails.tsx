@@ -57,7 +57,7 @@ const StyledCollapsibleBox = styled(CollapsibleBox)`
     }
 
     ${CollapsibleBox.Content} {
-        padding: 8px 0 0 0;
+        padding: 8px 0 0;
         border: none;
     }
 `;
@@ -130,7 +130,7 @@ const AmountRow = styled.div`
     gap: 10px;
 
     ${StyledFormattedCryptoAmount} {
-        margin-top: 0px;
+        margin-top: 0;
     }
 `;
 

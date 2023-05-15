@@ -17,7 +17,7 @@ import SelectedOffer from './SelectedOffer';
 import NoOffers from '@wallet-views/coinmarket/common/no-offers';
 
 const Wrapper = styled.div`
-    padding: 0 32px 32px 32px;
+    padding: 0 32px 32px;
 
     @media screen and (max-width: ${variables.SCREEN_SIZE.LG}) {
         padding: 16px;
@@ -29,7 +29,7 @@ const Wrapper = styled.div`
 `;
 
 const Header = styled.div`
-    margin: 18px 0 24px 0;
+    margin: 18px 0 24px;
 
     @media (max-width: ${variables.SCREEN_SIZE.SM}) {
         margin: 12px 0 24px;

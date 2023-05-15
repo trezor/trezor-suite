@@ -5,7 +5,7 @@ import { TranslationKey } from '@suite-common/intl-types';
 import { Translation } from '@suite-components/Translation';
 
 const StyledBalanceContainer = styled.div`
-    padding: 0 24px 0;
+    padding: 0 24px;
 `;
 
 const Heading = styled.p<{ $color?: string }>`

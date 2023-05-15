@@ -13,7 +13,7 @@ const Wrapper = styled.div`
     color: ${props => props.theme.TYPE_DARK_GREY};
     font-size: ${variables.NEUE_FONT_SIZE.NORMAL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    padding: 16px 0px;
+    padding: 16px 0;
 `;
 
 const StyledModal = styled(Modal)`

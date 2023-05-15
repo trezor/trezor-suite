@@ -12,7 +12,7 @@ type Props = {
 };
 
 const StyledImage = styled(Image)`
-    margin: 14px 0px;
+    margin: 14px 0;
 `;
 
 const StyledModal = styled(Modal)`

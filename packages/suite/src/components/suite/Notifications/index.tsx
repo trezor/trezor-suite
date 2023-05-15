@@ -31,7 +31,8 @@ const TabButton = styled.button<{ selected: boolean }>`
     padding-bottom: 12px;
     margin-right: 24px;
     cursor: pointer;
-    /* change styles if the button is selected*/
+
+    /* change styles if the button is selected */
     color: ${props => (props.selected ? props.theme.TYPE_DARK_GREY : props.theme.TYPE_LIGHT_GREY)};
     border-bottom: 2px solid;
     border-color: ${props => (props.selected ? props.theme.TYPE_DARK_GREY : 'transparent')};
