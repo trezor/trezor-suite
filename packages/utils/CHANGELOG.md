@@ -1,3 +1,8 @@
+# 9.0.8
+
+-   63bc156f2 fix(suite-common): allow long decimals with localizeNumber
+-   19360addf chore: move resolveStaticPath from utils to suite-common
+
 # 9.0.7
 
 -   feat(utils): add arrayShuffle util
