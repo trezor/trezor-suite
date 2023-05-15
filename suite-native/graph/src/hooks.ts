@@ -7,7 +7,7 @@ import {
     useGetTimeFrameForHistoryHours,
     useGraphForAccounts,
 } from '@suite-common/graph';
-import { selectAccountByKey, selectAccounts } from '@suite-common/wallet-core';
+import { selectAccountByKey, selectMainnetAccounts } from '@suite-common/wallet-core';
 import { AccountKey } from '@suite-common/wallet-types';
 import { analytics, EventType } from '@suite-native/analytics';
 import { NetworkSymbol } from '@suite-common/wallet-config';
@@ -85,7 +85,7 @@ export const useGraphForSingleAccount = ({
 };
 
 export const useGraphForAllAccounts = ({ fiatCurrency }: CommonUseGraphParams) => {
-    const accounts = useSelector(selectAccounts);
+    const accounts = useSelector(selectMainnetAccounts);
     const [hoursToHistory, setHoursToHistory] = useState<HoursValue>(24);
     const { startOfTimeFrameDate, endOfTimeFrameDate } =
         useGetTimeFrameForHistoryHours(hoursToHistory);
