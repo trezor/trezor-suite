@@ -2,6 +2,7 @@
 
 -   fix(connect-popup): fix connect-popup in firefox
 -   feat(connect-popup): tiny visual updates, added loading messages based on communication with iframe
+-   fix(connect-web): prevent unexpected import of transport runtime code in connect/web
 
 # 9.0.9
 
