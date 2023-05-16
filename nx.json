@@ -1,8 +1,7 @@
 {
-    "extends": "nx/presets/npm.json",
     "tasksRunnerOptions": {
         "default": {
-            "runner": "@nrwl/nx-cloud",
+            "runner": "nx-cloud",
             "options": {
                 "cacheableOperations": [
                     "lint",
@@ -17,6 +16,7 @@
             }
         }
     },
+    "extends": "nx/presets/npm.json",
     "namedInputs": {
         "default": ["{projectRoot}/**/*"],
         "prod": ["!{projectRoot}/**/*.test.{ts,tsx}"]
