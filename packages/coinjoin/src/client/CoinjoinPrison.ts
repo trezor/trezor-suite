@@ -3,6 +3,19 @@ import { TypedEmitter } from '@trezor/utils/lib/typedEventEmitter';
 import { CoinjoinPrisonInmate, CoinjoinPrisonEvents } from '../types/client';
 import { WabiSabiProtocolErrorCode } from '../enums';
 
+export type DetainObject =
+    | {
+          outpoint: string;
+          accountKey: string;
+      }
+    | {
+          address: string;
+          accountKey: string;
+      }
+    | {
+          accountKey: string;
+      };
+
 export interface DetainOptions {
     roundId?: string;
     errorCode?: CoinjoinPrisonInmate['errorCode'];
@@ -41,14 +54,29 @@ export class CoinjoinPrison extends TypedEmitter<CoinjoinPrisonEvents> {
         }
     }
 
-    detain(id: string, options: DetainOptions = {}) {
+    detain(inmate: DetainObject, options: DetainOptions = {}) {
         const sentenceStart = Date.now();
         const sentenceEnd = Date.now() + (options.sentenceEnd ? options.sentenceEnd : 6 * 60000);
+
+        let id: string;
+        let type: CoinjoinPrisonInmate['type'];
+        if ('outpoint' in inmate) {
+            type = 'input';
+            id = inmate.outpoint;
+        } else if ('address' in inmate) {
+            type = 'output';
+            id = inmate.address;
+        } else {
+            type = 'account';
+            id = inmate.accountKey;
+        }
 
         this.inmates = this.inmates
             .filter(i => i.id !== id)
             .concat({
                 id,
+                type,
+                accountKey: inmate.accountKey,
                 sentenceEnd,
                 sentenceStart,
                 errorCode: options.errorCode,
@@ -59,13 +87,23 @@ export class CoinjoinPrison extends TypedEmitter<CoinjoinPrisonEvents> {
         this.dispatchChange();
     }
 
-    isDetained(id: string) {
+    isDetained(inmate: string | DetainObject) {
+        let id: string;
+        if (typeof inmate === 'string') {
+            id = inmate;
+        } else if ('outpoint' in inmate) {
+            id = inmate.outpoint;
+        } else if ('address' in inmate) {
+            id = inmate.address;
+        } else {
+            id = inmate.accountKey;
+        }
         return this.inmates.find(i => i.id === id);
     }
 
-    detainForBlameRound(ids: string[], roundId: string) {
-        ids.forEach(id => {
-            this.detain(id, {
+    detainForBlameRound(inmates: DetainObject[], roundId: string) {
+        inmates.forEach(inmate => {
+            this.detain(inmate, {
                 errorCode: 'blameOf',
                 roundId,
             });

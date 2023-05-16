@@ -87,7 +87,7 @@ const registerInput = async (
                     signal.dispatchEvent(new Event('abort'));
                 }
                 if (error.errorCode === WabiSabiProtocolErrorCode.InputBanned) {
-                    round.prison.detain(input.outpoint, {
+                    round.prison.detain(input, {
                         errorCode: WabiSabiProtocolErrorCode.InputBanned,
                         sentenceEnd: 60 * 60 * 1000, // try again in an hour
                     });
@@ -95,7 +95,7 @@ const registerInput = async (
                 if (error.errorCode === WabiSabiProtocolErrorCode.InputLongBanned) {
                     // track blacklist ban if it happens
                     logger.error(error.message);
-                    round.prison.detain(input.outpoint, {
+                    round.prison.detain(input, {
                         errorCode: WabiSabiProtocolErrorCode.InputLongBanned,
                         sentenceEnd: Infinity, // forever locked
                     });
@@ -120,7 +120,7 @@ const registerInput = async (
     // store RegistrationData and affiliateFlag
     input.setRegistrationData(registrationData, coordinatorFee > 0);
     // and put input to prison
-    round.prison.detain(input.outpoint, {
+    round.prison.detain(input, {
         roundId: round.id,
         errorCode: WabiSabiProtocolErrorCode.AliceAlreadyRegistered,
     });
