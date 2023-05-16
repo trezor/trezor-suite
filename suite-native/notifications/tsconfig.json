@@ -2,6 +2,7 @@
     "extends": "../../tsconfig.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
+        { "path": "../../suite-common/icons" },
         {
             "path": "../../suite-common/toast-notifications"
         },
@@ -19,7 +20,6 @@
         { "path": "../navigation" },
         { "path": "../theme" },
         { "path": "../transactions" },
-        { "path": "../../packages/icons" },
         { "path": "../../packages/styles" },
         { "path": "../../packages/theme" }
     ]

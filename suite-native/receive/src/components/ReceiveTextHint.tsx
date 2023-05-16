@@ -3,7 +3,7 @@ import { TouchableOpacity } from 'react-native';
 
 import { Button, Box, VStack, Text, Card, HStack, Pictogram } from '@suite-native/atoms';
 import { useOpenLink } from '@suite-native/link';
-import { Icon } from '@trezor/icons';
+import { Icon } from '@suite-common/icons';
 
 type ReceiveTextHintProps = {
     onShowAddress(): void;

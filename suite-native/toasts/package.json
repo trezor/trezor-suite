@@ -12,8 +12,8 @@
     "dependencies": {
         "@mobily/ts-belt": "^3.13.1",
         "@reduxjs/toolkit": "1.9.3",
+        "@suite-common/icons": "workspace:*",
         "@suite-native/atoms": "workspace:*",
-        "@trezor/icons": "workspace:*",
         "@trezor/styles": "workspace:*",
         "@trezor/theme": "workspace:*",
         "jotai": "1.9.1",

@@ -23,7 +23,6 @@ export * from './Select/Select';
 export * from './Select/SelectItem';
 export * from './Stack';
 export * from './Badge';
-
 export * from './Divider';
 export * from './TextDivider';
 export * from './ProgressBar';
@@ -34,4 +33,6 @@ export * from './Table';
 export * from './Loader';
 export * from './Toggle';
 export * from './Pictogram';
+export * from './RoundedIcon';
+
 export { useDebugView } from './DebugView';

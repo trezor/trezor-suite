@@ -5,7 +5,7 @@ import { fromWei } from 'web3-utils';
 
 import { AccountKey, WalletAccountTransaction } from '@suite-common/wallet-types';
 import { Box, Card, IconButton, Text, VStack } from '@suite-native/atoms';
-import { Icon } from '@trezor/icons';
+import { Icon } from '@suite-common/icons';
 import { getFeeRate, getFeeUnits } from '@suite-common/wallet-utils';
 import { selectTransactionConfirmations, TransactionsRootState } from '@suite-common/wallet-core';
 import { useCopyToClipboard } from '@suite-native/helpers';

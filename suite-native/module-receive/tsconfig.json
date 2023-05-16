@@ -2,6 +2,7 @@
     "extends": "../../tsconfig.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
+        { "path": "../../suite-common/icons" },
         {
             "path": "../../suite-common/wallet-core"
         },
@@ -20,7 +21,6 @@
         { "path": "../navigation" },
         { "path": "../qr-code" },
         { "path": "../receive" },
-        { "path": "../../packages/icons" },
         { "path": "../../packages/styles" }
     ]
 }

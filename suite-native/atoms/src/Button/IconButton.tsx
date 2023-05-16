@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Pressable, PressableProps } from 'react-native';
 import Animated from 'react-native-reanimated';
 
-import { Icon, IconName } from '@trezor/icons';
+import { Icon, IconName } from '@suite-common/icons';
 import {
     NativeStyleObject,
     prepareNativeStyle,

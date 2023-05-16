@@ -6,11 +6,8 @@ import {
     EthereumTokenAmountFormatter,
     EthereumTokenToFiatAmountFormatter,
 } from '@suite-native/formatters';
-import { EthereumTokenIcon } from '@trezor/icons';
-import {
-    selectEthereumAccountToken,
-    getEthereumTokenIconName,
-} from '@suite-native/ethereum-tokens';
+import { CryptoIcon } from '@suite-common/icons';
+import { selectEthereumAccountToken } from '@suite-native/ethereum-tokens';
 import { AccountsRootState } from '@suite-common/wallet-core';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 
@@ -29,12 +26,10 @@ export const AccountDetailTokenHeader = ({
 
     if (!tokenAccount || !tokenAccount.balance) return null;
 
-    const ethereumTokenIcon = getEthereumTokenIconName(tokenAccount.symbol);
-
     return (
         <VStack alignItems="center" spacing="small" marginVertical="medium">
             <HStack spacing="small" flexDirection="row" alignItems="center" justifyContent="center">
-                <EthereumTokenIcon name={ethereumTokenIcon} size="extraSmall" />
+                <CryptoIcon symbol={tokenAccount.symbol} size="extraSmall" />
                 <EthereumTokenAmountFormatter
                     value={tokenAccount?.balance}
                     ethereumToken={tokenAccount.symbol}

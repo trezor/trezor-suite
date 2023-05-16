@@ -4,7 +4,7 @@ import { TouchableOpacity, KeyboardAvoidingView, Platform } from 'react-native';
 import { NetworkType } from '@suite-common/wallet-config';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { BottomSheet, Box, Button, Text, VStack } from '@suite-native/atoms';
-import { Icon } from '@trezor/icons';
+import { Icon } from '@suite-common/icons';
 import { Video, VideoName } from '@suite-native/video-assets';
 
 type XpubScanHintSheet = {

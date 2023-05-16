@@ -19,9 +19,9 @@ const assetTypesConfig = [
         typeName: 'CryptoIconName',
     },
     {
-        name: 'ethereumTokenIcons',
-        dirname: 'assets/ethereumTokenIcons',
-        typeName: 'EthereumTokenIconName',
+        name: 'tokenIcons',
+        dirname: 'assets/tokenIcons',
+        typeName: 'TokenIconName',
     },
     {
         name: 'flagIcons',

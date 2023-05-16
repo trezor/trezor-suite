@@ -30,7 +30,7 @@ export const SupportSettings = () => {
                 onPress={() => navigation.navigate(SettingsStackRoutes.SettingsAbout)}
             />
             <SettingsSectionItem
-                iconName="question"
+                iconName="questionLight"
                 title="Get help"
                 subtitle="FAQ, Customer support"
                 onPress={() => navigation.navigate(SettingsStackRoutes.SettingsFAQ)}

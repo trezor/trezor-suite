@@ -2,7 +2,7 @@ import React from 'react';
 
 import { HStack } from '@suite-native/atoms';
 import { CryptoAmountFormatter } from '@suite-native/formatters';
-import { CryptoIcon } from '@trezor/icons';
+import { CryptoIcon } from '@suite-common/icons';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 
 type AccountDetailBalanceProps = {
@@ -23,7 +23,7 @@ export const AccountDetailCryptoValue = ({
         marginBottom="large"
         justifyContent="center"
     >
-        <CryptoIcon name={networkSymbol} />
+        <CryptoIcon symbol={networkSymbol} size="extraSmall" />
         <CryptoAmountFormatter
             value={value}
             network={networkSymbol}

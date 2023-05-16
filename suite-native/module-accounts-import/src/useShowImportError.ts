@@ -9,7 +9,7 @@ import {
     RootStackRoutes,
     StackToTabCompositeNavigationProp,
 } from '@suite-native/navigation';
-import { IconName } from '@trezor/icons';
+import { IconName } from '@suite-common/icons';
 import { PictogramVariant } from '@suite-native/atoms';
 
 type AlertError = 'invalidXpub' | 'invalidReceiveAddress' | 'networkError' | 'unknownError';

@@ -57,6 +57,7 @@ export const icons = {
     qrCode: require('../assets/icons/qrCode.svg'),
     qrCodeImport: require('../assets/icons/qrCodeImport.svg'),
     question: require('../assets/icons/question.svg'),
+    questionLight: require('../assets/icons/questionLight.svg'),
     receive: require('../assets/icons/receive.svg'),
     receiveAlt: require('../assets/icons/receiveAlt.svg'),
     reject: require('../assets/icons/reject.svg'),
@@ -110,20 +111,20 @@ export const cryptoIcons = {
 } as const;
 export type CryptoIconName = keyof typeof cryptoIcons;
 
-export const ethereumTokenIcons = {
-    cro: require('../assets/ethereumTokenIcons/cro.svg'),
-    dai: require('../assets/ethereumTokenIcons/dai.svg'),
-    erc20: require('../assets/ethereumTokenIcons/erc20.svg'),
-    leo: require('../assets/ethereumTokenIcons/leo.svg'),
-    link: require('../assets/ethereumTokenIcons/link.svg'),
-    okb: require('../assets/ethereumTokenIcons/okb.svg'),
-    shib: require('../assets/ethereumTokenIcons/shib.svg'),
-    uni: require('../assets/ethereumTokenIcons/uni.svg'),
-    usdc: require('../assets/ethereumTokenIcons/usdc.svg'),
-    usdt: require('../assets/ethereumTokenIcons/usdt.svg'),
-    wbtc: require('../assets/ethereumTokenIcons/wbtc.svg'),
+export const tokenIcons = {
+    cro: require('../assets/tokenIcons/cro.svg'),
+    dai: require('../assets/tokenIcons/dai.svg'),
+    erc20: require('../assets/tokenIcons/erc20.svg'),
+    leo: require('../assets/tokenIcons/leo.svg'),
+    link: require('../assets/tokenIcons/link.svg'),
+    okb: require('../assets/tokenIcons/okb.svg'),
+    shib: require('../assets/tokenIcons/shib.svg'),
+    uni: require('../assets/tokenIcons/uni.svg'),
+    usdc: require('../assets/tokenIcons/usdc.svg'),
+    usdt: require('../assets/tokenIcons/usdt.svg'),
+    wbtc: require('../assets/tokenIcons/wbtc.svg'),
 } as const;
-export type EthereumTokenIconName = keyof typeof ethereumTokenIcons;
+export type TokenIconName = keyof typeof tokenIcons;
 
 export const flagIcons = {
     cz: require('../assets/flags/cz.svg'),

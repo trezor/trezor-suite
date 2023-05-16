@@ -9,7 +9,7 @@ import {
     Screen,
     StackNavigationProps,
 } from '@suite-native/navigation';
-import { Icon } from '@trezor/icons';
+import { Icon } from '@suite-common/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Color } from '@trezor/theme';
 import { useActiveColorScheme } from '@suite-native/theme';

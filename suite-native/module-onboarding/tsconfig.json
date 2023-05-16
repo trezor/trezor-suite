@@ -5,13 +5,13 @@
         {
             "path": "../../suite-common/analytics"
         },
+        { "path": "../../suite-common/icons" },
         { "path": "../analytics" },
         { "path": "../atoms" },
         { "path": "../link" },
         { "path": "../module-settings" },
         { "path": "../navigation" },
         { "path": "../theme" },
-        { "path": "../../packages/icons" },
         { "path": "../../packages/styles" },
         { "path": "../../packages/theme" }
     ]

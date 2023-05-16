@@ -1,5 +1,5 @@
 {
-    "name": "@trezor/icons",
+    "name": "@suite-common/icons",
     "version": "1.0.0",
     "private": true,
     "license": "See LICENSE.md in repo root",
@@ -12,6 +12,8 @@
     },
     "dependencies": {
         "@shopify/react-native-skia": "0.1.188",
+        "@suite-common/wallet-config": "workspace:*",
+        "@suite-common/wallet-types": "workspace:*",
         "@trezor/styles": "workspace:*",
         "@trezor/theme": "workspace:*",
         "react": "18.2.0",

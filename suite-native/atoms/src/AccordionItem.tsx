@@ -8,7 +8,7 @@ import Animated, {
     withDelay,
 } from 'react-native-reanimated';
 
-import { Icon, IconName } from '@trezor/icons';
+import { Icon, IconName } from '@suite-common/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { Box } from './Box';

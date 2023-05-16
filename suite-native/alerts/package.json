@@ -10,8 +10,8 @@
         "type-check": "tsc --build"
     },
     "dependencies": {
+        "@suite-common/icons": "workspace:*",
         "@suite-native/atoms": "workspace:*",
-        "@trezor/icons": "workspace:*",
         "@trezor/styles": "workspace:*",
         "jotai": "1.9.1",
         "react": "18.2.0",

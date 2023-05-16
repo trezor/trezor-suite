@@ -2,6 +2,7 @@
     "extends": "../../tsconfig.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
+        { "path": "../../suite-common/icons" },
         {
             "path": "../../suite-common/wallet-config"
         },
@@ -18,7 +19,6 @@
         { "path": "../module-settings" },
         {
             "path": "../../packages/blockchain-link"
-        },
-        { "path": "../../packages/icons" }
+        }
     ]
 }

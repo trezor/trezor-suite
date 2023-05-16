@@ -17,7 +17,7 @@ import {
     StackNavigationProps,
     RootStackParamList,
 } from '@suite-native/navigation';
-import { Icon } from '@trezor/icons';
+import { Icon } from '@suite-common/icons';
 import {
     notificationsActions,
     TransactionNotificationType,
@@ -126,7 +126,6 @@ export const TransactionNotification = ({
                     symbol={notification.symbol}
                     isAnimated={isIconAnimated}
                     iconColor={isIconAnimated ? 'iconAlertYellow' : 'iconSubdued'}
-                    backgroundColor="backgroundSurfaceElevation2"
                 />
             }
             iconRight={<Icon name="circleRight" />}

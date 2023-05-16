@@ -16,7 +16,7 @@ import {
     selectAccountLabel,
     selectFormattedAccountType,
 } from '@suite-common/wallet-core';
-import { CryptoIcon } from '@trezor/icons';
+import { CryptoIcon } from '@suite-common/icons';
 
 import { AccountRenameButton } from '../components/AccountRenameButton';
 import { AccountSettingsShowXpub } from '../components/AccountSettingsShowXpub';
@@ -35,7 +35,7 @@ const CryptoNameWithIcon = ({ symbol }: { symbol: NetworkSymbol }) => (
     <Box flexDirection="row" alignItems="center" justifyContent="flex-end">
         <Text variant="hint">{networks[symbol].name}</Text>
         <Box marginLeft="small">
-            <CryptoIcon name={symbol} size="extraSmall" />
+            <CryptoIcon symbol={symbol} size="extraSmall" />
         </Box>
     </Box>
 );
