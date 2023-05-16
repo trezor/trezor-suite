@@ -11,7 +11,7 @@
         "type-check": "tsc --build"
     },
     "dependencies": {
-        "@reduxjs/toolkit": "1.9.3",
+        "@reduxjs/toolkit": "1.9.5",
         "@suite-common/intl-types": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
         "@suite-common/suite-constants": "workspace:*",
@@ -19,7 +19,7 @@
         "@suite-common/test-utils": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",
         "@trezor/connect": "workspace:*",
-        "proxy-memoize": "^2.0.2"
+        "proxy-memoize": "^2.0.4"
     },
     "devDependencies": {
         "jest": "^26.6.3",

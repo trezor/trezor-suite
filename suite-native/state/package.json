@@ -10,7 +10,7 @@
         "type-check": "tsc --build"
     },
     "dependencies": {
-        "@reduxjs/toolkit": "1.9.3",
+        "@reduxjs/toolkit": "1.9.5",
         "@suite-common/analytics": "workspace:*",
         "@suite-common/logger": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",

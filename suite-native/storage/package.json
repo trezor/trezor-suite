@@ -11,7 +11,7 @@
         "type-check": "tsc --build"
     },
     "dependencies": {
-        "@reduxjs/toolkit": "1.9.3",
+        "@reduxjs/toolkit": "1.9.5",
         "expo-random": "^13.1.1",
         "expo-secure-store": "^12.1.1",
         "expo-splash-screen": "0.18.1",
