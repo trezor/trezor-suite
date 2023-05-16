@@ -1,7 +1,7 @@
 {
     "version": 1,
-    "timestamp": "2023-05-12T00:00:00+00:00",
-    "sequence": 33,
+    "timestamp": "2023-05-16T00:00:00+00:00",
+    "sequence": 34,
     "actions": [
         {
             "conditions": [
@@ -199,12 +199,12 @@
                 "variant": "warning",
                 "category": "context",
                 "content": {
-                    "en-GB": "Due to technical issues related to exceptionally high network activity, coinjoin is temporarily unavailable in Trezor Suite. Our team is working on a solution to fix these issues and ensure a smooth user experience in the future. We apologize to all our users interested in coinjoining for the inconvenience. Thank you for your understanding.",
-                    "en": "Due to technical issues related to exceptionally high network activity, coinjoin is temporarily unavailable in Trezor Suite. Our team is working on a solution to fix these issues and ensure a smooth user experience in the future. We apologize to all our users interested in coinjoining for the inconvenience. Thank you for your understanding.",
-                    "es": "Debido a problemas técnicos relacionados con una actividad de red excepcionalmente alta, coinjoin no está disponible temporalmente en Trezor Suite. Nuestro equipo está trabajando en una solución para solucionar estos problemas y garantizar una experiencia de usuario fluida en el futuro. Pedimos disculpas a todos nuestros usuarios interesados en coinjoining por las molestias ocasionadas. Gracias por su comprensión.",
-                    "cs": "Z technických důvodu souvisejících s mimořádně vysokou aktivitou sítě je coinjoin v Trezor Suite dočasně nedostupný. Náš tým pracuje na řešení, které tyto problémy odstraní a v budoucnu zajistí bezproblémový provoz. Omlouváme se všem našim uživatelům za způsobené nepříjemnosti. Děkujeme vám za pochopení.",
-                    "ru": "Из-за технических проблем, связанных с исключительно высокой сетевой активностью, coinjoin временно недоступен в Trezor Suite. Наша команда работает над решением, чтобы устранить эти проблемы и обеспечить бесперебойную работу пользователей в будущем. Мы приносим извинения всем нашим пользователям, заинтересованным в coinjoin, за доставленные неудобства. Благодарим вас за понимание.",
-                    "ja": "例外的に高いネットワークアクティビティに関連する技術的な問題のため、Trezor Suiteではcoinjoinが一時的に利用できない状態になっています。私たちのチームは、これらの問題を修正し、将来的にスムーズなユーザー体験を保証するための解決策に取り組んでいます。コインジョインに関心のあるユーザーの皆様には、ご迷惑をおかけしております。ご理解のほど、よろしくお願いいたします。"
+                    "en-GB": "To use conjoin, download the latest version of the app via Early Access Program (turn on in Application settings).",
+                    "en": "To use conjoin, download the latest version of the app via Early Access Program (turn on in Application settings).",
+                    "es": "Para usar conjoin, descarga la última versión de la aplicación a través del Programa de acceso anticipado (activa en Ajustes de la aplicación).",
+                    "cs": "Pro použití funkce conjoin si stáhněte nejnovější verzi aplikace prostřednictvím Early Access Program (zapněte v Nastaveních aplikace).",
+                    "ru": "Для использования conjoin скачайте последнюю версию приложения через Программу раннего доступа (включите в настройках Приложения).",
+                    "ja": "conjoinを使用するには、アプリケーションの最新バージョンを早期アクセスプログラム経由でダウンロードしてください（アプリケーションの設定でオンにしてください）。"
                 },
                 "context": { "domain": "accounts.coinjoin" }
             }
@@ -346,23 +346,39 @@
                             "variant": "*",
                             "firmwareRevision": "*",
                             "vendor": "*"
+                        },
+                        {
+                            "model": "1",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "661ae37506f6e6ef94067d4b6de26c80bfb4c4b5",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "T",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "661ae37506f6e6ef94067d4b6de26c80bfb4c4b5",
+                            "vendor": "*"
                         }
                     ]
                 }
             ],
             "message": {
-                "id": "6f793f82-5e13-492f-803c-100c8dcc3cb6",
+                "id": "6f793f82-5e13-492f-803c-1jdk7dcc3cb6",
                 "priority": 99,
-                "dismissible": true,
+                "dismissible": false,
                 "variant": "critical",
                 "category": "banner",
                 "content": {
-                    "en-GB": "Your Trezor is running unofficial firmware. Please contact help@trezor.io immediately.",
-                    "en": "Your Trezor is running unofficial firmware. Please contact help@trezor.io immediately.",
-                    "es": "Su Trezor está ejecutando un firmware no oficial. Póngase en contacto con el servicio de asistencia help@trezor.io inmediatamente.",
-                    "cs": "Váš Trezor používá neoficiální verzi firmwaru. Okamžitě kontaktujte help@trezor.io",
-                    "ru": "На вашем Trezor установлена неофициальная прошивка. Пожалуйста, немедленно напишите в поддержку help@trezor.io",
-                    "ja": "お使いのTrezorは非公式ファームウェアが動作しています。すぐにサポート（help@trezor.io）にご連絡ください。"
+                    "en-GB": "CAUTION: Unofficial firmware detected! Your Trezor may be counterfeit. Contact help@trezor.io immediately.",
+                    "en": "CAUTION: Unofficial firmware detected! Your Trezor may be counterfeit. Contact help@trezor.io immediately.",
+                    "es": "¡PRECAUCIÓN: ¡El firmware detectado no es oficial! Es posible que su Trezor sea falso. Póngase en contacto de inmediato con help@trezor.io.",
+                    "cs": "UPOZORNĚNÍ: Byl detekován neoficiální firmware! Váš Trezor může být padělaný. Okamžitě kontaktujte help@trezor.io.",
+                    "ru": "ПРЕДУПРЕЖДЕНИЕ: Обнаружена неофициальная прошивка! Ваш Trezor может быть подделкой. Свяжитесь с нами по адресу help@trezor.io немедленно.",
+                    "ja": "注意：非公式のファームウェアが検出されました！お使いのTrezorは偽物かもしれません。直ちにhelp@trezor.ioに連絡してください。"
                 }
             }
         },
