@@ -87,7 +87,7 @@
         "css-loader": "^6.7.4",
         "html-webpack-plugin": "^5.5.1",
         "@types/node": "18.15.11",
-        "@sentry/types": "7.46.0"
+        "@sentry/types": "7.52.1"
     },
     "devDependencies": {
         "@babel/cli": "^7.21.5",
