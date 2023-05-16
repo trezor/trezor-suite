@@ -113,7 +113,7 @@ describe('selectRound', () => {
     });
 
     it('utxo in prison', () => {
-        prison.detain('Ba99ed');
+        prison.detain({ accountKey: ACCOUNT.accountKey, outpoint: 'Ba99ed' });
 
         const result = getAccountCandidates({
             accounts: [{ ...ACCOUNT, utxos: [{ outpoint: 'Ba99ed', anonymityLevel: 1 }] }],
@@ -526,7 +526,13 @@ describe('selectRound', () => {
 
         const blameOf = '1'.repeat(64);
 
-        prison.detainForBlameRound(['AA', 'AB'], blameOf);
+        prison.detainForBlameRound(
+            [
+                { accountKey: 'account-A', outpoint: 'AA' },
+                { accountKey: 'account-A', outpoint: 'AB' },
+            ],
+            blameOf,
+        );
 
         const result = await selectRound({
             roundGenerator,
@@ -562,9 +568,18 @@ describe('selectRound', () => {
     });
 
     it('too many blocked utxos', async () => {
-        prison.detain('A0', { errorCode: WabiSabiProtocolErrorCode.InputBanned });
-        prison.detain('A1', { errorCode: WabiSabiProtocolErrorCode.InputBanned });
-        prison.detain('A9', { errorCode: WabiSabiProtocolErrorCode.InputLongBanned });
+        prison.detain(
+            { outpoint: 'A0', accountKey: ACCOUNT.key },
+            { errorCode: WabiSabiProtocolErrorCode.InputBanned },
+        );
+        prison.detain(
+            { outpoint: 'A1', accountKey: ACCOUNT.key },
+            { errorCode: WabiSabiProtocolErrorCode.InputBanned },
+        );
+        prison.detain(
+            { outpoint: 'A9', accountKey: ACCOUNT.key },
+            { errorCode: WabiSabiProtocolErrorCode.InputLongBanned },
+        );
 
         const setSessionPhaseMock = jest.fn();
 

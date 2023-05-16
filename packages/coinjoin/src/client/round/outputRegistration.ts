@@ -21,6 +21,7 @@ import { SessionPhase, WabiSabiProtocolErrorCode } from '../../enums';
 
 const registerOutput = async (
     round: CoinjoinRound,
+    accountKey: string,
     outputAddress: AccountAddress[],
     amountCredentials: middleware.Credentials[],
     vsizeCredentials: middleware.Credentials[],
@@ -48,7 +49,7 @@ const registerOutput = async (
     // - try again with different address and link my new address with old address (privacy loss against coordinator?)
     // - intentionally stop output registrations for all other credentials. Question: which input will be banned if i call readyToSign on each anyway? is it better to break here and not to proceed to signing?
     const tryToRegisterOutput = (): Promise<AccountAddress> => {
-        const address = outputAddress.find(a => !round.prison.isDetained(a.scriptPubKey));
+        const address = outputAddress.find(a => !round.prison.isDetained(a.address));
         if (!address) {
             logger.error(
                 `No change address available. Used: ${round.addresses.length}. Total: ${outputAddress.length}`,
@@ -74,10 +75,13 @@ const registerOutput = async (
                 if (error instanceof coordinator.WabiSabiProtocolException) {
                     if (error.errorCode === WabiSabiProtocolErrorCode.AlreadyRegisteredScript) {
                         logger.error(`Change address already used (AlreadyRegisteredScript)`);
-                        round.prison.detain(address.scriptPubKey, {
-                            errorCode: error.errorCode,
-                            sentenceEnd: Infinity, // this address should never be recycled
-                        });
+                        round.prison.detain(
+                            { ...address, accountKey },
+                            {
+                                errorCode: error.errorCode,
+                                sentenceEnd: Infinity, // this address should never be recycled
+                            },
+                        );
                         return tryToRegisterOutput();
                     }
                     if (error.errorCode === WabiSabiProtocolErrorCode.NotEnoughFunds) {
@@ -92,10 +96,13 @@ const registerOutput = async (
     };
 
     const address = await tryToRegisterOutput();
-    round.prison.detain(address.scriptPubKey, {
-        roundId: round.id,
-        errorCode: WabiSabiProtocolErrorCode.AlreadyRegisteredScript,
-    });
+    round.prison.detain(
+        { ...address, accountKey },
+        {
+            roundId: round.id,
+            errorCode: WabiSabiProtocolErrorCode.AlreadyRegisteredScript,
+        },
+    );
 
     return {
         address,
@@ -144,12 +151,13 @@ export const outputRegistration = async (
                 // eslint-disable-next-line no-await-in-loop
                 const result = await registerOutput(
                     round,
+                    accountKey,
                     changeAddresses,
                     outputs[index].amountCredentials,
                     outputs[index].vsizeCredentials,
                     options,
                 );
-                round.addresses.push(result.address);
+                round.addresses.push({ ...result.address, accountKey });
             }
         }
 

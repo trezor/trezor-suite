@@ -312,10 +312,13 @@ describe('ended', () => {
         );
 
         // NOTE: registered inputs are detained by inputRegistration process
-        round.prison.detain('0'.repeat(72), {
-            roundId: round.id,
-            errorCode: WabiSabiProtocolErrorCode.AliceAlreadyRegistered,
-        });
+        round.prison.detain(
+            { accountKey: 'account-A', outpoint: '0'.repeat(72) },
+            {
+                roundId: round.id,
+                errorCode: WabiSabiProtocolErrorCode.AliceAlreadyRegistered,
+            },
+        );
 
         ended(round, options);
 

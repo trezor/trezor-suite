@@ -73,7 +73,14 @@ describe(`CoinjoinRound`, () => {
                 logger,
                 round: {
                     phase: 3,
-                    addresses: [{ address: 'doesnt matter', path: '', scriptPubKey: '' }],
+                    addresses: [
+                        {
+                            accountKey: 'account-A',
+                            address: 'doesnt matter',
+                            path: '',
+                            scriptPubKey: '',
+                        },
+                    ],
                 },
             },
         );

@@ -28,7 +28,9 @@ export interface CoinjoinPrisonEvents {
 }
 
 export interface CoinjoinPrisonInmate {
-    id: string; // AccountUtxo/Alice.outpoint or AccountAddress scriptPubKey
+    type: 'input' | 'output' | 'account';
+    accountKey: string;
+    id: string; // AccountUtxo/Alice.outpoint or AccountAddress scriptPubKey or Account key
     sentenceStart: number;
     sentenceEnd: number;
     errorCode?: WabiSabiProtocolErrorCode | 'blameOf';

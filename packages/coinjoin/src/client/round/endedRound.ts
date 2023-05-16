@@ -49,22 +49,21 @@ export const ended = (round: CoinjoinRound, { logger, network }: CoinjoinRoundOp
             logger.error(`Round not signed. This should never happen.`);
         }
         inputs.forEach(input =>
-            prison.detain(input.outpoint, {
+            prison.detain(input, {
                 roundId: id,
                 errorCode: WabiSabiProtocolErrorCode.InputBanned,
             }),
         );
     } else if (endRoundState === EndRoundState.NotAllAlicesSign) {
         logger.info('Awaiting blame round');
-        const inmates = inputs.map(i => i.outpoint).concat(addresses.map(a => a.scriptPubKey));
 
-        prison.detainForBlameRound(inmates, id);
+        prison.detainForBlameRound([...inputs, ...addresses], id);
     } else if (endRoundState === EndRoundState.AbortedNotEnoughAlices) {
         prison.releaseRegisteredInmates(id);
     } else if (endRoundState === EndRoundState.TransactionBroadcasted) {
         // detain all signed inputs and addresses forever
         inputs.forEach(input =>
-            prison.detain(input.outpoint, {
+            prison.detain(input, {
                 roundId: id,
                 errorCode: WabiSabiProtocolErrorCode.InputSpent,
                 sentenceEnd: Infinity,
@@ -72,7 +71,7 @@ export const ended = (round: CoinjoinRound, { logger, network }: CoinjoinRoundOp
         );
 
         addresses.forEach(addr =>
-            prison.detain(addr.scriptPubKey, {
+            prison.detain(addr, {
                 roundId: id,
                 errorCode: WabiSabiProtocolErrorCode.AlreadyRegisteredScript,
                 sentenceEnd: Infinity,

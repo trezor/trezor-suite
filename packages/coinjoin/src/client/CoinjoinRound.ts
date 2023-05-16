@@ -109,7 +109,7 @@ export class CoinjoinRound extends TypedEmitter<Events> {
     phaseDeadline: number; // deadline is inaccurate, phase may change earlier
     roundDeadline: number; // deadline is inaccurate,round may end earlier
     commitmentData: string; // commitment data used for ownership proof and witness requests
-    addresses: AccountAddress[] = []; // list of addresses (outputs) used in this round in outputRegistration phase
+    addresses: (AccountAddress & { accountKey: string })[] = []; // list of addresses (outputs) used in this round in outputRegistration phase
     transactionSignTries: number[] = []; // timestamps for processing transactionSigning phase
     transactionData?: CoinjoinTransactionData; // transaction to sign
     broadcastedTxDetails?: BroadcastedTransactionDetails; // transaction broadcasted
@@ -238,7 +238,7 @@ export class CoinjoinRound extends TypedEmitter<Events> {
         // do not pass failed inputs from InputRegistration to further phases
         if (this.phase > RoundPhase.InputRegistration) {
             failed.forEach(input =>
-                this.prison.detain(input.outpoint, {
+                this.prison.detain(input, {
                     roundId: this.id,
                     reason: input.error?.message,
                 }),
@@ -344,7 +344,12 @@ export class CoinjoinRound extends TypedEmitter<Events> {
                 if (type === 'ownership') {
                     // wallet request respond with error, account (device) is busy,
                     // detain whole account for short while and try again later
-                    this.prison.detain(input.accountKey, { sentenceEnd: ACCOUNT_BUSY_TIMEOUT });
+                    this.prison.detain(
+                        { accountKey: input.accountKey },
+                        {
+                            sentenceEnd: ACCOUNT_BUSY_TIMEOUT,
+                        },
+                    );
                 }
             } else if ('ownershipProof' in i) {
                 log(`Resolving ${type} request for ~~${i.outpoint}~~`);
