@@ -11,7 +11,7 @@
         "test:unit": "jest -c ../../jest.config.base.js"
     },
     "dependencies": {
-        "@reduxjs/toolkit": "1.9.3",
+        "@reduxjs/toolkit": "1.9.5",
         "@suite-common/suite-config": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",

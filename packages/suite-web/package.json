@@ -20,7 +20,7 @@
         "react-redux": "8.0.5",
         "react-router": "^5.2.0",
         "react-router-dom": "^5.2.0",
-        "styled-components": "^5.3.9",
+        "styled-components": "^5.3.10",
         "worker-loader": "^3.0.8"
     },
     "devDependencies": {
@@ -32,7 +32,7 @@
         "@types/chrome-remote-interface": "^0.31.9",
         "@types/cypress-image-snapshot": "^3.1.6",
         "@types/react": "18.0.32",
-        "@types/react-dom": "18.0.11",
+        "@types/react-dom": "18.2.4",
         "@types/react-helmet": "^6.1.6",
         "@types/react-router": "^5.1.20",
         "@types/react-router-dom": "^5.1.7",

@@ -22,9 +22,9 @@
         "@suite-common/wallet-utils": "workspace:*",
         "@trezor/connect": "workspace:*",
         "bignumber.js": "^9.1.1",
-        "date-fns": "^2.29.3",
+        "date-fns": "^2.30.0",
         "react": "18.2.0",
-        "react-intl": "^6.3.2",
+        "react-intl": "^6.4.2",
         "react-redux": "8.0.5"
     },
     "devDependencies": {
