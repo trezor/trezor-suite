@@ -60,12 +60,13 @@ media duplicates:
   except:
     <<: *run_everything_rules
 
-# validate that connect installation (outside monorepo) using npm works
+# validate that connect installation (outside monorepo) using npm and yarn works
 .install connect:
   stage: utils
   needs: []
   script:
     - ./packages/connect/e2e/test-npm-install.sh
+    - ./packages/connect/e2e/test-yarn.install.sh
 
 install connect nightly:
   extends: .install connect
