@@ -78,6 +78,8 @@ const config: webpack.Configuration = {
             crypto: require.resolve('crypto-browserify'), // required by multiple dependencies
             stream: require.resolve('stream-browserify'), // required by utxo-lib and keccak
             events: require.resolve('events'),
+            http: false,
+            zlib: false,
         },
     },
     performance: {
