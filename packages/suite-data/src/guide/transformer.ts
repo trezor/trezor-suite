@@ -13,7 +13,7 @@ const clean = (markdown: string): string => markdown.replace(/^---\n.*?\n---\n/s
  *
  * <figure><img src=".gitbook/assets/example.png" alt=""><figcaption></figcaption></figure> to ![](.gitbook/assets/example.png)
  */
-const transformImagesMarkdown = (markdown: string) =>
+export const transformImagesMarkdown = (markdown: string) =>
     markdown.replace(
         /<figure><img src="([^"]+)" alt=""><figcaption><\/figcaption><\/figure>/g,
         '![]($1)',
