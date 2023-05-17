@@ -15,13 +15,13 @@
         "@trezor/connect-common": "workspace:*",
         "@trezor/env-utils": "workspace:*",
         "copy-webpack-plugin": "^11.0.0",
-        "html-webpack-plugin": "^5.5.0",
+        "html-webpack-plugin": "^5.5.1",
         "jest": "^26.6.3",
         "rimraf": "^5.0.1",
         "terser-webpack-plugin": "^5.3.9",
         "typescript": "4.9.5",
-        "webpack": "^5.70.0",
-        "webpack-cli": "^5.0.1",
+        "webpack": "^5.83.1",
+        "webpack-cli": "^5.1.1",
         "worker-loader": "^3.0.8"
     },
     "nx": {

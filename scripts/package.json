@@ -12,7 +12,7 @@
         "fs-extra": "^11.1.1",
         "prettier": "2.8.8",
         "sort-package-json": "^1.57.0",
-        "yargs": "17.7.1"
+        "yargs": "17.7.2"
     },
     "devDependencies": {
         "@types/fs-extra": "^11.0.1",

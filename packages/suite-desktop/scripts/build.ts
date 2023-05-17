@@ -2,7 +2,7 @@
 import fs from 'fs';
 import path from 'path';
 import childProcess from 'child_process';
-import glob from 'glob';
+import { sync } from 'glob';
 import { build, PluginBuild } from 'esbuild';
 
 import uriSchemes from '../uriSchemes.json';
@@ -34,16 +34,16 @@ const sentryRelease = `${suiteVersion}.${PROJECT}${
 
 // Get all modules (used as entry points)
 const modulePath = path.join(source, 'modules');
-const modules = glob.sync(`${modulePath}/**/*.ts`).map(m => `modules${m.replace(modulePath, '')}`);
+const modules = sync(`${modulePath}/**/*.ts`).map(m => `modules${m.replace(modulePath, '')}`);
 
 const threadPath = path.join(source, 'threads');
-const threads = glob.sync(`${threadPath}/**/*.ts`).map(u => `threads${u.replace(threadPath, '')}`);
+const threads = sync(`${threadPath}/**/*.ts`).map(u => `threads${u.replace(threadPath, '')}`);
 
 // Prepare mock plugin with files from the mocks folder
 const mockPath = path.join(source, 'mocks');
-const mocks = glob
-    .sync(`${mockPath}/**/*.ts`)
-    .map(m => m.replace(`${mockPath}/`, '').replace('.ts', ''));
+const mocks = sync(`${mockPath}/**/*.ts`).map(m =>
+    m.replace(`${mockPath}/`, '').replace('.ts', ''),
+);
 const mockFilter = new RegExp(`^${mocks.join('|')}$`);
 const mockPlugin = {
     name: 'mock-plugin',

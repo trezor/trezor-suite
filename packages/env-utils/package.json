@@ -25,7 +25,7 @@
         "prepublish": "yarn tsx ../../scripts/prepublish.js"
     },
     "dependencies": {
-        "ua-parser-js": "^1.0.34"
+        "ua-parser-js": "^1.0.35"
     },
     "devDependencies": {
         "rimraf": "^5.0.1",
