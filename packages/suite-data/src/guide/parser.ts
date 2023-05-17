@@ -2,6 +2,7 @@ import { join } from 'path';
 import * as fs from 'fs-extra';
 
 import { GITBOOK_ASSETS_DIR_PREFIX } from './constants';
+import { transformImagesMarkdown } from './transformer';
 import type { GuideNode, GuideCategory } from '@suite-common/suite-types';
 
 /** @returns true if given path is a directory. */
@@ -48,9 +49,9 @@ export class Parser {
         const doc = fs.readFileSync(join(path, 'README.md'));
 
         // Match image file name from markdown image syntax
-        const image = doc
-            .toString()
-            .match(new RegExp(`(?<=${GITBOOK_ASSETS_DIR_PREFIX}/)(.*?)(?=\\))`))?.[0]
+        // The regex matches markdown syntax for images originally used by GitBook, so the markdown is transformed first - this way it is compatible with both versions of image syntax.
+        const image = transformImagesMarkdown(doc.toString())
+            .match(new RegExp(`(?<=${GITBOOK_ASSETS_DIR_PREFIX}/)(.*)(?=\\))`))?.[0]
             // even non-special characters are escaped in markdown, they are escaped again if used in JSON
             // which creates unnecessary backslash which is then converted to slash in browser and breaks the image url
             ?.replace(/\\/g, '');
