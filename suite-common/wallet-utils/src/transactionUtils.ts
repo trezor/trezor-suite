@@ -119,8 +119,8 @@ export const formatCardanoDeposit = (tx: WalletAccountTransaction) =>
         ? formatNetworkAmount(tx.cardanoSpecific.deposit, tx.symbol)
         : undefined;
 
-export const isTxOwned = (tx: WalletAccountTransaction) =>
-    !!tx.details.vin.find(vin => vin.isOwn || vin.isAccountOwned);
+export const isTxFeePaid = (tx: WalletAccountTransaction) =>
+    !!tx.details.vin.find(vin => vin.isOwn || vin.isAccountOwned) && tx.type !== 'joint';
 
 /**
  * Returns a sum of sent/recv txs amounts as a BigNumber.
@@ -151,15 +151,15 @@ export const sumTransactions = (transactions: WalletAccountTransaction[]) => {
         }
 
         // count in only if Inputs/Outputs includes my account (EVM does not need to)
-        if (tx.targets.length) {
-            if (tx.type === 'sent') {
-                totalAmount = totalAmount.minus(amount);
-            }
-            if (tx.type === 'recv' || tx.type === 'joint') {
-                totalAmount = totalAmount.plus(amount);
-            }
+        if (tx.targets.length && tx.type === 'sent') {
+            totalAmount = totalAmount.minus(amount);
         }
-        if (isTxOwned(tx)) {
+
+        if (tx.type === 'recv' || tx.type === 'joint') {
+            totalAmount = totalAmount.plus(amount);
+        }
+
+        if (isTxFeePaid(tx)) {
             totalAmount = totalAmount.minus(fee);
         }
 
@@ -207,19 +207,17 @@ export const sumTransactionsFiat = (
         }
 
         // count in only if Inputs/Outputs includes my account (EVM does not need to)
-        if (tx.targets.length) {
-            if (tx.type === 'sent') {
-                totalAmount = totalAmount.minus(
-                    toFiatCurrency(amount, fiatCurrency, tx.rates, -1) ?? 0,
-                );
-            }
-            if (tx.type === 'recv' || tx.type === 'joint') {
-                totalAmount = totalAmount.plus(
-                    toFiatCurrency(amount, fiatCurrency, tx.rates, -1) ?? 0,
-                );
-            }
+        if (tx.targets.length && tx.type === 'sent') {
+            totalAmount = totalAmount.minus(
+                toFiatCurrency(amount, fiatCurrency, tx.rates, -1) ?? 0,
+            );
         }
-        if (isTxOwned(tx)) {
+
+        if (tx.type === 'recv' || tx.type === 'joint') {
+            totalAmount = totalAmount.plus(toFiatCurrency(amount, fiatCurrency, tx.rates, -1) ?? 0);
+        }
+
+        if (isTxFeePaid(tx)) {
             totalAmount = totalAmount.minus(toFiatCurrency(fee, fiatCurrency, tx.rates, -1) ?? 0);
         }
 
