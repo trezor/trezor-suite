@@ -55,6 +55,8 @@ const config: webpack.Configuration = {
             os: false,
             path: false,
             https: false,
+            http: false,
+            zlib: false,
         },
     },
     optimization: {

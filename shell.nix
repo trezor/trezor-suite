@@ -1,14 +1,14 @@
-# the last successful build of nixpkgs-unstable as of 2023-02-28
+# the last successful build of nixpkgs-unstable as of 2023-05-17
 with import
   (builtins.fetchTarball {
-    url = "https://github.com/NixOS/nixpkgs/archive/7785526659fe5885abbd88a85a23a11bd0617e3c.tar.gz";
-    sha256 = "0sjsy3jihhdmck6hn9lizwvk25kzf5ags1p21xqqn3kj7fv5ax9x";
+    url = "https://github.com/NixOS/nixpkgs/archive/1323df1ade9902f59f25568edcdea8e3f530148b.tar.gz";
+    sha256 = "196i23k0pvx1l3pvc6m89mjz2hdq09ai77ll85ggrvp2pa6vlhad";
   })
 { };
 
 let
   # unstable packages
-  electron = electron_23;  # use the same version as defined in packages/suite-desktop/package.json
+  electron = electron_24;  # use the same version as defined in packages/suite-desktop/package.json
   nodejs = nodejs-18_x;
 in
   stdenv.mkDerivation {
