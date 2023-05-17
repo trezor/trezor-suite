@@ -28,7 +28,7 @@
         "react-date-range": "^1.4.0",
         "react-intl": "^6.4.2",
         "react-select": "^5.7.3",
-        "react-svg": "^16.1.12",
+        "react-svg": "^16.1.13",
         "react-truncate": "^2.4.0",
         "react-use": "^17.4.0",
         "zxcvbn": "^4.4.2"

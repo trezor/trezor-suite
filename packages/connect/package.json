@@ -57,10 +57,10 @@
         "@trezor/utxo-lib": "workspace:*",
         "bignumber.js": "^9.1.1",
         "blakejs": "^1.2.1",
-        "cross-fetch": "^3.1.5",
+        "cross-fetch": "^3.1.6",
         "events": "^3.3.0",
         "randombytes": "2.1.0",
-        "tslib": "2.5.0"
+        "tslib": "2.5.2"
     },
     "devDependencies": {
         "@trezor/trezor-user-env-link": "workspace:*",

@@ -71,7 +71,6 @@ export const AccountImportLoadingScreen = ({
                     details: 'tokenBalances',
                 }),
                 dispatch(
-                    // @ts-expect-error Seems there is a problem with global types do dispatch, no idea how to fix it
                     updateFiatRatesThunk({
                         ticker: {
                             symbol: networkSymbol,
@@ -87,7 +86,6 @@ export const AccountImportLoadingScreen = ({
                     if (networkSymbol === 'eth') {
                         fetchedAccountInfo.payload.tokens?.forEach(token => {
                             dispatch(
-                                // @ts-expect-error Seems there is a problem with global types do dispatch, no idea how to fix it
                                 updateFiatRatesThunk({
                                     ticker: {
                                         symbol: token.symbol as TokenSymbol,

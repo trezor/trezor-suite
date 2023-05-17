@@ -11,7 +11,7 @@
         "type-check": "tsc --build"
     },
     "dependencies": {
-        "@formatjs/intl": "2.6.9",
+        "@formatjs/intl": "2.7.2",
         "@mobily/ts-belt": "^3.13.1",
         "@suite-common/suite-config": "workspace:*",
         "@suite-common/suite-constants": "workspace:*",
