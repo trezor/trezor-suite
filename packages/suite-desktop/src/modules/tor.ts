@@ -26,6 +26,8 @@ const load = async ({ mainWindow, store }: Dependencies) => {
         store.setTorSettings({ running: shouldEnableTor, host, port });
     };
 
+    persistSettings(store.getTorSettings().running);
+
     const tor = new TorProcess({ host, port, controlPort, torDataDir });
 
     const setProxy = (rule: string) => {
