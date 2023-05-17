@@ -135,10 +135,6 @@ export const sumTransactions = (transactions: WalletAccountTransaction[]) => {
         const fee = formatNetworkAmount(tx.fee, tx.symbol);
 
         if (tx.type === 'self') {
-            // in sent to self tx all we spent is just a fee
-            // (tx.amount is set to the fee in blockchain-link)
-            totalAmount = totalAmount.minus(fee);
-
             const cardanoWithdrawal = formatCardanoWithdrawal(tx);
             if (cardanoWithdrawal) {
                 totalAmount = totalAmount.plus(cardanoWithdrawal);
@@ -187,10 +183,6 @@ export const sumTransactionsFiat = (
         const fee = formatNetworkAmount(tx.fee, tx.symbol);
 
         if (tx.type === 'self') {
-            // in sent to self tx all we spent is just a fee
-            // (tx.amount is set to the fee in blockchain-link)
-            totalAmount = totalAmount.minus(toFiatCurrency(fee, fiatCurrency, tx.rates, -1) ?? 0);
-
             const cardanoWithdrawal = formatCardanoWithdrawal(tx);
             if (cardanoWithdrawal) {
                 totalAmount = totalAmount.plus(
