@@ -5,25 +5,25 @@ import { useCopyToClipboard } from '@suite-native/helpers';
 
 type QRCodeCopyAndShareButtonProps = {
     data: string;
+    onCopy?: () => void;
     onCopyMessage: string;
-    onCopy: () => void;
 };
 
-export const QRCodeCopyAndShareButton = ({
+export const QRCodeCopyButton = ({
     data,
-    onCopyMessage,
     onCopy,
+    onCopyMessage,
 }: QRCodeCopyAndShareButtonProps) => {
     const copyToClipboard = useCopyToClipboard();
 
-    const handleCopyAndClose = async () => {
+    const handleCopy = async () => {
         await copyToClipboard(data, onCopyMessage);
-        onCopy();
+        onCopy?.();
     };
 
     return (
-        <Button size="large" onPress={handleCopyAndClose}>
-            Copy & Close
+        <Button size="large" onPress={handleCopy}>
+            Copy
         </Button>
     );
 };

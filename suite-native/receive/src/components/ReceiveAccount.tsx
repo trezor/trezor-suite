@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { useNavigation } from '@react-navigation/native';
 import { G } from '@mobily/ts-belt';
 
 import { Box, ErrorMessage, Text, VStack } from '@suite-native/atoms';
@@ -21,7 +20,6 @@ type AccountReceiveProps = {
 };
 
 export const ReceiveAccount = ({ accountKey, tokenContract }: AccountReceiveProps) => {
-    const navigation = useNavigation();
     const [isAddressVisible, setIsAddressVisible] = useState(false);
 
     const account = useSelector((state: AccountsRootState) =>
@@ -62,11 +60,7 @@ export const ReceiveAccount = ({ accountKey, tokenContract }: AccountReceiveProp
                 </Text>
             </Box>
             {isAddressVisible ? (
-                <ReceiveAddress
-                    accountKey={accountKey}
-                    onClose={navigation.goBack}
-                    backgroundElevation="1"
-                />
+                <ReceiveAddress accountKey={accountKey} backgroundElevation="1" />
             ) : (
                 <ReceiveTextHint onShowAddress={handleShowAddress} />
             )}

@@ -1,23 +1,17 @@
 import React, { useState } from 'react';
 
-import { Box, Button, Stack } from '@suite-native/atoms';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { Box, Text, Button, Stack } from '@suite-native/atoms';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 
 import { QRCode } from './QRCode';
-import { QRCodeCopyAndShareButton } from './QRCodeCopyAndShareButton';
+import { QRCodeCopyButton } from './QRCodeCopyButton';
 import { XpubOverlayWarning } from './XpubQRCodeWarningOverlay';
 
 type XpubQRCodeProps = {
     onCopy: () => void;
     data?: string;
     networkSymbol: NetworkSymbol;
-    onCopyMessage?: string;
 };
-
-const qrcodeWrapperStyle = prepareNativeStyle(_ => ({
-    position: 'relative',
-}));
 
 const networkSymbolHasXpub = (networkSymbol: NetworkSymbol) => {
     // These coins don't have XPUB but public address instead
@@ -25,44 +19,43 @@ const networkSymbolHasXpub = (networkSymbol: NetworkSymbol) => {
     return true;
 };
 
-export const XpubQRCode = ({
-    data,
-    networkSymbol,
-    onCopy,
-    onCopyMessage = 'XPUB copied',
-}: XpubQRCodeProps) => {
-    const { applyStyle } = useNativeStyles();
+export const XpubQRCode = ({ data, networkSymbol, onCopy }: XpubQRCodeProps) => {
     const [isAllowedToShowXpub, setIsAllowedToShowXpub] = useState(
         !networkSymbolHasXpub(networkSymbol),
     );
 
     if (!data) return null;
 
-    const handleCopy = () => {
+    const handleHideXpub = () => {
         setIsAllowedToShowXpub(false);
         onCopy();
     };
 
     const copyMessage = networkSymbolHasXpub(networkSymbol)
-        ? onCopyMessage
+        ? 'XPUB copied'
         : 'Public address copied';
 
     return (
         <Stack spacing="medium">
-            <Box style={applyStyle(qrcodeWrapperStyle)}>
-                {!isAllowedToShowXpub && <XpubOverlayWarning />}
-                <QRCode data={data} />
-            </Box>
-            {!isAllowedToShowXpub ? (
-                <Button iconLeft="eye" onPress={() => setIsAllowedToShowXpub(true)}>
-                    Show public key
-                </Button>
+            {isAllowedToShowXpub ? (
+                <>
+                    <QRCode data={data} />
+                    <Box margin="small" alignItems="center" justifyContent="center">
+                        <Text align="center">{data}</Text>
+                    </Box>
+                    <QRCodeCopyButton
+                        data={data}
+                        onCopyMessage={copyMessage}
+                        onCopy={handleHideXpub}
+                    />
+                </>
             ) : (
-                <QRCodeCopyAndShareButton
-                    data={data}
-                    onCopyMessage={copyMessage}
-                    onCopy={handleCopy}
-                />
+                <>
+                    <XpubOverlayWarning />
+                    <Button iconLeft="eye" onPress={() => setIsAllowedToShowXpub(true)}>
+                        Show public key
+                    </Button>
+                </>
             )}
         </Stack>
     );

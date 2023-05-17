@@ -6,9 +6,6 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 const overlayStyle = prepareNativeStyle(utils => ({
     justifyContent: 'center',
     alignItems: 'center',
-    width: '100%',
-    position: 'absolute',
-    zIndex: 1,
     padding: utils.spacings.medium,
 }));
 
