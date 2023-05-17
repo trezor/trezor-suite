@@ -133,6 +133,8 @@ export const selectCoinsLegacy = memoize(
         const coins: FiatRatesStateLegacy['coins'] = [];
 
         Object.values(state.wallet.fiat.current).forEach(rate => {
+            if (rate.error || !rate.rate) return;
+
             const coin = coins.find(c => c.symbol === rate.ticker.symbol);
             if (coin && coin.current) {
                 coin.current.rates[rate.locale] = rate.rate;
@@ -151,6 +153,8 @@ export const selectCoinsLegacy = memoize(
         });
 
         Object.values(state.wallet.fiat.lastWeek).forEach(rate => {
+            if (rate.error || !rate.rate) return;
+
             const coin = coins.find(c => c.symbol === rate.ticker.symbol);
             if (coin) {
                 const ticker = coin.lastWeek?.tickers.find(

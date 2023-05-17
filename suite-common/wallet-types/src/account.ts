@@ -7,8 +7,8 @@ export type XpubAddress = string;
 export type TokenSymbol = string & { __type: 'TokenSymbol' };
 export type TokenAddress = string & { __type: 'TokenAddress' };
 
-export type TokenInfoBranded = TokenInfo & {
-    symbol: TokenSymbol;
+export type TokenInfoBranded = Omit<TokenInfo, 'symbol' | 'contract'> & {
+    symbol?: TokenSymbol;
     contract: TokenAddress;
 };
 

@@ -40,7 +40,7 @@ export const RoundedIcon = ({ name, color, size, backgroundColor }: RoundedIconP
 
     return (
         <Box style={applyStyle(iconContainerStyle, { backgroundColor })}>
-            {name in icons ? (
+            {name && name in icons ? (
                 <Icon name={name as IconName} color={color} size={size} />
             ) : (
                 <CryptoIcon symbol={name as CoinSymbol} />

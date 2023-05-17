@@ -11,7 +11,7 @@ import { AccountKey, TokenAddress, TokenSymbol } from '@suite-common/wallet-type
 import { AccountsRootState, selectAccountLabel } from '@suite-common/wallet-core';
 
 type TokenReceiveCardProps = {
-    tokenSymbol: TokenSymbol;
+    tokenSymbol?: TokenSymbol;
     tokenName: string;
     accountKey: AccountKey;
     contract: TokenAddress;

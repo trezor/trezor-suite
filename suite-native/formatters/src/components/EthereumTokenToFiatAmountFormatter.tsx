@@ -16,7 +16,7 @@ import { convertTokenValueToDecimal } from '../utils';
 import { SignValueFormatter } from './SignValueFormatter';
 
 type EthereumTokenToFiatAmountFormatterProps = {
-    ethereumToken: TokenSymbol;
+    ethereumToken?: TokenSymbol;
     contract: TokenAddress;
     isDiscreetText?: boolean;
     decimals?: number;

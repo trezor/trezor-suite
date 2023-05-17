@@ -5,7 +5,7 @@ import { TokenSymbol, TokenAddress } from '@suite-common/wallet-types';
 import { FiatRateKey, TickerId } from './types';
 
 export const getFiatRateKey = (
-    symbol: TokenSymbol | NetworkSymbol,
+    symbol: TokenSymbol | NetworkSymbol | undefined, // token symbol might be `undefined`
     fiatCurrency: FiatCurrencyCode,
     tokenAddress?: TokenAddress,
 ): FiatRateKey => {

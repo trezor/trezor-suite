@@ -15,7 +15,7 @@ type TokenListItemProps = {
     balance?: string;
     isLast: boolean;
     label: string;
-    symbol: TokenSymbol;
+    symbol?: TokenSymbol;
     accountKey: AccountKey;
     contract: TokenAddress;
     onSelectAccount: (accountKey: AccountKey, tokenContract?: TokenAddress) => void;
@@ -75,7 +75,7 @@ export const TokenListItem = ({
                 <Box style={applyStyle(valuesContainerStyle)}>
                     <EthereumTokenToFiatAmountFormatter
                         value={balance ?? '0'}
-                        ethereumToken={symbol.toUpperCase() as TokenSymbol}
+                        ethereumToken={symbol?.toUpperCase() as TokenSymbol}
                         contract={contract}
                     />
                     <EthereumTokenAmountFormatter

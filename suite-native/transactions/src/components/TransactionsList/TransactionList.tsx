@@ -38,7 +38,7 @@ type RenderTransactionItemParams = {
 };
 
 type RenderTokenTranferItemParams = Omit<RenderTransactionItemParams, 'areTokensIncluded'> & {
-    tokenSymbol: TokenSymbol;
+    tokenSymbol?: TokenSymbol;
 };
 
 const sectionListStyle = prepareNativeStyle(utils => ({

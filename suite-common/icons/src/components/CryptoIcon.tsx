@@ -7,7 +7,7 @@ import { TokenSymbol } from '@suite-common/wallet-types';
 
 import { CryptoIconName, cryptoIcons, TokenIconName, tokenIcons } from '../icons';
 
-export type CoinSymbol = CryptoIconName | TokenSymbol;
+export type CoinSymbol = CryptoIconName | TokenSymbol | undefined;
 
 type CryptoIconProps = {
     symbol: CoinSymbol;
@@ -22,7 +22,9 @@ export const cryptoIconSizes = {
 
 export type CryptoIconSize = keyof typeof cryptoIconSizes;
 
-const getIconFile = (symbol: CoinSymbol) => {
+const getIconFile = (symbol?: CoinSymbol) => {
+    if (!symbol) return tokenIcons.erc20;
+
     if (symbol in networks) return cryptoIcons[symbol as CryptoIconName];
 
     const lowerCaseSymbol = symbol?.toLowerCase();
