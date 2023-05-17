@@ -7,7 +7,7 @@ import { getIsZeroValuePhishing } from '@suite-common/suite-utils';
 import { Translation } from '@suite-components';
 import { useActions } from '@suite-hooks';
 import * as modalActions from '@suite-actions/modalActions';
-import { formatNetworkAmount, isTestnet, isTxOwned } from '@suite-common/wallet-utils';
+import { formatNetworkAmount, isTestnet, isTxFeePaid } from '@suite-common/wallet-utils';
 import { AccountMetadata } from '@suite-types/metadata';
 import { Network, WalletAccountTransaction } from '@wallet-types';
 import { TransactionTypeIcon } from './components/TransactionTypeIcon';
@@ -114,7 +114,7 @@ const TransactionItem = React.memo(
             (!tokens.length && !internalTransfers.length && !targets.length) || type === 'failed';
 
         const fee = formatNetworkAmount(transaction.fee, transaction.symbol);
-        const showFeeRow = isTxOwned(transaction) && type !== 'joint';
+        const showFeeRow = isTxFeePaid(transaction);
 
         const [txItemIsHovered, setTxItemIsHovered] = useState(false);
         const [nestedItemIsHovered, setNestedItemIsHovered] = useState(false);
