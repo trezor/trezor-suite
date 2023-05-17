@@ -6820,6 +6820,7 @@ __metadata:
     react: 18.2.0
     react-native: 0.71.7
     react-redux: 8.0.5
+    web3-utils: ^1.8.2
   languageName: unknown
   linkType: soft
 
