@@ -43,7 +43,6 @@ export const init: Module = ({ mainWindow, store }) => {
 
     let isManualCheck = false;
     let updateCancellationToken: CancellationToken;
-    let errorHappened = false;
 
     // Prevent downloading an update unless user explicitly asks for it.
     autoUpdater.autoDownload = false;
@@ -121,7 +120,6 @@ export const init: Module = ({ mainWindow, store }) => {
     });
 
     autoUpdater.on('error', (err: Error) => {
-        errorHappened = true;
         logger.error('auto-updater', `An error happened: ${err.toString()}`);
         mainWindow.webContents.send('update/error', err);
     });
@@ -138,11 +136,6 @@ export const init: Module = ({ mainWindow, store }) => {
 
     autoUpdater.on('update-downloaded', async (info: UpdateDownloadedEvent) => {
         const { version, releaseDate, downloadedFile, releaseNotes } = info;
-
-        if (errorHappened) {
-            logger.info('auto-updater', 'An error happened. Stopping auto-update.');
-            return;
-        }
 
         logger.info('auto-updater', [
             'Update downloaded:',
