@@ -27,7 +27,7 @@ export const WordAdvanced = ({ count, ...rest }: WordAdvancedProps) => (
     <StyledModal
         heading={<Translation id="TR_FOLLOW_INSTRUCTIONS_ON_DEVICE" />}
         description={<Translation id="TR_ADVANCED_RECOVERY_TEXT" />}
-        onCancel={() => TrezorConnect.cancel()}
+        onCancel={() => TrezorConnect.cancel('cancelled')}
         isCancelable
         totalProgressBarSteps={5}
         currentProgressBarStep={4}

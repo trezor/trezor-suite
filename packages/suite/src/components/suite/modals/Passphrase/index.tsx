@@ -63,7 +63,7 @@ export const Passphrase = ({ device }: Props) => {
 
     const dispatch = useDispatch();
 
-    const onCancel = () => TrezorConnect.cancel();
+    const onCancel = () => TrezorConnect.cancel('cancelled');
 
     const onSubmit = useCallback(
         (value: string, passphraseOnDevice?: boolean) => {
