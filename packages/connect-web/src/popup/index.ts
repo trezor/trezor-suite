@@ -9,7 +9,7 @@ import {
     ConnectSettings,
     CoreMessage,
     IFrameLoaded,
-} from '@trezor/connect/lib/index';
+} from '@trezor/connect/lib/exports';
 import { getOrigin } from '@trezor/connect/lib/utils/urlUtils';
 import { showPopupRequest } from './showPopupRequest';
 
