@@ -135,7 +135,7 @@ const DevicePromptModalRenderer = ({
     isConfirmed,
     pillTitle,
     isAbortable = true,
-    onAbort = () => TrezorConnect.cancel(),
+    onAbort = () => TrezorConnect.cancel('cancelled'),
     ...rest
 }: DevicePromptModalProps) => {
     const deviceModel = useDeviceModel();

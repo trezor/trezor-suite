@@ -17,7 +17,7 @@ export const Word = (props: ModalProps) => (
                 <Translation id="TR_RANDOM_SEED_WORDS_DISCLAIMER" />
             </>
         }
-        onCancel={() => TrezorConnect.cancel()}
+        onCancel={() => TrezorConnect.cancel('cancelled')}
         isCancelable
         totalProgressBarSteps={5}
         currentProgressBarStep={4}

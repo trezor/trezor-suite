@@ -69,7 +69,9 @@ export const OnboardingStepBox = ({
                     <ConfirmOnDevice
                         title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
                         deviceModel={deviceModel}
-                        onCancel={isActionAbortable ? () => TrezorConnect.cancel() : undefined}
+                        onCancel={
+                            isActionAbortable ? () => TrezorConnect.cancel('cancelled') : undefined
+                        }
                     />
                 )}
             </ConfirmWrapper>
