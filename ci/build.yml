@@ -256,6 +256,7 @@ connect-web build:
     - git submodule update --init --recursive
     - yarn install --immutable
     - yarn workspace @trezor/connect-web build
+    - ./packages/connect-web/scripts/check-inline-build-size.sh
     - yarn workspace @trezor/connect-iframe build
     - yarn workspace @trezor/connect-popup build
   artifacts:
