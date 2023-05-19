@@ -1,3 +1,7 @@
+# 9.0.9
+
+-   fixup! chore(connect): improve release scripts (b4dfa97)
+
 # 9.0.8
 
 -   63bc156f2 fix(suite-common): allow long decimals with localizeNumber
