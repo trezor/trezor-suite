@@ -1,3 +1,7 @@
+# 1.0.2
+
+-   ci: install out of monorepo scripts (ef97f86)
+
 # 1.0.1
 
 -   9b9b72a01 chore(env-utils): add tsx as dev dependency
