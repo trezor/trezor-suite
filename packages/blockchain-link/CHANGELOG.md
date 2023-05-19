@@ -1,3 +1,7 @@
+# 2.1.13
+
+-   ci: install out of monorepo scripts (ef97f86)
+
 # 2.1.12
 
 -   5711aa998 feat(blockchain-link): add getMempoolFilters method
