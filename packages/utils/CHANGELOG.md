@@ -1,3 +1,7 @@
+# 9.0.9
+
+-   12ef63319 feat(utils): add TypedEmitter class
+
 # 9.0.8
 
 -   63bc156f2 fix(suite-common): allow long decimals with localizeNumber
