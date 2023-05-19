@@ -1,3 +1,7 @@
+# 9.0.9
+
+-   ci: install out of monorepo scripts (0ebf9c8)
+
 # 9.0.8
 
 -   63bc156f2 fix(suite-common): allow long decimals with localizeNumber

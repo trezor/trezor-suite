@@ -1,3 +1,7 @@
+# 1.1.12
+
+-   ci: install out of monorepo scripts (0ebf9c8)
+
 # 1.1.11
 
 -   819c019d1 chore: use workspace:\* everywhere
