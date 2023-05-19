@@ -185,10 +185,23 @@ const initConnectRelease = async () => {
         path: ROOT,
         message: commitMessage,
     })
+
+
+    const gitPushResult = child_process.spawnSync(
+        'git',
+        ['push', 'origin', branchName],
+        {
+            encoding: 'utf-8',
+            cwd: ROOT,
+        },
+    );
+    if (gitPushResult.status !== 0) {
+        console.log(gitPushResult);
+    }
     
     const ghPrCreateResult = child_process.spawnSync(
         'gh',
-        ['pr', 'create', '--repo', 'trezor/trezor-suite', '--title',`${commitMessage}`, '--body-file' ,"docs/releases/connect-release.md", '--base' ,'develop'],
+        ['pr', 'create', '--repo', 'trezor/trezor-suite', '--title',`${commitMessage}`, '--body-file' ,"docs/releases/connect-release.md", '--base' ,'develop', '--head', branchName],
         {
             encoding: 'utf-8',
             cwd: ROOT,
