@@ -7,6 +7,7 @@ bash --version
 DEPS_CHECK_RESULT=$(node ./ci/scripts/check-npm-dependencies.js connect)
 DEPS_CHECKLIST=""
 line_break=$'\n'
+changelog_line_break="§"
 
 DEPS=$(echo "${DEPS_CHECK_RESULT}" | jq -r '.deps')
 DEPS_ERRORS=$(echo "${DEPS_CHECK_RESULT}" | jq -r '.errors')
@@ -25,13 +26,27 @@ else
   do
     echo "processing ${i} package"
     yarn bump patch "./packages/${i}/package.json"
-    CHANGELOG_DRAFT=$(./ci/scripts/create_changelog_draft.sh "${i}")
+    
+    CHANGELOG_DRAFT=""
 
+    git log --oneline -- "./packages/${1}" | (
+        while read -r commit; do
+            if [[ $commit == *"npm-release: @trezor/${1}"* ]];
+            then
+                break;
+            fi
+            CHANGELOG_DRAFT="${CHANGELOG_DRAFT}${commit}${changelog_line_break}"
+        done
+    )
+    
+    echo "=========1"
+    printf "${CHANGELOG_DRAFT}"
+    
     if [[ -n "${CHANGELOG_DRAFT}" ]]; then
       echo "changelog draft for ${i}:"
       touch -a "./packages/${i}/CHANGELOG.md"
       PACKAGE_NEXT_V=$(jq -r '.version' < "packages/${i}/package.json")
-      IFS='§' read -ra CHANGELOG_ARRAY <<< "${CHANGELOG_DRAFT}"
+      IFS="$changelog_line_break" $ read -ra CHANGELOG_ARRAY <<< "${CHANGELOG_DRAFT}"
       CHANGELOG_FORMATTED=$(for j in "${CHANGELOG_ARRAY[@]}"; do echo "-   ${j}"; done)
       echo "# ${PACKAGE_NEXT_V} ${line_break} ${CHANGELOG_FORMATTED}" | cat - "packages/${i}/CHANGELOG.md" > /tmp/out
       mv "/tmp/out" "packages/${i}/CHANGELOG.md"
@@ -45,7 +60,7 @@ else
   done
 fi
 
-# no yarn.lock change should be needed
+# # no yarn.lock change should be needed
 yarn --immutable
 
 yarn workspace @trezor/connect version:"${1}"
