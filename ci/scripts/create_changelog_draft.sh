@@ -10,7 +10,7 @@ git log --oneline -- "./packages/${1}" | (
     while read -r commit; do
         if [[ $commit == *"npm-release: @trezor/${1}"* ]];
         then
-            echo "${changelog}"
+            printf "${changelog}"
             exit 0
         fi
         changelog="${changelog}${commit}${line_break}"
