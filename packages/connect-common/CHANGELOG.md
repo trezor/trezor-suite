@@ -1,3 +1,7 @@
+# 0.0.16
+
+-   fixup! chore(connect): improve release scripts (b4dfa97)
+
 # 0.0.15
 
 -   a926901a6 chore: unify Trezor T and 1 names
