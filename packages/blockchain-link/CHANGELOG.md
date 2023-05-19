@@ -1,3 +1,7 @@
+# 2.1.13
+
+-   395331f2f chore(blockchain-link): use TypedEmitter from `@trezor/utils`
+
 # 2.1.12
 
 -   5711aa998 feat(blockchain-link): add getMempoolFilters method
