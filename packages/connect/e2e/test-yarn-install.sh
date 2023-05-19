@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# validate that installing connect package using npm works
+# validate that installing connect package using yarn works
 
 set -e
 
@@ -12,7 +12,6 @@ node --version
 mkdir connect-implementation
 cd connect-implementation
 npm init -y
-npm install @trezor/connect
-npm install @trezor/connect-web
-
-cat package.json
+touch yarn.lock
+yarn add @trezor/connect
+yarn add @trezor/connect-web
