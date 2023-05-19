@@ -26,7 +26,10 @@ else
     echo "processing ${i} package"
     yarn bump patch "./packages/${i}/package.json"
     CHANGELOG_DRAFT=$(./ci/scripts/create_changelog_draft.sh "${i}")
-
+    
+    echo "=========1"
+    printf "${CHANGELOG_DRAFT}"
+    
     if [[ -n "${CHANGELOG_DRAFT}" ]]; then
       echo "changelog draft for ${i}:"
       touch -a "./packages/${i}/CHANGELOG.md"
@@ -45,7 +48,7 @@ else
   done
 fi
 
-# no yarn.lock change should be needed
+# # no yarn.lock change should be needed
 yarn --immutable
 
 yarn workspace @trezor/connect version:"${1}"
