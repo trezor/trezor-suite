@@ -14,15 +14,6 @@ const packages = fs.readdirSync(packagesPath, {
     encoding: 'utf-8',
 });
 
-const args = process.argv.slice(2);
-
-if (args.length < 1) throw new Error('Check npm dependencies requires 1 parameter: package name');
-const [packageName] = args;
-
-if (!packages.includes(packageName)) {
-    throw new Error(`provided package name: ${packageName} must be one of ${packages}`);
-}
-
 const ROOT = path.join(__dirname, '..', '..');
 
 const updateNeeded = [];
@@ -93,19 +84,11 @@ const checkPackageDependencies = packageName => {
 
         checkPackageDependencies(name);
     });
+
+    return {
+        update: updateNeeded,
+        errors,
+    };
 };
 
-checkPackageDependencies(packageName);
-
-const formattedDeps = updateNeeded
-    .map(dep => {
-        return dep.replace('@trezor/', '');
-    })
-    .join(',');
-
-process.stdout.write(
-    JSON.stringify({
-        deps: formattedDeps,
-        errors,
-    }),
-);
+module.exports = { checkPackageDependencies };
