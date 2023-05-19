@@ -23,14 +23,14 @@ else
   # prepare one commit for each dependency with version bump and changelog 
   for i in "${DEPS_ARRAY[@]}";
   do
+
     echo "processing ${i} package"
-    yarn bump patch "./packages/${i}/package.json"
+    CHANGELOG_DRAFT=$(git log --oneline --max-count 1000 --pretty=tformat:"-   %s (%h)" -- "./packages/${i}" | sed "/npm-release: @trezor\/${i}/,\$d")
     release_commit_msg="npm-release: @trezor/${i}"
 
-    CHANGELOG_DRAFT=$(git log --oneline --max-count 1000 --pretty=tformat:"-   %s (%h)" -- "./packages/${i}" | sed '/npm-release: @trezor/,$d')
+    yarn bump patch "./packages/${i}/package.json"
         
     if [[ -n "${CHANGELOG_DRAFT}" ]]; then
-      echo "changelog draft for ${i}:"
       touch -a "./packages/${i}/CHANGELOG.md"
       PACKAGE_NEXT_V=$(jq -r '.version' < "packages/${i}/package.json")
       echo "# ${PACKAGE_NEXT_V} ${line_break} ${CHANGELOG_DRAFT}" | cat - "packages/${i}/CHANGELOG.md" > /tmp/out
@@ -41,7 +41,7 @@ else
     fi
 
     git add "./packages/${i}" yarn.lock
-    # git commit -m "${release_commit_msg} $(jq -r '.version' < "packages/${i}/package.json")";
+    git commit -m "${release_commit_msg} $(jq -r '.version' < "packages/${i}/package.json")";
   done
 fi
 
