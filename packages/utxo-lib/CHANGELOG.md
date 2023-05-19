@@ -1,3 +1,7 @@
+# 1.0.7
+
+-   fixup! chore(connect): improve release scripts (b4dfa97)
+
 # 1.0.6
 
 -   819c019d1 chore: use workspace:\* everywhere
