@@ -16,7 +16,7 @@ import { TypedEmitter } from '../types/typed-emitter';
 import { success, error, unknownError } from '../utils/result';
 
 import * as ERRORS from '../errors';
-import { ACTION_TIMEOUT } from '../constants';
+import { ACTION_TIMEOUT, TRANSPORT } from '../constants';
 
 export type AcquireInput = {
     path: string;
@@ -37,13 +37,6 @@ type DeviceDescriptorDiff = {
     releasedElsewhere: Descriptor[];
 };
 
-export const TRANSPORT = {
-    START: 'transport-start',
-    ERROR: 'transport-error',
-    UPDATE: 'transport-update',
-    DISABLE_WEBUSB: 'transport-disable_webusb',
-    REQUEST_DEVICE: 'transport-request_device',
-} as const;
 
 type ConstructorParams = {
     messages: Record<string, any>;

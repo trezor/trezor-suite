@@ -22,3 +22,11 @@ export const TREZOR_USB_DESCRIPTORS = [
  * How long is single transport action (call, acquire) allowed to take
  */
 export const ACTION_TIMEOUT = 10000;
+
+export const TRANSPORT = {
+    START: 'transport-start',
+    ERROR: 'transport-error',
+    UPDATE: 'transport-update',
+    DISABLE_WEBUSB: 'transport-disable_webusb',
+    REQUEST_DEVICE: 'transport-request_device',
+} as const;

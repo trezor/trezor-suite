@@ -1,8 +1,10 @@
 import { serializeError } from '../constants/errors';
 import type { MessageFactoryFn } from '../types/utils';
-import { TRANSPORT, Transport } from '@trezor/transport';
+import type { Transport } from '@trezor/transport';
 
-export { TRANSPORT } from '@trezor/transport';
+import { TRANSPORT } from '@trezor/transport/lib/constants';
+
+export { TRANSPORT } from '@trezor/transport/lib/constants';
 
 export const TRANSPORT_EVENT = 'TRANSPORT_EVENT';
 export interface BridgeInfo {
