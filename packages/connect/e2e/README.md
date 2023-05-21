@@ -17,26 +17,6 @@ you may use the following params:
 -i <in case -p methods, use -i to filter one connect method, such as -i binanceGetAddress>
 ```
 
-or
-
-```
-yarn workspace @trezor/integration-tests test:connect
-```
-
-## karma tests
-
-Testing `./packages/connect-iframe/build` directory in browser environment.
-
-```
-./docker/docker-connect-test-karma.sh
-```
-
-or
-
-```
-yarn workspace @trezor/integration-tests test:connect:karma
-```
-
 ## Transactions cache
 
 Bitcoin-like coins `signTransaction` method require additional data about transactions referenced from used inputs.
