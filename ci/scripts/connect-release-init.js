@@ -2,7 +2,7 @@ const child_process = require('child_process');
 const path = require('path');
 const fs = require('fs');
 
-const { checkPackageDependencies } = require('./check-npm-dependencies');
+const { checkPackageDependencies } = require('./npm-dependencies-helper');
 
 const args = process.argv.slice(2);
 
