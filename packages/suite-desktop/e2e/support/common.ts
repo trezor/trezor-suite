@@ -1,7 +1,7 @@
 import { promisify } from 'util';
 import path from 'path';
 import fs from 'fs';
-import { Page, _electron as electron } from 'playwright';
+import { Page, _electron as electron } from '@playwright/test';
 
 const mkdir = promisify(fs.mkdir);
 const fileExists = promisify(fs.exists);

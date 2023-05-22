@@ -1,7 +1,6 @@
 // eslint-disable-next-line @typescript-eslint/no-shadow
-import { test, expect } from '@playwright/test';
+import { test, expect, chromium } from '@playwright/test';
 import path from 'path';
-import { chromium } from 'playwright';
 
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 import { ensureDirectoryExists } from '@trezor/node-utils';
