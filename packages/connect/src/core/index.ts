@@ -195,6 +195,7 @@ export const handleMessage = (message: CoreMessage, isTrustedOrigin = false) => 
         case IFRAME.CALL:
             onCall(message).catch(error => {
                 _log.error('onCall', error);
+                console.log('onCall error', error);
             });
             break;
 
@@ -288,6 +289,15 @@ const initDevice = async (method: AbstractMethod) => {
  * @memberof Core
  */
 export const onCall = async (message: CoreMessage) => {
+    // @ts-ignore
+    console.log('>>>>>>>>>>>>>>>>>>>>>>', message.payload.method, '<<<<<<<<<<<<<<<<<<<<<<<<');
+
+    if (interruptPromise) {
+        console.log('core interrputPromise await');
+        await interruptPromise;
+        console.log('core interrputPromise done');
+    }
+    
     if (!message.id || !message.payload || message.type !== IFRAME.CALL) {
         throw ERRORS.TypedError(
             'Method_InvalidParameter',
@@ -308,6 +318,7 @@ export const onCall = async (message: CoreMessage) => {
     let messageResponse: CoreMessage;
     try {
         method = getMethod(message);
+
         // bind callbacks
         method.postMessage = postMessage;
         method.getPopupPromise = getPopupPromise;
@@ -343,7 +354,9 @@ export const onCall = async (message: CoreMessage) => {
 
     if (!_deviceList && !DataManager.getSettings('transportReconnect')) {
         // transport is missing try to initialize it once again
+        console.log('init transport await');
         await initTransport(DataManager.getSettings());
+        console.log('init transport await done');
     }
 
     if (method.isManagementRestricted()) {
@@ -359,7 +372,9 @@ export const onCall = async (message: CoreMessage) => {
     // find device
     let device: Device;
     try {
+        console.log('init device await');
         device = await initDevice(method);
+        console.log('init device done');
     } catch (error) {
         if (error.code === 'Transport_Missing') {
             // wait for popup handshake
@@ -384,6 +399,12 @@ export const onCall = async (message: CoreMessage) => {
     const previousCall = _callMethods.filter(
         call => call && call !== method && call.devicePath === method.devicePath,
     );
+    console.log(
+        '==================previousCall',
+        previousCall[0]?.name,
+        method.overridePreviousCall,
+    );
+
     if (previousCall.length > 0 && method.overridePreviousCall) {
         // set flag for each pending method
         previousCall.forEach(call => {
@@ -392,10 +413,16 @@ export const onCall = async (message: CoreMessage) => {
         // interrupt potential communication with device. this should throw error in try/catch block below
         // this error will apply to the last item of pending methods
         const overrideError = ERRORS.TypedError('Method_Override');
+        interruptError = overrideError;
+        console.log('device.override');
         await device.override(overrideError);
+        console.log('======= calling device.override done ========');
         // if current method was overridden while waiting for device.override result
         // return response with status false
+
+        //
         if (method.overridden) {
+            console.log('=========================== method overriden post message meow');
             postMessage(createResponseMessage(method.responseID, false, { error: overrideError }));
             throw overrideError;
         }
@@ -551,6 +578,7 @@ export const onCall = async (message: CoreMessage) => {
                         if (uiResp.payload) {
                             // reset internal device state and try again
                             device.setInternalState(undefined);
+                            console.log('==== device.initialize');
                             await device.initialize(
                                 method.useEmptyPassphrase,
                                 method.useCardanoDerivation,
@@ -593,12 +621,20 @@ export const onCall = async (message: CoreMessage) => {
             // run method
             try {
                 const response = await method.run();
+                console.log('core response', response);
                 messageResponse = createResponseMessage(method.responseID, true, response);
+                console.log('messageResponse', messageResponse);
             } catch (error) {
+                // if (method.overridden) {
+                //     // postMessage(createResponseMessage(method.responseID, false, { error: overrideError }));
+                //     return Promise.reject(ERRORS.TypedError('Method_Override'));
+                // }
+                console.log('src/core, inner error', error);
                 return Promise.reject(error);
             }
         };
 
+        console.log('core device.run await');
         // run inner function
         await device.run(inner, {
             keepSession: method.keepSession,
@@ -606,7 +642,10 @@ export const onCall = async (message: CoreMessage) => {
             skipFinalReload: method.skipFinalReload,
             useCardanoDerivation: method.useCardanoDerivation,
         });
+        console.log('core device.run  done');
     } catch (error) {
+        console.log('src/core -> error', error);
+
         // corner case: Device was disconnected during authorization
         // this device_id needs to be stored and penalized with delay on future connection
         // this solves issue with U2F login (leaves space for requests from services which aren't using trezord)
@@ -622,11 +661,13 @@ export const onCall = async (message: CoreMessage) => {
             if (_deviceList && error.message === TRANSPORT_ERROR.SESSION_WRONG_PREVIOUS) {
                 await _deviceList.enumerate();
             }
-            messageResponse = createResponseMessage(method.responseID, false, { error });
+            messageResponse = createResponseMessage(method.responseID, false, {
+                error: interruptError || error,
+            });
+            interruptError = undefined;
         }
     } finally {
         // Work done
-
         // TODO: This requires a massive refactoring https://github.com/trezor/trezor-suite/issues/5323
         // @ts-expect-error TODO: messageResponse should be assigned from the response of "inner" function
         const response = messageResponse;
@@ -638,10 +679,20 @@ export const onCall = async (message: CoreMessage) => {
                 await resolveAfter(1000).promise;
                 // call Device.run with empty function to fetch new Features
                 // (acquire > Initialize > nothing > release)
-                console.log('core finally -> device.run');
                 await device.run(() => Promise.resolve(), { skipFinalReload: true });
             }
+            console.log('src/core onCall finally', response.payload);
+
+            // if (interruptPromise) {
+            //     console.log('core/finally interruptPromise aawait')
+            //     await interruptPromise;
+            //     console.log('core/finally interruptPromise done')
+            // }
+
+            console.log('xx device.cleanup await ');
+
             await device.cleanup();
+            console.log('xx device.cleanup done ');
 
             closePopup();
             cleanup();
@@ -655,6 +706,8 @@ export const onCall = async (message: CoreMessage) => {
                     _deviceList.removeAuthPenalty(device);
                 }
             }
+
+            console.log('xx xx postMessage', response);
             postMessage(response);
         }
     }
@@ -791,13 +844,18 @@ const onEmptyPassphraseHandler: DeviceEvents['passphrase'] = (...[_, callback]) 
     callback({ passphrase: '' });
 };
 
+let interruptPromise: Promise<void>;
+
+let interruptError: ERRORS.TrezorError | undefined;
 /**
  * Handle popup closed by user.
  * @returns {void}
  * @memberof Core
  */
 const onPopupClosed = (customErrorMessage?: string) => {
-    const error = customErrorMessage
+    console.log('src/core onPopupClosed', customErrorMessage);
+
+    interruptError = customErrorMessage
         ? ERRORS.TypedError('Method_Cancel', customErrorMessage)
         : ERRORS.TypedError('Method_Interrupted');
     // Device was already acquired. Try to interrupt running action which will throw error from onCall try/catch block
@@ -805,14 +863,21 @@ const onPopupClosed = (customErrorMessage?: string) => {
         _deviceList.allDevices().forEach(d => {
             d.keepSession = false; // clear session on release
             if (d.isUsedHere()) {
-                d.interruptionFromUser(error);
+                // _callMethods[0].overridePreviousCall = true;
+                // cancelTimoutPromise = new Promise((resolve) => {
+                //     setTimeout(() => {
+                //         resolve(undefined);
+                //     }, 1000);
+                // });
+
+                interruptPromise = d.override(interruptError!);
             } else {
                 const uiPromise = findUiPromise(DEVICE.DISCONNECT);
                 if (uiPromise) {
                     uiPromise.resolve({ type: DEVICE.DISCONNECT, payload: undefined });
                 } else {
                     _callMethods.forEach(m => {
-                        postMessage(createResponseMessage(m.responseID, false, { error }));
+                        postMessage(createResponseMessage(m.responseID, false, { error: interruptError }));
                     });
                     _callMethods.splice(0, _callMethods.length);
                 }
@@ -823,12 +888,12 @@ const onPopupClosed = (customErrorMessage?: string) => {
     } else {
         if (_uiPromises.length > 0) {
             _uiPromises.forEach(p => {
-                p.reject(error);
+                p.reject(interruptError!);
             });
             _uiPromises = [];
         }
         if (_popupPromise) {
-            _popupPromise.reject(error);
+            _popupPromise.reject(interruptError!);
             _popupPromise = undefined;
         }
         cleanup();
@@ -983,6 +1048,7 @@ export class Core extends EventEmitter {
         }
         this.removeAllListeners();
         if (_deviceList) {
+            console.log('src/core.dispose => deviceList.dispose()');
             await _deviceList.dispose();
         }
     }

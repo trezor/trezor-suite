@@ -137,7 +137,7 @@ const handleMessage = (messageEvent: PostMessageEvent) => {
     }
 };
 
-const init = async (settings: Partial<ConnectSettings> = {}): Promise<void> => {
+const init = async (settings: Partial<ConnectSettings> = {}) => {
     if (iframe.instance) {
         throw ERRORS.TypedError('Init_AlreadyInitialized');
     }
@@ -145,6 +145,7 @@ const init = async (settings: Partial<ConnectSettings> = {}): Promise<void> => {
     _settings = parseConnectSettings({ ..._settings, ...settings });
 
     if (!_settings.manifest) {
+        console.log('missing web');
         throw ERRORS.TypedError('Init_ManifestMissing');
     }
 
@@ -171,12 +172,15 @@ const init = async (settings: Partial<ConnectSettings> = {}): Promise<void> => {
     await iframe.init(_settings);
 };
 
+let initPromise: Promise<void> | undefined;
+
 const call: CallMethod = async params => {
     if (!iframe.instance && !iframe.timeout) {
         // init popup with lazy loading before iframe initialization
         _settings = parseConnectSettings(_settings);
 
         if (!_settings.manifest) {
+            console.log('missing web 2');
             return createErrorMessage(ERRORS.TypedError('Init_ManifestMissing'));
         }
 
@@ -187,7 +191,7 @@ const call: CallMethod = async params => {
 
         // auto init with default settings
         try {
-            await init(_settings);
+            initPromise = init(_settings);
         } catch (error) {
             if (_popupManager) {
                 // Catch fatal iframe errors (not loading)
@@ -201,8 +205,15 @@ const call: CallMethod = async params => {
         }
     }
 
+    console.log('awaiting ini promise');
+    if (initPromise) {
+        await initPromise;
+        console.log('awaiting ini promise done');
+    }
+
     if (iframe.timeout) {
         // this.init was called, but iframe doesn't return handshake yet
+        console.log('iframe timeout manifest missing');
         return createErrorMessage(ERRORS.TypedError('Init_ManifestMissing'));
     }
     if (iframe.error) {

@@ -14,13 +14,14 @@ import {
     toHardened,
 } from '../utils/pathUtils';
 import { getAccountAddressN } from '../utils/accountUtils';
-import { versionCompare } from '../utils/versionUtils';
+// import { versionCompare } from '../utils/versionUtils';
 import { getSegwitNetwork, getBech32Network } from '../data/coinInfo';
 import { initLog } from '../utils/debug';
 
 import type { Device } from './Device';
 import type { CoinInfo, BitcoinNetworkInfo, Network } from '../types';
 import type { HDNodeResponse } from '../types/api/getPublicKey';
+import { Deferred,create as createDeferred} from '../utils/deferred';
 
 type MessageType = Messages.MessageType;
 type MessageKey = keyof MessageType;
@@ -89,6 +90,8 @@ const filterForLog = (type: string, msg: any) => {
     return msg;
 };
 
+let i = 0;
+
 export class DeviceCommands {
     device: Device;
 
@@ -98,7 +101,8 @@ export class DeviceCommands {
 
     disposed: boolean;
 
-    callPromise?: Promise<DefaultMessageResponse>;
+    callPromise?: ReturnType<Transport['call']>;
+    cancelPromise?: Deferred<undefined>;
 
     // see DeviceCommands.cancel
     _cancelableRequest?: (error?: any) => void;
@@ -112,6 +116,7 @@ export class DeviceCommands {
 
     dispose() {
         this.disposed = true;
+        console.log('deviceCommands.dispose');
         this._cancelableRequest = undefined;
     }
 
@@ -373,29 +378,40 @@ export class DeviceCommands {
     ): Promise<DefaultMessageResponse> {
         logger.debug('Sending', type, filterForLog(type, msg));
 
-        const { promise } = this.transport.call({
-            session: this.sessionId,
-            name: type,
-            data: msg,
-        });
-        // TODO: https://github.com/trezor/trezor-suite/issues/5301
-        // @ts-expect-error
-        this.callPromise = promise;
-        const res = await promise;
+        console.log('call', i, type, msg);
 
-        if (!res.success) {
-            logger.warn('Received error', res.error);
-            throw new Error(res.error);
-        }
+            this.callPromise = this.transport.call({
+                session: this.sessionId,
+                name: type,
+                data: msg,
+            });
+    
+        
+            const res = await this.callPromise.promise
+            
+            if (this.cancelPromise) {
+                console.log('call waiting cancel promise await')
+                await this.cancelPromise.promise;
+                console.log('call waiting cancel promise done');
 
-        logger.debug(
-            'Received',
-            res.payload.type,
-            filterForLog(res.payload.type, res.payload.message),
-        );
-        // TODO: https://github.com/trezor/trezor-suite/issues/5301
-        // @ts-expect-error
-        return res.payload;
+            }
+
+            if (!res.success) {
+                console.log('call throwing error, ', res.error)
+                logger.warn('Received error', res.error);
+                throw new Error(res.error);
+            }
+    
+            logger.debug(
+                'Received',
+                res.payload.type,
+                filterForLog(res.payload.type, res.payload.message),
+            );
+            // TODO: https://github.com/trezor/trezor-suite/issues/5301
+            // @ts-ignore
+            return res.payload;
+
+        
     }
 
     typedCall<T extends MessageKey, R extends MessageKey[]>(
@@ -417,25 +433,37 @@ export class DeviceCommands {
             throw ERRORS.TypedError('Runtime', 'typedCall: DeviceCommands already disposed');
         }
 
+        i++;
+
         const response = await this._commonCall(type, msg);
         try {
             assertType(response, resType);
         } catch (error) {
+            console.log('unexpected typed ==> ', error);
             // handle possible race condition
             // Bridge may have some unread message in buffer, read it
-            await this.transport.receive({ session: this.sessionId });
+            // if (response.type !== "Failure") {
+                console.log('== this.transport.receive')
+                await this.transport.receive({ session: this.sessionId }).promise;
+            // }
             // throw error anyway, next call should be resolved properly
             throw error;
+        } finally {
+            this._cancelableRequest = undefined;
         }
         return response;
     }
 
     async _commonCall(type: MessageKey, msg?: DefaultMessageResponse['message']) {
+    
         const resp = await this.call(type, msg);
+
         return this._filterCommonTypes(resp);
     }
 
     _filterCommonTypes(res: DefaultMessageResponse): Promise<DefaultMessageResponse> {
+        console.log('call res', i , res.type);
+
         if (res.type === 'Failure') {
             const { code } = res.message;
             let { message } = res.message;
@@ -451,6 +479,7 @@ export class DeviceCommands {
             if (code === 'Failure_ActionCancelled' && !message) {
                 message = 'Action cancelled by user';
             }
+
             // pass code and message from firmware error
             return Promise.reject(
                 new ERRORS.TrezorError(
@@ -465,6 +494,8 @@ export class DeviceCommands {
         }
 
         if (res.type === 'ButtonRequest') {
+            console.log('res', res);
+
             if (res.message.code === '_Deprecated_ButtonRequest_PassphraseType') {
                 // for backwards compatibility stick to old message type
                 // which was part of protobuf in versions < 2.3.0
@@ -477,7 +508,10 @@ export class DeviceCommands {
             } else {
                 this.device.emit(DEVICE.BUTTON, this.device, res.message);
             }
+            this._cancelableRequest = () => this.cancel();
+
             return this._commonCall('ButtonAck', {});
+            
         }
 
         if (res.type === 'EntropyRequest') {
@@ -603,11 +637,13 @@ export class DeviceCommands {
         return new Promise<PassphrasePromptResponse>((resolve, reject) => {
             if (this.device.listenerCount(DEVICE.PASSPHRASE) > 0) {
                 this._cancelableRequest = reject;
+                console.log('_promptPassphrase');
                 this.device.emit(
                     DEVICE.PASSPHRASE,
                     this.device,
                     (response: PassphrasePromptResponse, error?: Error) => {
                         this._cancelableRequest = undefined;
+                        console.log('_promptPassphrase', response, error);
                         if (error) {
                             reject(error);
                         } else {
@@ -696,48 +732,52 @@ export class DeviceCommands {
         );
     }
 
-    // TODO: implement whole "cancel" logic in "trezor-link"
     async cancel() {
-        // TEMP: this patch should be implemented in 'trezor-link' instead
-        // NOTE:
-        // few ButtonRequests can be canceled by design because they are awaiting for user input
-        // those are: Pin, Passphrase, Word
-        // _cancelableRequest holds reference to the UI promise `reject` method
-        // in those cases `this.transport.call` needs to be used
-        // calling `this.transport.send` (below) will result with throttling somewhere in low level
-        // trezor-link or trezord (not sure which one) will reject NEXT incoming call with "Cancelled" error
-        if (this._cancelableRequest) {
-            this._cancelableRequest();
-            this._cancelableRequest = undefined;
-            return;
-        }
+        this.cancelPromise = createDeferred();
+        // this.callPromise?.abort();
+     
+        // big note!!! send and receive work, just must not send release at the same time!
+        const ressend = await this.transport.send({
+                session: this.sessionId,
+                name: 'Cancel',
+                data: {},
+            }).promise;
+            console.log('cacncel send res', ressend)
 
-        if (this.disposed) {
-            return;
-        }
+            
+            // big note 2 - receive does not work for generic button request!!! it either times out
+            // or returns 'other call in progress'
+            // await new Promise((resolve) => {setTimeout(() => {resolve(undefined)}, 1000)})
+    
+        // this.transport.receive({ session: this.sessionId })
+            // if (res.success) {
+            //     console.log('transport.receive res', res.payload);
+            // } else {
+            //     console.log('transport.receive.res err', res);
+            // }
+        this.cancelPromise.resolve(undefined);
+        this.cancelPromise  = undefined;
+        // this.callPromise?.abort();
 
         /**
          * Bridge version =< 2.0.28 has a bug that doesn't permit it to cancel
          * user interactions in progress, so we have to do it manually.
          */
-        const { name, version } = this.transport;
-        if (name === 'BridgeTransport' && versionCompare(version, '2.0.28') < 1) {
-            try {
-                await this.device.legacyForceRelease();
-            } catch (err) {
-                // ignore
-            }
-        } else {
-            await this.transport.send({
-                session: this.sessionId,
-                name: 'Cancel',
-                data: {},
-            }).promise;
-            // post does not read back from usb stack. this means that there is a pending message left
-            // and we need to remove it so that it does not interfere with the next transport call.
-            // see DeviceCommands.typedCall
-            await this.transport.receive({ session: this.sessionId }).promise;
-        }
+        // const { name, version } = this.transport;
+        // if (name === 'BridgeTransport' && versionCompare(version, '2.0.28') < 1) {
+        //     try {
+        //         if (this.callPromise) {
+        //             console.log('call promise abort!');
+        //             this.callPromise.abort();
+        //         }
+
+        //         await this.device.legacyForceRelease();
+        //     } catch (err) {
+        //         // ignore
+        //     }
+        // } else {
+
+        // }
     }
 }
 

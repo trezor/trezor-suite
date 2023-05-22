@@ -4,29 +4,93 @@
         <title>@trezor/connect example</title>
     </head>
     <body>
-        <script type="text/javascript" src="https://connect.trezor.io/9/trezor-connect.js"></script>
+        <script type="text/javascript" src="https://localhost:8088/trezor-connect.js"></script>
         <script type="text/javascript">
             window.TrezorConnect.init({
                 lazyLoad: true,
+                popup: false,
+                connectSrc: 'https://localhost:8088/',
                 manifest: {
                     email: 'developer@xyz.com',
                     appUrl: 'http://your.application.com',
                 },
             });
 
-            trezorGetAddress = function () {
+            override = function (timeout) {
                 window.TrezorConnect.getAddress({
-                    showOnTrezor: true,
+                    // showOnTrezor: true,
                     path: "m/49'/0'/0'/0/0",
                     coin: 'btc',
                 }).then(res => {
-                    console.info(res);
+                    console.info('->', res);
+                    document.getElementById('result').innerText = JSON.stringify(res);
+                });
+                if (timeout) {
+                    setTimeout(() => {
+                        window.TrezorConnect.getAddress({
+                            showOnTrezor: true,
+                            path: "m/49'/0'/0'/0/0",
+                            override: true,
+                        }).then(res => {
+                            console.info('->', res);
+                            document.getElementById('result').innerText = JSON.stringify(res);
+                        });
+                    }, timeout);
+                }
+            };
+
+            window.getAddress = function () {
+                window.TrezorConnect.getAddress({
+                    // showOnTrezor: true,
+                    path: "m/49'/0'/0'/0/0",
+                    coin: 'btc',
+                }).then(res => {
+                    console.info('->', res);
                     document.getElementById('result').innerText = JSON.stringify(res);
                 });
             };
+
+            cancel = function () {
+                window.TrezorConnect.cancel('Meow I am cancelled');
+            };
+
+            unlockPath = function () {
+                TrezorConnect.unlockPath({
+                    path: "m/10025'",
+                }).then(res => {
+                    document.getElementById('result').innerText = JSON.stringify(res);
+                });
+            };
+
+            applySettings = function () {
+                TrezorConnect.applySettings({
+                    label: 'meow',
+                }).then(res => {
+                    document.getElementById('result').innerText = JSON.stringify(res);
+                });
+            };
+
+            window.TrezorConnect.on('button', event => {
+                document.getElementById('btn').innerText = event.code;
+            });
         </script>
 
-        <button onclick="trezorGetAddress()">Get address</button>
+        <button onclick="window.override()">Override 0</button>
+        <button onclick="override(100)">Override 100</button>
+        <button onclick="override(1000)">Override 1000</button>
+        <button onclick="override(5000)">Override 5000</button>
+
+        <button onclick="window.getAddress()">Get address</button>
+        <button onclick="unlockPath()">Unlock path</button>
+        <button onclick="applySettings()">Apply settings</button>
+
+        <button onclick="cancel()">Cancel</button>
+
+        <div>
+            tmp: just run yarn workspace @trezor/connect-explorer dev and test some weird stuff
+        </div>
+        <div id="btn">btn:</div>
+
         <div id="result"></div>
     </body>
 </html>

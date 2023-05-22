@@ -133,6 +133,7 @@ const init = async (settings: Partial<ConnectSettings> = {}) => {
     _settings = parseConnectSettings({ ..._settings, ...settings, popup: false });
 
     if (!_settings.manifest) {
+        console.log(' missing connect src');
         throw ERRORS.TypedError('Init_ManifestMissing');
     }
 

@@ -154,6 +154,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> {
              * where transport.acquire, transport.release is called
              */
             this.transport.on(TRANSPORT.UPDATE, diff => {
+                // console.log('transport.on.update diff', diff);
                 diff.connected.forEach(async descriptor => {
                     const path = descriptor.path.toString();
                     const priority = DataManager.getSettings('priority');
@@ -249,22 +250,13 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> {
                     }
                 });
 
-                // todo: not sure if this is correct, it might be duplication of writes to
-                // this.devices[d.path].activitySessionID in case of acquired/release by myself
-                // maybe, updating of descriptors should be done only in diff.acquiredElsewhere,
-                // diff.releasedElsewhere blocks
-
-                // whenever descriptors change we need to update them so that we can use them
-                // in subsequent transport.acquire calls
+                // keep track of transport descriptor changes in deviceList.
                 diff.descriptors.forEach(d => {
                     if (this.devices[d.path]) {
                         this.devices[d.path].originalDescriptor = {
                             session: d.session,
                             path: d.path,
                         };
-                        // todo: not sure about updating activitySessionID, imho this should
-                        // be done only after acquire/release
-                        this.devices[d.path].activitySessionID = d.session;
                     }
                 });
             });
@@ -388,6 +380,8 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> {
         await Promise.all(this.allDevices().map(device => device.dispose()));
         // now we can be relatively sure that release calls have been dispatched
         // and we can safely kill all async subscriptions in transport layer
+
+        console.log('deviceList.stop() -> transport stop');
         this.transport.stop();
     }
 
@@ -494,8 +488,10 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> {
         const path = descriptor.path.toString();
 
         this.devices[path] = device;
+        console.log('_takeAndCreateDevice await');
         const promise = device.run();
         await promise;
+        console.log('_takeAndCreateDevice done');
 
         this.emit(DEVICE.CONNECT, device.toMessageObject());
     }

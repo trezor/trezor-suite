@@ -1,4 +1,4 @@
-/* eslint-disable import/no-named-as-default */
+/* eslint-disable import/no-named-as-default, no-restricted-syntax */
 
 import TrezorConnect from '../../../src';
 
@@ -10,6 +10,7 @@ describe('TrezorConnect override param', () => {
     beforeAll(async () => {
         await setup(controller, { mnemonic: 'mnemonic_all' });
         await initTrezorConnect(controller);
+        TrezorConnect.removeAllListeners();
     });
 
     afterAll(async () => {
@@ -17,23 +18,41 @@ describe('TrezorConnect override param', () => {
         await TrezorConnect.dispose();
     });
 
-    it('override previous call', async () => {
-        TrezorConnect.getAddress({
-            path: "m/44'/1'/0'/0/0",
-        }).then(response => {
-            expect(response.success).toBe(false);
-            // TODO: received error depends on timeout below
-            // expect(response.payload).toMatchObject({ code: 'Method_Override' });
-        });
+    // test override for couple of delays to simulate what happens if:
+    // - TrezorConnet.method() -> acquire -> override
+    // - TrezorConnet.method() -> acquire -> initialize -> override
+    // - TrezorConnet.method() -> acquire -> initialize -> call -> override
+    // this test is intentionally not waiting for button request to send the subsequent (overriding) request. side note: cancel test does this.
+    // this tests tries to prove that it is possible to override request at any point of time.
+    for (const delay of [1, 10, 100, 1000, 1500, 3000]) {
+        it(`override previous call after ms ${delay} delay`, async () => {
+            TrezorConnect.getAddress({
+                path: "m/44'/1'/0'/0/0",
+                showOnTrezor: true,
+            }).then(response => {
+                expect(response).toMatchObject({
+                    success: false,
+                    payload: { code: 'Method_Override' },
+                });
+            });
 
-        // TODO: immediate call causes race condition in bridge http request, test might be flaky
-        // requires AbortController implementation in @trezor/transport to cancel current request to bridge (acquire process)
-        await new Promise(resolve => setTimeout(resolve, 1000));
+            await new Promise(resolve => {
+                setTimeout(async () => {
+                    const address = await TrezorConnect.getAddress({
+                        path: "m/44'/1'/0'/0/1",
+                        showOnTrezor: false,
+                        override: true,
+                    });
+                    resolve(undefined);
+                    expect(address.success).toEqual(true);
+                }, delay);
+            });
 
-        const address = await TrezorConnect.getAddress({
-            path: "m/44'/1'/0'/0/0",
-            override: true,
+            await new Promise(resolve => {
+                setTimeout(() => {
+                    resolve(undefined);
+                }, 500);
+            });
         });
-        expect(address.success).toBe(true);
-    });
+    }
 });

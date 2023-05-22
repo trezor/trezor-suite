@@ -117,6 +117,9 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
     firmwareType: 'regular' | 'bitcoin-only' = 'regular';
 
+    acquirePromise: ReturnType<Transport['acquire']>['promise'] | undefined;
+    releasePromise: ReturnType<Transport['release']>['promise'] | undefined;
+
     constructor(transport: Transport, descriptor: Descriptor) {
         super();
 
@@ -150,16 +153,22 @@ export class Device extends TypedEmitter<DeviceEvents> {
     }
 
     async acquire() {
+        if (this.releasePromise) {
+            await this.releasePromise;
+        }
         const { promise } = this.transport.acquire({
             input: {
                 path: this.originalDescriptor.path,
                 previous: this.originalDescriptor.session,
             },
         });
+        this.acquirePromise = promise;
         const acquireResult = await promise;
+        this.acquirePromise = undefined;
         if (!acquireResult.success) {
             if (this.runPromise) {
                 this.runPromise.reject(new Error(acquireResult.error));
+                console.log('1');
                 this.runPromise = null;
             }
             throw acquireResult.error;
@@ -169,9 +178,6 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
         _log.debug('Expected session id:', sessionID);
         this.activitySessionID = sessionID;
-        // note: this.originalDescriptor is updated here and also in TRANSPORT.UPDATE listener.
-        // I would like to update it only in one place (listener) but it some cases (unchained test),
-        // listen response is not triggered by device acquire. not sure why.
         this.originalDescriptor.session = sessionID;
 
         if (this.commands) {
@@ -181,22 +187,37 @@ export class Device extends TypedEmitter<DeviceEvents> {
     }
 
     async release() {
-        if (this.isUsedHere() && !this.keepSession && this.activitySessionID) {
+        if (this.releasePromise) {
+            await this.releasePromise;
+        }
+        console.log('device.release meow meow');
+        if (
+            this.isUsedHere() &&
+            !this.keepSession &&
+            this.activitySessionID &&
+            !this.releasePromise
+        ) {
             if (this.commands) {
                 this.commands.dispose();
-                if (this.commands.callPromise) {
-                    try {
-                        await this.commands.callPromise;
-                    } catch (error) {
-                        this.commands.callPromise = undefined;
-                    }
-                }
+                // if (this.commands.callPromise) {
+                //     try {
+                //         await this.commands.callPromise;
+                //     } catch (error) {
+                //         this.commands.callPromise = undefined;
+                //     }
+                // }
             }
-            const releaseResponse = await this.transport.release(this.activitySessionID, false)
-                .promise;
 
-            if (releaseResponse.success) {
-                this.activitySessionID = null;
+            const { promise } = this.transport.release(this.activitySessionID, false);
+            this.releasePromise = promise;
+
+            console.log('device.release await');
+            const releaseResult = await promise;
+            console.log('device.release done');
+            this.activitySessionID = null;
+            this.releasePromise = undefined;
+
+            if (releaseResult.success) {
                 this.originalDescriptor.session = null;
             }
         }
@@ -205,7 +226,9 @@ export class Device extends TypedEmitter<DeviceEvents> {
     async cleanup() {
         this.removeAllListeners();
         // make sure that Device_CallInProgress will not be thrown
+        console.log('2');
         this.runPromise = null;
+        console.log('device.cleanup()');
         await this.release();
     }
 
@@ -216,28 +239,81 @@ export class Device extends TypedEmitter<DeviceEvents> {
         }
 
         options = parseRunOptions(options);
+        console.log('device setting this.runPromisse', options);
         this.runPromise = createDeferred(this._runInner.bind(this, fn, options));
 
         return this.runPromise.promise;
     }
 
     async override(error: Error) {
+        if (this.acquirePromise) {
+            console.log('device.override waiting this.acquirePromise');
+            await this.acquirePromise;
+            console.log('device.override waiting this.acquirePromise done');
+        }
+
         if (this.runPromise) {
+            console.log('device.override -> this.interruptionFromUser');
             await this.interruptionFromUser(error);
+            console.log('device.override interruptionFromUser done');
+        }
+        if (this.releasePromise) {
+            console.log('override waiting this.release');
+            await this.releasePromise;
+            console.log('override waiting this.release done');
         }
     }
 
     async interruptionFromUser(error: Error) {
+      
+        console.log(
+            'device.interruptionFromUser this.commands?._cancelableRequest',
+            this.commands?._cancelableRequest,
+        );
         _log.debug('interruptionFromUser');
+
+   
+        // there is a call promise which is cancellable
+        if (this.commands?._cancelableRequest) {
+            console.log('interruptionFromUser this.commands?._cancelableRequest await')
+            // await this.commands?._cancelableRequest();
+            // await this.commands.cancel();
+            await Promise.all([
+                this.commands?._cancelableRequest(),
+                this.commands.callPromise,
+            ])
+            console.log('interruptionFromUser this.commands?._cancelableRequest done')
+        }
+
+        if (this.commands?.cancelPromise) {
+            await this.commands.cancelPromise;
+        }
+
+        // there is call to device which is not cancellable -> wait for it. this will typically be
+        // Initialize, GetFeatures... Cancelling such calls would result into 'device call in progress' error
+        // from transport layer.
+        if (this.commands?.callPromise) {
+            try {
+                await this.commands.callPromise.promise;
+            } catch (err) {
+                console.log('intterrupott catch err', err);
+            }
+        }
+
+        // once all active calls to transport layer are gone, reject run promise and set commands to disposed
+        // so that new calls are not made
         if (this.commands) {
-            await this.commands.cancel();
             this.commands.dispose();
         }
+
+        // rejecting runPromise causes runInner to throw and go finally block
         if (this.runPromise) {
             // reject inner defer
             this.runPromise.reject(error);
+            console.log('3');
             this.runPromise = null;
         }
+        //this.cleanup();
     }
 
     interruptionFromOutside() {
@@ -248,6 +324,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
         }
         if (this.runPromise) {
             this.runPromise.reject(ERRORS.TypedError('Device_UsedElsewhere'));
+            console.log('4');
             this.runPromise = null;
         }
 
@@ -283,6 +360,14 @@ export class Device extends TypedEmitter<DeviceEvents> {
                     ]);
                 }
             } catch (error) {
+                // zavola se initializre ale device commands uz je disposed
+
+                // console.log('fn err', error.message);
+                // if (error.message === 'Cancelled') {
+                //     return;
+                // }
+
+                console.log('run inner catch', error);
                 // note: this happens on t1 with webusb if there was "select wallet dialog" and user reloads page.
                 // note this happens even before transport-refactor-2 branch
                 if (!this.inconsistent && error.message === 'GetFeatures timeout') {
@@ -293,11 +378,13 @@ export class Device extends TypedEmitter<DeviceEvents> {
                     return this._runInner(() => Promise.resolve({}), options);
                 }
                 this.inconsistent = true;
-                this.runPromise = null;
+                console.log('5');
+                this.runPromise?.reject(error);
+                this.runPromise = null; //// <-------
                 return Promise.reject(
                     ERRORS.TypedError(
                         'Device_InitializeFailed',
-                        `Initialize failed: ${error.message} ${
+                        `Initialize failed: ${error.message}${
                             error.code ? `, code: ${error.code}` : ''
                         }`,
                     ),
@@ -332,19 +419,26 @@ export class Device extends TypedEmitter<DeviceEvents> {
             options.keepSession === false
         ) {
             this.keepSession = false;
+            console.log('device.runInner -> this.release');
+            // todo: why is release called here? it is also called from core/index onCall finally -> cleanup()
             await this.release();
+            console.log('device.runInner -> this.release done');
         }
 
+        console.log('device_runnInner this.runPromise', this.runPromise);
         if (this.runPromise) {
+            console.log('resssss');
             this.runPromise.resolve();
         }
 
+        console.log('6');
         this.runPromise = null;
 
         if (!this.loaded) {
             this.loaded = true;
             this.firstRunPromise.resolve(true);
         }
+        console.log('device.runInner done');
     }
 
     getCommands() {
@@ -511,6 +605,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
         _log.debug('Disconnect cleanup');
 
         this.interruptionFromUser(ERRORS.TypedError('Device_Disconnected'));
+        console.log('7');
         this.runPromise = null;
     }
 
@@ -604,9 +699,10 @@ export class Device extends TypedEmitter<DeviceEvents> {
         this.removeAllListeners();
         if (this.isUsedHere() && this.activitySessionID) {
             try {
-                if (this.commands) {
-                    this.commands.cancel();
-                }
+                // if (this.commands) {
+                //     console.log('device.disopose => this.commands.cancel')
+                //     this.commands.cancel();
+                // }
 
                 return this.transport.release(this.activitySessionID, true);
             } catch (err) {
@@ -691,6 +787,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
         if (this.isUsedHere()) {
             await this.acquire();
             await this.getFeatures();
+            console.log('legacyForceRleease');
             await this.release();
         }
     }

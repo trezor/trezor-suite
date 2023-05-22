@@ -22,6 +22,7 @@ module.exports = config => {
         hostname: 'localhost',
         port: 8099,
         autoWatch: false,
+        // to debug set singleRun: false and go to http://localhost:8099/debug.html
         singleRun: true,
 
         client: {
