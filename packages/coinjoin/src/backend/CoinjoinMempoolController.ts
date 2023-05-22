@@ -68,7 +68,13 @@ export class CoinjoinMempoolController implements MempoolController {
             })
             .map(([txid]) => txid);
         await promiseAllSequence(
-            txids.map(txid => () => this.client.fetchTransaction(txid).then(this.onTx)),
+            txids.map(
+                txid => () =>
+                    this.client
+                        .fetchTransaction(txid)
+                        .then(this.onTx)
+                        .catch(() => {}), // Missing txs can be ignored
+            ),
         );
         this.lastPurge = new Date().getTime();
     }
