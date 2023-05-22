@@ -10,6 +10,7 @@ export default {
 export const Basic: ComponentStory<typeof Warning> = args => <Warning {...args} />;
 export const Critical: ComponentStory<typeof Warning> = args => <Warning {...args} />;
 export const Info: ComponentStory<typeof Warning> = args => <Warning {...args} />;
+export const Learn: ComponentStory<typeof Warning> = args => <Warning {...args} />;
 
 Basic.args = {
     children: 'Warning! Here dragons abound. 🐲',
@@ -24,5 +25,10 @@ Critical.args = {
 Info.args = {
     children: 'Info: Dragons have been spotted in this area.',
     variant: 'info',
+    withIcon: true,
+};
+Learn.args = {
+    children: 'Learn: This variant is used in Guide.',
+    variant: 'learn',
     withIcon: true,
 };
