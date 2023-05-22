@@ -3,6 +3,8 @@
  * node check-npm-dependencies.js <package_name>
  */
 
+console.log('running check-npm-dependencies');
+
 const fs = require('fs');
 const path = require('path');
 const child_process = require('child_process');
