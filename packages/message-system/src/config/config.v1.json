@@ -1,7 +1,7 @@
 {
     "version": 1,
     "timestamp": "2023-05-16T00:00:00+00:00",
-    "sequence": 34,
+    "sequence": 35,
     "actions": [
         {
             "conditions": [
@@ -361,6 +361,22 @@
                             "bootloader": "*",
                             "variant": "*",
                             "firmwareRevision": "661ae37506f6e6ef94067d4b6de26c80bfb4c4b5",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "T",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "307865613335663436663566356364373962353461373039643438623533343132363534356533646230",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "T",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "ea35f46f5f5cd79b54a709d48b534126545e3db0",
                             "vendor": "*"
                         }
                     ]
