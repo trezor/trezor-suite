@@ -21,6 +21,8 @@ PODS:
     - ExpoModulesCore
   - ExpoClipboard (4.1.1):
     - ExpoModulesCore
+  - ExpoLocalAuthentication (13.4.0):
+    - ExpoModulesCore
   - ExpoLocalization (14.1.1):
     - ExpoModulesCore
   - ExpoModulesCore (1.2.2):
@@ -535,6 +537,7 @@ DEPENDENCIES:
   - EXImageLoader (from `../../../node_modules/expo-image-loader/ios`)
   - Expo (from `../../../node_modules/expo`)
   - ExpoClipboard (from `../../../node_modules/expo-clipboard/ios`)
+  - ExpoLocalAuthentication (from `../../../node_modules/expo-local-authentication/ios`)
   - ExpoLocalization (from `../../../node_modules/expo-localization/ios`)
   - ExpoModulesCore (from `../../../node_modules/expo-modules-core`)
   - ExpoRandom (from `../../../node_modules/expo-random/ios`)
@@ -654,6 +657,8 @@ EXTERNAL SOURCES:
     :path: "../../../node_modules/expo"
   ExpoClipboard:
     :path: "../../../node_modules/expo-clipboard/ios"
+  ExpoLocalAuthentication:
+    :path: "../../../node_modules/expo-local-authentication/ios"
   ExpoLocalization:
     :path: "../../../node_modules/expo-localization/ios"
   ExpoModulesCore:
@@ -766,6 +771,7 @@ SPEC CHECKSUMS:
   EXImageLoader: fd053169a8ee932dd83bf1fe5487a50c26d27c2b
   Expo: 79deb55f33fab1b232232868a74713772943238d
   ExpoClipboard: 8a36a8376ab93df9050c14577e9e0fcb805e9114
+  ExpoLocalAuthentication: de5f50fae4fa643a3fc6b404d61a2ab36b5acf20
   ExpoLocalization: f26cd431ad9ea3533c5b08c4fabd879176a794bb
   ExpoModulesCore: 79392ab654019ea3aadeae308919c3d9dd97879c
   ExpoRandom: 7ee07d62e7003b74d0536e0495e3a653fe1b2a74

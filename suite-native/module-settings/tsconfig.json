@@ -12,8 +12,10 @@
         {
             "path": "../../suite-common/suite-constants"
         },
+        { "path": "../alerts" },
         { "path": "../analytics" },
         { "path": "../atoms" },
+        { "path": "../biometrics" },
         { "path": "../config" },
         { "path": "../link" },
         { "path": "../navigation" },

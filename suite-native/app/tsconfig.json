@@ -24,6 +24,7 @@
         { "path": "../alerts" },
         { "path": "../analytics" },
         { "path": "../atoms" },
+        { "path": "../biometrics" },
         { "path": "../config" },
         { "path": "../fiat-rates" },
         { "path": "../module-accounts" },

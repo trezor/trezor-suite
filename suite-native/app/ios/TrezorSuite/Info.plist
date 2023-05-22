@@ -39,6 +39,8 @@
 	</dict>
 	<key>NSCameraUsageDescription</key>
 	<string>$(PRODUCT_NAME) needs access to your Camera to scan your XPUB.</string>
+	<key>NSFaceIDUsageDescription</key>
+    <string>This app uses Face ID to authenticate the user to protect sensitive data about his portfolio.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string></string>
 	<key>UIAppFonts</key>
