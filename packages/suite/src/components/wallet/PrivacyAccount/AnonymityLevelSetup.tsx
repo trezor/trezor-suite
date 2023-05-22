@@ -12,6 +12,8 @@ import { SetupSlider } from './SetupSlider';
 const Label = styled.span`
     display: flex;
     align-items: center;
+    gap: 2px;
+    height: 14px;
 `;
 
 const RedText = styled.span`
