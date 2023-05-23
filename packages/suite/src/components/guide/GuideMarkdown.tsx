@@ -58,6 +58,9 @@ const StyledMarkdown = styled.div`
     img {
         max-width: 100%;
     }
+    strong {
+        font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
+    }
 `;
 
 interface GuideMarkdownProps {
