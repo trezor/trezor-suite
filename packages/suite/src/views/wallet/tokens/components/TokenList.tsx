@@ -26,7 +26,7 @@ interface ColProps {
 }
 
 const Col = styled.div<ColProps>`
-    padding: 10px 12px 10px 0px;
+    padding: 10px 12px 10px 0;
     color: ${({ theme }) => theme.TYPE_DARK_GREY};
     font-size: ${variables.FONT_SIZE.SMALL};
     border-top: 1px solid ${({ theme }) => theme.STROKE_GREY};

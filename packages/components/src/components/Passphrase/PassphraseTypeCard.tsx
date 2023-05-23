@@ -27,6 +27,7 @@ const MAX_LENGTH = 50;
 const Wrapper = styled.div<Pick<PassphraseTypeCardProps, 'type' | 'singleColModal'>>`
     display: flex;
     flex: 1;
+
     /* align-items: center; */
     border-radius: 8px;
     flex-direction: column;
@@ -41,6 +42,7 @@ const Wrapper = styled.div<Pick<PassphraseTypeCardProps, 'type' | 'singleColModa
         !props.singleColModal &&
         css`
             padding: 12px;
+
             /* border: solid 1px ${props => props.theme.STROKE_GREY}; */
         `}
 
@@ -104,7 +106,7 @@ const InputWrapper = styled(Description)`
 `;
 
 const Spacer = styled.div`
-    margin: 16px 0px;
+    margin: 16px 0;
 `;
 
 const PassphraseInput = styled(Input)`
@@ -128,7 +130,7 @@ const ActionButton = styled(Button)`
     margin-top: 8px;
 
     &:first-child {
-        margin-top: 0px;
+        margin-top: 0;
     }
 `;
 
@@ -138,7 +140,7 @@ const OnDeviceActionButton = styled(ActionButton)`
     color: ${props => props.theme.TYPE_LIGHT_GREY};
 
     &:first-child {
-        margin-top: 0px;
+        margin-top: 0;
     }
 
     &:hover,

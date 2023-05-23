@@ -40,8 +40,8 @@ const GlobalStyle = createGlobalStyle<{ theme: SuiteThemeColors }>`
     }
 
     *,
-    *:before,
-    *:after {
+    *::before,
+    *::after {
         box-sizing: border-box;
     }
 

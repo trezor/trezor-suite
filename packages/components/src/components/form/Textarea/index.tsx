@@ -32,7 +32,7 @@ const StyledTextarea = styled.textarea<Pick<TextareaProps, 'inputState' | 'width
 `;
 
 const BottomText = styled.span<Pick<TextareaProps, 'inputState'>>`
-    padding: 10px 10px 0 10px;
+    padding: 10px 10px 0;
     min-height: 27px;
     font-size: ${FONT_SIZE.TINY};
     color: ${({ inputState, theme }) => getInputStateTextColor(inputState, theme)};

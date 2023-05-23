@@ -11,7 +11,7 @@ const Wrapper = styled.div`
 `;
 
 const Label = styled.span`
-    padding: 0px 14px;
+    padding: 0 14px;
     color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};

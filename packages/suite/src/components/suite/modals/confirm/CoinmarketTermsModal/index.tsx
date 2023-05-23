@@ -30,6 +30,7 @@ const StyledIcon = styled(Icon)`
 const SecurityStyledIcon = styled(StyledIcon)`
     fill: #00854d;
     background-color: #e5f3ee;
+
     path {
         fill: #00854d;
     }
@@ -38,6 +39,7 @@ const SecurityStyledIcon = styled(StyledIcon)`
 const VerifiedPartnersStyledIcon = styled(StyledIcon)`
     fill: #1d88c5;
     background-color: #e8f3fa;
+
     path {
         fill: #1d88c5;
     }
@@ -45,6 +47,7 @@ const VerifiedPartnersStyledIcon = styled(StyledIcon)`
 const LegalStyledIcon = styled(StyledIcon)`
     fill: #00854d;
     background-color: #f9f4e6;
+
     path {
         fill: #c19009;
     }
@@ -52,6 +55,7 @@ const LegalStyledIcon = styled(StyledIcon)`
 
 const Flex = styled.div`
     display: flex;
+
     & + & {
         padding-top: 20px;
     }

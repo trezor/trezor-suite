@@ -23,7 +23,7 @@ const Wrapper = styled.div<FluidSpinnerProps>`
         border: ${({ strokeWidth }) => (strokeWidth ? `${strokeWidth}px` : '1px')} solid transparent; /* change to 0.1em to scale based on used font-size */
         border-radius: 50%;
         animation: ${animations.SPIN} 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
-        border-color: #fff transparent transparent transparent;
+        border-color: #fff transparent transparent;
         border-top-color: ${({ color }) => color || 'inherit'};
         will-change: transform;
     }

@@ -13,6 +13,7 @@ export const Wrapper = styled.div<ResponsiveSize>`
     @media screen and (min-width: ${props => variables.SCREEN_SIZE[props.responsiveSize]}) {
         flex-flow: wrap;
     }
+
     @media screen and (max-width: ${props => variables.SCREEN_SIZE[props.responsiveSize]}) {
         flex-direction: column;
     }
@@ -74,6 +75,7 @@ export const FooterWrapper = styled.div`
 
 export const StyledSelectBar = styled(SelectBar)`
     width: 100%;
+
     & div div {
         justify-content: center;
     }

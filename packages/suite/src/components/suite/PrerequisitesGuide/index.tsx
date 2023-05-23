@@ -37,7 +37,7 @@ const Wrapper = styled.div<{ padded?: boolean }>`
             }
 
             @media all and (max-height: ${variables.SCREEN_SIZE.SM}) {
-                margin-top: 0vh;
+                margin-top: 0;
             }
         `}
 `;

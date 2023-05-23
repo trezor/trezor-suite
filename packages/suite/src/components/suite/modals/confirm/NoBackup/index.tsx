@@ -4,7 +4,7 @@ import { Button, Image } from '@trezor/components';
 import { Translation, Modal, ModalProps } from '@suite-components';
 
 const ImageWrapper = styled.div`
-    padding: 60px 0px;
+    padding: 60px 0;
 `;
 
 const StyledModal = styled(Modal)`

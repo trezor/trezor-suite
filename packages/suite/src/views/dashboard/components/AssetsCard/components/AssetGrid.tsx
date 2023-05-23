@@ -18,7 +18,7 @@ import { useActions, useAccountSearch, useLoadingSkeleton } from '@suite-hooks';
 const Col = styled.div`
     display: flex;
     align-items: center;
-    padding: 16px 0px;
+    padding: 16px 0;
     color: ${({ theme }) => theme.TYPE_DARK_GREY};
     font-size: ${variables.FONT_SIZE.NORMAL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
@@ -35,7 +35,7 @@ const CoinNameWrapper = styled.div`
 const UpperRowWrapper = styled.div`
     display: flex;
     justify-content: space-between;
-    padding: 0px 15px 15px 15px;
+    padding: 0 15px 15px;
     border-bottom: 1px solid ${({ theme }) => theme.STROKE_GREY};
 `;
 

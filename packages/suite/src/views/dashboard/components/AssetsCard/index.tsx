@@ -16,7 +16,7 @@ import { AnimatePresence } from 'framer-motion';
 
 const StyledCard = styled(Card)`
     flex-direction: column;
-    padding: 0px;
+    padding: 0;
 `;
 
 const InfoMessage = styled.div`
@@ -39,12 +39,13 @@ const Header = styled.div`
     font-weight: 500;
     line-height: 1.57;
     align-items: center;
-    padding: 12px 0px;
+    padding: 12px 0;
     border-bottom: 1px solid ${props => props.theme.STROKE_GREY};
 
     &:first-child {
         padding-left: 18px;
     }
+
     &:last-child {
         padding-right: 18px;
     }

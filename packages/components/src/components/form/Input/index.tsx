@@ -32,7 +32,7 @@ const StyledInput = styled.input<StyledInputProps>`
 
     width: 100%;
     height: ${({ variant }) => `${INPUT_HEIGHTS[variant as InputVariant]}px`};
-    padding: 1px 16px 0 16px;
+    padding: 1px 16px 0;
     padding-left: ${({ leftAddonWidth }) =>
         leftAddonWidth ? `${leftAddonWidth + 19}px` : undefined};
     padding-right: ${({ rightAddonWidth }) =>
@@ -46,10 +46,9 @@ const InputWrapper = styled.div`
 
 const InputAddon = styled.div<{ align: AddonAlignment; variant: InputVariant }>`
     position: absolute;
-    top: 1px;
-    bottom: 1px;
-    right: ${({ align, variant }) => align === 'right' && (variant === 'small' ? '10px' : '16px')};
-    left: ${({ align, variant }) => align === 'left' && (variant === 'small' ? '10px' : '16px')};
+    inset: 1px
+        ${({ align, variant }) => align === 'right' && (variant === 'small' ? '10px' : '16px')} 1px
+        ${({ align, variant }) => align === 'left' && (variant === 'small' ? '10px' : '16px')};
     display: flex;
     align-items: center;
 `;
@@ -70,20 +69,17 @@ const BottomText = styled.div<Pick<InputProps, 'errorPosition' | 'inputState'>>`
     ${({ errorPosition }) =>
         errorPosition === 'bottom' &&
         css`
-            padding: 6px 10px 0 10px;
+            padding: 6px 10px 0;
             min-height: 22px;
         `}
 `;
 
 const Overlay = styled.div`
-    bottom: 1px;
-    top: 1px;
-    left: 1px;
-    right: 1px;
+    inset: 1px;
     border: 1px solid transparent;
     border-radius: 3px;
     position: absolute;
-    background-image: linear-gradient(to right, rgba(0, 0, 0, 0) 0%, rgba(255, 255, 255, 1) 220px);
+    background-image: linear-gradient(to right, rgb(0 0 0 / 0%) 0%, rgb(255 255 255 / 100%) 220px);
     z-index: ${Z_INDEX.BASE};
 `;
 

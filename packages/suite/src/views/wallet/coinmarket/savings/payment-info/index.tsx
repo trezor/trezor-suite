@@ -34,8 +34,7 @@ const Divider = styled.div`
 const Setup = styled.div`
     margin: 9px 0;
     display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
+    flex-flow: row nowrap;
     justify-content: space-between;
     align-items: stretch;
     align-content: stretch;
@@ -49,8 +48,7 @@ const Values = styled.div`
 const PaymentInfoOverview = styled.div`
     margin: 15px 0;
     display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
+    flex-flow: row nowrap;
     justify-content: space-between;
     align-items: stretch;
     align-content: stretch;

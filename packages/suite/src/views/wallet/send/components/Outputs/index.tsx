@@ -33,7 +33,7 @@ const OutputWrapper = styled.div<{ index: number }>`
 `;
 
 const Row = styled.div`
-    padding: 0 0 10px 0;
+    padding: 0 0 10px;
 
     &:last-child {
         padding: 0;

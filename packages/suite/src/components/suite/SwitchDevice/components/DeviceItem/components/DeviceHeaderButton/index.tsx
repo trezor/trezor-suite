@@ -8,7 +8,7 @@ import { TrezorDevice } from '@suite-types';
 
 const GrayNotificationCard = styled(NotificationCard)`
     background: ${props => props.theme.BG_GREY};
-    margin-bottom: 0px;
+    margin-bottom: 0;
 `;
 interface Props {
     needsAttention: boolean;

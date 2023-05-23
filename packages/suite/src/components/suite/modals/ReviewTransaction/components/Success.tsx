@@ -5,7 +5,7 @@ import { Translation } from '@suite-components';
 
 const SuccessWrapper = styled.div`
     height: 100%;
-    padding: 0 0 20px 0;
+    padding: 0 0 20px;
 `;
 const Top = styled.div`
     display: flex;
@@ -24,7 +24,7 @@ const IconWrapper = styled.div`
     justify-content: center;
     border: 2px solid ${props => props.theme.STROKE_LIGHT_GREY};
     border-radius: 75px;
-    padding: 2px 0 0px 2px;
+    padding: 2px 0 0 2px;
 `;
 const Message = styled.div`
     font-size: 24px;

@@ -29,7 +29,7 @@ const RadioIcon = styled.div<Pick<RadioButtonProps, 'isChecked' | 'disabled'>>`
         ${({ disabled, isChecked, theme }) =>
             getInputColor(theme, { checked: isChecked, disabled })};
 
-    :after {
+    ::after {
         display: ${({ isChecked }) => (isChecked ? 'block' : 'none')};
         content: '';
         position: absolute;

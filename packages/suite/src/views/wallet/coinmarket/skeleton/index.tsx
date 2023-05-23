@@ -8,6 +8,7 @@ import { Wrapper, Left, Middle, Right, StyledIcon, FooterWrapper } from '@wallet
 const SkeletonWrapper = styled.div`
     display: flex;
     width: 100%;
+
     @media screen and (max-width: ${variables.SCREEN_SIZE.LG}) {
         flex-direction: column;
     }
@@ -28,6 +29,7 @@ const StyledLeft = styled(Left)`
     @media screen and (max-width: ${variables.SCREEN_SIZE.LG}) {
         width: 100%;
     }
+
     @media screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
         margin-left: 0;
         justify-content: center;
@@ -44,6 +46,7 @@ const StyledRight = styled(Right)`
         width: 100%;
         justify-content: flex-end;
     }
+
     @media screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
         margin-top: 20px;
         justify-content: center;

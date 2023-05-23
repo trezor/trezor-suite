@@ -35,11 +35,11 @@ const Description = styled.div`
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 
     :first-child {
-        margin-top: 0px;
+        margin-top: 0;
     }
 
     :last-child {
-        margin-bottom: 0px;
+        margin-bottom: 0;
     }
 `;
 

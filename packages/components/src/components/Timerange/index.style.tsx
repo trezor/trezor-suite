@@ -27,7 +27,8 @@ export const style = css`
 
     .rdrDateDisplayItem + .rdrDateDisplayItem {
         margin-left: 41px;
-        &:after {
+
+        &::after {
             content: '-';
             display: block;
             position: absolute;
@@ -42,7 +43,7 @@ export const style = css`
         cursor: pointer;
         height: 2.8em;
         line-height: 3em;
-        border: 0px;
+        border: 0;
         background: transparent;
         width: 100%;
         font-size: 14px;
@@ -101,7 +102,7 @@ export const style = css`
 
     .rdrMonth {
         width: 100%;
-        padding: 0 0 1em 0;
+        padding: 0 0 1em;
     }
 
     .rdrWeekDays {
@@ -160,10 +161,7 @@ export const style = css`
     .rdrDayNumber {
         outline: 0;
         position: absolute;
-        left: 0;
-        right: 0;
-        top: 5px;
-        bottom: 5px;
+        inset: 5px 0;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -176,22 +174,16 @@ export const style = css`
     .rdrEndEdge {
         pointer-events: none;
         position: absolute;
-        top: 5px;
-        left: 0;
-        right: 0;
-        bottom: 5px;
+        inset: 5px 0;
     }
 
     .rdrDayStartPreview,
     .rdrDayInPreview,
     .rdrDayEndPreview {
         position: absolute;
-        top: 3px;
-        left: 0px;
-        right: 0px;
-        bottom: 3px;
+        inset: 3px 0;
         pointer-events: none;
-        border: 0px solid currentColor;
+        border: 0 solid currentcolor;
     }
 
     .rdrDayStartPreview {
@@ -252,18 +244,18 @@ export const style = css`
         text-align: center;
         border-style: solid;
         margin: auto;
-        transform: translate(-3px, 0px);
+        transform: translate(-3px, 0);
     }
 
     .rdrPprevButton i {
         border-width: 4px 6px 4px 4px;
-        transform: translate(-3px, 0px);
+        transform: translate(-3px, 0);
     }
 
     .rdrNextButton i {
         margin: 0 0 0 10px;
         border-width: 4px 4px 4px 6px;
-        transform: translate(3px, 0px);
+        transform: translate(3px, 0);
     }
 
     .rdrMonth .rdrWeekDays {
@@ -325,7 +317,7 @@ export const style = css`
         border-bottom-width: 1px;
         border-top-right-radius: 4px;
         border-bottom-right-radius: 4px;
-        right: 0px;
+        right: 0;
     }
 
     .rdrDayStartOfMonth .rdrDayInPreview,
@@ -345,18 +337,15 @@ export const style = css`
         border-top-right-radius: 4px;
         border-bottom-right-radius: 4px;
         border-right-width: 1px;
-        right: 0px;
+        right: 0;
     }
 
-    .rdrCalendarWrapper:not(.rdrDateRangeWrapper) .rdrDayHovered .rdrDayNumber:after {
+    .rdrCalendarWrapper:not(.rdrDateRangeWrapper) .rdrDayHovered .rdrDayNumber::after {
         content: '';
-        border: 1px solid currentColor;
+        border: 1px solid currentcolor;
         border-radius: 4px;
         position: absolute;
-        top: -2px;
-        bottom: -2px;
-        left: 0px;
-        right: 0px;
+        inset: -2px 0;
         background: transparent;
     }
 
@@ -384,7 +373,7 @@ export const style = css`
         filter: grayscale(100%) opacity(60%);
     }
 
-    .rdrDayToday .rdrDayNumber span:after {
+    .rdrDayToday .rdrDayNumber span::after {
         content: '';
         position: absolute;
         bottom: 4px;

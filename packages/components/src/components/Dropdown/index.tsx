@@ -92,21 +92,21 @@ const Menu = styled.ul<MenuProps>`
         props.alignMenu === 'left' &&
         !props.coords &&
         css`
-            left: 0px;
+            left: 0;
         `};
 
     ${props =>
         props.alignMenu === 'right' &&
         !props.coords &&
         css`
-            right: 0px;
+            right: 0;
         `};
 
     ${props =>
         props.alignMenu === 'top-left' &&
         !props.coords &&
         css`
-            left: 0px;
+            left: 0;
             top: ${props.menuSize ? `-${props.menuSize[1]}px` : '0px'};
         `};
 
@@ -114,7 +114,7 @@ const Menu = styled.ul<MenuProps>`
         props.alignMenu === 'top-right' &&
         !props.coords &&
         css`
-            right: 0px;
+            right: 0;
             top: ${props.menuSize ? `-${props.menuSize[1]}px` : '0px'};
         `};
 
@@ -134,7 +134,7 @@ const Group = styled.li`
     color: ${props => props.theme.TYPE_LIGHT_GREY};
     font-size: ${FONT_SIZE.TINY};
     font-weight: ${FONT_WEIGHT.MEDIUM};
-    padding: 10px 16px 10px 16px;
+    padding: 10px 16px;
     cursor: default;
 `;
 
@@ -162,7 +162,7 @@ const MenuItem = styled.li<MenuItemProps>`
         css`
             margin-top: 17px;
 
-            :after {
+            ::after {
                 position: absolute;
                 width: calc(100% - 32px);
                 top: -9px;
@@ -183,6 +183,7 @@ const IconLeft = styled.div`
 
 const IconRight = styled.div`
     margin-left: auto;
+
     & > * {
         margin-left: 16px;
     }

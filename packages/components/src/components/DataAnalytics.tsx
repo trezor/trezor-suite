@@ -45,6 +45,7 @@ const Description = styled.span`
     color: ${props => props.theme.TYPE_LIGHT_GREY};
 
     margin-bottom: 20px;
+
     /* text-align: center; */
 `;
 
@@ -60,7 +61,7 @@ const CategoryItems = styled.div`
 `;
 
 const CategoryName = styled(Description)`
-    margin-bottom: 0px;
+    margin-bottom: 0;
     width: 120px;
 `;
 

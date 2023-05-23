@@ -7,8 +7,7 @@ import { Translation } from '@suite-components';
 
 const Wrapper = styled.div`
     display: flex;
-    flex-direction: column;
-    flex-wrap: nowrap;
+    flex-flow: column nowrap;
     justify-content: flex-start;
     align-items: center;
     align-content: stretch;

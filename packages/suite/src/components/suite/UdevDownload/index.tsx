@@ -17,6 +17,7 @@ const Download = styled.div`
     justify-content: space-between;
     font-size: ${variables.FONT_SIZE.TINY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+
     /* min-height to avoid jumpy behavior in transition loader > select */
     min-height: 40px;
 `;
@@ -25,6 +26,7 @@ const LoaderWrapper = styled.div`
     display: flex;
     flex-direction: row;
     align-items: center;
+
     span {
         margin-left: 12px;
     }

@@ -19,7 +19,7 @@ const OutputsWrapper = styled.div`
 const Output = styled.div`
     display: flex;
     align-items: center;
-    padding: 8px 0px;
+    padding: 8px 0;
 `;
 
 const OutputInner = styled.div`
@@ -51,7 +51,8 @@ const ReducedAmount = styled.span`
 `;
 
 const ArrowIcon = styled(Icon)`
-    margin: 0px 8px;
+    margin: 0 8px;
+
     & svg {
         fill: ${$props => $props.theme.TYPE_GREEN};
     }

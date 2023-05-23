@@ -7,7 +7,7 @@ const Holder = styled.div`
     display: flex;
     justify-content: center;
     width: 300px;
-    padding: 100px 0px;
+    padding: 100px 0;
 `;
 
 export default {

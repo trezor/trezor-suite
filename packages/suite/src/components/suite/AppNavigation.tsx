@@ -27,10 +27,7 @@ const Wrapper = styled.div<{ subRoute: boolean | undefined; inView?: boolean }>`
     background: ${props => props.theme.BG_LIGHT_GREY};
     justify-content: center;
     position: sticky;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    inset: 0;
     height: 0;
 
     ${props =>

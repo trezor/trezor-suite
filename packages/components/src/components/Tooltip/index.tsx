@@ -34,16 +34,18 @@ const BoxDefault = styled(motion.div)<{ $maxWidth: string | number }>`
     border-radius: 10px;
     font-size: ${variables.FONT_SIZE.TINY};
     text-align: left;
-    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2);
+    box-shadow: 0 1px 2px 0 rgb(0 0 0 / 20%);
     max-width: ${props => props.$maxWidth}px;
 
     @media all and (min-width: ${variables.SCREEN_SIZE.MD}) {
         &:hover ${OpenGuideInner} {
             border-radius: 26px;
             background-color: ${props => transparentize(0.85, props.theme.TYPE_ORANGE)};
+
             & > a span:first-child {
                 max-width: 100px;
             }
+
             & > a span:last-child {
                 background-color: transparent;
             }
@@ -58,7 +60,7 @@ const BoxRich = styled(motion.div)<{ $maxWidth: string | number }>`
     border-radius: 5px;
     font-size: ${variables.FONT_SIZE.NORMAL};
     text-align: left;
-    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.2);
+    box-shadow: 0 2px 5px 0 rgb(0 0 0 / 20%);
     max-width: ${props => props.$maxWidth}px;
 `;
 

@@ -9,7 +9,7 @@ const Container = styled.div<Pick<SwitchProps, 'isChecked' | 'isDisabled' | 'isS
     height: ${({ isSmall }) => (isSmall ? '18px' : '24px')};
     width: ${({ isSmall }) => (isSmall ? '32px' : '42px')};
     flex-shrink: 0;
-    margin: 0px;
+    margin: 0;
     padding: 3px;
     position: relative;
     background: ${({ isChecked, isDisabled, theme }) =>
@@ -25,7 +25,7 @@ const Container = styled.div<Pick<SwitchProps, 'isChecked' | 'isDisabled' | 'isS
             :hover,
             :focus-within {
                 button {
-                    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 1);
+                    box-shadow: 0 2px 4px 0 rgb(0 0 0 / 100%);
                 }
             }
 
@@ -45,7 +45,7 @@ const Handle = styled.button<{ disabled?: boolean } & Pick<SwitchProps, 'isCheck
     border: none;
     border-radius: 50%;
     background: ${({ theme }) => theme.TYPE_WHITE};
-    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.5);
+    box-shadow: 0 2px 4px 0 rgb(0 0 0 / 50%);
     transform: ${({ isChecked, isSmall }) =>
         isChecked && `translateX(${isSmall ? '12px' : '18px'})`};
     transition: transform 0.25s ease 0s, box-shadow 0.15s ease 0s;
@@ -61,12 +61,12 @@ const Handle = styled.button<{ disabled?: boolean } & Pick<SwitchProps, 'isCheck
 `;
 
 const CheckboxInput = styled.input`
-    border: 0px;
-    clip: rect(0px, 0px, 0px, 0px);
+    border: 0;
+    clip: rect(0, 0, 0, 0);
     height: 1px;
     margin: -1px;
     overflow: hidden;
-    padding: 0px;
+    padding: 0;
     position: absolute;
     width: 1px;
 `;
