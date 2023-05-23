@@ -12,6 +12,7 @@ export * from './createTimeoutPromise';
 export * as enumUtils from './enumUtils';
 export * from './getNumberFromPixelString';
 export * from './getRandomNumberInRange';
+export * from './getSynchronize';
 export * from './getWeakRandomId';
 export * from './hasUppercaseLetter';
 export * from './isAscii';
