@@ -8,6 +8,8 @@ import { captureMessage, withScope } from '@sentry/electron';
 import { coinjoinReportTag, coinjoinNetworktTag } from '@suite-common/sentry';
 import { createIpcProxyHandler, IpcProxyHandlerOptions } from '@trezor/ipc-proxy';
 import { CoinjoinClient, CoinjoinBackend, CoinjoinBackendSettings } from '@trezor/coinjoin';
+import { getSynchronize } from '@trezor/utils';
+import { getFreePort } from '@trezor/node-utils';
 
 import { CoinjoinProcess } from '../libs/processes/CoinjoinProcess';
 import { PowerSaveBlocker } from '../libs/power-save-blocker';
@@ -25,7 +27,24 @@ export const init: Module = ({ mainWindow, store }) => {
     const backends: ThreadProxy<CoinjoinBackend>[] = [];
     const clients: CoinjoinClient[] = [];
 
-    const coinjoinMiddleware = new CoinjoinProcess();
+    const synchronize = getSynchronize();
+
+    let coinjoinProcess: CoinjoinProcess | undefined;
+
+    const getCoinjoinProcess = async () => {
+        if (!coinjoinProcess) {
+            const port = await getFreePort();
+            coinjoinProcess = new CoinjoinProcess(port);
+        }
+        return coinjoinProcess;
+    };
+
+    const killCoinjoinProcess = () => {
+        if (coinjoinProcess) {
+            coinjoinProcess.stop();
+            coinjoinProcess = undefined;
+        }
+    };
 
     const powerSaveBlocker = new PowerSaveBlocker();
 
@@ -75,7 +94,8 @@ export const init: Module = ({ mainWindow, store }) => {
 
     const clientProxyOptions: IpcProxyHandlerOptions<CoinjoinClient> = {
         onCreateInstance: async (settings: ConstructorParameters<typeof CoinjoinClient>[0]) => {
-            const port = await coinjoinMiddleware.getPort();
+            const coinjoinMiddleware = await synchronize(getCoinjoinProcess);
+            const port = coinjoinMiddleware.getPort();
             // override default url in coinjoin settings
             settings.middlewareUrl = coinjoinMiddleware.getUrl();
             const client = new CoinjoinClient(settings);
@@ -100,7 +120,7 @@ export const init: Module = ({ mainWindow, store }) => {
                             `${CLIENT_CHANNEL} binary enable on port ${port}`,
                         );
                         try {
-                            await coinjoinMiddleware.start();
+                            await synchronize(() => coinjoinMiddleware.start());
                         } catch (err) {
                             logger.error(SERVICE_NAME, `Start failed: ${err.message}`);
                             throw err; // pass this error to suite toast
@@ -111,7 +131,7 @@ export const init: Module = ({ mainWindow, store }) => {
 
                         if (clients.length === 0) {
                             logger.debug(SERVICE_NAME, `${CLIENT_CHANNEL} binary stop`);
-                            coinjoinMiddleware.stop();
+                            synchronize(killCoinjoinProcess);
                         }
                         if (!clients.some(cli => cli.getAccounts().length > 0)) {
                             powerSaveBlocker.stopBlockingPowerSave();
@@ -172,7 +192,7 @@ export const init: Module = ({ mainWindow, store }) => {
             unregisterBackendProxy();
             unregisterClientProxy();
             logger.info(SERVICE_NAME, 'Stopping (app quit)');
-            coinjoinMiddleware.stop();
+            synchronize(killCoinjoinProcess);
             powerSaveBlocker.stopBlockingPowerSave();
         };
 
