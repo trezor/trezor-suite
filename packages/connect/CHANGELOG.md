@@ -1,3 +1,7 @@
+# 9.0.11
+
+-   fix(connect-web): fix imports from connect
+
 # 9.0.10
 
 -   fix(connect-popup): fix connect-popup in firefox
