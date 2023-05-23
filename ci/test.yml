@@ -278,9 +278,19 @@ connect-popup manual:
     - docker-compose up -d trezor-user-env-unix
     - docker-compose run test-run
   after_script:
+    - docker cp ${CI_JOB_ID}_trezor-user-env-unix_1:/trezor-user-env/logs/debugging.log trezor-user-env-debugging.log
+    - docker cp ${CI_JOB_ID}_trezor-user-env-unix_1:/trezor-user-env/logs/emulator_bridge.log tenv-emulator-bridge-debugging.log
+    - docker cp ${CI_JOB_ID}_trezor-user-env-unix_1:/trezor-user-env/docker/version.txt trezor-user-env-version.txt
     - docker-compose down
     - docker network prune -f
   interruptible: true
+  artifacts:
+    expire_in: 7 days
+    when: always
+    paths:
+      - trezor-user-env-debugging.log
+      - tenv-emulator-bridge-debugging.log
+      - trezor-user-env-version.txt
 
 .connect matrix:
   extends: .connect
