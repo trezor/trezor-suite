@@ -1,24 +1,20 @@
-import { getFreePort } from '@trezor/node-utils';
-
 import { BaseProcess, Status } from './BaseProcess';
 
 export class CoinjoinProcess extends BaseProcess {
-    port = 37128; // Default port, that is going to be updated when starting the process.
+    private readonly port;
 
-    constructor() {
+    constructor(port = 37128) {
         super('coinjoin', 'WalletWasabi.WabiSabiClientLibrary', {
             autoRestart: 0,
         });
+        this.port = port;
     }
 
     getUrl() {
         return `http://localhost:${this.port}/`;
     }
 
-    async getPort() {
-        if (!(await this.status()).process) {
-            this.port = await getFreePort();
-        }
+    getPort() {
         return this.port;
     }
 
