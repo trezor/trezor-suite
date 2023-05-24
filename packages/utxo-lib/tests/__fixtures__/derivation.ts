@@ -218,5 +218,71 @@ export default {
                 'bcrt1pmqaq03uudz5j9dlrrlvf80nrrywnw009yzn76x0crlagfvrzmtqsqrjjzr',
             ],
         },
+        {
+            description: 'First Ltub of all seed',
+            xpubs: [
+                'Ltub2Y8PyEMWQVgiX4L4gVzU8PakBTQ2WBxFdS6tJARQeasUUfXmBut2jGShnQyD3jgyBf7mmvs5jPNgmgXad5J6M8a8FiZK78dbT21fYtTAC9a',
+            ],
+            symbol: 'ltc',
+            pathPrefix: "m/44'/2'/0'",
+            receive: [
+                'LcubERmHD31PWup1fbozpKuiqjHZ4anxcL',
+                'LVWBmHBkCGNjSPHucvL2PmnuRAJnucmRE6',
+                'LUQ91iCfoayy3G3rrFtmF6eVzKQyFSdi2T',
+                'LNk7cQvGW5LPgkii3RUX7YQWtX6HjmLbB4',
+                'Laz1nYzJwrGcaZDEERENpNVbgte1n3vWLJ',
+            ],
+            change: [
+                'LWj6ApswZxay4cJEJES2sGe7fLMLRvvv8h',
+                'LPNy6RUnr5pQqdqFpQPW5UfjS7CRdqADfj',
+                'LZRHNwA8xrSsNC3QPzB5PS32S7aaU3HqGS',
+                'LVT3a9DFmXZFnLbtBwXoKxuEa2BwW2G85v',
+                'Ld6sLFdsNGh7HDYXfeupc9Fzzos8BMG1R5',
+            ],
+        },
+        {
+            description: 'First Mtub of all seed',
+            xpubs: [
+                'Mtub2syZtptY6mWCxNgC59ji2ELzxifydR33xbfT5w1AcQKfEd1BrsnzraY9asxRJcQbUYuFPHGfa8opGaXQQiGEPXKDcDEjUPFXTzS1gQMYtnX',
+            ],
+            symbol: 'ltc',
+            pathPrefix: "m/49'/2'/0'",
+            receive: [
+                'MUbHn23ZL733kCUbvQ88ZhVSWMdFQMEoV8',
+                'MSxTNYpZGqmk2FNFZr1p2f7wZ6GJmwf8jL',
+                'MHqboKdC8QYQcYzCCSinx1zTtZwi5Wpq7o',
+                'MUSBXSCNuswEJtQe4t68KumdfciFoKMXZU',
+                'M8kU1TLLMtwLVu4CFeXFicDdJUXvUsDFsY',
+            ],
+            change: [
+                'MTpGW4fqTFJLNUxHU24De3g5XQjv4gqjoe',
+                'MSVQD37RbpEjoDHPJQXbHh57qj6WpmwFTa',
+                'MPBHsRUi6X6jYFhRdSijnngnpViCwpkYvU',
+                'MCPCadBz26FNKie5CfGjwaAnerhuAD4qzK',
+                'M99BKh7dXMi7sYW1gz9eupjrrMtQiM4Gpd',
+            ],
+        },
+        {
+            description: 'First LTC zpub of all seed',
+            xpubs: [
+                'zpub6qhzAgn63nQAJZiY829GUUb1eXFDqpLbeShTdAbTEKyZa8n2VbkLwbRhq9xqPyj5Yet5TBdbCZDgiw53NQ2qwib4mygybFq66i7ZcXUcwgU',
+            ],
+            symbol: 'ltc',
+            pathPrefix: "m/84'/2'/0'",
+            receive: [
+                'ltc1qkzyarpkhdecu5rzeuj78pwpr5sfm798afny4n6',
+                'ltc1qwxtmkev2vwj5qg7vwcvwj88z9uf3cea8mparml',
+                'ltc1qhjlp4eg4rludl9kzuwx6p6e5n40etu5gx7tgp8',
+                'ltc1ql23mvvaaskg5lx8rqfay80lv8h6d9xxx7k4fq0',
+                'ltc1qyvptcql9p3gze3frh7pvszmwcxcxaxgg5xr35r',
+            ],
+            change: [
+                'ltc1q5hfvnsqpsg22vk5shtcfq34t7kp22gqc90kl53',
+                'ltc1qsmp34p7ytwd2pn0wfd2jpapgwp38nuu7q4h494',
+                'ltc1q3nqkgv6jkd0ear7kpg9p7lsm902u5jqg3vfwrs',
+                'ltc1q7f29ecxxa5kv4qvq62cve58snhx5t4uqr4rdmx',
+                'ltc1q0cpzd0khxa2hqvaruwx3udvwpknwa72v9umkr8',
+            ],
+        },
     ],
 };
