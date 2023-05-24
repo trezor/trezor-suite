@@ -6,11 +6,13 @@ import { Translation } from 'src/components/suite';
 import { useLayoutSize, useSelector } from 'src/hooks/suite';
 import { isDesktop, isWeb } from '@trezor/env-utils';
 
+import { selectDevice, selectTorState } from 'src/reducers/suite/suiteReducer';
+import { selectEnabledNetworks } from 'src/reducers/wallet/settingsReducer';
 import { Language } from './Language';
 import { Fiat } from './Fiat';
 import { Labeling } from './Labeling';
-import { LabelingDisconnect } from './LabelingDisconnect';
-import { LabelingConnect } from './LabelingConnect';
+import { DisconnectLabelingProvider } from './DisconnectLabelingProvider';
+import { ConnectLabelingProvider } from './ConnectLabelingProvider';
 import { Tor } from './Tor';
 import { TorOnionLinks } from './TorOnionLinks';
 import { Theme } from './Theme';
@@ -22,14 +24,14 @@ import { EarlyAccess } from './EarlyAccess';
 import { BitcoinAmountUnit } from './BitcoinAmountUnit';
 import { NETWORKS } from 'src/config/wallet';
 import { DesktopSuiteBanner } from './DesktopSuiteBanner';
-import { selectTorState } from 'src/reducers/suite/suiteReducer';
-import { selectEnabledNetworks } from 'src/reducers/wallet/settingsReducer';
 
 export const SettingsGeneral = () => {
     const isPromoHidden = useSelector(state => state.suite.settings.isDesktopSuitePromoHidden);
     const { isTorEnabled } = useSelector(selectTorState);
     const enabledNetworks = useSelector(selectEnabledNetworks);
     const desktopUpdate = useSelector(state => state.desktopUpdate);
+    const metadata = useSelector(state => state.metadata);
+    const device = useSelector(selectDevice);
 
     const { isMobileLayout } = useLayoutSize();
 
@@ -37,6 +39,10 @@ export const SettingsGeneral = () => {
         ({ symbol, features }) =>
             enabledNetworks.includes(symbol) && features?.includes('amount-unit'),
     );
+
+    const isMetadataEnabled = metadata.enabled && !metadata.initiating;
+    const isProviderConnected =
+        metadata.enabled && device?.metadata.status === 'enabled' && !!metadata.provider;
 
     return (
         <SettingsLayout data-test="@settings/index">
@@ -50,8 +56,12 @@ export const SettingsGeneral = () => {
 
             <SettingsSection title={<Translation id="TR_LABELING" />} icon="TAG_MINIMAL">
                 <Labeling />
-                <LabelingDisconnect />
-                <LabelingConnect />
+                {isMetadataEnabled &&
+                    (isProviderConnected ? (
+                        <DisconnectLabelingProvider />
+                    ) : (
+                        <ConnectLabelingProvider />
+                    ))}
             </SettingsSection>
 
             {(isDesktop() || (isWeb() && isTorEnabled)) && (
