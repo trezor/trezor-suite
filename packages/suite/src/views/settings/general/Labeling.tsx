@@ -1,6 +1,6 @@
 import React from 'react';
 import { analytics, EventType } from '@trezor/suite-analytics';
-import { Switch, Tooltip } from '@trezor/components';
+import { LoadingContent, Switch, Tooltip } from '@trezor/components';
 import { HELP_CENTER_LABELING } from '@trezor/urls';
 import { Translation } from 'src/components/suite';
 import { ActionColumn, SectionItem, TextColumn } from 'src/components/suite/Settings';
@@ -49,7 +49,11 @@ export const Labeling = () => {
             shouldHighlight={shouldHighlight}
         >
             <TextColumn
-                title={<Translation id="TR_LABELING_ENABLED" />}
+                title={
+                    <LoadingContent isLoading={metadata.initiating} isSuccessful={metadata.enabled}>
+                        <Translation id="TR_LABELING_ENABLED" />
+                    </LoadingContent>
+                }
                 description={<Translation id="TR_LABELING_FEATURE_ALLOWS" />}
                 buttonLink={HELP_CENTER_LABELING}
             />
@@ -61,7 +65,7 @@ export const Labeling = () => {
                     content={isDisabled && <Translation id="TR_DISABLED_SWITCH_TOOLTIP" />}
                 >
                     <Switch
-                        isDisabled={isDisabled}
+                        isDisabled={isDisabled || metadata.initiating}
                         dataTest="@settings/metadata-switch"
                         isChecked={metadata.enabled}
                         onChange={handleSwitchClick}
