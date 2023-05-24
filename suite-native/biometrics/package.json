@@ -1,0 +1,23 @@
+{
+    "name": "@suite-native/biometrics",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "main": "src/index",
+    "scripts": {
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "test:unit": "jest -c ../../jest.config.base.js --passWithNoTests",
+        "type-check": "tsc --build"
+    },
+    "dependencies": {
+        "@suite-common/icons": "workspace:*",
+        "@suite-native/atoms": "workspace:*",
+        "@suite-native/storage": "workspace:*",
+        "@trezor/styles": "workspace:*",
+        "expo-local-authentication": "^13.3.0",
+        "jotai": "1.9.1",
+        "react": "18.2.0",
+        "react-native": "0.71.7"
+    }
+}

@@ -79,6 +79,7 @@ export const icons = {
     trezor: require('../assets/icons/trezor.svg'),
     trezorT: require('../assets/icons/trezorT.svg'),
     twitter: require('../assets/icons/twitter.svg'),
+    userFocus: require('../assets/icons/userFocus.svg'),
     warningCircle: require('../assets/icons/warningCircle.svg'),
     warningCircleLight: require('../assets/icons/warningCircleLight.svg'),
     warningTriangle: require('../assets/icons/warningTriangle.svg'),

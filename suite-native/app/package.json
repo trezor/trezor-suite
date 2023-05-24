@@ -48,6 +48,7 @@
         "@suite-native/alerts": "workspace:*",
         "@suite-native/analytics": "workspace:*",
         "@suite-native/atoms": "workspace:*",
+        "@suite-native/biometrics": "workspace:*",
         "@suite-native/config": "workspace:*",
         "@suite-native/fiat-rates": "workspace:*",
         "@suite-native/module-accounts": "workspace:*",
