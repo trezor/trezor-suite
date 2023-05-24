@@ -34,6 +34,10 @@ module.exports = config => {
             mocha: {
                 bail: true,
             },
+            // uncomment to disable random ordering of tests
+            // jasmine: {
+            //     random: false,
+            // },
         },
         browserConsoleLogOptions: {
             terminal: true,
