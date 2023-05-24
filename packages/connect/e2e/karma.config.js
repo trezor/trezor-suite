@@ -22,6 +22,8 @@ module.exports = config => {
         hostname: 'localhost',
         port: 8099,
         autoWatch: false,
+        // to debug locally set single run to false and go to http://localhost:8099/debug.html
+        // for local changes to take effect build connect-iframe and connect-web
         singleRun: true,
 
         client: {
