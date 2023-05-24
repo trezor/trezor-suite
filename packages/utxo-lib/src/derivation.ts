@@ -11,15 +11,19 @@ const BIP32_PAYMENT_TYPES = {
     0x043587cf: 'p2pkh', // 70617039, tpub
     0x044a5262: 'p2sh', // 71979618, upub
     0x045f1cf6: 'p2wpkh', // 73342198, vpub
+    0x019da462: 'p2pkh', // 27108450, Ltub
+    0x01b26ef6: 'p2sh', // 28471030, Mtub
 } as const;
 
 const BIP32_COIN_TYPES = {
     0x0488b21e: "0'",
     0x049d7cb2: "0'",
-    0x04b24746: "0'",
+    0x04b24746: "0'", // Or 2' for LTC, must be distinguished by network
     0x043587cf: "1'",
     0x044a5262: "1'",
     0x045f1cf6: "1'",
+    0x019da462: "2'",
+    0x01b26ef6: "2'",
 } as const;
 
 const BIP32_PURPOSES = {
@@ -74,7 +78,10 @@ const getBip32Node = (xpub: string, version: VersionBytes, network: Network) =>
 const getXpubInfo = (xpub: string, network: Network) => {
     const version = getVersion(xpub);
     const paymentType = BIP32_PAYMENT_TYPES[version];
-    const coinType = BIP32_COIN_TYPES[version];
+    const coinType =
+        network.wif === 0xb0 // ltc
+            ? "2'"
+            : BIP32_COIN_TYPES[version];
     const purpose = BIP32_PURPOSES[paymentType];
     const node = getBip32Node(xpub, version, network);
     const account = `${(node.index << 1) >>> 1}'`; // Unsigned to signed conversion

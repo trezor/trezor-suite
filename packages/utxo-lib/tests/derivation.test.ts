@@ -1,6 +1,6 @@
 import fixtures from './__fixtures__/derivation';
 import { deriveAddresses } from '../src/derivation';
-import { testnet, regtest } from '../src/networks';
+import { testnet, regtest, litecoin } from '../src/networks';
 
 const getNetwork = (symbol?: string) => {
     switch (symbol) {
@@ -8,6 +8,8 @@ const getNetwork = (symbol?: string) => {
             return testnet;
         case 'regtest':
             return regtest;
+        case 'ltc':
+            return litecoin;
         default:
             break;
     }
