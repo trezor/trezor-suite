@@ -34,7 +34,7 @@
         "build:inline": "TS_NODE_PROJECT=\"tsconfig.lib.json\" webpack --config ./webpack/inline.webpack.config.ts",
         "build:webextension": "TS_NODE_PROJECT=\"tsconfig.lib.json\" yarn webpack --config ./webpack/prod.webpack.config.ts",
         "build": "rimraf build && yarn build:inline && yarn build:webextension",
-        "test:e2e": "yarn xvfb-maybe -- playwright test --config=./e2e/playwright.config.ts",
+        "test:e2e": "yarn playwright install && yarn xvfb-maybe -- playwright test --config=./e2e/playwright.config.ts",
         "prepublishOnly": "yarn tsx ../../scripts/prepublishNPM.js",
         "prepublish": "yarn tsx ../../scripts/prepublish.js"
     },
