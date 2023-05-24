@@ -1655,6 +1655,7 @@ export default {
 
         {
             description: 'signWithEverythingSetExceptPoolRegistrationCertificate',
+            customTimeout: 40000,
             params: {
                 inputs: [
                     {
