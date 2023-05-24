@@ -1,6 +1,6 @@
 {
     "version": 1,
-    "timestamp": "2023-05-16T00:00:00+00:00",
+    "timestamp": "2023-05-24T00:00:00+00:00",
     "sequence": 35,
     "actions": [
         {
@@ -113,7 +113,6 @@
                     {
                         "domain": "coinjoin",
                         "flag": true,
-                        "isPublic": true,
                         "averageAnonymityGainPerRound": 0.34,
                         "roundsFailRateBuffer": 10,
                         "roundsDurationInHours": 3
@@ -125,42 +124,9 @@
             "conditions": [
                 {
                     "environment": {
-                        "desktop": ">=23.4.1",
+                        "desktop": "<23.5.2",
                         "mobile": "!",
-                        "web": ">=23.4.1"
-                    }
-                }
-            ],
-            "message": {
-                "id": "c4196202-b796-4c67-abcb-ac38c15ae343",
-                "priority": 89,
-                "dismissible": false,
-                "variant": "info",
-                "category": ["feature"],
-                "content": {
-                    "en-GB": "Coinjoin is temporarily unavailable due to technical issues",
-                    "en": "Coinjoin is temporarily unavailable due to technical issues",
-                    "es": "Coinjoin no está disponible temporalmente por problemas técnicos",
-                    "cs": "Coinjoin je z technických důvodů dočasně nedostupný",
-                    "ru": "Coinjoin временно недоступен по техническим причинам",
-                    "ja": "Coinjoinは技術的な問題により、一時的に利用できません。"
-                },
-                "feature": [
-                    {
-                        "domain": "coinjoin",
-                        "flag": false,
-                        "isPublic": true
-                    }
-                ]
-            }
-        },
-        {
-            "conditions": [
-                {
-                    "environment": {
-                        "desktop": "<23.4.1",
-                        "mobile": "!",
-                        "web": "<23.4.1"
+                        "web": "<23.5.2"
                     }
                 }
             ],
@@ -179,33 +145,6 @@
                     "ja": "coinjoinを使用するには、アプリを最新バージョンにアップデートしてください。"
                 },
                 "feature": [{ "domain": "coinjoin", "flag": false }],
-                "context": { "domain": "accounts.coinjoin" }
-            }
-        },
-        {
-            "conditions": [
-                {
-                    "environment": {
-                        "desktop": ">=23.1.0",
-                        "mobile": "!",
-                        "web": "!"
-                    }
-                }
-            ],
-            "message": {
-                "id": "c3196202-b796-4c57-abdb-ac38c15ae342",
-                "priority": 50,
-                "dismissible": false,
-                "variant": "warning",
-                "category": "context",
-                "content": {
-                    "en-GB": "To use conjoin, download the latest version of the app via Early Access Program (turn on in Application settings).",
-                    "en": "To use conjoin, download the latest version of the app via Early Access Program (turn on in Application settings).",
-                    "es": "Para usar conjoin, descarga la última versión de la aplicación a través del Programa de acceso anticipado (activa en Ajustes de la aplicación).",
-                    "cs": "Pro použití funkce conjoin si stáhněte nejnovější verzi aplikace prostřednictvím Early Access Program (zapněte v Nastaveních aplikace).",
-                    "ru": "Для использования conjoin скачайте последнюю версию приложения через Программу раннего доступа (включите в настройках Приложения).",
-                    "ja": "conjoinを使用するには、アプリケーションの最新バージョンを早期アクセスプログラム経由でダウンロードしてください（アプリケーションの設定でオンにしてください）。"
-                },
                 "context": { "domain": "accounts.coinjoin" }
             }
         },
@@ -393,7 +332,7 @@
                     "en": "CAUTION: Unofficial firmware detected! Your Trezor may be counterfeit. Contact help@trezor.io immediately.",
                     "es": "¡PRECAUCIÓN: ¡El firmware detectado no es oficial! Es posible que su Trezor sea falso. Póngase en contacto de inmediato con help@trezor.io.",
                     "cs": "UPOZORNĚNÍ: Byl detekován neoficiální firmware! Váš Trezor může být padělaný. Okamžitě kontaktujte help@trezor.io.",
-                    "ru": "ПРЕДУПРЕЖДЕНИЕ: Обнаружена неофициальная прошивка! Ваш Trezor может быть подделкой. Свяжитесь с нами по адресу help@trezor.io немедленно.",
+                    "ru": "ВНИМАНИЕ: Обнаружено неофициальное ПО! Ваш Trezor может быть подделкой. Свяжитесь с нами немедленно на help@trezor.io.",
                     "ja": "注意：非公式のファームウェアが検出されました！お使いのTrezorは偽物かもしれません。直ちにhelp@trezor.ioに連絡してください。"
                 }
             }
