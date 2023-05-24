@@ -51,7 +51,7 @@ export const TransactionDetailInputsSheet = ({
         <TransactionDetailSheet
             isVisible={isVisible}
             onVisibilityChange={onSheetVisibilityChange}
-            title="Inpust & Outputs"
+            title="Inputs & Outputs"
             iconName="swap"
             transactionId={transaction.txid}
         >
