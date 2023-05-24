@@ -57,7 +57,7 @@ export const ApplicationSettings = () => {
                 <SettingsSectionItem
                     title="Privacy & Security"
                     iconName="eye"
-                    subtitle="Analytics, Discreet mode"
+                    subtitle="Analytics, Discreet mode, Biometrics"
                     onPress={() => handleNavigation(SettingsStackRoutes.SettingsPrivacyAndSecurity)}
                 />
             </SettingsSection>
