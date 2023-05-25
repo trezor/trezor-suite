@@ -19,6 +19,7 @@ module.exports = makeMetroConfig({
             stream: nodejs.stream,
             https: nodejs.https,
             http: nodejs.http,
+            zlib: nodejs.zlib,
         },
     },
 });
