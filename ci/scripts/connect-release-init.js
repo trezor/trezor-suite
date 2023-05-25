@@ -41,6 +41,24 @@ const comment = ({ prNumber, body }) => {
     exec('gh', ['pr', 'comment', `${prNumber}`, '--body', body]);
 };
 
+const getGitCommitByPackageName = (packageName, maxCount = 10) =>
+    exec('git', [
+        'log',
+        '--oneline',
+        '--max-count',
+        `${maxCount}`,
+        '--pretty=tformat:"-   %s (%h)"',
+        '--',
+        `./packages/${packageName}`,
+    ]);
+
+const splitByNewlines = input => input.split('\n');
+
+const findIndexByCommit = (commitArr, searchString) =>
+    commitArr.findIndex(commit => commit.includes(searchString));
+
+const formArrayToText = arr => arr.join('\n');
+
 const initConnectRelease = () => {
     const checkResult = checkPackageDependencies('connect');
 
@@ -58,17 +76,9 @@ const initConnectRelease = () => {
             const packageJSON = JSON.parse(rawPackageJSON);
             const { version } = packageJSON;
 
-            const gitLogResult = exec('git', [
-                'log',
-                '--oneline',
-                '--max-count',
-                '1000',
-                '--pretty=tformat:"-   %s (%h)"',
-                '--',
-                `./packages/${packageName}`,
-            ]);
+            const packageGitLog = getGitCommitByPackageName(packageName, 1000);
 
-            const commitsArr = gitLogResult.stdout.split('\n');
+            const commitsArr = packageGitLog.stdout.split('\n');
 
             const CHANGELOG_PATH = path.join(PACKAGE_PATH, 'CHANGELOG.md');
 
@@ -158,6 +168,21 @@ const initConnectRelease = () => {
         comment({
             prNumber,
             body: depsChecklist,
+        });
+    }
+
+    // Adding list of commits form the connect* packages to help creating and checking connect CHANGELOG.
+    const connectGitLog = getGitCommitByPackageName('connect*', 1000);
+    const connectGitLogArr = splitByNewlines(connectGitLog.stdout);
+    const connectGitLogIndex = findIndexByCommit(connectGitLogArr, 'npm-release: @trezor/connect');
+
+    // Creating a comment only if there are commits to add since last connect release.
+    if (connectGitLogIndex !== -1) {
+        connectGitLogArr.splice(connectGitLogIndex, connectGitLogArr.length - connectGitLogIndex);
+        const connectGitLogText = formArrayToText(connectGitLogArr);
+        comment({
+            prNumber,
+            body: connectGitLogText,
         });
     }
 };
