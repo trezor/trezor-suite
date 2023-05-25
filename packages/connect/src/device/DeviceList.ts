@@ -6,6 +6,7 @@ import { TypedEmitter } from '@trezor/utils/lib/typedEventEmitter';
 import {
     BridgeTransport,
     WebUsbTransport,
+    NodeUsbTransport,
     Transport,
     TRANSPORT,
     Descriptor,
@@ -82,6 +83,14 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> {
                     case 'WebUsbTransport':
                         this.transports.push(
                             new WebUsbTransport({
+                                messages: this.messages,
+                                logger: transportLogger,
+                            }),
+                        );
+                        break;
+                    case 'NodeUsbTransport':
+                        this.transports.push(
+                            new NodeUsbTransport({
                                 messages: this.messages,
                                 logger: transportLogger,
                             }),

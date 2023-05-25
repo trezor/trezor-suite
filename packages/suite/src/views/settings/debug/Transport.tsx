@@ -29,8 +29,7 @@ export const Transport = () => {
         const transports: TransportMenuItem['name'][] = ['BridgeTransport'];
 
         if (isDesktop()) {
-            // todo: enable when nodeusb added
-            // transports.push('NodeUsbTransport');
+            transports.push('NodeUsbTransport');
         } else {
             transports.push('WebUsbTransport');
         }
