@@ -19,6 +19,8 @@ PODS:
     - React-Core
   - Expo (48.0.1):
     - ExpoModulesCore
+  - ExpoBrightness (11.3.0):
+    - ExpoModulesCore
   - ExpoClipboard (4.1.1):
     - ExpoModulesCore
   - ExpoLocalAuthentication (13.4.0):
@@ -536,6 +538,7 @@ DEPENDENCIES:
   - EXConstants (from `../../../node_modules/expo-constants/ios`)
   - EXImageLoader (from `../../../node_modules/expo-image-loader/ios`)
   - Expo (from `../../../node_modules/expo`)
+  - ExpoBrightness (from `../../../node_modules/expo-brightness/ios`)
   - ExpoClipboard (from `../../../node_modules/expo-clipboard/ios`)
   - ExpoLocalAuthentication (from `../../../node_modules/expo-local-authentication/ios`)
   - ExpoLocalization (from `../../../node_modules/expo-localization/ios`)
@@ -655,6 +658,8 @@ EXTERNAL SOURCES:
     :path: "../../../node_modules/expo-image-loader/ios"
   Expo:
     :path: "../../../node_modules/expo"
+  ExpoBrightness:
+    :path: "../../../node_modules/expo-brightness/ios"
   ExpoClipboard:
     :path: "../../../node_modules/expo-clipboard/ios"
   ExpoLocalAuthentication:
@@ -770,6 +775,7 @@ SPEC CHECKSUMS:
   EXConstants: 29269f841ed8786d483b753021953264ac04818f
   EXImageLoader: fd053169a8ee932dd83bf1fe5487a50c26d27c2b
   Expo: 79deb55f33fab1b232232868a74713772943238d
+  ExpoBrightness: 13a6108d77641ad310b7873438a0260f9eedfe5c
   ExpoClipboard: 8a36a8376ab93df9050c14577e9e0fcb805e9114
   ExpoLocalAuthentication: de5f50fae4fa643a3fc6b404d61a2ab36b5acf20
   ExpoLocalization: f26cd431ad9ea3533c5b08c4fabd879176a794bb

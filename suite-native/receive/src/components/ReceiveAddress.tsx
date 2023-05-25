@@ -2,7 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { AddressQRCode } from '@suite-native/qr-code';
-import { Card, ButtonBackgroundElevation } from '@suite-native/atoms';
+import { Card, ButtonBackgroundElevation, ErrorMessage } from '@suite-native/atoms';
 import {
     TransactionsRootState,
     AccountsRootState,
@@ -14,15 +14,10 @@ import { getFirstFreshAddress } from '@suite-common/wallet-utils';
 
 type ReceiveAddressProps = {
     accountKey: string;
-    onClose: () => void;
     backgroundElevation?: ButtonBackgroundElevation;
 };
 
-export const ReceiveAddress = ({
-    accountKey,
-    onClose,
-    backgroundElevation = '0',
-}: ReceiveAddressProps) => {
+export const ReceiveAddress = ({ accountKey, backgroundElevation = '0' }: ReceiveAddressProps) => {
     const [freshAddressError, setFreshAddressError] = useState();
 
     const account = useSelector((state: AccountsRootState) =>
@@ -46,24 +41,15 @@ export const ReceiveAddress = ({
         }
     }, [account, pendingAddresses, isAccountUtxoBased]);
 
-    const handleClose = () => {
-        if (freshAddress) {
-            onClose();
-        }
-    };
+    if (!freshAddress || freshAddressError)
+        return <ErrorMessage errorMessage="Something went wrong" />;
 
     return (
         <Card>
-            {!freshAddressError ? (
-                <AddressQRCode
-                    data={freshAddress?.address}
-                    onCopy={handleClose}
-                    isShareEnabled
-                    backgroundElevation={backgroundElevation}
-                />
-            ) : (
-                'Something went wrong...'
-            )}
+            <AddressQRCode
+                address={freshAddress.address}
+                backgroundElevation={backgroundElevation}
+            />
         </Card>
     );
 };
