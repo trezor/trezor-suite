@@ -43,7 +43,7 @@ const LTC_ACCOUNT = {
     totalPages: 1,
     itemsOnPage: 25,
     address:
-        'zpub6rDfq4mDgVKjjFz9cqWizJQvJyHKss4NhBzuiSaoJ5k23cCFyU2WQFrZEJPorsZt4soMDJtZBHL3ZyH8HfqkYSo7qzebbHL4QhpSTXUNpAq',
+        'Ltub2ZYSDNkHBYfdWFMg5CPq9KuqJrjB8QNCtyHXKzdEN4kx1Kp68XXhurqzjS1xuENMgSo8Skib8vDTmgxakHCJQQ9Tv4gsjyEkC1AdzD1jjaq',
     balance: '9997490',
     totalReceived: '9997490',
     totalSent: '0',
