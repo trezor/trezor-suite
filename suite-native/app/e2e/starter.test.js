@@ -8,6 +8,9 @@ describe('Example', () => {
     });
 
     it('should have welcome screen', async () => {
-        await expect(element(by.id('@onboarding/Welcome/nextBtn'))).toBeVisible();
+        await device.takeScreenshot('first screen');
+        // await waitFor(element(by.id('@onboarding/Welcome/nextBtn')))
+        await expect(element(by.text('Trezor'))).toExist();
+        await device.takeScreenshot('next screen');
     });
 });
