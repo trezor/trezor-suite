@@ -22,14 +22,16 @@ const checkPackageDependencies = packageName => {
     );
 
     const packageJSON = JSON.parse(rawPackageJSON);
-    const { dependencies, devDependencies } = packageJSON;
+    const {
+        dependencies,
+        // devDependencies // We should ignore devDependencies.
+    } = packageJSON;
 
-    const allDependnecies = { ...dependencies, ...devDependencies };
-    if (!Object.keys(allDependnecies)) {
+    if (!dependencies || !Object.keys(dependencies)) {
         return;
     }
 
-    Object.entries(allDependnecies).forEach(([dependency, version]) => {
+    Object.entries(dependencies).forEach(([dependency, version]) => {
         // is not a dependency released from monorepo. we don't care
         if (!dependency.startsWith('@trezor')) {
             return;
