@@ -62,7 +62,7 @@ const initConnectRelease = () => {
                 'log',
                 '--oneline',
                 '--max-count',
-                '10',
+                '1000',
                 '--pretty=tformat:"-   %s (%h)"',
                 '--',
                 `./packages/${packageName}`,
