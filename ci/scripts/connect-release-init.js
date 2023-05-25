@@ -1,3 +1,5 @@
+/* eslint-disable camelcase */
+
 const child_process = require('child_process');
 const path = require('path');
 const fs = require('fs');
@@ -46,7 +48,7 @@ const initConnectRelease = () => {
     const errors = checkResult.errors.map(package => package.replace('@trezor/', ''));
 
     if (update) {
-        for (let packageName of update) {
+        update.forEach(packageName => {
             const PACKAGE_PATH = path.join(ROOT, 'packages', packageName);
             const PACKAGE_JSON_PATH = path.join(PACKAGE_PATH, 'package.json');
 
@@ -71,12 +73,12 @@ const initConnectRelease = () => {
             const CHANGELOG_PATH = path.join(PACKAGE_PATH, 'CHANGELOG.md');
 
             const newCommits = [];
-            for (let commit of commitsArr) {
+            commitsArr.forEach(commit => {
                 if (commit.includes(`npm-release: @trezor/${packageName}`)) {
-                    break;
+                    return;
                 }
                 newCommits.push(commit.replaceAll('"', ''));
-            }
+            });
 
             if (newCommits.length) {
                 if (!fs.existsSync(CHANGELOG_PATH)) {
@@ -95,7 +97,7 @@ const initConnectRelease = () => {
                 path: PACKAGE_PATH,
                 message: `npm-release: @trezor/${packageName} ${version}`,
             });
-        }
+        });
     }
 
     exec('yarn', ['workspace', '@trezor/connect', 'version:patch']);
