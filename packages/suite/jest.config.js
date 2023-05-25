@@ -72,4 +72,5 @@ module.exports = {
         // https://jestjs.io/docs/28.x/upgrading-to-jest28#faketimers
         legacyFakeTimers: true,
     },
+    workerIdleMemoryLimit: 0.2,
 };

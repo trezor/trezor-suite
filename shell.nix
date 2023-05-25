@@ -29,6 +29,7 @@ in
       pkg-config
       pixman cairo giflib libjpeg libpng librsvg pango            # build dependencies for node-canvas
       shellcheck
+      udev
     ] ++ lib.optionals stdenv.isLinux [
       appimagekit nsis openjpeg osslsigncode p7zip squashfsTools  # binaries used by node_module: electron-builder
       # winePackages.minimal
