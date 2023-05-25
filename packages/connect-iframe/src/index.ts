@@ -7,6 +7,7 @@ import {
     UI_EVENT,
     DEVICE_EVENT,
     TRANSPORT_EVENT,
+    TRANSPORT,
     POPUP,
     IFRAME,
     UI,
@@ -119,9 +120,21 @@ const handleMessage = (event: PostMessageEvent) => {
     event.preventDefault();
     event.stopImmediatePropagation();
 
+    const safeMessages: CoreMessage['type'][] = [
+        IFRAME.CALL,
+        POPUP.CLOSED,
+        // UI.CHANGE_SETTINGS,
+        UI.LOGIN_CHALLENGE_RESPONSE,
+        TRANSPORT.DISABLE_WEBUSB,
+    ];
+
+    if (!isTrustedDomain && safeMessages.indexOf(message.type) === -1) {
+        return;
+    }
+
     // pass data to Core
     if (_core) {
-        _core.handleMessage(message, isTrustedDomain);
+        _core.handleMessage(message);
     }
 };
 
@@ -136,7 +149,7 @@ const postMessage = (message: CoreMessage) => {
     // popup handshake is resolved automatically
     if (!usingPopup) {
         if (_core && message.type === UI.REQUEST_UI_WINDOW) {
-            _core.handleMessage({ event: UI_EVENT, type: POPUP.HANDSHAKE }, true);
+            _core.handleMessage({ event: UI_EVENT, type: POPUP.HANDSHAKE });
             return;
         }
         if (message.type === POPUP.CANCEL_POPUP_REQUEST) {

@@ -126,24 +126,11 @@ const removeUiPromise = (promise: Deferred<any>) => {
 /**
  * Handle incoming message.
  * @param {CoreMessage} message
- * @param {boolean} isTrustedOrigin
  * @returns {void}
  * @memberof Core
  */
-export const handleMessage = (message: CoreMessage, isTrustedOrigin = false) => {
-    _log.debug('handleMessage', isTrustedOrigin, message);
-
-    const safeMessages: CoreMessage['type'][] = [
-        IFRAME.CALL,
-        POPUP.CLOSED,
-        // UI.CHANGE_SETTINGS,
-        UI.LOGIN_CHALLENGE_RESPONSE,
-        TRANSPORT.DISABLE_WEBUSB,
-    ];
-
-    if (!isTrustedOrigin && safeMessages.indexOf(message.type) === -1) {
-        return;
-    }
+export const handleMessage = (message: CoreMessage) => {
+    _log.debug('handleMessage', message);
 
     switch (message.type) {
         case POPUP.HANDSHAKE:
@@ -970,8 +957,8 @@ const initDeviceList = async (settings: ConnectSettings) => {
  * @memberof Core
  */
 export class Core extends EventEmitter {
-    handleMessage(message: any, isTrustedOrigin: boolean) {
-        handleMessage(message, isTrustedOrigin);
+    handleMessage(message: any) {
+        handleMessage(message);
     }
 
     async dispose() {
