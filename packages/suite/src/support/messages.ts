@@ -7741,89 +7741,89 @@ export default defineMessages({
         defaultMessage:
             "<red>Very low privacy.</red> We recommend using at least 1 in 5, as anything below this threshold isn't private.",
     },
-    TR_SESSION_PHASE_11_MESSAGE: {
-        id: 'TR_SESSION_PHASE_11_MESSAGE',
+    TR_SESSION_PHASE_ROUND_SEARCH: {
+        id: 'TR_SESSION_PHASE_ROUND_SEARCH',
         defaultMessage: 'Looking for a round',
         description: '29 symbols max',
     },
-    TR_SESSION_PHASE_12_MESSAGE: {
-        id: 'TR_SESSION_PHASE_12_MESSAGE',
+    TR_SESSION_PHASE_COIN_SELECTION: {
+        id: 'TR_SESSION_PHASE_COIN_SELECTION',
         defaultMessage: 'Choosing coins',
         description: '29 symbols max',
     },
-    TR_SESSION_PHASE_13_MESSAGE: {
-        id: 'TR_SESSION_PHASE_13_MESSAGE',
+    TR_SESSION_PHASE_ROUND_PAIRING: {
+        id: 'TR_SESSION_PHASE_ROUND_PAIRING',
         defaultMessage: 'Pairing coins with the round',
         description: '29 symbols max',
     },
-    TR_SESSION_PHASE_14_MESSAGE: {
-        id: 'TR_SESSION_PHASE_14_MESSAGE',
+    TR_SESSION_PHASE_COIN_REGISTRATION: {
+        id: 'TR_SESSION_PHASE_COIN_REGISTRATION',
         defaultMessage: 'Registering coins',
         description: '29 symbols max',
     },
-    TR_SESSION_PHASE_15_MESSAGE: {
-        id: 'TR_SESSION_PHASE_15_MESSAGE',
+    TR_SESSION_ERROR_PHASE_MISSING_UTXOS: {
+        id: 'TR_SESSION_ERROR_PHASE_MISSING_UTXOS',
         defaultMessage: 'Looking for available coins',
         description: '29 symbols max',
     },
-    TR_SESSION_PHASE_16_MESSAGE: {
-        id: 'TR_SESSION_PHASE_16_MESSAGE',
+    TR_SESSION_ERROR_PHASE_SKIPPING_ROUND: {
+        id: 'TR_SESSION_ERROR_PHASE_SKIPPING_ROUND',
         defaultMessage: 'Skipping round',
         description: '29 symbols max',
     },
-    TR_SESSION_PHASE_17_MESSAGE: {
-        id: 'TR_SESSION_PHASE_17_MESSAGE',
+    TR_SESSION_ERROR_PHASE_RETRYING_PAIRING: {
+        id: 'TR_SESSION_ERROR_PHASE_RETRYING_PAIRING',
         defaultMessage: 'Pairing failed, retrying',
         description: '29 symbols max',
     },
-    TR_SESSION_PHASE_18_MESSAGE: {
-        id: 'TR_SESSION_PHASE_18_MESSAGE',
+    TR_SESSION_ERROR_PHASE_AFFILIATE_SERVERS_OFFLINE: {
+        id: 'TR_SESSION_ERROR_PHASE_AFFILIATE_SERVERS_OFFLINE',
         defaultMessage: 'The coinjoin service is temporarily unavailable',
         description: '29 symbols max',
     },
-    TR_SESSION_PHASE_19_MESSAGE: {
-        id: 'TR_SESSION_PHASE_19_MESSAGE',
+    TR_SESSION_ERROR_PHASE_CRITICAL_ERROR: {
+        id: 'TR_SESSION_ERROR_PHASE_CRITICAL_ERROR',
         defaultMessage: 'Critical error, stopping coinjoin.',
         description: '29 symbols max',
     },
-    TR_SESSION_PHASE_21_MESSAGE: {
-        id: 'TR_SESSION_PHASE_21_MESSAGE',
+    TR_SESSION_PHASE_AWAITING_CONFIRMATION: {
+        id: 'TR_SESSION_PHASE_AWAITING_CONFIRMATION',
         defaultMessage: 'Confirming availability',
     },
-    TR_SESSION_PHASE_22_MESSAGE: {
-        id: 'TR_SESSION_PHASE_22_MESSAGE',
+    TR_SESSION_PHASE_WAITING_FOR_OTHERS: {
+        id: 'TR_SESSION_PHASE_WAITING_FOR_OTHERS',
         defaultMessage: 'Waiting for participants',
     },
-    TR_SESSION_PHASE_31_MESSAGE: {
-        id: 'TR_SESSION_PHASE_31_MESSAGE',
+    TR_SESSION_PHASE_REGISTERING_OUTPUTS: {
+        id: 'TR_SESSION_PHASE_REGISTERING_OUTPUTS',
         defaultMessage: 'Registering outputs',
     },
-    TR_SESSION_PHASE_32_MESSAGE: {
-        id: 'TR_SESSION_PHASE_32_MESSAGE',
+    TR_SESSION_PHASE_WAITING_FOR_COORDINATOR: {
+        id: 'TR_SESSION_PHASE_WAITING_FOR_COORDINATOR',
         defaultMessage: 'Waiting for coordinator',
     },
-    TR_SESSION_PHASE_33_MESSAGE: {
-        id: 'TR_SESSION_PHASE_33_MESSAGE',
+    TR_SESSION_ERROR_PHASE_REGISTRATION_FAILED: {
+        id: 'TR_SESSION_ERROR_PHASE_REGISTRATION_FAILED',
         defaultMessage: 'Verification failed, retrying',
     },
-    TR_SESSION_PHASE_41_MESSAGE: {
-        id: 'TR_SESSION_PHASE_41_MESSAGE',
+    TR_SESSION_PHASE_AWAITING_TRANSACTION: {
+        id: 'TR_SESSION_PHASE_AWAITING_TRANSACTION',
         defaultMessage: 'Waiting for transaction',
     },
-    TR_SESSION_PHASE_42_MESSAGE: {
-        id: 'TR_SESSION_PHASE_42_MESSAGE',
+    TR_SESSION_PHASE_TRANSACTION_SIGNING: {
+        id: 'TR_SESSION_PHASE_TRANSACTION_SIGNING',
         defaultMessage: 'Signing transaction',
     },
-    TR_SESSION_PHASE_43_MESSAGE: {
-        id: 'TR_SESSION_PHASE_43_MESSAGE',
+    TR_SESSION_PHASE_SENDING_SIGNATURE: {
+        id: 'TR_SESSION_PHASE_SENDING_SIGNATURE',
         defaultMessage: 'Sending to coordinator',
     },
-    TR_SESSION_PHASE_44_MESSAGE: {
-        id: 'TR_SESSION_PHASE_44_MESSAGE',
+    TR_SESSION_PHASE_AWAITING_SIGNATURES: {
+        id: 'TR_SESSION_PHASE_AWAITING_SIGNATURES',
         defaultMessage: 'Waiting for signatures',
     },
-    TR_SESSION_PHASE_45_MESSAGE: {
-        id: 'TR_SESSION_PHASE_45_MESSAGE',
+    TR_SESSION_PHASE_SIGNING_FAILED: {
+        id: 'TR_SESSION_PHASE_SIGNING_FAILED',
         defaultMessage: 'Signing failed, retrying',
     },
     TR_COINJOIN_EXPLANATION_TITLE: {

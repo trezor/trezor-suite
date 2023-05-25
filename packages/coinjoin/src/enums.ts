@@ -1,33 +1,33 @@
 export enum SessionPhase {
     // RoundPhase.InputRegistration
-    RoundSearch = 11,
-    CoinSelection = 12,
-    RoundPairing = 13,
-    CoinRegistration = 14,
+    RoundSearch = 101,
+    CoinSelection = 102,
+    RoundPairing = 103,
+    CoinRegistration = 104,
     // error phases
-    AccountMissingUtxos = 15,
-    SkippingRound = 16,
-    RetryingRoundPairing = 17,
-    AffiliateServerOffline = 18,
-    CriticalError = 19,
+    AccountMissingUtxos = 151,
+    SkippingRound = 152,
+    RetryingRoundPairing = 153,
+    AffiliateServerOffline = 154,
+    CriticalError = 155,
 
     // RoundPhase.ConnectionConfirmation
-    AwaitingConfirmation = 21,
-    AwaitingOthersConfirmation = 22,
+    AwaitingConfirmation = 201,
+    AwaitingOthersConfirmation = 202,
 
     // RoundPhase.OutputRegistration
-    RegisteringOutputs = 31,
-    AwaitingOthersOutputs = 32,
+    RegisteringOutputs = 301,
+    AwaitingOthersOutputs = 302,
     // error phase
-    OutputRegistrationFailed = 33,
+    OutputRegistrationFailed = 351,
 
     // RoundPhase.TransactionSigning
-    AwaitingCoinjoinTransaction = 41,
-    TransactionSigning = 42,
-    SendingSignature = 43,
-    AwaitingOtherSignatures = 44,
+    AwaitingCoinjoinTransaction = 401,
+    TransactionSigning = 402,
+    SendingSignature = 403,
+    AwaitingOtherSignatures = 404,
     // error phases
-    SignatureFailed = 45,
+    SignatureFailed = 451,
 }
 
 export enum RoundPhase {
