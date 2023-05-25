@@ -12,6 +12,7 @@
         { "path": "../connect-ui" },
         { "path": "../crypto-utils" },
         { "path": "../urls" },
+        { "path": "../e2e-utils" },
         { "path": "../node-utils" },
         { "path": "../trezor-user-env-link" }
     ],
