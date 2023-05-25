@@ -58,7 +58,7 @@ const handleMessage = (message: CoreMessage) => {
     if (!_core) return;
 
     if (type === UI.REQUEST_UI_WINDOW) {
-        _core.handleMessage({ event: UI_EVENT, type: POPUP.HANDSHAKE }, true);
+        _core.handleMessage({ event: UI_EVENT, type: POPUP.HANDSHAKE });
         return;
     }
 
@@ -119,11 +119,11 @@ function postMessage(message: PostMessage, usePromise = true) {
         _messageID++;
         messagePromises[_messageID] = createDeferred();
         const { promise } = messagePromises[_messageID];
-        _core.handleMessage({ ...message, id: _messageID }, true);
+        _core.handleMessage({ ...message, id: _messageID });
         return promise;
     }
 
-    _core.handleMessage(message, true);
+    _core.handleMessage(message);
 }
 
 const init = async (settings: Partial<ConnectSettings> = {}) => {
@@ -181,7 +181,7 @@ const uiResponse = (response: UiResponseEvent) => {
         throw ERRORS.TypedError('Init_NotInitialized');
     }
     const { type, payload } = response;
-    _core.handleMessage({ event: UI_EVENT, type, payload }, true);
+    _core.handleMessage({ event: UI_EVENT, type, payload });
 };
 
 const requestLogin = async (params: any) => {
@@ -194,23 +194,17 @@ const requestLogin = async (params: any) => {
             if (data && data.type === UI.LOGIN_CHALLENGE_REQUEST) {
                 try {
                     const payload = await callback();
-                    _core?.handleMessage(
-                        {
-                            event: UI_EVENT,
-                            type: UI.LOGIN_CHALLENGE_RESPONSE,
-                            payload,
-                        },
-                        true,
-                    );
+                    _core?.handleMessage({
+                        event: UI_EVENT,
+                        type: UI.LOGIN_CHALLENGE_RESPONSE,
+                        payload,
+                    });
                 } catch (error) {
-                    _core?.handleMessage(
-                        {
-                            event: UI_EVENT,
-                            type: UI.LOGIN_CHALLENGE_RESPONSE,
-                            payload: error.message,
-                        },
-                        true,
-                    );
+                    _core?.handleMessage({
+                        event: UI_EVENT,
+                        type: UI.LOGIN_CHALLENGE_RESPONSE,
+                        payload: error.message,
+                    });
                 }
             }
         };
