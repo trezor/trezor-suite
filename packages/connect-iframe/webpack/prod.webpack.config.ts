@@ -79,6 +79,8 @@ const config: webpack.Configuration = {
             events: require.resolve('events'),
             http: false,
             zlib: false,
+            path: false, // usb
+            os: false, // usb
         },
     },
     performance: {
