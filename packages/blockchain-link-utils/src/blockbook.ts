@@ -365,6 +365,7 @@ export const transformAccountInfo = (payload: BlockbookAccountInfo): AccountInfo
         tokens,
         addresses,
         history: {
+            addrTxCount: payload.addrTxCount,
             total: payload.txs,
             tokens:
                 typeof payload.nonTokenTxs === 'number'

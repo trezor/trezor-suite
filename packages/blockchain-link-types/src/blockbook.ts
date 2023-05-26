@@ -82,6 +82,7 @@ export interface AccountInfo {
     totalReceived: string;
     totalSent: string;
     txs: number;
+    addrTxCount?: number;
     unconfirmedBalance: string;
     unconfirmedTxs: number;
     page?: number;

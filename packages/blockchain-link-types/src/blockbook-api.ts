@@ -145,6 +145,7 @@ export interface Address {
     unconfirmedBalance: string;
     unconfirmedTxs: number;
     txs: number;
+    addrTxCount?: number;
     nonTokenTxs?: number;
     internalTxs?: number;
     transactions?: Tx[];
