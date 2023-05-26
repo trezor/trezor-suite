@@ -549,47 +549,34 @@ export const isTestnet = (symbol: NetworkSymbol) => {
 };
 
 export const isAccountOutdated = (account: Account, freshInfo: AccountInfo) => {
-    // changed transaction count when app is running during tx confirmation
-    const changedTxCountOnline =
-        freshInfo.history.total + (freshInfo.history.unconfirmed || 0) >
-        account.history.total + (account.history.unconfirmed || 0);
+    // confirmed tx count is different than before
+    if (account.history.total !== freshInfo.history.total) return true;
 
-    // changed transaction count when app was closed before tx confirmation
-    const changedTxCountOffline =
-        freshInfo.history.total > account.history.total &&
-        (freshInfo.history.unconfirmed || 0) < (account.history.unconfirmed || 0);
+    // unconfirmed tx count is different than before
+    if (account.history.unconfirmed !== freshInfo.history.unconfirmed) return true;
 
-    // changed transaction count when app was closed during tx confirmation and account was empty
-    const changedTxCountOfflineFresh =
-        freshInfo.history.total === 0 && freshInfo.history.unconfirmed;
-
-    // different sequence or balance
-    const changedRipple =
-        account.networkType === 'ripple' &&
-        (freshInfo.misc!.sequence !== account.misc.sequence ||
-            freshInfo.balance !== account.balance ||
-            freshInfo.misc!.reserve !== account.misc.reserve);
-
-    const changedEthereum =
-        account.networkType === 'ethereum' && freshInfo.misc!.nonce !== account.misc.nonce;
-
-    const changedCardano =
-        account.networkType === 'cardano' &&
-        // stake address (de)registration
-        (freshInfo.misc!.staking?.isActive !== account.misc.staking.isActive ||
-            // changed rewards amount (rewards are distributed every epoch (5 days))
-            freshInfo.misc!.staking?.rewards !== account.misc.staking.rewards ||
-            // changed stake pool
-            freshInfo.misc!.staking?.poolId !== account.misc.staking.poolId);
-
-    return (
-        changedTxCountOfflineFresh ||
-        changedTxCountOffline ||
-        changedTxCountOnline ||
-        changedCardano ||
-        changedRipple ||
-        changedEthereum
-    );
+    switch (account.networkType) {
+        case 'ripple':
+            // different sequence or balance
+            return (
+                freshInfo.misc!.sequence !== account.misc.sequence ||
+                freshInfo.balance !== account.balance ||
+                freshInfo.misc!.reserve !== account.misc.reserve
+            );
+        case 'ethereum':
+            return freshInfo.misc!.nonce !== account.misc.nonce;
+        case 'cardano':
+            return (
+                // stake address (de)registration
+                freshInfo.misc!.staking?.isActive !== account.misc.staking.isActive ||
+                // changed rewards amount (rewards are distributed every epoch (5 days))
+                freshInfo.misc!.staking?.rewards !== account.misc.staking.rewards ||
+                // changed stake pool
+                freshInfo.misc!.staking?.poolId !== account.misc.staking.poolId
+            );
+        default:
+            return false;
+    }
 };
 
 // Used in accountActions and failed accounts
