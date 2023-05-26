@@ -386,7 +386,7 @@ export const selectInputsForRound = async ({
         return;
     }
 
-    // get index of Round with maximum possble utxos
+    // get index of Round with maximum possible utxos
     const roundIndex = sumUtxosInRounds.findIndex(count => count === maxUtxosInRound);
     const selectedRound = normalRounds[roundIndex];
 
@@ -395,7 +395,16 @@ export const selectInputsForRound = async ({
         // find utxos assigned to this Round and Account
         const utxoIndexes = utxoSelection[roundIndex][accountIndex];
         const selectedUtxos = utxoIndexes.map(utxoIndex => account.utxos[utxoIndex]);
-        if (selectedUtxos.length > 0) {
+
+        // skip round if selected utxo value is greater than maxSuggestedAmount
+        // https://github.com/zkSNACKs/WalletWasabi/blob/23e4ec0971303b4502372332ecaffe4ff5d08917/WalletWasabi/WabiSabi/Client/CoinJoinClient.cs#L156
+        if (
+            selectedUtxos.some(
+                utxo => utxo.amount > selectedRound.roundParameters.maxSuggestedAmount,
+            )
+        ) {
+            logger.info('Skipping the round for more optimal mixing.');
+        } else {
             // create new Alice(s) and add it to CoinjoinRound
             selectedRound.inputs.push(
                 ...selectedUtxos.map(utxo =>
@@ -405,7 +414,7 @@ export const selectInputsForRound = async ({
         }
     });
 
-    return selectedRound;
+    return selectedRound.inputs.length > 0 ? selectedRound : undefined;
 };
 
 export const selectRound = async ({
