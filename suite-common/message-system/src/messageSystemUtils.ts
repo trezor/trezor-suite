@@ -1,10 +1,4 @@
 import * as semver from 'semver';
-import {
-    getBootloaderVersion,
-    getDeviceModel,
-    getFirmwareRevision,
-    getFirmwareVersion,
-} from '@trezor/device-utils';
 
 import {
     getEnvironment,
@@ -14,11 +8,15 @@ import {
     getOsVersion,
     Environment as EnvironmentType,
 } from '@trezor/env-utils';
-
+import type { TrezorDevice } from '@suite-common/suite-types';
+import type { Network } from '@suite-common/wallet-config';
 import type { TransportInfo } from '@trezor/connect';
-
-import type { Network } from '@wallet-types';
-import type { TrezorDevice } from '@suite-types';
+import {
+    getBootloaderVersion,
+    getDeviceModel,
+    getFirmwareRevision,
+    getFirmwareVersion,
+} from '@trezor/device-utils';
 import type {
     Duration,
     MessageSystem,
@@ -29,6 +27,31 @@ import type {
     Device,
     Environment,
 } from '@trezor/message-system';
+
+import { ValidMessagesPayload } from './messageSystemActions';
+
+export const categorizeMessages = (messages: Message[]): ValidMessagesPayload => {
+    const validMessages: ValidMessagesPayload = {
+        banner: [],
+        modal: [],
+        context: [],
+        feature: [],
+    };
+
+    messages.forEach(message => {
+        const { category } = message;
+
+        if (typeof category === 'string') {
+            // can be just one category
+            validMessages[category]?.push(message.id);
+        } else if (Array.isArray(category)) {
+            // also can be array of categories
+            category.forEach(categoryKey => validMessages[categoryKey]?.push(message.id));
+        }
+    });
+
+    return validMessages;
+};
 
 type CurrentSettings = {
     tor: boolean;

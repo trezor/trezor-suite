@@ -2,8 +2,12 @@ import { MiddlewareAPI } from 'redux';
 import { TRANSPORT, DEVICE } from '@trezor/connect';
 
 import { SUITE } from '@suite-actions/constants';
-import { messageSystemActions, ValidMessagesPayload } from '@suite-common/message-system';
-import { getValidMessages } from '@suite-utils/messageSystem';
+import {
+    messageSystemActions,
+    categorizeMessages,
+    getValidMessages,
+} from '@suite-common/message-system';
+
 import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
 import { getIsTorEnabled } from '@suite-utils/tor';
 
@@ -30,7 +34,7 @@ const messageSystemMiddleware =
             const { device, transport, torStatus } = api.getState().suite;
             const { enabledNetworks } = api.getState().wallet.settings;
 
-            const messages = getValidMessages(config, {
+            const validMessages = getValidMessages(config, {
                 device,
                 transport,
                 settings: {
@@ -39,24 +43,9 @@ const messageSystemMiddleware =
                 },
             });
 
-            const payload: ValidMessagesPayload = {
-                banner: [],
-                modal: [],
-                context: [],
-                feature: [],
-            };
+            const categorizedValidMessages = categorizeMessages(validMessages);
 
-            messages.forEach(message => {
-                let { category: categories } = message;
-
-                if (typeof categories === 'string') {
-                    categories = [categories];
-                }
-
-                categories.forEach(category => payload[category]?.push(message.id));
-            });
-
-            api.dispatch(messageSystemActions.updateValidMessages(payload));
+            api.dispatch(messageSystemActions.updateValidMessages(categorizedValidMessages));
         }
 
         return action;

@@ -4,8 +4,8 @@ import { configureMockStore } from '@suite-common/test-utils';
 
 import suiteReducer from '@suite-reducers/suiteReducer';
 import { prepareMessageSystemReducer, messageSystemActions } from '@suite-common/message-system';
+import * as messageSystemUtils from '@suite-common/message-system/src/messageSystemUtils';
 import { extraDependencies } from '@suite/support/extraDependencies';
-import * as messageSystemSuiteUtils from '@suite-utils/messageSystem';
 import WalletReducers from '@wallet-reducers';
 import messageSystemMiddleware from '../messageSystemMiddleware';
 import { AppState } from '../../../reducers/store';
@@ -85,7 +85,7 @@ describe('Message system middleware', () => {
         };
 
         // @ts-expect-error: all properties except category and id are not required for testing
-        jest.spyOn(messageSystemSuiteUtils, 'getValidMessages').mockImplementation(() => [
+        jest.spyOn(messageSystemUtils, 'getValidMessages').mockImplementation(() => [
             message1,
             message2,
             message3,
@@ -117,7 +117,7 @@ describe('Message system middleware', () => {
     });
 
     it('saves messages even if there are no valid messages', async () => {
-        jest.spyOn(messageSystemSuiteUtils, 'getValidMessages').mockImplementation(() => []);
+        jest.spyOn(messageSystemUtils, 'getValidMessages').mockImplementation(() => []);
 
         const store = initStore(getInitialState(undefined, undefined));
         await store.dispatch({

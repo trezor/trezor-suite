@@ -1,7 +1,7 @@
 import * as envUtils from '@trezor/env-utils';
 
-import * as messageSystem from '../messageSystem';
-import * as fixtures from '../__fixtures__/messageSystem';
+import * as messageSystem from '../messageSystemUtils';
+import * as fixtures from '../__fixtures__/messageSystemUtils';
 
 describe('Message system utils', () => {
     describe('createVersionRange', () => {
