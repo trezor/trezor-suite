@@ -34,7 +34,7 @@ const parseTx = (data: any) => ({
 
 const analyzeTransactionsExtended = [
     {
-        result: [blockchainActions.synced.type],
+        result: [accountsActions.updateAccount.type, blockchainActions.synced.type],
     },
     {
         result: [
@@ -63,7 +63,7 @@ const analyzeTransactionsExtended = [
         },
     },
     {
-        result: [blockchainActions.synced.type],
+        result: [accountsActions.updateAccount.type, blockchainActions.synced.type],
         resultTxs: {
             'xpub-btc-deviceState': [{ blockHeight: undefined, blockHash: '1', txid: '1' }],
         },
@@ -230,6 +230,7 @@ export const onBlock = analyzeTransactions
             },
             {
                 history: {
+                    total: 1,
                     transactions: f.fresh.slice().map((t: any) => parseTx(t)),
                 },
             },
