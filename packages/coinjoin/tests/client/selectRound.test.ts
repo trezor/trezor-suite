@@ -284,6 +284,43 @@ describe('selectRound', () => {
         expect(result).toBeUndefined();
     });
 
+    it('Skipping round when selected utxo value > maxSuggestedAmount', async () => {
+        const spy = jest.fn();
+        server?.addListener('test-request', ({ url, resolve }) => {
+            if (url.endsWith('/select-inputs-for-round')) {
+                spy();
+                resolve({ indices: [0] });
+            }
+            resolve();
+        });
+
+        const result = await selectInputsForRound({
+            aliceGenerator,
+            roundCandidates: [
+                {
+                    ...DEFAULT_ROUND,
+                    id: '01',
+                    roundParameters: {
+                        ...ROUND_CREATION_EVENT.roundParameters,
+                        maxSuggestedAmount: 1000,
+                    },
+                    inputs: [],
+                } as any,
+            ],
+            accountCandidates: [
+                {
+                    ...ACCOUNT,
+                    accountKey: 'account1',
+                    utxos: [{ outpoint: 'AA', amount: 1001, anonymityLevel: 1 }],
+                },
+            ],
+            options: { ...server?.requestOptions, logger: console },
+        });
+
+        expect(spy).toBeCalledTimes(1); // middleware was called once
+        expect(result).toBeUndefined();
+    });
+
     it('Multiple blame rounds in roundCandidates', async () => {
         // pick utxo which amount is greater than miningFeeRate
         server?.addListener('test-request', ({ url, data, resolve }) => {
