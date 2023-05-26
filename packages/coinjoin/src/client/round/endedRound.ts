@@ -39,7 +39,8 @@ export const ended = (round: CoinjoinRound, { logger, network }: CoinjoinRoundOp
             logger.error('Round not signed. Missing outputs.');
         } else if (!round.affiliateRequest) {
             // missing affiliateRequest
-            logger.error('Round not signed. Missing affiliate request.');
+            const times = round.transactionSignTries.join(',');
+            logger.error(`Round not signed. Missing affiliate request. Status fetched at ${times}`);
         } else if (inputs.some(i => !i.witness)) {
             // no signed inputs
             logger.error('Round not signed. Missing signed inputs.');

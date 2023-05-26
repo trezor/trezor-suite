@@ -300,9 +300,9 @@ describe('Status', () => {
         await fastForward(STATUS_TIMEOUT.enabled);
 
         expect(coordinatorRequestSpy).toHaveBeenCalledTimes(4); // status fetched 4 times
-        expect(onUpdateListener).toHaveBeenCalledTimes(2); // status changed twice, affiliateData added at 3rd iteration
+        expect(onUpdateListener).toHaveBeenCalledTimes(4); // affiliateData added at 3rd iteration
 
-        expect(onUpdateListener.mock.calls[1][0]).toMatchObject({
+        expect(onUpdateListener.mock.calls[3][0]).toMatchObject({
             changed: [{ affiliateRequest: affiliateDataBase64 }],
         });
     });
