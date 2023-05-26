@@ -12,6 +12,8 @@ import { InstructionStep } from '@suite-components/InstructionStep';
 import { getCheckBackupUrl } from '@suite-utils/device';
 import { DeviceModel, getDeviceModel, pickByDeviceModel } from '@trezor/device-utils';
 import TrezorConnect from '@trezor/connect';
+import { useIntl } from 'react-intl';
+import messages from '@suite/support/messages';
 
 const StyledModal = styled(Modal)`
     min-height: 450px;
@@ -69,6 +71,8 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
     });
     const { device, isLocked } = useDevice();
     const [understood, setUnderstood] = useState(false);
+
+    const intl = useIntl();
 
     const onSetWordsCount = (count: WordCount) => {
         actions.setWordsCount(count);
@@ -259,7 +263,7 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
             isCancelable
             onCancel={() => {
                 if (['in-progress', 'waiting-for-confirmation'].includes(recovery.status)) {
-                    TrezorConnect.cancel('cancelled');
+                    TrezorConnect.cancel(intl.formatMessage(messages.TR_CANCELLED));
                 } else {
                     onCancel();
                 }

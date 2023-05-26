@@ -10,6 +10,8 @@ import {
 } from '@trezor/components';
 import { Translation } from '@suite-components';
 import { DeviceModel } from '@trezor/device-utils';
+import { useIntl } from 'react-intl';
+import messages from '@suite/support/messages';
 
 const ConfirmWrapper = styled.div`
     margin-bottom: 20px;
@@ -60,38 +62,47 @@ export const OnboardingStepBox = ({
     nested,
     children,
     ...rest
-}: OnboardingStepBoxProps) => (
-    <>
-        <StyledBackdrop show={!!deviceModel && !disableConfirmWrapper} />
-        {!disableConfirmWrapper && (
-            <ConfirmWrapper data-test="@onboarding/confirm-on-device">
-                {deviceModel && (
-                    <ConfirmOnDevice
-                        title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
-                        deviceModel={deviceModel}
-                        onCancel={
-                            isActionAbortable ? () => TrezorConnect.cancel('cancelled') : undefined
-                        }
-                    />
-                )}
-            </ConfirmWrapper>
-        )}
+}: OnboardingStepBoxProps) => {
+    const intl = useIntl();
 
-        <CollapsibleCard
-            image={image}
-            heading={heading}
-            description={description}
-            nested={nested}
-            {...rest}
-        >
-            {(children || innerActions) && (
-                <>
-                    {children}
-                    {innerActions && <InnerActions>{innerActions}</InnerActions>}
-                </>
+    return (
+        <>
+            <StyledBackdrop show={!!deviceModel && !disableConfirmWrapper} />
+            {!disableConfirmWrapper && (
+                <ConfirmWrapper data-test="@onboarding/confirm-on-device">
+                    {deviceModel && (
+                        <ConfirmOnDevice
+                            title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
+                            deviceModel={deviceModel}
+                            onCancel={
+                                isActionAbortable
+                                    ? () =>
+                                          TrezorConnect.cancel(
+                                              intl.formatMessage(messages.TR_CANCELLED),
+                                          )
+                                    : undefined
+                            }
+                        />
+                    )}
+                </ConfirmWrapper>
             )}
-        </CollapsibleCard>
 
-        {outerActions && <OuterActions smallMargin={nested}>{outerActions}</OuterActions>}
-    </>
-);
+            <CollapsibleCard
+                image={image}
+                heading={heading}
+                description={description}
+                nested={nested}
+                {...rest}
+            >
+                {(children || innerActions) && (
+                    <>
+                        {children}
+                        {innerActions && <InnerActions>{innerActions}</InnerActions>}
+                    </>
+                )}
+            </CollapsibleCard>
+
+            {outerActions && <OuterActions smallMargin={nested}>{outerActions}</OuterActions>}
+        </>
+    );
+};

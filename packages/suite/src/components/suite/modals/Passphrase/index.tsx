@@ -9,6 +9,8 @@ import * as deviceUtils from '@suite-utils/device';
 import { Translation, Modal } from '@suite-components';
 import type { TrezorDevice } from '@suite-types';
 import { OpenGuideFromTooltip } from '@guide-components';
+import { useIntl } from 'react-intl';
+import messages from '@suite/support/messages';
 
 const Wrapper = styled.div<{ authConfirmation?: boolean }>`
     display: flex;
@@ -63,7 +65,9 @@ export const Passphrase = ({ device }: Props) => {
 
     const dispatch = useDispatch();
 
-    const onCancel = () => TrezorConnect.cancel('cancelled');
+    const intl = useIntl();
+
+    const onCancel = () => TrezorConnect.cancel(intl.formatMessage(messages.TR_CANCELLED));
 
     const onSubmit = useCallback(
         (value: string, passphraseOnDevice?: boolean) => {

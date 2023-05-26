@@ -4106,6 +4106,10 @@ export default defineMessages({
         id: 'TR_CANCEL',
         defaultMessage: 'Cancel',
     },
+    TR_CANCELLED: {
+        id: 'TR_CANCELLED',
+        defaultMessage: 'Cancelled',
+    },
     TR_FOLLOW_INSTRUCTIONS_ON_DEVICE: {
         id: 'TR_FOLLOW_INSTRUCTIONS_ON_DEVICE',
         defaultMessage: 'Check your Trezor screen',

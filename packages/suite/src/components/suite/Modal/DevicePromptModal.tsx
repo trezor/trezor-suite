@@ -17,6 +17,8 @@ import { Modal } from '.';
 import { useDeviceModel } from '@suite-hooks/useDeviceModel';
 import { selectIsActionAbortable } from '@suite-reducers/suiteReducer';
 import { useSelector } from '@suite-hooks/useSelector';
+import { useIntl } from 'react-intl';
+import messages from '@suite/support/messages';
 
 const StyledTrezorModal = styled(TrezorModal)`
     ${Modal.Header} {
@@ -135,7 +137,7 @@ const DevicePromptModalRenderer = ({
     isConfirmed,
     pillTitle,
     isAbortable = true,
-    onAbort = () => TrezorConnect.cancel('cancelled'),
+    onAbort,
     ...rest
 }: DevicePromptModalProps) => {
     const deviceModel = useDeviceModel();
@@ -143,6 +145,12 @@ const DevicePromptModalRenderer = ({
 
     // duplicated because headerComponents should receive undefined if isAbortable === false
     const isActionAbortable = useSelector(selectIsActionAbortable) || isAbortable;
+
+    const intl = useIntl();
+
+    if (!onAbort) {
+        onAbort = () => TrezorConnect.cancel(intl.formatMessage(messages.TR_CANCELLED));
+    }
 
     if (!modalTarget) return null;
 
