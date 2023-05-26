@@ -117,11 +117,12 @@ export const prepareAccountsReducer = createReducerWithExtraDeps(
 
 export const selectAccounts = (state: AccountsRootState) => state.wallet.accounts;
 
-export const selectMainnetAccounts = (state: AccountsRootState) =>
+export const selectMainnetAccounts = memoize((state: AccountsRootState) =>
     pipe(
         selectAccounts(state),
         A.filter(account => !isTestnet(account.symbol)),
-    );
+    ),
+);
 
 export const selectNumberOfAccounts = (state: AccountsRootState) => selectAccounts(state).length;
 
