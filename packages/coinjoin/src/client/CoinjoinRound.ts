@@ -110,6 +110,7 @@ export class CoinjoinRound extends TypedEmitter<Events> {
     roundDeadline: number; // deadline is inaccurate,round may end earlier
     commitmentData: string; // commitment data used for ownership proof and witness requests
     addresses: AccountAddress[] = []; // list of addresses (outputs) used in this round in outputRegistration phase
+    transactionSignTries: number[] = []; // timestamps for processing transactionSigning phase
     transactionData?: CoinjoinTransactionData; // transaction to sign
     broadcastedTxDetails?: BroadcastedTransactionDetails; // transaction broadcasted
     liquidityClues?: CoinjoinTransactionLiquidityClue[]; // updated liquidity clues
@@ -200,12 +201,15 @@ export class CoinjoinRound extends TypedEmitter<Events> {
         if (this.phase === RoundPhase.Ended) return this;
 
         // update data from status
-        this.phase = changed.phase;
-        this.endRoundState = changed.endRoundState;
-        this.coinjoinState = changed.coinjoinState;
-        const { phaseDeadline, roundDeadline } = getCoinjoinRoundDeadlines(this);
-        this.phaseDeadline = phaseDeadline;
-        this.roundDeadline = roundDeadline;
+        if (this.phase !== changed.phase) {
+            this.phase = changed.phase;
+            this.endRoundState = changed.endRoundState;
+            this.coinjoinState = changed.coinjoinState;
+            const { phaseDeadline, roundDeadline } = getCoinjoinRoundDeadlines(this);
+            this.phaseDeadline = phaseDeadline;
+            this.roundDeadline = roundDeadline;
+        }
+
         // update affiliateRequest once and keep the value
         // affiliateData are removed from the status once phase is changed to Ended
         if (!this.affiliateRequest && changed.affiliateRequest) {

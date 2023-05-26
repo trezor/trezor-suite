@@ -52,11 +52,7 @@ export class Status extends TypedEmitter<StatusEvents> {
                 const known = this.rounds.find(prevRound => prevRound.id === nextRound.id);
                 if (!known) return true; // new phase
                 if (nextRound.phase === known.phase + 1) return true; // expected update
-                if (
-                    nextRound.phase === RoundPhase.TransactionSigning &&
-                    !known.affiliateRequest &&
-                    nextRound.affiliateRequest
-                ) {
+                if (nextRound.phase === RoundPhase.TransactionSigning && !known.affiliateRequest) {
                     return true; // affiliateRequest is propagated asynchronously, might be added after phase change
                 }
 

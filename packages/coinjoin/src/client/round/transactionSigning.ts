@@ -155,6 +155,7 @@ export const transactionSigning = async (
     if (!round.affiliateRequest) {
         logger.warn(`Missing affiliate request. Waiting for status`);
         round.setSessionPhase(SessionPhase.AwaitingCoinjoinTransaction);
+        round.transactionSignTries.push(Date.now());
         return round;
     }
 
