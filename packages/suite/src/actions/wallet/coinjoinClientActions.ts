@@ -17,6 +17,7 @@ import {
 } from 'src/utils/wallet/coinjoinUtils';
 import { CoinjoinService } from 'src/services/coinjoin';
 import { selectAccountByKey } from '@suite-common/wallet-core';
+import { getUtxoOutpoint } from '@suite-common/wallet-utils';
 import { Dispatch, GetState } from 'src/types/suite';
 import { Account } from '@suite-common/wallet-types';
 import {
@@ -74,6 +75,12 @@ const clientOnStatusEvent = (symbol: Account['symbol'], status: CoinjoinStatusEv
             symbol,
             status,
         },
+    } as const);
+
+const clientOnPrisonEvent = (event: CoinjoinClientEvents['prison']) =>
+    ({
+        type: COINJOIN.CLIENT_PRISON_EVENT,
+        payload: event.prison,
     } as const);
 
 const clientSessionRoundChanged = (
@@ -172,6 +179,7 @@ export type CoinjoinClientAction =
     | ReturnType<typeof clientEnableSuccess>
     | ReturnType<typeof clientEnableFailed>
     | ReturnType<typeof clientOnStatusEvent>
+    | ReturnType<typeof clientOnPrisonEvent>
     | ReturnType<typeof clientSessionRoundChanged>
     | ReturnType<typeof clientSessionCompleted>
     | ReturnType<typeof clientSessionOwnership>
@@ -635,7 +643,8 @@ export const onCoinjoinClientRequest = (data: CoinjoinRequestEvent[]) => (dispat
 
 export const initCoinjoinService =
     (symbol: Account['symbol']) => async (dispatch: Dispatch, getState: GetState) => {
-        const { clients, debug } = getState().wallet.coinjoin;
+        const state = getState();
+        const { clients, debug, accounts } = state.wallet.coinjoin;
         const knownClient = clients[symbol];
         if (knownClient?.status === 'loading') return;
 
@@ -651,8 +660,46 @@ export const initCoinjoinService =
         // or start new instance
         dispatch(clientEnable(symbol));
 
+        // restore CoinjoinPrison initialState
+        const prison = accounts
+            .filter(account => account.symbol === symbol && account.prison)
+            .flatMap(account => {
+                const realAccount = selectAccountByKey(state, account.key);
+                if (!realAccount) return [];
+
+                const utxos = realAccount.utxo!.map(getUtxoOutpoint);
+                const usedChange = realAccount
+                    .addresses!.change.filter(a => a.transfers > 0)
+                    .map(a => a.address);
+
+                return Object.keys(account.prison!).flatMap(id => {
+                    const inmate = account.prison![id];
+                    // clear outdated info with Infinity sentence
+                    if (inmate.sentenceEnd === Infinity) {
+                        // utxos which are no longer in account (spent utxos)
+                        if (inmate.type === 'input' && !utxos.includes(id)) {
+                            return [];
+                        }
+                        // change addresses with transfers (used addresses)
+                        if (inmate.type === 'output' && usedChange.includes(id)) {
+                            return [];
+                        }
+                    }
+
+                    return {
+                        id,
+                        accountKey: account.key,
+                        ...inmate,
+                    };
+                });
+            });
+
         try {
-            const service = await CoinjoinService.createInstance(symbol, environment);
+            const service = await CoinjoinService.createInstance({
+                network: symbol,
+                prison,
+                environment,
+            });
             const { client } = service;
             const status = await client.enable();
             if (!status) {
@@ -660,6 +707,8 @@ export const initCoinjoinService =
             }
             // handle status change
             client.on('status', status => dispatch(clientOnStatusEvent(symbol, status)));
+            // handle prison event
+            client.on('prison', event => dispatch(clientOnPrisonEvent(event)));
             // handle active round change
             client.on('round', event => dispatch(onCoinjoinRoundChanged(event)));
             // handle requests (ownership proof, sign transaction)

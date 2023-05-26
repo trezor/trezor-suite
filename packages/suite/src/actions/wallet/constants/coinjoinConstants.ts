@@ -20,6 +20,7 @@ export const CLIENT_ENABLE_SUCCESS = '@coinjoin/client-enable-success';
 export const CLIENT_ENABLE_FAILED = '@coinjoin/client-enable-failed';
 export const CLIENT_STATUS = '@coinjoin/client-status';
 export const CLIENT_SESSION_PHASE = '@coinjoin/session-phase';
+export const CLIENT_PRISON_EVENT = '@coinjoin/prison-event';
 
 export const SESSION_STARTING = '@coinjoin/session-starting';
 export const SESSION_PAUSE = '@coinjoin/session-pause';

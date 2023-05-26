@@ -102,7 +102,7 @@ describe('coinjoinAccountActions', () => {
             const store = initStore(f.state as Wallet);
 
             if (f.client) {
-                await CoinjoinService.createInstance(f.client as any);
+                await CoinjoinService.createInstance({ network: f.client as any });
             }
 
             await store.dispatch(coinjoinAccountActions.stopCoinjoinSession(f.param));
@@ -128,7 +128,7 @@ describe('coinjoinAccountActions', () => {
             const store = initStore(f.state as Wallet);
 
             if (f.client) {
-                await CoinjoinService.createInstance(f.client as any);
+                await CoinjoinService.createInstance({ network: f.client as any });
             }
 
             await store.dispatch(coinjoinAccountActions.restoreCoinjoinSession(f.param));

@@ -3,10 +3,15 @@ import { PartialRecord } from '@trezor/type-utils';
 
 // @trezor/coinjoin package is meant to be imported dynamically
 // importing types is safe, but importing an enum thru index will bundle whole lib
-import { RegisterAccountParams } from '@trezor/coinjoin';
-import { RoundPhase, SessionPhase, EndRoundState } from '@trezor/coinjoin/src/enums';
+import { RegisterAccountParams, CoinjoinPrisonInmate } from '@trezor/coinjoin';
+import {
+    RoundPhase,
+    SessionPhase,
+    EndRoundState,
+    WabiSabiProtocolErrorCode,
+} from '@trezor/coinjoin/src/enums';
 
-export { RoundPhase, SessionPhase, EndRoundState };
+export { RoundPhase, SessionPhase, EndRoundState, WabiSabiProtocolErrorCode };
 
 export interface CoinjoinSetup {
     targetAnonymity: number;
@@ -67,6 +72,7 @@ export interface CoinjoinAccount {
     checkpoints?: CoinjoinDiscoveryCheckpoint[];
     anonymityGains?: AnonymityGains;
     transactionCandidates?: CoinjoinTxCandidate[];
+    prison?: Record<string, Omit<CoinjoinPrisonInmate, 'id' | 'accountKey'>>;
 }
 
 export type CoinjoinServerEnvironment = 'public' | 'staging' | 'localhost';
