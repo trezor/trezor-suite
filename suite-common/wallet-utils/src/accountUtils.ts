@@ -486,10 +486,12 @@ export const enhanceHistory = ({
     total,
     unconfirmed,
     tokens,
+    addrTxCount,
 }: AccountInfo['history']): Account['history'] => ({
     total,
     unconfirmed,
     tokens,
+    addrTxCount,
 });
 
 export const getAccountFiatBalance = (
@@ -549,8 +551,16 @@ export const isTestnet = (symbol: NetworkSymbol) => {
 };
 
 export const isAccountOutdated = (account: Account, freshInfo: AccountInfo) => {
-    // confirmed tx count is different than before
-    if (account.history.total !== freshInfo.history.total) return true;
+    if (
+        // if backend/coin supports addrTxCount, compare it instead of total
+        typeof freshInfo.history.addrTxCount === 'number'
+            ? // addrTxCount (address/tx pairs) is different than before
+              account.history.addrTxCount !== freshInfo.history.addrTxCount
+            : // confirmed tx count is different than before
+              // (unreliable for different getAccountInfo levels, that's why addrTxCount was added)
+              account.history.total !== freshInfo.history.total
+    )
+        return true;
 
     // unconfirmed tx count is different than before
     if (account.history.unconfirmed !== freshInfo.history.unconfirmed) return true;
