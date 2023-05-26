@@ -375,6 +375,26 @@ const updateClientStatus = (
     };
 };
 
+const updateAccountPrison = (
+    draft: CoinjoinState,
+    payload: ExtractActionPayload<typeof COINJOIN.CLIENT_PRISON_EVENT>,
+) => {
+    draft.accounts.forEach(account => {
+        const accountPrison = payload.filter(inmate => inmate.accountKey === account.key);
+        account.prison = accountPrison.reduce<NonNullable<CoinjoinAccount['prison']>>(
+            (prison, inmate) => {
+                if (['input', 'output'].includes(inmate.type)) {
+                    // remove duplicated info (id, accountKey)
+                    const { id, accountKey, ...rest } = inmate;
+                    prison[id] = rest;
+                }
+                return prison;
+            },
+            {},
+        );
+    });
+};
+
 const updateSessionPhase = (
     draft: CoinjoinState,
     payload: ExtractActionPayload<typeof COINJOIN.CLIENT_SESSION_PHASE>,
@@ -533,6 +553,9 @@ export const coinjoinReducer = (
                 break;
             case COINJOIN.CLIENT_STATUS:
                 updateClientStatus(draft, action.payload);
+                break;
+            case COINJOIN.CLIENT_PRISON_EVENT:
+                updateAccountPrison(draft, action.payload);
                 break;
             case COINJOIN.CLIENT_SESSION_PHASE:
                 updateSessionPhase(draft, action.payload);

@@ -51,11 +51,11 @@ export const mockCoinjoinService = () => {
         CoinjoinService: {
             getInstance: jest.fn((symbol: string) => clients[symbol]),
             getInstances: jest.fn(() => Object.values(clients)),
-            createInstance: jest.fn((symbol: string) => {
-                if (!allowed.includes(symbol)) throw new Error('Client not supported');
-                if (clients[symbol]) return clients[symbol];
-                const instance = getMockedInstance(symbol);
-                clients[symbol] = instance;
+            createInstance: jest.fn(({ network }: { network: string }) => {
+                if (!allowed.includes(network)) throw new Error('Client not supported');
+                if (clients[network]) return clients[network];
+                const instance = getMockedInstance(network);
+                clients[network] = instance;
                 return instance;
             }),
             removeInstance: jest.fn((symbol: string) => {

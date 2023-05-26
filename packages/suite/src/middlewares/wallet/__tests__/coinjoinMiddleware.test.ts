@@ -93,7 +93,7 @@ describe('coinjoinMiddleware', () => {
             }
 
             if (f.client) {
-                await CoinjoinService.createInstance(f.client);
+                await CoinjoinService.createInstance({ network: f.client });
             }
 
             store.dispatch(f.action);
