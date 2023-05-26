@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { roundToNearestMinutes, subHours } from 'date-fns';
+import { A } from '@mobily/ts-belt';
 
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 
@@ -37,6 +38,12 @@ export const useGraphForAccounts = ({
     }, []);
 
     useEffect(() => {
+        // if there are no accounts, that means that user has only testnets imported.
+        if (A.isEmpty(accounts)) {
+            setIsLoading(false);
+            setError('Graph is not available for testnet coins.');
+        }
+
         let shouldSetPoints = true;
 
         const getGraphPoints = async () => {
