@@ -5,7 +5,6 @@ import { Modal, Translation } from '@suite-components';
 import { useSelector, useDeviceModel } from '@suite-hooks';
 import { selectCoinjoinAccountByKey } from '@wallet-reducers/coinjoinReducer';
 import { PhaseProgress } from './PhaseProgress';
-import { DeviceModel } from '@trezor/device-utils';
 import { ROUND_PHASE_MESSAGES } from '@suite-constants/coinjoin';
 import { useCoinjoinSessionPhase } from '@wallet-hooks';
 import { AutoPauseButton } from './AutoPauseButton';
@@ -52,8 +51,7 @@ interface CriticalCoinjoinPhaseProps {
 }
 
 export const CriticalCoinjoinPhase = ({ relatedAccountKey }: CriticalCoinjoinPhaseProps) => {
-    // coinjoin available only on T and T2B1
-    const deviceModel = useDeviceModel() as DeviceModel.T2B1 | DeviceModel.TT;
+    const deviceModel = useDeviceModel();
     const relatedCoinjoinAccount = useSelector(state =>
         selectCoinjoinAccountByKey(state, relatedAccountKey),
     );
@@ -69,7 +67,7 @@ export const CriticalCoinjoinPhase = ({ relatedAccountKey }: CriticalCoinjoinPha
     return (
         <StyledModal>
             <Content>
-                <Image image={`DONT_DISCONNECT_TREZOR_T${deviceModel}`} />
+                {deviceModel && <Image image={`DONT_DISCONNECT_TREZOR_T${deviceModel}`} />}
 
                 <TextContainer>
                     <CoinjoinText>
