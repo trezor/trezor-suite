@@ -1,4 +1,4 @@
-import { variables, H1 } from '@trezor/components';
+import { variables, H1, Card } from '@trezor/components';
 import styled from 'styled-components';
 
 export const Heading = styled.div`
@@ -69,4 +69,10 @@ export const Value = styled.div`
     border-radius: 8px;
     word-break: break-all;
     padding: 10px;
+`;
+
+export const StyledCard = styled(Card)`
+    & + & {
+        margin-top: 8px;
+    }
 `;

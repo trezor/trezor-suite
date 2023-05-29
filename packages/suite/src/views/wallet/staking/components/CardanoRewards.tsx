@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Icon, Card } from '@trezor/components';
+import { Icon } from '@trezor/components';
 import { getReasonForDisabledAction, useCardanoStaking } from '@wallet-hooks/useCardanoStaking';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { Translation } from '@suite-components/Translation';
@@ -15,6 +15,7 @@ import {
     Title,
     Content,
     Column,
+    StyledCard,
 } from './CardanoPrimitives';
 import { HiddenPlaceholder } from '@suite-components/HiddenPlaceholder';
 import { DeviceModel } from '@trezor/device-utils';
@@ -50,7 +51,7 @@ export const CardanoRewards = ({ account }: CardanoRewardsProps) => {
         !!pendingStakeTx;
 
     return (
-        <Card>
+        <StyledCard>
             <StyledH1>
                 <Icon icon="CHECK" size={25} />
                 <Heading>
@@ -109,6 +110,6 @@ export const CardanoRewards = ({ account }: CardanoRewardsProps) => {
                     <Translation id="TR_STAKING_WITHDRAW" />
                 </DeviceButton>
             </Actions>
-        </Card>
+        </StyledCard>
     );
 };
