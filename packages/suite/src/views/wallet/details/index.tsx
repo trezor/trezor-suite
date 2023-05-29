@@ -4,9 +4,8 @@ import styled from 'styled-components';
 import { P, variables } from '@trezor/components';
 import { HELP_CENTER_XPUB_URL } from '@trezor/urls';
 import { WalletLayout } from '@wallet-components';
-import { useDevice, useActions, useSelector, useDiscovery } from '@suite-hooks';
+import { useDevice, useDispatch, useSelector } from '@suite-hooks';
 import { Card, Translation } from '@suite-components';
-import * as modalActions from '@suite-actions/modalActions';
 import {
     getAccountTypeName,
     getAccountTypeTech,
@@ -15,6 +14,7 @@ import {
 } from '@suite-common/wallet-utils';
 import { ActionColumn, Row, TextColumn, ActionButton } from '@suite-components/Settings';
 import { CARD_PADDING_SIZE } from '@suite-constants/layout';
+import { showXpub } from '@wallet-actions/publicKeyActions';
 import { NETWORKS } from '@wallet-config';
 import { CoinjoinLogs } from '@wallet-components/PrivacyAccount/CoinjoinLogs';
 import { CoinjoinSetup } from '@wallet-components/PrivacyAccount/CoinjoinSetup';
@@ -68,19 +68,17 @@ const NoWrap = styled.span`
 
 const Details = () => {
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
-
-    const { openModal } = useActions({
-        openModal: modalActions.openModal,
-    });
+    const dispatch = useDispatch();
 
     const { device, isLocked } = useDevice();
-    const { isDiscoveryRunning } = useDiscovery();
+
     if (!device || selectedAccount.status !== 'loaded') {
         return <WalletLayout title="TR_ACCOUNT_DETAILS_HEADER" account={selectedAccount} />;
     }
 
     const { account } = selectedAccount;
-    const isDisabled = !!device.authConfirm || isLocked();
+    const locked = isLocked(true);
+    const disabled = !!device.authConfirm || locked;
 
     // check if all network types
     const accountTypes =
@@ -93,8 +91,9 @@ const Details = () => {
     const accountTypeTech = getAccountTypeTech(account.path);
     const accountTypeUrl = getAccountTypeUrl(account.path);
     const accountTypeDesc = getAccountTypeDesc(account.path);
-
     const isCoinjoinAccount = account.backendType === 'coinjoin';
+
+    const handleXpubClick = () => dispatch(showXpub());
 
     return (
         <WalletLayout
@@ -143,19 +142,9 @@ const Details = () => {
                                 <ActionButton
                                     variant="secondary"
                                     data-test="@wallets/details/show-xpub-button"
-                                    onClick={() =>
-                                        openModal({
-                                            type: 'xpub',
-                                            xpub: account.descriptor,
-                                            accountPath: account.path,
-                                            accountIndex: account.index,
-                                            accountType: account.accountType,
-                                            symbol: account.symbol,
-                                            accountLabel: account.metadata.accountLabel,
-                                        })
-                                    }
-                                    isDisabled={isDisabled}
-                                    isLoading={isDiscoveryRunning}
+                                    onClick={handleXpubClick}
+                                    isDisabled={disabled}
+                                    isLoading={locked}
                                 >
                                     <Translation id="TR_ACCOUNT_DETAILS_XPUB_BUTTON" />
                                 </ActionButton>

@@ -87,6 +87,8 @@ const NotificationRenderer = ({ notification, render }: NotificationRendererProp
             return error(render, notification, 'TOAST_SIGN_TX_ERROR');
         case 'verify-address-error':
             return error(render, notification, 'TOAST_VERIFY_ADDRESS_ERROR');
+        case 'verify-xpub-error':
+            return error(render, notification, 'TOAST_VERIFY_XPUB_ERROR');
         case 'sign-message-error':
             return error(render, notification, 'TOAST_SIGN_MESSAGE_ERROR');
         case 'verify-message-error':

@@ -116,7 +116,6 @@ const StoreTitle = styled(Image)`
 const QR = styled(QrCode)`
     width: 140px;
     height: 140px;
-    margin: 0;
     padding: 4px;
     background-color: white;
     border-radius: 6px;

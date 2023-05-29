@@ -11,7 +11,6 @@ import {
     ConfirmXpub,
     ReviewTransaction,
     ImportTransaction,
-    ConfirmUnverifiedAddress,
     AddAccount,
     QrScanner,
     BackgroundGallery,
@@ -29,12 +28,15 @@ import {
     CriticalCoinjoinPhase,
     CoinjoinSuccess,
     MoreRoundsNeeded,
+    ConfirmUnverified,
 } from '@suite-components/modals';
 
 import type { AcquiredDevice } from '@suite-types';
 import type { ReduxModalProps } from './types';
 import { DisableTorStopCoinjoin } from '@suite-components/modals/DisableTorStopCoinjoin';
 import { UnecoCoinjoinWarning } from '@suite-components/modals/UnecoCoinjoinWarning';
+import { openXpubModal, showXpub } from '@wallet-actions/publicKeyActions';
+import { showAddress, showUnverifiedAddress } from '@wallet-actions/receiveActions';
 
 /** Modals opened as a result of user action */
 export const UserContextModal = ({
@@ -53,10 +55,31 @@ export const UserContextModal = ({
                 />
             );
         case 'unverified-address':
-            return <ConfirmUnverifiedAddress {...payload} onCancel={onCancel} />;
+            return (
+                <ConfirmUnverified
+                    showUnverifiedButtonText="TR_SHOW_UNVERIFIED_ADDRESS"
+                    warningText="TR_ADDRESS_PHISHING_WARNING"
+                    verify={() => showAddress(payload.addressPath, payload.value)}
+                    showUnverified={() => showUnverifiedAddress(payload.addressPath, payload.value)}
+                    onCancel={onCancel}
+                />
+            );
+        case 'unverified-xpub':
+            return (
+                <ConfirmUnverified
+                    showUnverifiedButtonText="TR_SHOW_UNVERIFIED_XPUB"
+                    warningText="TR_XPUB_PHISHING_WARNING"
+                    verify={showXpub}
+                    showUnverified={() => openXpubModal({ isCancelable: true })}
+                    onCancel={onCancel}
+                />
+            );
         case 'address':
             return (
-                <ConfirmAddress {...payload} onCancel={payload.cancelable ? onCancel : undefined} />
+                <ConfirmAddress
+                    {...payload}
+                    onCancel={payload.isCancelable ? onCancel : undefined}
+                />
             );
         case 'xpub':
             return <ConfirmXpub {...payload} onCancel={onCancel} />;

@@ -73,7 +73,7 @@ export const verifyAddress =
 
         const modalPayload = {
             device,
-            address,
+            value: address,
             networkType,
             symbol,
             addressPath: path,

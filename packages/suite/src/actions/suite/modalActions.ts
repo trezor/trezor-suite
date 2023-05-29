@@ -2,7 +2,7 @@ import TrezorConnect, { UI } from '@trezor/connect';
 import { createDeferred, Deferred, DeferredResponse } from '@trezor/utils';
 import { MODAL, SUITE } from '@suite-actions/constants';
 import { Route, Dispatch, GetState, TrezorDevice } from '@suite-types';
-import { Account, WalletAccountTransaction } from '@wallet-types';
+import { Account, NetworkSymbol, WalletAccountTransaction } from '@wallet-types';
 import { RequestEnableTorResponse } from '@suite-components/modals/RequestEnableTor';
 
 export type UserContextPayload =
@@ -13,30 +13,31 @@ export type UserContextPayload =
       }
     | {
           type: 'unverified-address';
-          device: TrezorDevice;
-          address: string;
+          value: string;
           addressPath: string;
-          symbol: Account['symbol'];
-          networkType: Account['networkType'];
+      }
+    | {
+          type: 'unverified-xpub';
       }
     | {
           type: 'address';
           device: TrezorDevice;
-          address: string;
+          value: string;
           addressPath: string;
-          symbol: Account['symbol'];
+          symbol: NetworkSymbol;
           networkType: Account['networkType'];
-          confirmed?: boolean;
-          cancelable?: boolean;
+          isConfirmed?: boolean;
+          isCancelable?: boolean;
       }
     | {
           type: 'xpub';
-          xpub: string;
-          accountPath: string;
+          device: TrezorDevice;
+          value: string;
           accountIndex: number;
-          accountType: Account['accountType'];
-          symbol: Account['symbol'];
+          symbol: NetworkSymbol;
           accountLabel: Account['metadata']['accountLabel'];
+          isConfirmed?: boolean;
+          isCancelable?: boolean;
       }
     | {
           type: 'passphrase-duplicate';
