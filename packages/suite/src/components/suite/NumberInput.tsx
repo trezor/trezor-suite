@@ -20,6 +20,10 @@ const hasLeadingZeroes = (value: string) => /^0+(\d+\.\d*|\d+)$/.test(value);
 const removeLeadingZeroes = (value: string) => value.replace(/^0+(?!\.|$)/, '');
 
 const cleanValueString = (value: string, locale: Locale) => {
+    if (value === undefined) {
+        return '';
+    }
+
     const { decimalSeparator, thousandsSeparator } = getLocaleSeparators(locale);
 
     // clean the entered number string if it's not convertable to Number or if it has a non-conventional format
@@ -101,7 +105,7 @@ export const NumberInput = ({
     const [redoHistory, setRedoHistory] = useState<string[]>([]);
 
     const previousFormValueRef = useRef<string | undefined>(value);
-    const previousDisplayValueRef = useRef(displayValue);
+    const previousDisplayValueRef = useRef<string | undefined>(displayValue);
 
     // formats and sets the value visible in the input (not the form)
     const formatDisplayValue = useCallback(
@@ -164,7 +168,10 @@ export const NumberInput = ({
     useLayoutEffect(() => {
         const cleanPrevFormValue = cleanValueString(previousFormValueRef.current ?? '', locale);
         const cleanFormValue = cleanValueString(value ?? '', locale);
-        const cleanPrevDisplayValue = cleanValueString(previousDisplayValueRef.current, locale);
+        const cleanPrevDisplayValue = cleanValueString(
+            previousDisplayValueRef.current ?? '',
+            locale,
+        );
         const cleanDisplayValue = cleanValueString(displayValue, locale);
 
         if (cleanPrevFormValue !== cleanFormValue && cleanPrevDisplayValue === cleanDisplayValue) {
@@ -185,7 +192,7 @@ export const NumberInput = ({
             if (cursorPosition === null) return;
 
             const { thousandsSeparator } = getLocaleSeparators(locale);
-            const previousDisplayValue = previousDisplayValueRef.current;
+            const previousDisplayValue = previousDisplayValueRef.current ?? '';
             // Ctrl+D on Mac
             const isDeleteKeyUsed =
                 pressedKey === 'Delete' || pressedKey.toLocaleLowerCase() === 'd';
