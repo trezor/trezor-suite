@@ -1,3 +1,5 @@
+import { RateLimiter } from '@suite-common/suite-utils';
+
 import { AbstractMetadataProvider, OAuthServerEnvironment, Tokens } from 'src/types/suite/metadata';
 import GoogleClient from 'src/services/google';
 
@@ -59,6 +61,27 @@ class GoogleProvider extends AbstractMetadataProvider {
                 return this.ok(undefined);
             }
             return this.handleProviderError(err);
+        }
+    }
+
+    // Google API complains when we try to write too many files at once
+    async batchSetFileContent(files: Array<{ fileName: string; content: Buffer }>) {
+        const limiter = new RateLimiter(300);
+
+        try {
+            const uploadPromises = files.map(async ({ fileName, content }) => {
+                const result = await limiter.limit(() => this.setFileContent(fileName, content));
+
+                if (!result.success) {
+                    throw new Error(result.error);
+                }
+            });
+
+            await Promise.all(uploadPromises);
+
+            return this.ok();
+        } catch (error) {
+            return this.error('PROVIDER_ERROR', error);
         }
     }
 

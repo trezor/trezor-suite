@@ -114,6 +114,11 @@ export abstract class AbstractMetadataProvider {
      */
     abstract getFileContent(file: string): Result<Buffer | undefined>;
     /**
+     * Upload metadata content in a batch cloud provider for given filenames and content
+     * (required by the providers)
+     */
+    abstract batchSetFileContent(files: Array<{ fileName: string; content: any }>): Result<void>;
+    /**
      * Upload metadata content in cloud provider for given filename and content
      */
     abstract setFileContent(file: string, content: any): Result<void>;

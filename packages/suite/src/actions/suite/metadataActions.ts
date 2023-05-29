@@ -796,7 +796,7 @@ const createMissingFiles = (missingFiles: Array<MissingFileInfo>) => async (disp
         return { success: true };
     }
 
-    const promises = missingFiles.map(async ({ fileName, aesKey }) => {
+    const createBatchPromises = missingFiles.map(async ({ fileName, aesKey }) => {
         const encrypted = await metadataUtils.encrypt(
             {
                 version: METADATA_FORMAT_VERSION,
@@ -805,18 +805,20 @@ const createMissingFiles = (missingFiles: Array<MissingFileInfo>) => async (disp
             aesKey,
         );
 
-        const response = await provider.setFileContent(
-            `${fileName}_${METADATA_ENCODING_VERSION}`,
-            encrypted,
-        );
+        return {
+            fileName: `${fileName}_${METADATA_ENCODING_VERSION}`,
+            content: encrypted,
+        };
+    });
+
+    const batchToUpload = await Promise.all(createBatchPromises);
+
+    try {
+        const response = await provider.batchSetFileContent(batchToUpload);
 
         if (!response.success) {
             throw new Error(response.error);
         }
-    });
-
-    try {
-        await Promise.all(promises);
 
         return { success: true };
     } catch (err) {

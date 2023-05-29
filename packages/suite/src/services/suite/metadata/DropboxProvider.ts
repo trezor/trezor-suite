@@ -1,4 +1,4 @@
-import { Dropbox, DropboxAuth } from 'dropbox';
+import { Dropbox, DropboxAuth, files } from 'dropbox';
 import type { users } from 'dropbox';
 import { AbstractMetadataProvider } from 'src/types/suite/metadata';
 import {
@@ -156,9 +156,62 @@ class DropboxProvider extends AbstractMetadataProvider {
         }
     }
 
+    async batchSetFileContent(files: Array<{ fileName: string; content: Buffer }>) {
+        try {
+            // refresh token because the upload can take time
+            await this.auth.checkAndRefreshAccessToken();
+
+            const response = await this.client.filesUploadSessionStartBatch({
+                session_type: { '.tag': 'concurrent' },
+                num_sessions: files.length,
+            });
+
+            const sessionIds = response.result.session_ids;
+
+            const filePromises = files.map(async (file, index) => {
+                const blob = new Blob([file.content], { type: 'text/plain;charset=UTF-8' });
+
+                await this.client.filesUploadSessionAppendV2({
+                    contents: blob,
+                    close: true,
+                    cursor: {
+                        session_id: sessionIds[index],
+                        offset: 0,
+                    },
+                });
+            });
+
+            await Promise.all(filePromises);
+
+            const entries: files.UploadSessionFinishBatchArg['entries'] = files.map(
+                (file, index) => ({
+                    cursor: {
+                        session_id: sessionIds[index],
+                        offset: 0,
+                    },
+                    commit: {
+                        path: `/${file.fileName}.mtdt`,
+                        mode: { '.tag': 'overwrite' },
+                        autorename: false,
+                        mute: true,
+                    },
+                }),
+            );
+
+            await this.client.filesUploadSessionFinishBatchV2({
+                entries,
+            });
+
+            return this.ok();
+        } catch (err) {
+            return this.handleProviderError(err);
+        }
+    }
+
     async setFileContent(file: string, content: Buffer) {
         try {
             const blob = new Blob([content], { type: 'text/plain;charset=UTF-8' });
+
             await this.client.filesUpload({
                 path: `/${file}.mtdt`,
                 contents: blob,

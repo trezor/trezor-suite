@@ -33,6 +33,24 @@ class FileSystemProvider extends AbstractMetadataProvider {
         return this.ok(result.success ? Buffer.from(result.payload, 'hex') : undefined);
     }
 
+    async batchSetFileContent(files: Array<{ fileName: string; content: Buffer }>) {
+        const writePromises = files.map(async ({ fileName, content }) => {
+            const result = await this.setFileContent(fileName, content);
+
+            if (!result.success) {
+                throw new Error(result.error);
+            }
+        });
+
+        try {
+            await Promise.all(writePromises);
+
+            return this.ok(undefined);
+        } catch (error) {
+            return this.error('PROVIDER_ERROR', error);
+        }
+    }
+
     async setFileContent(file: string, content: Buffer) {
         const hex = content.toString('hex');
 

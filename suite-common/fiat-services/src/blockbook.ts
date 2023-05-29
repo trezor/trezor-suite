@@ -1,6 +1,6 @@
 import type { LastWeekRates, TimestampedRates, TickerId } from '@suite-common/wallet-types';
+import { RateLimiter } from '@suite-common/suite-utils';
 
-import { RateLimiter } from './limiter';
 import { fetchUrl } from './fetch';
 
 // TODO: generate from @trezor/connect-common/files/coins.json

@@ -6163,6 +6163,7 @@ __metadata:
   resolution: "@suite-common/fiat-services@workspace:suite-common/fiat-services"
   dependencies:
     "@suite-common/suite-config": "workspace:*"
+    "@suite-common/suite-utils": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     date-fns: ^2.30.0
     jest: ^26.6.3
