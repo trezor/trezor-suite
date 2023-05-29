@@ -46,7 +46,7 @@ export type FormState = {
     selectedUtxos: AccountUtxo[];
 };
 
-export type ExcludedUtxos = Record<string, 'low-anonymity' | 'dust' | undefined>;
+export type ExcludedUtxos = Record<string, 'low-anonymity' | 'dust' | 'prison' | undefined>;
 
 // local state of @wallet-hooks/useSendForm
 export type UseSendFormState = {
@@ -69,6 +69,7 @@ export interface ComposeActionContext {
     network: Network;
     feeInfo: FeeInfo;
     excludedUtxos?: ExcludedUtxos;
+    prison?: Record<string, unknown>;
 }
 
 export interface UtxoSelectionContext {

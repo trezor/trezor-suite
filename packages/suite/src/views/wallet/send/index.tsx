@@ -12,7 +12,10 @@ import { SendFees } from './components/Fees';
 import { TotalSent } from './components/TotalSent';
 import { ReviewButton } from './components/ReviewButton';
 import Raw from './components/Raw';
-import { selectCurrentTargetAnonymity } from 'src/reducers/wallet/coinjoinReducer';
+import {
+    selectTargetAnonymityByAccountKey,
+    selectBlockedUtxosByAccountKey,
+} from 'src/reducers/wallet/coinjoinReducer';
 
 const StyledCard = styled(Card)`
     display: flex;
@@ -21,18 +24,33 @@ const StyledCard = styled(Card)`
     padding: 0;
 `;
 
-interface SendLoadedProps extends UseSendFormProps {
-    children?: React.ReactNode;
+interface SendProps {
+    children: React.ReactNode;
+}
+
+interface SendLoadedProps extends SendProps {
+    selectedAccount: UseSendFormProps['selectedAccount'];
 }
 
 // inner component for selectedAccount.status = "loaded"
 // separated to call `useSendForm` hook at top level
 // children are only for test purposes, this prop is not available in regular build
-const SendLoaded = ({ children, ...props }: SendLoadedProps) => {
-    const sendContextValues = useSendForm({ ...props });
+const SendLoaded = ({ children, selectedAccount }: SendLoadedProps) => {
+    const props = useSelector(state => ({
+        fiat: state.wallet.fiat,
+        localCurrency: state.wallet.settings.localCurrency,
+        fees: state.wallet.fees,
+        online: state.suite.online,
+        sendRaw: state.wallet.send.sendRaw,
+        metadataEnabled: state.metadata.enabled && !!state.metadata.provider,
+        targetAnonymity: selectTargetAnonymityByAccountKey(state, selectedAccount.account.key),
+        prison: selectBlockedUtxosByAccountKey(state, selectedAccount.account.key),
+    }));
+
+    const sendContextValues = useSendForm({ ...props, selectedAccount });
 
     return (
-        <WalletLayout title="TR_NAV_SEND" account={props.selectedAccount}>
+        <WalletLayout title="TR_NAV_SEND" account={selectedAccount}>
             <SendContext.Provider value={sendContextValues}>
                 <Header />
                 {!props.sendRaw && (
@@ -48,25 +66,12 @@ const SendLoaded = ({ children, ...props }: SendLoadedProps) => {
                     </>
                 )}
             </SendContext.Provider>
-            {props.sendRaw && <Raw network={props.selectedAccount.network} />}
+            {props.sendRaw && <Raw network={selectedAccount.network} />}
         </WalletLayout>
     );
 };
 
-interface SendProps {
-    children: React.ReactNode;
-}
-
 const Send = ({ children }: SendProps) => {
-    const props = useSelector(state => ({
-        fiat: state.wallet.fiat,
-        localCurrency: state.wallet.settings.localCurrency,
-        fees: state.wallet.fees,
-        online: state.suite.online,
-        sendRaw: state.wallet.send.sendRaw,
-        metadataEnabled: state.metadata.enabled && !!state.metadata.provider,
-        targetAnonymity: selectCurrentTargetAnonymity(state),
-    }));
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
 
     if (selectedAccount.status !== 'loaded') {
@@ -74,11 +79,7 @@ const Send = ({ children }: SendProps) => {
     }
 
     /* children are only for test purposes, this prop is not available in regular build */
-    return (
-        <SendLoaded {...props} selectedAccount={selectedAccount}>
-            {children}
-        </SendLoaded>
-    );
+    return <SendLoaded selectedAccount={selectedAccount}>{children}</SendLoaded>;
 };
 
 export default Send;
