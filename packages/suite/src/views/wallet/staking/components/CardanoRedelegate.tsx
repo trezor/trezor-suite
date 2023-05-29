@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
-import { Icon, Card } from '@trezor/components';
+import { Icon } from '@trezor/components';
 import { getReasonForDisabledAction, useCardanoStaking } from '@wallet-hooks/useCardanoStaking';
 import { Translation } from '@suite-components/Translation';
-import { Actions, Title, Heading, Text } from './CardanoPrimitives';
+import { Actions, Title, Heading, Text, StyledCard } from './CardanoPrimitives';
 import { DeviceModel } from '@trezor/device-utils';
 import { useDeviceModel } from '@suite-hooks/useDeviceModel';
 import { DeviceButton } from '@suite-components';
@@ -31,7 +31,7 @@ export const CardanoRedelegate = () => {
         !delegatingAvailable.status || !deviceAvailable.status || !!pendingStakeTx;
 
     return (
-        <Card>
+        <StyledCard>
             <Title>
                 <Icon icon="INFO" size={18} />
                 <Heading>
@@ -73,6 +73,6 @@ export const CardanoRedelegate = () => {
                     <Translation id="TR_STAKING_REDELEGATE" />
                 </DeviceButton>
             </Actions>
-        </Card>
+        </StyledCard>
     );
 };

@@ -7,10 +7,6 @@ const Wrapper = styled.div<{ paddingSize: string }>`
     border-radius: 12px;
     padding: ${props => props.paddingSize};
     background: ${props => props.theme.BG_WHITE};
-
-    & + & {
-        margin-top: 8px;
-    }
 `;
 
 const getPaddingSize = (
