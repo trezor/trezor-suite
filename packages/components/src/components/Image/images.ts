@@ -66,6 +66,8 @@ export const PNG_IMAGES = {
     WALLET_2x: 'wallet@2x.png',
     DONT_DISCONNECT_TREZOR_TT: 'dont-disconnect-trezor-tt.png',
     DONT_DISCONNECT_TREZOR_TT_2x: 'dont-disconnect-trezor-tr@2x.png',
+    DONT_DISCONNECT_TREZOR_T1: 'dont-disconnect-trezor-t1.png',
+    DONT_DISCONNECT_TREZOR_T1_2x: 'dont-disconnect-trezor-t1@2x.png',
     DONT_DISCONNECT_TREZOR_TR: 'dont-disconnect-trezor-tr.png',
     DONT_DISCONNECT_TREZOR_TR_2x: 'dont-disconnect-trezor-tr@2x.png',
     TREZOR_T1: 'trezor-t1.png',
