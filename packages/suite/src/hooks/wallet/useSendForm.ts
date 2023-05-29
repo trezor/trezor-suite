@@ -43,6 +43,7 @@ export interface SendFormProps {
     sendRaw?: boolean;
     metadataEnabled: boolean;
     targetAnonymity?: number;
+    prison?: Record<string, unknown>;
 }
 // Props of @wallet-hooks/useSendForm (selectedAccount should be loaded)
 export interface UseSendFormProps extends SendFormProps {
@@ -162,6 +163,7 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
         account: state.account,
         dustLimit: state.coinFees.dustLimit,
         targetAnonymity: props.targetAnonymity,
+        prison: props.prison,
     });
 
     // declare sendFormUtils, sub-hook of useSendForm
@@ -184,6 +186,7 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
         ...useFormMethods,
         state,
         account: props.selectedAccount.account,
+        prison: props.prison,
         excludedUtxos,
         updateContext,
         setAmount: sendFormUtils.setAmount,

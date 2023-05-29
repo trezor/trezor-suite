@@ -23,6 +23,7 @@ type Props = UseFormMethods<FormState> & {
     updateContext: SendContextValues['updateContext'];
     setAmount: (index: number, amount: string) => void;
     targetAnonymity?: number;
+    prison?: Record<string, unknown>;
 };
 
 // This hook should be used only as a sub-hook of `useSendForm`
@@ -37,6 +38,7 @@ export const useSendFormCompose = ({
     excludedUtxos,
     updateContext,
     setAmount,
+    prison,
 }: Props) => {
     const [composedLevels, setComposedLevels] =
         useState<SendContextValues['composedLevels']>(undefined);
@@ -63,12 +65,21 @@ export const useSendFormCompose = ({
                 network: state.network,
                 feeInfo: state.feeInfo,
                 excludedUtxos,
+                prison,
             });
 
             setComposedLevels(result);
             updateContext({ isLoading: false, isDirty: true }); // isDirty needs to be set again, "state" is cached in updateContext callback
         },
-        [account, excludedUtxos, state.network, state.feeInfo, composeTransaction, updateContext],
+        [
+            account,
+            prison,
+            excludedUtxos,
+            state.network,
+            state.feeInfo,
+            composeTransaction,
+            updateContext,
+        ],
     );
 
     // called from composeRequest useEffect

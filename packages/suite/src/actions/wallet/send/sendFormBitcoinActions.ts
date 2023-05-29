@@ -21,7 +21,7 @@ import { Dispatch, GetState } from 'src/types/suite';
 export const composeTransaction =
     (formValues: FormState, formState: ComposeActionContext) =>
     async (dispatch: Dispatch, getState: GetState) => {
-        const { account, excludedUtxos, feeInfo } = formState;
+        const { account, excludedUtxos, feeInfo, prison } = formState;
 
         const {
             settings: { bitcoinAmountUnit },
@@ -78,10 +78,19 @@ export const composeTransaction =
             ? formValues.selectedUtxos?.map(u => ({ ...u, required: true }))
             : account.utxo.filter(u => (u as any).required || !excludedUtxos?.[getUtxoOutpoint(u)]);
 
+        // certain change addresses might be temporary blocked by coinjoin process
+        // exclude addresses which exists in "prison" dataset (see coinjoinReducer/selectBlockedUtxosByAccountKey)
+        const changeAddresses = prison
+            ? account.addresses.change.filter(a => !prison[a.address])
+            : account.addresses.change;
+
         const params = {
             account: {
                 path: account.path,
-                addresses: account.addresses,
+                addresses: {
+                    ...account.addresses,
+                    change: changeAddresses,
+                },
                 utxo,
             },
             feeLevels: predefinedLevels,

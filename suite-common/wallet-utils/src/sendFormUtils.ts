@@ -441,6 +441,7 @@ export interface GetExcludedUtxosProps {
     anonymitySet?: NonNullable<Account['addresses']>['anonymitySet'];
     dustLimit?: number;
     targetAnonymity?: number;
+    prison?: Record<string, unknown>;
 }
 
 export const getExcludedUtxos = ({
@@ -448,6 +449,7 @@ export const getExcludedUtxos = ({
     anonymitySet,
     dustLimit,
     targetAnonymity,
+    prison,
 }: GetExcludedUtxosProps) => {
     // exclude utxos from default composeTransaction process (see sendFormBitcoinActions)
     // utxos are stored as dictionary where:
@@ -458,7 +460,9 @@ export const getExcludedUtxos = ({
     utxos?.forEach(utxo => {
         const outpoint = getUtxoOutpoint(utxo);
         const anonymity = (anonymitySet && anonymitySet[utxo.address]) || 1;
-        if (new BigNumber(utxo.amount).lte(Number(dustLimit))) {
+        if (prison && prison[outpoint]) {
+            excludedUtxos[outpoint] = 'prison';
+        } else if (new BigNumber(utxo.amount).lte(Number(dustLimit))) {
             // is lower than dust limit
             excludedUtxos[outpoint] = 'dust';
         } else if (anonymity < (targetAnonymity || 1)) {

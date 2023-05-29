@@ -669,6 +669,28 @@ export const selectCurrentCoinjoinBalanceBreakdown = (state: CoinjoinRootState) 
     return balanceBreakdown;
 };
 
+export const selectPrisonByAccountKey = (state: CoinjoinRootState, accountKey: AccountKey) => {
+    const coinjoinAccount = selectCoinjoinAccountByKey(state, accountKey);
+    if (!coinjoinAccount) return;
+    return coinjoinAccount.prison;
+};
+
+export const selectBlockedUtxosByAccountKey = (
+    state: CoinjoinRootState,
+    accountKey: AccountKey,
+) => {
+    const prison = selectPrisonByAccountKey(state, accountKey);
+    if (!prison) return;
+    return Object.keys(prison).reduce<typeof prison>((result, key) => {
+        const inmate = prison[key];
+        // select **only** inmates with assigned roundId (signed in current round or promised to future blaming round)
+        if (inmate.roundId) {
+            result[key] = inmate;
+        }
+        return result;
+    }, {});
+};
+
 export const selectSessionProgressByAccountKey = (
     state: CoinjoinRootState,
     accountKey: AccountKey,

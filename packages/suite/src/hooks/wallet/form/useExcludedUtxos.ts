@@ -1,12 +1,10 @@
 import { useMemo } from 'react';
 
 import { Account } from '@suite-common/wallet-types';
-import { getExcludedUtxos } from '@suite-common/wallet-utils';
+import { getExcludedUtxos, GetExcludedUtxosProps } from '@suite-common/wallet-utils';
 
-interface UseExcludedUtxosProps {
+interface UseExcludedUtxosProps extends GetExcludedUtxosProps {
     account: Account;
-    dustLimit?: number;
-    targetAnonymity?: number;
 }
 
 /**
@@ -14,7 +12,12 @@ interface UseExcludedUtxosProps {
  * Returns utxos which should be automatically excluded while composingTransaction.
  * Response format: { utxo_outpoint: exclusion_reason }
  */
-export const useExcludedUtxos = ({ account, dustLimit, targetAnonymity }: UseExcludedUtxosProps) =>
+export const useExcludedUtxos = ({
+    account,
+    dustLimit,
+    targetAnonymity,
+    prison,
+}: UseExcludedUtxosProps) =>
     useMemo(
         () =>
             getExcludedUtxos({
@@ -22,6 +25,7 @@ export const useExcludedUtxos = ({ account, dustLimit, targetAnonymity }: UseExc
                 anonymitySet: account.addresses?.anonymitySet,
                 dustLimit,
                 targetAnonymity,
+                prison,
             }),
-        [account.utxo, account.addresses?.anonymitySet, dustLimit, targetAnonymity],
+        [account.utxo, account.addresses?.anonymitySet, dustLimit, targetAnonymity, prison],
     );
