@@ -96,10 +96,7 @@ export const VERIFY_BUY_ADDRESS_FIXTURES = [
                     type: MODAL.OPEN_USER_CONTEXT,
                     payload: {
                         type: 'unverified-address',
-                        device: UNAVAILABLE_DEVICE,
-                        address: XRP_ACCOUNT.descriptor,
-                        networkType: XRP_ACCOUNT.networkType,
-                        symbol: XRP_ACCOUNT.symbol,
+                        value: XRP_ACCOUNT.descriptor,
                         addressPath: XRP_ACCOUNT.path,
                     },
                 },

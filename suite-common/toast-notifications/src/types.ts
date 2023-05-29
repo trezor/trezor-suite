@@ -72,6 +72,7 @@ export type ToastPayload = (
               | 'auth-failed'
               | 'discovery-error'
               | 'verify-address-error'
+              | 'verify-xpub-error'
               | 'sign-message-error'
               | 'verify-message-error'
               | 'sign-tx-error'

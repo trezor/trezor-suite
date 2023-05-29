@@ -9,6 +9,7 @@ const Wrapper = styled.div`
     text-align: left;
     background: ${props => props.theme.BG_GREY};
     align-items: center;
+    border-radius: 8px;
     width: 100%;
     justify-content: space-between;
 `;

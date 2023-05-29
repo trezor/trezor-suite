@@ -14,6 +14,7 @@ import {
     WordAdvanced,
     ReviewTransaction,
     ConfirmAddress,
+    ConfirmXpub,
 } from '@suite-components/modals';
 import { selectSelectedAccount } from '@wallet-reducers/selectedAccountReducer';
 
@@ -80,7 +81,17 @@ export const DeviceContextModal = ({
             return <ConfirmActionModal device={device} renderer={renderer} />;
         case 'ButtonRequest_Address':
             return account && data?.address ? (
-                <ConfirmAddress device={device} address={data.address} symbol={account.symbol} />
+                <ConfirmAddress device={device} value={data.address} symbol={account.symbol} />
+            ) : null;
+        case 'ButtonRequest_PublicKey':
+            return account ? (
+                <ConfirmXpub
+                    device={device}
+                    value={account.descriptor}
+                    symbol={account.symbol}
+                    accountIndex={account.index}
+                    accountLabel={account.metadata.accountLabel}
+                />
             ) : null;
         default:
             return null;

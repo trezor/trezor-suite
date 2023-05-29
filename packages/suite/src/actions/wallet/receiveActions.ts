@@ -29,11 +29,11 @@ export const showUnverifiedAddress =
             modalActions.openModal({
                 type: 'address',
                 device,
-                address,
+                value: address,
                 addressPath: path,
                 networkType: account.networkType,
                 symbol: account.symbol,
-                cancelable: true,
+                isCancelable: true,
             }),
         );
         dispatch({
@@ -51,7 +51,7 @@ export const showAddress =
 
         const modalPayload = {
             device,
-            address,
+            value: address,
             addressPath: path,
             networkType: account.networkType,
             symbol: account.symbol,
@@ -117,8 +117,8 @@ export const showAddress =
                 modalActions.openModal({
                     type: 'address',
                     ...modalPayload,
-                    confirmed: true,
-                    cancelable: true,
+                    isConfirmed: true,
+                    isCancelable: true,
                 }),
             );
             dispatch({
