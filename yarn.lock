@@ -7056,6 +7056,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/qr-code@workspace:suite-native/qr-code"
   dependencies:
+    "@mobily/ts-belt": ^3.13.1
     "@react-navigation/core": ^6.4.6
     "@suite-common/icons": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"

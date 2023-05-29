@@ -10,6 +10,7 @@
         "type-check": "tsc --build"
     },
     "dependencies": {
+        "@mobily/ts-belt": "^3.13.1",
         "@react-navigation/core": "^6.4.6",
         "@suite-common/icons": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",
