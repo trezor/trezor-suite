@@ -387,23 +387,29 @@ export const createPendingTransaction =
         );
     };
 
-/** Remove prepending transactions with outdated deadline */
-const cleanPendingTransactions = (account: Account) => (dispatch: Dispatch, getState: GetState) => {
-    const {
-        wallet: {
-            transactions: { transactions },
-            blockchain: {
-                [account.symbol]: { blockHeight },
+/** Remove outdated pending transactions */
+const cleanPendingTransactions =
+    (account: Account, pending: { txid: string }[]) => (dispatch: Dispatch, getState: GetState) => {
+        const {
+            wallet: {
+                transactions: { transactions },
+                blockchain: {
+                    [account.symbol]: { blockHeight },
+                },
             },
-        },
-    } = getState();
-    const txs = getAccountTransactions(account.key, transactions).filter(
-        tx => tx.deadline && tx.deadline < blockHeight,
-    );
-    if (txs.length) {
-        dispatch(transactionsActions.removeTransaction({ account, txs }));
-    }
-};
+        } = getState();
+        const pendingTxids = pending.map(({ txid }) => txid);
+        const txs = getAccountTransactions(account.key, transactions).filter(tx =>
+            tx.deadline
+                ? // remove prepending transactions with outdated deadline
+                  tx.deadline < blockHeight
+                : // remove pending transactions absent from the last batch
+                  (tx.blockHeight ?? 0) <= 0 && !pendingTxids.includes(tx.txid),
+        );
+        if (txs.length) {
+            dispatch(transactionsActions.removeTransaction({ account, txs }));
+        }
+    };
 
 export const fetchAndUpdateAccount =
     (account: Account) => async (dispatch: Dispatch, getState: GetState) => {
@@ -446,7 +452,7 @@ export const fetchAndUpdateAccount =
 
             onProgress({ checkpoint, transactions: pending });
 
-            dispatch(cleanPendingTransactions(account));
+            dispatch(cleanPendingTransactions(account, pending));
 
             // get fresh state
             const transactions = getState().wallet.transactions.transactions[account.key];
