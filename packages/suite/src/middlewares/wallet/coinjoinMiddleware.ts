@@ -115,29 +115,14 @@ export const coinjoinMiddleware =
             }
         }
 
-        if (action.type === DISCOVERY.START) {
+        if (action.type === DISCOVERY.START || blockchainActions.synced.match(action)) {
             const state = api.getState();
+            const symbol = action.type === DISCOVERY.START ? undefined : action.payload.symbol;
             const isCoinjoinBlockedByTor = selectIsCoinjoinBlockedByTor(state);
             if (!isCoinjoinBlockedByTor) {
-                // find all coinjoin accounts
+                // find all coinjoin accounts (for specific network when initiating action is network-specific)
                 const coinjoinAccounts = state.wallet.accounts.filter(
-                    a => a.accountType === 'coinjoin',
-                );
-                coinjoinAccounts.forEach(a =>
-                    api.dispatch(coinjoinAccountActions.fetchAndUpdateAccount(a)),
-                );
-            }
-        }
-
-        if (blockchainActions.synced.match(action)) {
-            const state = api.getState();
-            const { symbol } = action.payload;
-            const isCoinjoinBlockedByTor = selectIsCoinjoinBlockedByTor(state);
-            if (!isCoinjoinBlockedByTor) {
-                const { accounts } = state.wallet;
-                // find all coinjoin accounts for network
-                const coinjoinAccounts = accounts.filter(
-                    a => a.accountType === 'coinjoin' && a.symbol === symbol,
+                    a => a.accountType === 'coinjoin' && (!symbol || a.symbol === symbol),
                 );
                 coinjoinAccounts.forEach(a =>
                     api.dispatch(coinjoinAccountActions.fetchAndUpdateAccount(a)),
