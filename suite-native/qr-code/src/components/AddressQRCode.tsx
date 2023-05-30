@@ -1,6 +1,8 @@
 import React from 'react';
 import { Alert, Share } from 'react-native';
 
+import { pipe, S, A } from '@mobily/ts-belt';
+
 import { Box, Text, Button, ButtonBackgroundElevation, VStack } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
@@ -20,7 +22,8 @@ const actionButtonsStyle = prepareNativeStyle(_ => ({
     flexDirection: 'row',
 }));
 
-const splitStringByFourCharacters = (input: string) => input.match(/(.{4})/g)?.join(' ');
+const splitStringByFourCharacters = (address: string) =>
+    pipe(address, S.splitByRe(/(.{4})/g), A.join(' '));
 
 export const AddressQRCode = ({ address, backgroundElevation = '0' }: AddressQRCodeProps) => {
     const { applyStyle } = useNativeStyles();
