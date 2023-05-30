@@ -1,5 +1,5 @@
 import { desktopApi } from '@trezor/suite-desktop-api';
-import { AbstractMetadataProvider } from 'src/types/suite/metadata';
+import { AbstractMetadataProvider, MetadataFileInfo } from 'src/types/suite/metadata';
 
 class FileSystemProvider extends AbstractMetadataProvider {
     isCloud = false;
@@ -25,15 +25,15 @@ class FileSystemProvider extends AbstractMetadataProvider {
         });
     }
 
-    async getFileContent(file: string) {
-        const result = await desktopApi.metadataRead({ file: `${file}.mtdt` });
+    async getFileContent(fileName: string) {
+        const result = await desktopApi.metadataRead({ file: `${fileName}.mtdt` });
         if (!result.success && result.code !== 'ENOENT') {
             return this.error('PROVIDER_ERROR', result.error);
         }
         return this.ok(result.success ? Buffer.from(result.payload, 'hex') : undefined);
     }
 
-    async batchSetFileContent(files: Array<{ fileName: string; content: Buffer }>) {
+    async batchSetFileContent(files: Array<MetadataFileInfo>) {
         const writePromises = files.map(async ({ fileName, content }) => {
             const result = await this.setFileContent(fileName, content);
 
@@ -51,11 +51,11 @@ class FileSystemProvider extends AbstractMetadataProvider {
         }
     }
 
-    async setFileContent(file: string, content: Buffer) {
+    async setFileContent(fileName: string, content: Buffer) {
         const hex = content.toString('hex');
 
         const result = await desktopApi.metadataWrite({
-            file: `${file}.mtdt`,
+            file: `${fileName}.mtdt`,
             content: hex,
         });
         if (!result.success) {

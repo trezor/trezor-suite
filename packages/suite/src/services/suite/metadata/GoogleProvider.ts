@@ -1,6 +1,11 @@
 import { RateLimiter } from '@suite-common/suite-utils';
 
-import { AbstractMetadataProvider, OAuthServerEnvironment, Tokens } from 'src/types/suite/metadata';
+import {
+    AbstractMetadataProvider,
+    MetadataFileInfo,
+    OAuthServerEnvironment,
+    Tokens,
+} from 'src/types/suite/metadata';
 import GoogleClient from 'src/services/google';
 
 class GoogleProvider extends AbstractMetadataProvider {
@@ -36,9 +41,9 @@ class GoogleProvider extends AbstractMetadataProvider {
         }
     }
 
-    async getFileContent(file: string) {
+    async getFileContent(fileName: string) {
         try {
-            const id = await GoogleClient.getIdByName(`${file}.mtdt`);
+            const id = await GoogleClient.getIdByName(`${fileName}.mtdt`);
             if (!id) {
                 return this.ok(undefined);
             }
@@ -65,7 +70,7 @@ class GoogleProvider extends AbstractMetadataProvider {
     }
 
     // Google API complains when we try to write too many files at once
-    async batchSetFileContent(files: Array<{ fileName: string; content: Buffer }>) {
+    async batchSetFileContent(files: Array<MetadataFileInfo>) {
         const limiter = new RateLimiter(300);
 
         try {
@@ -85,16 +90,16 @@ class GoogleProvider extends AbstractMetadataProvider {
         }
     }
 
-    async setFileContent(file: string, content: Buffer) {
+    async setFileContent(fileName: string, content: Buffer) {
         try {
             // search for file by name with forceReload=true parameter to make sure that we do not save
             // two files with the same name but different ids
-            const id = await GoogleClient.getIdByName(`${file}.mtdt`, true);
+            const id = await GoogleClient.getIdByName(`${fileName}.mtdt`, true);
             if (id) {
                 await GoogleClient.update(
                     {
                         body: {
-                            name: `${file}.mtdt`,
+                            name: `${fileName}.mtdt`,
                             mimeType: 'text/plain;charset=UTF-8',
                         },
                     },
@@ -106,7 +111,7 @@ class GoogleProvider extends AbstractMetadataProvider {
             await GoogleClient.create(
                 {
                     body: {
-                        name: `${file}.mtdt`,
+                        name: `${fileName}.mtdt`,
                         mimeType: 'text/plain;charset=UTF-8',
                         parents: ['appDataFolder'],
                     },

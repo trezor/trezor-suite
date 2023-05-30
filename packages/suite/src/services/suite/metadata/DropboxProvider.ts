@@ -1,6 +1,6 @@
 import { Dropbox, DropboxAuth, files } from 'dropbox';
 import type { users } from 'dropbox';
-import { AbstractMetadataProvider } from 'src/types/suite/metadata';
+import { AbstractMetadataProvider, MetadataFileInfo } from 'src/types/suite/metadata';
 import {
     extractCredentialsFromAuthorizationFlow,
     getOauthReceiverUrl,
@@ -103,10 +103,10 @@ class DropboxProvider extends AbstractMetadataProvider {
         }
     }
 
-    async getFileContent(file: string) {
+    async getFileContent(fileName: string) {
         try {
             const { result } = await this.client.filesSearchV2({
-                query: `${file}.mtdt`,
+                query: `${fileName}.mtdt`,
             });
 
             // this is basically impossible to happen (maybe QA team might get there) after few years of testing
@@ -118,7 +118,7 @@ class DropboxProvider extends AbstractMetadataProvider {
                 let match = result.matches.find(
                     m =>
                         'metadata' in m.metadata &&
-                        m.metadata.metadata.path_lower === `/${file}.mtdt`,
+                        m.metadata.metadata.path_lower === `/${fileName}.mtdt`,
                 );
 
                 // ... or in the legacy folder
@@ -127,7 +127,7 @@ class DropboxProvider extends AbstractMetadataProvider {
                 const matchLegacy = result.matches.find(
                     m =>
                         'metadata' in m.metadata &&
-                        m.metadata.metadata.path_lower === `/apps/trezor/${file}.mtdt`,
+                        m.metadata.metadata.path_lower === `/apps/trezor/${fileName}.mtdt`,
                 );
 
                 // fail if it is in neither
@@ -156,7 +156,7 @@ class DropboxProvider extends AbstractMetadataProvider {
         }
     }
 
-    async batchSetFileContent(files: Array<{ fileName: string; content: Buffer }>) {
+    async batchSetFileContent(files: Array<MetadataFileInfo>) {
         try {
             // refresh token because the upload can take time
             await this.auth.checkAndRefreshAccessToken();
@@ -208,12 +208,12 @@ class DropboxProvider extends AbstractMetadataProvider {
         }
     }
 
-    async setFileContent(file: string, content: Buffer) {
+    async setFileContent(fileName: string, content: Buffer) {
         try {
             const blob = new Blob([content], { type: 'text/plain;charset=UTF-8' });
 
             await this.client.filesUpload({
-                path: `/${file}.mtdt`,
+                path: `/${fileName}.mtdt`,
                 contents: blob,
                 // @ts-expect-error
                 mode: 'overwrite',

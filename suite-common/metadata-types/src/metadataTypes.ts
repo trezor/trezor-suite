@@ -42,6 +42,11 @@ export type Tokens = {
 
 export type EncodingVersion = 1 | 2;
 
+export type MetadataFileInfo = {
+    fileName: string;
+    content: Buffer;
+};
+
 /**
  * Representation of provider data stored in reducer
  * properties 'tokens' and 'type' are needed to recreate corresponding provider instance
@@ -112,12 +117,12 @@ export abstract class AbstractMetadataProvider {
     /**
      * For given filename download metadata file from provider
      */
-    abstract getFileContent(file: string): Result<Buffer | undefined>;
+    abstract getFileContent(fileName: string): Result<Buffer | undefined>;
     /**
      * Upload metadata content in a batch cloud provider for given filenames and content
      * (required by the providers)
      */
-    abstract batchSetFileContent(files: Array<{ fileName: string; content: any }>): Result<void>;
+    abstract batchSetFileContent(files: Array<MetadataFileInfo>): Result<void>;
     /**
      * Upload metadata content in cloud provider for given filename and content
      */
