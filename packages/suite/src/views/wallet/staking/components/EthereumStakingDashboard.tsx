@@ -18,7 +18,12 @@ export const EthereumStakingDashboard = ({ selectedAccount }: EthereumStakingDas
     const [stakeForm, setStakeForm] = React.useState(false);
 
     if (stakeForm) {
-        return <EthereumStakeForm selectedAccount={selectedAccount} />;
+        return (
+            <EthereumStakeForm
+                selectedAccount={selectedAccount}
+                onClose={() => setStakeForm(false)}
+            />
+        );
     }
 
     return (

@@ -69,7 +69,7 @@ export const networks = {
             nft: 'https://eth1.trezor.io/nft/',
             address: 'https://eth1.trezor.io/address/',
         },
-        features: ['rbf', 'sign-verify', 'tokens'],
+        features: ['rbf', 'sign-verify', 'tokens', 'staking'],
         label: 'TR_NETWORK_ETHEREUM_LABEL',
         tooltip: 'TR_NETWORK_ETHEREUM_TOOLTIP',
         customBackends: ['blockbook'],

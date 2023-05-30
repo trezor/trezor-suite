@@ -1,7 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import { variables } from '@trezor/components';
-import { useSendFormContext } from '@wallet-hooks';
+import { useSendFormContext, useStakeFormContext } from '@wallet-hooks';
+
 import { formatNetworkAmount, formatAmount } from '@suite-common/wallet-utils';
 import { Card, Translation, FiatValue, FormattedCryptoAmount } from '@suite-components';
 
@@ -60,16 +61,20 @@ const TotalSentFiat = styled.div`
     color: ${props => props.theme.TYPE_LIGHT_GREY};
 `;
 
-export const TotalSent = () => {
+interface TotalTxWithFeeProps {
+    useContext: typeof useSendFormContext | typeof useStakeFormContext;
+}
+
+export const TotalTxWithFee = ({ useContext }: TotalTxWithFeeProps) => {
     const {
         account: { symbol, networkType },
         composedLevels,
         getValues,
-    } = useSendFormContext();
+    } = useContext();
 
     const selectedFee = getValues().selectedFee || 'normal';
     const transactionInfo = composedLevels ? composedLevels[selectedFee] : undefined;
-    const isTokenTransfer = networkType === 'ethereum' && !!getValues('outputs[0].token');
+    const isTokenTransfer = networkType === 'ethereum' && !!getValues()?.outputs?.[0]?.token;
     const tokenInfo =
         transactionInfo && transactionInfo.type !== 'error' ? transactionInfo.token : undefined;
 

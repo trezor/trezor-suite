@@ -4,7 +4,7 @@ import { variables } from '@trezor/components';
 
 import { Card } from '@suite-components';
 import { Fees } from '@wallet-components/Fees';
-import { useSendFormContext } from '@wallet-hooks';
+import { useSendFormContext, useStakeFormContext } from '@wallet-hooks';
 
 const StyledCard = styled(Card)`
     display: flex;
@@ -16,10 +16,13 @@ const StyledCard = styled(Card)`
     }
 `;
 
-// wrapper for shareable Fees component
-export const SendFees = () => {
+interface FeesWrapperProps {
+    useContext: typeof useSendFormContext | typeof useStakeFormContext;
+}
+
+export const FeesWrapper = ({ useContext }: FeesWrapperProps) => {
     const {
-        errors,
+        formState,
         register,
         control,
         setValue,
@@ -28,13 +31,13 @@ export const SendFees = () => {
         account,
         feeInfo,
         composedLevels,
-    } = useSendFormContext();
+    } = useContext();
 
     return (
         <StyledCard>
             <Fees
                 control={control}
-                errors={errors}
+                errors={formState.errors}
                 register={register}
                 feeInfo={feeInfo}
                 setValue={setValue}

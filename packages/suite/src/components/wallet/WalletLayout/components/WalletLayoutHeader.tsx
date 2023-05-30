@@ -37,9 +37,15 @@ type WalletLayoutHeaderProps = {
     children?: React.ReactNode;
     title: ExtendedMessageDescriptor['id'];
     routeName?: Route['name'];
+    onClose?: () => void;
 };
 
-export const WalletLayoutHeader = ({ title, children, routeName }: WalletLayoutHeaderProps) => (
+export const WalletLayoutHeader = ({
+    title,
+    children,
+    routeName,
+    onClose,
+}: WalletLayoutHeaderProps) => (
     <HeaderWrapper>
         <HeaderLeft>
             <StyledTitle>
@@ -48,7 +54,7 @@ export const WalletLayoutHeader = ({ title, children, routeName }: WalletLayoutH
         </HeaderLeft>
         <HeaderRight>
             {children}
-            <AccountFormCloseButton routeName={routeName} />
+            <AccountFormCloseButton routeName={routeName} onClose={onClose} />
         </HeaderRight>
     </HeaderWrapper>
 );

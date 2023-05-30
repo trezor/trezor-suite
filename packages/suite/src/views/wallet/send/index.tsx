@@ -8,11 +8,12 @@ import { useSendForm, SendContext, UseSendFormProps } from '@wallet-hooks/useSen
 import { Header } from './components/Header';
 import Outputs from './components/Outputs';
 import Options from './components/Options';
-import { SendFees } from './components/Fees';
-import { TotalSent } from './components/TotalSent';
+import { FeesWrapper } from '@wallet-views/FeesWrapper';
+import { TotalTxWithFee } from '@wallet-views/TotalTxWithFee';
 import { ReviewButton } from './components/ReviewButton';
 import Raw from './components/Raw';
 import { selectCurrentTargetAnonymity } from '@wallet-reducers/coinjoinReducer';
+import { useSendFormContext } from '@wallet-hooks';
 
 const StyledCard = styled(Card)`
     display: flex;
@@ -41,8 +42,8 @@ const SendLoaded = ({ children, ...props }: SendLoadedProps) => {
                             <Outputs disableAnim={!!children} />
                             <Options />
                         </StyledCard>
-                        <SendFees />
-                        <TotalSent />
+                        <FeesWrapper useContext={useSendFormContext} />
+                        <TotalTxWithFee useContext={useSendFormContext} />
                         <ReviewButton />
                         {children}
                     </>

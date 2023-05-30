@@ -5427,6 +5427,10 @@ export default defineMessages({
         id: 'AMOUNT_SEND_MAX',
         defaultMessage: 'Send max',
     },
+    AMOUNT_STAKE_MAX: {
+        id: 'AMOUNT_STAKE_MAX',
+        defaultMessage: 'Stake max',
+    },
     AMOUNT_IS_NOT_ENOUGH: {
         defaultMessage: 'Not enough funds',
         id: 'AMOUNT_IS_NOT_ENOUGH',
