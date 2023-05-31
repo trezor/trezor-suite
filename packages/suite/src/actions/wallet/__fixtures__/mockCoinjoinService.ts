@@ -41,6 +41,7 @@ export const mockCoinjoinService = () => {
                     change: [],
                 },
             })),
+            getAccountCheckpoint: jest.fn(() => undefined),
         };
         return { client, backend };
     };
