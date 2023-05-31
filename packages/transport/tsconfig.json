@@ -6,6 +6,8 @@
     },
     "include": ["src"],
     "references": [
+        { "path": "../protobuf" },
+        { "path": "../protocol" },
         { "path": "../utils" },
         { "path": "../trezor-user-env-link" }
     ]

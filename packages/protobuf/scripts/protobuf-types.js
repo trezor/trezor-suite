@@ -198,7 +198,7 @@ export type TypedCall = <T extends MessageKey, R extends MessageKey>(
 `);
 
 // save to file
-const filePath = path.join(__dirname, '../src/types/messages.ts');
+const filePath = path.join(__dirname, '../src/messages.ts');
 
 fs.writeFile(filePath, lines.join('\n'), err => {
     if (err) return console.log(err);

@@ -2,9 +2,8 @@
 //
 // Logic of "call" is broken to two parts - sending and receiving
 import { Root } from 'protobufjs/light';
-import { encode as encodeProtobuf } from './protobuf';
-import { encode as encodeProtocol } from './protocol';
-import { createMessageFromName } from './protobuf/messages';
+import { encode as encodeProtobuf, createMessageFromName } from '@trezor/protobuf';
+import { v1 as protocolV1 } from '@trezor/protocol';
 
 // Sends more buffers to device.
 async function sendBuffers(sender: (data: Buffer) => Promise<void>, buffers: Array<Buffer>) {
@@ -19,7 +18,7 @@ export function buildOne(messages: Root, name: string, data: Record<string, unkn
     const { Message, messageType } = createMessageFromName(messages, name);
 
     const buffer = encodeProtobuf(Message, data);
-    return encodeProtocol(buffer, {
+    return protocolV1.encode(buffer, {
         addTrezorHeaders: false,
         chunked: false,
         messageType,
@@ -29,7 +28,7 @@ export function buildOne(messages: Root, name: string, data: Record<string, unkn
 export const buildBuffers = (messages: Root, name: string, data: Record<string, unknown>) => {
     const { Message, messageType } = createMessageFromName(messages, name);
     const buffer = encodeProtobuf(Message, data);
-    return encodeProtocol(buffer, {
+    return protocolV1.encode(buffer, {
         addTrezorHeaders: true,
         chunked: true,
         messageType,

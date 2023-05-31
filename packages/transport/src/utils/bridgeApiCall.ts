@@ -4,6 +4,8 @@ import { success, error, unknownError } from './result';
 
 import * as ERRORS from '../errors';
 
+import { PROTOCOL_MALFORMED } from '@trezor/protocol';
+
 export type HttpRequestOptions = {
     body?: Array<any> | Record<string, unknown> | string;
     url: string;
@@ -97,10 +99,10 @@ export async function bridgeApiCall(options: HttpRequestOptions) {
             return error({ error: ERRORS.INTERFACE_UNABLE_TO_OPEN_DEVICE });
         }
         if (errStr === BRIDGE_MALFORMED_PROTOBUF) {
-            return error({ error: ERRORS.PROTOCOL_MALFORMED });
+            return error({ error: PROTOCOL_MALFORMED });
         }
         if (errStr === BRIDGE_MALFORMED_WIRE_FORMAT) {
-            return error({ error: ERRORS.PROTOCOL_MALFORMED });
+            return error({ error: PROTOCOL_MALFORMED });
         }
         return unknownError(new Error(errStr), [
             ERRORS.DEVICE_NOT_FOUND,

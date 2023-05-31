@@ -5,7 +5,7 @@ import CopyWebpackPlugin from 'copy-webpack-plugin';
 import TerserPlugin from 'terser-webpack-plugin';
 
 const COMMON_DATA_SRC = '../../packages/connect-common/files';
-const MESSAGES_SRC = '../../packages/transport/messages.json';
+const MESSAGES_SRC = '../../packages/protobuf/messages.json';
 
 const DIST = path.resolve(__dirname, '../build');
 

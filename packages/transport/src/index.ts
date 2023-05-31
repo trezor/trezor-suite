@@ -11,14 +11,14 @@ export * as TRANSPORT_ERROR from './errors';
 protobuf.util.Long = Long;
 protobuf.configure();
 
-export type { MessageFromTrezor, Descriptor } from './types';
+export type { Descriptor } from './types';
 export { TREZOR_USB_DESCRIPTORS, TRANSPORT } from './constants';
 
 export { AbstractTransport as Transport } from './transports/abstract';
 
 // messages are exported but there is no real need to use them elsewhere
 // transports have reference to this already
-export * as Messages from './types/messages';
+export { Messages } from '@trezor/protobuf';
 
 // browser + node
 export { BridgeTransport } from './transports/bridge';

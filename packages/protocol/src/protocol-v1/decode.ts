@@ -1,6 +1,7 @@
 import ByteBuffer from 'bytebuffer';
-import { MESSAGE_HEADER_BYTE } from '../../constants';
-import * as ERRORS from '../../errors';
+
+import * as ERRORS from '../errors';
+import { MESSAGE_HEADER_BYTE } from './constants';
 
 /**
  * Reads meta information from buffer
