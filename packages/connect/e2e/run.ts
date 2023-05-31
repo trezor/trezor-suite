@@ -52,6 +52,12 @@ const getEmulatorOptions = (availableFirmwares: Firmwares) => {
 
     if (firmwareModel) {
         Object.assign(emulatorStartOpts, { model: firmwareModel });
+
+        // temporary, it seems that model "R" does not have any built versions
+        // and only master build is available
+        if (firmwareModel === 'R') {
+            [emulatorStartOpts.version] = availableFirmwares.R;
+        }
     }
 
     return emulatorStartOpts;
