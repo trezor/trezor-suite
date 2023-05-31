@@ -314,7 +314,7 @@ describe('selectRound', () => {
                     utxos: [{ outpoint: 'AA', amount: 1001, anonymityLevel: 1 }],
                 },
             ],
-            options: { ...server?.requestOptions, logger: console },
+            options: server?.requestOptions,
         });
 
         expect(spy).toBeCalledTimes(1); // middleware was called once
