@@ -39,7 +39,7 @@ jobs:
       - name: verify workspace resolutions
         run: yarn check-workspace-resolutions
       - name: msg-system config validation
-        run: yarn workspace @trezor/message-system validate-config
+        run: yarn workspace @suite-common/message-system validate-config
       - run: git status
       - name: build libs
         run: yarn nx:build:libs

@@ -1,6 +1,6 @@
 import { createAction } from '@reduxjs/toolkit';
 
-import { Category, MessageSystem } from '@trezor/message-system';
+import { Category, MessageSystem } from '@suite-common/suite-types';
 
 export type ValidMessagesPayload = { [key in Category]: string[] };
 

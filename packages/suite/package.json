@@ -54,7 +54,6 @@
         "@trezor/device-utils": "workspace:*",
         "@trezor/dom-utils": "workspace:*",
         "@trezor/env-utils": "workspace:*",
-        "@trezor/message-system": "workspace:*",
         "@trezor/react-utils": "workspace:*",
         "@trezor/suite-analytics": "workspace:*",
         "@trezor/suite-data": "workspace:*",

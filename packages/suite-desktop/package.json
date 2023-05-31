@@ -30,6 +30,7 @@
     },
     "dependencies": {
         "@sentry/electron": "^4.5.0",
+        "@suite-common/message-system": "workspace:*",
         "@suite-common/sentry": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
         "@suite-common/suite-utils": "workspace:*",
@@ -37,7 +38,6 @@
         "@trezor/connect": "workspace:*",
         "@trezor/connect-common": "workspace:*",
         "@trezor/ipc-proxy": "workspace:*",
-        "@trezor/message-system": "workspace:^",
         "@trezor/node-utils": "workspace:*",
         "@trezor/request-manager": "workspace:*",
         "@trezor/suite-desktop-api": "workspace:*",

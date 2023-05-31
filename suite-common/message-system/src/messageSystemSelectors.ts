@@ -1,6 +1,6 @@
 import { memoize, memoizeWithArgs } from 'proxy-memoize';
 
-import { Message, Category } from '@trezor/message-system';
+import { Message, Category } from '@suite-common/suite-types';
 
 import { ContextDomain, FeatureDomain, MessageSystemRootState } from './messageSystemTypes';
 

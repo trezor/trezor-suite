@@ -1,9 +1,11 @@
 /* eslint-disable no-console */
+
 import * as fs from 'fs-extra';
 import * as jws from 'jws';
 import { join } from 'path';
 
-import { CONFIG_PATH, PACKAGE_ROOT, JWS_CONFIG_FILENAME } from '../constants';
+import { CONFIG_PATH, PACKAGE_ROOT } from './constants';
+import { JWS_CONFIG_FILENAME, JWS_SIGN_ALGORITHM } from '../src/messageSystemConstants';
 
 // There must be no extra spaces at the beginning of the line.
 const devPrivateKey = `-----BEGIN EC PRIVATE KEY-----
@@ -41,7 +43,7 @@ const getConfigJwsSignature = () => {
     const config = fs.readFileSync(CONFIG_PATH, 'utf-8');
 
     const jwsConfig = jws.sign({
-        header: { alg: 'ES256' }, // Algorithm has to be consistent with the one used for verification https://github.com/trezor/trezor-suite/blob/develop/packages/suite/src/actions/suite/messageSystemActions.ts#L82
+        header: { alg: JWS_SIGN_ALGORITHM },
         payload: config,
         secret: getPrivateKey(),
     });

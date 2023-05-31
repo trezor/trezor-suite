@@ -1,4 +1,4 @@
-import { MessageSystem, Category } from '@trezor/message-system';
+import { MessageSystem, Category } from '@suite-common/suite-types';
 
 export type MessageState = { [key in Category]: boolean };
 

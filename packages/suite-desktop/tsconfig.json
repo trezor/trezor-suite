@@ -6,6 +6,9 @@
     },
     "include": ["./src", "./e2e", "**/*.json"],
     "references": [
+        {
+            "path": "../../suite-common/message-system"
+        },
         { "path": "../../suite-common/sentry" },
         {
             "path": "../../suite-common/suite-types"
@@ -17,7 +20,6 @@
         { "path": "../connect" },
         { "path": "../connect-common" },
         { "path": "../ipc-proxy" },
-        { "path": "../message-system" },
         { "path": "../node-utils" },
         { "path": "../request-manager" },
         { "path": "../suite-desktop-api" },

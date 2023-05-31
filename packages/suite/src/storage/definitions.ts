@@ -5,6 +5,7 @@ import type { AcquiredDevice } from '@suite-types';
 import type { MetadataState } from '@suite-types/metadata';
 import type { Trade } from '@wallet-types/coinmarketCommonTypes';
 import type { MessageState } from '@suite-common/message-system';
+import type { MessageSystem } from '@suite-common/suite-types';
 import type { FormDraft } from '@wallet-types/form';
 import type {
     Account,
@@ -15,7 +16,6 @@ import type {
 } from '@wallet-types';
 import type { CoinjoinAccount, CoinjoinDebugSettings } from '@wallet-types/coinjoin';
 
-import type { MessageSystem } from '@trezor/message-system';
 import type { BackendSettings, WalletSettings } from '@suite-common/wallet-types';
 import type { StorageUpdateMessage } from '@trezor/suite-storage';
 import { AnalyticsState } from '@suite-common/analytics';

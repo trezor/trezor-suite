@@ -8,16 +8,8 @@ import {
     getOsVersion,
     Environment as EnvironmentType,
 } from '@trezor/env-utils';
-import type { TrezorDevice } from '@suite-common/suite-types';
-import type { Network } from '@suite-common/wallet-config';
-import type { TransportInfo } from '@trezor/connect';
-import {
-    getBootloaderVersion,
-    getDeviceModel,
-    getFirmwareRevision,
-    getFirmwareVersion,
-} from '@trezor/device-utils';
 import type {
+    TrezorDevice,
     Duration,
     MessageSystem,
     Message,
@@ -26,7 +18,15 @@ import type {
     Transport,
     Device,
     Environment,
-} from '@trezor/message-system';
+} from '@suite-common/suite-types';
+import type { Network } from '@suite-common/wallet-config';
+import type { TransportInfo } from '@trezor/connect';
+import {
+    getBootloaderVersion,
+    getDeviceModel,
+    getFirmwareRevision,
+    getFirmwareVersion,
+} from '@trezor/device-utils';
 
 import { ValidMessagesPayload } from './messageSystemActions';
 

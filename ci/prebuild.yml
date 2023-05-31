@@ -3,11 +3,12 @@ msg-system config sign dev:
   stage: prebuild
   script:
     - yarn install --immutable
-    - yarn workspace @trezor/message-system sign-config
+    - yarn message-system-sign-config
   artifacts:
     expire_in: 7 days
     paths:
-      - packages/message-system/files/config.v1.jws
+      - suite-common/message-system/files/config.v1.jws
+      - suite-common/message-system/files/config.v1.ts
   interruptible: true
 
 msg-system config sign stable:
@@ -23,8 +24,9 @@ msg-system config sign stable:
     - . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh || true # loads nix-shell
     - nix-shell --option system x86_64-darwin --run "git lfs pull"
     - nix-shell --option system x86_64-darwin --run "yarn install --immutable"
-    - nix-shell --option system x86_64-darwin --run "yarn workspace @trezor/message-system sign-config"
+    - nix-shell --option system x86_64-darwin --run "yarn message-system-sign-config"
   artifacts:
     expire_in: 7 days
     paths:
-      - packages/message-system/files/config.v1.jws
+      - suite-common/message-system/files/config.v1.jws
+      - suite-common/message-system/files/config.v1.ts
