@@ -338,7 +338,6 @@ connect manual:
 
 connect model R:
   extends: .connect
-  allow_failure: true
   only:
     refs:
       - schedules
@@ -348,49 +347,19 @@ connect model R:
         TESTS_PATTERN: "methods"
         TESTS_FIRMWARE: ["2-latest"]
         TESTS_FIRMWARE_MODEL: "R"
-        # todo: would be nice to create a scheduled job in firmware-repo in order to have artifact from this branch always available
-        TESTS_FIRMWARE_URL: "https://gitlab.com/satoshilabs/trezor/trezor-firmware/-/jobs/4189306201/artifacts/raw/core/build/unix/trezor-emu-core"
-        # one method per job for easier debugging
-        TESTS_INCLUDED_METHODS: [
-            "applySettings",
-            "applyFlags",
-            "getFeatures",
-            "getFirmwareHash",
+        TESTS_INCLUDED_METHODS:
+          [
+            "applySettings,applyFlags,getFeatures,getFirmwareHash",
             "signTransaction",
-            "getAccountInfo",
-            "getAddress",
-            "getPublicKey",
-            "signMessage",
-            "verifyMessage",
-            "composeTransaction",
-            "stellarGetAddress",
-            "stellarSignTransaction",
-            "cardanoGetAddress",
-            "cardanoGetNativeScriptHash",
-            "cardanoGetPublicKey",
-            "cardanoSignTransaction",
-            "eosGetPublicKey",
-            "eosSignTransaction",
-            "ethereumGetAddress",
-            "ethereumGetPublicKey",
-            "ethereumSignMessage",
-            "ethereumSignTransaction",
-            "ethereumVerifyMessage",
-            "nemGetAddress",
-            "nemSignTransaction",
-            "rippleGetAddress",
-            "rippleSignTransaction",
-            "tezosGetAddress",
-            "tezosGetPublicKey",
-            "tezosSignTransaction",
-            "binanceGetAddress",
-            "binanceGetPublicKey",
-            "binanceSignTransaction",
-            # Failing, firmware probably not rebased, newly added functionality
-            "getOwnershipId",
-            "getOwnershipProof",
-            # Fails on structs_arrays_v4, weird error "Transport stopped."
-            "ethereumSignTypedData",
+            "getAccountInfo,getAddress,getPublicKey,signMessage,verifyMessage,composeTransaction,getOwnershipId,getOwnershipProof",
+            "stellarGetAddress,stellarSignTransaction",
+            "cardanoGetAddress,cardanoGetNativeScriptHash,cardanoGetPublicKey,cardanoSignTransaction",
+            "eosGetPublicKey,eosSignTransaction",
+            "ethereumGetAddress,ethereumGetPublicKey,ethereumSignMessage,ethereumSignTransaction,ethereumVerifyMessage,ethereumSignTypedData",
+            "nemGetAddress,nemSignTransaction",
+            "rippleGetAddress,rippleSignTransaction",
+            "tezosGetAddress,tezosGetPublicKey,tezosSignTransaction",
+            "binanceGetAddress,binanceGetPublicKey,binanceSignTransaction",
           ]
         TESTS_MOCK_BACKENDS: "false"
 
