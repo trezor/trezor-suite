@@ -639,6 +639,40 @@ export const createCoinjoinAccount =
         return dispatch(fetchAndUpdateAccount(account.payload));
     };
 
+export const rescanCoinjoinAccount =
+    (accountKey: string, fullRescan = false) =>
+    async (dispatch: Dispatch, getState: GetState) => {
+        const state = getState();
+        const account = selectAccountByKey(state, accountKey);
+        if (account?.backendType !== 'coinjoin' || account.syncing) return;
+        if (selectIsAnySessionInCriticalPhase(state)) return;
+        const api = await dispatch(coinjoinClientActions.initCoinjoinService(account.symbol));
+        if (!api) return;
+
+        // lock
+        dispatch(accountsActions.startCoinjoinAccountSync(account));
+
+        // clear txs
+        dispatch(transactionsActions.resetTransaction({ account }));
+
+        // reset cj account
+        const checkpoint = fullRescan
+            ? undefined
+            : await api.backend.getAccountCheckpoint(account.descriptor);
+        dispatch(coinjoinAccountDiscoveryReset(accountKey, checkpoint));
+
+        // reset account + unlock
+        const { payload } = dispatch(
+            accountsActions.updateAccount(
+                { ...account, status: 'initial' },
+                { ...EMPTY_ACCOUNT_INFO, descriptor: account.descriptor },
+            ),
+        );
+
+        // start discovery
+        return dispatch(fetchAndUpdateAccount(payload));
+    };
+
 const authorizeCoinjoin =
     (account: Account, coordinator: string, params: CoinjoinSessionParameters) =>
     async (dispatch: Dispatch, getState: GetState) => {

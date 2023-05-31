@@ -18,6 +18,7 @@ import { CARD_PADDING_SIZE } from '@suite-constants/layout';
 import { NETWORKS } from '@wallet-config';
 import { CoinjoinLogs } from '@wallet-components/PrivacyAccount/CoinjoinLogs';
 import { CoinjoinSetup } from '@wallet-components/PrivacyAccount/CoinjoinSetup';
+import { RescanAccount } from '@wallet-components/PrivacyAccount/RescanAccount';
 
 const Heading = styled.h3`
     color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
@@ -93,7 +94,7 @@ const Details = () => {
     const accountTypeUrl = getAccountTypeUrl(account.path);
     const accountTypeDesc = getAccountTypeDesc(account.path);
 
-    const isCoinjoinAccount = account.accountType === 'coinjoin';
+    const isCoinjoinAccount = account.backendType === 'coinjoin';
 
     return (
         <WalletLayout
@@ -131,7 +132,7 @@ const Details = () => {
                             </P>
                         </AccountTypeLabel>
                     </Row>
-                    {!isCoinjoinAccount && (
+                    {!isCoinjoinAccount ? (
                         <Row>
                             <TextColumn
                                 title={<Translation id="TR_ACCOUNT_DETAILS_XPUB_HEADER" />}
@@ -160,6 +161,8 @@ const Details = () => {
                                 </ActionButton>
                             </ActionColumn>
                         </Row>
+                    ) : (
+                        <RescanAccount account={account} />
                     )}
                 </StyledCard>
 
