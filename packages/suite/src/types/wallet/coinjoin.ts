@@ -53,6 +53,10 @@ export interface AnonymityGains {
     lastReportTimestamp?: number;
 }
 
+export interface CoinjoinTxCandidate {
+    roundId: string;
+}
+
 export interface CoinjoinAccount {
     key: string; // reference to wallet Account.key
     symbol: NetworkSymbol;
@@ -62,6 +66,7 @@ export interface CoinjoinAccount {
     previousSessions: CoinjoinSession[]; // history
     checkpoints?: CoinjoinDiscoveryCheckpoint[];
     anonymityGains?: AnonymityGains;
+    transactionCandidates?: CoinjoinTxCandidate[];
 }
 
 export type CoinjoinServerEnvironment = 'public' | 'staging' | 'localhost';

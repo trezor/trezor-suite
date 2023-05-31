@@ -225,6 +225,32 @@ const sessionTxSigned = (
     };
 };
 
+const addTxCandidate = (
+    draft: CoinjoinState,
+    payload: ExtractActionPayload<typeof COINJOIN.SESSION_TX_CANDIDATE>,
+) => {
+    const account = getAccount(draft, payload.accountKey);
+    if (!account) return;
+    account.transactionCandidates = [{ roundId: payload.roundId }];
+};
+
+const removeTxCandidate = (
+    draft: CoinjoinState,
+    payload: ExtractActionPayload<typeof COINJOIN.SESSION_TX_BROADCASTED>,
+) => {
+    payload.accountKeys.forEach(key => {
+        const account = getAccount(draft, key);
+        if (account && account.transactionCandidates) {
+            account.transactionCandidates = account.transactionCandidates.filter(
+                tx => tx.roundId !== payload.round.id,
+            );
+            if (account.transactionCandidates.length < 1) {
+                delete account.transactionCandidates;
+            }
+        }
+    });
+};
+
 const updateSessionStarting = (
     draft: CoinjoinState,
     payload: ExtractActionPayload<typeof COINJOIN.SESSION_STARTING>,
@@ -528,6 +554,13 @@ export const coinjoinReducer = (
                 break;
             case COINJOIN.SESSION_TX_SIGNED:
                 sessionTxSigned(draft, action.payload);
+                break;
+            case COINJOIN.SESSION_TX_CANDIDATE:
+                addTxCandidate(draft, action.payload);
+                break;
+            case COINJOIN.SESSION_TX_BROADCASTED:
+            case COINJOIN.SESSION_TX_FAILED:
+                removeTxCandidate(draft, action.payload);
                 break;
             case COINJOIN.SESSION_STARTING:
                 updateSessionStarting(draft, action.payload);

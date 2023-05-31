@@ -54,12 +54,10 @@ export const saveCoinjoinAccount =
     (accountKey: string) => async (_: Dispatch, getState: GetState) => {
         const coinjoinAccount = selectCoinjoinAccountByKey(getState(), accountKey);
         if (!coinjoinAccount || !(await db.isAccessible())) return;
-        return db.addItem(
-            'coinjoinAccounts',
-            serializeCoinjoinSession(coinjoinAccount),
-            accountKey,
-            true,
-        );
+        const serializedAccount = serializeCoinjoinSession(coinjoinAccount);
+        delete serializedAccount.transactionCandidates; // do not store tx candidates
+
+        return db.addItem('coinjoinAccounts', serializedAccount, accountKey, true);
     };
 
 const removeCoinjoinRelatedSetting = (state: AppState) => {
