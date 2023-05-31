@@ -48,6 +48,10 @@ export const config = {
             url: './data/coins.json',
         },
         {
+            name: 'coinsEth',
+            url: './data/coins-eth.json',
+        },
+        {
             name: 'bridge',
             url: './data/bridge/releases.json',
         },
