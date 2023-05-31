@@ -95,6 +95,8 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
     // @ts-expect-error: strictPropertyInitialization
     removeUiPromise: (promise: Deferred<any>) => void;
 
+    initAsync?(): Promise<void>;
+
     constructor(message: { id?: number; payload: Payload<Name> }) {
         const { payload } = message;
         this.name = payload.method;
