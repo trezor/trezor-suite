@@ -8,7 +8,8 @@ const port = 30002;
  * Mock implementation of Dropbox service intended to be used in e2e tests.
  */
 export class DropboxMock {
-    files: Record<string, any> = {};
+    files: Record<string, Buffer> = {};
+    uploadSessionFiles: Record<string, Buffer> = {};
     nextResponse: null | Record<string, any> = null;
     // store requests for assertions in tests
     requests: string[] = [];
@@ -139,6 +140,69 @@ export class DropboxMock {
             res.end();
         });
 
+        // https://api.dropboxapi.com/2/files/list_folder
+        app.post('/2/files/list_folder', (_req, res) => {
+            const entries = Object.keys(this.files).map(name => {
+                const formattedName = name.replace('/apps/trezor/', '');
+
+                return { name: formattedName };
+            });
+
+            res.write(
+                JSON.stringify({
+                    entries,
+                }),
+            );
+
+            return res.send();
+        });
+
+        // https://api.dropboxapi.com/2/files/upload_session/start_batch
+        app.post('/2/files/upload_session/start_batch', (req, res) => {
+            const { num_sessions } = req.body as { num_sessions: number };
+
+            res.write(
+                JSON.stringify({
+                    session_ids: Array.from({ length: num_sessions }, (_, i) => i),
+                }),
+            );
+
+            return res.send();
+        });
+
+        // https://content.dropboxapi.com/2/files/upload_session/append_v2
+        app.post('/2/files/upload_session/append_v2', (req, res) => {
+            // @ts-expect-error
+            const dropboxApiArgs = JSON.parse(req.headers['dropbox-api-arg']);
+            const { cursor } = dropboxApiArgs;
+            const file = req.body;
+
+            this.uploadSessionFiles[cursor.session_id] = file;
+
+            return res.send();
+        });
+
+        // https://content.dropboxapi.com/2/files/upload_session/finish_batch_v2
+        app.post('/2/files/upload_session/finish_batch_v2', (req, res) => {
+            const { entries } = req.body as {
+                entries: Array<{
+                    cursor: {
+                        session_id: number;
+                    };
+                    commit: {
+                        path: string;
+                    };
+                }>;
+            };
+
+            entries.forEach(({ cursor, commit }) => {
+                const file = this.uploadSessionFiles[cursor.session_id];
+                this.files[`/apps/trezor${commit.path.toLowerCase()}`] = file;
+            });
+
+            return res.send();
+        });
+
         // https://content.dropboxapi.com/2/files/download
         app.post('/2/files/download', (req, res) => {
             // @ts-expect-error
@@ -169,8 +233,14 @@ export class DropboxMock {
             (req, res) => {
                 // @ts-expect-error
                 const dropboxApiArgs = JSON.parse(req.headers['dropbox-api-arg']);
-                const { path } = dropboxApiArgs;
-                this.files[path.toLowerCase()] = req.body;
+                const { path } = dropboxApiArgs as { path: string };
+
+                let formattedPath = path;
+                if (!path.includes('apps/trezor')) {
+                    formattedPath = `/apps/trezor${path}`;
+                }
+
+                this.files[formattedPath.toLowerCase()] = req.body;
 
                 res.send();
             },
