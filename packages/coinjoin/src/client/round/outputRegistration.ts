@@ -130,7 +130,7 @@ export const outputRegistration = async (
     try {
         round.setSessionPhase(SessionPhase.RegisteringOutputs);
         // decompose output amounts for all registered inputs grouped by Account
-        const decomposedGroup = await outputDecomposition(round, options);
+        const decomposedGroup = await outputDecomposition(round, accounts, options);
 
         // collect all used addresses
         // try to register outputs for each account (each input in account group)

@@ -4,6 +4,7 @@ import * as coordinator from '../coordinator';
 import * as middleware from '../middleware';
 import { getRoundEvents, compareOutpoint, sumCredentials } from '../../utils/roundUtils';
 import { getExternalOutputSize } from '../../utils/coordinatorUtils';
+import type { Account } from '../Account';
 import type { CoinjoinRound, CoinjoinRoundOptions } from '../CoinjoinRound';
 
 /**
@@ -394,6 +395,7 @@ export interface DecomposedOutputs {
 
 export const outputDecomposition = async (
     round: CoinjoinRound,
+    accounts: Account[],
     options: CoinjoinRoundOptions,
 ): Promise<DecomposedOutputs[]> => {
     // group inputs by accountKeys
@@ -415,9 +417,19 @@ export const outputDecomposition = async (
     // calculate amounts
     const outputAmounts = await Promise.all(
         Object.values(groupInputsByAccount).map(inputs => {
-            const allVsizeCredentials = inputs.flatMap(i => i.confirmedVsizeCredentials!);
-            const availableVsize = sumCredentials(allVsizeCredentials);
             const { accountKey, inputSize, outputSize } = inputs[0]; // all inputs belongs to the same account (key, size)
+            const allVsizeCredentials = inputs.flatMap(i => i.confirmedVsizeCredentials!);
+            // limit available vsize if it's bigger than available change addresses
+            // prevent from creating amounts which cannot be assigned to address
+            const availableAddresses =
+                accounts
+                    .find(account => account.accountKey === accountKey)
+                    ?.changeAddresses.filter(addr => !round.prison.isDetained(addr.address)) || [];
+            const availableVsize = Math.min(
+                sumCredentials(allVsizeCredentials),
+                availableAddresses.length * outputSize,
+            );
+
             return getOutputAmounts({
                 round,
                 accountKey,

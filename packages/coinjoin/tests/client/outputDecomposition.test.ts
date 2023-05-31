@@ -28,6 +28,7 @@ describe('outputRegistration', () => {
                         phase: 3,
                     },
                 }),
+                [],
                 server?.requestOptions,
             ),
         ).rejects.toThrow('Missing confirmed credentials');
@@ -36,8 +37,10 @@ describe('outputRegistration', () => {
     fixtures.forEach(f => {
         it(`outputDecomposition ${f.description}`, async () => {
             const spy = jest.fn();
-            server?.addListener('test-request', ({ url, resolve }) => {
+            const availableVsize: number[] = [];
+            server?.addListener('test-request', ({ url, resolve, data }) => {
                 if (url.endsWith('/get-outputs-amounts')) {
+                    availableVsize.push(data.availableVsize);
                     resolve({
                         outputAmounts: f.outputAmounts,
                     });
@@ -75,6 +78,7 @@ describe('outputRegistration', () => {
                     },
                     roundParameters: f.roundParameters,
                 }),
+                f.accounts,
                 server?.requestOptions,
             );
 
@@ -83,6 +87,7 @@ describe('outputRegistration', () => {
                 expect(r.outputs.length).toBe(f.result[i].outputs.length);
                 expect(r).toMatchObject(f.result[i]);
             });
+            expect(availableVsize).toEqual(f.availableVsize);
             expect(spy).toBeCalledTimes(f.credentialIssuanceCalls);
         });
     });
