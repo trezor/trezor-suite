@@ -224,6 +224,7 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                     api.dispatch(storageActions.saveFirmware());
                     break;
 
+                case COINJOIN.ACCOUNT_DISCOVERY_RESET:
                 case COINJOIN.ACCOUNT_DISCOVERY_PROGRESS:
                 case COINJOIN.ACCOUNT_AUTHORIZE_SUCCESS:
                 case COINJOIN.ACCOUNT_UNREGISTER:

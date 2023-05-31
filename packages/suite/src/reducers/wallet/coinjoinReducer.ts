@@ -479,6 +479,15 @@ export const coinjoinReducer = (
             case COINJOIN.ACCOUNT_UNREGISTER:
                 stopSession(draft, action.payload);
                 break;
+            case COINJOIN.ACCOUNT_DISCOVERY_RESET: {
+                const account = getAccount(draft, action.payload.accountKey);
+                if (account) {
+                    account.checkpoints = action.payload.checkpoint
+                        ? [action.payload.checkpoint]
+                        : [];
+                }
+                break;
+            }
             case COINJOIN.ACCOUNT_DISCOVERY_PROGRESS:
                 saveCheckpoint(draft, action.payload);
                 break;
