@@ -86,13 +86,15 @@ const handleMessage = (event: PostMessageEvent) => {
         }
 
         const method = _core.getCurrentMethod()[0];
-        postMessage(
-            createPopupMessage(POPUP.HANDSHAKE, {
-                settings: DataManager.getSettings(),
-                transport: _core.getTransportInfo(),
-                method: method ? method.info : undefined,
-            }),
-        );
+        (method.initAsync ? method?.initAsync() : Promise.resolve()).finally(() => {
+            postMessage(
+                createPopupMessage(POPUP.HANDSHAKE, {
+                    settings: DataManager.getSettings(),
+                    transport: _core!.getTransportInfo(),
+                    method: method ? method.info : undefined, // method.info might change based on initAsync
+                }),
+            );
+        });
     }
 
     // clear reference to popup MessagePort
