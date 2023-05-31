@@ -13,7 +13,7 @@ export { Word } from './Word';
 export { WordAdvanced } from './WordAdvanced';
 export { ConfirmAddress } from './confirm/ConfirmAddress';
 export { ConfirmXpub } from './confirm/ConfirmXpub';
-export { ConfirmNoBackup } from './confirm/NoBackup';
+export { ConfirmNoBackup } from './confirm/ConfirmNoBackup';
 export { ReviewTransaction } from './ReviewTransaction';
 export { ImportTransaction } from './ImportTransaction';
 export { ConfirmUnverified } from './confirm/ConfirmUnverified';

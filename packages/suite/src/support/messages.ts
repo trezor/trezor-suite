@@ -3276,6 +3276,10 @@ export default defineMessages({
         defaultMessage: 'Show address anyway',
         id: 'TR_SHOW_ADDRESS_ANYWAY',
     },
+    TR_SHOW_XPUB_ANYWAY: {
+        defaultMessage: 'Show public key anyway',
+        id: 'TR_SHOW_XPUB_ANYWAY',
+    },
     TR_SHOW_DETAILS: {
         defaultMessage: 'Update now',
         id: 'TR_SHOW_DETAILS',

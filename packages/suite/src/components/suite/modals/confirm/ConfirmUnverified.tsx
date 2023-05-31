@@ -8,12 +8,17 @@ import { useDevice, useDispatch } from '@suite-hooks';
 import { ThunkAction } from '@suite-types';
 import { Button, Image, ModalProps } from '@trezor/components';
 
-const ImageWrapper = styled.div`
-    padding: 60px 0px;
+const StyledImage = styled(Image)`
+    align-self: center;
+    padding: 20px 0px;
 `;
 
 const StyledModal = styled(Modal)`
-    width: 600px;
+    width: 500px;
+`;
+
+const StyledButton = styled(Button)`
+    flex-grow: 1;
 `;
 
 interface ConfirmUnverifiedProps extends Required<Pick<ModalProps, 'onCancel'>> {
@@ -77,19 +82,17 @@ export const ConfirmUnverified = ({
                     <Button variant="secondary" onClick={showUnverifiedAndContinue}>
                         <Translation id={showUnverifiedButtonText} />
                     </Button>
-                    <Button
+                    <StyledButton
                         variant="primary"
                         onClick={verifyAndContinue}
                         isDisabled={isDeviceLocked}
                     >
                         <Translation id={primaryButtonText} />
-                    </Button>
+                    </StyledButton>
                 </>
             }
         >
-            <ImageWrapper>
-                <Image image="UNI_ERROR" />
-            </ImageWrapper>
+            <StyledImage image="UNI_ERROR" />
         </StyledModal>
     );
 };
