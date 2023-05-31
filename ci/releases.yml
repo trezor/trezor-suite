@@ -98,7 +98,7 @@ msg-system codesign deploy:
     AWS_CLOUDFRONT_ID: E1ERY5K2OTKKI1
   script:
     - source ${MSG_SYSTEM_DATA_DEPLOY_KEYFILE}
-    - aws s3 cp packages/message-system/files/config.v1.jws s3://data.trezor.io/config/stable/config.v1.jws --cache-control no-cache
+    - aws s3 cp suite-common/message-system/files/config.v1.jws s3://data.trezor.io/config/stable/config.v1.jws --cache-control no-cache
     - aws cloudfront create-invalidation --distribution-id ${AWS_CLOUDFRONT_ID} --paths '/config/stable/*'
 
 # connect v9 deploy to production jobs

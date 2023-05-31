@@ -4,6 +4,7 @@ export * from './device';
 export * from './guide';
 export * from './sign';
 export * from './github';
+export * from './messageSystem';
 
 export type Selector<TReturnValue> = (state: any) => TReturnValue;
 export type SuiteCompatibleAction<TPayload> = (

@@ -2,17 +2,18 @@ import { decode, verify } from 'jws';
 
 import { scheduleAction } from '@trezor/utils';
 import { createThunk } from '@suite-common/redux-utils';
-import { MessageSystem } from '@trezor/message-system';
+import { MessageSystem } from '@suite-common/suite-types';
 
-import { ACTION_PREFIX, messageSystemActions } from './messageSystemActions';
 import {
-    CONFIG_URL_LOCAL,
+    VERSION,
+    JWS_SIGN_ALGORITHM,
     CONFIG_URL_REMOTE,
+    CONFIG_URL_LOCAL,
     FETCH_CHECK_INTERVAL,
     FETCH_INTERVAL,
     FETCH_TIMEOUT,
-    VERSION,
 } from './messageSystemConstants';
+import { ACTION_PREFIX, messageSystemActions } from './messageSystemActions';
 import {
     selectMessageSystemTimestamp,
     selectMessageSystemCurrentSequence,
@@ -59,15 +60,12 @@ export const fetchConfigThunk = createThunk(
                     throw Error('Decoding of config failed');
                 }
 
-                // It has to be consistent with algorithm used for signing https://github.com/trezor/trezor-suite/blob/32bf733f3086bec1273caf03dfae1a5bccdbca24/packages/suite-data/src/message-system/scripts/sign-config.ts#L30
-                const algorithm = 'ES256';
-
                 const algorithmInHeader = decodedJws?.header.alg;
-                if (algorithmInHeader !== algorithm) {
+                if (algorithmInHeader !== JWS_SIGN_ALGORITHM) {
                     throw Error(`Wrong algorithm in JWS config header: ${algorithmInHeader}`);
                 }
 
-                const isAuthenticityValid = verify(jwsResponse, algorithm, jwsPublicKey);
+                const isAuthenticityValid = verify(jwsResponse, JWS_SIGN_ALGORITHM, jwsPublicKey);
 
                 if (!isAuthenticityValid) {
                     throw Error('Config authenticity is invalid');

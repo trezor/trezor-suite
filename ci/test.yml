@@ -133,7 +133,7 @@ suite web 2-master manual:
     - yarn install --immutable
     # 3 next steps could be removed if we passed packages/suite-desktop/dist and build folder as an artifact
     # but since this is run only in nightly builds it can be probably built inside the job for now..
-    - yarn workspace @trezor/message-system sign-config
+    - yarn message-system-sign-config
     - yarn workspace @trezor/suite-desktop build:linux
     - docker-compose pull
     - docker-compose up -d ${CONTAINERS}

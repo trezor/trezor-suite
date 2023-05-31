@@ -2,7 +2,7 @@
 import * as fs from 'fs';
 import Ajv from 'ajv';
 
-import { CONFIG_PATH, SCHEMA_PATH } from '../constants';
+import { CONFIG_PATH, SCHEMA_PATH } from './constants';
 
 // checks that a config meets the criteria specified by the schema
 const validateConfigStructure = () => {

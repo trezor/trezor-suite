@@ -50,7 +50,7 @@
         "check-workspace-resolutions": "yarn tsx ./scripts/check-workspace-resolutions.ts",
         "generate-package": "yarn tsx ./scripts/generatePackage.js",
         "deps": "rimraf 'node_modules' '*/**/node_modules' && yarn",
-        "msg-system-sign-config": "yarn workspace @trezor/message-system sign-config",
+        "message-system-sign-config": "yarn workspace @suite-common/message-system sign-config",
         "format": "yarn prettier --write \"**/*.{js,ts,tsx,mdx,md,html,json}\"",
         "format:verify": "yarn prettier --check \"**/*.{js,ts,tsx,mdx,md,html,json}\"",
         "update-submodules": "./scripts/update-submodules.sh",
@@ -61,7 +61,7 @@
         "_______ Aliases _______": "Aliases for longer commands which we often have to run manually. Names don't have to be pretty or make total sense.",
         "refs": "yarn update-project-references",
         "types": "yarn type-check",
-        "messages": "yarn msg-system-sign-config",
+        "messages": "yarn message-system-sign-config",
         "validate": "yarn verify-project-references && yarn nx:lint:js && yarn nx:lint:styles && yarn nx:build:libs && yarn nx:type-check && yarn nx:test-unit && yarn check-workspace-resolutions"
     },
     "lint-staged": {

@@ -8,9 +8,6 @@
         { "path": "../wallet-types" },
         { "path": "../../packages/connect" },
         { "path": "../../packages/device-utils" },
-        {
-            "path": "../../packages/message-system"
-        },
         { "path": "../../packages/utils" }
     ]
 }

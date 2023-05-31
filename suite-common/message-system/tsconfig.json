@@ -9,9 +9,6 @@
         { "path": "../../packages/connect" },
         { "path": "../../packages/device-utils" },
         { "path": "../../packages/env-utils" },
-        {
-            "path": "../../packages/message-system"
-        },
         { "path": "../../packages/utils" },
         { "path": "../test-utils" }
     ]

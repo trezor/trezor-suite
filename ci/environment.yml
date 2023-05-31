@@ -31,4 +31,4 @@ install:
       - "packages/suite-data/files/browser-detection/*"
       - "packages/suite-data/files/guide/*"
       - "packages/connect-iframe/build/*"
-      - "packages/message-system/src/types/messageSystem.ts"
+      - "suite-common/message-system/src/types/messageSystem.ts"

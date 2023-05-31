@@ -162,6 +162,5 @@ _.mobileprovision
 # @trezor/suite-data
 
 packages/suite-data/files/browser-detection
-packages/suite-data/files/message-system
 packages/suite-data/files/guide
 packages/suite-data/files/translations/master.json
