@@ -12,7 +12,11 @@ import { getAccountProgressHandle, getRegisterAccountParams } from '@wallet-util
 import { Dispatch, GetState } from '@suite-types';
 import { Network, NetworkSymbol } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
-import { CoinjoinAccount, CoinjoinSessionParameters } from '@wallet-types/coinjoin';
+import {
+    CoinjoinAccount,
+    CoinjoinDiscoveryCheckpoint,
+    CoinjoinSessionParameters,
+} from '@wallet-types/coinjoin';
 import {
     accountsActions,
     selectAccountByKey,
@@ -130,6 +134,18 @@ const coinjoinSessionRestore = (accountKey: string) =>
         },
     } as const);
 
+const coinjoinAccountDiscoveryReset = (
+    accountKey: string,
+    checkpoint?: CoinjoinDiscoveryCheckpoint,
+) =>
+    ({
+        type: COINJOIN.ACCOUNT_DISCOVERY_RESET,
+        payload: {
+            accountKey,
+            checkpoint,
+        },
+    } as const);
+
 const coinjoinAccountDiscoveryProgress = (accountKey: string, progress: ScanAccountProgress) =>
     ({
         type: COINJOIN.ACCOUNT_DISCOVERY_PROGRESS,
@@ -206,6 +222,7 @@ export type CoinjoinAccountAction =
     | ReturnType<typeof coinjoinAccountAuthorizeSuccess>
     | ReturnType<typeof coinjoinAccountAuthorizeFailed>
     | ReturnType<typeof coinjoinAccountUnregister>
+    | ReturnType<typeof coinjoinAccountDiscoveryReset>
     | ReturnType<typeof coinjoinAccountDiscoveryProgress>
     | ReturnType<typeof updateCoinjoinConfig>
     | ReturnType<typeof coinjoinAccountPreloading>
@@ -214,6 +231,16 @@ export type CoinjoinAccountAction =
     | ReturnType<typeof coinjoinSessionAutopause>
     | ReturnType<typeof updateLastAnonymityReportTimestamp>
     | ReturnType<typeof coinjoinAccountUpdateAnonymityLevels>;
+
+const EMPTY_ACCOUNT_INFO = {
+    addresses: { change: [], used: [], unused: [] },
+    availableBalance: '0',
+    balance: '0',
+    empty: true,
+    history: { total: 0, unconfirmed: 0 },
+    page: { index: 1, size: 25, total: 1 },
+    utxo: [],
+};
 
 const getCheckpoints = (
     account: Extract<Account, { backendType: 'coinjoin' }>,
@@ -582,20 +609,18 @@ export const createCoinjoinAccount =
                     status: 'initial',
                 },
                 {
-                    addresses: { change: [], used: [], unused: [] },
-                    availableBalance: '0',
-                    balance: '0',
+                    ...EMPTY_ACCOUNT_INFO,
                     descriptor: publicKey.payload.xpubSegwit || publicKey.payload.xpub,
-                    empty: true,
-                    history: { total: 0, unconfirmed: 0 },
                     legacyXpub: publicKey.payload.xpub,
-                    page: { index: 1, size: 25, total: 1 },
-                    utxo: [],
                 },
             ),
         );
 
         console.log(`CoinjoinAccount created: ${getAccountProgressHandle(account.payload)}`);
+
+        // birthdate optimization
+        const checkpoint = await api.backend.getAccountCheckpoint(account.payload.descriptor);
+        dispatch(coinjoinAccountDiscoveryReset(account.payload.key, checkpoint));
 
         dispatch(coinjoinAccountPreloading(false));
 
