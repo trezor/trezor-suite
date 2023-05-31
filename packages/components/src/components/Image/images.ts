@@ -29,6 +29,7 @@ export const SVG_IMAGES = {
     PLAY_STORE_BADGE: 'play-store-badge.svg',
     APP_STORE_TITLE: 'app-store-title.svg',
     PLAY_STORE_TITLE: 'play-store-title.svg',
+    STROKE_BORDER: 'stroke-border.svg',
 } as const;
 
 export type PngImage = keyof typeof PNG_IMAGES;
