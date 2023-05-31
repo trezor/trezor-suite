@@ -109,6 +109,24 @@ export default class GetPublicKey extends AbstractMethod<'getPublicKey', Params[
         return this.confirmed;
     }
 
+    async noBackupConfirmation() {
+        // wait for popup window
+        await this.getPopupPromise().promise;
+        // initialize user response promise
+        const uiPromise = this.createUiPromise(UI.RECEIVE_CONFIRMATION);
+
+        // request confirmation view
+        this.postMessage(
+            createUiMessage(UI.REQUEST_CONFIRMATION, {
+                view: 'get-public-key-no-backup',
+            }),
+        );
+
+        // wait for user action
+        const uiResp = await uiPromise.promise;
+        return uiResp.payload;
+    }
+
     async run() {
         const responses: MethodReturnType<typeof this.name> = [];
         const cmd = this.device.getCommands();
