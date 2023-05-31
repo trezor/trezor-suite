@@ -121,6 +121,7 @@ export const createCoinjoinAccount = [
                 COINJOIN.CLIENT_ENABLE_SUCCESS,
                 COINJOIN.ACCOUNT_PRELOADING,
                 accountsActions.createAccount.type,
+                COINJOIN.ACCOUNT_DISCOVERY_RESET,
                 COINJOIN.ACCOUNT_PRELOADING,
                 accountsActions.startCoinjoinAccountSync.type,
                 COINJOIN.ACCOUNT_DISCOVERY_PROGRESS,
