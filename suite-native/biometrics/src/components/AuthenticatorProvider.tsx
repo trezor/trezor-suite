@@ -1,4 +1,4 @@
-import React, { ReactNode, useEffect } from 'react';
+import React, { ReactNode } from 'react';
 
 import { BiometricOverlay } from './BiometricOverlay';
 import { useIsBiometricsEnabled } from '../biometricsAtoms';
@@ -9,22 +9,8 @@ type AuthenticatorProviderProps = {
 };
 
 export const AuthenticatorProvider = ({ children }: AuthenticatorProviderProps) => {
-    const { handleAuthenticate, isUserAuthenticated } = useBiometrics();
+    const { isUserAuthenticated } = useBiometrics();
     const { isBiometricsOptionEnabled } = useIsBiometricsEnabled();
-
-    useEffect(() => {
-        if (isBiometricsOptionEnabled) {
-            const authenticate = async () => {
-                console.log('call from provider');
-                await handleAuthenticate();
-            };
-            authenticate();
-        }
-    }, [handleAuthenticate, isBiometricsOptionEnabled]);
-
-    useEffect(() => {
-        console.log(isUserAuthenticated, 'is authed');
-    }, [isUserAuthenticated]);
 
     return (
         <>

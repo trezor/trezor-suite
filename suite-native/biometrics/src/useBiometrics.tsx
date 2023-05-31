@@ -5,11 +5,11 @@ import * as LocalAuthentication from 'expo-local-authentication';
 
 import { useAlert } from '@suite-native/alerts';
 
-import { useIsBiometricsEnabled, useIsUserAuthenticated } from './biometricsAtoms';
+import { useIsBiometricsEnabled } from './biometricsAtoms';
 import { getIsBiometricsFeatureAvailable } from './isBiometricsFeatureAvailable';
 
 export const useBiometrics = () => {
-    const { showAlert } = useAlert();
+    const { showAlert, hideAlert } = useAlert();
     const { isBiometricsOptionEnabled, setIsBiometricsOptionEnabled } = useIsBiometricsEnabled();
     const [isUserAuthenticated, setIsUserAuthenticated] = useState(false);
 
@@ -23,7 +23,6 @@ export const useBiometrics = () => {
 
         try {
             const result = await LocalAuthentication.authenticateAsync();
-            setIsUserAuthenticated(result.success);
             console.log('result', result);
 
             if (
@@ -32,6 +31,7 @@ export const useBiometrics = () => {
                     result.error === 'system_cancel' ||
                     result.error.startsWith('unknown'))
             ) {
+                // setIsUserAuthenticated(false);
                 showAlert({
                     title: 'Authentication canceled',
                     description: 'You will have to try again.',
@@ -42,19 +42,21 @@ export const useBiometrics = () => {
                     secondaryButtonTitle: 'Cancel',
                     onPressSecondaryButton: () => null,
                 });
+            } else {
+                setIsUserAuthenticated(result.success);
+                hideAlert();
+                return result;
             }
-
-            return result;
         } catch (e) {
             console.log(e);
+            return { success: false };
         }
-    }, [setIsUserAuthenticated, showAlert]);
+    }, [hideAlert, showAlert]);
 
     const toggleBiometricsOption = useCallback(async () => {
         const isBiometricsOnDevice = await getIsBiometricsFeatureAvailable();
 
         if (isBiometricsOnDevice) {
-            console.log('call from toggle');
             const result = await authenticate();
             if (result?.success) {
                 setIsBiometricsOptionEnabled(!isBiometricsOptionEnabled);
@@ -76,12 +78,11 @@ export const useBiometrics = () => {
         const subscription = AppState.addEventListener('change', nextAppState => {
             if (nextAppState === 'active' && isBiometricsOptionEnabled && !isUserAuthenticated) {
                 const auth = async () => {
-                    console.log('call from app state');
                     await authenticate();
                 };
                 auth();
             }
-            if (nextAppState === 'background' || nextAppState === 'inactive') {
+            if (nextAppState === 'background') {
                 console.log('set false');
                 setIsUserAuthenticated(false);
             }
@@ -90,5 +91,14 @@ export const useBiometrics = () => {
         return () => subscription.remove();
     }, [authenticate, isBiometricsOptionEnabled, isUserAuthenticated, setIsUserAuthenticated]);
 
-    return { handleAuthenticate: authenticate, toggleBiometricsOption, isUserAuthenticated };
+    useEffect(() => {
+        if (isBiometricsOptionEnabled && !isUserAuthenticated) {
+            const auth = async () => {
+                await authenticate();
+            };
+            auth();
+        }
+    }, [authenticate, isBiometricsOptionEnabled, isUserAuthenticated]);
+
+    return { toggleBiometricsOption, isUserAuthenticated };
 };
