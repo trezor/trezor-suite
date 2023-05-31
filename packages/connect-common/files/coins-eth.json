@@ -1,0 +1,21 @@
+[
+    {
+        "blockchain_link": {
+            "type": "blockbook",
+            "url": ["https://eth1.trezor.io", "https://eth2.trezor.io"]
+        },
+        "chain": "eth",
+        "chain_id": 1,
+        "name": "Ethereum",
+        "rskip60": false,
+        "shortcut": "ETH",
+        "slip44": 60,
+        "support": {
+            "connect": true,
+            "suite": true,
+            "trezor1": "1.6.2",
+            "trezor2": "2.0.7"
+        },
+        "url": "https://ethereum.org"
+    }
+]

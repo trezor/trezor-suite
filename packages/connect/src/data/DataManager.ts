@@ -34,7 +34,15 @@ export class DataManager {
         parseBridgeJSON(this.assets.bridge);
 
         // parse coins definitions
-        parseCoinsJson(this.assets.coins);
+        parseCoinsJson({
+            ...this.assets.coins,
+            eth: [
+                // @ts-expect-error
+                ...this.assets.coins.eth,
+                // @ts-expect-error
+                ...this.assets.coinsEth,
+            ],
+        });
 
         // parse firmware definitions
         parseFirmware(this.assets['firmware-t1'], 1);
