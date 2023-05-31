@@ -2411,12 +2411,12 @@ export default defineMessages({
         id: 'TR_SAFETY_CHECKS_PROMPT_LEVEL',
     },
     TR_SAFETY_CHECKS_PROMPT_LEVEL_WARNING: {
-        defaultMessage: 'Do not change this unless you know what you are doing!',
+        defaultMessage: "Do not change this unless you know what you're doing!",
         id: 'TR_SAFETY_CHECKS_PROMPT_LEVEL_WARNING',
     },
     TR_SAFETY_CHECKS_PROMPT_LEVEL_DESC: {
         defaultMessage:
-            'Allow potentially unsafe actions, such as mismatching coin keys or extreme fees by manually approving them on your Trezor.',
+            'Allow potentially unsafe actions, such as mismatching keys or allowing extreme fees, by manually approving them on your Trezor.',
         id: 'TR_SAFETY_CHECKS_PROMPT_LEVEL_DESC',
     },
     TR_SAFETY_CHECKS_DISABLED_WARNING: {
@@ -3154,7 +3154,7 @@ export default defineMessages({
     },
     TR_REMEMBER_ALLOWS_YOU_TO: {
         defaultMessage:
-            'Stores wallet for a watch-only mode: You will see your wallet even if device is disconnected.',
+            'Stores wallet for watch-only mode. You will see your wallet even if your Trezor is disconnected.',
         id: 'TR_REMEMBER_ALLOWS_YOU_TO',
     },
     TR_RESELLERS_LINK: {
@@ -3192,7 +3192,7 @@ export default defineMessages({
     },
     TR_SECURITY_SUBHEADING: {
         defaultMessage:
-            "You've successfully set up your Trezor and created your wallet. You should never use your Trezor without backing it up; it is the only way to recover a lost wallet.",
+            "You've successfully set up your Trezor and created your wallet. You should never use your Trezor without backing it up: it is the only way to recover a lost wallet.",
         description: 'Text in security page',
         id: 'TR_SECURITY_SUBHEADING',
     },
@@ -3758,7 +3758,7 @@ export default defineMessages({
     },
     TOAST_COIN_SCHEME_PROTOCOL_HEADER: {
         id: 'TOAST_COIN_SCHEME_PROTOCOL_HEADER',
-        defaultMessage: 'Get to an account to send',
+        defaultMessage: 'Go to an account to send',
     },
     TOAST_ACQUIRE_ERROR: {
         id: 'TOAST_ACQUIRE_ERROR',
@@ -6953,7 +6953,7 @@ export default defineMessages({
     TR_SEEDLESS_SETUP_IS_NOT_SUPPORTED_DESCRIPTION: {
         id: 'TR_SEEDLESS_SETUP_IS_NOT_SUPPORTED_DESCRIPTION',
         defaultMessage:
-            'Devices which are set up in the seedless mode cannot access the Trezor Suite. This is to avoid catastrophic coin loss, in case an inappropriately setup device is used for a wrong purpose.',
+            'Devices set up in seedless mode cannot access Trezor Suite. This is to avoid irreversible coin loss, which happens when using an improperly setup device for the wrong purpose.',
     },
     TR_DO_YOU_REALLY_WANT_TO_SKIP: {
         id: 'TR_DO_YOU_REALLY_WANT_TO_SKIP',
@@ -7777,7 +7777,7 @@ export default defineMessages({
     },
     TR_SESSION_ERROR_PHASE_RETRYING_PAIRING: {
         id: 'TR_SESSION_ERROR_PHASE_RETRYING_PAIRING',
-        defaultMessage: 'Pairing failed, retrying',
+        defaultMessage: 'Pairing retrying',
         description: '29 symbols max',
     },
     TR_SESSION_ERROR_PHASE_AFFILIATE_SERVERS_OFFLINE: {
