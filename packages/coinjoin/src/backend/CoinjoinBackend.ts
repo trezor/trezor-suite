@@ -49,16 +49,14 @@ export class CoinjoinBackend extends TypedEmitter<Events> {
         });
     }
 
-    async scanAccount({ descriptor, progressHandle, checkpoints, cache }: ScanAccountParams) {
+    scanAccount({ descriptor, progressHandle, checkpoints, cache }: ScanAccountParams) {
         this.abortController = new AbortController();
         const filters = new CoinjoinFilterController(this.client, this.settings);
-        const getFirstAddress = () =>
-            deriveAddresses([], descriptor, 'receive', 0, 1, this.network)[0].address;
 
         return scanAccount(
             {
                 descriptor,
-                checkpoints: await this.getCheckpoints(checkpoints, getFirstAddress),
+                checkpoints: this.getCheckpoints(checkpoints),
                 cache,
             },
             {
@@ -73,13 +71,12 @@ export class CoinjoinBackend extends TypedEmitter<Events> {
         );
     }
 
-    async scanAddress({ descriptor, progressHandle, checkpoints }: ScanAddressParams) {
+    scanAddress({ descriptor, progressHandle, checkpoints }: ScanAddressParams) {
         this.abortController = new AbortController();
         const filters = new CoinjoinFilterController(this.client, this.settings);
-        const getFirstAddress = () => descriptor;
 
         return scanAddress(
-            { descriptor, checkpoints: await this.getCheckpoints(checkpoints, getFirstAddress) },
+            { descriptor, checkpoints: this.getCheckpoints(checkpoints) },
             {
                 client: this.client,
                 network: this.network,
@@ -134,20 +131,13 @@ export class CoinjoinBackend extends TypedEmitter<Events> {
         this.mempool.stop();
     }
 
-    private getCheckpoints<T extends ScanAddressCheckpoint>(
-        checkpoints: T[] | undefined,
-        getFirstAddress: () => string,
-    ): Promise<T[]>;
-    private async getCheckpoints(checkpoints: any[] = [], getFirstAddress: () => string) {
-        const cp = checkpoints.length
-            ? checkpoints
-            : [await this.getAccountCheckpoint(getFirstAddress())];
-
-        if (cp.find(({ blockHeight }) => blockHeight <= this.settings.baseBlockHeight)) {
+    private getCheckpoints<T extends ScanAddressCheckpoint>(checkpoints: T[] | undefined): T[];
+    private getCheckpoints(checkpoints: any[] = []) {
+        if (checkpoints.find(({ blockHeight }) => blockHeight <= this.settings.baseBlockHeight)) {
             throw new Error('Cannot get checkpoint which precedes base block.');
         }
 
-        return cp
+        return checkpoints
             .slice()
             .sort((a, b) => b.blockHeight - a.blockHeight)
             .concat({
@@ -158,7 +148,8 @@ export class CoinjoinBackend extends TypedEmitter<Events> {
             });
     }
 
-    private async getAccountCheckpoint(address: string) {
+    async getAccountCheckpoint(xpub: string) {
+        const { address } = deriveAddresses([], xpub, 'receive', 0, 1, this.network)[0];
         const addressFirstPage = await this.client.fetchAddress(address);
 
         if (addressFirstPage.txs === 0) {
