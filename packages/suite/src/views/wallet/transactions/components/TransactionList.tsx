@@ -23,6 +23,7 @@ import { NoSearchResults } from './NoSearchResults';
 import { findAnchorTransactionPage } from '@suite-utils/anchor';
 import { fetchTransactionsThunk } from '@suite-common/wallet-core';
 import { CoinjoinBatchItem } from '@wallet-components/TransactionItem/components/CoinjoinBatchItem';
+import { TransactionCandidates } from './TransactionCandidates';
 
 const StyledSection = styled(Section)`
     margin-bottom: 20px;
@@ -185,6 +186,10 @@ export const TransactionList = ({
             }
             data-test="@wallet/accounts/transaction-list"
         >
+            {account.accountType === 'coinjoin' && (
+                <TransactionCandidates accountKey={account.key} />
+            )}
+
             {/* TODO: show this skeleton also while searching in txs */}
             {isLoading ? (
                 <Stack col childMargin="0px 0px 16px 0px">

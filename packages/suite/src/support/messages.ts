@@ -7980,4 +7980,16 @@ export default defineMessages({
         id: 'TR_MOBILE_APP_PROMO_TEXT_FOOTER',
         defaultMessage: 'Sync & track on your phone with <b>Trezor Suite Lite</b>',
     },
+    TR_CANDIDATE_TRANSACTION_HEADER: {
+        id: 'TR_CANDIDATE_TRANSACTION_DESCRIPTION',
+        defaultMessage: 'Candidate Transactions',
+    },
+    TR_CANDIDATE_TRANSACTION: {
+        id: 'TR_CANDIDATE_TRANSACTION',
+        defaultMessage: 'CoinJoin Candidate',
+    },
+    TR_CANDIDATE_TRANSACTION_DESCRIPTION: {
+        id: 'TR_CANDIDATE_TRANSACTION_DESCRIPTION',
+        defaultMessage: 'Signed by you, waiting for others',
+    },
 });
