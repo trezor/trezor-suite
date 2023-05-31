@@ -17,7 +17,9 @@ export const SettingsFAQScreen = () => {
                         <Text numberOfLines={3} variant="titleSmall">
                             Need more help?
                         </Text>
-                        <Button onPress={() => openLink('https://trezor.io/support')}>
+                        <Button
+                            onPress={() => openLink('https://trezor.io/learn/c/trezor-suite-lite')}
+                        >
                             Contact support
                         </Button>
                     </VStack>
