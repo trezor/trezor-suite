@@ -23,32 +23,30 @@ export const useBiometrics = () => {
 
         try {
             const result = await LocalAuthentication.authenticateAsync();
-            console.log('result', result);
 
             if (
                 !result.success &&
                 (result.error === 'user_cancel' ||
                     result.error === 'system_cancel' ||
+                    // Sometimes the native code returns some unknown error that we need to handle as well so we give user option to try again.
                     result.error.startsWith('unknown'))
             ) {
-                // setIsUserAuthenticated(false);
                 showAlert({
                     title: 'Authentication canceled',
                     description: 'You will have to try again.',
                     pictogramVariant: 'red',
                     icon: 'warningCircle',
-                    onPressPrimaryButton: authenticate, // TODO test this
+                    onPressPrimaryButton: authenticate,
                     primaryButtonTitle: 'Try again',
                     secondaryButtonTitle: 'Cancel',
                     onPressSecondaryButton: () => null,
                 });
             } else {
                 setIsUserAuthenticated(result.success);
-                hideAlert();
+                hideAlert(); // Hide alert if previous attempts failed but there is a new succesfull attempt underway
                 return result;
             }
         } catch (e) {
-            console.log(e);
             return { success: false };
         }
     }, [hideAlert, showAlert]);
@@ -83,7 +81,6 @@ export const useBiometrics = () => {
                 auth();
             }
             if (nextAppState === 'background') {
-                console.log('set false');
                 setIsUserAuthenticated(false);
             }
         });
