@@ -24,6 +24,7 @@ import { AccountDetailGraphHeader } from './AccountDetailGraphHeader';
 import { AccountDetailCryptoValue } from './AccountDetailCryptoValue';
 import { AccountDetailTokenHeader } from './AccountDetailTokenHeader';
 import { IncludeTokensToggle } from './IncludeTokensToggle';
+import { CoinPriceCard } from './CoinPriceCard';
 
 type AccountDetailHeaderProps = {
     accountKey: AccountKey;
@@ -105,6 +106,9 @@ export const TransactionListHeader = memo(
         const accountHasTransactions = useSelector((state: AccountsRootState) =>
             selectHasAccountTransactions(state, accountKey),
         );
+        const isTestnetAccount = useSelector((state: AccountsRootState) =>
+            selectIsTestnetAccount(state, accountKey),
+        );
 
         if (!account) return null;
 
@@ -117,6 +121,7 @@ export const TransactionListHeader = memo(
 
         const isTokenDetail = !!tokenContract;
         const isEthereumAccountDetail = !isTokenDetail && isEthereumAccountSymbol(account.symbol);
+        const isPriceCardDisplayed = !isTestnetAccount && !isTokenDetail;
 
         return (
             <>
@@ -125,21 +130,18 @@ export const TransactionListHeader = memo(
                     tokenContract={tokenContract}
                 />
                 {accountHasTransactions && (
-                    <>
-                        <Divider />
-                        <Box marginVertical="large" paddingHorizontal="medium">
-                            <Button iconLeft="receive" size="large" onPress={handleReceive}>
-                                Receive
-                            </Button>
-                        </Box>
-                        <Divider />
-                    </>
+                    <Box marginVertical="large" paddingHorizontal="medium">
+                        <Button iconLeft="receive" size="large" onPress={handleReceive}>
+                            Receive
+                        </Button>
+                    </Box>
                 )}
+                {isPriceCardDisplayed && <CoinPriceCard accountKey={accountKey} />}
 
+                <Divider />
                 <Box marginTop="extraLarge" marginBottom="medium" marginHorizontal="large">
                     <Text variant="titleSmall">Transactions</Text>
                 </Box>
-
                 {isEthereumAccountDetail && accountHasTransactions && (
                     <IncludeTokensToggle
                         isToggled={areTokensIncluded}
