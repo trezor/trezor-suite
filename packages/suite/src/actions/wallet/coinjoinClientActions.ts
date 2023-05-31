@@ -117,6 +117,15 @@ const clientSessionTxSigned = (payload: {
         payload,
     } as const);
 
+const clientSessionTxCandidate = (accountKey: string, roundId: string) =>
+    ({
+        type: COINJOIN.SESSION_TX_CANDIDATE,
+        payload: {
+            accountKey,
+            roundId,
+        },
+    } as const);
+
 const clientSessionTxBroadcasted = (accountKeys: string[], round: SerializedCoinjoinRound) =>
     ({
         type: COINJOIN.SESSION_TX_BROADCASTED,
@@ -168,6 +177,7 @@ export type CoinjoinClientAction =
     | ReturnType<typeof clientSessionOwnership>
     | ReturnType<typeof clientSessionPhase>
     | ReturnType<typeof clientSessionTxSigned>
+    | ReturnType<typeof clientSessionTxCandidate>
     | ReturnType<typeof clientSessionTxBroadcasted>
     | ReturnType<typeof clientSessionTxFailed>
     | ReturnType<typeof clientSessionPhase>
@@ -566,6 +576,10 @@ export const signCoinjoinTx =
                                     utxoIndex++;
                                 }
                             });
+
+                            // create tx candidate
+                            dispatch(clientSessionTxCandidate(key, roundId));
+
                             return;
                         }
 
