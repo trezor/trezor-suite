@@ -1,4 +1,4 @@
-import { atom, useAtom } from 'jotai';
+import { useAtom } from 'jotai';
 
 import { atomWithUnecryptedStorage } from '@suite-native/storage';
 
@@ -16,11 +16,4 @@ export const useIsBiometricsEnabled = () => {
         isBiometricsOptionEnabled,
         setIsBiometricsOptionEnabled,
     };
-};
-
-const isUserAuthenticatedAtom = atom(false);
-export const useIsUserAuthenticated = () => {
-    const [isUserAuthenticated, setIsUserAuthenticated] = useAtom(isUserAuthenticatedAtom);
-
-    return { isUserAuthenticated, setIsUserAuthenticated };
 };

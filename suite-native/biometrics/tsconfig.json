@@ -3,6 +3,7 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         { "path": "../../suite-common/icons" },
+        { "path": "../alerts" },
         { "path": "../atoms" },
         { "path": "../storage" },
         { "path": "../../packages/styles" }

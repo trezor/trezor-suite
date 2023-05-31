@@ -1,53 +1,30 @@
-import React, { ReactNode, useCallback, useEffect } from 'react';
-import { AppState, Platform } from 'react-native';
-
-import * as LocalAuthentication from 'expo-local-authentication';
+import React, { ReactNode, useEffect } from 'react';
 
 import { BiometricOverlay } from './BiometricOverlay';
-import { useIsUserAuthenticated, useIsBiometricsEnabled } from '../biometricsAtoms';
+import { useIsBiometricsEnabled } from '../biometricsAtoms';
+import { useBiometrics } from '../useBiometrics';
 
 type AuthenticatorProviderProps = {
     children: ReactNode;
 };
 
 export const AuthenticatorProvider = ({ children }: AuthenticatorProviderProps) => {
+    const { handleAuthenticate, isUserAuthenticated } = useBiometrics();
     const { isBiometricsOptionEnabled } = useIsBiometricsEnabled();
-    const { isUserAuthenticated, setIsUserAuthenticated } = useIsUserAuthenticated();
-
-    const handleAuthenticate = useCallback(async () => {
-        if (Platform.OS === 'android') {
-            // Cancel any previous authentication attempt.
-            await LocalAuthentication.cancelAuthenticate();
-        }
-
-        const result = await LocalAuthentication.authenticateAsync();
-        setIsUserAuthenticated(result.success);
-    }, [setIsUserAuthenticated]);
 
     useEffect(() => {
-        if (isBiometricsOptionEnabled && !isUserAuthenticated) {
-            handleAuthenticate();
+        if (isBiometricsOptionEnabled) {
+            const authenticate = async () => {
+                console.log('call from provider');
+                await handleAuthenticate();
+            };
+            authenticate();
         }
-    }, [handleAuthenticate, isBiometricsOptionEnabled, isUserAuthenticated]);
+    }, [handleAuthenticate, isBiometricsOptionEnabled]);
 
     useEffect(() => {
-        const subscription = AppState.addEventListener('change', nextAppState => {
-            if (nextAppState === 'active') {
-                if (isBiometricsOptionEnabled && !isUserAuthenticated) {
-                    handleAuthenticate();
-                }
-            } else {
-                setIsUserAuthenticated(false);
-            }
-        });
-
-        return () => subscription.remove();
-    }, [
-        handleAuthenticate,
-        isBiometricsOptionEnabled,
-        isUserAuthenticated,
-        setIsUserAuthenticated,
-    ]);
+        console.log(isUserAuthenticated, 'is authed');
+    }, [isUserAuthenticated]);
 
     return (
         <>
