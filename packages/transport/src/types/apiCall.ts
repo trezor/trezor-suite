@@ -1,6 +1,8 @@
+import { PROTOCOL_MALFORMED } from '@trezor/protocol';
+
 import * as ERRORS from '../errors';
 
-export type AnyError = (typeof ERRORS)[keyof typeof ERRORS];
+export type AnyError = (typeof ERRORS)[keyof typeof ERRORS] | typeof PROTOCOL_MALFORMED;
 
 export interface Success<T> {
     success: true;

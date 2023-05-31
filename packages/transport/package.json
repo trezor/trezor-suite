@@ -24,11 +24,7 @@
     },
     "files": [
         "lib/",
-        "!**/*.map",
-        "scripts/protobuf-build.sh",
-        "scripts/protobuf-patches",
-        "scripts/protobuf-types.js",
-        "messages.json"
+        "!**/*.map"
     ],
     "scripts": {
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
@@ -38,7 +34,6 @@
         "test:unit": "jest",
         "test:e2e": "ts-node -O '{\"module\": \"commonjs\", \"esModuleInterop\": true}' ./e2e/run.ts",
         "example:bridge": "jest --verbose -c jest.config.e2e.js --testPathPattern bridge.integration",
-        "update:protobuf": "./scripts/protobuf-build.sh && yarn prettier --write \"{messages.json,src/types/messages.ts}\"",
         "prepublishOnly": "yarn tsx ../../scripts/prepublishNPM.js",
         "prepublish": "yarn tsx ../../scripts/prepublish.js"
     },
@@ -55,12 +50,13 @@
         "typescript": "4.9.5"
     },
     "dependencies": {
+        "@trezor/protobuf": "workspace:*",
+        "@trezor/protocol": "workspace:*",
         "@trezor/utils": "workspace:*",
         "bytebuffer": "^5.0.1",
         "cross-fetch": "^3.1.6",
         "json-stable-stringify": "^1.0.2",
         "long": "^4.0.0",
-        "prettier": "2.8.8",
         "protobufjs": "7.2.4",
         "usb": "^2.9.0"
     }

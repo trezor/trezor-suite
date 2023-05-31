@@ -1,7 +1,7 @@
 import * as ProtoBuf from 'protobufjs/light';
 
-import { encode } from '../src/lowlevel/protobuf/encode';
-import { decode } from '../src/lowlevel/protobuf/decode';
+import { encode } from '../src/encode';
+import { decode } from '../src/decode';
 
 const messages = {
     nested: {
@@ -232,6 +232,7 @@ describe('basic concepts', () => {
         });
 
         test('Different protobuf between receiving ends', () => {
+            /* eslint-disable-next-line @typescript-eslint/no-shadow */
             const messages = {
                 nested: {
                     messages: {

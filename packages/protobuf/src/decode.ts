@@ -1,6 +1,7 @@
 import ByteBuffer from 'bytebuffer';
 import { Type, Message, Field } from 'protobufjs/light';
-import { isPrimitiveField } from '../../utils/protobuf';
+
+import { isPrimitiveField } from './utils';
 
 const transform = (field: Field, value: any) => {
     if (isPrimitiveField(field.type)) {
@@ -41,9 +42,12 @@ const transform = (field: Field, value: any) => {
     throw new Error(`transport: decode: case not handled: ${field}`);
 };
 
-function messageToJSON(Message: Message<Record<string, unknown>>, fields: Type['fields']) {
+export function messageToJSON(
+    MessageParam: Message<Record<string, unknown>>,
+    fields: Type['fields'],
+) {
     // get rid of Message.prototype references
-    const { ...message } = Message;
+    const { ...message } = MessageParam;
     const res: { [key: string]: any } = {};
 
     Object.keys(fields).forEach(key => {
@@ -61,10 +65,10 @@ function messageToJSON(Message: Message<Record<string, unknown>>, fields: Type['
     return res;
 }
 
-export const decode = (Message: Type, data: ByteBuffer) => {
+export const decode = (MessageParam: Type, data: ByteBuffer) => {
     const buff = data.toBuffer();
     const a = new Uint8Array(buff);
-    const decoded = Message.decode(a);
+    const decoded = MessageParam.decode(a);
 
     // [compatibility]: in the end it should be possible to get rid of messageToJSON method and call
     // Message.toObject(decoded) to return result as plain javascript object. This method should be able to do

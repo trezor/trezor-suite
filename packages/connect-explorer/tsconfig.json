@@ -12,7 +12,7 @@
     "references": [
         { "path": "../components" },
         { "path": "../connect-web" },
-        { "path": "../transport" }
+        { "path": "../protobuf" }
     ],
     "ts-node": {
         "compilerOptions": {

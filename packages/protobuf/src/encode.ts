@@ -1,7 +1,7 @@
 import ByteBuffer from 'bytebuffer';
 import { Type } from 'protobufjs/light';
 
-import { isPrimitiveField } from '../../utils/protobuf';
+import { isPrimitiveField } from './utils';
 
 const transform = (fieldType: string, value: any) => {
     if (fieldType === 'bytes') {

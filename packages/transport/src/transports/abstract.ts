@@ -1,9 +1,10 @@
 import * as protobuf from 'protobufjs/light';
 import { scheduleAction, ScheduleActionParams, ScheduledAction, Deferred } from '@trezor/utils';
 import { TypedEmitter } from '@trezor/utils/lib/typedEventEmitter';
+import { PROTOCOL_MALFORMED } from '@trezor/protocol';
+import { MessageFromTrezor } from '@trezor/protobuf';
 
 import {
-    MessageFromTrezor,
     Session,
     Descriptor,
     AbortableCall,
@@ -256,7 +257,7 @@ export abstract class AbstractTransport extends TypedEmitter<{
         | typeof ERRORS.WRONG_RESULT_TYPE
         | typeof ERRORS.OTHER_CALL_IN_PROGRESS
         // webusb + bridge
-        | typeof ERRORS.PROTOCOL_MALFORMED
+        | typeof PROTOCOL_MALFORMED
         | typeof ERRORS.UNEXPECTED_ERROR
         | typeof ERRORS.SESSION_NOT_FOUND
         | typeof ERRORS.ABORTED_BY_TIMEOUT
@@ -274,7 +275,7 @@ export abstract class AbstractTransport extends TypedEmitter<{
         | typeof ERRORS.WRONG_RESULT_TYPE
         | typeof ERRORS.OTHER_CALL_IN_PROGRESS
         // webusb + bridge
-        | typeof ERRORS.PROTOCOL_MALFORMED
+        | typeof PROTOCOL_MALFORMED
         | typeof ERRORS.DEVICE_DISCONNECTED_DURING_ACTION
         | typeof ERRORS.UNEXPECTED_ERROR
         | typeof ERRORS.SESSION_NOT_FOUND
@@ -302,7 +303,7 @@ export abstract class AbstractTransport extends TypedEmitter<{
         | typeof ERRORS.OTHER_CALL_IN_PROGRESS
         // webusb + bridge
         | typeof ERRORS.DEVICE_DISCONNECTED_DURING_ACTION
-        | typeof ERRORS.PROTOCOL_MALFORMED
+        | typeof PROTOCOL_MALFORMED
         | typeof ERRORS.UNEXPECTED_ERROR
         | typeof ERRORS.ABORTED_BY_TIMEOUT
         | typeof ERRORS.ABORTED_BY_SIGNAL

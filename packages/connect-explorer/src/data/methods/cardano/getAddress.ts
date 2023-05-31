@@ -1,4 +1,4 @@
-import { CardanoAddressType } from '@trezor/transport/lib/types/messages';
+import { CardanoAddressType } from '@trezor/protobuf/lib/messages';
 
 import { cardanoDerivationType } from './common';
 

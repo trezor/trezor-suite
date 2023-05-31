@@ -1,6 +1,6 @@
 import fetch from 'cross-fetch';
 
-import { EthereumDefinitions } from '@trezor/transport/lib/types/messages';
+import { EthereumDefinitions } from '@trezor/protobuf/lib/messages';
 
 /**
  * For given chainId and optionally contractAddress download ethereum definitions for transaction signing.

@@ -88,4 +88,3 @@ export const ABORTED_BY_SIGNAL = 'Aborted by signal' as const;
  * see scheduleAction
  */
 export const ABORTED_BY_TIMEOUT = 'Aborted by timeout' as const;
-export const PROTOCOL_MALFORMED = 'Malformed protocol format' as const;

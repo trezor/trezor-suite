@@ -12,7 +12,7 @@ export const getAssetByUrl = (url: string) => {
         case './data/firmware/2/releases.json':
             return require('@trezor/connect-common/files/firmware/2/releases.json');
         case './data/messages/messages.json':
-            return require('@trezor/transport/messages.json');
+            return require('@trezor/protobuf/messages.json');
         default:
             return null;
     }

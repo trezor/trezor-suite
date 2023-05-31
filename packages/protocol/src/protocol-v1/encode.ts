@@ -1,6 +1,6 @@
 import ByteBuffer from 'bytebuffer';
 
-import { HEADER_SIZE, MESSAGE_HEADER_BYTE, BUFFER_SIZE } from '../../constants';
+import { HEADER_SIZE, MESSAGE_HEADER_BYTE, BUFFER_SIZE } from './constants';
 
 type Options<Chunked> = {
     chunked: Chunked;

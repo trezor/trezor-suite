@@ -3,7 +3,7 @@ import { AbstractUsbTransport, UsbTransportConstructorParams } from '../src/tran
 import { UsbInterface } from '../src/interfaces/usb';
 import { SessionsClient } from '../src/sessions/client';
 import { SessionsBackground } from '../src/sessions/background';
-import * as messages from '../messages.json';
+import * as messages from '@trezor/protobuf/messages.json';
 
 // we cant directly use abstract class (UsbTransport)
 class TestUsbTransport extends AbstractUsbTransport {
