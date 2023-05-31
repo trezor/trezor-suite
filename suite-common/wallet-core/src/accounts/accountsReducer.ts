@@ -184,6 +184,16 @@ export const selectAccountLabel = memoizeWithArgs(
     },
 );
 
+export const selectAccountNetworkSymbol = memoizeWithArgs(
+    (state: AccountsRootState, accountKey: AccountKey): NetworkSymbol | null => {
+        const account = selectAccountByKey(state, accountKey);
+
+        if (!account) return null;
+
+        return account.symbol;
+    },
+);
+
 export const selectFormattedAccountType = memoizeWithArgs(
     (state: AccountsRootState, accountKey: AccountKey): string | null => {
         const account = selectAccountByKey(state, accountKey);
