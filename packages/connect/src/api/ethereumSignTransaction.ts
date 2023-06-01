@@ -54,8 +54,6 @@ export default class EthereumSignTransaction extends AbstractMethod<
         const path = validatePath(payload.path, 3);
         const network = getEthereumNetwork(path);
 
-        this.info = getNetworkLabel('Sign #NETWORK transaction', network);
-
         // incoming transaction should be in EthereumTx format
         // https://github.com/ethereumjs/ethereumjs-tx
         const tx = payload.transaction;
@@ -107,6 +105,10 @@ export default class EthereumSignTransaction extends AbstractMethod<
                 ...strip(tx), // strip '0x' from values
             },
         };
+    }
+
+    get info() {
+        return getNetworkLabel('Sign #NETWORK transaction', getEthereumNetwork(this.params.path));
     }
 
     async run() {

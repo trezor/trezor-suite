@@ -32,8 +32,6 @@ export default class SignMessage extends AbstractMethod<'signMessage', PROTO.Sig
             coinInfo = getBitcoinNetwork(path);
         }
 
-        this.info = getLabel('Sign #NETWORK message', coinInfo);
-
         // firmware range depends on used no_script_type parameter
         // no_script_type is possible since 1.10.4 / 2.4.3
         this.firmwareRange = getFirmwareRange(
@@ -53,6 +51,11 @@ export default class SignMessage extends AbstractMethod<'signMessage', PROTO.Sig
             script_type: scriptType && scriptType !== 'SPENDMULTISIG' ? scriptType : 'SPENDADDRESS', // script_type 'SPENDMULTISIG' throws Failure_FirmwareError
             no_script_type: payload.no_script_type,
         };
+    }
+
+    get info() {
+        const coinInfo = getBitcoinNetwork(this.payload.coin ?? this.params.address_n);
+        return getLabel('Sign #NETWORK message', coinInfo);
     }
 
     async run() {

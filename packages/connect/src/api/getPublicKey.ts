@@ -20,7 +20,6 @@ export default class GetPublicKey extends AbstractMethod<'getPublicKey', Params[
 
     init() {
         this.requiredPermissions = ['read'];
-        this.info = 'Export public key';
 
         // create a bundle with only one batch if bundle doesn't exists
         this.hasBundle = !!this.payload.bundle;
@@ -79,6 +78,10 @@ export default class GetPublicKey extends AbstractMethod<'getPublicKey', Params[
                 unlockPath: batch.unlockPath,
             };
         });
+    }
+
+    get info() {
+        return 'Export public key';
     }
 
     async confirmation() {

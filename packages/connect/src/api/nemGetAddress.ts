@@ -61,7 +61,9 @@ export default class NEMGetAddress extends AbstractMethod<'nemGetAddress', Param
             this.params[0].show_display;
         this.confirmed = useEventListener;
         this.useUi = !useEventListener;
+    }
 
+    get info() {
         // set info
         if (this.params.length === 1) {
             let network = 'Unknown';
@@ -77,12 +79,11 @@ export default class NEMGetAddress extends AbstractMethod<'nemGetAddress', Param
                     break;
                 // no default
             }
-            this.info = `Export NEM address for account #${
+            return `Export NEM address for account #${
                 fromHardened(this.params[0].address_n[2]) + 1
             } on ${network} network`;
-        } else {
-            this.info = 'Export multiple NEM addresses';
         }
+        return 'Export multiple NEM addresses';
     }
 
     getButtonRequestData(code: string) {

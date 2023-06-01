@@ -45,22 +45,19 @@ export default class EthereumGetPublicKey extends AbstractMethod<'ethereumGetPub
                 network,
             };
         });
+    }
 
+    get info() {
         // set info
         if (this.params.length === 1) {
-            this.info = getNetworkLabel('Export #NETWORK public key', this.params[0].network);
-        } else {
-            const requestedNetworks = this.params.map(b => b.network);
-            const uniqNetworks = getUniqueNetworks(requestedNetworks);
-            if (uniqNetworks.length === 1 && uniqNetworks[0]) {
-                this.info = getNetworkLabel(
-                    'Export multiple #NETWORK public keys',
-                    uniqNetworks[0],
-                );
-            } else {
-                this.info = 'Export multiple public keys';
-            }
+            return getNetworkLabel('Export #NETWORK public key', this.params[0].network);
         }
+        const requestedNetworks = this.params.map(b => b.network);
+        const uniqNetworks = getUniqueNetworks(requestedNetworks);
+        if (uniqNetworks.length === 1 && uniqNetworks[0]) {
+            return getNetworkLabel('Export multiple #NETWORK public keys', uniqNetworks[0]);
+        }
+        return 'Export multiple public keys';
     }
 
     async confirmation() {

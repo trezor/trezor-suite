@@ -18,7 +18,6 @@ export default class EosSignTransaction extends AbstractMethod<'eosSignTransacti
     init() {
         this.requiredPermissions = ['read', 'write'];
         this.firmwareRange = getFirmwareRange(this.name, getMiscNetwork('EOS'), this.firmwareRange);
-        this.info = 'Sign EOS transaction';
 
         const { payload } = this;
         // validate incoming parameters
@@ -36,6 +35,10 @@ export default class EosSignTransaction extends AbstractMethod<'eosSignTransacti
             header,
             ack,
         };
+    }
+
+    get info() {
+        return 'Sign EOS transaction';
     }
 
     async run() {

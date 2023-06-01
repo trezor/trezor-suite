@@ -59,15 +59,15 @@ export default class StellarGetAddress extends AbstractMethod<'stellarGetAddress
             this.params[0].show_display;
         this.confirmed = useEventListener;
         this.useUi = !useEventListener;
+    }
 
-        // set info
+    get info() {
         if (this.params.length === 1) {
-            this.info = `Export Stellar address for account #${
+            return `Export Stellar address for account #${
                 fromHardened(this.params[0].address_n[2]) + 1
             }`;
-        } else {
-            this.info = 'Export multiple Stellar addresses';
         }
+        return 'Export multiple Stellar addresses';
     }
 
     getButtonRequestData(code: string) {

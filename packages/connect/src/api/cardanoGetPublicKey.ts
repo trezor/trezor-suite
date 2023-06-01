@@ -21,7 +21,6 @@ export default class CardanoGetPublicKey extends AbstractMethod<
             getMiscNetwork('Cardano'),
             this.firmwareRange,
         );
-        this.info = 'Export Cardano public key';
 
         // create a bundle with only one batch if bundle doesn't exists
         this.hasBundle = !!this.payload.bundle;
@@ -50,6 +49,10 @@ export default class CardanoGetPublicKey extends AbstractMethod<
                 show_display: typeof batch.showOnTrezor === 'boolean' ? batch.showOnTrezor : false,
             };
         });
+    }
+
+    get info() {
+        return 'Export Cardano public key';
     }
 
     async confirmation() {

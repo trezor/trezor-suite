@@ -93,19 +93,19 @@ export default class GetAddress extends AbstractMethod<'getAddress', Params[]> {
             this.params[0].show_display;
         this.confirmed = useEventListener;
         this.useUi = !useEventListener;
+    }
 
+    get info() {
         // set info
         if (this.params.length === 1) {
-            this.info = getLabel('Export #NETWORK address', this.params[0].coinInfo);
-        } else {
-            const requestedNetworks = this.params.map(b => b.coinInfo);
-            const uniqNetworks = getUniqueNetworks(requestedNetworks);
-            if (uniqNetworks.length === 1 && uniqNetworks[0]) {
-                this.info = getLabel('Export multiple #NETWORK addresses', uniqNetworks[0]);
-            } else {
-                this.info = 'Export multiple addresses';
-            }
+            return getLabel('Export #NETWORK address', this.params[0].coinInfo);
         }
+        const requestedNetworks = this.params.map(b => b.coinInfo);
+        const uniqNetworks = getUniqueNetworks(requestedNetworks);
+        if (uniqNetworks.length === 1 && uniqNetworks[0]) {
+            return getLabel('Export multiple #NETWORK addresses', uniqNetworks[0]);
+        }
+        return 'Export multiple addresses';
     }
 
     getButtonRequestData(code: string) {

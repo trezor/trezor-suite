@@ -12,7 +12,10 @@ export default class CancelCoinjoinAuthorization extends AbstractMethod<
         this.firmwareRange = getFirmwareRange(this.name, null, this.firmwareRange);
         this.preauthorized =
             typeof payload.preauthorized === 'boolean' ? payload.preauthorized : true;
-        this.info = 'Cancel Coinjoin Authorization';
+    }
+
+    get info() {
+        return 'Cancel Coinjoin Authorization';
     }
 
     async run() {

@@ -59,15 +59,15 @@ export default class TezosGetAddress extends AbstractMethod<'tezosGetAddress', P
             this.params[0].show_display;
         this.confirmed = useEventListener;
         this.useUi = !useEventListener;
+    }
 
-        // set info
+    get info() {
         if (this.params.length === 1) {
-            this.info = `Export Tezos address for account #${
+            return `Export Tezos address for account #${
                 fromHardened(this.params[0].address_n[2]) + 1
             }`;
-        } else {
-            this.info = 'Export multiple Tezos addresses';
         }
+        return 'Export multiple Tezos addresses';
     }
 
     getButtonRequestData(code: string) {

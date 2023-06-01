@@ -59,17 +59,17 @@ export default class RippleGetAddress extends AbstractMethod<'rippleGetAddress',
             this.params[0].show_display;
         this.confirmed = useEventListener;
         this.useUi = !useEventListener;
-
-        // set info
-        if (this.params.length === 1) {
-            this.info = `Export Ripple address for account #${
-                fromHardened(this.params[0].address_n[2]) + 1
-            }`;
-        } else {
-            this.info = 'Export multiple Ripple addresses';
-        }
     }
 
+    get info() {
+        // set info
+        if (this.params.length === 1) {
+            return `Export Ripple address for account #${
+                fromHardened(this.params[0].address_n[2]) + 1
+            }`;
+        }
+        return 'Export multiple Ripple addresses';
+    }
     getButtonRequestData(code: string) {
         if (code === 'ButtonRequest_Address') {
             return {

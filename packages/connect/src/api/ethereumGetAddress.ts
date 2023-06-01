@@ -57,19 +57,6 @@ export default class EthereumGetAddress extends AbstractMethod<'ethereumGetAddre
             };
         });
 
-        // set info
-        if (this.params.length === 1) {
-            this.info = getNetworkLabel('Export #NETWORK address', this.params[0].network);
-        } else {
-            const requestedNetworks = this.params.map(b => b.network);
-            const uniqNetworks = getUniqueNetworks(requestedNetworks);
-            if (uniqNetworks.length === 1 && uniqNetworks[0]) {
-                this.info = getNetworkLabel('Export multiple #NETWORK addresses', uniqNetworks[0]);
-            } else {
-                this.info = 'Export multiple addresses';
-            }
-        }
-
         const useEventListener =
             payload.useEventListener &&
             this.params.length === 1 &&
@@ -77,6 +64,18 @@ export default class EthereumGetAddress extends AbstractMethod<'ethereumGetAddre
             this.params[0].show_display;
         this.confirmed = useEventListener;
         this.useUi = !useEventListener;
+    }
+
+    get info() {
+        if (this.params.length === 1) {
+            return getNetworkLabel('Export #NETWORK address', this.params[0].network);
+        }
+        const requestedNetworks = this.params.map(b => b.network);
+        const uniqNetworks = getUniqueNetworks(requestedNetworks);
+        if (uniqNetworks.length === 1 && uniqNetworks[0]) {
+            return getNetworkLabel('Export multiple #NETWORK addresses', uniqNetworks[0]);
+        }
+        return 'Export multiple addresses';
     }
 
     getButtonRequestData(code: string) {

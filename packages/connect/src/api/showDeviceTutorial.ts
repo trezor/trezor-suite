@@ -9,10 +9,13 @@ export default class ShowDeviceTutorial extends AbstractMethod<
 > {
     init() {
         this.firmwareRange = getFirmwareRange(this.name, null, this.firmwareRange);
-        this.info = 'Show device tutorial';
         this.useEmptyPassphrase = true;
         this.useDeviceState = false;
         this.allowDeviceMode = [UI.INITIALIZE];
+    }
+
+    get info() {
+        return 'Show device tutorial';
     }
 
     async run() {

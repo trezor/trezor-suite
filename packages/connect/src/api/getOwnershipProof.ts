@@ -14,7 +14,6 @@ export default class GetOwnershipProof extends AbstractMethod<
 
     init() {
         this.requiredPermissions = ['read'];
-        this.info = 'Export ownership proof';
 
         // create a bundle with only one batch if bundle doesn't exists
         this.hasBundle = !!this.payload.bundle;
@@ -56,6 +55,10 @@ export default class GetOwnershipProof extends AbstractMethod<
                 commitment_data: batch.commitmentData,
             };
         });
+    }
+
+    get info() {
+        return 'Export ownership proof';
     }
 
     async confirmation() {
