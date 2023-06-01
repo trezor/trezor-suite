@@ -31,6 +31,7 @@ module.exports = {
         '!node_modules/@babel',
         '!node_modules/date-fns',
         '!node_modules/@reduxjs',
+        '!node_modules/react-native-config',
         '!node_modules/redux',
         '!node_modules/redux-thunk',
         '!node_modules/reselect',

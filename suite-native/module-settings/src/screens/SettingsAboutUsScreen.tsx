@@ -4,7 +4,8 @@ import { S } from '@mobily/ts-belt';
 
 import { Screen, ScreenHeader } from '@suite-native/navigation';
 import { VStack, Card, Text, Box, Divider, ListItem } from '@suite-native/atoms';
-import { getAppVersion, getBuildVersionNumber, getCommitHash } from '@suite-native/config';
+import { getBuildVersionNumber } from '@suite-native/config';
+import { getSuiteVersion, getCommitHash } from '@trezor/env-utils';
 import { useOpenLink } from '@suite-native/link';
 
 import { AboutUsBanners } from '../components/AboutUsBanners';
@@ -21,7 +22,7 @@ const CommitHashWithDevMenu = () => (
 export const SettingsAboutUsScreen = () => {
     const openLink = useOpenLink();
     const hasVersionAndBuildInfo =
-        S.isNotEmpty(getAppVersion()) && S.isNotEmpty(getBuildVersionNumber());
+        S.isNotEmpty(getSuiteVersion()) && S.isNotEmpty(getBuildVersionNumber());
     const hasCommitHash = S.isNotEmpty(getCommitHash());
 
     return (
@@ -53,7 +54,7 @@ export const SettingsAboutUsScreen = () => {
                 <Box flexDirection="row" justifyContent="space-between">
                     {hasVersionAndBuildInfo && (
                         <Text variant="hint" color="textDisabled">
-                            Version: {`${getAppVersion()} (${getBuildVersionNumber()})`}
+                            Version: {`${getSuiteVersion()} (${getBuildVersionNumber()})`}
                         </Text>
                     )}
                     {(hasCommitHash || true) && <CommitHashWithDevMenu />}

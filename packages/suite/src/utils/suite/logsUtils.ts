@@ -6,11 +6,13 @@ import {
     getEnvironment,
     getBrowserName,
     getBrowserVersion,
+    getCommitHash,
     getOsName,
     getOsVersion,
     getPlatformLanguages,
     getScreenHeight,
     getScreenWidth,
+    getSuiteVersion,
     getWindowHeight,
     getWindowWidth,
 } from '@trezor/env-utils';
@@ -168,8 +170,8 @@ export const getApplicationLog = (log: LogEntry[], redactSensitiveData = false) 
 
 export const getApplicationInfo = (state: AppState, hideSensitiveInfo: boolean) => ({
     environment: getEnvironment(),
-    suiteVersion: process.env.VERSION || '',
-    commitHash: process.env.COMMITHASH || '',
+    suiteVersion: getSuiteVersion(),
+    commitHash: getCommitHash(),
     startTime,
     isDev: !process.env.CODESIGN_BUILD,
     debugMenu: state.suite.settings.debug.showDebugMenu,

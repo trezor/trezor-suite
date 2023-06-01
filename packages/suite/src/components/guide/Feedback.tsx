@@ -15,6 +15,8 @@ import {
     getWindowHeight,
     getWindowWidth,
     getOsName,
+    getCommitHash,
+    getSuiteVersion,
 } from '@trezor/env-utils';
 
 const Headline = styled.div`
@@ -186,8 +188,8 @@ export const Feedback = ({ type }: FeedbackProps) => {
             platform: getEnvironment(),
             os: getOsName(),
             user_agent: getUserAgent(),
-            suite_version: process.env.VERSION || '',
-            suite_revision: process.env.COMMITHASH || '',
+            suite_version: getSuiteVersion(),
+            suite_revision: getCommitHash(),
             window_dimensions: `${getWindowWidth()}x${getWindowHeight()}`,
             device_model: getDeviceModel(device),
             firmware_version: device?.features ? getFirmwareVersion(device) : '',
