@@ -8,7 +8,6 @@ import {
     VERSION,
     JWS_SIGN_ALGORITHM,
     CONFIG_URL_REMOTE,
-    CONFIG_URL_LOCAL,
     FETCH_CHECK_INTERVAL,
     FETCH_INTERVAL,
     FETCH_TIMEOUT,
@@ -19,6 +18,34 @@ import {
     selectMessageSystemCurrentSequence,
 } from './messageSystemSelectors';
 
+const getConfigJws = async () => {
+    try {
+        const response = await scheduleAction(signal => fetch(CONFIG_URL_REMOTE, { signal }), {
+            timeout: FETCH_TIMEOUT,
+        });
+
+        if (!response.ok) {
+            throw Error(response.statusText);
+        }
+
+        const configJws = await response.text();
+
+        return {
+            configJws,
+            isRemote: true,
+        };
+    } catch (error) {
+        console.error(`Fetching of remote JWS config failed: ${error}`);
+
+        const { jws } = await import('../files/config.v1');
+
+        return {
+            configJws: jws,
+            isRemote: false,
+        };
+    }
+};
+
 export const fetchConfigThunk = createThunk(
     `${ACTION_PREFIX}/fetchConfig`,
     async (jwsPublicKey: string, { dispatch, getState }) => {
@@ -27,34 +54,9 @@ export const fetchConfigThunk = createThunk(
 
         if (Date.now() >= timestamp + FETCH_INTERVAL) {
             try {
-                let jwsResponse;
-                let isRemote = true;
+                const { configJws, isRemote } = await getConfigJws();
 
-                try {
-                    const response = await scheduleAction(
-                        signal => fetch(CONFIG_URL_REMOTE, { signal }),
-                        { timeout: FETCH_TIMEOUT },
-                    );
-
-                    if (!response.ok) {
-                        throw Error(response.statusText);
-                    }
-
-                    jwsResponse = await response.text();
-                } catch (error) {
-                    console.error(`Fetching of remote JWS config failed: ${error}`);
-
-                    const response = await fetch(CONFIG_URL_LOCAL);
-
-                    if (!response.ok) {
-                        throw Error(`Fetching of local JWS config failed: ${response.statusText}`);
-                    }
-
-                    jwsResponse = await response.text();
-                    isRemote = false;
-                }
-
-                const decodedJws = decode(jwsResponse);
+                const decodedJws = decode(configJws);
 
                 if (!decodedJws) {
                     throw Error('Decoding of config failed');
@@ -65,7 +67,7 @@ export const fetchConfigThunk = createThunk(
                     throw Error(`Wrong algorithm in JWS config header: ${algorithmInHeader}`);
                 }
 
-                const isAuthenticityValid = verify(jwsResponse, JWS_SIGN_ALGORITHM, jwsPublicKey);
+                const isAuthenticityValid = verify(configJws, JWS_SIGN_ALGORITHM, jwsPublicKey);
 
                 if (!isAuthenticityValid) {
                     throw Error('Config authenticity is invalid');
