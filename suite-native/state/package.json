@@ -21,6 +21,7 @@
         "@suite-native/config": "workspace:*",
         "@suite-native/fiat-rates": "workspace:*",
         "@suite-native/logger": "workspace:*",
+        "@suite-native/message-system": "workspace:*",
         "@suite-native/module-devices": "workspace:*",
         "@suite-native/module-settings": "workspace:*",
         "@suite-native/storage": "workspace:*",
