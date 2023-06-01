@@ -24,6 +24,7 @@
         { "path": "../config" },
         { "path": "../fiat-rates" },
         { "path": "../logger" },
+        { "path": "../message-system" },
         { "path": "../module-devices" },
         { "path": "../module-settings" },
         { "path": "../storage" },
