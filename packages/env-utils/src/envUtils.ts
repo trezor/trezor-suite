@@ -30,8 +30,12 @@ const isChromeOs = () => /CrOS/.test(getUserAgent());
 
 const getBrowserVersion = () => getUserAgentParser().getBrowser().version || '';
 
+const getCommitHash = () => process.env.COMMITHASH || '';
+
 /* Not correct for Linux as there is many different distributions in different versions */
 const getOsVersion = () => getUserAgentParser().getOS().version || '';
+
+const getSuiteVersion = () => process.env.VERSION || '';
 
 const getBrowserName = () => {
     const browserName = getUserAgentParser().getBrowser().name;
@@ -122,7 +126,9 @@ export const envUtils: EnvUtils = {
     getOsVersion,
     getBrowserName,
     getBrowserVersion,
+    getCommitHash,
     getDeviceType,
+    getSuiteVersion,
     isFirefox,
     getPlatform,
     getPlatformLanguages,

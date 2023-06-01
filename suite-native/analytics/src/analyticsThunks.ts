@@ -7,7 +7,8 @@ import {
 } from '@suite-common/analytics';
 import { createThunk } from '@suite-common/redux-utils';
 import { getTrackingRandomId } from '@trezor/analytics';
-import { getCommitHash, isDevelopEnv } from '@suite-native/config';
+import { isDevelopEnv } from '@suite-native/config';
+import { getCommitHash } from '@trezor/env-utils';
 
 import { analytics } from './analytics';
 import { EventType } from './constants';

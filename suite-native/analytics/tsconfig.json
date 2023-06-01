@@ -21,6 +21,7 @@
             "path": "../../suite-common/wallet-types"
         },
         { "path": "../config" },
-        { "path": "../../packages/analytics" }
+        { "path": "../../packages/analytics" },
+        { "path": "../../packages/env-utils" }
     ]
 }

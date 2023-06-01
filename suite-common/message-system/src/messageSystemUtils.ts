@@ -4,8 +4,10 @@ import {
     getEnvironment,
     getBrowserName,
     getBrowserVersion,
+    getCommitHash,
     getOsName,
     getOsVersion,
+    getSuiteVersion,
     Environment as EnvironmentType,
 } from '@trezor/env-utils';
 import type {
@@ -230,8 +232,8 @@ export const getValidMessages = (config: MessageSystem | null, options: Options)
     const currentBrowserVersion = transformVersionToSemverFormat(getBrowserVersion());
 
     const environment = getEnvironment();
-    const suiteVersion = transformVersionToSemverFormat(process.env.VERSION);
-    const commitHash = process.env.COMMITHASH;
+    const suiteVersion = transformVersionToSemverFormat(getSuiteVersion());
+    const commitHash = getCommitHash();
 
     return config.actions
         .filter(

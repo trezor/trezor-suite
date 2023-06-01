@@ -1,6 +1,7 @@
 /* eslint-disable import/no-extraneous-dependencies -- react-native and expo-localization have been excluded from the package.json file as a workaround, ensuring that they are not bundled with the suite-desktop app  */
 
 import { Dimensions, Platform } from 'react-native';
+import Config from 'react-native-config';
 
 import { getLocales } from 'expo-localization';
 
@@ -23,6 +24,10 @@ const getBrowserVersion = () => '';
 const getDeviceType = () => '';
 
 const getOsVersion = () => `${Platform.Version}`;
+
+const getSuiteVersion = () => Config.VERSION || '';
+
+const getCommitHash = () => Config.COMMIT_HASH || '';
 
 const isFirefox = () => false;
 
@@ -77,8 +82,10 @@ export const envUtils: EnvUtils = {
     isChromeOs,
     getBrowserName,
     getBrowserVersion,
+    getCommitHash,
     getDeviceType,
     getOsVersion,
+    getSuiteVersion,
     isFirefox,
     getPlatform,
     getPlatformLanguages,

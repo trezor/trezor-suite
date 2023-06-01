@@ -1,6 +1,13 @@
 import { getDeviceModel, getFirmwareType, getFirmwareVersion } from '@trezor/device-utils';
 
-import { isDesktop, getUserAgent, getScreenWidth, getScreenHeight } from '@trezor/env-utils';
+import {
+    getCommitHash,
+    getScreenHeight,
+    getScreenWidth,
+    getSuiteVersion,
+    getUserAgent,
+    isDesktop,
+} from '@trezor/env-utils';
 import type { TrezorDevice } from '@suite-types';
 import type { TransportInfo } from '@trezor/connect';
 import { GITHUB_REPO_URL } from '@trezor/urls';
@@ -20,7 +27,7 @@ const getDeviceInfo = (device?: TrezorDevice) => {
 };
 
 const getSuiteInfo = () =>
-    `${isDesktop() ? 'desktop' : 'web'} ${process.env.VERSION} (${process.env.COMMITHASH})`;
+    `${isDesktop() ? 'desktop' : 'web'} ${getSuiteVersion()} (${getCommitHash()})`;
 
 const getTransportInfo = (transport?: Partial<TransportInfo>) => {
     if (!transport?.type) {

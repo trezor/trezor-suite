@@ -9,8 +9,10 @@ export interface EnvUtils {
     isChromeOs: () => boolean;
     getBrowserName: () => string;
     getBrowserVersion: () => string;
+    getCommitHash: () => string;
     getDeviceType: () => string | undefined;
     getOsVersion: () => string;
+    getSuiteVersion: () => string;
     isFirefox: () => boolean;
     getPlatform: () => string;
     getPlatformLanguages: () => readonly string[];
