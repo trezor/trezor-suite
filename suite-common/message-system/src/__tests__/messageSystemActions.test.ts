@@ -30,6 +30,15 @@ const initStore = (preloadedState: State) => {
     return store;
 };
 
+jest.mock('../../files/config.v1.ts', () => {
+    // eslint-disable-next-line global-require, @typescript-eslint/no-var-requires
+    const { validJwsWithSequence10 } = require('../__fixtures__/messageSystemActions');
+    return {
+        __esModule: true,
+        jws: validJwsWithSequence10,
+    };
+});
+
 describe('Message system actions', () => {
     beforeAll(() => {
         process.env.JWS_PUBLIC_KEY = fixtures.DEV_JWS_PUBLIC_KEY;
@@ -108,14 +117,8 @@ describe('Message system actions', () => {
 
         it('fetches local jws if the remote one fails', async () => {
             jest.spyOn(console, 'error').mockImplementation(() => {});
-            const mockSecondFetchPromise = Promise.resolve({
-                ok: true,
-                text: () => Promise.resolve(fixtures.validJwsWithSequence10),
-            });
-            global.fetch = jest
-                .fn()
-                .mockImplementationOnce(() => undefined)
-                .mockImplementationOnce(() => mockSecondFetchPromise);
+
+            global.fetch = jest.fn().mockImplementationOnce(() => undefined);
 
             const store = initStore({
                 messageSystem: { ...getInitialState().messageSystem, currentSequence: 1 },

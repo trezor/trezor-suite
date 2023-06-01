@@ -32,6 +32,7 @@ const config: webpack.Configuration = {
                             'suite-common',
                             'message-system',
                             'files',
+                            'config.v1.ts',
                         ),
                         to: path.join(baseDir, 'build', 'static', 'message-system'),
                     },
