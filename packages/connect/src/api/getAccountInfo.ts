@@ -22,7 +22,6 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
 
     init() {
         this.requiredPermissions = ['read'];
-        this.info = 'Export account info';
         this.useDevice = true;
         this.useUi = true;
 
@@ -92,6 +91,10 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
 
         this.useDevice = willUseDevice;
         this.useUi = willUseDevice;
+    }
+
+    get info() {
+        return 'Export account info';
     }
 
     async confirmation() {

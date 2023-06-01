@@ -14,7 +14,6 @@ type Params = {
 export default class BlockchainDisconnect extends AbstractMethod<'blockchainDisconnect', Params> {
     init() {
         this.requiredPermissions = [];
-        this.info = '';
         this.useDevice = false;
         this.useUi = false;
 
@@ -33,6 +32,10 @@ export default class BlockchainDisconnect extends AbstractMethod<'blockchainDisc
         this.params = {
             coinInfo,
         };
+    }
+
+    get info() {
+        return '';
     }
 
     run() {

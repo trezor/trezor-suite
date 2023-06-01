@@ -84,7 +84,6 @@ export default class CardanoSignTransaction extends AbstractMethod<
             getMiscNetwork('Cardano'),
             this.firmwareRange,
         );
-        this.info = 'Sign Cardano transaction';
 
         const { payload } = this;
 
@@ -254,6 +253,10 @@ export default class CardanoSignTransaction extends AbstractMethod<
                     : PROTO.CardanoDerivationType.ICARUS_TREZOR,
             includeNetworkId: payload.includeNetworkId,
         };
+    }
+
+    get info() {
+        return 'Sign Cardano transaction';
     }
 
     _isFeatureSupported(feature: keyof typeof CardanoSignTransactionFeatures) {

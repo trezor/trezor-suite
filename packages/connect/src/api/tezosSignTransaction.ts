@@ -18,7 +18,6 @@ export default class TezosSignTransaction extends AbstractMethod<
             getMiscNetwork('Tezos'),
             this.firmwareRange,
         );
-        this.info = 'Sign Tezos transaction';
 
         const { payload } = this;
 
@@ -31,6 +30,10 @@ export default class TezosSignTransaction extends AbstractMethod<
 
         const path = validatePath(payload.path, 3);
         this.params = helper.createTx(path, payload.branch, payload.operation);
+    }
+
+    get info() {
+        return 'Sign Tezos transaction';
     }
 
     async run() {

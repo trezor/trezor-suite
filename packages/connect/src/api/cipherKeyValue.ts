@@ -15,7 +15,6 @@ export default class CipherKeyValue extends AbstractMethod<
     init() {
         this.requiredPermissions = ['read', 'write'];
         this.firmwareRange = getFirmwareRange(this.name, null, this.firmwareRange);
-        this.info = 'Cipher key value';
 
         // create a bundle with only one batch if bundle doesn't exists
         this.hasBundle = !!this.payload.bundle;
@@ -51,6 +50,10 @@ export default class CipherKeyValue extends AbstractMethod<
                 iv: batch.iv instanceof Buffer ? batch.iv.toString('hex') : batch.iv,
             };
         });
+    }
+
+    get info() {
+        return 'Cipher key value';
     }
 
     async run() {

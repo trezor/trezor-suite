@@ -50,7 +50,9 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
 
     payload: Payload<Name>; // method payload
 
-    info = ''; // method info, displayed in popup info-panel
+    get info() {
+        return '';
+    } // method info, displayed in popup info-panel
 
     useUi: boolean; // should use popup?
 

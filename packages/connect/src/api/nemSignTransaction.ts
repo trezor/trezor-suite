@@ -14,7 +14,6 @@ export default class NEMSignTransaction extends AbstractMethod<
     init() {
         this.requiredPermissions = ['read', 'write'];
         this.firmwareRange = getFirmwareRange(this.name, getMiscNetwork('NEM'), this.firmwareRange);
-        this.info = 'Sign NEM transaction';
 
         const { payload } = this;
         // validate incoming parameters
@@ -26,6 +25,10 @@ export default class NEMSignTransaction extends AbstractMethod<
         const path = validatePath(payload.path, 3);
         // incoming data should be in nem-sdk format
         this.params = helper.createTx(payload.transaction, path);
+    }
+
+    get info() {
+        return 'Sign NEM transaction';
     }
 
     async run() {

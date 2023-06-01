@@ -12,7 +12,6 @@ export default class EthereumVerifyMessage extends AbstractMethod<
     init() {
         this.requiredPermissions = ['read', 'write'];
         this.firmwareRange = getFirmwareRange(this.name, null, this.firmwareRange);
-        this.info = 'Verify message';
 
         const { payload } = this;
 
@@ -32,6 +31,10 @@ export default class EthereumVerifyMessage extends AbstractMethod<
             signature: stripHexPrefix(payload.signature),
             message: messageHex,
         };
+    }
+
+    get info() {
+        return 'Verify message';
     }
 
     async run() {

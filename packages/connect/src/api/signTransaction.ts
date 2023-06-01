@@ -44,7 +44,6 @@ type Params = {
 export default class SignTransaction extends AbstractMethod<'signTransaction', Params> {
     init() {
         this.requiredPermissions = ['read', 'write'];
-        this.info = 'Sign transaction';
 
         const { payload } = this;
 
@@ -86,7 +85,6 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
         // set required firmware from coinInfo support
         this.firmwareRange = getFirmwareRange(this.name, coinInfo, this.firmwareRange);
         this.preauthorized = payload.preauthorized;
-        this.info = getLabel('Sign #NETWORK transaction', coinInfo);
 
         const inputs = validateTrezorInputs(payload.inputs, coinInfo);
         const outputs = validateTrezorOutputs(payload.outputs, coinInfo);
@@ -135,6 +133,11 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
         };
 
         this.params.options = enhanceSignTx(this.params.options, coinInfo);
+    }
+
+    get info() {
+        const coinInfo = getBitcoinNetwork(this.payload.coin);
+        return getLabel('Sign #NETWORK transaction', coinInfo);
     }
 
     private async fetchAddresses(blockchain: Blockchain) {

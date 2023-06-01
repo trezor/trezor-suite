@@ -44,8 +44,6 @@ export default class EthereumSignTypedData extends AbstractMethod<'ethereumSignT
         const network = getEthereumNetwork(path);
         this.firmwareRange = getFirmwareRange(this.name, network, this.firmwareRange);
 
-        this.info = getNetworkLabel('Sign #NETWORK typed data', network);
-
         this.params = {
             address_n: path,
             metamask_v4_compat: payload.metamask_v4_compat,
@@ -89,6 +87,13 @@ export default class EthereumSignTypedData extends AbstractMethod<'ethereumSignT
                 );
             }
         }
+    }
+
+    get info() {
+        return getNetworkLabel(
+            'Sign #NETWORK typed data',
+            getEthereumNetwork(this.params.address_n),
+        );
     }
 
     async run() {
