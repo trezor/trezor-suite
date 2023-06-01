@@ -8,6 +8,7 @@ import * as middleware from '../middleware';
 import { Round } from '../coordinator';
 import { ROUND_SELECTION_REGISTRATION_OFFSET, ROUND_SELECTION_MAX_OUTPUTS } from '../../constants';
 import { RoundPhase, SessionPhase, WabiSabiProtocolErrorCode } from '../../enums';
+import { getInputSize, getOutputSize } from '../../utils/coordinatorUtils';
 
 export type CoinjoinRoundGenerator = (
     ...args: ConstructorParameters<typeof CoinjoinRound>
@@ -396,9 +397,19 @@ export const selectInputsForRound = async ({
         const utxoIndexes = utxoSelection[roundIndex][accountIndex];
         const selectedUtxos = utxoIndexes.map(utxoIndex => account.utxos[utxoIndex]);
 
-        // skip round if selected utxo value is greater than maxSuggestedAmount
-        // https://github.com/zkSNACKs/WalletWasabi/blob/23e4ec0971303b4502372332ecaffe4ff5d08917/WalletWasabi/WabiSabi/Client/CoinJoinClient.cs#L156
-        if (
+        // Temporary workaround for middleware issue: https://github.com/zkSNACKs/WalletWasabi/issues/10759
+        const feeRate = selectedRound.roundParameters.miningFeeRate;
+        const inputFee = Math.floor((getInputSize(account.scriptType) * feeRate) / 1000);
+        const outputFee = Math.floor((getOutputSize(account.scriptType) * feeRate) / 1000);
+        const totalValue = selectedUtxos.reduce((a, b) => a + b.amount, 0);
+        const effectiveValue = totalValue - outputFee - selectedUtxos.length * inputFee;
+        if (effectiveValue < selectedRound.roundParameters.allowedOutputAmounts.min) {
+            // skip round if effective value is too low
+            // https://github.com/zkSNACKs/WalletWasabi/issues/10759
+            logger.error(`Skipping the round. Utxo effective value ${effectiveValue} is too low`);
+        } else if (
+            // skip round if selected utxo value is greater than maxSuggestedAmount
+            // https://github.com/zkSNACKs/WalletWasabi/blob/23e4ec0971303b4502372332ecaffe4ff5d08917/WalletWasabi/WabiSabi/Client/CoinJoinClient.cs#L156
             selectedUtxos.some(
                 utxo => utxo.amount > selectedRound.roundParameters.maxSuggestedAmount,
             )
