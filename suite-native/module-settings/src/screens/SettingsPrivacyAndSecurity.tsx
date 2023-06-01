@@ -6,8 +6,7 @@ import { Screen, ScreenHeader } from '@suite-native/navigation';
 import { selectIsAnalyticsEnabled } from '@suite-common/analytics';
 import { Box, Card, DiscreetCanvas, Text, useDiscreetMode } from '@suite-native/atoms';
 import { useNativeStyles } from '@trezor/styles';
-import { getIsBiometricsFeatureAvailable, useIsBiometricsEnabled } from '@suite-native/biometrics';
-import { useAlert } from '@suite-native/alerts';
+import { useBiometrics, useIsBiometricsEnabled } from '@suite-native/biometrics';
 
 import { TouchableSwitchRow } from '../components/TouchableSwitchRow';
 
@@ -86,31 +85,13 @@ const AnalyticsSwitchRow = () => {
 };
 
 const BiometricsSwitchRow = () => {
-    const { showAlert, hideAlert } = useAlert();
-    const { isBiometricsOptionEnabled, setIsBiometricsOptionEnabled } = useIsBiometricsEnabled();
-
-    const handleBiometricsSwitch = async () => {
-        const isBiometricsOnDevice = await getIsBiometricsFeatureAvailable();
-
-        if (isBiometricsOnDevice) {
-            setIsBiometricsOptionEnabled(!isBiometricsOptionEnabled);
-        } else {
-            showAlert({
-                title: 'Biometrics',
-                description:
-                    'No security features on your device. Make sure you have biometrics setup on your phone and try again.',
-                primaryButtonTitle: 'Cancel',
-                onPressPrimaryButton: hideAlert,
-                icon: 'warningCircle',
-                pictogramVariant: 'yellow',
-            });
-        }
-    };
+    const { isBiometricsOptionEnabled } = useIsBiometricsEnabled();
+    const { toggleBiometricsOption } = useBiometrics();
 
     return (
         <TouchableSwitchRow
             isChecked={isBiometricsOptionEnabled}
-            onChange={handleBiometricsSwitch}
+            onChange={toggleBiometricsOption}
             text="Biometrics"
             iconName="userFocus"
             description={
