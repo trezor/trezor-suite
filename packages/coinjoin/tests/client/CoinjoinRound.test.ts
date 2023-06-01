@@ -283,4 +283,89 @@ describe(`CoinjoinRound`, () => {
 
         expect(spy).toBeCalledTimes(2); // two registrations called
     });
+
+    it('unregisterAccount not in critical phase', () => {
+        const round = createCoinjoinRound(
+            [
+                createInput('account-A', 'A1', { ownershipProof: '01A1' }),
+                createInput('account-B', 'B1', { ownershipProof: '01B1' }),
+            ],
+            {
+                ...server?.requestOptions,
+            },
+        );
+
+        const spyEnded = jest.fn();
+        const spyChanged = jest.fn();
+        round.on('ended', spyEnded);
+        round.on('changed', spyChanged);
+
+        round.unregisterAccount('account-A');
+        expect(spyEnded).toBeCalledTimes(0); // not called because there is also account-B input in round
+
+        round.unregisterAccount('account-B');
+        expect(spyEnded).toBeCalledTimes(1);
+        expect(spyChanged).toBeCalledTimes(1);
+    });
+
+    it('unregisterAccount in critical phase', () => {
+        const round = createCoinjoinRound(
+            [
+                createInput('account-A', 'A1', { ownershipProof: '01A1' }),
+                createInput('account-B', 'B1', { ownershipProof: '01B1' }),
+            ],
+            {
+                ...server?.requestOptions,
+                round: { phase: 2 },
+            },
+        );
+
+        const spyEnded = jest.fn();
+        const spyChanged = jest.fn();
+        round.on('ended', spyEnded);
+        round.on('changed', spyChanged);
+
+        round.unregisterAccount('account-A');
+        expect(spyEnded).toBeCalledTimes(1); // called immediately event if there is account-B input in round
+        expect(spyChanged).toBeCalledTimes(1);
+    });
+
+    it('unregisterAccount when round is locked', async () => {
+        const delayMock = jest
+            .spyOn(trezorUtils, 'getRandomNumberInRange')
+            .mockImplementation(() => 800);
+
+        const constantsMock = jest
+            .spyOn(CONSTANTS, 'ROUND_SELECTION_REGISTRATION_OFFSET', 'get')
+            .mockReturnValue(1000 as any);
+
+        const round = createCoinjoinRound(
+            [createInput('account-A', 'A1', { ownershipProof: '01A1' })],
+            {
+                ...server?.requestOptions,
+                round: { phaseDeadline: Date.now() + 10000 },
+                roundParameters: {
+                    connectionConfirmationTimeout: '0d 0h 0m 4s',
+                },
+            },
+        );
+
+        const spyEnded = jest.fn();
+        const spyChanged = jest.fn();
+        round.on('ended', spyEnded);
+        round.on('changed', spyChanged);
+
+        // process but not wait for the result
+        round.process([]).then(() => {
+            expect(spyEnded).toBeCalledTimes(1);
+            expect(spyChanged).toBeCalledTimes(1);
+        });
+
+        // we want to unregister account before input-registration response
+        await new Promise(resolve => setTimeout(resolve, 100));
+        round.unregisterAccount('account-A');
+
+        delayMock.mockRestore();
+        constantsMock.mockRestore();
+    });
 });

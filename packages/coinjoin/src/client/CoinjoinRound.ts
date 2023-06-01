@@ -386,14 +386,27 @@ export class CoinjoinRound extends TypedEmitter<Events> {
 
     // decide if round process should be interrupted by Account change
     private breakRound(inputs: Alice[]) {
-        if (inputs.length > 0) {
-            if (this.phase > RoundPhase.InputRegistration) {
-                // unregistered in critical phase, breaking the round
-                this.lock?.abort();
-            }
-            if (inputs.length === this.inputs.length) {
-                // no more inputs left in round, breaking the round
-                this.lock?.abort();
+        if (inputs.length < 1) return;
+
+        let breaking = false;
+        if (this.phase > RoundPhase.InputRegistration) {
+            // unregistered in critical phase, breaking the round
+            breaking = true;
+        }
+        if (inputs.length === this.inputs.length || !this.inputs.filter(i => !i.error).length) {
+            // no more inputs left in round, breaking the round
+            breaking = true;
+        }
+
+        if (breaking) {
+            if (this.lock) {
+                // abort processing if locked. Round will be ended automatically as result of abort
+                this.lock.abort();
+            } else {
+                // emit events if not locked
+                this.phase = RoundPhase.Ended;
+                this.emit('ended', { round: this.toSerialized() });
+                this.emit('changed', { round: this.toSerialized() });
             }
         }
     }
