@@ -17,5 +17,6 @@ export enum EventType {
     SettingsChangeTheme = 'settings/change_theme',
     SettingsChangeBtcUnit = 'settings/change_btc_unit',
     SettingsDiscreetToggle = 'settings/discreet_toggle',
+    SettingsBiometricsToggle = 'settings/biometrics_toggle',
     SettingsDataPermission = 'settings/data_permission',
 }

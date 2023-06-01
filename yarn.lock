@@ -6609,6 +6609,7 @@ __metadata:
   dependencies:
     "@suite-common/icons": "workspace:*"
     "@suite-native/alerts": "workspace:*"
+    "@suite-native/analytics": "workspace:*"
     "@suite-native/atoms": "workspace:*"
     "@suite-native/storage": "workspace:*"
     "@trezor/styles": "workspace:*"

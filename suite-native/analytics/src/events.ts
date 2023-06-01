@@ -20,6 +20,7 @@ export type SuiteNativeAnalyticsEvent =
               discreetMode: boolean;
               theme: string;
               loadDuration: number;
+              isBiometricsEnabled: boolean;
           };
       }
     | {
@@ -123,4 +124,5 @@ export type SuiteNativeAnalyticsEvent =
           payload: {
               analyticsPermission: boolean;
           };
-      };
+      }
+    | { type: EventType.SettingsBiometricsToggle; payload: { enabled: boolean } };
