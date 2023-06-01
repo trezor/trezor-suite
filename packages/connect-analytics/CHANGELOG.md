@@ -1,0 +1,3 @@
+# 1.0.3
+
+-   chore(deps): unify typescript to 4.9.5 in all packages (66a50fcdd)- fix(connect-analytics): report method (ceeb6681b)- feat(connect-popup): report settings.origin in analytics (dac366671)- chore(connect): get rid of need for releasing extra packages (analytics related) (c89e91d97)- chore(monorepo): force workspace resolutions (d027b9763)- chore: build:lib 3 connect deps to fix desktop app build (1f5fa637a)- feat(connect-analytics): report appUrl query param if available (81a6c0d38)- feat(connect-analytics): events (4d5215b0e)- feat(connect): send analytics data from connect core (f7b5e27ce)- feat(connect-analytics): new analytics connect package (98cfff3e6)
