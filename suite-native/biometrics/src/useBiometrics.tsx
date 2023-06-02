@@ -2,8 +2,8 @@ import { useCallback, useEffect, useState } from 'react';
 import { AppState, Platform } from 'react-native';
 
 import * as LocalAuthentication from 'expo-local-authentication';
-
 import { useAlert } from '@suite-native/alerts';
+import { analytics, EventType } from '@suite-native/analytics';
 
 import { useIsBiometricsEnabled } from './biometricsAtoms';
 import { getIsBiometricsFeatureAvailable } from './isBiometricsFeatureAvailable';
@@ -58,6 +58,10 @@ export const useBiometrics = () => {
             const result = await authenticate();
             if (result?.success) {
                 setIsBiometricsOptionEnabled(!isBiometricsOptionEnabled);
+                analytics.report({
+                    type: EventType.SettingsBiometricsToggle,
+                    payload: { enabled: !isBiometricsOptionEnabled },
+                });
             }
         } else {
             showAlert({
@@ -97,5 +101,5 @@ export const useBiometrics = () => {
         }
     }, [authenticate, isBiometricsOptionEnabled, isUserAuthenticated]);
 
-    return { toggleBiometricsOption, isUserAuthenticated };
+    return { toggleBiometricsOption, isUserAuthenticated, isBiometricsOptionEnabled };
 };
