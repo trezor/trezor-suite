@@ -239,9 +239,13 @@ export const setBusyScreen =
         );
     };
 
-export const closeCriticalPhaseModal = () => (dispatch: Dispatch, getState: GetState) => {
+export const hasCriticalPhaseModal = () => (_: Dispatch, getState: GetState) => {
     const { modal } = getState();
-    if ('payload' in modal && modal.payload.type === 'critical-coinjoin-phase') {
+    return 'payload' in modal && modal.payload.type === 'critical-coinjoin-phase';
+};
+
+export const closeCriticalPhaseModal = () => (dispatch: Dispatch) => {
+    if (dispatch(hasCriticalPhaseModal())) {
         dispatch(closeModal());
     }
 };
@@ -307,17 +311,6 @@ export const onCoinjoinRoundChanged =
         // round event is triggered multiple times. like at the beginning and at the end of round process
         // critical actions should be triggered only once
         if (phaseChanged) {
-            if (round.phase === RoundPhase.ConnectionConfirmation) {
-                await dispatch(setBusyScreen(accountKeys, round.roundDeadline - Date.now()));
-
-                dispatch(
-                    openModal({
-                        type: 'critical-coinjoin-phase',
-                        relatedAccountKey: coinjoinAccountsWithSession[0].key, // since all accounts share the round, any key can be used,
-                    }),
-                );
-            }
-
             if (round.phase === RoundPhase.Ended) {
                 await dispatch(setBusyScreen(accountKeys));
                 dispatch(closeCriticalPhaseModal());
@@ -347,6 +340,18 @@ export const onCoinjoinRoundChanged =
                 accountsWithAutopause.forEach(({ key }) => {
                     dispatch(pauseCoinjoinSession(key));
                 });
+            } else if (
+                round.phase > RoundPhase.InputRegistration &&
+                !dispatch(hasCriticalPhaseModal())
+            ) {
+                await dispatch(setBusyScreen(accountKeys, round.roundDeadline - Date.now()));
+
+                dispatch(
+                    openModal({
+                        type: 'critical-coinjoin-phase',
+                        relatedAccountKey: coinjoinAccountsWithSession[0].key, // since all accounts share the round, any key can be used,
+                    }),
+                );
             }
         }
     };
