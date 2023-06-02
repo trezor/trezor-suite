@@ -7981,7 +7981,7 @@ export default defineMessages({
         defaultMessage: 'Sync & track on your phone with <b>Trezor Suite Lite</b>',
     },
     TR_CANDIDATE_TRANSACTION_HEADER: {
-        id: 'TR_CANDIDATE_TRANSACTION_DESCRIPTION',
+        id: 'TR_CANDIDATE_TRANSACTION_HEADER',
         defaultMessage: 'Candidate Transactions',
     },
     TR_CANDIDATE_TRANSACTION: {
