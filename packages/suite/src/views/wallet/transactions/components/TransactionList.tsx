@@ -11,6 +11,7 @@ import {
     advancedSearchTransactions,
     groupJointTransactions,
     getAccountNetwork,
+    isPending,
 } from '@suite-common/wallet-utils';
 import { SETTINGS } from '@suite-config';
 import { WalletAccountTransaction, Account } from '@wallet-types';
@@ -53,9 +54,28 @@ export const TransactionList = ({
 
     const network = getAccountNetwork(account);
 
+    const sortedTransacitions = useMemo(
+        () =>
+            transactions.reduce(
+                (acc, current) => {
+                    if (isPending(current)) {
+                        acc.pending.push(current);
+                    } else {
+                        acc.completed.push(current);
+                    }
+                    return acc;
+                },
+                { completed: [], pending: [] } as {
+                    completed: WalletAccountTransaction[];
+                    pending: WalletAccountTransaction[];
+                },
+            ),
+        [transactions],
+    );
+
     // Search
     const [searchQuery, setSearchQuery] = useState('');
-    const [searchedTransactions, setSearchedTransactions] = useState(transactions);
+    const [searchedTransactions, setSearchedTransactions] = useState(sortedTransacitions.completed);
     const [hasFetchedAll, setHasFetchedAll] = useState(false);
 
     const { fetchTransactions } = useActions({
@@ -68,7 +88,7 @@ export const TransactionList = ({
         () => {
             const results = searchQuery
                 ? advancedSearchTransactions(transactions, account.metadata, searchQuery)
-                : transactions;
+                : sortedTransacitions.completed;
             setSearchedTransactions(results);
         },
         200,
@@ -124,6 +144,47 @@ export const TransactionList = ({
     const transactionsByDate = useMemo(
         () => groupTransactionsByDate(slicedTransactions),
         [slicedTransactions],
+    );
+
+    const pendingByDate = useMemo(
+        () => groupTransactionsByDate(sortedTransacitions.pending),
+        [sortedTransacitions.pending],
+    );
+
+    const pendingListItems = useMemo(
+        () =>
+            Object.entries(pendingByDate).map(([dateKey, value], groupIndex) => (
+                <TransactionsGroup
+                    key={dateKey}
+                    dateKey={dateKey}
+                    symbol={symbol}
+                    transactions={value}
+                    localCurrency={localCurrency}
+                    index={groupIndex}
+                >
+                    {groupJointTransactions(value).map((item, index) =>
+                        item.type === 'joint-batch' ? (
+                            <CoinjoinBatchItem
+                                key={item.rounds[0].txid}
+                                transactions={item.rounds}
+                                isPending
+                                localCurrency={localCurrency}
+                            />
+                        ) : (
+                            <TransactionItem
+                                key={item.tx.txid}
+                                transaction={item.tx}
+                                isPending
+                                accountMetadata={account.metadata}
+                                accountKey={account.key}
+                                network={network!}
+                                index={index}
+                            />
+                        ),
+                    )}
+                </TransactionsGroup>
+            )),
+        [pendingByDate, account.key, account.metadata, localCurrency, network, symbol],
     );
 
     const listItems = useMemo(
@@ -191,6 +252,8 @@ export const TransactionList = ({
             {account.accountType === 'coinjoin' && !isSearching && (
                 <TransactionCandidates accountKey={account.key} />
             )}
+
+            <>{!isSearching && pendingListItems}</>
 
             {/* TODO: show this skeleton also while searching in txs */}
             {isLoading ? (
