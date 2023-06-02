@@ -1,7 +1,7 @@
 {
     "version": 1,
-    "timestamp": "2023-05-24T00:00:00+00:00",
-    "sequence": 36,
+    "timestamp": "2023-06-02T00:00:00+00:00",
+    "sequence": 37,
     "actions": [
         {
             "conditions": [
@@ -158,7 +158,7 @@
                 "feature": [
                     {
                         "domain": "coinjoin",
-                        "flag": true,
+                        "flag": false,
                         "averageAnonymityGainPerRound": 0.34,
                         "roundsFailRateBuffer": 10,
                         "roundsDurationInHours": 3
