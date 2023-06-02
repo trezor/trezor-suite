@@ -186,7 +186,7 @@ export const TransactionList = ({
             }
             data-test="@wallet/accounts/transaction-list"
         >
-            {account.accountType === 'coinjoin' && (
+            {account.accountType === 'coinjoin' && !isSearching && (
                 <TransactionCandidates accountKey={account.key} />
             )}
 
