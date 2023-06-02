@@ -54,7 +54,7 @@ export const TransactionList = ({
     const network = getAccountNetwork(account);
 
     // Search
-    const [search, setSearch] = useState('');
+    const [searchQuery, setSearchQuery] = useState('');
     const [searchedTransactions, setSearchedTransactions] = useState(transactions);
     const [hasFetchedAll, setHasFetchedAll] = useState(false);
 
@@ -66,11 +66,13 @@ export const TransactionList = ({
 
     useDebounce(
         () => {
-            const results = advancedSearchTransactions(transactions, account.metadata, search);
+            const results = searchQuery
+                ? advancedSearchTransactions(transactions, account.metadata, searchQuery)
+                : transactions;
             setSearchedTransactions(results);
         },
         200,
-        [transactions, account.metadata, search],
+        [transactions, account.metadata, searchQuery],
     );
 
     useEffect(() => {
@@ -96,7 +98,7 @@ export const TransactionList = ({
         setSelectedPage(startPage);
     }, [account.descriptor, account.symbol, startPage]);
 
-    const isSearching = search !== '';
+    const isSearching = searchQuery !== '';
     const totalItems = isSearching ? searchedTransactions.length : account.history.total;
 
     const onPageSelected = (page: number) => {
@@ -179,8 +181,8 @@ export const TransactionList = ({
             actions={
                 <TransactionListActions
                     account={account}
-                    search={search}
-                    setSearch={setSearch}
+                    search={searchQuery}
+                    setSearch={setSearchQuery}
                     setSelectedPage={setSelectedPage}
                 />
             }
