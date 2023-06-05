@@ -1,5 +1,6 @@
 import { BlockbookAPI } from '@trezor/blockchain-link/lib/workers/blockbook/websocket';
 
+import { WS_MESSAGE_TIMEOUT } from '../constants';
 import type { Logger } from '../types';
 
 export type BlockbookWS = Pick<
@@ -33,6 +34,7 @@ export class CoinjoinWebsocketController {
         let socket = this.sockets[socketId];
         if (!socket) {
             socket = new BlockbookAPI({
+                timeout: WS_MESSAGE_TIMEOUT,
                 url,
                 headers: { 'Proxy-Authorization': `Basic ${identity}` },
             });
