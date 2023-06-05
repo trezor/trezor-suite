@@ -1,5 +1,8 @@
 import React from 'react';
-import { UI } from '@trezor/connect';
+import { useIntl } from 'react-intl';
+
+import messages from '@suite/support/messages';
+import TrezorConnect, { UI } from '@trezor/connect';
 import { MODAL } from '@suite-actions/constants';
 import { useSelector } from '@suite-hooks';
 import {
@@ -28,7 +31,12 @@ export const DeviceContextModal = ({
 }: ReduxModalProps<typeof MODAL.CONTEXT_DEVICE>) => {
     const device = useSelector(state => state.suite.device);
     const account = useSelector(selectSelectedAccount);
+
+    const intl = useIntl();
+
     if (!device) return null;
+
+    const abort = () => TrezorConnect.cancel(intl.formatMessage(messages.TR_CANCELLED));
 
     switch (windowType) {
         // T1 firmware
@@ -81,7 +89,12 @@ export const DeviceContextModal = ({
             return <ConfirmActionModal device={device} renderer={renderer} />;
         case 'ButtonRequest_Address':
             return account && data?.address ? (
-                <ConfirmAddress device={device} value={data.address} symbol={account.symbol} />
+                <ConfirmAddress
+                    device={device}
+                    value={data.address}
+                    symbol={account.symbol}
+                    onCancel={abort}
+                />
             ) : null;
         case 'ButtonRequest_PublicKey':
             return account ? (
@@ -91,6 +104,7 @@ export const DeviceContextModal = ({
                     symbol={account.symbol}
                     accountIndex={account.index}
                     accountLabel={account.metadata.accountLabel}
+                    onCancel={abort}
                 />
             ) : null;
         default:

@@ -4,12 +4,7 @@ import { GetState, Dispatch } from '@suite-types';
 import TrezorConnect, { Success, Unsuccessful } from '@trezor/connect';
 
 export const openXpubModal =
-    (
-        params?: Pick<
-            Extract<modalActions.UserContextPayload, { type: 'xpub' }>,
-            'isCancelable' | 'isConfirmed'
-        >,
-    ) =>
+    (params?: Pick<Extract<modalActions.UserContextPayload, { type: 'xpub' }>, 'isConfirmed'>) =>
     (dispatch: Dispatch, getState: GetState) => {
         const { device } = getState().suite;
         const { account } = getState().wallet.selectedAccount;
@@ -72,7 +67,7 @@ export const showXpub = () => async (dispatch: Dispatch, getState: GetState) => 
 
     if (response.success) {
         // Show second part of the "confirm XPUB" modal.
-        dispatch(openXpubModal({ isCancelable: true, isConfirmed: true }));
+        dispatch(openXpubModal({ isConfirmed: true }));
     } else {
         dispatch(modalActions.onCancel());
         // Special case: closing no-backup warning modal should not show a toast.
