@@ -9,7 +9,11 @@ import { stripHexPrefix } from '../utils/formatUtils';
 import { PROTO, ERRORS } from '../constants';
 import { UI, createUiMessage } from '../events';
 import type { EthereumNetworkInfo } from '../types';
-import { getEthereumDefinitions } from './ethereum/ethereumDefinitions';
+import {
+    getEthereumDefinitions,
+    decodeEthereumDefinition,
+    ethereumNetworkInfoFromDefinition,
+} from './ethereum/ethereumDefinitions';
 
 type Params = PROTO.EthereumGetAddress & {
     address?: string;
@@ -64,6 +68,27 @@ export default class EthereumGetAddress extends AbstractMethod<'ethereumGetAddre
             this.params[0].show_display;
         this.confirmed = useEventListener;
         this.useUi = !useEventListener;
+    }
+
+    async initAsync(): Promise<void> {
+        for (let i = 0; i < this.params.length; i++) {
+            // network was maybe already set from 'well-known' definition in init method.
+            if (!this.params[i].network) {
+                const slip44 = getSlip44ByPath(this.params[i].address_n);
+
+                const definitions = await getEthereumDefinitions({
+                    slip44,
+                });
+
+                const decoded = decodeEthereumDefinition(definitions);
+                if (decoded.network) {
+                    this.params[i].network = ethereumNetworkInfoFromDefinition(decoded.network);
+                }
+                if (definitions.encoded_network) {
+                    this.params[i].encoded_network = definitions.encoded_network;
+                }
+            }
+        }
     }
 
     get info() {
@@ -142,24 +167,12 @@ export default class EthereumGetAddress extends AbstractMethod<'ethereumGetAddre
 
         for (let i = 0; i < this.params.length; i++) {
             const batch = this.params[i];
-            const slip44 = getSlip44ByPath(batch.address_n);
-            const definitions = await getEthereumDefinitions({
-                chainId: batch?.network?.chainId,
-                slip44,
-            });
-
-            const definitionParams = {
-                ...(definitions.encoded_network && {
-                    encoded_network: definitions.encoded_network,
-                }),
-            };
 
             // silently get address and compare with requested address
             // or display as default inside popup
             if (batch.show_display) {
                 const silent = await this._call({
                     ...batch,
-                    ...definitionParams,
                     show_display: false,
                 });
                 if (typeof batch.address === 'string') {
@@ -177,7 +190,6 @@ export default class EthereumGetAddress extends AbstractMethod<'ethereumGetAddre
 
             const response = await this._call({
                 ...batch,
-                ...definitionParams,
             });
             responses.push(response);
 

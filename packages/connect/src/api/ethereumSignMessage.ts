@@ -8,11 +8,15 @@ import { getNetworkLabel } from '../utils/ethereumUtils';
 import { messageToHex } from '../utils/formatUtils';
 import type { PROTO } from '../constants';
 import { getEthereumDefinitions } from './ethereum/ethereumDefinitions';
+import type { EthereumNetworkInfo } from '../types';
+import type { EthereumDefinitions } from '@trezor/protobuf/lib/messages';
 
-export default class EthereumSignMessage extends AbstractMethod<
-    'ethereumSignMessage',
-    PROTO.EthereumSignMessage
-> {
+type Params = PROTO.EthereumSignMessage & {
+    network?: EthereumNetworkInfo;
+    definitions?: EthereumDefinitions;
+};
+
+export default class EthereumSignMessage extends AbstractMethod<'ethereumSignMessage', Params> {
     init() {
         this.requiredPermissions = ['read', 'write'];
 
@@ -38,6 +42,16 @@ export default class EthereumSignMessage extends AbstractMethod<
         };
     }
 
+    async initAsync() {
+        if (this.params.network) return;
+
+        const { address_n } = this.params;
+        const slip44 = getSlip44ByPath(address_n);
+        this.params.definitions = await getEthereumDefinitions({
+            slip44,
+        });
+    }
+
     get info() {
         return getNetworkLabel('Sign #NETWORK message', getEthereumNetwork(this.params.address_n));
     }
@@ -45,20 +59,9 @@ export default class EthereumSignMessage extends AbstractMethod<
     async run() {
         const cmd = this.device.getCommands();
         const { address_n, message } = this.params;
-        const network = getEthereumNetwork(address_n);
-        const slip44 = getSlip44ByPath(address_n);
-        const definitions = await getEthereumDefinitions({
-            chainId: network?.chainId,
-            slip44,
-        });
 
-        const definitionParams = {
-            ...(definitions.encoded_network && {
-                encoded_network: definitions.encoded_network,
-            }),
-        };
         const response = await cmd.typedCall('EthereumSignMessage', 'EthereumMessageSignature', {
-            ...definitionParams,
+            encoded_network: this.params.definitions?.encoded_network,
             address_n,
             message,
         });

@@ -16,12 +16,16 @@ import type {
 import { getFieldType, parseArrayType, encodeData } from './ethereum/ethereumSignTypedData';
 import { messageToHex } from '../utils/formatUtils';
 import { getEthereumDefinitions } from './ethereum/ethereumDefinitions';
+import type { EthereumNetworkInfo } from '../types';
+import type { EthereumDefinitions } from '@trezor/protobuf/lib/messages';
 
 type Params = (
     | Omit<EthereumSignTypedDataParams<EthereumSignTypedDataTypes>, 'path'>
     | Omit<EthereumSignTypedHashParams<EthereumSignTypedDataTypes>, 'path'>
 ) & {
     address_n: number[];
+    network?: EthereumNetworkInfo;
+    definitions?: EthereumDefinitions;
 };
 export default class EthereumSignTypedData extends AbstractMethod<'ethereumSignTypedData', Params> {
     init() {
@@ -48,6 +52,7 @@ export default class EthereumSignTypedData extends AbstractMethod<'ethereumSignT
             address_n: path,
             metamask_v4_compat: payload.metamask_v4_compat,
             data: payload.data,
+            network,
         };
 
         if (payload.domain_separator_hash) {
@@ -89,6 +94,16 @@ export default class EthereumSignTypedData extends AbstractMethod<'ethereumSignT
         }
     }
 
+    async initAsync() {
+        if (this.params.network) return;
+
+        const { address_n } = this.params;
+        const slip44 = getSlip44ByPath(address_n);
+        this.params.definitions = await getEthereumDefinitions({
+            slip44,
+        });
+    }
+
     get info() {
         return getNetworkLabel(
             'Sign #NETWORK typed data',
@@ -98,14 +113,7 @@ export default class EthereumSignTypedData extends AbstractMethod<'ethereumSignT
 
     async run() {
         const cmd = this.device.getCommands();
-        const { address_n } = this.params;
-
-        const network = getEthereumNetwork(address_n);
-        const slip44 = getSlip44ByPath(address_n);
-        const definitions = await getEthereumDefinitions({
-            chainId: network?.chainId,
-            slip44,
-        });
+        const { address_n, definitions } = this.params;
 
         if (this.device.features.model === '1') {
             validateParams(this.params, [
@@ -115,12 +123,6 @@ export default class EthereumSignTypedData extends AbstractMethod<'ethereumSignT
 
             const { domain_separator_hash, message_hash } = this.params;
 
-            const definitionParams = {
-                ...(definitions.encoded_network && {
-                    encoded_network: definitions.encoded_network,
-                }),
-            };
-
             // For T1 we use EthereumSignTypedHash
             const response = await cmd.typedCall(
                 'EthereumSignTypedHash',
@@ -129,7 +131,7 @@ export default class EthereumSignTypedData extends AbstractMethod<'ethereumSignT
                     address_n,
                     domain_separator_hash: domain_separator_hash as string, // TODO: https://github.com/trezor/trezor-suite/issues/5297
                     message_hash,
-                    ...definitionParams,
+                    encoded_network: definitions?.encoded_network,
                 },
             );
 

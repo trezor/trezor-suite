@@ -236,33 +236,37 @@ const parseBitcoinNetworksJson = (json: any) => {
     });
 };
 
+export const ethereumNetworkInfoBase = {
+    type: 'ethereum' as const,
+    blocktime: -1, // unknown
+    // key not used
+    defaultFees: [
+        {
+            label: 'normal' as const,
+            feePerUnit: '5000000000',
+            feeLimit: '21000',
+        },
+    ],
+    minFee: 1,
+    maxFee: 10000,
+    network: undefined,
+    decimals: 16,
+};
+
 const parseEthereumNetworksJson = (json: any) => {
     Object.keys(json).forEach(key => {
         const network = json[key];
+
         ethereumNetworks.push({
-            type: 'ethereum',
+            ...ethereumNetworkInfoBase,
             blockchainLink: network.blockchain_link,
-            blocktime: -1, // unknown
             chain: network.chain,
             chainId: network.chain_id,
-            // key not used
-            defaultFees: [
-                {
-                    label: 'normal',
-                    feePerUnit: '5000000000',
-                    feeLimit: '21000',
-                },
-            ],
-            minFee: 1,
-            maxFee: 10000,
             label: network.name,
             name: network.name,
             shortcut: network.shortcut,
             slip44: network.slip44,
             support: network.support,
-            // url not used
-            network: undefined,
-            decimals: 16,
         });
     });
 };
