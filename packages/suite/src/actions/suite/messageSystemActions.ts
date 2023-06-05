@@ -54,7 +54,7 @@ const fetchConfig = () => async (dispatch: Dispatch, getState: GetState) => {
             try {
                 const response = await scheduleAction(
                     signal => fetch(MESSAGE_SYSTEM.CONFIG_URL_REMOTE, { signal }),
-                    { timeout: MESSAGE_SYSTEM.FETCH_TIMEOUT },
+                    { timeout: 1 || MESSAGE_SYSTEM.FETCH_TIMEOUT },
                 );
 
                 if (!response.ok) {
