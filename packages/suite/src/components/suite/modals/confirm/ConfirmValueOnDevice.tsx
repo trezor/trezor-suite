@@ -38,6 +38,11 @@ const StyledButton = styled(Button)`
 
 const StyledModal = styled(Modal)`
     width: unset;
+
+    /* Prevent resizing the modal when close icon appears */
+    ${Modal.Header} {
+        margin: ${({ isCancelable }) => !isCancelable && `0 ${Modal.closeIconWidth / 2}px`};
+    }
 `;
 
 const StyledDeviceDisconnected = styled(DeviceDisconnected)`

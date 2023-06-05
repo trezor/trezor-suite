@@ -10,6 +10,9 @@ import { variables } from '../../config';
 import { Progress } from '@trezor/components';
 import { IconType } from '../../support/types';
 
+const CLOSE_ICON_SIDE = 26;
+const CLOSE_ICON_PADDING = 16;
+
 const ModalPromptContainer = styled.div`
     margin-bottom: 25px;
 `;
@@ -82,11 +85,11 @@ const HeaderComponentsContainer = styled.div`
     display: flex;
     align-items: center;
     height: 100%;
-    padding-left: 30px;
+    padding-left: ${CLOSE_ICON_PADDING}px;
     margin-left: auto;
 
     > * + * {
-        margin-left: 16px;
+        margin-left: ${CLOSE_ICON_SIDE}px;
     }
 `;
 
@@ -153,8 +156,8 @@ const ModalWindow = styled.div`
 `;
 
 const CloseIcon = styled(Icon)`
-    width: 26px;
-    height: 26px;
+    width: ${CLOSE_ICON_SIDE}px;
+    height: ${CLOSE_ICON_SIDE}px;
 `;
 
 const BackIcon = styled(Icon)`
@@ -314,6 +317,7 @@ Modal.Body = Body;
 Modal.Description = Description;
 Modal.Content = Content;
 Modal.BottomBar = BottomBar;
+Modal.closeIconWidth = CLOSE_ICON_SIDE + CLOSE_ICON_PADDING;
 
 export { Modal };
 export type { ModalProps };
