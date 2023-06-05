@@ -144,7 +144,6 @@ export class CoinjoinMempoolController implements MempoolController {
     async update(force?: boolean) {
         const now = new Date().getTime();
         if (now - this.lastPurge < MEMPOOL_PURGE_CYCLE && !force) return;
-        this.lastPurge = now;
 
         const mempoolTxids = await this.client
             .fetchMempoolFilters()
@@ -154,6 +153,8 @@ export class CoinjoinMempoolController implements MempoolController {
             txid => !keepTxids.includes(txid),
         );
         removeTxids.forEach(this.onTxRemove);
+
+        this.lastPurge = now;
     }
 
     getTransactions(...addressControllers: AddressController[]) {
