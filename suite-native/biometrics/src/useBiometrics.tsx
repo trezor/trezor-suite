@@ -1,105 +1,119 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { AppState, Platform } from 'react-native';
 
 import * as LocalAuthentication from 'expo-local-authentication';
-import { useAlert } from '@suite-native/alerts';
-import { analytics, EventType } from '@suite-native/analytics';
+
+import { Alert, useAlert } from '@suite-native/alerts';
 
 import { useIsBiometricsEnabled } from './biometricsAtoms';
 import { getIsBiometricsFeatureAvailable } from './isBiometricsFeatureAvailable';
 
+const authenticate = async () => {
+    if (Platform.OS === 'android') {
+        // Cancel any previous authentication attempt. (Only available for android)
+        await LocalAuthentication.cancelAuthenticate();
+    }
+
+    const isBiometricsAvailable = await getIsBiometricsFeatureAvailable();
+    if (isBiometricsAvailable) {
+        const result = await LocalAuthentication.authenticateAsync();
+        return result;
+    }
+};
+
+const authenticationCanceledAlert: Alert = {
+    title: 'Authentication canceled',
+    description: 'You will have to try again.',
+    pictogramVariant: 'red',
+    icon: 'warningCircle',
+    onPressPrimaryButton: authenticate,
+    primaryButtonTitle: 'Try again',
+    secondaryButtonTitle: 'Cancel',
+    onPressSecondaryButton: () => null,
+};
+
+const biometricNotAvailableAlert: Alert = {
+    title: 'Biometrics',
+    description:
+        'No security features on your device. Make sure you have biometrics setup on your phone and try again.',
+    primaryButtonTitle: 'Cancel',
+    onPressPrimaryButton: () => null,
+    icon: 'warningCircle',
+    pictogramVariant: 'yellow',
+};
+
 export const useBiometrics = () => {
-    const { showAlert, hideAlert } = useAlert();
+    const appState = useRef(AppState.currentState);
     const { isBiometricsOptionEnabled, setIsBiometricsOptionEnabled } = useIsBiometricsEnabled();
-    const [isUserAuthenticated, setIsUserAuthenticated] = useState(false);
-
-    const authenticate = useCallback(async () => {
-        if (Platform.OS === 'android') {
-            // Cancel any previous authentication attempt. (Only available for android)
-            await LocalAuthentication.cancelAuthenticate();
-        }
-
-        if (AppState.currentState !== 'active') return;
-
-        try {
-            const result = await LocalAuthentication.authenticateAsync();
-
-            if (
-                !result.success &&
-                (result.error === 'user_cancel' ||
-                    result.error === 'system_cancel' ||
-                    // Sometimes the native code returns some unknown error that we need to handle as well so we give user option to try again.
-                    result.error.startsWith('unknown'))
-            ) {
-                showAlert({
-                    title: 'Authentication canceled',
-                    description: 'You will have to try again.',
-                    pictogramVariant: 'red',
-                    icon: 'warningCircle',
-                    onPressPrimaryButton: authenticate,
-                    primaryButtonTitle: 'Try again',
-                    secondaryButtonTitle: 'Cancel',
-                    onPressSecondaryButton: () => null,
-                });
-            } else {
-                setIsUserAuthenticated(result.success);
-                hideAlert(); // Hide alert if previous attempts failed but there is a new succesfull attempt underway
-                return result;
-            }
-        } catch (e) {
-            return { success: false };
-        }
-    }, [hideAlert, showAlert]);
+    const [isUserAuthenticated, setIsUserAuthenticated] = useState(!isBiometricsOptionEnabled);
+    const { showAlert } = useAlert();
 
     const toggleBiometricsOption = useCallback(async () => {
-        const isBiometricsOnDevice = await getIsBiometricsFeatureAvailable();
+        const isBiometricsAvailable = await getIsBiometricsFeatureAvailable();
 
-        if (isBiometricsOnDevice) {
-            const result = await authenticate();
-            if (result?.success) {
-                setIsBiometricsOptionEnabled(!isBiometricsOptionEnabled);
-                analytics.report({
-                    type: EventType.SettingsBiometricsToggle,
-                    payload: { enabled: !isBiometricsOptionEnabled },
-                });
-            }
-        } else {
-            showAlert({
-                title: 'Biometrics',
-                description:
-                    'No security features on your device. Make sure you have biometrics setup on your phone and try again.',
-                primaryButtonTitle: 'Cancel',
-                onPressPrimaryButton: () => null,
-                icon: 'warningCircle',
-                pictogramVariant: 'yellow',
-            });
+        if (!isBiometricsAvailable) {
+            showAlert(biometricNotAvailableAlert);
+            return;
         }
-    }, [authenticate, isBiometricsOptionEnabled, setIsBiometricsOptionEnabled, showAlert]);
+
+        const authResult = await authenticate();
+
+        if (!authResult?.success) {
+            return;
+        }
+
+        if (isBiometricsOptionEnabled) {
+            setIsBiometricsOptionEnabled(false);
+            setIsUserAuthenticated(false);
+        } else {
+            setIsBiometricsOptionEnabled(true);
+            setIsUserAuthenticated(true);
+        }
+    }, [isBiometricsOptionEnabled, setIsBiometricsOptionEnabled, showAlert]);
 
     useEffect(() => {
         const subscription = AppState.addEventListener('change', nextAppState => {
-            if (nextAppState === 'active' && isBiometricsOptionEnabled && !isUserAuthenticated) {
-                const auth = async () => {
-                    await authenticate();
-                };
-                auth();
+            if (appState.current === 'background' && nextAppState === 'active') {
+                if (isBiometricsOptionEnabled && !isUserAuthenticated) {
+                    const auth = async () => {
+                        const result = await authenticate();
+
+                        const resultHasError = result && !result.success;
+
+                        // In some cases, if auth happens too quickly after closing app, it will fail with unknown error.
+                        // User don't need to authenticate at this point. The library doesn't accept authentication that's been less than few seconds after closing app.
+                        if (resultHasError && result.error.startsWith('unknown:')) {
+                            return;
+                        }
+
+                        const authenticationFailedErrors =
+                            resultHasError && result.error === 'user_cancel';
+
+                        if (authenticationFailedErrors) {
+                            showAlert(authenticationCanceledAlert);
+                        }
+
+                        if (result && result?.success) {
+                            setIsUserAuthenticated(true);
+                        }
+                    };
+                    auth();
+                }
             }
-            if (nextAppState === 'background') {
+
+            if (appState.current === 'active' && nextAppState !== 'active') {
                 setIsUserAuthenticated(false);
             }
+
+            appState.current = nextAppState;
         });
 
         return () => subscription.remove();
-    }, [authenticate, isBiometricsOptionEnabled, isUserAuthenticated, setIsUserAuthenticated]);
+    }, [isBiometricsOptionEnabled, isUserAuthenticated, setIsUserAuthenticated, showAlert]);
 
-    useEffect(() => {
-        if (isBiometricsOptionEnabled && !isUserAuthenticated) {
-            const auth = async () => {
-                await authenticate();
-            };
-            auth();
-        }
-    }, [authenticate, isBiometricsOptionEnabled, isUserAuthenticated]);
-
-    return { toggleBiometricsOption, isUserAuthenticated, isBiometricsOptionEnabled };
+    return {
+        toggleBiometricsOption,
+        isUserAuthenticated,
+        isBiometricsOptionEnabled,
+    };
 };
