@@ -1,7 +1,8 @@
 import React from 'react';
+
 import { onCancel as onCancelAction } from '@suite-actions/modalActions';
 import { MODAL } from '@suite-actions/constants';
-import { useActions } from '@suite-hooks';
+import { useDispatch } from '@suite-hooks';
 import {
     PinMismatch,
     PassphraseDuplicate,
@@ -30,20 +31,22 @@ import {
     MoreRoundsNeeded,
     ConfirmUnverified,
 } from '@suite-components/modals';
-
-import type { AcquiredDevice } from '@suite-types';
-import type { ReduxModalProps } from './types';
 import { DisableTorStopCoinjoin } from '@suite-components/modals/DisableTorStopCoinjoin';
 import { UnecoCoinjoinWarning } from '@suite-components/modals/UnecoCoinjoinWarning';
+import type { AcquiredDevice } from '@suite-types';
 import { openXpubModal, showXpub } from '@wallet-actions/publicKeyActions';
 import { showAddress, showUnverifiedAddress } from '@wallet-actions/receiveActions';
+import type { ReduxModalProps } from './types';
 
 /** Modals opened as a result of user action */
 export const UserContextModal = ({
     payload,
     renderer,
 }: ReduxModalProps<typeof MODAL.CONTEXT_USER>) => {
-    const { onCancel } = useActions({ onCancel: onCancelAction });
+    const dispatch = useDispatch();
+
+    const onCancel = () => dispatch(onCancelAction());
+
     switch (payload.type) {
         case 'add-account':
             return (
@@ -70,17 +73,12 @@ export const UserContextModal = ({
                     showUnverifiedButtonText="TR_SHOW_UNVERIFIED_XPUB"
                     warningText="TR_XPUB_PHISHING_WARNING"
                     verify={showXpub}
-                    showUnverified={() => openXpubModal({ isCancelable: true })}
+                    showUnverified={() => openXpubModal()}
                     onCancel={onCancel}
                 />
             );
         case 'address':
-            return (
-                <ConfirmAddress
-                    {...payload}
-                    onCancel={payload.isCancelable ? onCancel : undefined}
-                />
-            );
+            return <ConfirmAddress {...payload} onCancel={onCancel} />;
         case 'xpub':
             return <ConfirmXpub {...payload} onCancel={onCancel} />;
         case 'device-background-gallery':

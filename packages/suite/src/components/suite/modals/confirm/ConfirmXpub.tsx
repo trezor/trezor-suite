@@ -5,10 +5,7 @@ import { ConfirmValueOnDevice, ConfirmDeviceScreenProps } from './ConfirmValueOn
 import { Account, NetworkSymbol } from '@wallet-types/index';
 
 interface ConfirmXpubProps
-    extends Pick<
-        ConfirmDeviceScreenProps,
-        'device' | 'isCancelable' | 'isConfirmed' | 'onCancel' | 'value'
-    > {
+    extends Pick<ConfirmDeviceScreenProps, 'device' | 'isConfirmed' | 'onCancel' | 'value'> {
     accountIndex: number;
     symbol: NetworkSymbol;
     accountLabel: Account['metadata']['accountLabel'];

@@ -49,8 +49,7 @@ const StyledDeviceDisconnected = styled(DeviceDisconnected)`
     max-width: calc(${QRCODE_SIZE}px + ${QRCODE_PADDING * 2}px);
 `;
 
-export interface ConfirmDeviceScreenProps
-    extends Pick<ModalProps, 'heading' | 'isCancelable' | 'onCancel'> {
+export interface ConfirmDeviceScreenProps extends Pick<ModalProps, 'onCancel' | 'heading'> {
     device: TrezorDevice;
     copyButtonText: React.ReactNode;
     copyButtonDataTest?: string;
@@ -64,14 +63,14 @@ export const ConfirmValueOnDevice = ({
     copyButtonDataTest,
     device,
     heading,
-    isCancelable,
     isConfirmed,
     onCancel,
     value,
     valueDataTest,
 }: ConfirmDeviceScreenProps) => {
-    const showCopyButton = isConfirmed || !device.connected;
     const dispatch = useDispatch();
+
+    const showCopyButton = isConfirmed || !device.connected;
 
     const copy = () => {
         const result = copyToClipboard(value);
@@ -82,21 +81,21 @@ export const ConfirmValueOnDevice = ({
 
     return (
         <StyledModal
+            isCancelable
             heading={heading}
             modalPrompt={
                 device.connected ? (
                     <ConfirmOnDevice
                         title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
                         deviceModel={getDeviceModel(device)}
-                        onCancel={isCancelable ? onCancel : undefined}
                         isConfirmed={isConfirmed}
                     />
                 ) : undefined
             }
-            isCancelable={isCancelable}
             onCancel={onCancel}
         >
             <Wrapper>
+                {!device.connected && <StyledDeviceDisconnected label={device.label} />}
                 <QrCode value={value} />
                 <Value data-test={valueDataTest}>{value}</Value>
                 {showCopyButton && (
@@ -104,7 +103,6 @@ export const ConfirmValueOnDevice = ({
                         {copyButtonText}
                     </StyledButton>
                 )}
-                {!device.connected && <StyledDeviceDisconnected label={device.label} />}
             </Wrapper>
         </StyledModal>
     );
