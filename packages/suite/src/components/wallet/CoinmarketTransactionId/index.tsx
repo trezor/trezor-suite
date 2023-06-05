@@ -45,7 +45,7 @@ const Value = styled.div`
 const TransactionId = ({ transactionId, className }: Props) => {
     const { addNotification } = useActions({ addNotification: notificationsActions.addToast });
     const copy = () => {
-        const result = copyToClipboard(transactionId, null);
+        const result = copyToClipboard(transactionId);
         if (typeof result !== 'string') {
             addNotification({ type: 'copy-to-clipboard' });
         }

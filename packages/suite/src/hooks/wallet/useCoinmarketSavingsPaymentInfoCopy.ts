@@ -8,7 +8,7 @@ export const useCoinmarketSavingsPaymentInfoCopy = (paymentInfo?: SavingsPayment
     const copyPaymentInfo = (paymentInfoKey: keyof SavingsPaymentInfo) => {
         if (paymentInfo) {
             const paymentInfoValue = paymentInfo[paymentInfoKey];
-            const result = paymentInfoValue && copyToClipboard(paymentInfoValue, null);
+            const result = paymentInfoValue && copyToClipboard(paymentInfoValue);
             if (typeof result !== 'string') {
                 addNotification({ type: 'copy-to-clipboard' });
             }

@@ -32,7 +32,7 @@ export const useCopySignedMessage = <T extends SignedMessageData>(
             (network || '').split('(')[0].toUpperCase(),
         );
 
-        const result = copyToClipboard(formatted, null);
+        const result = copyToClipboard(formatted);
 
         if (typeof result !== 'string') {
             addNotification({ type: 'copy-to-clipboard' });

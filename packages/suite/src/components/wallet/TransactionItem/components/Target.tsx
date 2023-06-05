@@ -151,7 +151,7 @@ export const Target = ({
                                     });
                                     return;
                                 }
-                                const result = copyToClipboard(target.addresses.join(), null);
+                                const result = copyToClipboard(target.addresses.join());
                                 if (typeof result === 'string') {
                                     addNotification({ type: 'error', error: result });
                                     return;
