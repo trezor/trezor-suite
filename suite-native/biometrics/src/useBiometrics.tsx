@@ -49,29 +49,25 @@ export const useBiometrics = () => {
     const { showAlert } = useAlert();
 
     const toggleBiometricsOption = useCallback(async () => {
-        try {
-            const isBiometricsAvailable = await getIsBiometricsFeatureAvailable();
+        const isBiometricsAvailable = await getIsBiometricsFeatureAvailable();
 
-            if (!isBiometricsAvailable) {
-                showAlert(biometricNotAvailableAlert);
-                return;
-            }
+        if (!isBiometricsAvailable) {
+            showAlert(biometricNotAvailableAlert);
+            return;
+        }
 
-            const authResult = await authenticate();
+        const authResult = await authenticate();
 
-            if (!authResult?.success) {
-                return;
-            }
+        if (!authResult?.success) {
+            return;
+        }
 
-            if (isBiometricsOptionEnabled) {
-                setIsBiometricsOptionEnabled(false);
-                setIsUserAuthenticated(false);
-            } else {
-                setIsBiometricsOptionEnabled(true);
-                setIsUserAuthenticated(true);
-            }
-        } catch (error) {
-            console.error(error);
+        if (isBiometricsOptionEnabled) {
+            setIsBiometricsOptionEnabled(false);
+            setIsUserAuthenticated(false);
+        } else {
+            setIsBiometricsOptionEnabled(true);
+            setIsUserAuthenticated(true);
         }
     }, [isBiometricsOptionEnabled, setIsBiometricsOptionEnabled, showAlert]);
 
@@ -80,28 +76,24 @@ export const useBiometrics = () => {
             if (appState.current === 'background' && nextAppState === 'active') {
                 if (isBiometricsOptionEnabled && !isUserAuthenticated) {
                     const auth = async () => {
-                        try {
-                            const result = await authenticate();
+                        const result = await authenticate();
 
-                            const resultHasError = result && !result.success;
+                        const resultHasError = result && !result.success;
 
-                            if (resultHasError && result.error.startsWith('unknown: -1000')) {
-                                // User don't need to authenticate at this point. The library doesn't accept authentication that's been less than few seconds after closing app.
-                                return;
-                            }
+                        if (resultHasError && result.error.startsWith('unknown: -1000')) {
+                            // User don't need to authenticate at this point. The library doesn't accept authentication that's been less than few seconds after closing app.
+                            return;
+                        }
 
-                            const authenticationFailedErrors =
-                                resultHasError && result.error === 'user_cancel';
+                        const authenticationFailedErrors =
+                            resultHasError && result.error === 'user_cancel';
 
-                            if (authenticationFailedErrors) {
-                                showAlert(authenticationCanceledAlert);
-                            }
+                        if (authenticationFailedErrors) {
+                            showAlert(authenticationCanceledAlert);
+                        }
 
-                            if (result && result?.success) {
-                                setIsUserAuthenticated(true);
-                            }
-                        } catch (error) {
-                            console.error(error);
+                        if (result && result?.success) {
+                            setIsUserAuthenticated(true);
                         }
                     };
                     auth();
