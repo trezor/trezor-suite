@@ -7,7 +7,6 @@
         "chain": "eth",
         "chain_id": 1,
         "name": "Ethereum",
-        "rskip60": false,
         "shortcut": "ETH",
         "slip44": 60,
         "support": {

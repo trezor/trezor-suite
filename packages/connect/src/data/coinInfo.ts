@@ -258,7 +258,6 @@ const parseEthereumNetworksJson = (json: any) => {
             label: network.name,
             name: network.name,
             shortcut: network.shortcut,
-            rskip60: network.rskip60,
             slip44: network.slip44,
             support: network.support,
             // url not used
