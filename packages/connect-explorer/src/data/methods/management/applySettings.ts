@@ -51,6 +51,18 @@ export default [
                     { value: 270, label: '←' },
                 ],
             },
+            {
+                label: 'safety checks',
+                name: 'safety_checks',
+                type: 'select',
+                optional: true,
+                placeholder: 'Select',
+                data: [
+                    { value: 'Strict', label: 'Strict' },
+                    { value: 'PromptAlways', label: 'PromptAlways' },
+                    { value: 'PromptTemporarily', label: 'PromptTemporarily' },
+                ],
+            },
             // todo: add homescreen (type bytes)
         ],
     },
