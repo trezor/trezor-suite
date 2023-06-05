@@ -9,7 +9,7 @@ import {
     AccountsImportStackRoutes,
     RootStackParamList,
     Screen,
-    StackToTabCompositeScreenProps,
+    StackToStackCompositeScreenProps,
 } from '@suite-native/navigation';
 import TrezorConnect, { AccountInfo } from '@trezor/connect';
 
@@ -24,7 +24,7 @@ const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 export const AccountImportLoadingScreen = ({
     navigation,
     route,
-}: StackToTabCompositeScreenProps<
+}: StackToStackCompositeScreenProps<
     AccountsImportStackParamList,
     AccountsImportStackRoutes.AccountImportLoading,
     RootStackParamList
@@ -50,8 +50,8 @@ export const AccountImportLoadingScreen = ({
         return () => clearTimeout(timeout);
     }, [setIsAnimationFinished]);
 
-    const safelyShowImportError: typeof showImportError = useCallback(
-        async (message, onRetry) => {
+    const safelyShowImportError = useCallback(
+        async (message?: string, onRetry?: () => Promise<void>) => {
             // Delay displaying the error message to avoid freezing the app on iOS. If an error occurs too quickly during the
             // transition from ScanQRCodeModalScreen, the error modal won't appear, resulting in a frozen app.
             await sleep(1000);
