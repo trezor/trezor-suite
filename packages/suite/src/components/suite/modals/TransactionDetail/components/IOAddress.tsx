@@ -1,6 +1,6 @@
 import { HiddenPlaceholder } from '@suite-components/HiddenPlaceholder';
 import { Icon, Link, useTheme } from '@trezor/components';
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { copyToClipboard } from '@trezor/dom-utils';
 import styled, { css } from 'styled-components';
 
@@ -65,11 +65,10 @@ interface IOAddressProps {
 
 export const IOAddress = ({ txAddress, explorerUrl }: IOAddressProps) => {
     const [isClicked, setIsClicked] = useState(false);
-    const htmlElement = useRef<HTMLDivElement>(null);
     const theme = useTheme();
 
     const copy = () => {
-        copyToClipboard(txAddress || '', htmlElement.current);
+        copyToClipboard(txAddress || '');
 
         setIsClicked(true);
     };
@@ -81,7 +80,6 @@ export const IOAddress = ({ txAddress, explorerUrl }: IOAddressProps) => {
     return (
         <HiddenPlaceholder>
             <TextOverflowContainer
-                ref={htmlElement}
                 onMouseLeave={() => setIsClicked(false)}
                 data-test="@tx-detail/txid-value"
                 id={txAddress}

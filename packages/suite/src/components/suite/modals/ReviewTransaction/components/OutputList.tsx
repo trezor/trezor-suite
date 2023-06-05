@@ -122,7 +122,6 @@ const OutputList = ({
             },
         });
 
-    const htmlElement = useRef<HTMLDivElement>(null);
     const totalRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
@@ -131,7 +130,7 @@ const OutputList = ({
         if (isLastStep) {
             totalRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
-    }, [buttonRequestsCount, outputs.length, totalRef]);
+    }, [buttonRequestsCount, outputs.length]);
 
     const { addNotification } = useActions({
         addNotification: notificationsActions.addToast,
@@ -173,7 +172,7 @@ const OutputList = ({
                         )}
                     </RightTopInner>
                 </RightTop>
-                <RightBottom ref={htmlElement}>
+                <RightBottom>
                     {broadcastEnabled ? (
                         <StyledButton
                             data-test="@modal/send"
@@ -195,10 +194,7 @@ const OutputList = ({
                             <StyledButton
                                 isDisabled={!signedTx}
                                 onClick={() => {
-                                    const result = copyToClipboard(
-                                        signedTx!.tx,
-                                        htmlElement.current,
-                                    );
+                                    const result = copyToClipboard(signedTx!.tx);
                                     if (typeof result !== 'string') {
                                         addNotification({ type: 'copy-to-clipboard' });
                                     }
