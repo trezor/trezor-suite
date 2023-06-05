@@ -166,8 +166,12 @@ export default [
                         url: '/method/ethereumSignTransaction',
                     },
                     {
-                        name: 'ERC 20',
-                        url: '/method/ethereumSignTransaction-erc20',
+                        name: 'ERC20 known token',
+                        url: '/method/ethereumSignTransaction-erc20-known',
+                    },
+                    {
+                        name: 'ERC20 unknown token',
+                        url: '/method/ethereumSignTransaction-erc20-unknown',
                     },
                 ],
             },
