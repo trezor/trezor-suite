@@ -1,7 +1,6 @@
 import React, { ReactNode } from 'react';
 
 import { BiometricOverlay } from './BiometricOverlay';
-import { useIsBiometricsEnabled } from '../biometricsAtoms';
 import { useBiometrics } from '../useBiometrics';
 
 type AuthenticatorProviderProps = {
@@ -9,13 +8,12 @@ type AuthenticatorProviderProps = {
 };
 
 export const AuthenticatorProvider = ({ children }: AuthenticatorProviderProps) => {
-    const { isUserAuthenticated } = useBiometrics();
-    const { isBiometricsOptionEnabled } = useIsBiometricsEnabled();
+    const { shouldShowBiometricOverlay } = useBiometrics();
 
     return (
         <>
             {children}
-            {isBiometricsOptionEnabled && !isUserAuthenticated && <BiometricOverlay />}
+            {shouldShowBiometricOverlay && <BiometricOverlay />}
         </>
     );
 };

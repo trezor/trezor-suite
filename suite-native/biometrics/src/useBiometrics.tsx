@@ -25,9 +25,9 @@ export const useBiometrics = () => {
     const { isBiometricsOptionEnabled, setIsBiometricsOptionEnabled } = useIsBiometricsEnabled();
     const [isUserAuthenticated, setIsUserAuthenticated] = useState(!isBiometricsOptionEnabled);
     const isBiometricsModalOpen = useRef(false);
+    const [shouldShowBiometricOverlay, setShouldShowBiometricOverlay] = useState(false);
 
     const toggleBiometricsOption = useCallback(async () => {
-        // console.log('toggle', isBiometricsOptionEnabled);
         try {
             const result = await authenticate();
             console.log('result', result);
@@ -46,6 +46,7 @@ export const useBiometrics = () => {
     useEffect(() => {
         const subscription = AppState.addEventListener('change', nextAppState => {
             if (appState.current === 'background' && nextAppState === 'active') {
+                setShouldShowBiometricOverlay(true);
                 if (isBiometricsOptionEnabled && !isUserAuthenticated) {
                     const auth = async () => {
                         try {
@@ -59,6 +60,7 @@ export const useBiometrics = () => {
                         } catch (error) {
                             console.error(error);
                         }
+                        setShouldShowBiometricOverlay(false);
                     };
                     auth();
                 }
@@ -74,5 +76,6 @@ export const useBiometrics = () => {
         isUserAuthenticated,
         isBiometricsOptionEnabled,
         isBiometricsModalOpen,
+        shouldShowBiometricOverlay,
     };
 };
