@@ -21,15 +21,6 @@ const authenticate = async () => {
     }
 };
 
-const authenticationCanceledAlert: Alert = {
-    title: 'Authentication canceled',
-    description: 'You will have to try again.',
-    pictogramVariant: 'red',
-    icon: 'warningCircle',
-    onPressPrimaryButton: authenticate,
-    primaryButtonTitle: 'Try again',
-};
-
 const biometricNotAvailableAlert: Alert = {
     title: 'Biometrics',
     description:
@@ -94,7 +85,14 @@ export const useBiometrics = () => {
                             resultHasError && result.error === 'user_cancel';
 
                         if (authenticationFailedErrors) {
-                            showAlert(authenticationCanceledAlert);
+                            showAlert({
+                                title: 'Authentication canceled',
+                                description: 'You will have to try again.',
+                                pictogramVariant: 'red',
+                                icon: 'warningCircle',
+                                onPressPrimaryButton: auth,
+                                primaryButtonTitle: 'Try again',
+                            });
                         }
 
                         if (result && result?.success) {
