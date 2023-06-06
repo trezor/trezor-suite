@@ -9,9 +9,10 @@ import { formatNetworkAmount } from '@suite-common/wallet-utils';
 interface EthereumClaimProps {
     selectedAccount: Extract<AppState['wallet']['selectedAccount'], { status: 'loaded' }>;
     deviceModel: Exclude<DeviceModel, DeviceModel.UNKNOWN>;
+    onClick: () => void;
 }
 
-export const EthereumClaim = ({ selectedAccount, deviceModel }: EthereumClaimProps) => {
+export const EthereumClaim = ({ selectedAccount, deviceModel, onClick }: EthereumClaimProps) => {
     const symbol = selectedAccount.account.symbol.toUpperCase();
     const withdrawingBalance = formatNetworkAmount('0', selectedAccount.account.symbol);
 
@@ -33,7 +34,7 @@ export const EthereumClaim = ({ selectedAccount, deviceModel }: EthereumClaimPro
                 </Column>
             </Row>
             <Actions>
-                <DeviceButton deviceModel={deviceModel} onClick={() => {}}>
+                <DeviceButton deviceModel={deviceModel} onClick={onClick}>
                     Claim
                 </DeviceButton>
             </Actions>

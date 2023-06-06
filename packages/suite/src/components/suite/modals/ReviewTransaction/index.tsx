@@ -120,10 +120,10 @@ export const ReviewTransaction = ({ decision }: ReviewTransactionProps) => {
                 tx={precomposedTx}
                 account={selectedAccount.account}
                 network={selectedAccount.network}
-                broadcast={precomposedForm.options.includes('broadcast')}
                 detailsOpen={detailsOpen}
-                isRbfAction={isRbfAction}
+                precomposedForm={precomposedForm}
                 onDetailsClick={() => setDetailsOpen(!detailsOpen)}
+                isRbfAction={isRbfAction}
             />
             <OutputList
                 account={selectedAccount.account}

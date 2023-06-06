@@ -9,11 +9,13 @@ import { formatNetworkAmount } from '@suite-common/wallet-utils';
 interface EthereumRequestWithdrawProps {
     selectedAccount: Extract<AppState['wallet']['selectedAccount'], { status: 'loaded' }>;
     deviceModel: Exclude<DeviceModel, DeviceModel.UNKNOWN>;
+    onClick: () => void;
 }
 
 export const EthereumRequestWithdraw = ({
     selectedAccount,
     deviceModel,
+    onClick,
 }: EthereumRequestWithdrawProps) => {
     const symbol = selectedAccount.account.symbol.toUpperCase();
     const stakedBalance = formatNetworkAmount('0', selectedAccount.account.symbol);
@@ -48,7 +50,7 @@ export const EthereumRequestWithdraw = ({
                 </Column>
             </Row>
             <Actions>
-                <DeviceButton deviceModel={deviceModel} onClick={() => {}}>
+                <DeviceButton deviceModel={deviceModel} onClick={onClick}>
                     Request withdraw
                 </DeviceButton>
             </Actions>

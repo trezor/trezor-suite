@@ -3,37 +3,37 @@ import { WalletLayout, WalletLayoutHeader } from '@wallet-components';
 import { SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { EthereumStakeFormAmount } from './EthereumStakeFormAmount';
 import { StakeFormContext, useStakeForm, useStakeFormContext } from '@wallet-hooks/useStakeForm';
-import { Card, Translation } from '@suite-components';
-import styled from 'styled-components';
-import { Button, variables } from '@trezor/components';
+import { Translation } from '@suite-components';
+import { Button } from '@trezor/components';
 import { TotalTxWithFee } from '@wallet-views/TotalTxWithFee';
 import { FeesWrapper } from '@wallet-views/FeesWrapper';
-
-const StyledCard = styled(Card)`
-    display: flex;
-    margin-bottom: 8px;
-    padding: 32px 42px;
-
-    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
-        padding: 32px 20px;
-    }
-`;
+import { EthereumStakeFormButton } from './EthereumStakeFormButton';
 
 interface EthereumStakeFormProps {
     selectedAccount: SelectedAccountLoaded;
     onClose?: () => void;
+    stakeFormState: 'stake' | 'withdraw' | 'claim';
 }
 
-export const EthereumStakeForm = ({ selectedAccount, onClose }: EthereumStakeFormProps) => {
+export const EthereumStakeForm = ({
+    selectedAccount,
+    onClose,
+    stakeFormState,
+}: EthereumStakeFormProps) => {
     const sendContextValues = useStakeForm({ selectedAccount });
 
     const { formState, handleClearFormButtonClick } = sendContextValues;
 
     return (
         <StakeFormContext.Provider value={sendContextValues}>
-            <WalletLayout title="TR_NAV_STAKING" account={selectedAccount}>
+            <WalletLayout
+                // @ts-expect-error
+                title={`TR_STAKE_${stakeFormState.toUpperCase()}`}
+                account={selectedAccount}
+            >
                 <WalletLayoutHeader
-                    title="TR_NAV_STAKING"
+                    // @ts-expect-error
+                    title={`TR_STAKE_${stakeFormState.toUpperCase()}`}
                     routeName="wallet-staking"
                     onClose={onClose}
                 >
@@ -47,11 +47,10 @@ export const EthereumStakeForm = ({ selectedAccount, onClose }: EthereumStakeFor
                         </Button>
                     )}
                 </WalletLayoutHeader>
-                <StyledCard>
-                    <EthereumStakeFormAmount />
-                </StyledCard>
+                <EthereumStakeFormAmount />
                 <FeesWrapper useContext={useStakeFormContext} />
                 <TotalTxWithFee useContext={useStakeFormContext} />
+                <EthereumStakeFormButton />
             </WalletLayout>
         </StakeFormContext.Provider>
     );

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { WalletLayout } from '@wallet-components';
 import { AppState } from '@suite-types';
 import { EthereumStake } from './EthereumStake';
@@ -15,13 +15,14 @@ interface EthereumStakingDashboardProps {
 export const EthereumStakingDashboard = ({ selectedAccount }: EthereumStakingDashboardProps) => {
     const deviceModel = useDeviceModel() as Exclude<DeviceModel, DeviceModel.UNKNOWN>;
 
-    const [stakeForm, setStakeForm] = React.useState(false);
+    const [stakeFormState, setStakeFormState] = useState<'stake' | 'withdraw' | 'claim' | ''>('');
 
-    if (stakeForm) {
+    if (stakeFormState) {
         return (
             <EthereumStakeForm
                 selectedAccount={selectedAccount}
-                onClose={() => setStakeForm(false)}
+                onClose={() => setStakeFormState('')}
+                stakeFormState={stakeFormState}
             />
         );
     }
@@ -31,10 +32,18 @@ export const EthereumStakingDashboard = ({ selectedAccount }: EthereumStakingDas
             <EthereumStake
                 selectedAccount={selectedAccount}
                 deviceModel={deviceModel}
-                onClick={() => setStakeForm(true)}
+                onClick={() => setStakeFormState('stake')}
             />
-            <EthereumRequestWithdraw selectedAccount={selectedAccount} deviceModel={deviceModel} />
-            <EthereumClaim selectedAccount={selectedAccount} deviceModel={deviceModel} />
+            <EthereumRequestWithdraw
+                selectedAccount={selectedAccount}
+                deviceModel={deviceModel}
+                onClick={() => setStakeFormState('withdraw')}
+            />
+            <EthereumClaim
+                selectedAccount={selectedAccount}
+                deviceModel={deviceModel}
+                onClick={() => setStakeFormState('claim')}
+            />
         </WalletLayout>
     );
 };

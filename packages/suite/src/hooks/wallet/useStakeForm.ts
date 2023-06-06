@@ -7,15 +7,22 @@ import { UseFormMethods, FormState as ReactHookFormState, useForm } from 'react-
 import { WithSelectedAccountLoadedProps } from '@wallet-components';
 import { useFees } from './form/useFees';
 import { useCompose } from './form/useCompose';
-import { useSelector } from '@suite-hooks';
+import { useActions, useSelector } from '@suite-hooks';
 import { getFeeLevels } from '@suite-common/wallet-utils';
 import { DEFAULT_PAYMENT } from '@suite-common/wallet-constants';
+import * as sendFormActions from '@wallet-actions/sendFormActions';
 
 import type { FormState } from '@wallet-types/sendForm';
 
 export type StakeFormState = Pick<
     FormState,
-    'feeLimit' | 'feePerUnit' | 'selectedFee' | 'outputs' | 'setMaxOutputId'
+    | 'feeLimit'
+    | 'feePerUnit'
+    | 'selectedFee'
+    | 'outputs'
+    | 'setMaxOutputId'
+    | 'ethereumDataHex'
+    | 'options'
 >;
 
 export type StakeFormContextValues = Omit<UseFormMethods<StakeFormState>, 'register'> & {
@@ -38,12 +45,17 @@ const defaultValues = {
     feeLimit: '',
     estimatedFeeLimit: undefined,
     setMaxOutputId: undefined,
+    // isAutocompound = true + source = 0
+    ethereumDataHex:
+        '0xb823ba0100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001',
+    ethereumStakeType: 'stake',
     outputs: [
         {
             ...DEFAULT_PAYMENT,
-            address: '0x728f2548559E2AaCAE8B6b01FC39fF72771FF8BE', // TODO: remove Metr Pára
+            address: '0x1048bE0Bac2fC94415023a3d9f2097E9ba46bb04', // pool address
         },
     ],
+    options: ['broadcast'],
 };
 
 const OUTPUT_AMOUNT_FIELD = 'outputs[0].amount';
@@ -61,7 +73,12 @@ export const useStakeForm = ({ selectedAccount }: UseStakeFormProps): StakeFormC
     const levels = getFeeLevels(networkType, coinFees);
     const feeInfo = useMemo(() => ({ ...coinFees, levels }), [coinFees, levels]);
 
+    const { signTransaction } = useActions({
+        signTransaction: sendFormActions.signTransaction,
+    });
+
     const methods = useForm<StakeFormState>({
+        shouldUnregister: false,
         mode: 'onChange',
         defaultValues,
     });
@@ -79,7 +96,7 @@ export const useStakeForm = ({ selectedAccount }: UseStakeFormProps): StakeFormC
     } = methods;
 
     useEffect(() => {
-        register('outputs'); // used only '0' index, required to be able to use useCompose methods
+        register('outputs');
         register('setMaxOutputId');
         return () => {
             unregister('outputs');
@@ -87,7 +104,6 @@ export const useStakeForm = ({ selectedAccount }: UseStakeFormProps): StakeFormC
         };
     }, [register, unregister]);
 
-    // Has to be here to avoid endless loop of compose in useCompose hook
     const [state] = useState({
         account,
         network,
@@ -149,12 +165,23 @@ export const useStakeForm = ({ selectedAccount }: UseStakeFormProps): StakeFormC
         composeRequest();
     }, [reset, composeRequest]);
 
-    const onSubmit = () => {};
+    const sign = useCallback(async () => {
+        const values = getValues();
+        const composedTx = composedLevels?.[values.selectedFee || 'normal'];
+
+        if (composedTx && composedTx.type === 'final') {
+            const result = await signTransaction(values, composedTx);
+            if (result?.success) {
+                // TODO back to staking
+            }
+        }
+    }, [getValues, composedLevels, signTransaction]);
 
     return {
+        ...methods,
         register: register as (rules?: TypedValidationRules) => (ref: any) => void,
         control,
-        onSubmit,
+        onSubmit: sign,
         account,
         changeFeeLevel,
         composeRequest,
@@ -165,7 +192,6 @@ export const useStakeForm = ({ selectedAccount }: UseStakeFormProps): StakeFormC
         formState,
         defaultValues,
         setMax,
-        getValues,
     };
 };
 

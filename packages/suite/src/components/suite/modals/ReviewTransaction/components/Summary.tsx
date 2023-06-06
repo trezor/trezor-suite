@@ -7,7 +7,7 @@ import { Icon, useTheme, CoinLogo, variables } from '@trezor/components';
 import { Translation, FormattedCryptoAmount, AccountLabel } from '@suite-components';
 import { Account, Network } from '@wallet-types';
 import { formatDuration, isFeatureFlagEnabled } from '@suite-common/suite-utils';
-import { PrecomposedTransactionFinal, TxFinalCardano } from '@wallet-types/sendForm';
+import { FormState, PrecomposedTransactionFinal, TxFinalCardano } from '@wallet-types/sendForm';
 import { useSelector } from '@suite-hooks/useSelector';
 
 const Wrapper = styled.div`
@@ -187,10 +187,10 @@ interface Props {
     tx: PrecomposedTransactionFinal | TxFinalCardano;
     account: Account;
     network: Network;
-    broadcast?: boolean;
     detailsOpen: boolean;
-    isRbfAction?: boolean;
+    precomposedForm?: FormState;
     onDetailsClick: () => void;
+    isRbfAction: boolean;
 }
 
 const Summary = ({
@@ -198,10 +198,10 @@ const Summary = ({
     tx,
     account,
     network,
-    broadcast,
     detailsOpen,
-    isRbfAction,
+    precomposedForm,
     onDetailsClick,
+    isRbfAction,
 }: Props) => {
     const drafts = useSelector(state => state.wallet.send.drafts);
     const currentAccountKey = useSelector(
@@ -220,6 +220,25 @@ const Summary = ({
     const formFeeRate = drafts[currentAccountKey]?.feePerUnit;
     const isFeeCustom = drafts[currentAccountKey]?.selectedFee === 'custom';
     const isComposedFeeRateDifferent = isFeeCustom && formFeeRate !== feePerByte;
+    const isBroadcast = precomposedForm?.options?.includes('broadcast');
+
+    const getHeadingType = () => {
+        switch (precomposedForm?.ethereumStakeType) {
+            case 'stake':
+                return 'TR_STAKE_STAKE';
+            case 'claim':
+                return 'TR_STAKE_CLAIM';
+            case 'withdraw':
+                return 'TR_STAKE_WITHDRAW';
+            // no default
+        }
+
+        if (isRbfAction) {
+            return 'TR_REPLACE_TX';
+        }
+
+        return 'SEND_TRANSACTION';
+    };
 
     return (
         <Wrapper>
@@ -231,7 +250,7 @@ const Summary = ({
                     </NestedIconWrapper>
                 </IconWrapper>
                 <Headline>
-                    <Translation id={isRbfAction ? 'TR_REPLACE_TX' : 'SEND_TRANSACTION'} />
+                    <Translation id={getHeadingType()} />
                     <HeadlineAmount>
                         <FormattedCryptoAmount
                             disableHiddenPlaceholder
@@ -301,26 +320,28 @@ const Summary = ({
                         <Translation id="BROADCAST" />
                     </ReviewRbfLeftDetailsLineLeft>
                     <ReviewRbfLeftDetailsLineRight
-                        color={broadcast ? theme.TYPE_GREEN : theme.TYPE_ORANGE}
+                        color={isBroadcast ? theme.TYPE_GREEN : theme.TYPE_ORANGE}
                         uppercase
                     >
-                        <Translation id={broadcast ? 'TR_ON' : 'TR_OFF'} />
+                        <Translation id={isBroadcast ? 'TR_ON' : 'TR_OFF'} />
                     </ReviewRbfLeftDetailsLineRight>
                 </LeftDetailsRow>
-                {isFeatureFlagEnabled('RBF') && network.features?.includes('rbf') && (
-                    <LeftDetailsRow>
-                        <ReviewRbfLeftDetailsLineLeft>
-                            <Icon size={12} color={theme.TYPE_LIGHT_GREY} icon="RBF" />
-                            <Translation id="RBF" />
-                        </ReviewRbfLeftDetailsLineLeft>
-                        <ReviewRbfLeftDetailsLineRight
-                            color={tx.rbf ? theme.TYPE_GREEN : theme.TYPE_ORANGE}
-                            uppercase
-                        >
-                            <Translation id={tx.rbf ? 'TR_ON' : 'TR_OFF'} />
-                        </ReviewRbfLeftDetailsLineRight>
-                    </LeftDetailsRow>
-                )}
+                {isFeatureFlagEnabled('RBF') &&
+                    network.features?.includes('rbf') &&
+                    network.networkType !== 'ethereum' && (
+                        <LeftDetailsRow>
+                            <ReviewRbfLeftDetailsLineLeft>
+                                <Icon size={12} color={theme.TYPE_LIGHT_GREY} icon="RBF" />
+                                <Translation id="RBF" />
+                            </ReviewRbfLeftDetailsLineLeft>
+                            <ReviewRbfLeftDetailsLineRight
+                                color={tx.rbf ? theme.TYPE_GREEN : theme.TYPE_ORANGE}
+                                uppercase
+                            >
+                                <Translation id={tx.rbf ? 'TR_ON' : 'TR_OFF'} />
+                            </ReviewRbfLeftDetailsLineRight>
+                        </LeftDetailsRow>
+                    )}
                 {tx.transaction.inputs.length !== 0 && (
                     <LeftDetailsBottom>
                         <Separator />

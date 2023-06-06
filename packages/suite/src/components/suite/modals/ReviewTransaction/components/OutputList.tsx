@@ -97,7 +97,7 @@ const OutputList = ({
     const { symbol } = account;
     const { options, selectedFee, isCoinControlEnabled, hasCoinControlBeenOpened } =
         precomposedForm;
-    const broadcastEnabled = options.includes('broadcast');
+    const broadcastEnabled = options?.includes('broadcast');
 
     const reportTransactionCreatedEvent = (action: 'sent' | 'copied' | 'downloaded' | 'replaced') =>
         analytics.report({
@@ -117,8 +117,8 @@ const OutputList = ({
                 rippleDestinationTag: !!options.includes('rippleDestinationTag'),
                 ethereumNonce: !!options.includes('ethereumNonce'),
                 selectedFee: selectedFee || 'normal',
-                isCoinControlEnabled,
-                hasCoinControlBeenOpened,
+                isCoinControlEnabled: !!isCoinControlEnabled,
+                hasCoinControlBeenOpened: !!hasCoinControlBeenOpened,
             },
         });
 
@@ -135,6 +135,24 @@ const OutputList = ({
     const { addNotification } = useActions({
         addNotification: notificationsActions.addToast,
     });
+
+    const getSignButtonText = () => {
+        switch (precomposedForm?.ethereumStakeType) {
+            case 'stake':
+                return 'TR_STAKE_STAKE';
+            case 'claim':
+                return 'TR_STAKE_CLAIM';
+            case 'withdraw':
+                return 'TR_STAKE_WITHDRAW';
+            // no default
+        }
+
+        if (isRbfAction) {
+            return 'TR_REPLACE_TX';
+        }
+
+        return 'SEND_TRANSACTION';
+    };
 
     return (
         <Content>
@@ -181,13 +199,14 @@ const OutputList = ({
                                 if (decision) {
                                     decision.resolve(true);
 
+                                    // TODO
                                     reportTransactionCreatedEvent(
                                         isRbfAction ? 'replaced' : 'sent',
                                     );
                                 }
                             }}
                         >
-                            <Translation id={isRbfAction ? 'TR_REPLACE_TX' : 'SEND_TRANSACTION'} />
+                            <Translation id={getSignButtonText()} />
                         </StyledButton>
                     ) : (
                         <>

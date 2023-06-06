@@ -5652,6 +5652,10 @@ export default defineMessages({
         description: 'Sign without sending button',
         defaultMessage: 'Sign',
     },
+    STAKE_TRANSACTION: {
+        id: 'STAKE_TRANSACTION',
+        defaultMessage: 'Stake',
+    },
     COPY_TRANSACTION_TO_CLIPBOARD: {
         id: 'COPY_TRANSACTION_TO_CLIPBOARD',
         description: 'used in review modal',
@@ -7008,6 +7012,18 @@ export default defineMessages({
     TR_NAV_STAKING: {
         defaultMessage: 'Staking',
         id: 'TR_NAV_STAKING',
+    },
+    TR_STAKE_STAKE: {
+        defaultMessage: 'Stake',
+        id: 'TR_STAKE_STAKE',
+    },
+    TR_STAKE_WITHDRAW: {
+        defaultMessage: 'Request withdraw',
+        id: 'TR_STAKE_WITHDRAW',
+    },
+    TR_STAKE_CLAIM: {
+        defaultMessage: 'Claim',
+        id: 'TR_STAKE_CLAIM',
     },
     TR_ACCOUNT_TYPE_SHELLEY: {
         defaultMessage: 'Shelley',

@@ -39,11 +39,12 @@ export type FormState = {
     ethereumDataAscii?: string;
     ethereumDataHex?: string;
     ethereumAdjustGasLimit?: string; // if used, final gas limit = estimated limit * ethereumAdjustGasLimit
+    ethereumStakeType?: 'stake' | 'withdraw' | 'claim';
     rippleDestinationTag?: string;
     rbfParams?: RbfTransactionParams;
-    isCoinControlEnabled: boolean;
-    hasCoinControlBeenOpened: boolean;
-    selectedUtxos: AccountUtxo[];
+    isCoinControlEnabled?: boolean;
+    hasCoinControlBeenOpened?: boolean;
+    selectedUtxos?: AccountUtxo[];
 };
 
 export type ExcludedUtxos = Record<string, 'low-anonymity' | 'dust' | undefined>;

@@ -3,7 +3,7 @@ import BigNumber from 'bignumber.js';
 import styled from 'styled-components';
 
 import { Switch, variables } from '@trezor/components';
-import { Translation, NumberInput } from '@suite-components';
+import { Translation, NumberInput, Card } from '@suite-components';
 import {
     formatNetworkAmount,
     isDecimalsValid,
@@ -13,7 +13,7 @@ import {
 import { MAX_LENGTH } from '@suite-constants/inputs';
 
 import { TypedValidationRules } from '@wallet-types/form';
-import { useStakeFormContext } from '@wallet-hooks/useStakeForm';
+import { useStakeFormContext } from '@wallet-hooks';
 import { InputError } from '@wallet-components';
 
 const Text = styled.div`
@@ -53,6 +53,16 @@ const Symbol = styled.span`
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
+const StyledCard = styled(Card)`
+    display: flex;
+    margin-bottom: 8px;
+    padding: 32px 42px;
+
+    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
+        padding: 32px 20px;
+    }
+`;
+
 export const EthereumStakeFormAmount = () => {
     const {
         account,
@@ -65,6 +75,7 @@ export const EthereumStakeFormAmount = () => {
         getValues,
         formState,
     } = useStakeFormContext();
+
     const { symbol, availableBalance, balance } = account;
 
     const inputName = 'outputs[0].amount';
@@ -81,7 +92,6 @@ export const EthereumStakeFormAmount = () => {
         if (isSetMaxActive) {
             setValue('setMaxOutputId', undefined);
         }
-
         composeRequest(inputName);
     }, [setValue, composeRequest, inputName, isSetMaxActive]);
 
@@ -135,56 +145,58 @@ export const EthereumStakeFormAmount = () => {
     );
 
     return (
-        <StyledNumberInput
-            inputState={getInputState(error, amountValue)}
-            isMonospace
-            labelAddonIsVisible={isSetMaxVisible}
-            labelAddon={
-                <SwitchWrapper>
-                    <Switch
-                        isSmall
-                        isChecked={isSetMaxActive}
-                        id={maxSwitchId}
-                        dataTest={maxSwitchId}
-                        onChange={() => {
-                            setMax(!isSetMaxActive);
-                            composeRequest(inputName);
-                        }}
-                    />
-                    <SwitchLabel htmlFor={maxSwitchId}>
-                        <Translation id="AMOUNT_STAKE_MAX" />
-                    </SwitchLabel>
-                </SwitchWrapper>
-            }
-            label={
-                <Label>
-                    <Text>
-                        <Translation id="AMOUNT" />
-                    </Text>
-                    <TokenBalance>
-                        <Translation
-                            id="TOKEN_BALANCE"
-                            values={{
-                                balance: formatNetworkAmount(
-                                    account.availableBalance,
-                                    account.symbol,
-                                ),
+        <StyledCard>
+            <StyledNumberInput
+                inputState={getInputState(error, amountValue)}
+                isMonospace
+                labelAddonIsVisible={isSetMaxVisible}
+                labelAddon={
+                    <SwitchWrapper>
+                        <Switch
+                            isSmall
+                            isChecked={isSetMaxActive}
+                            id={maxSwitchId}
+                            dataTest={maxSwitchId}
+                            onChange={() => {
+                                setMax(!isSetMaxActive);
+                                composeRequest(inputName);
                             }}
                         />
-                        &nbsp;
-                        {symbol.toUpperCase()}
-                    </TokenBalance>
-                </Label>
-            }
-            onChange={handleInputChange}
-            name={inputName}
-            data-test={inputName}
-            defaultValue={amountValue}
-            maxLength={MAX_LENGTH.AMOUNT}
-            rules={cryptoAmountRules}
-            control={control}
-            innerAddon={<Symbol>{symbol.toUpperCase()}</Symbol>}
-            bottomText={error ? <InputError error={error} /> : undefined}
-        />
+                        <SwitchLabel htmlFor={maxSwitchId}>
+                            <Translation id="AMOUNT_STAKE_MAX" />
+                        </SwitchLabel>
+                    </SwitchWrapper>
+                }
+                label={
+                    <Label>
+                        <Text>
+                            <Translation id="AMOUNT" />
+                        </Text>
+                        <TokenBalance>
+                            <Translation
+                                id="TOKEN_BALANCE"
+                                values={{
+                                    balance: formatNetworkAmount(
+                                        account.availableBalance,
+                                        account.symbol,
+                                    ),
+                                }}
+                            />
+                            &nbsp;
+                            {symbol.toUpperCase()}
+                        </TokenBalance>
+                    </Label>
+                }
+                onChange={handleInputChange}
+                name={inputName}
+                data-test={inputName}
+                defaultValue={amountValue}
+                maxLength={MAX_LENGTH.AMOUNT}
+                rules={cryptoAmountRules}
+                control={control}
+                innerAddon={<Symbol>{symbol.toUpperCase()}</Symbol>}
+                bottomText={error ? <InputError error={error} /> : undefined}
+            />
+        </StyledCard>
     );
 };

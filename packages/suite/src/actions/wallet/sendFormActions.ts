@@ -388,7 +388,7 @@ export const signTransaction =
 
         const enhancedTxInfo: PrecomposedTransactionFinal | PrecomposedTransactionFinalCardano = {
             ...transactionInfo,
-            rbf: formValues.options.includes('bitcoinRBF'),
+            rbf: formValues.options?.includes('bitcoinRBF'),
         };
 
         if (formValues.rbfParams && !isCardanoTx(account, enhancedTxInfo)) {
