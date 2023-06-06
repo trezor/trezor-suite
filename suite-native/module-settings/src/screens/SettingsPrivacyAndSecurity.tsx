@@ -6,7 +6,13 @@ import { Screen, ScreenHeader } from '@suite-native/navigation';
 import { selectIsAnalyticsEnabled } from '@suite-common/analytics';
 import { Box, Card, DiscreetCanvas, Text, useDiscreetMode } from '@suite-native/atoms';
 import { useNativeStyles } from '@trezor/styles';
-import { useBiometrics, useIsBiometricsEnabled } from '@suite-native/biometrics';
+import {
+    authenticate,
+    getIsBiometricsFeatureAvailable,
+    useIsBiometricsEnabled,
+    useIsUserAuthenticated,
+} from '@suite-native/biometrics';
+import { useAlert } from '@suite-native/alerts';
 
 import { TouchableSwitchRow } from '../components/TouchableSwitchRow';
 
@@ -85,8 +91,40 @@ const AnalyticsSwitchRow = () => {
 };
 
 const BiometricsSwitchRow = () => {
-    const { toggleBiometricsOption } = useBiometrics();
-    const { isBiometricsOptionEnabled } = useIsBiometricsEnabled();
+    const { showAlert } = useAlert();
+    const { setIsUserAuthenticated } = useIsUserAuthenticated();
+    const { isBiometricsOptionEnabled, setIsBiometricsOptionEnabled } = useIsBiometricsEnabled();
+
+    const toggleBiometricsOption = async () => {
+        const isBiometricsAvailable = await getIsBiometricsFeatureAvailable();
+
+        if (!isBiometricsAvailable) {
+            showAlert({
+                title: 'Biometrics',
+                description:
+                    'No security features on your device. Make sure you have biometrics setup on your phone and try again.',
+                primaryButtonTitle: 'Cancel',
+                onPressPrimaryButton: () => null,
+                icon: 'warningCircle',
+                pictogramVariant: 'yellow',
+            });
+            return;
+        }
+
+        const authResult = await authenticate();
+
+        if (!authResult?.success) {
+            return;
+        }
+
+        if (isBiometricsOptionEnabled) {
+            setIsBiometricsOptionEnabled(false);
+            setIsUserAuthenticated(false);
+        } else {
+            setIsBiometricsOptionEnabled(true);
+            setIsUserAuthenticated(true);
+        }
+    };
 
     return (
         <TouchableSwitchRow
@@ -96,7 +134,7 @@ const BiometricsSwitchRow = () => {
             iconName="userFocus"
             description={
                 <RowDescription>
-                    "Use facial or fingerprint verification to unlock the app"
+                    Use facial or fingerprint verification to unlock the app
                 </RowDescription>
             }
         />
