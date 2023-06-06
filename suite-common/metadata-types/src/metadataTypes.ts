@@ -41,19 +41,6 @@ export type Tokens = {
 };
 
 /**
- * Representation of provider data stored in reducer
- * properties 'tokens' and 'type' are needed to recreate corresponding provider instance
- * others may be used in UI
- */
-
-export type MetadataProvider = {
-    type: MetadataProviderType;
-    user: string;
-    tokens: Tokens;
-    isCloud: boolean;
-};
-
-/**
  * What caused the error. Use this to handle error in metadataActions
  */
 enum ProviderErrorReason {
@@ -106,7 +93,9 @@ export abstract class AbstractMetadataProvider {
     /**
      * Get details if provider that are supposed to be saved in reducer
      */
-    abstract getProviderDetails(): Result<MetadataProvider>;
+    abstract getProviderDetails(): Result<
+        Omit<MetadataProvider, 'selected' | 'data' | 'abilities'>
+    >;
     /**
      * For given filename download metadata file from provider
      */
@@ -139,13 +128,16 @@ export abstract class AbstractMetadataProvider {
     }
 }
 
-export interface AccountMetadata {
-    key: string; // legacy xpub format (btc-like coins) or account descriptor (other coins)
-    fileName: string; // file name in dropbox
-    aesKey: string; // asymmetric key for file encryption
+export interface Labels {
     accountLabel?: MetadataItem;
     outputLabels: { [txid: string]: { [index: string]: MetadataItem } };
     addressLabels: { [address: string]: MetadataItem };
+}
+
+export interface AccountMetadata extends Labels {
+    key: string; // legacy xpub format (btc-like coins) or account descriptor (other coins)
+    fileName: string; // file name in dropbox
+    aesKey: string; // asymmetric key for file encryption
 }
 
 export type DeviceMetadata =
@@ -160,9 +152,42 @@ export type DeviceMetadata =
           walletLabel?: string;
       };
 
+type Data = Record<
+    // filename
+    string,
+    Passwords | Labels
+>;
+
+type ClientId = string;
+
+/**
+ * DataType dictates shape of data.
+ * passwords are not implemented and maybe never will but lets be future proof
+ */
+export type DataType = 'labels' | 'passwords';
+
+/**
+ * Representation of provider data stored in reducer
+ * properties 'tokens' and 'type' are needed to recreate corresponding provider instance
+ * others may be used in UI
+ */
+export type MetadataProvider = {
+    type: MetadataProviderType;
+    user: string;
+    tokens: Tokens;
+    isCloud: boolean;
+    // decrypted content of data per provider
+    data: Data;
+    clientId: ClientId;
+};
+
 export interface MetadataState {
     enabled: boolean; // global for all devices
-    provider?: MetadataProvider;
+    providers: MetadataProvider[];
+    // being selected means:
+    // - see data from this provider
+    // - save data to this provider when making changes
+    selectedProvider: { [key in DataType]: ClientId };
     // is there active inline input? only one may be active at time so we save this
     // information in reducer to make it easily accessible in UI.
     // field shall hold default value for which user may add metadata (address, txId, etc...);

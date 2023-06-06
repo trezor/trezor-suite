@@ -83,18 +83,18 @@ const log =
                     }),
                 );
                 break;
-            case METADATA.SET_PROVIDER:
-                api.dispatch(
-                    addLog({
-                        type: action.type,
-                        payload: {
-                            ...action.payload,
-                            tokens: undefined,
-                            user: undefined,
-                        },
-                    }),
-                );
-                break;
+            // case METADATA.SET_PROVIDER:
+            //     api.dispatch(
+            //         addLog({
+            //             type: action.type,
+            //             payload: {
+            //                 ...action.payload,
+            //                 tokens: undefined,
+            //                 user: undefined,
+            //             },
+            //         }),
+            //     );
+            //     break;
             case TRANSPORT.START:
                 api.dispatch(
                     addLog({

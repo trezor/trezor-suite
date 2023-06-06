@@ -13,6 +13,8 @@ import {
     Error as MetadataProviderError,
     OAuthServerEnvironment,
     ProviderErrorAction,
+    Labels,
+    DataType,
 } from '@suite-types/metadata';
 import { Account } from '@wallet-types';
 import * as metadataUtils from '@suite-utils/metadata';
@@ -22,6 +24,7 @@ import GoogleProvider from '@suite-services/metadata/GoogleProvider';
 import FileSystemProvider from '@suite-services/metadata/FileSystemProvider';
 import { createAction } from '@reduxjs/toolkit';
 import { notificationsActions } from '@suite-common/toast-notifications';
+import { selectSelectedProviderForLabels } from '@suite-reducers/metadataReducer';
 
 export const setAccountLoaded = createAction(METADATA.ACCOUNT_LOADED, (payload: Account) => ({
     payload,
@@ -42,11 +45,29 @@ export type MetadataAction =
       }
     | {
           type: typeof METADATA.SET_PROVIDER;
-          payload: MetadataProvider | undefined;
+          payload: MetadataProviderType | undefined;
+      }
+    | {
+          type: typeof METADATA.ADD_PROVIDER;
+          payload: MetadataProvider;
       }
     | {
           type: typeof METADATA.WALLET_LOADED | typeof METADATA.WALLET_ADD;
           payload: { deviceState: string; walletLabel?: string };
+      }
+    | {
+          type: typeof METADATA.SET_DATA;
+          payload: {
+              provider: MetadataProvider;
+              data: Record<string, Passwords | Labels>;
+          };
+      }
+    | {
+          type: typeof METADATA.SET_SELECTED_PROVIDER;
+          payload: {
+              dataType: DataType;
+              clientId: string;
+          };
       }
     | ReturnType<typeof setAccountLoaded>
     | ReturnType<typeof setAccountAdd>;
@@ -55,14 +76,14 @@ export type MetadataAction =
 let providerInstance: DropboxProvider | GoogleProvider | FileSystemProvider | undefined;
 const fetchIntervals: { [deviceState: string]: any } = {}; // any because of native at the moment, otherwise number | undefined
 
-const createProvider = (
+const createProviderInstance = (
     type: MetadataProvider['type'],
     tokens: Tokens = {},
     environment: OAuthServerEnvironment = 'production',
 ) => {
     switch (type) {
         case 'dropbox':
-            return new DropboxProvider(tokens?.refreshToken);
+            return new DropboxProvider({ token: tokens?.refreshToken, clientId });
         case 'google':
             return new GoogleProvider(tokens, environment);
         case 'fileSystem':
@@ -82,11 +103,9 @@ export const disposeMetadata = (keys?: boolean) => (dispatch: Dispatch, getState
     getState().wallet.accounts.forEach(account => {
         const updatedMetadata = {
             ...account.metadata,
-            // always remove metadata  values
-            outputLabels: {},
-            addressLabels: {},
-            accountLabel: '',
         };
+
+        // todo: remove addressLabels, outputLabels, from metadata reducer
 
         // and sometimes remove also keys (information we can only if device is connected)
         if (keys) {
@@ -134,7 +153,7 @@ export const disconnectProvider =
         });
 
         /* eslint-disable-next-line @typescript-eslint/no-use-before-define */
-        const provider = dispatch(getProvider());
+        const provider = dispatch(getProviderInstance({}));
         if (provider) {
             await provider.disconnect();
             providerInstance = undefined;
@@ -208,26 +227,36 @@ const handleProviderError =
 /**
  * Return already existing instance of AbstractProvider or recreate it from token;
  */
-const getProvider = () => (_dispatch: Dispatch, getState: GetState) => {
-    const state = getState();
-    const { provider } = state.metadata;
-    if (!provider) return;
+const getProviderInstance =
+    ({ clientId }: { type?: MetadataProviderType; clientId?: string }) =>
+    (_dispatch: Dispatch, getState: GetState) => {
+        const state = getState();
+        console.log('getProviderInstance', clientId);
+        const { providers } = state.metadata;
 
-    // instance already exists but user did not finish log in and decided to use another provider;
-    if (providerInstance && providerInstance.type !== provider.type) {
-        providerInstance = undefined;
-    }
+        const provider = providers.find(p => p.clientId === clientId) || providers[0];
 
-    if (providerInstance) return providerInstance;
+        console.log('provider', provider);
+        console.log('providerInstance', providerInstance);
 
-    providerInstance = createProvider(
-        provider.type,
-        provider.tokens,
-        state.suite.settings.debug.oauthServerEnvironment,
-    );
+        if (!provider) return;
 
-    return providerInstance;
-};
+        // instance already exists but user did not finish log in and decided to use another provider;
+        if (providerInstance && providerInstance.type !== provider.type) {
+            providerInstance = undefined;
+        }
+
+        if (providerInstance) return providerInstance;
+
+        providerInstance = createProviderInstance(
+            provider.type,
+            provider.tokens,
+            state.suite.settings.debug.oauthServerEnvironment,
+            clientId,
+        );
+
+        return providerInstance;
+    };
 
 export const enableMetadata = (): MetadataAction => ({
     type: METADATA.ENABLE,
@@ -249,7 +278,7 @@ export const initProvider = () => (dispatch: Dispatch) => {
 
 export const fetchMetadata =
     (deviceState: string) => async (dispatch: Dispatch, getState: GetState) => {
-        const provider = dispatch(getProvider());
+        const provider = dispatch(getProviderInstance({}));
         if (!provider) {
             return;
         }
@@ -290,13 +319,21 @@ export const fetchMetadata =
                 const json = { walletLabel: '' };
                 if (result.payload) {
                     try {
-                        Object.assign(
-                            json,
-                            metadataUtils.decrypt(
-                                metadataUtils.arrayBufferToBuffer(result.payload),
-                                device.metadata.aesKey,
-                            ),
+                        const decrypted = metadataUtils.decrypt(
+                            metadataUtils.arrayBufferToBuffer(result.payload),
+                            device.metadata.aesKey,
                         );
+
+                        dispatch({
+                            type: METADATA.SET_DATA,
+                            payload: {
+                                provider,
+                                data: {
+                                    [device.metadata.fileName]: decrypted,
+                                },
+                            },
+                        });
+                        Object.assign(json, decrypted);
                     } catch (err) {
                         const error = provider.error('OTHER_ERROR', err.message);
                         return reject(error);
@@ -309,6 +346,7 @@ export const fetchMetadata =
                         walletLabel: json.walletLabel,
                     },
                 });
+
                 resolve();
             });
         });
@@ -319,6 +357,8 @@ export const fetchMetadata =
 
         const accountPromises = accounts.map(async account => {
             if (!provider) return; // ts
+            console.log('fetching labeling for account: ', account.path);
+
             const response = await provider.getFileContent(account.metadata.fileName);
 
             if (!response.success) {
@@ -331,33 +371,45 @@ export const fetchMetadata =
                 try {
                     // we found associated metadata file for given account, decrypt it
                     // and save its metadata into reducer;
-                    Object.assign(
-                        json,
-                        metadataUtils.decrypt(
-                            metadataUtils.arrayBufferToBuffer(response.payload),
-                            account.metadata.aesKey,
-                        ),
+                    console.log('decrypting filename', account.metadata.fileName);
+                    const decrypted = metadataUtils.decrypt(
+                        metadataUtils.arrayBufferToBuffer(response.payload),
+                        account.metadata.aesKey,
                     );
+                    console.log('fetched labeling for account: ', account.path, decrypted);
+
+                    dispatch({
+                        type: METADATA.SET_DATA,
+                        payload: {
+                            provider,
+                            data: {
+                                [account.metadata.fileName]: decrypted,
+                            },
+                        },
+                    });
+
+                    Object.assign(json, decrypted);
                     // if (json.version === '1.0.0') {
                     //     TODO: migration
                     // }
                 } catch (err) {
+                    console.error('error fetching labeling for account: ', account.path, err);
                     const error = provider.error('OTHER_ERROR', err.message);
                     return dispatch(handleProviderError(error, ProviderErrorAction.LOAD));
                 }
             }
 
-            dispatch(
-                setAccountLoaded({
-                    ...account,
-                    metadata: {
-                        ...account.metadata,
-                        accountLabel: json.accountLabel,
-                        outputLabels: json.outputLabels,
-                        addressLabels: json.addressLabels,
-                    },
-                }),
-            );
+            // dispatch(
+            //     setAccountLoaded({
+            //         ...account,
+            //         metadata: {
+            //             ...account.metadata,
+            //             accountLabel: json.accountLabel,
+            //             outputLabels: json.outputLabels,
+            //             addressLabels: json.addressLabels,
+            //         },
+            //     }),
+            // );
         });
 
         const promises = [deviceFileContentP, ...accountPromises];
@@ -401,7 +453,11 @@ export const setAccountMetadataKey =
                 device.metadata.key,
                 account.metadata.key,
             );
-            const fileName = metadataUtils.deriveFilename(metaKey);
+            const fileName = metadataUtils.deriveFilename(metaKey) + '.mtdt';
+
+            console.log('account', account.path);
+            console.log('filename', fileName);
+
             const aesKey = metadataUtils.deriveAesKey(metaKey);
             return { ...account, metadata: { ...account.metadata, fileName, aesKey } };
         } catch (error) {
@@ -422,16 +478,39 @@ const syncMetadataKeys = () => (dispatch: Dispatch, getState: GetState) => {
     // keys sooner when enabling labeling on device;
 };
 
+export const selectProvider =
+    ({ dataType, clientId }: { dataType: DataType; clientId: string }) =>
+    (dispatch: Dispatch) => {
+        dispatch({
+            type: METADATA.SET_SELECTED_PROVIDER,
+            payload: {
+                dataType,
+                clientId,
+            },
+        });
+    };
+
 export const connectProvider =
-    (type: MetadataProviderType) => async (dispatch: Dispatch, getState: GetState) => {
-        let provider = dispatch(getProvider());
+    ({
+        type,
+        clientId,
+        dataType = 'labels',
+    }: {
+        type: MetadataProviderType;
+        clientId?: string;
+        dataType?: DataType;
+    }) =>
+    async (dispatch: Dispatch, getState: GetState) => {
+        let provider = dispatch(getProviderInstance({ type, clientId }));
         if (!provider) {
-            provider = createProvider(
+            provider = createProviderInstance(
                 type,
                 {},
                 getState().suite.settings.debug.oauthServerEnvironment,
+                clientId,
             );
         }
+        console.log('provider', provider);
 
         const isConnected = await provider.isConnected();
         if (!isConnected) {
@@ -442,15 +521,15 @@ export const connectProvider =
         }
 
         const result = await provider.getProviderDetails();
-
+        console.log('result', result);
         if (!result.success) {
             dispatch(handleProviderError(result, ProviderErrorAction.CONNECT));
             return;
         }
 
         dispatch({
-            type: METADATA.SET_PROVIDER,
-            payload: result.payload,
+            type: METADATA.ADD_PROVIDER,
+            payload: { ...result.payload },
         });
 
         analytics.report({
@@ -459,6 +538,8 @@ export const connectProvider =
                 provider: result.payload.type,
             },
         });
+
+        dispatch(selectProvider({ dataType, clientId: provider.clientId }));
 
         return true;
     };
@@ -482,7 +563,7 @@ export const addDeviceMetadata =
             },
         });
 
-        const provider = await dispatch(getProvider());
+        const provider = await dispatch(getProviderInstance({}));
 
         if (!provider) {
             // provider should always be set here
@@ -518,19 +599,27 @@ export const addAccountMetadata =
     (payload: Exclude<MetadataAddPayload, { type: 'walletLabel' }>, save = true) =>
     async (dispatch: Dispatch, getState: GetState) => {
         const account = getState().wallet.accounts.find(a => a.key === payload.accountKey);
-        if (!account) return false;
-        // clone Account.metadata
-        const metadata = JSON.parse(JSON.stringify(account.metadata));
+        const provider = selectSelectedProviderForLabels(getState());
+
+        // const metadata = getState().metadata.providers
+        if (!account || !provider) return false;
+
+        const metadata = provider.data[account.metadata.fileName];
+
+        if (!metadata || 'entries' in metadata) return false;
+
+        const nextMetadata = JSON.parse(JSON.stringify(metadata));
 
         if (payload.type === 'outputLabel') {
             if (typeof payload.value !== 'string' || payload.value.length === 0) {
-                if (!metadata.outputLabels[payload.txid]) return false;
-                delete metadata.outputLabels[payload.txid][payload.outputIndex];
-                if (Object.keys(metadata.outputLabels[payload.txid]).length === 0)
-                    delete metadata.outputLabels[payload.txid];
+                if (!nextMetadata.outputLabels[payload.txid]) return false;
+                delete nextMetadata.outputLabels[payload.txid][payload.outputIndex];
+                if (Object.keys(nextMetadata.outputLabels[payload.txid]).length === 0)
+                    delete nextMetadata.outputLabels[payload.txid];
             } else {
-                if (!metadata.outputLabels[payload.txid]) metadata.outputLabels[payload.txid] = {};
-                metadata.outputLabels[payload.txid][payload.outputIndex] = payload.value;
+                if (!nextMetadata.outputLabels[payload.txid])
+                    nextMetadata.outputLabels[payload.txid] = {};
+                nextMetadata.outputLabels[payload.txid][payload.outputIndex] = payload.value;
                 // 2.0.0
                 // metadata.outputLabels[payload.txid][payload.outputIndex] = {
                 //     ts,
@@ -541,48 +630,59 @@ export const addAccountMetadata =
 
         if (payload.type === 'addressLabel') {
             if (typeof payload.value !== 'string' || payload.value.length === 0) {
-                delete metadata.addressLabels[payload.defaultValue];
+                delete nextMetadata.addressLabels[payload.defaultValue];
             } else {
-                metadata.addressLabels[payload.defaultValue] = payload.value;
+                nextMetadata.addressLabels[payload.defaultValue] = payload.value;
             }
         }
 
         if (payload.type === 'accountLabel') {
             if (typeof payload.value !== 'string' || payload.value.length === 0) {
-                delete metadata.accountLabel;
+                delete nextMetadata.accountLabel;
             } else {
-                metadata.accountLabel = payload.value;
+                nextMetadata.accountLabel = payload.value;
             }
         }
 
-        dispatch(
-            setAccountAdd({
-                ...account,
-                metadata,
-            }),
-        );
+        dispatch({
+            type: METADATA.SET_DATA,
+            payload: {
+                provider,
+                data: {
+                    [account.metadata.fileName]: nextMetadata,
+                },
+            },
+        });
+        // dispatch(
+        //     setAccountAdd({
+        //         ...account,
+        //         metadata,
+        //     }),
+        // );
 
         // we might intentionally skip saving metadata content to persistent storage.
         if (!save) return true;
 
-        const provider = await dispatch(getProvider());
-        if (!provider) {
+        const providerInstance = await dispatch(getProviderInstance({}));
+        if (!providerInstance) {
             // provider should always be set here (see init)
             return false;
         }
 
+        console.log('encrypting filename', account.metadata.fileName);
         // todo: can't this throw? heh?
         const encrypted = await metadataUtils.encrypt(
             {
                 version: '1.0.0',
-                accountLabel: metadata.accountLabel,
-                outputLabels: metadata.outputLabels,
-                addressLabels: metadata.addressLabels,
+                accountLabel: nextMetadata.accountLabel,
+                outputLabels: nextMetadata.outputLabels,
+                addressLabels: nextMetadata.addressLabels,
             },
             account.metadata.aesKey,
         );
 
-        const result = await provider.setFileContent(account.metadata.fileName, encrypted);
+        const result = await providerInstance.setFileContent(account.metadata.fileName, encrypted);
+        console.log('result', result);
         if (!result.success) {
             dispatch(handleProviderError(result, ProviderErrorAction.SAVE));
             return false;
@@ -598,7 +698,7 @@ export const setDeviceMetadataKey = () => async (dispatch: Dispatch, getState: G
     const { device } = getState().suite;
     if (!device || !device.state || !device.connected) return;
 
-    // mater key already exists
+    // master key already exists
     if (device.metadata.status === 'enabled') return;
 
     const result = await TrezorConnect.cipherKeyValue({
@@ -722,7 +822,7 @@ export const init =
         // 3. connect to provider
         if (
             getState().suite.device?.metadata.status === 'enabled' &&
-            !getState().metadata.provider
+            !getState().metadata.providers?.length
         ) {
             if (!getState().metadata.initiating) {
                 dispatch({ type: METADATA.SET_INITIATING, payload: true });

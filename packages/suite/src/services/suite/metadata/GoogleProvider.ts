@@ -9,6 +9,10 @@ class GoogleProvider extends AbstractMetadataProvider {
         GoogleClient.init(tokens, environment);
     }
 
+    get clientId() {
+        return GoogleClient.clientId;
+    }
+
     async connect() {
         try {
             await GoogleClient.authorize();
@@ -36,7 +40,7 @@ class GoogleProvider extends AbstractMetadataProvider {
 
     async getFileContent(file: string) {
         try {
-            const id = await GoogleClient.getIdByName(`${file}.mtdt`);
+            const id = await GoogleClient.getIdByName(file);
             if (!id) {
                 return this.ok(undefined);
             }
@@ -66,12 +70,12 @@ class GoogleProvider extends AbstractMetadataProvider {
         try {
             // search for file by name with forceReload=true parameter to make sure that we do not save
             // two files with the same name but different ids
-            const id = await GoogleClient.getIdByName(`${file}.mtdt`, true);
+            const id = await GoogleClient.getIdByName(file, true);
             if (id) {
                 await GoogleClient.update(
                     {
                         body: {
-                            name: `${file}.mtdt`,
+                            name: file,
                             mimeType: 'text/plain;charset=UTF-8',
                         },
                     },
@@ -83,7 +87,7 @@ class GoogleProvider extends AbstractMetadataProvider {
             await GoogleClient.create(
                 {
                     body: {
-                        name: `${file}.mtdt`,
+                        name: file,
                         mimeType: 'text/plain;charset=UTF-8',
                         parents: ['appDataFolder'],
                     },
@@ -109,6 +113,7 @@ class GoogleProvider extends AbstractMetadataProvider {
                     refreshToken: GoogleClient.refreshToken,
                 },
                 user: response.user.displayName,
+                clientId: this.clientId,
             } as const);
         } catch (err) {
             return this.handleProviderError(err);

@@ -192,7 +192,8 @@ export const getApplicationInfo = (state: AppState, hideSensitiveInfo: boolean) 
     discreetMode: state.wallet.settings.discreetMode,
     tor: getIsTorEnabled(state.suite.torStatus),
     torOnionLinks: state.suite.settings.torOnionLinks,
-    labeling: state.metadata.enabled ? state.metadata.provider?.type || 'missing-provider' : '',
+    // todo:
+    labeling: state.metadata.enabled ? state.metadata.providers[0]?.type || 'missing-provider' : '',
     analytics: state.analytics.enabled,
     instanceId: hideSensitiveInfo ? REDACTED_REPLACEMENT : state.analytics.instanceId,
     sessionId: hideSensitiveInfo ? REDACTED_REPLACEMENT : state.analytics.sessionId,

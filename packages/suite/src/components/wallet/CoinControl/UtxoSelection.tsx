@@ -13,6 +13,7 @@ import { TransactionTimestamp, UtxoAnonymity } from '@wallet-components';
 import { UtxoTag } from '@wallet-components/CoinControl/UtxoTag';
 import { useSendFormContext } from '@wallet-hooks';
 import { WalletAccountTransaction } from '@wallet-types';
+import { selectLabelingDataForSelectedAccount } from '@suite-reducers/metadataReducer';
 
 const VisibleOnHover = styled.div<{ alwaysVisible?: boolean }>`
     display: ${({ alwaysVisible }) => (alwaysVisible ? 'contents' : 'none')};
@@ -134,9 +135,8 @@ export const UtxoSelection = ({ isChecked, transaction, utxo }: UtxoSelectionPro
     const coordinatorData = useSelector(state => state.wallet.coinjoin.clients[account.symbol]);
     const device = useSelector(state => state.suite.device);
     // selecting metadata from store rather than send form context which does not update on metadata change
-    const outputLabels = useSelector(
-        state => state.wallet.selectedAccount.account?.metadata.outputLabels,
-    );
+    const { outputLabels } = useSelector(selectLabelingDataForSelectedAccount);
+
     const { openModal } = useActions({
         openModal: modalActions.openModal,
     });

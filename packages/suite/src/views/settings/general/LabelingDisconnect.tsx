@@ -7,6 +7,7 @@ import * as metadataActions from '@suite-actions/metadataActions';
 import { Translation } from '@suite-components';
 import { useAnchor } from '@suite-hooks/useAnchor';
 import { SettingsAnchor } from '@suite-constants/anchors';
+import { METADATA } from '@suite-actions/constants';
 
 export const LabelingDisconnect = () => {
     const { metadata } = useSelector(state => ({
@@ -18,7 +19,12 @@ export const LabelingDisconnect = () => {
         disconnectProvider: metadataActions.disconnectProvider,
     });
 
-    if (!metadata.enabled || !metadata.provider) return null;
+    if (!metadata.enabled) return null;
+    // todo + includes labes and is selected
+    const selectedProvider = metadata.providers.find(
+        p => p.type !== 'dropbox' || p.clientId === METADATA.DROPBOX_CLIENT_ID,
+    );
+    if (!selectedProvider) return null;
 
     return (
         <SectionItem
@@ -28,12 +34,12 @@ export const LabelingDisconnect = () => {
         >
             <TextColumn
                 title={
-                    metadata.provider.isCloud ? (
+                    selectedProvider.isCloud ? (
                         <Translation
                             id="TR_CONNECTED_TO_PROVIDER"
                             values={{
-                                provider: capitalizeFirstLetter(metadata.provider.type),
-                                user: metadata.provider.user,
+                                provider: capitalizeFirstLetter(selectedProvider.type),
+                                user: selectedProvider.user,
                             }}
                         />
                     ) : (
@@ -41,7 +47,7 @@ export const LabelingDisconnect = () => {
                     )
                 }
                 description={
-                    metadata.provider.isCloud ? (
+                    selectedProvider.isCloud ? (
                         <Translation id="TR_YOUR_LABELING_IS_SYNCED" />
                     ) : (
                         <Translation id="TR_YOUR_LABELING_IS_SYNCED_LOCALLY" />

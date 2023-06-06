@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js';
 import { toWei } from 'web3-utils';
-import { isDesktop } from '@suite-utils/env';
+// import { isDesktop } from '@suite-utils/env';
 import type { State } from '@wallet-reducers/settingsReducer';
 import type { CustomBackend, BlockbookUrl } from '@wallet-types/backend';
 import type { Network, Account, Discovery } from '@wallet-types';
@@ -500,31 +500,31 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
             });
     }
 
-    if (oldVersion < 29) {
-        db.createObjectStore('firmware');
+    // if (oldVersion < 29) {
+    //     db.createObjectStore('firmware');
 
-        const providerStore = await transaction.objectStore('metadata');
-        await providerStore.openCursor().then(async function update(cursor): Promise<void> {
-            if (!cursor) {
-                return;
-            }
-            const state = cursor.value;
-            // @ts-expect-error (token property removed)
-            if (state.provider?.token) {
-                if (isDesktop()) {
-                    state.provider.tokens = {
-                        accessToken: '',
-                        // @ts-expect-error
-                        refreshToken: state.provider.token,
-                    };
-                }
-                // @ts-expect-error
-                delete state.provider.token;
-                await cursor.update(state);
-            }
-            return cursor.continue().then(update);
-        });
-    }
+    //     const providerStore = await transaction.objectStore('metadata');
+    //     await providerStore.openCursor().then(async function update(cursor): Promise<void> {
+    //         if (!cursor) {
+    //             return;
+    //         }
+    //         const state = cursor.value;
+    //         // @ts-expect-error (token property removed)
+    //         if (state.provider?.token) {
+    //             if (isDesktop()) {
+    //                 state.provider.tokens = {
+    //                     accessToken: '',
+    //                     // @ts-expect-error
+    //                     refreshToken: state.provider.token,
+    //                 };
+    //             }
+    //             // @ts-expect-error
+    //             delete state.provider.token;
+    //             await cursor.update(state);
+    //         }
+    //         return cursor.continue().then(update);
+    //     });
+    // }
 
     if (oldVersion < 30) {
         const walletSettingsStore = transaction.objectStore('walletSettings');

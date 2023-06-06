@@ -6,6 +6,7 @@ import * as metadataActions from '@suite-actions/metadataActions';
 import { Translation } from '@suite-components';
 import { useAnchor } from '@suite-hooks/useAnchor';
 import { SettingsAnchor } from '@suite-constants/anchors';
+import { METADATA } from '@suite-actions/constants';
 
 export const LabelingConnect = () => {
     const { device } = useDevice();
@@ -19,7 +20,13 @@ export const LabelingConnect = () => {
         initMetadata: metadataActions.init,
     });
 
-    if (metadata.enabled && !metadata.provider && device?.metadata.status === 'enabled') {
+    if (
+        metadata.enabled &&
+        !metadata.providers.find(
+            p => p.type !== 'dropbox' || p.clientId === METADATA.DROPBOX_CLIENT_ID,
+        ) &&
+        device?.metadata.status === 'enabled'
+    ) {
         return (
             <SectionItem
                 data-test="@settings/labeling-connect"

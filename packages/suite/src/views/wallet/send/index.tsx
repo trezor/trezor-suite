@@ -13,6 +13,7 @@ import { TotalSent } from './components/TotalSent';
 import { ReviewButton } from './components/ReviewButton';
 import Raw from './components/Raw';
 import { selectCurrentTargetAnonymity } from '@wallet-reducers/coinjoinReducer';
+import { selectSelectedProviderForLabels } from '@suite-reducers/metadataReducer';
 
 const StyledCard = styled(Card)`
     display: flex;
@@ -58,13 +59,14 @@ interface SendProps {
 }
 
 const Send = ({ children }: SendProps) => {
+    const provider = useSelector(selectSelectedProviderForLabels);
     const props = useSelector(state => ({
         fiat: state.wallet.fiat,
         localCurrency: state.wallet.settings.localCurrency,
         fees: state.wallet.fees,
         online: state.suite.online,
         sendRaw: state.wallet.send.sendRaw,
-        metadataEnabled: state.metadata.enabled && !!state.metadata.provider,
+        metadataEnabled: state.metadata.enabled && !!provider,
         targetAnonymity: selectCurrentTargetAnonymity(state),
     }));
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);

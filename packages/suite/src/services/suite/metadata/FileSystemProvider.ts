@@ -7,6 +7,10 @@ class FileSystemProvider extends AbstractMetadataProvider {
         super('fileSystem');
     }
 
+    get clientId() {
+        return this.type;
+    }
+
     connect() {
         return Promise.resolve(this.ok());
     }
@@ -22,11 +26,12 @@ class FileSystemProvider extends AbstractMetadataProvider {
             isCloud: this.isCloud,
             tokens: {},
             user: '',
+            clientId: this.clientId,
         });
     }
 
     async getFileContent(file: string) {
-        const result = await desktopApi.metadataRead({ file: `${file}.mtdt` });
+        const result = await desktopApi.metadataRead({ file });
         if (!result.success && result.code !== 'ENOENT') {
             return this.error('PROVIDER_ERROR', result.error);
         }
@@ -37,7 +42,7 @@ class FileSystemProvider extends AbstractMetadataProvider {
         const hex = content.toString('hex');
 
         const result = await desktopApi.metadataWrite({
-            file: `${file}.mtdt`,
+            file,
             content: hex,
         });
         if (!result.success) {

@@ -101,7 +101,7 @@ const initStore = (state: State) => {
             // automatically resolve modal decision
             switch (action.payload.type) {
                 case 'metadata-provider':
-                    await store.dispatch(metadataActions.connectProvider('dropbox'));
+                    await store.dispatch(metadataActions.connectProvider({ type: 'dropbox' }));
                     action.payload.decision.resolve(true);
                     break;
                 default:
@@ -203,6 +203,7 @@ describe('Metadata Actions', () => {
                             refreshToken: 'token',
                         },
                         user: 'power-user',
+                        clientId: 'meow',
                     },
                 });
 

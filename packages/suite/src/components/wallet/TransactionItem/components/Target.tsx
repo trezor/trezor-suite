@@ -12,13 +12,14 @@ import {
 } from '@suite-common/wallet-utils';
 import { WalletAccountTransaction } from '@wallet-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { useActions } from '@suite-hooks';
+import { useActions, useSelector } from '@suite-hooks';
 import { TokenTransferAddressLabel } from './TokenTransferAddressLabel';
 import { TargetAddressLabel } from './TargetAddressLabel';
 import { BaseTargetLayout } from './BaseTargetLayout';
 import { copyToClipboard } from '@trezor/dom-utils';
 import { AccountMetadata } from '@suite-types/metadata';
 import { StyledFormattedCryptoAmount, StyledFormattedNftAmount } from './CommonComponents';
+import { selectLabelingDataForSelectedAccount } from '@suite-reducers/metadataReducer';
 
 interface BaseTransfer {
     singleRowLayout?: boolean;
@@ -125,7 +126,8 @@ export const Target = ({
     const targetAmount = getTargetAmount(target, transaction);
     const operation = getTxOperation(transaction.type);
     const { addNotification } = useActions({ addNotification: notificationsActions.addToast });
-    const targetMetadata = accountMetadata?.outputLabels?.[transaction.txid]?.[target.n];
+    const { outputLabels } = useSelector(selectLabelingDataForSelectedAccount);
+    const targetMetadata = outputLabels?.[transaction.txid]?.[target.n];
 
     return (
         <BaseTargetLayout

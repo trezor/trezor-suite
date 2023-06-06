@@ -323,16 +323,16 @@ export const saveAnalytics = () => async (_dispatch: Dispatch, getState: GetStat
 /**
  * save general metadata settings
  */
-export const saveMetadata = () => async (_dispatch: Dispatch, getState: GetState) => {
+export const saveMetadata = () => async (_dispatch: Dispatch, _getState: GetState) => {
     if (!(await db.isAccessible())) return;
 
-    const { metadata } = getState();
-    db.addItem(
-        'metadata',
-        { provider: metadata.provider, enabled: metadata.enabled },
-        'state',
-        true,
-    );
+    // const { metadata } = getState();
+    // db.addItem(
+    //     'metadata',
+    //     { provider: metadata.provider, enabled: metadata.enabled, data: {} },
+    //     'state',
+    //     true,
+    // );
 };
 
 export const saveMessageSystem = () => async (_dispatch: Dispatch, getState: GetState) => {
