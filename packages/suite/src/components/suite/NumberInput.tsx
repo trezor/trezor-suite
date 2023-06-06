@@ -24,6 +24,11 @@ const cleanValueString = (value: string, locale: Locale) => {
         return '';
     }
 
+    // in case somehow the value is a number, convert it to string
+    if (typeof value !== 'string') {
+        value = String(value);
+    }
+
     const { decimalSeparator, thousandsSeparator } = getLocaleSeparators(locale);
 
     // clean the entered number string if it's not convertable to Number or if it has a non-conventional format
@@ -124,6 +129,11 @@ export const NumberInput = ({
 
                 return newDisplayValue;
             };
+
+            // in case somehow the value is a number, convert it to string
+            if (typeof rawValue !== 'string') {
+                rawValue = String(rawValue);
+            }
 
             // don't localize when entering a separator or a 0 in decimals (e.g. 0.0000 -> 0.00001),
             // otherwise the separator might get removed
