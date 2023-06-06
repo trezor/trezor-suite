@@ -409,6 +409,24 @@ const ethereumGetAddress = [
     },
 ];
 
+const ethereumGetAddressGoChain = [
+    {
+        ...getAddress[0],
+        url: 'ethereumGetAddress-gochain',
+        views: [
+            {
+                // Tests that definition was correctly loaded, decoded and displayed in the "main section of screen"
+                selector: 'text=Export GoChain address',
+                screenshot: {
+                    name: 'export-address-go-chain',
+                },
+                next: 'button.confirm >> visible=true',
+            },
+            getConfirmAddressOnDeviceScreen('0x2cfd36BE875fd9cF203Ad1BD90C96e085a7839DB'),
+        ],
+    },
+];
+
 const ethereumSignMessage = [
     {
         ...signMessage[0],
@@ -615,6 +633,7 @@ export const fixtures = [
     ...recoverDevice,
     ...ethereumGetPublicKey,
     ...ethereumGetAddress,
+    ...ethereumGetAddressGoChain,
     ...ethereumSignTransaction,
     ...ethereumSignMessage,
     ...ethereumVerifyMessage,
