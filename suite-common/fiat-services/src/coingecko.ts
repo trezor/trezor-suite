@@ -106,25 +106,29 @@ export const fetchCurrentFiatRates = async (ticker: TickerId) => {
  * Helper function that goes through timestamped fiat rates returned from Coingecko and finds the closest one to the provided timestamp.
  * @returns [timestamp, fiatRate] pair
  */
-const findClosestTimestampValue = (timestamp: number, arr: Array<[number, number]>): number => {
-    let closestTimestamp = arr[0];
-    for (let i = 1; i < arr.length; i++) {
-        const currentTimeDelta = Math.abs(timestamp - closestTimestamp[0] / 1000);
-        const nextTimeDelta = Math.abs(timestamp - arr[i][0] / 1000);
+export const findClosestTimestampValue = (
+    timestamp: number,
+    prices: Array<[number, number]>,
+): number => {
+    let closestTimestamp = prices[0];
 
-        closestTimestamp = arr[i];
+    for (let i = 1; i < prices.length; i++) {
+        const currentTimeDelta = Math.abs(timestamp - closestTimestamp[0] / 1000);
+        const nextTimeDelta = Math.abs(timestamp - prices[i][0] / 1000);
 
         // The timestamps are ordered, if next time delta is higher, we can stop the iteration.
         if (currentTimeDelta < nextTimeDelta) {
             break;
         }
+
+        closestTimestamp = prices[i];
     }
 
     return closestTimestamp[1];
 };
 
 /**
- * Returns the historical rates for a given symbol adn array of timestamps, fetched from CoinGecko API.
+ * Returns the historical rates for a given symbol and array of timestamps, fetched from CoinGecko API.
  * Returns null if coin or fiat rates for a given symbol were not found.
  *
  * @param {TickerId} ticker
@@ -135,20 +139,28 @@ export const getFiatRatesForTimestamps = async (
     timestamps: number[],
     fiatCurrencyCode: FiatCurrencyCode,
 ): Promise<HistoricalResponse | null> => {
+    if (timestamps.length < 2) return null;
+
     const coinUrl = buildCoinUrl(ticker);
     const urlEndpoint = `market_chart/range`;
     if (!coinUrl) return null;
 
-    const params = `?vs_currency=${fiatCurrencyCode}&from=${timestamps[0]}&to=${
-        timestamps[timestamps.length - 1]
+    // sort timestamps chronologically to get the minimum and maximum values
+    const sortedTimestamps = [...timestamps].sort((ts1, ts2) => ts1 - ts2);
+
+    const params = `?vs_currency=${fiatCurrencyCode}&from=${sortedTimestamps[0]}&to=${
+        sortedTimestamps[sortedTimestamps.length - 1]
     }`;
     const url = `${coinUrl}/${urlEndpoint}${params}`;
 
     // returns pairs of [timestamp, fiatRate]
-    const response: { prices: Array<[number, number]> } = await fetchCoinGecko(url);
+    const { prices }: { prices: Array<[number, number]> } = await fetchCoinGecko(url);
+
+    if (!prices || prices.length === 0) return null;
+
     const tickers = timestamps.map(ts => ({
         ts,
-        rates: { [fiatCurrencyCode]: findClosestTimestampValue(ts, response.prices) },
+        rates: { [fiatCurrencyCode]: findClosestTimestampValue(ts, prices) },
     }));
 
     return {

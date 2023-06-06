@@ -10,7 +10,7 @@ import TrezorConnect, { AccountTransaction, BlockchainFiatRatesUpdate } from '@t
 import { createThunk } from '@suite-common/redux-utils';
 import { NetworkSymbol, networksCompatibility as NETWORKS } from '@suite-common/wallet-config';
 import { Account, CoinFiatRates, TickerId } from '@suite-common/wallet-types';
-import { FIAT } from '@suite-common/suite-config';
+import { FIAT, FiatCurrencyCode } from '@suite-common/suite-config';
 import { getAccountTransactions, isTestnet } from '@suite-common/wallet-utils';
 import { getBlockbookSafeTime } from '@suite-common/suite-utils';
 
@@ -36,7 +36,11 @@ type GetFiatStaleTickersThunkPayload = {
     includeTokens?: boolean;
 };
 type UpdateCurrentFiatRatesThunkPayload = { ticker: TickerId; maxAge?: number };
-type UpdateTxsFiatRatesThunkPayload = { account: Account; txs: AccountTransaction[] };
+type UpdateTxsFiatRatesThunkPayload = {
+    account: Account;
+    txs: AccountTransaction[];
+    localCurrency: FiatCurrencyCode;
+};
 
 export const removeFiatRatesForDisabledNetworksThunk = createThunk(
     `${actionPrefix}/removeRatesForDisabledNetworks`,
@@ -245,12 +249,7 @@ export const onUpdateFiatRateThunk = createThunk(
  */
 export const updateLastWeekFiatRatesThunk = createThunk(
     `${actionPrefix}/updateLastWeekRates`,
-    async (_, { dispatch, extra, getState }) => {
-        const {
-            selectors: { selectLocalCurrency },
-        } = extra;
-        const localCurrency = selectLocalCurrency(getState());
-
+    async (localCurrency: FiatCurrencyCode, { dispatch }) => {
         const weekAgoTimestamp = getUnixTime(subWeeks(new Date(), 1));
         const timestamps = [weekAgoTimestamp];
 
@@ -305,13 +304,9 @@ export const updateLastWeekFiatRatesThunk = createThunk(
  */
 export const updateTxsFiatRatesThunk = createThunk(
     `${actionPrefix}/updateTxsRates`,
-    async ({ account, txs }: UpdateTxsFiatRatesThunkPayload, { dispatch, extra, getState }) => {
+    async ({ account, txs, localCurrency }: UpdateTxsFiatRatesThunkPayload, { dispatch }) => {
         if (txs?.length === 0 || isTestnet(account.symbol)) return;
 
-        const {
-            selectors: { selectLocalCurrency },
-        } = extra;
-        const localCurrency = selectLocalCurrency(getState());
         const timestamps = txs.map(tx => getBlockbookSafeTime(tx.blockTime));
         const response = await TrezorConnect.blockchainGetFiatRatesForTimestamps({
             coin: account.symbol,
@@ -346,7 +341,11 @@ export const updateTxsFiatRatesThunk = createThunk(
 
 const updateMissingTxFiatRatesThunk = createThunk(
     `${actionPrefix}/updateMissingTxRates`,
-    (symbol: NetworkSymbol, { dispatch, getState }) => {
+    (symbol: NetworkSymbol, { dispatch, extra, getState }) => {
+        const {
+            selectors: { selectLocalCurrency },
+        } = extra;
+        const localCurrency = selectLocalCurrency(getState());
         const transactions = selectTransactions(getState());
         const accounts = selectAccounts(getState());
         accounts.forEach(account => {
@@ -359,6 +358,7 @@ const updateMissingTxFiatRatesThunk = createThunk(
                 updateTxsFiatRatesThunk({
                     account,
                     txs: accountTxs.filter(tx => !tx.rates),
+                    localCurrency,
                 }),
             );
         });
@@ -371,9 +371,14 @@ const updateMissingTxFiatRatesThunk = createThunk(
  */
 export const initFiatRatesThunk = createThunk(
     `${actionPrefix}/initRates`,
-    (symbol: NetworkSymbol, { dispatch }) => {
+    (symbol: NetworkSymbol, { dispatch, extra, getState }) => {
+        const {
+            selectors: { selectLocalCurrency },
+        } = extra;
+        const localCurrency = selectLocalCurrency(getState());
+
         dispatch(updateStaleFiatRatesThunk());
-        dispatch(updateLastWeekFiatRatesThunk());
+        dispatch(updateLastWeekFiatRatesThunk(localCurrency));
         dispatch(updateMissingTxFiatRatesThunk(symbol)); // just to be safe, refetch historical rates for transactions stored without these rates
 
         if (staleRatesTimeout && lastWeekTimeout) {
@@ -385,7 +390,7 @@ export const initFiatRatesThunk = createThunk(
             dispatch(updateStaleFiatRatesThunk());
         }, INTERVAL);
         lastWeekTimeout = setInterval(() => {
-            dispatch(updateLastWeekFiatRatesThunk());
+            dispatch(updateLastWeekFiatRatesThunk(localCurrency));
         }, INTERVAL_LAST_WEEK);
     },
 );
