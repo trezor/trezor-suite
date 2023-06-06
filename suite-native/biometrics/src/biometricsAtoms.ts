@@ -25,3 +25,13 @@ export const useIsBiometricsEnabled = () => {
         setIsBiometricsOptionEnabled,
     };
 };
+
+export const isBiometricsOverlayVisibleAtom = atom(get => {
+    const isUserAuthenticated = get(isUserAuthenticatedAtom);
+    const isBiometricsOptionEnabled = get(isBiometricsOptionEnabledAtom);
+
+    if (isBiometricsOptionEnabled) {
+        return !isUserAuthenticated;
+    }
+    return false;
+});
