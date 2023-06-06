@@ -128,7 +128,7 @@ export const composeTransaction =
                     ...getEthereumEstimateFeeParams(
                         address || account.descriptor,
                         tokenInfo,
-                        amount,
+                        tokenInfo ? amount : amount || account.formattedBalance,
                         formValues.ethereumDataHex,
                     ),
                 },
