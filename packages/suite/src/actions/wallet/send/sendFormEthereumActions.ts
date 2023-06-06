@@ -127,8 +127,9 @@ export const composeTransaction =
                     from: account.descriptor,
                     ...getEthereumEstimateFeeParams(
                         address || account.descriptor,
+                        // if amount is not set (set-max case) use max available balance
+                        amount || (tokenInfo ? tokenInfo.balance! : account.formattedBalance),
                         tokenInfo,
-                        amount,
                         formValues.ethereumDataHex,
                     ),
                 },
