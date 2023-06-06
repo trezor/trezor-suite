@@ -15,35 +15,36 @@ CURRENT_VERSION=$(grep -m1 -o '\"suiteVersion\": *\"[^\"]*\"' packages/suite/pac
 CURRENT_VERSION_YEAR=$(echo "$CURRENT_VERSION" | cut -d '.' -f 1)
 CURRENT_VERSION_MONTH=$(echo "$CURRENT_VERSION" | cut -d '.' -f 2)
 
-RELEASE_VERSION="$CURRENT_VERSION_YEAR.$CURRENT_VERSION_MONTH.1"
+RELEASE_MONTH="$CURRENT_VERSION_YEAR.$CURRENT_VERSION_MONTH"
+RELEASE_VERSION="$RELEASE_MONTH.1"
 TEST_UPGRADE_VERSION="$((CURRENT_VERSION_YEAR+10)).$CURRENT_VERSION_MONTH.1"
 TEST_DOWNGRADE_VERSION="0.$CURRENT_VERSION_YEAR.$CURRENT_VERSION_MONTH"
 if [ "$CURRENT_VERSION_MONTH" == 12 ]; then
-  NEXT_VERSION_YEAR=$(("$CURRENT_VERSION_YEAR"+1))
+  NEXT_VERSION_YEAR="$((CURRENT_VERSION_YEAR+1))"
   NEXT_VERSION_MONTH=1
 else
   NEXT_VERSION_YEAR=$CURRENT_VERSION_YEAR
-  NEXT_VERSION_MONTH=$(("$CURRENT_VERSION_MONTH"+1))
+  NEXT_VERSION_MONTH="$((CURRENT_VERSION_MONTH+1))"
 fi
   BETA_VERSION="$NEXT_VERSION_YEAR.$NEXT_VERSION_MONTH.0"
 
 echo Fetching origin...
 git fetch origin $MAIN_BRANCH
 
-echo Creating release branch "$RELEASE_VERSION"...
-git switch -c release/"$RELEASE_VERSION" $MAIN_BRANCH
+echo Creating release branch "$RELEASE_MONTH"...
+git switch -c release/"$RELEASE_MONTH" $MAIN_BRANCH
 sed -i '' -E "s/(\"suiteVersion\": \")[^\"]*(\".*)/\1$RELEASE_VERSION\2/" $FILEPATH
 git commit -am "chore(suite): bump Suite version to $RELEASE_VERSION [RELEASE ONLY]"
 git push
 
 echo Creating testing branch "$TEST_UPGRADE_VERSION"...
-git switch -c release/"$TEST_UPGRADE_VERSION" $MAIN_BRANCH
+git switch -c release/test-"$TEST_UPGRADE_VERSION" $MAIN_BRANCH
 sed -i '' -E "s/(\"suiteVersion\": \")[^\"]*(\".*$)/\1$TEST_UPGRADE_VERSION\2/" $FILEPATH
 git commit -am "chore(suite): set Suite version to $TEST_UPGRADE_VERSION for testing [RELEASE ONLY]"
 git push
 
 echo Creating testing branch "$TEST_DOWNGRADE_VERSION"...
-git switch -c release/"$TEST_DOWNGRADE_VERSION" $MAIN_BRANCH
+git switch -c release/test-"$TEST_DOWNGRADE_VERSION" $MAIN_BRANCH
 sed -i '' -E "s/(\"suiteVersion\": \")[^\"]*(\".*$)/\1$TEST_DOWNGRADE_VERSION\2/" $FILEPATH
 git commit -am "chore(suite): set Suite version to $TEST_DOWNGRADE_VERSION for testing [RELEASE ONLY]"
 git push
