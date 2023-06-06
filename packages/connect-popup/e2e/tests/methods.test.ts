@@ -106,7 +106,7 @@ fixtures.forEach(f => {
 
             if (v.selector) {
                 const element = popup.locator(v.selector);
-                await element.waitFor({ state: 'visible' });
+                await element.first().waitFor({ state: 'visible'});
 
                 if (v.screenshot) {
                     const path = `${screenshotsPath}/3-${screenshotCount}-${v.screenshot.name}.png`;
