@@ -28,8 +28,6 @@ const authenticationCanceledAlert: Alert = {
     icon: 'warningCircle',
     onPressPrimaryButton: authenticate,
     primaryButtonTitle: 'Try again',
-    secondaryButtonTitle: 'Cancel',
-    onPressSecondaryButton: () => null,
 };
 
 const biometricNotAvailableAlert: Alert = {
