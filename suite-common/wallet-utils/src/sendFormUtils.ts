@@ -88,25 +88,28 @@ const getSerializedErc20Transfer = (token: TokenInfo, to: string, amount: string
     return `0x${ERC20_TRANSFER}${erc20recipient}${erc20amount}`;
 };
 
-// TrezorConnect.blockchainEstimateFee for ethereum
-// NOTE:
-// - amount cannot be "0" (send max calculation), use at least 1 unit.
+// TrezorConnect.blockchainEstimateFee for ETH
 export const getEthereumEstimateFeeParams = (
     to: string,
+    amount: string,
     token?: TokenInfo,
-    amount?: string,
     data?: string,
 ) => {
+    if (new BigNumber(amount).lte(0)) {
+        throw new Error('Amount has to be greater than 0');
+    }
+
     if (token) {
         return {
             to: token.contract,
             value: '0x0',
-            data: getSerializedErc20Transfer(token, to, amount || token.balance!), // if amount is not set (set-max case) use whole token balance
+            data: getSerializedErc20Transfer(token, to, amount),
         };
     }
+
     return {
         to,
-        value: amount ? getSerializedAmount(amount) : toHex('1'), // if amount is not set (set-max case) use at least 1 wei
+        value: getSerializedAmount(amount),
         data: data || '',
     };
 };
