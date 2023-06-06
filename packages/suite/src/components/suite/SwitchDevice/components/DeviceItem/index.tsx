@@ -265,7 +265,7 @@ const DeviceItem = ({ device, instances, onCancel, backgroundRoute }: Props) => 
                                         <ColRememberHeader
                                             tooltipOpenGuide={instance => (
                                                 <OpenGuideFromTooltip
-                                                    id="/privacy/remember-and-eject.md"
+                                                    id="/1_initialize-and-secure-your-trezor/8_remember-and-eject.md"
                                                     instance={instance}
                                                 />
                                             )}
@@ -278,7 +278,7 @@ const DeviceItem = ({ device, instances, onCancel, backgroundRoute }: Props) => 
                                         <ColEjectHeader
                                             tooltipOpenGuide={instance => (
                                                 <OpenGuideFromTooltip
-                                                    id="/privacy/remember-and-eject.md"
+                                                    id="/1_initialize-and-secure-your-trezor/8_remember-and-eject.md"
                                                     instance={instance}
                                                 />
                                             )}

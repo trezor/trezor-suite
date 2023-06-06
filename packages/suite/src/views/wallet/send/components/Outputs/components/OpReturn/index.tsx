@@ -73,7 +73,7 @@ const OpReturn = ({ outputId }: { outputId: number }) => {
                         <Tooltip
                             guideAnchor={instance => (
                                 <OpenGuideFromTooltip
-                                    id="/suite-basics/send/op_return.md"
+                                    id="/3_send-and-receive/transactions-in-depth/op_return.md"
                                     instance={instance}
                                 />
                             )}

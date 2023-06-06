@@ -95,7 +95,7 @@ export const BitcoinOptions = () => {
                         <Tooltip
                             guideAnchor={instance => (
                                 <OpenGuideFromTooltip
-                                    id="/suite-basics/send/locktime.md"
+                                    id="/3_send-and-receive/transactions-in-depth/locktime.md"
                                     instance={instance}
                                 />
                             )}
@@ -122,7 +122,7 @@ export const BitcoinOptions = () => {
                             <Tooltip
                                 guideAnchor={instance => (
                                     <OpenGuideFromTooltip
-                                        id="/suite-basics/send/rbf-replace-by-fee.md"
+                                        id="/3_send-and-receive/5_replace-by-fee-rbf.md"
                                         instance={instance}
                                     />
                                 )}
@@ -160,7 +160,7 @@ export const BitcoinOptions = () => {
                         <Tooltip
                             guideAnchor={instance => (
                                 <OpenGuideFromTooltip
-                                    id="/suite-basics/coin-control.md"
+                                    id="/5_coinjoin-and-coin-control/coin-control.md"
                                     instance={instance}
                                 />
                             )}

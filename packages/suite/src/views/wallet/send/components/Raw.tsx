@@ -84,7 +84,7 @@ const Raw = ({ network }: { network: Network }) => {
                         <Tooltip
                             guideAnchor={instance => (
                                 <OpenGuideFromTooltip
-                                    id="/suite-basics/send/send-raw.md"
+                                    id="/3_send-and-receive/transactions-in-depth/send-raw.md"
                                     instance={instance}
                                 />
                             )}
