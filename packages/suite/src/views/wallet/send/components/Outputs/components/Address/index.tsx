@@ -97,7 +97,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
             setValue(inputName, protocol.address, { shouldValidate: true });
 
             if (protocol.amount) {
-                setValue(`outputs[${outputId}].amount`, protocol.amount, {
+                setValue(`outputs[${outputId}].amount`, String(protocol.amount), {
                     shouldValidate: true,
                 });
             }
