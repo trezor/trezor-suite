@@ -128,6 +128,10 @@ export default [
                         url: '/method/ethereumGetAddress',
                     },
                     {
+                        name: 'export address GoChain',
+                        url: '/method/ethereumGetAddress-gochain',
+                    },
+                    {
                         name: 'export multiple addresses',
                         url: '/method/ethereumGetAddress-multiple',
                     },
