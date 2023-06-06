@@ -85,8 +85,8 @@ const AnalyticsSwitchRow = () => {
 };
 
 const BiometricsSwitchRow = () => {
-    const { isBiometricsOptionEnabled } = useIsBiometricsEnabled();
     const { toggleBiometricsOption } = useBiometrics();
+    const { isBiometricsOptionEnabled } = useIsBiometricsEnabled();
 
     return (
         <TouchableSwitchRow

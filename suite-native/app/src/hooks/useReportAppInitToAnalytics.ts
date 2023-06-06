@@ -12,7 +12,7 @@ import { useUserColorScheme } from '@suite-native/theme';
 import { analytics, EventType } from '@suite-native/analytics';
 import { UNIT_ABBREVIATIONS } from '@suite-common/suite-constants';
 import { selectIsConnectInitialized } from '@suite-native/state';
-import { useBiometrics } from '@suite-native/biometrics';
+import { useIsBiometricsEnabled } from '@suite-native/biometrics';
 
 export const useReportAppInitToAnalytics = (appLaunchTimestamp: number) => {
     const [loadDuration, setLoadDuration] = useState<number | null>(null);
@@ -24,7 +24,7 @@ export const useReportAppInitToAnalytics = (appLaunchTimestamp: number) => {
     const { isDiscreetMode } = useDiscreetMode();
     const currencyCode = useSelector(selectFiatCurrencyCode);
     const bitcoinUnit = useSelector(selectBitcoinUnits);
-    const { isBiometricsOptionEnabled } = useBiometrics();
+    const { isBiometricsOptionEnabled } = useIsBiometricsEnabled();
 
     useEffect(() => {
         if (isConnectInitialized && !loadDuration) setLoadDuration(Date.now() - appLaunchTimestamp);

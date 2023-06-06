@@ -1,12 +1,12 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { AppState, Platform } from 'react-native';
 
 import * as LocalAuthentication from 'expo-local-authentication';
 
-import { Alert, useAlert } from '@suite-native/alerts';
+import { useAlert, Alert } from '@suite-native/alerts';
 
-import { useIsBiometricsEnabled } from './biometricsAtoms';
 import { getIsBiometricsFeatureAvailable } from './isBiometricsFeatureAvailable';
+import { useIsBiometricsEnabled, useIsUserAuthenticated } from './biometricsAtoms';
 
 const authenticate = async () => {
     if (Platform.OS === 'android') {
@@ -21,17 +21,6 @@ const authenticate = async () => {
     }
 };
 
-const authenticationCanceledAlert: Alert = {
-    title: 'Authentication canceled',
-    description: 'You will have to try again.',
-    pictogramVariant: 'red',
-    icon: 'warningCircle',
-    onPressPrimaryButton: authenticate,
-    primaryButtonTitle: 'Try again',
-    secondaryButtonTitle: 'Cancel',
-    onPressSecondaryButton: () => null,
-};
-
 const biometricNotAvailableAlert: Alert = {
     title: 'Biometrics',
     description:
@@ -43,9 +32,9 @@ const biometricNotAvailableAlert: Alert = {
 };
 
 export const useBiometrics = () => {
-    const appState = useRef(AppState.currentState);
     const { isBiometricsOptionEnabled, setIsBiometricsOptionEnabled } = useIsBiometricsEnabled();
-    const [isUserAuthenticated, setIsUserAuthenticated] = useState(!isBiometricsOptionEnabled);
+    const appState = useRef(AppState.currentState);
+    const { isUserAuthenticated, setIsUserAuthenticated } = useIsUserAuthenticated();
     const { showAlert } = useAlert();
 
     const toggleBiometricsOption = useCallback(async () => {
@@ -69,10 +58,16 @@ export const useBiometrics = () => {
             setIsBiometricsOptionEnabled(true);
             setIsUserAuthenticated(true);
         }
-    }, [isBiometricsOptionEnabled, setIsBiometricsOptionEnabled, showAlert]);
+    }, [
+        isBiometricsOptionEnabled,
+        setIsBiometricsOptionEnabled,
+        setIsUserAuthenticated,
+        showAlert,
+    ]);
 
     useEffect(() => {
         const subscription = AppState.addEventListener('change', nextAppState => {
+            // Re-authenticate user when app is opened from background
             if (appState.current === 'background' && nextAppState === 'active') {
                 if (isBiometricsOptionEnabled && !isUserAuthenticated) {
                     const auth = async () => {
@@ -90,7 +85,14 @@ export const useBiometrics = () => {
                             resultHasError && result.error === 'user_cancel';
 
                         if (authenticationFailedErrors) {
-                            showAlert(authenticationCanceledAlert);
+                            showAlert({
+                                title: 'Authentication canceled',
+                                description: 'You will have to try again.',
+                                pictogramVariant: 'red',
+                                icon: 'warningCircle',
+                                onPressPrimaryButton: auth,
+                                primaryButtonTitle: 'Try again',
+                            });
                         }
 
                         if (result && result?.success) {
@@ -111,9 +113,24 @@ export const useBiometrics = () => {
         return () => subscription.remove();
     }, [isBiometricsOptionEnabled, isUserAuthenticated, setIsUserAuthenticated, showAlert]);
 
+    // First authentication after app being opened after being killed (not just backgrounded)
+    useEffect(() => {
+        const auth = async () => {
+            if (isBiometricsOptionEnabled && !isUserAuthenticated) {
+                const result = await authenticate();
+
+                if (result && result.success) {
+                    setIsUserAuthenticated(true);
+                }
+            }
+        };
+
+        auth();
+        // Only run once on app start from killed state
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
     return {
         toggleBiometricsOption,
-        isUserAuthenticated,
-        isBiometricsOptionEnabled,
     };
 };
