@@ -39,3 +39,5 @@ export const GOOGLE_IMPLICIT_FLOW_CLIENT_ID =
 
 // dropbox allows authorization code flow for both web and desktop without client secret
 export const DROPBOX_CLIENT_ID = 'wg0yz2pbgjyhoda';
+
+export const DROPBOX_PASSWODS_CLIENT_ID = 's340kh3l0vla1nv';

@@ -13,6 +13,7 @@ import {
     Error as MetadataProviderError,
     OAuthServerEnvironment,
     ProviderErrorAction,
+    Passwords,
     Labels,
     DataType,
 } from '@suite-types/metadata';
@@ -438,6 +439,58 @@ export const fetchMetadata =
             // in such case, display error notification
             dispatch(handleProviderError(error, ProviderErrorAction.LOAD));
         }
+    };
+
+export const fetchPasswords =
+    (_deviceState: string, fileName: string, key: Buffer) =>
+    async (dispatch: Dispatch, _getState: GetState) => {
+        const provider = dispatch(
+            getProviderInstance({ clientId: METADATA.DROPBOX_PASSWODS_CLIENT_ID }),
+        );
+        console.log('fetchPassword provider', provider);
+        if (!provider) {
+            return;
+        }
+
+        // this triggers renewal of access token if needed. Otherwise multiple requests
+        // to renew access token are issued by every provider.getFileContent
+        const response = await provider.getProviderDetails();
+        if (!response.success) {
+            return dispatch(handleProviderError(response, ProviderErrorAction.LOAD));
+        }
+
+        return new Promise<void>((resolve, reject) => {
+            return provider.getFileContent(fileName).then(result => {
+                if (!result.success) {
+                    return reject(result);
+                }
+
+                if (result.payload) {
+                    try {
+                        const decrypted = metadataUtils.decrypt(
+                            metadataUtils.arrayBufferToBuffer(result.payload),
+                            key,
+                        );
+
+                        console.log('decrypted', decrypted);
+                        dispatch({
+                            type: METADATA.SET_DATA,
+                            payload: {
+                                provider: provider,
+                                data: {
+                                    [fileName]: decrypted,
+                                },
+                            },
+                        });
+                    } catch (err) {
+                        const error = provider.error('OTHER_ERROR', err.message);
+                        return reject(error);
+                    }
+                }
+
+                resolve();
+            });
+        });
     };
 
 export const setAccountMetadataKey =

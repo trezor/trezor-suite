@@ -15,6 +15,8 @@ import { CheckFirmwareAuthenticity } from './CheckFirmwareAuthenticity';
 import { Devkit } from './Devkit';
 import { Transport } from './Transport';
 import { Processes } from './Processes';
+import { Metadata } from './Metadata';
+import { PasswordManager } from './Passwords';
 
 export const SettingsDebug = () => (
     <SettingsLayout>
@@ -50,6 +52,12 @@ export const SettingsDebug = () => (
         )}
         <SettingsSection title="Transports">
             <Transport />
+        </SettingsSection>
+        <SettingsSection title="Labeling viewer">
+            <Metadata />
+        </SettingsSection>
+        <SettingsSection title="Password manager">
+            <PasswordManager />
         </SettingsSection>
     </SettingsLayout>
 );
