@@ -16,6 +16,7 @@ import {
 } from '../../types/wallet/graph';
 
 import type { BlockchainAccountBalanceHistory, FiatRates } from '@trezor/connect';
+import { FiatCurrencyCode } from '@suite-common/suite-config';
 
 type ObjectType<T> = T extends 'account'
     ? AggregatedAccountHistory
@@ -33,6 +34,7 @@ export const deviceGraphDataFilterFn = (d: GraphData, deviceState: string | unde
 export const ensureHistoryRates = async (
     symbol: string,
     data: BlockchainAccountBalanceHistory[],
+    fiatCurrency: FiatCurrencyCode,
 ): Promise<BlockchainAccountBalanceHistory[]> => {
     if (!getTickerConfig({ symbol })) return data;
 
@@ -40,7 +42,7 @@ export const ensureHistoryRates = async (
         .filter(({ rates }) => !Object.keys(rates || {}).length)
         .map(({ time }) => time);
 
-    const rateDictionary = await getFiatRatesForTimestamps({ symbol }, missingRates)
+    const rateDictionary = await getFiatRatesForTimestamps({ symbol }, missingRates, fiatCurrency)
         .then(res => (res?.tickers || []).map(({ ts, rates }) => [ts, rates]))
         .then(res => Object.fromEntries(res));
 

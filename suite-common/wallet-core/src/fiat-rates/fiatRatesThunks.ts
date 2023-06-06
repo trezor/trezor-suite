@@ -305,9 +305,13 @@ export const updateLastWeekFiatRatesThunk = createThunk(
  */
 export const updateTxsFiatRatesThunk = createThunk(
     `${actionPrefix}/updateTxsRates`,
-    async ({ account, txs }: UpdateTxsFiatRatesThunkPayload, { dispatch }) => {
+    async ({ account, txs }: UpdateTxsFiatRatesThunkPayload, { dispatch, extra, getState }) => {
         if (txs?.length === 0 || isTestnet(account.symbol)) return;
 
+        const {
+            selectors: { selectLocalCurrency },
+        } = extra;
+        const localCurrency = selectLocalCurrency(getState());
         const timestamps = txs.map(tx => getBlockbookSafeTime(tx.blockTime));
         const response = await TrezorConnect.blockchainGetFiatRatesForTimestamps({
             coin: account.symbol,
@@ -316,7 +320,11 @@ export const updateTxsFiatRatesThunk = createThunk(
         try {
             const results = response.success
                 ? response.payload
-                : await getFiatRatesForTimestamps({ symbol: account.symbol }, timestamps);
+                : await getFiatRatesForTimestamps(
+                      { symbol: account.symbol },
+                      timestamps,
+                      localCurrency,
+                  );
 
             if (results && 'tickers' in results) {
                 dispatch(

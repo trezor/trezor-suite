@@ -28,6 +28,7 @@ export const useDayCoinPriceChange = (networkSymbol?: NetworkSymbol | null) => {
             const timestampedFiatRates = await getFiatRatesForTimestamps(
                 { symbol: networkSymbol },
                 [yesterdayTimestamp, currentTimestamp],
+                fiatCurrencyCode,
             );
 
             if (!timestampedFiatRates) return;
