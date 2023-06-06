@@ -118,7 +118,7 @@ export const Passphrase = ({ device }: Props) => {
                     learnMoreTooltipOnClick={instance => (
                         <OpenGuideFromTooltip
                             dataTest="@tooltip/guideAnchor"
-                            id="/security/passphrase.md"
+                            id="/1_initialize-and-secure-your-trezor/6_passphrase.md"
                             instance={instance}
                         />
                     )}
@@ -147,7 +147,7 @@ export const Passphrase = ({ device }: Props) => {
                     learnMoreTooltipOnClick={instance => (
                         <OpenGuideFromTooltip
                             dataTest="@tooltip/guideAnchor"
-                            id="/security/passphrase.md"
+                            id="/1_initialize-and-secure-your-trezor/6_passphrase.md"
                             instance={instance}
                         />
                     )}
@@ -183,7 +183,7 @@ export const Passphrase = ({ device }: Props) => {
                         learnMoreTooltipOnClick={instance => (
                             <OpenGuideFromTooltip
                                 dataTest="@tooltip/guideAnchor"
-                                id="/security/passphrase.md"
+                                id="/1_initialize-and-secure-your-trezor/6_passphrase.md"
                                 instance={instance}
                             />
                         )}
