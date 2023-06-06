@@ -112,6 +112,7 @@ describe('Passphrase', () => {
         cy.getTestElement('@wallet/receive/reveal-address-button').click();
         cy.getTestElement('@modal/confirm-address/address-field').should('contain', abcAddr);
         cy.task('pressYes');
+        cy.getTestElement('@metadata/copy-address-button').should('exist');
         // close modal
         cy.getTestElement('@modal/close-button').click();
 
@@ -145,6 +146,7 @@ describe('Passphrase', () => {
 
         cy.getTestElement('@modal/confirm-address/address-field').should('contain', defAddr);
         cy.task('pressYes');
+        cy.getTestElement('@metadata/copy-address-button').should('exist');
         // close modal
         cy.getTestElement('@modal/close-button').click();
 
