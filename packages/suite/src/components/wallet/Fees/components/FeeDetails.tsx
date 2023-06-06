@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { FeeLevel } from '@trezor/connect';
 import { variables } from '@trezor/components';
@@ -35,6 +35,12 @@ const Label = styled.span`
     padding-right: 8px;
 `;
 
+// set min-width to prevent jumping when changing amount, width to fit 6 digits
+const FeeItem = styled.span`
+    min-width: 42px;
+    display: inline-block;
+`;
+
 interface Props {
     networkType: Network['networkType'];
     selectedLevel: FeeLevel;
@@ -69,24 +75,34 @@ const BitcoinDetails = ({ networkType, feeInfo, selectedLevel, transactionInfo }
     </Wrapper>
 );
 
-const EthereumDetails = ({ networkType, selectedLevel, transactionInfo }: Props) => (
-    <Wrapper>
-        <Item>
-            <Label>
-                <Translation id="TR_GAS_LIMIT" />
-            </Label>
-            {transactionInfo && transactionInfo.type !== 'error'
-                ? transactionInfo.feeLimit
-                : selectedLevel.feeLimit}
-        </Item>
-        <Item>
-            <Label>
-                <Translation id="TR_GAS_PRICE" />
-            </Label>
-            {`${selectedLevel.feePerUnit} ${getFeeUnits(networkType)}`}
-        </Item>
-    </Wrapper>
-);
+const EthereumDetails = ({ networkType, selectedLevel, transactionInfo }: Props) => {
+    const [fee, setFee] = useState<string | undefined>(selectedLevel.feeLimit);
+
+    const isComposedTx = transactionInfo && transactionInfo.type !== 'error';
+
+    useEffect(() => {
+        if (isComposedTx) {
+            setFee(transactionInfo.feeLimit);
+        }
+    }, [isComposedTx, transactionInfo]);
+
+    return (
+        <Wrapper>
+            <Item>
+                <Label>
+                    <Translation id="TR_GAS_LIMIT" />
+                </Label>
+                <FeeItem>{isComposedTx ? transactionInfo.feeLimit : fee}</FeeItem>
+            </Item>
+            <Item>
+                <Label>
+                    <Translation id="TR_GAS_PRICE" />
+                </Label>
+                <FeeItem>{`${selectedLevel.feePerUnit} ${getFeeUnits(networkType)}`}</FeeItem>
+            </Item>
+        </Wrapper>
+    );
+};
 
 const RippleDetails = ({ networkType, selectedLevel }: Props) => (
     <Wrapper>

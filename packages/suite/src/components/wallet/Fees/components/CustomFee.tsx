@@ -211,23 +211,21 @@ export const CustomFee = ({
         <>
             <Wrapper>
                 {useFeeLimit ? (
-                    <>
-                        <Col>
-                            <StyledNumberInput
-                                control={control}
-                                label={<Translation id="TR_GAS_LIMIT" />}
-                                disabled={feeLimitDisabled}
-                                isMonospace
-                                variant="small"
-                                inputState={getInputState(feeLimitError, feeLimitValue)}
-                                name={FEE_LIMIT}
-                                data-test={FEE_LIMIT}
-                                onChange={changeFeeLimit}
-                                rules={feeLimitRules}
-                                bottomText={<InputError error={feeLimitError} />}
-                            />
-                        </Col>
-                    </>
+                    <Col>
+                        <StyledNumberInput
+                            control={control}
+                            label={<Translation id="TR_GAS_LIMIT" />}
+                            disabled={feeLimitDisabled}
+                            isMonospace
+                            variant="small"
+                            inputState={getInputState(feeLimitError, feeLimitValue)}
+                            name={FEE_LIMIT}
+                            data-test={FEE_LIMIT}
+                            onChange={changeFeeLimit}
+                            rules={feeLimitRules}
+                            bottomText={<InputError error={feeLimitError} />}
+                        />
+                    </Col>
                 ) : (
                     <input type="hidden" name={FEE_LIMIT} ref={register()} />
                 )}
