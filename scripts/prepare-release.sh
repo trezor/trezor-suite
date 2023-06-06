@@ -28,8 +28,8 @@ else
 fi
   BETA_VERSION="$NEXT_VERSION_YEAR.$NEXT_VERSION_MONTH.0"
 
-echo Fetching origin...
-git fetch origin $MAIN_BRANCH
+echo Pulling "$MAIN_BRANCH"...
+git pull origin $MAIN_BRANCH
 
 echo Creating release branch "$RELEASE_MONTH"...
 git switch -c release/"$RELEASE_MONTH" $MAIN_BRANCH
