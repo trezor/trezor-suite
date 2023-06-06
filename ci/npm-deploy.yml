@@ -16,6 +16,8 @@
             "connect-analytics",
             "type-utils",
             "env-utils",
+            "protocol",
+            "protobuf",
           ]
 
 .packages_matrix_connect: &packages_matrix_connect
