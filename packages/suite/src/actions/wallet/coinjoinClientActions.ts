@@ -404,7 +404,7 @@ export const getOwnershipProof =
             }
             const { session } = coinjoinAccount;
             // do not provide ownership if requested account is no longer authorized
-            if (!session || session.signedRounds.length >= session.maxRounds) {
+            if (!session || session.paused || session.signedRounds.length >= session.maxRounds) {
                 response.inputs.push(...coinjoinResponseError(utxos, 'Account without session'));
                 return [];
             }
