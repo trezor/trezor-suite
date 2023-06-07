@@ -123,7 +123,7 @@
         "jest-environment-node": "^26.6.2",
         "metro-react-native-babel-preset": "0.76.4",
         "npm-run-all": "^4.1.5",
-        "nx": "16.1.4",
+        "nx": "^16.3.2",
         "nx-cloud": "16.0.5",
         "patch-package": "7.0.0",
         "postinstall-postinstall": "^2.1.0",
