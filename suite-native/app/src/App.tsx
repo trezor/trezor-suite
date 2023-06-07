@@ -15,7 +15,7 @@ import { ToastRenderer } from '@suite-native/toasts';
 import { FormatterProvider } from '@suite-common/formatters';
 import { AlertRenderer } from '@suite-native/alerts';
 import { NavigationContainerWithAnalytics } from '@suite-native/navigation';
-import { useBiometrics } from '@suite-native/biometrics';
+import { AuthenticatorProvider } from '@suite-native/biometrics';
 
 import { RootStackNavigator } from './navigation/RootStackNavigator';
 import { StylesProvider } from './StylesProvider';
@@ -37,7 +37,6 @@ const AppComponent = () => {
     const formattersConfig = useFormattersConfig();
     const isAppReady = useSelector(selectIsAppReady);
     const isConnectInitialized = useSelector(selectIsConnectInitialized);
-    useBiometrics();
 
     useReportAppInitToAnalytics(APP_STARTED_TIMESTAMP);
 
@@ -53,21 +52,19 @@ const AppComponent = () => {
         }
     }, [isAppReady]);
 
-    if (!isAppReady) {
-        return null;
-    }
-
     return (
         <FormatterProvider config={formattersConfig}>
-            <AlertRenderer>
-                {/* Notifications are disabled until the problem with after-import notifications flooding is solved. */}
-                {/* More here: https://github.com/trezor/trezor-suite/issues/7721  */}
-                {/* <NotificationRenderer> */}
-                <ToastRenderer>
-                    <RootStackNavigator />
-                </ToastRenderer>
-                {/* </NotificationRenderer> */}
-            </AlertRenderer>
+            <AuthenticatorProvider>
+                <AlertRenderer>
+                    {/* Notifications are disabled until the problem with after-import notifications flooding is solved. */}
+                    {/* More here: https://github.com/trezor/trezor-suite/issues/7721  */}
+                    {/* <NotificationRenderer> */}
+                    <ToastRenderer>
+                        <RootStackNavigator />
+                    </ToastRenderer>
+                    {/* </NotificationRenderer> */}
+                </AlertRenderer>
+            </AuthenticatorProvider>
         </FormatterProvider>
     );
 };
