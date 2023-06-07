@@ -18,14 +18,18 @@
     },
     "extends": "nx/presets/npm.json",
     "namedInputs": {
-        "default": ["{projectRoot}/**/*"],
-        "prod": ["!{projectRoot}/**/*.test.{ts,tsx}"]
+        "sharedGlobals": [
+            "{workspaceRoot}/nx.json",
+            "{workspaceRoot}/.yarnrc.yml",
+            "{workspaceRoot}/patches/*.patch"
+        ],
+        "default": ["{projectRoot}/**/*", "sharedGlobals"],
+        "prod": ["default", "!{projectRoot}/**/*.test.{ts,tsx}"]
     },
     "targetDefaults": {
         "build:lib": {
             "dependsOn": ["^build:lib"],
             "inputs": [
-                "default",
                 "^prod",
                 "{workspaceRoot}/tsconfig.json",
                 "{workspaceRoot}/tsconfig.aliases.json",
@@ -36,7 +40,6 @@
         "type-check": {
             "dependsOn": ["^build:lib", "^type-check"],
             "inputs": [
-                "default",
                 "^prod",
                 "{workspaceRoot}/tsconfig.json",
                 "{workspaceRoot}/tsconfig.aliases.json",
@@ -46,7 +49,6 @@
         "test:unit": {
             "dependsOn": ["^build:lib"],
             "inputs": [
-                "default",
                 "^prod",
                 "{workspaceRoot}/jest.config.base.js",
                 "{workspaceRoot}/jest.config.native.js"
@@ -58,12 +60,6 @@
         "lint:styles": {
             "inputs": ["default"]
         }
-    },
-    "implicitDependencies": {
-        "package.json": "*",
-        "nx.json": "*",
-        ".yarnrc.yml": "*",
-        "patches/*.patch": "*"
     },
     "affected": {
         "defaultBase": "origin/develop"
