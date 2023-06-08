@@ -1,5 +1,4 @@
 import produce from 'immer';
-import { memoize } from 'proxy-memoize';
 import { DISCOVERY } from 'src/actions/wallet/constants';
 import { STORAGE } from 'src/actions/suite/constants';
 import { createDeferred } from '@trezor/utils';
@@ -96,12 +95,13 @@ export const selectDiscoveryForDevice = (state: RootState) =>
  * Helper selector called from components
  * return `true` if discovery process is running/completed and `authConfirm` is required
  */
-export const selectIsDiscoveryAuthConfirmationRequired = memoize((state: RootState) => {
+export const selectIsDiscoveryAuthConfirmationRequired = (state: RootState) => {
     const discovery = selectDiscoveryForDevice(state);
+
     return (
         discovery &&
         discovery.authConfirm &&
         (discovery.status < DISCOVERY.STATUS.STOPPING ||
             discovery.status === DISCOVERY.STATUS.COMPLETED)
     );
-});
+};

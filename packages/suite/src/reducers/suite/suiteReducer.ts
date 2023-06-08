@@ -1,5 +1,4 @@
 import produce from 'immer';
-import { memoizeWithArgs, memoize } from 'proxy-memoize';
 import { TRANSPORT, TransportInfo, ConnectSettings } from '@trezor/connect';
 import { SuiteThemeVariant } from '@trezor/suite-desktop-api';
 import { Action, TrezorDevice, Lock, TorBootstrap, TorStatus } from 'src/types/suite';
@@ -254,7 +253,7 @@ const suiteReducer = (state: SuiteState = initialState, action: Action): SuiteSt
         }
     });
 
-export const selectTorState = memoize((state: SuiteRootState) => {
+export const selectTorState = (state: SuiteRootState) => {
     const { torStatus, torBootstrap } = state.suite;
     return {
         isTorEnabled: getIsTorEnabled(torStatus),
@@ -265,33 +264,29 @@ export const selectTorState = memoize((state: SuiteRootState) => {
         isTorEnabling: torStatus === TorStatus.Enabling,
         torBootstrap,
     };
-});
+};
 
-export const selectDeviceState = memoize((state: SuiteRootState) => {
+export const selectDeviceState = (state: SuiteRootState) => {
     const { device } = state.suite;
     return device && getStatus(device);
-});
+};
 
 export const selectDebug = (state: SuiteRootState) => state.suite.settings.debug;
 
 export const selectDevice = (state: SuiteRootState) => state.suite.device;
 
-export const selectDeviceModel = memoizeWithArgs(
-    (state: SuiteRootState, overrideDevice?: TrezorDevice) => {
-        const device = selectDevice(state);
-        return getDeviceModel(overrideDevice || device);
-    },
-);
+export const selectDeviceModel = (state: SuiteRootState, overrideDevice?: TrezorDevice) => {
+    const device = selectDevice(state);
+    return getDeviceModel(overrideDevice || device);
+};
 
 export const selectLanguage = (state: SuiteRootState) => state.suite.settings.language;
 
 export const selectLocks = (state: SuiteRootState) => state.suite.locks;
 
-export const selectIsDeviceLocked = memoize(
-    (state: SuiteRootState) =>
-        state.suite.locks.includes(SUITE.LOCK_TYPE.DEVICE) ||
-        state.suite.locks.includes(SUITE.LOCK_TYPE.UI),
-);
+export const selectIsDeviceLocked = (state: SuiteRootState) =>
+    state.suite.locks.includes(SUITE.LOCK_TYPE.DEVICE) ||
+    state.suite.locks.includes(SUITE.LOCK_TYPE.UI);
 
 export const selectIsActionAbortable = (state: SuiteRootState) =>
     state.suite.transport?.type === 'BridgeTransport'
