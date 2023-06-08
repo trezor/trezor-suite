@@ -22,6 +22,6 @@
         "@suite-common/wallet-utils": "workspace:*",
         "@trezor/connect": "workspace:*",
         "date-fns": "^2.30.0",
-        "proxy-memoize": "^2.0.4"
+        "proxy-memoize": "2.0.2"
     }
 }
