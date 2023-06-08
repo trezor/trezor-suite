@@ -1044,7 +1044,6 @@
   "TR_TO_ADD_NEW_ACCOUNT_WAIT_FOR_DISCOVERY": "Attendez que le processus de découverte soit terminé avant d'ajouter un nouveau compte.",
   "TR_TO_FIND_YOUR_ACCOUNTS_AND": "Pour trouver vos comptes et vos fonds, nous devons effectuer une découverte de pièces qui vous permettra de découvrir toutes vos pièces.",
   "TR_TO_MAKE_YOUR_LABELS_PERSISTENT": "Pour rendre vos étiquettes persistantes et disponibles sur différents appareils, connectez-vous au fournisseur de stockage cloud.",
-  "TR_TO_PREVENT_PHISHING_ATTACKS_COMMA": "Pour éviter les attaques de phishing, vous devez d'abord vérifier l'adresse sur votre Trezor. {claim}",
   "TR_TRADE_BUYS": "achète",
   "TR_TRADE_EXCHANGES": "échanges",
   "TR_TRADE_REDIRECTING": "Redirection en cours...",

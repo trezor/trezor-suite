@@ -1603,7 +1603,6 @@
   "TR_TO_BTC": "Para BTC",
   "TR_TO_FIND_YOUR_ACCOUNTS_AND": "Trezor está a executar um cheque à descoberta de moedas para encontrar as suas contas e fundos.",
   "TR_TO_MAKE_YOUR_LABELS_PERSISTENT": "Para tornar suas etiquetas persistentes e disponíveis em diferentes dispositivos, conecte-se ao provedor de armazenamento em nuvem.",
-  "TR_TO_PREVENT_PHISHING_ATTACKS_COMMA": "Para prevenir ataques de phishing, você deve verificar o endereço no seu Trezor. {claim}",
   "TR_TRADE_BUYS": "compra",
   "TR_TRADE_EXCHANGES": "intercâmbios",
   "TR_TRADE_REDIRECTING": "Redireccionar ...",

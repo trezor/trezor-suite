@@ -1449,7 +1449,6 @@
   "TR_TO_BTC": "到 BTC",
   "TR_TO_FIND_YOUR_ACCOUNTS_AND": "Trezor 正在进行一次币的扫描以找到您的帐户和资金。",
   "TR_TO_MAKE_YOUR_LABELS_PERSISTENT": "要使您的标签在不同的设备上持久可用，请连接到云存储提供商。",
-  "TR_TO_PREVENT_PHISHING_ATTACKS_COMMA": "为了防止网络钓鱼攻击，您应该验证您的Trezor上的地址。 {claim}",
   "TR_TO_SATOSHIS": "待定",
   "TR_TRADE_BUYS": "购买",
   "TR_TRADE_EXCHANGES": "兑换",
