@@ -71,6 +71,7 @@ export const readTimeSpan = (ts: string) => {
 // accept CoinjoinRound or modified coordinator Round (see estimatePhaseDeadline below)
 type PartialCoinjoinRound = {
     phase: RoundPhase;
+    blameOf: string;
     inputRegistrationEnd: string;
     roundParameters: CoinjoinRoundParameters;
 };
@@ -79,8 +80,10 @@ export const getCoinjoinRoundDeadlines = (round: PartialCoinjoinRound) => {
     const now = Date.now();
     switch (round.phase) {
         case RoundPhase.InputRegistration: {
-            const deadline =
-                new Date(round.inputRegistrationEnd).getTime() + ROUND_REGISTRATION_END_OFFSET;
+            const isBlamingRound = round.blameOf !== '0'.repeat(64);
+            const deadline = isBlamingRound
+                ? now + readTimeSpan(round.roundParameters.blameInputRegistrationTimeout)
+                : new Date(round.inputRegistrationEnd).getTime() + ROUND_REGISTRATION_END_OFFSET;
             return {
                 phaseDeadline: deadline,
                 roundDeadline:

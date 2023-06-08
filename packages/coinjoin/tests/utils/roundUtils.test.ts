@@ -34,6 +34,7 @@ describe('roundUtils', () => {
                             connectionConfirmationTimeout: '0d 0h 1m 0s',
                             outputRegistrationTimeout: '0d 0h 2m 0s',
                             transactionSigningTimeout: '0d 0h 3m 0s',
+                            blameInputRegistrationTimeout: '0d 0h 1m 30s',
                         },
                     },
                 ],
@@ -80,6 +81,11 @@ describe('roundUtils', () => {
                 phase: 4,
             }),
             Date.now() + timeouts * 3,
+        );
+
+        expectInRange(
+            estimatePhaseDeadline({ ...round, blameOf: '1'.repeat(64) }),
+            Date.now() + timeouts * 1.5,
         );
     });
 
