@@ -669,7 +669,6 @@
   "TR_TO_ACCESS_OTHER_WALLETS": "Pripojte svoje zariadenie a pridajte ďalšie peňaženky",
   "TR_TO_ADD_NEW_ACCOUNT_PLEASE_CONNECT": "Pripojte zariadenie a pridajte nový účet.",
   "TR_TO_ADD_NEW_ACCOUNT_WAIT_FOR_DISCOVERY": "Účty sa stále načítavajú. Pred pridaním nového účtu počkajte.",
-  "TR_TO_PREVENT_PHISHING_ATTACKS_COMMA": "Aby ste predišli phishingovým útokom, mali by ste overiť adresu v zariadení Trezor. {claim}",
   "TR_TRADE_REDIRECTING": "Presmerovanie ...",
   "TR_TRADE_SELECT_COIN": "Vyberte mincu...",
   "TR_TRADE_SELLS": "predáva",

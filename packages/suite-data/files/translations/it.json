@@ -1565,7 +1565,6 @@
   "TR_TO_BTC": "In BTC",
   "TR_TO_FIND_YOUR_ACCOUNTS_AND": "Trezor sta eseguendo un controllo di scoperta delle valute per trovare i tuoi conti e fondi.",
   "TR_TO_MAKE_YOUR_LABELS_PERSISTENT": "Per rendere le tue etichette persistenti e disponibili su diversi dispositivi, connettiti al fornitore d'archiviazione su cloud.",
-  "TR_TO_PREVENT_PHISHING_ATTACKS_COMMA": "Per prevenire gli attacchi di phishing, dovresti verificare l'indirizzo sul tuo Trezor. {claim}",
   "TR_TO_SATOSHIS": "In sat",
   "TR_TRADE_BUYS": "acquista",
   "TR_TRADE_EXCHANGES": "scambia",
