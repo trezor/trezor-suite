@@ -88,16 +88,20 @@ export const selectFeatureConfig = memoizeWithArgs(
     },
 );
 
-export const selectIsFeatureEnabled = memoizeWithArgs(
-    (state: MessageSystemRootState, domain: FeatureDomain, defaultValue?: boolean) => {
-        const featureFlag = selectFeatureConfig(state, domain)?.flag;
-        return featureFlag ?? defaultValue ?? true;
-    },
-);
+export const selectIsFeatureEnabled = (
+    state: MessageSystemRootState,
+    domain: FeatureDomain,
+    defaultValue?: boolean,
+) => {
+    const featureFlag = selectFeatureConfig(state, domain)?.flag;
+    return featureFlag ?? defaultValue ?? true;
+};
 
-export const selectIsFeatureDisabled = memoizeWithArgs(
-    (state: MessageSystemRootState, domain: FeatureDomain, defaultValue?: boolean) => {
-        const featureFlag = selectFeatureConfig(state, domain)?.flag;
-        return typeof featureFlag === 'boolean' ? !featureFlag : defaultValue ?? false;
-    },
-);
+export const selectIsFeatureDisabled = (
+    state: MessageSystemRootState,
+    domain: FeatureDomain,
+    defaultValue?: boolean,
+) => {
+    const featureFlag = selectFeatureConfig(state, domain)?.flag;
+    return typeof featureFlag === 'boolean' ? !featureFlag : defaultValue ?? false;
+};
