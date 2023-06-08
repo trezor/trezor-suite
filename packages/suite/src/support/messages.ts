@@ -7576,7 +7576,7 @@ export default defineMessages({
     TR_COINJOIN_ACCOUNT_RESCAN_DESCRIPTION: {
         id: 'TR_COINJOIN_ACCOUNT_RESCAN_DESCRIPTION',
         defaultMessage:
-            'In case of incorrect transaction history, you can fully rescan the account without optimizations. It may take more time than usual.',
+            'In case of incorrect transaction history, you can fully rescan the account without optimizations. It may take longer than usual.',
     },
     TR_COINJOIN_ACCOUNT_RESCAN_ACTION: {
         id: 'TR_COINJOIN_ACCOUNT_RESCAN_ACTION',
@@ -8012,11 +8012,11 @@ export default defineMessages({
     },
     TR_CANDIDATE_TRANSACTION_HEADER: {
         id: 'TR_CANDIDATE_TRANSACTION_HEADER',
-        defaultMessage: 'Candidate Transactions',
+        defaultMessage: 'Candidate transactions',
     },
     TR_CANDIDATE_TRANSACTION: {
         id: 'TR_CANDIDATE_TRANSACTION',
-        defaultMessage: 'Coinjoin Candidate',
+        defaultMessage: 'Coinjoin candidate',
     },
     TR_CANDIDATE_TRANSACTION_DESCRIPTION: {
         id: 'TR_CANDIDATE_TRANSACTION_DESCRIPTION',

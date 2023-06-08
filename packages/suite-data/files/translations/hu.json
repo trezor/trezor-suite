@@ -1666,7 +1666,6 @@
   "TR_TO_BTC": "BTC-ben",
   "TR_TO_FIND_YOUR_ACCOUNTS_AND": "A Trezor egy coin felderítési ellenőrzést futtat, hogy megtalálja a fiókjaidat és kriptoeszközeidet.",
   "TR_TO_MAKE_YOUR_LABELS_PERSISTENT": "Annak érdekében, hogy a címkék állandóak és elérhetőek legyenek különböző eszközökön, csatlakozz egy felhőalapú tárhelyszolgáltatóhoz.",
-  "TR_TO_PREVENT_PHISHING_ATTACKS_COMMA": "Az adathalász támadások elkerülése érdekében a címet mindig a Trezoron hitelesítsd. {claim}",
   "TR_TO_SATOSHIS": "sat-ban",
   "TR_TRADE_BUYS": "vásárlás",
   "TR_TRADE_EXCHANGES": "átváltás",
