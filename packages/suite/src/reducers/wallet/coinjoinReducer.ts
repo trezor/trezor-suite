@@ -1,5 +1,4 @@
 import produce from 'immer';
-import { memoizeWithArgs, memoize } from 'proxy-memoize';
 import BigNumber from 'bignumber.js';
 
 import { CoinjoinStatusEvent, getInputSize, getOutputSize } from '@trezor/coinjoin';
@@ -620,27 +619,21 @@ export const selectMaxMiningFeeModifier = (state: CoinjoinRootState) =>
 export const selectMaxMiningFeeConfig = (state: CoinjoinRootState) =>
     state.wallet.coinjoin.config.maxFeePerVbyte;
 
-export const selectCoinjoinAccountByKey = memoizeWithArgs(
-    (state: CoinjoinRootState, accountKey: AccountKey) => {
-        const coinjoinAccounts = selectCoinjoinAccounts(state);
-        return coinjoinAccounts.find(account => account.key === accountKey);
-    },
-);
+export const selectCoinjoinAccountByKey = (state: CoinjoinRootState, accountKey: AccountKey) => {
+    const coinjoinAccounts = selectCoinjoinAccounts(state);
+    return coinjoinAccounts.find(account => account.key === accountKey);
+};
 
-export const selectCoinjoinClient = memoizeWithArgs(
-    (state: CoinjoinRootState, accountKey: AccountKey) => {
-        const coinjoinAccount = selectCoinjoinAccountByKey(state, accountKey);
-        const clients = selectCoinjoinClients(state);
-        return coinjoinAccount?.symbol && clients[coinjoinAccount?.symbol];
-    },
-);
+export const selectCoinjoinClient = (state: CoinjoinRootState, accountKey: AccountKey) => {
+    const coinjoinAccount = selectCoinjoinAccountByKey(state, accountKey);
+    const clients = selectCoinjoinClients(state);
+    return coinjoinAccount?.symbol && clients[coinjoinAccount?.symbol];
+};
 
-export const selectSessionByAccountKey = memoizeWithArgs(
-    (state: CoinjoinRootState, accountKey: AccountKey) => {
-        const coinjoinAccounts = selectCoinjoinAccounts(state);
-        return coinjoinAccounts.find(account => account.key === accountKey)?.session;
-    },
-);
+export const selectSessionByAccountKey = (state: CoinjoinRootState, accountKey: AccountKey) => {
+    const coinjoinAccounts = selectCoinjoinAccounts(state);
+    return coinjoinAccounts.find(account => account.key === accountKey)?.session;
+};
 
 export const selectTargetAnonymityByAccountKey = (
     state: CoinjoinRootState,
@@ -651,7 +644,6 @@ export const selectTargetAnonymityByAccountKey = (
     return coinjoinAccount.setup?.targetAnonymity ?? DEFAULT_TARGET_ANONYMITY;
 };
 
-// memoization was causing incorrect return from the selector
 export const selectCurrentCoinjoinBalanceBreakdown = (state: CoinjoinRootState) => {
     const selectedAccount = selectSelectedAccount(state);
     const targetAnonymity = selectedAccount
@@ -713,7 +705,7 @@ export const selectSessionProgressByAccountKey = (
     return progress;
 };
 
-export const selectCurrentCoinjoinSession = memoize((state: CoinjoinRootState) => {
+export const selectCurrentCoinjoinSession = (state: CoinjoinRootState) => {
     const selectedAccount = selectSelectedAccount(state);
     const coinjoinAccounts = selectCoinjoinAccounts(state);
 
@@ -724,7 +716,7 @@ export const selectCurrentCoinjoinSession = memoize((state: CoinjoinRootState) =
     const { session } = currentCoinjoinAccount || {};
 
     return session;
-});
+};
 
 export const selectCurrentTargetAnonymity = (state: CoinjoinRootState) => {
     const selectedAccount = selectSelectedAccount(state);
@@ -735,7 +727,7 @@ export const selectCurrentTargetAnonymity = (state: CoinjoinRootState) => {
     return targetAnonymity;
 };
 
-export const selectIsCoinjoinBlockedByTor = memoize((state: CoinjoinRootState) => {
+export const selectIsCoinjoinBlockedByTor = (state: CoinjoinRootState) => {
     const { isTorEnabled } = selectTorState(state);
 
     if (state.wallet.coinjoin.debug?.coinjoinAllowNoTor) {
@@ -743,27 +735,29 @@ export const selectIsCoinjoinBlockedByTor = memoize((state: CoinjoinRootState) =
     }
 
     return !isTorEnabled;
-});
+};
 
-export const selectIsAnySessionInCriticalPhase = memoize((state: CoinjoinRootState) => {
+export const selectIsAnySessionInCriticalPhase = (state: CoinjoinRootState) => {
     const coinjoinAccounts = selectCoinjoinAccounts(state);
 
     return coinjoinAccounts.some(acc => (acc.session?.roundPhase ?? 0) > 0);
-});
+};
 
-export const selectIsAccountWithSessionInCriticalPhaseByAccountKey = memoizeWithArgs(
-    (state: CoinjoinRootState, accountKey: AccountKey) => {
-        const coinjoinAccount = selectCoinjoinAccountByKey(state, accountKey);
-        return (coinjoinAccount?.session?.roundPhase ?? 0) > 0;
-    },
-);
+export const selectIsAccountWithSessionInCriticalPhaseByAccountKey = (
+    state: CoinjoinRootState,
+    accountKey: AccountKey,
+) => {
+    const coinjoinAccount = selectCoinjoinAccountByKey(state, accountKey);
+    return (coinjoinAccount?.session?.roundPhase ?? 0) > 0;
+};
 
-export const selectIsAccountWithSessionByAccountKey = memoizeWithArgs(
-    (state: CoinjoinRootState, accountKey: AccountKey) => {
-        const coinjoinAccounts = selectCoinjoinAccounts(state);
-        return coinjoinAccounts.find(a => a.key === accountKey && a.session && !a.session.paused);
-    },
-);
+export const selectIsAccountWithSessionByAccountKey = (
+    state: CoinjoinRootState,
+    accountKey: AccountKey,
+) => {
+    const coinjoinAccounts = selectCoinjoinAccounts(state);
+    return coinjoinAccounts.find(a => a.key === accountKey && a.session && !a.session.paused);
+};
 
 export const selectfeeRateMedianByAccountKey = (
     state: CoinjoinRootState,
@@ -792,21 +786,22 @@ export const selectMinAllowedInputWithFee = (state: CoinjoinRootState, accountKe
     return minAllowedInput + txSize * status.feeRateMedian;
 };
 
-export const selectIsNothingToAnonymizeByAccountKey = memoizeWithArgs(
-    (state: CoinjoinRootState, accountKey: AccountKey) => {
-        const minAllowedInputWithFee = selectMinAllowedInputWithFee(state, accountKey);
-        const account = selectAccountByKey(state, accountKey);
-        const targetAnonymity = selectTargetAnonymityByAccountKey(state, accountKey) ?? 1;
+export const selectIsNothingToAnonymizeByAccountKey = (
+    state: CoinjoinRootState,
+    accountKey: AccountKey,
+) => {
+    const minAllowedInputWithFee = selectMinAllowedInputWithFee(state, accountKey);
+    const account = selectAccountByKey(state, accountKey);
+    const targetAnonymity = selectTargetAnonymityByAccountKey(state, accountKey) ?? 1;
 
-        const anonymitySet = account?.addresses?.anonymitySet || {};
-        const utxos = account?.utxo || [];
+    const anonymitySet = account?.addresses?.anonymitySet || {};
+    const utxos = account?.utxo || [];
 
-        // Return true if all non-private funds are too small.
-        return utxos
-            .filter(utxo => (anonymitySet[utxo.address] ?? 1) < targetAnonymity)
-            .every(utxo => new BigNumber(utxo.amount).lt(minAllowedInputWithFee));
-    },
-);
+    // Return true if all non-private funds are too small.
+    return utxos
+        .filter(utxo => (anonymitySet[utxo.address] ?? 1) < targetAnonymity)
+        .every(utxo => new BigNumber(utxo.amount).lt(minAllowedInputWithFee));
+};
 
 export const selectWeightedAnonymityByAccountKey = (
     state: CoinjoinRootState,
@@ -890,7 +885,7 @@ export const selectRoundsLeftByAccountKey = (state: CoinjoinRootState, accountKe
     return maxRounds - signedRounds.length;
 };
 
-export const selectHasAnonymitySetError = memoize((state: CoinjoinRootState) => {
+export const selectHasAnonymitySetError = (state: CoinjoinRootState) => {
     const selectedAccount = selectSelectedAccount(state);
 
     if (!selectedAccount) {
@@ -904,7 +899,7 @@ export const selectHasAnonymitySetError = memoize((state: CoinjoinRootState) => 
     );
 
     return hasFaultyAnonymitySet;
-});
+};
 
 export const selectCoinjoinSessionBlockerByAccountKey = (
     state: CoinjoinRootState,
@@ -940,7 +935,6 @@ export const selectCoinjoinSessionBlockerByAccountKey = (
     }
 };
 
-// memoization was causing incorrect return from the selector
 export const selectCurrentCoinjoinWheelStates = (state: CoinjoinRootState) => {
     const { notAnonymized } = selectCurrentCoinjoinBalanceBreakdown(state);
     const session = selectCurrentCoinjoinSession(state);
@@ -979,7 +973,7 @@ export const selectCurrentCoinjoinWheelStates = (state: CoinjoinRootState) => {
     };
 };
 
-export const selectCurrentSessionDeadlineInfo = memoize((state: CoinjoinRootState) => {
+export const selectCurrentSessionDeadlineInfo = (state: CoinjoinRootState) => {
     const session = selectCurrentCoinjoinSession(state);
 
     const { roundPhase, roundPhaseDeadline, sessionDeadline } = session || {};
@@ -989,17 +983,14 @@ export const selectCurrentSessionDeadlineInfo = memoize((state: CoinjoinRootStat
         roundPhaseDeadline,
         sessionDeadline,
     };
-});
+};
 
 // Return true if it's not explicitly set to false in the message-system config.
-export const selectIsPublic = memoize(
-    (state: CoinjoinRootState) => selectFeatureConfig(state, Feature.coinjoin)?.isPublic !== false,
-);
+export const selectIsPublic = (state: CoinjoinRootState) =>
+    selectFeatureConfig(state, Feature.coinjoin)?.isPublic !== false;
 
-export const selectIsSessionAutopaused = memoizeWithArgs(
-    (state: CoinjoinRootState, accountKey: string) => {
-        const currentState = selectSessionByAccountKey(state, accountKey);
+export const selectIsSessionAutopaused = (state: CoinjoinRootState, accountKey: string) => {
+    const currentState = selectSessionByAccountKey(state, accountKey);
 
-        return !!currentState?.isAutoPauseEnabled;
-    },
-);
+    return !!currentState?.isAutoPauseEnabled;
+};
