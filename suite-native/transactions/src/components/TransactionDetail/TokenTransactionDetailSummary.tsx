@@ -22,7 +22,7 @@ export const TokenTransactionDetailSummary = ({
         <TransactionDetailAddressesSection
             addressesType="inputs"
             addresses={[tokenTransfer.from]}
-            icon={tokenTransfer.symbol}
+            icon={tokenTransfer.contract}
             onShowMore={onShowMore}
         />
         <TransactionDetailStatusSection txid={txid} accountKey={accountKey} />

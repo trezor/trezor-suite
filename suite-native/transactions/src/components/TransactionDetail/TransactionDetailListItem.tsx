@@ -65,7 +65,7 @@ export const TransactionDetailListItem = ({
         >
             <Box flexDirection="row" alignItems="center" flex={1}>
                 <Box marginRight="medium">
-                    <RoundedIcon name={tokenTransfer?.symbol || transaction.symbol} />
+                    <RoundedIcon name={tokenTransfer?.contract || transaction.symbol} />
                 </Box>
                 <Box style={applyStyle(CoinNameContainerStyle)}>
                     <Text>{tokenTransfer?.name ?? 'Ethereum'}</Text>

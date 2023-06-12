@@ -29,7 +29,7 @@ import { CryptoIcon, tokenIcons, Icon, IconName, icons } from '@suite-common/ico
 import { CoinsSettings } from '@suite-native/module-settings';
 import { isDevelopOrDebugEnv } from '@suite-native/config';
 import { TypographyStyle } from '@trezor/theme';
-import { TokenSymbol } from '@suite-common/wallet-types';
+import { TokenAddress } from '@suite-common/wallet-types';
 
 const inputStackStyle = prepareNativeStyle(utils => ({
     borderRadius: utils.borders.radii.medium,
@@ -372,16 +372,16 @@ export const DemoScreen = () => {
                     <Box marginTop="medium">
                         <Text variant="titleMedium">Token Icons</Text>
                         <Box flexWrap="wrap" flexDirection="row">
-                            {Object.keys(tokenIcons).map((icon: string) => (
+                            {Object.keys(tokenIcons).map((iconContract: string) => (
                                 <Box
-                                    key={icon}
+                                    key={iconContract}
                                     marginRight="large"
                                     marginBottom="large"
                                     justifyContent="center"
                                     alignItems="center"
                                 >
-                                    <CryptoIcon symbol={icon as TokenSymbol} />
-                                    <Text>{icon}</Text>
+                                    <CryptoIcon symbol={iconContract as TokenAddress} />
+                                    <Text>{iconContract}</Text>
                                 </Box>
                             ))}
                         </Box>

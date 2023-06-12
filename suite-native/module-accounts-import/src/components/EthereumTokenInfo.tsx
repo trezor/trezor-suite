@@ -48,7 +48,7 @@ export const EthereumTokenInfo = ({
                     variant="label"
                 />
             }
-            icon={<CryptoIcon symbol={symbol} />}
+            icon={<CryptoIcon symbol={contract} />}
         >
             <EthereumTokenToFiatAmountFormatter
                 value={balance}

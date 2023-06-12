@@ -29,7 +29,7 @@ export const AccountDetailTokenHeader = ({
     return (
         <VStack alignItems="center" spacing="small" marginVertical="medium">
             <HStack spacing="small" flexDirection="row" alignItems="center" justifyContent="center">
-                <CryptoIcon symbol={tokenAccount.symbol} size="extraSmall" />
+                <CryptoIcon symbol={tokenAccount.contract} size="extraSmall" />
                 <EthereumTokenAmountFormatter
                     value={tokenAccount?.balance}
                     ethereumToken={tokenAccount.symbol}

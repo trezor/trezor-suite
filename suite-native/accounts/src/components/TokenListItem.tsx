@@ -68,7 +68,7 @@ export const TokenListItem = ({
             >
                 <Box flex={1} flexDirection="row" alignItems="center">
                     <Box marginRight="medium">
-                        <RoundedIcon name={symbol} />
+                        <RoundedIcon name={contract} />
                     </Box>
                     <Text style={applyStyle(accountDescriptionStyle)}>{label}</Text>
                 </Box>

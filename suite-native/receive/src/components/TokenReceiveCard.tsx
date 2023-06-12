@@ -59,7 +59,7 @@ export const TokenReceiveCard = ({
             >
                 <Box flex={1} flexDirection="row" alignItems="center">
                     <Box marginRight="medium">
-                        <RoundedIcon name={tokenSymbol} />
+                        <RoundedIcon name={contract} />
                     </Box>
                     <Box style={applyStyle(tokenDescriptionStyle)}>
                         <Text>{tokenName}</Text>

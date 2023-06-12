@@ -99,7 +99,7 @@ export const AccountDetailScreen = memo(() => {
             <TransactionList
                 areTokensIncluded={areTokensIncluded}
                 accountKey={accountKey}
-                tokenSymbol={token?.symbol}
+                tokenContract={tokenContract}
                 transactions={accountTransactions}
                 fetchMoreTransactions={fetchMoreTransactions}
                 listHeaderComponent={
