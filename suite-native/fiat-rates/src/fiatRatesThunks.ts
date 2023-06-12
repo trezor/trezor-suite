@@ -11,7 +11,7 @@ import { Account } from '@suite-common/wallet-types';
 import { isTestnet } from '@suite-common/wallet-utils';
 import TrezorConnect, { AccountTransaction } from '@trezor/connect';
 import { fiatRatesActions as fiatRatesActionsLegacy } from '@suite-common/wallet-core';
-import { networks, NetworkSymbol } from '@suite-common/wallet-config';
+import { networks } from '@suite-common/wallet-config';
 
 import { actionPrefix } from './fiatRatesActions';
 import { REFETCH_INTERVAL } from './fiatRatesConst';
@@ -69,13 +69,12 @@ const fetchFiatRate = async (
     ticker: TickerId,
     fiatCurrency: FiatCurrencyCode,
 ): Promise<number | undefined | null> => {
-    const { symbol, tokenAddress, mainNetworkSymbol } = ticker;
-    const networkSymbol = (mainNetworkSymbol || symbol) as NetworkSymbol;
+    const { symbol, tokenAddress } = ticker;
 
-    if (networks[networkSymbol].testnet) return null;
+    if (networks[symbol].testnet) return null;
 
     const { success, payload } = await TrezorConnect.blockchainGetCurrentFiatRates({
-        coin: mainNetworkSymbol || symbol,
+        coin: symbol,
         token: tokenAddress,
         currencies: [fiatCurrency],
     });
@@ -97,13 +96,12 @@ const fetchLastWeekRate = async (
 ): Promise<number | undefined | null> => {
     const weekAgoTimestamp = getUnixTime(subWeeks(new Date(), 1));
     const timestamps = [weekAgoTimestamp];
-    const { symbol, tokenAddress, mainNetworkSymbol } = ticker;
-    const networkSymbol = (mainNetworkSymbol || symbol) as NetworkSymbol;
+    const { symbol, tokenAddress } = ticker;
 
-    if (networks[networkSymbol].testnet) return null;
+    if (networks[symbol].testnet) return null;
 
     const { success, payload } = await TrezorConnect.blockchainGetFiatRatesForTimestamps({
-        coin: networkSymbol,
+        coin: symbol,
         token: tokenAddress,
         timestamps,
         currencies: [fiatCurrency],

@@ -7,8 +7,12 @@ import { convertCryptoToFiatAmount } from '@suite-common/formatters';
 import { CurrentFiatRates, WalletAccountTransaction } from '@suite-common/wallet-types';
 import { Card, Table, Td, Text, Th, Tr, VStack } from '@suite-native/atoms';
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { selectCoinsLegacy } from '@suite-native/fiat-rates';
-import { selectFiatCurrency } from '@suite-native/module-settings';
+import {
+    FiatRatesRootState,
+    getFiatRateKey,
+    selectFiatRatesByFiatRateKey,
+} from '@suite-native/fiat-rates';
+import { selectFiatCurrencyCode } from '@suite-native/module-settings';
 import {
     CryptoToFiatAmountFormatter,
     PercentageDifferenceFormatter,
@@ -35,27 +39,29 @@ const TodayHeaderCell = ({
     network,
     historicalRates,
 }: TodayHeaderCellProps) => {
-    const coins = useSelector(selectCoinsLegacy);
-    const fiatCurrency = useSelector(selectFiatCurrency);
-    const currentRates = coins.find(coin => coin.symbol === network)?.current?.rates;
+    const fiatCurrencyCode = useSelector(selectFiatCurrencyCode);
+    const fiatRateKey = getFiatRateKey(network, fiatCurrencyCode);
+    const currentRates = useSelector((state: FiatRatesRootState) =>
+        selectFiatRatesByFiatRateKey(state, fiatRateKey),
+    );
 
-    if (!historicalRates || !currentRates) return null;
+    if (!currentRates || !historicalRates) return null;
 
     const fiatTotalHistoryNumeric = pipe(
         convertCryptoToFiatAmount({
             value: historicalPrice,
             rates: historicalRates,
             network,
-            fiatCurrency: fiatCurrency.label,
+            fiatCurrency: fiatCurrencyCode,
         }) ?? 0,
         Number,
     );
     const fiatTotalActualNumeric = pipe(
         convertCryptoToFiatAmount({
             value: actualPrice,
-            rates: currentRates,
+            rates: { [fiatCurrencyCode]: currentRates?.rate },
             network,
-            fiatCurrency: fiatCurrency.label,
+            fiatCurrency: fiatCurrencyCode,
         }),
         Number,
     );

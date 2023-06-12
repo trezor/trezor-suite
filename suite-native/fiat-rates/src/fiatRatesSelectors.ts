@@ -67,8 +67,7 @@ export const selectTickerFromAccounts = memoize((state: FiatRatesRootState): Tic
             ...(account.tokens || []).map(
                 token =>
                     ({
-                        symbol: token.symbol,
-                        mainNetworkSymbol: account.symbol,
+                        symbol: account.symbol,
                         tokenAddress: token.contract,
                     } as TickerId),
             ),

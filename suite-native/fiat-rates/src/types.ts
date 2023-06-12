@@ -1,13 +1,12 @@
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { AccountsRootState, TransactionsRootState } from '@suite-common/wallet-core';
-import { TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
+import { TokenAddress } from '@suite-common/wallet-types';
 
 export type FiatRateKey = string & { __type: 'FiatRateKey' };
 
 export interface TickerId {
-    symbol: TokenSymbol | NetworkSymbol;
-    mainNetworkSymbol?: NetworkSymbol; // used for tokens
+    symbol: NetworkSymbol;
     tokenAddress?: TokenAddress;
 }
 
