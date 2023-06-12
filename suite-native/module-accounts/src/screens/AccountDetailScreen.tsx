@@ -15,7 +15,7 @@ import { FiatRatesRootState } from '@suite-native/fiat-rates';
 import { TransactionList } from '@suite-native/transactions';
 import {
     selectAccountOrTokenAccountTransactions,
-    selectEthereumAccountToken,
+    selectEthereumAccountTokenInfo,
 } from '@suite-native/ethereum-tokens';
 import { analytics, EventType } from '@suite-native/analytics';
 import { SettingsSliceRootState } from '@suite-native/module-settings';
@@ -45,7 +45,7 @@ export const AccountDetailScreen = memo(() => {
             ),
     );
     const token = useSelector((state: AccountsRootState) =>
-        selectEthereumAccountToken(state, accountKey, tokenContract),
+        selectEthereumAccountTokenInfo(state, accountKey, tokenContract),
     );
 
     const fetchMoreTransactions = useCallback(

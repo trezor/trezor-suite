@@ -32,7 +32,6 @@ export const TokenList = ({ accountKey, onSelectAccount }: TokenListProps) => {
                     key={token.contract}
                     contract={token.contract}
                     accountKey={accountKey}
-                    symbol={token.symbol}
                     onSelectAccount={onSelectAccount}
                     balance={token.balance}
                     label={getEthereumTokenName(token.name)}

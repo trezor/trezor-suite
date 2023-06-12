@@ -46,7 +46,7 @@ export const AccountRenameForm = ({ accountKey, onSubmit }: AccountRenameFormPro
         selectAccountLabel(state, accountKey),
     );
 
-    const form = useAccountLabelForm(accountLabel);
+    const form = useAccountLabelForm(accountLabel ?? undefined);
     const {
         handleSubmit,
         formState: { isValid },

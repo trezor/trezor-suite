@@ -54,18 +54,20 @@ export const selectAssetsWithBalances = memoize((state: AssetsRootState) => {
 
     return networksWithAssets
         .map((networkSymbol: NetworkSymbol) => {
-            const network = networks[networkSymbol];
-            const fiatRateKey = getFiatRateKey(networkSymbol, fiatCurrencyCode);
-            const fiatRate = selectFiatRatesByFiatRateKey(state, fiatRateKey);
+            const fiatRate = selectFiatRatesByFiatRateKey(
+                state,
+                getFiatRateKey(networkSymbol, fiatCurrencyCode),
+            );
 
-
-            // We need to calculate fiat Currency value already in the selector be able to compare one account value to another later in the code.
+            // We need to calculate fiat Currency value already in this selector to be able to compare individual accounts total values.
             const fiatBalance =
                 toFiatCurrency(
                     balancesPerNetwork[networkSymbol]?.toString() ?? '0',
                     fiatCurrencyCode,
                     { [fiatCurrencyCode]: fiatRate?.rate },
                 ) ?? '0';
+
+            const network = networks[networkSymbol];
 
             const asset: AssetType = {
                 symbol: networkSymbol,

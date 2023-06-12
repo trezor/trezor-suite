@@ -371,20 +371,17 @@ export const DemoScreen = () => {
                     </Box>
                     <Box marginTop="medium">
                         <Text variant="titleMedium">Token Icons</Text>
-                        <Box flexWrap="wrap" flexDirection="row">
+                        <HStack
+                            flexWrap="wrap"
+                            flexDirection="row"
+                            marginVertical="medium"
+                            alignItems="center"
+                            justifyContent="center"
+                        >
                             {Object.keys(tokenIcons).map((iconContract: string) => (
-                                <Box
-                                    key={iconContract}
-                                    marginRight="large"
-                                    marginBottom="large"
-                                    justifyContent="center"
-                                    alignItems="center"
-                                >
-                                    <CryptoIcon symbol={iconContract as TokenAddress} />
-                                    <Text>{iconContract}</Text>
-                                </Box>
+                                <CryptoIcon symbol={iconContract as TokenAddress} />
                             ))}
-                        </Box>
+                        </HStack>
                     </Box>
                     <CoinsSettings />
                 </Box>

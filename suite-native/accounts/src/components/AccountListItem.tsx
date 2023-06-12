@@ -1,11 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 
-import {
-    AccountsRootState,
-    selectAccountLabel,
-    selectFormattedAccountType,
-} from '@suite-common/wallet-core';
+import { AccountsRootState, selectFormattedAccountType } from '@suite-common/wallet-core';
 import { Badge, Box, RoundedIcon, Text } from '@suite-native/atoms';
 import { Account } from '@suite-common/wallet-types';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
@@ -49,9 +45,7 @@ export const valuesContainerStyle = prepareNativeStyle(utils => ({
 
 export const AccountListItem = ({ account, areTokensDisplayed = false }: AccountListItemProps) => {
     const { applyStyle } = useNativeStyles();
-    const accountLabel = useSelector((state: AccountsRootState) =>
-        selectAccountLabel(state, account.key),
-    );
+    const { accountLabel } = account.metadata;
 
     const formattedAccountType = useSelector((state: AccountsRootState) =>
         selectFormattedAccountType(state, account.key),

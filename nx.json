@@ -31,7 +31,7 @@
                 "{workspaceRoot}/tsconfig.aliases.json",
                 "{workspaceRoot}/tsconfig.lib.json"
             ],
-            "outputs": ["./lib", "./build"]
+            "outputs": ["{workspaceRoot}/lib", "{workspaceRoot}/build"]
         },
         "type-check": {
             "dependsOn": ["^build:lib", "^type-check"],
@@ -67,5 +67,6 @@
     },
     "affected": {
         "defaultBase": "origin/develop"
-    }
+    },
+    "$schema": "./node_modules/nx/schemas/nx-schema.json"
 }

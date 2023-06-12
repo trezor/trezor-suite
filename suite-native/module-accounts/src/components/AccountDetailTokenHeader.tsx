@@ -7,7 +7,10 @@ import {
     EthereumTokenToFiatAmountFormatter,
 } from '@suite-native/formatters';
 import { CryptoIcon } from '@suite-common/icons';
-import { selectEthereumAccountToken } from '@suite-native/ethereum-tokens';
+import {
+    selectEthereumAccountTokenInfo,
+    selectEthereumAccountTokenSymbol,
+} from '@suite-native/ethereum-tokens';
 import { AccountsRootState } from '@suite-common/wallet-core';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 
@@ -21,7 +24,11 @@ export const AccountDetailTokenHeader = ({
     tokenContract,
 }: AccountDetailTokenHeaderProps) => {
     const tokenAccount = useSelector((state: AccountsRootState) =>
-        selectEthereumAccountToken(state, accountKey, tokenContract),
+        selectEthereumAccountTokenInfo(state, accountKey, tokenContract),
+    );
+
+    const tokenSymbol = useSelector((state: AccountsRootState) =>
+        selectEthereumAccountTokenSymbol(state, accountKey, tokenContract),
     );
 
     if (!tokenAccount || !tokenAccount.balance) return null;
@@ -30,16 +37,12 @@ export const AccountDetailTokenHeader = ({
         <VStack alignItems="center" spacing="small" marginVertical="medium">
             <HStack spacing="small" flexDirection="row" alignItems="center" justifyContent="center">
                 <CryptoIcon symbol={tokenAccount.contract} size="extraSmall" />
-                <EthereumTokenAmountFormatter
-                    value={tokenAccount?.balance}
-                    ethereumToken={tokenAccount.symbol}
-                />
+                <EthereumTokenAmountFormatter value={tokenAccount?.balance} symbol={tokenSymbol} />
             </HStack>
             <EthereumTokenToFiatAmountFormatter
                 variant="titleLarge"
                 contract={tokenAccount.contract}
                 value={tokenAccount?.balance}
-                ethereumToken={tokenAccount.symbol}
                 numberOfLines={1}
                 adjustsFontSizeToFit
             />

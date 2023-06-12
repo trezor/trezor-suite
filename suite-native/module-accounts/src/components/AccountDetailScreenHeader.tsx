@@ -12,7 +12,7 @@ import {
 } from '@suite-native/navigation';
 
 type AccountDetailScreenHeaderProps = {
-    accountLabel?: string;
+    accountLabel: string | null;
     accountKey: string;
 };
 

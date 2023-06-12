@@ -1,21 +1,23 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 
-import { AlertBox, Badge, Box, RoundedIcon, Text, VStack } from '@suite-native/atoms';
+import { AlertBox, Badge, Box, ErrorMessage, RoundedIcon, Text, VStack } from '@suite-native/atoms';
 import {
     EthereumTokenAmountFormatter,
     EthereumTokenToFiatAmountFormatter,
 } from '@suite-native/formatters';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { AccountKey, TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
+import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import { AccountsRootState, selectAccountLabel } from '@suite-common/wallet-core';
+import {
+    getEthereumTokenName,
+    selectEthereumAccountTokenInfo,
+    selectEthereumAccountTokenSymbol,
+} from '@suite-native/ethereum-tokens';
 
 type TokenReceiveCardProps = {
-    tokenSymbol: TokenSymbol;
-    tokenName: string;
     accountKey: AccountKey;
     contract: TokenAddress;
-    balance?: string;
 };
 
 const tokenReceiveCardStyle = prepareNativeStyle(utils => ({
@@ -36,18 +38,24 @@ const valuesContainerStyle = prepareNativeStyle(utils => ({
     paddingLeft: utils.spacings.small,
 }));
 
-export const TokenReceiveCard = ({
-    tokenSymbol,
-    contract,
-    balance,
-    tokenName,
-    accountKey,
-}: TokenReceiveCardProps) => {
+export const TokenReceiveCard = ({ contract, accountKey }: TokenReceiveCardProps) => {
     const { applyStyle } = useNativeStyles();
 
     const accountLabel = useSelector((state: AccountsRootState) =>
         selectAccountLabel(state, accountKey),
     );
+
+    const token = useSelector((state: AccountsRootState) =>
+        selectEthereumAccountTokenInfo(state, accountKey, contract),
+    );
+
+    const tokenSymbol = useSelector((state: AccountsRootState) =>
+        selectEthereumAccountTokenSymbol(state, accountKey, contract),
+    );
+
+    if (!token) return <ErrorMessage errorMessage="Token not found." />;
+
+    const tokenName = getEthereumTokenName(token.name);
 
     return (
         <VStack>
@@ -73,13 +81,12 @@ export const TokenReceiveCard = ({
                 </Box>
                 <Box style={applyStyle(valuesContainerStyle)}>
                     <EthereumTokenToFiatAmountFormatter
-                        value={balance ?? '0'}
-                        ethereumToken={tokenSymbol}
+                        value={token.balance ?? '0'}
                         contract={contract}
                     />
                     <EthereumTokenAmountFormatter
-                        value={balance ?? '0'}
-                        ethereumToken={tokenSymbol}
+                        value={token.balance ?? '0'}
+                        symbol={tokenSymbol}
                         numberOfLines={1}
                         ellipsizeMode="tail"
                     />
