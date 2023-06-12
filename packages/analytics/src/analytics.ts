@@ -93,6 +93,7 @@ export class Analytics<T extends AnalyticsEvent> {
             url: `${this.url}?${qs}`,
             options: {
                 method: 'GET',
+                keepalive: true,
             },
             retry: true,
         });
