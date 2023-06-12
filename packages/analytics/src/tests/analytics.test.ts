@@ -48,7 +48,7 @@ describe('analytics', () => {
         expect(global.fetch).toHaveBeenNthCalledWith(
             1,
             `https://data.trezor.io/${app}/log/${environment}/develop.log?c_v=1.18&c_type=${actionType}&c_commit=${commitId}&c_instance_id=${instanceId}&c_session_id=${sessionId}&c_timestamp=${timestamp}&c_message_id=random`,
-            { method: 'GET' },
+            { method: 'GET', keepalive: true },
         );
         expect(global.fetch).toHaveBeenCalledTimes(1);
 
@@ -92,7 +92,7 @@ describe('analytics', () => {
         expect(global.fetch).toHaveBeenNthCalledWith(
             1,
             `https://data.trezor.io/${app}/log/stable.log?c_v=1.18&c_type=${actionType}&c_commit=${commitId}&c_instance_id=${instanceId}&c_session_id=${sessionId}&c_timestamp=${timestamp}&c_message_id=random`,
-            { method: 'GET' },
+            { method: 'GET', keepalive: true },
         );
         expect(global.fetch).toHaveBeenCalledTimes(1);
     });
