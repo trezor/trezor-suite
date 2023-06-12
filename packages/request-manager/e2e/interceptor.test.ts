@@ -191,6 +191,45 @@ describe('Interceptor', () => {
         });
     });
 
+    describe('TorControl', () => {
+        it('closing circuits', async () => {
+            await fetch(testGetUrlHttps, {
+                headers: { 'Proxy-Authorization': 'Basic user-circuit-1' },
+            });
+
+            await fetch(testGetUrlHttps, {
+                headers: { 'Proxy-Authorization': 'Basic user-circuit-2' },
+            });
+
+            const circuits1 = await torController.controlPort.getCircuits();
+            // there should be at least 2 circuits
+            expect(circuits1.length).toBeGreaterThanOrEqual(2);
+            // there should be circuits with requested username
+            expect(circuits1.map(c => c.username)).toEqual(
+                expect.arrayContaining(['user-circuit-1', 'user-circuit-2']),
+            );
+
+            // close specific circuit
+            await torController.controlPort.closeCircuit('user-circuit-1');
+
+            // and validate state afterward
+            const circuits2 = await torController.controlPort.getCircuits();
+            expect(circuits2.map(c => c.username)).not.toEqual(
+                expect.arrayContaining(['user-circuit-1']),
+            );
+            expect(circuits2.map(c => c.username)).toEqual(
+                expect.arrayContaining(['user-circuit-2']),
+            );
+
+            // close remaining circuits
+            await torController.controlPort.closeActiveCircuits();
+
+            // and validate state afterward
+            const circuits3 = await torController.controlPort.getCircuits();
+            expect(circuits3.length).toEqual(0);
+        });
+    });
+
     it('Block unauthorized requests', async () => {
         torSettings.running = false;
 
