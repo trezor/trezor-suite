@@ -1,5 +1,5 @@
 import { LastWeekRates, TickerId } from '@suite-common/wallet-types';
-import { FIAT as FIAT_CONFIG } from '@suite-common/suite-config';
+import { FIAT as FIAT_CONFIG, FiatCurrencyCode } from '@suite-common/suite-config';
 
 import { RateLimiter } from './limiter';
 import { fetchUrl } from './fetch';
@@ -103,39 +103,69 @@ export const fetchCurrentFiatRates = async (ticker: TickerId) => {
 };
 
 /**
- * Returns the historical rate for a given symbol, timestamp fetched from CoinGecko API.
- * Be aware that the data granularity is 1 day.
- * Returns null if coin for a given symbol was not found.
+ * Helper function that goes through timestamped fiat rates returned from Coingecko and finds the closest one to the provided timestamp.
+ * @returns [timestamp, fiatRate] pair
+ */
+export const findClosestTimestampValue = (
+    timestamp: number,
+    prices: Array<[number, number]>,
+): number => {
+    let closestTimestamp = prices[0];
+
+    for (let i = 1; i < prices.length; i++) {
+        const currentTimeDelta = Math.abs(timestamp - closestTimestamp[0] / 1000);
+        const nextTimeDelta = Math.abs(timestamp - prices[i][0] / 1000);
+
+        // The timestamps are ordered, if next time delta is higher, we can stop the iteration.
+        if (currentTimeDelta < nextTimeDelta) {
+            break;
+        }
+
+        closestTimestamp = prices[i];
+    }
+
+    return closestTimestamp[1];
+};
+
+/**
+ * Returns the historical rates for a given symbol and array of timestamps, fetched from CoinGecko API.
+ * Returns null if coin or fiat rates for a given symbol were not found.
  *
  * @param {TickerId} ticker
  * @param {number[]} timestamps
- * @returns
  */
 export const getFiatRatesForTimestamps = async (
     ticker: TickerId,
     timestamps: number[],
+    fiatCurrencyCode: FiatCurrencyCode,
 ): Promise<HistoricalResponse | null> => {
+    if (timestamps.length < 2) return null;
+
     const coinUrl = buildCoinUrl(ticker);
-    const urlEndpoint = `history`;
+    const urlEndpoint = `market_chart/range`;
     if (!coinUrl) return null;
 
-    const url = `${coinUrl}/${urlEndpoint}`;
+    // sort timestamps chronologically to get the minimum and maximum values
+    const sortedTimestamps = [...timestamps].sort((ts1, ts2) => ts1 - ts2);
 
-    const promises = timestamps.map(async t => {
-        const d = new Date(t * 1000);
-        const dateParam = `${d.getUTCDate()}-${d.getUTCMonth() + 1}-${d.getUTCFullYear()}`;
+    const params = `?vs_currency=${fiatCurrencyCode}&from=${sortedTimestamps[0]}&to=${
+        sortedTimestamps[sortedTimestamps.length - 1]
+    }`;
+    const url = `${coinUrl}/${urlEndpoint}${params}`;
 
-        const data = await fetchCoinGecko(`${url}?date=${dateParam}`);
-        return {
-            ts: t,
-            rates: data?.market_data?.current_price,
-        };
-    });
+    // returns pairs of [timestamp, fiatRate]
+    const { prices }: { prices: Array<[number, number]> } = await fetchCoinGecko(url);
 
-    const results = await Promise.all(promises);
+    if (!prices || prices.length === 0) return null;
+
+    const tickers = timestamps.map(ts => ({
+        ts,
+        rates: { [fiatCurrencyCode]: findClosestTimestampValue(ts, prices) },
+    }));
+
     return {
         symbol: ticker.symbol,
-        tickers: results,
+        tickers,
         ts: new Date().getTime(),
     };
 };
@@ -146,15 +176,15 @@ export const getFiatRatesForTimestamps = async (
  * Returns null if coin for a given symbol was not found.
  *
  * @param {TickerId} ticker
- * @param {string} localCurrency
+ * @param {string} fiatCurrencyCode
  * @returns {(Promise<HistoricalResponse | null>)}
  */
 export const fetchLastWeekRates = async (
     ticker: TickerId,
-    localCurrency: string,
+    fiatCurrencyCode: FiatCurrencyCode,
 ): Promise<HistoricalResponse | null> => {
     const urlEndpoint = `market_chart`;
-    const urlParams = `vs_currency=${localCurrency}&days=7`;
+    const urlParams = `vs_currency=${fiatCurrencyCode}&days=7`;
     const coinUrl = buildCoinUrl(ticker);
     if (!coinUrl) return null;
 
@@ -163,7 +193,7 @@ export const fetchLastWeekRates = async (
     const data = await fetchCoinGecko(url);
     const tickers = data?.prices?.map((d: any) => ({
         ts: Math.floor(d[0] / 1000),
-        rates: { [localCurrency]: d[1] },
+        rates: { [fiatCurrencyCode]: d[1] },
     }));
     if (!tickers) return null;
 
