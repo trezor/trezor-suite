@@ -92,7 +92,7 @@ export const TransactionDetailHeader = ({
                 {tokenTransfer ? (
                     <EthereumTokenAmountFormatter
                         value={tokenTransfer.amount}
-                        ethereumToken={tokenTransfer.symbol}
+                        symbol={tokenTransfer.symbol}
                         decimals={tokenTransfer.decimals}
                         variant="titleMedium"
                         color="textDefault"
@@ -114,7 +114,6 @@ export const TransactionDetailHeader = ({
                         <EthereumTokenToFiatAmountFormatter
                             contract={tokenTransfer.contract}
                             value={tokenTransfer.amount}
-                            ethereumToken={tokenTransfer.symbol}
                             decimals={tokenTransfer.decimals}
                         />
                     ) : (

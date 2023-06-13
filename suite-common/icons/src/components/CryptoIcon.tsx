@@ -3,11 +3,11 @@ import React from 'react';
 import { Canvas, ImageSVG, useSVG } from '@shopify/react-native-skia';
 
 import { networks } from '@suite-common/wallet-config';
-import { TokenSymbol } from '@suite-common/wallet-types';
+import { TokenAddress } from '@suite-common/wallet-types';
 
-import { CryptoIconName, cryptoIcons, TokenIconName, tokenIcons } from '../icons';
+import { CryptoIconName, cryptoIcons, TokenIconName, tokenIcons, genericTokenIcon } from '../icons';
 
-export type CoinSymbol = CryptoIconName | TokenSymbol;
+export type CoinSymbol = CryptoIconName | TokenAddress;
 
 type CryptoIconProps = {
     symbol: CoinSymbol;
@@ -25,11 +25,9 @@ export type CryptoIconSize = keyof typeof cryptoIconSizes;
 const getIconFile = (symbol: CoinSymbol) => {
     if (symbol in networks) return cryptoIcons[symbol as CryptoIconName];
 
-    const lowerCaseSymbol = symbol?.toLowerCase();
-    const tokenIconName = (
-        lowerCaseSymbol in tokenIcons ? lowerCaseSymbol : 'erc20'
-    ) as TokenIconName;
-    return tokenIcons[tokenIconName];
+    // the symbol in case of a token is a contract address. Since it is hexadecimal value, we can convert it
+    // to lowerCase to mach definition `suite-common/icons/icons.ts` without changing the meaning of the date.
+    return tokenIcons[symbol.toLowerCase() as TokenIconName] ?? genericTokenIcon;
 };
 
 export const CryptoIcon = ({ symbol, size = 'small' }: CryptoIconProps) => {

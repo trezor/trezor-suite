@@ -170,17 +170,12 @@ export const selectAccountsByNetworkAndDevice = memoizeWithArgs(
 );
 
 export const selectAccountLabel = memoizeWithArgs(
-    (state: AccountsRootState, accountKey: AccountKey) => {
+    (state: AccountsRootState, accountKey: AccountKey): string | null => {
         const account = selectAccountByKey(state, accountKey);
-        const accounts = selectAccounts(state);
 
-        const accountData = accounts.find(acc => acc.descriptor === account?.descriptor);
-        if (accountData) {
-            const {
-                metadata: { accountLabel },
-            } = accountData;
-            return accountLabel;
-        }
+        if (!account) return null;
+
+        return account.metadata.accountLabel ?? null;
     },
 );
 

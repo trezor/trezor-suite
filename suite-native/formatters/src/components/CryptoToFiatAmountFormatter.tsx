@@ -3,9 +3,13 @@ import { useSelector } from 'react-redux';
 
 import { TextProps } from '@suite-native/atoms';
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { selectCoinsLegacy } from '@suite-native/fiat-rates';
+import {
+    FiatRatesRootState,
+    getFiatRateKey,
+    selectFiatRatesByFiatRateKey,
+} from '@suite-native/fiat-rates';
 import { convertCryptoToFiatAmount, useFormatters } from '@suite-common/formatters';
-import { selectFiatCurrency } from '@suite-native/module-settings';
+import { selectFiatCurrency, selectFiatCurrencyCode } from '@suite-native/module-settings';
 import { FiatRates } from '@trezor/blockchain-link';
 import { isTestnet } from '@suite-common/wallet-utils';
 
@@ -27,18 +31,21 @@ export const CryptoToFiatAmountFormatter = ({
     isDiscreetText = true,
     ...textProps
 }: CryptoToFiatAmountFormatterProps) => {
-    const coins = useSelector(selectCoinsLegacy);
+    const fiatCurrencyCode = useSelector(selectFiatCurrencyCode);
+    const fiatRateKey = getFiatRateKey(network, fiatCurrencyCode);
+    const currentRate = useSelector((state: FiatRatesRootState) =>
+        selectFiatRatesByFiatRateKey(state, fiatRateKey),
+    );
     const fiatCurrency = useSelector(selectFiatCurrency);
     const { FiatAmountFormatter } = useFormatters();
 
     const isTestnetCoin = isTestnet(network);
-    const rates = customRates ?? coins.find(coin => coin.symbol === network)?.current?.rates;
 
-    if (!value || !rates || isTestnetCoin) return <EmptyAmountText />;
+    if (!value || !currentRate || currentRate.error || isTestnetCoin) return <EmptyAmountText />;
 
     const fiatValue = convertCryptoToFiatAmount({
         value,
-        rates,
+        rates: customRates ?? { [fiatCurrencyCode]: currentRate?.rate },
         fiatCurrency: fiatCurrency.label,
         network,
     });

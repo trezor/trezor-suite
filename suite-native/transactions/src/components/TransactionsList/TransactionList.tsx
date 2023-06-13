@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { SectionList } from 'react-native';
 import { useSelector } from 'react-redux';
 
-import { TokenSymbol, AccountKey } from '@suite-common/wallet-types';
+import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import { groupTransactionsByDate, MonthKey } from '@suite-common/wallet-utils';
 import { selectIsLoadingTransactions } from '@suite-common/wallet-core';
 import { Loader } from '@suite-native/atoms';
@@ -20,7 +20,7 @@ type AccountTransactionProps = {
     fetchMoreTransactions: (pageToFetch: number, perPage: number) => void;
     listHeaderComponent: JSX.Element;
     accountKey: string;
-    tokenSymbol?: TokenSymbol;
+    tokenContract?: TokenAddress;
 };
 
 type RenderSectionHeaderParams = {
@@ -38,7 +38,7 @@ type RenderTransactionItemParams = {
 };
 
 type RenderTokenTranferItemParams = Omit<RenderTransactionItemParams, 'areTokensIncluded'> & {
-    tokenSymbol: TokenSymbol;
+    tokenContract: TokenAddress;
 };
 
 const sectionListStyle = prepareNativeStyle(utils => ({
@@ -72,9 +72,9 @@ const renderTokenTransferItem = ({
     section,
     index,
     accountKey,
-    tokenSymbol,
+    tokenContract,
 }: RenderTokenTranferItemParams) => {
-    const tokenTransfers = item.tokens.filter(token => token.symbol === tokenSymbol);
+    const tokenTransfers = item.tokens.filter(token => token.contract === tokenContract);
 
     return (
         <>
@@ -107,7 +107,7 @@ export const TransactionList = ({
     listHeaderComponent,
     fetchMoreTransactions,
     accountKey,
-    tokenSymbol,
+    tokenContract,
 }: AccountTransactionProps) => {
     const { applyStyle } = useNativeStyles();
     const isLoadingTransactions = useSelector(selectIsLoadingTransactions);
@@ -158,8 +158,8 @@ export const TransactionList = ({
         <SectionList
             sections={sectionsData}
             renderItem={({ item, section, index }) =>
-                tokenSymbol
-                    ? renderTokenTransferItem({ item, section, index, accountKey, tokenSymbol })
+                tokenContract
+                    ? renderTokenTransferItem({ item, section, index, accountKey, tokenContract })
                     : renderTransactionItem({
                           item,
                           section,

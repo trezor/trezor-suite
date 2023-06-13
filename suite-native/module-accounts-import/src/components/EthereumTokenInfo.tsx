@@ -43,17 +43,16 @@ export const EthereumTokenInfo = ({
             cryptoAmount={
                 <EthereumTokenAmountFormatter
                     value={balance}
-                    ethereumToken={symbol}
+                    symbol={symbol}
                     decimals={decimals}
                     variant="label"
                 />
             }
-            icon={<CryptoIcon symbol={symbol} />}
+            icon={<CryptoIcon symbol={contract} />}
         >
             <EthereumTokenToFiatAmountFormatter
                 value={balance}
                 contract={contract}
-                ethereumToken={symbol}
                 decimals={decimals}
             />
         </AccountImportOverviewCard>

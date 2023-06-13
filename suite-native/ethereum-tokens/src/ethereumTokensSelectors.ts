@@ -24,7 +24,7 @@ import { isEthereumAccountSymbol } from '@suite-common/wallet-utils';
 
 import { WalletAccountTransaction } from './types';
 
-export const selectEthereumAccountToken = (
+export const selectEthereumAccountTokenInfo = (
     state: AccountsRootState,
     accountKey: AccountKey,
     tokenAddress?: TokenAddress,
@@ -39,6 +39,21 @@ export const selectEthereumAccountToken = (
     );
 };
 
+export const selectEthereumAccountTokenSymbol = (
+    state: AccountsRootState,
+    accountKey: AccountKey,
+    tokenAddress?: TokenAddress,
+): TokenSymbol | null => {
+    const tokenInfo = selectEthereumAccountTokenInfo(state, accountKey, tokenAddress);
+
+    if (!tokenInfo) return null;
+
+    // FIXME: This is the only place in the codebase where we change case of token symbol.
+    // The `toUpperCase()` operation is necessary because we are receiving wrongly formatted token symbol from connect.
+    // Can be removed at the moment when desktop issue https://github.com/trezor/trezor-suite/issues/8037 is resolved.
+    return tokenInfo.symbol.toUpperCase() as TokenSymbol;
+};
+
 export const selectEthereumAccountTokenTransactions = memoizeWithArgs(
     (
         state: TransactionsRootState,
@@ -51,7 +66,7 @@ export const selectEthereumAccountTokenTransactions = memoizeWithArgs(
                 ...transaction,
                 tokens: transaction.tokens.map((tokenTransfer: TokenTransfer) => ({
                     ...tokenTransfer,
-                    symbol: tokenTransfer.symbol.toLowerCase(),
+                    symbol: tokenTransfer.symbol,
                 })),
             })),
             A.filter(transaction =>
@@ -73,8 +88,7 @@ export const selectEthereumTokenHasFiatRates = (
     const fiatCurrencyCode = selectFiatCurrencyCode(state);
     const fiatRateKey = getFiatRateKeyFromTicker(
         {
-            symbol: tokenSymbol.toLowerCase() as TokenSymbol,
-            mainNetworkSymbol: 'eth',
+            symbol: 'eth',
             tokenAddress: contract,
         },
         fiatCurrencyCode,
@@ -108,7 +122,7 @@ const selectAccountTransactionsWithTokensWithFiatRates = memoizeWithArgs(
                     ),
                     A.map((tokenTransfer: TokenTransfer) => ({
                         ...tokenTransfer,
-                        symbol: tokenTransfer.symbol.toLowerCase(),
+                        symbol: tokenTransfer.symbol,
                     })),
                 ),
             })),

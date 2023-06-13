@@ -28,7 +28,6 @@ export const TokenTransferListItemValues = ({
         <EthereumTokenToFiatAmountFormatter
             value={tokenTransfer.amount}
             contract={tokenTransfer.contract}
-            ethereumToken={tokenTransfer.symbol}
             decimals={tokenTransfer.decimals}
             signValue={signValueMap[tokenTransfer.type]}
             numberOfLines={1}
@@ -36,7 +35,7 @@ export const TokenTransferListItemValues = ({
         />
         <EthereumTokenAmountFormatter
             value={tokenTransfer.amount}
-            ethereumToken={tokenTransfer.symbol}
+            symbol={tokenTransfer.symbol}
             decimals={tokenTransfer.decimals}
             numberOfLines={1}
             ellipsizeMode="tail"

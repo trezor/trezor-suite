@@ -158,7 +158,7 @@ export const TransactionListItemContainer = memo(
         );
 
         const iconColor: Color = isTransactionPending ? 'backgroundAlertYellowBold' : 'iconSubdued';
-        const coinSymbol = tokenTransfer?.symbol ?? networkSymbol;
+        const coinSymbol = tokenTransfer?.contract ?? networkSymbol;
         const transactionTitle = getTransactionTitle(transactionType, isTransactionPending);
 
         return (

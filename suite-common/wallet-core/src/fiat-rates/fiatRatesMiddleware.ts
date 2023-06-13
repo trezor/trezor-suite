@@ -45,8 +45,7 @@ export const prepareFiatRatesMiddleware = createMiddlewareWithExtraDeps(
                         dispatch(
                             updateCurrentFiatRatesThunk({
                                 ticker: {
-                                    symbol: token.symbol,
-                                    mainNetworkSymbol: account.symbol,
+                                    symbol: account.symbol,
                                     tokenAddress: token.contract,
                                 },
                             }),
@@ -66,8 +65,7 @@ export const prepareFiatRatesMiddleware = createMiddlewareWithExtraDeps(
                 dispatch(
                     updateCurrentFiatRatesThunk({
                         ticker: {
-                            symbol: token.symbol,
-                            mainNetworkSymbol: account.symbol,
+                            symbol: account.symbol,
                             tokenAddress: token.contract,
                         },
                     }),

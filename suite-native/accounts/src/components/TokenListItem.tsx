@@ -1,5 +1,6 @@
 import React from 'react';
 import { TouchableOpacity } from 'react-native';
+import { useSelector } from 'react-redux';
 
 import { Box, RoundedIcon, Text } from '@suite-native/atoms';
 import {
@@ -7,7 +8,9 @@ import {
     EthereumTokenToFiatAmountFormatter,
 } from '@suite-native/formatters';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { AccountKey, TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
+import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
+import { selectEthereumAccountTokenSymbol } from '@suite-native/ethereum-tokens';
+import { AccountsRootState } from '@suite-common/wallet-core';
 
 import { accountDescriptionStyle, valuesContainerStyle } from './AccountListItem';
 
@@ -15,7 +18,6 @@ type TokenListItemProps = {
     balance?: string;
     isLast: boolean;
     label: string;
-    symbol: TokenSymbol;
     accountKey: AccountKey;
     contract: TokenAddress;
     onSelectAccount: (accountKey: AccountKey, tokenContract?: TokenAddress) => void;
@@ -43,7 +45,6 @@ const horizontalLine = prepareNativeStyle(utils => ({
 }));
 
 export const TokenListItem = ({
-    symbol,
     contract,
     balance,
     isLast,
@@ -52,6 +53,10 @@ export const TokenListItem = ({
     onSelectAccount,
 }: TokenListItemProps) => {
     const { applyStyle } = useNativeStyles();
+
+    const tokenSymbol = useSelector((state: AccountsRootState) =>
+        selectEthereumAccountTokenSymbol(state, accountKey, contract),
+    );
 
     const handleOnPress = () => {
         onSelectAccount(accountKey, contract);
@@ -68,19 +73,18 @@ export const TokenListItem = ({
             >
                 <Box flex={1} flexDirection="row" alignItems="center">
                     <Box marginRight="medium">
-                        <RoundedIcon name={symbol} />
+                        <RoundedIcon name={contract} />
                     </Box>
                     <Text style={applyStyle(accountDescriptionStyle)}>{label}</Text>
                 </Box>
                 <Box style={applyStyle(valuesContainerStyle)}>
                     <EthereumTokenToFiatAmountFormatter
                         value={balance ?? '0'}
-                        ethereumToken={symbol.toUpperCase() as TokenSymbol}
                         contract={contract}
                     />
                     <EthereumTokenAmountFormatter
                         value={balance ?? '0'}
-                        ethereumToken={symbol}
+                        symbol={tokenSymbol}
                         numberOfLines={1}
                         ellipsizeMode="tail"
                     />

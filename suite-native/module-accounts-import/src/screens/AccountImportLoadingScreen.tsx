@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
 import { updateFiatRatesThunk } from '@suite-native/fiat-rates';
 import { selectFiatCurrencyCode } from '@suite-native/module-settings';
 import {
@@ -12,6 +11,7 @@ import {
     StackToStackCompositeScreenProps,
 } from '@suite-native/navigation';
 import TrezorConnect, { AccountInfo } from '@trezor/connect';
+import { TokenAddress } from '@suite-common/wallet-types';
 
 import { AccountImportHeader } from '../components/AccountImportHeader';
 import { AccountImportLoader } from '../components/AccountImportLoader';
@@ -88,8 +88,7 @@ export const AccountImportLoadingScreen = ({
                             dispatch(
                                 updateFiatRatesThunk({
                                     ticker: {
-                                        symbol: token.symbol as TokenSymbol,
-                                        mainNetworkSymbol: 'eth',
+                                        symbol: 'eth',
                                         tokenAddress: token.contract as TokenAddress,
                                     },
                                     rateType: 'current',

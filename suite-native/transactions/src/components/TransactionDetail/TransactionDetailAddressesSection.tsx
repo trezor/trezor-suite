@@ -4,9 +4,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Box, Text } from '@suite-native/atoms';
 import { AccountAddressFormatter } from '@suite-native/formatters';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { NetworkSymbol } from '@suite-common/wallet-config';
-import { TokenSymbol } from '@suite-common/wallet-types';
-import { CryptoIcon } from '@suite-common/icons';
+import { CoinSymbol, CryptoIcon } from '@suite-common/icons';
 
 import { SummaryRow } from './TransactionDetailStatusSection';
 import { formatAddressLabel } from './TransactionDetailAddressesSheet';
@@ -15,7 +13,7 @@ type TransactionDetailAddressesSectionProps = {
     addresses: string[];
     addressesType: 'inputs' | 'outputs';
     onShowMore: () => void;
-    icon?: NetworkSymbol | TokenSymbol;
+    icon?: CoinSymbol;
 };
 
 const showMoreButtonStyle = prepareNativeStyle(_ => ({ flexDirection: 'row' }));

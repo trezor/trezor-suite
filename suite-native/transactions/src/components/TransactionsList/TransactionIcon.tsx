@@ -2,15 +2,14 @@ import React from 'react';
 
 import { Box, RoundedIcon } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { TokenSymbol, TransactionType } from '@suite-common/wallet-types';
-import { CryptoIcon, IconName } from '@suite-common/icons';
+import { TransactionType } from '@suite-common/wallet-types';
+import { CoinSymbol, CryptoIcon, IconName } from '@suite-common/icons';
 import { Color } from '@trezor/theme';
-import { NetworkSymbol } from '@suite-common/wallet-config';
 
 import { TransactionIconSpinner } from './TransactionIconSpinner';
 
 type TransactionIconProps = {
-    symbol: NetworkSymbol | TokenSymbol;
+    symbol: CoinSymbol;
     transactionType: TransactionType;
     isAnimated?: boolean;
     iconColor?: Color;
