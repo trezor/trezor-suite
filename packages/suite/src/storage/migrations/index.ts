@@ -38,41 +38,39 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
 
     // TODO: make separate file for each iterative migration
 
-    // EXAMPLES
+    // migrations from version older than 13 (internal releases) are not implemented
+    if (oldVersion < 13) {
+        // object store for wallet transactions
+        const txsStore = db.createObjectStore('txs', {
+            keyPath: ['tx.deviceState', 'tx.descriptor', 'tx.txid', 'tx.type'],
+        });
+        txsStore.createIndex('txid', 'tx.txid', { unique: false });
+        txsStore.createIndex('order', 'order', { unique: false });
+        txsStore.createIndex('blockTime', 'tx.blockTime', { unique: false });
+        txsStore.createIndex('deviceState', 'tx.deviceState', { unique: false });
+        txsStore.createIndex('accountKey', ['tx.descriptor', 'tx.symbol', 'tx.deviceState'], {
+            unique: false,
+        });
 
-    // if (oldVersion < 3) {
-    //     // upgrade to version 3
-    //     db.deleteObjectStore('devices');
-    //     db.createObjectStore('devices');
+        // object store for settings
+        db.createObjectStore('suiteSettings');
+        db.createObjectStore('walletSettings');
 
-    //     // object store for accounts
-    //     const accountsStore = db.createObjectStore('accounts', {
-    //         keyPath: ['descriptor', 'symbol', 'deviceState'],
-    //     });
-    //     accountsStore.createIndex('deviceState', 'deviceState', { unique: false });
+        // object store for devices
+        db.createObjectStore('devices');
 
-    //     // object store for discovery
-    //     db.createObjectStore('discovery', { keyPath: 'deviceState' });
-    // }
+        // object store for accounts
+        const accountsStore = db.createObjectStore('accounts', {
+            keyPath: ['descriptor', 'symbol', 'deviceState'],
+        });
+        accountsStore.createIndex('deviceState', 'deviceState', { unique: false });
 
-    // if (oldVersion < 9) {
-    //     // added timestamp field
-    //     let cursor = await transaction.store.openCursor();
+        // object store for discovery
+        db.createObjectStore('discovery', { keyPath: 'deviceState' });
 
-    //     while (cursor) {
-    //         console.log(cursor.key, cursor.value);
-    //         const updateData = cursor.value;
-    //         updateData.timestamp = 146684800000;
-    //         const request = cursor.update(updateData);
-    //         // eslint-disable-next-line no-await-in-loop
-    //         cursor = await cursor.continue();
-    //     }
+        db.createObjectStore('analytics');
+    }
 
-    //     // create new index if not created before
-    //     if (!transaction.store.indexNames.contains('timestamp')) {
-    //         transaction.store.createIndex('timestamp', 'timestamp', { unique: false });
-    //     }
-    // }
     if (oldVersion < 14) {
         // added graph object store
         const graphStore = db.createObjectStore('graph', {
@@ -110,14 +108,17 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
     }
 
     if (oldVersion < 16) {
-        // object store for send form
         // @ts-expect-error sendForm doesn't exists anymore
-        db.deleteObjectStore('sendForm');
+        if (db.objectStoreNames.contains('sendForm')) {
+            // @ts-expect-error sendForm doesn't exists anymore
+            db.deleteObjectStore('sendForm');
+        }
+        // object store for send form
         db.createObjectStore('sendFormDrafts');
     }
 
     if (oldVersion < 17) {
-        db.createObjectStore('coinmarketTrades');
+        db.createObjectStore('coinmarketTrades', { keyPath: 'key' });
     }
 
     if (oldVersion < 18) {
@@ -129,7 +130,9 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
 
     if (oldVersion < 19) {
         // no longer uses keyPath to generate primary key
-        db.deleteObjectStore('fiatRates');
+        if (db.objectStoreNames.contains('fiatRates')) {
+            db.deleteObjectStore('fiatRates');
+        }
         db.createObjectStore('fiatRates');
     }
 
