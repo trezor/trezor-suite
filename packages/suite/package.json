@@ -15,7 +15,7 @@
         "translations:list-duplicates": "yarn tsx ../suite-data/src/translations/list-duplicates.ts",
         "translations:list-unused": "yarn tsx ../suite-data/src/translations/list-unused.ts",
         "type-check": "tsc --build tsconfig.json",
-        "test:unit": "jest",
+        "test:unit": "jest --logHeapUsage",
         "test-unit:watch": "jest -o --watch"
     },
     "dependencies": {
