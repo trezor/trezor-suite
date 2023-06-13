@@ -3,7 +3,7 @@ import { toWei } from 'web3-utils';
 import { isDesktop } from '@suite-utils/env';
 import type { State } from '@wallet-reducers/settingsReducer';
 import type { CustomBackend, BlockbookUrl } from '@wallet-types/backend';
-import type { Network, Account, Discovery } from '@wallet-types';
+import type { Network } from '@wallet-types';
 
 import type { BackendSettings } from '@suite-common/wallet-types';
 import type { OnUpgradeFunc } from '@trezor/suite-storage';
@@ -16,7 +16,6 @@ import {
 import { updateAll } from '@trezor/suite/src/storage/migrations/utils';
 
 import type { SuiteDBSchema } from '../definitions';
-import { GraphData } from '../../types/wallet/graph';
 
 type WalletWithBackends = {
     backends?: Partial<{
@@ -297,140 +296,74 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
             }
         });
 
-        const accounts: Account[] = [];
-        const accountsStore = transaction.objectStore('accounts');
-        await accountsStore
-            .openCursor()
-            .then(function read(cursor): Promise<void> | undefined {
-                if (!cursor) {
-                    return;
-                }
-                const account = cursor.value;
-                accounts.push(account);
-                return cursor.continue().then(read);
-            })
-            .then(() => {
-                db.deleteObjectStore('accounts');
-            })
-            .then(() => {
-                const accountsStore = db.createObjectStore('accounts', {
-                    keyPath: ['descriptor', 'symbol', 'deviceState'],
-                });
-                accountsStore.createIndex('deviceState', 'deviceState', { unique: false });
+        // accounts
+        const accountsStoreOld = transaction.objectStore('accounts');
+        const accounts = await accountsStoreOld.getAll();
+        db.deleteObjectStore('accounts');
 
-                return accountsStore;
-            })
-            .then(accountsStore => {
-                accounts.forEach(account => {
-                    account.deviceState = account.deviceState.replace('undefined', '0');
-                    account.key = account.key.replace('undefined', '0');
-                    accountsStore.add(account);
-                });
-            });
+        const accountsStoreNew = db.createObjectStore('accounts', {
+            keyPath: ['descriptor', 'symbol', 'deviceState'],
+        });
+        accountsStoreNew.createIndex('deviceState', 'deviceState', { unique: false });
 
-        const txs: DBWalletAccountTransaction[] = [];
-        const txsStore = transaction.objectStore('txs');
-        await txsStore
-            .openCursor()
-            .then(function read(cursor): Promise<void> | undefined {
-                if (!cursor) {
-                    return;
-                }
-                const tx = cursor.value;
-                txs.push(tx);
-                return cursor.continue().then(read);
-            })
-            .then(() => {
-                db.deleteObjectStore('txs');
-            })
-            .then(() => {
-                const txsStore = db.createObjectStore('txs', {
-                    keyPath: ['tx.deviceState', 'tx.descriptor', 'tx.txid', 'tx.type'],
-                });
-                txsStore.createIndex('txid', 'tx.txid', { unique: false });
-                txsStore.createIndex('order', 'order', { unique: false });
-                txsStore.createIndex('blockTime', 'tx.blockTime', { unique: false });
-                txsStore.createIndex('deviceState', 'tx.deviceState', { unique: false });
-                txsStore.createIndex(
-                    'accountKey',
-                    ['tx.descriptor', 'tx.symbol', 'tx.deviceState'],
-                    {
-                        unique: false,
-                    },
-                );
-                return txsStore;
-            })
-            .then(txsStore => {
-                txs.forEach(tx => {
-                    tx.tx.deviceState = tx.tx.deviceState.replace('undefined', '0');
-                    txsStore.add(tx);
-                });
-            });
+        accounts.forEach(account => {
+            account.deviceState = account.deviceState.replace('undefined', '0');
+            account.key = account.key.replace('undefined', '0');
+            accountsStoreNew.add(account);
+        });
+
+        // transactions
+        const txsStoreOld = transaction.objectStore('txs');
+        const txs = await txsStoreOld.getAll();
+        db.deleteObjectStore('txs');
+
+        const txsStoreNew = db.createObjectStore('txs', {
+            keyPath: ['tx.deviceState', 'tx.descriptor', 'tx.txid', 'tx.type'],
+        });
+        txsStoreNew.createIndex('txid', 'tx.txid', { unique: false });
+        txsStoreNew.createIndex('order', 'order', { unique: false });
+        txsStoreNew.createIndex('blockTime', 'tx.blockTime', { unique: false });
+        txsStoreNew.createIndex('deviceState', 'tx.deviceState', { unique: false });
+        txsStoreNew.createIndex('accountKey', ['tx.descriptor', 'tx.symbol', 'tx.deviceState'], {
+            unique: false,
+        });
+
+        txs.forEach(tx => {
+            tx.tx.deviceState = tx.tx.deviceState.replace('undefined', '0');
+            txsStoreNew.add(tx);
+        });
 
         // graph
-        const graphs: GraphData[] = [];
-        const graphStore = transaction.objectStore('graph');
-        await graphStore
-            .openCursor()
-            .then(function read(cursor): Promise<void> | undefined {
-                if (!cursor) {
-                    return;
-                }
-                const graph = cursor.value;
-                graphs.push(graph);
-                return cursor.continue().then(read);
-            })
-            .then(() => {
-                db.deleteObjectStore('graph');
-            })
-            .then(() => {
-                // graph
-                const graphStore = db.createObjectStore('graph', {
-                    keyPath: ['account.descriptor', 'account.symbol', 'account.deviceState'],
-                });
-                graphStore.createIndex('accountKey', [
-                    'account.descriptor',
-                    'account.symbol',
-                    'account.deviceState',
-                ]);
+        const graphStoreOld = transaction.objectStore('graph');
+        const graphs = await graphStoreOld.getAll();
+        db.deleteObjectStore('graph');
 
-                graphStore.createIndex('deviceState', 'account.deviceState');
+        const graphStoreNew = db.createObjectStore('graph', {
+            keyPath: ['account.descriptor', 'account.symbol', 'account.deviceState'],
+        });
+        graphStoreNew.createIndex('accountKey', [
+            'account.descriptor',
+            'account.symbol',
+            'account.deviceState',
+        ]);
+        graphStoreNew.createIndex('deviceState', 'account.deviceState');
 
-                return graphStore;
-            })
-            .then(graphStore => {
-                graphs.forEach(graph => {
-                    graph.account.deviceState = graph.account.deviceState.replace('undefined', '0');
-                    graphStore.add(graph);
-                });
-            });
+        graphs.forEach(graph => {
+            graph.account.deviceState = graph.account.deviceState.replace('undefined', '0');
+            graphStoreNew.add(graph);
+        });
 
         // discovery
-        const discoveries: Discovery[] = [];
-        const discoveryStore = transaction.objectStore('discovery');
-        await discoveryStore
-            .openCursor()
-            .then(function read(cursor): Promise<void> | undefined {
-                if (!cursor) {
-                    return;
-                }
-                const discovery = cursor.value;
-                discoveries.push(discovery);
-                return cursor.continue().then(read);
-            })
-            .then(() => {
-                db.deleteObjectStore('discovery');
-            })
-            .then(() =>
-                // object store for discovery
-                db.createObjectStore('discovery', { keyPath: 'deviceState' }),
-            )
-            .then(discoveryStore => {
-                discoveries.forEach(discovery => {
-                    discovery.deviceState = discovery.deviceState.replace('undefined', '0');
-                    discoveryStore.add(discovery);
-                });
-            });
+        const discoveryStoreOld = transaction.objectStore('discovery');
+        const discoveries = await discoveryStoreOld.getAll();
+        db.deleteObjectStore('discovery');
+
+        const discoveryStoreNew = db.createObjectStore('discovery', { keyPath: 'deviceState' });
+
+        discoveries.forEach(discovery => {
+            discovery.deviceState = discovery.deviceState.replace('undefined', '0');
+            discoveryStoreNew.add(discovery);
+        });
     }
 
     if (oldVersion < 29) {
