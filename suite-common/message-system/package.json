@@ -6,7 +6,7 @@
     "sideEffects": false,
     "main": "src/index",
     "scripts": {
-        "build:lib": "yarn msg-system-types",
+        "build:lib": "yarn msg-system-types && yarn sign-config",
         "msg-system-types": "tsx ./scripts/generate-types.ts",
         "validate-config": "tsx ./scripts/validate-config.ts",
         "sign-config": "tsx ./scripts/sign-config.ts",
