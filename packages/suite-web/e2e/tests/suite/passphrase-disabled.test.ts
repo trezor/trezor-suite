@@ -4,7 +4,7 @@
 const DEFAULT_STANDARD_WALLET_LABEL = 'Standard wallet';
 const DEFAULT_HIDDEN_WALLET_LABEL = 'Hidden wallet #';
 
-describe.skip('Suite switch wallet modal', () => {
+describe('Suite switch wallet modal', () => {
     beforeEach(() => {
         cy.viewport(1080, 1440).resetDb();
         cy.task('startBridge');
@@ -40,8 +40,9 @@ describe.skip('Suite switch wallet modal', () => {
         cy.getTestElement('@suite/modal/confirm-action-on-device');
         cy.task('pressYes');
 
-        const passphaseToType = 'taxation is theft{enter}';
+        const passphaseToType = 'taxation is theft';
         cy.getTestElement('@passphrase/input').type(passphaseToType);
+        cy.getTestElement('@passphrase/hidden/submit-button').click();
 
         cy.task('pressYes');
         cy.task('pressYes');

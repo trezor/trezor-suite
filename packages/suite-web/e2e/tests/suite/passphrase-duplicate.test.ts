@@ -1,7 +1,7 @@
 // @group:passphrase
 // @retry=2
 
-describe.skip('Passphrase', () => {
+describe('Passphrase', () => {
     beforeEach(() => {
         cy.task('startEmu', { wipe: true });
         cy.task('setupEmu', { passphrase_protection: true });
@@ -15,7 +15,7 @@ describe.skip('Passphrase', () => {
     });
 
     it('passphrase duplicate', () => {
-        const passphraseToType = 'taxation is theft{enter}';
+        const passphraseToType = 'taxation is theft';
 
         // cy.getTestElement('@menu/switch-device').click();
         cy.getTestElement('@passphrase-type/standard').click();
@@ -26,6 +26,7 @@ describe.skip('Passphrase', () => {
         cy.getTestElement('@menu/switch-device').click();
         cy.getTestElement('@switch-device/add-hidden-wallet-button').click();
         cy.getTestElement('@passphrase/input').type(passphraseToType);
+        cy.getTestElement('@passphrase/hidden/submit-button').click();
 
         cy.task('pressYes');
         cy.task('pressYes');
@@ -47,6 +48,7 @@ describe.skip('Passphrase', () => {
         cy.task('pressYes');
 
         cy.getTestElement('@passphrase/input', { timeout: 10000 }).type(passphraseToType);
+        cy.getTestElement('@passphrase/hidden/submit-button').click();
 
         // duplicate passphrase modal appears;
         cy.getTestElement('@passphrase-duplicate');
