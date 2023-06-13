@@ -152,7 +152,6 @@ export const prepareTransactionsReducer = createReducerWithExtraDeps(
 
 // Used to define selector cache size
 const EXPECTED_MAX_NUMBER_OF_ACCOUNTS = 50;
-const EXPECTED_NUMBER_OF_TRANSACTIONS = 500;
 
 export const selectIsLoadingTransactions = (state: TransactionsRootState) =>
     state.wallet.transactions.isLoading;
@@ -193,13 +192,14 @@ export const selectPendingAccountAddresses = memoizeWithArgs(
 );
 
 // Note: Account key is passed because there can be duplication of TXIDs if self transaction was sent.
-export const selectTransactionByTxidAndAccountKey = memoizeWithArgs(
-    (state: TransactionsRootState, txid: string, accountKey: AccountKey) => {
-        const transactions = selectAccountTransactions(state, accountKey);
-        return transactions.find(tx => tx?.txid === txid) ?? null;
-    },
-    { size: EXPECTED_NUMBER_OF_TRANSACTIONS },
-);
+export const selectTransactionByTxidAndAccountKey = (
+    state: TransactionsRootState,
+    txid: string,
+    accountKey: AccountKey,
+) => {
+    const transactions = selectAccountTransactions(state, accountKey);
+    return transactions.find(tx => tx?.txid === txid) ?? null;
+};
 
 export const selectTransactionBlockTimeById = (
     state: TransactionsRootState,
