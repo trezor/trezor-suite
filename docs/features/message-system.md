@@ -62,7 +62,7 @@ To ensure the authenticity of a configuration file, JSON Web Signatures are used
 
 -   Signing of the configuration file is performed:
     -   in CI job in `prebuild` phase for distribution and
-    -   manually by `yarn message-system-sign-config` script for local development.
+    -   manually by `yarn message-system-sign-config` (or `yarn build:libs`) script for local development.
 -   The results are saved into `suite-common/message-system/files` as two files:
     -   `config.v1.jws` to be uploaded to `https://data.trezor.io/config/$environment/config.vX.jws`
     -   `config.v1.ts` to be bundled with application

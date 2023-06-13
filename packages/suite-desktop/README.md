@@ -20,7 +20,6 @@ Prerequisites:
 
 ```
 yarn && yarn build:libs
-yarn message-system-sign-config
 ```
 
 ### Linux

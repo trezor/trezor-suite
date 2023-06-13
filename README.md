@@ -50,7 +50,7 @@ Before you start make sure you have downloaded and installed [NVM](https://githu
 -   `git lfs pull`
 -   `nvm install`
 -   `yarn`
--   `yarn build:libs && yarn message-system-sign-config`
+-   `yarn build:libs`
 
 > It's recommended to enable `git config --global submodule.recurse true` so you don't need to run `git submodule update --init --recursive` every time when submodules are updated.
 
