@@ -6,8 +6,6 @@ import * as LocalAuthentication from 'expo-local-authentication';
 import { getIsBiometricsFeatureAvailable } from './isBiometricsFeatureAvailable';
 import { useIsBiometricsEnabled, useIsUserAuthenticated } from './biometricsAtoms';
 
-const HALF_MINUTE = 30_000;
-
 export const authenticate = async () => {
     const isBiometricsAvailable = await getIsBiometricsFeatureAvailable();
 
@@ -21,17 +19,18 @@ export const useBiometrics = () => {
     const { isBiometricsOptionEnabled } = useIsBiometricsEnabled();
     const appState = useRef(AppState.currentState);
     const { isUserAuthenticated, setIsUserAuthenticated } = useIsUserAuthenticated();
-    const goneToBackgroundAt = useRef(Number.MAX_SAFE_INTEGER);
 
     const handleAuthentication = useCallback(async () => {
         if (isBiometricsOptionEnabled && !isUserAuthenticated) {
-            if (goneToBackgroundAt.current > Date.now() - HALF_MINUTE) {
-                // Don't authenticate if app was in background less than 1 minute ago
-                setIsUserAuthenticated(true);
+            const result = await authenticate();
+
+            const resultHasError = result && !result.success;
+
+            // In some cases, if auth happens too quickly after closing app, it will fail with unknown error.
+            // User don't need to authenticate at this point. The library doesn't accept authentication that's been less than few seconds after closing app.
+            if (resultHasError && result.error.startsWith('unknown:')) {
                 return;
             }
-
-            const result = await authenticate();
 
             if (result && result?.success) {
                 setIsUserAuthenticated(true);
@@ -55,7 +54,6 @@ export const useBiometrics = () => {
 
             if (appState.current === 'active' && nextAppState !== 'active') {
                 setIsUserAuthenticated(false);
-                goneToBackgroundAt.current = Date.now();
             }
 
             appState.current = nextAppState;
