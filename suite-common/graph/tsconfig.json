@@ -2,6 +2,7 @@
     "extends": "../../tsconfig.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
+        { "path": "../fiat-services" },
         { "path": "../suite-config" },
         { "path": "../suite-utils" },
         { "path": "../test-utils" },

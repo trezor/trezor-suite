@@ -1,4 +1,4 @@
-import { A, D, pipe } from '@mobily/ts-belt';
+import { A, D, G, pipe } from '@mobily/ts-belt';
 import BigNumber from 'bignumber.js';
 import { fromUnixTime, getUnixTime } from 'date-fns';
 
@@ -7,6 +7,7 @@ import { NetworkSymbol } from '@suite-common/wallet-config';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { AccountBalanceHistory as AccountMovementHistory } from '@trezor/blockchain-link';
 import TrezorConnect from '@trezor/connect';
+import { getFiatRatesForTimestamps } from '@suite-common/fiat-services';
 
 import { NUMBER_OF_POINTS } from './constants';
 import {
@@ -69,6 +70,7 @@ export const getAccountBalanceHistory = async ({
             coin,
             descriptor,
             to: endTimeFrameTimestamp,
+            groupBy: 1,
             // we don't need currencies at all here, this will just reduce transferred data size
             // TODO: doesn't work at all, fix it in connect or blockchain-link?
             currencies: ['usd'],
@@ -115,6 +117,7 @@ const fiatRatesCache: Record<string, FiatRatesItem[]> = {};
 export const getFiatRatesForNetworkInTimeFrame = async (
     timestamps: number[],
     networkSymbol: NetworkSymbol,
+    fiatCurrency: FiatCurrencyCode,
 ) => {
     const cacheKey = `${networkSymbol}-${JSON.stringify(timestamps)}`;
 
@@ -122,30 +125,21 @@ export const getFiatRatesForNetworkInTimeFrame = async (
         return fiatRatesCache[cacheKey];
     }
 
-    const fiatRatesForDatesInRange = await TrezorConnect.blockchainGetFiatRatesForTimestamps({
-        coin: networkSymbol,
+    const fiatRates = await getFiatRatesForTimestamps(
+        { symbol: networkSymbol },
         timestamps,
-    }).then(res => {
-        if (res.success) {
-            if (timestamps.length !== res.payload.tickers.length) {
-                throw new Error(
-                    `Get fiat rates error: number of returned rates doesn't match number of requested timestamps`,
-                );
-            }
+        fiatCurrency,
+    );
+    if (G.isNullable(fiatRates)) return null;
 
-            return res.payload.tickers.map(({ rates }, index) => ({
-                // blockbook returns little bit different timestamps than we requested.
-                // It's probably mapping to closes that is in his database, so we remap it back to requested timestamps.
-                time: timestamps[index],
-                rates,
-            }));
-        }
-        throw new Error(`Get fiat rates error: ${res.payload.error}`);
-    });
+    const formattedFiatRates = fiatRates.tickers.map((ticker, index) => ({
+        time: timestamps[index],
+        rates: ticker.rates,
+    }));
 
-    fiatRatesCache[cacheKey] = fiatRatesForDatesInRange;
+    fiatRatesCache[cacheKey] = formattedFiatRates;
 
-    return fiatRatesForDatesInRange;
+    return formattedFiatRates;
 };
 
 export const getMultipleAccountBalanceHistoryWithFiat = async ({
@@ -201,9 +195,12 @@ export const getMultipleAccountBalanceHistoryWithFiat = async ({
     const coinsFiatRates = D.fromPairs(
         await Promise.all(
             coins.map(coin =>
-                getFiatRatesForNetworkInTimeFrame(timestamps, coin).then(
-                    res => [coin, res] as const,
-                ),
+                getFiatRatesForNetworkInTimeFrame(timestamps, coin, fiatCurrency).then(res => {
+                    if (res === null)
+                        throw new Error(`Unable to fetch fiat rates for defined timestamps.`);
+
+                    return [coin, res] as const;
+                }),
             ),
         ),
     );

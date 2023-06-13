@@ -12,6 +12,7 @@
     },
     "dependencies": {
         "@mobily/ts-belt": "^3.13.1",
+        "@suite-common/fiat-services": "workspace:*",
         "@suite-common/suite-config": "workspace:*",
         "@suite-common/suite-utils": "workspace:*",
         "@suite-common/test-utils": "workspace:*",

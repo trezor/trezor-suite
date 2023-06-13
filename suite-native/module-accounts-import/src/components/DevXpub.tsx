@@ -18,7 +18,7 @@ const devXpubs: Partial<Record<NetworkSymbol, string>> = {
     dgb: 'ypub6X7pNV6ouYFiDGHjxCtbnV9EaCdq5uyVysMbR5Q79LHa3SWV93J7ubun37EJhfFQqsSGQBfz3UrAzNtYNhb5JsoPJbNKvbF9wKxBjgxfXkH',
     zec: 'xpub6DNsg962rV1MeqmathySUG2oKso9MfT2hMXCsMp6qemGWwD9xssVM61DfcAUUEaX2G8tjaaoKKppoKtFcSK8KVaMFHmZjAgyqod4DwXopPE',
     eth: '0x62270860B9a5337e46bE8563c512c9137AFa0384', // Public key, not xpub
-    ada: 'd507c8f866691bd96e131334c355188b1a1d0b2fa0ab11545075aab332d77d9eb19657ad13ee581b56b0f8d744d66ca356b93d42fe176b3de007d53e9c4c4e7a',
+    ada: '432505dc5010ec888c650319035dff62f964002f02473fa7fd65dd67f9bd80b327674cabf29c39a14c367dbae5ee01f967f8b4c3ad63a45468da8f28bb2e03d5',
     txrp: 'rJX2KwzaLJDyFhhtXKi3htaLfaUH2tptEX',
 };
 

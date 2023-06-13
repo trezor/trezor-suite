@@ -22,6 +22,7 @@ import {
     accountGraphDataFilterFn,
     deviceGraphDataFilterFn,
 } from '../../utils/wallet/graphUtils';
+import { selectLocalCurrency } from '../../reducers/wallet/settingsReducer';
 
 export type GraphAction =
     | {
@@ -70,7 +71,7 @@ export const setSelectedView = (view: GraphScale): GraphAction => ({
  * @returns
  */
 export const fetchAccountGraphData =
-    (account: Account) => async (dispatch: Dispatch, _getState: GetState) => {
+    (account: Account) => async (dispatch: Dispatch, getState: GetState) => {
         dispatch({
             type: ACCOUNT_GRAPH_START,
             payload: {
@@ -85,6 +86,7 @@ export const fetchAccountGraphData =
             },
         });
 
+        const localCurrency = selectLocalCurrency(getState());
         const response = await TrezorConnect.blockchainGetAccountBalanceHistory({
             coin: account.symbol,
             descriptor: account.descriptor,
@@ -92,7 +94,11 @@ export const fetchAccountGraphData =
         });
 
         if (response?.success) {
-            const responseWithRates = await ensureHistoryRates(account.symbol, response.payload);
+            const responseWithRates = await ensureHistoryRates(
+                account.symbol,
+                response.payload,
+                localCurrency,
+            );
 
             const enhancedResponse = enhanceBlockchainAccountHistory(
                 responseWithRates,
