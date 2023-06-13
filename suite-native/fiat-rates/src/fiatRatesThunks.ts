@@ -40,7 +40,11 @@ export const updateTxsFiatRatesThunk = createThunk(
         try {
             const results = response.success
                 ? response.payload
-                : await getFiatRatesForTimestamps({ symbol: account.symbol }, timestamps);
+                : await getFiatRatesForTimestamps(
+                      { symbol: account.symbol },
+                      timestamps,
+                      localCurrency,
+                  );
 
             if (results && 'tickers' in results) {
                 dispatch(
