@@ -52,6 +52,8 @@ const AppComponent = () => {
         }
     }, [isAppReady]);
 
+    if (!isAppReady) return null;
+
     return (
         <FormatterProvider config={formattersConfig}>
             <AuthenticatorProvider>
