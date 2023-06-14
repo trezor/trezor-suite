@@ -10,8 +10,7 @@
  */
 
 import { createDeferred, Deferred } from '@trezor/utils';
-
-import { TypedEmitter } from '../types/typed-emitter';
+import { TypedEmitter } from '@trezor/utils/lib/typedEventEmitter';
 
 import type {
     EnumerateDoneRequest,
@@ -36,7 +35,7 @@ export class SessionsBackground extends TypedEmitter<{
      * updated descriptors (session has changed)
      * note: we can't send diff from here (see abtract transport) altough it would make sense, because we need to support also bridge which  does not use this sessions background.
      */
-    ['descriptors']: Descriptor[];
+    descriptors: Descriptor[];
 }> {
     /**
      * Dictionary where key is path and value is session

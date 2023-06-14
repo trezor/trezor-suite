@@ -1,5 +1,6 @@
 import * as protobuf from 'protobufjs/light';
 import { scheduleAction, ScheduleActionParams, ScheduledAction, Deferred } from '@trezor/utils';
+import { TypedEmitter } from '@trezor/utils/lib/typedEventEmitter';
 
 import {
     MessageFromTrezor,
@@ -12,7 +13,6 @@ import {
     AnyError,
     Logger,
 } from '../types';
-import { TypedEmitter } from '../types/typed-emitter';
 import { success, error, unknownError } from '../utils/result';
 
 import * as ERRORS from '../errors';
