@@ -30,7 +30,7 @@ export const EthereumTokenInfo = ({
 }: EthereumTokenInfoProps) => {
     const ethereumSymbolHasFiatRates = useSelector(
         (state: FiatRatesRootState & SettingsSliceRootState) =>
-            selectEthereumTokenHasFiatRates(state, contract, symbol),
+            selectEthereumTokenHasFiatRates(state, contract),
     );
 
     if (!symbol || !balance || !name || !ethereumSymbolHasFiatRates) return null;

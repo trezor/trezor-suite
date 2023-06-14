@@ -82,9 +82,7 @@ export const selectEthereumAccountTokenTransactions = memoizeWithArgs(
 export const selectEthereumTokenHasFiatRates = (
     state: FiatRatesRootState & SettingsSliceRootState,
     contract: TokenAddress,
-    tokenSymbol?: TokenSymbol,
 ) => {
-    if (!tokenSymbol) return false;
     const fiatCurrencyCode = selectFiatCurrencyCode(state);
     const fiatRateKey = getFiatRateKeyFromTicker(
         {
@@ -114,11 +112,7 @@ const selectAccountTransactionsWithTokensWithFiatRates = memoizeWithArgs(
                     transaction.tokens,
                     A.filter(isNotZeroAmountTranfer),
                     A.filter(token =>
-                        selectEthereumTokenHasFiatRates(
-                            state,
-                            token.contract as TokenAddress,
-                            token.symbol as TokenSymbol,
-                        ),
+                        selectEthereumTokenHasFiatRates(state, token.contract as TokenAddress),
                     ),
                     A.map((tokenTransfer: TokenTransfer) => ({
                         ...tokenTransfer,
@@ -161,11 +155,7 @@ export const selectEthereumAccountsTokensWithFiatRates = memoizeWithArgs(
         const account = selectAccountByKey(state, ethereumAccountKey);
         if (!account || !isEthereumAccountSymbol(account.symbol)) return [];
         return A.filter(account.tokens ?? [], token =>
-            selectEthereumTokenHasFiatRates(
-                state,
-                token.contract as TokenAddress,
-                token.symbol as TokenSymbol,
-            ),
+            selectEthereumTokenHasFiatRates(state, token.contract as TokenAddress),
         ) as TokenInfoBranded[];
     },
     { size: 50 },
@@ -182,11 +172,7 @@ export const selectIsEthereumAccountWithTokensWithFiatRates = (
         return false;
     return A.isNotEmpty(
         A.filterMap(account.tokens, token =>
-            selectEthereumTokenHasFiatRates(
-                state,
-                token.contract as TokenAddress,
-                token.symbol as TokenSymbol,
-            ),
+            selectEthereumTokenHasFiatRates(state, token.contract as TokenAddress),
         ),
     );
 };
