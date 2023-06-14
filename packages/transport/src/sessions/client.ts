@@ -1,5 +1,6 @@
 import { getWeakRandomId } from '@trezor/utils';
-import { TypedEmitter } from '../types/typed-emitter';
+import { TypedEmitter } from '@trezor/utils/lib/typedEventEmitter';
+
 import { Descriptor } from '../types';
 import {
     EnumerateDoneRequest,
@@ -17,7 +18,7 @@ import { SessionsBackground } from './background';
  * You should provide your own communication method in requestFn param (direct module access, sharedworker messages...)
  */
 export class SessionsClient extends TypedEmitter<{
-    ['descriptors']: Descriptor[];
+    descriptors: Descriptor[];
 }> {
     // request method responsible for communication with sessions background.
     private request: SessionsBackground['handleMessage'];
