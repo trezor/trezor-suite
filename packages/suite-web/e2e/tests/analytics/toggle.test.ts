@@ -9,7 +9,7 @@ let requests: Requests;
 const instance = new RegExp(/^[A-Za-z0-9]{10,10}$/);
 const timestamp = new RegExp(/^[0-9]{13,16}$/);
 
-describe('Analytics', () => {
+describe('Analytics Toggle - Enablement and Disablement', () => {
     beforeEach(() => {
         cy.task('startEmu', { wipe: true });
         cy.task('setupEmu');
