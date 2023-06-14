@@ -542,6 +542,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
         // TODO: cleanup everything
         _log.debug('Disconnect cleanup');
 
+        this.activitySessionID = null; // set to null to prevent transport.release
         this.interruptionFromUser(ERRORS.TypedError('Device_Disconnected'));
         this.runPromise = null;
     }
