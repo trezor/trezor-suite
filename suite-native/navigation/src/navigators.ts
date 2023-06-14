@@ -2,7 +2,8 @@ import { NavigatorScreenParams } from '@react-navigation/native';
 
 import { AccountKey, TokenAddress, XpubAddress } from '@suite-common/wallet-types';
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { AccountInfo, TokenTransfer } from '@trezor/connect';
+import { AccountInfo } from '@trezor/connect';
+import { EthereumTokenTransfer } from '@suite-native/ethereum-tokens';
 
 import {
     AppTabsRoutes,
@@ -94,7 +95,7 @@ export type RootStackParamList = {
     [RootStackRoutes.TransactionDetail]: {
         txid: string;
         accountKey: AccountKey;
-        tokenTransfer?: TokenTransfer;
+        tokenTransfer?: EthereumTokenTransfer;
     };
     [RootStackRoutes.DevUtilsStack]: undefined;
     [RootStackRoutes.AccountDetail]: {

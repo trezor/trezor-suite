@@ -6,7 +6,7 @@ import {
 } from '@suite-common/wallet-types';
 
 export type EthereumTokenTransfer = Omit<TokenTransfer, 'symbol' | 'contract'> & {
-    symbol: TokenSymbol;
+    symbol?: TokenSymbol;
     contract: TokenAddress;
 };
 
