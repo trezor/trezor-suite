@@ -100,14 +100,14 @@ export class BlockfrostAPI extends TypedEmitter<BlockfrostEvents> {
     async onPing() {
         // make sure that connection is alive if there are subscriptions
         if (this.ws && this.isConnected()) {
-            if (this.subscriptions.length > 0 || this.options.keepAlive) {
-                await this.getBlockHash(1);
-            } else {
-                try {
+            try {
+                if (this.subscriptions.length > 0 || this.options.keepAlive) {
+                    await this.getBlockHash(1);
+                } else {
                     this.ws.close();
-                } catch (error) {
-                    // empty
                 }
+            } catch (error) {
+                // empty
             }
         }
     }
