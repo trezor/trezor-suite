@@ -7534,7 +7534,9 @@ __metadata:
     "@tippyjs/react": ^4.2.6
     "@trezor/device-utils": "workspace:*"
     "@trezor/dom-utils": "workspace:*"
+    "@trezor/env-utils": "workspace:*"
     "@trezor/react-utils": "workspace:*"
+    "@trezor/utils": "workspace:*"
     "@types/react": 18.0.32
     "@types/react-date-range": ^1.4.4
     "@types/react-truncate": ^2.3.4

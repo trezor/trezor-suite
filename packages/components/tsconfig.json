@@ -12,6 +12,8 @@
     "references": [
         { "path": "../device-utils" },
         { "path": "../dom-utils" },
-        { "path": "../react-utils" }
+        { "path": "../env-utils" },
+        { "path": "../react-utils" },
+        { "path": "../utils" }
     ]
 }
