@@ -93,17 +93,17 @@ export const buttonSchemeToColorsMap = {
 
 const sizeToDimensionsMap = {
     small: {
-        height: 40,
+        minHeight: 40,
         paddingVertical: 10,
         paddingHorizontal: nativeSpacings.medium,
     },
     medium: {
-        height: 48,
+        minHeight: 48,
         paddingVertical: 12,
         paddingHorizontal: 20,
     },
     large: {
-        height: 56,
+        minHeight: 56,
         paddingVertical: nativeSpacings.medium,
         paddingHorizontal: nativeSpacings.large,
     },
@@ -210,6 +210,7 @@ export const Button = ({
             >
                 {iconLeft && icon}
                 <Text
+                    align="center"
                     variant={textSizeToVariantMap[size]}
                     color={isDisabled ? disabledTextColor : textColor}
                 >

@@ -47,6 +47,8 @@ const assetContentStyle = prepareNativeStyle(() => ({
     marginLeft: 10,
 }));
 
+const assetValuesStyle = prepareNativeStyle(_ => ({ maxWidth: '60%' }));
+
 const iconStyle = prepareNativeStyle(() => ({
     marginRight: 6,
 }));
@@ -108,7 +110,7 @@ export const AssetItem = React.memo(
                                 </Text>
                             </Box>
                         </Box>
-                        <Box alignItems="flex-end">
+                        <Box alignItems="flex-end" style={applyStyle(assetValuesStyle)}>
                             <FiatAmountFormatter
                                 network={cryptoCurrencySymbol}
                                 value={fiatBalance}

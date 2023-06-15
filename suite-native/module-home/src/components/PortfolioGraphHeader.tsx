@@ -35,6 +35,13 @@ const headerStyle = prepareNativeStyle(utils => ({
     marginBottom: utils.spacings.small,
 }));
 
+const dateAndPriceChangeContainerStyle = prepareNativeStyle(_ => ({
+    flexDirection: 'row',
+    alignItems: 'center',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+}));
+
 const Balance = () => {
     const point = useAtomValue(selectedPointAtom);
 
@@ -60,7 +67,7 @@ export const PortfolioGraphHeader = () => {
                     My portfolio balance
                 </Text>
                 <Balance />
-                <Box flexDirection="row" alignItems="center">
+                <Box style={applyStyle(dateAndPriceChangeContainerStyle)}>
                     <Box marginRight="small">
                         <Text variant="hint" color="textSubdued">
                             <GraphDateFormatter

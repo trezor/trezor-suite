@@ -11,6 +11,7 @@ import { LayoutChangeEvent, Pressable } from 'react-native';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { Box } from './Box';
+import { TITLE_MAX_FONT_MULTIPLIER } from './Text';
 
 type ToggleProps = {
     leftLabel: string;
@@ -103,13 +104,17 @@ export const Toggle = ({ leftLabel, rightLabel, isToggled, onToggle }: TogglePro
                     />
                     <Box flexDirection="row" style={applyStyle(labelsContainerStyle)}>
                         <Box flex={1} alignItems="center" justifyContent="center">
-                            <Animated.Text style={[applyStyle(labelStyle), animatedLeftLabelStyle]}>
+                            <Animated.Text
+                                style={[applyStyle(labelStyle), animatedLeftLabelStyle]}
+                                maxFontSizeMultiplier={TITLE_MAX_FONT_MULTIPLIER}
+                            >
                                 {leftLabel}
                             </Animated.Text>
                         </Box>
                         <Box flex={1} alignItems="center" justifyContent="center">
                             <Animated.Text
                                 style={[applyStyle(labelStyle), animatedRightLabelStyle]}
+                                maxFontSizeMultiplier={TITLE_MAX_FONT_MULTIPLIER}
                             >
                                 {rightLabel}
                             </Animated.Text>

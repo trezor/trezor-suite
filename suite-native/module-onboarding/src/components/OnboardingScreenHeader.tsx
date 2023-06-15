@@ -10,6 +10,7 @@ type OnboardingScreenHeaderProps = {
 };
 
 const titleStyle = prepareNativeStyle(() => ({
+    textAlign: 'center',
     marginBottom: 12,
 }));
 

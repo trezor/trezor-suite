@@ -23,6 +23,7 @@ export const AccountImportOverview = ({ balance, networkSymbol }: AssetsOverview
             <CryptoAmountFormatter
                 value={balance}
                 network={networkSymbol}
+                isDiscreetText={false}
                 isBalance={false}
                 variant="label"
             />

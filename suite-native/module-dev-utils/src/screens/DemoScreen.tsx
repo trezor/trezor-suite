@@ -47,6 +47,10 @@ const textVariants: TypographyStyle[] = [
     'label',
 ];
 
+const flexWrapStyle = prepareNativeStyle(_ => ({
+    flexWrap: 'wrap',
+}));
+
 export const DemoScreen = () => {
     const { applyStyle } = useNativeStyles();
     const [input2Text, setInput2Text] = useState<string>('');
@@ -81,7 +85,7 @@ export const DemoScreen = () => {
             <VStack spacing="medium">
                 <VStack>
                     <Text variant="titleSmall">Badge:</Text>
-                    <HStack justifyContent="center">
+                    <HStack justifyContent="center" style={applyStyle(flexWrapStyle)}>
                         {badgeVariants.map(badgeVariant => (
                             <Badge
                                 key={badgeVariant}
@@ -112,6 +116,7 @@ export const DemoScreen = () => {
                                 flexDirection="row"
                                 justifyContent="space-around"
                                 alignItems="center"
+                                style={applyStyle(flexWrapStyle)}
                             >
                                 <Button colorScheme={buttonScheme} size="large" iconLeft="calendar">
                                     Large
