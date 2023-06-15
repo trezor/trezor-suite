@@ -23,6 +23,7 @@ import {
     signTx,
     signTxLegacy,
     verifyTx,
+    parseTransactionHexes,
 } from './bitcoin';
 import type { ComposeOutput } from '@trezor/utxo-lib';
 import type { BitcoinNetworkInfo, DiscoveryAccount, AccountUtxo } from '../types';
@@ -360,9 +361,10 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
         const requiredRefTxs = requireReferencedTransactions(inputs, options, coinInfo);
         const refTxsIds = getReferencedTransactions(inputs);
         if (requiredRefTxs && refTxsIds.length > 0) {
-            const blockchain = await initBlockchain(coinInfo, this.postMessage);
-            const rawTxs = await blockchain.getTransactions(refTxsIds);
-            refTxs = transformReferencedTransactions(rawTxs, coinInfo);
+            refTxs = await initBlockchain(coinInfo, this.postMessage)
+                .then(blockchain => blockchain.getTransactionHexes(refTxsIds))
+                .then(parseTransactionHexes(coinInfo.network))
+                .then(transformReferencedTransactions);
         }
 
         const signTxMethod = !this.device.unavailableCapabilities.replaceTransaction

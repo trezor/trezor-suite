@@ -1,19 +1,25 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/tx/refTx.js
 
 import {
+    address as BitcoinJsAddress,
     payments as BitcoinJsPayments,
     Transaction as BitcoinJsTransaction,
+    Network,
 } from '@trezor/utxo-lib';
 import { bufferUtils } from '@trezor/utils';
 import { getHDPath, getScriptType, getOutputScriptType } from '../../utils/pathUtils';
 import { validateParams } from '../common/paramsValidator';
 import { TypedError } from '../../constants/errors';
-import type { TypedRawTransaction } from '@trezor/blockchain-link';
 import type {
     TxInput as BitcoinJsInput,
     TxOutput as BitcoinJsOutput,
 } from '@trezor/utxo-lib/lib/transaction/base';
-import type { CoinInfo, AccountAddresses, AccountTransaction } from '../../types';
+import type {
+    CoinInfo,
+    AccountAddresses,
+    AccountTransaction,
+    BitcoinNetworkInfo,
+} from '../../types';
 import type { RefTransaction, TransactionOptions } from '../../types/api/bitcoin';
 import type { PROTO } from '../../constants';
 
@@ -62,6 +68,9 @@ export const getOrigTransactions = (
     return result;
 };
 
+export const parseTransactionHexes = (network?: Network) => (hexes: string[]) =>
+    hexes.map(hex => BitcoinJsTransaction.fromHex(hex, { network }));
+
 // extend refTx object with optional data
 const enhanceTransaction = (refTx: RefTransaction, srcTx: BitcoinJsTransaction): RefTransaction => {
     const extraData = srcTx.getExtraData();
@@ -80,39 +89,49 @@ const enhanceTransaction = (refTx: RefTransaction, srcTx: BitcoinJsTransaction):
     return refTx;
 };
 
+const parseOutputScript = (output: Buffer, network?: Network) => {
+    try {
+        const address = BitcoinJsAddress.fromOutputScript(output, network);
+        return { type: 'address', address } as const;
+    } catch {
+        try {
+            const { data } = BitcoinJsPayments.embed({ output }, { validate: true });
+            return { type: 'data', data } as const;
+        } catch {
+            return { type: 'unknown' } as const;
+        }
+    }
+};
+
 // Transform orig transactions from Blockbook (blockchain-link) to Trezor format
 const transformOrigTransaction = (
-    origTx: Pick<AccountTransaction['details'], 'vin' | 'vout'> & {
-        txid: string;
-    },
     tx: BitcoinJsTransaction,
+    coinInfo: BitcoinNetworkInfo,
+    currentInputs: PROTO.TxInputType[],
     addresses: AccountAddresses,
 ): RefTransaction => {
-    const { vin, vout, txid } = origTx;
-    const inputAddresses = addresses.used.concat(addresses.change).concat(addresses.unused);
-
     // inputs, required by TXORIGINPUT (TxAckInput) request from Trezor
     const inputsMap = (input: BitcoinJsInput, i: number) => {
-        const rawInput = vin[i];
-        if (!rawInput?.value || !rawInput?.addresses || rawInput.addresses.length !== 1) {
+        const prev_hash = bufferUtils.reverseBuffer(input.hash).toString('hex');
+        const currentInput = currentInputs.find(
+            inp => inp.prev_hash === prev_hash && inp.prev_index === input.index,
+        );
+        if (!currentInput?.address_n) {
             throw TypedError(
                 'Method_InvalidParameter',
-                `transformOrigTransactions: invalid input at ${txid} [${i}]`,
+                `transformOrigTransactions: invalid input at ${tx.getId()} [${i}]`,
             );
         }
-        const [address] = rawInput.addresses;
-        const inputAddress = inputAddresses.find(addr => addr.address === address);
-        const address_n = getHDPath(inputAddress?.path || ''); // throw error on invalid path
 
         return {
-            address_n,
-            prev_hash: bufferUtils.reverseBuffer(input.hash).toString('hex'),
+            address_n: currentInput.address_n,
+            prev_hash,
             prev_index: input.index,
             script_sig: input.script.toString('hex'),
             sequence: input.sequence,
-            script_type: getScriptType(address_n),
+            script_type: getScriptType(currentInput.address_n),
             multisig: undefined, // TODO
-            amount: rawInput.value,
+            amount: currentInput.amount,
             decred_tree: undefined, // TODO
             witness: tx.getWitness(i)?.toString('hex'),
             ownership_proof: undefined, // TODO
@@ -125,43 +144,46 @@ const transformOrigTransaction = (
         output: BitcoinJsOutput,
         i: number,
     ): Required<RefTransaction>['outputs'][number] => {
-        const rawOutput = vout[i];
-        if (!rawOutput.isAddress) {
-            const { data } = BitcoinJsPayments.embed({ output: output.script });
-            const op_return_data = data?.shift()?.toString('hex'); // shift OP code
-            if (typeof op_return_data !== 'string') {
+        const parsed = parseOutputScript(output.script, coinInfo.network);
+        switch (parsed.type) {
+            case 'data': {
+                const op_return_data = parsed.data?.shift()?.toString('hex'); // shift OP code
+                if (typeof op_return_data !== 'string') {
+                    throw TypedError(
+                        'Method_InvalidParameter',
+                        `transformOrigTransactions: invalid op_return_data at ${tx.getId()} [${i}]`,
+                    );
+                }
+                return {
+                    script_type: 'PAYTOOPRETURN',
+                    amount: '0',
+                    op_return_data,
+                };
+            }
+            case 'address': {
+                const { address } = parsed;
+                const changeAddress = addresses.change.find(addr => addr.address === address);
+                const address_n = changeAddress && getHDPath(changeAddress.path);
+                const amount = output.value.toString();
+                return address_n
+                    ? {
+                          address_n,
+                          amount,
+                          script_type: getOutputScriptType(address_n),
+                      }
+                    : {
+                          address,
+                          amount,
+                          script_type: 'PAYTOADDRESS',
+                      };
+            }
+            case 'unknown':
+            default:
                 throw TypedError(
                     'Method_InvalidParameter',
-                    `transformOrigTransactions: invalid op_return_data at ${txid} [${i}]`,
+                    `transformOrigTransactions: invalid output at ${tx.getId()} [${i}]`,
                 );
-            }
-            return {
-                script_type: 'PAYTOOPRETURN',
-                amount: '0',
-                op_return_data,
-            };
         }
-        if (!rawOutput.addresses || rawOutput.addresses.length !== 1) {
-            throw TypedError(
-                'Method_InvalidParameter',
-                `transformOrigTransactions: invalid output at ${txid} [${i}]`,
-            );
-        }
-        const [address] = rawOutput.addresses;
-        const changeAddress = addresses.change.find(addr => addr.address === address);
-        const address_n = changeAddress && getHDPath(changeAddress.path);
-        const amount = output.value.toString();
-        return address_n
-            ? {
-                  address_n,
-                  amount,
-                  script_type: getOutputScriptType(address_n),
-              }
-            : {
-                  address,
-                  amount,
-                  script_type: 'PAYTOADDRESS',
-              };
     };
 
     const refTx: RefTransaction = {
@@ -177,22 +199,13 @@ const transformOrigTransaction = (
     return enhanceTransaction(refTx, tx);
 };
 
-const isTransactionWithHex = (
-    tx: TypedRawTransaction,
-): tx is Extract<TypedRawTransaction, { type: 'blockbook' }> & { tx: { hex: string } } =>
-    tx.type === 'blockbook' && !!tx.tx.hex;
-
 export const transformOrigTransactions = (
-    txs: TypedRawTransaction[],
-    coinInfo: CoinInfo,
-    addresses?: AccountAddresses,
+    txs: BitcoinJsTransaction[],
+    coinInfo: BitcoinNetworkInfo,
+    currentInputs: PROTO.TxInputType[],
+    addresses: AccountAddresses,
 ): RefTransaction[] =>
-    coinInfo.type !== 'bitcoin' || !addresses
-        ? []
-        : txs.filter(isTransactionWithHex).map(raw => {
-              const tx = BitcoinJsTransaction.fromHex(raw.tx.hex, { network: coinInfo.network });
-              return transformOrigTransaction(raw.tx, tx, addresses);
-          });
+    txs.map(tx => transformOrigTransaction(tx, coinInfo, currentInputs, addresses));
 
 // Transform referenced transactions from Blockbook (blockchain-link) to Trezor format
 export const transformReferencedTransaction = (tx: BitcoinJsTransaction): RefTransaction => {
@@ -223,48 +236,8 @@ export const transformReferencedTransaction = (tx: BitcoinJsTransaction): RefTra
     return enhanceTransaction(refTx, tx);
 };
 
-export const transformReferencedTransactions = (
-    txs: TypedRawTransaction[],
-    coinInfo: CoinInfo,
-): RefTransaction[] =>
-    coinInfo.type !== 'bitcoin'
-        ? []
-        : txs.filter(isTransactionWithHex).map(raw => {
-              const tx = BitcoinJsTransaction.fromHex(raw.tx.hex, { network: coinInfo.network });
-              return transformReferencedTransaction(tx);
-          });
-
-const transformAccountToOrigTransaction = ({
-    tx,
-    addresses,
-    coinInfo,
-}: {
-    tx: AccountTransaction;
-    coinInfo: CoinInfo;
-    addresses?: AccountAddresses;
-}): RefTransaction => {
-    if (!tx.hex)
-        throw TypedError('Method_InvalidParameter', `refTx: hex for ${tx.txid} not provided`);
-    if (!addresses)
-        throw TypedError('Method_InvalidParameter', `refTx: addresses for ${tx.txid} not provided`);
-
-    const srcTx = BitcoinJsTransaction.fromHex(tx.hex, { network: coinInfo.network });
-    return transformOrigTransaction({ ...tx.details, txid: tx.txid }, srcTx, addresses);
-};
-
-const transformAccountToReferencedTransaction = ({
-    tx,
-    coinInfo,
-}: {
-    tx: AccountTransaction;
-    coinInfo: CoinInfo;
-}): RefTransaction => {
-    if (!tx.hex)
-        throw TypedError('Method_InvalidParameter', `refTx: hex for ${tx.txid} not provided`);
-
-    const srcTx = BitcoinJsTransaction.fromHex(tx.hex, { network: coinInfo.network });
-    return transformReferencedTransaction(srcTx);
-};
+export const transformReferencedTransactions = (txs: BitcoinJsTransaction[]): RefTransaction[] =>
+    txs.map(transformReferencedTransaction);
 
 // Validate referenced transactions provided by the user.
 // Data sent as response to TxAck needs to be strict.
@@ -280,7 +253,7 @@ export const validateReferencedTransactions = ({
     inputs: PROTO.TxInputType[];
     outputs: PROTO.TxOutputType[];
     addresses?: AccountAddresses;
-    coinInfo: CoinInfo;
+    coinInfo: BitcoinNetworkInfo;
 }): RefTransaction[] | undefined => {
     if (!Array.isArray(transactions) || transactions.length === 0) return; // allow empty, they will be downloaded later...
     // collect sets of transactions defined by inputs/outputs
@@ -289,10 +262,23 @@ export const validateReferencedTransactions = ({
     const transformedTxs: RefTransaction[] = transactions.map(tx => {
         // transform AccountTransaction to RefTransaction
         if ('details' in tx) {
+            if (!tx.hex)
+                throw TypedError(
+                    'Method_InvalidParameter',
+                    `refTx: hex for ${tx.txid} not provided`,
+                );
+
+            const srcTx = BitcoinJsTransaction.fromHex(tx.hex, { network: coinInfo.network });
+
             if (origTxs.includes(tx.txid)) {
-                return transformAccountToOrigTransaction({ tx, addresses, coinInfo });
+                if (!addresses)
+                    throw TypedError(
+                        'Method_InvalidParameter',
+                        `refTx: addresses for ${tx.txid} not provided`,
+                    );
+                return transformOrigTransaction(srcTx, coinInfo, inputs, addresses);
             }
-            return transformAccountToReferencedTransaction({ tx, coinInfo });
+            return transformReferencedTransaction(srcTx);
         }
         // validate common fields
         // TODO: detailed params validation will be addressed in https://github.com/trezor/connect/pull/782
