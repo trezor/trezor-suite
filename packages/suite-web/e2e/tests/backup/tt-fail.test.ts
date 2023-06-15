@@ -1,10 +1,9 @@
-import { urlSearchParams } from '@trezor/suite/src/utils/suite/metadata';
 import { EventType, SuiteAnalyticsEvent } from '@trezor/suite-analytics';
+import { Requests } from '../../support/utils/shortcuts';
 
 // @group:device-management
 // @retry=2
 
-type Requests = ReturnType<typeof urlSearchParams>[];
 let requests: Requests;
 
 describe('Backup fail', () => {
@@ -16,11 +15,8 @@ describe('Backup fail', () => {
         cy.prefixedVisit('/');
         cy.passThroughInitialRun();
 
-        cy.intercept({ hostname: 'data.trezor.io', url: '/suite/log/**' }, req => {
-            const params = urlSearchParams(req.url);
-            requests.push(params);
-        });
         requests = [];
+        cy.interceptDataTrezorIo(requests);
     });
 
     it('Backup failed - device disconnected during action', () => {

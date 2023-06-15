@@ -1,10 +1,9 @@
 // @group:settings
 // @retry=2
 
-import { urlSearchParams } from '@trezor/suite/src/utils/suite/metadata';
 import { EventType, SuiteAnalyticsEvent } from '@trezor/suite-analytics';
+import { Requests } from '../../support/utils/shortcuts';
 
-type Requests = ReturnType<typeof urlSearchParams>[];
 let requests: Requests;
 
 describe('General settings', () => {
@@ -19,10 +18,7 @@ describe('General settings', () => {
         cy.discoveryShouldFinish();
 
         requests = [];
-        cy.intercept({ hostname: 'data.trezor.io', url: '/suite/log/**' }, req => {
-            const params = urlSearchParams(req.url);
-            requests.push(params);
-        });
+        cy.interceptDataTrezorIo(requests);
     });
 
     it('Change settings on "general settings" page', () => {

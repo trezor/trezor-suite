@@ -20,10 +20,7 @@ describe('Analytics Toggle - Enablement and Disablement', () => {
     });
 
     it('should respect disabled analytics in onboarding with following enabling in settings', () => {
-        cy.intercept({ hostname: 'data.trezor.io', url: '/suite/log/**' }, req => {
-            const params = urlSearchParams(req.url);
-            requests.push(params);
-        }).as('data-fetch');
+        cy.interceptDataTrezorIo(requests).as('data-fetch');
 
         cy.prefixedVisit('/');
 
@@ -114,10 +111,7 @@ describe('Analytics Toggle - Enablement and Disablement', () => {
     });
 
     it('should respect enabled analytics in onboarding with following disabling in settings', () => {
-        cy.intercept({ hostname: 'data.trezor.io', url: '/suite/log/**' }, req => {
-            const params = urlSearchParams(req.url);
-            requests.push(params);
-        }).as('data-fetch');
+        cy.interceptDataTrezorIo(requests).as('data-fetch');
 
         cy.prefixedVisit('/');
 

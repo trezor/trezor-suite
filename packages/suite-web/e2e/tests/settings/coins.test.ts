@@ -1,10 +1,9 @@
 // @group:settings
 // @retry=2
 
-import { urlSearchParams } from '@trezor/suite/src/utils/suite/metadata';
 import { EventType, SuiteAnalyticsEvent } from '@trezor/suite-analytics';
+import { Requests } from '../../support/utils/shortcuts';
 
-type Requests = ReturnType<typeof urlSearchParams>[];
 let requests: Requests;
 
 describe('Coin Settings', () => {
@@ -17,10 +16,7 @@ describe('Coin Settings', () => {
         cy.passThroughInitialRun();
 
         requests = [];
-        cy.intercept({ hostname: 'data.trezor.io', url: '/suite/log/**' }, req => {
-            const params = urlSearchParams(req.url);
-            requests.push(params);
-        });
+        cy.interceptDataTrezorIo(requests);
     });
 
     it('go to wallet settings page, check BTC, activate all coins, deactivate all coins, set custom backend', () => {
