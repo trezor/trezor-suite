@@ -165,12 +165,15 @@ export const selectAccountsByNetworkAndDevice = memoizeWithArgs(
     },
 );
 
-export const selectAccountLabel = (state: AccountsRootState, accountKey: AccountKey): string | null => {
-  const account = selectAccountByKey(state, accountKey);
+export const selectAccountLabel = (
+    state: AccountsRootState,
+    accountKey: AccountKey,
+): string | null => {
+    const account = selectAccountByKey(state, accountKey);
 
-  if (!account) return null;
+    if (!account) return null;
 
-  return account.metadata.accountLabel ?? null;
+    return account.metadata.accountLabel ?? null;
 };
 
 export const selectAccountNetworkSymbol = (
