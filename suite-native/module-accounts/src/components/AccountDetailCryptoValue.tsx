@@ -11,24 +11,24 @@ type AccountDetailBalanceProps = {
     isBalance?: boolean;
 };
 
-export const AccountDetailCryptoValue = ({
-    value,
-    networkSymbol,
-    isBalance = true,
-}: AccountDetailBalanceProps) => (
-    <HStack
-        spacing="small"
-        flexDirection="row"
-        alignItems="center"
-        marginBottom="large"
-        justifyContent="center"
-    >
-        <CryptoIcon symbol={networkSymbol} size="extraSmall" />
-        <CryptoAmountFormatter
-            value={value}
-            network={networkSymbol}
-            isBalance={isBalance}
-            adjustsFontSizeToFit
-        />
-    </HStack>
+export const AccountDetailCryptoValue = React.memo(
+    ({ value, networkSymbol, isBalance = true }: AccountDetailBalanceProps) => (
+        <HStack
+            spacing="small"
+            flexDirection="row"
+            alignItems="center"
+            marginBottom="large"
+            justifyContent="center"
+        >
+            <CryptoIcon symbol={networkSymbol} size="extraSmall" />
+            <CryptoAmountFormatter
+                value={value}
+                network={networkSymbol}
+                isBalance={isBalance}
+                adjustsFontSizeToFit
+            />
+        </HStack>
+    ),
 );
+
+AccountDetailCryptoValue.displayName = 'AccountDetailCryptoValue';

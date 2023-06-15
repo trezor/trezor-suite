@@ -129,21 +129,17 @@ export const selectNumberOfAccounts = (state: AccountsRootState) => selectAccoun
 export const selectUserHasAccounts = (state: AccountsRootState): boolean =>
     pipe(selectAccounts(state), A.isNotEmpty);
 
-export const selectAccountByKey = memoizeWithArgs(
-    (state: AccountsRootState, accountKey: AccountKey) => {
-        const accounts = selectAccounts(state);
+export const selectAccountByKey = (state: AccountsRootState, accountKey: AccountKey) => {
+    const accounts = selectAccounts(state);
 
-        return accounts.find(account => account.key === accountKey) ?? null;
-    },
-);
+    return accounts.find(account => account.key === accountKey) ?? null;
+};
 
-export const selectHasAccountTransactions = memoizeWithArgs(
-    (state: AccountsRootState, accountKey: AccountKey) => {
-        const account = selectAccountByKey(state, accountKey);
+export const selectHasAccountTransactions = (state: AccountsRootState, accountKey: AccountKey) => {
+    const account = selectAccountByKey(state, accountKey);
 
-        return !!account?.history.total;
-    },
-);
+    return !!account?.history.total;
+};
 
 export const selectAccountsByNetworkSymbols = memoizeWithArgs(
     (state: AccountsRootState, networkSymbols: NetworkSymbol[]) => {
@@ -169,98 +165,92 @@ export const selectAccountsByNetworkAndDevice = memoizeWithArgs(
     },
 );
 
-export const selectAccountLabel = memoizeWithArgs(
-    (state: AccountsRootState, accountKey: AccountKey) => {
-        const account = selectAccountByKey(state, accountKey);
-        const accounts = selectAccounts(state);
+export const selectAccountLabel = (
+    state: AccountsRootState,
+    accountKey: AccountKey,
+): string | null => {
+    const account = selectAccountByKey(state, accountKey);
 
-        const accountData = accounts.find(acc => acc.descriptor === account?.descriptor);
-        if (accountData) {
-            const {
-                metadata: { accountLabel },
-            } = accountData;
-            return accountLabel;
-        }
-    },
-);
+    if (!account) return null;
 
-export const selectAccountNetworkSymbol = memoizeWithArgs(
-    (state: AccountsRootState, accountKey: AccountKey): NetworkSymbol | null => {
-        const account = selectAccountByKey(state, accountKey);
+    return account.metadata.accountLabel ?? null;
+};
 
-        if (!account) return null;
+export const selectAccountNetworkSymbol = (
+    state: AccountsRootState,
+    accountKey: AccountKey,
+): NetworkSymbol | null => {
+    const account = selectAccountByKey(state, accountKey);
 
-        return account.symbol;
-    },
-);
+    if (!account) return null;
 
-export const selectFormattedAccountType = memoizeWithArgs(
-    (state: AccountsRootState, accountKey: AccountKey): string | null => {
-        const account = selectAccountByKey(state, accountKey);
-        if (!account) return null;
+    return account.symbol;
+};
 
-        return formattedAccountTypeMap[account.accountType] ?? null;
-    },
-);
+export const selectFormattedAccountType = (
+    state: AccountsRootState,
+    accountKey: AccountKey,
+): string | null => {
+    const account = selectAccountByKey(state, accountKey);
+    if (!account) return null;
 
-export const selectIsAccountUtxoBased = memoizeWithArgs(
-    (state: AccountsRootState, accountKey: AccountKey) => {
-        const account = selectAccountByKey(state, accountKey);
+    return formattedAccountTypeMap[account.accountType] ?? null;
+};
 
-        return account ? isUtxoBased(account) : false;
-    },
-);
+export const selectIsAccountUtxoBased = (state: AccountsRootState, accountKey: AccountKey) => {
+    const account = selectAccountByKey(state, accountKey);
 
-export const selectIsTestnetAccount = memoizeWithArgs(
-    (state: AccountsRootState, accountKey: AccountKey) => {
-        const account = selectAccountByKey(state, accountKey);
+    return account ? isUtxoBased(account) : false;
+};
 
-        return account ? isTestnet(account.symbol) : false;
-    },
-);
+export const selectIsTestnetAccount = (state: AccountsRootState, accountKey: AccountKey) => {
+    const account = selectAccountByKey(state, accountKey);
 
-export const selectAccountByDescriptorAndNetworkSymbol = memoizeWithArgs(
-    (state: AccountsRootState, accountDescriptor: string, networkSymbol: NetworkSymbol) => {
-        const accounts = selectAccounts(state);
+    return account ? isTestnet(account.symbol) : false;
+};
 
-        return (
-            A.find(
-                accounts,
-                account =>
-                    account.descriptor === accountDescriptor && account.symbol === networkSymbol,
-            ) ?? null
-        );
-    },
-);
+export const selectAccountByDescriptorAndNetworkSymbol = (
+    state: AccountsRootState,
+    accountDescriptor: string,
+    networkSymbol: NetworkSymbol,
+) => {
+    const accounts = selectAccounts(state);
 
-export const selectAccountKeyByDescriptorAndNetworkSymbol = memoizeWithArgs(
-    (
-        state: AccountsRootState,
-        accountDescriptor?: string,
-        networkSymbol?: NetworkSymbol,
-    ): AccountKey | null => {
-        if (!accountDescriptor || !networkSymbol) return null;
-        const account = selectAccountByDescriptorAndNetworkSymbol(
-            state,
-            accountDescriptor,
-            networkSymbol,
-        );
-
-        return account?.key ?? null;
-    },
-);
-
-export const selectAccountsAmountPerSymbol = memoizeWithArgs(
-    (state: AccountsRootState, networkSymbol: NetworkSymbol) => {
-        const accounts = selectAccounts(state);
-
-        return pipe(
+    return (
+        A.find(
             accounts,
-            A.filter(account => account.symbol === networkSymbol),
-            A.length,
-        );
-    },
-);
+            account => account.descriptor === accountDescriptor && account.symbol === networkSymbol,
+        ) ?? null
+    );
+};
+
+export const selectAccountKeyByDescriptorAndNetworkSymbol = (
+    state: AccountsRootState,
+    accountDescriptor?: string,
+    networkSymbol?: NetworkSymbol,
+): AccountKey | null => {
+    if (!accountDescriptor || !networkSymbol) return null;
+    const account = selectAccountByDescriptorAndNetworkSymbol(
+        state,
+        accountDescriptor,
+        networkSymbol,
+    );
+
+    return account?.key ?? null;
+};
+
+export const selectAccountsAmountPerSymbol = (
+    state: AccountsRootState,
+    networkSymbol: NetworkSymbol,
+) => {
+    const accounts = selectAccounts(state);
+
+    return pipe(
+        accounts,
+        A.filter(account => account.symbol === networkSymbol),
+        A.length,
+    );
+};
 
 export const selectAccountsSymbols = memoize(
     (state: AccountsRootState): NetworkSymbol[] =>
@@ -271,16 +261,17 @@ export const selectAccountsSymbols = memoize(
         ) as NetworkSymbol[],
 );
 
-export const selectIsAccountWithRatesByKey = memoizeWithArgs(
-    (state: AccountsRootState & FiatRatesRootState, accountKey: string) => {
-        const account = selectAccountByKey(state, accountKey);
+export const selectIsAccountWithRatesByKey = (
+    state: AccountsRootState & FiatRatesRootState,
+    accountKey: string,
+) => {
+    const account = selectAccountByKey(state, accountKey);
 
-        if (!account) {
-            return false;
-        }
+    if (!account) {
+        return false;
+    }
 
-        const rates = selectCoins(state);
+    const rates = selectCoins(state);
 
-        return !!rates.find(rate => rate.symbol === account.symbol);
-    },
-);
+    return !!rates.find(rate => rate.symbol === account.symbol);
+};

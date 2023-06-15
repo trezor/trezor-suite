@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useEffect, useState } from 'react';
+import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { RouteProp, useRoute } from '@react-navigation/native';
@@ -74,6 +74,18 @@ export const AccountDetailScreen = memo(() => {
         setAreTokensIncluded(prev => !prev);
     }, []);
 
+    const listHeaderComponent = useMemo(
+        () => (
+            <TransactionListHeader
+                accountKey={accountKey}
+                tokenContract={tokenContract}
+                areTokensIncluded={areTokensIncluded}
+                toggleIncludeTokenTransactions={toggleIncludeTokenTransactions}
+            />
+        ),
+        [accountKey, tokenContract, areTokensIncluded, toggleIncludeTokenTransactions],
+    );
+
     if (!account) return null;
 
     return (
@@ -102,14 +114,7 @@ export const AccountDetailScreen = memo(() => {
                 tokenSymbol={token?.symbol}
                 transactions={accountTransactions}
                 fetchMoreTransactions={fetchMoreTransactions}
-                listHeaderComponent={
-                    <TransactionListHeader
-                        accountKey={accountKey}
-                        tokenContract={tokenContract}
-                        areTokensIncluded={areTokensIncluded}
-                        toggleIncludeTokenTransactions={toggleIncludeTokenTransactions}
-                    />
-                }
+                listHeaderComponent={listHeaderComponent}
             />
         </Screen>
     );

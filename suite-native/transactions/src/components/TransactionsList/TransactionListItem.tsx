@@ -109,3 +109,5 @@ export const TransactionListItem = memo(
         );
     },
 );
+
+TransactionListItem.displayName = 'TransactionListItem';
