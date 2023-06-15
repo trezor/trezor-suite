@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
@@ -36,13 +36,20 @@ export const Assets = () => {
         [assetsData],
     );
 
-    const handleSelectAssetsAccount = (accountKey: AccountKey, tokenContract?: TokenAddress) => {
-        navigation.navigate(RootStackRoutes.AccountDetail, {
-            accountKey,
-            tokenContract,
-        });
+    const handleSelectAssetsAccount = useCallback(
+        (accountKey: AccountKey, tokenContract?: TokenAddress) => {
+            navigation.navigate(RootStackRoutes.AccountDetail, {
+                accountKey,
+                tokenContract,
+            });
+            setSelectedAssetSymbol(null);
+        },
+        [navigation],
+    );
+
+    const handleSelectAccountClose = useCallback(() => {
         setSelectedAssetSymbol(null);
-    };
+    }, []);
 
     return (
         <>
@@ -66,7 +73,7 @@ export const Assets = () => {
             <BottomSheet
                 title="Select Account"
                 isVisible={!!selectedAssetSymbol}
-                onClose={() => setSelectedAssetSymbol(null)}
+                onClose={handleSelectAccountClose}
             >
                 {selectedAssetSymbol && (
                     <AccountsListGroup

@@ -59,7 +59,8 @@ export const selectAssetsWithBalances = memoize((state: AssetsRootState) => {
                 getFiatRateKey(networkSymbol, fiatCurrencyCode),
             );
 
-            // We need to calculate fiat Currency value already in this selector to be able to compare individual accounts total values.
+            // Note: This shouldn't be happening in a selector but rather in component itself.
+            // In future, we will probably have something like `CryptoAmountToFiatFormatter` in component just using value sent from this selector.
             const fiatBalance =
                 toFiatCurrency(
                     balancesPerNetwork[networkSymbol]?.toString() ?? '0',
