@@ -16620,6 +16620,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"eslint-plugin-chai-friendly@npm:^0.7.2":
+  version: 0.7.2
+  resolution: "eslint-plugin-chai-friendly@npm:0.7.2"
+  peerDependencies:
+    eslint: ">=3.0.0"
+  checksum: a9c70da37361b54d9cdd4f7c26a3d83caed106a239d21268b8fdaa6b30c0a097dab6ff76a320e40325fd6d27f395eb5cf914c56f5aaf5215d5614f515bbfc975
+  languageName: node
+  linkType: hard
+
 "eslint-plugin-cypress@npm:^2.13.3":
   version: 2.13.3
   resolution: "eslint-plugin-cypress@npm:2.13.3"
@@ -32405,6 +32414,7 @@ __metadata:
     eslint-config-airbnb: ^18.2.1
     eslint-config-prettier: ^8.8.0
     eslint-import-resolver-typescript: ^3.5.5
+    eslint-plugin-chai-friendly: ^0.7.2
     eslint-plugin-cypress: ^2.13.3
     eslint-plugin-import: ^2.27.5
     eslint-plugin-jest: ^27.2.1
