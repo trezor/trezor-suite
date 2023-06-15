@@ -94,6 +94,7 @@ export const CoinPriceCard = ({ accountKey }: CoinPriceCardProps) => {
                                 network={networkSymbol}
                                 value={`${currentValue}`}
                                 variant="titleSmall"
+                                isDiscreetText={false}
                             />
                         )}
                     </Box>
