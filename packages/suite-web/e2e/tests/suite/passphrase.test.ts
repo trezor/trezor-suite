@@ -1,7 +1,7 @@
 // @group:passphrase
 // @retry=2
-import { EventType, SuiteAnalyticsEvent } from '@trezor/suite-analytics';
-import { Requests } from '../../support/utils/shortcuts';
+import { EventType } from '@trezor/suite-analytics';
+import { ExtractByEventType, Requests } from '../../support/types';
 
 let requests: Requests;
 
@@ -144,11 +144,10 @@ describe('Passphrase', () => {
         cy.getTestElement('@passphrase/hidden/submit-button').click();
         cy.getTestElement('@modal').should('not.exist');
 
-        cy.wrap(requests).then(requestsArr => {
-            const selectWalletTypeEvent = requestsArr.find(
-                req => req.c_type === EventType.SelectWalletType,
-            ) as Extract<SuiteAnalyticsEvent, { type: EventType.SelectWalletType }>['payload'];
-
+        cy.findAnalyticsEventByType<ExtractByEventType<EventType.SelectWalletType>>(
+            requests,
+            EventType.SelectWalletType,
+        ).then(selectWalletTypeEvent => {
             expect(selectWalletTypeEvent.type).to.equal('hidden');
         });
 

@@ -1,8 +1,8 @@
 // @group:suite
 // @retry=2
 
-import { EventType, SuiteAnalyticsEvent } from '@trezor/suite-analytics';
-import { Requests } from '../../support/utils/shortcuts';
+import { EventType } from '@trezor/suite-analytics';
+import { ExtractByEventType, Requests } from '../../support/types';
 
 let requests: Requests;
 
@@ -39,22 +39,17 @@ describe('Assets', () => {
         cy.contains('Bitcoin').should('be.visible');
         cy.contains('Ethereum').should('be.visible').click();
 
-        cy.wrap(requests).then(requestsArr => {
-            const selectWalletTypeEvent = requestsArr.find(
-                req => req.c_type === EventType.SelectWalletType,
-            ) as Extract<SuiteAnalyticsEvent, { type: EventType.SelectWalletType }>['payload'];
-
+        cy.findAnalyticsEventByType<ExtractByEventType<EventType.SelectWalletType>>(
+            requests,
+            EventType.SelectWalletType,
+        ).then(selectWalletTypeEvent => {
             expect(selectWalletTypeEvent.type).to.equal('standard');
         });
 
-        cy.wrap(requests).then(requestsArr => {
-            const accountsStatusEvent = requestsArr.find(
-                req => req.c_type === EventType.AccountsStatus,
-            ) as unknown as Extract<
-                SuiteAnalyticsEvent,
-                { type: EventType.AccountsStatus }
-            >['payload'];
-
+        cy.findAnalyticsEventByType<ExtractByEventType<EventType.AccountsStatus>>(
+            requests,
+            EventType.AccountsStatus,
+        ).then(accountsStatusEvent => {
             expect(parseInt(accountsStatusEvent.btc_normal.toString(), 10)).to.not.equal(NaN);
             expect(parseInt(accountsStatusEvent.btc_taproot.toString(), 10)).to.not.equal(NaN);
             expect(parseInt(accountsStatusEvent.btc_segwit.toString(), 10)).to.not.equal(NaN);
@@ -62,42 +57,20 @@ describe('Assets', () => {
             expect(parseInt(accountsStatusEvent.eth_normal.toString(), 10)).to.not.equal(NaN);
         });
 
-        cy.wrap(requests).then(requestsArr => {
-            const AccountsNonZeroBalanceEvent = requestsArr.find(
-                req => req.c_type === EventType.AccountsNonZeroBalance,
-            ) as unknown as Extract<
-                SuiteAnalyticsEvent,
-                { type: EventType.AccountsNonZeroBalance }
-            >['payload'];
-
-            // 0x73d0385F4d8E00C5e6504C6030F47BF6212736A8 has token and nobody will be able to move it without ETH
-            expect(parseInt(AccountsNonZeroBalanceEvent.eth_normal.toString(), 10)).to.not.equal(
-                NaN,
-            );
-        });
-
-        cy.wrap(requests).then(requestsArr => {
-            const accountsNonZeroBalanceEvent = requestsArr.find(
-                req => req.c_type === EventType.AccountsNonZeroBalance,
-            ) as unknown as Extract<
-                SuiteAnalyticsEvent,
-                { type: EventType.AccountsNonZeroBalance }
-            >['payload'];
-
+        cy.findAnalyticsEventByType<ExtractByEventType<EventType.AccountsNonZeroBalance>>(
+            requests,
+            EventType.AccountsNonZeroBalance,
+        ).then(accountsNonZeroBalanceEvent => {
             // 0x73d0385F4d8E00C5e6504C6030F47BF6212736A8 has token and nobody will be able to move it without ETH
             expect(parseInt(accountsNonZeroBalanceEvent.eth_normal.toString(), 10)).to.not.equal(
                 NaN,
             );
         });
 
-        cy.wrap(requests).then(requestsArr => {
-            const accountsTokensStatusEvent = requestsArr.find(
-                req => req.c_type === EventType.AccountsTokensStatus,
-            ) as unknown as Extract<
-                SuiteAnalyticsEvent,
-                { type: EventType.AccountsTokensStatus }
-            >['payload'];
-
+        cy.findAnalyticsEventByType<ExtractByEventType<EventType.AccountsTokensStatus>>(
+            requests,
+            EventType.AccountsTokensStatus,
+        ).then(accountsTokensStatusEvent => {
             // 0x73d0385F4d8E00C5e6504C6030F47BF6212736A8 has token and nobody will be able to move it without ETH
             expect(parseInt(accountsTokensStatusEvent.eth.toString(), 10)).to.not.equal(NaN);
         });

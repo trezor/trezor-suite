@@ -1,8 +1,8 @@
 // @group:suite
 // @retry=2
 
-import { EventType, SuiteAnalyticsEvent } from '@trezor/suite-analytics';
-import { Requests } from '../../support/utils/shortcuts';
+import { EventType } from '@trezor/suite-analytics';
+import { ExtractByEventType, Requests } from '../../support/types';
 
 let requests: Requests;
 
@@ -43,15 +43,11 @@ describe('Dashboard', () => {
                 expect(className).to.contain(discreetPartialClass);
             });
 
-        cy.wrap(requests).then(requestsArr => {
-            const MenuToggleDiscreetEvent = requestsArr.find(
-                req => req.c_type === EventType.MenuToggleDiscreet,
-            ) as unknown as Extract<
-                SuiteAnalyticsEvent,
-                { type: EventType.MenuToggleDiscreet }
-            >['payload'];
-
-            expect(MenuToggleDiscreetEvent.value).to.equal('true');
+        cy.findAnalyticsEventByType<ExtractByEventType<EventType.MenuToggleDiscreet>>(
+            requests,
+            EventType.MenuToggleDiscreet,
+        ).then(menuToggleDiscreetEvent => {
+            expect(menuToggleDiscreetEvent.value).to.equal('true');
         });
     });
 });

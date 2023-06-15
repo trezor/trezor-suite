@@ -1,8 +1,8 @@
 // @group:settings
 // @retry=2
 
-import { EventType, SuiteAnalyticsEvent } from '@trezor/suite-analytics';
-import { Requests } from '../../support/utils/shortcuts';
+import { EventType } from '@trezor/suite-analytics';
+import { ExtractByEventType, Requests } from '../../support/types';
 
 let requests: Requests;
 
@@ -32,14 +32,10 @@ describe('General settings', () => {
         cy.getTestElement('@settings/fiat-select/input').click();
         cy.getTestElement('@settings/fiat-select/option/eur').click();
 
-        cy.wrap(requests).then(requestsArr => {
-            const settingsGeneralChangeFiatEvent = requestsArr.find(
-                req => req.c_type === EventType.SettingsGeneralChangeFiat,
-            ) as Extract<
-                SuiteAnalyticsEvent,
-                { type: EventType.SettingsGeneralChangeFiat }
-            >['payload'];
-
+        cy.findAnalyticsEventByType<ExtractByEventType<EventType.SettingsGeneralChangeFiat>>(
+            requests,
+            EventType.SettingsGeneralChangeFiat,
+        ).then(settingsGeneralChangeFiatEvent => {
             expect(settingsGeneralChangeFiatEvent.fiat).to.equal('eur');
         });
 
@@ -55,14 +51,10 @@ describe('General settings', () => {
         cy.getTestElement('@theme/color-scheme-select/option/dark').click();
         cy.getTestElement('@theme/color-scheme-select/input').should('contain', 'Dark');
 
-        cy.wrap(requests).then(requestsArr => {
-            const settingsGeneralChangeThemeEvent = requestsArr.find(
-                req => req.c_type === EventType.SettingsGeneralChangeTheme,
-            ) as unknown as Extract<
-                SuiteAnalyticsEvent,
-                { type: EventType.SettingsGeneralChangeTheme }
-            >['payload'];
-
+        cy.findAnalyticsEventByType<ExtractByEventType<EventType.SettingsGeneralChangeTheme>>(
+            requests,
+            EventType.SettingsGeneralChangeTheme,
+        ).then(settingsGeneralChangeThemeEvent => {
             expect(settingsGeneralChangeThemeEvent.platformTheme).to.not.be.undefined;
             expect(settingsGeneralChangeThemeEvent.previousTheme).to.not.be.undefined;
             expect(settingsGeneralChangeThemeEvent.previousAutodetectTheme).to.equal('true');
@@ -79,14 +71,10 @@ describe('General settings', () => {
         cy.getTestElement('@settings/language-select/option/es').click();
         cy.getTestElement('@settings/language-select/input').should('contain', 'Español');
 
-        cy.wrap(requests).then(requestsArr => {
-            const settingsGeneralChangeLanguageEvent = requestsArr.find(
-                req => req.c_type === EventType.SettingsGeneralChangeLanguage,
-            ) as unknown as Extract<
-                SuiteAnalyticsEvent,
-                { type: EventType.SettingsGeneralChangeLanguage }
-            >['payload'];
-
+        cy.findAnalyticsEventByType<ExtractByEventType<EventType.SettingsGeneralChangeLanguage>>(
+            requests,
+            EventType.SettingsGeneralChangeLanguage,
+        ).then(settingsGeneralChangeLanguageEvent => {
             expect(settingsGeneralChangeLanguageEvent.language).to.equal('es');
             expect(settingsGeneralChangeLanguageEvent.previousLanguage).to.equal('en');
             expect(settingsGeneralChangeLanguageEvent.autodetectLanguage).to.equal('false');
@@ -99,14 +87,10 @@ describe('General settings', () => {
         cy.getTestElement('@analytics/toggle-switch').click({ force: true });
         cy.getTestElement('@analytics/toggle-switch').find('input').should('not.be.checked');
 
-        cy.wrap(requests).then(requestsArr => {
-            const settingsAnalyticsEvent = requestsArr.find(
-                req => req.c_type === EventType.SettingsAnalytics,
-            ) as unknown as Extract<
-                SuiteAnalyticsEvent,
-                { type: EventType.SettingsAnalytics }
-            >['payload'];
-
+        cy.findAnalyticsEventByType<ExtractByEventType<EventType.SettingsAnalytics>>(
+            requests,
+            EventType.SettingsAnalytics,
+        ).then(settingsAnalyticsEvent => {
             expect(settingsAnalyticsEvent.value).to.equal('false');
         });
 

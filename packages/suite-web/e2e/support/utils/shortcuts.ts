@@ -1,4 +1,7 @@
+import { SuiteAnalyticsEvent } from '@trezor/suite-analytics';
 import { urlSearchParams } from '@trezor/suite/src/utils/suite/metadata';
+import { EventPayload, Requests } from '../types';
+
 /**
  * Shortcut to click device menu
  */
@@ -104,9 +107,22 @@ export const createAccountFromMyAccounts = (coin: string, label: string) => {
     cy.getTestElement('@add-account').click();
 };
 
-export type Requests = ReturnType<typeof urlSearchParams>[];
 export const interceptDataTrezorIo = (requests: Requests) =>
     cy.intercept({ hostname: 'data.trezor.io', url: '/suite/log/**' }, req => {
         const params = urlSearchParams(req.url);
         requests.push(params);
+    });
+
+export const findAnalyticsEventByType = <T extends SuiteAnalyticsEvent>(
+    requests: Requests,
+    eventType: T['type'],
+): Cypress.Chainable<NonNullable<EventPayload<T>>> =>
+    cy.wrap(requests).then(requestsArr => {
+        const event = requestsArr.find(req => req.c_type === eventType) as EventPayload<T>;
+
+        if (!event) {
+            throw new Error(`Event with type ${eventType} not found.`);
+        }
+
+        return event;
     });
