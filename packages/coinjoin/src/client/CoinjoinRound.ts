@@ -412,13 +412,17 @@ export class CoinjoinRound extends TypedEmitter<Events> {
     }
 
     onAffiliateServerStatus(status: boolean) {
-        if (!status && this.phase <= RoundPhase.OutputRegistration) {
+        if (!status) {
             // if affiliate server goes offline try to abort round if it's not in critical phase.
-            // if round is in critical phase, there is noting much we can do...
+            // if round is in critical phase, there is noting much we can do, just log it...
             // ...we need to continue and hope that server will become online before transaction signing phase
-            this.logger.info(`Affiliate server offline. Aborting round ${this.id}`);
-            this.lock?.abort();
-            this.inputs.forEach(i => i.clearConfirmationInterval());
+            if (this.phase <= RoundPhase.OutputRegistration) {
+                this.logger.warn(`Affiliate server offline. Aborting round ${this.id}`);
+                this.lock?.abort();
+                this.inputs.forEach(i => i.clearConfirmationInterval());
+            } else {
+                this.logger.error(`Affiliate server offline in phase ${this.phase}!`);
+            }
         }
     }
 
