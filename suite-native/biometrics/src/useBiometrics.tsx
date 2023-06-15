@@ -24,14 +24,6 @@ export const useBiometrics = () => {
         if (isBiometricsOptionEnabled && !isUserAuthenticated) {
             const result = await authenticate();
 
-            const resultHasError = result && !result.success;
-
-            // In some cases, if auth happens too quickly after closing app, it will fail with unknown error.
-            // User don't need to authenticate at this point. The library doesn't accept authentication that's been less than few seconds after closing app.
-            if (resultHasError && result.error.startsWith('unknown:')) {
-                return;
-            }
-
             if (result && result?.success) {
                 setIsUserAuthenticated(true);
             } else {
