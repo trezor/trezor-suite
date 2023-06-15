@@ -1,7 +1,7 @@
 // @group:metadata
 // @retry=2
 
-import * as METADATA from '../../../../suite/src/actions/suite/constants/metadataConstants';
+import * as METADATA from '@trezor/suite/src/actions/suite/constants/metadataConstants';
 
 import { rerouteMetadataToMockProvider, stubOpen } from '../../stubs/metadata';
 

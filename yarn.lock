@@ -8187,6 +8187,7 @@ __metadata:
     "@suite-common/test-utils": "workspace:*"
     "@trezor/device-utils": "workspace:*"
     "@trezor/e2e-utils": "workspace:*"
+    "@trezor/env-utils": "workspace:*"
     "@trezor/suite": "workspace:*"
     "@trezor/suite-analytics": "workspace:*"
     "@trezor/trezor-user-env-link": "workspace:*"

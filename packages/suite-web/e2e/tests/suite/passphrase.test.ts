@@ -1,5 +1,10 @@
 // @group:passphrase
 // @retry=2
+import { urlSearchParams } from '@trezor/suite/src/utils/suite/metadata';
+import { EventType, SuiteAnalyticsEvent } from '@trezor/suite-analytics';
+
+type Requests = ReturnType<typeof urlSearchParams>[];
+let requests: Requests;
 
 const abcAddr = 'bc1qpyfvfvm52zx7gek86ajj5pkkne3h385ada8r2y';
 const defAddr = 'bc1qek0hazgrelpuce8anp72ur4kpgel74ype3pw52';
@@ -15,6 +20,8 @@ describe('Passphrase', () => {
         cy.viewport(1080, 1440).resetDb();
         cy.prefixedVisit('/');
         cy.passThroughInitialRun();
+
+        requests = [];
     });
 
     // TODO: there is a problem with clearing our password input element -> cypress deletes only last char with {selectAll}{backspace} and totally ignores .clear() command
@@ -103,6 +110,11 @@ describe('Passphrase', () => {
         cy.task('pressYes');
         cy.task('pressYes');
 
+        cy.intercept({ hostname: 'data.trezor.io', url: '/suite/log/**' }, req => {
+            const params = urlSearchParams(req.url);
+            requests.push(params);
+        });
+
         cy.getTestElement('@dashboard/wallet-ready');
         // go to wallet
         cy.getTestElement('@suite/menu/wallet-index').click();
@@ -135,6 +147,15 @@ describe('Passphrase', () => {
 
         cy.getTestElement('@passphrase/hidden/submit-button').click();
         cy.getTestElement('@modal').should('not.exist');
+
+        cy.wrap(requests).then(requestsArr => {
+            const selectWalletTypeEvent = requestsArr.find(
+                req => req.c_type === EventType.SelectWalletType,
+            ) as Extract<SuiteAnalyticsEvent, { type: EventType.SelectWalletType }>['payload'];
+
+            expect(selectWalletTypeEvent.type).to.equal('hidden');
+        });
+
         // go to receive
         cy.wait(1000);
         cy.getTestElement('@wallet/menu/wallet-receive').click({ timeout: 10000 });

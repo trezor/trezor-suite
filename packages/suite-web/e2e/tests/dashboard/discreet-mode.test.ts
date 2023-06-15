@@ -1,10 +1,14 @@
 // @group:suite
 // @retry=2
 
+import { urlSearchParams } from '@trezor/suite/src/utils/suite/metadata';
+import { EventType, SuiteAnalyticsEvent } from '@trezor/suite-analytics';
+
+type Requests = ReturnType<typeof urlSearchParams>[];
+let requests: Requests;
+
 describe('Dashboard', () => {
     beforeEach(() => {
-        cy.task('stopEmu');
-
         cy.task('startEmu', { wipe: true });
         cy.task('setupEmu', {
             needs_backup: true,
@@ -15,10 +19,12 @@ describe('Dashboard', () => {
         cy.viewport(1080, 1440).resetDb();
         cy.prefixedVisit('/');
         cy.passThroughInitialRun();
-    });
 
-    afterEach(() => {
-        cy.task('stopEmu');
+        requests = [];
+        cy.intercept({ hostname: 'data.trezor.io', url: '/suite/log/**' }, req => {
+            const params = urlSearchParams(req.url);
+            requests.push(params);
+        });
     });
 
     /*
@@ -28,22 +34,11 @@ describe('Dashboard', () => {
      * 4. check that status of Discreet mode
      */
     it('Discreet mode checkbox', () => {
-        //
-        // Test preparation
-        //
-
         const discreetPartialClass = 'HiddenPlaceholder';
-
-        //
-        // Test execution
-        //
 
         cy.discoveryShouldFinish();
         cy.getTestElement('@dashboard/security-card/discreet/button').click();
 
-        //
-        // Assert
-        //
         cy.getTestElement('@wallet/coin-balance/value-btc')
             .parent()
             .parent()
@@ -51,6 +46,17 @@ describe('Dashboard', () => {
             .then(className => {
                 expect(className).to.contain(discreetPartialClass);
             });
+
+        cy.wrap(requests).then(requestsArr => {
+            const MenuToggleDiscreetEvent = requestsArr.find(
+                req => req.c_type === EventType.MenuToggleDiscreet,
+            ) as unknown as Extract<
+                SuiteAnalyticsEvent,
+                { type: EventType.MenuToggleDiscreet }
+            >['payload'];
+
+            expect(MenuToggleDiscreetEvent.value).to.equal('true');
+        });
     });
 });
 

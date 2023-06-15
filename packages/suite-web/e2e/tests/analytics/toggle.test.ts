@@ -1,8 +1,8 @@
 // @group:suite
 // @retry=2
 
-import { urlSearchParams } from '@trezor/suite/src/utils/suite/metadata';
 import { EventType } from '@trezor/suite-analytics';
+import { urlSearchParams } from '@trezor/suite/src/utils/suite/metadata';
 
 type Requests = ReturnType<typeof urlSearchParams>[];
 let requests: Requests;
@@ -37,7 +37,8 @@ describe('Analytics Toggle - Enablement and Disablement', () => {
         cy.wait('@data-fetch');
         cy.wrap(requests).its(0).should('have.property', 'c_type', EventType.SettingsAnalytics);
         cy.wrap(requests).its(0).should('have.property', 'value', 'false');
-        cy.wrap(requests).its(0).its('c_session_id').as('request0');
+        cy.wrap(requests).its(0).its('c_session_id').as('sessionId0');
+        cy.wrap(requests).its(0).its('c_instance_id').as('instanceId0');
         cy.wrap(requests)
             .its(0)
             .should('have.property', 'c_timestamp')
@@ -64,7 +65,8 @@ describe('Analytics Toggle - Enablement and Disablement', () => {
         cy.getTestElement('@analytics/toggle-switch').find('input').should('be.checked');
         cy.wait('@data-fetch');
         cy.wrap(requests).its(1).should('have.property', 'c_type', EventType.SettingsAnalytics);
-        cy.wrap(requests).its(1).its('c_session_id').as('request1');
+        cy.wrap(requests).its(1).its('c_session_id').as('sessionId1');
+        cy.wrap(requests).its(1).its('c_instance_id').as('instanceId1');
         cy.wrap(requests)
             .its(1)
             .should('have.property', 'c_timestamp')
@@ -73,16 +75,23 @@ describe('Analytics Toggle - Enablement and Disablement', () => {
         cy.wrap(requests).should('have.length', 2);
 
         // check that timestamp changes between requests
-        cy.get('@timestamp0').then(t0 => {
-            cy.get('@timestamp1').then(t1 => {
-                expect(t1).not.to.equal(t0);
+        cy.get('@timestamp0').then(timestamp0 => {
+            cy.get('@timestamp1').then(timestamp1 => {
+                expect(timestamp0).not.to.equal(timestamp1);
             });
         });
 
         // check that session ids changed after reload;
-        cy.get('@request0').then(r0 => {
-            cy.get('@request1').then(r1 => {
-                expect(r1).not.to.equal(r0);
+        cy.get('@sessionId0').then(sessionId0 => {
+            cy.get('@sessionId1').then(sessionId1 => {
+                expect(sessionId0).not.to.equal(sessionId1);
+            });
+        });
+
+        // check that instnace ids are same after reload;
+        cy.get('@instanceId0').then(instanceId0 => {
+            cy.get('@instanceId1').then(instanceId1 => {
+                expect(instanceId0).to.equal(instanceId1);
             });
         });
 
