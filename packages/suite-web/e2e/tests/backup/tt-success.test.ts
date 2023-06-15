@@ -1,4 +1,11 @@
+import { urlSearchParams } from '@trezor/suite/src/utils/suite/metadata';
+import { EventType, SuiteAnalyticsEvent } from '@trezor/suite-analytics';
+
 // @group:device-management
+// @retry=2
+
+type Requests = ReturnType<typeof urlSearchParams>[];
+let requests: Requests;
 
 describe('Backup success', () => {
     beforeEach(() => {
@@ -12,6 +19,12 @@ describe('Backup success', () => {
         cy.viewport(1080, 1440).resetDb();
         cy.prefixedVisit('/');
         cy.passThroughInitialRun();
+
+        cy.intercept({ hostname: 'data.trezor.io', url: '/suite/log/**' }, req => {
+            const params = urlSearchParams(req.url);
+            requests.push(params);
+        });
+        requests = [];
     });
 
     it('Successful backup happy path', () => {
@@ -44,6 +57,15 @@ describe('Backup success', () => {
         cy.getTestElement('@backup/check-item/made-no-digital-copy').click();
         cy.getTestElement('@backup/check-item/will-hide-seed').click();
         cy.getTestElement('@backup/continue-to-pin-button').should('not.be.disabled');
+
+        cy.wrap(requests).then(requestsArr => {
+            const createBackupEvent = requestsArr.find(
+                req => req.c_type === EventType.CreateBackup,
+            ) as Extract<SuiteAnalyticsEvent, { type: EventType.CreateBackup }>['payload'];
+
+            expect(createBackupEvent.status).to.equal('finished');
+            expect(createBackupEvent.error).to.equal('');
+        });
     });
 });
 

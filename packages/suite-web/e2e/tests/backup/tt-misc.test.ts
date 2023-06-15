@@ -1,9 +1,6 @@
-/* eslint-disable @typescript-eslint/prefer-ts-expect-error */
-
 // @group:device-management
 // @retry=2
 
-// @ts-ignore
 describe('Backup misc', () => {
     beforeEach(() => {
         cy.task('startEmu', { wipe: true });

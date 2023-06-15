@@ -5,6 +5,11 @@ import { onAccountsPage } from '../../support/pageObjects/accountsObject';
 import { onSettingsCryptoPage } from '../../support/pageObjects/settingsCryptoObject';
 import { onTopBar } from '../../support/pageObjects/topBarObject';
 import { NetworkSymbol } from '@suite-common/wallet-config';
+import { urlSearchParams } from '@trezor/suite/src/utils/suite/metadata';
+import { EventType, SuiteAnalyticsEvent } from '@trezor/suite-analytics';
+
+type Requests = ReturnType<typeof urlSearchParams>[];
+let requests: Requests;
 
 describe('Account types suite', () => {
     beforeEach(() => {
@@ -18,6 +23,12 @@ describe('Account types suite', () => {
         cy.prefixedVisit('/');
         cy.passThroughInitialRun();
         cy.discoveryShouldFinish();
+
+        requests = [];
+        cy.intercept({ hostname: 'data.trezor.io', url: '/suite/log/**' }, req => {
+            const params = urlSearchParams(req.url);
+            requests.push(params);
+        });
     });
 
     afterEach(() => {
@@ -76,6 +87,16 @@ describe('Account types suite', () => {
         // cy.get(`[type] > [data-test*="@account-menu/${coin}"]`).then(newAccounts => {
         //     const numberOfAccounts1 = newAccounts.length;
         //     expect(numberOfAccounts1).to.be.equal(currentAccounts.length);
+
+        cy.wrap(requests).then(requestsArr => {
+            const accountsNewAccountEvent = requestsArr.find(
+                req => req.c_type === EventType.AccountsNewAccount,
+            ) as Extract<SuiteAnalyticsEvent, { type: EventType.AccountsNewAccount }>['payload'];
+
+            expect(accountsNewAccountEvent.symbol).to.equal('btc');
+            expect(accountsNewAccountEvent.path).to.equal(`m/84'/0'/1'`);
+            expect(accountsNewAccountEvent.type).to.equal('normal'); // normal is first
+        });
     });
 
     /**
@@ -129,6 +150,16 @@ describe('Account types suite', () => {
         //     const numberOfAccounts1 = newAccounts.length;
         //     expect(numberOfAccounts1).to.be.equal(1);
         // });
+
+        cy.wrap(requests).then(requestsArr => {
+            const accountsNewAccountEvent = requestsArr.find(
+                req => req.c_type === EventType.AccountsNewAccount,
+            ) as Extract<SuiteAnalyticsEvent, { type: EventType.AccountsNewAccount }>['payload'];
+
+            expect(accountsNewAccountEvent.symbol).to.equal('ltc');
+            expect(accountsNewAccountEvent.path).to.equal(`m/84'/2'/1'`);
+            expect(accountsNewAccountEvent.type).to.equal('normal'); // normal is first
+        });
     });
 
     /**
@@ -181,6 +212,16 @@ describe('Account types suite', () => {
                     );
                 },
             );
+        });
+
+        cy.wrap(requests).then(requestsArr => {
+            const accountsNewAccountEvent = requestsArr.find(
+                req => req.c_type === EventType.AccountsNewAccount,
+            ) as Extract<SuiteAnalyticsEvent, { type: EventType.AccountsNewAccount }>['payload'];
+
+            expect(accountsNewAccountEvent.symbol).to.equal('ada'); // ada is first
+            expect(accountsNewAccountEvent.path).to.equal(`m/1852'/1815'/1'`);
+            expect(accountsNewAccountEvent.type).to.equal('normal'); // normal is first
         });
     });
 });

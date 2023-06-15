@@ -27,6 +27,7 @@
         "@cypress/skip-test": "^2.6.1",
         "@suite-common/test-utils": "workspace:*",
         "@trezor/e2e-utils": "workspace:*",
+        "@trezor/env-utils": "workspace:*",
         "@trezor/suite-analytics": "workspace:*",
         "@trezor/trezor-user-env-link": "workspace:*",
         "@trezor/utils": "workspace:*",
