@@ -1,3 +1,4 @@
+import { urlSearchParams } from '@trezor/suite/src/utils/suite/metadata';
 /**
  * Shortcut to click device menu
  */
@@ -102,3 +103,10 @@ export const createAccountFromMyAccounts = (coin: string, label: string) => {
     cy.get(`[data-test="@add-account-type/select/option/${label}"]`).click();
     cy.getTestElement('@add-account').click();
 };
+
+export type Requests = ReturnType<typeof urlSearchParams>[];
+export const interceptDataTrezorIo = (requests: Requests) =>
+    cy.intercept({ hostname: 'data.trezor.io', url: '/suite/log/**' }, req => {
+        const params = urlSearchParams(req.url);
+        requests.push(params);
+    });

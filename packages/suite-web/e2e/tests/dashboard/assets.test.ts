@@ -1,10 +1,9 @@
 // @group:suite
 // @retry=2
 
-import { urlSearchParams } from '@trezor/suite/src/utils/suite/metadata';
 import { EventType, SuiteAnalyticsEvent } from '@trezor/suite-analytics';
+import { Requests } from '../../support/utils/shortcuts';
 
-type Requests = ReturnType<typeof urlSearchParams>[];
 let requests: Requests;
 
 describe('Assets', () => {
@@ -19,10 +18,7 @@ describe('Assets', () => {
         cy.viewport(1080, 1440).resetDb();
 
         requests = [];
-        cy.intercept({ hostname: 'data.trezor.io', url: '/suite/log/**' }, req => {
-            const params = urlSearchParams(req.url);
-            requests.push(params);
-        });
+        cy.interceptDataTrezorIo(requests);
     });
 
     it('checks that BTC and ETH accounts are available', () => {

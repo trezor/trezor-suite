@@ -1,9 +1,8 @@
 // @group:passphrase
 // @retry=2
-import { urlSearchParams } from '@trezor/suite/src/utils/suite/metadata';
 import { EventType, SuiteAnalyticsEvent } from '@trezor/suite-analytics';
+import { Requests } from '../../support/utils/shortcuts';
 
-type Requests = ReturnType<typeof urlSearchParams>[];
 let requests: Requests;
 
 const abcAddr = 'bc1qpyfvfvm52zx7gek86ajj5pkkne3h385ada8r2y';
@@ -110,10 +109,7 @@ describe('Passphrase', () => {
         cy.task('pressYes');
         cy.task('pressYes');
 
-        cy.intercept({ hostname: 'data.trezor.io', url: '/suite/log/**' }, req => {
-            const params = urlSearchParams(req.url);
-            requests.push(params);
-        });
+        cy.interceptDataTrezorIo(requests);
 
         cy.getTestElement('@dashboard/wallet-ready');
         // go to wallet

@@ -20,6 +20,8 @@ import {
     passThroughSetPin,
     enableRegtestAndGetCoins,
     createAccountFromMyAccounts,
+    interceptDataTrezorIo,
+    Requests,
 } from './utils/shortcuts';
 import { interceptInvityApi } from './utils/intercept-invity-api';
 
@@ -109,6 +111,7 @@ declare global {
             onlyOn: (nameOrFlag: string | boolean, cb?: () => void) => Cypress.Chainable<any>;
             createAccountFromMyAccounts: (coin: string, label: string) => Chainable<Subject>;
             interceptInvityApi: () => void;
+            interceptDataTrezorIo: (requests: Requests) => Cypress.Chainable<null>;
         }
     }
 }
@@ -151,3 +154,4 @@ Cypress.Commands.add('onlyOn', onlyOn);
 Cypress.Commands.add('text', { prevSubject: true }, subject => subject.text());
 Cypress.Commands.add('createAccountFromMyAccounts', createAccountFromMyAccounts);
 Cypress.Commands.add('interceptInvityApi', interceptInvityApi);
+Cypress.Commands.add('interceptDataTrezorIo', interceptDataTrezorIo);

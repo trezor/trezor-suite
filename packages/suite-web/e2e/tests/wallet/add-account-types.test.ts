@@ -5,10 +5,9 @@ import { onAccountsPage } from '../../support/pageObjects/accountsObject';
 import { onSettingsCryptoPage } from '../../support/pageObjects/settingsCryptoObject';
 import { onTopBar } from '../../support/pageObjects/topBarObject';
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { urlSearchParams } from '@trezor/suite/src/utils/suite/metadata';
 import { EventType, SuiteAnalyticsEvent } from '@trezor/suite-analytics';
+import { Requests } from '../../support/utils/shortcuts';
 
-type Requests = ReturnType<typeof urlSearchParams>[];
 let requests: Requests;
 
 describe('Account types suite', () => {
@@ -25,10 +24,7 @@ describe('Account types suite', () => {
         cy.discoveryShouldFinish();
 
         requests = [];
-        cy.intercept({ hostname: 'data.trezor.io', url: '/suite/log/**' }, req => {
-            const params = urlSearchParams(req.url);
-            requests.push(params);
-        });
+        cy.interceptDataTrezorIo(requests);
     });
 
     afterEach(() => {
