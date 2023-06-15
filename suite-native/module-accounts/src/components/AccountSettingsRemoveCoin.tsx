@@ -58,7 +58,7 @@ export const AccountSettingsRemoveCoin = ({ accountKey }: { accountKey: AccountK
             pictogramVariant: 'red',
             title: 'Do you really want to remove this coin from Trezor Suite Lite?',
             description:
-                'Your coins remain intact and safe. Import this coin again with Trezor Suite Lite using your public key (XPUB) at any time.',
+                'Your coins remain intact and safe. Import this coin again using your public key (XPUB) or receive address at any time.',
             primaryButtonTitle: 'Remove coin',
             primaryButtonVariant: 'dangerElevation0',
             onPressPrimaryButton: handleRemoveAccount,

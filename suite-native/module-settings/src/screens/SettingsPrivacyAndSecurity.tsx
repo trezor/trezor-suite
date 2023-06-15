@@ -51,7 +51,7 @@ const DiscreetModeSwitchRow = () => {
 
     return (
         <TouchableSwitchRow
-            text="Hide balances"
+            text="Discreet mode"
             description={
                 <Box flexDirection="row" alignItems="center">
                     <RowDescription>{`$100 -> `}</RowDescription>
@@ -82,7 +82,7 @@ const AnalyticsSwitchRow = () => {
             iconName="database"
             description={
                 <RowDescription>
-                    All data is kept strictly anonymous; we only use it to improve the Trezor
+                    All collected data is anonymous and is only used to improve the Trezor
                     ecosystem.
                 </RowDescription>
             }
