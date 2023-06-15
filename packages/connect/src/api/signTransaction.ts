@@ -24,6 +24,7 @@ import {
     verifyTx,
     verifyTicketTx,
     createPendingTransaction,
+    parseTransactionHexes,
 } from './bitcoin';
 import type { BitcoinNetworkInfo, AccountAddresses } from '../types';
 import type { RefTransaction, TransactionOptions } from '../types/api/bitcoin';
@@ -193,18 +194,30 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
 
         const refTxs = !refTxsIds.length
             ? []
-            : await blockchain.getTransactions(refTxsIds).then(rawTxs => {
-                  enhanceTrezorInputs(this.params.inputs, rawTxs);
-                  return transformReferencedTransactions(rawTxs, coinInfo);
-              });
+            : await blockchain
+                  .getTransactionHexes(refTxsIds)
+                  .then(parseTransactionHexes(coinInfo.network))
+                  .then(rawTxs => {
+                      enhanceTrezorInputs(this.params.inputs, rawTxs);
+                      return transformReferencedTransactions(rawTxs);
+                  });
 
         const origTxs = !origTxsIds.length
             ? []
-            : await blockchain.getTransactions(origTxsIds).then(async rawOrigTxs => {
-                  // if sender account addresses not provided, fetch account info from the blockbook
-                  const accountAddresses = addresses ?? (await this.fetchAddresses(blockchain));
-                  return transformOrigTransactions(rawOrigTxs, coinInfo, accountAddresses);
-              });
+            : await blockchain
+                  .getTransactionHexes(origTxsIds)
+                  .then(parseTransactionHexes(coinInfo.network))
+                  .then(async rawOrigTxs => {
+                      // if sender account addresses not provided, fetch account info from the blockbook
+                      const accountAddresses = addresses ?? (await this.fetchAddresses(blockchain));
+                      if (!accountAddresses) return [];
+                      return transformOrigTransactions(
+                          rawOrigTxs,
+                          coinInfo,
+                          inputs,
+                          accountAddresses,
+                      );
+                  });
 
         return refTxs.concat(origTxs);
     }

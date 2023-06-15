@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/prefer-ts-expect-error */
+import { networks } from '@trezor/utxo-lib';
 // @ts-ignore
 import tx43d273 from '../../../../e2e/__txcache__/testnet/43d273d3caf41759ad843474f960fbf80ff2ec961135d018b61e9fab3ad1fc06.json';
 // @ts-ignore
@@ -13,6 +14,8 @@ const tx70f987blockbook = {
             {
                 addresses: ['tb1q9l0rk0gkgn73d0gc57qn3t3cwvucaj3h8wtrlu'],
                 value: '20000000',
+                txid: '43d273d3caf41759ad843474f960fbf80ff2ec961135d018b61e9fab3ad1fc06',
+                vout: 1,
             },
         ],
         vout: [
@@ -77,7 +80,7 @@ export const validateReferencedTransactions = [
             ],
             outputs: [], // irrelevant
             addresses: {}, // irrelevant
-            coinInfo: {}, // irrelevant
+            coinInfo: { network: networks.testnet },
         },
         result: [
             {
@@ -102,7 +105,7 @@ export const validateReferencedTransactions = [
             ],
             addresses: ADDRESSES,
             outputs: [], // irrelevant
-            coinInfo: {}, // irrelevant
+            coinInfo: { network: networks.testnet },
         },
         result: [
             {
@@ -142,6 +145,8 @@ export const validateReferencedTransactions = [
                     prev_index: 1,
                     orig_hash: '70f9871eb03a38405cfd7a01e0e1448678132d815e2c9f552ad83ae23969509e',
                     orig_index: 0,
+                    address_n: [2147483734, 2147483649, 2147483648, 0, 0],
+                    amount: '20000000',
                 },
             ],
             addresses: {
@@ -160,7 +165,7 @@ export const validateReferencedTransactions = [
                 ],
             },
             outputs: [], // irrelevant
-            coinInfo: {}, // irrelevant
+            coinInfo: { network: networks.testnet },
         },
         result: [
             {
@@ -231,6 +236,8 @@ export const validateReferencedTransactions = [
                     prev_index: 1,
                     orig_hash: 'ba917a2b563966e324ab37ed7de5f5cd7503b970b0f0bb9a5208f5835557e99c',
                     orig_index: 0,
+                    address_n: [2147483732, 2147483649, 2147483649, 0, 14],
+                    amount: '1000000',
                 },
             ],
             addresses: {
@@ -249,7 +256,7 @@ export const validateReferencedTransactions = [
                 ],
             },
             outputs: [], // irrelevant
-            coinInfo: {}, // irrelevant
+            coinInfo: { network: networks.testnet },
         },
         result: [
             {
@@ -292,7 +299,7 @@ export const validateReferencedTransactions = [
                 },
             ],
             outputs: [], // irrelevant
-            coinInfo: {}, // irrelevant
+            coinInfo: { network: networks.testnet },
         },
         error: '43d273d3caf41759ad843474f960fbf80ff2ec961135d018b61e9fab3ad1fc06 not provided',
     },
@@ -320,35 +327,9 @@ export const validateReferencedTransactions = [
             ],
             addresses: ADDRESSES,
             outputs: [], // irrelevant
-            coinInfo: {}, // irrelevant
+            coinInfo: { network: networks.testnet },
         },
         error: 'invalid input at 70f9871eb03a38405cfd7a01e0e1448678132d815e2c9f552ad83ae23969509e [0]',
-    },
-    {
-        description: 'AccountTransaction to OrigTransaction throws missing outputs data',
-        params: {
-            transactions: [
-                {
-                    ...tx70f987blockbook,
-                    details: {
-                        ...tx70f987blockbook.details,
-                        vout: [{ isAddress: true }], // missing "addresses" field
-                    },
-                },
-            ],
-            inputs: [
-                {
-                    prev_hash: '43d273d3caf41759ad843474f960fbf80ff2ec961135d018b61e9fab3ad1fc06',
-                    prev_index: 1,
-                    orig_hash: '70f9871eb03a38405cfd7a01e0e1448678132d815e2c9f552ad83ae23969509e',
-                    orig_index: 0,
-                },
-            ],
-            addresses: ADDRESSES,
-            outputs: [], // irrelevant
-            coinInfo: {}, // irrelevant
-        },
-        error: 'invalid output at 70f9871eb03a38405cfd7a01e0e1448678132d815e2c9f552ad83ae23969509e [0]',
     },
     {
         description: 'AccountTransaction to OrigTransaction throws missing hex',
@@ -369,7 +350,7 @@ export const validateReferencedTransactions = [
             ],
             outputs: [], // irrelevant
             addresses: {}, // irrelevant
-            coinInfo: {}, // irrelevant
+            coinInfo: { network: networks.testnet },
         },
         error: 'hex for 70f9871eb03a38405cfd7a01e0e1448678132d815e2c9f552ad83ae23969509e not provided',
     },
@@ -390,7 +371,7 @@ export const validateReferencedTransactions = [
             ],
             outputs: [], // irrelevant
             addresses: {}, // irrelevant
-            coinInfo: {}, // irrelevant
+            coinInfo: { network: networks.testnet },
         },
         error: 'hex for 70f9871eb03a38405cfd7a01e0e1448678132d815e2c9f552ad83ae23969509e not provided',
     },
@@ -408,7 +389,7 @@ export const validateReferencedTransactions = [
             ],
             addresses: undefined,
             outputs: [], // irrelevant
-            coinInfo: {}, // irrelevant
+            coinInfo: { network: networks.testnet },
         },
         error: 'addresses for 70f9871eb03a38405cfd7a01e0e1448678132d815e2c9f552ad83ae23969509e not provided',
     },
@@ -418,7 +399,7 @@ export const validateReferencedTransactions = [
             transactions: [],
             inputs: [], // irrelevant
             outputs: [], // irrelevant
-            coinInfo: {}, // irrelevant
+            coinInfo: { network: networks.testnet },
         },
         result: undefined,
     },
@@ -428,7 +409,7 @@ export const validateReferencedTransactions = [
             transactions: {},
             inputs: [], // irrelevant
             outputs: [], // irrelevant
-            coinInfo: {}, // irrelevant
+            coinInfo: { network: networks.testnet },
         },
         result: undefined,
     },
