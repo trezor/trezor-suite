@@ -12,7 +12,7 @@ module.exports = {
             jsx: true,
         },
     },
-    plugins: ['import', '@typescript-eslint', 'react-hooks', 'prettier', 'jest'],
+    plugins: ['import', '@typescript-eslint', 'react-hooks', 'prettier', 'jest', 'chai-friendly'],
     extends: [
         'airbnb',
         'plugin:@typescript-eslint/recommended',
@@ -183,6 +183,8 @@ module.exports = {
         'no-undefined': 'off', // disallow use of undefined variable (off by default)
         'no-undef-init': 'error', // disallow use of undefined when initializing variables
         'no-unused-vars': 'off',
+        'no-unused-expressions': 0,
+        'chai-friendly/no-unused-expressions': 2,
         '@typescript-eslint/no-unused-vars': [
             'error',
             { vars: 'all', args: 'none', ignoreRestSiblings: true, varsIgnorePattern: '^_' },

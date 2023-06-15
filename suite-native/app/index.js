@@ -8,7 +8,7 @@ import { App } from './src/App';
 if (__DEV__) {
     // Flipper plugin for debugging websocket traffic.
     // more: https://github.com/Matju-M/flipper-plugin-basil-ws
-    // eslint-disable-next-line no-unused-expressions, global-require
+    // eslint-disable-next-line global-require, chai-friendly/no-unused-expressions
     require('basil-ws-flipper').wsDebugPlugin;
 }
 
