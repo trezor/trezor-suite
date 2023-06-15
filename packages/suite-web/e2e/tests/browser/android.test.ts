@@ -1,6 +1,6 @@
 // @group:browser
 // @retry=2
-// @user-agent=Mozilla/5.0 (Linux; U; Android 2.3.6; en-us; Nexus S Build/GRK39F) AppleWebKit/533.1 (KHTML, like Gecko) Version/4.0 Mobile Safari/533.1
+// @user-agent=Mozilla/5.0 (Android 13; Mobile; LG-M255; rv:114.0) Gecko/114.0 Firefox/114.0
 
 // note that running tests in /browser folder will not work in 'debug local setup'
 
