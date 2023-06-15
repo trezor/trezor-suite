@@ -1,8 +1,8 @@
 // @group:settings
 // @retry=2
 
-import { EventType, SuiteAnalyticsEvent } from '@trezor/suite-analytics';
-import { Requests } from '../../support/utils/shortcuts';
+import { EventType } from '@trezor/suite-analytics';
+import { ExtractByEventType, Requests } from '../../support/types';
 
 let requests: Requests;
 
@@ -91,14 +91,10 @@ describe('Coin Settings', () => {
             );
         });
 
-        cy.wrap(requests).then(requestsArr => {
-            const settingsCoinsEvent = requestsArr.find(
-                req => req.c_type === EventType.SettingsCoins,
-            ) as unknown as Extract<
-                SuiteAnalyticsEvent,
-                { type: EventType.SettingsCoins }
-            >['payload'];
-
+        cy.findAnalyticsEventByType<ExtractByEventType<EventType.SettingsCoins>>(
+            requests,
+            EventType.SettingsCoins,
+        ).then(settingsCoinsEvent => {
             expect(settingsCoinsEvent.symbol).to.be.oneOf(['btc', ...defaultUnchecked]);
             expect(settingsCoinsEvent.value).to.be.oneOf(['true', 'false']);
         });
@@ -110,14 +106,10 @@ describe('Coin Settings', () => {
         cy.getTestElement('@settings/advance/url').type('https://eth.marek.pl/');
         cy.getTestElement('@settings/advance/button/save').click();
 
-        cy.wrap(requests).then(requestsArr => {
-            const settingsCoinsBackendEvent = requestsArr.find(
-                req => req.c_type === EventType.SettingsCoinsBackend,
-            ) as unknown as Extract<
-                SuiteAnalyticsEvent,
-                { type: EventType.SettingsCoinsBackend }
-            >['payload'];
-
+        cy.findAnalyticsEventByType<ExtractByEventType<EventType.SettingsCoinsBackend>>(
+            requests,
+            EventType.SettingsCoinsBackend,
+        ).then(settingsCoinsBackendEvent => {
             expect(settingsCoinsBackendEvent.symbol).to.equal('eth');
             expect(settingsCoinsBackendEvent.type).to.equal('blockbook');
             expect(settingsCoinsBackendEvent.totalRegular).to.equal('1');

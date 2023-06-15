@@ -21,9 +21,11 @@ import {
     enableRegtestAndGetCoins,
     createAccountFromMyAccounts,
     interceptDataTrezorIo,
-    Requests,
+    findAnalyticsEventByType,
 } from './utils/shortcuts';
 import { interceptInvityApi } from './utils/intercept-invity-api';
+import { SuiteAnalyticsEvent } from '@trezor/suite-analytics';
+import { EventPayload, Requests } from './types';
 
 const command = require('cypress-image-snapshot/command');
 const { skipOn, onlyOn } = require('@cypress/skip-test');
@@ -112,6 +114,10 @@ declare global {
             createAccountFromMyAccounts: (coin: string, label: string) => Chainable<Subject>;
             interceptInvityApi: () => void;
             interceptDataTrezorIo: (requests: Requests) => Cypress.Chainable<null>;
+            findAnalyticsEventByType: <T extends SuiteAnalyticsEvent>(
+                requests: Requests,
+                eventType: T['type'],
+            ) => Cypress.Chainable<NonNullable<EventPayload<T>>>;
         }
     }
 }
@@ -155,3 +161,5 @@ Cypress.Commands.add('text', { prevSubject: true }, subject => subject.text());
 Cypress.Commands.add('createAccountFromMyAccounts', createAccountFromMyAccounts);
 Cypress.Commands.add('interceptInvityApi', interceptInvityApi);
 Cypress.Commands.add('interceptDataTrezorIo', interceptDataTrezorIo);
+
+Cypress.Commands.add('findAnalyticsEventByType', findAnalyticsEventByType);

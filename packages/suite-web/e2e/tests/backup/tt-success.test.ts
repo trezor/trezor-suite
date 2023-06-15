@@ -1,5 +1,5 @@
-import { EventType, SuiteAnalyticsEvent } from '@trezor/suite-analytics';
-import { Requests } from '../../support/utils/shortcuts';
+import { EventType } from '@trezor/suite-analytics';
+import { ExtractByEventType, Requests } from '../../support/types';
 
 // @group:device-management
 // @retry=2
@@ -54,11 +54,10 @@ describe('Backup success', () => {
         cy.getTestElement('@backup/check-item/will-hide-seed').click();
         cy.getTestElement('@backup/continue-to-pin-button').should('not.be.disabled');
 
-        cy.wrap(requests).then(requestsArr => {
-            const createBackupEvent = requestsArr.find(
-                req => req.c_type === EventType.CreateBackup,
-            ) as Extract<SuiteAnalyticsEvent, { type: EventType.CreateBackup }>['payload'];
-
+        cy.findAnalyticsEventByType<ExtractByEventType<EventType.CreateBackup>>(
+            requests,
+            EventType.CreateBackup,
+        ).then(createBackupEvent => {
             expect(createBackupEvent.status).to.equal('finished');
             expect(createBackupEvent.error).to.equal('');
         });

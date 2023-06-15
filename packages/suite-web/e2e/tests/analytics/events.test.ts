@@ -1,10 +1,9 @@
 // @group:suite
 // @retry=2
 
-import { urlSearchParams } from '@trezor/suite/src/utils/suite/metadata';
-import { EventType, SuiteAnalyticsEvent } from '@trezor/suite-analytics';
+import { EventType } from '@trezor/suite-analytics';
+import { ExtractByEventType, Requests } from '../../support/types';
 
-type Requests = ReturnType<typeof urlSearchParams>[];
 let requests: Requests;
 
 const windowWidth = 1080;
@@ -35,10 +34,7 @@ describe('Analytics Events', () => {
 
         // reload to activate bridge and start testing app with enabled analytics
         cy.reload();
-        cy.intercept({ hostname: 'data.trezor.io', url: '/suite/log/**' }, req => {
-            const params = urlSearchParams(req.url);
-            requests.push(params);
-        });
+        cy.interceptDataTrezorIo(requests);
 
         // suite-ready is logged 1st, just check that it is reported when app is initialized and enabled
         // device-connect is logged 2nd
@@ -52,14 +48,10 @@ describe('Analytics Events', () => {
         cy.wrap(requests).its(2).should('have.property', 'c_type', EventType.TransportType);
 
         // device-connect
-        cy.wrap(requests).then(requestsArr => {
-            const deviceConnectEvent = requestsArr.find(
-                req => req.c_type === EventType.SettingsCoins,
-            ) as unknown as Extract<
-                SuiteAnalyticsEvent,
-                { type: EventType.DeviceConnect }
-            >['payload'];
-
+        cy.findAnalyticsEventByType<ExtractByEventType<EventType.DeviceConnect>>(
+            requests,
+            EventType.DeviceConnect,
+        ).then(deviceConnectEvent => {
             expect(deviceConnectEvent.mode).to.equal('normal'); // not in BL
             expect(deviceConnectEvent.firmware).to.equal('2.6.0'); // 2.6.0 is hardcoded in startEmu to always match
             expect(deviceConnectEvent.firmwareRevision).to.equal(
@@ -78,11 +70,10 @@ describe('Analytics Events', () => {
         });
 
         // transport-type
-        cy.wrap(requests).then(requestsArr => {
-            const transportTypeEvent = requestsArr.find(
-                req => req.c_type === EventType.TransportType,
-            ) as Extract<SuiteAnalyticsEvent, { type: EventType.TransportType }>['payload'];
-
+        cy.findAnalyticsEventByType<ExtractByEventType<EventType.TransportType>>(
+            requests,
+            EventType.TransportType,
+        ).then(transportTypeEvent => {
             expect(transportTypeEvent.type).to.equal('BridgeTransport');
             expect(parseInt(transportTypeEvent.version, 10)).to.not.equal(NaN);
         });
@@ -101,10 +92,7 @@ describe('Analytics Events', () => {
         });
         cy.task('startBridge');
 
-        cy.intercept({ hostname: 'data.trezor.io', url: '/suite/log/**' }, req => {
-            const params = urlSearchParams(req.url);
-            requests.push(params);
-        });
+        cy.interceptDataTrezorIo(requests);
 
         cy.prefixedVisit('/');
 
@@ -157,22 +145,18 @@ describe('Analytics Events', () => {
         cy.wrap(requests).its(1).should('have.property', 'c_type', EventType.SuiteReady);
 
         // settings/analytics
-        cy.wrap(requests).then(requestsArr => {
-            const transportTypeEvent = requestsArr.find(
-                req => req.c_type === EventType.SettingsAnalytics,
-            ) as unknown as Extract<
-                SuiteAnalyticsEvent,
-                { type: EventType.SettingsAnalytics }
-            >['payload'];
-            expect(transportTypeEvent.value).to.equal('true');
+        cy.findAnalyticsEventByType<ExtractByEventType<EventType.SettingsAnalytics>>(
+            requests,
+            EventType.SettingsAnalytics,
+        ).then(deviceConnectEvent => {
+            expect(deviceConnectEvent.value).to.equal('true');
         });
 
         // suite-ready
-        cy.wrap(requests).then(requestsArr => {
-            const suiteReadyEvent = requestsArr.find(
-                req => req.c_type === EventType.SuiteReady,
-            ) as unknown as Extract<SuiteAnalyticsEvent, { type: EventType.SuiteReady }>['payload'];
-
+        cy.findAnalyticsEventByType<ExtractByEventType<EventType.SuiteReady>>(
+            requests,
+            EventType.SuiteReady,
+        ).then(suiteReadyEvent => {
             expect(suiteReadyEvent.language).to.equal('cs');
             expect(suiteReadyEvent.enabledNetworks).to.equal('eth,tgor');
             expect(suiteReadyEvent.customBackends).to.equal('eth');
