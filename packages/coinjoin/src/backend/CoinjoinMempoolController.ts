@@ -36,6 +36,7 @@ export class CoinjoinMempoolController implements MempoolController {
     private readonly filter;
     private readonly onTxAdd;
     private readonly onTxRemove;
+    private readonly onDisconnect;
     private lastPurge;
     private _status: MempoolStatus;
 
@@ -52,6 +53,9 @@ export class CoinjoinMempoolController implements MempoolController {
         this.filter = filter;
         this.onTxAdd = this.onTransactionAdd.bind(this);
         this.onTxRemove = this.onTransactionRemove.bind(this);
+        this.onDisconnect = () => {
+            this._status = 'stopped';
+        };
         this.lastPurge = new Date().getTime();
         this._status = 'stopped';
     }
@@ -131,13 +135,13 @@ export class CoinjoinMempoolController implements MempoolController {
 
     async start() {
         if (this._status === 'running') return;
-        await this.client.subscribeMempoolTxs(this.onTxAdd);
+        await this.client.subscribeMempoolTxs(this.onTxAdd, this.onDisconnect);
         this._status = 'running';
     }
 
     async stop() {
         if (this._status === 'stopped') return;
-        await this.client.unsubscribeMempoolTxs(this.onTxAdd);
+        await this.client.unsubscribeMempoolTxs(this.onTxAdd, this.onDisconnect);
         this._status = 'stopped';
     }
 
