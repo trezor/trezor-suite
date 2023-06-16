@@ -1,4 +1,5 @@
 import { scheduleAction, arrayShuffle } from '@trezor/utils';
+import { TypedEmitter } from '@trezor/utils/lib/typedEventEmitter';
 
 import { httpGet, RequestOptions } from '../utils/http';
 import type {
@@ -21,6 +22,7 @@ export class CoinjoinBackendClient {
     protected readonly wabisabiUrl;
     protected readonly blockbookUrls;
     protected readonly websockets;
+    protected readonly emitter;
 
     protected blockbookRequestId;
 
@@ -38,6 +40,10 @@ export class CoinjoinBackendClient {
         this.blockbookUrls = arrayShuffle(settings.blockbookUrls);
         this.blockbookRequestId = Math.floor(Math.random() * settings.blockbookUrls.length);
         this.websockets = new CoinjoinWebsocketController(settings);
+
+        // This allows to subscribe to mempool WS disconnecting in this.subscribeMempoolTxs(),
+        // which is then emitted in this.reconnect()
+        this.emitter = new TypedEmitter<{ mempoolDisconnected: void }>();
     }
 
     // Blockbook methods
@@ -79,25 +85,39 @@ export class CoinjoinBackendClient {
     }
 
     private reconnect = async () => {
-        const api = await this.websockets.getOrCreate(this.blockbookUrls[0]);
+        let api;
+        try {
+            api = await this.websockets.getOrCreate(this.blockbookUrls[0]);
+        } catch {
+            this.emitter.emit('mempoolDisconnected');
+            return;
+        }
         api.once('disconnected', this.reconnect);
         if (api.listenerCount('mempool')) {
             await api.subscribeMempool();
         }
     };
 
-    async subscribeMempoolTxs(listener: (tx: BlockbookTransaction) => void) {
+    async subscribeMempoolTxs(
+        listener: (tx: BlockbookTransaction) => void,
+        onDisconnect?: () => void,
+    ) {
         const api = await this.websockets.getOrCreate(this.blockbookUrls[0]);
         api.on('mempool', listener);
+        if (onDisconnect) this.emitter.once('mempoolDisconnected', onDisconnect);
         if (api.listenerCount('mempool') === 1) {
             api.once('disconnected', this.reconnect);
             await api.subscribeMempool();
         }
     }
 
-    async unsubscribeMempoolTxs(listener: (tx: BlockbookTransaction) => void) {
+    async unsubscribeMempoolTxs(
+        listener: (tx: BlockbookTransaction) => void,
+        onDisconnect?: () => void,
+    ) {
         const api = await this.websockets.getOrCreate(this.blockbookUrls[0]);
         api.off('mempool', listener);
+        if (onDisconnect) this.emitter.off('mempoolDisconnected', onDisconnect);
         if (!api.listenerCount('mempool')) {
             api.off('disconnected', this.reconnect);
             await api.unsubscribeMempool();

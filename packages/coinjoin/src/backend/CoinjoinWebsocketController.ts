@@ -41,7 +41,13 @@ export class CoinjoinWebsocketController {
             this.sockets[socketId] = socket;
         }
         if (!socket.isConnected()) {
-            await socket.connect();
+            try {
+                await socket.connect();
+            } catch (err) {
+                delete this.sockets[socketId];
+                socket.dispose();
+                throw err;
+            }
             this.logger?.debug(`WS OPENED ${socketId}`);
             socket.once('disconnected', () => {
                 this.logger?.debug(`WS CLOSED ${socketId}`);
