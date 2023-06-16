@@ -26,10 +26,10 @@
         "@trezor/utils": "workspace:*",
         "ajv": "^8.12.0",
         "fs-extra": "^11.1.1",
-        "json-schema-to-typescript": "^13.0.1",
+        "json-schema-to-typescript": "^13.0.2",
         "jws": "^4.0.0",
         "proxy-memoize": "2.0.2",
-        "semver": "^7.5.1"
+        "semver": "^7.5.2"
     },
     "devDependencies": {
         "@suite-common/test-utils": "workspace:*",
