@@ -15,9 +15,11 @@ const WhiteCollapsibleBox = styled(CollapsibleBox)`
 export interface ErrorViewProps {
     type: 'error';
     detail: // errors that might arise when using connect-ui with connect-popup
-    | 'handshake-timeout' // communication was not established in a set time period
+    | 'response-event-error' // Error coming from connect RESPONSE_EVENT
+        | 'handshake-timeout' // communication was not established in a set time period
         | 'iframe-failure'; // another (legacy) error, this is sent from popupManager (host) to popup. it means basically the same like handshake-timeout but we might be notified earlier
     // future errors when using connect-ui in different contexts
+    message?: string;
 }
 
 const StepsOrderedList = styled.ol`
@@ -135,6 +137,16 @@ const getTroubleshootingTips = (props: ErrorViewProps) => {
         }
     }
 
+    if (props.detail === 'response-event-error') {
+        tips.push({
+            icon: 'QUESTION',
+            title: 'There was an error',
+            detail: {
+                steps: [<Step>{props.message}</Step>],
+            },
+        });
+    }
+
     if (!tips.length) {
         tips.push({
             icon: 'QUESTION',
@@ -202,7 +214,7 @@ const HeadingH1 = styled.div`
 `;
 
 export const ErrorView = (props: ErrorViewProps) => (
-    <View>
+    <View data-test="@connect-ui/error">
         <InnerWrapper>
             <H>Error</H>
             <Text>You can try the following steps to solve the problem</Text>
@@ -231,7 +243,11 @@ export const ErrorView = (props: ErrorViewProps) => (
                 ))}
             </TipsContainer>
 
-            <Button variant="primary" onClick={() => window.close()}>
+            <Button
+                data-test="@connect-ui/error-close-button"
+                variant="primary"
+                onClick={() => window.close()}
+            >
                 Close
             </Button>
         </InnerWrapper>
