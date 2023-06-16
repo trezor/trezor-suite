@@ -29,7 +29,7 @@
         "@trezor/connect": "workspace:*",
         "@trezor/utils": "workspace:*",
         "react": "18.2.0",
-        "react-redux": "8.0.5",
+        "react-redux": "8.0.7",
         "redux-flipper": "2.0.2",
         "redux-persist": "6.0.0"
     },

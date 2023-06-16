@@ -17,7 +17,7 @@
         "react-native-gesture-handler": "^2.9.0",
         "react-native-reanimated": "3.1.0",
         "react-native-safe-area-context": "^4.5.0",
-        "react-redux": "8.0.5"
+        "react-redux": "8.0.7"
     },
     "devDependencies": {
         "jest": "^26.6.3",

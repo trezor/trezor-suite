@@ -59,16 +59,16 @@
     "devDependencies": {
         "@trezor/connect": "workspace:*",
         "babel-loader": "^9.1.2",
-        "concurrently": "^8.0.1",
+        "concurrently": "^8.2.0",
         "copy-webpack-plugin": "^11.0.0",
         "electron": "24.3.1",
         "electron-builder": "^23.6.0",
-        "html-webpack-plugin": "^5.5.1",
+        "html-webpack-plugin": "^5.5.3",
         "terser-webpack-plugin": "^5.3.9",
         "wait-on": "^7.0.1",
-        "webpack": "^5.83.1",
-        "webpack-cli": "^5.1.1",
-        "webpack-dev-server": "^4.15.0",
+        "webpack": "^5.87.0",
+        "webpack-cli": "^5.1.4",
+        "webpack-dev-server": "^4.15.1",
         "worker-loader": "^3.0.8"
     }
 }
