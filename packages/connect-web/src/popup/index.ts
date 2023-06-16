@@ -13,7 +13,7 @@ import {
 import { getOrigin } from '@trezor/connect/lib/utils/urlUtils';
 import { showPopupRequest } from './showPopupRequest';
 
-// const POPUP_REQUEST_TIMEOUT = 602;
+// Event `POPUP_REQUEST_TIMEOUT` is used to close Popup window when there was no handshake from iframe.
 const POPUP_REQUEST_TIMEOUT = 850;
 const POPUP_CLOSE_INTERVAL = 500;
 const POPUP_OPEN_TIMEOUT = 3000;
@@ -315,17 +315,17 @@ export class PopupManager extends EventEmitter {
             this.extensionTabId = 0;
         }
 
-        if (this.popupWindow) {
-            if (this.settings.env === 'webextension') {
-                // @ts-expect-error
-                let _e = chrome.runtime.lastError;
+        if (!this.popupWindow) return;
 
-                chrome.tabs.remove(this.popupWindow.id, () => {
-                    _e = chrome.runtime.lastError;
-                });
-            } else {
-                this.popupWindow.close();
-            }
+        if (this.settings.env === 'webextension') {
+            // @ts-expect-error
+            let _e = chrome.runtime.lastError;
+
+            chrome.tabs.remove(this.popupWindow.id, () => {
+                _e = chrome.runtime.lastError;
+            });
+        } else if (!this.settings.debug) {
+            this.popupWindow.close();
             this.popupWindow = null;
         }
     }
