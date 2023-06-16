@@ -31,7 +31,8 @@ export type InterceptedEvent =
           type: 'NETWORK_MISBEHAVING';
       }
     | {
-          type: 'ERROR' | 'ERROR_PROXY_TIMEOUT' | 'ERROR_PROXY_REJECTED';
+          type: 'ERROR';
+          error: Error;
       };
 
 export type TorSettings = {
