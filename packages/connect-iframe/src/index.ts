@@ -4,6 +4,7 @@
 
 import {
     CORE_EVENT,
+    RESPONSE_EVENT,
     UI_EVENT,
     DEVICE_EVENT,
     TRANSPORT_EVENT,
@@ -172,18 +173,18 @@ const postMessage = (message: CoreMessage) => {
         message.payload.udev = suggestUdevInstaller(platform);
     }
 
-    if (usingPopup && shouldUiEventBeSentToPopup(message)) {
-        if (_popupMessagePort) {
-            _popupMessagePort.postMessage(message);
-        }
-    } else {
+    if (usingPopup && _popupMessagePort) {
+        _popupMessagePort.postMessage(message);
+    }
+
+    if (!usingPopup || shouldUiEventBeSentToHost(message)) {
         let origin = DataManager.getSettings('origin');
         if (!origin || origin.indexOf('file://') >= 0) origin = '*';
         window.parent.postMessage(message, origin);
     }
 };
 
-const shouldUiEventBeSentToPopup = (message: CoreMessage) => {
+const shouldUiEventBeSentToHost = (message: CoreMessage) => {
     // whitelistedMessages are messages that are sent to 3rd party/host/parent.
     const whitelistedMessages: CoreMessage['type'][] = [
         IFRAME.LOADED,
@@ -193,8 +194,9 @@ const shouldUiEventBeSentToPopup = (message: CoreMessage) => {
         UI.LOGIN_CHALLENGE_REQUEST,
         UI.BUNDLE_PROGRESS,
         UI.ADDRESS_VALIDATION,
+        RESPONSE_EVENT,
     ];
-    return message.event === UI_EVENT && whitelistedMessages.indexOf(message.type) < 0;
+    return whitelistedMessages.includes(message.type);
 };
 
 const filterDeviceEvent = (message: DeviceEvent) => {
