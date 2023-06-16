@@ -5,10 +5,10 @@ import tls from 'tls';
 import { getWeakRandomId } from '@trezor/utils';
 import { TorIdentities } from './torIdentities';
 import { InterceptorOptions } from './types';
-import { RequestPool } from './httpPool';
+import { createRequestPool } from './httpPool';
 
 type InterceptorContext = InterceptorOptions & {
-    requestPool: RequestPool;
+    requestPool: ReturnType<typeof createRequestPool>;
     torIdentities: TorIdentities;
 };
 
@@ -178,9 +178,7 @@ const interceptHttp = (context: InterceptorContext) => {
     http.request = (...args) => {
         const overload = overloadHttpRequest(context, 'http', ...args);
         if (overload) {
-            const request = originalHttpRequest(...overload);
-            context.requestPool.addRequest(request);
-            return request;
+            return context.requestPool(originalHttpRequest(...overload));
         }
 
         // In cases that are not considered above we pass the args as they came.
@@ -192,7 +190,7 @@ const interceptHttp = (context: InterceptorContext) => {
     http.get = (...args) => {
         const overload = overloadWebsocketHandshake(context, 'http', ...args);
         if (overload) {
-            return originalHttpGet(...overload);
+            return context.requestPool(originalHttpGet(...overload));
         }
         return originalHttpGet(...(args as Parameters<typeof https.get>));
     };
@@ -204,9 +202,7 @@ const interceptHttps = (context: InterceptorContext) => {
     https.request = (...args) => {
         const overload = overloadHttpRequest(context, 'https', ...args);
         if (overload) {
-            const request = originalHttpsRequest(...overload);
-            context.requestPool.addRequest(request);
-            return request;
+            return context.requestPool(originalHttpsRequest(...overload));
         }
 
         // In cases that are not considered above we pass the args as they came.
@@ -218,7 +214,7 @@ const interceptHttps = (context: InterceptorContext) => {
     https.get = (...args) => {
         const overload = overloadWebsocketHandshake(context, 'https', ...args);
         if (overload) {
-            return originalHttpsGet(...overload);
+            return context.requestPool(originalHttpsGet(...overload));
         }
         return originalHttpsGet(...(args as Parameters<typeof https.get>));
     };
@@ -246,7 +242,7 @@ const interceptTlsConnect = (context: InterceptorContext) => {
 };
 
 export const createInterceptor = (interceptorOptions: InterceptorOptions) => {
-    const requestPool = new RequestPool(interceptorOptions);
+    const requestPool = createRequestPool(interceptorOptions);
     const torIdentities = new TorIdentities(interceptorOptions.getTorSettings);
     const context = { ...interceptorOptions, requestPool, torIdentities };
 
