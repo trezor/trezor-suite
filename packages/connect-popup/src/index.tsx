@@ -2,12 +2,14 @@
 import {
     POPUP,
     UI_REQUEST,
+    RESPONSE_EVENT,
     parseMessage,
     createPopupMessage,
     UiEvent,
     PopupEvent,
     PopupInit,
     PopupHandshake,
+    MethodResponseMessage,
 } from '@trezor/connect';
 import { config } from '@trezor/connect/lib/data/config';
 
@@ -40,13 +42,29 @@ const escapeHtml = (payload: any) => {
 };
 
 // handle messages from window.opener and iframe
-const handleMessage = (event: MessageEvent<PopupEvent | UiEvent>) => {
+const handleMessage = (
+    event: MessageEvent<
+        | PopupEvent
+        | UiEvent
+        | (Omit<MethodResponseMessage, 'payload'> & { payload?: { error: string } })
+    >,
+) => {
     const { data } = event;
     if (!data) return;
 
     // This is message from the window.opener
     if (data.type === POPUP.INIT) {
         init(escapeHtml(data.payload)); // eslint-disable-line @typescript-eslint/no-use-before-define
+        return;
+    }
+
+    if (data.type === RESPONSE_EVENT && !data.success) {
+        const errorMessage = data.payload?.error || 'Unknown error';
+        reactEventBus.dispatch({
+            type: 'error',
+            detail: 'response-event-error',
+            message: errorMessage,
+        });
         return;
     }
 
