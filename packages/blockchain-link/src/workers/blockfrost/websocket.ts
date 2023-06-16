@@ -14,8 +14,6 @@ import type {
     AccountBalanceHistoryParams,
 } from '@trezor/blockchain-link-types/lib/params';
 
-const NOT_INITIALIZED = new CustomError('websocket_not_initialized');
-
 interface Subscription {
     id: string;
     type: 'block' | 'notification';
@@ -51,7 +49,6 @@ export class BlockfrostAPI extends TypedEmitter<BlockfrostEvents> {
 
     constructor(options: Options) {
         super();
-        this.setMaxListeners(Infinity);
         this.options = options;
     }
 
@@ -118,7 +115,7 @@ export class BlockfrostAPI extends TypedEmitter<BlockfrostEvents> {
 
     send: Send = (command, params = {}) => {
         const { ws } = this;
-        if (!ws) throw NOT_INITIALIZED;
+        if (!ws) throw new CustomError('websocket_not_initialized');
         const id = this.messageID.toString();
 
         const dfd = createDeferred(id);
@@ -176,9 +173,6 @@ export class BlockfrostAPI extends TypedEmitter<BlockfrostEvents> {
         const ws = new WebSocket(url, {
             agent: this.options.agent,
         });
-        if (typeof ws.setMaxListeners === 'function') {
-            ws.setMaxListeners(Infinity);
-        }
 
         ws.once('error', error => {
             this.dispose();
@@ -212,14 +206,11 @@ export class BlockfrostAPI extends TypedEmitter<BlockfrostEvents> {
     }
 
     disconnect() {
-        if (this.ws) {
-            this.ws.close();
-        }
+        this.ws?.close();
     }
 
     isConnected() {
-        const { ws } = this;
-        return ws && ws.readyState === WebSocket.OPEN;
+        return this.ws?.readyState === WebSocket.OPEN;
     }
 
     getServerInfo() {
@@ -326,14 +317,10 @@ export class BlockfrostAPI extends TypedEmitter<BlockfrostEvents> {
             clearTimeout(this.connectionTimeout);
         }
 
-        const { ws } = this;
         if (this.isConnected()) {
             this.disconnect();
         }
-        if (ws) {
-            ws.removeAllListeners();
-        }
-
+        this.ws?.removeAllListeners();
         this.removeAllListeners();
     }
 }
