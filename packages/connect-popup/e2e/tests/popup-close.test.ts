@@ -139,8 +139,6 @@ test.beforeAll(async () => {
     }) => {
         // user canceled dialog on device
         await TrezorUserEnvLink.send({ type: 'emulator-press-no' });
-        await releasePromise!.promise;
-        await popupClosedPromise;
         await page.waitForTimeout(WAIT_AFTER_TEST);
 
         responses.forEach(response => {
@@ -148,6 +146,10 @@ test.beforeAll(async () => {
             // no post endpoint is used
             expect(response.url).not.toContain('post');
         });
+
+        await popup.click("button[data-test='@connect-ui/error-close-button']");
+        await releasePromise!.promise;
+        await popupClosedPromise;
 
         await page.waitForSelector('text=Failure_ActionCancelled');
     });
@@ -157,8 +159,6 @@ test.beforeAll(async () => {
     }) => {
         // user canceled interaction on device
         await TrezorUserEnvLink.api.stopEmu();
-        await releasePromise!.promise;
-        await popupClosedPromise;
         await page.waitForTimeout(WAIT_AFTER_TEST);
 
         responses.forEach(response => {
@@ -170,6 +170,10 @@ test.beforeAll(async () => {
             url: 'http://127.0.0.1:21325/call/2',
             status: 400,
         });
+
+        await popup.click("button[data-test='@connect-ui/error-close-button']");
+        await releasePromise!.promise;
+        await popupClosedPromise;
 
         await page.waitForSelector('text=device disconnected during action');
 
@@ -207,10 +211,10 @@ test.beforeAll(async () => {
     // just like the previous skipped test.
     // request: http://127.0.0.1:21325/call/3
     // response {"error":"closed device"}
-    test.skip(`popup is reloaded by user. bridge version ${bridgeVersion}`, async () => {
+    test(`popup is reloaded by user. bridge version ${bridgeVersion}`, async () => {
         await popup.reload();
         // after popup is reload, communication is lost, there is only infinite loader
-        await popup.waitForSelector('.loader');
+        await popup.waitForSelector('div[data-test="@connect-ui/loader"]');
         // todo: there is no message into client about the fact that popup was unloaded
     });
 });
