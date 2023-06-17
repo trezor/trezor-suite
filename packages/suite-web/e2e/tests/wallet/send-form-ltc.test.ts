@@ -24,7 +24,7 @@ describe('LTC send form with mocked blockbook', () => {
         //
         // Test preparation
         //
-        cy.task('startBlockbookMock', { endpointsFile: 'send-form-ltc-mimble-wimble' }).then(
+        cy.task('startBlockbookMock', { endpointsFile: 'blockbook-ltc-mimble-wimble' }).then(
             port => {
                 const customBlockbook = `ws://localhost:${port}`;
                 cy.log(customBlockbook);

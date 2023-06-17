@@ -227,6 +227,7 @@ transport manual:
       - TEST_FILE: ["unchained"]
       - TEST_FILE: ["browser-support"]
       - TEST_FILE: ["install-bridge"]
+      - TEST_FILE: ["compose-transaction"]
 
 connect-popup:
   extends: .e2e connect-popup

@@ -23,6 +23,7 @@ const CoinSelect = ({ field, onChange }: CoinSelectProps) => (
                 return onChange(field, value);
             }}
             options={field.data}
+            data-test={`@select/${field.name}`}
         />
     </Row>
 );

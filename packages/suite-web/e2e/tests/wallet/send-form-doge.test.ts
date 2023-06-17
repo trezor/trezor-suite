@@ -26,7 +26,7 @@ describe('Doge send form with mocked blockbook', () => {
         // Test preparation
         //
 
-        cy.task('startBlockbookMock', { endpointsFile: 'send-form-doge' }).then(port => {
+        cy.task('startBlockbookMock', { endpointsFile: 'blockbook-doge' }).then(port => {
             const customBlockbook = `ws://localhost:${port}`;
             cy.log(customBlockbook);
 
