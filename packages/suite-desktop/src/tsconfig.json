@@ -1,5 +1,5 @@
 {
-    "extends": "../../../tsconfig.aliases.json",
+    "extends": "../../../tsconfig.json",
     "compilerOptions": {
         "watch": false,
         "preserveWatchOutput": true,

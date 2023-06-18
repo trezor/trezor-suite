@@ -1,5 +1,5 @@
 {
-    "extends": "../../tsconfig.aliases.json",
+    "extends": "../../tsconfig.json",
     "compilerOptions": {
         "module": "commonjs",
         "outDir": "./libDev"

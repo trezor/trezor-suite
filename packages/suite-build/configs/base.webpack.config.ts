@@ -4,7 +4,6 @@ import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
 import TerserPlugin from 'terser-webpack-plugin';
 import SentryWebpackPlugin from '@sentry/webpack-plugin';
 
-import alias from '../utils/alias';
 import {
     assetPrefix,
     project,
@@ -42,7 +41,9 @@ const config: webpack.Configuration = {
     resolve: {
         extensions: ['.ts', '.tsx', '.js', '.jsx'],
         modules: ['node_modules'],
-        alias,
+        alias: {
+            src: path.resolve(__dirname, '../../suite/src/'),
+        },
         fallback: {
             // Polyfills crypto API for NodeJS libraries in the browser. 'crypto' does not run without 'stream'
             crypto: require.resolve('crypto-browserify'),
