@@ -6,11 +6,14 @@
  * in case our authorization server (which holds a client secret necessary for the authorization code flow) is not available.
  */
 
-import { METADATA } from '@suite-actions/constants';
+import { METADATA } from 'src/actions/suite/constants';
 import { isDesktop } from '@trezor/env-utils';
-import { OAuthServerEnvironment, Tokens } from '@suite-types/metadata';
-import { extractCredentialsFromAuthorizationFlow, getOauthReceiverUrl } from '@suite-utils/oauth';
-import { getCodeChallenge } from '@suite-utils/random';
+import { OAuthServerEnvironment, Tokens } from 'src/types/suite/metadata';
+import {
+    extractCredentialsFromAuthorizationFlow,
+    getOauthReceiverUrl,
+} from 'src/utils/suite/oauth';
+import { getCodeChallenge } from 'src/utils/suite/random';
 
 const SCOPES = 'https://www.googleapis.com/auth/drive.appdata';
 const BOUNDARY = '-------314159265358979323846';

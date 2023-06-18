@@ -1,11 +1,11 @@
 import React, { useCallback, useState } from 'react';
 import styled, { css } from 'styled-components';
-import { useDiscovery, useAccountSearch, useSelector } from '@suite-hooks';
+import { useDiscovery, useAccountSearch, useSelector } from 'src/hooks/suite';
 import { H2, variables, useTheme, Icon, LoadingContent } from '@trezor/components';
-import { Translation, AddAccountButton } from '@suite-components';
+import { Translation, AddAccountButton } from 'src/components/suite';
 
 import { sortByCoin, getFailedAccounts, accountSearchFn } from '@suite-common/wallet-utils';
-import { Account } from '@wallet-types';
+import { Account } from 'src/types/wallet';
 
 import { AccountSearchBox } from './AccountSearchBox';
 import { AccountGroup } from './AccountGroup';

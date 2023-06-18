@@ -1,6 +1,6 @@
 import { useRef, useEffect } from 'react';
 
-import { useSelector } from '@suite-hooks';
+import { useSelector } from 'src/hooks/suite';
 
 export const useAnchor = (anchorId: string) => {
     const anchorRef = useRef<HTMLDivElement>(null);

@@ -1,7 +1,7 @@
 import React from 'react';
-import { useDevice, useActions } from '@suite-hooks';
-import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
-import { NotificationCard, Translation } from '@suite-components';
+import { useDevice, useActions } from 'src/hooks/suite';
+import * as deviceSettingsActions from 'src/actions/settings/deviceSettingsActions';
+import { NotificationCard, Translation } from 'src/components/suite';
 
 const DeviceUnavailable = () => {
     const { device, isLocked } = useDevice();

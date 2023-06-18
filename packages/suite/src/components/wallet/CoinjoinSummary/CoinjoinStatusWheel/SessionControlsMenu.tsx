@@ -1,12 +1,12 @@
 import React, { useMemo, useRef } from 'react';
 import styled from 'styled-components';
 import { Dropdown, FluidSpinner, GroupedMenuItems, Icon } from '@trezor/components';
-import { Translation } from '@suite-components/Translation';
-import { stopCoinjoinSession } from '@wallet-actions/coinjoinAccountActions';
-import { useCoinjoinSessionBlockers } from '@suite/hooks/coinjoin/useCoinjoinSessionBlockers';
-import { useDispatch } from '@suite-hooks/useDispatch';
-import { useSelector } from '@suite-hooks/useSelector';
-import { selectCurrentCoinjoinWheelStates } from '@wallet-reducers/coinjoinReducer';
+import { Translation } from 'src/components/suite/Translation';
+import { stopCoinjoinSession } from 'src/actions/wallet/coinjoinAccountActions';
+import { useCoinjoinSessionBlockers } from 'src/hooks/coinjoin/useCoinjoinSessionBlockers';
+import { useDispatch } from 'src/hooks/suite/useDispatch';
+import { useSelector } from 'src/hooks/suite/useSelector';
+import { selectCurrentCoinjoinWheelStates } from 'src/reducers/wallet/coinjoinReducer';
 
 const Menu = styled(Dropdown)`
     position: absolute;

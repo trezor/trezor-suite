@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
-import { useDispatch } from '@suite-hooks';
+import { useDispatch } from 'src/hooks/suite';
 import { Button, Icon, useTheme, variables } from '@trezor/components';
-import { onCancel as closeModal } from '@suite-actions/modalActions';
+import { onCancel as closeModal } from 'src/actions/suite/modalActions';
 import { Modal, Translation } from '..';
 
 const StyledModal = styled(Modal)`

@@ -1,4 +1,4 @@
-import { transactionsReducer } from '@wallet-reducers';
+import { transactionsReducer } from 'src/reducers/wallet';
 import { getAccountTransactions } from '@suite-common/wallet-utils';
 import {
     transactionsActions,

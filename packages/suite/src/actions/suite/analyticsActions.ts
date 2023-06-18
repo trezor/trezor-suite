@@ -3,9 +3,9 @@
  * @docs docs/misc/analytics.md
  */
 
-import { allowSentryReport, setSentryUser } from '@suite-utils/sentry';
+import { allowSentryReport, setSentryUser } from 'src/utils/suite/sentry';
 import { getEnvironment, getCommitHash } from '@trezor/env-utils';
-import type { Dispatch, GetState } from '@suite-types';
+import type { Dispatch, GetState } from 'src/types/suite';
 
 import {
     analyticsActions,

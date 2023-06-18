@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
-import { useActions } from '@suite-hooks';
-import { onAnchorChange } from '@suite-actions/routerActions';
+import { useActions } from 'src/hooks/suite';
+import { onAnchorChange } from 'src/actions/suite/routerActions';
 
 export const useAnchorRemoving = (anchor: string | undefined) => {
     const ref = useRef<HTMLDivElement>(null);

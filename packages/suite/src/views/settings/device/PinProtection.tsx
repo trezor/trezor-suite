@@ -1,13 +1,13 @@
 import React from 'react';
 import { analytics, EventType } from '@trezor/suite-analytics';
 
-import { Translation } from '@suite-components';
-import { ActionColumn, SectionItem, TextColumn } from '@suite-components/Settings';
+import { Translation } from 'src/components/suite';
+import { ActionColumn, SectionItem, TextColumn } from 'src/components/suite/Settings';
 import { Switch } from '@trezor/components';
-import { useDevice, useActions } from '@suite-hooks';
-import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
-import { useAnchor } from '@suite-hooks/useAnchor';
-import { SettingsAnchor } from '@suite-constants/anchors';
+import { useDevice, useActions } from 'src/hooks/suite';
+import * as deviceSettingsActions from 'src/actions/settings/deviceSettingsActions';
+import { useAnchor } from 'src/hooks/suite/useAnchor';
+import { SettingsAnchor } from 'src/constants/suite/anchors';
 
 interface PinProtectionProps {
     isDeviceLocked: boolean;

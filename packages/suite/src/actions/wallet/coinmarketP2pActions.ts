@@ -1,7 +1,7 @@
-import { COINMARKET_P2P } from '@wallet-actions/constants';
-import { Dispatch } from '@suite-types';
-import * as modalActions from '@suite-actions/modalActions';
-import invityAPI from '@suite-services/invityAPI';
+import { COINMARKET_P2P } from 'src/actions/wallet/constants';
+import { Dispatch } from 'src/types/suite';
+import * as modalActions from 'src/actions/suite/modalActions';
+import invityAPI from 'src/services/suite/invityAPI';
 import { P2pProviderInfo, P2pQuote, P2pQuotesRequest } from 'invity-api';
 
 export interface P2pInfo {

@@ -1,4 +1,4 @@
-import { Account } from '@wallet-types';
+import { Account } from 'src/types/wallet';
 import {
     GraphRange,
     AggregatedAccountHistory,

@@ -5,13 +5,13 @@ import {
     SavingsProviderInfo,
     SavingsTradeResponse,
 } from 'invity-api';
-import invityAPI from '@suite-services/invityAPI';
+import invityAPI from 'src/services/suite/invityAPI';
 import { COINMARKET_COMMON, COINMARKET_SAVINGS } from './constants';
-import { verifyAddress as verifySavingsAddress } from '@wallet-actions/coinmarket/coinmarketCommonActions';
-import type { Account } from '@wallet-types';
-import regional from '@wallet-constants/coinmarket/regional';
-import * as modalActions from '@suite-actions/modalActions';
-import type { Dispatch } from '@suite-types';
+import { verifyAddress as verifySavingsAddress } from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
+import type { Account } from 'src/types/wallet';
+import regional from 'src/constants/wallet/coinmarket/regional';
+import * as modalActions from 'src/actions/suite/modalActions';
+import type { Dispatch } from 'src/types/suite';
 
 export interface SavingsInfo {
     savingsList?: SavingsListResponse;

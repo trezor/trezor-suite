@@ -1,8 +1,8 @@
-import { Dispatch, GetState } from '@suite-types';
+import { Dispatch, GetState } from 'src/types/suite';
 import { getFormDraftKey } from '@suite-common/wallet-utils';
 import { FORM_DRAFT } from './constants';
 
-import type { FormDraftKeyPrefix, FormDraft } from '@wallet-types/form';
+import type { FormDraftKeyPrefix, FormDraft } from 'src/types/wallet/form';
 
 export type FormDraftAction =
     | {

@@ -1,9 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { Translation } from '@suite-components';
-import * as routerActions from '@suite-actions/routerActions';
-import { useActions } from '@suite-hooks';
+import { Translation } from 'src/components/suite';
+import * as routerActions from 'src/actions/suite/routerActions';
+import { useActions } from 'src/hooks/suite';
 import { Banner } from './Banner';
 
 const Message = styled.span``;

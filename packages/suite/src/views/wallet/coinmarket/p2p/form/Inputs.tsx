@@ -2,16 +2,16 @@ import React, { useMemo } from 'react';
 import { Controller } from 'react-hook-form';
 import styled from 'styled-components';
 import Bignumber from 'bignumber.js';
-import { FIAT } from '@suite-config';
-import { Translation, NumberInput } from '@suite-components';
-import { MAX_LENGTH } from '@suite-constants/inputs';
+import { FIAT } from 'src/config/suite';
+import { Translation, NumberInput } from 'src/components/suite';
+import { MAX_LENGTH } from 'src/constants/suite/inputs';
 import { getInputState, isDecimalsValid } from '@suite-common/wallet-utils';
 import { CoinLogo, Select } from '@trezor/components';
-import { useCoinmarketP2pFormContext } from '@wallet-hooks/useCoinmarketP2pForm';
-import { InputError } from '@wallet-components';
-import { Wrapper } from '@wallet-views/coinmarket';
-import { buildOption } from '@wallet-utils/coinmarket/coinmarketUtils';
-import { TypedValidationRules } from '@wallet-types/form';
+import { useCoinmarketP2pFormContext } from 'src/hooks/wallet/useCoinmarketP2pForm';
+import { InputError } from 'src/components/wallet';
+import { Wrapper } from 'src/views/wallet/coinmarket';
+import { buildOption } from 'src/utils/wallet/coinmarket/coinmarketUtils';
+import { TypedValidationRules } from 'src/types/wallet/form';
 
 const Left = styled.div`
     display: flex;

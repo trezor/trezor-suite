@@ -1,5 +1,5 @@
-import { Account } from '@wallet-types';
-import { Dispatch } from '@suite-types';
+import { Account } from 'src/types/wallet';
+import { Dispatch } from 'src/types/suite';
 import {
     ExchangeListResponse,
     ExchangeProviderInfo,
@@ -7,10 +7,10 @@ import {
     ExchangeTrade,
     ExchangeCoinInfo,
 } from 'invity-api';
-import invityAPI from '@suite-services/invityAPI';
+import invityAPI from 'src/services/suite/invityAPI';
 import { COINMARKET_EXCHANGE, COINMARKET_COMMON } from './constants';
-import * as modalActions from '@suite-actions/modalActions';
-import { verifyAddress as verifyExchangeAddress } from '@wallet-actions/coinmarket/coinmarketCommonActions';
+import * as modalActions from 'src/actions/suite/modalActions';
+import { verifyAddress as verifyExchangeAddress } from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
 
 export interface ExchangeInfo {
     exchangeList?: ExchangeListResponse;

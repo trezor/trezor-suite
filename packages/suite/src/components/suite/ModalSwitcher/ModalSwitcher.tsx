@@ -1,6 +1,6 @@
 import React from 'react';
-import DiscoveryLoader from '@suite-components/DiscoveryLoader';
-import { usePreferredModal } from '@suite-hooks/usePreferredModal';
+import DiscoveryLoader from 'src/components/suite/DiscoveryLoader';
+import { usePreferredModal } from 'src/hooks/suite/usePreferredModal';
 
 import { ReduxModal } from './ReduxModal';
 import { ForegroundAppModal } from './ForegroundAppModal';

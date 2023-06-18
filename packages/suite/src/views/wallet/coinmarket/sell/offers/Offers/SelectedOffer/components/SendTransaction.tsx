@@ -1,9 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Translation, AccountLabeling } from '@suite-components';
+import { Translation, AccountLabeling } from 'src/components/suite';
 import { Button, variables, Loader } from '@trezor/components';
-import { useCoinmarketSellOffersContext } from '@wallet-hooks/useCoinmarketSellOffers';
-import { useWatchSellTrade } from '@wallet-hooks/useCoinmarket';
+import { useCoinmarketSellOffersContext } from 'src/hooks/wallet/useCoinmarketSellOffers';
+import { useWatchSellTrade } from 'src/hooks/wallet/useCoinmarket';
 
 const Wrapper = styled.div`
     display: flex;

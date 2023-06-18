@@ -1,4 +1,4 @@
-import { TrezorDevice } from '@suite-types/index';
+import { TrezorDevice } from 'src/types/suite/index';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { versionUtils } from '@trezor/utils';
 

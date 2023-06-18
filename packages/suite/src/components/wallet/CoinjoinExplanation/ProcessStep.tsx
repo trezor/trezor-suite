@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Image, ImageType, P, variables } from '@trezor/components';
-import { Translation } from '@suite-components/Translation';
+import { Translation } from 'src/components/suite/Translation';
 
 const StyledImage = styled(Image)`
     margin: -8px;

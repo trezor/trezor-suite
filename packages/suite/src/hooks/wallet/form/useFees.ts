@@ -1,9 +1,9 @@
 import { useEffect, useRef } from 'react';
 import { UseFormMethods } from 'react-hook-form';
 import { FeeLevel } from '@trezor/connect';
-import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
-import { useActions } from '@suite-hooks';
-import { FeeInfo, PrecomposedLevels, PrecomposedLevelsCardano } from '@wallet-types/sendForm';
+import * as walletSettingsActions from 'src/actions/settings/walletSettingsActions';
+import { useActions } from 'src/hooks/suite';
+import { FeeInfo, PrecomposedLevels, PrecomposedLevelsCardano } from 'src/types/wallet/sendForm';
 
 type Props = UseFormMethods<{
     selectedFee?: FeeLevel['label'];

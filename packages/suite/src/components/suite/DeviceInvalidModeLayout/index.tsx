@@ -1,9 +1,9 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 import { Button, Image, ImageProps } from '@trezor/components';
-import { Translation } from '@suite-components';
-import { useSelector, useActions } from '@suite-hooks';
-import * as routerActions from '@suite-actions/routerActions';
+import { Translation } from 'src/components/suite';
+import { useSelector, useActions } from 'src/hooks/suite';
+import * as routerActions from 'src/actions/suite/routerActions';
 import { Modal } from '../Modal';
 
 const StyledImage = styled(Image)`

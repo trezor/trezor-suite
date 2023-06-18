@@ -1,5 +1,5 @@
 import type { ReactElement } from 'react';
-import type { Account } from '@wallet-types';
+import type { Account } from 'src/types/wallet';
 import type {
     BuyTrade,
     SellFiatTrade,

@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import { variables } from '@trezor/components';
-import { Translation } from '@suite-components';
-import { ExtendedMessageDescriptor } from '@suite/types/suite';
+import { Translation } from 'src/components/suite';
+import { ExtendedMessageDescriptor } from 'src/types/suite';
 
 const { FONT_WEIGHT, FONT_SIZE } = variables;
 

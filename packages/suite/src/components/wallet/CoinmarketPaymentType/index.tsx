@@ -1,9 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
 import { variables } from '@trezor/components';
-import invityApi from '@suite-services/invityAPI';
+import invityApi from 'src/services/suite/invityAPI';
 import { BuyCryptoPaymentMethod, SavingsPaymentMethod } from 'invity-api';
-import { Translation } from '@suite-components';
+import { Translation } from 'src/components/suite';
 
 const Wrapper = styled.div`
     display: flex;

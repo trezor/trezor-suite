@@ -1,3 +1,3 @@
-import onboarding from '@onboarding-reducers/onboardingReducer';
+import onboarding from 'src/reducers/onboarding/onboardingReducer';
 
 export default onboarding;

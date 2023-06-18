@@ -1,9 +1,9 @@
 import React from 'react';
 import { Button } from '@trezor/components';
 
-import { Translation, TroubleshootingTips } from '@suite-components';
-import { useDevice, useActions } from '@suite-hooks';
-import * as suiteActions from '@suite-actions/suiteActions';
+import { Translation, TroubleshootingTips } from 'src/components/suite';
+import { useDevice, useActions } from 'src/hooks/suite';
+import * as suiteActions from 'src/actions/suite/suiteActions';
 import { isDesktop } from '@trezor/env-utils';
 
 export const DeviceAcquire = () => {

@@ -1,12 +1,12 @@
 import React from 'react';
-import { OnboardingButtonCta } from '@onboarding-components';
-import { SelectWordCount, SelectRecoveryType, SelectRecoveryWord } from '@recovery-components';
-import { Translation } from '@suite-components';
-import * as onboardingActions from '@onboarding-actions/onboardingActions';
-import { useActions, useRecovery, useSelector } from '@suite-hooks';
+import { OnboardingButtonCta } from 'src/components/onboarding';
+import { SelectWordCount, SelectRecoveryType, SelectRecoveryWord } from 'src/components/recovery';
+import { Translation } from 'src/components/suite';
+import * as onboardingActions from 'src/actions/onboarding/onboardingActions';
+import { useActions, useRecovery, useSelector } from 'src/hooks/suite';
 import RecoveryStepBox from './RecoveryStepBox';
 import { DeviceModel, getDeviceModel, pickByDeviceModel } from '@trezor/device-utils';
-import { selectIsActionAbortable } from '@suite-reducers/suiteReducer';
+import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
 import styled from 'styled-components';
 
 const InProgressRecoveryStepBox = styled(RecoveryStepBox)<{ deviceModel: DeviceModel }>`

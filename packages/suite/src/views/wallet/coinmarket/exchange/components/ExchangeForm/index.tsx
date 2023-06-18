@@ -1,8 +1,8 @@
 import React from 'react';
-import { Translation } from '@suite-components';
-import { useCoinmarketExchangeFormContext } from '@wallet-hooks/useCoinmarketExchangeForm';
-import { Wrapper, FeesWrapper, NoProviders, FullWidthForm } from '@wallet-views/coinmarket';
-import { CoinmarketSkeleton } from '@wallet-views/coinmarket/skeleton';
+import { Translation } from 'src/components/suite';
+import { useCoinmarketExchangeFormContext } from 'src/hooks/wallet/useCoinmarketExchangeForm';
+import { Wrapper, FeesWrapper, NoProviders, FullWidthForm } from 'src/views/wallet/coinmarket';
+import { CoinmarketSkeleton } from 'src/views/wallet/coinmarket/skeleton';
 import Inputs from './Inputs';
 import Fees from './Fees';
 import Footer from './Footer';

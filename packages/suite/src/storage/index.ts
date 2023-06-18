@@ -1,5 +1,5 @@
 import SuiteDB, { OnUpgradeFunc } from '@trezor/suite-storage';
-import { reloadApp } from '@suite-utils/reload';
+import { reloadApp } from 'src/utils/suite/reload';
 import { migrate } from './migrations';
 
 import type { SuiteDBSchema } from './definitions';

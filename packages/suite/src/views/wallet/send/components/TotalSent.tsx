@@ -1,9 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
 import { variables } from '@trezor/components';
-import { useSendFormContext } from '@wallet-hooks';
+import { useSendFormContext } from 'src/hooks/wallet';
 import { formatNetworkAmount, formatAmount } from '@suite-common/wallet-utils';
-import { Card, Translation, FiatValue, FormattedCryptoAmount } from '@suite-components';
+import { Card, Translation, FiatValue, FormattedCryptoAmount } from 'src/components/suite';
 
 const StyledCard = styled(Card)`
     display: flex;

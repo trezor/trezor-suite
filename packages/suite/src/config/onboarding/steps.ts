@@ -1,5 +1,5 @@
-import type { Step } from '@onboarding-types';
-import * as STEP from '@onboarding-constants/steps';
+import type { Step } from 'src/types/onboarding';
+import * as STEP from 'src/constants/onboarding/steps';
 
 const commonPrerequisites: Step['prerequisites'] = [
     'transport-bridge',

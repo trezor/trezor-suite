@@ -1,9 +1,9 @@
 /* eslint-disable camelcase */
 import { desktopApi } from '@trezor/suite-desktop-api';
-import { getPrefixedURL } from '@suite-utils/router';
-import { METADATA } from '@suite-actions/constants';
+import { getPrefixedURL } from 'src/utils/suite/router';
+import { METADATA } from 'src/actions/suite/constants';
 import { Deferred, createDeferred } from '@trezor/utils';
-import { urlHashParams, urlSearchParams } from '@suite-utils/metadata';
+import { urlHashParams, urlSearchParams } from 'src/utils/suite/metadata';
 
 /**
  * For web, use oauth_receiver.html hosted on the same origin (localhost/sldev/trezor.io)

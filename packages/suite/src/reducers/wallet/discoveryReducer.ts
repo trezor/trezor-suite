@@ -1,10 +1,10 @@
 import produce from 'immer';
 import { memoize } from 'proxy-memoize';
-import { DISCOVERY } from '@wallet-actions/constants';
-import { STORAGE } from '@suite-actions/constants';
+import { DISCOVERY } from 'src/actions/wallet/constants';
+import { STORAGE } from 'src/actions/suite/constants';
 import { createDeferred } from '@trezor/utils';
-import type { AppState, Action as SuiteAction } from '@suite-types';
-import type { WalletAction } from '@wallet-types';
+import type { AppState, Action as SuiteAction } from 'src/types/suite';
+import type { WalletAction } from 'src/types/wallet';
 import type { Discovery as CommonDiscovery } from '@suite-common/wallet-types';
 
 export type Discovery = CommonDiscovery;

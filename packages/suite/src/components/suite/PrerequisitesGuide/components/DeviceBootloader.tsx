@@ -1,10 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Translation, TroubleshootingTips } from '@suite-components';
+import { Translation, TroubleshootingTips } from 'src/components/suite';
 import { Button } from '@trezor/components';
-import { useActions } from '@suite-hooks';
-import * as routerActions from '@suite-actions/routerActions';
-import { TrezorDevice } from '@suite-types';
+import { useActions } from 'src/hooks/suite';
+import * as routerActions from 'src/actions/suite/routerActions';
+import { TrezorDevice } from 'src/types/suite';
 import { DeviceModel, getDeviceModel, pickByDeviceModel } from '@trezor/device-utils';
 
 const WhiteSpace = styled.div`

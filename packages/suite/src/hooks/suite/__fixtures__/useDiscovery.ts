@@ -1,5 +1,5 @@
-import { SUITE } from '@suite-actions/constants';
-import { DISCOVERY } from '@wallet-actions/constants';
+import { SUITE } from 'src/actions/suite/constants';
+import { DISCOVERY } from 'src/actions/wallet/constants';
 
 const { getSuiteDevice } = global.JestMocks;
 const DEV = getSuiteDevice();

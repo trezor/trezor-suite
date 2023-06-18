@@ -1,8 +1,8 @@
 import { PROTOCOL } from './constants';
-import { getProtocolInfo, isProtocolScheme } from '@suite-utils/protocol';
-import type { Dispatch } from '@suite-types';
-import type { PROTOCOL_SCHEME } from '@suite-constants/protocol';
-import type { SendFormState } from '@suite-reducers/protocolReducer';
+import { getProtocolInfo, isProtocolScheme } from 'src/utils/suite/protocol';
+import type { Dispatch } from 'src/types/suite';
+import type { PROTOCOL_SCHEME } from 'src/constants/suite/protocol';
+import type { SendFormState } from 'src/reducers/suite/protocolReducer';
 import { notificationsActions } from '@suite-common/toast-notifications';
 
 export type ProtocolAction =

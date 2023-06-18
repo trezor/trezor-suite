@@ -1,5 +1,5 @@
 import React from 'react';
-import { TrezorDevice } from '@suite-types';
+import { TrezorDevice } from 'src/types/suite';
 import { Image, ImageProps } from '@trezor/components';
 import { getDeviceModel } from '@trezor/device-utils';
 

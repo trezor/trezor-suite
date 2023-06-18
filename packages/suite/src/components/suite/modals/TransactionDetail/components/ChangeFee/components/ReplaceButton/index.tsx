@@ -1,9 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Button } from '@trezor/components';
-import { Translation } from '@suite-components';
-import { useDevice } from '@suite-hooks';
-import { useRbfContext } from '@wallet-hooks/useRbfForm';
+import { Translation } from 'src/components/suite';
+import { useDevice } from 'src/hooks/suite';
+import { useRbfContext } from 'src/hooks/wallet/useRbfForm';
 
 const Wrapper = styled.div`
     display: flex;

@@ -2,15 +2,15 @@ import React from 'react';
 import styled from 'styled-components';
 import { ExchangeProviderInfo } from 'invity-api';
 import { Button, Icon, variables, useTheme } from '@trezor/components';
-import { CoinmarketProviderInfo } from '@wallet-components';
-import { TradeExchange } from '@wallet-types/coinmarketCommonTypes';
-import * as routerActions from '@suite-actions/routerActions';
-import * as coinmarketExchangeActions from '@wallet-actions/coinmarketExchangeActions';
-import { Account } from '@wallet-types';
-import { useWatchExchangeTrade } from '@wallet-hooks/useCoinmarket';
+import { CoinmarketProviderInfo } from 'src/components/wallet';
+import { TradeExchange } from 'src/types/wallet/coinmarketCommonTypes';
+import * as routerActions from 'src/actions/suite/routerActions';
+import * as coinmarketExchangeActions from 'src/actions/wallet/coinmarketExchangeActions';
+import { Account } from 'src/types/wallet';
+import { useWatchExchangeTrade } from 'src/hooks/wallet/useCoinmarket';
 import Status from '../Status';
-import { Translation, FormattedDate, FormattedCryptoAmount } from '@suite-components';
-import { useActions } from '@suite-hooks';
+import { Translation, FormattedDate, FormattedCryptoAmount } from 'src/components/suite';
+import { useActions } from 'src/hooks/suite';
 
 interface Props {
     trade: TradeExchange;

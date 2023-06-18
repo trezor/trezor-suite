@@ -1,6 +1,6 @@
-import { useSelector, useActions } from '@suite-hooks';
-import { changeCoinVisibility } from '@settings-actions/walletSettingsActions';
-import type { Network } from '@wallet-types';
+import { useSelector, useActions } from 'src/hooks/suite';
+import { changeCoinVisibility } from 'src/actions/settings/walletSettingsActions';
+import type { Network } from 'src/types/wallet';
 
 import { getMainnets, getTestnets } from '@suite-common/wallet-config';
 

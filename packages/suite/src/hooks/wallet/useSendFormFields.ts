@@ -6,7 +6,7 @@ import {
     FormOptions,
     UseSendFormState,
     SendContextValues,
-} from '@wallet-types/sendForm';
+} from 'src/types/wallet/sendForm';
 import { isFeatureFlagEnabled } from '@suite-common/suite-utils';
 import { useBitcoinAmountUnit } from './useBitcoinAmountUnit';
 

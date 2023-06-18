@@ -1,17 +1,17 @@
 import React from 'react';
 import styled, { useTheme } from 'styled-components';
 import BigNumber from 'bignumber.js';
-import { NETWORKS } from '@wallet-config';
-import { Section } from '@dashboard-components';
+import { NETWORKS } from 'src/config/wallet';
+import { Section } from 'src/components/dashboard';
 import { AssetTable, AssetTableSkeleton } from './components/AssetTable';
 import { AssetGrid, AssetGridSkeleton } from './components/AssetGrid';
-import { Account, Network } from '@wallet-types';
+import { Account, Network } from 'src/types/wallet';
 import { variables, Icon, Button, colors, LoadingContent } from '@trezor/components';
-import { Card, Translation } from '@suite-components';
-import { useDiscovery, useActions, useSelector } from '@suite-hooks';
-import { useAccounts } from '@wallet-hooks';
-import * as suiteActions from '@suite-actions/suiteActions';
-import * as routerActions from '@suite-actions/routerActions';
+import { Card, Translation } from 'src/components/suite';
+import { useDiscovery, useActions, useSelector } from 'src/hooks/suite';
+import { useAccounts } from 'src/hooks/wallet';
+import * as suiteActions from 'src/actions/suite/suiteActions';
+import * as routerActions from 'src/actions/suite/routerActions';
 import { AnimatePresence } from 'framer-motion';
 
 const StyledCard = styled(Card)`

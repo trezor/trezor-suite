@@ -1,6 +1,6 @@
 import React from 'react';
-import { NotificationCard, Translation } from '@suite-components';
-import type { Account } from '@wallet-types/index';
+import { NotificationCard, Translation } from 'src/components/suite';
+import type { Account } from 'src/types/wallet/index';
 
 type AccountOutOfSyncProps = {
     account: Account | undefined;

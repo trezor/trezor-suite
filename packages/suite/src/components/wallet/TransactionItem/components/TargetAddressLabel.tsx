@@ -1,9 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
-import { WalletAccountTransaction } from '@wallet-types';
+import { WalletAccountTransaction } from 'src/types/wallet';
 import { ArrayElement } from '@trezor/type-utils';
-import { Translation, AddressLabeling } from '@suite-components';
-import { AccountMetadata } from '@suite-types/metadata';
+import { Translation, AddressLabeling } from 'src/components/suite';
+import { AccountMetadata } from 'src/types/suite/metadata';
 
 const TruncatedSpan = styled.span<{ isBlurred?: boolean }>`
     overflow: hidden;

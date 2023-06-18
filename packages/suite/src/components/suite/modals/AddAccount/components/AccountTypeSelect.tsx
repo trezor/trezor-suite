@@ -1,10 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Select, variables } from '@trezor/components';
-import { Translation } from '@suite-components/Translation';
+import { Translation } from 'src/components/suite/Translation';
 import { getAccountTypeName, getAccountTypeTech } from '@suite-common/wallet-utils';
 import { AccountTypeDescription } from './AccountTypeDescription';
-import { Network } from '@wallet-types';
+import { Network } from 'src/types/wallet';
 
 const LabelWrapper = styled.div`
     display: flex;

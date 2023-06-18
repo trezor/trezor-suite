@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Button } from '@trezor/components';
-import { Translation, Modal } from '@suite-components';
-import { NETWORKS } from '@wallet-config';
-import { Account, Network } from '@wallet-types';
-import { TrezorDevice } from '@suite-types';
-import { useSelector, useActions, useDispatch } from '@suite-hooks';
+import { Translation, Modal } from 'src/components/suite';
+import { NETWORKS } from 'src/config/wallet';
+import { Account, Network } from 'src/types/wallet';
+import { TrezorDevice } from 'src/types/suite';
+import { useSelector, useActions, useDispatch } from 'src/hooks/suite';
 import { accountsActions } from '@suite-common/wallet-core';
-import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
-import * as routerActions from '@suite-actions/routerActions';
+import * as walletSettingsActions from 'src/actions/settings/walletSettingsActions';
+import * as routerActions from 'src/actions/suite/routerActions';
 import { arrayPartition } from '@trezor/utils';
-import { selectIsPublic } from '@wallet-reducers/coinjoinReducer';
+import { selectIsPublic } from 'src/reducers/wallet/coinjoinReducer';
 
 import { AccountTypeSelect } from './components/AccountTypeSelect';
 import { SelectNetwork } from './components/SelectNetwork';

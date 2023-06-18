@@ -1,9 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
 import { ConfirmOnDevice } from '@trezor/components';
-import { Translation, Modal, ModalProps } from '@suite-components';
-import { TrezorDevice } from '@suite-types';
-import { Fingerprint } from '@firmware-components';
+import { Translation, Modal, ModalProps } from 'src/components/suite';
+import { TrezorDevice } from 'src/types/suite';
+import { Fingerprint } from 'src/components/firmware';
 import { getDeviceModel } from '@trezor/device-utils';
 
 const StyledModal = styled(Modal)`

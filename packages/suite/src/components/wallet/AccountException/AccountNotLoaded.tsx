@@ -1,8 +1,8 @@
 import React from 'react';
-import * as discoveryActions from '@wallet-actions/discoveryActions';
-import { useDevice, useActions } from '@suite-hooks';
-import { Translation } from '@suite-components';
-import { AccountExceptionLayout } from '@wallet-components';
+import * as discoveryActions from 'src/actions/wallet/discoveryActions';
+import { useDevice, useActions } from 'src/hooks/suite';
+import { Translation } from 'src/components/suite';
+import { AccountExceptionLayout } from 'src/components/wallet';
 
 /**
  * Handler for 'bundle-exception' in discovery

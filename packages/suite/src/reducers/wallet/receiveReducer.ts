@@ -1,6 +1,6 @@
 import produce from 'immer';
-import { RECEIVE } from '@wallet-actions/constants';
-import { Action as SuiteAction } from '@suite-types';
+import { RECEIVE } from 'src/actions/wallet/constants';
+import { Action as SuiteAction } from 'src/types/suite';
 
 import { ReceiveInfo } from '@suite-common/wallet-types';
 

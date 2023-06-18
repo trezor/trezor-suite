@@ -3,11 +3,11 @@ import { FormattedDate } from 'react-intl';
 import styled from 'styled-components';
 import BigNumber from 'bignumber.js';
 import { variables } from '@trezor/components';
-import { Translation, HiddenPlaceholder, FormattedCryptoAmount } from '@suite-components';
+import { Translation, HiddenPlaceholder, FormattedCryptoAmount } from 'src/components/suite';
 import { useFormatters } from '@suite-common/formatters';
 import { parseTransactionDateKey, isTestnet } from '@suite-common/wallet-utils';
-import { Network } from '@wallet-types';
-import { SECONDARY_PANEL_HEIGHT } from '@suite-components/AppNavigation';
+import { Network } from 'src/types/wallet';
+import { SECONDARY_PANEL_HEIGHT } from 'src/components/suite/AppNavigation';
 
 const Wrapper = styled.div`
     display: flex;

@@ -3,12 +3,12 @@ import styled from 'styled-components';
 import { isValidChecksumAddress, toChecksumAddress } from 'ethereumjs-util';
 import { capitalizeFirstLetter } from '@trezor/utils';
 import { Input, useTheme, Icon, Button, Tooltip } from '@trezor/components';
-import { AddressLabeling, Translation, ReadMoreLink, MetadataLabeling } from '@suite-components';
-import { InputError } from '@wallet-components';
-import { scanQrRequest } from '@wallet-actions/sendFormActions';
-import { useActions, useDevice } from '@suite-hooks';
-import { useSendFormContext } from '@wallet-hooks';
-import { getProtocolInfo } from '@suite-utils/protocol';
+import { AddressLabeling, Translation, ReadMoreLink, MetadataLabeling } from 'src/components/suite';
+import { InputError } from 'src/components/wallet';
+import { scanQrRequest } from 'src/actions/wallet/sendFormActions';
+import { useActions, useDevice } from 'src/hooks/suite';
+import { useSendFormContext } from 'src/hooks/wallet';
+import { getProtocolInfo } from 'src/utils/suite/protocol';
 import {
     isAddressValid,
     isAddressDeprecated,
@@ -16,12 +16,12 @@ import {
     isBech32AddressUppercase,
     getInputState,
 } from '@suite-common/wallet-utils';
-import { MAX_LENGTH } from '@suite-constants/inputs';
+import { MAX_LENGTH } from 'src/constants/suite/inputs';
 import { ConvertAddress } from './components/ConvertAddress';
-import { PROTOCOL_TO_NETWORK } from '@suite-constants/protocol';
+import { PROTOCOL_TO_NETWORK } from 'src/constants/suite/protocol';
 import { notificationsActions } from '@suite-common/toast-notifications';
 
-import type { Output } from '@wallet-types/sendForm';
+import type { Output } from 'src/types/wallet/sendForm';
 
 const Text = styled.span`
     display: flex;

@@ -1,14 +1,14 @@
 import { MiddlewareAPI } from 'redux';
 import TrezorConnect, { UI } from '@trezor/connect';
-import { SUITE, ROUTER, MODAL } from '@suite-actions/constants';
-import { DISCOVERY } from '@wallet-actions/constants';
-import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
-import * as suiteActions from '@suite-actions/suiteActions';
-import * as discoveryActions from '@wallet-actions/discoveryActions';
-import { selectDiscoveryForDevice } from '@wallet-reducers/discoveryReducer';
+import { SUITE, ROUTER, MODAL } from 'src/actions/suite/constants';
+import { DISCOVERY } from 'src/actions/wallet/constants';
+import * as walletSettingsActions from 'src/actions/settings/walletSettingsActions';
+import * as suiteActions from 'src/actions/suite/suiteActions';
+import * as discoveryActions from 'src/actions/wallet/discoveryActions';
+import { selectDiscoveryForDevice } from 'src/reducers/wallet/discoveryReducer';
 import { accountsActions, disableAccountsThunk } from '@suite-common/wallet-core';
-import { getApp } from '@suite-utils/router';
-import { AppState, Action, Dispatch } from '@suite-types';
+import { getApp } from 'src/utils/suite/router';
+import { AppState, Action, Dispatch } from 'src/types/suite';
 
 const discoveryMiddleware =
     (api: MiddlewareAPI<Dispatch, AppState>) =>

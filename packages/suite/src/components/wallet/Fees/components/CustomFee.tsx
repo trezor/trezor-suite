@@ -4,14 +4,14 @@ import styled, { css } from 'styled-components';
 import { Control, UseFormMethods } from 'react-hook-form';
 import { Button, Note, variables } from '@trezor/components';
 import { FeeLevel } from '@trezor/connect';
-import { Translation } from '@suite-components';
-import { NumberInput } from '@suite-components/NumberInput';
-import { InputError } from '@wallet-components';
+import { Translation } from 'src/components/suite';
+import { NumberInput } from 'src/components/suite/NumberInput';
+import { InputError } from 'src/components/wallet';
 import { getInputState, getFeeUnits, isDecimalsValid, isInteger } from '@suite-common/wallet-utils';
 import { ETH_DEFAULT_GAS_LIMIT } from '@suite-common/wallet-constants';
-import { Account } from '@wallet-types';
-import { FeeInfo } from '@wallet-types/sendForm';
-import { TypedValidationRules } from '@wallet-types/form';
+import { Account } from 'src/types/wallet';
+import { FeeInfo } from 'src/types/wallet/sendForm';
+import { TypedValidationRules } from 'src/types/wallet/form';
 
 const Wrapper = styled.div`
     display: flex;

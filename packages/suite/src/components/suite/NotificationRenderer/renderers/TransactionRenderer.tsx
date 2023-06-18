@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
-import { AccountLabeling, HiddenPlaceholder } from '@suite-components';
-import * as suiteActions from '@suite-actions/suiteActions';
-import * as routerActions from '@suite-actions/routerActions';
+import { AccountLabeling, HiddenPlaceholder } from 'src/components/suite';
+import * as suiteActions from 'src/actions/suite/suiteActions';
+import * as routerActions from 'src/actions/suite/routerActions';
 import {
     findAccountsByNetwork,
     findAccountsByDescriptor,
@@ -11,8 +11,8 @@ import {
     findTransaction,
     getConfirmations,
 } from '@suite-common/wallet-utils';
-import { useActions, useSelector } from '@suite-hooks';
-import { getTxAnchor } from '@suite-utils/anchor';
+import { useActions, useSelector } from 'src/hooks/suite';
+import { getTxAnchor } from 'src/utils/suite/anchor';
 
 import type { NotificationRendererProps, NotificationViewProps } from '../types';
 

@@ -1,9 +1,9 @@
 import { MiddlewareAPI } from 'redux';
-import { SUITE } from '@suite-actions/constants';
-import { AppState, Action, Dispatch } from '@suite-types';
+import { SUITE } from 'src/actions/suite/constants';
+import { AppState, Action, Dispatch } from 'src/types/suite';
 import TrezorConnect, { UI } from '@trezor/connect';
-import { addButtonRequest, removeButtonRequests } from '@suite-actions/suiteActions';
-import { ONBOARDING } from '@onboarding-actions/constants';
+import { addButtonRequest, removeButtonRequests } from 'src/actions/suite/suiteActions';
+import { ONBOARDING } from 'src/actions/onboarding/constants';
 
 const buttonRequest =
     (api: MiddlewareAPI<Dispatch, AppState>) =>

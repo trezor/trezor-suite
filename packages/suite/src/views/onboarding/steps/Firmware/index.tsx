@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
-import { OnboardingButtonBack, OnboardingStepBox } from '@onboarding-components';
-import { Translation } from '@suite-components';
+import { OnboardingButtonBack, OnboardingStepBox } from 'src/components/onboarding';
+import { Translation } from 'src/components/suite';
 import {
     ContinueButton,
     RetryButton,
     FirmwareInstallation,
     FirmwareInitial,
     Fingerprint,
-} from '@firmware-components';
-import { useSelector, useFirmware, useOnboarding } from '@suite-hooks';
-import { TrezorDevice } from '@suite-types';
+} from 'src/components/firmware';
+import { useSelector, useFirmware, useOnboarding } from 'src/hooks/suite';
+import { TrezorDevice } from 'src/types/suite';
 import { getFirmwareType, getFirmwareVersion, getDeviceModel } from '@trezor/device-utils';
 
 const FirmwareStep = () => {

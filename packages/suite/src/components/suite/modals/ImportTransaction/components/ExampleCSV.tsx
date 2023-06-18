@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
 import { P, Icon, variables, motionAnimation } from '@trezor/components';
-import { Translation } from '@suite-components';
-import { useSelector, useTranslation } from '@suite-hooks';
-import { selectIsLabelingAvailable } from '@suite-reducers/metadataReducer';
+import { Translation } from 'src/components/suite';
+import { useSelector, useTranslation } from 'src/hooks/suite';
+import { selectIsLabelingAvailable } from 'src/reducers/suite/metadataReducer';
 
 const Wrapper = styled.div`
     display: flex;

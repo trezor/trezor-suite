@@ -1,7 +1,7 @@
 import React, { isValidElement } from 'react';
-import { Translation } from '@suite-components';
-import { ExtendedMessageDescriptor } from '@suite-types';
-import { TypedFieldError } from '@wallet-types/form';
+import { Translation } from 'src/components/suite';
+import { ExtendedMessageDescriptor } from 'src/types/suite';
+import { TypedFieldError } from 'src/types/wallet/form';
 
 const InputError = ({ error }: { error?: TypedFieldError }) => {
     if (!error) return null;

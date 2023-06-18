@@ -1,7 +1,7 @@
 import React from 'react';
 
-import { Option, OptionsWrapper, OptionsDivider } from '@onboarding-components';
-import { Translation } from '@suite-components';
+import { Option, OptionsWrapper, OptionsDivider } from 'src/components/onboarding';
+import { Translation } from 'src/components/suite';
 
 interface SelectRecoveryTypeProps {
     onSelect: (type: 'standard' | 'advanced') => void;

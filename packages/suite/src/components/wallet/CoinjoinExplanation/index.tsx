@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { darken } from 'polished';
 import { Button, Icon, variables } from '@trezor/components';
 import { HELP_CENTER_COINJOIN_URL } from '@trezor/urls';
-import { Translation, TrezorLink } from '@suite-components';
+import { Translation, TrezorLink } from 'src/components/suite';
 import { ProcessStep, ProcessStepProps } from './ProcessStep';
 
 const Container = styled.div`

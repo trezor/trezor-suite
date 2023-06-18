@@ -1,11 +1,11 @@
-import { Account } from '@wallet-types';
+import { Account } from 'src/types/wallet';
 import { BuyListResponse, BuyProviderInfo, BuyTradeQuoteRequest, BuyTrade } from 'invity-api';
-import invityAPI from '@suite-services/invityAPI';
+import invityAPI from 'src/services/suite/invityAPI';
 import { COINMARKET_BUY, COINMARKET_COMMON } from './constants';
-import { Dispatch } from '@suite-types';
-import regional from '@wallet-constants/coinmarket/regional';
-import * as modalActions from '@suite-actions/modalActions';
-import { verifyAddress as verifyBuyAddress } from '@wallet-actions/coinmarket/coinmarketCommonActions';
+import { Dispatch } from 'src/types/suite';
+import regional from 'src/constants/wallet/coinmarket/regional';
+import * as modalActions from 'src/actions/suite/modalActions';
+import { verifyAddress as verifyBuyAddress } from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
 
 export interface BuyInfo {
     buyInfo?: BuyListResponse;

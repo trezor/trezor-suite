@@ -1,7 +1,7 @@
 import React from 'react';
-import { WalletLayout } from '@wallet-components';
+import { WalletLayout } from 'src/components/wallet';
 import { isTestnet } from '@suite-common/wallet-utils';
-import { useSelector } from '@suite-hooks';
+import { useSelector } from 'src/hooks/suite';
 
 import { NoTokens } from './components/NoTokens';
 import { TokenList } from './components/TokenList';

@@ -1,19 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { analytics, EventType } from '@trezor/suite-analytics';
 
-import { Translation } from '@suite-components';
+import { Translation } from 'src/components/suite';
 import {
     ActionButton,
     ActionInput,
     ActionColumn,
     SectionItem,
     TextColumn,
-} from '@suite-components/Settings';
-import { useDevice, useActions } from '@suite-hooks';
-import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
-import { MAX_LABEL_LENGTH } from '@suite-constants/device';
-import { useAnchor } from '@suite-hooks/useAnchor';
-import { SettingsAnchor } from '@suite-constants/anchors';
+} from 'src/components/suite/Settings';
+import { useDevice, useActions } from 'src/hooks/suite';
+import * as deviceSettingsActions from 'src/actions/settings/deviceSettingsActions';
+import { MAX_LABEL_LENGTH } from 'src/constants/suite/device';
+import { useAnchor } from 'src/hooks/suite/useAnchor';
+import { SettingsAnchor } from 'src/constants/suite/anchors';
 
 interface DeviceLabelProps {
     isDeviceLocked: boolean;

@@ -10,14 +10,14 @@ import {
     MAX_ROUNDS_ALLOWED,
     ESTIMATED_MIN_ROUNDS_NEEDED,
     SKIP_ROUNDS_VALUE_WHEN_ENABLED,
-} from '@suite/services/coinjoin/config';
+} from 'src/services/coinjoin/config';
 import {
     AnonymityGainPerRound,
     CoinjoinAccount,
     CoinjoinSessionParameters,
     RoundPhase,
     SessionPhase,
-} from '@wallet-types/coinjoin';
+} from 'src/types/wallet/coinjoin';
 import { AnonymitySet } from '@trezor/blockchain-link';
 import {
     CoinjoinStatusEvent,

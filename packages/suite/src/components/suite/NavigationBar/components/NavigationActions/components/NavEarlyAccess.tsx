@@ -1,11 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { Translation } from '@suite-components';
+import { Translation } from 'src/components/suite';
 import { ActionItem } from './ActionItem';
-import { useActions } from '@suite-hooks';
-import * as routerActions from '@suite-actions/routerActions';
-import { SettingsAnchor } from '@suite-constants/anchors';
+import { useActions } from 'src/hooks/suite';
+import * as routerActions from 'src/actions/suite/routerActions';
+import { SettingsAnchor } from 'src/constants/suite/anchors';
 
 const Wrapper = styled.div`
     margin-left: 8px;

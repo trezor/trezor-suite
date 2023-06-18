@@ -1,10 +1,10 @@
 import React from 'react';
-import { NotificationCard } from '@suite-components';
+import { NotificationCard } from 'src/components/suite';
 import { Link } from '@trezor/components';
-import { useSelector } from '@suite-hooks';
+import { useSelector } from 'src/hooks/suite';
 import { selectContextMessageContent, Context } from '@suite-common/message-system';
-import { selectLanguage } from '@suite-reducers/suiteReducer';
-import { Account } from '@wallet-types';
+import { selectLanguage } from 'src/reducers/suite/suiteReducer';
+import { Account } from 'src/types/wallet';
 
 type CoinjoinContextMessageProps = {
     account?: Account;

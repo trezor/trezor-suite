@@ -1,7 +1,7 @@
 import React from 'react';
-import { withSelectedAccountLoaded, WithSelectedAccountLoadedProps } from '@wallet-components';
+import { withSelectedAccountLoaded, WithSelectedAccountLoadedProps } from 'src/components/wallet';
 import styled from 'styled-components';
-import { CoinmarketSellOffersContext, useOffers } from '@wallet-hooks/useCoinmarketSellOffers';
+import { CoinmarketSellOffersContext, useOffers } from 'src/hooks/wallet/useCoinmarketSellOffers';
 import Offers from './Offers';
 
 const Wrapper = styled.div`

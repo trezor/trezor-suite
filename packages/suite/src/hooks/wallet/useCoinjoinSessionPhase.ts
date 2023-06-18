@@ -1,9 +1,9 @@
 import { useEffect, useState, useCallback } from 'react';
-import { SESSION_PHASE_TRANSITION_DELAY } from '@suite-constants/coinjoin';
-import { useSelector } from '@suite-hooks/useSelector';
-import { selectSessionByAccountKey } from '@wallet-reducers/coinjoinReducer';
-import { SessionPhase } from '@wallet-types/coinjoin';
-import { getFirstSessionPhaseFromRoundPhase } from '@wallet-utils/coinjoinUtils';
+import { SESSION_PHASE_TRANSITION_DELAY } from 'src/constants/suite/coinjoin';
+import { useSelector } from 'src/hooks/suite/useSelector';
+import { selectSessionByAccountKey } from 'src/reducers/wallet/coinjoinReducer';
+import { SessionPhase } from 'src/types/wallet/coinjoin';
+import { getFirstSessionPhaseFromRoundPhase } from 'src/utils/wallet/coinjoinUtils';
 
 const checkExpiration = (lastChangeTimestamp: number) => {
     const currentTimestamp = Date.now();

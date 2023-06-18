@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import { Translation } from '@suite-components';
+import { Translation } from 'src/components/suite';
 import {
     OnboardingButtonCta,
     OnboardingButtonSkip,
     OnboardingStepBox,
     SkipStepConfirmation,
-} from '@onboarding-components';
-import { useOnboarding } from '@suite-hooks';
+} from 'src/components/onboarding';
+import { useOnboarding } from 'src/hooks/suite';
 
 const SecurityStep = () => {
     const [showSkipConfirmation, setShowSkipConfirmation] = useState(false);

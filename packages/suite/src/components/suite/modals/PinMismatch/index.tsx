@@ -1,9 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Button, Image } from '@trezor/components';
-import { Translation, Modal, ModalProps } from '@suite-components';
-import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
-import { useActions } from '@suite-hooks';
+import { Translation, Modal, ModalProps } from 'src/components/suite';
+import * as deviceSettingsActions from 'src/actions/settings/deviceSettingsActions';
+import { useActions } from 'src/hooks/suite';
 
 const StyledImage = styled(Image)`
     margin: 48px auto;

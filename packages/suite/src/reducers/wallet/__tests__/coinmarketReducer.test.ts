@@ -1,12 +1,12 @@
-import reducer, { initialState } from '@wallet-reducers/coinmarketReducer';
-import { TradeBuy, TradeExchange } from '@wallet-types/coinmarketCommonTypes';
-import { STORAGE } from '@suite-actions/constants';
+import reducer, { initialState } from 'src/reducers/wallet/coinmarketReducer';
+import { TradeBuy, TradeExchange } from 'src/types/wallet/coinmarketCommonTypes';
+import { STORAGE } from 'src/actions/suite/constants';
 import {
     COINMARKET_BUY,
     COINMARKET_COMMON,
     COINMARKET_EXCHANGE,
     COINMARKET_SELL,
-} from '@wallet-actions/constants';
+} from 'src/actions/wallet/constants';
 import {
     BuyTrade,
     BuyTradeQuoteRequest,
@@ -14,8 +14,8 @@ import {
     ExchangeTradeQuoteRequest,
     SellFiatTradeQuoteRequest,
 } from 'invity-api';
-import { BuyInfo } from '@wallet-actions/coinmarketBuyActions';
-import { ExchangeInfo } from '@wallet-actions/coinmarketExchangeActions';
+import { BuyInfo } from 'src/actions/wallet/coinmarketBuyActions';
+import { ExchangeInfo } from 'src/actions/wallet/coinmarketExchangeActions';
 
 describe('settings reducer', () => {
     it('test initial state', () => {

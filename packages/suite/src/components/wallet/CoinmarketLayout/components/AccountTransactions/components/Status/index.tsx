@@ -1,12 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Translation } from '@suite-components';
-import { getStatusMessage as getBuyStatusMessage } from '@wallet-utils/coinmarket/buyUtils';
-import { getStatusMessage as getExchangeStatusMessage } from '@wallet-utils/coinmarket/exchangeUtils';
-import { getStatusMessage as getSellStatusMessage } from '@wallet-utils/coinmarket/sellUtils';
-import { getStatusMessage as getSavingsStatusMessage } from '@wallet-utils/coinmarket/savingsUtils';
+import { Translation } from 'src/components/suite';
+import { getStatusMessage as getBuyStatusMessage } from 'src/utils/wallet/coinmarket/buyUtils';
+import { getStatusMessage as getExchangeStatusMessage } from 'src/utils/wallet/coinmarket/exchangeUtils';
+import { getStatusMessage as getSellStatusMessage } from 'src/utils/wallet/coinmarket/sellUtils';
+import { getStatusMessage as getSavingsStatusMessage } from 'src/utils/wallet/coinmarket/savingsUtils';
 import { variables, Icon, useTheme, SuiteThemeColors } from '@trezor/components';
-import { Trade } from '@wallet-types/coinmarketCommonTypes';
+import { Trade } from 'src/types/wallet/coinmarketCommonTypes';
 import {
     BuyTradeStatus,
     ExchangeTradeStatus,

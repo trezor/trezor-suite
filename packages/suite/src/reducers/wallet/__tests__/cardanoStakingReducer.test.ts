@@ -1,5 +1,5 @@
-import reducer, { initialState } from '@wallet-reducers/cardanoStakingReducer';
-import { CARDANO_STAKING } from '@wallet-actions/constants';
+import reducer, { initialState } from 'src/reducers/wallet/cardanoStakingReducer';
+import { CARDANO_STAKING } from 'src/actions/wallet/constants';
 
 describe('cardanoStakingReducer reducer', () => {
     it('test initial state', () => {

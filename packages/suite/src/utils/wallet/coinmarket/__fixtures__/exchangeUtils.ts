@@ -1,4 +1,4 @@
-import { ExchangeInfo } from '@wallet-actions/coinmarketExchangeActions';
+import { ExchangeInfo } from 'src/actions/wallet/coinmarketExchangeActions';
 import { ExchangeTrade } from 'invity-api';
 
 export const EXCHANGE_INFO: ExchangeInfo = {

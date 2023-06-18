@@ -11,11 +11,11 @@ import {
 import { useFormatters } from '@suite-common/formatters';
 import { variables, CollapsibleBox } from '@trezor/components';
 
-import { useActions } from '@suite-hooks/useActions';
-import * as modalActions from '@suite-actions/modalActions';
-import { WalletAccountTransaction } from '@wallet-types/index';
-import { HiddenPlaceholder, Translation } from '@suite-components';
-import { TransactionTimestamp } from '@wallet-components/TransactionTimestamp';
+import { useActions } from 'src/hooks/suite/useActions';
+import * as modalActions from 'src/actions/suite/modalActions';
+import { WalletAccountTransaction } from 'src/types/wallet/index';
+import { HiddenPlaceholder, Translation } from 'src/components/suite';
+import { TransactionTimestamp } from 'src/components/wallet/TransactionTimestamp';
 
 import { TransactionTypeIcon } from './TransactionTypeIcon';
 import { BaseTargetLayout } from './BaseTargetLayout';

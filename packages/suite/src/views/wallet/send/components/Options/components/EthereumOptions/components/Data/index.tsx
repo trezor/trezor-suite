@@ -1,11 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Textarea, Icon } from '@trezor/components';
-import { QuestionTooltip } from '@suite-components';
-import { InputError } from '@wallet-components';
-import { useSendFormContext } from '@wallet-hooks';
+import { QuestionTooltip } from 'src/components/suite';
+import { InputError } from 'src/components/wallet';
+import { useSendFormContext } from 'src/hooks/wallet';
 import { getInputState, isHexValid } from '@suite-common/wallet-utils';
-import { MAX_LENGTH } from '@suite-constants/inputs';
+import { MAX_LENGTH } from 'src/constants/suite/inputs';
 
 const Wrapper = styled.div`
     display: flex;

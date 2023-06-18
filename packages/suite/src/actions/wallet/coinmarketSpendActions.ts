@@ -1,6 +1,6 @@
 import { SellVoucherTrade as SpendTrade } from 'invity-api';
 import { COINMARKET_COMMON } from './constants';
-import { Account } from '@wallet-types';
+import { Account } from 'src/types/wallet';
 
 export type CoinMarketSpendAction = {
     type: typeof COINMARKET_COMMON.SAVE_TRADE;

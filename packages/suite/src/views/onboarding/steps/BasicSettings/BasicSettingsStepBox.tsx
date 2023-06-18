@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
-import { OnboardingStepBox, OnboardingStepBoxProps } from '@onboarding-components';
-import { CoinsGroup } from '@suite-components';
-import { useEnabledNetworks } from '@settings-hooks/useEnabledNetworks';
+import { OnboardingStepBox, OnboardingStepBoxProps } from 'src/components/onboarding';
+import { CoinsGroup } from 'src/components/suite';
+import { useEnabledNetworks } from 'src/hooks/settings/useEnabledNetworks';
 
 const Separator = styled.hr`
     height: 1px;

@@ -1,14 +1,14 @@
-import { configureStore } from '@suite/support/tests/configureStore';
+import { configureStore } from 'src/support/tests/configureStore';
 
-import coinmarketReducer, { initialState } from '@wallet-reducers/coinmarketReducer';
-import selectedAccountReducer from '@wallet-reducers/selectedAccountReducer';
-import coinmarketMiddleware from '@wallet-middlewares/coinmarketMiddleware';
-import { Action } from '@suite-types';
-import { COINMARKET_COMMON } from '@wallet-actions/constants';
-import invityAPI from '@suite-services/invityAPI';
-import suiteReducer from '@suite-reducers/suiteReducer';
+import coinmarketReducer, { initialState } from 'src/reducers/wallet/coinmarketReducer';
+import selectedAccountReducer from 'src/reducers/wallet/selectedAccountReducer';
+import coinmarketMiddleware from 'src/middlewares/wallet/coinmarketMiddleware';
+import { Action } from 'src/types/suite';
+import { COINMARKET_COMMON } from 'src/actions/wallet/constants';
+import invityAPI from 'src/services/suite/invityAPI';
+import suiteReducer from 'src/reducers/suite/suiteReducer';
 
-jest.mock('@suite-services/invityAPI');
+jest.mock('src/services/suite/invityAPI');
 invityAPI.setInvityServersEnvironment = () => {};
 invityAPI.createInvityAPIKey = () => {};
 

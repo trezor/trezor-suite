@@ -1,6 +1,6 @@
 import produce from 'immer';
-import { Action } from '@suite-types';
-import { GUIDE } from '@suite-actions/constants';
+import { Action } from 'src/types/suite';
+import { GUIDE } from 'src/actions/suite/constants';
 import type { ActiveView, GuideCategory, GuideNode } from '@suite-common/suite-types';
 import * as indexNodeJSON from '@trezor/suite-data/files/guide/index.json';
 

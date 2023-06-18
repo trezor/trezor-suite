@@ -2,20 +2,20 @@ import produce from 'immer';
 import { memoizeWithArgs, memoize } from 'proxy-memoize';
 import { TRANSPORT, TransportInfo, ConnectSettings } from '@trezor/connect';
 import { SuiteThemeVariant } from '@trezor/suite-desktop-api';
-import { Action, TrezorDevice, Lock, TorBootstrap, TorStatus } from '@suite-types';
+import { Action, TrezorDevice, Lock, TorBootstrap, TorStatus } from 'src/types/suite';
 
 import { variables } from '@trezor/components';
-import { SUITE, STORAGE } from '@suite-actions/constants';
-import { DISCOVERY } from '@wallet-actions/constants';
-import type { Locale } from '@suite-config/languages';
+import { SUITE, STORAGE } from 'src/actions/suite/constants';
+import { DISCOVERY } from 'src/actions/wallet/constants';
+import type { Locale } from 'src/config/suite/languages';
 import { isWeb, getWindowWidth } from '@trezor/env-utils';
-import { ensureLocale } from '@suite-utils/l10n';
+import { ensureLocale } from 'src/utils/suite/l10n';
 import { getNumberFromPixelString, versionUtils } from '@trezor/utils';
-import type { OAuthServerEnvironment } from '@suite-types/metadata';
+import type { OAuthServerEnvironment } from 'src/types/suite/metadata';
 import type { InvityServerEnvironment } from '@suite-common/invity';
 import { getDeviceModel } from '@trezor/device-utils';
-import { getStatus } from '@suite-utils/device';
-import { getIsTorEnabled, getIsTorLoading } from '@suite-utils/tor';
+import { getStatus } from 'src/utils/suite/device';
+import { getIsTorEnabled, getIsTorLoading } from 'src/utils/suite/tor';
 
 export interface SuiteRootState {
     suite: SuiteState;

@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { WalletAccountTransaction } from '@wallet-types';
+import { WalletAccountTransaction } from 'src/types/wallet';
 import { Icon, useTheme, IconProps } from '@trezor/components';
 import { getTxIcon } from '@suite-common/wallet-utils';
 

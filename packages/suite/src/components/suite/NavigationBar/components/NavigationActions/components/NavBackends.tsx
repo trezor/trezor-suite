@@ -2,14 +2,14 @@ import React, { useRef, useState } from 'react';
 import styled from 'styled-components';
 
 import { Dropdown, DropdownRef, CoinLogo, variables } from '@trezor/components';
-import { Translation, StatusLight } from '@suite-components';
+import { Translation, StatusLight } from 'src/components/suite';
 import { ActionItem } from './ActionItem';
-import { useActions, useSelector } from '@suite-hooks';
-import { goto as gotoAction } from '@suite-actions/routerActions';
-import { openModal as openModalAction } from '@suite-actions/modalActions';
+import { useActions, useSelector } from 'src/hooks/suite';
+import { goto as gotoAction } from 'src/actions/suite/routerActions';
+import { openModal as openModalAction } from 'src/actions/suite/modalActions';
 
 import { BlockchainState } from '@suite-common/wallet-core';
-import type { CustomBackend } from '@wallet-types';
+import type { CustomBackend } from 'src/types/wallet';
 
 const Wrapper = styled.div`
     margin-left: 8px;

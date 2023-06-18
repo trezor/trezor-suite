@@ -1,10 +1,10 @@
 import produce from 'immer';
 import { UI, Device } from '@trezor/connect';
 
-import { FIRMWARE } from '@firmware-actions/constants';
-import { SUITE, STORAGE } from '@suite-actions/constants';
+import { FIRMWARE } from 'src/actions/firmware/constants';
+import { SUITE, STORAGE } from 'src/actions/suite/constants';
 
-import type { Action, AcquiredDevice, FirmwareType } from '@suite-types';
+import type { Action, AcquiredDevice, FirmwareType } from 'src/types/suite';
 
 type FirmwareUpdateCommon = {
     installingProgress?: number;

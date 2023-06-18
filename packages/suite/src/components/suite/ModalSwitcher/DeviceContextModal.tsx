@@ -1,10 +1,10 @@
 import React from 'react';
 import { useIntl } from 'react-intl';
 
-import messages from '@suite/support/messages';
+import messages from 'src/support/messages';
 import TrezorConnect, { UI } from '@trezor/connect';
-import { MODAL } from '@suite-actions/constants';
-import { useSelector } from '@suite-hooks';
+import { MODAL } from 'src/actions/suite/constants';
+import { useSelector } from 'src/hooks/suite';
 import {
     Pin,
     PinInvalid,
@@ -18,8 +18,8 @@ import {
     ReviewTransaction,
     ConfirmAddress,
     ConfirmXpub,
-} from '@suite-components/modals';
-import { selectSelectedAccount } from '@wallet-reducers/selectedAccountReducer';
+} from 'src/components/suite/modals';
+import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 
 import type { ReduxModalProps } from './types';
 

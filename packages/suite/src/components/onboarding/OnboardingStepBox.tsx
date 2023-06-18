@@ -8,10 +8,10 @@ import {
     CollapsibleCard,
     CollapsibleCardProps,
 } from '@trezor/components';
-import { Translation } from '@suite-components';
+import { Translation } from 'src/components/suite';
 import { DeviceModel } from '@trezor/device-utils';
 import { useIntl } from 'react-intl';
-import messages from '@suite/support/messages';
+import messages from 'src/support/messages';
 
 const ConfirmWrapper = styled.div`
     margin-bottom: 20px;

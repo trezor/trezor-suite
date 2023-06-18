@@ -1,5 +1,5 @@
 import { DEVICE, UI } from '@trezor/connect';
-import { MODAL } from '@suite-actions/constants';
+import { MODAL } from 'src/actions/suite/constants';
 
 const { getConnectDevice, getSuiteDevice } = global.JestMocks;
 // Default devices

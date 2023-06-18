@@ -1,4 +1,4 @@
-import type { Network } from '@wallet-types';
+import type { Network } from 'src/types/wallet';
 
 export enum PROTOCOL_SCHEME {
     BITCOIN = 'bitcoin',

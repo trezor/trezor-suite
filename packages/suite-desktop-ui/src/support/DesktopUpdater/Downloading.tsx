@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
 import styled from 'styled-components';
-import { Translation, Modal } from '@suite-components';
+import { Translation, Modal } from 'src/components/suite';
 
 import { UpdateProgress } from '@trezor/suite-desktop-api';
 import { bytesToHumanReadable } from '@trezor/utils';

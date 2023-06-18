@@ -1,23 +1,23 @@
 import type { ThunkDispatch, ThunkAction as TAction } from 'redux-thunk';
 import type { Store as ReduxStore } from 'redux';
-import type { RouterAction } from '@suite-actions/routerActions';
-import type { AppState } from '@suite/reducers/store';
-import type { StorageAction } from '@suite-actions/storageActions';
-import type { SuiteAction } from '@suite-actions/suiteActions';
-import type { ResizeAction } from '@suite-actions/resizeActions';
-import type { ModalAction } from '@suite-actions/modalActions';
-import type { MetadataAction } from '@suite-actions/metadataActions';
-import type { ProtocolAction } from '@suite-actions/protocolActions';
-import type { DesktopUpdateAction } from '@suite-actions/desktopUpdateActions';
-import type { OnboardingAction } from '@onboarding-actions/onboardingActions';
-import type { WalletSettingsAction } from '@settings-actions/walletSettingsActions';
-import type { FirmwareAction } from '@firmware-actions/firmwareActions';
-import type { WalletAction } from '@wallet-types';
-import type { BackupAction } from '@backup-actions/backupActions';
-import type { RecoveryAction } from '@recovery-actions/recoveryActions';
-import type { SUITE } from '@suite-actions/constants';
-import type { GuideAction } from '@suite-actions/guideActions';
-import type { Route } from '@suite-constants/routes';
+import type { RouterAction } from 'src/actions/suite/routerActions';
+import type { AppState } from 'src/reducers/store';
+import type { StorageAction } from 'src/actions/suite/storageActions';
+import type { SuiteAction } from 'src/actions/suite/suiteActions';
+import type { ResizeAction } from 'src/actions/suite/resizeActions';
+import type { ModalAction } from 'src/actions/suite/modalActions';
+import type { MetadataAction } from 'src/actions/suite/metadataActions';
+import type { ProtocolAction } from 'src/actions/suite/protocolActions';
+import type { DesktopUpdateAction } from 'src/actions/suite/desktopUpdateActions';
+import type { OnboardingAction } from 'src/actions/onboarding/onboardingActions';
+import type { WalletSettingsAction } from 'src/actions/settings/walletSettingsActions';
+import type { FirmwareAction } from 'src/actions/firmware/firmwareActions';
+import type { WalletAction } from 'src/types/wallet';
+import type { BackupAction } from 'src/actions/backup/backupActions';
+import type { RecoveryAction } from 'src/actions/recovery/recoveryActions';
+import type { SUITE } from 'src/actions/suite/constants';
+import type { GuideAction } from 'src/actions/suite/guideActions';
+import type { Route } from 'src/constants/suite/routes';
 
 import { analyticsActions } from '@suite-common/analytics';
 import type { ObjectValues } from '@trezor/type-utils';
@@ -27,10 +27,10 @@ import { notificationsActions } from '@suite-common/toast-notifications';
 import { messageSystemActions } from '@suite-common/message-system';
 
 // reexport
-export type { ExtendedMessageDescriptor } from '@suite-components/Translation/components/BaseTranslation';
-export type { AppState } from '@suite/reducers/store';
+export type { ExtendedMessageDescriptor } from 'src/components/suite/Translation/components/BaseTranslation';
+export type { AppState } from 'src/reducers/store';
 export type { SuiteThemeColors } from '@trezor/components';
-export type { PrerequisiteType } from '@suite-utils/prerequisites';
+export type { PrerequisiteType } from 'src/utils/suite/prerequisites';
 export type { Route };
 export type {
     ButtonRequest,

@@ -1,8 +1,8 @@
 import React from 'react';
-import { Translation } from '@suite-components/Translation';
+import { Translation } from 'src/components/suite/Translation';
 import styled from 'styled-components';
 import { Button } from '@trezor/components';
-import { useSendFormContext } from '@wallet-hooks';
+import { useSendFormContext } from 'src/hooks/wallet';
 
 const Wrapper = styled.div`
     display: flex;

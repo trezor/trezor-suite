@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { variables, Button, Icon } from '@trezor/components';
-import { Translation, TrezorLink } from '@suite-components';
+import { Translation, TrezorLink } from 'src/components/suite';
 
 interface TextColumnProps {
     title?: React.ReactNode;

@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 
 import { Button, Switch } from '@trezor/components';
-import { ActionColumn, SectionItem, TextColumn } from '@suite-components/Settings';
-import { useFirmware, useActions, useSelector } from '@suite-hooks';
-import * as suiteActions from '@suite-actions/suiteActions';
+import { ActionColumn, SectionItem, TextColumn } from 'src/components/suite/Settings';
+import { useFirmware, useActions, useSelector } from 'src/hooks/suite';
+import * as suiteActions from 'src/actions/suite/suiteActions';
 
 export const CheckFirmwareAuthenticity = () => {
     const [inProgress, setInProgress] = useState(false);

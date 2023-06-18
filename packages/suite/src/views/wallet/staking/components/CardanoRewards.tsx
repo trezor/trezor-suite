@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react';
 import { Icon } from '@trezor/components';
-import { getReasonForDisabledAction, useCardanoStaking } from '@wallet-hooks/useCardanoStaking';
+import { getReasonForDisabledAction, useCardanoStaking } from 'src/hooks/wallet/useCardanoStaking';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
-import { Translation } from '@suite-components/Translation';
+import { Translation } from 'src/components/suite/Translation';
 import { CardanoActionPending } from './CardanoActionPending';
-import { Account } from '@suite/types/wallet';
+import { Account } from 'src/types/wallet';
 import {
     StyledH1,
     Actions,
@@ -17,10 +17,10 @@ import {
     Column,
     StyledCard,
 } from './CardanoPrimitives';
-import { HiddenPlaceholder } from '@suite-components/HiddenPlaceholder';
+import { HiddenPlaceholder } from 'src/components/suite/HiddenPlaceholder';
 import { DeviceModel } from '@trezor/device-utils';
-import { useDeviceModel } from '@suite-hooks/useDeviceModel';
-import { DeviceButton } from '@suite-components';
+import { useDeviceModel } from 'src/hooks/suite/useDeviceModel';
+import { DeviceButton } from 'src/components/suite';
 
 interface CardanoRewardsProps {
     account: Account;

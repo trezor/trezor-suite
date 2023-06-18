@@ -1,5 +1,5 @@
-import { Translation } from '@suite-components/Translation';
-import { CustomPaymentAmountKey } from '@wallet-constants/coinmarket/savings';
+import { Translation } from 'src/components/suite/Translation';
+import { CustomPaymentAmountKey } from 'src/constants/wallet/coinmarket/savings';
 import {
     calculateAnnualSavings,
     getFiatAmountEffective,

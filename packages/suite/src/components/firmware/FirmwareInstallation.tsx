@@ -1,14 +1,14 @@
 import React, { useCallback, useMemo } from 'react';
 import { Button } from '@trezor/components';
-import { getTextForStatus } from '@firmware-utils';
-import { Translation, WebUsbButton } from '@suite-components';
-import { useDevice, useFirmware } from '@suite-hooks';
-import { FirmwareOffer, ProgressBar, ReconnectDevicePrompt } from '@firmware-components';
-import { OnboardingStepBox } from '@onboarding-components';
-import { TrezorDevice } from '@suite-types';
+import { getTextForStatus } from 'src/utils/firmware';
+import { Translation, WebUsbButton } from 'src/components/suite';
+import { useDevice, useFirmware } from 'src/hooks/suite';
+import { FirmwareOffer, ProgressBar, ReconnectDevicePrompt } from 'src/components/firmware';
+import { OnboardingStepBox } from 'src/components/onboarding';
+import { TrezorDevice } from 'src/types/suite';
 import { DeviceModel, getDeviceModel } from '@trezor/device-utils';
-import { selectIsActionAbortable } from '@suite-reducers/suiteReducer';
-import { useSelector } from '@suite-hooks/useSelector';
+import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
+import { useSelector } from 'src/hooks/suite/useSelector';
 
 interface FirmwareInstallationProps {
     cachedDevice?: TrezorDevice;

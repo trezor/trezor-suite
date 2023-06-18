@@ -2,27 +2,27 @@ import React, { useMemo, useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import useDebounce from 'react-use/lib/useDebounce';
 
-import { Stack } from '@suite-components/Skeleton';
-import { Translation } from '@suite-components';
-import { Section } from '@dashboard-components';
-import { useSelector, useActions } from '@suite-hooks';
+import { Stack } from 'src/components/suite/Skeleton';
+import { Translation } from 'src/components/suite';
+import { Section } from 'src/components/dashboard';
+import { useSelector, useActions } from 'src/hooks/suite';
 import {
     groupTransactionsByDate,
     advancedSearchTransactions,
     groupJointTransactions,
     getAccountNetwork,
 } from '@suite-common/wallet-utils';
-import { SETTINGS } from '@suite-config';
-import { WalletAccountTransaction, Account } from '@wallet-types';
+import { SETTINGS } from 'src/config/suite';
+import { WalletAccountTransaction, Account } from 'src/types/wallet';
 import { TransactionListActions } from './TransactionListActions';
-import TransactionItem from '@wallet-components/TransactionItem';
-import { Pagination } from '@wallet-components';
+import TransactionItem from 'src/components/wallet/TransactionItem';
+import { Pagination } from 'src/components/wallet';
 import { TransactionsGroup } from './TransactionsGroup';
 import { SkeletonTransactionItem } from './SkeletonTransactionItem';
 import { NoSearchResults } from './NoSearchResults';
-import { findAnchorTransactionPage } from '@suite-utils/anchor';
+import { findAnchorTransactionPage } from 'src/utils/suite/anchor';
 import { fetchTransactionsThunk } from '@suite-common/wallet-core';
-import { CoinjoinBatchItem } from '@wallet-components/TransactionItem/components/CoinjoinBatchItem';
+import { CoinjoinBatchItem } from 'src/components/wallet/TransactionItem/components/CoinjoinBatchItem';
 import { TransactionCandidates } from './TransactionCandidates';
 
 const StyledSection = styled(Section)`

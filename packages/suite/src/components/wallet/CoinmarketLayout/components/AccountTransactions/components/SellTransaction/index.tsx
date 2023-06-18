@@ -1,22 +1,22 @@
 import React from 'react';
 import styled from 'styled-components';
 import { SellProviderInfo } from 'invity-api';
-import { useWatchSellTrade } from '@wallet-hooks/useCoinmarket';
-import * as routerActions from '@suite-actions/routerActions';
-import * as coinmarketCommonActions from '@wallet-actions/coinmarket/coinmarketCommonActions';
-import * as coinmarketSellActions from '@wallet-actions/coinmarketSellActions';
+import { useWatchSellTrade } from 'src/hooks/wallet/useCoinmarket';
+import * as routerActions from 'src/actions/suite/routerActions';
+import * as coinmarketCommonActions from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
+import * as coinmarketSellActions from 'src/actions/wallet/coinmarketSellActions';
 import { useTheme, variables, Icon, Button } from '@trezor/components';
-import { CoinmarketPaymentType, CoinmarketProviderInfo } from '@wallet-components';
-import { Account } from '@wallet-types';
+import { CoinmarketPaymentType, CoinmarketProviderInfo } from 'src/components/wallet';
+import { Account } from 'src/types/wallet';
 import {
     Translation,
     HiddenPlaceholder,
     FormattedDate,
     FormattedCryptoAmount,
-} from '@suite-components';
-import { TradeSell } from '@wallet-types/coinmarketCommonTypes';
+} from 'src/components/suite';
+import { TradeSell } from 'src/types/wallet/coinmarketCommonTypes';
 import Status from '../Status';
-import { useActions, useSelector } from '@suite-hooks';
+import { useActions, useSelector } from 'src/hooks/suite';
 
 interface Props {
     trade: TradeSell;

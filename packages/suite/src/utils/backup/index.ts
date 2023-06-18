@@ -1,6 +1,6 @@
-import { ConfirmKey } from '@backup-actions/backupActions';
-import { Lock } from '@suite-types';
-import { SUITE } from '@suite-actions/constants';
+import { ConfirmKey } from 'src/actions/backup/backupActions';
+import { Lock } from 'src/types/suite';
+import { SUITE } from 'src/actions/suite/constants';
 /**
  * Utility function used to disable backup start button
  */

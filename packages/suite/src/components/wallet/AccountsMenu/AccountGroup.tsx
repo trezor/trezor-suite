@@ -1,8 +1,8 @@
 import React, { useState, forwardRef, useRef } from 'react';
 import styled from 'styled-components';
-import { Translation } from '@suite-components';
+import { Translation } from 'src/components/suite';
 import { useTheme, Icon, variables } from '@trezor/components';
-import { Account } from '@wallet-types';
+import { Account } from 'src/types/wallet';
 import { AnimationWrapper } from './AnimationWrapper';
 
 const Wrapper = styled.div`

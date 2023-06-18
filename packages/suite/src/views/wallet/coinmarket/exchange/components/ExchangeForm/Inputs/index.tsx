@@ -4,15 +4,19 @@ import { DeepMap, FieldError } from 'react-hook-form';
 import styled from 'styled-components';
 import BigNumber from 'bignumber.js';
 import { isZero, amountToSatoshi } from '@suite-common/wallet-utils';
-import { useCoinmarketExchangeFormContext } from '@wallet-hooks/useCoinmarketExchangeForm';
+import { useCoinmarketExchangeFormContext } from 'src/hooks/wallet/useCoinmarketExchangeForm';
 import SendCryptoInput from './SendCryptoInput';
 import FiatInput from './FiatInput';
 import ReceiveCryptoSelect from './ReceiveCryptoSelect';
-import FractionButtons from '@wallet-components/CoinmarketFractionButtons';
-import { CRYPTO_INPUT, ExchangeFormState, FIAT_INPUT } from '@wallet-types/coinmarketExchangeForm';
-import { useLayoutSize } from '@suite/hooks/suite';
-import { Wrapper, Left, Middle, Right, StyledIcon } from '@wallet-views/coinmarket';
-import { useBitcoinAmountUnit } from '@wallet-hooks/useBitcoinAmountUnit';
+import FractionButtons from 'src/components/wallet/CoinMarketFractionButtons';
+import {
+    CRYPTO_INPUT,
+    ExchangeFormState,
+    FIAT_INPUT,
+} from 'src/types/wallet/coinmarketExchangeForm';
+import { useLayoutSize } from 'src/hooks/suite';
+import { Wrapper, Left, Middle, Right, StyledIcon } from 'src/views/wallet/coinmarket';
+import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 
 const StyledLeft = styled(Left)`
     flex-basis: 50%;

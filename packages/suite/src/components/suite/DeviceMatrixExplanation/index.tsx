@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Image, Icon, IconProps, variables } from '@trezor/components';
-import { useGuide } from '@guide-hooks';
+import { useGuide } from 'src/hooks/guide';
 import { DeviceModel } from '@trezor/device-utils';
 
 const Wrapper = styled.div<{ isGuideOpen?: boolean }>`

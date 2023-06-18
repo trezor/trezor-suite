@@ -1,8 +1,8 @@
 import React from 'react';
-import { useSelector } from '@suite-hooks';
-import { Header, Content, ViewWrapper, GuideMarkdown } from '@guide-components';
-import { Translation } from '@suite-components';
-import { useGuideLoadPage } from '@guide-hooks';
+import { useSelector } from 'src/hooks/suite';
+import { Header, Content, ViewWrapper, GuideMarkdown } from 'src/components/guide';
+import { Translation } from 'src/components/suite';
+import { useGuideLoadPage } from 'src/hooks/guide';
 
 export const GuidePage = () => {
     const { currentNode, language } = useSelector(state => ({

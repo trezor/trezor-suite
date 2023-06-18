@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Button, ButtonProps, Tooltip } from '@trezor/components';
-import { Translation } from '@suite-components';
-import { useTranslation } from '@suite-hooks';
+import { Translation } from 'src/components/suite';
+import { useTranslation } from 'src/hooks/suite';
 
 const StyledButton = styled(Button)`
     min-width: 180px;

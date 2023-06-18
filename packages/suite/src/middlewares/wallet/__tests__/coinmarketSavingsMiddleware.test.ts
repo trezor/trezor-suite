@@ -1,16 +1,16 @@
-import { configureStore } from '@suite/support/tests/configureStore';
+import { configureStore } from 'src/support/tests/configureStore';
 
-import coinmarketReducer, { initialState } from '@wallet-reducers/coinmarketReducer';
-import selectedAccountReducer from '@wallet-reducers/selectedAccountReducer';
-import coinmarketSavingsMiddleware from '@wallet-middlewares/coinmarketSavingsMiddleware';
-import { Action } from '@suite-types';
-import { COINMARKET_SAVINGS } from '@wallet-actions/constants';
+import coinmarketReducer, { initialState } from 'src/reducers/wallet/coinmarketReducer';
+import selectedAccountReducer from 'src/reducers/wallet/selectedAccountReducer';
+import coinmarketSavingsMiddleware from 'src/middlewares/wallet/coinmarketSavingsMiddleware';
+import { Action } from 'src/types/suite';
+import { COINMARKET_SAVINGS } from 'src/actions/wallet/constants';
 import { SavingsTradeResponse } from 'invity-api';
-import invityAPI from '@suite-services/invityAPI';
-import suiteReducer from '@suite-reducers/suiteReducer';
+import invityAPI from 'src/services/suite/invityAPI';
+import suiteReducer from 'src/reducers/suite/suiteReducer';
 import { SAVINGS_TRADE_RESPONSE } from '../__fixtures__/coinmarketSavingsMiddleware';
 
-jest.mock('@suite-services/invityAPI');
+jest.mock('src/services/suite/invityAPI');
 invityAPI.createInvityAPIKey = () => {};
 invityAPI.getSavingsTrade = (): Promise<SavingsTradeResponse | undefined> =>
     Promise.resolve(SAVINGS_TRADE_RESPONSE);

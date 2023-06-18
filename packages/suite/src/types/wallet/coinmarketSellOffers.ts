@@ -1,9 +1,9 @@
-import type { AppState } from '@suite-types';
-import type { Account } from '@wallet-types';
+import type { AppState } from 'src/types/suite';
+import type { Account } from 'src/types/wallet';
 import type { BankAccount, SellFiatTrade } from 'invity-api';
 import type { Timer } from '@trezor/react-utils';
-import type { CoinmarketSellAction, SellInfo } from '@wallet-actions/coinmarketSellActions';
-import type { WithSelectedAccountLoadedProps } from '@wallet-components';
+import type { CoinmarketSellAction, SellInfo } from 'src/actions/wallet/coinmarketSellActions';
+import type { WithSelectedAccountLoadedProps } from 'src/components/wallet';
 import { TradeSell } from './coinmarketCommonTypes';
 
 export type UseOffersProps = WithSelectedAccountLoadedProps;

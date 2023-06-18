@@ -3,11 +3,11 @@ import { useWatch } from 'react-hook-form';
 import styled, { useTheme } from 'styled-components';
 
 import { Checkbox, TooltipButton, Warning, variables } from '@trezor/components';
-import { useDevice } from '@suite-hooks';
-import { useSendFormContext } from '@wallet-hooks';
+import { useDevice } from 'src/hooks/suite';
+import { useSendFormContext } from 'src/hooks/wallet';
 import { isLowAnonymityWarning } from '@suite-common/wallet-utils';
-import { Translation } from '@suite-components/Translation';
-import { FormOptions } from '@wallet-types/sendForm';
+import { Translation } from 'src/components/suite/Translation';
+import { FormOptions } from 'src/types/wallet/sendForm';
 
 const StyledWarning = styled(Warning)`
     margin-top: 8px;

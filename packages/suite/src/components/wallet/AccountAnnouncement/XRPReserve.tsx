@@ -1,8 +1,8 @@
 import React from 'react';
 import Bignumber from 'bignumber.js';
-import { NotificationCard, Translation, ReadMoreLink } from '@suite-components';
+import { NotificationCard, Translation, ReadMoreLink } from 'src/components/suite';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
-import type { Account } from '@wallet-types/index';
+import type { Account } from 'src/types/wallet/index';
 
 interface XRPReserveProps {
     account: Account | undefined;

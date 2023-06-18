@@ -1,9 +1,9 @@
 import { MiddlewareAPI } from 'redux';
 import { DEVICE } from '@trezor/connect';
-import { SUITE } from '@suite-actions/constants';
+import { SUITE } from 'src/actions/suite/constants';
 import { notificationsActions, removeAccountEventsThunk } from '@suite-common/toast-notifications';
-import * as deviceUtils from '@suite-utils/device';
-import { AppState, Action, Dispatch } from '@suite-types';
+import * as deviceUtils from 'src/utils/suite/device';
+import { AppState, Action, Dispatch } from 'src/types/suite';
 import { accountsActions } from '@suite-common/wallet-core';
 
 /*

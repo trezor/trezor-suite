@@ -1,7 +1,7 @@
 import React from 'react';
 import * as URLS from '@trezor/urls';
-import { Translation, TrezorLink } from '@suite-components';
-import { ExtendedMessageDescriptor } from '@suite-types';
+import { Translation, TrezorLink } from 'src/components/suite';
+import { ExtendedMessageDescriptor } from 'src/types/suite';
 
 interface ReadMoreLinkProps {
     url: keyof Omit<typeof URLS, 'TOR_URLS'>;

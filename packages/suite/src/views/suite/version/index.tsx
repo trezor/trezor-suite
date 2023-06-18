@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Link, H2, P } from '@trezor/components';
-import { Modal } from '@suite-components';
+import { Modal } from 'src/components/suite';
 import { getCommitHash, getSuiteVersion } from '@trezor/env-utils';
 
 const Wrapper = styled.div`

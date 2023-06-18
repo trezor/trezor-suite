@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { Translation } from '@suite-components';
-import { PinMatrix } from '@suite-components/PinMatrix';
+import { Translation } from 'src/components/suite';
+import { PinMatrix } from 'src/components/suite/PinMatrix';
 import {
     OnboardingButtonCta,
     OnboardingButtonSkip,
     OnboardingStepBox,
     SkipStepConfirmation,
-} from '@onboarding-components';
-import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
-import { useActions, useSelector, useOnboarding } from '@suite-hooks';
+} from 'src/components/onboarding';
+import * as deviceSettingsActions from 'src/actions/settings/deviceSettingsActions';
+import { useActions, useSelector, useOnboarding } from 'src/hooks/suite';
 import { getDeviceModel } from '@trezor/device-utils';
-import { selectIsActionAbortable } from '@suite-reducers/suiteReducer';
+import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
 
 const SetPinStep = () => {
     const [showSkipConfirmation, setShowSkipConfirmation] = useState(false);

@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Card, Icon, variables } from '@trezor/components';
-import { Translation, FiatValue, FormattedCryptoAmount } from '@suite-components';
-import { useRbf, RbfContext, UseRbfProps } from '@wallet-hooks/useRbfForm';
+import { Translation, FiatValue, FormattedCryptoAmount } from 'src/components/suite';
+import { useRbf, RbfContext, UseRbfProps } from 'src/hooks/wallet/useRbfForm';
 import { formatNetworkAmount, getFeeUnits } from '@suite-common/wallet-utils';
 import Fees from './components/Fees';
 import AffectedTransactions from './components/AffectedTransactions';

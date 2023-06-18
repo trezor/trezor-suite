@@ -2,13 +2,13 @@ import React from 'react';
 import styled from 'styled-components';
 import { ExchangeTrade } from 'invity-api';
 import { variables, CoinLogo } from '@trezor/components';
-import { CoinmarketProviderInfo, CoinmarketTransactionId } from '@wallet-components';
-import { Account } from '@wallet-types';
-import { AccountLabeling, FormattedCryptoAmount, Translation } from '@suite-components';
+import { CoinmarketProviderInfo, CoinmarketTransactionId } from 'src/components/wallet';
+import { Account } from 'src/types/wallet';
+import { AccountLabeling, FormattedCryptoAmount, Translation } from 'src/components/suite';
 // hitting issue https://github.com/styled-components/styled-components/issues/213 in unit test when importing directly from @suite-components
-import QuestionTooltip from '@suite-components/QuestionTooltip';
-import { ExchangeInfo } from '@wallet-actions/coinmarketExchangeActions';
-import invityAPI from '@suite-services/invityAPI';
+import QuestionTooltip from 'src/components/suite/QuestionTooltip';
+import { ExchangeInfo } from 'src/actions/wallet/coinmarketExchangeActions';
+import invityAPI from 'src/services/suite/invityAPI';
 
 interface Props {
     selectedQuote: ExchangeTrade;

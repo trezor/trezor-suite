@@ -1,12 +1,12 @@
 /* eslint-disable global-require */
 
-import { configureStore } from '@suite/support/tests/configureStore';
+import { configureStore } from 'src/support/tests/configureStore';
 
-import receiveReducer from '@wallet-reducers/receiveReducer';
-import suiteReducer from '@suite-reducers/suiteReducer';
-import modalReducer from '@suite-reducers/modalReducer';
+import receiveReducer from 'src/reducers/wallet/receiveReducer';
+import suiteReducer from 'src/reducers/suite/suiteReducer';
+import modalReducer from 'src/reducers/suite/modalReducer';
 import { connectInitThunk } from '@suite-common/connect-init';
-import * as receiveActions from '@wallet-actions/receiveActions';
+import * as receiveActions from 'src/actions/wallet/receiveActions';
 import fixtures from '../__fixtures__/receiveActions';
 
 const { getSuiteDevice } = global.JestMocks;

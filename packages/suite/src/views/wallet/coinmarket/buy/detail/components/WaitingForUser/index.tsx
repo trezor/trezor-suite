@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Button, variables, Image } from '@trezor/components';
-import { Translation } from '@suite-components/Translation';
+import { Translation } from 'src/components/suite/Translation';
 import { BuyTrade, BuyTradeStatus } from 'invity-api';
-import { Account } from '@wallet-types';
-import invityAPI from '@suite-services/invityAPI';
-import { createTxLink } from '@wallet-utils/coinmarket/buyUtils';
-import * as coinmarketCommonActions from '@wallet-actions/coinmarket/coinmarketCommonActions';
-import { useActions } from '@suite-hooks';
+import { Account } from 'src/types/wallet';
+import invityAPI from 'src/services/suite/invityAPI';
+import { createTxLink } from 'src/utils/wallet/coinmarket/buyUtils';
+import * as coinmarketCommonActions from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
+import { useActions } from 'src/hooks/suite';
 
 const Wrapper = styled.div`
     display: flex;

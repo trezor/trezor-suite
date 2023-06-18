@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react';
 
-import { Translation, Modal, TrezorLink } from '@suite-components';
+import { Translation, Modal, TrezorLink } from 'src/components/suite';
 import styled from 'styled-components';
 
 import { SUITE_URL } from '@trezor/urls';

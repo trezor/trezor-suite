@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Button, P } from '@trezor/components';
-import { Modal, Translation } from '@suite-components';
-import { UserContextPayload } from '@suite-actions/modalActions';
+import { Modal, Translation } from 'src/components/suite';
+import { UserContextPayload } from 'src/actions/suite/modalActions';
 
 const SmallModal = styled(Modal)`
     width: 560px;

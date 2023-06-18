@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { Translation, AccountLabeling } from '@suite-components';
+import { Translation, AccountLabeling } from 'src/components/suite';
 import { Button, Loader, P, RadioButton, Truncate, variables } from '@trezor/components';
-import { useCoinmarketExchangeOffersContext } from '@wallet-hooks/useCoinmarketExchangeOffers';
-import { useCoinmarketNavigation } from '@wallet-hooks/useCoinmarketNavigation';
+import { useCoinmarketExchangeOffersContext } from 'src/hooks/wallet/useCoinmarketExchangeOffers';
+import { useCoinmarketNavigation } from 'src/hooks/wallet/useCoinmarketNavigation';
 import { DexApprovalType, ExchangeTrade } from 'invity-api';
 import useTimeoutFn from 'react-use/lib/useTimeoutFn';
 import useUnmount from 'react-use/lib/useUnmount';
-import invityAPI from '@suite-services/invityAPI';
+import invityAPI from 'src/services/suite/invityAPI';
 
 // add APPROVED means no approval request is necessary
 type ExtendedDexApprovalType = DexApprovalType | 'APPROVED';

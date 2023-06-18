@@ -2,14 +2,14 @@ import { Select, CoinLogo } from '@trezor/components';
 import React from 'react';
 import { Controller } from 'react-hook-form';
 import styled from 'styled-components';
-import invityAPI from '@suite-services/invityAPI';
-import { useCoinmarketExchangeFormContext } from '@wallet-hooks/useCoinmarketExchangeForm';
-import { CRYPTO_INPUT, FIAT_INPUT, CRYPTO_TOKEN } from '@wallet-types/coinmarketExchangeForm';
+import invityAPI from 'src/services/suite/invityAPI';
+import { useCoinmarketExchangeFormContext } from 'src/hooks/wallet/useCoinmarketExchangeForm';
+import { CRYPTO_INPUT, FIAT_INPUT, CRYPTO_TOKEN } from 'src/types/wallet/coinmarketExchangeForm';
 import {
     getSendCryptoOptions,
     invityApiSymbolToSymbol,
-} from '@suite/utils/wallet/coinmarket/coinmarketUtils';
-import { useBitcoinAmountUnit } from '@wallet-hooks/useBitcoinAmountUnit';
+} from 'src/utils/wallet/coinmarket/coinmarketUtils';
+import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 
 const Option = styled.div`
     display: flex;

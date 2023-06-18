@@ -3,9 +3,9 @@ import { analytics } from '@trezor/suite-analytics';
 import { DOCS_ANALYTICS_URL, DATA_TOS_URL } from '@trezor/urls';
 import { DataAnalytics } from '@trezor/components';
 
-import { useOnboarding, useSelector } from '@suite-hooks';
+import { useOnboarding, useSelector } from 'src/hooks/suite';
 import SecurityCheck from './SecurityCheck';
-import TrezorLink from '@suite-components/TrezorLink';
+import TrezorLink from 'src/components/suite/TrezorLink';
 import styled from 'styled-components';
 
 const StyledTrezorLink = styled(TrezorLink)`

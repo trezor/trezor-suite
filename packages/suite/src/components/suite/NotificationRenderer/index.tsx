@@ -1,11 +1,11 @@
 import React from 'react';
 import { DEVICE } from '@trezor/connect';
-import { SUITE } from '@suite-actions/constants';
+import { SUITE } from 'src/actions/suite/constants';
 import ActionRenderer from './renderers/ActionRenderer';
 import TransactionRenderer from './renderers/TransactionRenderer';
 import { CoinProtocolRenderer } from './renderers/UriSchemeRenderers';
 import type { NotificationViewProps, NotificationRendererProps } from './types';
-import type { ExtendedMessageDescriptor } from '@suite-types';
+import type { ExtendedMessageDescriptor } from 'src/types/suite';
 
 export type { NotificationViewProps };
 

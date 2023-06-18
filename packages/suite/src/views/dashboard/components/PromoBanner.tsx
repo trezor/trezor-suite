@@ -3,10 +3,13 @@ import styled, { css } from 'styled-components';
 import { SUITE_MOBILE_APP_STORE, SUITE_MOBILE_PLAY_STORE, SUITE_URL } from '@trezor/urls';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { Button, Icon, Image, Tooltip, variables } from '@trezor/components';
-import { Translation, QrCode, TrezorLink } from '@suite-components';
+import { Translation, QrCode, TrezorLink } from 'src/components/suite';
 import { isWeb } from '@trezor/env-utils';
-import { useLayoutSize } from '@suite-hooks/useLayoutSize';
-import { DESKTOP_HORIZONTAL_PADDINGS, MOBILE_HORIZONTAL_PADDINGS } from '@suite-constants/layout';
+import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
+import {
+    DESKTOP_HORIZONTAL_PADDINGS,
+    MOBILE_HORIZONTAL_PADDINGS,
+} from 'src/constants/suite/layout';
 
 const Container = styled.div`
     position: absolute;

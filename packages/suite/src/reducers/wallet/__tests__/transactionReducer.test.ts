@@ -1,4 +1,4 @@
-import { extraDependencies } from '@suite/support/extraDependencies';
+import { extraDependencies } from 'src/support/extraDependencies';
 import {
     transactionsInitialState,
     transactionsActions,

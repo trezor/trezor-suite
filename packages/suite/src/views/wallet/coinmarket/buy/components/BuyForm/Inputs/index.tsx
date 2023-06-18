@@ -1,25 +1,25 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
-import invityAPI from '@suite-services/invityAPI';
+import invityAPI from 'src/services/suite/invityAPI';
 import Bignumber from 'bignumber.js';
 import { Controller } from 'react-hook-form';
-import { FIAT } from '@suite-config';
-import { FormattedCryptoAmount, Translation, NumberInput } from '@suite-components';
-import { getCryptoOptions } from '@wallet-utils/coinmarket/buyUtils';
+import { FIAT } from 'src/config/suite';
+import { FormattedCryptoAmount, Translation, NumberInput } from 'src/components/suite';
+import { getCryptoOptions } from 'src/utils/wallet/coinmarket/buyUtils';
 import { Select, CoinLogo } from '@trezor/components';
-import { buildOption } from '@wallet-utils/coinmarket/coinmarketUtils';
-import { useCoinmarketBuyFormContext } from '@wallet-hooks/useCoinmarketBuyForm';
+import { buildOption } from 'src/utils/wallet/coinmarket/coinmarketUtils';
+import { useCoinmarketBuyFormContext } from 'src/hooks/wallet/useCoinmarketBuyForm';
 import {
     amountToSatoshi,
     isDecimalsValid,
     isInteger,
     getInputState,
 } from '@suite-common/wallet-utils';
-import { InputError } from '@wallet-components';
-import { MAX_LENGTH } from '@suite-constants/inputs';
-import { Wrapper, Left, Middle, Right, StyledIcon } from '@wallet-views/coinmarket';
-import { useBitcoinAmountUnit } from '@wallet-hooks/useBitcoinAmountUnit';
-import { TypedValidationRules } from '@wallet-types/form';
+import { InputError } from 'src/components/wallet';
+import { MAX_LENGTH } from 'src/constants/suite/inputs';
+import { Wrapper, Left, Middle, Right, StyledIcon } from 'src/views/wallet/coinmarket';
+import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
+import { TypedValidationRules } from 'src/types/wallet/form';
 
 const Option = styled.div`
     display: flex;

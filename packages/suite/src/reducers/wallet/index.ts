@@ -18,7 +18,7 @@ import formDraftReducer from './formDraftReducer';
 import cardanoStakingReducer from './cardanoStakingReducer';
 import pollingReducer from './pollingReducer';
 import { coinjoinReducer } from './coinjoinReducer';
-import { extraDependencies } from '@suite/support/extraDependencies';
+import { extraDependencies } from 'src/support/extraDependencies';
 
 export const transactionsReducer = prepareTransactionsReducer(extraDependencies);
 export const accountsReducer = prepareAccountsReducer(extraDependencies);

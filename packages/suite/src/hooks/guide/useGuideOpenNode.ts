@@ -1,9 +1,9 @@
 import { analytics, EventType } from '@trezor/suite-analytics';
 
-import { useActions, useSelector } from '@suite-hooks';
-import * as guideActions from '@suite-actions/guideActions';
-import { getNodeById } from '@suite-utils/guide';
-import { useGuide } from '@guide-hooks';
+import { useActions, useSelector } from 'src/hooks/suite';
+import * as guideActions from 'src/actions/suite/guideActions';
+import { getNodeById } from 'src/utils/suite/guide';
+import { useGuide } from 'src/hooks/guide';
 
 export const useGuideOpenNode = () => {
     const { isGuideOpen, openGuide } = useGuide();

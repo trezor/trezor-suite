@@ -1,8 +1,8 @@
 import React from 'react';
-import * as suiteActions from '@suite-actions/suiteActions';
-import { useDevice, useActions } from '@suite-hooks';
-import { Translation } from '@suite-components';
-import { AccountExceptionLayout } from '@wallet-components';
+import * as suiteActions from 'src/actions/suite/suiteActions';
+import { useDevice, useActions } from 'src/hooks/suite';
+import { Translation } from 'src/components/suite';
+import { AccountExceptionLayout } from 'src/components/wallet';
 
 const AuthFailed = () => {
     const { isLocked } = useDevice();

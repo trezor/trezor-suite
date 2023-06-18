@@ -1,11 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { applySettings } from '@settings-actions/deviceSettingsActions';
-import { Translation, Modal } from '@suite-components';
-import { TranslationKey } from '@suite-components/Translation';
-import { useDevice, useDispatch } from '@suite-hooks';
-import { ThunkAction } from '@suite-types';
+import { applySettings } from 'src/actions/settings/deviceSettingsActions';
+import { Translation, Modal } from 'src/components/suite';
+import { TranslationKey } from 'src/components/suite/Translation';
+import { useDevice, useDispatch } from 'src/hooks/suite';
+import { ThunkAction } from 'src/types/suite';
 import { Button, Image, ModalProps } from '@trezor/components';
 
 const StyledImage = styled(Image)`

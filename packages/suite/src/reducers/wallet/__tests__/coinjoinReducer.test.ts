@@ -1,7 +1,7 @@
 import { coinjoinReducer, CoinjoinState } from '../coinjoinReducer';
 import fixtures from '../__fixtures__/coinjoinReducer';
 
-import type { Action } from '@suite-types';
+import type { Action } from 'src/types/suite';
 
 describe('Coinjoin reducer', () => {
     fixtures.forEach(f => {

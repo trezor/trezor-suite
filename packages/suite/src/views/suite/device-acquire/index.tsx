@@ -1,10 +1,10 @@
 // TODO: remove whole file, replaced by @suite-components/PrerequisitesGuide/components/DeviceAcquire
 
 import React from 'react';
-import { useDevice, useActions } from '@suite-hooks';
-import * as suiteActions from '@suite-actions/suiteActions';
+import { useDevice, useActions } from 'src/hooks/suite';
+import * as suiteActions from 'src/actions/suite/suiteActions';
 import { Button } from '@trezor/components';
-import { Translation, DeviceInvalidModeLayout } from '@suite-components';
+import { Translation, DeviceInvalidModeLayout } from 'src/components/suite';
 
 export const DeviceAcquire = () => {
     const { device, isLocked } = useDevice();

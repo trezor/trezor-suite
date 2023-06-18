@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 /* eslint-disable global-require */
 
-import { configureStore } from '@suite/support/tests/configureStore';
+import { configureStore } from 'src/support/tests/configureStore';
 
-import firmwareReducer from '@firmware-reducers/firmwareReducer';
-import suiteReducer from '@suite-reducers/suiteReducer';
+import firmwareReducer from 'src/reducers/firmware/firmwareReducer';
+import suiteReducer from 'src/reducers/suite/suiteReducer';
 import { ArrayElement } from '@trezor/type-utils';
 import { actions, reducerActions } from '../__fixtures__/firmwareActions';
-import { TrezorDevice } from '@suite-types';
+import { TrezorDevice } from 'src/types/suite';
 import { DeviceModel } from '@trezor/device-utils';
 
 type Fixture = ArrayElement<typeof actions>;

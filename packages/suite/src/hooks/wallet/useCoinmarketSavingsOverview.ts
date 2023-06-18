@@ -2,10 +2,10 @@ import { createContext, useCallback, useContext } from 'react';
 import type {
     SavingsOverviewContextValues,
     UseSavingsOverviewProps,
-} from '@wallet-types/coinmarketSavingsOverview';
-import { useCoinmarketNavigation } from '@wallet-hooks/useCoinmarketNavigation';
-import { useSelector } from '@suite-hooks';
-import { Trade } from '@wallet-types/coinmarketCommonTypes';
+} from 'src/types/wallet/coinmarketSavingsOverview';
+import { useCoinmarketNavigation } from 'src/hooks/wallet/useCoinmarketNavigation';
+import { useSelector } from 'src/hooks/suite';
+import { Trade } from 'src/types/wallet/coinmarketCommonTypes';
 import BigNumber from 'bignumber.js';
 
 export const SavingsOverviewContext = createContext<SavingsOverviewContextValues | null>(null);

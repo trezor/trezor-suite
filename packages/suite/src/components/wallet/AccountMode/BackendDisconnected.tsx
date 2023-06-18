@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { NotificationCard, Translation } from '@suite-components';
-import { useSelector, useActions } from '@suite-hooks';
+import { NotificationCard, Translation } from 'src/components/suite';
+import { useSelector, useActions } from 'src/hooks/suite';
 import { reconnectBlockchainThunk } from '@suite-common/wallet-core';
 import { isTrezorConnectBackendType } from '@suite-common/wallet-utils';
 import type { NetworkSymbol } from '@suite-common/wallet-config';

@@ -1,8 +1,8 @@
 import { MiddlewareAPI } from 'redux';
-import { DISCOVERY } from '@wallet-actions/constants';
-import * as graphActions from '@wallet-actions/graphActions';
-import { selectDiscoveryForDevice } from '@wallet-reducers/discoveryReducer';
-import { AppState, Action, Dispatch } from '@suite-types';
+import { DISCOVERY } from 'src/actions/wallet/constants';
+import * as graphActions from 'src/actions/wallet/graphActions';
+import { selectDiscoveryForDevice } from 'src/reducers/wallet/discoveryReducer';
+import { AppState, Action, Dispatch } from 'src/types/suite';
 import { accountsActions, transactionsActions } from '@suite-common/wallet-core';
 
 const graphMiddleware =

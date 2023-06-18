@@ -1,13 +1,13 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import GoogleClient from '@suite/services/google';
-import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@suite-components/Settings';
-import * as suiteActions from '@suite-actions/suiteActions';
-import { useSelector, useActions } from '@suite-hooks';
-import type { OAuthServerEnvironment } from '@suite-types/metadata';
-import { useAnchor } from '@suite-hooks/useAnchor';
-import { SettingsAnchor } from '@suite-constants/anchors';
+import GoogleClient from 'src/services/google';
+import { ActionColumn, ActionSelect, SectionItem, TextColumn } from 'src/components/suite/Settings';
+import * as suiteActions from 'src/actions/suite/suiteActions';
+import { useSelector, useActions } from 'src/hooks/suite';
+import type { OAuthServerEnvironment } from 'src/types/suite/metadata';
+import { useAnchor } from 'src/hooks/suite/useAnchor';
+import { SettingsAnchor } from 'src/constants/suite/anchors';
 
 const StyledActionSelect = styled(ActionSelect)`
     min-width: 256px;

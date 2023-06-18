@@ -1,9 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
 import { variables } from '@trezor/components';
-import { FiatValue } from '@suite-components/FiatValue';
-import { FormattedCryptoAmount } from '@suite-components/FormattedCryptoAmount';
-import { NetworkSymbol } from '@wallet-types';
+import { FiatValue } from 'src/components/suite/FiatValue';
+import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
+import { NetworkSymbol } from 'src/types/wallet';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 
 const Container = styled.div`

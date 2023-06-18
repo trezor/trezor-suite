@@ -1,13 +1,13 @@
 import React, { memo, useState, useEffect, useCallback } from 'react';
 
-import { TransactionsGraph, Translation, HiddenPlaceholder } from '@suite-components';
+import { TransactionsGraph, Translation, HiddenPlaceholder } from 'src/components/suite';
 import { getUnixTime } from 'date-fns';
 import styled from 'styled-components';
-import { CARD_PADDING_SIZE } from '@suite-constants/layout';
-import GraphWorker from '@suite-workers/graph';
-import * as graphActions from '@wallet-actions/graphActions';
-import { useActions, useSelector } from '@suite-hooks';
-import { Account } from '@wallet-types';
+import { CARD_PADDING_SIZE } from 'src/constants/suite/layout';
+import GraphWorker from 'src/workers/graph';
+import * as graphActions from 'src/actions/wallet/graphActions';
+import { useActions, useSelector } from 'src/hooks/suite';
+import { Account } from 'src/types/wallet';
 
 import { variables, Button } from '@trezor/components';
 import { calcTicks, calcTicksFromData } from '@suite-common/suite-utils';

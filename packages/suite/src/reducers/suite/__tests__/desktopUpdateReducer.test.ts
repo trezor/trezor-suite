@@ -1,6 +1,6 @@
 import desktopUpdateReducer, { State, UpdateState } from '../desktopUpdateReducer';
-import { DESKTOP_UPDATE, SUITE } from '@suite-actions/constants';
-import type { Action } from '@suite-types';
+import { DESKTOP_UPDATE, SUITE } from 'src/actions/suite/constants';
+import type { Action } from 'src/types/suite';
 
 const createUpdateInfo = (salt: string) => ({
     releaseDate: `releaseDate-${salt}`,

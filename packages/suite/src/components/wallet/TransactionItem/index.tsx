@@ -4,12 +4,12 @@ import styled, { css } from 'styled-components';
 import { AnimatePresence } from 'framer-motion';
 import { variables, Button, Card } from '@trezor/components';
 import { getIsZeroValuePhishing } from '@suite-common/suite-utils';
-import { Translation } from '@suite-components';
-import { useActions } from '@suite-hooks';
-import * as modalActions from '@suite-actions/modalActions';
+import { Translation } from 'src/components/suite';
+import { useActions } from 'src/hooks/suite';
+import * as modalActions from 'src/actions/suite/modalActions';
 import { formatNetworkAmount, isTestnet, isTxFeePaid } from '@suite-common/wallet-utils';
-import { AccountMetadata } from '@suite-types/metadata';
-import { Network, WalletAccountTransaction } from '@wallet-types';
+import { AccountMetadata } from 'src/types/suite/metadata';
+import { Network, WalletAccountTransaction } from 'src/types/wallet';
 import { TransactionTypeIcon } from './components/TransactionTypeIcon';
 import { TransactionHeading } from './components/TransactionHeading';
 import { Target, TokenTransfer, InternalTransfer } from './components/Target';
@@ -22,11 +22,11 @@ import {
     TimestampWrapper,
     TxTypeIconWrapper,
 } from './components/CommonComponents';
-import { useAnchor } from '@suite-hooks/useAnchor';
-import { AccountTransactionBaseAnchor } from '@suite-constants/anchors';
-import { SECONDARY_PANEL_HEIGHT } from '@suite-components/AppNavigation';
-import { anchorOutlineStyles } from '@suite-utils/anchor';
-import { TransactionTimestamp } from '@wallet-components/TransactionTimestamp';
+import { useAnchor } from 'src/hooks/suite/useAnchor';
+import { AccountTransactionBaseAnchor } from 'src/constants/suite/anchors';
+import { SECONDARY_PANEL_HEIGHT } from 'src/components/suite/AppNavigation';
+import { anchorOutlineStyles } from 'src/utils/suite/anchor';
+import { TransactionTimestamp } from 'src/components/wallet/TransactionTimestamp';
 
 const Wrapper = styled(Card)<{
     isPending: boolean;

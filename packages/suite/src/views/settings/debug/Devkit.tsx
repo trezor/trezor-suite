@@ -1,9 +1,9 @@
 import React from 'react';
 
 import { Switch } from '@trezor/components';
-import { ActionColumn, SectionItem, TextColumn } from '@suite-components/Settings';
-import { useSelector, useDispatch } from '@suite-hooks';
-import { toggleUseDevkit } from '@firmware-actions/firmwareActions';
+import { ActionColumn, SectionItem, TextColumn } from 'src/components/suite/Settings';
+import { useSelector, useDispatch } from 'src/hooks/suite';
+import { toggleUseDevkit } from 'src/actions/firmware/firmwareActions';
 
 export const Devkit = () => {
     const dispatch = useDispatch();

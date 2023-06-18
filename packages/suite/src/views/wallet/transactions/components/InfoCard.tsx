@@ -6,8 +6,8 @@ import {
     FormattedCryptoAmount,
     Sign,
     SkeletonRectangle,
-} from '@suite-components';
-import { Account } from '@wallet-types';
+} from 'src/components/suite';
+import { Account } from 'src/types/wallet';
 import BigNumber from 'bignumber.js';
 
 const Wrapper = styled(Card)`

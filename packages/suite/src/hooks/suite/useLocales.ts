@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 
 import type { Locale } from 'date-fns';
 
-import { useSelector } from '@suite-hooks';
+import { useSelector } from 'src/hooks/suite';
 
 export const useLocales = () => {
     const [locale, setLocale] = useState<Locale>();

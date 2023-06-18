@@ -1,18 +1,18 @@
 import TrezorConnect, { Device, DEVICE } from '@trezor/connect';
 import { analytics, EventType } from '@trezor/suite-analytics';
 import { desktopApi, HandshakeElectron } from '@trezor/suite-desktop-api';
-import { TorStatus } from '@suite-types';
+import { TorStatus } from 'src/types/suite';
 
-import * as comparisonUtils from '@suite-utils/comparisonUtils';
-import * as deviceUtils from '@suite-utils/device';
-import { isOnionUrl } from '@suite-utils/tor';
+import * as comparisonUtils from 'src/utils/suite/comparisonUtils';
+import * as deviceUtils from 'src/utils/suite/device';
+import { isOnionUrl } from 'src/utils/suite/tor';
 import { getCustomBackends } from '@suite-common/wallet-utils';
-import { sortByTimestamp } from '@suite-utils/device';
+import { sortByTimestamp } from 'src/utils/suite/device';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import * as modalActions from '@suite-actions/modalActions';
-import * as firmwareActions from '@firmware-actions/firmwareActions';
+import * as modalActions from 'src/actions/suite/modalActions';
+import * as firmwareActions from 'src/actions/firmware/firmwareActions';
 import { SUITE, METADATA } from './constants';
-import type { Locale } from '@suite-config/languages';
+import type { Locale } from 'src/config/suite/languages';
 import type {
     Action,
     Dispatch,
@@ -21,9 +21,13 @@ import type {
     ButtonRequest,
     AppState,
     TorBootstrap,
-} from '@suite-types';
-import { DebugModeOptions, AutodetectSettings, selectTorState } from '@suite-reducers/suiteReducer';
-import type { TranslationKey } from '@suite-components/Translation/components/BaseTranslation';
+} from 'src/types/suite';
+import {
+    DebugModeOptions,
+    AutodetectSettings,
+    selectTorState,
+} from 'src/reducers/suite/suiteReducer';
+import type { TranslationKey } from 'src/components/suite/Translation/components/BaseTranslation';
 import { createAction } from '@reduxjs/toolkit';
 
 export type SuiteAction =

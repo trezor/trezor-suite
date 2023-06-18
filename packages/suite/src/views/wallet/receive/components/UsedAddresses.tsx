@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { AccountAddress } from '@trezor/connect';
 import { variables, Button } from '@trezor/components';
-import { Card, Translation, MetadataLabeling, FormattedCryptoAmount } from '@suite-components';
+import { Card, Translation, MetadataLabeling, FormattedCryptoAmount } from 'src/components/suite';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
-import { Network } from '@wallet-types';
-import { AppState } from '@suite-types';
-import { MetadataAddPayload } from '@suite-types/metadata';
+import { Network } from 'src/types/wallet';
+import { AppState } from 'src/types/suite';
+import { MetadataAddPayload } from 'src/types/suite/metadata';
 
 const StyledCard = styled(Card)`
     flex-direction: column;

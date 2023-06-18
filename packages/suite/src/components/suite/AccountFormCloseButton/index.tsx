@@ -1,7 +1,7 @@
 import React from 'react';
-import { useActions } from '@suite-hooks';
-import * as routerActions from '@suite-actions/routerActions';
-import { CloseButton } from '@suite-components';
+import { useActions } from 'src/hooks/suite';
+import * as routerActions from 'src/actions/suite/routerActions';
+import { CloseButton } from 'src/components/suite';
 
 const AccountFormCloseButton = () => {
     const { goto } = useActions({

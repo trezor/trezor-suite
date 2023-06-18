@@ -2,12 +2,12 @@ import React from 'react';
 import { transparentize } from 'polished';
 import styled, { css } from 'styled-components';
 
-import { findRouteByName } from '@suite-utils/router';
+import { findRouteByName } from 'src/utils/suite/router';
 import { variables, HoverAnimation } from '@trezor/components';
-import { Translation } from '@suite-components';
-import { MAIN_MENU_ITEMS } from '@suite-constants/menu';
-import { useActions, useSelector, useAccountSearch } from '@suite-hooks';
-import * as routerActions from '@suite-actions/routerActions';
+import { Translation } from 'src/components/suite';
+import { MAIN_MENU_ITEMS } from 'src/constants/suite/menu';
+import { useActions, useSelector, useAccountSearch } from 'src/hooks/suite';
+import * as routerActions from 'src/actions/suite/routerActions';
 
 interface ComponentProps {
     isActive: boolean;

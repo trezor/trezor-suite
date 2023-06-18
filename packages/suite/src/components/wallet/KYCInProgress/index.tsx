@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Translation } from '@suite-components';
-import { SavingsKYCCard } from '@wallet-views/coinmarket';
+import { Translation } from 'src/components/suite';
+import { SavingsKYCCard } from 'src/views/wallet/coinmarket';
 import { Image } from '@trezor/components';
 
 const StyledCard = styled(SavingsKYCCard)`

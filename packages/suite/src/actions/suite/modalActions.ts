@@ -1,9 +1,9 @@
 import TrezorConnect, { UI } from '@trezor/connect';
 import { createDeferred, Deferred, DeferredResponse } from '@trezor/utils';
-import { MODAL, SUITE } from '@suite-actions/constants';
-import { Route, Dispatch, GetState, TrezorDevice } from '@suite-types';
-import { Account, NetworkSymbol, WalletAccountTransaction } from '@wallet-types';
-import { RequestEnableTorResponse } from '@suite-components/modals/RequestEnableTor';
+import { MODAL, SUITE } from 'src/actions/suite/constants';
+import { Route, Dispatch, GetState, TrezorDevice } from 'src/types/suite';
+import { Account, NetworkSymbol, WalletAccountTransaction } from 'src/types/wallet';
+import { RequestEnableTorResponse } from 'src/components/suite/modals/RequestEnableTor';
 
 export type UserContextPayload =
     | {

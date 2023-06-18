@@ -1,15 +1,15 @@
 import React, { useMemo } from 'react';
 import { analytics, EventType } from '@trezor/suite-analytics';
 
-import { Translation } from '@suite-components';
-import { isTranslationMode, getOsLocale } from '@suite-utils/l10n';
-import { useActions, useSelector, useTranslation } from '@suite-hooks';
-import LANGUAGES, { Locale, LocaleInfo } from '@suite-config/languages';
-import * as suiteActions from '@suite-actions/suiteActions';
-import * as languageActions from '@settings-actions/languageActions';
-import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@suite-components/Settings';
-import { useAnchor } from '@suite-hooks/useAnchor';
-import { SettingsAnchor } from '@suite-constants/anchors';
+import { Translation } from 'src/components/suite';
+import { isTranslationMode, getOsLocale } from 'src/utils/suite/l10n';
+import { useActions, useSelector, useTranslation } from 'src/hooks/suite';
+import LANGUAGES, { Locale, LocaleInfo } from 'src/config/suite/languages';
+import * as suiteActions from 'src/actions/suite/suiteActions';
+import * as languageActions from 'src/actions/settings/languageActions';
+import { ActionColumn, ActionSelect, SectionItem, TextColumn } from 'src/components/suite/Settings';
+import { useAnchor } from 'src/hooks/suite/useAnchor';
+import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { getPlatformLanguages } from '@trezor/env-utils';
 
 const onlyComplete = (locale: [string, LocaleInfo]): locale is [Locale, LocaleInfo] =>

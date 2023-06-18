@@ -1,14 +1,14 @@
 import { variables, Select } from '@trezor/components';
-import { ExchangeInfo } from '@wallet-actions/coinmarketExchangeActions';
+import { ExchangeInfo } from 'src/actions/wallet/coinmarketExchangeActions';
 import React from 'react';
 import { Controller } from 'react-hook-form';
 import styled from 'styled-components';
 import { ExchangeCoinInfo } from 'invity-api';
-import { useCoinmarketExchangeFormContext } from '@wallet-hooks/useCoinmarketExchangeForm';
-import { Translation } from '@suite-components';
-import { Account } from '@wallet-types';
-import invityAPI from '@suite-services/invityAPI';
-import { symbolToInvityApiSymbol } from '@suite/utils/wallet/coinmarket/coinmarketUtils';
+import { useCoinmarketExchangeFormContext } from 'src/hooks/wallet/useCoinmarketExchangeForm';
+import { Translation } from 'src/components/suite';
+import { Account } from 'src/types/wallet';
+import invityAPI from 'src/services/suite/invityAPI';
+import { symbolToInvityApiSymbol } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { getInputState } from '@suite-common/wallet-utils';
 
 const Wrapper = styled.div`

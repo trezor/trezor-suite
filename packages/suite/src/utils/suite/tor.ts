@@ -1,6 +1,6 @@
 import { parseHostname } from '@trezor/utils';
 import { TOR_URLS } from '@trezor/urls';
-import { TorStatus } from '@suite-types';
+import { TorStatus } from 'src/types/suite';
 
 /**
  * returns tor url if tor url is request and tor url is available for given domain

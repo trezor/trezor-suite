@@ -1,8 +1,8 @@
-import { BuyInfo } from '@wallet-actions/coinmarketBuyActions';
+import { BuyInfo } from 'src/actions/wallet/coinmarketBuyActions';
 import { useMemo } from 'react';
-import regional from '@wallet-constants/coinmarket/regional';
-import { Account } from '@wallet-types';
-import { buildOption } from '@wallet-utils/coinmarket/coinmarketUtils';
+import regional from 'src/constants/wallet/coinmarket/regional';
+import { Account } from 'src/types/wallet';
+import { buildOption } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 
 export const useCoinmarketBuyFormDefaultValues = (
     accountSymbol: Account['symbol'],

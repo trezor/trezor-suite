@@ -1,6 +1,6 @@
-import * as utils from '@suite-utils/device';
+import * as utils from 'src/utils/suite/device';
 import { getDeviceModel } from '@trezor/device-utils';
-import { AcquiredDevice } from '@suite-types';
+import { AcquiredDevice } from 'src/types/suite';
 import fixtures from '../__fixtures__/device';
 
 describe('getStatus', () => {

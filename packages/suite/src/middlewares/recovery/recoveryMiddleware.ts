@@ -1,10 +1,10 @@
 import { UI } from '@trezor/connect';
 import { MiddlewareAPI } from 'redux';
-import { SUITE } from '@suite-actions/constants';
-import * as recoveryActions from '@recovery-actions/recoveryActions';
-import * as onboardingActions from '@onboarding-actions/onboardingActions';
+import { SUITE } from 'src/actions/suite/constants';
+import * as recoveryActions from 'src/actions/recovery/recoveryActions';
+import * as onboardingActions from 'src/actions/onboarding/onboardingActions';
 
-import { AppState, Action, Dispatch } from '@suite-types';
+import { AppState, Action, Dispatch } from 'src/types/suite';
 
 const recovery =
     (api: MiddlewareAPI<Dispatch, AppState>) =>

@@ -1,14 +1,14 @@
 import React, { useMemo } from 'react';
 import styled from 'styled-components';
-import { InputError } from '@wallet-components';
+import { InputError } from 'src/components/wallet';
 import { isDecimalsValid, getInputState } from '@suite-common/wallet-utils';
-import { useCoinmarketExchangeFormContext } from '@wallet-hooks/useCoinmarketExchangeForm';
-import { Translation, NumberInput } from '@suite-components';
+import { useCoinmarketExchangeFormContext } from 'src/hooks/wallet/useCoinmarketExchangeForm';
+import { Translation, NumberInput } from 'src/components/suite';
 import FiatSelect from './FiatSelect';
 import BigNumber from 'bignumber.js';
-import { MAX_LENGTH } from '@suite-constants/inputs';
-import { CRYPTO_INPUT, FIAT_INPUT } from '@suite/types/wallet/coinmarketExchangeForm';
-import { TypedValidationRules } from '@wallet-types/form';
+import { MAX_LENGTH } from 'src/constants/suite/inputs';
+import { CRYPTO_INPUT, FIAT_INPUT } from 'src/types/wallet/coinmarketExchangeForm';
+import { TypedValidationRules } from 'src/types/wallet/form';
 
 const StyledInput = styled(NumberInput)`
     border-left: 0;

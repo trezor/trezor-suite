@@ -2,15 +2,15 @@ import React from 'react';
 import { useWatch } from 'react-hook-form';
 import styled from 'styled-components';
 
-import { Translation } from '@suite-components';
-import { OnOffSwitcher } from '@wallet-components';
+import { Translation } from 'src/components/suite';
+import { OnOffSwitcher } from 'src/components/wallet';
 import { Button, Tooltip } from '@trezor/components';
-import { useSendFormContext } from '@wallet-hooks';
+import { useSendFormContext } from 'src/hooks/wallet';
 import { isFeatureFlagEnabled } from '@suite-common/suite-utils';
-import { OpenGuideFromTooltip } from '@guide-components';
+import { OpenGuideFromTooltip } from 'src/components/guide';
 import { Locktime } from './components/Locktime';
 import { CoinControl } from './components/CoinControl';
-import { FormOptions } from '@wallet-types/sendForm';
+import { FormOptions } from 'src/types/wallet/sendForm';
 
 const Wrapper = styled.div`
     display: flex;

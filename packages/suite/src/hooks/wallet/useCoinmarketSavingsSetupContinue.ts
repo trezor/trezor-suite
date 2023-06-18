@@ -3,23 +3,23 @@ import type {
     SavingsSetupContinueFormState,
     SavingsSetupContinueContextValues,
     UseSavingsSetupContinueProps,
-} from '@wallet-types/coinmarketSavingsSetupContinue';
+} from 'src/types/wallet/coinmarketSavingsSetupContinue';
 import { useForm, useWatch } from 'react-hook-form';
-import { useActions, useSelector } from '@suite-hooks';
-import { getUnusedAddressFromAccount } from '@wallet-utils/coinmarket/coinmarketUtils';
-import { CustomPaymentAmountKey } from '@wallet-constants/coinmarket/savings';
-import * as coinmarketSavingsActions from '@wallet-actions/coinmarketSavingsActions';
-import * as coinmarketCommonActions from '@wallet-actions/coinmarket/coinmarketCommonActions';
-import * as pollingActions from '@wallet-actions/pollingActions';
+import { useActions, useSelector } from 'src/hooks/suite';
+import { getUnusedAddressFromAccount } from 'src/utils/wallet/coinmarket/coinmarketUtils';
+import { CustomPaymentAmountKey } from 'src/constants/wallet/coinmarket/savings';
+import * as coinmarketSavingsActions from 'src/actions/wallet/coinmarketSavingsActions';
+import * as coinmarketCommonActions from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
+import * as pollingActions from 'src/actions/wallet/pollingActions';
 import {
     calculateAnnualSavings,
     getFiatAmountEffective,
     getPaymentFrequencyOptions,
-} from '@wallet-utils/coinmarket/savingsUtils';
+} from 'src/utils/wallet/coinmarket/savingsUtils';
 import { SavingsTrade } from 'invity-api';
-import invityAPI from '@suite-services/invityAPI';
-import { useCoinmarketNavigation } from '@wallet-hooks/useCoinmarketNavigation';
-import { useFormDraft } from '@wallet-hooks/useFormDraft';
+import invityAPI from 'src/services/suite/invityAPI';
+import { useCoinmarketNavigation } from 'src/hooks/wallet/useCoinmarketNavigation';
+import { useFormDraft } from 'src/hooks/wallet/useFormDraft';
 import { TypedValidationRules } from '@suite-common/wallet-types';
 
 export const useSavingsSetupContinue = ({

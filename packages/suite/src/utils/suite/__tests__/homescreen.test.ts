@@ -7,7 +7,7 @@ import {
     isValidImageHeight,
     isValidImageSize,
     isValidImageWidth,
-} from '@suite-utils/homescreen';
+} from 'src/utils/suite/homescreen';
 import { DeviceModel } from '@trezor/device-utils';
 import * as fixtures from '../__fixtures__/homescreen';
 

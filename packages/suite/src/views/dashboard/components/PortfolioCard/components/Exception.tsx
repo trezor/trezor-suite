@@ -1,15 +1,15 @@
 import React from 'react';
 import styled from 'styled-components';
 import { variables, Button, IconProps, H3, Image } from '@trezor/components';
-import { Translation } from '@suite-components';
-import { useDevice, useActions } from '@suite-hooks';
-import * as discoveryActions from '@wallet-actions/discoveryActions';
-import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
-import * as suiteActions from '@suite-actions/suiteActions';
-import * as modalActions from '@suite-actions/modalActions';
-import * as routerActions from '@suite-actions/routerActions';
+import { Translation } from 'src/components/suite';
+import { useDevice, useActions } from 'src/hooks/suite';
+import * as discoveryActions from 'src/actions/wallet/discoveryActions';
+import * as deviceSettingsActions from 'src/actions/settings/deviceSettingsActions';
+import * as suiteActions from 'src/actions/suite/suiteActions';
+import * as modalActions from 'src/actions/suite/modalActions';
+import * as routerActions from 'src/actions/suite/routerActions';
 import * as accountUtils from '@suite-common/wallet-utils';
-import type { Discovery, DiscoveryStatus } from '@wallet-types';
+import type { Discovery, DiscoveryStatus } from 'src/types/wallet';
 
 const Wrapper = styled.div`
     display: flex;

@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Button, variables, useTheme } from '@trezor/components';
-import { Translation } from '@suite-components/Translation';
+import { Translation } from 'src/components/suite/Translation';
 
 const ButtonBadge = styled(Button)`
     margin: 0px 8px;

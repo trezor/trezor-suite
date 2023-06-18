@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import { valid, satisfies } from 'semver';
 import { getFirmwareVersion } from '@trezor/device-utils';
-import type { TrezorDevice } from '@suite-types';
-import { useActions } from '@suite-hooks';
-import * as firmwareActions from '@firmware-actions/firmwareActions';
+import type { TrezorDevice } from 'src/types/suite';
+import { useActions } from 'src/hooks/suite';
+import * as firmwareActions from 'src/actions/firmware/firmwareActions';
 
 export type RebootRequestedMode = 'bootloader' | 'normal';
 export type RebootPhase = 'initial' | 'wait-for-confirm' | 'disconnected' | 'done';

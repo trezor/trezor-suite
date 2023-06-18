@@ -3,11 +3,11 @@ import { darken } from 'polished';
 import styled from 'styled-components';
 import { analytics, EventType } from '@trezor/suite-analytics';
 
-import { Translation } from '@suite-components';
-import * as guideActions from '@suite-actions/guideActions';
-import { useActions, useSelector } from '@suite-hooks';
+import { Translation } from 'src/components/suite';
+import * as guideActions from 'src/actions/suite/guideActions';
+import { useActions, useSelector } from 'src/hooks/suite';
 import { Icon, variables, useTheme } from '@trezor/components';
-import { Header, Content, ViewWrapper, GuideCategories, GuideSearch } from '@guide-components';
+import { Header, Content, ViewWrapper, GuideCategories, GuideSearch } from 'src/components/guide';
 
 const FeedbackLinkWrapper = styled.div`
     border-top: 1px solid ${props => props.theme.STROKE_GREY};

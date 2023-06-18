@@ -3,15 +3,15 @@ import styled, { css } from 'styled-components';
 
 import { WalletAccountTransaction } from '@suite-common/wallet-types';
 import { formatAmount, formatNetworkAmount, isNftTokenTransfer } from '@suite-common/wallet-utils';
-import { FormattedCryptoAmount, Translation } from '@suite-components';
-import { useSelector } from '@suite-hooks/useSelector';
+import { FormattedCryptoAmount, Translation } from 'src/components/suite';
+import { useSelector } from 'src/hooks/suite/useSelector';
 import { AnonymitySet, TokenTransfer } from '@trezor/blockchain-link';
 import { Icon, useTheme, variables, CollapsibleBox } from '@trezor/components';
-import { UtxoAnonymity } from '@wallet-components';
+import { UtxoAnonymity } from 'src/components/wallet';
 import { IOAddress } from './IOAddress';
 import { AnalyzeInBlockbookBanner } from './AnalyzeInBlockbookBanner';
-import { FormattedNftAmount } from '@suite-components/FormattedNftAmount';
-import { useExplorerTxUrl } from '@suite-hooks/useExplorerTxUrl';
+import { FormattedNftAmount } from 'src/components/suite/FormattedNftAmount';
+import { useExplorerTxUrl } from 'src/hooks/suite/useExplorerTxUrl';
 
 export const blurFix = css`
     margin-left: -10px;

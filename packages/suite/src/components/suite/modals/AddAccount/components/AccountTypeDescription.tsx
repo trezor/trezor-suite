@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import { P } from '@trezor/components';
-import { Network } from '@wallet-types';
-import { Translation, TrezorLink } from '@suite-components';
+import { Network } from 'src/types/wallet';
+import { Translation, TrezorLink } from 'src/components/suite';
 import { getAccountTypeDesc, getAccountTypeUrl } from '@suite-common/wallet-utils';
 
 const Info = styled(P).attrs(() => ({

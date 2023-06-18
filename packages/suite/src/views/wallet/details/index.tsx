@@ -3,22 +3,22 @@ import styled from 'styled-components';
 
 import { P, variables } from '@trezor/components';
 import { HELP_CENTER_XPUB_URL } from '@trezor/urls';
-import { WalletLayout } from '@wallet-components';
-import { useDevice, useDispatch, useSelector } from '@suite-hooks';
-import { Card, Translation } from '@suite-components';
+import { WalletLayout } from 'src/components/wallet';
+import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
+import { Card, Translation } from 'src/components/suite';
 import {
     getAccountTypeName,
     getAccountTypeTech,
     getAccountTypeUrl,
     getAccountTypeDesc,
 } from '@suite-common/wallet-utils';
-import { ActionColumn, Row, TextColumn, ActionButton } from '@suite-components/Settings';
-import { CARD_PADDING_SIZE } from '@suite-constants/layout';
-import { showXpub } from '@wallet-actions/publicKeyActions';
-import { NETWORKS } from '@wallet-config';
-import { CoinjoinLogs } from '@wallet-components/PrivacyAccount/CoinjoinLogs';
-import { CoinjoinSetup } from '@wallet-components/PrivacyAccount/CoinjoinSetup';
-import { RescanAccount } from '@wallet-components/PrivacyAccount/RescanAccount';
+import { ActionColumn, Row, TextColumn, ActionButton } from 'src/components/suite/Settings';
+import { CARD_PADDING_SIZE } from 'src/constants/suite/layout';
+import { showXpub } from 'src/actions/wallet/publicKeyActions';
+import { NETWORKS } from 'src/config/wallet';
+import { CoinjoinLogs } from 'src/components/wallet/PrivacyAccount/CoinjoinLogs';
+import { CoinjoinSetup } from 'src/components/wallet/PrivacyAccount/CoinjoinSetup';
+import { RescanAccount } from 'src/components/wallet/PrivacyAccount/RescanAccount';
 
 const Heading = styled.h3`
     color: ${({ theme }) => theme.TYPE_LIGHT_GREY};

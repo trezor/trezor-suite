@@ -1,8 +1,8 @@
 import { Select } from '@trezor/components';
 import React from 'react';
 import { Controller } from 'react-hook-form';
-import { useCoinmarketExchangeFormContext } from '@wallet-hooks/useCoinmarketExchangeForm';
-import { FIAT_CURRENCY } from '@wallet-types/coinmarketExchangeForm';
+import { useCoinmarketExchangeFormContext } from 'src/hooks/wallet/useCoinmarketExchangeForm';
+import { FIAT_CURRENCY } from 'src/types/wallet/coinmarketExchangeForm';
 import { buildCurrencyOptions } from '@suite-common/wallet-utils';
 
 const FiatSelect = () => {

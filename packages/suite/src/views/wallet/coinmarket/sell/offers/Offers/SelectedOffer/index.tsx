@@ -3,9 +3,9 @@ import styled from 'styled-components';
 import { Card, Icon, variables, colors } from '@trezor/components';
 import { SelectBankAccount } from './components/SelectBankAccount';
 import { SendTransaction } from './components/SendTransaction';
-import { CoinmarketSellOfferInfo } from '@wallet-components';
-import { useCoinmarketSellOffersContext } from '@wallet-hooks/useCoinmarketSellOffers';
-import { Translation } from '@suite-components';
+import { CoinmarketSellOfferInfo } from 'src/components/wallet';
+import { useCoinmarketSellOffersContext } from 'src/hooks/wallet/useCoinmarketSellOffers';
+import { Translation } from 'src/components/suite';
 
 const Wrapper = styled.div`
     display: flex;

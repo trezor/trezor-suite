@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 
 import styled from 'styled-components';
-import { Translation, FormattedDate } from '@suite-components';
+import { Translation, FormattedDate } from 'src/components/suite';
 import { TooltipProps } from 'recharts';
 
 import { variables } from '@trezor/components';

@@ -1,7 +1,7 @@
-import { AcquiredDevice } from '@suite-types';
-import { Discovery } from '@wallet-reducers/discoveryReducer';
+import { AcquiredDevice } from 'src/types/suite';
+import { Discovery } from 'src/reducers/wallet/discoveryReducer';
 import { connectInitThunk } from '@suite-common/connect-init';
-import { CoinjoinAccount } from '@wallet-types/coinjoin';
+import { CoinjoinAccount } from 'src/types/wallet/coinjoin';
 
 /**
  * Strip unserializable fields from Discovery (eg. promises)

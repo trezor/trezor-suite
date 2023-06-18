@@ -1,8 +1,8 @@
 import produce from 'immer';
-import { RECOVERY } from '@recovery-actions/constants';
-import { Action } from '@suite-types';
-import { WordCount } from '@recovery-types';
-import { SeedInputStatus } from '@recovery-actions/recoveryActions';
+import { RECOVERY } from 'src/actions/recovery/constants';
+import { Action } from 'src/types/suite';
+import { WordCount } from 'src/types/recovery';
+import { SeedInputStatus } from 'src/actions/recovery/recoveryActions';
 
 export interface RecoveryState {
     advancedRecovery: boolean;

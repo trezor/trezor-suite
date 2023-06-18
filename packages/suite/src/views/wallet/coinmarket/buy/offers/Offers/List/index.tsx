@@ -2,13 +2,13 @@ import React from 'react';
 import styled from 'styled-components';
 import { CoinLogo, variables, Icon, H2 } from '@trezor/components';
 import { BuyTrade } from 'invity-api';
-import { useCoinmarketBuyOffersContext } from '@wallet-hooks/useCoinmarketBuyOffers';
+import { useCoinmarketBuyOffersContext } from 'src/hooks/wallet/useCoinmarketBuyOffers';
 import Quote from './Quote';
-import { Translation } from '@suite-components';
-import { CoinmarketRefreshTime } from '@wallet-components';
-import { InvityAPIReloadQuotesAfterSeconds } from '@wallet-constants/coinmarket/metadata';
-import { CoinmarketCryptoAmount } from '@wallet-views/coinmarket/common/CoinmarketCryptoAmount';
-import { CoinmarketFiatAmount } from '@wallet-views/coinmarket/common/CoinmarketFiatAmount';
+import { Translation } from 'src/components/suite';
+import { CoinmarketRefreshTime } from 'src/components/wallet';
+import { InvityAPIReloadQuotesAfterSeconds } from 'src/constants/wallet/coinmarket/metadata';
+import { CoinmarketCryptoAmount } from 'src/views/wallet/coinmarket/common/CoinmarketCryptoAmount';
+import { CoinmarketFiatAmount } from 'src/views/wallet/coinmarket/common/CoinmarketFiatAmount';
 
 interface Props {
     isAlternative?: boolean;

@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Icon, useTheme, variables, CoinLogo, H3 } from '@trezor/components';
-import { Translation, FormattedDateWithBullet } from '@suite-components';
-import { WalletAccountTransaction, Network } from '@wallet-types';
+import { Translation, FormattedDateWithBullet } from 'src/components/suite';
+import { WalletAccountTransaction, Network } from 'src/types/wallet';
 import {
     isTxFinal,
     getTxIcon,
@@ -10,7 +10,7 @@ import {
     getFeeUnits,
     getFeeRate,
 } from '@suite-common/wallet-utils';
-import { TransactionHeader } from '@suite/components/wallet/TransactionItem/components/TransactionHeader';
+import { TransactionHeader } from 'src/components/wallet/TransactionItem/components/TransactionHeader';
 import { fromWei } from 'web3-utils';
 import { IOAddress } from './IOAddress';
 

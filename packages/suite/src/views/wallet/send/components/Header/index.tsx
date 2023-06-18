@@ -1,11 +1,11 @@
 import React from 'react';
 import { Dropdown } from '@trezor/components';
-import { Translation } from '@suite-components';
-import { useActions } from '@suite-hooks';
-import { useSendFormContext } from '@wallet-hooks';
-import * as sendFormActions from '@wallet-actions/sendFormActions';
+import { Translation } from 'src/components/suite';
+import { useActions } from 'src/hooks/suite';
+import { useSendFormContext } from 'src/hooks/wallet';
+import * as sendFormActions from 'src/actions/wallet/sendFormActions';
 import { Clear } from './components/Clear';
-import { WalletLayoutHeader } from '@wallet-components';
+import { WalletLayoutHeader } from 'src/components/wallet';
 
 export const Header = () => {
     const {

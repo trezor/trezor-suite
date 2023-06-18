@@ -1,20 +1,20 @@
 import TrezorConnect from '@trezor/connect';
 import React from 'react';
-import { configureStore } from '@suite/support/tests/configureStore';
+import { configureStore } from 'src/support/tests/configureStore';
 import * as fixtures from '../__fixtures__/useRbfForm';
-import sendFormReducer from '@wallet-reducers/sendFormReducer';
-import resizeReducer from '@suite-reducers/resizeReducer';
+import sendFormReducer from 'src/reducers/wallet/sendFormReducer';
+import resizeReducer from 'src/reducers/suite/resizeReducer';
 
 import {
     renderWithProviders,
     waitForLoader,
     waitForRender,
     actionSequence,
-} from '@suite/support/tests/hooksHelper';
-import { ChangeFee } from '@suite-components/modals/TransactionDetail/components/ChangeFee';
+} from 'src/support/tests/hooksHelper';
+import { ChangeFee } from 'src/components/suite/modals/TransactionDetail/components/ChangeFee';
 import { useRbfContext } from '../useRbfForm';
 
-jest.mock('@suite-actions/routerActions', () => ({
+jest.mock('src/actions/suite/routerActions', () => ({
     goto: () => ({ type: 'mock-redirect' }),
 }));
 

@@ -1,6 +1,6 @@
 import * as Sentry from '@sentry/core';
-import { Dispatch, GetState } from '@suite-types';
-import { redactDevice, redactDiscovery, getApplicationLog } from '@suite-utils/logsUtils';
+import { Dispatch, GetState } from 'src/types/suite';
+import { redactDevice, redactDiscovery, getApplicationLog } from 'src/utils/suite/logsUtils';
 
 import { allowReportTag } from '@suite-common/sentry';
 

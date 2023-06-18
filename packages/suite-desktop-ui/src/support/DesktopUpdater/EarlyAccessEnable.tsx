@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react';
 
 import styled from 'styled-components';
-import { CheckItem, Translation, Modal } from '@suite-components';
+import { CheckItem, Translation, Modal } from 'src/components/suite';
 
 import { analytics, EventType } from '@trezor/suite-analytics';
 import { desktopApi } from '@trezor/suite-desktop-api';

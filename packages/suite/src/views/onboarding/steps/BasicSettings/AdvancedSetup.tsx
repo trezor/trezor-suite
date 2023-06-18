@@ -1,11 +1,11 @@
 import React, { useCallback, useState } from 'react';
 import styled from 'styled-components';
-import { Translation } from '@suite-components';
+import { Translation } from 'src/components/suite';
 import { Icon, useTheme, CollapsibleCard } from '@trezor/components';
-import { useSelector } from '@suite-hooks';
+import { useSelector } from 'src/hooks/suite';
 import { isDesktop, isWeb } from '@trezor/env-utils';
 import { TorSection } from './TorSection';
-import { getIsTorEnabled } from '@suite-utils/tor';
+import { getIsTorEnabled } from 'src/utils/suite/tor';
 
 const AdvancedSetupWrapper = styled.div`
     width: 100%;

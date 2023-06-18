@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Translation } from '@suite-components/Translation';
+import { Translation } from 'src/components/suite/Translation';
 
 const Wrapper = styled.div``;
 const Content = styled.div``;

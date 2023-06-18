@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import styled from 'styled-components';
 
-import { useLayoutSize, useSelector } from '@suite-hooks';
+import { useLayoutSize, useSelector } from 'src/hooks/suite';
 import { Icon, useTheme, variables } from '@trezor/components';
 import { DeviceSelector } from './components/DeviceSelector';
 import { MainNavigation } from './components/MainNavigation';

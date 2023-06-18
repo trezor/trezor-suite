@@ -2,11 +2,11 @@ import React, { useMemo, useState } from 'react';
 import { AnimatePresence, HTMLMotionProps, motion } from 'framer-motion';
 import styled from 'styled-components';
 
-import { Translation } from '@suite-components';
-import { AnonymityStatus } from '@suite-constants/coinjoin';
-import { useAnonymityStatus, useDispatch } from '@suite-hooks';
+import { Translation } from 'src/components/suite';
+import { AnonymityStatus } from 'src/constants/suite/coinjoin';
+import { useAnonymityStatus, useDispatch } from 'src/hooks/suite';
 import { Icon, Warning, motionEasing, useTheme } from '@trezor/components';
-import { coinjoinAccountUpdateAnonymity } from '@wallet-actions/coinjoinAccountActions';
+import { coinjoinAccountUpdateAnonymity } from 'src/actions/wallet/coinjoinAccountActions';
 import { SetupSlider } from './SetupSlider';
 
 const Label = styled.span`

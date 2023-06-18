@@ -1,15 +1,15 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 import { FluidSpinner, Icon, useTheme, variables } from '@trezor/components';
-import { Translation } from '@suite-components/Translation';
-import { CountdownTimer } from '@suite-components/CountdownTimer';
-import { useSelector } from '@suite-hooks/useSelector';
+import { Translation } from 'src/components/suite/Translation';
+import { CountdownTimer } from 'src/components/suite/CountdownTimer';
+import { useSelector } from 'src/hooks/suite/useSelector';
 import {
     selectCurrentCoinjoinWheelStates,
     selectCurrentSessionDeadlineInfo,
     selectRoundsDurationInHours,
-} from '@wallet-reducers/coinjoinReducer';
-import { useCoinjoinSessionBlockers } from '@suite/hooks/coinjoin/useCoinjoinSessionBlockers';
+} from 'src/reducers/wallet/coinjoinReducer';
+import { useCoinjoinSessionBlockers } from 'src/hooks/coinjoin/useCoinjoinSessionBlockers';
 import { FormattedNumber } from 'react-intl';
 
 export const Container = styled.div<{ isWide: boolean }>`

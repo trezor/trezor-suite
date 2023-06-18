@@ -1,5 +1,5 @@
 import { DEVICE } from '@trezor/connect';
-import { SUITE } from '@suite-actions/constants';
+import { SUITE } from 'src/actions/suite/constants';
 
 const { getConnectDevice, getSuiteDevice } = global.JestMocks;
 

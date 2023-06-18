@@ -1,14 +1,14 @@
 import React from 'react';
 
-import { Translation } from '@suite-components';
-import { useDispatch, useSelector } from '@suite-hooks';
+import { Translation } from 'src/components/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useTheme } from '@trezor/components';
-import { coinjoinAccountUpdateMaxMiningFee } from '@wallet-actions/coinjoinAccountActions';
+import { coinjoinAccountUpdateMaxMiningFee } from 'src/actions/wallet/coinjoinAccountActions';
 import { SetupSlider } from './SetupSlider';
 import {
     selectDefaultMaxMiningFeeByAccountKey,
     selectfeeRateMedianByAccountKey,
-} from '@wallet-reducers/coinjoinReducer';
+} from 'src/reducers/wallet/coinjoinReducer';
 
 const min = 1;
 const max = 500;

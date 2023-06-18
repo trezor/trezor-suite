@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { Translation } from '@suite-components';
-import { useActions } from '@suite-hooks';
-import { openModal as openModalAction } from '@suite-actions/modalActions';
+import { Translation } from 'src/components/suite';
+import { useActions } from 'src/hooks/suite';
+import { openModal as openModalAction } from 'src/actions/suite/modalActions';
 import CoinsGroupHeader from './CoinsGroupHeader';
 import CoinsList from './CoinsList';
-import type { Network } from '@wallet-types';
+import type { Network } from 'src/types/wallet';
 
 const CoinsGroupWrapper = styled.div`
     width: 100%;

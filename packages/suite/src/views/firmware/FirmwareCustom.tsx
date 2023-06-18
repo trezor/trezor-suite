@@ -1,23 +1,23 @@
 import React, { useState, useMemo, useCallback } from 'react';
 import styled from 'styled-components';
 import { ConfirmOnDevice } from '@trezor/components';
-import { useActions, useDevice, useFirmware } from '@suite-hooks';
-import { Translation, Modal } from '@suite-components';
-import { DeviceAcquire } from '@suite-views/device-acquire';
-import { DeviceUnknown } from '@suite-views/device-unknown';
-import { DeviceUnreadable } from '@suite-views/device-unreadable';
-import * as routerActions from '@suite-actions/routerActions';
-import type { TrezorDevice } from '@suite-types';
-import { ConnectDevicePromptManager, OnboardingStepBox } from '@onboarding-components';
-import { useCachedDevice } from '@firmware-hooks/useCachedDevice';
+import { useActions, useDevice, useFirmware } from 'src/hooks/suite';
+import { Translation, Modal } from 'src/components/suite';
+import { DeviceAcquire } from 'src/views/suite/device-acquire';
+import { DeviceUnknown } from 'src/views/suite/device-unknown';
+import { DeviceUnreadable } from 'src/views/suite/device-unreadable';
+import * as routerActions from 'src/actions/suite/routerActions';
+import type { TrezorDevice } from 'src/types/suite';
+import { ConnectDevicePromptManager, OnboardingStepBox } from 'src/components/onboarding';
+import { useCachedDevice } from 'src/hooks/firmware/useCachedDevice';
 import {
     FirmwareInstallation,
     CloseButton,
     CheckSeedStep,
     ReconnectDevicePrompt,
     SelectCustomFirmware,
-} from '@firmware-components';
-import * as suiteActions from '@suite-actions/suiteActions';
+} from 'src/components/firmware';
+import * as suiteActions from 'src/actions/suite/suiteActions';
 import { getDeviceModel } from '@trezor/device-utils';
 
 const StyledModal = styled(Modal)<{ isNarrow: boolean }>`

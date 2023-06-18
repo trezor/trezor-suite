@@ -3,8 +3,8 @@ import React, { useState, useRef } from 'react';
 import styled, { css } from 'styled-components';
 import { useOnClickOutside } from '@trezor/react-utils';
 import { DATA_TOS_INVITY_URL, INVITY_URL } from '@trezor/urls';
-import { CoinmarketProvidedByInvity } from '@wallet-components';
-import { Translation } from '@suite-components';
+import { CoinmarketProvidedByInvity } from 'src/components/wallet';
+import { Translation } from 'src/components/suite';
 
 const Wrapper = styled.div`
     display: flex;

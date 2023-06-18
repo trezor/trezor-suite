@@ -1,16 +1,16 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Button, variables, Icon, useTheme, H2 } from '@trezor/components';
-import { FormattedCryptoAmount, QuestionTooltip, Translation } from '@suite-components';
+import { FormattedCryptoAmount, QuestionTooltip, Translation } from 'src/components/suite';
 import { useFormatters } from '@suite-common/formatters';
 import { ExchangeTrade } from 'invity-api';
-import { useSelector, useTranslation } from '@suite-hooks';
+import { useSelector, useTranslation } from 'src/hooks/suite';
 import { toFiatCurrency } from '@suite-common/wallet-utils';
-import { getTagAndInfoNote } from '@wallet-utils/coinmarket/coinmarketUtils';
-import { isQuoteError } from '@wallet-utils/coinmarket/exchangeUtils';
-import { useCoinmarketExchangeOffersContext } from '@wallet-hooks/useCoinmarketExchangeOffers';
-import { CoinmarketProviderInfo, CoinmarketTag } from '@wallet-components';
-import { CoinmarketCryptoAmount } from '@wallet-views/coinmarket/common/CoinmarketCryptoAmount';
+import { getTagAndInfoNote } from 'src/utils/wallet/coinmarket/coinmarketUtils';
+import { isQuoteError } from 'src/utils/wallet/coinmarket/exchangeUtils';
+import { useCoinmarketExchangeOffersContext } from 'src/hooks/wallet/useCoinmarketExchangeOffers';
+import { CoinmarketProviderInfo, CoinmarketTag } from 'src/components/wallet';
+import { CoinmarketCryptoAmount } from 'src/views/wallet/coinmarket/common/CoinmarketCryptoAmount';
 import BigNumber from 'bignumber.js';
 
 const Wrapper = styled.div`

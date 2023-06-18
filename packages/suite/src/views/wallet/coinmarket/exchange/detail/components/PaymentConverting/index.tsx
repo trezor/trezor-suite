@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { variables, Loader, Button, Link } from '@trezor/components';
-import { Translation } from '@suite-components/Translation';
+import { Translation } from 'src/components/suite/Translation';
 
 const Wrapper = styled.div`
     display: flex;

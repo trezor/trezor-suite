@@ -1,6 +1,6 @@
 import React from 'react';
-import { MODAL } from '@suite-actions/constants';
-import { ConfirmNoBackup } from '@suite-components/modals';
+import { MODAL } from 'src/actions/suite/constants';
+import { ConfirmNoBackup } from 'src/components/suite/modals';
 
 import type { ReduxModalProps } from './types';
 

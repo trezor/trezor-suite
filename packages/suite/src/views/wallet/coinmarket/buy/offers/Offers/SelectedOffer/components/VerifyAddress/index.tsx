@@ -1,18 +1,18 @@
 import React from 'react';
 import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
-import { getUnusedAddressFromAccount } from '@wallet-utils/coinmarket/coinmarketUtils';
+import { getUnusedAddressFromAccount } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import {
     FiatValue,
     QuestionTooltip,
     Translation,
     AccountLabeling,
     FormattedCryptoAmount,
-} from '@suite-components';
+} from 'src/components/suite';
 import { Input, Button, variables, CoinLogo, Image } from '@trezor/components';
-import { useCoinmarketBuyOffersContext } from '@wallet-hooks/useCoinmarketBuyOffers';
-import { AddressOptions } from '@wallet-views/coinmarket/common/AddressOptions';
-import { useAccountAddressDictionary } from '@wallet-hooks/useAccounts';
+import { useCoinmarketBuyOffersContext } from 'src/hooks/wallet/useCoinmarketBuyOffers';
+import { AddressOptions } from 'src/views/wallet/coinmarket/common/AddressOptions';
+import { useAccountAddressDictionary } from 'src/hooks/wallet/useAccounts';
 import { getDeviceModel } from '@trezor/device-utils';
 
 const Wrapper = styled.div`

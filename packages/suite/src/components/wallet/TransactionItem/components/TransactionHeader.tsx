@@ -1,7 +1,7 @@
 import React from 'react';
-import { Translation } from '@suite-components';
+import { Translation } from 'src/components/suite';
 import { getTxHeaderSymbol } from '@suite-common/wallet-utils';
-import { WalletAccountTransaction } from '@wallet-types';
+import { WalletAccountTransaction } from 'src/types/wallet';
 import { AccountTransaction } from '@trezor/connect';
 
 interface TransactionHeaderProps {

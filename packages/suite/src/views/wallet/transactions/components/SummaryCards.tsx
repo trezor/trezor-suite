@@ -2,15 +2,15 @@ import React from 'react';
 
 import styled from 'styled-components';
 import BigNumber from 'bignumber.js';
-import { Translation, HiddenPlaceholder, FormattedDate } from '@suite-components';
-import { Account } from '@wallet-types';
+import { Translation, HiddenPlaceholder, FormattedDate } from 'src/components/suite';
+import { Account } from 'src/types/wallet';
 
 import { useFormatters } from '@suite-common/formatters';
 import { variables } from '@trezor/components';
 
 import { InfoCard } from './InfoCard';
-import { AggregatedAccountHistory, GraphRange } from '@wallet-types/graph';
-import { sumFiatValueMap } from '@wallet-utils/graphUtils';
+import { AggregatedAccountHistory, GraphRange } from 'src/types/wallet/graph';
+import { sumFiatValueMap } from 'src/utils/wallet/graphUtils';
 
 const InfoCardsWrapper = styled.div`
     display: grid;

@@ -1,9 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Button, Tooltip } from '@trezor/components';
-import { Translation } from '@suite-components';
-import { OnOffSwitcher } from '@wallet-components';
-import { useSendFormContext } from '@wallet-hooks';
+import { Translation } from 'src/components/suite';
+import { OnOffSwitcher } from 'src/components/wallet';
+import { useSendFormContext } from 'src/hooks/wallet';
 import Data from './components/Data';
 
 const Wrapper = styled.div`

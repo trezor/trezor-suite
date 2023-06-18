@@ -1,7 +1,7 @@
 import { MiddlewareAPI } from 'redux';
-import { SUITE } from '@suite-actions/constants';
-import * as backupActions from '@backup-actions/backupActions';
-import { AppState, Action, Dispatch } from '@suite-types';
+import { SUITE } from 'src/actions/suite/constants';
+import * as backupActions from 'src/actions/backup/backupActions';
+import { AppState, Action, Dispatch } from 'src/types/suite';
 
 const backup =
     (api: MiddlewareAPI<Dispatch, AppState>) =>

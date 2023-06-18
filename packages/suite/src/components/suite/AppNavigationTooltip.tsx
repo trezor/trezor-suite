@@ -1,7 +1,7 @@
 import React from 'react';
 
-import { Translation } from '@suite-components';
-import { useSelector } from '@suite-hooks';
+import { Translation } from 'src/components/suite';
+import { useSelector } from 'src/hooks/suite';
 import { Tooltip } from '@trezor/components';
 
 interface AppNavigationTooltipProps {

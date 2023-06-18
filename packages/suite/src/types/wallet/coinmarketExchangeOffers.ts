@@ -1,12 +1,12 @@
-import type { AppState } from '@suite-types';
-import type { Account } from '@wallet-types';
+import type { AppState } from 'src/types/suite';
+import type { Account } from 'src/types/wallet';
 import type { ExchangeTrade } from 'invity-api';
 import type { Timer } from '@trezor/react-utils';
 import type {
     CoinmarketExchangeAction,
     ExchangeInfo,
-} from '@wallet-actions/coinmarketExchangeActions';
-import type { WithSelectedAccountLoadedProps } from '@wallet-components';
+} from 'src/actions/wallet/coinmarketExchangeActions';
+import type { WithSelectedAccountLoadedProps } from 'src/components/wallet';
 
 export type UseCoinmarketExchangeFormProps = WithSelectedAccountLoadedProps;
 

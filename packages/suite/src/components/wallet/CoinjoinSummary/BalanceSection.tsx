@@ -3,8 +3,8 @@ import styled from 'styled-components';
 
 import { selectHasAccountTransactions } from '@suite-common/wallet-core';
 import { Card, useTheme } from '@trezor/components';
-import { useSelector } from '@suite-hooks';
-import { selectHasAnonymitySetError } from '@wallet-reducers/coinjoinReducer';
+import { useSelector } from 'src/hooks/suite';
+import { selectHasAnonymitySetError } from 'src/reducers/wallet/coinjoinReducer';
 import { BalancePrivacyBreakdown } from './BalancePrivacyBreakdown';
 import { BalanceError, BalanceErrorProps } from './BalanceError';
 import { CoinjoinStatusWheel } from './CoinjoinStatusWheel';

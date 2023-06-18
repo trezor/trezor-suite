@@ -1,6 +1,6 @@
 import React from 'react';
-import { TrezorDevice } from '@suite-types';
-import { useTranslation } from '@suite-hooks/useTranslation';
+import { TrezorDevice } from 'src/types/suite';
+import { useTranslation } from 'src/hooks/suite/useTranslation';
 
 interface WalletLabellingProps {
     device: TrezorDevice;

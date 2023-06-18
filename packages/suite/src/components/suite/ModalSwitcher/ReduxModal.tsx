@@ -1,5 +1,5 @@
 import React from 'react';
-import { MODAL } from '@suite-actions/constants';
+import { MODAL } from 'src/actions/suite/constants';
 
 import { DeviceContextModal } from './DeviceContextModal';
 import { DeviceConfirmationModal } from './DeviceConfirmationModal';

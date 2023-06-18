@@ -2,8 +2,8 @@ import React from 'react';
 
 import styled from 'styled-components';
 import { TooltipProps } from 'recharts';
-import { FormattedCryptoAmount } from '@suite-components/FormattedCryptoAmount';
-import { NetworkSymbol } from '@wallet-types';
+import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
+import { NetworkSymbol } from 'src/types/wallet';
 
 import { Formatters, useFormatters } from '@suite-common/formatters';
 

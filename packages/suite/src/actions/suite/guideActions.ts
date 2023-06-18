@@ -1,7 +1,7 @@
 import { analytics, EventType } from '@trezor/suite-analytics';
 
 import { GUIDE } from './constants';
-import { Dispatch } from '@suite-types';
+import { Dispatch } from 'src/types/suite';
 
 import type {
     ActiveView,

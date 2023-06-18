@@ -1,12 +1,12 @@
-import { configureStore } from '@suite/support/tests/configureStore';
+import { configureStore } from 'src/support/tests/configureStore';
 
-import { SUITE } from '@suite-actions/constants';
-import { FIRMWARE } from '@firmware-actions/constants';
-import firmwareReducer from '@firmware-reducers/firmwareReducer';
-import routerReducer from '@suite-reducers/routerReducer';
-import modalReducer from '@suite-reducers/modalReducer';
-import suiteReducer from '@suite-reducers/suiteReducer';
-import firmwareMiddleware from '@firmware-middlewares/firmwareMiddleware';
+import { SUITE } from 'src/actions/suite/constants';
+import { FIRMWARE } from 'src/actions/firmware/constants';
+import firmwareReducer from 'src/reducers/firmware/firmwareReducer';
+import routerReducer from 'src/reducers/suite/routerReducer';
+import modalReducer from 'src/reducers/suite/modalReducer';
+import suiteReducer from 'src/reducers/suite/suiteReducer';
+import firmwareMiddleware from 'src/middlewares/firmware/firmwareMiddleware';
 
 const { getSuiteDevice } = global.JestMocks;
 

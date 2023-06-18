@@ -1,10 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { Card } from '@suite-components';
-import { useSelector } from '@suite-hooks';
-import { WalletLayout } from '@wallet-components';
-import { useSendForm, SendContext, UseSendFormProps } from '@wallet-hooks/useSendForm';
+import { Card } from 'src/components/suite';
+import { useSelector } from 'src/hooks/suite';
+import { WalletLayout } from 'src/components/wallet';
+import { useSendForm, SendContext, UseSendFormProps } from 'src/hooks/wallet/useSendForm';
 import { Header } from './components/Header';
 import Outputs from './components/Outputs';
 import Options from './components/Options';
@@ -12,7 +12,7 @@ import { SendFees } from './components/Fees';
 import { TotalSent } from './components/TotalSent';
 import { ReviewButton } from './components/ReviewButton';
 import Raw from './components/Raw';
-import { selectCurrentTargetAnonymity } from '@wallet-reducers/coinjoinReducer';
+import { selectCurrentTargetAnonymity } from 'src/reducers/wallet/coinjoinReducer';
 
 const StyledCard = styled(Card)`
     display: flex;

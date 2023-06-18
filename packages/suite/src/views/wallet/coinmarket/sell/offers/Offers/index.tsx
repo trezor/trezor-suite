@@ -1,12 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
-import { CoinmarketFooter, CoinmarketSellTopPanel } from '@wallet-components';
+import { CoinmarketFooter, CoinmarketSellTopPanel } from 'src/components/wallet';
 import { variables } from '@trezor/components';
-import { Translation } from '@suite-components';
-import { useLayout } from '@suite-hooks/useLayout';
-import { useCoinmarketSellOffersContext } from '@wallet-hooks/useCoinmarketSellOffers';
-import NoOffers from '@wallet-views/coinmarket/common/no-offers';
-import { useCoinmarketNavigation } from '@wallet-hooks/useCoinmarketNavigation';
+import { Translation } from 'src/components/suite';
+import { useLayout } from 'src/hooks/suite/useLayout';
+import { useCoinmarketSellOffersContext } from 'src/hooks/wallet/useCoinmarketSellOffers';
+import NoOffers from 'src/views/wallet/coinmarket/common/no-offers';
+import { useCoinmarketNavigation } from 'src/hooks/wallet/useCoinmarketNavigation';
 import List from './List';
 import { SelectedOffer } from './SelectedOffer';
 

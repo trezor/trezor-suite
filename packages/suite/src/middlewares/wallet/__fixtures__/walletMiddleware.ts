@@ -1,10 +1,10 @@
 import { PROTO } from '@trezor/connect';
-import { SEND } from '@wallet-actions/constants';
+import { SEND } from 'src/actions/wallet/constants';
 import { Account } from '@suite-common/wallet-types';
-import { FormState as SendFormState, Output } from '@wallet-types/sendForm';
-import { WALLET_SETTINGS } from '@settings-actions/constants';
-import { RouterState } from '@suite-reducers/routerReducer';
-import { State as SelectedAccountState } from '@wallet-reducers/selectedAccountReducer';
+import { FormState as SendFormState, Output } from 'src/types/wallet/sendForm';
+import { WALLET_SETTINGS } from 'src/actions/settings/constants';
+import { RouterState } from 'src/reducers/suite/routerReducer';
+import { State as SelectedAccountState } from 'src/reducers/wallet/selectedAccountReducer';
 import { accountsActions } from '@suite-common/wallet-core';
 
 export const blockchainSubscription = [

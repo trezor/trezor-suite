@@ -3,8 +3,8 @@ import styled from 'styled-components';
 import { darken } from 'polished';
 
 import { Button, Icon, Link, useTheme, variables, Warning } from '@trezor/components';
-import { Translation } from '@suite-components';
-import { useSelector } from '@suite-hooks';
+import { Translation } from 'src/components/suite';
+import { useSelector } from 'src/hooks/suite';
 
 const StyledWarning = styled(Warning)`
     margin-bottom: 16px;

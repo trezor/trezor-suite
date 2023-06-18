@@ -16,7 +16,7 @@ import {
     PrecomposedTransaction,
     PrecomposedTransactionFinal,
 } from '@suite-common/wallet-types';
-import { Dispatch, GetState } from '@suite-types';
+import { Dispatch, GetState } from 'src/types/suite';
 
 export const composeTransaction =
     (formValues: FormState, formState: ComposeActionContext) =>

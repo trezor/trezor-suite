@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 /* eslint-disable global-require */
 
-import { configureStore } from '@suite/support/tests/configureStore';
+import { configureStore } from 'src/support/tests/configureStore';
 import { mergeDeepObject } from '@trezor/utils';
 import { connectInitThunk } from '@suite-common/connect-init';
-import { SUITE } from '@suite-actions/constants';
-import { BACKUP } from '@backup-actions/constants';
-import * as backupActions from '@backup-actions/backupActions';
+import { SUITE } from 'src/actions/suite/constants';
+import { BACKUP } from 'src/actions/backup/constants';
+import * as backupActions from 'src/actions/backup/backupActions';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { CommonParams } from '@trezor/connect';
 import { DeviceModel } from '@trezor/device-utils';

@@ -2,8 +2,8 @@ import React from 'react';
 import styled, { css } from 'styled-components';
 import { Icon, P, variables } from '@trezor/components';
 import { FADE_IN } from '@trezor/components/src/config/animations';
-import { CoinsList, Translation } from '@suite-components';
-import type { Network } from '@wallet-types';
+import { CoinsList, Translation } from 'src/components/suite';
+import type { Network } from 'src/types/wallet';
 
 const Header = styled.div<{ disabled: boolean }>`
     display: flex;

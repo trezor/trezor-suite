@@ -1,20 +1,20 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import invityAPI from '@suite-services/invityAPI';
-import { useActions, useSelector } from '@suite-hooks';
+import invityAPI from 'src/services/suite/invityAPI';
+import { useActions, useSelector } from 'src/hooks/suite';
 import { useTimer } from '@trezor/react-utils';
 import type { BankAccount, SellFiatTrade } from 'invity-api';
-import { processQuotes, createQuoteLink } from '@wallet-utils/coinmarket/sellUtils';
-import * as coinmarketCommonActions from '@wallet-actions/coinmarket/coinmarketCommonActions';
-import * as coinmarketSellActions from '@wallet-actions/coinmarketSellActions';
-import * as routerActions from '@suite-actions/routerActions';
-import { UseOffersProps, ContextValues, SellStep } from '@wallet-types/coinmarketSellOffers';
+import { processQuotes, createQuoteLink } from 'src/utils/wallet/coinmarket/sellUtils';
+import * as coinmarketCommonActions from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
+import * as coinmarketSellActions from 'src/actions/wallet/coinmarketSellActions';
+import * as routerActions from 'src/actions/suite/routerActions';
+import { UseOffersProps, ContextValues, SellStep } from 'src/types/wallet/coinmarketSellOffers';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { useCoinmarketRecomposeAndSign } from './useCoinmarketRecomposeAndSign ';
-import { useCoinmarketNavigation } from '@wallet-hooks/useCoinmarketNavigation';
-import { InvityAPIReloadQuotesAfterSeconds } from '@wallet-constants/coinmarket/metadata';
-import { getUnusedAddressFromAccount } from '@suite/utils/wallet/coinmarket/coinmarketUtils';
-import type { TradeSell } from '@suite/types/wallet/coinmarketCommonTypes';
-import { useBitcoinAmountUnit } from '@wallet-hooks/useBitcoinAmountUnit';
+import { useCoinmarketNavigation } from 'src/hooks/wallet/useCoinmarketNavigation';
+import { InvityAPIReloadQuotesAfterSeconds } from 'src/constants/wallet/coinmarket/metadata';
+import { getUnusedAddressFromAccount } from 'src/utils/wallet/coinmarket/coinmarketUtils';
+import type { TradeSell } from 'src/types/wallet/coinmarketCommonTypes';
+import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { amountToSatoshi } from '@suite-common/wallet-utils';
 
 export const useOffers = ({ selectedAccount }: UseOffersProps) => {

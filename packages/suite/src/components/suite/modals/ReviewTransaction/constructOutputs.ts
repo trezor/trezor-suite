@@ -1,8 +1,8 @@
-import { TrezorDevice } from '@suite-types/index';
+import { TrezorDevice } from 'src/types/suite/index';
 import { CardanoOutput } from '@trezor/connect';
-import { FormState, PrecomposedTransactionFinal, TxFinalCardano } from '@wallet-types/sendForm';
-import { Account } from '@wallet-types/index';
-import { getShortFingerprint, isCardanoTx } from '@wallet-utils/cardanoUtils';
+import { FormState, PrecomposedTransactionFinal, TxFinalCardano } from 'src/types/wallet/sendForm';
+import { Account } from 'src/types/wallet/index';
+import { getShortFingerprint, isCardanoTx } from 'src/utils/wallet/cardanoUtils';
 import { OutputProps } from './components/Output';
 import { fromWei } from 'web3-utils';
 import { getIsUpdatedSendFlow } from './components/getIsUpdatedSendFlow';

@@ -1,26 +1,26 @@
-import { configureStore } from '@suite/support/tests/configureStore';
+import { configureStore } from 'src/support/tests/configureStore';
 
 import { Middleware } from 'redux';
 import * as storageActions from '../storageActions';
 import * as suiteActions from '../suiteActions';
-import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
-import * as discoveryActions from '@wallet-actions/discoveryActions';
+import * as walletSettingsActions from 'src/actions/settings/walletSettingsActions';
+import * as discoveryActions from 'src/actions/wallet/discoveryActions';
 import { disableAccountsThunk, transactionsActions } from '@suite-common/wallet-core';
-import * as SUITE from '@suite-actions/constants/suiteConstants';
+import * as SUITE from 'src/actions/suite/constants/suiteConstants';
 
-import { accountsReducer, fiatRatesReducer, transactionsReducer } from '@wallet-reducers';
-import walletSettingsReducer from '@wallet-reducers/settingsReducer';
-import suiteReducer from '@suite-reducers/suiteReducer';
-import deviceReducer from '@suite-reducers/deviceReducer';
-import discoveryReducer from '@wallet-reducers/discoveryReducer';
-import sendFormReducer from '@wallet-reducers/sendFormReducer';
-import graphReducer from '@wallet-reducers/graphReducer';
-import storageMiddleware from '@wallet-middlewares/storageMiddleware';
-import { coinjoinReducer } from '@wallet-reducers/coinjoinReducer';
+import { accountsReducer, fiatRatesReducer, transactionsReducer } from 'src/reducers/wallet';
+import walletSettingsReducer from 'src/reducers/wallet/settingsReducer';
+import suiteReducer from 'src/reducers/suite/suiteReducer';
+import deviceReducer from 'src/reducers/suite/deviceReducer';
+import discoveryReducer from 'src/reducers/wallet/discoveryReducer';
+import sendFormReducer from 'src/reducers/wallet/sendFormReducer';
+import graphReducer from 'src/reducers/wallet/graphReducer';
+import storageMiddleware from 'src/middlewares/wallet/storageMiddleware';
+import { coinjoinReducer } from 'src/reducers/wallet/coinjoinReducer';
 import { getAccountTransactions, getAccountIdentifier } from '@suite-common/wallet-utils';
-import { AppState } from '@suite-types';
-import { SETTINGS } from '@suite/config/suite';
-import { preloadStore } from '@suite-support/preloadStore';
+import { AppState } from 'src/types/suite';
+import { SETTINGS } from 'src/config/suite';
+import { preloadStore } from 'src/support/suite/preloadStore';
 
 const { getSuiteDevice, getWalletAccount, getWalletTransaction } = global.JestMocks;
 

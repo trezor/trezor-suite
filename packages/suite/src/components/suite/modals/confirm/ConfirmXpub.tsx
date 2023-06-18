@@ -1,8 +1,8 @@
 import React from 'react';
 
-import { Translation } from '@suite-components';
+import { Translation } from 'src/components/suite';
 import { ConfirmValueOnDevice, ConfirmDeviceScreenProps } from './ConfirmValueOnDevice';
-import { Account, NetworkSymbol } from '@wallet-types/index';
+import { Account, NetworkSymbol } from 'src/types/wallet/index';
 
 interface ConfirmXpubProps
     extends Pick<ConfirmDeviceScreenProps, 'device' | 'isConfirmed' | 'onCancel' | 'value'> {

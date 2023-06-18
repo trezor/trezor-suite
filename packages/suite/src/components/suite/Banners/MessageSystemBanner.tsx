@@ -2,14 +2,14 @@ import React, { useMemo } from 'react';
 
 import styled from 'styled-components';
 import { variables } from '@trezor/components';
-import * as routerActions from '@suite-actions/routerActions';
+import * as routerActions from 'src/actions/suite/routerActions';
 import { messageSystemActions } from '@suite-common/message-system';
 import { Message } from '@suite-common/suite-types';
-import { useActions, useSelector } from '@suite-hooks';
-import { getTorUrlIfAvailable } from '@suite-utils/tor';
+import { useActions, useSelector } from 'src/hooks/suite';
+import { getTorUrlIfAvailable } from 'src/utils/suite/tor';
 import { Banner } from './Banner';
 
-import { selectTorState } from '@suite-reducers/suiteReducer';
+import { selectTorState } from 'src/reducers/suite/suiteReducer';
 
 const BannerOnTop = styled(Banner)`
     position: relative;

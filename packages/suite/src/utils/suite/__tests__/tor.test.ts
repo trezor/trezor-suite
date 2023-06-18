@@ -1,5 +1,5 @@
 import { TOR_URLS } from '@trezor/urls';
-import { getTorUrlIfAvailable, getIsTorDomain, isOnionUrl } from '@suite-utils/tor';
+import { getTorUrlIfAvailable, getIsTorDomain, isOnionUrl } from 'src/utils/suite/tor';
 
 describe('tor', () => {
     beforeAll(() => {

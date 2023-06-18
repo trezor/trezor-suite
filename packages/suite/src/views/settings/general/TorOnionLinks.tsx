@@ -1,13 +1,13 @@
 import React from 'react';
 import { analytics, EventType } from '@trezor/suite-analytics';
 
-import * as suiteActions from '@suite-actions/suiteActions';
-import { useSelector, useActions } from '@suite-hooks';
-import { ActionColumn, SectionItem, TextColumn } from '@suite-components/Settings';
+import * as suiteActions from 'src/actions/suite/suiteActions';
+import { useSelector, useActions } from 'src/hooks/suite';
+import { ActionColumn, SectionItem, TextColumn } from 'src/components/suite/Settings';
 import { Switch } from '@trezor/components';
-import { Translation } from '@suite-components';
-import { useAnchor } from '@suite-hooks/useAnchor';
-import { SettingsAnchor } from '@suite-constants/anchors';
+import { Translation } from 'src/components/suite';
+import { useAnchor } from 'src/hooks/suite/useAnchor';
+import { SettingsAnchor } from 'src/constants/suite/anchors';
 
 /* keep torOnionLinks value as it is but hide this section when tor is off.
    when tor is off this value has no effect anyway (handled by ExternalLink hook) */

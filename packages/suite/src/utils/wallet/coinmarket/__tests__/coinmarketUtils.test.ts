@@ -1,4 +1,4 @@
-import { Account } from '@suite/types/wallet';
+import { Account } from 'src/types/wallet';
 import {
     buildOption,
     symbolToInvityApiSymbol,

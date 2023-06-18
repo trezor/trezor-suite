@@ -1,8 +1,8 @@
 import React, { useCallback } from 'react';
 import styled from 'styled-components';
-import { NotificationCard, Translation } from '@suite-components';
+import { NotificationCard, Translation } from 'src/components/suite';
 import { SavingsTrade } from 'invity-api';
-import { submitRequestForm } from '@suite-utils/env';
+import { submitRequestForm } from 'src/utils/suite/env';
 
 const StyledNotificationCard = styled(NotificationCard)`
     padding: 20px;

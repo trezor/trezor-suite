@@ -1,7 +1,7 @@
-import type { AppState } from '@suite-types';
-import type { Account } from '@wallet-types';
+import type { AppState } from 'src/types/suite';
+import type { Account } from 'src/types/wallet';
 import type { Timer } from '@trezor/react-utils';
-import { WithSelectedAccountLoadedProps } from '@wallet-components';
+import { WithSelectedAccountLoadedProps } from 'src/components/wallet';
 import { P2pProviderInfo, P2pQuote, P2pQuotesRequest } from 'invity-api';
 
 export type UseOffersProps = WithSelectedAccountLoadedProps;

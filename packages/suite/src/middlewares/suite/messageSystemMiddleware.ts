@@ -1,17 +1,17 @@
 import { MiddlewareAPI } from 'redux';
 import { TRANSPORT, DEVICE } from '@trezor/connect';
 
-import { SUITE } from '@suite-actions/constants';
+import { SUITE } from 'src/actions/suite/constants';
 import {
     messageSystemActions,
     categorizeMessages,
     getValidMessages,
 } from '@suite-common/message-system';
 
-import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
-import { getIsTorEnabled } from '@suite-utils/tor';
+import * as walletSettingsActions from 'src/actions/settings/walletSettingsActions';
+import { getIsTorEnabled } from 'src/utils/suite/tor';
 
-import type { AppState, Action, Dispatch } from '@suite-types';
+import type { AppState, Action, Dispatch } from 'src/types/suite';
 
 // actions which can affect message system messages
 const actions = [

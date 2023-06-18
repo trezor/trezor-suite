@@ -1,11 +1,11 @@
-import * as routerActions from '@suite-actions/routerActions';
-import { MAX_WIDTH } from '@suite-constants/layout';
-import { useActions, useSelector } from '@suite-hooks';
-import { AccountLabeling } from '@suite-components';
+import * as routerActions from 'src/actions/suite/routerActions';
+import { MAX_WIDTH } from 'src/constants/suite/layout';
+import { useActions, useSelector } from 'src/hooks/suite';
+import { AccountLabeling } from 'src/components/suite';
 import { Icon, variables } from '@trezor/components';
 import React from 'react';
 import styled from 'styled-components';
-import { Route } from '@suite-types';
+import { Route } from 'src/types/suite';
 
 const Wrapper = styled.div`
     display: flex;

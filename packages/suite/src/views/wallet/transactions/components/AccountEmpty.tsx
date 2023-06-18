@@ -3,11 +3,11 @@ import styled from 'styled-components';
 import { analytics, EventType } from '@trezor/suite-analytics';
 
 import { variables, H2, Button, Card, Image } from '@trezor/components';
-import { Translation } from '@suite-components';
-import { useActions, useSelector } from '@suite-hooks';
-import { Account } from '@wallet-types';
-import * as suiteActions from '@suite-actions/suiteActions';
-import * as routerActions from '@suite-actions/routerActions';
+import { Translation } from 'src/components/suite';
+import { useActions, useSelector } from 'src/hooks/suite';
+import { Account } from 'src/types/wallet';
+import * as suiteActions from 'src/actions/suite/suiteActions';
+import * as routerActions from 'src/actions/suite/routerActions';
 import { TaprootBanner } from './TaprootBanner';
 import { getBip43Type } from '@suite-common/wallet-utils';
 

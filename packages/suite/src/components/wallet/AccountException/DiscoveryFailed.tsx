@@ -1,8 +1,8 @@
 import React from 'react';
-import { Translation } from '@suite-components';
-import { AccountExceptionLayout } from '@wallet-components';
-import { useDiscovery, useActions } from '@suite-hooks';
-import * as discoveryActions from '@wallet-actions/discoveryActions';
+import { Translation } from 'src/components/suite';
+import { AccountExceptionLayout } from 'src/components/wallet';
+import { useDiscovery, useActions } from 'src/hooks/suite';
+import * as discoveryActions from 'src/actions/wallet/discoveryActions';
 
 /**
  * Handler for discovery "hard" error (other than bundle-error)

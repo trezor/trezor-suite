@@ -1,21 +1,21 @@
 /* eslint-disable global-require */
 /* eslint-disable @typescript-eslint/no-var-requires */
 
-import { configureStore } from '@suite/support/tests/configureStore';
+import { configureStore } from 'src/support/tests/configureStore';
 
 import { UI_EVENT, UI } from '@trezor/connect';
 
-import { SUITE } from '@suite-actions/constants';
-import routerReducer from '@suite-reducers/routerReducer';
-import suiteReducer from '@suite-reducers/suiteReducer';
+import { SUITE } from 'src/actions/suite/constants';
+import routerReducer from 'src/reducers/suite/routerReducer';
+import suiteReducer from 'src/reducers/suite/suiteReducer';
 
-import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
+import * as deviceSettingsActions from 'src/actions/settings/deviceSettingsActions';
 import { connectInitThunk } from '@suite-common/connect-init';
 
-import suiteMiddleware from '@suite-middlewares/suiteMiddleware';
-import buttonRequestMiddleware from '@suite-middlewares/buttonRequestMiddleware';
+import suiteMiddleware from 'src/middlewares/suite/suiteMiddleware';
+import buttonRequestMiddleware from 'src/middlewares/suite/buttonRequestMiddleware';
 
-import { Action } from '@suite-types';
+import { Action } from 'src/types/suite';
 
 const { getSuiteDevice } = global.JestMocks;
 

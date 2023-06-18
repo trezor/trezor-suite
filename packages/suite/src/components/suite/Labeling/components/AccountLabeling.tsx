@@ -1,9 +1,9 @@
 import React from 'react';
 import { findAccountDevice } from '@suite-common/wallet-utils';
-import { isSelectedDevice } from '@suite-utils/device';
-import { AccountLabel } from '@suite-components';
-import { Account as WalletAccount } from '@wallet-types';
-import { useSelector } from '@suite-hooks';
+import { isSelectedDevice } from 'src/utils/suite/device';
+import { AccountLabel } from 'src/components/suite';
+import { Account as WalletAccount } from 'src/types/wallet';
+import { useSelector } from 'src/hooks/suite';
 import { WalletLabeling } from './WalletLabeling';
 
 interface AccountProps {

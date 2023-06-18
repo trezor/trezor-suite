@@ -1,8 +1,8 @@
 import produce from 'immer';
-import { STORAGE } from '@suite-actions/constants';
-import { SEND } from '@wallet-actions/constants';
-import { Action } from '@suite-types';
-import { FormState, PrecomposedTransactionFinal, TxFinalCardano } from '@wallet-types/sendForm';
+import { STORAGE } from 'src/actions/suite/constants';
+import { SEND } from 'src/actions/wallet/constants';
+import { Action } from 'src/types/suite';
+import { FormState, PrecomposedTransactionFinal, TxFinalCardano } from 'src/types/wallet/sendForm';
 import { accountsActions } from '@suite-common/wallet-core';
 
 export interface SendState {

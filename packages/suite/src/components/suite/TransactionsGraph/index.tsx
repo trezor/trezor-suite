@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 import styled from 'styled-components';
 import { ComposedChart, Tooltip, Bar, YAxis, XAxis, Line, CartesianGrid, Cell } from 'recharts';
-import { useGraph } from '@suite-hooks';
+import { useGraph } from 'src/hooks/suite';
 
 import { variables, Icon, useTheme } from '@trezor/components';
 

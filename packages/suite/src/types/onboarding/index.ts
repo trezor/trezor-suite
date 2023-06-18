@@ -1,5 +1,5 @@
-import * as STEP from '@onboarding-constants/steps';
-import { PrerequisiteType } from '@suite/utils/suite/prerequisites';
+import * as STEP from 'src/constants/onboarding/steps';
+import { PrerequisiteType } from 'src/utils/suite/prerequisites';
 
 export interface Step {
     id: AnyStepId;

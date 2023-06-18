@@ -1,4 +1,4 @@
-import { MetadataAddPayload } from '@suite-types/metadata';
+import { MetadataAddPayload } from 'src/types/suite/metadata';
 
 export interface DropdownMenuItem {
     key: string;

@@ -1,9 +1,9 @@
 import { useCallback } from 'react';
 import { useSelector } from './useSelector';
-import { DISCOVERY } from '@wallet-actions/constants';
-import { DiscoveryStatus } from '@wallet-types';
-import { selectDevice } from '@suite-reducers/suiteReducer';
-import { selectDiscovery } from '@wallet-reducers/discoveryReducer';
+import { DISCOVERY } from 'src/actions/wallet/constants';
+import { DiscoveryStatus } from 'src/types/wallet';
+import { selectDevice } from 'src/reducers/suite/suiteReducer';
+import { selectDiscovery } from 'src/reducers/wallet/discoveryReducer';
 
 export const useDiscovery = () => {
     const device = useSelector(selectDevice);

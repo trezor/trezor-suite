@@ -1,9 +1,9 @@
 import BigNumber from 'bignumber.js';
 import { toWei } from 'web3-utils';
 import { isDesktop } from '@trezor/env-utils';
-import type { State } from '@wallet-reducers/settingsReducer';
-import type { CustomBackend, BlockbookUrl } from '@wallet-types/backend';
-import type { Network } from '@wallet-types';
+import type { State } from 'src/reducers/wallet/settingsReducer';
+import type { CustomBackend, BlockbookUrl } from 'src/types/wallet/backend';
+import type { Network } from 'src/types/wallet';
 
 import type { BackendSettings } from '@suite-common/wallet-types';
 import type { OnUpgradeFunc } from '@trezor/suite-storage';

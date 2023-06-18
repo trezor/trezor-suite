@@ -1,10 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Translation, FormattedDateWithBullet } from '@suite-components';
-import { getNotificationIcon } from '@suite-utils/notification';
+import { Translation, FormattedDateWithBullet } from 'src/components/suite';
+import { getNotificationIcon } from 'src/utils/suite/notification';
 import { Button, Icon, P } from '@trezor/components';
-import { useLayoutSize } from '@suite-hooks';
-import type { NotificationViewProps } from '@suite-components/NotificationRenderer';
+import { useLayoutSize } from 'src/hooks/suite';
+import type { NotificationViewProps } from 'src/components/suite/NotificationRenderer';
 
 const TextP = styled(P)<{ $seen?: boolean }>`
     opacity: ${props => (props.$seen ? 0.7 : 1)};

@@ -2,10 +2,10 @@ import React from 'react';
 import styled from 'styled-components';
 import { TREZOR_SUPPORT_URL } from '@trezor/urls';
 import { Icon, Tooltip, variables, useTheme, CollapsibleCard } from '@trezor/components';
-import { useOnboarding, useSelector } from '@suite-hooks';
-import { Translation, TrezorLink } from '@suite-components';
-import { Hologram, OnboardingButtonCta, OnboardingButtonSkip } from '@onboarding-components';
-import { getConnectedDeviceStatus } from '@suite-utils/device';
+import { useOnboarding, useSelector } from 'src/hooks/suite';
+import { Translation, TrezorLink } from 'src/components/suite';
+import { Hologram, OnboardingButtonCta, OnboardingButtonSkip } from 'src/components/onboarding';
+import { getConnectedDeviceStatus } from 'src/utils/suite/device';
 
 const Items = styled.div`
     display: flex;

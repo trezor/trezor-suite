@@ -3,19 +3,19 @@ import { arrayDistinct } from '@trezor/utils';
 import { UI, DEVICE } from '@trezor/connect';
 import { SessionPhase } from '@trezor/coinjoin/lib/enums';
 import { addToast } from '@suite-common/toast-notifications';
-import { SUITE, ROUTER } from '@suite-actions/constants';
+import { SUITE, ROUTER } from 'src/actions/suite/constants';
 import {
     SESSION_ROUND_CHANGED,
     SET_DEBUG_SETTINGS,
     SESSION_TX_BROADCASTED,
-} from '@wallet-actions/constants/coinjoinConstants';
-import { COINJOIN, DISCOVERY } from '@wallet-actions/constants';
-import * as coinjoinAccountActions from '@wallet-actions/coinjoinAccountActions';
-import * as coinjoinClientActions from '@wallet-actions/coinjoinClientActions';
-import * as storageActions from '@suite-actions/storageActions';
-import { CoinjoinService } from '@suite/services/coinjoin';
-import type { AppState, Action, Dispatch } from '@suite-types';
-import { CoinjoinConfig, RoundPhase } from '@wallet-types/coinjoin';
+} from 'src/actions/wallet/constants/coinjoinConstants';
+import { COINJOIN, DISCOVERY } from 'src/actions/wallet/constants';
+import * as coinjoinAccountActions from 'src/actions/wallet/coinjoinAccountActions';
+import * as coinjoinClientActions from 'src/actions/wallet/coinjoinClientActions';
+import * as storageActions from 'src/actions/suite/storageActions';
+import { CoinjoinService } from 'src/services/coinjoin';
+import type { AppState, Action, Dispatch } from 'src/types/suite';
+import { CoinjoinConfig, RoundPhase } from 'src/types/wallet/coinjoin';
 import {
     accountsActions,
     blockchainActions,
@@ -28,7 +28,7 @@ import {
     selectIsAccountWithSessionInCriticalPhaseByAccountKey,
     selectIsCoinjoinBlockedByTor,
     selectCoinjoinSessionBlockerByAccountKey,
-} from '@wallet-reducers/coinjoinReducer';
+} from 'src/reducers/wallet/coinjoinReducer';
 
 import {
     Feature,

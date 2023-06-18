@@ -1,7 +1,7 @@
-import * as firmwareActions from '@firmware-actions/firmwareActions';
-import { useActions, useSelector } from '@suite-hooks';
-import { isWebUsb } from '@suite-utils/transport';
-import { MODAL } from '@suite/actions/suite/constants';
+import * as firmwareActions from 'src/actions/firmware/firmwareActions';
+import { useActions, useSelector } from 'src/hooks/suite';
+import { isWebUsb } from 'src/utils/suite/transport';
+import { MODAL } from 'src/actions/suite/constants';
 
 export const useFirmware = () => {
     const { firmware, transport, modal } = useSelector(state => ({

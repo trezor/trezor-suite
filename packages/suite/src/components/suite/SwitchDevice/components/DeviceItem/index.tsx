@@ -2,20 +2,20 @@ import React, { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import styled from 'styled-components';
 import { useTheme, variables, Icon, Image, motionAnimation } from '@trezor/components';
-import { Translation } from '@suite-components';
-import * as deviceUtils from '@suite-utils/device';
-import { useSelector, useActions } from '@suite-hooks';
-import * as routerActions from '@suite-actions/routerActions';
-import * as suiteActions from '@suite-actions/suiteActions';
-import { OpenGuideFromTooltip } from '@guide-components';
+import { Translation } from 'src/components/suite';
+import * as deviceUtils from 'src/utils/suite/device';
+import { useSelector, useActions } from 'src/hooks/suite';
+import * as routerActions from 'src/actions/suite/routerActions';
+import * as suiteActions from 'src/actions/suite/suiteActions';
+import { OpenGuideFromTooltip } from 'src/components/guide';
 
 import { WalletInstance } from '../WalletInstance';
 import ColHeader from './components/ColHeader';
 import AddWalletButton from './components/AddWalletButton';
 import DeviceHeaderButton from './components/DeviceHeaderButton';
 
-import type { TrezorDevice, AcquiredDevice, ForegroundAppProps } from '@suite-types';
-import type { getBackgroundRoute } from '@suite-utils/router';
+import type { TrezorDevice, AcquiredDevice, ForegroundAppProps } from 'src/types/suite';
+import type { getBackgroundRoute } from 'src/utils/suite/router';
 import { getDeviceModel } from '@trezor/device-utils';
 
 const DeviceWrapper = styled.div`

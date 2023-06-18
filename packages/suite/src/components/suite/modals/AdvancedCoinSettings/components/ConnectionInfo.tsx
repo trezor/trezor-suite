@@ -1,9 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
 import { P } from '@trezor/components';
-import { useSelector } from '@suite-hooks';
-import { Translation } from '@suite-components/Translation';
-import type { Network } from '@wallet-types';
+import { useSelector } from 'src/hooks/suite';
+import { Translation } from 'src/components/suite/Translation';
+import type { Network } from 'src/types/wallet';
 
 const Wrapper = styled(P)`
     display: flex;

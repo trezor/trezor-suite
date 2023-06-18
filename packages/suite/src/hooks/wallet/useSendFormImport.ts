@@ -1,9 +1,9 @@
-import * as sendFormActions from '@wallet-actions/sendFormActions';
-import { useActions } from '@suite-hooks';
+import * as sendFormActions from 'src/actions/wallet/sendFormActions';
+import { useActions } from 'src/hooks/suite';
 import { DEFAULT_PAYMENT } from '@suite-common/wallet-constants';
-import { FIAT } from '@suite-config';
+import { FIAT } from 'src/config/suite';
 import { fromFiatCurrency, toFiatCurrency } from '@suite-common/wallet-utils';
-import { UseSendFormState, Output } from '@wallet-types/sendForm';
+import { UseSendFormState, Output } from 'src/types/wallet/sendForm';
 
 type Props = {
     network: UseSendFormState['network'];

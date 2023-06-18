@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { variables } from '@trezor/components';
-import { Translation } from '@suite-components';
+import { Translation } from 'src/components/suite';
 import styled from 'styled-components';
 
 const Wrapper = styled.div`

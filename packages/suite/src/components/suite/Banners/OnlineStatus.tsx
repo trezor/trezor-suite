@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { Translation } from '@suite-components';
+import { Translation } from 'src/components/suite';
 import { Banner } from './Banner';
 
 interface Props {

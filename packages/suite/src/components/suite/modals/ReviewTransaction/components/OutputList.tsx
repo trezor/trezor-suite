@@ -3,18 +3,18 @@ import styled from 'styled-components';
 
 import { analytics, EventType } from '@trezor/suite-analytics';
 import { Button, variables } from '@trezor/components';
-import { Translation } from '@suite-components';
+import { Translation } from 'src/components/suite';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { copyToClipboard, download } from '@trezor/dom-utils';
-import { useActions } from '@suite-hooks';
+import { useActions } from 'src/hooks/suite';
 import { TransactionDetails } from './TransactionDetails';
 import Output, { OutputProps } from './Output';
-import type { Account } from '@wallet-types';
+import type { Account } from 'src/types/wallet';
 import type {
     FormState,
     PrecomposedTransactionFinal,
     TxFinalCardano,
-} from '@wallet-types/sendForm';
+} from 'src/types/wallet/sendForm';
 import { getOutputState } from './getOutputState';
 import { TotalOutput } from './TotalOutput';
 

@@ -3,11 +3,11 @@ import styled, { css } from 'styled-components';
 import { analytics, EventType } from '@trezor/suite-analytics';
 import { getFirmwareType, getFirmwareVersion, getDeviceModel } from '@trezor/device-utils';
 
-import { CharacterCount, Translation } from '@suite-components';
+import { CharacterCount, Translation } from 'src/components/suite';
 import { Textarea, Select, variables, Button, CollapsibleBox } from '@trezor/components';
-import { useActions, useDevice, useSelector } from '@suite-hooks';
-import * as guideActions from '@suite-actions/guideActions';
-import { ViewWrapper, Header, Content } from '@guide-components';
+import { useActions, useDevice, useSelector } from 'src/hooks/suite';
+import * as guideActions from 'src/actions/suite/guideActions';
+import { ViewWrapper, Header, Content } from 'src/components/guide';
 import { Rating, FeedbackCategory, FeedbackType, UserData } from '@suite-common/suite-types';
 import {
     getEnvironment,

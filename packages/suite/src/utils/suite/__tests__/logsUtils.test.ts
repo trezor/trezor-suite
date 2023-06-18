@@ -4,8 +4,8 @@ import {
     redactDevice,
     redactDiscovery,
     REDACTED_REPLACEMENT,
-} from '@suite-utils/logsUtils';
-import { DISCOVERY } from '@wallet-actions/constants';
+} from 'src/utils/suite/logsUtils';
+import { DISCOVERY } from 'src/actions/wallet/constants';
 
 describe('logsUtils', () => {
     const account = global.JestMocks.getWalletAccount({

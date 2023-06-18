@@ -1,26 +1,26 @@
 import { createContext, useContext, useCallback, useState, useEffect } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
-import { isChanged } from '@suite-utils/comparisonUtils';
+import { isChanged } from 'src/utils/suite/comparisonUtils';
 import useDebounce from 'react-use/lib/useDebounce';
-import * as coinmarketBuyActions from '@wallet-actions/coinmarketBuyActions';
-import { useActions, useSelector } from '@suite-hooks';
-import * as coinmarketCommonActions from '@wallet-actions/coinmarket/coinmarketCommonActions';
+import * as coinmarketBuyActions from 'src/actions/wallet/coinmarketBuyActions';
+import { useActions, useSelector } from 'src/hooks/suite';
+import * as coinmarketCommonActions from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
 import type { BuyTradeQuoteRequest } from 'invity-api';
-import invityAPI from '@suite-services/invityAPI';
-import { getAmountLimits, processQuotes } from '@wallet-utils/coinmarket/buyUtils';
+import invityAPI from 'src/services/suite/invityAPI';
+import { getAmountLimits, processQuotes } from 'src/utils/wallet/coinmarket/buyUtils';
 import type {
     FormState,
     UseCoinmarketBuyFormProps,
     AmountLimits,
     BuyFormContextValues,
-} from '@wallet-types/coinmarketBuyForm';
-import { useFormDraft } from '@wallet-hooks/useFormDraft';
+} from 'src/types/wallet/coinmarketBuyForm';
+import { useFormDraft } from 'src/hooks/wallet/useFormDraft';
 import { useCoinmarketBuyFormDefaultValues } from './useCoinmarketBuyFormDefaultValues';
-import { useCoinmarketNavigation } from '@wallet-hooks/useCoinmarketNavigation';
+import { useCoinmarketNavigation } from 'src/hooks/wallet/useCoinmarketNavigation';
 import { useBitcoinAmountUnit } from './useBitcoinAmountUnit';
 import { amountToSatoshi, formatAmount } from '@suite-common/wallet-utils';
 import { useDidUpdate } from '@trezor/react-utils';
-import { CRYPTO_INPUT } from '@wallet-types/coinmarketSellForm';
+import { CRYPTO_INPUT } from 'src/types/wallet/coinmarketSellForm';
 import { TypedValidationRules } from '@suite-common/wallet-types';
 
 export const BuyFormContext = createContext<BuyFormContextValues | null>(null);

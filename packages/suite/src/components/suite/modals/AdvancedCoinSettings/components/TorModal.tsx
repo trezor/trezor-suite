@@ -1,10 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Button, P } from '@trezor/components';
-import { Modal, Translation } from '@suite-components';
+import { Modal, Translation } from 'src/components/suite';
 import { isDesktop } from '@trezor/env-utils';
-import { useSelector } from '@suite-hooks/useSelector';
-import { getIsTorLoading } from '@suite-utils/tor';
+import { useSelector } from 'src/hooks/suite/useSelector';
+import { getIsTorLoading } from 'src/utils/suite/tor';
 
 const StyledModal = styled(Modal)`
     width: 550px;

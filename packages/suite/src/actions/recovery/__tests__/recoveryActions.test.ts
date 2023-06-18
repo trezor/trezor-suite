@@ -1,8 +1,8 @@
-import { configureStore } from '@suite/support/tests/configureStore';
+import { configureStore } from 'src/support/tests/configureStore';
 
-import recoveryReducer from '@recovery-reducers/recoveryReducer';
-import { Action } from '@suite-types';
-import * as recoveryActions from '@recovery-actions/recoveryActions';
+import recoveryReducer from 'src/reducers/recovery/recoveryReducer';
+import { Action } from 'src/types/suite';
+import * as recoveryActions from 'src/actions/recovery/recoveryActions';
 import { DeviceModel } from '@trezor/device-utils';
 
 jest.mock('@trezor/connect', () => ({

@@ -1,15 +1,15 @@
 import React, { useCallback, useEffect } from 'react';
 import BigNumber from 'bignumber.js';
 import styled from 'styled-components';
-import { useCoinmarketSellFormContext } from '@wallet-hooks/useCoinmarketSellForm';
+import { useCoinmarketSellFormContext } from 'src/hooks/wallet/useCoinmarketSellForm';
 import FiatInput from './FiatInput';
-import { CRYPTO_INPUT, FIAT_INPUT, OUTPUT_AMOUNT } from '@suite/types/wallet/coinmarketSellForm';
+import { CRYPTO_INPUT, FIAT_INPUT, OUTPUT_AMOUNT } from 'src/types/wallet/coinmarketSellForm';
 import CryptoInput from './CryptoInput';
-import { useLayoutSize } from '@suite/hooks/suite';
-import FractionButtons from '@wallet-components/CoinmarketFractionButtons';
+import { useLayoutSize } from 'src/hooks/suite';
+import FractionButtons from 'src/components/wallet/CoinMarketFractionButtons';
 import { amountToSatoshi, isZero } from '@suite-common/wallet-utils';
-import { Wrapper, Left, Middle, Right, StyledIcon } from '@wallet-views/coinmarket';
-import { useBitcoinAmountUnit } from '@wallet-hooks/useBitcoinAmountUnit';
+import { Wrapper, Left, Middle, Right, StyledIcon } from 'src/views/wallet/coinmarket';
+import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 
 const EmptyDiv = styled.div`
     width: 100%;

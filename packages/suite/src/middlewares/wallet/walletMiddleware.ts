@@ -1,10 +1,10 @@
 import type { MiddlewareAPI } from 'redux';
 
-import { ROUTER, SUITE } from '@suite-actions/constants';
-import { WALLET_SETTINGS } from '@settings-actions/constants';
-import * as selectedAccountActions from '@wallet-actions/selectedAccountActions';
-import * as sendFormActions from '@wallet-actions/sendFormActions';
-import * as modalActions from '@suite-actions/modalActions';
+import { ROUTER, SUITE } from 'src/actions/suite/constants';
+import { WALLET_SETTINGS } from 'src/actions/settings/constants';
+import * as selectedAccountActions from 'src/actions/wallet/selectedAccountActions';
+import * as sendFormActions from 'src/actions/wallet/sendFormActions';
+import * as modalActions from 'src/actions/suite/modalActions';
 import {
     accountsActions,
     blockchainActions,
@@ -13,11 +13,11 @@ import {
     transactionsActions,
     unsubscribeBlockchainThunk,
 } from '@suite-common/wallet-core';
-import * as receiveActions from '@wallet-actions/receiveActions';
-import * as cardanoStakingActions from '@wallet-actions/cardanoStakingActions';
-import * as coinmarketCommonActions from '@wallet-actions/coinmarket/coinmarketCommonActions';
-import * as coinmarketBuyActions from '@wallet-actions/coinmarketBuyActions';
-import type { AppState, Action, Dispatch } from '@suite-types';
+import * as receiveActions from 'src/actions/wallet/receiveActions';
+import * as cardanoStakingActions from 'src/actions/wallet/cardanoStakingActions';
+import * as coinmarketCommonActions from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
+import * as coinmarketBuyActions from 'src/actions/wallet/coinmarketBuyActions';
+import type { AppState, Action, Dispatch } from 'src/types/suite';
 import { isAnyOf } from '@reduxjs/toolkit';
 import { settingsCommonConfig } from '@suite-common/suite-config';
 

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { Network, WalletAccountTransaction } from '@wallet-types';
+import { Network, WalletAccountTransaction } from 'src/types/wallet';
 import { DayHeader } from './DayHeader';
 import { sumTransactions, sumTransactionsFiat } from '@suite-common/wallet-utils';
 

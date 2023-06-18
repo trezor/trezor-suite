@@ -1,6 +1,6 @@
-import { configureStore } from '@suite/support/tests/configureStore';
+import { configureStore } from 'src/support/tests/configureStore';
 
-import coinmarketReducer from '@wallet-reducers/coinmarketReducer';
+import coinmarketReducer from 'src/reducers/wallet/coinmarketReducer';
 
 import * as coinmarketSpendActions from '../coinmarketSpendActions';
 import { SellVoucherTrade as SpendTrade } from 'invity-api';

@@ -5,15 +5,15 @@ import { FreeFocusInside } from 'react-focus-lock';
 
 import { variables, Backdrop } from '@trezor/components';
 import { useOnce } from '@trezor/react-utils';
-import { useSelector } from '@suite-hooks';
+import { useSelector } from 'src/hooks/suite';
 import {
     SupportFeedbackSelection,
     GuideDefault,
     GuidePage,
     GuideCategory,
     Feedback,
-} from '@guide-components';
-import { useGuide, GUIDE_ANIMATION_DURATION_MS } from '@guide-hooks';
+} from 'src/components/guide';
+import { useGuide, GUIDE_ANIMATION_DURATION_MS } from 'src/hooks/guide';
 
 const fullHeightStyle = css`
     position: absolute;

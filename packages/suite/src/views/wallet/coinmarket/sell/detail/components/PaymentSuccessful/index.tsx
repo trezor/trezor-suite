@@ -1,10 +1,10 @@
-import * as routerActions from '@suite-actions/routerActions';
+import * as routerActions from 'src/actions/suite/routerActions';
 import React from 'react';
 import styled from 'styled-components';
 import { Button, variables, Image } from '@trezor/components';
-import { Translation } from '@suite-components';
-import { useActions } from '@suite-hooks';
-import { Account } from '@wallet-types';
+import { Translation } from 'src/components/suite';
+import { useActions } from 'src/hooks/suite';
+import { Account } from 'src/types/wallet';
 
 const Wrapper = styled.div`
     display: flex;

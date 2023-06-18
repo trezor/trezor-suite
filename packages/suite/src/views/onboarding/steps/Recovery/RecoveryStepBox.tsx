@@ -3,13 +3,13 @@ import {
     OnboardingButtonBack,
     OnboardingStepBox,
     OnboardingStepBoxProps,
-} from '@onboarding-components';
-import { Translation } from '@suite-components';
-import * as onboardingActions from '@onboarding-actions/onboardingActions';
-import * as recoveryActions from '@recovery-actions/recoveryActions';
-import { useActions, useSelector } from '@suite-hooks';
+} from 'src/components/onboarding';
+import { Translation } from 'src/components/suite';
+import * as onboardingActions from 'src/actions/onboarding/onboardingActions';
+import * as recoveryActions from 'src/actions/recovery/recoveryActions';
+import { useActions, useSelector } from 'src/hooks/suite';
 import { DeviceModel } from '@trezor/device-utils';
-import { useDeviceModel } from '@suite-hooks/useDeviceModel';
+import { useDeviceModel } from 'src/hooks/suite/useDeviceModel';
 
 const RecoveryStepBox = (props: OnboardingStepBoxProps) => {
     const { goToPreviousStep, setStatus } = useActions({

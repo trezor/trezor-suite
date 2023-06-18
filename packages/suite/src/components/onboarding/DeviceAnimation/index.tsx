@@ -6,7 +6,7 @@ import { resolveStaticPath } from '@suite-common/suite-utils';
 
 import { useTheme } from '@trezor/components';
 
-import type { TrezorDevice } from '@suite/types/suite';
+import type { TrezorDevice } from 'src/types/suite';
 import { DeviceModel, getDeviceModel, getFirmwareVersion } from '@trezor/device-utils';
 
 const Wrapper = styled.div<{ size?: number; shape?: Shape }>`

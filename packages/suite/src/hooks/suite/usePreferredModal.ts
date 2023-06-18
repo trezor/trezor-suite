@@ -1,7 +1,7 @@
-import { MODAL } from '@suite-actions/constants';
-import { useSelector, useDiscovery } from '@suite-hooks';
-import type { Route, ForegroundAppRoute } from '@suite-types';
-import { ModalAppParams } from '@suite-utils/router';
+import { MODAL } from 'src/actions/suite/constants';
+import { useSelector, useDiscovery } from 'src/hooks/suite';
+import type { Route, ForegroundAppRoute } from 'src/types/suite';
+import { ModalAppParams } from 'src/utils/suite/router';
 
 const isForegroundApp = (route: Route): route is ForegroundAppRoute =>
     !route.isFullscreenApp && !!route.isForegroundApp;

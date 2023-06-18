@@ -6,8 +6,8 @@ import {
     processQuotes,
     createQuoteLink,
 } from '../sellUtils';
-import { Account } from '@wallet-types';
-import { ComposedTransactionInfo } from '@suite/reducers/wallet/coinmarketReducer';
+import { Account } from 'src/types/wallet';
+import { ComposedTransactionInfo } from 'src/reducers/wallet/coinmarketReducer';
 
 const {
     QUOTE_REQUEST_FIAT,

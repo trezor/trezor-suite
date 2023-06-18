@@ -3,19 +3,19 @@
 // unit test for suite actions
 // data provided by TrezorConnect are mocked
 
-import { configureStore } from '@suite/support/tests/configureStore';
+import { configureStore } from 'src/support/tests/configureStore';
 
 import { DEVICE } from '@trezor/connect';
-import suiteReducer from '@suite-reducers/suiteReducer';
-import deviceReducer from '@suite-reducers/deviceReducer';
-import routerReducer from '@suite-reducers/routerReducer';
-import modalReducer from '@suite-reducers/modalReducer';
-import firmwareReducer from '@firmware-reducers/firmwareReducer';
+import suiteReducer from 'src/reducers/suite/suiteReducer';
+import deviceReducer from 'src/reducers/suite/deviceReducer';
+import routerReducer from 'src/reducers/suite/routerReducer';
+import modalReducer from 'src/reducers/suite/modalReducer';
+import firmwareReducer from 'src/reducers/firmware/firmwareReducer';
 import { SUITE } from '../constants';
 import * as suiteActions from '../suiteActions';
 import { connectInitThunk } from '@suite-common/connect-init';
 import fixtures from '../__fixtures__/suiteActions';
-import { discardMockedConnectInitActions } from '@suite-utils/storage';
+import { discardMockedConnectInitActions } from 'src/utils/suite/storage';
 
 const { getSuiteDevice } = global.JestMocks;
 

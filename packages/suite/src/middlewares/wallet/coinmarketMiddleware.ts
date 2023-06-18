@@ -1,14 +1,14 @@
 import { MiddlewareAPI } from 'redux';
-import { AppState, Action, Dispatch } from '@suite-types';
-import { COINMARKET_COMMON } from '@wallet-actions/constants';
-import { InvityAPIReloadDataAfterMs } from '@wallet-constants/coinmarket/metadata';
-import invityAPI from '@suite-services/invityAPI';
-import * as coinmarketCommonActions from '@wallet-actions/coinmarket/coinmarketCommonActions';
-import * as coinmarketBuyActions from '@wallet-actions/coinmarketBuyActions';
-import * as coinmarketExchangeActions from '@wallet-actions/coinmarketExchangeActions';
-import * as coinmarketSellActions from '@wallet-actions/coinmarketSellActions';
-import * as coinmarketP2pActions from '@wallet-actions/coinmarketP2pActions';
-import * as coinmarketSavingsActions from '@wallet-actions/coinmarketSavingsActions';
+import { AppState, Action, Dispatch } from 'src/types/suite';
+import { COINMARKET_COMMON } from 'src/actions/wallet/constants';
+import { InvityAPIReloadDataAfterMs } from 'src/constants/wallet/coinmarket/metadata';
+import invityAPI from 'src/services/suite/invityAPI';
+import * as coinmarketCommonActions from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
+import * as coinmarketBuyActions from 'src/actions/wallet/coinmarketBuyActions';
+import * as coinmarketExchangeActions from 'src/actions/wallet/coinmarketExchangeActions';
+import * as coinmarketSellActions from 'src/actions/wallet/coinmarketSellActions';
+import * as coinmarketP2pActions from 'src/actions/wallet/coinmarketP2pActions';
+import * as coinmarketSavingsActions from 'src/actions/wallet/coinmarketSavingsActions';
 
 const coinmarketMiddleware =
     (api: MiddlewareAPI<Dispatch, AppState>) =>

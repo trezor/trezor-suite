@@ -1,12 +1,12 @@
 import React, { useMemo, useState } from 'react';
 import styled, { css } from 'styled-components';
 
-import { CloseButton, Translation, AppNavigationPanel, AppNavigation } from '@suite-components';
-import { useActions, useSelector } from '@suite-hooks';
-import * as routerActions from '@suite-actions/routerActions';
-import * as suiteActions from '@suite-actions/suiteActions';
+import { CloseButton, Translation, AppNavigationPanel, AppNavigation } from 'src/components/suite';
+import { useActions, useSelector } from 'src/hooks/suite';
+import * as routerActions from 'src/actions/suite/routerActions';
+import * as suiteActions from 'src/actions/suite/suiteActions';
 import { FADE_IN } from '@trezor/components/src/config/animations';
-import { AppNavigationItem } from '@suite-components/AppNavigation';
+import { AppNavigationItem } from 'src/components/suite/AppNavigation';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
 const CloseButtonWrapper = styled.div<{ isAppNavigationPanelInView?: boolean }>`

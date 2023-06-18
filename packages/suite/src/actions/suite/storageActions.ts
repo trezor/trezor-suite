@@ -1,18 +1,18 @@
-import { db } from '@suite/storage';
+import { db } from 'src/storage';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import * as suiteActions from '@suite-actions/suiteActions';
+import * as suiteActions from 'src/actions/suite/suiteActions';
 import {
     serializeDiscovery,
     serializeDevice,
     serializeCoinjoinSession,
-} from '@suite-utils/storage';
-import type { AppState, Dispatch, GetState, TrezorDevice } from '@suite-types';
-import type { Account, Network } from '@wallet-types';
-import type { Discovery } from '@wallet-reducers/discoveryReducer';
-import type { FormState } from '@wallet-types/sendForm';
-import type { Trade } from '@wallet-types/coinmarketCommonTypes';
-import type { FormDraft, FormDraftKeyPrefix } from '@wallet-types/form';
-import type { PreloadStoreAction } from '@suite-support/preloadStore';
+} from 'src/utils/suite/storage';
+import type { AppState, Dispatch, GetState, TrezorDevice } from 'src/types/suite';
+import type { Account, Network } from 'src/types/wallet';
+import type { Discovery } from 'src/reducers/wallet/discoveryReducer';
+import type { FormState } from 'src/types/wallet/sendForm';
+import type { Trade } from 'src/types/wallet/coinmarketCommonTypes';
+import type { FormDraft, FormDraftKeyPrefix } from 'src/types/wallet/form';
+import type { PreloadStoreAction } from 'src/support/suite/preloadStore';
 
 import { getFormDraftKey } from '@suite-common/wallet-utils';
 import { FormDraftPrefixKeyValues } from '@suite-common/wallet-constants';
@@ -20,7 +20,7 @@ import { FormDraftPrefixKeyValues } from '@suite-common/wallet-constants';
 import { STORAGE } from './constants';
 import { GraphData } from '../../types/wallet/graph';
 import { deviceGraphDataFilterFn } from '../../utils/wallet/graphUtils';
-import { selectCoinjoinAccountByKey } from '@wallet-reducers/coinjoinReducer';
+import { selectCoinjoinAccountByKey } from 'src/reducers/wallet/coinjoinReducer';
 
 export type StorageAction = NonNullable<PreloadStoreAction>;
 export type StorageLoadAction = Extract<StorageAction, { type: typeof STORAGE.LOAD }>;

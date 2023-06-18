@@ -2,12 +2,12 @@ import React, { useRef, useState } from 'react';
 import styled from 'styled-components';
 import { HOMESCREEN_EDITOR_URL } from '@trezor/urls';
 
-import { Translation } from '@suite-components';
-import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@suite-components/Settings';
+import { Translation } from 'src/components/suite';
+import { ActionButton, ActionColumn, SectionItem, TextColumn } from 'src/components/suite/Settings';
 import { Tooltip, variables } from '@trezor/components';
-import { useDevice, useActions } from '@suite-hooks';
-import * as modalActions from '@suite-actions/modalActions';
-import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
+import { useDevice, useActions } from 'src/hooks/suite';
+import * as modalActions from 'src/actions/suite/modalActions';
+import * as deviceSettingsActions from 'src/actions/settings/deviceSettingsActions';
 import { DeviceModel, getDeviceModel } from '@trezor/device-utils';
 import {
     deviceModelInformation,
@@ -17,9 +17,9 @@ import {
     validateImage,
     dataUrlToImage,
     isHomescreenSupportedOnDevice,
-} from '@suite-utils/homescreen';
-import { useAnchor } from '@suite-hooks/useAnchor';
-import { SettingsAnchor } from '@suite-constants/anchors';
+} from 'src/utils/suite/homescreen';
+import { useAnchor } from 'src/hooks/suite/useAnchor';
+import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { analytics, EventType } from '@trezor/suite-analytics';
 
 const StyledActionButton = styled(ActionButton)`

@@ -1,6 +1,6 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
-import { Network } from '@wallet-types';
+import { Network } from 'src/types/wallet';
 import { CoinLogo, Icon, variables, useTheme, motionAnimation } from '@trezor/components';
 import {
     FiatValue,
@@ -9,11 +9,11 @@ import {
     SkeletonRectangle,
     Ticker,
     Translation,
-} from '@suite-components';
-import { CoinBalance } from '@wallet-components';
+} from 'src/components/suite';
+import { CoinBalance } from 'src/components/wallet';
 import { isTestnet } from '@suite-common/wallet-utils';
-import * as routerActions from '@suite-actions/routerActions';
-import { useActions, useAccountSearch, useLoadingSkeleton } from '@suite-hooks';
+import * as routerActions from 'src/actions/suite/routerActions';
+import { useActions, useAccountSearch, useLoadingSkeleton } from 'src/hooks/suite';
 import { motion } from 'framer-motion';
 
 const LogoWrapper = styled.div`

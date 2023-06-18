@@ -1,5 +1,5 @@
-import { Translation } from '@suite-components';
-import { useSelector } from '@suite-hooks';
+import { Translation } from 'src/components/suite';
+import { useSelector } from 'src/hooks/suite';
 import { H2, variables } from '@trezor/components';
 import React from 'react';
 import styled from 'styled-components';

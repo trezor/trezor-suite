@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Button } from '@trezor/components';
-import { Translation } from '@suite-components/Translation';
-import type { ExtendedMessageDescriptor } from '@suite-types';
+import { Translation } from 'src/components/suite/Translation';
+import type { ExtendedMessageDescriptor } from 'src/types/suite';
 
 const Wrapper = styled.div`
     display: flex;

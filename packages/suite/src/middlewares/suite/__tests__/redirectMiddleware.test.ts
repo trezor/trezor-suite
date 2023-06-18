@@ -1,22 +1,22 @@
 import { DEVICE } from '@trezor/connect';
-import { configureStore } from '@suite/support/tests/configureStore';
+import { configureStore } from 'src/support/tests/configureStore';
 import { Middleware } from 'redux';
 
-import * as routerActions from '@suite-actions/routerActions';
-import { SUITE } from '@suite-actions/constants';
+import * as routerActions from 'src/actions/suite/routerActions';
+import { SUITE } from 'src/actions/suite/constants';
 
-import routerReducer from '@suite-reducers/routerReducer';
-import deviceReducer from '@suite-reducers/deviceReducer';
-import suiteReducer from '@suite-reducers/suiteReducer';
-import modalReducer from '@suite-reducers/modalReducer';
+import routerReducer from 'src/reducers/suite/routerReducer';
+import deviceReducer from 'src/reducers/suite/deviceReducer';
+import suiteReducer from 'src/reducers/suite/suiteReducer';
+import modalReducer from 'src/reducers/suite/modalReducer';
 
-import suiteMiddleware from '@suite-middlewares/suiteMiddleware';
-import redirectMiddleware from '@suite-middlewares/redirectMiddleware';
-import { Action } from '@suite-types';
+import suiteMiddleware from 'src/middlewares/suite/suiteMiddleware';
+import redirectMiddleware from 'src/middlewares/suite/redirectMiddleware';
+import { Action } from 'src/types/suite';
 
 const { getSuiteDevice } = global.JestMocks;
 
-jest.mock('@suite-actions/storageActions', () => ({ __esModule: true }));
+jest.mock('src/actions/suite/storageActions', () => ({ __esModule: true }));
 
 type SuiteState = ReturnType<typeof suiteReducer>;
 type DevicesState = ReturnType<typeof deviceReducer>;

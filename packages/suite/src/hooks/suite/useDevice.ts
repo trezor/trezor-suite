@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import { useSelector } from './useSelector';
-import { SUITE } from '@suite-actions/constants';
+import { SUITE } from 'src/actions/suite/constants';
 
 export const useDevice = () => {
     const { device, locks } = useSelector(state => ({

@@ -1,4 +1,4 @@
-import { TrezorDevice } from '@suite-types';
+import { TrezorDevice } from 'src/types/suite';
 import { getFormattedFingerprint, validateFirmware } from '..';
 
 describe('getFormattedFingerprint', () => {

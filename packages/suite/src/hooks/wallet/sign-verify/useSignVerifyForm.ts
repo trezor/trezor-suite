@@ -4,7 +4,7 @@ import { ValidationSchema, yup } from '@trezor/validation';
 import { isAddressValid } from '@suite-common/wallet-utils';
 import { yupResolver } from '@hookform/resolvers/yup';
 
-import type { Account, Network } from '@wallet-types';
+import type { Account, Network } from 'src/types/wallet';
 
 export const MAX_LENGTH_MESSAGE = 1024;
 export const MAX_LENGTH_SIGNATURE = 255;

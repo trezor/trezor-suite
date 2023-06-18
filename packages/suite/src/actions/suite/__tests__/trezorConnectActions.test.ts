@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 /* eslint-disable global-require */
-import { configureStore } from '@suite/support/tests/configureStore';
+import { configureStore } from 'src/support/tests/configureStore';
 
 import { DEVICE_EVENT, UI_EVENT, TRANSPORT_EVENT, BLOCKCHAIN_EVENT } from '@trezor/connect';
-import suiteReducer from '@suite-reducers/suiteReducer';
-import deviceReducer from '@suite-reducers/deviceReducer';
-import { SUITE } from '@suite-actions/constants';
+import suiteReducer from 'src/reducers/suite/suiteReducer';
+import deviceReducer from 'src/reducers/suite/deviceReducer';
+import { SUITE } from 'src/actions/suite/constants';
 import { connectInitThunk } from '@suite-common/connect-init';
 
 jest.mock('@trezor/connect', () => {

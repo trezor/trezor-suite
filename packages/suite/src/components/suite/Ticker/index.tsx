@@ -2,9 +2,9 @@ import React from 'react';
 import styled from 'styled-components';
 import { differenceInMinutes } from 'date-fns';
 import { Tooltip, useTheme, variables, Icon } from '@trezor/components';
-import { FiatValue, Translation, NoRatesTooltip } from '@suite-components';
+import { FiatValue, Translation, NoRatesTooltip } from 'src/components/suite';
 import { FormattedRelativeTime } from 'react-intl';
-import { useSelector } from '@suite-hooks';
+import { useSelector } from 'src/hooks/suite';
 
 const FiatRateWrapper = styled.span`
     display: flex;

@@ -21,4 +21,4 @@ export { useCountdownTimer } from './useCountdownTimer';
 export { useDispatch } from './useDispatch';
 
 // replaced in suite-native
-export { useLocales } from '@suite-hooks/useLocales';
+export { useLocales } from 'src/hooks/suite/useLocales';

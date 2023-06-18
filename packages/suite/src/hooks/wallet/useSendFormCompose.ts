@@ -11,9 +11,9 @@ import {
     PrecomposedLevelsCardano,
 } from '@suite-common/wallet-types';
 import { useAsyncDebounce } from '@trezor/react-utils';
-import { useActions } from '@suite-hooks';
-import { isChanged } from '@suite-utils/comparisonUtils';
-import * as sendFormActions from '@wallet-actions/sendFormActions';
+import { useActions } from 'src/hooks/suite';
+import { isChanged } from 'src/utils/suite/comparisonUtils';
+import * as sendFormActions from 'src/actions/wallet/sendFormActions';
 import { findComposeErrors } from '@suite-common/wallet-utils';
 
 type Props = UseFormMethods<FormState> & {

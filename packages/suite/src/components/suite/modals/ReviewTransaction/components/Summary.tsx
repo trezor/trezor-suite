@@ -4,11 +4,11 @@ import BigNumber from 'bignumber.js';
 import { transparentize, darken } from 'polished';
 import { getFeeUnits, formatNetworkAmount, formatAmount } from '@suite-common/wallet-utils';
 import { Icon, useTheme, CoinLogo, variables } from '@trezor/components';
-import { Translation, FormattedCryptoAmount, AccountLabel } from '@suite-components';
-import { Account, Network } from '@wallet-types';
+import { Translation, FormattedCryptoAmount, AccountLabel } from 'src/components/suite';
+import { Account, Network } from 'src/types/wallet';
 import { formatDuration, isFeatureFlagEnabled } from '@suite-common/suite-utils';
-import { PrecomposedTransactionFinal, TxFinalCardano } from '@wallet-types/sendForm';
-import { useSelector } from '@suite-hooks/useSelector';
+import { PrecomposedTransactionFinal, TxFinalCardano } from 'src/types/wallet/sendForm';
+import { useSelector } from 'src/hooks/suite/useSelector';
 
 const Wrapper = styled.div`
     padding: 20px 15px 12px;

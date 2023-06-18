@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { DATA_URL, HELP_CENTER_TOR_URL, GITHUB_BRIDGE_CHANGELOG_URL } from '@trezor/urls';
-import { Translation, TrezorLink, Modal, Metadata } from '@suite-components';
+import { Translation, TrezorLink, Modal, Metadata } from 'src/components/suite';
 import { Button, P, Link, Select, Image, useTheme, variables, Loader } from '@trezor/components';
-import * as routerActions from '@suite-actions/routerActions';
+import * as routerActions from 'src/actions/suite/routerActions';
 import { isDesktop, isWeb } from '@trezor/env-utils';
-import { useSelector, useActions } from '@suite-hooks';
-import { selectTorState } from '@suite-reducers/suiteReducer';
+import { useSelector, useActions } from 'src/hooks/suite';
+import { selectTorState } from 'src/reducers/suite/suiteReducer';
 import { DeviceModel } from '@trezor/device-utils';
 
 const Content = styled.div`

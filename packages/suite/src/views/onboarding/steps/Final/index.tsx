@@ -4,14 +4,14 @@ import useMeasure from 'react-use/lib/useMeasure';
 import { analytics, EventType } from '@trezor/suite-analytics';
 
 import { Button, Icon, variables, Input, Dropdown, DropdownRef, Tooltip } from '@trezor/components';
-import { Translation, HomescreenGallery } from '@suite-components';
-import { DeviceAnimation, OnboardingStepBox } from '@onboarding-components';
-import { useActions, useDevice, useOnboarding, useSelector } from '@suite-hooks';
-import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
-import { DEFAULT_LABEL, MAX_LABEL_LENGTH } from '@suite-constants/device';
+import { Translation, HomescreenGallery } from 'src/components/suite';
+import { DeviceAnimation, OnboardingStepBox } from 'src/components/onboarding';
+import { useActions, useDevice, useOnboarding, useSelector } from 'src/hooks/suite';
+import * as deviceSettingsActions from 'src/actions/settings/deviceSettingsActions';
+import { DEFAULT_LABEL, MAX_LABEL_LENGTH } from 'src/constants/suite/device';
 import { getDeviceModel } from '@trezor/device-utils';
-import { isHomescreenSupportedOnDevice } from '@suite-utils/homescreen';
-import { selectIsActionAbortable } from '@suite-reducers/suiteReducer';
+import { isHomescreenSupportedOnDevice } from 'src/utils/suite/homescreen';
+import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
 
 const StyledButton = styled(Button)`
     display: flex;

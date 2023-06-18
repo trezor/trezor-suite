@@ -1,6 +1,6 @@
 import { useSelector } from './useSelector';
-import { AnonymityStatus } from '@suite-constants/coinjoin';
-import { selectCurrentTargetAnonymity } from '@wallet-reducers/coinjoinReducer';
+import { AnonymityStatus } from 'src/constants/suite/coinjoin';
+import { selectCurrentTargetAnonymity } from 'src/reducers/wallet/coinjoinReducer';
 
 const getAnonymityStatus = (targetAnonymity: number) => {
     if (targetAnonymity < AnonymityStatus.Bad) {

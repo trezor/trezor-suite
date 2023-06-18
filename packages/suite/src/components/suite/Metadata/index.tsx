@@ -2,7 +2,7 @@ import React from 'react';
 import { SUITE_URL } from '@trezor/urls';
 import Helmet from 'react-helmet';
 import { useIntl } from 'react-intl';
-import messages from '@suite/support/messages';
+import messages from 'src/support/messages';
 
 type MetadataProps = {
     title?: string;

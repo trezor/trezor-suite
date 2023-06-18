@@ -1,5 +1,5 @@
-import { AppState } from '@suite-types';
-import { AccountTransactionBaseAnchor } from '@suite-constants/anchors';
+import { AppState } from 'src/types/suite';
+import { AccountTransactionBaseAnchor } from 'src/constants/suite/anchors';
 
 import { AppUpdateEvent } from '@trezor/suite-analytics';
 import {

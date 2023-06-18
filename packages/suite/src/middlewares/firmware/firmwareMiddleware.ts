@@ -1,8 +1,8 @@
-import { SUITE } from '@suite-actions/constants';
-import { FIRMWARE } from '@firmware-actions/constants';
-import * as firmwareActions from '@firmware-actions/firmwareActions';
+import { SUITE } from 'src/actions/suite/constants';
+import { FIRMWARE } from 'src/actions/firmware/constants';
+import * as firmwareActions from 'src/actions/firmware/firmwareActions';
 import type { MiddlewareAPI } from 'redux';
-import type { AppState, Action, Dispatch } from '@suite-types';
+import type { AppState, Action, Dispatch } from 'src/types/suite';
 
 const firmware =
     (api: MiddlewareAPI<Dispatch, AppState>) =>

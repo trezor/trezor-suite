@@ -3,19 +3,19 @@ import styled from 'styled-components';
 import { FeeLevel } from '@trezor/connect';
 import { Control, UseFormMethods } from 'react-hook-form';
 import { SelectBar, variables } from '@trezor/components';
-import { FiatValue, FormattedCryptoAmount, Translation } from '@suite-components';
+import { FiatValue, FormattedCryptoAmount, Translation } from 'src/components/suite';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
-import { useLayoutSize } from '@suite-hooks';
-import { InputError } from '@wallet-components';
-import { Account } from '@wallet-types';
-import { ExtendedMessageDescriptor } from '@suite-types';
+import { useLayoutSize } from 'src/hooks/suite';
+import { InputError } from 'src/components/wallet';
+import { Account } from 'src/types/wallet';
+import { ExtendedMessageDescriptor } from 'src/types/suite';
 import {
     FeeInfo,
     PrecomposedLevels,
     PrecomposedLevelsCardano,
     PrecomposedTransactionFinal,
-} from '@wallet-types/sendForm';
-import { TypedValidationRules } from '@wallet-types/form';
+} from 'src/types/wallet/sendForm';
+import { TypedValidationRules } from 'src/types/wallet/form';
 import { CustomFee } from './components/CustomFee';
 import FeeDetails from './components/FeeDetails';
 

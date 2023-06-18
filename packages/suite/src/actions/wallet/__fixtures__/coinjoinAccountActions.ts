@@ -1,7 +1,7 @@
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { accountsActions } from '@suite-common/wallet-core';
-import { Account } from '@wallet-types';
-import * as COINJOIN from '@wallet-actions/constants/coinjoinConstants';
+import { Account } from 'src/types/wallet';
+import * as COINJOIN from 'src/actions/wallet/constants/coinjoinConstants';
 
 const ACCOUNT: Partial<Account> = {
     accountType: 'coinjoin',

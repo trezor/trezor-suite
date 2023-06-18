@@ -1,11 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Card, variables } from '@trezor/components';
-import { CoinmarketExchangeOfferInfo, CoinmarketExchangeTopPanel } from '@wallet-components';
-import { useCoinmarketExchangeDetailContext } from '@wallet-hooks/useCoinmarketExchangeDetail';
-import { ExchangeTradeFinalStatuses } from '@wallet-hooks/useCoinmarket';
-import * as routerActions from '@suite-actions/routerActions';
-import { useActions, useLayout } from '@suite-hooks';
+import { CoinmarketExchangeOfferInfo, CoinmarketExchangeTopPanel } from 'src/components/wallet';
+import { useCoinmarketExchangeDetailContext } from 'src/hooks/wallet/useCoinmarketExchangeDetail';
+import { ExchangeTradeFinalStatuses } from 'src/hooks/wallet/useCoinmarket';
+import * as routerActions from 'src/actions/suite/routerActions';
+import { useActions, useLayout } from 'src/hooks/suite';
 
 import PaymentFailed from '../components/PaymentFailed';
 import PaymentSuccessful from '../components/PaymentSuccessful';

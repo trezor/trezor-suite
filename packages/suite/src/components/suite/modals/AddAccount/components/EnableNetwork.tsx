@@ -3,8 +3,8 @@ import styled from 'styled-components';
 import { motion } from 'framer-motion';
 import { P, CollapsibleBox, motionAnimation } from '@trezor/components';
 
-import { CoinsList, Translation, TooltipSymbol } from '@suite-components';
-import { Network } from '@wallet-types';
+import { CoinsList, Translation, TooltipSymbol } from 'src/components/suite';
+import { Network } from 'src/types/wallet';
 
 import { MoreCoins } from './MoreCoins';
 

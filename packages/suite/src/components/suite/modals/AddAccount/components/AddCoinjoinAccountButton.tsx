@@ -1,18 +1,18 @@
 import React, { useState } from 'react';
 import { createTimeoutPromise } from '@trezor/utils';
-import { Translation } from '@suite-components';
-import { useSelector, useActions, useDispatch } from '@suite-hooks';
-import { createCoinjoinAccount } from '@wallet-actions/coinjoinAccountActions';
-import * as suiteActions from '@suite-actions/suiteActions';
-import * as modalActions from '@suite-actions/modalActions';
-import { Account, Network, NetworkSymbol } from '@wallet-types';
+import { Translation } from 'src/components/suite';
+import { useSelector, useActions, useDispatch } from 'src/hooks/suite';
+import { createCoinjoinAccount } from 'src/actions/wallet/coinjoinAccountActions';
+import * as suiteActions from 'src/actions/suite/suiteActions';
+import * as modalActions from 'src/actions/suite/modalActions';
+import { Account, Network, NetworkSymbol } from 'src/types/wallet';
 import { UnavailableCapabilities } from '@trezor/connect';
 import { AddButton } from './AddButton';
 import { isDesktop } from '@trezor/env-utils';
 import { isDevEnv } from '@suite-common/suite-utils';
-import { Dispatch } from '@suite-types';
-import { RequestEnableTorResponse } from '@suite-components/modals/RequestEnableTor';
-import { selectTorState } from '@suite-reducers/suiteReducer';
+import { Dispatch } from 'src/types/suite';
+import { RequestEnableTorResponse } from 'src/components/suite/modals/RequestEnableTor';
+import { selectTorState } from 'src/reducers/suite/suiteReducer';
 
 interface VerifyAvailabilityProps {
     coinjoinAccounts: Account[];

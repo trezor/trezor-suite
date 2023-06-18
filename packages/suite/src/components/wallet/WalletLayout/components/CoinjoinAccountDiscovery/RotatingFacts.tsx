@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { AnimatePresence, motion } from 'framer-motion';
 import { motionEasing, variables } from '@trezor/components';
-import { TranslationKey } from '@suite-components/Translation/components/BaseTranslation';
-import { Translation } from '@suite-components/Translation';
+import { TranslationKey } from 'src/components/suite/Translation/components/BaseTranslation';
+import { Translation } from 'src/components/suite/Translation';
 
 const Fact = styled(motion.p)`
     max-width: 460px;

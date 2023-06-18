@@ -1,9 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
-import TrezorLink from '@suite-components/TrezorLink';
+import TrezorLink from 'src/components/suite/TrezorLink';
 import { WalletAccountTransaction } from '@suite-common/wallet-types';
-import TransactionItem from '@wallet-components/TransactionItem';
-import { Network } from '@wallet-types';
+import TransactionItem from 'src/components/wallet/TransactionItem';
+import { Network } from 'src/types/wallet';
 
 const Wrapper = styled.div`
     text-align: left;

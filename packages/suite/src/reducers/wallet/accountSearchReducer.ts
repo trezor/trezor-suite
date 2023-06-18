@@ -1,9 +1,9 @@
 import produce from 'immer';
-import { SUITE } from '@suite-actions/constants';
-import { ACCOUNT_SEARCH } from '@wallet-actions/constants';
-import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
-import { Action } from '@suite-types';
-import { Account as AccountType } from '@wallet-types';
+import { SUITE } from 'src/actions/suite/constants';
+import { ACCOUNT_SEARCH } from 'src/actions/wallet/constants';
+import * as walletSettingsActions from 'src/actions/settings/walletSettingsActions';
+import { Action } from 'src/types/suite';
+import { Account as AccountType } from 'src/types/wallet';
 
 export interface State {
     coinFilter: AccountType['symbol'] | undefined;

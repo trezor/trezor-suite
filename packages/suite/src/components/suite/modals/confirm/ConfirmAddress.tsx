@@ -1,7 +1,7 @@
 import React from 'react';
 
-import { Translation } from '@suite-components';
-import { NetworkSymbol } from '@wallet-types';
+import { Translation } from 'src/components/suite';
+import { NetworkSymbol } from 'src/types/wallet';
 import { ConfirmValueOnDevice, ConfirmDeviceScreenProps } from './ConfirmValueOnDevice';
 
 interface ConfirmAddressProps

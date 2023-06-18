@@ -2,11 +2,11 @@ import produce from 'immer';
 import { DEVICE, Device } from '@trezor/connect';
 import { OnboardingAnalytics } from '@trezor/suite-analytics';
 
-import { ONBOARDING } from '@onboarding-actions/constants';
-import * as STEP from '@onboarding-constants/steps';
-import { Action } from '@suite-types';
+import { ONBOARDING } from 'src/actions/onboarding/constants';
+import * as STEP from 'src/constants/onboarding/steps';
+import { Action } from 'src/types/suite';
 
-import type { AnyStepId, AnyPath } from '@onboarding-types';
+import type { AnyStepId, AnyPath } from 'src/types/onboarding';
 
 export interface OnboardingState {
     reducerEnabled: boolean;

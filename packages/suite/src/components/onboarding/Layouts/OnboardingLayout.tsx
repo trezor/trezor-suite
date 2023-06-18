@@ -3,15 +3,15 @@ import styled from 'styled-components';
 
 import { TrezorLogo, Button, variables } from '@trezor/components';
 import { TREZOR_SUPPORT_URL } from '@trezor/urls';
-import { TrezorLink, Translation } from '@suite-components';
-import { ProgressBar } from '@onboarding-components';
-import { useSelector, useOnboarding } from '@suite-hooks';
-import { MAX_WIDTH } from '@suite-constants/layout';
-import steps from '@onboarding-config/steps';
-import { GuideButton, GuidePanel } from '@guide-components';
+import { TrezorLink, Translation } from 'src/components/suite';
+import { ProgressBar } from 'src/components/onboarding';
+import { useSelector, useOnboarding } from 'src/hooks/suite';
+import { MAX_WIDTH } from 'src/constants/suite/layout';
+import steps from 'src/config/onboarding/steps';
+import { GuideButton, GuidePanel } from 'src/components/guide';
 import { selectBannerMessage } from '@suite-common/message-system';
-import MessageSystemBanner from '@suite-components/Banners/MessageSystemBanner';
-import { ModalContextProvider } from '@suite-support/ModalContext';
+import MessageSystemBanner from 'src/components/suite/Banners/MessageSystemBanner';
+import { ModalContextProvider } from 'src/support/suite/ModalContext';
 
 const Wrapper = styled.div`
     display: flex;

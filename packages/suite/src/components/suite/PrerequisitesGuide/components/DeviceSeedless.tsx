@@ -1,5 +1,5 @@
 import React from 'react';
-import { Translation, TroubleshootingTips } from '@suite-components';
+import { Translation, TroubleshootingTips } from 'src/components/suite';
 
 // Seedless devices are not supported by Trezor Suite
 export const DeviceSeedless = () => (

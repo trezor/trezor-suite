@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
-import { useSelector } from '@suite-hooks';
-import { Account } from '@wallet-types';
+import { useSelector } from 'src/hooks/suite';
+import { Account } from 'src/types/wallet';
 import { variables } from '@trezor/components';
-import { useCoinmarketRedirect } from '@wallet-hooks/useCoinmarketRedirect';
-import { Translation } from '@suite-components';
+import { useCoinmarketRedirect } from 'src/hooks/wallet/useCoinmarketRedirect';
+import { Translation } from 'src/components/suite';
 import { FeeLevel } from '@trezor/connect';
 
 const Wrapper = styled.div`

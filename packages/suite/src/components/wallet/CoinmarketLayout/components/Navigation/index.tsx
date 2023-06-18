@@ -1,10 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
-import * as routerActions from '@suite-actions/routerActions';
-import { useSelector, useActions } from '@suite-hooks';
-import { WalletLayoutNavigation, WalletLayoutNavLink } from '@wallet-components';
+import * as routerActions from 'src/actions/suite/routerActions';
+import { useSelector, useActions } from 'src/hooks/suite';
+import { WalletLayoutNavigation, WalletLayoutNavLink } from 'src/components/wallet';
 import { getTitleForNetwork } from '@suite-common/wallet-utils';
-import { Translation } from '@suite-components';
+import { Translation } from 'src/components/suite';
 
 const SavingsWalletLayoutNavLinkWrapper = styled.div`
     display: flex;

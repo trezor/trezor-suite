@@ -1,13 +1,17 @@
 import React from 'react';
 import styled from 'styled-components';
 import { useTheme, Button, variables, Icon, H2 } from '@trezor/components';
-import { CoinmarketPaymentType, CoinmarketProviderInfo, CoinmarketTag } from '@wallet-components';
-import { QuestionTooltip, Translation } from '@suite-components';
+import {
+    CoinmarketPaymentType,
+    CoinmarketProviderInfo,
+    CoinmarketTag,
+} from 'src/components/wallet';
+import { QuestionTooltip, Translation } from 'src/components/suite';
 import { SellFiatTrade } from 'invity-api';
-import { useCoinmarketSellOffersContext } from '@wallet-hooks/useCoinmarketSellOffers';
-import { getTagAndInfoNote } from '@wallet-utils/coinmarket/coinmarketUtils';
-import { CoinmarketCryptoAmount } from '@wallet-views/coinmarket/common/CoinmarketCryptoAmount';
-import { CoinmarketFiatAmount } from '@wallet-views/coinmarket/common/CoinmarketFiatAmount';
+import { useCoinmarketSellOffersContext } from 'src/hooks/wallet/useCoinmarketSellOffers';
+import { getTagAndInfoNote } from 'src/utils/wallet/coinmarket/coinmarketUtils';
+import { CoinmarketCryptoAmount } from 'src/views/wallet/coinmarket/common/CoinmarketCryptoAmount';
+import { CoinmarketFiatAmount } from 'src/views/wallet/coinmarket/common/CoinmarketFiatAmount';
 
 interface Props {
     className?: string;

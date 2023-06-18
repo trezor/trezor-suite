@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import * as STEP from '@onboarding-constants/steps';
+import * as STEP from 'src/constants/onboarding/steps';
 import {
     OnboardingButtonBack,
     Option,
@@ -7,12 +7,12 @@ import {
     OptionWrapper,
     OptionsDivider,
     OnboardingStepBox,
-} from '@onboarding-components';
-import { Translation } from '@suite-components';
-import { useActions, useSelector, useOnboarding } from '@suite-hooks';
-import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
+} from 'src/components/onboarding';
+import { Translation } from 'src/components/suite';
+import { useActions, useSelector, useOnboarding } from 'src/hooks/suite';
+import * as deviceSettingsActions from 'src/actions/settings/deviceSettingsActions';
 import { getDeviceModel } from '@trezor/device-utils';
-import { selectIsActionAbortable } from '@suite-reducers/suiteReducer';
+import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
 
 export const ResetDeviceStep = () => {
     const [submitted, setSubmitted] = useState(false);

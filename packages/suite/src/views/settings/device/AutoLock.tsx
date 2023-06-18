@@ -1,13 +1,13 @@
 import React from 'react';
 import { analytics, EventType } from '@trezor/suite-analytics';
 
-import { Translation } from '@suite-components';
-import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@suite-components/Settings';
-import { useActions, useDevice, useLocales } from '@suite-hooks';
-import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
+import { Translation } from 'src/components/suite';
+import { ActionColumn, ActionSelect, SectionItem, TextColumn } from 'src/components/suite/Settings';
+import { useActions, useDevice, useLocales } from 'src/hooks/suite';
+import * as deviceSettingsActions from 'src/actions/settings/deviceSettingsActions';
 import { formatDurationStrict } from '@suite-common/suite-utils';
-import { useAnchor } from '@suite-hooks/useAnchor';
-import { SettingsAnchor } from '@suite-constants/anchors';
+import { useAnchor } from 'src/hooks/suite/useAnchor';
+import { SettingsAnchor } from 'src/constants/suite/anchors';
 
 // auto lock times in seconds; allowed lock times by device: <1 minute, 6 days>
 const AUTO_LOCK_TIMES = {

@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import { TrezorDevice } from '@suite-types';
-import { getFormattedFingerprint } from '@firmware-utils';
+import { TrezorDevice } from 'src/types/suite';
+import { getFormattedFingerprint } from 'src/utils/firmware';
 
 const Wrapper = styled.pre`
     padding: 8px;

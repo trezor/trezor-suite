@@ -1,6 +1,6 @@
 import React from 'react';
-import { WalletLayout } from '@wallet-components';
-import { useCardanoStaking } from '@wallet-hooks/useCardanoStaking';
+import { WalletLayout } from 'src/components/wallet';
+import { useCardanoStaking } from 'src/hooks/wallet/useCardanoStaking';
 import { CardanoRewards } from './CardanoRewards';
 import { CardanoStake } from './CardanoStake';
 import { CardanoRedelegate } from './CardanoRedelegate';

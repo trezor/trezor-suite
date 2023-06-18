@@ -1,4 +1,4 @@
-import { getThemeColors } from '@suite-utils/theme';
+import { getThemeColors } from 'src/utils/suite/theme';
 import { THEME } from '@trezor/components/src/config/colors';
 
 describe('theme', () => {

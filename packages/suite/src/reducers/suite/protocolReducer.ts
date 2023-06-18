@@ -1,7 +1,7 @@
 import produce from 'immer';
-import { PROTOCOL } from '@suite-actions/constants';
-import type { Action } from '@suite-types';
-import type { PROTOCOL_SCHEME } from '@suite-constants/protocol';
+import { PROTOCOL } from 'src/actions/suite/constants';
+import type { Action } from 'src/types/suite';
+import type { PROTOCOL_SCHEME } from 'src/constants/suite/protocol';
 
 export interface SendFormState {
     scheme: PROTOCOL_SCHEME;

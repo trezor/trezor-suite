@@ -1,6 +1,6 @@
-import { useActions } from '@suite-hooks';
-import { FormDraft, FormDraftKeyPrefix } from '@wallet-types/form';
-import * as formDraftActions from '@wallet-actions/formDraftActions';
+import { useActions } from 'src/hooks/suite';
+import { FormDraft, FormDraftKeyPrefix } from 'src/types/wallet/form';
+import * as formDraftActions from 'src/actions/wallet/formDraftActions';
 
 export const useFormDraft = <T extends FormDraft>(keyPrefix: FormDraftKeyPrefix) =>
     useActions({

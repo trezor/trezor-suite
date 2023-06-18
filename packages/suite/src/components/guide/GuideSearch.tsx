@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { Icon, Input, Loader, variables } from '@trezor/components';
-import { Translation } from '@suite-components';
-import { useTranslation } from '@suite-hooks';
-import { GuideNode } from '@guide-components';
-import { useGuideSearch } from '@guide-hooks';
+import { Translation } from 'src/components/suite';
+import { useTranslation } from 'src/hooks/suite';
+import { GuideNode } from 'src/components/guide';
+import { useGuideSearch } from 'src/hooks/guide';
 
 import type { GuideCategory } from '@suite-common/suite-types';
 

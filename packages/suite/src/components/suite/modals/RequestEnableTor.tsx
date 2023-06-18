@@ -1,11 +1,11 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { Button, P } from '@trezor/components';
-import { Modal, Translation } from '@suite-components';
-import { UserContextPayload } from '@suite-actions/modalActions';
+import { Modal, Translation } from 'src/components/suite';
+import { UserContextPayload } from 'src/actions/suite/modalActions';
 import { isDevEnv } from '@suite-common/suite-utils';
-import { useSelector } from '@suite-hooks';
-import { selectTorState } from '@suite-reducers/suiteReducer';
+import { useSelector } from 'src/hooks/suite';
+import { selectTorState } from 'src/reducers/suite/suiteReducer';
 
 const SmallModal = styled(Modal)`
     width: 560px;

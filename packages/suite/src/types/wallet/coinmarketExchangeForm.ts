@@ -1,21 +1,21 @@
-import type { AppState } from '@suite-types';
+import type { AppState } from 'src/types/suite';
 import type { UseFormMethods, FormState as ReactHookFormState } from 'react-hook-form';
-import type { Account, Network, CoinFiatRates } from '@wallet-types';
+import type { Account, Network, CoinFiatRates } from 'src/types/wallet';
 import type { FeeLevel } from '@trezor/connect';
 import type { ExchangeTrade, ExchangeTradeQuoteRequest, ExchangeCoinInfo } from 'invity-api';
 import type {
     ExchangeInfo,
     CoinmarketExchangeAction,
-} from '@wallet-actions/coinmarketExchangeActions';
+} from 'src/actions/wallet/coinmarketExchangeActions';
 import type { TypedValidationRules } from './form';
 import type {
     FeeInfo,
     FormState,
     PrecomposedLevels,
     PrecomposedLevelsCardano,
-} from '@wallet-types/sendForm';
+} from 'src/types/wallet/sendForm';
 import type { Option } from './coinmarketCommonTypes';
-import type { WithSelectedAccountLoadedProps } from '@wallet-components';
+import type { WithSelectedAccountLoadedProps } from 'src/components/wallet';
 
 export const CRYPTO_INPUT = 'outputs[0].amount';
 export const CRYPTO_TOKEN = 'outputs[0].token';

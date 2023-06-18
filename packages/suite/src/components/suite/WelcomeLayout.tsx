@@ -4,17 +4,17 @@ import { AnimatePresence, motion } from 'framer-motion';
 
 import { H1, TrezorLogo, Button, variables, SVG_IMAGES } from '@trezor/components';
 import { useOnce } from '@trezor/react-utils';
-import { Translation } from '@suite-components';
-import { useSelector } from '@suite-hooks';
+import { Translation } from 'src/components/suite';
+import { useSelector } from 'src/hooks/suite';
 import { selectBannerMessage } from '@suite-common/message-system';
-import MessageSystemBanner from '@suite-components/Banners/MessageSystemBanner';
-import TrezorLink from '@suite-components/TrezorLink';
+import MessageSystemBanner from 'src/components/suite/Banners/MessageSystemBanner';
+import TrezorLink from 'src/components/suite/TrezorLink';
 import { isWeb } from '@trezor/env-utils';
 import { TREZOR_URL, SUITE_URL } from '@trezor/urls';
 import { resolveStaticPath } from '@suite-common/suite-utils';
-import { GuideButton, GuidePanel } from '@guide-components';
-import { useGuide } from '@guide-hooks';
-import { NavSettings } from '@suite-components/NavigationBar/components/NavigationActions/components/NavSettings';
+import { GuideButton, GuidePanel } from 'src/components/guide';
+import { useGuide } from 'src/hooks/guide';
+import { NavSettings } from 'src/components/suite/NavigationBar/components/NavigationActions/components/NavSettings';
 
 const Wrapper = styled.div`
     display: flex;

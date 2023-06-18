@@ -1,10 +1,10 @@
 import { useState, useCallback, useMemo } from 'react';
-import { ActionAvailability, CardanoStaking } from '@wallet-types/cardanoStaking';
-import { SUITE } from '@suite-actions/constants';
+import { ActionAvailability, CardanoStaking } from 'src/types/wallet/cardanoStaking';
+import { SUITE } from 'src/actions/suite/constants';
 import trezorConnect, { PROTO } from '@trezor/connect';
-import { useActions, useSelector } from '@suite-hooks';
+import { useActions, useSelector } from 'src/hooks/suite';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import * as cardanoStakingActions from '@wallet-actions/cardanoStakingActions';
+import * as cardanoStakingActions from 'src/actions/wallet/cardanoStakingActions';
 import { isTestnet } from '@suite-common/wallet-utils';
 import {
     getStakingPath,
@@ -18,8 +18,8 @@ import {
     getTtl,
     loadCardanoLib,
     getDerivationType,
-} from '@wallet-utils/cardanoUtils';
-import { AppState } from '@suite-types';
+} from 'src/utils/wallet/cardanoUtils';
+import { AppState } from 'src/types/suite';
 import { addFakePendingCardanoTxThunk } from '@suite-common/wallet-core';
 
 const getDeviceAvailability = (

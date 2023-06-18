@@ -1,9 +1,9 @@
 import React from 'react';
 
 import styled from 'styled-components';
-import { Translation, Modal } from '@suite-components';
-import { useActions } from '@suite-hooks';
-import * as desktopUpdateActions from '@suite-actions/desktopUpdateActions';
+import { Translation, Modal } from 'src/components/suite';
+import { useActions } from 'src/hooks/suite';
+import * as desktopUpdateActions from 'src/actions/suite/desktopUpdateActions';
 
 import { Button, H2, variables } from '@trezor/components';
 

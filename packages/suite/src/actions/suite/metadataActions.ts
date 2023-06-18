@@ -2,8 +2,8 @@ import TrezorConnect from '@trezor/connect';
 import { analytics, EventType } from '@trezor/suite-analytics';
 
 import { createDeferred } from '@trezor/utils';
-import { METADATA } from '@suite-actions/constants';
-import { Dispatch, GetState } from '@suite-types';
+import { METADATA } from 'src/actions/suite/constants';
+import { Dispatch, GetState } from 'src/types/suite';
 import {
     MetadataProviderType,
     MetadataProvider,
@@ -13,13 +13,13 @@ import {
     Error as MetadataProviderError,
     OAuthServerEnvironment,
     ProviderErrorAction,
-} from '@suite-types/metadata';
-import { Account } from '@wallet-types';
-import * as metadataUtils from '@suite-utils/metadata';
-import * as modalActions from '@suite-actions/modalActions';
-import DropboxProvider from '@suite-services/metadata/DropboxProvider';
-import GoogleProvider from '@suite-services/metadata/GoogleProvider';
-import FileSystemProvider from '@suite-services/metadata/FileSystemProvider';
+} from 'src/types/suite/metadata';
+import { Account } from 'src/types/wallet';
+import * as metadataUtils from 'src/utils/suite/metadata';
+import * as modalActions from 'src/actions/suite/modalActions';
+import DropboxProvider from 'src/services/suite/metadata/DropboxProvider';
+import GoogleProvider from 'src/services/suite/metadata/GoogleProvider';
+import FileSystemProvider from 'src/services/suite/metadata/FileSystemProvider';
 import { createAction } from '@reduxjs/toolkit';
 import { notificationsActions } from '@suite-common/toast-notifications';
 

@@ -1,13 +1,13 @@
 import React from 'react';
 import { Controller } from 'react-hook-form';
 import styled from 'styled-components';
-import { Translation } from '@suite-components';
+import { Translation } from 'src/components/suite';
 import { Button, Flag, Select, variables } from '@trezor/components';
-import regional from '@wallet-constants/coinmarket/regional';
-import { CountryOption } from '@wallet-types/coinmarketCommonTypes';
-import { useCoinmarketP2pFormContext } from '@wallet-hooks/useCoinmarketP2pForm';
-import { FooterWrapper, Left, Right } from '@wallet-views/coinmarket';
-import { getCountryLabelParts } from '@wallet-utils/coinmarket/coinmarketUtils';
+import regional from 'src/constants/wallet/coinmarket/regional';
+import { CountryOption } from 'src/types/wallet/coinmarketCommonTypes';
+import { useCoinmarketP2pFormContext } from 'src/hooks/wallet/useCoinmarketP2pForm';
+import { FooterWrapper, Left, Right } from 'src/views/wallet/coinmarket';
+import { getCountryLabelParts } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 
 const OptionLabel = styled.div`
     display: flex;

@@ -1,9 +1,9 @@
 import React from 'react';
-import { ActionButton, ActionColumn, TextColumn, Row } from '@suite-components/Settings';
-import { Translation } from '@suite-components';
-import { useDispatch } from '@suite-hooks/useDispatch';
-import { rescanCoinjoinAccount } from '@wallet-actions/coinjoinAccountActions';
-import type { Account } from '@wallet-types';
+import { ActionButton, ActionColumn, TextColumn, Row } from 'src/components/suite/Settings';
+import { Translation } from 'src/components/suite';
+import { useDispatch } from 'src/hooks/suite/useDispatch';
+import { rescanCoinjoinAccount } from 'src/actions/wallet/coinjoinAccountActions';
+import type { Account } from 'src/types/wallet';
 
 type RescanAccountProps = {
     account: Extract<Account, { backendType: 'coinjoin' }>;

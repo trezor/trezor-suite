@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { TorLoader, Modal } from '@suite-components';
-import type { UserContextPayload } from '@suite-actions/modalActions';
+import { TorLoader, Modal } from 'src/components/suite';
+import type { UserContextPayload } from 'src/actions/suite/modalActions';
 
 const SmallModal = styled(Modal)`
     width: 560px;

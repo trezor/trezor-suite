@@ -2,8 +2,8 @@ import React from 'react';
 import styled, { css } from 'styled-components';
 
 import { Button, Tooltip, Link } from '@trezor/components';
-import { getReleaseUrl } from '@suite/services/github';
-import { Translation } from '@suite-components';
+import { getReleaseUrl } from 'src/services/github';
+import { Translation } from 'src/components/suite';
 
 const VersionTooltip = styled(Tooltip)`
     display: inline-flex;

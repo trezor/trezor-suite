@@ -9,19 +9,19 @@ import {
 } from '@trezor/device-utils';
 
 import { H1, Button, ConfirmOnDevice, variables } from '@trezor/components';
-import { Modal, Translation, WebUsbButton } from '@suite-components';
-import { DeviceConfirmImage } from '@suite-components/images/DeviceConfirmImage';
-import { DeviceAnimation } from '@onboarding-components/DeviceAnimation';
-import { useDevice, useFirmware } from '@suite-hooks';
+import { Modal, Translation, WebUsbButton } from 'src/components/suite';
+import { DeviceConfirmImage } from 'src/components/suite/images/DeviceConfirmImage';
+import { DeviceAnimation } from 'src/components/onboarding/DeviceAnimation';
+import { useDevice, useFirmware } from 'src/hooks/suite';
 import {
     useRebootRequest,
     RebootRequestedMode,
     RebootPhase,
     RebootMethod,
-} from '@firmware-hooks/useRebootRequest';
+} from 'src/hooks/firmware/useRebootRequest';
 
-import type { TrezorDevice } from '@suite/types/suite';
-import { AbortButton } from '@suite-components/Modal/DevicePromptModal';
+import type { TrezorDevice } from 'src/types/suite';
+import { AbortButton } from 'src/components/suite/Modal/DevicePromptModal';
 
 const StyledModal = styled(Modal)`
     width: 580px;

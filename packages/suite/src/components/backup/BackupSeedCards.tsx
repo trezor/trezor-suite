@@ -1,12 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { ConfirmKey, toggleCheckboxByKey } from '@suite/actions/backup/backupActions';
-import { Translation } from '@suite-components/Translation';
+import { ConfirmKey, toggleCheckboxByKey } from 'src/actions/backup/backupActions';
+import { Translation } from 'src/components/suite/Translation';
 import { variables } from '@trezor/components';
-import { useSelector } from '@suite/hooks/suite';
+import { useSelector, useDispatch } from 'src/hooks/suite';
 import { BackupSeedCard } from './BackupSeedCard';
-import { useDispatch } from '@suite-hooks';
 
 const Wrapper = styled.div`
     display: flex;

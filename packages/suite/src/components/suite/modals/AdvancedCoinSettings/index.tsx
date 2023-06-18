@@ -1,9 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
 import { CoinLogo, variables } from '@trezor/components';
-import { Modal, Translation } from '@suite-components';
-import { NETWORKS } from '@wallet-config';
-import { NetworkSymbol } from '@suite/types/wallet';
+import { Modal, Translation } from 'src/components/suite';
+import { NETWORKS } from 'src/config/wallet';
+import { NetworkSymbol } from 'src/types/wallet';
 import { CustomBackends } from './components/CustomBackends';
 
 const Section = styled.div`

@@ -1,14 +1,14 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@suite-components/Settings';
-import * as suiteActions from '@suite-actions/suiteActions';
-import { useSelector, useActions } from '@suite-hooks';
-import invityAPI from '@suite-services/invityAPI';
+import { ActionColumn, ActionSelect, SectionItem, TextColumn } from 'src/components/suite/Settings';
+import * as suiteActions from 'src/actions/suite/suiteActions';
+import { useSelector, useActions } from 'src/hooks/suite';
+import invityAPI from 'src/services/suite/invityAPI';
 import type { InvityServerEnvironment } from '@suite-common/invity';
-import { useAnchor } from '@suite-hooks/useAnchor';
-import { SettingsAnchor } from '@suite-constants/anchors';
-import { reloadApp } from '@suite-utils/reload';
+import { useAnchor } from 'src/hooks/suite/useAnchor';
+import { SettingsAnchor } from 'src/constants/suite/anchors';
+import { reloadApp } from 'src/utils/suite/reload';
 
 const StyledActionSelect = styled(ActionSelect)`
     min-width: 256px;

@@ -1,7 +1,7 @@
-import type { AppState } from '@suite-types';
-import type { WithSelectedAccountLoadedProps } from '@suite/components/wallet';
-import type { Account } from '@wallet-types';
-import type { TradeSell } from '@wallet-types/coinmarketCommonTypes';
+import type { AppState } from 'src/types/suite';
+import type { WithSelectedAccountLoadedProps } from 'src/components/wallet';
+import type { Account } from 'src/types/wallet';
+import type { TradeSell } from 'src/types/wallet/coinmarketCommonTypes';
 
 export type UseCoinmarketSellDetailProps = WithSelectedAccountLoadedProps;
 

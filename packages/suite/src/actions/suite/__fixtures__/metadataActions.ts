@@ -1,5 +1,5 @@
-import { METADATA, SUITE } from '@suite-actions/constants';
-import * as metadataActions from '@suite-actions/metadataActions';
+import { METADATA, SUITE } from 'src/actions/suite/constants';
+import * as metadataActions from 'src/actions/suite/metadataActions';
 
 const setDeviceMetadataKey = [
     {

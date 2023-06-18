@@ -1,5 +1,5 @@
 import { desktopReducer } from '..';
-import * as SUITE from '@suite-actions/constants/suiteConstants';
+import * as SUITE from 'src/actions/suite/constants/suiteConstants';
 import type { HandshakeElectron } from '@trezor/suite-desktop-api';
 
 const handshakePayload: HandshakeElectron = {

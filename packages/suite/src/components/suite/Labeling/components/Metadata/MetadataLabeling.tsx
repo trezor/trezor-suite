@@ -2,14 +2,14 @@ import React, { useEffect, useState, useMemo, useRef } from 'react';
 import styled from 'styled-components';
 
 import { Button, Icon, useTheme } from '@trezor/components';
-import { useActions, useDiscovery, useSelector } from '@suite-hooks';
-import * as metadataActions from '@suite-actions/metadataActions';
-import { MetadataAddPayload } from '@suite-types/metadata';
-import { Translation } from '@suite-components';
+import { useActions, useDiscovery, useSelector } from 'src/hooks/suite';
+import * as metadataActions from 'src/actions/suite/metadataActions';
+import { MetadataAddPayload } from 'src/types/suite/metadata';
+import { Translation } from 'src/components/suite';
 import { Props, ExtendedProps, DropdownMenuItem } from './definitions';
 import { withEditable } from './withEditable';
 import { withDropdown } from './withDropdown';
-import { selectIsLabelingAvailable } from '@suite-reducers/metadataReducer';
+import { selectIsLabelingAvailable } from 'src/reducers/suite/metadataReducer';
 import type { Timeout } from '@trezor/type-utils';
 
 const LabelValue = styled.div`

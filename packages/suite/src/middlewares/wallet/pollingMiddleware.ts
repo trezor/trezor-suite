@@ -1,7 +1,7 @@
 import type { MiddlewareAPI } from 'redux';
-import type { AppState, Action, Dispatch } from '@suite-types';
-import { POLLING } from '@wallet-actions/constants';
-import * as pollingActions from '@wallet-actions/pollingActions';
+import type { AppState, Action, Dispatch } from 'src/types/suite';
+import { POLLING } from 'src/actions/wallet/constants';
+import * as pollingActions from 'src/actions/wallet/pollingActions';
 
 const pollingMiddleware =
     (api: MiddlewareAPI<Dispatch, AppState>) =>

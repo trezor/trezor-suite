@@ -1,4 +1,4 @@
-import { useSelector } from '@suite-hooks';
+import { useSelector } from 'src/hooks/suite';
 
 export const useLoadingSkeleton = () => {
     const waitingForDevice = !useSelector(state => state.suite.device)?.state;

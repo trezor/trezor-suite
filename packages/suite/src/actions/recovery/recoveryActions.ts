@@ -1,13 +1,13 @@
 import TrezorConnect, { UI, RecoveryDevice } from '@trezor/connect';
 import { analytics, EventType } from '@trezor/suite-analytics';
 
-import { RECOVERY } from '@recovery-actions/constants';
-import * as onboardingActions from '@onboarding-actions/onboardingActions';
-import * as routerActions from '@suite-actions/routerActions';
-import { Dispatch, GetState } from '@suite-types';
-import { WordCount } from '@recovery-types';
-import { DEFAULT_PASSPHRASE_PROTECTION } from '@suite-constants/device';
-import { SUITE } from '@suite-actions/constants';
+import { RECOVERY } from 'src/actions/recovery/constants';
+import * as onboardingActions from 'src/actions/onboarding/onboardingActions';
+import * as routerActions from 'src/actions/suite/routerActions';
+import { Dispatch, GetState } from 'src/types/suite';
+import { WordCount } from 'src/types/recovery';
+import { DEFAULT_PASSPHRASE_PROTECTION } from 'src/constants/suite/device';
+import { SUITE } from 'src/actions/suite/constants';
 import { DeviceModel, getDeviceModel } from '@trezor/device-utils';
 
 export type SeedInputStatus =

@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import { H2, variables } from '@trezor/components';
-import type { ExtendedMessageDescriptor } from '@suite-types';
-import { Translation, AccountFormCloseButton } from '@suite-components';
+import type { ExtendedMessageDescriptor } from 'src/types/suite';
+import { Translation, AccountFormCloseButton } from 'src/components/suite';
 
 const HeaderWrapper = styled.div`
     display: flex;

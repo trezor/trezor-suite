@@ -1,7 +1,7 @@
 import { ArrayElement, ConstWithOptionalFields } from '@trezor/type-utils';
-import { Network } from '@wallet-types';
-import routes from '@suite-config/routes';
-import { RouteParams } from '@suite-utils/router';
+import { Network } from 'src/types/wallet';
+import routes from 'src/config/suite/routes';
+import { RouteParams } from 'src/utils/suite/router';
 
 type RouteKeys =
     | keyof ArrayElement<typeof routes>

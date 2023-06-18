@@ -1,13 +1,13 @@
 import React from 'react';
 import { desktopApi } from '@trezor/suite-desktop-api';
-import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@suite-components/Settings';
-import { Translation } from '@suite-components';
-import * as storageActions from '@suite-actions/storageActions';
-import * as routerActions from '@suite-actions/routerActions';
-import { useActions } from '@suite-hooks';
-import { useAnchor } from '@suite-hooks/useAnchor';
-import { SettingsAnchor } from '@suite-constants/anchors';
-import { reloadApp } from '@suite-utils/reload';
+import { ActionButton, ActionColumn, SectionItem, TextColumn } from 'src/components/suite/Settings';
+import { Translation } from 'src/components/suite';
+import * as storageActions from 'src/actions/suite/storageActions';
+import * as routerActions from 'src/actions/suite/routerActions';
+import { useActions } from 'src/hooks/suite';
+import { useAnchor } from 'src/hooks/suite/useAnchor';
+import { SettingsAnchor } from 'src/constants/suite/anchors';
+import { reloadApp } from 'src/utils/suite/reload';
 
 export const ClearStorage = () => {
     const { removeDatabase, goto } = useActions({

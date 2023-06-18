@@ -1,7 +1,7 @@
 import React from 'react';
 import { ThemeProvider as SCThemeProvider } from 'styled-components';
-import { getThemeColors } from '@suite-utils/theme';
-import { getOsTheme } from '@suite-utils/env';
+import { getThemeColors } from 'src/utils/suite/theme';
+import { getOsTheme } from 'src/utils/suite/env';
 import GlobalStyle from './styles/GlobalStyle';
 
 type ThemeProviderProps = {

@@ -2,15 +2,15 @@ import TrezorConnect from '@trezor/connect';
 import React, { useCallback, useState } from 'react';
 import styled from 'styled-components';
 import { variables, PassphraseTypeCard } from '@trezor/components';
-import { useSelector, useDispatch } from '@suite-hooks';
-import { onPassphraseSubmit } from '@suite-actions/modalActions';
-import { selectIsDiscoveryAuthConfirmationRequired } from '@wallet-reducers/discoveryReducer';
-import * as deviceUtils from '@suite-utils/device';
-import { Translation, Modal } from '@suite-components';
-import type { TrezorDevice } from '@suite-types';
-import { OpenGuideFromTooltip } from '@guide-components';
+import { useSelector, useDispatch } from 'src/hooks/suite';
+import { onPassphraseSubmit } from 'src/actions/suite/modalActions';
+import { selectIsDiscoveryAuthConfirmationRequired } from 'src/reducers/wallet/discoveryReducer';
+import * as deviceUtils from 'src/utils/suite/device';
+import { Translation, Modal } from 'src/components/suite';
+import type { TrezorDevice } from 'src/types/suite';
+import { OpenGuideFromTooltip } from 'src/components/guide';
 import { useIntl } from 'react-intl';
-import messages from '@suite/support/messages';
+import messages from 'src/support/messages';
 
 const Wrapper = styled.div<{ authConfirmation?: boolean }>`
     display: flex;

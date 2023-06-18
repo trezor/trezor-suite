@@ -2,11 +2,11 @@ import React from 'react';
 import styled from 'styled-components';
 
 import { variables, Icon, Button, useTheme, motionEasing } from '@trezor/components';
-import { DeviceAnimation } from '@onboarding-components';
-import { Translation } from '@suite-components';
-import { useDevice, useActions } from '@suite-hooks';
-import * as routerActions from '@suite-actions/routerActions';
-import type { PrerequisiteType } from '@suite-types';
+import { DeviceAnimation } from 'src/components/onboarding';
+import { Translation } from 'src/components/suite';
+import { useDevice, useActions } from 'src/hooks/suite';
+import * as routerActions from 'src/actions/suite/routerActions';
+import type { PrerequisiteType } from 'src/types/suite';
 import { motion } from 'framer-motion';
 
 const Wrapper = styled(motion.div)`

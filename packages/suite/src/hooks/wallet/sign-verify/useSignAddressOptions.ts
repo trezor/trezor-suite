@@ -1,8 +1,8 @@
 import { useMemo } from 'react';
-import { useTranslation } from '@suite-hooks';
-import type { Account } from '@wallet-types';
-import type { ExtendedMessageDescriptor } from '@suite-types';
-import type { State as RevealedAddresses } from '@wallet-reducers/receiveReducer';
+import { useTranslation } from 'src/hooks/suite';
+import type { Account } from 'src/types/wallet';
+import type { ExtendedMessageDescriptor } from 'src/types/suite';
+import type { State as RevealedAddresses } from 'src/reducers/wallet/receiveReducer';
 
 export type AddressItem = {
     label: string;

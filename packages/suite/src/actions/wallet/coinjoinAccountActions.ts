@@ -2,21 +2,21 @@ import { ScanAccountProgress, BroadcastedTransactionDetails } from '@trezor/coin
 import TrezorConnect from '@trezor/connect';
 import { promiseAllSequence } from '@trezor/utils';
 
-import { SUITE } from '@suite-actions/constants';
+import { SUITE } from 'src/actions/suite/constants';
 import * as COINJOIN from './constants/coinjoinConstants';
 import { goto } from '../suite/routerActions';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import * as coinjoinClientActions from './coinjoinClientActions';
-import { CoinjoinService, COORDINATOR_FEE_RATE_MULTIPLIER } from '@suite/services/coinjoin';
-import { getAccountProgressHandle, getRegisterAccountParams } from '@wallet-utils/coinjoinUtils';
-import { Dispatch, GetState } from '@suite-types';
+import { CoinjoinService, COORDINATOR_FEE_RATE_MULTIPLIER } from 'src/services/coinjoin';
+import { getAccountProgressHandle, getRegisterAccountParams } from 'src/utils/wallet/coinjoinUtils';
+import { Dispatch, GetState } from 'src/types/suite';
 import { Network, NetworkSymbol } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
 import {
     CoinjoinAccount,
     CoinjoinDiscoveryCheckpoint,
     CoinjoinSessionParameters,
-} from '@wallet-types/coinjoin';
+} from 'src/types/wallet/coinjoin';
 import {
     accountsActions,
     selectAccountByKey,
@@ -33,9 +33,9 @@ import {
     selectIsNothingToAnonymizeByAccountKey,
     selectSessionByAccountKey,
     selectWeightedAnonymityByAccountKey,
-} from '@wallet-reducers/coinjoinReducer';
+} from 'src/reducers/wallet/coinjoinReducer';
 import { getAccountTransactions, sortByBIP44AddressIndex } from '@suite-common/wallet-utils';
-import { openModal } from '@suite-actions/modalActions';
+import { openModal } from 'src/actions/suite/modalActions';
 
 export const coinjoinAccountUpdateAnonymity = (accountKey: string, targetAnonymity: number) =>
     ({

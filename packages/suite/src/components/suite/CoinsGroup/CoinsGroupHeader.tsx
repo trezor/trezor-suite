@@ -2,7 +2,7 @@ import React from 'react';
 import { transparentize } from 'polished';
 import styled, { css } from 'styled-components';
 import { variables, Icon } from '@trezor/components';
-import { Translation } from '@suite-components';
+import { Translation } from 'src/components/suite';
 
 const Wrapper = styled.div`
     margin-bottom: 27px;

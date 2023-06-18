@@ -3,16 +3,16 @@ import styled, { css, DefaultTheme } from 'styled-components';
 import { animations, Tooltip } from '@trezor/components';
 import { ProgressContent, Container as ProgressContentContainer } from './ProgressContent';
 import { lighten, rgba } from 'polished';
-import { useSelector } from '@suite-hooks/useSelector';
+import { useSelector } from 'src/hooks/suite/useSelector';
 import {
     selectCurrentCoinjoinWheelStates,
     selectSessionProgressByAccountKey,
-} from '@wallet-reducers/coinjoinReducer';
-import { useDispatch } from '@suite-hooks/useDispatch';
-import { useCoinjoinSessionBlockers } from '@suite/hooks/coinjoin/useCoinjoinSessionBlockers';
-import { goto } from '@suite-actions/routerActions';
-import { Translation } from '@suite-components/Translation';
-import { openModal } from '@suite-actions/modalActions';
+} from 'src/reducers/wallet/coinjoinReducer';
+import { useDispatch } from 'src/hooks/suite/useDispatch';
+import { useCoinjoinSessionBlockers } from 'src/hooks/coinjoin/useCoinjoinSessionBlockers';
+import { goto } from 'src/actions/suite/routerActions';
+import { Translation } from 'src/components/suite/Translation';
+import { openModal } from 'src/actions/suite/modalActions';
 
 const getOutlineSvg = (theme: DefaultTheme) =>
     `url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='100' ry='100' stroke='${theme.TYPE_LIGHT_GREY.replace(

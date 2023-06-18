@@ -1,10 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
-import { AccountsMenu, AccountException, AccountTopPanel } from '@wallet-components';
-import { MAX_WIDTH_WALLET_CONTENT } from '@suite-constants/layout';
-import { AppState, ExtendedMessageDescriptor } from '@suite-types';
-import { useTranslation, useLayout } from '@suite-hooks';
-import { SkeletonRectangle } from '@suite-components/Skeleton';
+import { AccountsMenu, AccountException, AccountTopPanel } from 'src/components/wallet';
+import { MAX_WIDTH_WALLET_CONTENT } from 'src/constants/suite/layout';
+import { AppState, ExtendedMessageDescriptor } from 'src/types/suite';
+import { useTranslation, useLayout } from 'src/hooks/suite';
+import { SkeletonRectangle } from 'src/components/suite/Skeleton';
 import { CoinjoinAccountDiscovery } from './components/CoinjoinAccountDiscovery';
 import { AccountBanners } from './components/AccountBanners';
 

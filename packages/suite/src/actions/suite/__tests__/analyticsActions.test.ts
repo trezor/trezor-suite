@@ -1,6 +1,6 @@
-import { extraDependencies } from '@suite/support/extraDependencies';
-import { configureStore } from '@suite/support/tests/configureStore';
-import { init } from '@suite-actions/analyticsActions';
+import { extraDependencies } from 'src/support/extraDependencies';
+import { configureStore } from 'src/support/tests/configureStore';
+import { init } from 'src/actions/suite/analyticsActions';
 
 import { prepareAnalyticsReducer, analyticsActions } from '@suite-common/analytics';
 

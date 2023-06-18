@@ -2,8 +2,8 @@ import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 import styled from 'styled-components';
-import { Translation, QuestionTooltip, ReadMoreLink } from '@suite-components';
-import { AppState } from '@suite-types';
+import { Translation, QuestionTooltip, ReadMoreLink } from 'src/components/suite';
+import { AppState } from 'src/types/suite';
 
 import { Button, Card, variables, H2, Tooltip } from '@trezor/components';
 import { getFirstFreshAddress } from '@suite-common/wallet-utils';

@@ -1,5 +1,5 @@
 import React from 'react';
-import { useSelector } from '@suite-hooks';
+import { useSelector } from 'src/hooks/suite';
 import { ThemeProvider } from './ThemeProvider';
 
 interface ConnectedThemeProviderProps {

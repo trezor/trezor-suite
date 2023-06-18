@@ -1,5 +1,5 @@
-import * as publicKeyActions from '@wallet-actions/publicKeyActions';
-import { MODAL } from '@suite-actions/constants';
+import * as publicKeyActions from 'src/actions/wallet/publicKeyActions';
+import { MODAL } from 'src/actions/suite/constants';
 import { connectInitThunk } from '@suite-common/connect-init';
 import { notificationsActions } from '@suite-common/toast-notifications';
 

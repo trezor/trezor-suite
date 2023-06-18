@@ -1,14 +1,14 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { onReceiveConfirmation } from '@suite-actions/modalActions';
-import { goto } from '@suite-actions/routerActions';
-import { Translation, Modal } from '@suite-components';
-import { useDispatch } from '@suite-hooks/useDispatch';
+import { onReceiveConfirmation } from 'src/actions/suite/modalActions';
+import { goto } from 'src/actions/suite/routerActions';
+import { Translation, Modal } from 'src/components/suite';
+import { useDispatch } from 'src/hooks/suite/useDispatch';
 import { Button, Image } from '@trezor/components';
-import { ReduxModalProps } from '@suite-components/ModalSwitcher/types';
-import { TranslationKey } from '@suite-components/Translation';
-import { SettingsAnchor } from '@suite-constants/anchors';
+import { ReduxModalProps } from 'src/components/suite/ModalSwitcher/types';
+import { TranslationKey } from 'src/components/suite/Translation';
+import { SettingsAnchor } from 'src/constants/suite/anchors';
 
 const ImageWrapper = styled.div`
     padding: 60px 0px;

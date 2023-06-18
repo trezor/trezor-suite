@@ -1,14 +1,14 @@
 import React from 'react';
 import BigNumber from 'bignumber.js';
-import { FiatValue, Translation } from '@suite-components';
+import { FiatValue, Translation } from 'src/components/suite';
 import {
     formatCardanoWithdrawal,
     formatCardanoDeposit,
     formatNetworkAmount,
 } from '@suite-common/wallet-utils';
-import { WalletAccountTransaction } from '@wallet-types';
+import { WalletAccountTransaction } from 'src/types/wallet';
 import { BaseTargetLayout } from './BaseTargetLayout';
-import { ExtendedMessageDescriptor } from '@suite-types';
+import { ExtendedMessageDescriptor } from 'src/types/suite';
 import { SignOperator } from '@suite-common/suite-types';
 import { StyledFormattedCryptoAmount } from './CommonComponents';
 

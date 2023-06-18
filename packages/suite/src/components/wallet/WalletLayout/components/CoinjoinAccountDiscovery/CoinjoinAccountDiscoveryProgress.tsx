@@ -1,7 +1,7 @@
 import React from 'react';
 import styled, { useTheme } from 'styled-components';
 import { H3, Icon, variables } from '@trezor/components';
-import { Card, Translation } from '@suite-components';
+import { Card, Translation } from 'src/components/suite';
 import { AccountLoadingProgress } from './AccountLoadingProgress';
 import { RotatingFacts } from './RotatingFacts';
 

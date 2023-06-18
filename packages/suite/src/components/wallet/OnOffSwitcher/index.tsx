@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Translation } from '@suite-components';
+import { Translation } from 'src/components/suite';
 
 const Wrapper = styled.div`
     display: flex;

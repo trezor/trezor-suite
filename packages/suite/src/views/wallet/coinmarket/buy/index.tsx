@@ -1,10 +1,10 @@
 import React from 'react';
-import { useCoinmarketBuyForm, BuyFormContext } from '@wallet-hooks/useCoinmarketBuyForm';
+import { useCoinmarketBuyForm, BuyFormContext } from 'src/hooks/wallet/useCoinmarketBuyForm';
 import {
     CoinmarketLayout,
     WithSelectedAccountLoadedProps,
     withSelectedAccountLoaded,
-} from '@wallet-components';
+} from 'src/components/wallet';
 import BuyForm from './components/BuyForm';
 
 const CoinmarketBuy = (props: WithSelectedAccountLoadedProps) => {

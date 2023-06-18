@@ -4,14 +4,14 @@ import {
     KYCInProgress,
     withCoinmarket,
     WithCoinmarketProps,
-} from '@wallet-components';
-import { useSavingsPaymentInfo } from '@wallet-hooks/useCoinmarketSavingsPaymentInfo';
+} from 'src/components/wallet';
+import { useSavingsPaymentInfo } from 'src/hooks/wallet/useCoinmarketSavingsPaymentInfo';
 import { Button } from '@trezor/components';
 import React from 'react';
 import styled from 'styled-components';
-import { Translation } from '@suite-components';
+import { Translation } from 'src/components/suite';
 import { useFormatters } from '@suite-common/formatters';
-import ReauthorizationCard from '@wallet-components/CoinmarketReauthorizationCard';
+import ReauthorizationCard from 'src/components/wallet/CoinmarketReauthorizationCard';
 
 const Header = styled.div`
     font-size: 24px;

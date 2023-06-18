@@ -1,11 +1,11 @@
 import React from 'react';
-import { WalletParams } from '@wallet-types';
-import { AppNavigation, AppNavigationItem } from '@suite-components/AppNavigation';
-import { Translation } from '@suite-components/Translation';
-import { useActions, useSelector } from '@suite-hooks';
+import { WalletParams } from 'src/types/wallet';
+import { AppNavigation, AppNavigationItem } from 'src/components/suite/AppNavigation';
+import { Translation } from 'src/components/suite/Translation';
+import { useActions, useSelector } from 'src/hooks/suite';
 import { getNetwork, hasNetworkFeatures } from '@suite-common/wallet-utils';
-import * as routerActions from '@suite-actions/routerActions';
-import * as modalActions from '@suite-actions/modalActions';
+import * as routerActions from 'src/actions/suite/routerActions';
+import * as modalActions from 'src/actions/suite/modalActions';
 
 interface AccountNavigationProps {
     filterPosition?: 'primary' | 'secondary';

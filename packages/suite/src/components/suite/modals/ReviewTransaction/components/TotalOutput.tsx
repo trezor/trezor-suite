@@ -1,13 +1,13 @@
 import React, { forwardRef } from 'react';
 import { formatNetworkAmount, isTestnet } from '@suite-common/wallet-utils';
-import { Translation } from '@suite-components/Translation';
+import { Translation } from 'src/components/suite/Translation';
 import Indicator from './Indicator';
 import OutputElement, { OutputElementLine } from './OutputElement';
 import type { OutputListProps } from './OutputList';
 import { getOutputState } from './getOutputState';
 import { getIsUpdatedSendFlow } from './getIsUpdatedSendFlow';
-import { useSelector } from '@suite-hooks/useSelector';
-import { selectDevice } from '@suite-reducers/suiteReducer';
+import { useSelector } from 'src/hooks/suite/useSelector';
+import { selectDevice } from 'src/reducers/suite/suiteReducer';
 
 type StepIndicatorProps = Pick<OutputListProps, 'signedTx' | 'outputs' | 'buttonRequestsCount'>;
 

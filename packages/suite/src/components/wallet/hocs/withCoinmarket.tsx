@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
-import { CoinmarketLayout, withSelectedAccountLoaded } from '@wallet-components';
-import type { AppState, ExtendedMessageDescriptor } from '@suite-types';
-import { useActions } from '@suite-hooks';
-import * as coinmarketCommonActions from '@wallet-actions/coinmarket/coinmarketCommonActions';
+import { CoinmarketLayout, withSelectedAccountLoaded } from 'src/components/wallet';
+import type { AppState, ExtendedMessageDescriptor } from 'src/types/suite';
+import { useActions } from 'src/hooks/suite';
+import * as coinmarketCommonActions from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
 
 interface ComponentProps {
     selectedAccount: AppState['wallet']['selectedAccount'];

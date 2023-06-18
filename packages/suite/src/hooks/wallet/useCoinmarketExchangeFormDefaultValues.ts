@@ -1,9 +1,9 @@
 import { useMemo } from 'react';
-import { ExchangeInfo } from '@wallet-actions/coinmarketExchangeActions';
+import { ExchangeInfo } from 'src/actions/wallet/coinmarketExchangeActions';
 import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants';
-import { buildOption } from '@wallet-utils/coinmarket/coinmarketUtils';
-import { Account } from '@wallet-types';
-import { ExchangeFormState } from '@wallet-types/coinmarketExchangeForm';
+import { buildOption } from 'src/utils/wallet/coinmarket/coinmarketUtils';
+import { Account } from 'src/types/wallet';
+import { ExchangeFormState } from 'src/types/wallet/coinmarketExchangeForm';
 
 export const useCoinmarketExchangeFormDefaultValues = (
     symbol: Account['symbol'],

@@ -1,13 +1,13 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { FirmwareChangelog } from '@firmware-components';
+import { FirmwareChangelog } from 'src/components/firmware';
 import { Icon, Tooltip, variables } from '@trezor/components';
-import { Translation } from '@suite-components';
+import { Translation } from 'src/components/suite';
 import { getFirmwareType, getFirmwareVersion } from '@trezor/device-utils';
-import { getFwUpdateVersion, parseFirmwareChangelog } from '@suite-utils/device';
-import { useFirmware, useTranslation, useSelector } from '@suite-hooks';
-import { AcquiredDevice, FirmwareType } from '@suite-types';
+import { getFwUpdateVersion, parseFirmwareChangelog } from 'src/utils/suite/device';
+import { useFirmware, useTranslation, useSelector } from 'src/hooks/suite';
+import { AcquiredDevice, FirmwareType } from 'src/types/suite';
 
 const FwVersionWrapper = styled.div`
     display: flex;

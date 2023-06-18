@@ -3,10 +3,10 @@ import parseISO from 'date-fns/parseISO';
 import format from 'date-fns/format';
 import styled from 'styled-components';
 import { Button, Icon, Image } from '@trezor/components';
-import { Translation } from '@suite-components';
+import { Translation } from 'src/components/suite';
 import type { SavingsTradePlannedPayment } from 'invity-api';
-import type { ExtendedMessageDescriptor } from '@suite/types/suite';
-import { useCoinmarketSavingsPaymentInfoCopy } from '@wallet-hooks/useCoinmarketSavingsPaymentInfoCopy';
+import type { ExtendedMessageDescriptor } from 'src/types/suite';
+import { useCoinmarketSavingsPaymentInfoCopy } from 'src/hooks/wallet/useCoinmarketSavingsPaymentInfoCopy';
 
 const Wrapper = styled.div`
     margin-top: 18px;

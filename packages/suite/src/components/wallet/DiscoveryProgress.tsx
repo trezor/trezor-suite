@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { useDiscovery } from '@suite-hooks';
+import { useDiscovery } from 'src/hooks/suite';
 import { Progress, variables } from '@trezor/components';
 
 const StyledProgress = styled(Progress)`

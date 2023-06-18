@@ -1,11 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Translation, FormattedDate, FormattedCryptoAmount } from '@suite-components';
+import { Translation, FormattedDate, FormattedCryptoAmount } from 'src/components/suite';
 import { variables } from '@trezor/components';
 import Status from '../Status';
-import { CoinmarketProviderInfo } from '@wallet-components';
+import { CoinmarketProviderInfo } from 'src/components/wallet';
 import { SellProviderInfo } from 'invity-api';
-import { TradeSpend } from '@wallet-types/coinmarketCommonTypes';
+import { TradeSpend } from 'src/types/wallet/coinmarketCommonTypes';
 
 interface Props {
     trade: TradeSpend;

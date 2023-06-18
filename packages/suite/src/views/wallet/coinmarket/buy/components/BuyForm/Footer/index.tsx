@@ -2,12 +2,12 @@ import React from 'react';
 import { Controller } from 'react-hook-form';
 import styled from 'styled-components';
 import { Button, Select, variables, Flag } from '@trezor/components';
-import regional from '@wallet-constants/coinmarket/regional';
-import { useCoinmarketBuyFormContext } from '@wallet-hooks/useCoinmarketBuyForm';
-import { getCountryLabelParts } from '@wallet-utils/coinmarket/coinmarketUtils';
-import { CountryOption } from '@wallet-types/coinmarketCommonTypes';
-import { Translation } from '@suite-components';
-import { FooterWrapper, Left, Right } from '@wallet-views/coinmarket';
+import regional from 'src/constants/wallet/coinmarket/regional';
+import { useCoinmarketBuyFormContext } from 'src/hooks/wallet/useCoinmarketBuyForm';
+import { getCountryLabelParts } from 'src/utils/wallet/coinmarket/coinmarketUtils';
+import { CountryOption } from 'src/types/wallet/coinmarketCommonTypes';
+import { Translation } from 'src/components/suite';
+import { FooterWrapper, Left, Right } from 'src/views/wallet/coinmarket';
 
 const OptionLabel = styled.div`
     display: flex;

@@ -17,7 +17,7 @@ import {
     PrecomposedTransactionFinal,
     ExternalOutput,
 } from '@suite-common/wallet-types';
-import { Dispatch, GetState } from '@suite-types';
+import { Dispatch, GetState } from 'src/types/suite';
 
 const calculate = (
     availableBalance: string,

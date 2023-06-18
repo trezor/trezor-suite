@@ -1,8 +1,8 @@
 import { css } from 'styled-components';
 
-import { AccountTransactionBaseAnchor, AnchorType } from '@suite-constants/anchors';
+import { AccountTransactionBaseAnchor, AnchorType } from 'src/constants/suite/anchors';
 
-import type { WalletAccountTransaction } from '@wallet-types';
+import type { WalletAccountTransaction } from 'src/types/wallet';
 
 export const getTxIdFromAnchor = (anchor?: string): string => anchor?.split('/').pop() || '';
 

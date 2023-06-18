@@ -2,12 +2,12 @@ import React, { forwardRef, useCallback, useMemo } from 'react';
 import { CoinLogo, variables } from '@trezor/components';
 import styled from 'styled-components';
 import { isTestnet } from '@suite-common/wallet-utils';
-import { AccountLabel, FiatValue } from '@suite-components';
-import { Stack, SkeletonRectangle } from '@suite-components/Skeleton';
-import { useActions, useLoadingSkeleton } from '@suite-hooks';
-import { CoinBalance } from '@wallet-components';
-import { Account } from '@wallet-types';
-import * as routerActions from '@suite-actions/routerActions';
+import { AccountLabel, FiatValue } from 'src/components/suite';
+import { Stack, SkeletonRectangle } from 'src/components/suite/Skeleton';
+import { useActions, useLoadingSkeleton } from 'src/hooks/suite';
+import { CoinBalance } from 'src/components/wallet';
+import { Account } from 'src/types/wallet';
+import * as routerActions from 'src/actions/suite/routerActions';
 import { TokensCount } from './TokensCount';
 
 const activeClassName = 'selected';

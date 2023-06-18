@@ -1,4 +1,4 @@
-import type { WithSelectedAccountLoadedProps } from '@wallet-components';
+import type { WithSelectedAccountLoadedProps } from 'src/components/wallet';
 import type { SellProviderInfo } from 'invity-api';
 
 export type UseCoinmarketSpendProps = WithSelectedAccountLoadedProps;

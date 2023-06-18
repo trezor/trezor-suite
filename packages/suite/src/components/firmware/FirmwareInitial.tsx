@@ -6,12 +6,12 @@ import {
     ConnectDevicePromptManager,
     OnboardingStepBox,
     OnboardingButtonSkip,
-} from '@onboarding-components';
-import { Translation } from '@suite-components';
-import { useDevice, useFirmware, useOnboarding, useSelector } from '@suite-hooks';
-import { ReconnectDevicePrompt, InstallButton, FirmwareOffer } from '@firmware-components';
-import { FirmwareType, TrezorDevice } from '@suite-types';
-import { getFwUpdateVersion } from '@suite-utils/device';
+} from 'src/components/onboarding';
+import { Translation } from 'src/components/suite';
+import { useDevice, useFirmware, useOnboarding, useSelector } from 'src/hooks/suite';
+import { ReconnectDevicePrompt, InstallButton, FirmwareOffer } from 'src/components/firmware';
+import { FirmwareType, TrezorDevice } from 'src/types/suite';
+import { getFwUpdateVersion } from 'src/utils/suite/device';
 import { getFirmwareVersion, getDeviceModel } from '@trezor/device-utils';
 
 const Description = styled.div`

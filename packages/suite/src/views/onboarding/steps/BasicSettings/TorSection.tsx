@@ -1,11 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
 import { variables, Switch } from '@trezor/components';
-import { Translation } from '@suite-components';
-import { useActions } from '@suite-hooks';
-import { toggleTor as toggleTorAction } from '@suite-actions/suiteActions';
-import { getIsTorEnabled, getIsTorLoading } from '@suite-utils/tor';
-import { TorStatus } from '@suite-types';
+import { Translation } from 'src/components/suite';
+import { useActions } from 'src/hooks/suite';
+import { toggleTor as toggleTorAction } from 'src/actions/suite/suiteActions';
+import { getIsTorEnabled, getIsTorLoading } from 'src/utils/suite/tor';
+import { TorStatus } from 'src/types/suite';
 
 const TorWrapper = styled.div`
     width: 100%;

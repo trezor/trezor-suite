@@ -2,14 +2,14 @@ import React from 'react';
 import styled from 'styled-components';
 import { Button, variables } from '@trezor/components';
 import { FiatValue, FormattedCryptoAmount, Modal, Translation } from '..';
-import { useDispatch } from '@suite-hooks/useDispatch';
-import { onCancel } from '@suite-actions/modalActions';
-import { goto } from '@suite-actions/routerActions';
+import { useDispatch } from 'src/hooks/suite/useDispatch';
+import { onCancel } from 'src/actions/suite/modalActions';
+import { goto } from 'src/actions/suite/routerActions';
 import { formatAmount, getAccountDecimals } from '@suite-common/wallet-utils';
-import { UNECONOMICAL_COINJOIN_THRESHOLD } from '@suite/services/coinjoin';
-import { selectSelectedAccount } from '@wallet-reducers/selectedAccountReducer';
+import { UNECONOMICAL_COINJOIN_THRESHOLD } from 'src/services/coinjoin';
+import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 import { selectIsAccountWithRatesByKey } from '@suite-common/wallet-core';
-import { useSelector } from '@suite-hooks/useSelector';
+import { useSelector } from 'src/hooks/suite/useSelector';
 import { transparentize } from 'polished';
 
 const StyledModal = styled(Modal)`

@@ -1,9 +1,9 @@
 import React from 'react';
-import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@suite-components/Settings';
-import { useDevice, useSelector } from '@suite-hooks';
-import { openGithubIssue } from '@suite/services/github';
-import { useAnchor } from '@suite-hooks/useAnchor';
-import { SettingsAnchor } from '@suite-constants/anchors';
+import { ActionButton, ActionColumn, SectionItem, TextColumn } from 'src/components/suite/Settings';
+import { useDevice, useSelector } from 'src/hooks/suite';
+import { openGithubIssue } from 'src/services/github';
+import { useAnchor } from 'src/hooks/suite/useAnchor';
+import { SettingsAnchor } from 'src/constants/suite/anchors';
 
 export const GithubIssue = () => {
     const transport = useSelector(state => state.suite.transport);

@@ -1,10 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Button, Checkbox } from '@trezor/components';
-import { useDevice, useFirmware } from '@suite-hooks';
-import { Translation } from '@suite-components';
-import { OnboardingStepBox } from '@onboarding-components';
-import { P } from '@firmware-components';
+import { useDevice, useFirmware } from 'src/hooks/suite';
+import { Translation } from 'src/components/suite';
+import { OnboardingStepBox } from 'src/components/onboarding';
+import { P } from 'src/components/firmware';
 
 const StyledCheckbox = styled(Checkbox)`
     margin: 16px 0;

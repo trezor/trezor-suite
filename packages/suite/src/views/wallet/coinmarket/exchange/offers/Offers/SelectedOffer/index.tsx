@@ -1,11 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Card, Icon, variables, colors } from '@trezor/components';
-import { useCoinmarketExchangeOffersContext } from '@wallet-hooks/useCoinmarketExchangeOffers';
-import CoinmarketExchangeOfferInfo from '@wallet-components/CoinmarketExchangeOfferInfo';
+import { useCoinmarketExchangeOffersContext } from 'src/hooks/wallet/useCoinmarketExchangeOffers';
+import CoinmarketExchangeOfferInfo from 'src/components/wallet/CoinmarketExchangeOfferInfo';
 import VerifyAddress from './components/VerifyAddress';
 import SendTransaction from './components/SendTransaction';
-import { Translation } from '@suite-components';
+import { Translation } from 'src/components/suite';
 import SendApprovalTransaction from './components/SendApprovalTransaction';
 import SendSwapTransaction from './components/SendSwapTransaction';
 

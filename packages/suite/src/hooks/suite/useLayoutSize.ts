@@ -1,4 +1,4 @@
-import { useSelector } from '@suite-hooks';
+import { useSelector } from 'src/hooks/suite';
 
 export const useLayoutSize = () => {
     const layoutSize = useSelector(state => state.resize.size);

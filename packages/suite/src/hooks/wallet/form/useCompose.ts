@@ -1,8 +1,8 @@
 import { useEffect, useRef, useCallback, useState } from 'react';
 import { UseFormMethods } from 'react-hook-form';
 import { useAsyncDebounce } from '@trezor/react-utils';
-import { useActions } from '@suite-hooks';
-import * as sendFormActions from '@wallet-actions/sendFormActions';
+import { useActions } from 'src/hooks/suite';
+import * as sendFormActions from 'src/actions/wallet/sendFormActions';
 import { findComposeErrors } from '@suite-common/wallet-utils';
 import {
     FormState,

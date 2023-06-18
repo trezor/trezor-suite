@@ -1,9 +1,9 @@
-import * as suiteActions from '@suite-actions/suiteActions';
-import * as routerActions from '@suite-actions/routerActions';
-import * as analyticsActions from '@suite-actions/analyticsActions';
+import * as suiteActions from 'src/actions/suite/suiteActions';
+import * as routerActions from 'src/actions/suite/routerActions';
+import * as analyticsActions from 'src/actions/suite/analyticsActions';
 import { initMessageSystemThunk } from '@suite-common/message-system';
-import * as languageActions from '@settings-actions/languageActions';
-import type { Dispatch, GetState } from '@suite-types';
+import * as languageActions from 'src/actions/settings/languageActions';
+import type { Dispatch, GetState } from 'src/types/suite';
 
 import * as trezorConnectActions from '@suite-common/connect-init';
 import { initBlockchainThunk } from '@suite-common/wallet-core';

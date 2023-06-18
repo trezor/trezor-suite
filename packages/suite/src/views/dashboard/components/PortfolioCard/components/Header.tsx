@@ -1,10 +1,10 @@
 import React, { useCallback } from 'react';
 
 import styled, { css } from 'styled-components';
-import { Translation, HiddenPlaceholder } from '@suite-components';
-import { RangeSelector } from '@suite-components/TransactionsGraph/components/RangeSelector';
-import { updateGraphData } from '@wallet-actions/graphActions';
-import { useFastAccounts } from '@wallet-hooks';
+import { Translation, HiddenPlaceholder } from 'src/components/suite';
+import { RangeSelector } from 'src/components/suite/TransactionsGraph/components/RangeSelector';
+import { updateGraphData } from 'src/actions/wallet/graphActions';
+import { useFastAccounts } from 'src/hooks/wallet';
 
 import { useFormatters } from '@suite-common/formatters';
 import { H2, Button, LoadingContent } from '@trezor/components';

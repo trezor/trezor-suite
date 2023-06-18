@@ -1,9 +1,9 @@
 import { useCallback } from 'react';
-import { useActions, useSelector, useTranslation } from '@suite-hooks';
-import * as sendFormActions from '@wallet-actions/sendFormActions';
+import { useActions, useSelector, useTranslation } from 'src/hooks/suite';
+import * as sendFormActions from 'src/actions/wallet/sendFormActions';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { DEFAULT_VALUES, DEFAULT_PAYMENT } from '@suite-common/wallet-constants';
-import { FormState, UseSendFormState } from '@wallet-types/sendForm';
+import { FormState, UseSendFormState } from 'src/types/wallet/sendForm';
 import { getFeeLevels } from '@suite-common/wallet-utils';
 import type { SelectedAccountLoaded } from '@suite-common/wallet-types';
 

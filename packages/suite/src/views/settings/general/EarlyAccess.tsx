@@ -2,12 +2,12 @@ import React, { useCallback } from 'react';
 import styled from 'styled-components';
 
 import { desktopApi } from '@trezor/suite-desktop-api';
-import { Translation } from '@suite-components';
-import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@suite-components/Settings';
-import { useSelector, useActions } from '@suite-hooks';
-import * as desktopUpdateActions from '@suite-actions/desktopUpdateActions';
-import { useAnchor } from '@suite-hooks/useAnchor';
-import { SettingsAnchor } from '@suite-constants/anchors';
+import { Translation } from 'src/components/suite';
+import { ActionButton, ActionColumn, SectionItem, TextColumn } from 'src/components/suite/Settings';
+import { useSelector, useActions } from 'src/hooks/suite';
+import * as desktopUpdateActions from 'src/actions/suite/desktopUpdateActions';
+import { useAnchor } from 'src/hooks/suite/useAnchor';
+import { SettingsAnchor } from 'src/constants/suite/anchors';
 
 const Version = styled.div`
     span {

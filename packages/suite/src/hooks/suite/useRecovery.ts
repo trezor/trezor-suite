@@ -1,6 +1,6 @@
-import * as recoveryActions from '@recovery-actions/recoveryActions';
-import { useActions, useSelector } from '@suite-hooks';
-import { MODAL } from '@suite-actions/constants';
+import * as recoveryActions from 'src/actions/recovery/recoveryActions';
+import { useActions, useSelector } from 'src/hooks/suite';
+import { MODAL } from 'src/actions/suite/constants';
 
 const getWordRequestInputType = (request: string | undefined) => {
     switch (request) {
