@@ -8,7 +8,7 @@ import { useCoinmarketExchangeFormContext } from 'src/hooks/wallet/useCoinmarket
 import SendCryptoInput from './SendCryptoInput';
 import FiatInput from './FiatInput';
 import ReceiveCryptoSelect from './ReceiveCryptoSelect';
-import FractionButtons from 'src/components/wallet/CoinMarketFractionButtons';
+import { FractionButtons } from 'src/components/wallet/CoinMarketFractionButtons';
 import {
     CRYPTO_INPUT,
     ExchangeFormState,

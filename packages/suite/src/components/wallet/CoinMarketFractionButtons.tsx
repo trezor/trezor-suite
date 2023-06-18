@@ -28,7 +28,7 @@ interface Props {
     disabled?: boolean;
 }
 
-const FractionButtons = ({ disabled, onFractionClick, onAllClick }: Props) => (
+export const FractionButtons = ({ disabled, onFractionClick, onAllClick }: Props) => (
     <Wrapper>
         <Left>
             <SmallButton isDisabled={disabled} onClick={() => onFractionClick(4)}>
@@ -46,5 +46,3 @@ const FractionButtons = ({ disabled, onFractionClick, onAllClick }: Props) => (
         </Left>
     </Wrapper>
 );
-
-export default FractionButtons;
