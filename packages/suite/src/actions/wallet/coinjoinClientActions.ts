@@ -7,32 +7,32 @@ import {
     CoinjoinResponseEvent,
     CoinjoinClientEvents,
 } from '@trezor/coinjoin';
-import { SUITE } from '@suite-actions/constants';
+import { SUITE } from 'src/actions/suite/constants';
 import { arrayDistinct, arrayToDictionary, promiseAllSequence } from '@trezor/utils';
 import * as COINJOIN from './constants/coinjoinConstants';
 import {
     prepareCoinjoinTransaction,
     getSessionDeadline,
     getEstimatedTimePerRound,
-} from '@wallet-utils/coinjoinUtils';
-import { CoinjoinService } from '@suite/services/coinjoin';
+} from 'src/utils/wallet/coinjoinUtils';
+import { CoinjoinService } from 'src/services/coinjoin';
 import { selectAccountByKey } from '@suite-common/wallet-core';
-import { Dispatch, GetState } from '@suite-types';
+import { Dispatch, GetState } from 'src/types/suite';
 import { Account } from '@suite-common/wallet-types';
 import {
     RoundPhase,
     CoinjoinAccount,
     EndRoundState,
     CoinjoinDebugSettings,
-} from '@wallet-types/coinjoin';
-import { onCancel as closeModal, openModal } from '@suite-actions/modalActions';
+} from 'src/types/wallet/coinjoin';
+import { onCancel as closeModal, openModal } from 'src/actions/suite/modalActions';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     selectRoundsNeededByAccountKey,
     selectRoundsLeftByAccountKey,
     selectRoundsDurationInHours,
     selectCoinjoinAccounts,
-} from '@wallet-reducers/coinjoinReducer';
+} from 'src/reducers/wallet/coinjoinReducer';
 
 const clientEnable = (symbol: Account['symbol']) =>
     ({

@@ -1,12 +1,12 @@
 import React from 'react';
 import BigNumber from 'bignumber.js';
 import { Input, Icon } from '@trezor/components';
-import { QuestionTooltip } from '@suite-components';
-import { InputError } from '@wallet-components';
-import { useSendFormContext } from '@wallet-hooks';
+import { QuestionTooltip } from 'src/components/suite';
+import { InputError } from 'src/components/wallet';
+import { useSendFormContext } from 'src/hooks/wallet';
 import { getInputState, isInteger } from '@suite-common/wallet-utils';
 import { U_INT_32 } from '@suite-common/wallet-constants';
-import { MAX_LENGTH } from '@suite-constants/inputs';
+import { MAX_LENGTH } from 'src/constants/suite/inputs';
 
 interface Props {
     close: () => void;

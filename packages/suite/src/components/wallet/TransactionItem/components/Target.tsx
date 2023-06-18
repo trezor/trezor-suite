@@ -1,6 +1,6 @@
 import React from 'react';
 import { getIsZeroValuePhishing } from '@suite-common/suite-utils';
-import { FiatValue, Translation, MetadataLabeling, AddressLabeling } from '@suite-components';
+import { FiatValue, Translation, MetadataLabeling, AddressLabeling } from 'src/components/suite';
 import { ArrayElement } from '@trezor/type-utils';
 import {
     getTxOperation,
@@ -10,14 +10,14 @@ import {
     formatNetworkAmount,
     isNftTokenTransfer,
 } from '@suite-common/wallet-utils';
-import { WalletAccountTransaction } from '@wallet-types';
+import { WalletAccountTransaction } from 'src/types/wallet';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { useActions } from '@suite-hooks';
+import { useActions } from 'src/hooks/suite';
 import { TokenTransferAddressLabel } from './TokenTransferAddressLabel';
 import { TargetAddressLabel } from './TargetAddressLabel';
 import { BaseTargetLayout } from './BaseTargetLayout';
 import { copyToClipboard } from '@trezor/dom-utils';
-import { AccountMetadata } from '@suite-types/metadata';
+import { AccountMetadata } from 'src/types/suite/metadata';
 import { StyledFormattedCryptoAmount, StyledFormattedNftAmount } from './CommonComponents';
 
 interface BaseTransfer {

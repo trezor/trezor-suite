@@ -1,6 +1,6 @@
-import { configureStore } from '@suite/support/tests/configureStore';
-import settingsReducer from '@wallet-reducers/settingsReducer';
-import suiteReducer from '@suite-reducers/suiteReducer';
+import { configureStore } from 'src/support/tests/configureStore';
+import settingsReducer from 'src/reducers/wallet/settingsReducer';
+import suiteReducer from 'src/reducers/suite/suiteReducer';
 import fixtures from '../__fixtures__/walletSettings';
 
 export const getInitialState = (settings?: any) => ({

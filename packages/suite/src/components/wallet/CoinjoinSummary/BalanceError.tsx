@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { variables } from '@trezor/components';
 import { TranslationKey } from '@suite-common/intl-types';
-import { Translation } from '@suite-components/Translation';
+import { Translation } from 'src/components/suite/Translation';
 
 const StyledBalanceContainer = styled.div`
     padding: 0 24px 0;

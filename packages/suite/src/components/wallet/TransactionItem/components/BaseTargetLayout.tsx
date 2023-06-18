@@ -1,7 +1,7 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 import { motion } from 'framer-motion';
-import { HiddenPlaceholder } from '@suite-components';
+import { HiddenPlaceholder } from 'src/components/suite';
 import { variables, motionAnimation } from '@trezor/components';
 
 export const MIN_ROW_HEIGHT = '23px';

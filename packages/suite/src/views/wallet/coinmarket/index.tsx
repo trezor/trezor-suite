@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { Icon, variables, SelectBar } from '@trezor/components';
-import { CardWithHeader } from '@suite-components/CardWithHeader';
+import { CardWithHeader } from 'src/components/suite/CardWithHeader';
 
 interface ResponsiveSize {
     responsiveSize: keyof typeof variables.SCREEN_SIZE;

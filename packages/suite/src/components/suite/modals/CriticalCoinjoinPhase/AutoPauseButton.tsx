@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import styled, { css } from 'styled-components';
 import { Icon, IconType, useTheme, variables } from '@trezor/components';
 import { TranslationKey } from '@suite-common/intl-types';
-import { Translation } from '@suite-components';
-import { toggleAutopauseCoinjoin } from '@wallet-actions/coinjoinAccountActions';
-import { useSelector } from '@suite-hooks/useSelector';
-import { selectIsSessionAutopaused } from '@wallet-reducers/coinjoinReducer';
-import { useDispatch } from '@suite-hooks/useDispatch';
+import { Translation } from 'src/components/suite';
+import { toggleAutopauseCoinjoin } from 'src/actions/wallet/coinjoinAccountActions';
+import { useSelector } from 'src/hooks/suite/useSelector';
+import { selectIsSessionAutopaused } from 'src/reducers/wallet/coinjoinReducer';
+import { useDispatch } from 'src/hooks/suite/useDispatch';
 
 const TRANSITION_CONFIG = '0.1s ease';
 

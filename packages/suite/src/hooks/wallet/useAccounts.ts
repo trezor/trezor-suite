@@ -1,8 +1,8 @@
 import { useState, useEffect, useMemo } from 'react';
-import { useSelector } from '@suite-hooks';
+import { useSelector } from 'src/hooks/suite';
 import type { AccountAddress } from '@trezor/connect';
 import * as accountUtils from '@suite-common/wallet-utils';
-import type { Account, Discovery } from '@wallet-types';
+import type { Account, Discovery } from 'src/types/wallet';
 
 export const useAccounts = (discovery?: Discovery) => {
     const [accounts, setAccounts] = useState<Account[]>([]);

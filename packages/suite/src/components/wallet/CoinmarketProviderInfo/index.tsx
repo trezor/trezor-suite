@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { variables } from '@trezor/components';
-import invityApi from '@suite-services/invityAPI';
+import invityApi from 'src/services/suite/invityAPI';
 
 const Wrapper = styled.div`
     display: flex;

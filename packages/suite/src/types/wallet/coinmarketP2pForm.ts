@@ -1,9 +1,9 @@
-import { WithSelectedAccountLoadedProps } from '@wallet-components';
+import { WithSelectedAccountLoadedProps } from 'src/components/wallet';
 import { UseFormMethods } from 'react-hook-form';
-import { Account } from '@wallet-types';
-import { DefaultCountryOption, Option } from '@wallet-types/coinmarketCommonTypes';
-import { TypedValidationRules } from '@wallet-types/form';
-import { P2pInfo } from '@wallet-actions/coinmarketP2pActions';
+import { Account } from 'src/types/wallet';
+import { DefaultCountryOption, Option } from 'src/types/wallet/coinmarketCommonTypes';
+import { TypedValidationRules } from 'src/types/wallet/form';
+import { P2pInfo } from 'src/actions/wallet/coinmarketP2pActions';
 
 export type UseCoinmarketP2pFormProps = WithSelectedAccountLoadedProps;
 

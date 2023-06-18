@@ -1,8 +1,8 @@
 import { MiddlewareAPI } from 'redux';
-import { SUITE } from '@suite-actions/constants';
-import * as routerActions from '@suite-actions/routerActions';
+import { SUITE } from 'src/actions/suite/constants';
+import * as routerActions from 'src/actions/suite/routerActions';
 
-import { AppState, Action, Dispatch, TrezorDevice } from '@suite-types';
+import { AppState, Action, Dispatch, TrezorDevice } from 'src/types/suite';
 
 const handleDeviceRedirect = (dispatch: Dispatch, state: AppState, device?: TrezorDevice) => {
     // no device, no redirect

@@ -1,6 +1,6 @@
 import React from 'react';
-import { Translation } from '@suite-components';
-import { AccountExceptionLayout } from '@wallet-components';
+import { Translation } from 'src/components/suite';
+import { AccountExceptionLayout } from 'src/components/wallet';
 
 /**
  * Handler for invalid router params

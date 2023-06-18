@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Translation, AccountLabeling } from '@suite-components';
+import { Translation, AccountLabeling } from 'src/components/suite';
 import { Button, variables } from '@trezor/components';
-import { useCoinmarketExchangeOffersContext } from '@wallet-hooks/useCoinmarketExchangeOffers';
+import { useCoinmarketExchangeOffersContext } from 'src/hooks/wallet/useCoinmarketExchangeOffers';
 
 const Wrapper = styled.div`
     display: flex;

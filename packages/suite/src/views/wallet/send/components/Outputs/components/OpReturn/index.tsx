@@ -1,12 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
-import { useSendFormContext } from '@wallet-hooks';
-import { Translation } from '@suite-components';
-import { InputError } from '@wallet-components';
+import { useSendFormContext } from 'src/hooks/wallet';
+import { Translation } from 'src/components/suite';
+import { InputError } from 'src/components/wallet';
 import { Textarea, Icon, Tooltip } from '@trezor/components';
 import { getInputState, isHexValid } from '@suite-common/wallet-utils';
-import { OpenGuideFromTooltip } from '@guide-components';
-import { MAX_LENGTH } from '@suite-constants/inputs';
+import { OpenGuideFromTooltip } from 'src/components/guide';
+import { MAX_LENGTH } from 'src/constants/suite/inputs';
 
 const Wrapper = styled.div`
     display: flex;

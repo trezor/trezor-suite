@@ -1,4 +1,4 @@
-import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
+import * as walletSettingsActions from 'src/actions/settings/walletSettingsActions';
 
 export default [
     {

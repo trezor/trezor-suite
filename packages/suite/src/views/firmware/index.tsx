@@ -1,21 +1,21 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import * as routerActions from '@suite-actions/routerActions';
-import { TrezorDevice } from '@suite-types';
+import * as routerActions from 'src/actions/suite/routerActions';
+import { TrezorDevice } from 'src/types/suite';
 import {
     CheckSeedStep,
     CloseButton,
     FirmwareInitial,
     FirmwareInstallation,
-} from '@firmware-components';
-import { DeviceAcquire } from '@suite-views/device-acquire';
-import { DeviceUnknown } from '@suite-views/device-unknown';
-import { DeviceUnreadable } from '@suite-views/device-unreadable';
-import { Translation, Modal } from '@suite-components';
-import { OnboardingStepBox } from '@onboarding-components';
-import { useActions, useFirmware, useSelector } from '@suite-hooks';
+} from 'src/components/firmware';
+import { DeviceAcquire } from 'src/views/suite/device-acquire';
+import { DeviceUnknown } from 'src/views/suite/device-unknown';
+import { DeviceUnreadable } from 'src/views/suite/device-unreadable';
+import { Translation, Modal } from 'src/components/suite';
+import { OnboardingStepBox } from 'src/components/onboarding';
+import { useActions, useFirmware, useSelector } from 'src/hooks/suite';
 import { ConfirmOnDevice, variables } from '@trezor/components';
-import * as suiteActions from '@suite-actions/suiteActions';
+import * as suiteActions from 'src/actions/suite/suiteActions';
 import { getDeviceModel } from '@trezor/device-utils';
 
 const Wrapper = styled.div<{ isWithTopPadding: boolean }>`

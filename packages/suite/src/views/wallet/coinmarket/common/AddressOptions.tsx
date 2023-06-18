@@ -1,12 +1,12 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import type { AccountAddress } from '@trezor/connect';
-import { Translation, FiatValue, FormattedCryptoAmount } from '@suite-components';
+import { Translation, FiatValue, FormattedCryptoAmount } from 'src/components/suite';
 import { variables, Select } from '@trezor/components';
 import { UseFormMethods, Control, Controller } from 'react-hook-form';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
-import type { Account } from '@wallet-types';
-import { useAccountAddressDictionary } from '@wallet-hooks/useAccounts';
+import type { Account } from 'src/types/wallet';
+import { useAccountAddressDictionary } from 'src/hooks/wallet/useAccounts';
 import type { MenuPlacement } from 'react-select';
 
 const AddressWrapper = styled.div`

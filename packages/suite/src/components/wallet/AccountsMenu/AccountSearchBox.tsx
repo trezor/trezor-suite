@@ -1,7 +1,7 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 import { useTheme, Icon, Input, CoinLogo } from '@trezor/components';
-import { useSelector, useAccountSearch, useTranslation } from '@suite-hooks';
+import { useSelector, useAccountSearch, useTranslation } from 'src/hooks/suite';
 
 const Wrapper = styled.div`
     background: ${props => props.theme.BG_WHITE};

@@ -12,13 +12,13 @@ import {
 } from '@trezor/components';
 import { Translation } from '..';
 import { ModalEnvironment } from './ModalEnvironment';
-import { useModalTarget } from '@suite-support/ModalContext';
+import { useModalTarget } from 'src/support/suite/ModalContext';
 import { Modal } from '.';
-import { useDeviceModel } from '@suite-hooks/useDeviceModel';
-import { selectIsActionAbortable } from '@suite-reducers/suiteReducer';
-import { useSelector } from '@suite-hooks/useSelector';
+import { useDeviceModel } from 'src/hooks/suite/useDeviceModel';
+import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
+import { useSelector } from 'src/hooks/suite/useSelector';
 import { useIntl } from 'react-intl';
-import messages from '@suite/support/messages';
+import messages from 'src/support/messages';
 
 const StyledTrezorModal = styled(TrezorModal)`
     ${Modal.Header} {

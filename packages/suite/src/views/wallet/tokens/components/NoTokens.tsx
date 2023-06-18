@@ -1,9 +1,9 @@
 import React from 'react';
 import { Button } from '@trezor/components';
-import { AccountExceptionLayout } from '@wallet-components';
-import { Translation } from '@suite-components';
-import * as modalActions from '@suite-actions/modalActions';
-import { useActions, useSelector } from '@suite-hooks';
+import { AccountExceptionLayout } from 'src/components/wallet';
+import { Translation } from 'src/components/suite';
+import * as modalActions from 'src/actions/suite/modalActions';
+import { useActions, useSelector } from 'src/hooks/suite';
 
 export const NoTokens = () => {
     const { selectedAccount } = useSelector(state => ({

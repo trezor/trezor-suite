@@ -1,13 +1,13 @@
-import { Account } from '@wallet-types';
+import { Account } from 'src/types/wallet';
 import {
     SellFiatTrade,
     SellFiatTradeQuoteRequest,
     SellListResponse,
     SellProviderInfo,
 } from 'invity-api';
-import { Dispatch } from '@suite-types';
-import * as modalActions from '@suite-actions/modalActions';
-import invityAPI from '@suite-services/invityAPI';
+import { Dispatch } from 'src/types/suite';
+import * as modalActions from 'src/actions/suite/modalActions';
+import invityAPI from 'src/services/suite/invityAPI';
 import { COINMARKET_COMMON, COINMARKET_SELL } from './constants';
 
 export interface SellInfo {

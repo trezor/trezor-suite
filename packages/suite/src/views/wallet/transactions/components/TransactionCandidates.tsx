@@ -2,13 +2,13 @@ import React from 'react';
 import styled from 'styled-components';
 import { resolveStaticPath } from '@suite-common/suite-utils';
 import { Card, SVG_IMAGES, variables } from '@trezor/components';
-import { useSelector } from '@suite-hooks';
-import { selectCoinjoinAccountByKey } from '@wallet-reducers/coinjoinReducer';
-import { SECONDARY_PANEL_HEIGHT } from '@suite-components/AppNavigation';
-import { TransactionTypeIcon } from '@wallet-components/TransactionItem/components/TransactionTypeIcon';
-import { TxTypeIconWrapper } from '@wallet-components/TransactionItem/components/CommonComponents';
-import { Translation } from '@suite-components/Translation';
-import TooltipSymbol from '@suite-components/TooltipSymbol';
+import { useSelector } from 'src/hooks/suite';
+import { selectCoinjoinAccountByKey } from 'src/reducers/wallet/coinjoinReducer';
+import { SECONDARY_PANEL_HEIGHT } from 'src/components/suite/AppNavigation';
+import { TransactionTypeIcon } from 'src/components/wallet/TransactionItem/components/TransactionTypeIcon';
+import { TxTypeIconWrapper } from 'src/components/wallet/TransactionItem/components/CommonComponents';
+import { Translation } from 'src/components/suite/Translation';
+import TooltipSymbol from 'src/components/suite/TooltipSymbol';
 
 const Header = styled.div`
     position: sticky;

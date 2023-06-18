@@ -6,11 +6,11 @@ import {
     CoinmarketPaymentType,
     CoinmarketProviderInfo,
     CoinmarketTransactionId,
-} from '@wallet-components';
-import { Account } from '@wallet-types';
-import { Translation, AccountLabeling } from '@suite-components';
-import { CoinmarketCryptoAmount } from '@wallet-views/coinmarket/common/CoinmarketCryptoAmount';
-import { CoinmarketFiatAmount } from '@wallet-views/coinmarket/common/CoinmarketFiatAmount';
+} from 'src/components/wallet';
+import { Account } from 'src/types/wallet';
+import { Translation, AccountLabeling } from 'src/components/suite';
+import { CoinmarketCryptoAmount } from 'src/views/wallet/coinmarket/common/CoinmarketCryptoAmount';
+import { CoinmarketFiatAmount } from 'src/views/wallet/coinmarket/common/CoinmarketFiatAmount';
 
 interface Props {
     selectedQuote: BuyTrade;

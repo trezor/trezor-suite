@@ -1,11 +1,11 @@
 import React, { useCallback } from 'react';
 import { analytics, EventType } from '@trezor/suite-analytics';
-import { Account, Network } from '@wallet-types';
+import { Account, Network } from 'src/types/wallet';
 import { UnavailableCapability } from '@trezor/connect';
-import { Translation } from '@suite-components';
+import { Translation } from 'src/components/suite';
 import { AddCoinjoinAccountButton } from './AddCoinjoinAccountButton';
 import { AddButton } from './AddButton';
-import { useAccountSearch, useSelector } from '@suite-hooks';
+import { useAccountSearch, useSelector } from 'src/hooks/suite';
 
 const verifyAvailability = ({
     emptyAccounts,

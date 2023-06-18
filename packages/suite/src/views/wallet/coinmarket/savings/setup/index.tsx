@@ -1,16 +1,16 @@
 import React from 'react';
-import { withCoinmarket, WithSelectedAccountLoadedProps } from '@wallet-components';
+import { withCoinmarket, WithSelectedAccountLoadedProps } from 'src/components/wallet';
 import styled from 'styled-components';
 import { Button, variables, Select, Flag } from '@trezor/components';
-import { useSavingsSetup } from '@wallet-hooks/useCoinmarketSavingsSetup';
+import { useSavingsSetup } from 'src/hooks/wallet/useCoinmarketSavingsSetup';
 import { Controller } from 'react-hook-form';
-import { Translation } from '@suite-components';
-import regional from '@wallet-constants/coinmarket/regional';
-import type { CountryOption } from '@wallet-types/coinmarketCommonTypes';
-import { getCountryLabelParts } from '@wallet-utils/coinmarket/coinmarketUtils';
+import { Translation } from 'src/components/suite';
+import regional from 'src/constants/wallet/coinmarket/regional';
+import type { CountryOption } from 'src/types/wallet/coinmarketCommonTypes';
+import { getCountryLabelParts } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import FiatAmount from './components/FiatAmount';
 import Summary from './components/Summary';
-import { NoProviders, StyledSelectBar } from '@wallet-views/coinmarket';
+import { NoProviders, StyledSelectBar } from 'src/views/wallet/coinmarket';
 import { getTitleForNetwork } from '@suite-common/wallet-utils';
 import { AllFeesIncluded } from '../AllFeesIncluded';
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { useSendFormContext } from '@wallet-hooks';
+import { useSendFormContext } from 'src/hooks/wallet';
 import { variables } from '@trezor/components';
 
 import { BitcoinOptions } from './components/BitcoinOptions';

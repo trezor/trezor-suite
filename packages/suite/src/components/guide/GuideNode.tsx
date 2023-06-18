@@ -5,10 +5,10 @@ import { analytics, EventType } from '@trezor/suite-analytics';
 import { resolveStaticPath } from '@suite-common/suite-utils';
 
 import { Icon, variables, useTheme } from '@trezor/components';
-import { useActions, useSelector } from '@suite-hooks';
-import * as guideActions from '@suite-actions/guideActions';
+import { useActions, useSelector } from 'src/hooks/suite';
+import * as guideActions from 'src/actions/suite/guideActions';
 import { GuideNode as GuideNodeType } from '@suite-common/suite-types';
-import { getNodeTitle } from '@suite-utils/guide';
+import { getNodeTitle } from 'src/utils/suite/guide';
 
 const NodeButton = styled.button`
     display: flex;

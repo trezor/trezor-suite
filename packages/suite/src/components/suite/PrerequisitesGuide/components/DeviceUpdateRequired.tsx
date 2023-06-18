@@ -1,9 +1,9 @@
 import React from 'react';
 import { Button } from '@trezor/components';
 
-import { Translation, TroubleshootingTips } from '@suite-components';
-import { useActions } from '@suite-hooks';
-import * as routerActions from '@suite-actions/routerActions';
+import { Translation, TroubleshootingTips } from 'src/components/suite';
+import { useActions } from 'src/hooks/suite';
+import * as routerActions from 'src/actions/suite/routerActions';
 
 export const DeviceUpdateRequired = () => {
     const { goto } = useActions({ goto: routerActions.goto });

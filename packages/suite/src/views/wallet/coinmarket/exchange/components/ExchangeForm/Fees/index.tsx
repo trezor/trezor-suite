@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Fees } from '@wallet-components/Fees';
-import { useCoinmarketExchangeFormContext } from '@wallet-hooks/useCoinmarketExchangeForm';
+import { Fees } from 'src/components/wallet/Fees';
+import { useCoinmarketExchangeFormContext } from 'src/hooks/wallet/useCoinmarketExchangeForm';
 
 const StyledCard = styled.div`
     display: flex;

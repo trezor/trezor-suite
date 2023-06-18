@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
-import { useDispatch, useSelector } from '@suite-hooks';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import styled from 'styled-components';
 
 import { Account } from '@suite-common/wallet-types';
-import { Translation, TrezorLink } from '@suite-components';
-import { Error } from '@suite-components/Error';
+import { Translation, TrezorLink } from 'src/components/suite';
+import { Error } from 'src/components/suite/Error';
 import { Button, Card, Checkbox, Link, Note, Tooltip, variables } from '@trezor/components';
 import { DATA_TOS_URL, ZKSNACKS_TERMS_URL } from '@trezor/urls';
-import { startCoinjoinSession } from '@wallet-actions/coinjoinAccountActions';
+import { startCoinjoinSession } from 'src/actions/wallet/coinjoinAccountActions';
 import {
     selectCurrentTargetAnonymity,
     selectRoundsNeededByAccountKey,
@@ -15,11 +15,11 @@ import {
     selectCoinjoinClient,
     selectCoinjoinAccountByKey,
     selectDefaultMaxMiningFeeByAccountKey,
-} from '@wallet-reducers/coinjoinReducer';
-import { useCoinjoinSessionBlockers } from '@suite/hooks/coinjoin/useCoinjoinSessionBlockers';
-import { getMaxRounds, getSkipRounds } from '@wallet-utils/coinjoinUtils';
+} from 'src/reducers/wallet/coinjoinReducer';
+import { useCoinjoinSessionBlockers } from 'src/hooks/coinjoin/useCoinjoinSessionBlockers';
+import { getMaxRounds, getSkipRounds } from 'src/utils/wallet/coinjoinUtils';
 import { Tile, TileProps } from './Tile';
-import { SKIP_ROUNDS_BY_DEFAULT } from '@suite/services/coinjoin';
+import { SKIP_ROUNDS_BY_DEFAULT } from 'src/services/coinjoin';
 
 const StyledCard = styled(Card)`
     padding: 24px;

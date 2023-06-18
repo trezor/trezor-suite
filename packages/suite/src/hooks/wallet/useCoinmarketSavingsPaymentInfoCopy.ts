@@ -1,6 +1,6 @@
 import type { SavingsPaymentInfo } from 'invity-api';
 import { copyToClipboard } from '@trezor/dom-utils';
-import { useActions } from '@suite-hooks';
+import { useActions } from 'src/hooks/suite';
 import { notificationsActions } from '@suite-common/toast-notifications';
 
 export const useCoinmarketSavingsPaymentInfoCopy = (paymentInfo?: SavingsPaymentInfo) => {

@@ -1,4 +1,4 @@
-import { Account } from '@wallet-types';
+import { Account } from 'src/types/wallet';
 
 export const BTC_ACCOUNT: Account = {
     networkType: 'bitcoin',

@@ -1,17 +1,17 @@
 import React, { useEffect } from 'react';
 
-import { SuiteLayout } from '@suite-components';
+import { SuiteLayout } from 'src/components/suite';
 import InitialLoading from './components/InitialLoading';
 import DatabaseUpgradeModal from './components/DatabaseUpgradeModal';
 import PrerequisiteScreen from './components/PrerequisiteScreen';
-import { useDiscovery, useSelector, useActions } from '@suite-hooks';
-import { Onboarding } from '@onboarding-views';
-import { getPrerequisites } from '@suite-utils/prerequisites';
-import ErrorPage from '@suite-views/error';
-import { useGuideKeyboard } from '@guide-hooks';
-import { init } from '@suite-actions/initAction';
+import { useDiscovery, useSelector, useActions } from 'src/hooks/suite';
+import { Onboarding } from 'src/views/onboarding';
+import { getPrerequisites } from 'src/utils/suite/prerequisites';
+import ErrorPage from 'src/views/suite/error';
+import { useGuideKeyboard } from 'src/hooks/guide';
+import { init } from 'src/actions/suite/initAction';
 
-import type { AppState } from '@suite-types';
+import type { AppState } from 'src/types/suite';
 
 const getFullscreenApp = (route: AppState['router']['route']) => {
     switch (route?.app) {

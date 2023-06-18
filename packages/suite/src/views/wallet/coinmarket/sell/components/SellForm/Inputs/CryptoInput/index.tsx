@@ -1,31 +1,31 @@
 import React, { useMemo } from 'react';
 import styled from 'styled-components';
-import invityAPI from '@suite-services/invityAPI';
-import { FormattedCryptoAmount, Translation, NumberInput } from '@suite-components';
+import invityAPI from 'src/services/suite/invityAPI';
+import { FormattedCryptoAmount, Translation, NumberInput } from 'src/components/suite';
 import { Select, CoinLogo } from '@trezor/components';
 import Bignumber from 'bignumber.js';
 import { Controller } from 'react-hook-form';
-import { useCoinmarketSellFormContext } from '@wallet-hooks/useCoinmarketSellForm';
+import { useCoinmarketSellFormContext } from 'src/hooks/wallet/useCoinmarketSellForm';
 import {
     amountToSatoshi,
     isDecimalsValid,
     isInteger,
     getInputState,
 } from '@suite-common/wallet-utils';
-import { InputError } from '@wallet-components';
-import { MAX_LENGTH } from '@suite-constants/inputs';
+import { InputError } from 'src/components/wallet';
+import { MAX_LENGTH } from 'src/constants/suite/inputs';
 import {
     CRYPTO_CURRENCY_SELECT,
     CRYPTO_INPUT,
     CRYPTO_TOKEN,
     FIAT_INPUT,
-} from '@suite/types/wallet/coinmarketSellForm';
+} from 'src/types/wallet/coinmarketSellForm';
 import {
     getSendCryptoOptions,
     invityApiSymbolToSymbol,
-} from '@suite/utils/wallet/coinmarket/coinmarketUtils';
-import { useBitcoinAmountUnit } from '@wallet-hooks/useBitcoinAmountUnit';
-import { TypedValidationRules } from '@wallet-types/form';
+} from 'src/utils/wallet/coinmarket/coinmarketUtils';
+import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
+import { TypedValidationRules } from 'src/types/wallet/form';
 
 interface CryptoInputProps {
     activeInput: typeof FIAT_INPUT | typeof CRYPTO_INPUT;

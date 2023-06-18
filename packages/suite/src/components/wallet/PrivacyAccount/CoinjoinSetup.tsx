@@ -3,14 +3,14 @@ import { useDispatch } from 'react-redux';
 import { AnimatePresence, motion } from 'framer-motion';
 import styled from 'styled-components';
 
-import { Translation } from '@suite-components';
-import { useSelector } from '@suite-hooks/useSelector';
+import { Translation } from 'src/components/suite';
+import { useSelector } from 'src/hooks/suite/useSelector';
 import { Card, RadioButton, motionAnimation, motionEasing, Warning } from '@trezor/components';
-import { coinjoinAccountUpdateSetupOption } from '@wallet-actions/coinjoinAccountActions';
-import { AnonymityLevelSetup } from '@wallet-components/PrivacyAccount/AnonymityLevelSetup';
-import { MaxMiningFeeSetup } from '@wallet-components/PrivacyAccount/MaxMiningFeeSetup';
+import { coinjoinAccountUpdateSetupOption } from 'src/actions/wallet/coinjoinAccountActions';
+import { AnonymityLevelSetup } from 'src/components/wallet/PrivacyAccount/AnonymityLevelSetup';
+import { MaxMiningFeeSetup } from 'src/components/wallet/PrivacyAccount/MaxMiningFeeSetup';
 import { SkipRoundsSetup } from './SkipRoundsSetup';
-import { selectCoinjoinAccountByKey } from '@wallet-reducers/coinjoinReducer';
+import { selectCoinjoinAccountByKey } from 'src/reducers/wallet/coinjoinReducer';
 
 const SetupContainer = styled.div`
     padding: 18px;

@@ -1,11 +1,11 @@
-import { configureStore } from '@suite/support/tests/configureStore';
+import { configureStore } from 'src/support/tests/configureStore';
 
-import onboardingReducer from '@onboarding-reducers/onboardingReducer';
-import suiteReducer from '@suite-reducers/suiteReducer';
-import recoveryReducer from '@recovery-reducers/recoveryReducer';
+import onboardingReducer from 'src/reducers/onboarding/onboardingReducer';
+import suiteReducer from 'src/reducers/suite/suiteReducer';
+import recoveryReducer from 'src/reducers/recovery/recoveryReducer';
 import fixtures from '../__fixtures__/onboardingActions';
 
-import { Action } from '@suite-types';
+import { Action } from 'src/types/suite';
 
 // todo fighting with typescript here. How to keep string literal being exported from fixtures and not converted
 // to string? if exported as const, it makes all properties readonly and thus not assignable to reducer which

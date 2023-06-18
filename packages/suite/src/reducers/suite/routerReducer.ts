@@ -1,8 +1,8 @@
-import { RouterAppWithParams, SettingsBackRoute } from '@suite-constants/routes';
-import { ROUTER } from '@suite-actions/constants';
-import { Action } from '@suite-types';
+import { RouterAppWithParams, SettingsBackRoute } from 'src/constants/suite/routes';
+import { ROUTER } from 'src/actions/suite/constants';
+import { Action } from 'src/types/suite';
 
-import type { AnchorType } from '@suite-constants/anchors';
+import type { AnchorType } from 'src/constants/suite/anchors';
 
 export type RouterState = {
     loaded: boolean;

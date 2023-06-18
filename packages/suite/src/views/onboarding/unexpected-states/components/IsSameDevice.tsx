@@ -1,7 +1,7 @@
 import React from 'react';
-import { OnboardingButtonAlt, OnboardingStepBox } from '@onboarding-components';
-import { Translation } from '@suite-components';
-import { useOnboarding } from '@suite-hooks';
+import { OnboardingButtonAlt, OnboardingStepBox } from 'src/components/onboarding';
+import { Translation } from 'src/components/suite';
+import { useOnboarding } from 'src/hooks/suite';
 
 const IsSameDevice = () => {
     const { resetOnboarding, enableOnboardingReducer } = useOnboarding();

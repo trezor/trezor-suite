@@ -2,13 +2,13 @@ import React from 'react';
 import styled from 'styled-components';
 
 import { Switch } from '@trezor/components';
-import { COINJOIN_NETWORKS } from '@suite/services/coinjoin';
-import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@suite-components/Settings';
-import * as coinjoinClientActions from '@wallet-actions/coinjoinClientActions';
-import { useSelector, useActions } from '@suite-hooks';
-import { CoinjoinServerEnvironment } from '@wallet-types/coinjoin';
+import { COINJOIN_NETWORKS } from 'src/services/coinjoin';
+import { ActionColumn, ActionSelect, SectionItem, TextColumn } from 'src/components/suite/Settings';
+import * as coinjoinClientActions from 'src/actions/wallet/coinjoinClientActions';
+import { useSelector, useActions } from 'src/hooks/suite';
+import { CoinjoinServerEnvironment } from 'src/types/wallet/coinjoin';
 import { NetworkSymbol, networks } from '@suite-common/wallet-config';
-import { reloadApp } from '@suite-utils/reload';
+import { reloadApp } from 'src/utils/suite/reload';
 
 const StyledActionSelect = styled(ActionSelect)`
     min-width: 256px;

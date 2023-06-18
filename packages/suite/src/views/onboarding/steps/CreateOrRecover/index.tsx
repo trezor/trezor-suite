@@ -1,14 +1,14 @@
 import React from 'react';
-import { Translation } from '@suite-components';
-import { useOnboarding } from '@suite-hooks';
-import * as STEP from '@onboarding-constants/steps';
+import { Translation } from 'src/components/suite';
+import { useOnboarding } from 'src/hooks/suite';
+import * as STEP from 'src/constants/onboarding/steps';
 import {
     Option,
     OptionWrapper,
     OptionsWrapper,
     OptionsDivider,
     OnboardingStepBox,
-} from '@onboarding-components';
+} from 'src/components/onboarding';
 
 const CreateOrRecoverStep = () => {
     const { goToNextStep, addPath, updateAnalytics } = useOnboarding();

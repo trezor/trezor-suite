@@ -1,7 +1,7 @@
 import React from 'react';
 
-import { configureStore } from '@suite/support/tests/configureStore';
-import { renderWithProviders, findByTestId } from '@suite/support/tests/hooksHelper';
+import { configureStore } from 'src/support/tests/configureStore';
+import { renderWithProviders, findByTestId } from 'src/support/tests/hooksHelper';
 
 import * as envUtils from '@trezor/env-utils';
 
@@ -10,7 +10,7 @@ import Preloader from '..';
 // react-svg will not work
 jest.mock('react-svg', () => ({ ReactSVG: () => 'SVG' }));
 // render only Translation.id in data-test attribute
-jest.mock('@suite-components/Translation', () => ({
+jest.mock('src/components/suite/Translation', () => ({
     Translation: ({ id }: any) => <div data-test={id}>{id}</div>,
 }));
 
@@ -18,7 +18,7 @@ jest.mock('@suite-components/Translation', () => ({
 //     __esModule: true, // export as module
 //     default: ({ children }: any) => <div data-test="box">{children}</div>,
 // }));
-// jest.mock('@onboarding-components/DeviceAnimation', () => ({
+// jest.mock('src/components/onboarding/DeviceAnimation', () => ({
 //     __esModule: true, // export as module
 //     default: ({ children }: any) => <div data-test="box">{children}</div>,
 // }));

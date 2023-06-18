@@ -7,16 +7,16 @@ import {
     KYCInProgress,
     KYCFailed,
     KYCError,
-} from '@wallet-components';
+} from 'src/components/wallet';
 import { Button, SelectBar, variables } from '@trezor/components';
-import { useSavingsSetupContinue } from '@wallet-hooks/useCoinmarketSavingsSetupContinue';
-import { Translation } from '@suite-components';
-import { AddressOptions } from '@wallet-views/coinmarket/common/AddressOptions';
+import { useSavingsSetupContinue } from 'src/hooks/wallet/useCoinmarketSavingsSetupContinue';
+import { Translation } from 'src/components/suite';
+import { AddressOptions } from 'src/views/wallet/coinmarket/common/AddressOptions';
 import FiatAmount from '../components/FiatAmount';
 import Summary from '../components/Summary';
 import { AllFeesIncluded } from '../../AllFeesIncluded';
 import { ProvidedBy } from '../../ProvidedBy';
-import ReauthorizationCard from '@wallet-components/CoinmarketReauthorizationCard';
+import ReauthorizationCard from 'src/components/wallet/CoinmarketReauthorizationCard';
 
 const Header = styled.div`
     font-weight: 500;

@@ -1,9 +1,9 @@
-import { configureStore } from '@suite/support/tests/configureStore';
+import { configureStore } from 'src/support/tests/configureStore';
 
-import coinmarketReducer from '@wallet-reducers/coinmarketReducer';
+import coinmarketReducer from 'src/reducers/wallet/coinmarketReducer';
 
 import * as coinmarketExchangeActions from '../coinmarketExchangeActions';
-import invityAPI from '@suite-services/invityAPI';
+import invityAPI from 'src/services/suite/invityAPI';
 import { ExchangeCoinInfo, ExchangeTrade, ExchangeTradeQuoteRequest } from 'invity-api';
 
 export const getInitialState = () => ({

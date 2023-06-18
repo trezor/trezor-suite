@@ -1,5 +1,5 @@
-import { ACCOUNT_SEARCH } from '@wallet-actions/constants';
-import type { Account } from '@wallet-types';
+import { ACCOUNT_SEARCH } from 'src/actions/wallet/constants';
+import type { Account } from 'src/types/wallet';
 
 export type AccountSearchAction =
     | {

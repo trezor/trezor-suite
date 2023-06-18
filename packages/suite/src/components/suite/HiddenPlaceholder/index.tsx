@@ -1,6 +1,6 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
-import { useSelector } from '@suite-hooks';
+import { useSelector } from 'src/hooks/suite';
 
 interface WrapperProps {
     intensity: number;

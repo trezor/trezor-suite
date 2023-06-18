@@ -1,11 +1,11 @@
 import React from 'react';
 
 import styled from 'styled-components';
-import { HiddenPlaceholder, Sign } from '@suite-components';
-import { NetworkSymbol } from '@wallet-types';
-import { NETWORKS } from '@wallet-config';
-import { useSelector } from '@suite-hooks';
-import { useBitcoinAmountUnit } from '@wallet-hooks/useBitcoinAmountUnit';
+import { HiddenPlaceholder, Sign } from 'src/components/suite';
+import { NetworkSymbol } from 'src/types/wallet';
+import { NETWORKS } from 'src/config/wallet';
+import { useSelector } from 'src/hooks/suite';
+import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 
 import { SignValue } from '@suite-common/suite-types';
 import {

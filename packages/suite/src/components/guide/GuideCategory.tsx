@@ -2,11 +2,11 @@ import React from 'react';
 import styled from 'styled-components';
 
 import { variables } from '@trezor/components';
-import { Header, Content, ViewWrapper, GuideNode, GuideCategories } from '@guide-components';
-import { useActions, useSelector } from '@suite-hooks';
-import { Translation } from '@suite-components';
-import * as guideActions from '@suite-actions/guideActions';
-import { getNodeTitle } from '@suite-utils/guide';
+import { Header, Content, ViewWrapper, GuideNode, GuideCategories } from 'src/components/guide';
+import { useActions, useSelector } from 'src/hooks/suite';
+import { Translation } from 'src/components/suite';
+import * as guideActions from 'src/actions/suite/guideActions';
+import { getNodeTitle } from 'src/utils/suite/guide';
 
 const Section = styled.div`
     margin-bottom: 20px;

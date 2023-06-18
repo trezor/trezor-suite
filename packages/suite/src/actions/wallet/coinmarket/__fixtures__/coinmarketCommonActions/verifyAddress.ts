@@ -1,6 +1,6 @@
-import { MODAL } from '@suite-actions/constants';
+import { MODAL } from 'src/actions/suite/constants';
 import { BTC_ACCOUNT, ETH_ACCOUNT, XRP_ACCOUNT } from './accounts';
-import { COINMARKET_BUY, COINMARKET_EXCHANGE } from '@wallet-actions/constants';
+import { COINMARKET_BUY, COINMARKET_EXCHANGE } from 'src/actions/wallet/constants';
 
 const { getSuiteDevice } = global.JestMocks;
 const UNAVAILABLE_DEVICE = getSuiteDevice({ available: false });

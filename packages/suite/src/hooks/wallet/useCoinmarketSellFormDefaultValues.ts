@@ -1,10 +1,10 @@
 import { useMemo } from 'react';
-import regional from '@wallet-constants/coinmarket/regional';
-import { SellInfo } from '@wallet-actions/coinmarketSellActions';
+import regional from 'src/constants/wallet/coinmarket/regional';
+import { SellInfo } from 'src/actions/wallet/coinmarketSellActions';
 import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants';
-import { buildOption } from '@wallet-utils/coinmarket/coinmarketUtils';
-import { Account } from '@wallet-types';
-import { SellFormState } from '@wallet-types/coinmarketSellForm';
+import { buildOption } from 'src/utils/wallet/coinmarket/coinmarketUtils';
+import { Account } from 'src/types/wallet';
+import { SellFormState } from 'src/types/wallet/coinmarketSellForm';
 
 export const useCoinmarketSellFormDefaultValues = (
     symbol: Account['symbol'],

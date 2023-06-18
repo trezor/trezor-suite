@@ -1,10 +1,10 @@
 import React from 'react';
-import { Translation } from '@suite-components';
-import { OnboardingButtonCta } from '@onboarding-components';
-import { useOnboarding, useSelector } from '@suite-hooks';
+import { Translation } from 'src/components/suite';
+import { OnboardingButtonCta } from 'src/components/onboarding';
+import { useOnboarding, useSelector } from 'src/hooks/suite';
 import { BasicSettingsStepBox } from './BasicSettingsStepBox';
 import { AdvancedSetup } from './AdvancedSetup';
-import { getIsTorLoading } from '@suite-utils/tor';
+import { getIsTorLoading } from 'src/utils/suite/tor';
 
 const BasicSettings = () => {
     const { noNetworkEnabled, isTorLoading } = useSelector(state => ({

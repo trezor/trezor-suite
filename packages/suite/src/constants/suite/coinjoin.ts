@@ -1,5 +1,5 @@
 import { TranslationKey } from '@suite-common/intl-types';
-import { RoundPhase, SessionPhase } from '@wallet-types/coinjoin';
+import { RoundPhase, SessionPhase } from 'src/types/wallet/coinjoin';
 
 export const ROUND_PHASE_MESSAGES: Record<RoundPhase, TranslationKey> = {
     [RoundPhase.InputRegistration]: 'TR_COINJOIN_PHASE_0_MESSAGE',

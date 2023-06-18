@@ -2,7 +2,7 @@ import React, { useEffect, useCallback } from 'react';
 import styled from 'styled-components';
 import { HELP_CENTER_ADVANCED_RECOVERY_URL } from '@trezor/urls';
 import { Button, ButtonPin, KEYBOARD_CODE } from '@trezor/components';
-import { Translation, TrezorLink, DeviceMatrixExplanation } from '@suite-components';
+import { Translation, TrezorLink, DeviceMatrixExplanation } from 'src/components/suite';
 import { DeviceModel } from '@trezor/device-utils';
 import { createTimeoutPromise } from '@trezor/utils';
 import TrezorConnect, { UI } from '@trezor/connect';

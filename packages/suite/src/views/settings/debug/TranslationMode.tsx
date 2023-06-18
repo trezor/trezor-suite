@@ -1,10 +1,10 @@
 import React from 'react';
 
 import { Switch } from '@trezor/components';
-import { ActionColumn, SectionItem, TextColumn } from '@suite-components/Settings';
-import { isTranslationMode, setTranslationMode } from '@suite-utils/l10n';
-import { useAnchor } from '@suite-hooks/useAnchor';
-import { SettingsAnchor } from '@suite-constants/anchors';
+import { ActionColumn, SectionItem, TextColumn } from 'src/components/suite/Settings';
+import { isTranslationMode, setTranslationMode } from 'src/utils/suite/l10n';
+import { useAnchor } from 'src/hooks/suite/useAnchor';
+import { SettingsAnchor } from 'src/constants/suite/anchors';
 
 export const TranslationMode = () => {
     const { anchorRef, shouldHighlight } = useAnchor(SettingsAnchor.TranslationMode);

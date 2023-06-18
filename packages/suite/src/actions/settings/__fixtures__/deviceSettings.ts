@@ -1,5 +1,5 @@
 import * as deviceSettingsActions from '../deviceSettingsActions';
-import { SUITE } from '@suite-actions/constants';
+import { SUITE } from 'src/actions/suite/constants';
 import { notificationsActions } from '@suite-common/toast-notifications';
 
 const { getSuiteDevice } = global.JestMocks;

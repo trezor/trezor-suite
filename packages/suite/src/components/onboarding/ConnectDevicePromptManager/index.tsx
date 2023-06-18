@@ -4,11 +4,11 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import { useSelector } from '@suite-hooks';
-import { ConnectDevicePrompt } from '@suite-components';
-import { isWebUsb } from '@suite-utils/transport';
-import { getConnectedDeviceStatus } from '@suite-utils/device';
-import type { TrezorDevice } from '@suite-types';
+import { useSelector } from 'src/hooks/suite';
+import { ConnectDevicePrompt } from 'src/components/suite';
+import { isWebUsb } from 'src/utils/suite/transport';
+import { getConnectedDeviceStatus } from 'src/utils/suite/device';
+import type { TrezorDevice } from 'src/types/suite';
 
 // todo: these should be replaced
 import { NoTransport } from './components/NoTransport';

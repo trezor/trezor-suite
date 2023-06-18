@@ -1,8 +1,8 @@
 import React, { useState, useRef } from 'react';
 
 import styled, { css } from 'styled-components';
-import { Translation } from '@suite-components';
-import { useGraph, useLocales } from '@suite-hooks';
+import { Translation } from 'src/components/suite';
+import { useGraph, useLocales } from 'src/hooks/suite';
 import {
     startOfDay,
     startOfToday,

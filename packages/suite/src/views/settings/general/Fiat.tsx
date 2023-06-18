@@ -1,12 +1,12 @@
 import React from 'react';
 
-import { FIAT } from '@suite-config';
-import { Translation } from '@suite-components';
-import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@suite-components/Settings';
-import { useSelector, useActions } from '@suite-hooks';
-import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
-import { useAnchor } from '@suite-hooks/useAnchor';
-import { SettingsAnchor } from '@suite-constants/anchors';
+import { FIAT } from 'src/config/suite';
+import { Translation } from 'src/components/suite';
+import { ActionColumn, ActionSelect, SectionItem, TextColumn } from 'src/components/suite/Settings';
+import { useSelector, useActions } from 'src/hooks/suite';
+import * as walletSettingsActions from 'src/actions/settings/walletSettingsActions';
+import { useAnchor } from 'src/hooks/suite/useAnchor';
+import { SettingsAnchor } from 'src/constants/suite/anchors';
 
 import { analytics, EventType } from '@trezor/suite-analytics';
 import { FiatCurrencyCode } from '@suite-common/suite-config';

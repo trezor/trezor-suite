@@ -1,5 +1,5 @@
-import { MODAL } from '@suite-actions/constants';
-import type { AppState } from '@suite-types';
+import { MODAL } from 'src/actions/suite/constants';
+import type { AppState } from 'src/types/suite';
 import type { ModalProps } from '../Modal';
 
 /**

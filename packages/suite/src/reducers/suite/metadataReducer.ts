@@ -1,10 +1,10 @@
 import produce from 'immer';
 import { createSelector } from '@reduxjs/toolkit';
 
-import { STORAGE, METADATA } from '@suite-actions/constants';
-import { Action } from '@suite-types';
-import { MetadataState } from '@suite-types/metadata';
-import { selectDevice } from '@suite-reducers/suiteReducer';
+import { STORAGE, METADATA } from 'src/actions/suite/constants';
+import { Action } from 'src/types/suite';
+import { MetadataState } from 'src/types/suite/metadata';
+import { selectDevice } from 'src/reducers/suite/suiteReducer';
 
 export const initialState: MetadataState = {
     // is Suite trying to load metadata (get master key -> sync cloud)?

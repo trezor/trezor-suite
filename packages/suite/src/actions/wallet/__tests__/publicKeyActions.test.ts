@@ -4,7 +4,7 @@ import { combineReducers, createReducer } from '@reduxjs/toolkit';
 import { configureMockStore, testMocks } from '@suite-common/test-utils';
 import { connectInitThunk } from '@suite-common/connect-init';
 import fixtures from '../__fixtures__/publicKeyActions';
-import { SuiteState } from '@suite-reducers/suiteReducer';
+import { SuiteState } from 'src/reducers/suite/suiteReducer';
 
 jest.mock('@trezor/connect', () => {
     let fixture: any;

@@ -1,14 +1,14 @@
-import { configureStore } from '@suite/support/tests/configureStore';
+import { configureStore } from 'src/support/tests/configureStore';
 
-import coinmarketReducer, { ComposedTransactionInfo } from '@wallet-reducers/coinmarketReducer';
-import selectedAccountReducer from '@wallet-reducers/selectedAccountReducer';
+import coinmarketReducer, { ComposedTransactionInfo } from 'src/reducers/wallet/coinmarketReducer';
+import selectedAccountReducer from 'src/reducers/wallet/selectedAccountReducer';
 import * as coinmarketCommonActions from '../coinmarketCommonActions';
 import { DEFAULT_STORE } from '../__fixtures__/coinmarketCommonActions/store';
 import {
     VERIFY_BUY_ADDRESS_FIXTURES,
     VERIFY_EXCHANGE_ADDRESS_FIXTURES,
 } from '../__fixtures__/coinmarketCommonActions/verifyAddress';
-import { transactionsReducer } from '@wallet-reducers';
+import { transactionsReducer } from 'src/reducers/wallet';
 
 export const getInitialState = (initial = {}) => ({
     ...DEFAULT_STORE,

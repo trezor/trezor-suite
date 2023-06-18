@@ -1,11 +1,11 @@
 import React from 'react';
 
-import { WalletLayout, WalletLayoutHeader } from '@wallet-components';
-import { useDevice, useSelector, useActions } from '@suite-hooks';
-import * as receiveActions from '@wallet-actions/receiveActions';
+import { WalletLayout, WalletLayoutHeader } from 'src/components/wallet';
+import { useDevice, useSelector, useActions } from 'src/hooks/suite';
+import * as receiveActions from 'src/actions/wallet/receiveActions';
 
 import { selectPendingAccountAddresses } from '@suite-common/wallet-core';
-import { selectDevice } from '@suite-reducers/suiteReducer';
+import { selectDevice } from 'src/reducers/suite/suiteReducer';
 
 import { FreshAddress } from './components/FreshAddress';
 import { UsedAddresses } from './components/UsedAddresses';

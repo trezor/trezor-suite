@@ -2,20 +2,20 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 
 import { variables } from '@trezor/components';
-import SuiteBanners from '@suite-components/Banners';
-import MenuSecondary from '@suite-components/MenuSecondary';
-import { Metadata } from '@suite-components';
-import { GuidePanel, GuideButton } from '@guide-components';
+import SuiteBanners from 'src/components/suite/Banners';
+import MenuSecondary from 'src/components/suite/MenuSecondary';
+import { Metadata } from 'src/components/suite';
+import { GuidePanel, GuideButton } from 'src/components/guide';
 import {
     DESKTOP_HORIZONTAL_PADDINGS,
     MAX_WIDTH,
     MOBILE_HORIZONTAL_PADDINGS,
-} from '@suite-constants/layout';
-import { DiscoveryProgress } from '@wallet-components';
+} from 'src/constants/suite/layout';
+import { DiscoveryProgress } from 'src/components/wallet';
 import { NavigationBar } from '../NavigationBar';
-import { useLayoutSize, useSelector, useDevice } from '@suite-hooks';
-import { useGuide } from '@guide-hooks';
-import { ModalContextProvider } from '@suite-support/ModalContext';
+import { useLayoutSize, useSelector, useDevice } from 'src/hooks/suite';
+import { useGuide } from 'src/hooks/guide';
+import { ModalContextProvider } from 'src/support/suite/ModalContext';
 import { ModalSwitcher } from '../ModalSwitcher/ModalSwitcher';
 import { LayoutContext, LayoutContextPayload } from './LayoutContext';
 import { useResetScroll } from './useResetScroll';

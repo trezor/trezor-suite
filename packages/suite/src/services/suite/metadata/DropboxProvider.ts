@@ -1,8 +1,11 @@
 import { Dropbox, DropboxAuth } from 'dropbox';
 import type { users } from 'dropbox';
-import { AbstractMetadataProvider } from '@suite-types/metadata';
-import { extractCredentialsFromAuthorizationFlow, getOauthReceiverUrl } from '@suite-utils/oauth';
-import { METADATA } from '@suite-actions/constants';
+import { AbstractMetadataProvider } from 'src/types/suite/metadata';
+import {
+    extractCredentialsFromAuthorizationFlow,
+    getOauthReceiverUrl,
+} from 'src/utils/suite/oauth';
+import { METADATA } from 'src/actions/suite/constants';
 
 import { getWeakRandomId } from '@trezor/utils';
 

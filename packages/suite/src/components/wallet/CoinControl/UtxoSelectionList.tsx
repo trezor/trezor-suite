@@ -3,11 +3,11 @@ import styled from 'styled-components';
 import { transparentize } from 'polished';
 
 import { selectAccountTransactionsWithNulls } from '@suite-common/wallet-core';
-import { useSelector } from '@suite-hooks';
+import { useSelector } from 'src/hooks/suite';
 import { Icon, variables, IconType } from '@trezor/components';
 import type { AccountUtxo } from '@trezor/connect';
-import { UtxoSelection } from '@wallet-components/CoinControl/UtxoSelection';
-import { useSendFormContext } from '@wallet-hooks';
+import { UtxoSelection } from 'src/components/wallet/CoinControl/UtxoSelection';
+import { useSendFormContext } from 'src/hooks/wallet';
 
 const Wrapper = styled.section`
     border-bottom: 1px solid ${({ theme }) => theme.STROKE_GREY};

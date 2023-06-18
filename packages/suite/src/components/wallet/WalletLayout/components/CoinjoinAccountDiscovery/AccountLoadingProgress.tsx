@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Progress } from '@trezor/components';
-import { CoinjoinService } from '@suite/services/coinjoin';
-import { selectSelectedAccount } from '@wallet-reducers/selectedAccountReducer';
-import { useSelector } from '@suite-hooks/useSelector';
-import { getAccountProgressHandle } from '@wallet-utils/coinjoinUtils';
+import { CoinjoinService } from 'src/services/coinjoin';
+import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
+import { useSelector } from 'src/hooks/suite/useSelector';
+import { getAccountProgressHandle } from 'src/utils/wallet/coinjoinUtils';
 
 const DiscoveryProgress = styled(Progress)`
     max-width: 440px;

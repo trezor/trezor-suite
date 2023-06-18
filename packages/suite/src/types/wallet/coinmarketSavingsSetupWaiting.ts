@@ -1,4 +1,4 @@
-import type { WithSelectedAccountLoadedProps } from '@wallet-components';
+import type { WithSelectedAccountLoadedProps } from 'src/components/wallet';
 
 export type UseCoinmarketSavingsSetupWaitingProps = WithSelectedAccountLoadedProps;
 

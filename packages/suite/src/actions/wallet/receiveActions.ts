@@ -1,15 +1,15 @@
 import TrezorConnect from '@trezor/connect';
-import { RECEIVE } from '@wallet-actions/constants';
-import * as modalActions from '@suite-actions/modalActions';
+import { RECEIVE } from 'src/actions/wallet/constants';
+import * as modalActions from 'src/actions/suite/modalActions';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { GetState, Dispatch } from '@suite-types';
+import { GetState, Dispatch } from 'src/types/suite';
 import {
     getStakingPath,
     getProtocolMagic,
     getNetworkId,
     getAddressType,
     getDerivationType,
-} from '@wallet-utils/cardanoUtils';
+} from 'src/utils/wallet/cardanoUtils';
 
 export type ReceiveAction =
     | { type: typeof RECEIVE.DISPOSE }

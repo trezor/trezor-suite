@@ -2,11 +2,11 @@ import React from 'react';
 
 import styled from 'styled-components';
 import { getUnixTime } from 'date-fns';
-import { Account } from '@wallet-types';
-import { TransactionsGraph, Translation, HiddenPlaceholder } from '@suite-components';
-import { useSelector, useActions } from '@suite-hooks';
-import * as graphActions from '@wallet-actions/graphActions';
-import { RangeSelector } from '@suite-components/TransactionsGraph/components/RangeSelector';
+import { Account } from 'src/types/wallet';
+import { TransactionsGraph, Translation, HiddenPlaceholder } from 'src/components/suite';
+import { useSelector, useActions } from 'src/hooks/suite';
+import * as graphActions from 'src/actions/wallet/graphActions';
+import { RangeSelector } from 'src/components/suite/TransactionsGraph/components/RangeSelector';
 
 import { calcTicks, calcTicksFromData } from '@suite-common/suite-utils';
 import { variables, Button, Card } from '@trezor/components';

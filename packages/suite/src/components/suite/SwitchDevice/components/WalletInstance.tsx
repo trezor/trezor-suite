@@ -4,17 +4,17 @@ import { analytics, EventType } from '@trezor/suite-analytics';
 
 import { Switch, Box, Icon, useTheme, variables } from '@trezor/components';
 import { getAllAccounts, getTotalFiatBalance } from '@suite-common/wallet-utils';
-import * as suiteActions from '@suite-actions/suiteActions';
+import * as suiteActions from 'src/actions/suite/suiteActions';
 import { useFormatters } from '@suite-common/formatters';
-import { selectDiscovery } from '@wallet-reducers/discoveryReducer';
+import { selectDiscovery } from 'src/reducers/wallet/discoveryReducer';
 import {
     WalletLabeling,
     Translation,
     MetadataLabeling,
     HiddenPlaceholder,
-} from '@suite-components';
-import { useSelector, useActions } from '@suite-hooks';
-import { TrezorDevice, AcquiredDevice } from '@suite-types';
+} from 'src/components/suite';
+import { useSelector, useActions } from 'src/hooks/suite';
+import { TrezorDevice, AcquiredDevice } from 'src/types/suite';
 
 const InstanceType = styled.div`
     display: flex;

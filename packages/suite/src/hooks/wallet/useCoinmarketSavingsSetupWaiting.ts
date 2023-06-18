@@ -2,19 +2,19 @@ import { useCallback, useEffect } from 'react';
 import type {
     UseCoinmarketSavingsSetupWaitingProps,
     UseCoinmarketSavingsSetupWaitingValues,
-} from '@wallet-types/coinmarketSavingsSetupWaiting';
-import { useActions, useSelector } from '@suite-hooks';
-import { useCoinmarketNavigation } from '@wallet-hooks/useCoinmarketNavigation';
-import { useFormDraft } from '@wallet-hooks/useFormDraft';
-import * as coinmarketCommonActions from '@wallet-actions/coinmarket/coinmarketCommonActions';
-import * as coinmarketSavingsActions from '@wallet-actions/coinmarketSavingsActions';
-import * as pollingActions from '@wallet-actions/pollingActions';
+} from 'src/types/wallet/coinmarketSavingsSetupWaiting';
+import { useActions, useSelector } from 'src/hooks/suite';
+import { useCoinmarketNavigation } from 'src/hooks/wallet/useCoinmarketNavigation';
+import { useFormDraft } from 'src/hooks/wallet/useFormDraft';
+import * as coinmarketCommonActions from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
+import * as coinmarketSavingsActions from 'src/actions/wallet/coinmarketSavingsActions';
+import * as pollingActions from 'src/actions/wallet/pollingActions';
 import {
     SavingsTradePollingIntervalMilliseconds,
     SavingsTradePollingMaxCount,
-} from '@wallet-constants/coinmarket/savings';
-import invityAPI, { SavingsTradeKYCFinalStatuses } from '@suite-services/invityAPI';
-import { createReturnLink } from '@wallet-utils/coinmarket/savingsUtils';
+} from 'src/constants/wallet/coinmarket/savings';
+import invityAPI, { SavingsTradeKYCFinalStatuses } from 'src/services/suite/invityAPI';
+import { createReturnLink } from 'src/utils/wallet/coinmarket/savingsUtils';
 import { isDesktop } from '@trezor/env-utils';
 
 export const useCoinmarketSavingsSetupWaiting = ({

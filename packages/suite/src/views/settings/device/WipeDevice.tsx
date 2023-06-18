@@ -1,11 +1,11 @@
 import React from 'react';
 
-import { Translation } from '@suite-components';
-import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@suite-components/Settings';
-import { useActions } from '@suite-hooks';
-import * as modalActions from '@suite-actions/modalActions';
-import { useAnchor } from '@suite-hooks/useAnchor';
-import { SettingsAnchor } from '@suite-constants/anchors';
+import { Translation } from 'src/components/suite';
+import { ActionButton, ActionColumn, SectionItem, TextColumn } from 'src/components/suite/Settings';
+import { useActions } from 'src/hooks/suite';
+import * as modalActions from 'src/actions/suite/modalActions';
+import { useAnchor } from 'src/hooks/suite/useAnchor';
+import { SettingsAnchor } from 'src/constants/suite/anchors';
 
 interface WipeDeviceProps {
     isDeviceLocked: boolean;

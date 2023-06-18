@@ -1,5 +1,5 @@
 /* eslint-disable no-bitwise */
-import { TrezorDevice } from '@suite-types/index';
+import { TrezorDevice } from 'src/types/suite/index';
 import { DeviceModel, getDeviceModel } from '@trezor/device-utils';
 
 export const deviceModelInformation = {

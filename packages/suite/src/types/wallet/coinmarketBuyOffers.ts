@@ -1,9 +1,9 @@
-import type { AppState } from '@suite-types';
-import type { Account } from '@wallet-types';
+import type { AppState } from 'src/types/suite';
+import type { Account } from 'src/types/wallet';
 import type { BuyTrade } from 'invity-api';
 import type { Timer } from '@trezor/react-utils';
-import type { BuyInfo } from '@wallet-actions/coinmarketBuyActions';
-import type { WithSelectedAccountLoadedProps } from '@wallet-components';
+import type { BuyInfo } from 'src/actions/wallet/coinmarketBuyActions';
+import type { WithSelectedAccountLoadedProps } from 'src/components/wallet';
 
 export type UseOffersProps = WithSelectedAccountLoadedProps;
 

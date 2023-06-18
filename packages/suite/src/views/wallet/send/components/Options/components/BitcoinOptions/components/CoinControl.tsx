@@ -3,17 +3,17 @@ import styled from 'styled-components';
 
 import { fetchTransactionsThunk } from '@suite-common/wallet-core';
 import { amountToSatoshi, formatNetworkAmount } from '@suite-common/wallet-utils';
-import { FormattedCryptoAmount, Translation } from '@suite-components';
-import { SETTINGS } from '@suite-config';
-import { useActions, useSelector } from '@suite-hooks';
-import { ExtendedMessageDescriptor } from '@suite-types';
-import { Pagination } from '@wallet-components';
+import { FormattedCryptoAmount, Translation } from 'src/components/suite';
+import { SETTINGS } from 'src/config/suite';
+import { useActions, useSelector } from 'src/hooks/suite';
+import { ExtendedMessageDescriptor } from 'src/types/suite';
+import { Pagination } from 'src/components/wallet';
 import { useTheme, Checkbox, Icon, Switch, variables } from '@trezor/components';
-import { UtxoSelectionList } from '@wallet-components/CoinControl/UtxoSelectionList';
-import { useSendFormContext } from '@wallet-hooks';
-import { useBitcoinAmountUnit } from '@wallet-hooks/useBitcoinAmountUnit';
-import { selectCurrentTargetAnonymity } from '@wallet-reducers/coinjoinReducer';
-import { TypedFieldError } from '@wallet-types/form';
+import { UtxoSelectionList } from 'src/components/wallet/CoinControl/UtxoSelectionList';
+import { useSendFormContext } from 'src/hooks/wallet';
+import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
+import { selectCurrentTargetAnonymity } from 'src/reducers/wallet/coinjoinReducer';
+import { TypedFieldError } from 'src/types/wallet/form';
 
 const Row = styled.div`
     align-items: center;

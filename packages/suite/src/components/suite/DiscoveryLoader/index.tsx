@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Image } from '@trezor/components';
-import { Translation, Modal } from '@suite-components';
+import { Translation, Modal } from 'src/components/suite';
 
 const Expand = styled.div`
     display: flex;

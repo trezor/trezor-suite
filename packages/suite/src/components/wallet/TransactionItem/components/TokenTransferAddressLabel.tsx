@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import { ArrayElement } from '@trezor/type-utils';
-import { Translation, AddressLabeling } from '@suite-components';
-import { WalletAccountTransaction } from '@wallet-types';
+import { Translation, AddressLabeling } from 'src/components/suite';
+import { WalletAccountTransaction } from 'src/types/wallet';
 
 const BlurWrapper = styled.span<{ isBlurred: boolean }>`
     filter: ${({ isBlurred }) => isBlurred && 'blur(2px)'};

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Translation, TooltipSymbol } from '@suite-components';
+import { Translation, TooltipSymbol } from 'src/components/suite';
 import styled from 'styled-components';
 import { Tooltip, variables } from '@trezor/components';
 

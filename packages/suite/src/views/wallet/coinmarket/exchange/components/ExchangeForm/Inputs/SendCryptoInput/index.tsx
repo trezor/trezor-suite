@@ -8,15 +8,15 @@ import {
     isInteger,
     getInputState,
 } from '@suite-common/wallet-utils';
-import { useCoinmarketExchangeFormContext } from '@wallet-hooks/useCoinmarketExchangeForm';
-import { FormattedCryptoAmount, Translation, NumberInput } from '@suite-components';
+import { useCoinmarketExchangeFormContext } from 'src/hooks/wallet/useCoinmarketExchangeForm';
+import { FormattedCryptoAmount, Translation, NumberInput } from 'src/components/suite';
 import SendCryptoSelect from './SendCryptoSelect';
-import { InputError } from '@wallet-components';
+import { InputError } from 'src/components/wallet';
 import Bignumber from 'bignumber.js';
-import { MAX_LENGTH } from '@suite-constants/inputs';
-import { CRYPTO_INPUT, CRYPTO_TOKEN, FIAT_INPUT } from '@wallet-types/coinmarketExchangeForm';
-import { useBitcoinAmountUnit } from '@wallet-hooks/useBitcoinAmountUnit';
-import { TypedValidationRules } from '@wallet-types/form';
+import { MAX_LENGTH } from 'src/constants/suite/inputs';
+import { CRYPTO_INPUT, CRYPTO_TOKEN, FIAT_INPUT } from 'src/types/wallet/coinmarketExchangeForm';
+import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
+import { TypedValidationRules } from 'src/types/wallet/form';
 
 const StyledInput = styled(NumberInput)<{ isToken: boolean }>`
     ${props =>

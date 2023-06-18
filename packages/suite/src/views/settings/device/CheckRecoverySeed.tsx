@@ -1,12 +1,12 @@
 import React from 'react';
 
-import { Translation } from '@suite-components';
-import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@suite-components/Settings';
-import { useDevice, useActions } from '@suite-hooks';
-import * as routerActions from '@suite-actions/routerActions';
-import { useAnchor } from '@suite-hooks/useAnchor';
-import { SettingsAnchor } from '@suite-constants/anchors';
-import { getCheckBackupUrl } from '@suite-utils/device';
+import { Translation } from 'src/components/suite';
+import { ActionButton, ActionColumn, SectionItem, TextColumn } from 'src/components/suite/Settings';
+import { useDevice, useActions } from 'src/hooks/suite';
+import * as routerActions from 'src/actions/suite/routerActions';
+import { useAnchor } from 'src/hooks/suite/useAnchor';
+import { SettingsAnchor } from 'src/constants/suite/anchors';
+import { getCheckBackupUrl } from 'src/utils/suite/device';
 
 interface CheckRecoverySeedProps {
     isDeviceLocked: boolean;

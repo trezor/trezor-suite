@@ -1,9 +1,9 @@
 import React from 'react';
 import { act } from '@testing-library/react';
-import { renderWithProviders } from '@suite/support/tests/hooksHelper';
+import { renderWithProviders } from 'src/support/tests/hooksHelper';
 
-import discoveryReducer from '@wallet-reducers/discoveryReducer';
-import suiteReducer from '@suite-reducers/suiteReducer';
+import discoveryReducer from 'src/reducers/wallet/discoveryReducer';
+import suiteReducer from 'src/reducers/suite/suiteReducer';
 import { useDiscovery } from '../useDiscovery';
 import { actions } from '../__fixtures__/useDiscovery';
 import { configureMockStore } from '@suite-common/test-utils';

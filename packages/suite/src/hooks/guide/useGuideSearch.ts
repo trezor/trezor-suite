@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { GuideCategory, GuidePage } from '@suite-common/suite-types';
-import { loadPageMarkdownFile } from '@guide-hooks/useGuideLoadPage';
+import { loadPageMarkdownFile } from 'src/hooks/guide/useGuideLoadPage';
 
 const SEARCH_DELAY = 300;
 const MIN_QUERY_LENGTH = 3;

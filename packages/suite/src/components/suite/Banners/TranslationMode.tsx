@@ -1,6 +1,6 @@
 import React from 'react';
 import { Banner } from './Banner';
-import { setTranslationMode } from '@suite-utils/l10n';
+import { setTranslationMode } from 'src/utils/suite/l10n';
 
 const TranslationMode = () => (
     <Banner

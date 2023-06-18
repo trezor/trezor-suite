@@ -2,13 +2,13 @@ import TrezorConnect from '@trezor/connect';
 import { analytics, EventType } from '@trezor/suite-analytics';
 
 import { notificationsActions } from '@suite-common/toast-notifications';
-import * as suiteActions from '@suite-actions/suiteActions';
-import * as deviceUtils from '@suite-utils/device';
-import * as modalActions from '@suite-actions/modalActions';
-import * as routerActions from '@suite-actions/routerActions';
-import { Dispatch, GetState } from '@suite-types';
-import * as DEVICE from '@suite-constants/device';
-import { SUITE } from '@suite-actions/constants';
+import * as suiteActions from 'src/actions/suite/suiteActions';
+import * as deviceUtils from 'src/utils/suite/device';
+import * as modalActions from 'src/actions/suite/modalActions';
+import * as routerActions from 'src/actions/suite/routerActions';
+import { Dispatch, GetState } from 'src/types/suite';
+import * as DEVICE from 'src/constants/suite/device';
+import { SUITE } from 'src/actions/suite/constants';
 import { getDeviceModel } from '@trezor/device-utils';
 
 export const applySettings =

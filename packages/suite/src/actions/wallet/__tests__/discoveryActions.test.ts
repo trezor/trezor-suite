@@ -3,16 +3,16 @@
 // unit test for discovery actions
 // data provided by TrezorConnect are mocked
 
-import { configureStore } from '@suite/support/tests/configureStore';
+import { configureStore } from 'src/support/tests/configureStore';
 
 import discoveryReducer, {
     selectIsDiscoveryAuthConfirmationRequired,
-} from '@wallet-reducers/discoveryReducer';
-import walletSettingsReducer from '@wallet-reducers/settingsReducer';
-import { DISCOVERY } from '@wallet-actions/constants';
+} from 'src/reducers/wallet/discoveryReducer';
+import walletSettingsReducer from 'src/reducers/wallet/settingsReducer';
+import { DISCOVERY } from 'src/actions/wallet/constants';
 import { accountsActions } from '@suite-common/wallet-core';
-import { accountsReducer } from '@wallet-reducers';
-import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
+import { accountsReducer } from 'src/reducers/wallet';
+import * as walletSettingsActions from 'src/actions/settings/walletSettingsActions';
 import { ArrayElement } from '@trezor/type-utils';
 import * as discoveryActions from '../discoveryActions';
 import {

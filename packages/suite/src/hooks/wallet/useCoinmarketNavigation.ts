@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
-import { Account } from '@wallet-types';
-import * as routerActions from '@suite-actions/routerActions';
-import { useActions } from '@suite-hooks';
+import { Account } from 'src/types/wallet';
+import * as routerActions from 'src/actions/suite/routerActions';
+import { useActions } from 'src/hooks/suite';
 
 export const useCoinmarketNavigation = (account: Account) => {
     const { goto } = useActions({

@@ -1,10 +1,10 @@
 import React, { useRef, useState } from 'react';
 
 import styled from 'styled-components';
-import { Translation, Modal } from '@suite-components';
-import { useSelector } from '@suite-hooks';
-import { SectionItem, ActionColumn, TextColumn } from '@suite-components/Settings';
-import { getApplicationInfo, getApplicationLog, prettifyLog } from '@suite-utils/logsUtils';
+import { Translation, Modal } from 'src/components/suite';
+import { useSelector } from 'src/hooks/suite';
+import { SectionItem, ActionColumn, TextColumn } from 'src/components/suite/Settings';
+import { getApplicationInfo, getApplicationLog, prettifyLog } from 'src/utils/suite/logsUtils';
 
 import { selectLogs } from '@suite-common/logger';
 import { Switch, Button, variables } from '@trezor/components';

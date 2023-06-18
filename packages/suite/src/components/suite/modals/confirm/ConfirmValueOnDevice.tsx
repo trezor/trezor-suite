@@ -1,11 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { Translation, Modal } from '@suite-components';
+import { Translation, Modal } from 'src/components/suite';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { useDispatch } from '@suite-hooks';
-import { QrCode, QRCODE_PADDING, QRCODE_SIZE } from '@suite-components/QrCode';
-import { TrezorDevice } from '@suite-types/index';
+import { useDispatch } from 'src/hooks/suite';
+import { QrCode, QRCODE_PADDING, QRCODE_SIZE } from 'src/components/suite/QrCode';
+import { TrezorDevice } from 'src/types/suite/index';
 import { Button, ConfirmOnDevice, ModalProps, variables } from '@trezor/components';
 import { getDeviceModel } from '@trezor/device-utils';
 import { copyToClipboard } from '@trezor/dom-utils';

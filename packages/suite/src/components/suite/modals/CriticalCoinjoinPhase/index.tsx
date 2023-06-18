@@ -1,12 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
 import { variables, Image } from '@trezor/components';
-import { Modal, Translation } from '@suite-components';
-import { useSelector, useDeviceModel } from '@suite-hooks';
-import { selectCoinjoinAccountByKey } from '@wallet-reducers/coinjoinReducer';
+import { Modal, Translation } from 'src/components/suite';
+import { useSelector, useDeviceModel } from 'src/hooks/suite';
+import { selectCoinjoinAccountByKey } from 'src/reducers/wallet/coinjoinReducer';
 import { PhaseProgress } from './PhaseProgress';
-import { ROUND_PHASE_MESSAGES } from '@suite-constants/coinjoin';
-import { useCoinjoinSessionPhase } from '@wallet-hooks';
+import { ROUND_PHASE_MESSAGES } from 'src/constants/suite/coinjoin';
+import { useCoinjoinSessionPhase } from 'src/hooks/wallet';
 import { AutoPauseButton } from './AutoPauseButton';
 
 const StyledModal = styled(Modal)`

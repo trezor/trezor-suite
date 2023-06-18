@@ -1,30 +1,30 @@
 import React from 'react';
-import { configureStore, filterThunkActionTypes } from '@suite/support/tests/configureStore';
+import { configureStore, filterThunkActionTypes } from 'src/support/tests/configureStore';
 import { DeepPartial } from 'react-hook-form';
 import { PROTO } from '@trezor/connect';
-import sendFormReducer from '@wallet-reducers/sendFormReducer';
-import resizeReducer from '@suite-reducers/resizeReducer';
+import sendFormReducer from 'src/reducers/wallet/sendFormReducer';
+import resizeReducer from 'src/reducers/suite/resizeReducer';
 import {
     renderWithProviders,
     waitForLoader,
     findByTestId,
     UserAction,
     actionSequence,
-} from '@suite/support/tests/hooksHelper';
+} from 'src/support/tests/hooksHelper';
 
-import { SendContextValues } from '@wallet-types/sendForm';
-import SendIndex from '@wallet-views/send';
+import { SendContextValues } from 'src/types/wallet/sendForm';
+import SendIndex from 'src/views/wallet/send';
 import * as fixtures from '../__fixtures__/useSendForm';
 import { useSendFormContext } from '../useSendForm';
 
-jest.mock('@suite-actions/routerActions', () => ({
+jest.mock('src/actions/suite/routerActions', () => ({
     goto: () => ({ type: 'mock-redirect' }),
 }));
 
 jest.mock('react-svg', () => ({ ReactSVG: () => 'SVG' }));
 
 // render only Translation['id']
-jest.mock('@suite-components/Translation', () => ({ Translation: ({ id }: any) => id }));
+jest.mock('src/components/suite/Translation', () => ({ Translation: ({ id }: any) => id }));
 
 jest.mock('@trezor/connect', () => global.JestMocks.getTrezorConnect({}));
 // eslint-disable-next-line @typescript-eslint/no-var-requires

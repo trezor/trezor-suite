@@ -2,11 +2,11 @@ import React, { useMemo } from 'react';
 import styled from 'styled-components';
 
 import { Select } from '@trezor/components';
-import { Translation } from '@suite-components';
+import { Translation } from 'src/components/suite';
 import { isDesktop } from '@trezor/env-utils';
 
-import type { Network } from '@wallet-types';
-import type { BackendOption } from '@settings-hooks/backends';
+import type { Network } from 'src/types/wallet';
+import type { BackendOption } from 'src/hooks/settings/backends';
 
 const Capitalize = styled.span`
     text-transform: capitalize;

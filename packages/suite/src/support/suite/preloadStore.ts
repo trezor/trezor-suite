@@ -1,5 +1,5 @@
-import { db } from '@suite/storage';
-import * as STORAGE from '@suite-actions/constants/storageConstants';
+import { db } from 'src/storage';
+import * as STORAGE from 'src/actions/suite/constants/storageConstants';
 
 // This function should be called before first render
 // PreloadedState will be used in redux store creation

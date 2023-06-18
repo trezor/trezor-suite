@@ -1,13 +1,13 @@
 import React from 'react';
 import styled, { useTheme } from 'styled-components';
 import { darken } from 'polished';
-import { useDispatch, useSelector } from '@suite-hooks';
-import { FiatValue, FormattedCryptoAmount, Translation } from '@suite-components';
+import { useDispatch, useSelector } from 'src/hooks/suite';
+import { FiatValue, FormattedCryptoAmount, Translation } from 'src/components/suite';
 import { Button, Icon, variables, Warning } from '@trezor/components';
-import { hideCoinjoinReceiveWarning } from '@suite-actions/suiteActions';
+import { hideCoinjoinReceiveWarning } from 'src/actions/suite/suiteActions';
 import { formatAmount, getAccountDecimals } from '@suite-common/wallet-utils';
-import { UNECONOMICAL_COINJOIN_THRESHOLD } from '@suite/services/coinjoin';
-import { selectSelectedAccount } from '@wallet-reducers/selectedAccountReducer';
+import { UNECONOMICAL_COINJOIN_THRESHOLD } from 'src/services/coinjoin';
+import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 import { selectIsAccountWithRatesByKey } from '@suite-common/wallet-core';
 
 const StyledWarning = styled(Warning)`

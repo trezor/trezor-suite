@@ -1,6 +1,6 @@
 import { testMocks } from '@suite-common/test-utils';
-import * as MODAL from '@suite-actions/constants/modalConstants';
-import * as COINJOIN from '@wallet-actions/constants/coinjoinConstants';
+import * as MODAL from 'src/actions/suite/constants/modalConstants';
+import * as COINJOIN from 'src/actions/wallet/constants/coinjoinConstants';
 
 export const DEVICE = testMocks.getSuiteDevice({
     state: 'device-state',

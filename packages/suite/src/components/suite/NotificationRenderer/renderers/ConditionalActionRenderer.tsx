@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { variables } from '@trezor/components';
-import type { ExtendedMessageDescriptor } from '@suite-types';
+import type { ExtendedMessageDescriptor } from 'src/types/suite';
 import type { NotificationRendererProps } from '../types';
 
 const Header = styled.div`

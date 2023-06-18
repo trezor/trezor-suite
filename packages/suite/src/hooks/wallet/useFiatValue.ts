@@ -1,4 +1,4 @@
-import { useSelector } from '@suite-hooks';
+import { useSelector } from 'src/hooks/suite';
 
 // TODO: do the calculation here
 export const useFiatValue = () => {

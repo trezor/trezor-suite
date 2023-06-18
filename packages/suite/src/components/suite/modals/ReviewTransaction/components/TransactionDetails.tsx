@@ -1,9 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { Translation } from '@suite-components';
+import { Translation } from 'src/components/suite';
 import { Icon, useTheme, Box, variables } from '@trezor/components';
-import { PrecomposedTransactionFinal, TxFinalCardano } from '@wallet-types/sendForm';
+import { PrecomposedTransactionFinal, TxFinalCardano } from 'src/types/wallet/sendForm';
 
 const TransactionDetailsWrapper = styled.div`
     display: flex;

@@ -1,17 +1,17 @@
 import { createContext, useContext, useCallback, useState, useEffect } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import type { SellFiatTradeQuoteRequest } from 'invity-api';
-import { useActions, useSelector } from '@suite-hooks';
-import invityAPI from '@suite-services/invityAPI';
+import { useActions, useSelector } from 'src/hooks/suite';
+import invityAPI from 'src/services/suite/invityAPI';
 import {
     fromFiatCurrency,
     getFeeLevels,
     amountToSatoshi,
     formatAmount,
 } from '@suite-common/wallet-utils';
-import { isChanged } from '@suite-utils/comparisonUtils';
-import * as coinmarketSellActions from '@wallet-actions/coinmarketSellActions';
-import * as coinmarketCommonActions from '@wallet-actions/coinmarket/coinmarketCommonActions';
+import { isChanged } from 'src/utils/suite/comparisonUtils';
+import * as coinmarketSellActions from 'src/actions/wallet/coinmarketSellActions';
+import * as coinmarketCommonActions from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
 import {
     SellFormState,
     UseCoinmarketSellFormProps,
@@ -21,20 +21,20 @@ import {
     FIAT_INPUT,
     OUTPUT_AMOUNT,
     FIAT_CURRENCY_SELECT,
-} from '@wallet-types/coinmarketSellForm';
+} from 'src/types/wallet/coinmarketSellForm';
 import {
     getComposeAddressPlaceholder,
     mapTestnetSymbol,
-} from '@wallet-utils/coinmarket/coinmarketUtils';
-import { getAmountLimits, processQuotes } from '@wallet-utils/coinmarket/sellUtils';
+} from 'src/utils/wallet/coinmarket/coinmarketUtils';
+import { getAmountLimits, processQuotes } from 'src/utils/wallet/coinmarket/sellUtils';
 import { useFees } from './form/useFees';
 import { useCompose } from './form/useCompose';
 import useDebounce from 'react-use/lib/useDebounce';
-import { useFormDraft } from '@wallet-hooks/useFormDraft';
+import { useFormDraft } from 'src/hooks/wallet/useFormDraft';
 import { useCoinmarketSellFormDefaultValues } from './useCoinmarketSellFormDefaultValues';
-import { useCoinmarketNavigation } from '@wallet-hooks/useCoinmarketNavigation';
-import type { AppState } from '@suite-types';
-import { useBitcoinAmountUnit } from '@wallet-hooks/useBitcoinAmountUnit';
+import { useCoinmarketNavigation } from 'src/hooks/wallet/useCoinmarketNavigation';
+import type { AppState } from 'src/types/suite';
+import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { useDidUpdate } from '@trezor/react-utils';
 import { TypedValidationRules } from '@suite-common/wallet-types';
 

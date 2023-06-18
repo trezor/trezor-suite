@@ -1,5 +1,5 @@
 import React from 'react';
-import { Translation, Modal, HomescreenGallery } from '@suite-components';
+import { Translation, Modal, HomescreenGallery } from 'src/components/suite';
 
 type BackgroundGalleryProps = {
     onCancel: () => void;

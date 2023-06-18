@@ -1,7 +1,7 @@
 import { DEVICE } from '@trezor/connect';
-import * as STEP from '@onboarding-constants/steps';
-import onboardingReducer from '@onboarding-reducers';
-import { Action } from '@suite-types';
+import * as STEP from 'src/constants/onboarding/steps';
+import onboardingReducer from 'src/reducers/onboarding';
+import { Action } from 'src/types/suite';
 
 const { getConnectDevice } = global.JestMocks;
 

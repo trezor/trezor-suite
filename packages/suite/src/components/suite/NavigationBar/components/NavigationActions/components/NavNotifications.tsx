@@ -2,10 +2,10 @@ import React, { useRef, useCallback, useState } from 'react';
 import styled from 'styled-components';
 import { analytics, EventType } from '@trezor/suite-analytics';
 
-import { Translation, Notifications } from '@suite-components';
+import { Translation, Notifications } from 'src/components/suite';
 import { Dropdown, DropdownRef, variables } from '@trezor/components';
 import { ActionItem } from './ActionItem';
-import { useActions } from '@suite-hooks';
+import { useActions } from 'src/hooks/suite';
 import { notificationsActions } from '@suite-common/toast-notifications';
 
 const Wrapper = styled.div`

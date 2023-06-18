@@ -1,12 +1,12 @@
 import React, { useMemo } from 'react';
 import styled from 'styled-components';
 
-import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
-import * as routerActions from '@suite-actions/routerActions';
-import { Translation } from '@suite-components';
-import { findRouteByName } from '@suite-utils/router';
-import { useActions, useSelector } from '@suite-hooks';
-import { useCustomBackends } from '@settings-hooks/backends';
+import * as walletSettingsActions from 'src/actions/settings/walletSettingsActions';
+import * as routerActions from 'src/actions/suite/routerActions';
+import { Translation } from 'src/components/suite';
+import { findRouteByName } from 'src/utils/suite/router';
+import { useActions, useSelector } from 'src/hooks/suite';
+import { useCustomBackends } from 'src/hooks/settings/backends';
 import { ActionItem } from './components/ActionItem';
 import { isDesktop } from '@trezor/env-utils';
 import { NavTor } from './components/NavTor';
@@ -15,11 +15,11 @@ import { NavNotifications } from './components/NavNotifications';
 import { NavSettings } from './components/NavSettings';
 import { variables } from '@trezor/components';
 import { NavBackends } from './components/NavBackends';
-import { useGuide } from '@guide-hooks/useGuide';
-import { SettingsAnchor } from '@suite-constants/anchors';
+import { useGuide } from 'src/hooks/guide/useGuide';
+import { SettingsAnchor } from 'src/constants/suite/anchors';
 
-import type { Route } from '@suite-types';
-import { selectTorState } from '@suite-reducers/suiteReducer';
+import type { Route } from 'src/types/suite';
+import { selectTorState } from 'src/reducers/suite/suiteReducer';
 
 const Wrapper = styled.div`
     display: flex;

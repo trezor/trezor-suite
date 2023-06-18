@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { LoadingContent, Switch } from '@trezor/components';
 import { TOR_PROJECT_URL } from '@trezor/urls';
-import { useSelector, useActions } from '@suite-hooks';
-import { ActionColumn, SectionItem, TextColumn } from '@suite-components/Settings';
-import * as suiteActions from '@suite-actions/suiteActions';
-import { Translation } from '@suite-components';
-import { useAnchor } from '@suite-hooks/useAnchor';
-import { SettingsAnchor } from '@suite-constants/anchors';
-import { getIsTorEnabled, getIsTorLoading } from '@suite-utils/tor';
-import { Dispatch, TorStatus } from '@suite-types';
+import { useSelector, useActions } from 'src/hooks/suite';
+import { ActionColumn, SectionItem, TextColumn } from 'src/components/suite/Settings';
+import * as suiteActions from 'src/actions/suite/suiteActions';
+import { Translation } from 'src/components/suite';
+import { useAnchor } from 'src/hooks/suite/useAnchor';
+import { SettingsAnchor } from 'src/constants/suite/anchors';
+import { getIsTorEnabled, getIsTorLoading } from 'src/utils/suite/tor';
+import { Dispatch, TorStatus } from 'src/types/suite';
 
-import * as modalActions from '@suite-actions/modalActions';
-import { selectCoinjoinAccounts } from '@wallet-reducers/coinjoinReducer';
+import * as modalActions from 'src/actions/suite/modalActions';
+import { selectCoinjoinAccounts } from 'src/reducers/wallet/coinjoinReducer';
 
 const disableTorStopCoinjoinAction = () => (dispatch: Dispatch) =>
     dispatch(

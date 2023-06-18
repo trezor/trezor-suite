@@ -1,10 +1,10 @@
 import React from 'react';
 
-import { Translation } from '@suite-components';
-import { useActions } from '@suite-hooks';
-import * as routerActions from '@suite-actions/routerActions';
+import { Translation } from 'src/components/suite';
+import { useActions } from 'src/hooks/suite';
+import * as routerActions from 'src/actions/suite/routerActions';
 import { Banner } from './Banner';
-import { SettingsAnchor } from '@suite-constants/anchors';
+import { SettingsAnchor } from 'src/constants/suite/anchors';
 
 interface Props {
     onDismiss?: () => void;

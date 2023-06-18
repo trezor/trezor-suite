@@ -1,9 +1,9 @@
 import { BlockchainBlock } from '@trezor/connect';
 import { CARDANO_STAKE_POOL_PREVIEW_URL, CARDANO_STAKE_POOL_MAINNET_URL } from '@trezor/urls';
-import { CARDANO_STAKING } from '@wallet-actions/constants';
-import { PendingStakeTx, PoolsResponse, CardanoNetwork } from '@wallet-types/cardanoStaking';
-import { Account, WalletAccountTransaction } from '@wallet-types';
-import { Dispatch, GetState } from '@suite-types';
+import { CARDANO_STAKING } from 'src/actions/wallet/constants';
+import { PendingStakeTx, PoolsResponse, CardanoNetwork } from 'src/types/wallet/cardanoStaking';
+import { Account, WalletAccountTransaction } from 'src/types/wallet';
+import { Dispatch, GetState } from 'src/types/suite';
 import { getUnixTime } from 'date-fns';
 import { isPending, getAccountTransactions, getNetwork } from '@suite-common/wallet-utils';
 import { CARDANO_DEFAULT_TTL_OFFSET } from '@suite-common/wallet-constants';

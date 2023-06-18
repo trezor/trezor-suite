@@ -1,11 +1,11 @@
-import * as routerActions from '@suite-actions/routerActions';
+import * as routerActions from 'src/actions/suite/routerActions';
 import React from 'react';
 import styled from 'styled-components';
 import { Button, variables, Link, Image } from '@trezor/components';
-import { CoinmarketTransactionId } from '@wallet-components';
-import { useActions } from '@suite-hooks/useActions';
-import { Account } from '@wallet-types';
-import { Translation } from '@suite-components/Translation';
+import { CoinmarketTransactionId } from 'src/components/wallet';
+import { useActions } from 'src/hooks/suite/useActions';
+import { Account } from 'src/types/wallet';
+import { Translation } from 'src/components/suite/Translation';
 
 const Wrapper = styled.div`
     display: flex;

@@ -8,7 +8,7 @@ import {
     getUserAgent,
     isDesktop,
 } from '@trezor/env-utils';
-import type { TrezorDevice } from '@suite-types';
+import type { TrezorDevice } from 'src/types/suite';
 import type { TransportInfo } from '@trezor/connect';
 import { GITHUB_REPO_URL } from '@trezor/urls';
 

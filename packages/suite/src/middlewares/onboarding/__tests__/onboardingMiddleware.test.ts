@@ -1,12 +1,12 @@
-import { configureStore } from '@suite/support/tests/configureStore';
+import { configureStore } from 'src/support/tests/configureStore';
 
-import { SUITE } from '@suite-actions/constants';
+import { SUITE } from 'src/actions/suite/constants';
 
-import routerReducer from '@suite-reducers/routerReducer';
-import suiteReducer from '@suite-reducers/suiteReducer';
-import modalReducer from '@suite-reducers/modalReducer';
-import onboardingReducer from '@onboarding-reducers/index';
-import onboardingMiddlewares from '@onboarding-middlewares';
+import routerReducer from 'src/reducers/suite/routerReducer';
+import suiteReducer from 'src/reducers/suite/suiteReducer';
+import modalReducer from 'src/reducers/suite/modalReducer';
+import onboardingReducer from 'src/reducers/onboarding/index';
+import onboardingMiddlewares from 'src/middlewares/onboarding';
 
 const middlewares = [...onboardingMiddlewares];
 
@@ -15,7 +15,7 @@ jest.mock('@trezor/suite-storage', () => ({
     default: () => {},
 }));
 
-jest.mock('@suite-actions/storageActions', () => ({ __esModule: true }));
+jest.mock('src/actions/suite/storageActions', () => ({ __esModule: true }));
 
 type SuiteState = ReturnType<typeof suiteReducer>;
 type RouterState = ReturnType<typeof routerReducer>;

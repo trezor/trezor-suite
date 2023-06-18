@@ -2,10 +2,10 @@ import React from 'react';
 import styled from 'styled-components';
 import { Tooltip } from '@trezor/components';
 import { versionUtils } from '@trezor/utils';
-import { Coin, Translation } from '@suite-components';
-import { useDevice, useSelector } from '@suite-hooks';
-import { getCoinUnavailabilityMessage } from '@suite-utils/device';
-import type { Network } from '@wallet-types';
+import { Coin, Translation } from 'src/components/suite';
+import { useDevice, useSelector } from 'src/hooks/suite';
+import { getCoinUnavailabilityMessage } from 'src/utils/suite/device';
+import type { Network } from 'src/types/wallet';
 import { getDeviceModel, getFirmwareVersion, isDeviceInBootloaderMode } from '@trezor/device-utils';
 
 const Wrapper = styled.div`

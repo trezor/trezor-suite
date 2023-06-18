@@ -1,15 +1,15 @@
-import { ROUTER, SUITE } from '@suite-actions/constants';
-import { DISCOVERY } from '@wallet-actions/constants';
+import { ROUTER, SUITE } from 'src/actions/suite/constants';
+import { DISCOVERY } from 'src/actions/wallet/constants';
 
-import { selectDiscoveryForDevice } from '@wallet-reducers/discoveryReducer';
-import * as metadataActions from '@suite-actions/metadataActions';
-import * as comparisonUtils from '@suite-utils/comparisonUtils';
-import { getSelectedAccount } from '@wallet-utils/accountUtils';
+import { selectDiscoveryForDevice } from 'src/reducers/wallet/discoveryReducer';
+import * as metadataActions from 'src/actions/suite/metadataActions';
+import * as comparisonUtils from 'src/utils/suite/comparisonUtils';
+import { getSelectedAccount } from 'src/utils/wallet/accountUtils';
 import { accountsActions, blockchainActions } from '@suite-common/wallet-core';
 import { getAccountNetwork } from '@suite-common/wallet-utils';
 import { SelectedAccountStatus } from '@suite-common/wallet-types';
 
-import { Action, Dispatch, GetState, AppState } from '@suite-types';
+import { Action, Dispatch, GetState, AppState } from 'src/types/suite';
 
 const getAccountState = (state: AppState): SelectedAccountStatus => {
     const { device } = state.suite;

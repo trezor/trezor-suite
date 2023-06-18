@@ -1,9 +1,9 @@
 import React from 'react';
-import { Translation } from '@suite-components';
-import * as routerActions from '@suite-actions/routerActions';
-import { useActions } from '@suite-hooks';
+import { Translation } from 'src/components/suite';
+import * as routerActions from 'src/actions/suite/routerActions';
+import { useActions } from 'src/hooks/suite';
 import { Banner } from './Banner';
-import { SettingsAnchor } from '@suite-constants/anchors';
+import { SettingsAnchor } from 'src/constants/suite/anchors';
 
 const FailedBackup = () => {
     const { goto } = useActions({

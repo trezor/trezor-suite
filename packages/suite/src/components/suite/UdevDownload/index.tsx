@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { DATA_URL, HELP_CENTER_UDEV_URL } from '@trezor/urls';
-import { Translation, TrezorLink } from '@suite-components';
+import { Translation, TrezorLink } from 'src/components/suite';
 import { variables, Button, Select, Link, Loader } from '@trezor/components';
-import { useSelector } from '@suite-hooks';
+import { useSelector } from 'src/hooks/suite';
 
 const Wrapper = styled.div`
     display: flex;

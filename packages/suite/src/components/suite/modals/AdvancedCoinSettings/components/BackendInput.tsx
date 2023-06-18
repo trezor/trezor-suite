@@ -1,6 +1,6 @@
 import React from 'react';
 import { Input, Tooltip } from '@trezor/components';
-import { Translation, StatusLight } from '@suite-components';
+import { Translation, StatusLight } from 'src/components/suite';
 
 const InputAddon = (
     <Tooltip content={<Translation id="TR_ACTIVE" />}>

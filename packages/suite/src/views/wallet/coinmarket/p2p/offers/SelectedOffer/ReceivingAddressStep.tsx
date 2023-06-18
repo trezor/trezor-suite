@@ -1,12 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
-import { useActions, useDevice } from '@suite-hooks';
-import { Translation } from '@suite-components';
-import * as routerActions from '@suite-actions/routerActions';
+import { useActions, useDevice } from 'src/hooks/suite';
+import { Translation } from 'src/components/suite';
+import * as routerActions from 'src/actions/suite/routerActions';
 import { Button, variables } from '@trezor/components';
-import { useCoinmarketP2pOffersContext } from '@wallet-hooks/useCoinmarketP2pOffers';
-import * as receiveActions from '@wallet-actions/receiveActions';
-import { getUnusedAddressFromAccount } from '@wallet-utils/coinmarket/coinmarketUtils';
+import { useCoinmarketP2pOffersContext } from 'src/hooks/wallet/useCoinmarketP2pOffers';
+import * as receiveActions from 'src/actions/wallet/receiveActions';
+import { getUnusedAddressFromAccount } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 
 const Wrapper = styled.div`
     display: flex;

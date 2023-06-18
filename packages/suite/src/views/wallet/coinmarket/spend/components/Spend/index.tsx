@@ -2,11 +2,11 @@ import React from 'react';
 import styled from 'styled-components';
 
 import { Button, Note } from '@trezor/components';
-import { Translation } from '@suite-components';
+import { Translation } from 'src/components/suite';
 import { isDesktop } from '@trezor/env-utils';
-import { useCoinmarketSpendContext } from '@wallet-hooks/useCoinmarketSpend';
-import { NoProviders, Wrapper } from '@wallet-views/coinmarket';
-import { CoinmarketSkeleton } from '@wallet-views/coinmarket/skeleton';
+import { useCoinmarketSpendContext } from 'src/hooks/wallet/useCoinmarketSpend';
+import { NoProviders, Wrapper } from 'src/views/wallet/coinmarket';
+import { CoinmarketSkeleton } from 'src/views/wallet/coinmarket/skeleton';
 
 const Vouchers = styled.div`
     width: 100%;

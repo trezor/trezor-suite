@@ -1,9 +1,9 @@
 import React from 'react';
-import * as modalActions from '@suite-actions/modalActions';
-import * as routerActions from '@suite-actions/routerActions';
-import { useDevice, useActions } from '@suite-hooks';
-import { Translation } from '@suite-components';
-import { AccountExceptionLayout } from '@wallet-components';
+import * as modalActions from 'src/actions/suite/modalActions';
+import * as routerActions from 'src/actions/suite/routerActions';
+import { useDevice, useActions } from 'src/hooks/suite';
+import { Translation } from 'src/components/suite';
+import { AccountExceptionLayout } from 'src/components/wallet';
 
 /**
  * Handler for invalid wallet setting, no coins in discovery

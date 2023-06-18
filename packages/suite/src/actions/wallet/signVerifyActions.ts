@@ -1,8 +1,8 @@
 import TrezorConnect, { Unsuccessful, Success } from '@trezor/connect';
 import { SIGN_VERIFY } from './constants';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import type { Dispatch, GetState, TrezorDevice } from '@suite-types';
-import type { Account } from '@wallet-types';
+import type { Dispatch, GetState, TrezorDevice } from 'src/types/suite';
+import type { Account } from 'src/types/wallet';
 
 export type SignVerifyAction =
     | { type: typeof SIGN_VERIFY.SIGN_SUCCESS; signSignature: string }

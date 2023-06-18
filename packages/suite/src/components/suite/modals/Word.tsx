@@ -1,9 +1,9 @@
 import React from 'react';
 import TrezorConnect from '@trezor/connect';
-import { Translation, WordInput, Modal, ModalProps } from '@suite-components';
+import { Translation, WordInput, Modal, ModalProps } from 'src/components/suite';
 import styled from 'styled-components';
 import { useIntl } from 'react-intl';
-import messages from '@suite/support/messages';
+import messages from 'src/support/messages';
 
 const StyledModal = styled(Modal)`
     min-height: 450px;

@@ -1,7 +1,7 @@
 import React from 'react';
-import { Translation } from '@suite-components';
-import { AccountExceptionLayout, WalletLayout } from '@wallet-components';
-import { useSelector } from '@suite-hooks';
+import { Translation } from 'src/components/suite';
+import { AccountExceptionLayout, WalletLayout } from 'src/components/wallet';
+import { useSelector } from 'src/hooks/suite';
 import { CardanoStakingDashboard } from './components/CardanoStakingDashboard';
 import { hasNetworkFeatures } from '@suite-common/wallet-utils';
 

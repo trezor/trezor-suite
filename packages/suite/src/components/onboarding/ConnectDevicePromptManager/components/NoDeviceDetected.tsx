@@ -1,6 +1,6 @@
 import React from 'react';
-import { Translation } from '@suite-components/Translation';
-import { TroubleshootingTips } from '@suite-components';
+import { Translation } from 'src/components/suite/Translation';
+import { TroubleshootingTips } from 'src/components/suite';
 import {
     TROUBLESHOOTING_TIP_BRIDGE_STATUS,
     TROUBLESHOOTING_TIP_BRIDGE_INSTALL,
@@ -8,7 +8,7 @@ import {
     TROUBLESHOOTING_TIP_CABLE,
     TROUBLESHOOTING_TIP_USB,
     TROUBLESHOOTING_TIP_DIFFERENT_COMPUTER,
-} from '@suite-components/TroubleshootingTips/tips';
+} from 'src/components/suite/TroubleshootingTips/tips';
 
 interface NoDeviceDetectedProps {
     offerWebUsb: boolean;

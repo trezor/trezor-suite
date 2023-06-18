@@ -1,9 +1,9 @@
 import React from 'react';
 import { Icon } from '@trezor/components';
-import { Translation } from '@suite-components';
-import TrezorLink from '@suite-components/TrezorLink';
+import { Translation } from 'src/components/suite';
+import TrezorLink from 'src/components/suite/TrezorLink';
 import { transparentize } from 'polished';
-import { useGuideOpenNode } from '@guide-hooks';
+import { useGuideOpenNode } from 'src/hooks/guide';
 import styled from 'styled-components';
 
 const OpenGuideLink = styled(TrezorLink)`

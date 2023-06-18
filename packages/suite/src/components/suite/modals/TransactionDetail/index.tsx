@@ -3,8 +3,8 @@ import styled from 'styled-components';
 import { variables, Button } from '@trezor/components';
 import { HELP_CENTER_ZERO_VALUE_ATTACKS } from '@trezor/urls';
 import { getIsZeroValuePhishing } from '@suite-common/suite-utils';
-import { Translation, Modal, TrezorLink } from '@suite-components';
-import { WalletAccountTransaction } from '@wallet-types';
+import { Translation, Modal, TrezorLink } from 'src/components/suite';
+import { WalletAccountTransaction } from 'src/types/wallet';
 import { BasicDetails } from './components/BasicDetails';
 import { AdvancedDetails, TabID } from './components/AdvancedDetails';
 import { ChangeFee } from './components/ChangeFee';
@@ -15,7 +15,7 @@ import {
     getAccountKey,
     getAccountNetwork,
 } from '@suite-common/wallet-utils';
-import { useSelector } from '@suite-hooks';
+import { useSelector } from 'src/hooks/suite';
 import { selectAccountByKey } from '@suite-common/wallet-core';
 
 const StyledModal = styled(Modal)`

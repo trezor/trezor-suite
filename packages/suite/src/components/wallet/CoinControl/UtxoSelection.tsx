@@ -3,16 +3,21 @@ import BigNumber from 'bignumber.js';
 import styled, { css } from 'styled-components';
 import { darken } from 'polished';
 
-import * as modalActions from '@suite-actions/modalActions';
-import { FiatValue, FormattedCryptoAmount, MetadataLabeling, Translation } from '@suite-components';
+import * as modalActions from 'src/actions/suite/modalActions';
+import {
+    FiatValue,
+    FormattedCryptoAmount,
+    MetadataLabeling,
+    Translation,
+} from 'src/components/suite';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
-import { useActions, useSelector } from '@suite-hooks';
+import { useActions, useSelector } from 'src/hooks/suite';
 import { useTheme, Checkbox, FluidSpinner, Tooltip, variables } from '@trezor/components';
 import type { AccountUtxo } from '@trezor/connect';
-import { TransactionTimestamp, UtxoAnonymity } from '@wallet-components';
-import { UtxoTag } from '@wallet-components/CoinControl/UtxoTag';
-import { useSendFormContext } from '@wallet-hooks';
-import { WalletAccountTransaction } from '@wallet-types';
+import { TransactionTimestamp, UtxoAnonymity } from 'src/components/wallet';
+import { UtxoTag } from 'src/components/wallet/CoinControl/UtxoTag';
+import { useSendFormContext } from 'src/hooks/wallet';
+import { WalletAccountTransaction } from 'src/types/wallet';
 
 const VisibleOnHover = styled.div<{ alwaysVisible?: boolean }>`
     display: ${({ alwaysVisible }) => (alwaysVisible ? 'contents' : 'none')};

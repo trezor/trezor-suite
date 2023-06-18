@@ -1,13 +1,13 @@
 import React from 'react';
 import styled from 'styled-components';
 import { H1, variables } from '@trezor/components';
-import { Translation } from '@suite-components/Translation';
-import { DeviceConfirmImage } from '@suite-components/images/DeviceConfirmImage';
-import { TrezorDevice } from '@suite-types';
+import { Translation } from 'src/components/suite/Translation';
+import { DeviceConfirmImage } from 'src/components/suite/images/DeviceConfirmImage';
+import { TrezorDevice } from 'src/types/suite';
 import {
     DevicePromptModal,
     DevicePromptModalProps,
-} from '@suite-components/Modal/DevicePromptModal';
+} from 'src/components/suite/Modal/DevicePromptModal';
 
 const StyledDevicePromptModal = styled(DevicePromptModal)`
     width: 360px;

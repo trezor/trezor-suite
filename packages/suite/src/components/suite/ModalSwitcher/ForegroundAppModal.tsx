@@ -1,15 +1,15 @@
 import React from 'react';
-import { Firmware } from '@firmware-views';
-import { FirmwareCustom } from '@firmware-views/FirmwareCustom';
-import { Recovery } from '@recovery-views';
-import { Backup } from '@backup-views';
-import { useActions } from '@suite-hooks';
-import { closeModalApp } from '@suite-actions/routerActions';
-import { InstallBridge } from '@suite-views/bridge';
-import { UdevRules } from '@suite-views/udev';
-import { Version } from '@suite-views/version';
-import { SwitchDevice } from '@suite-components/SwitchDevice';
-import type { ForegroundAppRoute } from '@suite-types';
+import { Firmware } from 'src/views/firmware';
+import { FirmwareCustom } from 'src/views/firmware/FirmwareCustom';
+import { Recovery } from 'src/views/recovery';
+import { Backup } from 'src/views/backup';
+import { useActions } from 'src/hooks/suite';
+import { closeModalApp } from 'src/actions/suite/routerActions';
+import { InstallBridge } from 'src/views/suite/bridge';
+import { UdevRules } from 'src/views/suite/udev';
+import { Version } from 'src/views/suite/version';
+import { SwitchDevice } from 'src/components/suite/SwitchDevice';
+import type { ForegroundAppRoute } from 'src/types/suite';
 
 // would not work if defined directly in the switch
 const FirmwareType = () => <Firmware shouldSwitchFirmwareType />;

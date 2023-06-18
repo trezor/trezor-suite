@@ -3,9 +3,15 @@ import styled from 'styled-components';
 import TrezorConnect from '@trezor/connect';
 import { P } from '@trezor/components';
 import { HELP_CENTER_ADVANCED_RECOVERY_URL } from '@trezor/urls';
-import { Translation, WordInputAdvanced, TrezorLink, Modal, ModalProps } from '@suite-components';
+import {
+    Translation,
+    WordInputAdvanced,
+    TrezorLink,
+    Modal,
+    ModalProps,
+} from 'src/components/suite';
 import { useIntl } from 'react-intl';
-import messages from '@suite/support/messages';
+import messages from 'src/support/messages';
 
 const ContentWrapper = styled.div`
     display: flex;

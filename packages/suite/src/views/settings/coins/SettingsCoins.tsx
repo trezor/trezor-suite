@@ -1,13 +1,13 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { SettingsLayout } from '@settings-components';
-import { CoinsGroup, TooltipSymbol, Translation } from '@suite-components';
-import { DeviceBanner, SettingsSection, SectionItem } from '@suite-components/Settings';
-import { useEnabledNetworks } from '@settings-hooks/useEnabledNetworks';
-import { useAnchor } from '@suite-hooks/useAnchor';
-import { SettingsAnchor } from '@suite-constants/anchors';
-import { useDevice, useSelector } from '@suite-hooks';
+import { SettingsLayout } from 'src/components/settings';
+import { CoinsGroup, TooltipSymbol, Translation } from 'src/components/suite';
+import { DeviceBanner, SettingsSection, SectionItem } from 'src/components/suite/Settings';
+import { useEnabledNetworks } from 'src/hooks/settings/useEnabledNetworks';
+import { useAnchor } from 'src/hooks/suite/useAnchor';
+import { SettingsAnchor } from 'src/constants/suite/anchors';
+import { useDevice, useSelector } from 'src/hooks/suite';
 import { FirmwareTypeSuggestion } from './FirmwareTypeSuggestion';
 
 const StyledSettingsLayout = styled(SettingsLayout)`

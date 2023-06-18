@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { Translation, AccountLabeling, FormattedCryptoAmount } from '@suite-components';
+import { Translation, AccountLabeling, FormattedCryptoAmount } from 'src/components/suite';
 import {
     Button,
     Icon,
@@ -12,9 +12,9 @@ import {
     useTheme,
     variables,
 } from '@trezor/components';
-import { TypedFieldError } from '@wallet-types/form';
-import { useCoinmarketExchangeOffersContext } from '@wallet-hooks/useCoinmarketExchangeOffers';
-import { InputError } from '@wallet-components';
+import { TypedFieldError } from 'src/types/wallet/form';
+import { useCoinmarketExchangeOffersContext } from 'src/hooks/wallet/useCoinmarketExchangeOffers';
+import { InputError } from 'src/components/wallet';
 import useDebounce from 'react-use/lib/useDebounce';
 import BigNumber from 'bignumber.js';
 

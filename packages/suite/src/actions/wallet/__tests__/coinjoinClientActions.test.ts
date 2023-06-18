@@ -2,12 +2,12 @@ import { combineReducers, createReducer } from '@reduxjs/toolkit';
 import { configureMockStore, testMocks } from '@suite-common/test-utils';
 import { promiseAllSequence } from '@trezor/utils';
 
-import { accountsReducer } from '@wallet-reducers';
-import { coinjoinReducer } from '@wallet-reducers/coinjoinReducer';
-import selectedAccountReducer from '@wallet-reducers/selectedAccountReducer';
+import { accountsReducer } from 'src/reducers/wallet';
+import { coinjoinReducer } from 'src/reducers/wallet/coinjoinReducer';
+import selectedAccountReducer from 'src/reducers/wallet/selectedAccountReducer';
 import { prepareMessageSystemReducer } from '@suite-common/message-system';
-import { extraDependencies } from '@suite/support/extraDependencies';
-import modalReducer from '@suite-reducers/modalReducer';
+import { extraDependencies } from 'src/support/extraDependencies';
+import modalReducer from 'src/reducers/suite/modalReducer';
 import {
     initCoinjoinService,
     onCoinjoinRoundChanged,
@@ -17,13 +17,13 @@ import {
     clientEmitException,
 } from '../coinjoinClientActions';
 import * as fixtures from '../__fixtures__/coinjoinClientActions';
-import { coinjoinMiddleware } from '@wallet-middlewares/coinjoinMiddleware';
+import { coinjoinMiddleware } from 'src/middlewares/wallet/coinjoinMiddleware';
 
 jest.mock('@trezor/connect', () => global.JestMocks.getTrezorConnect({}));
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const TrezorConnect = require('@trezor/connect').default;
 
-jest.mock('@suite/services/coinjoin/coinjoinService', () => {
+jest.mock('src/services/coinjoin/coinjoinService', () => {
     const mock = jest.requireActual('../__fixtures__/mockCoinjoinService');
     return mock.mockCoinjoinService();
 });

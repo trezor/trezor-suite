@@ -2,15 +2,15 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { FeeLevel } from '@trezor/connect';
 import { variables } from '@trezor/components';
-import { Translation } from '@suite-components';
+import { Translation } from 'src/components/suite';
 import { getFeeUnits } from '@suite-common/wallet-utils';
 import { formatDuration } from '@suite-common/suite-utils';
-import { Network } from '@wallet-types';
+import { Network } from 'src/types/wallet';
 import {
     FeeInfo,
     PrecomposedTransaction,
     PrecomposedTransactionCardano,
-} from '@wallet-types/sendForm';
+} from 'src/types/wallet/sendForm';
 
 const Wrapper = styled.div`
     display: flex;

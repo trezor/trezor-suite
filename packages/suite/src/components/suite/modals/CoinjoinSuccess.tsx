@@ -1,15 +1,15 @@
 import React from 'react';
 import styled from 'styled-components';
-import { useDispatch } from '@suite-hooks';
+import { useDispatch } from 'src/hooks/suite';
 import { transparentize } from 'polished';
 
 import { Button, Icon, useTheme, variables } from '@trezor/components';
 import { selectAccountByKey } from '@suite-common/wallet-core';
 import { WalletParams } from '@suite-common/wallet-types';
-import { goto } from '@suite-actions/routerActions';
-import { useSelector } from '@suite-hooks/useSelector';
-import { selectRouterParams } from '@suite-reducers/routerReducer';
-import { onCancel as closeModal } from '@suite-actions/modalActions';
+import { goto } from 'src/actions/suite/routerActions';
+import { useSelector } from 'src/hooks/suite/useSelector';
+import { selectRouterParams } from 'src/reducers/suite/routerReducer';
+import { onCancel as closeModal } from 'src/actions/suite/modalActions';
 import { Modal, Translation } from '..';
 
 const StyledModal = styled(Modal)`

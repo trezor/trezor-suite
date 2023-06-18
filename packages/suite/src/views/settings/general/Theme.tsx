@@ -2,13 +2,13 @@ import React, { useMemo } from 'react';
 import { analytics, EventType } from '@trezor/suite-analytics';
 
 import { desktopApi, SuiteThemeVariant } from '@trezor/suite-desktop-api';
-import * as suiteActions from '@suite-actions/suiteActions';
-import { Translation } from '@suite-components/Translation';
-import { SectionItem, ActionColumn, ActionSelect, TextColumn } from '@suite-components/Settings';
-import { useActions, useSelector, useTranslation } from '@suite-hooks';
-import { useAnchor } from '@suite-hooks/useAnchor';
-import { SettingsAnchor } from '@suite-constants/anchors';
-import { getOsTheme } from '@suite-utils/env';
+import * as suiteActions from 'src/actions/suite/suiteActions';
+import { Translation } from 'src/components/suite/Translation';
+import { SectionItem, ActionColumn, ActionSelect, TextColumn } from 'src/components/suite/Settings';
+import { useActions, useSelector, useTranslation } from 'src/hooks/suite';
+import { useAnchor } from 'src/hooks/suite/useAnchor';
+import { SettingsAnchor } from 'src/constants/suite/anchors';
+import { getOsTheme } from 'src/utils/suite/env';
 
 const useThemeOptions = () => {
     const { translationString } = useTranslation();

@@ -2,8 +2,8 @@ import React, { forwardRef } from 'react';
 import styled from 'styled-components';
 
 import { Truncate, variables } from '@trezor/components';
-import { FiatValue, FormattedCryptoAmount, Translation } from '@suite-components';
-import { Network, Account, NetworkSymbol } from '@wallet-types';
+import { FiatValue, FormattedCryptoAmount, Translation } from 'src/components/suite';
+import { Network, Account, NetworkSymbol } from 'src/types/wallet';
 import { TokenInfo } from '@trezor/connect';
 import { amountToSatoshi } from '@suite-common/wallet-utils';
 

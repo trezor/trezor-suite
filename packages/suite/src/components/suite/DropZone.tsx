@@ -1,8 +1,8 @@
 import React, { useRef, useCallback, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import { P, Icon } from '@trezor/components';
-import { Translation } from '@suite-components';
-import type { ExtendedMessageDescriptor } from '@suite-types';
+import { Translation } from 'src/components/suite';
+import type { ExtendedMessageDescriptor } from 'src/types/suite';
 import { IconType } from '@trezor/components/src/support/types';
 
 interface Props {

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Loading } from '@suite-components';
+import { Loading } from 'src/components/suite';
 import styled from 'styled-components';
 
 const StyledLoading = styled(props => <Loading {...props} />)`

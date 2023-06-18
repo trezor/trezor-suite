@@ -1,6 +1,6 @@
 import React from 'react';
-import { Account } from '@wallet-types';
-import { FormattedCryptoAmount } from '@suite-components';
+import { Account } from 'src/types/wallet';
+import { FormattedCryptoAmount } from 'src/components/suite';
 
 interface CoinBalanceProps {
     value: string;

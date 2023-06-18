@@ -1,5 +1,5 @@
 import { Account } from '@suite-common/wallet-types';
-import { WalletParams } from '@wallet-types';
+import { WalletParams } from 'src/types/wallet';
 
 export const getSelectedAccount = (
     deviceState: string | typeof undefined,

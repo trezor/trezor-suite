@@ -10,7 +10,7 @@ import {
     formatMaxOutputAmount,
     loadCardanoLib,
     getDerivationType,
-} from '@wallet-utils/cardanoUtils';
+} from 'src/utils/wallet/cardanoUtils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     FormState,
@@ -18,7 +18,7 @@ import {
     PrecomposedLevelsCardano,
     PrecomposedTransactionFinalCardano,
 } from '@suite-common/wallet-types';
-import { Dispatch, GetState } from '@suite-types';
+import { Dispatch, GetState } from 'src/types/suite';
 
 export const composeTransaction =
     (formValues: FormState, formState: ComposeActionContext) =>

@@ -1,7 +1,7 @@
 import React from 'react';
 
-import { TranslationKey } from '@suite-components/Translation/components/BaseTranslation';
-import { Translation } from '@suite-components';
+import { TranslationKey } from 'src/components/suite/Translation/components/BaseTranslation';
+import { Translation } from 'src/components/suite';
 import { useTheme, Icon, Tooltip, IconType } from '@trezor/components';
 
 interface UtxoTagProps {

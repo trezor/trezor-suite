@@ -1,10 +1,10 @@
 import React from 'react';
-import { withSelectedAccountLoaded, WithSelectedAccountLoadedProps } from '@wallet-components';
+import { withSelectedAccountLoaded, WithSelectedAccountLoadedProps } from 'src/components/wallet';
 import styled from 'styled-components';
 import {
     CoinmarketExchangeOffersContext,
     useOffers,
-} from '@wallet-hooks/useCoinmarketExchangeOffers';
+} from 'src/hooks/wallet/useCoinmarketExchangeOffers';
 import Offers from './Offers';
 
 const Wrapper = styled.div`

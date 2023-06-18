@@ -1,11 +1,11 @@
 import React, { useEffect } from 'react';
 import { Icon } from '@trezor/components';
-import { getReasonForDisabledAction, useCardanoStaking } from '@wallet-hooks/useCardanoStaking';
-import { Translation } from '@suite-components/Translation';
+import { getReasonForDisabledAction, useCardanoStaking } from 'src/hooks/wallet/useCardanoStaking';
+import { Translation } from 'src/components/suite/Translation';
 import { Actions, Title, Heading, Text, StyledCard } from './CardanoPrimitives';
 import { DeviceModel } from '@trezor/device-utils';
-import { useDeviceModel } from '@suite-hooks/useDeviceModel';
-import { DeviceButton } from '@suite-components';
+import { useDeviceModel } from 'src/hooks/suite/useDeviceModel';
+import { DeviceButton } from 'src/components/suite';
 
 export const CardanoRedelegate = () => {
     const {

@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { Translation } from '@suite-components';
+import { Translation } from 'src/components/suite';
 import { variables } from '@trezor/components';
 import { isTestnet } from '@suite-common/wallet-utils';
-import { Network, WalletAccountTransaction } from '@wallet-types';
+import { Network, WalletAccountTransaction } from 'src/types/wallet';
 import { AmountDetails } from './AmountDetails';
 import { IODetails } from './IODetails';
 import { ChainedTxs } from './ChainedTxs';

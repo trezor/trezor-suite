@@ -3,14 +3,14 @@ import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
 import { analytics, EventType } from '@trezor/suite-analytics';
 
-import { Card, Translation } from '@suite-components';
-import { InputError } from '@wallet-components';
+import { Card, Translation } from 'src/components/suite';
+import { InputError } from 'src/components/wallet';
 import { Textarea, Button, Icon, Tooltip, variables } from '@trezor/components';
-import { useActions } from '@suite-hooks';
-import * as sendFormActions from '@wallet-actions/sendFormActions';
+import { useActions } from 'src/hooks/suite';
+import * as sendFormActions from 'src/actions/wallet/sendFormActions';
 import { getInputState, isHexValid } from '@suite-common/wallet-utils';
-import { Network } from '@wallet-types';
-import { OpenGuideFromTooltip } from '@guide-components';
+import { Network } from 'src/types/wallet';
+import { OpenGuideFromTooltip } from 'src/components/guide';
 
 const Wrapper = styled.div`
     /* display: flex;

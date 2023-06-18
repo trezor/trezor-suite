@@ -1,11 +1,11 @@
-import { configureStore } from '@suite/support/tests/configureStore';
-import { SUITE, ROUTER } from '@suite-actions/constants';
-import routerReducer from '@suite-reducers/routerReducer';
-import suiteReducer from '@suite-reducers/suiteReducer';
-import modalReducer from '@suite-reducers/modalReducer';
-import suiteMiddleware from '@suite-middlewares/suiteMiddleware';
-import type { Action } from '@suite-types';
-import { extraDependencies } from '@suite/support/extraDependencies';
+import { configureStore } from 'src/support/tests/configureStore';
+import { SUITE, ROUTER } from 'src/actions/suite/constants';
+import routerReducer from 'src/reducers/suite/routerReducer';
+import suiteReducer from 'src/reducers/suite/suiteReducer';
+import modalReducer from 'src/reducers/suite/modalReducer';
+import suiteMiddleware from 'src/middlewares/suite/suiteMiddleware';
+import type { Action } from 'src/types/suite';
+import { extraDependencies } from 'src/support/extraDependencies';
 
 import { analyticsActions, prepareAnalyticsReducer } from '@suite-common/analytics';
 

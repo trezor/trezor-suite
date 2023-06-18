@@ -2,13 +2,18 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import useTimeoutFn from 'react-use/lib/useTimeoutFn';
 import { variables, CoinLogo, Select, Icon, useTheme } from '@trezor/components';
-import { FiatValue, Translation, AccountLabeling, FormattedCryptoAmount } from '@suite-components';
-import { useActions } from '@suite-hooks';
-import * as modalActions from '@suite-actions/modalActions';
-import { useCoinmarketExchangeOffersContext } from '@wallet-hooks/useCoinmarketExchangeOffers';
-import { getUnusedAddressFromAccount } from '@wallet-utils/coinmarket/coinmarketUtils';
+import {
+    FiatValue,
+    Translation,
+    AccountLabeling,
+    FormattedCryptoAmount,
+} from 'src/components/suite';
+import { useActions } from 'src/hooks/suite';
+import * as modalActions from 'src/actions/suite/modalActions';
+import { useCoinmarketExchangeOffersContext } from 'src/hooks/wallet/useCoinmarketExchangeOffers';
+import { getUnusedAddressFromAccount } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import type { UseFormMethods } from 'react-hook-form';
-import type { Account } from '@wallet-types';
+import type { Account } from 'src/types/wallet';
 
 const LogoWrapper = styled.div`
     display: flex;

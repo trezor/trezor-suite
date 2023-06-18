@@ -1,11 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Translation } from '@suite-components';
+import { Translation } from 'src/components/suite';
 import { CoinLogo, H2, Icon, variables } from '@trezor/components';
-import { useCoinmarketP2pOffersContext } from '@wallet-hooks/useCoinmarketP2pOffers';
-import { CoinmarketRefreshTime } from '@wallet-components';
-import { InvityAPIReloadQuotesAfterSeconds } from '@wallet-constants/coinmarket/metadata';
-import { CoinmarketFiatAmount } from '@wallet-views/coinmarket/common/CoinmarketFiatAmount';
+import { useCoinmarketP2pOffersContext } from 'src/hooks/wallet/useCoinmarketP2pOffers';
+import { CoinmarketRefreshTime } from 'src/components/wallet';
+import { InvityAPIReloadQuotesAfterSeconds } from 'src/constants/wallet/coinmarket/metadata';
+import { CoinmarketFiatAmount } from 'src/views/wallet/coinmarket/common/CoinmarketFiatAmount';
 import { P2pQuote } from 'invity-api';
 import { Quote } from './Quote';
 

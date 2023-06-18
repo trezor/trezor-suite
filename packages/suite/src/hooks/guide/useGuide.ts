@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
-import { useSelector, useActions, useLayoutSize } from '@suite-hooks';
-import * as guideActions from '@suite-actions/guideActions';
+import { useSelector, useActions, useLayoutSize } from 'src/hooks/suite';
+import * as guideActions from 'src/actions/suite/guideActions';
 import { usePreferredModal } from '../suite/usePreferredModal';
 
 export const GUIDE_ANIMATION_DURATION_MS = 300;

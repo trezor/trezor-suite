@@ -4,22 +4,22 @@ import BigNumber from 'bignumber.js';
 
 import { CoinjoinStatusEvent, getInputSize, getOutputSize } from '@trezor/coinjoin';
 import { PartialRecord } from '@trezor/type-utils';
-import { STORAGE } from '@suite-actions/constants';
+import { STORAGE } from 'src/actions/suite/constants';
 import { Account, AccountKey } from '@suite-common/wallet-types';
 import {
     CoinjoinAccount,
     RoundPhase,
     CoinjoinDebugSettings,
     CoinjoinConfig,
-} from '@wallet-types/coinjoin';
-import { COINJOIN } from '@wallet-actions/constants';
-import { Action } from '@suite-types';
+} from 'src/types/wallet/coinjoin';
+import { COINJOIN } from 'src/actions/wallet/constants';
+import { Action } from 'src/types/suite';
 import {
     selectDeviceState,
     selectIsDeviceLocked,
     selectTorState,
     SuiteRootState,
-} from '@suite-reducers/suiteReducer';
+} from 'src/reducers/suite/suiteReducer';
 import {
     breakdownCoinjoinBalance,
     calculateAnonymityProgress,
@@ -28,7 +28,7 @@ import {
     getRoundPhaseFromSessionPhase,
     transformCoinjoinStatus,
     calculateAverageAnonymityGainPerRound,
-} from '@wallet-utils/coinjoinUtils';
+} from 'src/utils/wallet/coinjoinUtils';
 import {
     CLIENT_STATUS_FALLBACK,
     ESTIMATED_ANONYMITY_GAINED_PER_ROUND,
@@ -40,7 +40,7 @@ import {
     SKIP_ROUNDS_BY_DEFAULT,
     FEE_RATE_MEDIAN_FALLBACK,
     MAX_MINING_FEE_MODIFIER,
-} from '@suite/services/coinjoin';
+} from 'src/services/coinjoin';
 import { accountsActions, AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import {
     Feature,

@@ -1,15 +1,15 @@
 import React from 'react';
 import styled from 'styled-components';
-import { useDispatch } from '@suite-hooks';
+import { useDispatch } from 'src/hooks/suite';
 import { Button, variables } from '@trezor/components';
 import { selectAccountByKey } from '@suite-common/wallet-core';
 import { WalletParams } from '@suite-common/wallet-types';
-import { CoinjoinSession } from '@wallet-types/coinjoin';
-import { ROUND_PHASE_MESSAGES } from '@suite-constants/coinjoin';
-import { selectDevice } from '@suite-actions/suiteActions';
-import { goto } from '@suite-actions/routerActions';
-import { useSelector } from '@suite-hooks/useSelector';
-import { selectRouterParams } from '@suite-reducers/routerReducer';
+import { CoinjoinSession } from 'src/types/wallet/coinjoin';
+import { ROUND_PHASE_MESSAGES } from 'src/constants/suite/coinjoin';
+import { selectDevice } from 'src/actions/suite/suiteActions';
+import { goto } from 'src/actions/suite/routerActions';
+import { useSelector } from 'src/hooks/suite/useSelector';
+import { selectRouterParams } from 'src/reducers/suite/routerReducer';
 import { CountdownTimer } from './CountdownTimer';
 import { WalletLabeling } from './Labeling';
 import { ProgressPie } from './ProgressPie';
@@ -17,7 +17,7 @@ import { Translation } from './Translation';
 import {
     selectSessionProgressByAccountKey,
     selectRoundsDurationInHours,
-} from '@wallet-reducers/coinjoinReducer';
+} from 'src/reducers/wallet/coinjoinReducer';
 
 const SPACING = 6;
 

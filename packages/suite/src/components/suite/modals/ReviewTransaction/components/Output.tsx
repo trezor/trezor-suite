@@ -1,13 +1,13 @@
 import React from 'react';
 import BigNumber from 'bignumber.js';
-import { Translation } from '@suite-components';
+import { Translation } from 'src/components/suite';
 import { formatNetworkAmount, formatAmount, isTestnet } from '@suite-common/wallet-utils';
 import { BTC_LOCKTIME_VALUE } from '@suite-common/wallet-constants';
-import { Network, NetworkSymbol } from '@wallet-types';
+import { Network, NetworkSymbol } from 'src/types/wallet';
 import { TokenInfo } from '@trezor/connect';
 import Indicator, { Props as IndicatorProps } from './Indicator';
 import OutputElement, { OutputElementLine } from './OutputElement';
-import type { Account } from '@wallet-types';
+import type { Account } from 'src/types/wallet';
 
 export type OutputProps =
     | {

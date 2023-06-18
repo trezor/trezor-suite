@@ -9,9 +9,9 @@ import {
     syncAccountsWithBlockchainThunk,
 } from '@suite-common/wallet-core';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import * as modalActions from '@suite-actions/modalActions';
-import * as metadataActions from '@suite-actions/metadataActions';
-import { SEND } from '@wallet-actions/constants';
+import * as modalActions from 'src/actions/suite/modalActions';
+import * as metadataActions from 'src/actions/suite/metadataActions';
+import { SEND } from 'src/actions/wallet/constants';
 import {
     formatNetworkAmount,
     getPendingAccount,
@@ -21,9 +21,9 @@ import {
     getAccountDecimals,
     hasNetworkFeatures,
 } from '@suite-common/wallet-utils';
-import { isCardanoTx } from '@wallet-utils/cardanoUtils';
-import { Dispatch, GetState } from '@suite-types';
-import { Account } from '@wallet-types';
+import { isCardanoTx } from 'src/utils/wallet/cardanoUtils';
+import { Dispatch, GetState } from 'src/types/suite';
+import { Account } from 'src/types/wallet';
 import {
     FormState,
     ComposeActionContext,
@@ -33,7 +33,7 @@ import {
 import * as sendFormBitcoinActions from './send/sendFormBitcoinActions';
 import * as sendFormEthereumActions from './send/sendFormEthereumActions';
 import * as sendFormRippleActions from './send/sendFormRippleActions';
-import { MetadataAddPayload } from '@suite/types/suite/metadata';
+import { MetadataAddPayload } from 'src/types/suite/metadata';
 import * as sendFormCardanoActions from './send/sendFormCardanoActions';
 
 export type SendFormAction =

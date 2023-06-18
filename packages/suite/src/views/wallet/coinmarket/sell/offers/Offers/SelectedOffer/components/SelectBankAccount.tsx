@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { QuestionTooltip, Translation } from '@suite-components';
+import { QuestionTooltip, Translation } from 'src/components/suite';
 import { variables, Button, Select, Icon, useTheme } from '@trezor/components';
-import { useCoinmarketSellOffersContext } from '@wallet-hooks/useCoinmarketSellOffers';
+import { useCoinmarketSellOffersContext } from 'src/hooks/wallet/useCoinmarketSellOffers';
 import { BankAccount } from 'invity-api';
-import { formatIban } from '@wallet-utils/coinmarket/sellUtils';
+import { formatIban } from 'src/utils/wallet/coinmarket/sellUtils';
 
 const Wrapper = styled.div`
     display: flex;

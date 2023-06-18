@@ -1,14 +1,14 @@
 import React, { useState, useCallback } from 'react';
 import { Loader, Dropdown } from '@trezor/components';
 import { analytics, EventType } from '@trezor/suite-analytics';
-import { Translation } from '@suite-components';
-import { useActions } from '@suite-hooks';
-import { SETTINGS } from '@suite-config';
-import { useTranslation } from '@suite-hooks/useTranslation';
+import { Translation } from 'src/components/suite';
+import { useActions } from 'src/hooks/suite';
+import { SETTINGS } from 'src/config/suite';
+import { useTranslation } from 'src/hooks/suite/useTranslation';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { exportTransactionsThunk, fetchTransactionsThunk } from '@suite-common/wallet-core';
 import { ExportFileType } from '@suite-common/wallet-types';
-import { Account } from '@wallet-types';
+import { Account } from 'src/types/wallet';
 import { isFeatureFlagEnabled } from '@suite-common/suite-utils';
 import { getTitleForNetwork, getTitleForCoinjoinAccount } from '@suite-common/wallet-utils';
 

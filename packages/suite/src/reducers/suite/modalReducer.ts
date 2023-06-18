@@ -1,7 +1,7 @@
 import { UI, DEVICE, Device, UiRequestButtonData } from '@trezor/connect';
-import { MODAL } from '@suite-actions/constants';
-import type { UserContextPayload } from '@suite-actions/modalActions';
-import type { Action, TrezorDevice } from '@suite-types';
+import { MODAL } from 'src/actions/suite/constants';
+import type { UserContextPayload } from 'src/actions/suite/modalActions';
+import type { Action, TrezorDevice } from 'src/types/suite';
 
 export type State = ModalState & { preserve?: boolean };
 

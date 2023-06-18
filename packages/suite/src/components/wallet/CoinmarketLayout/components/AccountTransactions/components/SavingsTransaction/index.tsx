@@ -6,13 +6,13 @@ import {
     HiddenPlaceholder,
     FormattedDate,
     FormattedCryptoAmount,
-} from '@suite-components';
-import type { TradeSavings } from '@wallet-types/coinmarketCommonTypes';
+} from 'src/components/suite';
+import type { TradeSavings } from 'src/types/wallet/coinmarketCommonTypes';
 import Status from '../Status';
 import type { SavingsProviderInfo } from 'invity-api';
-import { CoinmarketProviderInfo, CoinmarketPaymentType } from '@wallet-components';
-import { useWatchSavingsTrade } from '@wallet-hooks/useCoinmarket';
-import type { Account } from '@wallet-types';
+import { CoinmarketProviderInfo, CoinmarketPaymentType } from 'src/components/wallet';
+import { useWatchSavingsTrade } from 'src/hooks/wallet/useCoinmarket';
+import type { Account } from 'src/types/wallet';
 
 interface Props {
     trade: TradeSavings;

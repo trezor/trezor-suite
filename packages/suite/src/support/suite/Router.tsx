@@ -2,10 +2,10 @@ import { useEffect } from 'react';
 
 import { useLocation } from 'react-router-dom';
 import { useDidUpdate } from '@trezor/react-utils';
-import { useActions } from '@suite-hooks/useActions';
-import * as routerActions from '@suite-actions/routerActions';
-import history from '@suite/support/history';
-import { useSelector } from '@suite-hooks';
+import { useActions } from 'src/hooks/suite/useActions';
+import * as routerActions from 'src/actions/suite/routerActions';
+import history from 'src/support/history';
+import { useSelector } from 'src/hooks/suite';
 
 const RouterComponent = () => {
     const { routerLoaded } = useSelector(state => ({

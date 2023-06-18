@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 import { variables } from '@trezor/components';
 import { GuideCategory } from '@suite-common/suite-types';
-import { GuideNode } from '@guide-components';
+import { GuideNode } from 'src/components/guide';
 
 const Section = styled.section`
     padding-bottom: 20px;

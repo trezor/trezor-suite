@@ -1,5 +1,5 @@
-import { ExchangeInfo } from '@wallet-actions/coinmarketExchangeActions';
-import { AmountLimits } from '@wallet-types/coinmarketExchangeForm';
+import { ExchangeInfo } from 'src/actions/wallet/coinmarketExchangeActions';
+import { AmountLimits } from 'src/types/wallet/coinmarketExchangeForm';
 import { ExchangeTrade, ExchangeTradeStatus } from 'invity-api';
 
 // loop through quotes and if all quotes are either with error below minimum or over maximum, return error message

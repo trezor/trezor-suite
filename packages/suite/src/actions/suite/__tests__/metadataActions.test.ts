@@ -2,17 +2,17 @@
 /* eslint-disable global-require */
 import fs from 'fs';
 import path from 'path';
-import { configureStore } from '@suite/support/tests/configureStore';
+import { configureStore } from 'src/support/tests/configureStore';
 
-import metadataReducer from '@suite-reducers/metadataReducer';
-import suiteReducer, { SuiteState } from '@suite-reducers/suiteReducer';
-import deviceReducer from '@suite-reducers/deviceReducer';
+import metadataReducer from 'src/reducers/suite/metadataReducer';
+import suiteReducer, { SuiteState } from 'src/reducers/suite/suiteReducer';
+import deviceReducer from 'src/reducers/suite/deviceReducer';
 import { STORAGE, MODAL } from '../constants';
 import * as metadataActions from '../metadataActions';
 import * as fixtures from '../__fixtures__/metadataActions';
-import DropboxProvider from '@suite-services/metadata/DropboxProvider';
-import suiteMiddleware from '@suite-middlewares/suiteMiddleware';
-import { accountsReducer } from '@wallet-reducers';
+import DropboxProvider from 'src/services/suite/metadata/DropboxProvider';
+import suiteMiddleware from 'src/middlewares/suite/suiteMiddleware';
+import { accountsReducer } from 'src/reducers/wallet';
 
 jest.mock('@trezor/connect', () => {
     let fixture: any;
@@ -171,7 +171,7 @@ describe('Metadata Actions', () => {
 
     fixtures.connectProvider.forEach(f => {
         it(`connectProvider - ${f.description}`, async () => {
-            jest.mock('@suite-services/metadata/DropboxProvider');
+            jest.mock('src/services/suite/metadata/DropboxProvider');
             DropboxProvider.prototype.connect = () =>
                 Promise.resolve({ success: true, payload: undefined });
 
@@ -190,7 +190,7 @@ describe('Metadata Actions', () => {
 
     fixtures.addMetadata.forEach(f => {
         it(`add metadata - ${f.description}`, async () => {
-            jest.mock('@suite-services/metadata/DropboxProvider');
+            jest.mock('src/services/suite/metadata/DropboxProvider');
             DropboxProvider.prototype.connect = () =>
                 Promise.resolve({ success: true, payload: undefined });
             DropboxProvider.prototype.getProviderDetails = () =>
@@ -265,7 +265,7 @@ describe('Metadata Actions', () => {
 
     fixtures.init.forEach(f => {
         it(`initMetadata - ${f.description}`, async () => {
-            jest.mock('@suite-services/metadata/DropboxProvider');
+            jest.mock('src/services/suite/metadata/DropboxProvider');
             // @ts-expect-error
             const store = initStore(getInitialState(f.initialState));
             // @ts-expect-error, params

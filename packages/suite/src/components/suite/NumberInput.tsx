@@ -10,7 +10,7 @@ import BigNumber from 'bignumber.js';
 import { Input, InputProps } from '@trezor/components';
 import { TypedValidationRules } from '@suite-common/wallet-types';
 import { localizeNumber } from '@suite-common/wallet-utils';
-import { Locale } from '@suite-config/languages';
+import { Locale } from 'src/config/suite/languages';
 import { useSelector } from '@trezor/suite/src/hooks/suite';
 import { getLocaleSeparators } from '@trezor/utils';
 

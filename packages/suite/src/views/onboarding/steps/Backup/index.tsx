@@ -8,17 +8,17 @@ import {
     OptionsWrapper,
     OnboardingStepBox,
     SkipStepConfirmation,
-} from '@onboarding-components';
-import { Translation } from '@suite-components';
-import { BackupSeedCards } from '@backup-components';
-import { canContinue } from '@backup-utils';
-import { useSelector, useActions } from '@suite-hooks';
-import * as onboardingActions from '@onboarding-actions/onboardingActions';
-import * as backupActions from '@backup-actions/backupActions';
-import * as routerActions from '@suite-actions/routerActions';
-import { SettingsAnchor } from '@suite-constants/anchors';
-import { useDeviceModel } from '@suite-hooks/useDeviceModel';
-import { selectIsActionAbortable } from '@suite-reducers/suiteReducer';
+} from 'src/components/onboarding';
+import { Translation } from 'src/components/suite';
+import { BackupSeedCards } from 'src/components/backup';
+import { canContinue } from 'src/utils/backup';
+import { useSelector, useActions } from 'src/hooks/suite';
+import * as onboardingActions from 'src/actions/onboarding/onboardingActions';
+import * as backupActions from 'src/actions/backup/backupActions';
+import * as routerActions from 'src/actions/suite/routerActions';
+import { SettingsAnchor } from 'src/constants/suite/anchors';
+import { useDeviceModel } from 'src/hooks/suite/useDeviceModel';
+import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
 
 const StyledImage = styled(Image)`
     flex: 1;

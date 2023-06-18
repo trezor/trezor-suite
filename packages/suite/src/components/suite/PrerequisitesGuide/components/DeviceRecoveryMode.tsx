@@ -1,8 +1,8 @@
 import React from 'react';
 import { Button } from '@trezor/components';
-import { Translation, TroubleshootingTips } from '@suite-components';
-import * as recoveryActions from '@recovery-actions/recoveryActions';
-import { useDevice, useSelector, useActions } from '@suite-hooks';
+import { Translation, TroubleshootingTips } from 'src/components/suite';
+import * as recoveryActions from 'src/actions/recovery/recoveryActions';
+import { useDevice, useSelector, useActions } from 'src/hooks/suite';
 
 export const DeviceRecoveryMode = () => {
     const recovery = useSelector(state => state.recovery);

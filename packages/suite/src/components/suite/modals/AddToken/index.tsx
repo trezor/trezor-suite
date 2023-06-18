@@ -4,12 +4,12 @@ import TrezorConnect, { TokenInfo } from '@trezor/connect';
 import { analytics, EventType } from '@trezor/suite-analytics';
 
 import { Input, Button, Tooltip } from '@trezor/components';
-import * as tokenActions from '@wallet-actions/tokenActions';
-import { Modal } from '@suite-components';
-import { Translation } from '@suite-components/Translation';
-import { useActions, useSelector, useTranslation } from '@suite-hooks';
+import * as tokenActions from 'src/actions/wallet/tokenActions';
+import { Modal } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
+import { useActions, useSelector, useTranslation } from 'src/hooks/suite';
 import { isAddressValid } from '@suite-common/wallet-utils';
-import { Account } from '@wallet-types';
+import { Account } from 'src/types/wallet';
 
 const Wrapper = styled.div`
     display: flex;

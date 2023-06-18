@@ -1,13 +1,13 @@
 import { createContext, useCallback, useContext, useEffect, useState } from 'react';
-import { ContextValues, P2pStep, UseOffersProps } from '@wallet-types/coinmarketP2pOffers';
-import { useActions, useSelector } from '@suite-hooks';
+import { ContextValues, P2pStep, UseOffersProps } from 'src/types/wallet/coinmarketP2pOffers';
+import { useActions, useSelector } from 'src/hooks/suite';
 import { useTimer } from '@trezor/react-utils';
-import { InvityAPIReloadQuotesAfterSeconds } from '@wallet-constants/coinmarket/metadata';
-import * as coinmarketP2pActions from '@wallet-actions/coinmarketP2pActions';
-import invityAPI from '@suite-services/invityAPI';
+import { InvityAPIReloadQuotesAfterSeconds } from 'src/constants/wallet/coinmarket/metadata';
+import * as coinmarketP2pActions from 'src/actions/wallet/coinmarketP2pActions';
+import invityAPI from 'src/services/suite/invityAPI';
 import { P2pQuote } from 'invity-api';
-import { useCoinmarketNavigation } from '@wallet-hooks/useCoinmarketNavigation';
-import * as coinmarketCommonActions from '@wallet-actions/coinmarket/coinmarketCommonActions';
+import { useCoinmarketNavigation } from 'src/hooks/wallet/useCoinmarketNavigation';
+import * as coinmarketCommonActions from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
 
 export const useOffers = ({ selectedAccount }: UseOffersProps): ContextValues => {
     const timer = useTimer();

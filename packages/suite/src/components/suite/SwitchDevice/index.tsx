@@ -1,13 +1,13 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Translation } from '@suite-components/Translation';
-import { Modal } from '@suite-components';
-import * as deviceUtils from '@suite-utils/device';
-import { isWebUsb } from '@suite-utils/transport';
-import { getBackgroundRoute } from '@suite-utils/router';
+import { Translation } from 'src/components/suite/Translation';
+import { Modal } from 'src/components/suite';
+import * as deviceUtils from 'src/utils/suite/device';
+import { isWebUsb } from 'src/utils/suite/transport';
+import { getBackgroundRoute } from 'src/utils/suite/router';
 import DeviceItem from './components/DeviceItem';
-import { ForegroundAppProps } from '@suite-types';
-import { useSelector } from '@suite-hooks';
+import { ForegroundAppProps } from 'src/types/suite';
+import { useSelector } from 'src/hooks/suite';
 
 import { WebUsbButton } from '../WebUsbButton';
 

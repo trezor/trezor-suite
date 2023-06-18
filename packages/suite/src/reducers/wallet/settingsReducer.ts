@@ -1,8 +1,8 @@
 import produce from 'immer';
-import { STORAGE } from '@suite-actions/constants';
-import { WALLET_SETTINGS } from '@settings-actions/constants';
-import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
-import { Action, AppState } from '@suite-types';
+import { STORAGE } from 'src/actions/suite/constants';
+import { WALLET_SETTINGS } from 'src/actions/settings/constants';
+import * as walletSettingsActions from 'src/actions/settings/walletSettingsActions';
+import { Action, AppState } from 'src/types/suite';
 
 import { WalletSettings } from '@suite-common/wallet-types';
 import { PROTO } from '@trezor/connect';

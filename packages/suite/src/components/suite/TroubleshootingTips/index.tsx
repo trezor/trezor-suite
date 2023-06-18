@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import styled from 'styled-components';
-import { Translation, TrezorLink } from '@suite-components';
+import { Translation, TrezorLink } from 'src/components/suite';
 import { variables, Button, CollapsibleBox } from '@trezor/components';
 import { TREZOR_SUPPORT_URL } from '@trezor/urls';
 import TrezorConnect from '@trezor/connect';

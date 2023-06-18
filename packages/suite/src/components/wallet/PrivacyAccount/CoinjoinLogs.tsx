@@ -1,13 +1,13 @@
 import React from 'react';
 import styled from 'styled-components';
 import { desktopApi } from '@trezor/suite-desktop-api';
-import { ActionButton, ActionColumn, TextColumn } from '@suite-components/Settings';
-import { Translation } from '@suite-components';
+import { ActionButton, ActionColumn, TextColumn } from 'src/components/suite/Settings';
+import { Translation } from 'src/components/suite';
 import { Card } from '@trezor/components';
-import { useSelector } from '@suite-hooks/useSelector';
-import { useAnchor } from '@suite-hooks/useAnchor';
-import { CoinjoinLogsAnchor } from '@suite-constants/anchors';
-import { anchorOutlineStyles } from '@suite-utils/anchor';
+import { useSelector } from 'src/hooks/suite/useSelector';
+import { useAnchor } from 'src/hooks/suite/useAnchor';
+import { CoinjoinLogsAnchor } from 'src/constants/suite/anchors';
+import { anchorOutlineStyles } from 'src/utils/suite/anchor';
 
 const SetupCard = styled(Card)<{ shouldHighlight?: boolean }>`
     position: relative;

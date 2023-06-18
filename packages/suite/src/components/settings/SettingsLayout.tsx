@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import { useLayout } from '@suite-hooks';
-import { SettingsMenu } from '@settings-components';
+import { useLayout } from 'src/hooks/suite';
+import { SettingsMenu } from 'src/components/settings';
 import { variables } from '@trezor/components';
 
 const Wrapper = styled.div`

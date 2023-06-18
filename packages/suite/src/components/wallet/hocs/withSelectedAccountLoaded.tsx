@@ -1,7 +1,7 @@
 import React from 'react';
-import { WalletLayout } from '@wallet-components';
-import { useSelector } from '@suite-hooks';
-import type { ExtendedMessageDescriptor } from '@suite-types';
+import { WalletLayout } from 'src/components/wallet';
+import { useSelector } from 'src/hooks/suite';
+import type { ExtendedMessageDescriptor } from 'src/types/suite';
 import type { SelectedAccountLoaded } from '@suite-common/wallet-types';
 
 export interface WithSelectedAccountLoadedProps {

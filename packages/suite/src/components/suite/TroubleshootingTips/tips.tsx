@@ -1,9 +1,9 @@
 import React from 'react';
-import TrezorLink from '@suite-components/TrezorLink';
-import { Translation } from '@suite-components/Translation';
+import TrezorLink from 'src/components/suite/TrezorLink';
+import { Translation } from 'src/components/suite/Translation';
 import { isWeb, isLinux, isAndroid } from '@trezor/env-utils';
-import { useActions } from '@suite-hooks';
-import * as routerActions from '@suite-actions/routerActions';
+import { useActions } from 'src/hooks/suite';
+import * as routerActions from 'src/actions/suite/routerActions';
 
 // TODO: move it to separated components?
 

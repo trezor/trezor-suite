@@ -1,28 +1,28 @@
 import TrezorConnect, { PROTO } from '@trezor/connect';
-import { GetState, Dispatch } from '@suite-types';
+import { GetState, Dispatch } from 'src/types/suite';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import * as modalActions from '@suite-actions/modalActions';
+import * as modalActions from 'src/actions/suite/modalActions';
 import {
     COINMARKET_BUY,
     COINMARKET_EXCHANGE,
     COINMARKET_SAVINGS,
     COINMARKET_COMMON,
 } from '../constants';
-import { getUnusedAddressFromAccount } from '@wallet-utils/coinmarket/coinmarketUtils';
-import { Account } from '@wallet-types';
-import { ComposedTransactionInfo } from '@wallet-reducers/coinmarketReducer';
-import * as suiteActions from '@suite-actions/suiteActions';
+import { getUnusedAddressFromAccount } from 'src/utils/wallet/coinmarket/coinmarketUtils';
+import { Account } from 'src/types/wallet';
+import { ComposedTransactionInfo } from 'src/reducers/wallet/coinmarketReducer';
+import * as suiteActions from 'src/actions/suite/suiteActions';
 import {
     getStakingPath,
     getProtocolMagic,
     getNetworkId,
     getAddressType,
     getDerivationType,
-} from '@wallet-utils/cardanoUtils';
+} from 'src/utils/wallet/cardanoUtils';
 
-import { submitRequestForm as envSubmitRequestForm } from '@suite-utils/env';
+import { submitRequestForm as envSubmitRequestForm } from 'src/utils/suite/env';
 import { isDesktop } from '@trezor/env-utils';
-import * as formDraftActions from '@wallet-actions/formDraftActions';
+import * as formDraftActions from 'src/actions/wallet/formDraftActions';
 import {
     amountToSatoshi,
     formatAmount,

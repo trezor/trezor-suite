@@ -1,20 +1,20 @@
 import React, { useMemo } from 'react';
-import { FIAT } from '@suite-config';
-import { Translation, NumberInput } from '@suite-components';
+import { FIAT } from 'src/config/suite';
+import { Translation, NumberInput } from 'src/components/suite';
 import { Select } from '@trezor/components';
-import { buildOption } from '@wallet-utils/coinmarket/coinmarketUtils';
+import { buildOption } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import Bignumber from 'bignumber.js';
 import { Controller } from 'react-hook-form';
-import { useCoinmarketSellFormContext } from '@wallet-hooks/useCoinmarketSellForm';
+import { useCoinmarketSellFormContext } from 'src/hooks/wallet/useCoinmarketSellForm';
 import { isDecimalsValid, getInputState } from '@suite-common/wallet-utils';
-import { InputError } from '@wallet-components';
-import { MAX_LENGTH } from '@suite-constants/inputs';
+import { InputError } from 'src/components/wallet';
+import { MAX_LENGTH } from 'src/constants/suite/inputs';
 import {
     CRYPTO_INPUT,
     FIAT_CURRENCY_SELECT,
     FIAT_INPUT,
-} from '@suite/types/wallet/coinmarketSellForm';
-import { TypedValidationRules } from '@wallet-types/form';
+} from 'src/types/wallet/coinmarketSellForm';
+import { TypedValidationRules } from 'src/types/wallet/form';
 
 interface Props {
     activeInput: typeof FIAT_INPUT | typeof CRYPTO_INPUT;

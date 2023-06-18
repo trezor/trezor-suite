@@ -2,8 +2,8 @@ import React, { useState, useEffect, useCallback } from 'react';
 import styled, { css } from 'styled-components';
 import { Button, ButtonPin, KEYBOARD_CODE } from '@trezor/components';
 import InputPin from './components/InputPin';
-import { Translation } from '@suite-components';
-import { MAX_LENGTH } from '@suite-constants/inputs';
+import { Translation } from 'src/components/suite';
+import { MAX_LENGTH } from 'src/constants/suite/inputs';
 
 const Wrapper = styled.div`
     display: flex;

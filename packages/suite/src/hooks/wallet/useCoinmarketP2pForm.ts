@@ -3,17 +3,17 @@ import {
     FormState,
     P2pFormContextValues,
     UseCoinmarketP2pFormProps,
-} from '@wallet-types/coinmarketP2pForm';
-import { useActions, useSelector } from '@suite-hooks';
-import * as coinmarketP2pActions from '@wallet-actions/coinmarketP2pActions';
-import * as coinmarketCommonActions from '@wallet-actions/coinmarket/coinmarketCommonActions';
-import { useCoinmarketP2pFormDefaultValues } from '@wallet-hooks/useCoinmarketP2pFormDefaultValues';
+} from 'src/types/wallet/coinmarketP2pForm';
+import { useActions, useSelector } from 'src/hooks/suite';
+import * as coinmarketP2pActions from 'src/actions/wallet/coinmarketP2pActions';
+import * as coinmarketCommonActions from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
+import { useCoinmarketP2pFormDefaultValues } from 'src/hooks/wallet/useCoinmarketP2pFormDefaultValues';
 import { useForm, useWatch } from 'react-hook-form';
-import { useFormDraft } from '@wallet-hooks/useFormDraft';
+import { useFormDraft } from 'src/hooks/wallet/useFormDraft';
 import useDebounce from 'react-use/lib/useDebounce';
-import { isChanged } from '@suite-utils/comparisonUtils';
-import { useCoinmarketNavigation } from '@wallet-hooks/useCoinmarketNavigation';
-import invityAPI from '@suite-services/invityAPI';
+import { isChanged } from 'src/utils/suite/comparisonUtils';
+import { useCoinmarketNavigation } from 'src/hooks/wallet/useCoinmarketNavigation';
+import invityAPI from 'src/services/suite/invityAPI';
 import { TypedValidationRules } from '@suite-common/wallet-types';
 
 export const P2pFormContext = createContext<P2pFormContextValues | null>(null);

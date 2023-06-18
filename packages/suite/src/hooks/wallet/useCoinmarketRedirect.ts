@@ -1,10 +1,10 @@
-import { Account } from '@wallet-types';
+import { Account } from 'src/types/wallet';
 import { BuyTradeQuoteRequest, SellFiatTradeQuoteRequest } from 'invity-api';
-import { useActions } from '@suite-hooks';
-import * as routerActions from '@suite-actions/routerActions';
-import * as coinmarketBuyActions from '@wallet-actions/coinmarketBuyActions';
-import * as coinmarketSellActions from '@wallet-actions/coinmarketSellActions';
-import * as coinmarketCommonActions from '@wallet-actions/coinmarket/coinmarketCommonActions';
+import { useActions } from 'src/hooks/suite';
+import * as routerActions from 'src/actions/suite/routerActions';
+import * as coinmarketBuyActions from 'src/actions/wallet/coinmarketBuyActions';
+import * as coinmarketSellActions from 'src/actions/wallet/coinmarketSellActions';
+import * as coinmarketCommonActions from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
 import { FeeLevel } from '@trezor/connect';
 
 export interface OfferRedirectParams {

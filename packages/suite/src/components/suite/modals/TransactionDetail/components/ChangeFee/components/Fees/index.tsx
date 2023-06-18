@@ -1,6 +1,6 @@
 import React from 'react';
-import { Fees } from '@wallet-components/Fees';
-import { useRbfContext } from '@wallet-hooks/useRbfForm';
+import { Fees } from 'src/components/wallet/Fees';
+import { useRbfContext } from 'src/hooks/wallet/useRbfForm';
 
 // wrapper for shareable Fees component
 const RbfFees = () => {

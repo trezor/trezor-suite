@@ -1,7 +1,7 @@
-import routes, { Route, RouterAppWithParams } from '@suite-constants/routes';
+import routes, { Route, RouterAppWithParams } from 'src/constants/suite/routes';
 import { WalletParams as CommonWalletParams } from '@suite-common/wallet-types';
-import history from '@suite/support/history';
-import { NETWORKS } from '@wallet-config';
+import history from 'src/support/history';
+import { NETWORKS } from 'src/config/wallet';
 
 // Prefix a url with ASSET_PREFIX (eg. name of the branch in CI)
 // Useful with next.js Router.push() that accepts `as` prop as second arg

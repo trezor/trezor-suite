@@ -1,6 +1,6 @@
 import { Button, Icon, H3 } from '@trezor/components';
 import React from 'react';
-import { Modal, Translation } from '@suite-components';
+import { Modal, Translation } from 'src/components/suite';
 import styled from 'styled-components';
 import type { Deferred } from '@trezor/utils';
 import { DeviceModel } from '@trezor/device-utils';

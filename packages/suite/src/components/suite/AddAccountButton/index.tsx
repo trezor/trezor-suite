@@ -1,10 +1,10 @@
 import React from 'react';
 import { Button, Tooltip, ButtonProps, useTheme } from '@trezor/components';
-import { Translation } from '@suite-components';
-import { TrezorDevice } from '@suite-types';
-import { useActions, useDiscovery } from '@suite-hooks';
-import { DISCOVERY } from '@wallet-actions/constants';
-import * as modalActions from '@suite-actions/modalActions';
+import { Translation } from 'src/components/suite';
+import { TrezorDevice } from 'src/types/suite';
+import { useActions, useDiscovery } from 'src/hooks/suite';
+import { DISCOVERY } from 'src/actions/wallet/constants';
+import * as modalActions from 'src/actions/suite/modalActions';
 
 interface Props extends ButtonProps {
     device: TrezorDevice | undefined;

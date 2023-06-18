@@ -1,9 +1,9 @@
 import type { PaymentFrequency, SavingsKYCStatus, SavingsTrade } from 'invity-api';
-import type { WithSelectedAccountLoadedProps } from '@wallet-components';
-import type { TypedValidationRules } from '@wallet-types/form';
+import type { WithSelectedAccountLoadedProps } from 'src/components/wallet';
+import type { TypedValidationRules } from 'src/types/wallet/form';
 import type { UseFormMethods } from 'react-hook-form';
-import type { Account } from '@wallet-types';
-import type { Option } from '@wallet-types/coinmarketCommonTypes';
+import type { Account } from 'src/types/wallet';
+import type { Option } from 'src/types/wallet/coinmarketCommonTypes';
 
 export type UseSavingsSetupContinueProps = WithSelectedAccountLoadedProps;
 

@@ -1,8 +1,8 @@
 import React from 'react';
 
-import { onCancel as onCancelAction } from '@suite-actions/modalActions';
-import { MODAL } from '@suite-actions/constants';
-import { useDispatch } from '@suite-hooks';
+import { onCancel as onCancelAction } from 'src/actions/suite/modalActions';
+import { MODAL } from 'src/actions/suite/constants';
+import { useDispatch } from 'src/hooks/suite';
 import {
     PinMismatch,
     PassphraseDuplicate,
@@ -30,12 +30,12 @@ import {
     CoinjoinSuccess,
     MoreRoundsNeeded,
     ConfirmUnverified,
-} from '@suite-components/modals';
-import { DisableTorStopCoinjoin } from '@suite-components/modals/DisableTorStopCoinjoin';
-import { UnecoCoinjoinWarning } from '@suite-components/modals/UnecoCoinjoinWarning';
-import type { AcquiredDevice } from '@suite-types';
-import { openXpubModal, showXpub } from '@wallet-actions/publicKeyActions';
-import { showAddress, showUnverifiedAddress } from '@wallet-actions/receiveActions';
+} from 'src/components/suite/modals';
+import { DisableTorStopCoinjoin } from 'src/components/suite/modals/DisableTorStopCoinjoin';
+import { UnecoCoinjoinWarning } from 'src/components/suite/modals/UnecoCoinjoinWarning';
+import type { AcquiredDevice } from 'src/types/suite';
+import { openXpubModal, showXpub } from 'src/actions/wallet/publicKeyActions';
+import { showAddress, showUnverifiedAddress } from 'src/actions/wallet/receiveActions';
 import type { ReduxModalProps } from './types';
 
 /** Modals opened as a result of user action */

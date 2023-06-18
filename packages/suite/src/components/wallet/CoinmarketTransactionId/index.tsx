@@ -2,8 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 import { variables, Button } from '@trezor/components';
 import { copyToClipboard } from '@trezor/dom-utils';
-import { useActions } from '@suite-hooks';
-import { Translation } from '@suite-components';
+import { useActions } from 'src/hooks/suite';
+import { Translation } from 'src/components/suite';
 import { notificationsActions } from '@suite-common/toast-notifications';
 
 interface Props {

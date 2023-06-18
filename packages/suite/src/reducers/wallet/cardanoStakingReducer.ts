@@ -1,7 +1,7 @@
 import produce from 'immer';
-import { CARDANO_STAKING } from '@wallet-actions/constants';
-import { WalletAction } from '@wallet-types';
-import { CardanoNetwork, PendingStakeTx, PoolsResponse } from '@wallet-types/cardanoStaking';
+import { CARDANO_STAKING } from 'src/actions/wallet/constants';
+import { WalletAction } from 'src/types/wallet';
+import { CardanoNetwork, PendingStakeTx, PoolsResponse } from 'src/types/wallet/cardanoStaking';
 import BigNumber from 'bignumber.js';
 
 export interface State {

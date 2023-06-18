@@ -1,9 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Translation } from '@suite-components';
-import { CoinmarketRefreshTime } from '@wallet-components';
+import { Translation } from 'src/components/suite';
+import { CoinmarketRefreshTime } from 'src/components/wallet';
 import { Button, Image } from '@trezor/components';
-import { InvityAPIReloadQuotesAfterSeconds } from '@wallet-constants/coinmarket/metadata';
+import { InvityAPIReloadQuotesAfterSeconds } from 'src/constants/wallet/coinmarket/metadata';
 
 interface Props {
     coinmarketRefreshTimeIsLoading: boolean;

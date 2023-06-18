@@ -1,7 +1,7 @@
 import produce from 'immer';
 import { UpdateInfo, UpdateProgress } from '@trezor/suite-desktop-api';
-import { DESKTOP_UPDATE, SUITE } from '@suite-actions/constants';
-import { Action } from '@suite-types';
+import { DESKTOP_UPDATE, SUITE } from 'src/actions/suite/constants';
+import { Action } from 'src/types/suite';
 import { DesktopAppUpdateState as UpdateState } from '@suite-common/suite-constants';
 
 export { DesktopAppUpdateState as UpdateState } from '@suite-common/suite-constants';

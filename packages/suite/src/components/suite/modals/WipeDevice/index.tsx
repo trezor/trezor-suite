@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Button, Image } from '@trezor/components';
-import { Translation, CheckItem, Modal } from '@suite-components';
-import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
-import { useDevice, useActions } from '@suite-hooks';
+import { Translation, CheckItem, Modal } from 'src/components/suite';
+import * as deviceSettingsActions from 'src/actions/settings/deviceSettingsActions';
+import { useDevice, useActions } from 'src/hooks/suite';
 
 const Row = styled.div`
     display: flex;

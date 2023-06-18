@@ -3,9 +3,14 @@ import styled from 'styled-components';
 import { variables } from '@trezor/components';
 import Quote from './Quote';
 import { ExchangeTrade } from 'invity-api';
-import { FiatValue, FormattedCryptoAmount, QuestionTooltip, Translation } from '@suite-components';
-import { useCoinmarketExchangeOffersContext } from '@wallet-hooks/useCoinmarketExchangeOffers';
-import { useSelector } from '@suite-hooks';
+import {
+    FiatValue,
+    FormattedCryptoAmount,
+    QuestionTooltip,
+    Translation,
+} from 'src/components/suite';
+import { useCoinmarketExchangeOffersContext } from 'src/hooks/wallet/useCoinmarketExchangeOffers';
+import { useSelector } from 'src/hooks/suite';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 
 const Wrapper = styled.div``;

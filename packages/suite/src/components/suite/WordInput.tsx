@@ -4,7 +4,7 @@ import { MenuListProps, SelectInstance, createFilter } from 'react-select';
 import styled from 'styled-components';
 import { Select, variables } from '@trezor/components';
 import { bip39 } from '@trezor/crypto-utils';
-import { useTranslation } from '@suite-hooks/useTranslation';
+import { useTranslation } from 'src/hooks/suite/useTranslation';
 import { useKeyPress } from 'react-use';
 import TrezorConnect, { UI } from '@trezor/connect';
 import { createTimeoutPromise } from '@trezor/utils';

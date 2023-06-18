@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { Card, Translation } from '@suite-components';
+import { Card, Translation } from 'src/components/suite';
 import { Image, Note, Switch, variables } from '@trezor/components';
 
 const Container = styled(Card)`

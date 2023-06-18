@@ -5,13 +5,13 @@ import { TREZOR_FORUM_URL, TREZOR_SUPPORT_URL } from '@trezor/urls';
 import { analytics, EventType } from '@trezor/suite-analytics';
 import { resolveStaticPath, isDevEnv } from '@suite-common/suite-utils';
 
-import { Translation } from '@suite-components';
-import * as guideActions from '@suite-actions/guideActions';
-import { useActions, useSelector } from '@suite-hooks';
+import { Translation } from 'src/components/suite';
+import * as guideActions from 'src/actions/suite/guideActions';
+import { useActions, useSelector } from 'src/hooks/suite';
 import { Icon, Link, variables } from '@trezor/components';
-import { ViewWrapper, Header, Content } from '@guide-components';
+import { ViewWrapper, Header, Content } from 'src/components/guide';
 import { isDesktop } from '@trezor/env-utils';
-import { UpdateState } from '@suite-reducers/desktopUpdateReducer';
+import { UpdateState } from 'src/reducers/suite/desktopUpdateReducer';
 import { getFirmwareVersion } from '@trezor/device-utils';
 
 const Section = styled.div`

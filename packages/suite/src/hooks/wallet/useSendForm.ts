@@ -1,12 +1,12 @@
 import { createContext, useContext, useCallback, useState, useEffect, useRef } from 'react';
 import { useForm, useFieldArray } from 'react-hook-form';
-import { useActions, useSelector } from '@suite-hooks';
+import { useActions, useSelector } from 'src/hooks/suite';
 import { useDidUpdate } from '@trezor/react-utils';
-import * as sendFormActions from '@wallet-actions/sendFormActions';
-import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
-import * as routerActions from '@suite-actions/routerActions';
-import * as protocolActions from '@suite-actions/protocolActions';
-import { AppState } from '@suite-types';
+import * as sendFormActions from 'src/actions/wallet/sendFormActions';
+import * as walletSettingsActions from 'src/actions/settings/walletSettingsActions';
+import * as routerActions from 'src/actions/suite/routerActions';
+import * as protocolActions from 'src/actions/suite/protocolActions';
+import { AppState } from 'src/types/suite';
 import {
     FormState,
     Output,
@@ -25,7 +25,7 @@ import { useSendFormFields } from './useSendFormFields';
 import { useSendFormCompose } from './useSendFormCompose';
 import { useSendFormImport } from './useSendFormImport';
 import { useFees } from './form/useFees';
-import { PROTOCOL_TO_NETWORK } from '@suite-constants/protocol';
+import { PROTOCOL_TO_NETWORK } from 'src/constants/suite/protocol';
 import { useBitcoinAmountUnit } from './useBitcoinAmountUnit';
 import { useUtxoSelection } from './form/useUtxoSelection';
 import { useExcludedUtxos } from './form/useExcludedUtxos';

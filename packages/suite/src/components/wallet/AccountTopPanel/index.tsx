@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { Account } from '@wallet-types';
+import { Account } from 'src/types/wallet';
 import { CoinLogo, H1, H3 } from '@trezor/components';
 import {
     Ticker,
@@ -11,9 +11,9 @@ import {
     FormattedCryptoAmount,
     MetadataLabeling,
     AmountUnitSwitchWrapper,
-} from '@suite-components';
-import { Stack, SkeletonCircle, SkeletonRectangle } from '@suite-components/Skeleton';
-import { useSelector } from '@suite-hooks';
+} from 'src/components/suite';
+import { Stack, SkeletonCircle, SkeletonRectangle } from 'src/components/suite/Skeleton';
+import { useSelector } from 'src/hooks/suite';
 import { isTestnet } from '@suite-common/wallet-utils';
 import { AccountNavigation } from './AccountNavigation';
 

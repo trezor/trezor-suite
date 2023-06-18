@@ -1,11 +1,11 @@
 import React, { useMemo } from 'react';
 import styled from 'styled-components';
-import { Translation, PrerequisitesGuide } from '@suite-components';
-import { PinMatrix } from '@suite-components/PinMatrix';
-import { PrerequisiteType } from '@suite-types';
-import { useOnboarding, useSelector } from '@suite-hooks';
-import { OnboardingStepBox } from '@onboarding-components';
-import steps from '@onboarding-config/steps';
+import { Translation, PrerequisitesGuide } from 'src/components/suite';
+import { PinMatrix } from 'src/components/suite/PinMatrix';
+import { PrerequisiteType } from 'src/types/suite';
+import { useOnboarding, useSelector } from 'src/hooks/suite';
+import { OnboardingStepBox } from 'src/components/onboarding';
+import steps from 'src/config/onboarding/steps';
 
 import IsSameDevice from './components/IsSameDevice';
 import { getDeviceModel } from '@trezor/device-utils';

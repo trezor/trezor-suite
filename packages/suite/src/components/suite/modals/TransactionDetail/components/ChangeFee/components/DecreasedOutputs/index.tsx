@@ -2,9 +2,9 @@ import React from 'react';
 import styled from 'styled-components';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Icon, variables, RadioButton, motionAnimation } from '@trezor/components';
-import { Translation, FormattedCryptoAmount, HiddenPlaceholder } from '@suite-components';
+import { Translation, FormattedCryptoAmount, HiddenPlaceholder } from 'src/components/suite';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
-import { useRbfContext } from '@wallet-hooks/useRbfForm';
+import { useRbfContext } from 'src/hooks/wallet/useRbfForm';
 import GreyCard from '../GreyCard';
 import WarnHeader from '../WarnHeader';
 

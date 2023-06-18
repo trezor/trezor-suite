@@ -1,6 +1,6 @@
 import React from 'react';
-import { WelcomeLayout, PrerequisitesGuide } from '@suite-components';
-import type { PrerequisiteType } from '@suite-types';
+import { WelcomeLayout, PrerequisitesGuide } from 'src/components/suite';
+import type { PrerequisiteType } from 'src/types/suite';
 
 interface Props {
     prerequisite: PrerequisiteType;

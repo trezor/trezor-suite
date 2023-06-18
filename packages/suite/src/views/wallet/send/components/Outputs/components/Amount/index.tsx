@@ -3,8 +3,8 @@ import BigNumber from 'bignumber.js';
 import styled from 'styled-components';
 
 import { Icon, Switch, Warning, variables, useTheme } from '@trezor/components';
-import { FiatValue, Translation, NumberInput } from '@suite-components';
-import { InputError } from '@wallet-components';
+import { FiatValue, Translation, NumberInput } from 'src/components/suite';
+import { InputError } from 'src/components/wallet';
 import {
     amountToSatoshi,
     formatNetworkAmount,
@@ -15,13 +15,13 @@ import {
     getInputState,
     findToken,
 } from '@suite-common/wallet-utils';
-import { useSendFormContext } from '@wallet-hooks';
-import { Output } from '@wallet-types/sendForm';
-import { MAX_LENGTH } from '@suite-constants/inputs';
+import { useSendFormContext } from 'src/hooks/wallet';
+import { Output } from 'src/types/wallet/sendForm';
+import { MAX_LENGTH } from 'src/constants/suite/inputs';
 import { TokenSelect } from './components/TokenSelect';
 import { Fiat } from './components/Fiat';
-import { useBitcoinAmountUnit } from '@wallet-hooks/useBitcoinAmountUnit';
-import { TypedValidationRules } from '@wallet-types/form';
+import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
+import { TypedValidationRules } from 'src/types/wallet/form';
 
 const Row = styled.div`
     display: flex;

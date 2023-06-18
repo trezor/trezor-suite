@@ -1,9 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
 import { variables } from '@trezor/components';
-import { Translation, FormattedCryptoAmount, FiatValue, FormattedDate } from '@suite-components';
+import { Translation, FormattedCryptoAmount, FiatValue, FormattedDate } from 'src/components/suite';
 import { AmountRow } from './AmountRow';
-import { NetworkSymbol, WalletAccountTransaction } from '@wallet-types';
+import { NetworkSymbol, WalletAccountTransaction } from 'src/types/wallet';
 import {
     formatAmount,
     formatCardanoDeposit,
@@ -14,7 +14,7 @@ import {
     isTxFeePaid,
 } from '@suite-common/wallet-utils';
 import BigNumber from 'bignumber.js';
-import { FormattedNftAmount } from '@suite-components/FormattedNftAmount';
+import { FormattedNftAmount } from 'src/components/suite/FormattedNftAmount';
 
 const MainContainer = styled.div`
     display: flex;

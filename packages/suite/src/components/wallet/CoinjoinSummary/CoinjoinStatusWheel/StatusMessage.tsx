@@ -1,15 +1,15 @@
 import React from 'react';
 import styled from 'styled-components';
-import { SESSION_PHASE_MESSAGES } from '@suite-constants/coinjoin';
+import { SESSION_PHASE_MESSAGES } from 'src/constants/suite/coinjoin';
 import { variables } from '@trezor/components';
-import { Translation } from '@suite-components/Translation';
-import { CountdownTimer } from '@suite-components';
-import { useCoinjoinSessionPhase } from '@wallet-hooks/useCoinjoinSessionPhase';
-import { useSelector } from '@suite-hooks/useSelector';
+import { Translation } from 'src/components/suite/Translation';
+import { CountdownTimer } from 'src/components/suite';
+import { useCoinjoinSessionPhase } from 'src/hooks/wallet/useCoinjoinSessionPhase';
+import { useSelector } from 'src/hooks/suite/useSelector';
 import {
     selectCurrentCoinjoinWheelStates,
     selectCurrentSessionDeadlineInfo,
-} from '@wallet-reducers/coinjoinReducer';
+} from 'src/reducers/wallet/coinjoinReducer';
 
 const Cointainer = styled.div`
     height: 30px;

@@ -3,10 +3,10 @@ import styled, { css } from 'styled-components';
 import { darken, transparentize } from 'polished';
 import { analytics, EventType } from '@trezor/suite-analytics';
 
-import * as guideActions from '@suite-actions/guideActions';
-import { useActions } from '@suite-hooks';
+import * as guideActions from 'src/actions/suite/guideActions';
+import { useActions } from 'src/hooks/suite';
 import { Icon, variables, useTheme } from '@trezor/components';
-import { HeaderBreadcrumb, ContentScrolledContext } from '@guide-components';
+import { HeaderBreadcrumb, ContentScrolledContext } from 'src/components/guide';
 
 const HeaderWrapper = styled.div<{ noLabel?: boolean; isScrolled: boolean }>`
     display: flex;

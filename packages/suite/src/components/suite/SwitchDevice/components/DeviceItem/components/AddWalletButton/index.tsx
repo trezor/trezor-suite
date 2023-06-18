@@ -2,10 +2,10 @@ import React from 'react';
 import styled from 'styled-components';
 
 import { Button, Tooltip } from '@trezor/components';
-import { Translation } from '@suite-components';
-import { TrezorDevice, AcquiredDevice } from '@suite-types';
-import { useSelector } from '@suite-hooks';
-import { SUITE } from '@suite-actions/constants';
+import { Translation } from 'src/components/suite';
+import { TrezorDevice, AcquiredDevice } from 'src/types/suite';
+import { useSelector } from 'src/hooks/suite';
+import { SUITE } from 'src/actions/suite/constants';
 
 const AddWallet = styled.div`
     display: flex;

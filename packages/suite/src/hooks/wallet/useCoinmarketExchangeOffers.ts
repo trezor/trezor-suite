@@ -1,23 +1,23 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import invityAPI from '@suite-services/invityAPI';
-import { useActions, useSelector, useDevice } from '@suite-hooks';
+import invityAPI from 'src/services/suite/invityAPI';
+import { useActions, useSelector, useDevice } from 'src/hooks/suite';
 import { useTimer } from '@trezor/react-utils';
 import { ExchangeCoinInfo, ExchangeTrade } from 'invity-api';
-import * as coinmarketExchangeActions from '@wallet-actions/coinmarketExchangeActions';
-import { Account } from '@wallet-types';
+import * as coinmarketExchangeActions from 'src/actions/wallet/coinmarketExchangeActions';
+import { Account } from 'src/types/wallet';
 import {
     UseCoinmarketExchangeFormProps,
     ContextValues,
     ExchangeStep,
-} from '@wallet-types/coinmarketExchangeOffers';
+} from 'src/types/wallet/coinmarketExchangeOffers';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { splitToQuoteCategories } from '@wallet-utils/coinmarket/exchangeUtils';
+import { splitToQuoteCategories } from 'src/utils/wallet/coinmarket/exchangeUtils';
 import { networksCompatibility as networks } from '@suite-common/wallet-config';
-import { getUnusedAddressFromAccount } from '@wallet-utils/coinmarket/coinmarketUtils';
+import { getUnusedAddressFromAccount } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { useCoinmarketRecomposeAndSign } from './useCoinmarketRecomposeAndSign ';
-import { useCoinmarketNavigation } from '@wallet-hooks/useCoinmarketNavigation';
-import { InvityAPIReloadQuotesAfterSeconds } from '@wallet-constants/coinmarket/metadata';
-import { useBitcoinAmountUnit } from '@wallet-hooks/useBitcoinAmountUnit';
+import { useCoinmarketNavigation } from 'src/hooks/wallet/useCoinmarketNavigation';
+import { InvityAPIReloadQuotesAfterSeconds } from 'src/constants/wallet/coinmarket/metadata';
+import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { amountToSatoshi } from '@suite-common/wallet-utils';
 
 const getReceiveAccountSymbol = (

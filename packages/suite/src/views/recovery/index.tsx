@@ -1,19 +1,19 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Button, H2, P, Image, variables } from '@trezor/components';
-import { SelectWordCount, SelectRecoveryType } from '@recovery-components';
-import { Loading, Translation, CheckItem, TrezorLink, Modal } from '@suite-components';
-import { ReduxModal } from '@suite-components/ModalSwitcher/ReduxModal';
-import * as recoveryActions from '@recovery-actions/recoveryActions';
-import { useDevice, useSelector, useActions } from '@suite-hooks';
-import type { ForegroundAppProps } from '@suite-types';
-import type { WordCount } from '@recovery-types';
-import { InstructionStep } from '@suite-components/InstructionStep';
-import { getCheckBackupUrl } from '@suite-utils/device';
+import { SelectWordCount, SelectRecoveryType } from 'src/components/recovery';
+import { Loading, Translation, CheckItem, TrezorLink, Modal } from 'src/components/suite';
+import { ReduxModal } from 'src/components/suite/ModalSwitcher/ReduxModal';
+import * as recoveryActions from 'src/actions/recovery/recoveryActions';
+import { useDevice, useSelector, useActions } from 'src/hooks/suite';
+import type { ForegroundAppProps } from 'src/types/suite';
+import type { WordCount } from 'src/types/recovery';
+import { InstructionStep } from 'src/components/suite/InstructionStep';
+import { getCheckBackupUrl } from 'src/utils/suite/device';
 import { DeviceModel, getDeviceModel, pickByDeviceModel } from '@trezor/device-utils';
 import TrezorConnect from '@trezor/connect';
 import { useIntl } from 'react-intl';
-import messages from '@suite/support/messages';
+import messages from 'src/support/messages';
 
 const StyledModal = styled(Modal)`
     min-height: 450px;

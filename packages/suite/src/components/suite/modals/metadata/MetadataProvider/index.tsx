@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { P, Button, variables } from '@trezor/components';
 
-import { Translation, Modal } from '@suite-components';
-import { useActions } from '@suite-hooks';
-import * as metadataActions from '@suite-actions/metadataActions';
+import { Translation, Modal } from 'src/components/suite';
+import { useActions } from 'src/hooks/suite';
+import * as metadataActions from 'src/actions/suite/metadataActions';
 import type { Deferred } from '@trezor/utils';
-import { MetadataProviderType } from '@suite-types/metadata';
+import { MetadataProviderType } from 'src/types/suite/metadata';
 import { isFeatureFlagEnabled } from '@suite-common/suite-utils';
 
 const { FONT_SIZE, FONT_WEIGHT, SCREEN_SIZE } = variables;

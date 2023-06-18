@@ -1,5 +1,5 @@
 import React from 'react';
-import { Translation, TroubleshootingTips, WebUsbButton } from '@suite-components';
+import { Translation, TroubleshootingTips, WebUsbButton } from 'src/components/suite';
 import {
     TROUBLESHOOTING_TIP_BRIDGE_STATUS,
     TROUBLESHOOTING_TIP_BRIDGE_USE,
@@ -7,7 +7,7 @@ import {
     TROUBLESHOOTING_TIP_USB,
     TROUBLESHOOTING_TIP_DIFFERENT_COMPUTER,
     TROUBLESHOOTING_TIP_UDEV,
-} from '@suite-components/TroubleshootingTips/tips';
+} from 'src/components/suite/TroubleshootingTips/tips';
 
 interface DeviceConnectProps {
     isWebUsbTransport: boolean;

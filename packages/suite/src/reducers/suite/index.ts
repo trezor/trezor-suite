@@ -1,6 +1,6 @@
 import { Reducer } from '@reduxjs/toolkit';
 
-import { extraDependencies } from '@suite/support/extraDependencies';
+import { extraDependencies } from 'src/support/extraDependencies';
 
 import { prepareAnalyticsReducer } from '@suite-common/analytics';
 import { prepareMessageSystemReducer } from '@suite-common/message-system';

@@ -1,4 +1,4 @@
-import { PROTOCOL_SCHEME } from '@suite-constants/protocol';
+import { PROTOCOL_SCHEME } from 'src/constants/suite/protocol';
 import { parseQuery, parseUri } from './parseUri';
 import { analytics, EventType } from '@trezor/suite-analytics';
 

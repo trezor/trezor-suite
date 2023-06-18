@@ -2,11 +2,11 @@ import TrezorConnect, { Device, Unsuccessful } from '@trezor/connect';
 import { analytics, EventType } from '@trezor/suite-analytics';
 import { resolveStaticPath } from '@suite-common/suite-utils';
 
-import { FIRMWARE } from '@firmware-actions/constants';
+import { FIRMWARE } from 'src/actions/firmware/constants';
 import { isDesktop } from '@trezor/env-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 
-import { Dispatch, GetState, AppState, AcquiredDevice, FirmwareType } from '@suite-types';
+import { Dispatch, GetState, AppState, AcquiredDevice, FirmwareType } from 'src/types/suite';
 import type { Await } from '@trezor/type-utils';
 import {
     getFirmwareVersion,

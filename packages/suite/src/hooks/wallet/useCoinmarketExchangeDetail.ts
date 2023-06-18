@@ -2,11 +2,11 @@ import { createContext, useContext } from 'react';
 import type {
     UseCoinmarketExchangeDetailProps,
     ContextValues,
-} from '@wallet-types/coinmarketExchangeDetail';
-import { useWatchExchangeTrade } from '@wallet-hooks/useCoinmarket';
-import { useSelector } from '@suite-hooks';
-import type { TradeExchange } from '@wallet-types/coinmarketCommonTypes';
-import invityAPI from '@suite-services/invityAPI';
+} from 'src/types/wallet/coinmarketExchangeDetail';
+import { useWatchExchangeTrade } from 'src/hooks/wallet/useCoinmarket';
+import { useSelector } from 'src/hooks/suite';
+import type { TradeExchange } from 'src/types/wallet/coinmarketCommonTypes';
+import invityAPI from 'src/services/suite/invityAPI';
 
 export const useCoinmarketExchangeDetail = ({
     selectedAccount,

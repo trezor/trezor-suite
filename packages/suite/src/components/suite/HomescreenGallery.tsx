@@ -3,10 +3,10 @@ import styled from 'styled-components';
 import { analytics, EventType } from '@trezor/suite-analytics';
 import { resolveStaticPath } from '@suite-common/suite-utils';
 
-import { homescreensBW64x128, homescreensColor240x240 } from '@suite-constants/homescreens';
-import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
-import { imagePathToHex } from '@suite-utils/homescreen';
-import { useActions, useDevice } from '@suite-hooks';
+import { homescreensBW64x128, homescreensColor240x240 } from 'src/constants/suite/homescreens';
+import * as deviceSettingsActions from 'src/actions/settings/deviceSettingsActions';
+import { imagePathToHex } from 'src/utils/suite/homescreen';
+import { useActions, useDevice } from 'src/hooks/suite';
 import { DeviceModel, getDeviceModel } from '@trezor/device-utils';
 
 type AnyImageName = (typeof homescreensBW64x128)[number] | (typeof homescreensColor240x240)[number];

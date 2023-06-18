@@ -4,19 +4,19 @@ import {
     PartialDiscovery,
     selectDiscovery,
     selectDiscoveryForDevice,
-} from '@wallet-reducers/discoveryReducer';
+} from 'src/reducers/wallet/discoveryReducer';
 import TrezorConnect, { BundleProgress, AccountInfo, UI } from '@trezor/connect';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { SUITE } from '@suite-actions/constants';
+import { SUITE } from 'src/actions/suite/constants';
 import { accountsActions } from '@suite-common/wallet-core';
-import * as metadataActions from '@suite-actions/metadataActions';
-import { DISCOVERY } from '@wallet-actions/constants';
-import { SETTINGS } from '@suite-config';
-import { NETWORKS } from '@wallet-config';
-import { Dispatch, GetState, TrezorDevice } from '@suite-types';
-import { Account } from '@wallet-types';
+import * as metadataActions from 'src/actions/suite/metadataActions';
+import { DISCOVERY } from 'src/actions/wallet/constants';
+import { SETTINGS } from 'src/config/suite';
+import { NETWORKS } from 'src/config/wallet';
+import { Dispatch, GetState, TrezorDevice } from 'src/types/suite';
+import { Account } from 'src/types/wallet';
 import { DiscoveryItem } from '@suite-common/wallet-types';
-import { getDerivationType } from '@wallet-utils/cardanoUtils';
+import { getDerivationType } from 'src/utils/wallet/cardanoUtils';
 import { isTrezorConnectBackendType } from '@suite-common/wallet-utils';
 import { getDeviceModel, getFirmwareVersion } from '@trezor/device-utils';
 

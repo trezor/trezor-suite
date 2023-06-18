@@ -1,6 +1,6 @@
-import deviceReducer, { isUnlocked } from '@suite-reducers/deviceReducer';
+import deviceReducer, { isUnlocked } from 'src/reducers/suite/deviceReducer';
 
-import { Action } from '@suite-types';
+import { Action } from 'src/types/suite';
 import { testMocks } from '@suite-common/test-utils';
 import fixtures from '../__fixtures__/deviceReducer';
 

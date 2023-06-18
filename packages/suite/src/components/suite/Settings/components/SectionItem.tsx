@@ -2,9 +2,9 @@ import React from 'react';
 import styled from 'styled-components';
 
 import { variables } from '@trezor/components';
-import { CARD_PADDING_SIZE } from '@suite-constants/layout';
-import { SECONDARY_PANEL_HEIGHT } from '@suite-components/AppNavigation';
-import { anchorOutlineStyles } from '@suite-utils/anchor';
+import { CARD_PADDING_SIZE } from 'src/constants/suite/layout';
+import { SECONDARY_PANEL_HEIGHT } from 'src/components/suite/AppNavigation';
+import { anchorOutlineStyles } from 'src/utils/suite/anchor';
 
 const Wrapper = styled.div<{ shouldHighlight?: boolean }>`
     padding: 0 ${CARD_PADDING_SIZE};

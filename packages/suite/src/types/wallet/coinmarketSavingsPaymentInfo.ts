@@ -1,5 +1,5 @@
 import type { SavingsKYCStatus, SavingsPaymentInfo } from 'invity-api';
-import type { WithSelectedAccountLoadedProps } from '@wallet-components';
+import type { WithSelectedAccountLoadedProps } from 'src/components/wallet';
 import { SavingsContextValues } from './coinmarketSavings';
 
 export type UseSavingsPaymentInfoProps = WithSelectedAccountLoadedProps;

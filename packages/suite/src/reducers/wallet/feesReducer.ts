@@ -1,7 +1,7 @@
 import produce from 'immer';
-import { FeeInfo } from '@wallet-types/sendForm';
-import { NETWORKS } from '@wallet-config';
-import { Network, WalletAction } from '@wallet-types';
+import { FeeInfo } from 'src/types/wallet/sendForm';
+import { NETWORKS } from 'src/config/wallet';
+import { Network, WalletAction } from 'src/types/wallet';
 import { blockchainActions } from '@suite-common/wallet-core';
 
 // type Symbol = Network['symbol'] | 'erc20';

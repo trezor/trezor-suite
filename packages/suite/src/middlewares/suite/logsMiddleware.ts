@@ -1,10 +1,17 @@
 import { MiddlewareAPI } from 'redux';
-import { AppState, Action, Dispatch } from '@suite-types';
-import { DESKTOP_UPDATE, METADATA, MODAL, PROTOCOL, ROUTER, SUITE } from '@suite-actions/constants';
-import { DISCOVERY } from '@wallet-actions/constants';
-import { WALLET_SETTINGS } from '@settings-actions/constants';
-import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
-import { redactTransactionIdFromAnchor } from '@suite-utils/analytics';
+import { AppState, Action, Dispatch } from 'src/types/suite';
+import {
+    DESKTOP_UPDATE,
+    METADATA,
+    MODAL,
+    PROTOCOL,
+    ROUTER,
+    SUITE,
+} from 'src/actions/suite/constants';
+import { DISCOVERY } from 'src/actions/wallet/constants';
+import { WALLET_SETTINGS } from 'src/actions/settings/constants';
+import * as walletSettingsActions from 'src/actions/settings/walletSettingsActions';
+import { redactTransactionIdFromAnchor } from 'src/utils/suite/analytics';
 
 import { addLog } from '@suite-common/logger';
 import { TRANSPORT, DEVICE } from '@trezor/connect';

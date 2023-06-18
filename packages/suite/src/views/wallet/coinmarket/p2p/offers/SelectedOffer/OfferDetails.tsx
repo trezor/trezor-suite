@@ -1,10 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
 import { useFormatters } from '@suite-common/formatters';
-import { AccountLabeling, Translation } from '@suite-components';
+import { AccountLabeling, Translation } from 'src/components/suite';
 import { CoinLogo, variables } from '@trezor/components';
-import { Account } from '@wallet-types';
-import { CoinmarketProviderInfo } from '@wallet-components';
+import { Account } from 'src/types/wallet';
+import { CoinmarketProviderInfo } from 'src/components/wallet';
 import { P2pProviderInfo, P2pQuote, P2pQuotesRequest } from 'invity-api';
 import { Avatar } from '../Avatar';
 

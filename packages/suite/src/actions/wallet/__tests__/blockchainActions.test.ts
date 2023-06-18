@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import { configureStore, filterThunkActionTypes } from '@suite/support/tests/configureStore';
+import { configureStore, filterThunkActionTypes } from 'src/support/tests/configureStore';
 import { PROTO } from '@trezor/connect';
-import { accountsReducer, transactionsReducer, blockchainReducer } from '@wallet-reducers';
-import feesReducer from '@wallet-reducers/feesReducer';
+import { accountsReducer, transactionsReducer, blockchainReducer } from 'src/reducers/wallet';
+import feesReducer from 'src/reducers/wallet/feesReducer';
 import { notificationsActions, notificationsReducer } from '@suite-common/toast-notifications';
 import * as fixtures from '../__fixtures__/blockchainActions';
 import {

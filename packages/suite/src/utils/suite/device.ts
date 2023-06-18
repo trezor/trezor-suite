@@ -1,5 +1,5 @@
 import { Device, UnavailableCapability, FirmwareRelease } from '@trezor/connect';
-import { TrezorDevice, AcquiredDevice } from '@suite-types';
+import { TrezorDevice, AcquiredDevice } from 'src/types/suite';
 import { DeviceModel, getDeviceModel } from '@trezor/device-utils';
 import * as URLS from '@trezor/urls';
 

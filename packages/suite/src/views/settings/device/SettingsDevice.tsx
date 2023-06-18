@@ -2,11 +2,11 @@ import React from 'react';
 
 import type { TransportInfo } from '@trezor/connect';
 
-import { SettingsLayout } from '@settings-components';
-import { Translation } from '@suite-components';
-import { SettingsSection, DeviceBanner } from '@suite-components/Settings';
-import { isDeviceRemembered } from '@suite-utils/device';
-import { useDevice, useSelector } from '@suite-hooks';
+import { SettingsLayout } from 'src/components/settings';
+import { Translation } from 'src/components/suite';
+import { SettingsSection, DeviceBanner } from 'src/components/suite/Settings';
+import { isDeviceRemembered } from 'src/utils/suite/device';
+import { useDevice, useSelector } from 'src/hooks/suite';
 import { DeviceModel, getDeviceModel, pickByDeviceModel } from '@trezor/device-utils';
 
 import { BackupRecoverySeed } from './BackupRecoverySeed';
@@ -25,7 +25,7 @@ import { AutoLock } from './AutoLock';
 import { WipeDevice } from './WipeDevice';
 import { CustomFirmware } from './CustomFirmware';
 
-import type { TrezorDevice } from '@suite-types';
+import type { TrezorDevice } from 'src/types/suite';
 
 const deviceSettingsUnavailable = (device?: TrezorDevice, transport?: Partial<TransportInfo>) => {
     const noTransportAvailable = transport && !transport.type;

@@ -3,7 +3,12 @@ import styled from 'styled-components';
 import { variables, Icon, useTheme } from '@trezor/components';
 import { HELP_CENTER_ZERO_VALUE_ATTACKS } from '@trezor/urls';
 import { getIsZeroValuePhishing } from '@suite-common/suite-utils';
-import { FormattedCryptoAmount, TooltipSymbol, Translation, TrezorLink } from '@suite-components';
+import {
+    FormattedCryptoAmount,
+    TooltipSymbol,
+    Translation,
+    TrezorLink,
+} from 'src/components/suite';
 import {
     formatAmount,
     formatNetworkAmount,
@@ -12,7 +17,7 @@ import {
     getTxOperation,
 } from '@suite-common/wallet-utils';
 import { TransactionHeader } from './TransactionHeader';
-import { WalletAccountTransaction } from '@wallet-types';
+import { WalletAccountTransaction } from 'src/types/wallet';
 import BigNumber from 'bignumber.js';
 
 const Wrapper = styled.span`

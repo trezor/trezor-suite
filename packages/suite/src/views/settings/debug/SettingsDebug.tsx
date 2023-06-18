@@ -1,7 +1,7 @@
 import React from 'react';
 
-import { SettingsLayout } from '@settings-components';
-import { SettingsSection } from '@suite-components/Settings';
+import { SettingsLayout } from 'src/components/settings';
+import { SettingsSection } from 'src/components/suite/Settings';
 import { isWeb } from '@trezor/env-utils';
 
 import { TranslationMode } from './TranslationMode';

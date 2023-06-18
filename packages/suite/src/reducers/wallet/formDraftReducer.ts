@@ -1,8 +1,8 @@
-import { FORM_DRAFT } from '@wallet-actions/constants';
+import { FORM_DRAFT } from 'src/actions/wallet/constants';
 import produce from 'immer';
-import { Action } from '@suite-types';
-import { FormDraft } from '@wallet-types/form';
-import { STORAGE } from '@suite/actions/suite/constants';
+import { Action } from 'src/types/suite';
+import { FormDraft } from 'src/types/wallet/form';
+import { STORAGE } from 'src/actions/suite/constants';
 
 export interface FormDraftState {
     [key: string]: FormDraft;

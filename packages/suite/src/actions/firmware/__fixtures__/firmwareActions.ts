@@ -1,8 +1,8 @@
 import { UI } from '@trezor/connect';
-import { FIRMWARE } from '@firmware-actions/constants';
-import { SUITE } from '@suite-actions/constants';
-import * as firmwareActions from '@firmware-actions/firmwareActions';
-import { FirmwareType } from '@suite-types';
+import { FIRMWARE } from 'src/actions/firmware/constants';
+import { SUITE } from 'src/actions/suite/constants';
+import * as firmwareActions from 'src/actions/firmware/firmwareActions';
+import { FirmwareType } from 'src/types/suite';
 import { DeviceModel } from '@trezor/device-utils';
 
 const { getSuiteDevice, getDeviceFeatures, getFirmwareRelease } = global.JestMocks;

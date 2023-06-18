@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { useActions, useDevice } from '@suite-hooks';
+import { useActions, useDevice } from 'src/hooks/suite';
 import { RadioButton, Button, H3, P, Warning } from '@trezor/components';
-import { Translation, Modal, ModalProps } from '@suite-components';
-import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
+import { Translation, Modal, ModalProps } from 'src/components/suite';
+import * as deviceSettingsActions from 'src/actions/settings/deviceSettingsActions';
 
 const StyledButton = styled(Button)`
     min-width: 230px;

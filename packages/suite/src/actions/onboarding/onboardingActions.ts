@@ -1,12 +1,12 @@
 import { OnboardingAnalytics } from '@trezor/suite-analytics';
 
-import { ONBOARDING } from '@onboarding-actions/constants';
-import * as STEP from '@onboarding-constants/steps';
-import { AnyStepId, AnyPath } from '@onboarding-types';
-import steps from '@onboarding-config/steps';
-import { findNextStep, findPrevStep, isStepInPath } from '@onboarding-utils/steps';
+import { ONBOARDING } from 'src/actions/onboarding/constants';
+import * as STEP from 'src/constants/onboarding/steps';
+import { AnyStepId, AnyPath } from 'src/types/onboarding';
+import steps from 'src/config/onboarding/steps';
+import { findNextStep, findPrevStep, isStepInPath } from 'src/utils/onboarding/steps';
 
-import { GetState, Dispatch } from '@suite-types';
+import { GetState, Dispatch } from 'src/types/suite';
 
 export type OnboardingAction =
     | {

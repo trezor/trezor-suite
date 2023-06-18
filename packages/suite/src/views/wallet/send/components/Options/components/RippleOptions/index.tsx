@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
-import { useSendFormContext } from '@wallet-hooks';
-import { Translation } from '@suite-components';
-import { OnOffSwitcher } from '@wallet-components';
+import { useSendFormContext } from 'src/hooks/wallet';
+import { Translation } from 'src/components/suite';
+import { OnOffSwitcher } from 'src/components/wallet';
 import { Button, Tooltip } from '@trezor/components';
 import DestinationTag from './components/DestinationTag';
 

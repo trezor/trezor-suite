@@ -2,15 +2,15 @@ import React from 'react';
 import styled from 'styled-components';
 
 import { Button, SecurityCard, SecurityCardProps, variables } from '@trezor/components';
-import { Translation } from '@suite-components';
-import { Section } from '@dashboard-components';
-import { AcquiredDevice } from '@suite-types';
-import { useDevice, useDiscovery, useActions, useSelector } from '@suite-hooks';
-import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
-import * as suiteActions from '@suite-actions/suiteActions';
-import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
-import * as routerActions from '@suite-actions/routerActions';
-import { SettingsAnchor } from '@suite-constants/anchors';
+import { Translation } from 'src/components/suite';
+import { Section } from 'src/components/dashboard';
+import { AcquiredDevice } from 'src/types/suite';
+import { useDevice, useDiscovery, useActions, useSelector } from 'src/hooks/suite';
+import * as walletSettingsActions from 'src/actions/settings/walletSettingsActions';
+import * as suiteActions from 'src/actions/suite/suiteActions';
+import * as deviceSettingsActions from 'src/actions/settings/deviceSettingsActions';
+import * as routerActions from 'src/actions/suite/routerActions';
+import { SettingsAnchor } from 'src/constants/suite/anchors';
 
 const Content = styled.div`
     display: grid;

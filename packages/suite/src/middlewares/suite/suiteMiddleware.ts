@@ -1,9 +1,9 @@
 import { MiddlewareAPI } from 'redux';
 import { DEVICE } from '@trezor/connect';
-import { SUITE, ROUTER } from '@suite-actions/constants';
-import * as suiteActions from '@suite-actions/suiteActions';
-import { AppState, Action, Dispatch } from '@suite-types';
-import { handleProtocolRequest } from '@suite-actions/protocolActions';
+import { SUITE, ROUTER } from 'src/actions/suite/constants';
+import * as suiteActions from 'src/actions/suite/suiteActions';
+import { AppState, Action, Dispatch } from 'src/types/suite';
+import { handleProtocolRequest } from 'src/actions/suite/protocolActions';
 import { notificationsActions } from '@suite-common/toast-notifications';
 
 const suite =

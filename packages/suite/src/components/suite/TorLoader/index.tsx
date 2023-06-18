@@ -1,12 +1,12 @@
 import React, { useState, useEffect, ComponentType } from 'react';
 
 import styled from 'styled-components';
-import { TorStatus } from '@suite-types';
+import { TorStatus } from 'src/types/suite';
 
-import { Translation } from '@suite-components';
-import { useActions, useSelector } from '@suite-hooks';
-import { selectTorState } from '@suite-reducers/suiteReducer';
-import * as suiteActions from '@suite-actions/suiteActions';
+import { Translation } from 'src/components/suite';
+import { useActions, useSelector } from 'src/hooks/suite';
+import { selectTorState } from 'src/reducers/suite/suiteReducer';
+import * as suiteActions from 'src/actions/suite/suiteActions';
 
 import { Button, ModalProps } from '@trezor/components';
 import { TorProgressBar } from './TorProgressBar';

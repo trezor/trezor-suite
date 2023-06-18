@@ -1,10 +1,10 @@
 import { Button, H3 } from '@trezor/components';
 import React from 'react';
-import * as routerActions from '@suite-actions/routerActions';
-import { useActions } from '@suite-hooks';
-import { Translation, Modal } from '@suite-components';
+import * as routerActions from 'src/actions/suite/routerActions';
+import { useActions } from 'src/hooks/suite';
+import { Translation, Modal } from 'src/components/suite';
 import styled from 'styled-components';
-import * as coinmarketSellActions from '@wallet-actions/coinmarketSellActions';
+import * as coinmarketSellActions from 'src/actions/wallet/coinmarketSellActions';
 
 const Text = styled(H3)`
     display: flex;

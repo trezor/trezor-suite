@@ -1,5 +1,5 @@
-import { useSelector, useActions } from '@suite-hooks';
-import * as graphActions from '@wallet-actions/graphActions';
+import { useSelector, useActions } from 'src/hooks/suite';
+import * as graphActions from 'src/actions/wallet/graphActions';
 
 export const useGraph = () => {
     const { selectedRange, selectedView } = useSelector(state => ({

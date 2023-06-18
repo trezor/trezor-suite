@@ -1,5 +1,5 @@
 import React from 'react';
-import { SkeletonRectangle, Spread, Stack } from '@suite-components/Skeleton';
+import { SkeletonRectangle, Spread, Stack } from 'src/components/suite/Skeleton';
 
 export const SkeletonTransactionItem = () => (
     <Stack col childMargin="0px 0px 8px 0px">

@@ -1,20 +1,20 @@
 import React, { useMemo } from 'react';
 import styled from 'styled-components';
 import { Dropdown } from '@trezor/components';
-import { Card, QuestionTooltip, Translation } from '@suite-components';
-import { Section } from '@dashboard-components';
-import { useDiscovery, useSelector, useActions } from '@suite-hooks';
-import { useFastAccounts, useFiatValue } from '@wallet-hooks';
-import { SkeletonTransactionsGraph } from '@suite-components/TransactionsGraph';
-import * as routerActions from '@suite-actions/routerActions';
-import * as suiteActions from '@suite-actions/suiteActions';
+import { Card, QuestionTooltip, Translation } from 'src/components/suite';
+import { Section } from 'src/components/dashboard';
+import { useDiscovery, useSelector, useActions } from 'src/hooks/suite';
+import { useFastAccounts, useFiatValue } from 'src/hooks/wallet';
+import { SkeletonTransactionsGraph } from 'src/components/suite/TransactionsGraph';
+import * as routerActions from 'src/actions/suite/routerActions';
+import * as suiteActions from 'src/actions/suite/suiteActions';
 import * as accountUtils from '@suite-common/wallet-utils';
 
 import { Header } from './components/Header';
 import { Exception } from './components/Exception';
 import { EmptyWallet } from './components/EmptyWallet';
 import { DashboardGraph } from './components/DashboardGraph';
-import { GraphScaleDropdownItem } from '@suite-components/TransactionsGraph/components/GraphScaleDropdownItem';
+import { GraphScaleDropdownItem } from 'src/components/suite/TransactionsGraph/components/GraphScaleDropdownItem';
 
 const StyledCard = styled(Card)`
     flex-direction: column;

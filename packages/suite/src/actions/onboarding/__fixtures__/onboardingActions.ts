@@ -1,6 +1,6 @@
-import * as onboardingActions from '@onboarding-actions/onboardingActions';
-import onboardingReducer from '@onboarding-reducers/onboardingReducer';
-import * as STEP from '@onboarding-constants/steps';
+import * as onboardingActions from 'src/actions/onboarding/onboardingActions';
+import onboardingReducer from 'src/reducers/onboarding/onboardingReducer';
+import * as STEP from 'src/constants/onboarding/steps';
 
 const { getSuiteDevice } = global.JestMocks;
 

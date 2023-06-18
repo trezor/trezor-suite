@@ -1,11 +1,11 @@
 import React from 'react';
 
-import { ActionColumn, SectionItem, TextColumn, ActionButton } from '@suite-components/Settings';
-import { useSelector, useActions, useDevice } from '@suite-hooks';
-import * as metadataActions from '@suite-actions/metadataActions';
-import { Translation } from '@suite-components';
-import { useAnchor } from '@suite-hooks/useAnchor';
-import { SettingsAnchor } from '@suite-constants/anchors';
+import { ActionColumn, SectionItem, TextColumn, ActionButton } from 'src/components/suite/Settings';
+import { useSelector, useActions, useDevice } from 'src/hooks/suite';
+import * as metadataActions from 'src/actions/suite/metadataActions';
+import { Translation } from 'src/components/suite';
+import { useAnchor } from 'src/hooks/suite/useAnchor';
+import { SettingsAnchor } from 'src/constants/suite/anchors';
 
 export const LabelingConnect = () => {
     const { device } = useDevice();

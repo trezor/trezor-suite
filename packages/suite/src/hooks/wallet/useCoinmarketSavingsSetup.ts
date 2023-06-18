@@ -3,25 +3,25 @@ import type {
     SavingsSetupContextValues,
     SavingsSetupFormState,
     UseSavingsSetupProps,
-} from '@wallet-types/coinmarketSavingsSetup';
+} from 'src/types/wallet/coinmarketSavingsSetup';
 import { useForm, useWatch } from 'react-hook-form';
 import { InitSavingsTradeRequest } from 'invity-api';
-import invityAPI, { SavingsTradeKYCFinalStatuses } from '@suite-services/invityAPI';
-import { useActions, useSelector } from '@suite-hooks';
-import type { CountryOption } from '@wallet-types/coinmarketCommonTypes';
-import { CustomPaymentAmountKey } from '@wallet-constants/coinmarket/savings';
-import * as coinmarketSavingsActions from '@wallet-actions/coinmarketSavingsActions';
-import * as coinmarketCommonActions from '@wallet-actions/coinmarket/coinmarketCommonActions';
-import * as pollingActions from '@wallet-actions/pollingActions';
-import { useCoinmarketNavigation } from '@wallet-hooks/useCoinmarketNavigation';
-import regional from '@wallet-constants/coinmarket/regional';
+import invityAPI, { SavingsTradeKYCFinalStatuses } from 'src/services/suite/invityAPI';
+import { useActions, useSelector } from 'src/hooks/suite';
+import type { CountryOption } from 'src/types/wallet/coinmarketCommonTypes';
+import { CustomPaymentAmountKey } from 'src/constants/wallet/coinmarket/savings';
+import * as coinmarketSavingsActions from 'src/actions/wallet/coinmarketSavingsActions';
+import * as coinmarketCommonActions from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
+import * as pollingActions from 'src/actions/wallet/pollingActions';
+import { useCoinmarketNavigation } from 'src/hooks/wallet/useCoinmarketNavigation';
+import regional from 'src/constants/wallet/coinmarket/regional';
 import {
     calculateAnnualSavings,
     createReturnLink,
     getPaymentFrequencyOptions,
-} from '@wallet-utils/coinmarket/savingsUtils';
+} from 'src/utils/wallet/coinmarket/savingsUtils';
 import { isDesktop } from '@trezor/env-utils';
-import { useFormDraft } from '@wallet-hooks/useFormDraft';
+import { useFormDraft } from 'src/hooks/wallet/useFormDraft';
 import { TypedValidationRules } from '@suite-common/wallet-types';
 
 export const useSavingsSetup = ({

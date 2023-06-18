@@ -1,7 +1,7 @@
 import React from 'react';
 
-import { useGraph } from '@suite-hooks';
-import { Translation } from '@suite-components';
+import { useGraph } from 'src/hooks/suite';
+import { Translation } from 'src/components/suite';
 
 import { SelectBar, SelectBarProps } from '@trezor/components';
 import { GraphScale } from '../../../../types/wallet/graph';

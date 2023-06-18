@@ -5,7 +5,7 @@ import {
     KYCInProgress,
     withCoinmarket,
     WithCoinmarketProps,
-} from '@wallet-components';
+} from 'src/components/wallet';
 import styled from 'styled-components';
 import { Icon, variables } from '@trezor/components';
 import {
@@ -13,19 +13,19 @@ import {
     FormattedCryptoAmount,
     HiddenPlaceholder,
     Translation,
-} from '@suite-components';
+} from 'src/components/suite';
 import { PaymentDetail } from './components/PaymentDetail';
 import {
     SavingsOverviewContext,
     useSavingsOverview,
-} from '@wallet-hooks/useCoinmarketSavingsOverview';
+} from 'src/hooks/wallet/useCoinmarketSavingsOverview';
 import type { PaymentFrequency, SavingsKYCStatus, SavingsTrade } from 'invity-api';
 import { WaitingForFirstPayment } from './components/WaitingForFirstPayment';
 import { darken } from 'polished';
-import type { Account, NetworkSymbol } from '@wallet-types';
+import type { Account, NetworkSymbol } from 'src/types/wallet';
 import { AllFeesIncluded } from '../AllFeesIncluded';
 import { ProvidedBy } from '../ProvidedBy';
-import ReauthorizationCard from '@wallet-components/CoinmarketReauthorizationCard';
+import ReauthorizationCard from 'src/components/wallet/CoinmarketReauthorizationCard';
 
 const Wrapper = styled.div`
     display: flex;

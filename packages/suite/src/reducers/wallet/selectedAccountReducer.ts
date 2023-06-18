@@ -1,5 +1,5 @@
 import { accountsActions } from '@suite-common/wallet-core';
-import type { Action } from '@suite-types';
+import type { Action } from 'src/types/suite';
 import type { SelectedAccountStatus } from '@suite-common/wallet-types';
 
 export type State = SelectedAccountStatus;

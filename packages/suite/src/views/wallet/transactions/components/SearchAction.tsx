@@ -1,12 +1,12 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react';
 import styled, { css } from 'styled-components';
 import { Input, Icon, useTheme, Tooltip, KEYBOARD_CODE } from '@trezor/components';
-import { useActions } from '@suite-hooks';
-import { SETTINGS } from '@suite-config';
-import { useTranslation } from '@suite-hooks/useTranslation';
+import { useActions } from 'src/hooks/suite';
+import { SETTINGS } from 'src/config/suite';
+import { useTranslation } from 'src/hooks/suite/useTranslation';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { Account } from '@wallet-types';
-import { Translation } from '@suite-components';
+import { Account } from 'src/types/wallet';
+import { Translation } from 'src/components/suite';
 import { isFeatureFlagEnabled } from '@suite-common/suite-utils';
 import { fetchTransactionsThunk } from '@suite-common/wallet-core';
 

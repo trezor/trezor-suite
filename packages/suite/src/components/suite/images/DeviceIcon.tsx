@@ -1,6 +1,6 @@
 import React from 'react';
 import { Icon, useTheme } from '@trezor/components';
-import { TrezorDevice } from '@suite-types';
+import { TrezorDevice } from 'src/types/suite';
 import { getDeviceModel } from '@trezor/device-utils';
 
 interface DeviceIconProps {

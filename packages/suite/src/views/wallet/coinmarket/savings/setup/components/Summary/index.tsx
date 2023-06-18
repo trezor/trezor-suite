@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import { variables } from '@trezor/components';
-import { FiatValue, FormattedCryptoAmount, Translation } from '@suite-components';
-import { NetworkSymbol } from '@wallet-types';
+import { FiatValue, FormattedCryptoAmount, Translation } from 'src/components/suite';
+import { NetworkSymbol } from 'src/types/wallet';
 
 const SummaryWrapper = styled.div`
     display: flex;

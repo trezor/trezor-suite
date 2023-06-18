@@ -1,6 +1,6 @@
-import * as modalActions from '@suite-actions/modalActions';
+import * as modalActions from 'src/actions/suite/modalActions';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { GetState, Dispatch } from '@suite-types';
+import { GetState, Dispatch } from 'src/types/suite';
 import TrezorConnect, { Success, Unsuccessful } from '@trezor/connect';
 
 export const openXpubModal =

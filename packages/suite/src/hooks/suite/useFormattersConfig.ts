@@ -1,5 +1,5 @@
-import { useSelector } from '@suite-hooks/useSelector';
-import { selectLocalCurrency } from '@wallet-reducers/settingsReducer';
+import { useSelector } from 'src/hooks/suite/useSelector';
+import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 
 import { FormatterProviderConfig } from '@suite-common/formatters';
 

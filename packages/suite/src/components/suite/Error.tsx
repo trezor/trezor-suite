@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import { H1, P, Button, variables } from '@trezor/components';
-import { db } from '@suite/storage';
-import { reloadApp } from '@suite-utils/reload';
+import { db } from 'src/storage';
+import { reloadApp } from 'src/utils/suite/reload';
 
 const Wrapper = styled.div`
     display: flex;

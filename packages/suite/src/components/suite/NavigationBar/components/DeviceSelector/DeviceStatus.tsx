@@ -1,10 +1,10 @@
 import React from 'react';
 import { Icon, variables, useTheme, SuiteThemeColors } from '@trezor/components';
 import styled from 'styled-components';
-import * as deviceUtils from '@suite-utils/device';
-import { TrezorDevice } from '@suite-types';
-import { Translation } from '@suite-components/Translation';
-import StatusLight from '@suite-components/StatusLight';
+import * as deviceUtils from 'src/utils/suite/device';
+import { TrezorDevice } from 'src/types/suite';
+import { Translation } from 'src/components/suite/Translation';
+import StatusLight from 'src/components/suite/StatusLight';
 
 type Status = 'connected' | 'disconnected' | 'warning';
 

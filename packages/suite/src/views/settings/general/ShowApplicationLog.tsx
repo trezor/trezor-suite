@@ -1,11 +1,11 @@
 import React from 'react';
 
-import * as modalActions from '@suite-actions/modalActions';
-import { useActions } from '@suite-hooks';
-import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@suite-components/Settings';
-import { Translation } from '@suite-components';
-import { useAnchor } from '@suite-hooks/useAnchor';
-import { SettingsAnchor } from '@suite-constants/anchors';
+import * as modalActions from 'src/actions/suite/modalActions';
+import { useActions } from 'src/hooks/suite';
+import { ActionButton, ActionColumn, SectionItem, TextColumn } from 'src/components/suite/Settings';
+import { Translation } from 'src/components/suite';
+import { useAnchor } from 'src/hooks/suite/useAnchor';
+import { SettingsAnchor } from 'src/constants/suite/anchors';
 
 export const ShowApplicationLog = () => {
     const { openModal } = useActions({

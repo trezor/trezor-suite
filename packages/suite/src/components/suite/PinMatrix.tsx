@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { HELP_CENTER_PIN_URL } from '@trezor/urls';
 import { variables, useTheme } from '@trezor/components';
-import { DeviceMatrixExplanation, PinInput, Translation, TrezorLink } from '@suite-components';
-import { TrezorDevice } from '@suite-types';
-import * as modalActions from '@suite-actions/modalActions';
-import { useActions } from '@suite-hooks';
+import { DeviceMatrixExplanation, PinInput, Translation, TrezorLink } from 'src/components/suite';
+import { TrezorDevice } from 'src/types/suite';
+import * as modalActions from 'src/actions/suite/modalActions';
+import { useActions } from 'src/hooks/suite';
 import { DeviceModel } from '@trezor/device-utils';
 
 export const PIN_MATRIX_MAX_WIDTH = '316px';

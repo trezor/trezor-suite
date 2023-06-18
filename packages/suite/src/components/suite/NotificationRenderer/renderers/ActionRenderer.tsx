@@ -1,7 +1,7 @@
 import React from 'react';
 import { DEVICE } from '@trezor/connect';
-import { useActions } from '@suite-hooks';
-import * as suiteActions from '@suite-actions/suiteActions';
+import { useActions } from 'src/hooks/suite';
+import * as suiteActions from 'src/actions/suite/suiteActions';
 import type { NotificationViewProps, NotificationRendererProps } from '../types';
 
 type ActionRendererProps = NotificationViewProps & NotificationRendererProps;

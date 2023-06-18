@@ -3,12 +3,12 @@ import styled from 'styled-components';
 import { darken } from 'polished';
 import { analytics, EventType } from '@trezor/suite-analytics';
 
-import { useActions, useSelector } from '@suite-hooks';
-import * as guideActions from '@suite-actions/guideActions';
+import { useActions, useSelector } from 'src/hooks/suite';
+import * as guideActions from 'src/actions/suite/guideActions';
 import { variables } from '@trezor/components';
-import { Translation } from '@suite-components';
-import TrezorLink from '@suite-components/TrezorLink';
-import { findAncestorNodes, getNodeTitle } from '@suite-utils/guide';
+import { Translation } from 'src/components/suite';
+import TrezorLink from 'src/components/suite/TrezorLink';
+import { findAncestorNodes, getNodeTitle } from 'src/utils/suite/guide';
 
 import type { GuideCategory } from '@suite-common/suite-types';
 

@@ -1,6 +1,6 @@
 import { isWithinInterval, fromUnixTime } from 'date-fns';
-import { Dispatch, GetState } from '@suite-types';
-import { Account } from '@wallet-types';
+import { Dispatch, GetState } from 'src/types/suite';
+import { Account } from 'src/types/wallet';
 
 import { isTrezorConnectBackendType } from '@suite-common/wallet-utils';
 

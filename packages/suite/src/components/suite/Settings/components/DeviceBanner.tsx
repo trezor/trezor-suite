@@ -2,10 +2,10 @@ import React from 'react';
 import styled from 'styled-components';
 import { P, variables } from '@trezor/components';
 
-import { DeviceAnimation } from '@onboarding-components';
-import { useDevice, useSelector } from '@suite-hooks';
-import { isWebUsb } from '@suite-utils/transport';
-import { WebUsbButton } from '@suite-components/WebUsbButton';
+import { DeviceAnimation } from 'src/components/onboarding';
+import { useDevice, useSelector } from 'src/hooks/suite';
+import { isWebUsb } from 'src/utils/suite/transport';
+import { WebUsbButton } from 'src/components/suite/WebUsbButton';
 
 const DeviceBadge = styled(DeviceAnimation)`
     margin: 8px 16px 8px 0;

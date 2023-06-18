@@ -1,10 +1,10 @@
 import React from 'react';
-import { NotificationCard, Translation } from '@suite-components';
-import { useActions, useSelector } from '@suite-hooks';
-import * as suiteActions from '@suite-actions/suiteActions';
-import { selectTorState } from '@suite-reducers/suiteReducer';
-import { selectIsCoinjoinBlockedByTor } from '@wallet-reducers/coinjoinReducer';
-import { selectSelectedAccount } from '@wallet-reducers/selectedAccountReducer';
+import { NotificationCard, Translation } from 'src/components/suite';
+import { useActions, useSelector } from 'src/hooks/suite';
+import * as suiteActions from 'src/actions/suite/suiteActions';
+import { selectTorState } from 'src/reducers/suite/suiteReducer';
+import { selectIsCoinjoinBlockedByTor } from 'src/reducers/wallet/coinjoinReducer';
+import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 
 export const TorDisconnected = () => {
     const account = useSelector(selectSelectedAccount);

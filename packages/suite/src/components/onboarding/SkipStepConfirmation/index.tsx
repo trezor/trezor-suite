@@ -1,11 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import * as STEP from '@onboarding-constants/steps';
-import { AnyStepId } from '@onboarding-types';
+import * as STEP from 'src/constants/onboarding/steps';
+import { AnyStepId } from 'src/types/onboarding';
 import { Button, variables } from '@trezor/components';
-import { Translation, Modal } from '@suite-components';
-import { useOnboarding } from '@suite-hooks';
+import { Translation, Modal } from 'src/components/suite';
+import { useOnboarding } from 'src/hooks/suite';
 
 const Wrapper = styled.div`
     display: flex;

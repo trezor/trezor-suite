@@ -1,19 +1,25 @@
 import { MiddlewareAPI } from 'redux';
-import { db } from '@suite/storage';
-import { WALLET_SETTINGS } from '@settings-actions/constants';
-import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
-import { DISCOVERY, GRAPH, SEND, COINMARKET_COMMON, FORM_DRAFT } from '@wallet-actions/constants';
-import * as COINJOIN from '@wallet-actions/constants/coinjoinConstants';
-import * as storageActions from '@suite-actions/storageActions';
-import { SUITE, METADATA, STORAGE } from '@suite-actions/constants';
+import { db } from 'src/storage';
+import { WALLET_SETTINGS } from 'src/actions/settings/constants';
+import * as walletSettingsActions from 'src/actions/settings/walletSettingsActions';
+import {
+    DISCOVERY,
+    GRAPH,
+    SEND,
+    COINMARKET_COMMON,
+    FORM_DRAFT,
+} from 'src/actions/wallet/constants';
+import * as COINJOIN from 'src/actions/wallet/constants/coinjoinConstants';
+import * as storageActions from 'src/actions/suite/storageActions';
+import { SUITE, METADATA, STORAGE } from 'src/actions/suite/constants';
 import { messageSystemActions } from '@suite-common/message-system';
-import { FIRMWARE } from '@firmware-actions/constants';
-import { selectDiscovery } from '@wallet-reducers/discoveryReducer';
-import * as metadataActions from '@suite-actions/metadataActions';
-import { isDeviceRemembered } from '@suite-utils/device';
-import { serializeDiscovery } from '@suite-utils/storage';
-import type { AppState, Action as SuiteAction, Dispatch } from '@suite-types';
-import type { WalletAction } from '@wallet-types';
+import { FIRMWARE } from 'src/actions/firmware/constants';
+import { selectDiscovery } from 'src/reducers/wallet/discoveryReducer';
+import * as metadataActions from 'src/actions/suite/metadataActions';
+import { isDeviceRemembered } from 'src/utils/suite/device';
+import { serializeDiscovery } from 'src/utils/suite/storage';
+import type { AppState, Action as SuiteAction, Dispatch } from 'src/types/suite';
+import type { WalletAction } from 'src/types/wallet';
 import { isAnyOf } from '@reduxjs/toolkit';
 
 import {

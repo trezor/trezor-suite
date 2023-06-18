@@ -4,8 +4,8 @@ import styled from 'styled-components';
 import { Controller } from 'react-hook-form';
 
 import { Select } from '@trezor/components';
-import { InputError } from '@wallet-components';
-import { useSendFormContext } from '@wallet-hooks';
+import { InputError } from 'src/components/wallet';
+import { useSendFormContext } from 'src/hooks/wallet';
 import {
     fromFiatCurrency,
     isDecimalsValid,
@@ -17,11 +17,11 @@ import {
     formatAmount,
     buildCurrencyOptions,
 } from '@suite-common/wallet-utils';
-import { CurrencyOption, Output } from '@wallet-types/sendForm';
-import { MAX_LENGTH } from '@suite-constants/inputs';
-import { useBitcoinAmountUnit } from '@wallet-hooks/useBitcoinAmountUnit';
-import { NumberInput, Translation } from '@suite-components';
-import { TypedValidationRules } from '@wallet-types/form';
+import { CurrencyOption, Output } from 'src/types/wallet/sendForm';
+import { MAX_LENGTH } from 'src/constants/suite/inputs';
+import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
+import { NumberInput, Translation } from 'src/components/suite';
+import { TypedValidationRules } from 'src/types/wallet/form';
 
 const Wrapper = styled.div`
     display: flex;

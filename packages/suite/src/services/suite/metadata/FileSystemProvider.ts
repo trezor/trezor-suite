@@ -1,5 +1,5 @@
 import { desktopApi } from '@trezor/suite-desktop-api';
-import { AbstractMetadataProvider } from '@suite-types/metadata';
+import { AbstractMetadataProvider } from 'src/types/suite/metadata';
 
 class FileSystemProvider extends AbstractMetadataProvider {
     isCloud = false;

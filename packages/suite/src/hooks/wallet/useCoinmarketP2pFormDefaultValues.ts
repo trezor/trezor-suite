@@ -1,8 +1,8 @@
 import { useMemo } from 'react';
-import { useSelector } from '@suite-hooks';
-import regional from '@wallet-constants/coinmarket/regional';
-import { buildOption } from '@wallet-utils/coinmarket/coinmarketUtils';
-import { P2pInfo } from '@wallet-actions/coinmarketP2pActions';
+import { useSelector } from 'src/hooks/suite';
+import regional from 'src/constants/wallet/coinmarket/regional';
+import { buildOption } from 'src/utils/wallet/coinmarket/coinmarketUtils';
+import { P2pInfo } from 'src/actions/wallet/coinmarketP2pActions';
 
 export const useCoinmarketP2pFormDefaultValues = (p2pInfo?: P2pInfo) => {
     const { localCurrency } = useSelector(state => ({

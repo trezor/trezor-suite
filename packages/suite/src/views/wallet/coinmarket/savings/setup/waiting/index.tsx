@@ -1,9 +1,9 @@
 import React from 'react';
-import { withCoinmarket, WithSelectedAccountLoadedProps } from '@wallet-components';
-import { useCoinmarketSavingsSetupWaiting } from '@wallet-hooks/useCoinmarketSavingsSetupWaiting';
+import { withCoinmarket, WithSelectedAccountLoadedProps } from 'src/components/wallet';
+import { useCoinmarketSavingsSetupWaiting } from 'src/hooks/wallet/useCoinmarketSavingsSetupWaiting';
 import { Button, Loader } from '@trezor/components';
 import styled from 'styled-components';
-import { Translation } from '@suite-components';
+import { Translation } from 'src/components/suite';
 
 const Wrapper = styled.div`
     display: flex;

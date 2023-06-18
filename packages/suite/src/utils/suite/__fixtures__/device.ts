@@ -1,4 +1,4 @@
-import type { TrezorDevice } from '@suite/types/suite';
+import type { TrezorDevice } from 'src/types/suite';
 import type { FirmwareRelease } from '@trezor/connect';
 import { DeviceModel } from '@trezor/device-utils';
 import * as URLS from '@trezor/urls';

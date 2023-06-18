@@ -1,11 +1,11 @@
 import React, { useCallback, useEffect, useMemo } from 'react';
 
-import { useActions, useSelector } from '@suite-hooks';
-import * as desktopUpdateActions from '@suite-actions/desktopUpdateActions';
-import { UpdateState } from '@suite-reducers/desktopUpdateReducer';
-import { ModalContextProvider } from '@suite-support/ModalContext';
-import { getAppUpdatePayload } from '@suite-utils/analytics';
-import { selectRouteName } from '@suite-reducers/routerReducer';
+import { useActions, useSelector } from 'src/hooks/suite';
+import * as desktopUpdateActions from 'src/actions/suite/desktopUpdateActions';
+import { UpdateState } from 'src/reducers/suite/desktopUpdateReducer';
+import { ModalContextProvider } from 'src/support/suite/ModalContext';
+import { getAppUpdatePayload } from 'src/utils/suite/analytics';
+import { selectRouteName } from 'src/reducers/suite/routerReducer';
 
 import { analytics, AppUpdateEventStatus, EventType } from '@trezor/suite-analytics';
 import { desktopApi } from '@trezor/suite-desktop-api';

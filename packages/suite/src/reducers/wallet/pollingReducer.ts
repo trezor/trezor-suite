@@ -1,7 +1,7 @@
-import { POLLING } from '@wallet-actions/constants';
+import { POLLING } from 'src/actions/wallet/constants';
 import produce from 'immer';
-import { Action } from '@suite-types';
-import { Polling } from '@wallet-types/polling';
+import { Action } from 'src/types/suite';
+import { Polling } from 'src/types/wallet/polling';
 
 export interface PollingState {
     [key: string]: Polling;

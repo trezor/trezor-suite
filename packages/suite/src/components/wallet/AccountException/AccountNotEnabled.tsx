@@ -1,9 +1,9 @@
 import React from 'react';
-import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
-import { useDevice, useActions } from '@suite-hooks';
-import { Network } from '@wallet-types';
-import { Translation } from '@suite-components';
-import { AccountExceptionLayout } from '@wallet-components';
+import * as walletSettingsActions from 'src/actions/settings/walletSettingsActions';
+import { useDevice, useActions } from 'src/hooks/suite';
+import { Network } from 'src/types/wallet';
+import { Translation } from 'src/components/suite';
+import { AccountExceptionLayout } from 'src/components/wallet';
 
 interface Props {
     network: Network;

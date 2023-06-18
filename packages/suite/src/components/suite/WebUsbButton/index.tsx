@@ -1,7 +1,7 @@
 import React from 'react';
 import TrezorConnect from '@trezor/connect';
 import { Button, ButtonProps } from '@trezor/components';
-import { Translation } from '@suite-components';
+import { Translation } from 'src/components/suite';
 
 export const WebUsbButton = (props: ButtonProps) => (
     <Button

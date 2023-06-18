@@ -1,17 +1,17 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import invityAPI from '@suite-services/invityAPI';
-import { useActions, useSelector, useDevice } from '@suite-hooks';
+import invityAPI from 'src/services/suite/invityAPI';
+import { useActions, useSelector, useDevice } from 'src/hooks/suite';
 import { useTimer } from '@trezor/react-utils';
 import { BuyTrade } from 'invity-api';
-import { processQuotes, createQuoteLink, createTxLink } from '@wallet-utils/coinmarket/buyUtils';
-import * as coinmarketCommonActions from '@wallet-actions/coinmarket/coinmarketCommonActions';
-import * as coinmarketBuyActions from '@wallet-actions/coinmarketBuyActions';
-import * as routerActions from '@suite-actions/routerActions';
-import { UseOffersProps, ContextValues } from '@wallet-types/coinmarketBuyOffers';
+import { processQuotes, createQuoteLink, createTxLink } from 'src/utils/wallet/coinmarket/buyUtils';
+import * as coinmarketCommonActions from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
+import * as coinmarketBuyActions from 'src/actions/wallet/coinmarketBuyActions';
+import * as routerActions from 'src/actions/suite/routerActions';
+import { UseOffersProps, ContextValues } from 'src/types/wallet/coinmarketBuyOffers';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { isDesktop } from '@trezor/env-utils';
-import { useCoinmarketNavigation } from '@wallet-hooks/useCoinmarketNavigation';
-import { InvityAPIReloadQuotesAfterSeconds } from '@wallet-constants/coinmarket/metadata';
+import { useCoinmarketNavigation } from 'src/hooks/wallet/useCoinmarketNavigation';
+import { InvityAPIReloadQuotesAfterSeconds } from 'src/constants/wallet/coinmarket/metadata';
 
 export const useOffers = ({ selectedAccount }: UseOffersProps) => {
     const timer = useTimer();

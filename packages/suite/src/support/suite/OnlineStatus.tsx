@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
-import { useActions } from '@suite-hooks/useActions';
-import { updateOnlineStatus } from '@suite-actions/suiteActions';
+import { useActions } from 'src/hooks/suite/useActions';
+import { updateOnlineStatus } from 'src/actions/suite/suiteActions';
 
 /**
  * Navigator online/offline handler

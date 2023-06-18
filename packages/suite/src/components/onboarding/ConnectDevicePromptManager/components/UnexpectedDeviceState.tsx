@@ -1,9 +1,9 @@
 import React from 'react';
-import { Translation, TroubleshootingTips } from '@suite-components';
+import { Translation, TroubleshootingTips } from 'src/components/suite';
 import {
     TROUBLESHOOTING_TIP_BRIDGE_STATUS,
     TROUBLESHOOTING_TIP_BRIDGE_INSTALL,
-} from '@suite-components/TroubleshootingTips/tips';
+} from 'src/components/suite/TroubleshootingTips/tips';
 import { DeviceModel, pickByDeviceModel } from '@trezor/device-utils';
 
 // todo: remove in favour of suite-components

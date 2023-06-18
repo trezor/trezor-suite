@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
-import { useDispatch, useSelector } from '@suite-hooks';
-import { CheckItem, Translation } from '@suite-components';
-import { ConfirmKey, toggleCheckboxByKey } from '@suite/actions/backup/backupActions';
+import { useDispatch, useSelector } from 'src/hooks/suite';
+import { CheckItem, Translation } from 'src/components/suite';
+import { ConfirmKey, toggleCheckboxByKey } from 'src/actions/backup/backupActions';
 
 const CheckboxWrapper = styled.div`
     margin-top: 38px;

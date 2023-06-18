@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { variables, Card } from '@trezor/components';
-import { CARD_PADDING_SIZE, CARD_PADDING_SIZE_LARGE } from '@suite-constants/layout';
+import { CARD_PADDING_SIZE, CARD_PADDING_SIZE_LARGE } from 'src/constants/suite/layout';
 
 const getPaddingSize = (
     largePadding?: boolean,

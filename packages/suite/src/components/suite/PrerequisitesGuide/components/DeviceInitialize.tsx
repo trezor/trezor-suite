@@ -1,9 +1,9 @@
 import React from 'react';
 import { Button } from '@trezor/components';
-import { Translation, TroubleshootingTips } from '@suite-components';
-import { useActions } from '@suite-hooks';
-import * as routerActions from '@suite-actions/routerActions';
-import * as onboardingActions from '@onboarding-actions/onboardingActions';
+import { Translation, TroubleshootingTips } from 'src/components/suite';
+import { useActions } from 'src/hooks/suite';
+import * as routerActions from 'src/actions/suite/routerActions';
+import * as onboardingActions from 'src/actions/onboarding/onboardingActions';
 
 export const DeviceInitialize = () => {
     const { goto, resetOnboarding, enableOnboardingReducer } = useActions({

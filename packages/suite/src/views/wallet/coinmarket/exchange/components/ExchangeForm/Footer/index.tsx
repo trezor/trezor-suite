@@ -1,10 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Button } from '@trezor/components';
-import { Translation } from '@suite-components';
-import { useCoinmarketExchangeFormContext } from '@wallet-hooks/useCoinmarketExchangeForm';
-import { CRYPTO_INPUT } from '@wallet-types/coinmarketExchangeForm';
-import { FooterWrapper } from '@wallet-views/coinmarket';
+import { Translation } from 'src/components/suite';
+import { useCoinmarketExchangeFormContext } from 'src/hooks/wallet/useCoinmarketExchangeForm';
+import { CRYPTO_INPUT } from 'src/types/wallet/coinmarketExchangeForm';
+import { FooterWrapper } from 'src/views/wallet/coinmarket';
 
 const Center = styled.div`
     display: flex;

@@ -1,7 +1,7 @@
 import React from 'react';
-import { NotificationCard, Translation } from '@suite-components';
-import * as suiteActions from '@suite-actions/suiteActions';
-import { useDevice, useActions } from '@suite-hooks';
+import { NotificationCard, Translation } from 'src/components/suite';
+import * as suiteActions from 'src/actions/suite/suiteActions';
+import { useDevice, useActions } from 'src/hooks/suite';
 
 const AuthConfirmFailed = () => {
     const { device, isLocked } = useDevice();

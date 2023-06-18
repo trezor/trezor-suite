@@ -7,20 +7,20 @@ import {
 } from 'invity-api';
 import useUnmount from 'react-use/lib/useUnmount';
 import useTimeoutFn from 'react-use/lib/useTimeoutFn';
-import { useActions } from '@suite-hooks';
-import invityAPI from '@suite-services/invityAPI';
-import * as coinmarketBuyActions from '@wallet-actions/coinmarketBuyActions';
-import * as coinmarketExchangeActions from '@wallet-actions/coinmarketExchangeActions';
-import * as coinmarketSellActions from '@wallet-actions/coinmarketSellActions';
-import * as coinmarketSavingsActions from '@wallet-actions/coinmarketSavingsActions';
-import { Account } from '@wallet-types';
+import { useActions } from 'src/hooks/suite';
+import invityAPI from 'src/services/suite/invityAPI';
+import * as coinmarketBuyActions from 'src/actions/wallet/coinmarketBuyActions';
+import * as coinmarketExchangeActions from 'src/actions/wallet/coinmarketExchangeActions';
+import * as coinmarketSellActions from 'src/actions/wallet/coinmarketSellActions';
+import * as coinmarketSavingsActions from 'src/actions/wallet/coinmarketSavingsActions';
+import { Account } from 'src/types/wallet';
 import type {
     TradeBuy,
     TradeSell,
     TradeExchange,
     TradeSavings,
-} from '@wallet-types/coinmarketCommonTypes';
-import { useFormDraft } from '@wallet-hooks/useFormDraft';
+} from 'src/types/wallet/coinmarketCommonTypes';
+import { useFormDraft } from 'src/hooks/wallet/useFormDraft';
 
 const BuyTradeFinalStatuses: BuyTradeStatus[] = ['SUCCESS', 'ERROR', 'BLOCKED'];
 

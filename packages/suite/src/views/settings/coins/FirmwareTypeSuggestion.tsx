@@ -1,12 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import * as suiteActions from '@suite-actions/suiteActions';
-import * as routerActions from '@suite-actions/routerActions';
-import { Translation } from '@suite-components';
-import { TextColumn } from '@suite-components/Settings';
-import { SettingsAnchor } from '@suite-constants/anchors';
-import { useActions, useDevice } from '@suite-hooks';
+import * as suiteActions from 'src/actions/suite/suiteActions';
+import * as routerActions from 'src/actions/suite/routerActions';
+import { Translation } from 'src/components/suite';
+import { TextColumn } from 'src/components/suite/Settings';
+import { SettingsAnchor } from 'src/constants/suite/anchors';
+import { useActions, useDevice } from 'src/hooks/suite';
 import { Button, Card } from '@trezor/components';
 
 const StyledCard = styled(Card)`

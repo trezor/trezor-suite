@@ -2,12 +2,12 @@ import React, { useMemo } from 'react';
 
 import { Checkbox } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
-import { useSelector, useActions } from '@suite-hooks';
-import * as suiteActions from '@suite-actions/suiteActions';
-import { DebugModeOptions } from '@suite/reducers/suite/suiteReducer';
+import { useSelector, useActions } from 'src/hooks/suite';
+import * as suiteActions from 'src/actions/suite/suiteActions';
+import { DebugModeOptions } from 'src/reducers/suite/suiteReducer';
 import { ArrayElement } from '@trezor/type-utils';
 
-import { ActionColumn, SectionItem, TextColumn } from '@suite-components/Settings';
+import { ActionColumn, SectionItem, TextColumn } from 'src/components/suite/Settings';
 
 type TransportMenuItem = {
     name: ArrayElement<NonNullable<DebugModeOptions['transports']>>;

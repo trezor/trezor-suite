@@ -1,6 +1,6 @@
 import React from 'react';
 import { Banner } from './Banner';
-import { Translation } from '@suite-components';
+import { Translation } from 'src/components/suite';
 
 const FirmwareHashMismatch = () => (
     <Banner variant="critical" body={<Translation id="TR_FIRMWARE_HASH_MISMATCH" />} />

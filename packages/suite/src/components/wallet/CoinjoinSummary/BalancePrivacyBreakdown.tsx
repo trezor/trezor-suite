@@ -2,14 +2,14 @@ import React from 'react';
 import styled from 'styled-components';
 import { useTheme, Icon } from '@trezor/components';
 import { isZero } from '@suite-common/wallet-utils';
-import { Translation } from '@suite-components/Translation';
-import { useSelector } from '@suite-hooks';
-import { CryptoAmountWithHeader } from '@wallet-components/PrivacyAccount/CryptoAmountWithHeader';
+import { Translation } from 'src/components/suite/Translation';
+import { useSelector } from 'src/hooks/suite';
+import { CryptoAmountWithHeader } from 'src/components/wallet/PrivacyAccount/CryptoAmountWithHeader';
 import {
     selectCurrentCoinjoinBalanceBreakdown,
     selectCurrentCoinjoinSession,
-} from '@wallet-reducers/coinjoinReducer';
-import { selectSelectedAccount } from '@wallet-reducers/selectedAccountReducer';
+} from 'src/reducers/wallet/coinjoinReducer';
+import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 
 const BalanceContainer = styled.div`
     display: flex;
