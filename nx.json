@@ -32,7 +32,6 @@
             "inputs": [
                 "^prod",
                 "{workspaceRoot}/tsconfig.json",
-                "{workspaceRoot}/tsconfig.aliases.json",
                 "{workspaceRoot}/tsconfig.lib.json"
             ],
             "outputs": ["{workspaceRoot}/lib", "{workspaceRoot}/build"]
@@ -42,7 +41,6 @@
             "inputs": [
                 "^prod",
                 "{workspaceRoot}/tsconfig.json",
-                "{workspaceRoot}/tsconfig.aliases.json",
                 "{workspaceRoot}/tsconfig.lib.json"
             ]
         },
