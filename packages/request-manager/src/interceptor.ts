@@ -42,18 +42,32 @@ const interceptNetSocketConnect = (context: InterceptorContext) => {
     const originalSocketConnect = net.Socket.prototype.connect;
 
     net.Socket.prototype.connect = function (...args) {
-        const [options, connectionListener] = args as any;
-        let details;
-        if (Array.isArray(options) && options.length > 0 && options[0].href) {
-            // When websockets in clear-net options contains array where first element is networkOptions.
-            details = options[0].href;
-        } else if (typeof options === 'object' && options.host && options.port) {
-            // When Tor is used options is object with host and port that is used to connect to SocksPort.
-            details = `${options.host}:${options.port}`;
-        } else if (typeof options === 'number') {
-            // When establishing connection to Tor control port `connectionListener` is Tor control port and
-            // `options` is Tor control port host, most likely 127.0.0.1.
-            details = `${connectionListener}:${options}`;
+        const [options, callback] = args;
+        let request: typeof options;
+        let details: string;
+        if (Array.isArray(options)) {
+            // Websocket in clear-net contains array where first element is SocketConnectOpts
+            [request] = options;
+        } else {
+            request = options;
+        }
+
+        if (typeof request === 'object') {
+            if ('port' in request) {
+                // TcpSocketConnectOpts
+                details = `${request.host}:${request.port}`;
+            } else {
+                // IpcSocketConnectOpts
+                details = request.path;
+            }
+        } else if (typeof request === 'string') {
+            details = request;
+        } else {
+            details = typeof callback === 'string' ? `${callback}:${request}` : request.toString();
+        }
+
+        if (!details) {
+            console.warn('DET UNDEF', args);
         }
 
         context.handler({
@@ -61,8 +75,11 @@ const interceptNetSocketConnect = (context: InterceptorContext) => {
             method: 'net.Socket.connect',
             details,
         });
-        // @ts-expect-error
-        return originalSocketConnect.apply(this, args);
+
+        return originalSocketConnect.apply(
+            this,
+            args as unknown as Parameters<typeof originalSocketConnect>,
+        );
     };
 };
 
@@ -70,15 +87,30 @@ const interceptNetConnect = (context: InterceptorContext) => {
     const originalConnect = net.connect;
 
     net.connect = function (...args) {
-        const [connectArguments] = args;
+        const [options, callback] = args;
+
+        let details: string;
+        if (typeof options === 'object') {
+            if ('port' in options) {
+                // TcpNetConnectOpts
+                details = `${options.host}:${options.port}`;
+            } else {
+                // IpcNetConnectOpts
+                details = options.path;
+            }
+        } else if (typeof options === 'string') {
+            details = options;
+        } else {
+            details = typeof callback === 'string' ? `${callback}:${options}` : options.toString();
+        }
+
         context.handler({
             type: 'INTERCEPTED_REQUEST',
             method: 'net.connect',
-            details: (connectArguments as any).host,
+            details,
         });
 
-        // @ts-expect-error
-        return originalConnect.apply(this, args);
+        return originalConnect.apply(this, args as Parameters<typeof net.connect>);
     };
 };
 
@@ -102,8 +134,7 @@ const overloadHttpRequest = (
         const isTorRequired = getIsTorRequired(url);
         const overloadedOptions = url;
         const overloadedCallback = options;
-        // @ts-expect-error href does exist
-        const requestedUrl = overloadedOptions.href || overloadedOptions.host;
+        const { host } = overloadedOptions;
 
         if (isTorEnabled) {
             // Create proxy agent for the request (from Proxy-Authorization or default)
@@ -120,13 +151,13 @@ const overloadHttpRequest = (
                 context.handler({
                     type: 'INTERCEPTED_REQUEST',
                     method: 'http.request',
-                    details: `Conditionally allowed request with Proxy-Authorization ${requestedUrl}`,
+                    details: `Conditionally allowed request with Proxy-Authorization ${host}`,
                 });
             } else {
                 context.handler({
                     type: 'INTERCEPTED_REQUEST',
                     method: 'http.request',
-                    details: `Request blocked ${requestedUrl}`,
+                    details: `Request blocked ${host}`,
                 });
                 throw new Error('Blocked request with Proxy-Authorization. TOR not enabled.');
             }
@@ -135,7 +166,7 @@ const overloadHttpRequest = (
         context.handler({
             type: 'INTERCEPTED_REQUEST',
             method: 'http.request',
-            details: `${requestedUrl} with agent ${!!overloadedOptions.agent}`,
+            details: `${host} with agent ${!!overloadedOptions.agent}`,
         });
 
         delete overloadedOptions.headers?.['Proxy-Authorization'];
