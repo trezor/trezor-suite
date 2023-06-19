@@ -79,6 +79,8 @@ module.exports = {
                 devDependencies: [
                     '**/*fixtures*/**',
                     '**/*.test.{tsx,ts,js}',
+                    '**/blockchain-link/tests/**',
+                    '**/blockchain-link/webpack/**',
                     '**/suite-desktop/scripts/**',
                     '**/suite-desktop/e2e/**',
                 ],
@@ -236,8 +238,6 @@ module.exports = {
         {
             // we are using explicit blacklist because this will enforce new rules in newly created packages
             files: [
-                'packages/analytics/**/*',
-                'packages/blockchain-link/**/*',
                 'packages/components/**/*',
                 'packages/connect/**/*',
                 'packages/connect-common/**/*',
