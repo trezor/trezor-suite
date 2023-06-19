@@ -7803,7 +7803,6 @@ __metadata:
     randombytes: 2.1.0
     react-native: 0.71.8
     rimraf: ^5.0.1
-    ts-loader: ^9.4.2
     ts-node: ^10.9.1
     tsx: ^3.12.7
     typescript: 4.9.5
@@ -15873,16 +15872,6 @@ __metadata:
     engine.io-parser: ~5.0.3
     ws: ~8.2.3
   checksum: 626d7a77f2f6d3e1f888c43932e2f34222201b6c0bc4bcbb0ead054cc170a1df3bf0d6f8b34432e68d7223346b7aa5ed34fbda1e706ef02b7801789465e34f40
-  languageName: node
-  linkType: hard
-
-"enhanced-resolve@npm:^5.0.0":
-  version: 5.15.0
-  resolution: "enhanced-resolve@npm:5.15.0"
-  dependencies:
-    graceful-fs: ^4.2.4
-    tapable: ^2.2.0
-  checksum: fbd8cdc9263be71cc737aa8a7d6c57b43d6aa38f6cc75dde6fcd3598a130cc465f979d2f4d01bb3bf475acb43817749c79f8eef9be048683602ca91ab52e4f11
   languageName: node
   linkType: hard
 
@@ -24768,7 +24757,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"micromatch@npm:^4.0.0, micromatch@npm:^4.0.2, micromatch@npm:^4.0.4, micromatch@npm:^4.0.5":
+"micromatch@npm:^4.0.2, micromatch@npm:^4.0.4, micromatch@npm:^4.0.5":
   version: 4.0.5
   resolution: "micromatch@npm:4.0.5"
   dependencies:
@@ -32594,21 +32583,6 @@ __metadata:
   bin:
     ts-jest: cli.js
   checksum: 6f65ad4fe67ab3f0fd4c7f9954acbee863af05b2b3f88dd0f490bbcdc58002960fac908b2cb9f009ec14da6fe13cb00a39e291260d6e555abe72448d1c0a017f
-  languageName: node
-  linkType: hard
-
-"ts-loader@npm:^9.4.2":
-  version: 9.4.3
-  resolution: "ts-loader@npm:9.4.3"
-  dependencies:
-    chalk: ^4.1.0
-    enhanced-resolve: ^5.0.0
-    micromatch: ^4.0.0
-    semver: ^7.3.4
-  peerDependencies:
-    typescript: "*"
-    webpack: ^5.0.0
-  checksum: 139ed53bc60717d0ca231cdffbdef7566b9feda11c72fecc697983113f1266ccca2e1cdf191f841a43afa6b87d6afe57a0caf4feecf02f30845aa7ac6f2411a4
   languageName: node
   linkType: hard
 
