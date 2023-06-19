@@ -8333,8 +8333,9 @@ __metadata:
     history: ^4.10.1
     idb: ^7.1.1
     immer: 9.0.21
-    jest: ^26.6.3
+    jest: ^29.5.0
     jest-canvas-mock: ^2.5.1
+    jest-environment-jsdom: ^29.5.0
     jest-watch-typeahead: 0.6.5
     jws: ^4.0.0
     lottie-react: ^2.4.0

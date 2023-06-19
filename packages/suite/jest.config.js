@@ -66,4 +66,5 @@ module.exports = {
     },
     verbose: false,
     watchPlugins: ['jest-watch-typeahead/filename', 'jest-watch-typeahead/testname'],
+    testEnvironment: 'jsdom',
 };
