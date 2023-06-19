@@ -82,7 +82,7 @@ module.exports = {
                     '**/blockchain-link/tests/**',
                     '**/blockchain-link/webpack/**',
                     '**/suite-desktop/scripts/**',
-                    '**/suite-desktop/e2e/**',
+                    '**/*e2e/**',
                     '**/suite/src/support/tests/**',
                     '**/suite-data/**',
                     '**/*.stories.*',
