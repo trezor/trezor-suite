@@ -14,6 +14,8 @@
 import fs from 'fs';
 import path from 'path';
 
+// See comment in list-duplicates.ts
+// eslint-disable-next-line import/no-extraneous-dependencies
 import messages from '@trezor/suite/src/support/messages';
 
 const packagesRoot = path.join(__dirname, '../../../');
