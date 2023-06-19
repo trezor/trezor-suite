@@ -8,6 +8,7 @@ const isBiometricsOptionEnabledAtom = atomWithUnecryptedStorage<boolean>(
 );
 
 const isUserAuthenticatedAtom = atom(false);
+const isBiometricsOverlayVisibleAtom = atom(false);
 
 export const useIsUserAuthenticated = () => {
     const [isUserAuthenticated, setIsUserAuthenticated] = useAtom(isUserAuthenticatedAtom);
@@ -26,12 +27,13 @@ export const useIsBiometricsEnabled = () => {
     };
 };
 
-export const isBiometricsOverlayVisibleAtom = atom(get => {
-    const isUserAuthenticated = get(isUserAuthenticatedAtom);
-    const isBiometricsOptionEnabled = get(isBiometricsOptionEnabledAtom);
+export const useIsBiometricsOverlayVisible = () => {
+    const [isBiometricsOverlayVisible, setIsBiometricsOverlayVisible] = useAtom(
+        isBiometricsOverlayVisibleAtom,
+    );
 
-    if (isBiometricsOptionEnabled) {
-        return !isUserAuthenticated;
-    }
-    return false;
-});
+    return {
+        isBiometricsOverlayVisible,
+        setIsBiometricsOverlayVisible,
+    };
+};

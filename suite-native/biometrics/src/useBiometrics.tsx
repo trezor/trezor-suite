@@ -4,7 +4,16 @@ import { AppState } from 'react-native';
 import * as LocalAuthentication from 'expo-local-authentication';
 
 import { getIsBiometricsFeatureAvailable } from './isBiometricsFeatureAvailable';
-import { useIsBiometricsEnabled, useIsUserAuthenticated } from './biometricsAtoms';
+import {
+    useIsBiometricsEnabled,
+    useIsBiometricsOverlayVisible,
+    useIsUserAuthenticated,
+} from './biometricsAtoms';
+
+/**
+ * The time period for which is user not asked to be authenticated again if returns back to the app.
+ */
+const KEEP_LOGGED_IN_TIMEOUT = 30_000;
 
 export const authenticate = async () => {
     const isBiometricsAvailable = await getIsBiometricsFeatureAvailable();
@@ -17,43 +26,58 @@ export const authenticate = async () => {
 
 export const useBiometrics = () => {
     const { isBiometricsOptionEnabled } = useIsBiometricsEnabled();
-    const appState = useRef(AppState.currentState);
     const { isUserAuthenticated, setIsUserAuthenticated } = useIsUserAuthenticated();
+    const { setIsBiometricsOverlayVisible } = useIsBiometricsOverlayVisible();
+    const appState = useRef(AppState.currentState);
+    const goneToBackgroundAtTimestamp = useRef<null | number>(null);
 
     const handleAuthentication = useCallback(async () => {
         if (isBiometricsOptionEnabled && !isUserAuthenticated) {
             const result = await authenticate();
 
-            const resultHasError = result && !result.success;
-
-            // In some cases, if auth happens too quickly after closing app, it will fail with unknown error.
-            // User don't need to authenticate at this point. The library doesn't accept authentication that's been less than few seconds after closing app.
-            if (resultHasError && result.error.startsWith('unknown:')) {
-                return;
-            }
-
             if (result && result?.success) {
                 setIsUserAuthenticated(true);
+                setIsBiometricsOverlayVisible(false);
             } else {
                 handleAuthentication();
             }
         }
-    }, [isBiometricsOptionEnabled, isUserAuthenticated, setIsUserAuthenticated]);
+    }, [
+        isBiometricsOptionEnabled,
+        isUserAuthenticated,
+        setIsUserAuthenticated,
+        setIsBiometricsOverlayVisible,
+    ]);
 
+    // Monitors AppState and adjust the authentication state accordingly.
     useEffect(() => {
         const subscription = AppState.addEventListener('change', nextAppState => {
-            // Re-authenticate user when app is opened from background
-            if (appState.current === 'background' && nextAppState === 'active') {
-                if (isBiometricsOptionEnabled && !isUserAuthenticated) {
-                    const auth = async () => {
-                        await handleAuthentication();
-                    };
-                    auth();
-                }
-            }
+            switch (nextAppState) {
+                case 'active':
+                    if (
+                        // Revoke user authentication if the timeout has run out.
+                        appState.current === 'background' &&
+                        goneToBackgroundAtTimestamp.current &&
+                        goneToBackgroundAtTimestamp.current < Date.now() - KEEP_LOGGED_IN_TIMEOUT
+                    ) {
+                        setIsUserAuthenticated(false);
+                    } else if (isUserAuthenticated) {
+                        setIsBiometricsOverlayVisible(false);
+                    }
 
-            if (appState.current === 'active' && nextAppState !== 'active') {
-                setIsUserAuthenticated(false);
+                    break;
+
+                case 'background':
+                    setIsBiometricsOverlayVisible(true);
+                    goneToBackgroundAtTimestamp.current = Date.now();
+                    break;
+
+                case 'inactive':
+                    setIsBiometricsOverlayVisible(true);
+                    break;
+
+                default:
+                    return;
             }
 
             appState.current = nextAppState;
@@ -61,13 +85,13 @@ export const useBiometrics = () => {
 
         return () => subscription.remove();
     }, [
-        handleAuthentication,
         isBiometricsOptionEnabled,
-        isUserAuthenticated,
         setIsUserAuthenticated,
+        setIsBiometricsOverlayVisible,
+        isUserAuthenticated,
     ]);
 
-    // First authentication after app being opened after being killed (not just backgrounded)
+    // Ask the user for an authentication whenever the authentication state changes.
     useEffect(() => {
         const auth = async () => {
             await handleAuthentication();
@@ -76,5 +100,5 @@ export const useBiometrics = () => {
         auth();
         // Only run once on app start from killed state
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [isUserAuthenticated, isBiometricsOptionEnabled]);
 };
