@@ -10,10 +10,14 @@
             "path": "../../suite-common/formatters"
         },
         { "path": "../../suite-common/sentry" },
+        { "path": "../connect" },
         { "path": "../device-utils" },
         { "path": "../suite" },
         {
             "path": "../../suite-common/test-utils"
+        },
+        {
+            "path": "../../suite-common/wallet-config"
         },
         { "path": "../e2e-utils" },
         { "path": "../env-utils" },
