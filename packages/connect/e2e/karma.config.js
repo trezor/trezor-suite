@@ -96,10 +96,9 @@ module.exports = config => {
                         exclude: /node_modules/,
                         use: [
                             {
-                                loader: 'ts-loader',
+                                loader: 'babel-loader',
                                 options: {
-                                    transpileOnly: true,
-                                    // configFile: '../../tsconfig.json',
+                                    presets: ['@babel/preset-typescript'],
                                 },
                             },
                         ],
