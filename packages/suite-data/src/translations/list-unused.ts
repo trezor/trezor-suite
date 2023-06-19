@@ -3,6 +3,9 @@
 
 import { execSync } from 'child_process';
 import path from 'path';
+
+// See comment in list-duplicates.ts
+// eslint-disable-next-line import/no-extraneous-dependencies
 import messages from '@trezor/suite/src/support/messages';
 
 console.log('unused messages: ');

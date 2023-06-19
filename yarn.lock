@@ -7971,9 +7971,11 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/suite-data@workspace:packages/suite-data"
   dependencies:
+    "@mobily/ts-belt": ^3.13.1
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/suite-utils": "workspace:*"
     "@trezor/env-utils": "workspace:*"
+    "@trezor/suite": "workspace:*"
     "@trezor/urls": "workspace:*"
     "@trezor/utils": "workspace:*"
     "@types/fs-extra": ^11.0.1

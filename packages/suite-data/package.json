@@ -14,6 +14,7 @@
         "browser-detection": "webpack --config ./browser-detection.webpack.ts",
         "guide-pull-content": "tsx ./src/guide/index.ts",
         "update-coinjoin-middleware": "./files/bin/coinjoin/update.sh",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "type-check": "tsc --build tsconfig.json"
     },
     "dependencies": {
@@ -24,6 +25,7 @@
         "@trezor/utils": "workspace:*"
     },
     "devDependencies": {
+        "@mobily/ts-belt": "^3.13.1",
         "@types/fs-extra": "^11.0.1",
         "autoprefixer": "^10.4.14",
         "babel-loader": "^9.1.2",
