@@ -7561,12 +7561,10 @@ __metadata:
     stylelint-config-recommended: ^9.0.0
     stylelint-config-styled-components: ^0.1.1
     stylelint-processor-styled-components: ^1.10.0
+    tippy.js: ^6.3.1
     typescript: 4.9.5
     typescript-styled-plugin: ^0.18.3
     zxcvbn: ^4.4.2
-  peerDependencies:
-    react: 18.2.0
-    styled-components: ^5.3.10
   languageName: unknown
   linkType: soft
 

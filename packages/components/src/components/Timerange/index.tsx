@@ -6,7 +6,7 @@ import type { Locale } from 'date-fns';
 
 import { Button } from '../buttons/Button';
 import { style as datepickerStyle } from './index.style';
-import { variables } from '@trezor/components';
+import { variables } from '../../config';
 
 type Selection = {
     key: string;

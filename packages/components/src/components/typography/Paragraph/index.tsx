@@ -1,7 +1,6 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
-import { variables } from '@trezor/components';
-import { FONT_SIZE } from '../../../config/variables';
+import { variables } from '../../../config';
 import { ParagraphSize } from '../../../support/types';
 
 const getLineHeight = (size: Props['size']) => {
@@ -29,9 +28,9 @@ const getWeight = (size: Props['weight']) => {
 };
 
 const P_SIZES: { [key: string]: string } = {
-    normal: FONT_SIZE.NORMAL,
-    small: FONT_SIZE.SMALL,
-    tiny: FONT_SIZE.TINY,
+    normal: variables.FONT_SIZE.NORMAL,
+    small: variables.FONT_SIZE.SMALL,
+    tiny: variables.FONT_SIZE.TINY,
 };
 
 const Paragraph = styled.div<Props>`

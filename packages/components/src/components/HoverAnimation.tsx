@@ -1,8 +1,7 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 import { transparentize } from 'polished';
-
-import { variables } from '@trezor/components';
+import { variables } from '../config';
 
 const Wrapper = styled.div<{ size?: string; isHoverable?: boolean }>`
     position: relative;

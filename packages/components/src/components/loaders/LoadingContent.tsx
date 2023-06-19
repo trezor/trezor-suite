@@ -1,6 +1,6 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
-import { useTheme } from '@trezor/components';
+import { useTheme } from '../../utils';
 import { Icon } from '../Icon';
 import { Loader } from './Loader';
 

@@ -1,9 +1,9 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
-import { Icon } from '@trezor/components';
 import { Image } from '../../Image/Image';
 import { variables, animations } from '../../../config';
 import { type DeviceModel } from '@trezor/device-utils';
+import { Icon } from '../../Icon';
 
 enum AnimationDirection {
     Up,

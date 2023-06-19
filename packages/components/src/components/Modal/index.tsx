@@ -7,8 +7,8 @@ import { useTheme } from '../../utils/hooks';
 import { Icon } from '../Icon';
 import { H1 } from '../typography/Heading';
 import { variables } from '../../config';
-import { Progress } from '@trezor/components';
 import { IconType } from '../../support/types';
+import { Progress } from '../loaders/Progress';
 
 const CLOSE_ICON_SIDE = 26;
 const CLOSE_ICON_PADDING = 16;
