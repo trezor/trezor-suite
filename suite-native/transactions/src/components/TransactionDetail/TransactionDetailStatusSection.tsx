@@ -39,6 +39,13 @@ const borderLineStyle = prepareNativeStyle(utils => ({
     width: 1,
 }));
 
+const confirmationContainerStyle = prepareNativeStyle(_ => ({
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    flexWrap: 'wrap',
+}));
+
 const VerticalSeparator = () => {
     const { applyStyle } = useNativeStyles();
 
@@ -94,7 +101,7 @@ export const TransactionDetailStatusSection = ({
                 </Box>
             }
         >
-            <Box flexDirection="row" justifyContent="space-between" alignItems="center">
+            <Box style={applyStyle(confirmationContainerStyle)}>
                 <Text
                     variant="hint"
                     color={isTransactionPending ? 'textAlertYellow' : 'textPrimaryDefault'}

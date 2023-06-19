@@ -15,6 +15,7 @@ type TouchableSwitchRowProps = {
 
 const textStyle = prepareNativeStyle(_ => ({
     marginLeft: 12,
+    flex: 1,
 }));
 
 const contentStyle = prepareNativeStyle(_ => ({

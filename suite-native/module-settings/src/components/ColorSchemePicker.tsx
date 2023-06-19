@@ -1,16 +1,22 @@
 import React from 'react';
 
 import { HStack, Text, VStack } from '@suite-native/atoms';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { ColorSchemePickerItem } from './ColorSchemePickerItem';
 
-export const ColorSchemePicker = () => (
-    <VStack spacing={11}>
-        <Text>Color Scheme</Text>
-        <HStack spacing="small">
-            <ColorSchemePickerItem colorScheme="standard" />
-            <ColorSchemePickerItem colorScheme="dark" />
-            <ColorSchemePickerItem colorScheme="system" />
-        </HStack>
-    </VStack>
-);
+const themesContainerStyle = prepareNativeStyle(_ => ({ flexWrap: 'wrap' }));
+
+export const ColorSchemePicker = () => {
+    const { applyStyle } = useNativeStyles();
+    return (
+        <VStack spacing={11}>
+            <Text>Color Scheme</Text>
+            <HStack spacing="small" style={applyStyle(themesContainerStyle)}>
+                <ColorSchemePickerItem colorScheme="standard" />
+                <ColorSchemePickerItem colorScheme="dark" />
+                <ColorSchemePickerItem colorScheme="system" />
+            </HStack>
+        </VStack>
+    );
+};

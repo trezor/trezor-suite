@@ -19,6 +19,7 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { nativeSpacings } from '@trezor/theme';
 
 import { Box } from '../Box';
+import { ACCESSIBILITY_FONTSIZE_MULTIPLIER } from '../Text';
 
 export type InputProps = TextInputProps & {
     value: string;
@@ -29,10 +30,12 @@ export type InputProps = TextInputProps & {
     leftIcon?: ReactNode;
 };
 
-const INPUT_WRAPPER_PADDING_HORIZONTAL = 14;
-const INPUT_WRAPPER_PADDING_VERTICAL = 17;
-const INPUT_WRAPPER_PADDING_VERTICAL_MINIMIZED = nativeSpacings.small;
-const INPUT_TEXT_HEIGHT = 24;
+const INPUT_WRAPPER_PADDING_HORIZONTAL = 14 * ACCESSIBILITY_FONTSIZE_MULTIPLIER;
+const INPUT_WRAPPER_PADDING_VERTICAL = 17 * ACCESSIBILITY_FONTSIZE_MULTIPLIER;
+const INPUT_WRAPPER_PADDING_VERTICAL_MINIMIZED =
+    nativeSpacings.small * ACCESSIBILITY_FONTSIZE_MULTIPLIER;
+const INPUT_TEXT_HEIGHT = 24 * ACCESSIBILITY_FONTSIZE_MULTIPLIER;
+const INPUT_WRAPPER_HEIGHT = 58 * ACCESSIBILITY_FONTSIZE_MULTIPLIER;
 
 type InputWrapperStyleProps = {
     hasWarning: boolean;
@@ -48,7 +51,7 @@ const inputWrapperStyle = prepareNativeStyle<InputWrapperStyleProps>(
         borderRadius: utils.borders.radii.small,
         paddingHorizontal: INPUT_WRAPPER_PADDING_HORIZONTAL,
         paddingBottom: INPUT_WRAPPER_PADDING_VERTICAL_MINIMIZED,
-        height: 58,
+        height: INPUT_WRAPPER_HEIGHT,
         justifyContent: 'flex-end',
         extend: [
             {
@@ -110,7 +113,7 @@ const leftIconStyle = prepareNativeStyle(() => ({
     marginRight: 3,
 }));
 
-const useAnimationStyles = ({
+const useInputLabelAnimationStyles = ({
     isLabelMinimized,
 }: Pick<InputWrapperStyleProps, 'isLabelMinimized'>) => {
     const { utils } = useNativeStyles();
@@ -168,7 +171,7 @@ export const Input = React.forwardRef<TextInput, InputProps>(
         const isLabelMinimized = isFocused || !!value?.length;
 
         const { applyStyle } = useNativeStyles();
-        const { animatedInputLabelStyle } = useAnimationStyles({
+        const { animatedInputLabelStyle } = useInputLabelAnimationStyles({
             isLabelMinimized,
         });
 

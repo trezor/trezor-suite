@@ -23,7 +23,7 @@ export const OnboardingScreen = ({
     title,
     subtitle,
     activeStep,
-    isScrollable = false,
+    isScrollable = true,
 }: OnboardingScreenProps) => {
     const { applyStyle } = useNativeStyles();
 

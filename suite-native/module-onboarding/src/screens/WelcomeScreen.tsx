@@ -72,7 +72,9 @@ export const WelcomeScreen = () => {
                                 <TitleText color="textSubdued"> Lite</TitleText>
                             </Text>
                         </Box>
-                        <Text color="textSubdued">Simple and secure portfolio tracker</Text>
+                        <Text color="textSubdued" align="center">
+                            Simple and secure portfolio tracker
+                        </Text>
                     </Box>
                     <OnboardingFooter redirectTarget={handleRedirect} />
                 </Box>
