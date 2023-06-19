@@ -137,6 +137,9 @@ local.properties
 # fastlane supply (google service account - upload key)
 **/android/upload-key.json
 
+# suite native E2E artifacts
+suite-native/app/artifacts
+
 # Bundle artifact
 *.jsbundle
 

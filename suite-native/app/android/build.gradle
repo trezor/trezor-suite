@@ -4,8 +4,9 @@ buildscript {
     ext {
         buildToolsVersion = "33.0.0"
         minSdkVersion = 26
-        compileSdkVersion = 33
-        targetSdkVersion = 33
+        compileSdkVersion = 31
+        targetSdkVersion = 31
+        kotlinVersion = '1.8.0'
 
         // We use NDK 23 which has both M1 support and is the side-by-side NDK version from AGP.
         ndkVersion = "23.1.7779620"
@@ -13,9 +14,13 @@ buildscript {
     repositories {
         google()
         mavenCentral()
+        maven {
+        url("$rootDir/../node_modules/detox/Detox-android")
+        }
     }
     dependencies {
         classpath("com.android.tools.build:gradle:7.3.1")
         classpath("com.facebook.react:react-native-gradle-plugin")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
     }
 }
