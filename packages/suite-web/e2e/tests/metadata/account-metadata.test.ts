@@ -111,6 +111,8 @@ Hovering over fields that may be labeled shows "add label" button upon which is 
             // - why asserting it:  just to make sure that metadata don't send unnecessary amount of request
 
             // todo: this assertion is flaky. turning it off for now
+            // cy.waitUntil command is part of cypress-wait-until library which was already removed from the project
+            //
             // cy.waitUntil(() =>
             //     cy.task('metadataGetRequests', { provider: f.provider }).then(requests => {
             //         const expectedNumberOfRequests =
@@ -138,6 +140,8 @@ Hovering over fields that may be labeled shows "add label" button upon which is 
             cy.getTestElement('@dashboard/graph');
 
             // todo: this assertion is flaky. turning it off for now
+            // cy.waitUntil command is part of cypress-wait-until library which was already removed from the project
+            //
             // cy.waitUntil(() =>
             //     cy.task('metadataGetRequests', { provider: f.provider }).then(requests => {
             //         const expectedNumberOfRequests =

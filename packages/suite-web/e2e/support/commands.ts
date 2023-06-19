@@ -1,8 +1,6 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 /* eslint-disable @typescript-eslint/no-var-requires */
 
-import 'cypress-wait-until';
-
 import {
     onboardingShouldLoad,
     dashboardShouldLoad,
