@@ -38,6 +38,7 @@
         {
             "path": "../../suite-common/redux-utils"
         },
+        { "path": "../../suite-common/sentry" },
         {
             "path": "../../suite-common/suite-config"
         },
@@ -72,6 +73,7 @@
             "path": "../../suite-common/wallet-utils"
         },
         { "path": "../analytics" },
+        { "path": "../blockchain-link" },
         { "path": "../coinjoin" },
         { "path": "../components" },
         { "path": "../connect" },
@@ -79,6 +81,7 @@
         { "path": "../device-utils" },
         { "path": "../dom-utils" },
         { "path": "../env-utils" },
+        { "path": "../ipc-proxy" },
         { "path": "../react-utils" },
         { "path": "../suite-analytics" },
         { "path": "../suite-data" },
