@@ -11,33 +11,38 @@ import { createInterceptor, InterceptedEvent } from '@trezor/request-manager';
 import { isDevEnv } from '@suite-common/suite-utils';
 import { TorStatus } from '@trezor/suite-desktop-api';
 
+import { mainThreadEmitter } from '../typed-electron';
+
 import { Module } from './index';
 
 export const init: Module = ({ mainWindow, store }) => {
     const { logger } = global;
 
-    const options = {
-        handler: (event: InterceptedEvent) => {
-            if (event.type === 'INTERCEPTED_REQUEST') {
-                logger.debug('request-interceptor', `${event.method} - ${event.details}`);
-            }
-            if (event.type === 'INTERCEPTED_RESPONSE') {
-                logger.debug(
-                    'request-interceptor',
-                    `request to ${event.host} took ${event.time}ms and responded with status code ${event.statusCode}`,
-                );
-            }
-            if (event.type === 'NETWORK_MISBEHAVING') {
-                logger.debug('request-interceptor', 'networks is misbehaving');
-                mainWindow.webContents.send('tor/status', {
-                    type: TorStatus.Misbehaving,
-                });
-            }
-        },
+    const requestInterceptorEventHandler = (event: InterceptedEvent) => {
+        if (event.type === 'INTERCEPTED_REQUEST') {
+            logger.debug('request-interceptor', `${event.method} - ${event.details}`);
+        }
+        if (event.type === 'INTERCEPTED_RESPONSE') {
+            logger.debug(
+                'request-interceptor',
+                `request to ${event.host} took ${event.time}ms and responded with status code ${event.statusCode}`,
+            );
+        }
+        if (event.type === 'NETWORK_MISBEHAVING') {
+            logger.debug('request-interceptor', 'networks is misbehaving');
+            mainWindow.webContents.send('tor/status', {
+                type: TorStatus.Misbehaving,
+            });
+        }
+    };
+
+    // handle event sent from modules/coinjoin (background thread)
+    mainThreadEmitter.on('module/request-interceptor', requestInterceptorEventHandler);
+
+    createInterceptor({
+        handler: requestInterceptorEventHandler,
         getTorSettings: () => store.getTorSettings(),
         allowTorBypass: isDevEnv,
         whitelistedHosts: ['127.0.0.1', 'localhost', '.sldev.cz'],
-    };
-
-    createInterceptor(options);
+    });
 };

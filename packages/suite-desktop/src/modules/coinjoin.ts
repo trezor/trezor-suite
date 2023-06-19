@@ -15,6 +15,7 @@ import { InterceptedEvent } from '@trezor/request-manager';
 import { CoinjoinProcess } from '../libs/processes/CoinjoinProcess';
 import { PowerSaveBlocker } from '../libs/power-save-blocker';
 import { ThreadProxy } from '../libs/thread-proxy';
+import { mainThreadEmitter } from '../typed-electron';
 
 import type { Module } from './index';
 
@@ -61,20 +62,9 @@ export const init: Module = ({ mainWindow, store }) => {
             await backend.run({ ...settings, torSettings: store.getTorSettings() });
             backends.push(backend);
 
-            backend.on('interceptor', (event: InterceptedEvent) => {
-                if (event.type === 'INTERCEPTED_REQUEST') {
-                    logger.debug('request-interceptor', `${event.method} - ${event.details}`);
-                }
-                if (event.type === 'INTERCEPTED_RESPONSE') {
-                    logger.debug(
-                        'request-interceptor',
-                        `request to ${event.host} took ${event.time}ms and responded with status code ${event.statusCode}`,
-                    );
-                }
-                if (event.type === 'NETWORK_MISBEHAVING') {
-                    logger.debug('request-interceptor', 'networks is misbehaving');
-                }
-            });
+            backend.on('interceptor', (event: InterceptedEvent) =>
+                mainThreadEmitter.emit('module/request-interceptor', event),
+            );
 
             backend.on('log', ({ level, payload }) => {
                 (logger as any)[level](SERVICE_NAME, `${BACKEND_CHANNEL} ${payload}`);
