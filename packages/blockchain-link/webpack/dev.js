@@ -40,8 +40,10 @@ module.exports = {
                 test: /\.ts$/,
                 exclude: /node_modules/,
                 use: {
-                    loader: 'ts-loader',
-                    options: { configFile: 'tsconfig.lib.json' },
+                    loader: 'babel-loader',
+                    options: {
+                        presets: ['@babel/preset-typescript'],
+                    },
                 },
             },
         ],
