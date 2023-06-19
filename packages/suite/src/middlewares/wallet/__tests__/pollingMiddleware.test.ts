@@ -88,6 +88,11 @@ describe('pollingMiddleware', () => {
         jest.runOnlyPendingTimers();
 
         expect(store.getActions()).toEqual([{ type: POLLING.REQUEST, key: 'fake' }]);
+        // todo:
+        // this assertion fails without
+        // legacyFakeTimers: true,
+        // (see jest.config.js)
+        // https://jestjs.io/docs/28.x/upgrading-to-jest28#faketimers
         expect(setTimeout).toHaveBeenCalledTimes(1);
     });
 
