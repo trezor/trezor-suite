@@ -7,15 +7,13 @@ import type { Network } from 'src/types/wallet';
 
 import type { BackendSettings } from '@suite-common/wallet-types';
 import type { OnUpgradeFunc } from '@trezor/suite-storage';
-import type { DBWalletAccountTransaction } from '@trezor/suite/src/storage/definitions';
+import type { DBWalletAccountTransaction, SuiteDBSchema } from '../definitions';
 import {
     formatNetworkAmount,
     networkAmountToSatoshi,
     amountToSatoshi,
 } from '@suite-common/wallet-utils';
-import { updateAll } from '@trezor/suite/src/storage/migrations/utils';
-
-import type { SuiteDBSchema } from '../definitions';
+import { updateAll } from './utils';
 
 type WalletWithBackends = {
     backends?: Partial<{
