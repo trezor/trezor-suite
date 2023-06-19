@@ -235,7 +235,7 @@ describe('Discovery Actions', () => {
 
     // Detailed info about this test could be found in fixtures
     interruptionFixtures.forEach(f => {
-        it(`Start/stop/change networks/start: ${f.description}`, async done => {
+        it(`Start/stop/change networks/start: ${f.description}`, async () => {
             require('@trezor/connect').setTestFixtures(f);
             const store = initStore();
             // additional action listener for triggering "discovery.stop" action
@@ -274,12 +274,12 @@ describe('Discovery Actions', () => {
             expect(complete.type).toEqual(DISCOVERY.COMPLETE);
             const discovery = store.getState().wallet.discovery[0];
             expect(discovery.loaded).toEqual(store.getState().wallet.accounts.length);
-            done(expect(discovery.total).toEqual(discovery.loaded));
+            expect(discovery.total).toEqual(discovery.loaded);
         });
     });
 
     changeNetworksFixtures.forEach(f => {
-        it(`Change network: ${f.description}`, async done => {
+        it(`Change network: ${f.description}`, async () => {
             require('@trezor/connect').setTestFixtures(f);
             const state = getInitialState();
             const store = initStore(state);
@@ -313,7 +313,7 @@ describe('Discovery Actions', () => {
             // length of accounts in reducer are equal discovery.loaded
             expect(discovery.loaded).toEqual(accounts.length);
             // 100% progress
-            done(expect(discovery.total).toEqual(discovery.loaded));
+            expect(discovery.total).toEqual(discovery.loaded);
         });
     });
 
@@ -446,7 +446,7 @@ describe('Discovery Actions', () => {
         await store.dispatch(discoveryActions.restart());
     });
 
-    it(`TrezorConnect responded with success but discovery was removed`, async done => {
+    it(`TrezorConnect responded with success but discovery was removed`, async () => {
         const f = new Promise(resolve => {
             setTimeout(() => resolve({ success: true }), 100);
         });
@@ -465,10 +465,10 @@ describe('Discovery Actions', () => {
         store.dispatch(discoveryActions.create('device-state', SUITE_DEVICE));
         await store.dispatch(discoveryActions.start());
         const action = store.getActions().pop();
-        done(expect(action.type).toEqual(DISCOVERY.REMOVE));
+        expect(action.type).toEqual(DISCOVERY.REMOVE);
     });
 
-    it(`TrezorConnect responded with success but discovery is not running`, async done => {
+    it(`TrezorConnect responded with success but discovery is not running`, async () => {
         const f = new Promise(resolve => {
             setTimeout(() => resolve({ success: true }), 100);
         });
@@ -492,7 +492,7 @@ describe('Discovery Actions', () => {
         store.dispatch(discoveryActions.create('device-state', SUITE_DEVICE));
         await store.dispatch(discoveryActions.start());
         const action = store.getActions().pop();
-        done(expect(action.type).toEqual(notificationsActions.addToast.type));
+        expect(action.type).toEqual(notificationsActions.addToast.type);
     });
 
     it('Discovery completed but device is not connected anymore', async () => {

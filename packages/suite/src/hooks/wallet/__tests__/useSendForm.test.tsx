@@ -214,9 +214,6 @@ const actionCallback = (
 };
 
 describe('useSendForm hook', () => {
-    beforeEach(() => {
-        jest.setTimeout(30000); // action sequences takes time
-    });
     afterEach(() => {
         jest.clearAllMocks();
     });
@@ -251,33 +248,37 @@ describe('useSendForm hook', () => {
 
             unmount();
         });
-    });
+    }, 30000);
 
     fixtures.setMax.forEach(f => {
-        it(f.description, async () => {
-            TrezorConnect.setTestFixtures(f.connect);
-            const store = initStore(getInitialState(f.store));
-            const callback: TestCallback = {};
-            const { unmount } = renderWithProviders(
-                store,
-                <SendIndex>
-                    <Component callback={callback} />
-                </SendIndex>,
-            );
+        it(
+            f.description,
+            async () => {
+                TrezorConnect.setTestFixtures(f.connect);
+                const store = initStore(getInitialState(f.store));
+                const callback: TestCallback = {};
+                const { unmount } = renderWithProviders(
+                    store,
+                    <SendIndex>
+                        <Component callback={callback} />
+                    </SendIndex>,
+                );
 
-            // wait for first render
-            await waitForLoader();
+                // wait for first render
+                await waitForLoader();
 
-            // execute user actions sequence
-            if (f.actions) {
-                await actionSequence(f.actions, a => actionCallback(callback, a));
-            }
+                // execute user actions sequence
+                if (f.actions) {
+                    await actionSequence(f.actions, a => actionCallback(callback, a));
+                }
 
-            // validate finalResult
-            actionCallback(callback, { result: f.finalResult });
+                // validate finalResult
+                actionCallback(callback, { result: f.finalResult });
 
-            unmount();
-        });
+                unmount();
+            },
+            30000,
+        );
     });
 
     fixtures.composeDebouncedTransaction.forEach(f => {
@@ -340,7 +341,7 @@ describe('useSendForm hook', () => {
     });
 
     fixtures.feeChange.forEach(f => {
-        it(f.description, async () => {
+        it(`changeFee: ${f.description}`, async () => {
             TrezorConnect.setTestFixtures(f.connect);
             const store = initStore(getInitialState(f.store));
             const callback: TestCallback = {};
@@ -361,7 +362,7 @@ describe('useSendForm hook', () => {
             actionCallback(callback, { result: f.finalResult });
 
             unmount();
-        });
+        }, 30000);
     });
 
     fixtures.amountUnitChange.forEach(f => {

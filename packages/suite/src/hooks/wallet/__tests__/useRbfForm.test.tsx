@@ -116,9 +116,6 @@ describe('useRbfForm hook', () => {
     afterAll(async () => {
         await TrezorConnect.dispose();
     });
-    beforeEach(() => {
-        jest.setTimeout(30000); // action sequences takes time
-    });
     afterEach(() => {
         jest.clearAllMocks();
     });
