@@ -46,7 +46,7 @@ const handleMessage = (
     event: MessageEvent<
         | PopupEvent
         | UiEvent
-        | (Omit<MethodResponseMessage, 'payload'> & { payload?: { error: string } })
+        | (Omit<MethodResponseMessage, 'payload'> & { payload?: { error: string; code?: string } })
     >,
 ) => {
     const { data } = event;
@@ -58,7 +58,11 @@ const handleMessage = (
         return;
     }
 
-    if (data.type === RESPONSE_EVENT && !data.success) {
+    if (
+        data.type === RESPONSE_EVENT &&
+        !data.success &&
+        data.payload?.code !== 'Transport_Missing'
+    ) {
         const errorMessage = data.payload?.error || 'Unknown error';
         reactEventBus.dispatch({
             type: 'error',
