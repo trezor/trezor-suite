@@ -2,7 +2,7 @@ import path from 'path';
 import webpack from 'webpack';
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
 import TerserPlugin from 'terser-webpack-plugin';
-import SentryWebpackPlugin from '@sentry/webpack-plugin';
+import { sentryWebpackPlugin } from '@sentry/webpack-plugin';
 
 import {
     assetPrefix,
@@ -187,14 +187,15 @@ const config: webpack.Configuration = {
             : []),
         ...(!isDev && sentryAuthToken
             ? [
-                  new SentryWebpackPlugin({
-                      authToken: sentryAuthToken,
+                  sentryWebpackPlugin({
                       org: 'satoshilabs',
                       project: 'trezor-suite',
-                      release: sentryRelease,
-                      include: path.join(getPathForProject(project), 'build'),
-                      ignore: ['static/connect'], // connect does not contain source maps for now
-                      cleanArtifacts: true,
+                      authToken: sentryAuthToken,
+                      release: { name: sentryRelease, cleanArtifacts: true },
+                      sourcemaps: {
+                          assets: path.join(getPathForProject(project), 'build'),
+                          ignore: ['static/connect'], // connect does not contain source maps for now
+                      },
                   }),
               ]
             : []),
