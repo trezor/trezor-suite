@@ -67,4 +67,9 @@ module.exports = {
     verbose: false,
     watchPlugins: ['jest-watch-typeahead/filename', 'jest-watch-typeahead/testname'],
     testEnvironment: 'jsdom',
+    fakeTimers: {
+        enableGlobally: false,
+        // https://jestjs.io/docs/28.x/upgrading-to-jest28#faketimers
+        legacyFakeTimers: true,
+    },
 };
