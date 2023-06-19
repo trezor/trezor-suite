@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { colors } from '@trezor/components';
 
 import type { ZXCVBNScore } from 'zxcvbn';
+import { colors } from '../../config';
 
 interface WrapperProps {
     width?: number;

@@ -1,7 +1,7 @@
+import { variables } from '../../../config';
 import React, { useLayoutEffect, useMemo, useRef, useState } from 'react';
 import styled, { css, CSSObject } from 'styled-components';
-
-import { useTheme, variables } from '@trezor/components';
+import { useTheme } from '../../../utils';
 
 const track = css<Pick<RangeProps, 'trackStyle'>>`
     background: ${({ theme }) => theme.BG_GREEN};

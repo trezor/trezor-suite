@@ -2,7 +2,10 @@ import React, { useMemo } from 'react';
 import styled, { css } from 'styled-components';
 import { motion, Variants } from 'framer-motion';
 import useMeasure from 'react-use/lib/useMeasure';
-import { H1, variables, Image, ImageType, motionEasing, Icon } from '@trezor/components';
+import { H1 } from './typography/Heading';
+import { variables, motion as motionConfig } from '../config';
+import { Image, ImageType } from './Image/Image';
+import { Icon } from './Icon';
 
 const CardWrapper = styled(
     ({ variant, withImage, disablePadding, expanded, expandable, nested, ...rest }) => (
@@ -218,7 +221,7 @@ export const CollapsibleCard = ({
             className={className}
             nested={nested}
             animate={expanded ? 'expanded' : 'closed'}
-            transition={{ duration: 0.4, ease: motionEasing.transition }}
+            transition={{ duration: 0.4, ease: motionConfig.motionEasing.transition }}
             onClick={expandable && !expanded ? onToggle : undefined}
             data-test="@components/collapsible-box"
             {...rest}
@@ -241,7 +244,7 @@ export const CollapsibleCard = ({
                 <motion.div
                     variants={expandable ? animationVariants : undefined}
                     animate={expanded ? 'expanded' : 'closed'}
-                    transition={{ duration: 0.4, ease: motionEasing.transition }}
+                    transition={{ duration: 0.4, ease: motionConfig.motionEasing.transition }}
                 >
                     <div ref={heightRef}>
                         {expandable && expanded && (

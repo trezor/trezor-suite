@@ -1,7 +1,13 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { H1, Switch, CollapsibleBox, variables, Button, CollapsibleCard } from '@trezor/components';
+
 import { FormattedMessage } from 'react-intl';
+import { variables } from '../config';
+import { Button } from './buttons/Button';
+import { CollapsibleBox } from './CollapsibleBox';
+import { CollapsibleCard } from './CollapsibleCard';
+import { Switch } from './form/Switch';
+import { H1 } from './typography/Heading';
 
 const Wrapper = styled.div`
     display: flex;

@@ -1,6 +1,5 @@
 import { css } from 'styled-components';
-
-import { variables } from '@trezor/components';
+import { variables } from '../../config';
 
 export const style = css`
     .rdrCalendarWrapper {

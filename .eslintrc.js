@@ -83,6 +83,7 @@ module.exports = {
                     '**/blockchain-link/webpack/**',
                     '**/suite-desktop/scripts/**',
                     '**/suite-desktop/e2e/**',
+                    '**/*.stories.*',
                 ],
                 includeTypes: true,
             },
@@ -238,7 +239,6 @@ module.exports = {
         {
             // we are using explicit blacklist because this will enforce new rules in newly created packages
             files: [
-                'packages/components/**/*',
                 'packages/connect/**/*',
                 'packages/connect-common/**/*',
                 'packages/connect-explorer/**/*',
