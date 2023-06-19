@@ -1,9 +1,7 @@
 import React, { ReactNode } from 'react';
 
-import { useAtomValue } from 'jotai';
-
 import { useBiometrics } from '../useBiometrics';
-import { isBiometricsOverlayVisibleAtom } from '../biometricsAtoms';
+import { useIsBiometricsOverlayVisible } from '../biometricsAtoms';
 import { BiometricOverlay } from './BiometricOverlay';
 
 type AuthenticatorProviderProps = {
@@ -12,7 +10,7 @@ type AuthenticatorProviderProps = {
 
 export const AuthenticatorProvider = ({ children }: AuthenticatorProviderProps) => {
     useBiometrics();
-    const isBiometricsOverlayVisible = useAtomValue(isBiometricsOverlayVisibleAtom);
+    const { isBiometricsOverlayVisible } = useIsBiometricsOverlayVisible();
 
     return (
         <>

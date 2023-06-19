@@ -123,8 +123,8 @@ const BiometricsSwitchRow = () => {
             setIsBiometricsOptionEnabled(false);
             setIsUserAuthenticated(false);
         } else {
-            setIsBiometricsOptionEnabled(true);
             setIsUserAuthenticated(true);
+            setIsBiometricsOptionEnabled(true);
         }
     };
 
