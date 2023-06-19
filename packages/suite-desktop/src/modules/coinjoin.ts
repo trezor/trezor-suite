@@ -10,6 +10,7 @@ import { createIpcProxyHandler, IpcProxyHandlerOptions } from '@trezor/ipc-proxy
 import { CoinjoinClient, CoinjoinBackend, CoinjoinBackendSettings } from '@trezor/coinjoin';
 import { getSynchronize } from '@trezor/utils';
 import { getFreePort } from '@trezor/node-utils';
+import { InterceptedEvent } from '@trezor/request-manager';
 
 import { CoinjoinProcess } from '../libs/processes/CoinjoinProcess';
 import { PowerSaveBlocker } from '../libs/power-save-blocker';
@@ -59,6 +60,21 @@ export const init: Module = ({ mainWindow, store }) => {
 
             await backend.run({ ...settings, torSettings: store.getTorSettings() });
             backends.push(backend);
+
+            backend.on('interceptor', (event: InterceptedEvent) => {
+                if (event.type === 'INTERCEPTED_REQUEST') {
+                    logger.debug('request-interceptor', `${event.method} - ${event.details}`);
+                }
+                if (event.type === 'INTERCEPTED_RESPONSE') {
+                    logger.debug(
+                        'request-interceptor',
+                        `request to ${event.host} took ${event.time}ms and responded with status code ${event.statusCode}`,
+                    );
+                }
+                if (event.type === 'NETWORK_MISBEHAVING') {
+                    logger.debug('request-interceptor', 'networks is misbehaving');
+                }
+            });
 
             backend.on('log', ({ level, payload }) => {
                 (logger as any)[level](SERVICE_NAME, `${BACKEND_CHANNEL} ${payload}`);

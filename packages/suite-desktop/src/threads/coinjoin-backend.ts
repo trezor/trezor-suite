@@ -30,7 +30,8 @@ const init = (settings: BackgroundCoinjoinBackendSettings) => {
     const backend = new BackgroundCoinjoinBackend(settings);
 
     createInterceptor({
-        handler: () => {},
+        // @ts-expect-error: backend emitter is strongly typed. there is no interceptor event
+        handler: event => backend.emit('interceptor' as any, event),
         getTorSettings: () => backend.torSettings,
         allowTorBypass: isDevEnv,
         whitelistedHosts: ['127.0.0.1', 'localhost', '.sldev.cz'],
