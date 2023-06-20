@@ -32,6 +32,10 @@ export const init: Module = ({ mainWindow, store, mainThreadEmitter }) => {
                 type: TorStatus.Misbehaving,
             });
         }
+
+        if (event.type === 'CIRCUIT_MISBEHAVING') {
+            mainThreadEmitter.emit('module/reset-tor-circuits', event);
+        }
     };
 
     // handle event sent from modules/coinjoin (background thread)
