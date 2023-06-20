@@ -13,7 +13,8 @@
         { "path": "../crypto-utils" },
         { "path": "../urls" },
         { "path": "../node-utils" },
-        { "path": "../trezor-user-env-link" }
+        { "path": "../trezor-user-env-link" },
+        { "path": "../utils" }
     ],
     "ts-node": {
         "compilerOptions": {

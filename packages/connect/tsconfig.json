@@ -6,6 +6,7 @@
     },
     "references": [
         { "path": "../blockchain-link" },
+        { "path": "../blockchain-link-types" },
         { "path": "../connect-analytics" },
         { "path": "../connect-common" },
         { "path": "../transport" },
