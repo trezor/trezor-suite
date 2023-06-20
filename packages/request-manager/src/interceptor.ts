@@ -66,10 +66,6 @@ const interceptNetSocketConnect = (context: InterceptorContext) => {
             details = typeof callback === 'string' ? `${callback}:${request}` : request.toString();
         }
 
-        if (!details) {
-            console.warn('DET UNDEF', args);
-        }
-
         context.handler({
             type: 'INTERCEPTED_REQUEST',
             method: 'net.Socket.connect',
@@ -134,14 +130,15 @@ const overloadHttpRequest = (
         const isTorRequired = getIsTorRequired(url);
         const overloadedOptions = url;
         const overloadedCallback = options;
-        const { host } = overloadedOptions;
+        const { host, path } = overloadedOptions;
+        let identity: string | undefined;
 
         if (isTorEnabled) {
             // Create proxy agent for the request (from Proxy-Authorization or default)
             // get authorization data from request headers
-            const identity = getIdentityForAgent(overloadedOptions);
+            identity = getIdentityForAgent(overloadedOptions) || 'default';
             overloadedOptions.agent = context.torIdentities.getIdentity(
-                identity || 'default',
+                identity,
                 overloadedOptions.timeout,
                 protocol,
             );
@@ -166,13 +163,13 @@ const overloadHttpRequest = (
         context.handler({
             type: 'INTERCEPTED_REQUEST',
             method: 'http.request',
-            details: `${host} with agent ${!!overloadedOptions.agent}`,
+            details: `${host}${path} with agent ${!!overloadedOptions.agent}`,
         });
 
         delete overloadedOptions.headers?.['Proxy-Authorization'];
 
         // return tuple of params for original request
-        return [overloadedOptions, overloadedCallback] as const;
+        return [identity, overloadedOptions, overloadedCallback] as const;
     }
 };
 
@@ -209,7 +206,8 @@ const interceptHttp = (context: InterceptorContext) => {
     http.request = (...args) => {
         const overload = overloadHttpRequest(context, 'http', ...args);
         if (overload) {
-            return context.requestPool(originalHttpRequest(...overload));
+            const [identity, ...overloadedArgs] = overload;
+            return context.requestPool(originalHttpRequest(...overloadedArgs), identity);
         }
 
         // In cases that are not considered above we pass the args as they came.
@@ -221,7 +219,8 @@ const interceptHttp = (context: InterceptorContext) => {
     http.get = (...args) => {
         const overload = overloadWebsocketHandshake(context, 'http', ...args);
         if (overload) {
-            return context.requestPool(originalHttpGet(...overload));
+            const [identity, ...overloadedArgs] = overload;
+            return context.requestPool(originalHttpGet(...overloadedArgs), identity);
         }
         return originalHttpGet(...(args as Parameters<typeof https.get>));
     };
@@ -233,7 +232,8 @@ const interceptHttps = (context: InterceptorContext) => {
     https.request = (...args) => {
         const overload = overloadHttpRequest(context, 'https', ...args);
         if (overload) {
-            return context.requestPool(originalHttpsRequest(...overload));
+            const [identity, ...overloadedArgs] = overload;
+            return context.requestPool(originalHttpsRequest(...overloadedArgs), identity);
         }
 
         // In cases that are not considered above we pass the args as they came.
@@ -245,7 +245,8 @@ const interceptHttps = (context: InterceptorContext) => {
     https.get = (...args) => {
         const overload = overloadWebsocketHandshake(context, 'https', ...args);
         if (overload) {
-            return context.requestPool(originalHttpsGet(...overload));
+            const [identity, ...overloadedArgs] = overload;
+            return context.requestPool(originalHttpsGet(...overloadedArgs), identity);
         }
         return originalHttpsGet(...(args as Parameters<typeof https.get>));
     };

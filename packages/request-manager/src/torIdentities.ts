@@ -18,9 +18,7 @@ export class TorIdentities {
         const [user, password] = identity.split(':');
 
         if (this.identities[user] && password) {
-            // looks like destroy does nothing, but just in case
-            this.identities[user].destroy();
-            delete this.identities[user];
+            this.removeIdentity(user);
         }
 
         const { host, port } = this.getTorSettings();
@@ -44,5 +42,11 @@ export class TorIdentities {
         if (protocol) agent.protocol = `${protocol}:`;
 
         return agent;
+    }
+
+    public removeIdentity(user: string) {
+        // looks like destroy does nothing, but just in case
+        this.identities[user].destroy();
+        delete this.identities[user];
     }
 }
