@@ -308,7 +308,7 @@ connect-popup manual:
         # TESTS_NODE_VERSION: ["12", "14", "16"]
         TESTS_INCLUDED_METHODS:
           [
-            "applySettings,applyFlags,getFeatures,getFirmwareHash",
+            "applySettings,applyFlags,getFeatures,getFirmwareHash,checkFirmwareAuthenticity",
             "signTransaction",
             "getAccountInfo,getAddress,getPublicKey,signMessage,verifyMessage,composeTransaction,getOwnershipId,getOwnershipProof",
             "stellarGetAddress,stellarSignTransaction",
