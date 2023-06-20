@@ -63,12 +63,6 @@ import verifyMessage from './verifyMessage';
 import verifyMessageSegwit from './verifyMessageSegwit';
 import verifyMessageSegwitNative from './verifyMessageSegwitNative';
 
-// todo: this test fixture relies on actual firmware binary being deployed to data.trezor.io
-// this is sometimes the case and sometimes it is not. to fix this we:
-// a] either need more flexibility in selecting which tests should be run based on some env variables
-// b] move this test outside of methods.test.js and create a custom test file for it, possibly with some mocking
-import checkFirmwareAuthenticity from './checkFirmwareAuthenticity';
-
 // TODO: add fixtures for missing dependencies https://github.com/trezor/trezor-suite/issues/5353
 // backupDevice
 // blockchainDisconnect
@@ -161,7 +155,6 @@ let fixtures = [
     verifyMessage,
     verifyMessageSegwit,
     verifyMessageSegwitNative,
-    checkFirmwareAuthenticity,
 ];
 
 const includedMethods = process.env.TESTS_INCLUDED_METHODS;
