@@ -15,7 +15,7 @@ import { app, ipcMain } from '../typed-electron';
 
 import type { Dependencies } from './index';
 
-const load = async ({ mainWindow, store }: Dependencies) => {
+const load = async ({ mainWindow, store, mainThreadEmitter }: Dependencies) => {
     const { logger } = global;
     const host = '127.0.0.1';
     const port = await getFreePort();
@@ -161,6 +161,23 @@ const load = async ({ mainWindow, store }: Dependencies) => {
         const status = await tor.status();
         handleTorProcessStatus(status);
         return { success: true };
+    });
+
+    // Handle event emitted by request-interceptor module
+    let lastCircuitResetTime = 0;
+    const socksTimeout = 30000; // this value reflects --SocksTimeout flag set by TorController config
+    mainThreadEmitter.on('module/reset-tor-circuits', event => {
+        const lastResetDiff = Date.now() - lastCircuitResetTime;
+        if (lastResetDiff > socksTimeout) {
+            logger.debug('tor', `Close active circuits. Triggered by identity ${event.identity}`);
+            lastCircuitResetTime = Date.now();
+            tor.torController.closeActiveCircuits();
+        } else {
+            logger.debug(
+                'tor',
+                `Ignore circuit reset. Triggered by identity ${event.identity} Last reset: ${lastResetDiff}ms. ago`,
+            );
+        }
     });
 
     ipcMain.on('tor/get-status', async () => {
