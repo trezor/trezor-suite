@@ -26,7 +26,7 @@ export class CoinjoinBackendClient {
 
     protected blockbookRequestId;
 
-    private readonly identityWabisabi = 'Satoshi';
+    private readonly identityWabisabi = 'WabisabiApi';
     private readonly identitiesBlockbook = [
         'Blockbook_1',
         'Blockbook_2',
