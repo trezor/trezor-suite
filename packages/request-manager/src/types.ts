@@ -41,6 +41,10 @@ export type InterceptedEvent =
           type: 'NETWORK_MISBEHAVING';
       }
     | {
+          type: 'CIRCUIT_MISBEHAVING';
+          identity?: string;
+      }
+    | {
           type: 'ERROR';
           error: Error;
       };
