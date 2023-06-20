@@ -87,6 +87,7 @@ module.exports = {
                     '**/suite-data/**',
                     '**/*.stories.*',
                     '**/*webpack.config*',
+                    '**/webpack/**',
                 ],
                 includeTypes: true,
             },
@@ -239,23 +240,7 @@ module.exports = {
                 'no-console': 'off',
             },
         },
-        {
-            // we are using explicit blacklist because this will enforce new rules in newly created packages
-            files: [
-                'packages/connect/**/*',
-                'packages/connect-common/**/*',
-                'packages/connect-explorer/**/*',
-                'packages/connect-web/**/*',
-                'packages/connect-popup/**/*',
-                'packages/connect-iframe/**/*',
-                'packages/connect-examples/**/*',
-            ],
-            rules: {
-                'import/no-unresolved': 'off',
-                'import/no-extraneous-dependencies': 'off',
-                'no-undef': 'off',
-            },
-        },
+
         {
             // we are using explicit blacklist because this will enforce new rules in newly created packages
             files: [

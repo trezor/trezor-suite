@@ -13,7 +13,8 @@
     ],
     "references": [
         { "path": "../components" },
-        { "path": "../connect-web" }
+        { "path": "../connect-web" },
+        { "path": "../transport" }
     ],
     "ts-node": {
         "compilerOptions": {

@@ -2,8 +2,8 @@
 
 import TrezorConnect from '../src';
 import * as versionUtils from '@trezor/utils/src/versionUtils'; // NOTE: only this module is required
-import { UI } from '@trezor/connect/src/events'; // NOTE: import UI constants directly from source
-import { toHardened, getHDPath } from '@trezor/connect/src/utils/pathUtils'; // NOTE: import utils directly from source
+import { UI } from '../src/events';
+import { toHardened, getHDPath } from '../src/utils/pathUtils';
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
 const MNEMONICS = {
