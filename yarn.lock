@@ -3359,12 +3359,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hookform/resolvers@npm:1.3.8":
-  version: 1.3.8
-  resolution: "@hookform/resolvers@npm:1.3.8"
+"@hookform/resolvers@npm:3.1.0":
+  version: 3.1.0
+  resolution: "@hookform/resolvers@npm:3.1.0"
   peerDependencies:
-    react-hook-form: ">=6.6.0"
-  checksum: bf200a923273af954b4652c426c976a4b0a9b2b1d6976791a8c7fdcfa0784df3fbf5e6253bcf9f86f4ac17afe2e523df499f7d03e319dcae6bf2e136c6580a08
+    react-hook-form: ^7.0.0
+  checksum: 8f6690e514e645dd2a38baf573e7a62a9555c95d6a27f84216be7b3ae4cdc1c09111d6f7a38250612e46aa9d562ccec63db9306ec179156381583b444bf552c2
   languageName: node
   linkType: hard
 
@@ -6758,7 +6758,7 @@ __metadata:
     "@trezor/utils": "workspace:*"
     jest: ^26.6.3
     react: 18.2.0
-    react-hook-form: 6.15.7
+    react-hook-form: 7.44.3
     typescript: 4.9.5
   languageName: unknown
   linkType: soft
@@ -6789,7 +6789,7 @@ __metadata:
     jest: ^26.6.3
     pdfmake: ^0.2.7
     react: 18.2.0
-    react-hook-form: 6.15.7
+    react-hook-form: 7.44.3
     trezor-address-validator: ^0.4.3
     typescript: 4.9.5
     web3-utils: ^1.10.0
@@ -7003,10 +7003,10 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/forms@workspace:suite-native/forms"
   dependencies:
-    "@hookform/resolvers": 1.3.8
+    "@hookform/resolvers": 3.1.0
     "@suite-native/atoms": "workspace:*"
     react: 18.2.0
-    react-hook-form: 6.15.7
+    react-hook-form: 7.44.3
     yup: ^0.32.11
   languageName: unknown
   linkType: soft
@@ -7175,7 +7175,7 @@ __metadata:
     date-fns: ^2.30.0
     jotai: 1.9.1
     react: 18.2.0
-    react-hook-form: 6.15.7
+    react-hook-form: 7.44.3
     react-native: 0.71.8
     react-native-reanimated: 3.3.0
     react-redux: 8.0.7
@@ -8549,7 +8549,7 @@ __metadata:
     "@fivebinaries/coin-selection": 2.1.0
     "@formatjs/cli": ^6.1.3
     "@formatjs/intl": 2.9.0
-    "@hookform/resolvers": 1.3.8
+    "@hookform/resolvers": 3.1.0
     "@reduxjs/toolkit": 1.9.5
     "@sentry/core": ^7.56.0
     "@suite-common/analytics": "workspace:*"
@@ -8636,7 +8636,7 @@ __metadata:
     react-dom: 18.2.0
     react-focus-lock: ^2.9.4
     react-helmet: ^6.1.0
-    react-hook-form: 6.15.7
+    react-hook-form: 7.44.3
     react-intl: ^6.4.4
     react-markdown: ^8.0.7
     react-qr-reader: ^2.2.1
@@ -28439,12 +28439,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-hook-form@npm:6.15.7":
-  version: 6.15.7
-  resolution: "react-hook-form@npm:6.15.7"
+"react-hook-form@npm:7.44.3":
+  version: 7.44.3
+  resolution: "react-hook-form@npm:7.44.3"
   peerDependencies:
-    react: ^16.8.0 || ^17
-  checksum: 5692288ef64409cf8e2591fb515d54d5d1f6ed67d29dd29aae88e4e6d46bd2289a6c6f3fdd069b9e692f19b25bbf0136887d33219015631b3cc7db6e7897eb5c
+    react: ^16.8.0 || ^17 || ^18
+  checksum: 8dc97e705d28d842c60fd79b0f07b8b045c458c234e3bf422baab87a844d0ebecbdf3e349538eaaa5c12366cd85169f60a52ed84dd31cdd99729899e424548bf
   languageName: node
   linkType: hard
 
