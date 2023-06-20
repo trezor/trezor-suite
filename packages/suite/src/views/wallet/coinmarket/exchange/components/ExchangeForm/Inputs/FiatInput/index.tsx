@@ -11,7 +11,6 @@ import { CRYPTO_INPUT, FIAT_INPUT } from 'src/types/wallet/coinmarketExchangeFor
 import { TypedValidationRules } from 'src/types/wallet/form';
 
 const StyledInput = styled(NumberInput)`
-    border-left: 0;
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
 `;

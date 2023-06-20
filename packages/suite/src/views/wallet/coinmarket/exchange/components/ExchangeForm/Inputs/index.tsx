@@ -1,6 +1,4 @@
-import { useTheme, SuiteThemeColors } from '@trezor/components';
 import React, { useCallback, useEffect } from 'react';
-import { DeepMap, FieldError } from 'react-hook-form';
 import styled from 'styled-components';
 import BigNumber from 'bignumber.js';
 import { isZero, amountToSatoshi } from '@suite-common/wallet-utils';
@@ -9,11 +7,7 @@ import SendCryptoInput from './SendCryptoInput';
 import FiatInput from './FiatInput';
 import ReceiveCryptoSelect from './ReceiveCryptoSelect';
 import { FractionButtons } from 'src/components/wallet/CoinMarketFractionButtons';
-import {
-    CRYPTO_INPUT,
-    ExchangeFormState,
-    FIAT_INPUT,
-} from 'src/types/wallet/coinmarketExchangeForm';
+import { CRYPTO_INPUT, FIAT_INPUT } from 'src/types/wallet/coinmarketExchangeForm';
 import { useLayoutSize } from 'src/hooks/suite';
 import { Wrapper, Left, Middle, Right, StyledIcon } from 'src/views/wallet/coinmarket';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
@@ -26,41 +20,15 @@ const StyledMiddle = styled(Middle)`
     min-width: 35px;
 `;
 
-const Line = styled.div<{ color: string }>`
-    height: 48px;
-    border: 1px solid ${props => props.color};
-`;
-
 const EmptyDiv = styled.div`
     width: 100%;
 `;
 
-const getLineDividerColor = (
-    theme: SuiteThemeColors,
-    errors: DeepMap<ExchangeFormState, FieldError>,
-    amount: string,
-    fiat: string,
-) => {
-    if (
-        errors.outputs &&
-        errors.outputs[0] &&
-        (errors.outputs[0].amount || errors.outputs[0].fiat)
-    ) {
-        return theme.TYPE_RED;
-    }
-    if (amount?.length > 0 && fiat?.length > 0) {
-        return theme.TYPE_GREEN;
-    }
-    return theme.STROKE_GREY;
-};
-
 const Inputs = () => {
-    const theme = useTheme();
     const {
         trigger,
         amountLimits,
         account,
-        errors,
         getValues,
         composeRequest,
         network,
@@ -72,8 +40,6 @@ const Inputs = () => {
 
     const { outputs } = getValues();
     const tokenAddress = outputs?.[0]?.token;
-    const fiat = outputs?.[0]?.fiat;
-    const amount = outputs?.[0]?.amount;
     const tokenData = account.tokens?.find(t => t.contract === tokenAddress);
 
     useEffect(() => {
@@ -130,12 +96,7 @@ const Inputs = () => {
         <Wrapper responsiveSize="XL">
             <StyledLeft>
                 <SendCryptoInput />
-                {!tokenData && (
-                    <>
-                        <Line color={getLineDividerColor(theme, errors, amount, fiat)} />
-                        <FiatInput />
-                    </>
-                )}
+                {!tokenData && <FiatInput />}
             </StyledLeft>
             <StyledMiddle responsiveSize="XL">
                 {!isXLargeLayoutSize && (

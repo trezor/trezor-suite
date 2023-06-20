@@ -21,7 +21,6 @@ import { TypedValidationRules } from 'src/types/wallet/form';
 const StyledInput = styled(NumberInput)<{ isToken: boolean }>`
     ${props =>
         !props.isToken && {
-            'border-right': 0,
             'border-top-right-radius': 0,
             'border-bottom-right-radius': 0,
             'padding-right': '105px',
