@@ -1,17 +1,17 @@
-import React, { useCallback, useState } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
-import { RegisterOptions, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import addressValidator from 'trezor-address-validator';
 import { QuestionTooltip, Translation } from 'src/components/suite';
 import { Input, variables, Image, Button } from '@trezor/components';
 import { InputError } from 'src/components/wallet';
 import { useCoinmarketExchangeOffersContext } from 'src/hooks/wallet/useCoinmarketExchangeOffers';
-import { TypedValidationRules } from 'src/types/wallet/form';
 import { isHexValid, isInteger } from '@suite-common/wallet-utils';
 import { AddressOptions } from 'src/views/wallet/coinmarket/common/AddressOptions';
 import { useAccountAddressDictionary } from 'src/hooks/wallet/useAccounts';
 import { ReceiveOptions, AccountSelectOption } from './ReceiveOptions';
 import { getDeviceModel } from '@trezor/device-utils';
+import { useTranslation } from 'src/hooks/suite/useTranslation';
 
 const Wrapper = styled.div`
     display: flex;
@@ -114,17 +114,16 @@ const VerifyAddressComponent = () => {
     } = useForm<FormState>({
         mode: 'onChange',
     });
+
+    const { translationString } = useTranslation();
+
     const deviceModel = getDeviceModel(device);
-
-    const typedRegister = useCallback(
-        (rules?: TypedValidationRules) => register(rules as RegisterOptions),
-        [register],
-    );
-
     const addressDictionary = useAccountAddressDictionary(selectedAccountOption?.account);
     const { address, extraField } = watch();
     const accountAddress = address && addressDictionary[address];
-
+    const { accountTooltipTranslationId, addressTooltipTranslationId } = getTranslationIds(
+        selectedAccountOption?.type,
+    );
     const extraFieldDescription = selectedQuote?.extraFieldDescription
         ? {
               extraFieldName: selectedQuote?.extraFieldDescription?.name,
@@ -133,9 +132,34 @@ const VerifyAddressComponent = () => {
           }
         : {};
 
-    const { accountTooltipTranslationId, addressTooltipTranslationId } = getTranslationIds(
-        selectedAccountOption?.type,
-    );
+    const { ref: networkRef, ...networkField } = register('address', {
+        required: 'TR_EXCHANGE_RECEIVING_ADDRESS_REQUIRED',
+        validate: value => {
+            if (selectedAccountOption?.type === 'NON_SUITE' && receiveSymbol) {
+                if (value && !addressValidator.validate(value, receiveSymbol)) {
+                    return 'TR_EXCHANGE_RECEIVING_ADDRESS_INVALID';
+                }
+            }
+        },
+    });
+    const { ref: descriptionRef, ...descriptionField } = register('extraField', {
+        required: selectedQuote?.extraFieldDescription?.required
+            ? translationString('TR_EXCHANGE_EXTRA_FIELD_REQUIRED', extraFieldDescription)
+            : undefined,
+        validate: value => {
+            let valid = true;
+            if (value) {
+                if (selectedQuote?.extraFieldDescription?.type === 'hex') {
+                    valid = isHexValid(value);
+                } else if (selectedQuote?.extraFieldDescription?.type === 'number') {
+                    valid = isInteger(value);
+                }
+            }
+            if (!valid) {
+                return translationString('TR_EXCHANGE_EXTRA_FIELD_INVALID', extraFieldDescription);
+            }
+        },
+    });
 
     return (
         <Wrapper>
@@ -189,23 +213,11 @@ const VerifyAddressComponent = () => {
                                 </Label>
                             }
                             variant="small"
-                            name="address"
-                            innerRef={typedRegister({
-                                required: 'TR_EXCHANGE_RECEIVING_ADDRESS_REQUIRED',
-                                validate: value => {
-                                    if (
-                                        selectedAccountOption?.type === 'NON_SUITE' &&
-                                        receiveSymbol
-                                    ) {
-                                        if (!addressValidator.validate(value, receiveSymbol)) {
-                                            return 'TR_EXCHANGE_RECEIVING_ADDRESS_INVALID';
-                                        }
-                                    }
-                                },
-                            })}
                             readOnly={selectedAccountOption?.type !== 'NON_SUITE'}
                             inputState={errors.address ? 'error' : undefined}
                             bottomText={<InputError error={errors.address} />}
+                            innerRef={networkRef}
+                            {...networkField}
                         />
                     )}
 
@@ -236,37 +248,10 @@ const VerifyAddressComponent = () => {
                                     />
                                 </Label>
                             }
-                            name="extraField"
-                            innerRef={typedRegister({
-                                required: selectedQuote?.extraFieldDescription?.required ? (
-                                    <Translation
-                                        id="TR_EXCHANGE_EXTRA_FIELD_REQUIRED"
-                                        values={extraFieldDescription}
-                                    />
-                                ) : undefined,
-                                validate: value => {
-                                    let valid = true;
-                                    if (value) {
-                                        if (selectedQuote?.extraFieldDescription?.type === 'hex') {
-                                            valid = isHexValid(value);
-                                        } else if (
-                                            selectedQuote?.extraFieldDescription?.type === 'number'
-                                        ) {
-                                            valid = isInteger(value);
-                                        }
-                                    }
-                                    if (!valid) {
-                                        return (
-                                            <Translation
-                                                id="TR_EXCHANGE_EXTRA_FIELD_INVALID"
-                                                values={extraFieldDescription}
-                                            />
-                                        );
-                                    }
-                                },
-                            })}
                             inputState={errors.extraField ? 'error' : undefined}
                             bottomText={<InputError error={errors.extraField} />}
+                            innerRef={descriptionRef}
+                            {...descriptionField}
                         />
                     </Row>
                 )}

@@ -173,9 +173,9 @@ export const useRbf = (props: UseRbfProps) => {
 
     // react-hook-form auto register custom form fields (without HTMLElement)
     useEffect(() => {
-        register({ name: 'outputs', type: 'custom' });
-        register({ name: 'setMaxOutputId', type: 'custom' });
-        register({ name: 'options', type: 'custom' });
+        register('outputs');
+        register('setMaxOutputId');
+        register('options');
     }, [register]);
 
     // react-hook-form reset, set default values

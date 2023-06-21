@@ -22,9 +22,9 @@ export const useUtxoSelection = ({
 }: Props): UtxoSelectionContext => {
     // register custom form field (without HTMLElement)
     useEffect(() => {
-        register({ name: 'isCoinControlEnabled', type: 'custom' });
-        register({ name: 'selectedUtxos', type: 'custom' });
-        register({ name: 'anonymityWarningChecked', type: 'custom' });
+        register('isCoinControlEnabled');
+        register('selectedUtxos');
+        register('anonymityWarningChecked');
     }, [register]);
 
     // has coin control been enabled manually?

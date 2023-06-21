@@ -14,7 +14,6 @@ type Props = UseFormReturn<FormState> & {
 export const useSendFormOutputs = ({
     outputsFieldArray,
     register,
-    unregister,
     getValues,
     setValue,
     reset,
@@ -97,17 +96,11 @@ export const useSendFormOutputs = ({
     const { fields } = outputsFieldArray;
     useEffect(() => {
         fields.forEach((output, index) => {
-            register({ name: `outputs.${index}.type`, type: 'custom' });
+            register(`outputs.${index}.type`, { shouldUnregister: true });
             // set defaultValues
             setValue(`outputs.${index}.type`, output.type);
         });
-        return () => {
-            // unregister fields
-            fields.forEach((_output, index) => {
-                unregister(`outputs.${index}.type`);
-            });
-        };
-    }, [fields, register, unregister, setValue]);
+    }, [fields, register, setValue]);
 
     return {
         addOutput,

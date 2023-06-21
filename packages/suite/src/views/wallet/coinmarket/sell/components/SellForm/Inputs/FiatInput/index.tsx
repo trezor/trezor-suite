@@ -40,15 +40,18 @@ const FiatInput = ({ activeInput, setActiveInput }: Props) => {
     const tokenAddress = getValues('outputs.0.token');
     const tokenData = account.tokens?.find(t => t.contract === tokenAddress);
 
-    const fiatInputRules = useMemo<TypedValidationRules>(
-        () => ({
-            validate: (value: string) => {
-                if (activeInput === FIAT_INPUT) {
-                    if (!value) {
-                        if (formState.isSubmitting) {
-                            return <Translation id="TR_REQUIRED_FIELD" />;
-                        }
-                        return;
+    const fiatInputRules = {
+        validate: {
+            min: validateMin(translationString),
+            decimals: validateDecimals(translationString, { decimals: 2 }),
+            limits: (value: string) => {
+                if (value && amountLimits) {
+                    const amount = Number(value);
+                    if (amountLimits.minFiat && amount < amountLimits.minFiat) {
+                        return translationString('TR_SELL_VALIDATION_ERROR_MINIMUM_FIAT', {
+                            minimum: amountLimits.minFiat,
+                            currency: amountLimits.currency,
+                        });
                     }
 
                     const amountBig = new Bignumber(value);

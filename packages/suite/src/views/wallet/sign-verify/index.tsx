@@ -100,6 +100,7 @@ const SignVerify = () => {
     const isSignPage = page === 'sign';
 
     const {
+        register,
         isFormDirty,
         isSubmitting,
         resetForm,
@@ -107,8 +108,6 @@ const SignVerify = () => {
         formValues,
         formErrors,
         formSetSignature,
-        messageRef,
-        signatureRef,
         hexField,
         addressField,
         pathField,
@@ -124,6 +123,9 @@ const SignVerify = () => {
         verify: signVerifyActions.verify,
         goto: routerActions.goto,
     });
+
+    const { ref: messageRef, ...messageField } = register('message');
+    const { ref: signatureRef, ...signatureField } = register('signature');
 
     useEffect(() => {
         if (isSignPage && formValues.signature) return;
@@ -196,7 +198,6 @@ const SignVerify = () => {
                 <Form onSubmit={formSubmit(onSubmit)}>
                     <Row>
                         <Textarea
-                            name="message"
                             label={<Translation id="TR_MESSAGE" />}
                             labelRight={
                                 <SwitchWrapper>
@@ -204,12 +205,13 @@ const SignVerify = () => {
                                     <Switch {...hexField} isSmall />
                                 </SwitchWrapper>
                             }
-                            innerRef={messageRef}
                             inputState={getInputState(formErrors.message, formValues.message)}
                             bottomText={<InputError error={formErrors.message} />}
                             rows={4}
                             maxRows={4}
                             data-test="@sign-verify/message"
+                            innerRef={messageRef}
+                            {...messageField}
                         >
                             <CharacterCount
                                 current={formValues.message?.length || 0}
@@ -274,11 +276,9 @@ const SignVerify = () => {
                                 )}
 
                                 <Input
-                                    name="signature"
                                     label={<Translation id="TR_SIGNATURE" />}
                                     maxLength={MAX_LENGTH_SIGNATURE}
                                     type="text"
-                                    innerRef={signatureRef}
                                     readOnly={isSignPage}
                                     isDisabled={!formValues.signature?.length}
                                     inputState={getInputState(
@@ -290,14 +290,14 @@ const SignVerify = () => {
                                         'TR_SIGNATURE_AFTER_SIGNING_PLACEHOLDER',
                                     )}
                                     data-test="@sign-verify/signature"
+                                    innerRef={signatureRef}
+                                    {...signatureField}
                                 />
                             </>
                         ) : (
                             <Textarea
-                                name="signature"
                                 label={<Translation id="TR_SIGNATURE" />}
                                 maxLength={MAX_LENGTH_SIGNATURE}
-                                innerRef={signatureRef}
                                 inputState={getInputState(
                                     formErrors.signature,
                                     formValues.signature,
@@ -306,6 +306,8 @@ const SignVerify = () => {
                                 rows={4}
                                 maxRows={4}
                                 data-test="@sign-verify/signature"
+                                innerRef={signatureRef}
+                                {...signatureField}
                             >
                                 <CharacterCount
                                     current={formValues.signature?.length || 0}
