@@ -70,7 +70,7 @@ export const useCoinmarketBuyForm = (props: UseCoinmarketBuyFormProps): BuyFormC
         defaultValues: isDraft ? draft : defaultValues,
     });
 
-    const { register, control, formState, errors, reset, setValue, getValues } = methods;
+    const { register, control, formState, reset, setValue, getValues } = methods;
     const values = useWatch<FormState>({ control });
 
     useEffect(() => {
@@ -99,12 +99,24 @@ export const useCoinmarketBuyForm = (props: UseCoinmarketBuyFormProps): BuyFormC
 
     useDebounce(
         () => {
-            if (formState.isDirty && !formState.isValidating && Object.keys(errors).length === 0) {
+            if (
+                formState.isDirty &&
+                !formState.isValidating &&
+                Object.keys(formState.errors).length === 0
+            ) {
                 saveDraft(account.key, values as FormState);
             }
         },
         200,
-        [errors, saveDraft, account.key, values, shouldSendInSats],
+        [
+            formState.errors,
+            formState.isDirty,
+            formState.isValidating,
+            saveDraft,
+            account.key,
+            values,
+            shouldSendInSats,
+        ],
     );
     useEffect(() => {
         if (!isChanged(defaultValues, values)) {

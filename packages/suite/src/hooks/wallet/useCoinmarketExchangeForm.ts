@@ -148,28 +148,30 @@ export const useCoinmarketExchangeForm = ({
         shouldUnregister: false, // NOTE: tracking custom fee inputs
         defaultValues: isDraft ? draft : defaultValues,
     });
-    const {
-        reset,
-        register,
-        setValue,
-        getValues,
-        setError,
-        clearErrors,
-        formState,
-        errors,
-        control,
-    } = methods;
+    const { reset, register, setValue, getValues, setError, clearErrors, formState, control } =
+        methods;
 
     const values = useWatch<ExchangeFormState>({ control });
 
     useDebounce(
         () => {
-            if (formState.isDirty && !formState.isValidating && Object.keys(errors).length === 0) {
+            if (
+                formState.isDirty &&
+                !formState.isValidating &&
+                Object.keys(formState.errors).length === 0
+            ) {
                 saveDraft(account.key, values as ExchangeFormState);
             }
         },
         200,
-        [errors, saveDraft, account.key, values, formState],
+        [
+            saveDraft,
+            account.key,
+            values,
+            formState.errors,
+            formState.isDirty,
+            formState.isValidating,
+        ],
     );
 
     useEffect(() => {

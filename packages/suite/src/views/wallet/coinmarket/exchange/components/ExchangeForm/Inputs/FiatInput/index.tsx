@@ -20,7 +20,7 @@ const FiatInput = () => {
         control,
         network,
         clearErrors,
-        errors,
+        formState: { errors },
         trigger,
         updateSendCryptoValue,
         setValue,

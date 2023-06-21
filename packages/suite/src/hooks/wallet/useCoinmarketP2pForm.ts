@@ -47,7 +47,7 @@ export const useCoinmarketP2pForm = (props: UseCoinmarketP2pFormProps): P2pFormC
         defaultValues: isDraft ? draft : defaultValues,
     });
 
-    const { register, control, formState, errors, reset } = methods;
+    const { register, control, formState, reset } = methods;
     const values = useWatch<FormState>({ control });
 
     useEffect(() => {
@@ -64,12 +64,16 @@ export const useCoinmarketP2pForm = (props: UseCoinmarketP2pFormProps): P2pFormC
 
     useDebounce(
         () => {
-            if (formState.isDirty && !formState.isValidating && Object.keys(errors).length === 0) {
+            if (
+                formState.isDirty &&
+                !formState.isValidating &&
+                Object.keys(formState.errors).length === 0
+            ) {
                 saveDraft(account.key, values as FormState);
             }
         },
         200,
-        [errors, saveDraft, account.key, values, formState],
+        [formState.errors, saveDraft, account.key, values, formState],
     );
     useEffect(() => {
         if (!isChanged(defaultValues, values)) {

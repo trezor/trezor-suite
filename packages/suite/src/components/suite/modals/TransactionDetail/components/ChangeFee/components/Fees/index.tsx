@@ -5,7 +5,7 @@ import { useRbfContext } from 'src/hooks/wallet/useRbfForm';
 // wrapper for shareable Fees component
 const RbfFees = () => {
     const {
-        errors,
+        formState: { errors },
         register,
         control,
         setValue,

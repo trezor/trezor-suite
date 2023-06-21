@@ -125,7 +125,7 @@ export interface FeesProps {
     control: Control;
     setValue: FormMethods['setValue'];
     getValues: FormMethods['getValues'];
-    errors: FormMethods['errors'];
+    errors: FormMethods['formState']['errors'];
     changeFeeLevel: (level: FeeLevel['label']) => void;
     changeFeeLimit?: (value: string) => void;
     composedLevels?: PrecomposedLevels | PrecomposedLevelsCardano;

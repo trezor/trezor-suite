@@ -30,17 +30,17 @@ const Wrapper = styled.div`
     justify-content: flex-start;
 `;
 
-interface Props {
+interface FiatProps {
     output: Partial<Output>;
     outputId: number;
 }
 
-export const Fiat = ({ output, outputId }: Props) => {
+export const Fiat = ({ output, outputId }: FiatProps) => {
     const {
         account,
         network,
         fiatRates,
-        errors,
+        formState: { errors },
         clearErrors,
         getDefaultValue,
         control,

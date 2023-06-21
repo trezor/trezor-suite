@@ -41,7 +41,12 @@ const ButtonSend = styled(Button)`
 `;
 
 const Raw = ({ network }: { network: Network }) => {
-    const { register, getValues, setValue, errors } = useForm({
+    const {
+        register,
+        getValues,
+        setValue,
+        formState: { errors },
+    } = useForm({
         mode: 'onChange',
         defaultValues: {
             rawTx: '',

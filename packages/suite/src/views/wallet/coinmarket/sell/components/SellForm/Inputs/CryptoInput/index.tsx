@@ -49,7 +49,7 @@ const TokenLogo = styled.img`
 
 const CryptoInput = ({ activeInput, setActiveInput }: CryptoInputProps) => {
     const {
-        errors,
+        formState: { errors },
         account,
         network,
         control,

@@ -38,7 +38,7 @@ const TokenLogo = styled.img`
 
 const Inputs = () => {
     const {
-        errors,
+        formState: { errors },
         trigger,
         account,
         network,

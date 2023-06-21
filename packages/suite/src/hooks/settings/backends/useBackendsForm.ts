@@ -48,7 +48,12 @@ const useBackendUrlInput = (
     type: BackendOption,
     currentUrls: string[],
 ) => {
-    const { register, watch, setValue, errors } = useForm<{ url: string }>({
+    const {
+        register,
+        watch,
+        setValue,
+        formState: { errors },
+    } = useForm<{ url: string }>({
         mode: 'onChange',
     });
     const { translationString } = useTranslation();

@@ -116,7 +116,7 @@ export const Amount = ({ output, outputId }: Props) => {
         localCurrencyOption,
         control,
         getDefaultValue,
-        errors,
+        formState: { errors },
         setValue,
         setMax,
         calculateFiat,

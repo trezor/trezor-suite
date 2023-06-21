@@ -90,7 +90,7 @@ type FormMethods = UseFormMethods<{
 interface CustomFeeProps {
     networkType: Account['networkType'];
     feeInfo: FeeInfo;
-    errors: FormMethods['errors'];
+    errors: FormMethods['formState']['errors'];
     register: (rules?: TypedValidationRules) => (ref: any) => void;
     control: Control;
     getValues: FormMethods['getValues'];

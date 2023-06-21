@@ -13,7 +13,7 @@ const StyledCard = styled.div`
 // wrapper for shareable Fees component
 const ExchangeFees = () => {
     const {
-        errors,
+        formState,
         register,
         control,
         setValue,
@@ -28,7 +28,7 @@ const ExchangeFees = () => {
         <StyledCard>
             <Fees
                 control={control}
-                errors={errors}
+                errors={formState.errors}
                 register={register}
                 feeInfo={feeInfo}
                 setValue={setValue}

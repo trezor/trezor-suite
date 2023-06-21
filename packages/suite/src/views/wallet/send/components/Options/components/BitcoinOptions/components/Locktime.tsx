@@ -69,7 +69,7 @@ export const Locktime = ({ close }: Props) => {
         getDefaultValue,
         setValue,
         toggleOption,
-        errors,
+        formState: { errors },
         composeTransaction,
     } = useSendFormContext();
 

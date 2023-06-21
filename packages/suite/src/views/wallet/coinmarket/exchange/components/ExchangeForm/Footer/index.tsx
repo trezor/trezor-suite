@@ -18,13 +18,13 @@ const StyledButton = styled(Button)`
 `;
 
 const Footer = () => {
-    const { formState, getValues, watch, errors, isComposing } = useCoinmarketExchangeFormContext();
+    const { formState, getValues, watch, isComposing } = useCoinmarketExchangeFormContext();
     const hasValues = !!watch(CRYPTO_INPUT) && !!watch('receiveCryptoSelect')?.value;
     const formValues = getValues();
     const equalCrypto =
         formValues.sendCryptoSelect.value.toUpperCase() ===
         formValues.receiveCryptoSelect?.value?.toUpperCase();
-    const formIsValid = Object.keys(errors).length === 0;
+    const formIsValid = Object.keys(formState.errors).length === 0;
 
     return (
         <FooterWrapper>

@@ -32,7 +32,7 @@ const OpReturn = ({ outputId }: { outputId: number }) => {
         outputs,
         getDefaultValue,
         setValue,
-        errors,
+        formState: { errors },
         composeTransaction,
         removeOpReturn,
     } = useSendFormContext();

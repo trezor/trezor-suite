@@ -73,7 +73,7 @@ export const CoinControl = ({ close }: CoinControlProps) => {
 
     const {
         account,
-        errors,
+        formState: { errors },
         getDefaultValue,
         network,
         outputs,

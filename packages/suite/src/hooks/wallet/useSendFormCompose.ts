@@ -31,7 +31,7 @@ export const useSendFormCompose = ({
     getValues,
     setValue,
     setError,
-    errors,
+    formState: { errors },
     clearErrors,
     state,
     account,

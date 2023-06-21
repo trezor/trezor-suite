@@ -51,7 +51,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
         composeTransaction,
         register,
         getDefaultValue,
-        errors,
+        formState: { errors },
         setValue,
         metadataEnabled,
         watch,
