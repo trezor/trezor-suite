@@ -192,7 +192,7 @@ const CryptoInput = ({ activeInput, setActiveInput }: CryptoInputProps) => {
                     control={control}
                     name={CRYPTO_CURRENCY_SELECT}
                     defaultValue={cryptoOption}
-                    render={({ onChange, value }) => (
+                    render={({ field: { onChange, value } }) => (
                         <Select
                             onChange={(selected: any) => {
                                 setValue('setMaxOutputId', undefined);

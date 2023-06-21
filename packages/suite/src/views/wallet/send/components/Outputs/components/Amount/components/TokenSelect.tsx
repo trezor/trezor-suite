@@ -159,7 +159,7 @@ export const TokenSelect = ({ output, outputId }: TokenSelectProps) => {
             name={tokenInputName}
             data-test={tokenInputName}
             defaultValue={tokenValue}
-            render={({ onChange }) => (
+            render={({ field: { onChange } }) => (
                 <Select
                     options={options}
                     minWidth="58px"

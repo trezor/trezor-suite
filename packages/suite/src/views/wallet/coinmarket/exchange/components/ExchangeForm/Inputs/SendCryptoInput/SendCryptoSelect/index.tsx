@@ -39,7 +39,7 @@ const SendCryptoSelect = () => {
             control={control}
             name="sendCryptoSelect"
             defaultValue={sendCryptoOptions[0]}
-            render={({ onChange, value }) => (
+            render={({ field: { onChange, value } }) => (
                 <Select
                     onChange={(selected: any) => {
                         setValue('setMaxOutputId', undefined);

@@ -76,7 +76,7 @@ export const Footer = () => {
                     control={control}
                     defaultValue={defaultCountry}
                     name={countrySelect}
-                    render={({ onChange, value }) => (
+                    render={({ field: { onChange, value } }) => (
                         <StyledSelect
                             options={regional.countriesOptions.filter(
                                 c =>

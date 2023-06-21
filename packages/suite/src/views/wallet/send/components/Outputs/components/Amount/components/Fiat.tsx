@@ -161,12 +161,14 @@ export const Fiat = ({ output, outputId }: FiatProps) => {
     );
 
     interface CallbackParams {
-        onChange: (value: CurrencyOption) => void;
-        value: any;
+        field: {
+            onChange: (...event: any[]) => void;
+            value: any;
+        };
     }
 
     const renderCurrencySelect = useCallback(
-        ({ onChange, value }: CallbackParams) => (
+        ({ field: { onChange, value } }: CallbackParams) => (
             <Select
                 options={buildCurrencyOptions(value)}
                 value={value}

@@ -115,7 +115,7 @@ const CoinmarketSavingsSetupContinue = (props: WithSelectedAccountLoadedProps) =
                 control={control}
                 name="paymentFrequency"
                 defaultValue={savingsTrade?.paymentFrequency}
-                render={({ onChange, value }) => (
+                render={({ field: { onChange, value } }) => (
                     <FrequencyStyledSelectBar
                         onChange={onChange}
                         selectedOption={value}

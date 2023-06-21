@@ -110,12 +110,13 @@ const ReceiveCryptoSelect = () => {
     const { outputs, receiveCryptoSelect } = getValues();
     const token = outputs?.[0]?.token;
     const tokenData = account.tokens?.find(t => t.contract === token);
+
     return (
         <Wrapper>
             <Controller
                 control={control}
                 name="receiveCryptoSelect"
-                render={({ onChange, value }) => (
+                render={({ field: { onChange, value } }) => (
                     <Select
                         inputState={getInputState(
                             errors.receiveCryptoSelect,
