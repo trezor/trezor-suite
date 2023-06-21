@@ -4,6 +4,7 @@ import type {
     BuyTrade,
     SellFiatTrade,
     ExchangeTrade,
+    PaymentFrequency,
     SellVoucherTrade as SpendTrade,
     SavingsTradeItem,
 } from 'invity-api';
@@ -29,7 +30,13 @@ export type Trade = TradeBuy | TradeSell | TradeExchange | TradeSpend | TradeSav
 
 export type Option = { value: string; label: string };
 export type CountryOption = { value: FlagProps['country']; label: string };
-export type DefaultCountryOption = { value: string; label?: string };
+export type DefaultCountryOption = { value: string; label: string };
 export type TranslationOption = { value: string; label?: ReactElement };
 
 export type PaymentFrequencyOption = Option & { label: JSX.Element };
+
+export type Savings = {
+    paymentFrequency: PaymentFrequency;
+    fiatAmount: string;
+    customFiatAmount: string;
+};

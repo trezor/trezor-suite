@@ -903,7 +903,7 @@ export const setMax = [
                     composeTransactionParams: {
                         outputs: [
                             // corner-case: send-max was changed to send-max-noaddress
-                            // see sendFormUtils.getBitcoinComposeOutput
+                            // see sendFormUtils.getBitcoinComposeOutputs
                             {
                                 type: 'send-max-noaddress',
                                 address: '3AnYTd2FGxJLNKL1AzxfW3FJMntp9D2KKX',
@@ -923,7 +923,7 @@ export const setMax = [
                     composeTransactionParams: {
                         outputs: [
                             // corner-case: external was changed to noaddress
-                            // see sendFormUtils.getBitcoinComposeOutput
+                            // see sendFormUtils.getBitcoinComposeOutputs
                             {
                                 type: 'noaddress',
                                 address: '3AnYTd2FGxJLNKL1AzxfW3FJMntp9D2KKX',

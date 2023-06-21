@@ -1,7 +1,13 @@
 import React from 'react';
 import styled from 'styled-components';
 import { FeeLevel } from '@trezor/connect';
-import { Control, UseFormReturn } from 'react-hook-form';
+import {
+    Control,
+    FieldErrors,
+    UseFormGetValues,
+    UseFormReturn,
+    UseFormSetValue,
+} from 'react-hook-form';
 import { SelectBar, variables } from '@trezor/components';
 import { FiatValue, FormattedCryptoAmount, Translation } from 'src/components/suite';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
@@ -15,9 +21,9 @@ import {
     PrecomposedLevelsCardano,
     PrecomposedTransactionFinal,
 } from 'src/types/wallet/sendForm';
-import { TypedValidationRules } from 'src/types/wallet/form';
 import { CustomFee } from './components/CustomFee';
 import FeeDetails from './components/FeeDetails';
+import { FormState, SuiteUseFormRegister, SuiteUseFormReturn } from '@suite-common/wallet-types';
 
 const FeeSetupWrapper = styled.div`
     width: 100%;
@@ -89,7 +95,7 @@ const FeeInfoWrapper = styled.div`
     flex-direction: column;
 `;
 
-const Label = styled.div<Pick<FeesProps, 'rbfForm'>>`
+const Label = styled.div<Pick<FeesProps<FormState>, 'rbfForm'>>`
     padding: ${({ rbfForm }) => (rbfForm ? '5px 60px 10px 0;' : '5px 20px 10px 0;')};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     text-transform: capitalize;
@@ -111,21 +117,14 @@ const buildFeeOptions = (levels: FeeLevel[]) =>
         value: label,
     }));
 
-type FormMethods = UseFormReturn<{
-    selectedFee?: FeeLevel['label'];
-    feePerUnit?: string;
-    feeLimit?: string;
-    estimatedFeeLimit?: string;
-}>;
-
-export interface FeesProps {
+export interface FeesProps<TFieldValues extends FormState> {
     account: Account;
     feeInfo: FeeInfo;
-    register: (rules?: TypedValidationRules) => (ref: any) => void;
-    control: Control;
-    setValue: FormMethods['setValue'];
-    getValues: FormMethods['getValues'];
-    errors: FormMethods['formState']['errors'];
+    register: SuiteUseFormReturn<TFieldValues>['register'];
+    control: Control<any>;
+    setValue: UseFormSetValue<TFieldValues>;
+    getValues: UseFormGetValues<TFieldValues>;
+    errors: FieldErrors<TFieldValues>;
     changeFeeLevel: (level: FeeLevel['label']) => void;
     changeFeeLimit?: (value: string) => void;
     composedLevels?: PrecomposedLevels | PrecomposedLevelsCardano;
@@ -134,23 +133,25 @@ export interface FeesProps {
     rbfForm?: boolean;
 }
 
-export const Fees = ({
+export const Fees = <TFieldValues extends FormState>({
     account: { symbol, networkType },
     feeInfo,
-    register,
     control,
-    setValue,
-    getValues,
-    errors,
     changeFeeLevel,
     changeFeeLimit,
     composedLevels,
     showLabel,
     label,
     rbfForm,
-}: FeesProps) => {
+    ...props
+}: FeesProps<TFieldValues>) => {
     const { layoutSize } = useLayoutSize();
     const isDesktopLayout = layoutSize === 'XLARGE'; // we use slightly different layout on big screens (Fee label, selector and amount in one row)
+
+    // Type assertion allowing to make the component reusable, see https://stackoverflow.com/a/73624072.
+    const { getValues, setValue } = props as unknown as UseFormReturn<FormState>;
+    const errors = props.errors as unknown as FieldErrors<FormState>;
+    const register = props.register as unknown as SuiteUseFormRegister<FormState>;
 
     const selectedOption = getValues('selectedFee') || 'normal';
     const isCustomLevel = selectedOption === 'custom';

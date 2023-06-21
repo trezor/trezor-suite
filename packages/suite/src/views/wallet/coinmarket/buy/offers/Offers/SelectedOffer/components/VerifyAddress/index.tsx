@@ -11,7 +11,10 @@ import {
 } from 'src/components/suite';
 import { Input, Button, variables, CoinLogo, Image } from '@trezor/components';
 import { useCoinmarketBuyOffersContext } from 'src/hooks/wallet/useCoinmarketBuyOffers';
-import { AddressOptions } from 'src/views/wallet/coinmarket/common/AddressOptions';
+import {
+    AddressOptions,
+    AddressOptionsFormState,
+} from 'src/views/wallet/coinmarket/common/AddressOptions';
 import { useAccountAddressDictionary } from 'src/hooks/wallet/useAccounts';
 import { getDeviceModel } from '@trezor/device-utils';
 
@@ -111,10 +114,6 @@ const Confirmed = styled.div`
     margin-top: 27px;
 `;
 
-interface FormState {
-    address: string;
-}
-
 const VerifyAddressComponent = () => {
     const {
         account,
@@ -129,7 +128,7 @@ const VerifyAddressComponent = () => {
     const { path, address: unusedAddress } = getUnusedAddressFromAccount(account);
     const deviceModel = getDeviceModel(device);
 
-    const { watch, setValue, control } = useForm<FormState>({
+    const { watch, setValue, control } = useForm<AddressOptionsFormState>({
         mode: 'onChange',
         defaultValues: { address: unusedAddress },
     });

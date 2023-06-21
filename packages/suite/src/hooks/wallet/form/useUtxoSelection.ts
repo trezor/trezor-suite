@@ -1,15 +1,22 @@
 import { useEffect, useMemo } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 
-import { UseSendFormState, ExcludedUtxos, UtxoSelectionContext } from '@suite-common/wallet-types';
+import {
+    UseSendFormState,
+    ExcludedUtxos,
+    UtxoSelectionContext,
+    SendContextValues,
+    FormState,
+} from '@suite-common/wallet-types';
 import type { AccountUtxo, PROTO } from '@trezor/connect';
 import { getUtxoOutpoint } from '@suite-common/wallet-utils';
 
-type Props = UseFormReturn &
-    Pick<UseSendFormState, 'account' | 'composedLevels'> & {
-        excludedUtxos: ExcludedUtxos;
-        composeRequest: (field?: string) => void;
-    };
+interface UtxoSelectionContextProps
+    extends UseFormReturn<FormState>,
+        Pick<UseSendFormState, 'account' | 'composedLevels'> {
+    excludedUtxos: ExcludedUtxos;
+    composeRequest: SendContextValues['composeTransaction'];
+}
 
 export const useUtxoSelection = ({
     account,
@@ -19,7 +26,7 @@ export const useUtxoSelection = ({
     register,
     setValue,
     watch,
-}: Props): UtxoSelectionContext => {
+}: UtxoSelectionContextProps): UtxoSelectionContext => {
     // register custom form field (without HTMLElement)
     useEffect(() => {
         register('isCoinControlEnabled');

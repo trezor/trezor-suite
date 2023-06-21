@@ -1,15 +1,16 @@
 import type { PaymentFrequency } from 'invity-api';
 import type { WithSelectedAccountLoadedProps } from 'src/components/wallet';
-import type { CountryOption, PaymentFrequencyOption } from 'src/types/wallet/coinmarketCommonTypes';
+import type {
+    CountryOption,
+    PaymentFrequencyOption,
+    Savings,
+} from 'src/types/wallet/coinmarketCommonTypes';
 import type { Account } from 'src/types/wallet';
 import { SuiteUseFormReturn } from '@suite-common/wallet-types';
 
 export type UseSavingsSetupProps = WithSelectedAccountLoadedProps;
 
-export interface SavingsSetupFormState {
-    paymentFrequency: PaymentFrequency;
-    fiatAmount: string;
-    customFiatAmount: string;
+export interface SavingsSetupFormState extends Savings {
     country?: CountryOption;
 }
 

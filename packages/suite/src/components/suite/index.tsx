@@ -56,7 +56,7 @@ import { SuiteLayout } from './SuiteLayout';
 import { TorLoader } from './TorLoader';
 import { CoinjoinStatusBar } from './CoinjoinStatusBar';
 import { CountdownTimer } from './CountdownTimer';
-import { NumberInput } from './NumberInput';
+import { NumberInput, NumberInputProps } from './NumberInput';
 import { QrCode } from './QrCode';
 
 export {
@@ -124,4 +124,4 @@ export {
     DeviceButton,
     QrCode,
 };
-export type { ModalProps };
+export type { ModalProps, NumberInputProps };
