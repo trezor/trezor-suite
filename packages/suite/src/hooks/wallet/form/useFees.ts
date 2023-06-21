@@ -10,37 +10,29 @@ import {
     PrecomposedLevelsCardano,
     SendContextValues,
 } from 'src/types/wallet/sendForm';
+import { SuiteUseFormRegister } from '@suite-common/wallet-types';
 
-type Props = UseFormReturn<{
-    selectedFee?: FeeLevel['label'];
-    feePerUnit?: string;
-    feeLimit?: string;
-    estimatedFeeLimit?: string;
-}> & {
+interface Props<TFieldValues extends FormState> extends UseFormReturn<TFieldValues> {
     defaultValue?: FeeLevel['label'];
     feeInfo?: FeeInfo;
     saveLastUsedFee?: boolean;
     onChange?: (prev?: FeeLevel['label'], current?: FeeLevel['label']) => void;
     composeRequest: SendContextValues['composeTransaction'];
     composedLevels?: PrecomposedLevels | PrecomposedLevelsCardano;
-};
+}
 
 // shareable sub-hook used in useRbfForm and useSendForm (TODO)
 
-export const useFees = ({
+export const useFees = <TFieldValues extends FormState>({
     defaultValue,
     feeInfo,
     saveLastUsedFee,
     onChange,
     composeRequest,
     composedLevels,
-    watch,
-    register,
-    getValues,
-    setValue,
     formState: { errors },
-    clearErrors,
-}: Props) => {
+    ...props
+}: Props<TFieldValues>) => {
     // local references
     const selectedFeeRef = useRef(defaultValue);
     const feePerUnitRef = useRef<string | undefined>('');
@@ -51,6 +43,11 @@ export const useFees = ({
     const { setLastUsedFeeLevel } = useActions({
         setLastUsedFeeLevel: walletSettingsActions.setLastUsedFeeLevel,
     });
+
+    // Type assertion allowing to make the component reusable, see https://stackoverflow.com/a/73624072.
+    const { clearErrors, getValues, setValue, watch } =
+        props as unknown as UseFormReturn<FormState>;
+    const register = props.register as SuiteUseFormRegister<FormState>;
 
     // register custom form fields (without HTMLElement)
     useEffect(() => {
@@ -87,7 +84,9 @@ export const useFees = ({
 
         // compose
         if (updateField) {
-            if (composeRequest) composeRequest(updateField);
+            if (composeRequest) {
+                composeRequest(updateField);
+            }
             // save last used fee
             if (
                 saveLastUsedFeeRef.current &&

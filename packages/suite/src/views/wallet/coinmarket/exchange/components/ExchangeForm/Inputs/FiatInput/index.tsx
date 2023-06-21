@@ -13,7 +13,7 @@ import { TypedValidationRules } from 'src/types/wallet/form';
 const StyledInput = styled(NumberInput)`
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
-`;
+` as typeof NumberInput; // Styled wrapper doesn't preserve type argument, see https://github.com/styled-components/styled-components/issues/1803#issuecomment-857092410
 
 const FiatInput = () => {
     const {

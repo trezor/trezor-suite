@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo } from 'react';
 import styled from 'styled-components';
+import { FieldValues } from 'react-hook-form';
 import {
     amountToSatoshi,
     formatAmount,
@@ -9,7 +10,12 @@ import {
     getInputState,
 } from '@suite-common/wallet-utils';
 import { useCoinmarketExchangeFormContext } from 'src/hooks/wallet/useCoinmarketExchangeForm';
-import { FormattedCryptoAmount, Translation, NumberInput } from 'src/components/suite';
+import {
+    FormattedCryptoAmount,
+    Translation,
+    NumberInput,
+    NumberInputProps,
+} from 'src/components/suite';
 import SendCryptoSelect from './SendCryptoSelect';
 import { InputError } from 'src/components/wallet';
 import Bignumber from 'bignumber.js';
@@ -19,13 +25,15 @@ import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { TypedValidationRules } from 'src/types/wallet/form';
 
 const StyledInput = styled(NumberInput)<{ isToken: boolean }>`
-    ${props =>
-        !props.isToken && {
+    ${({ isToken }) =>
+        !isToken && {
             'border-top-right-radius': 0,
             'border-bottom-right-radius': 0,
             'padding-right': '105px',
         }}
-`;
+` as <T extends FieldValues>(
+    props: NumberInputProps<T> & { isToken: boolean },
+) => React.ReactElement; // Styled wrapper doesn't preserve type argument, see https://github.com/styled-components/styled-components/issues/1803#issuecomment-1181765843
 
 const SendCryptoInput = () => {
     const {

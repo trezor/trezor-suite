@@ -45,7 +45,7 @@ const StyledSelectBar = styled(SelectBar)`
 
 const FrequencyStyledSelectBar = styled(StyledSelectBar)`
     margin-bottom: 26px;
-`;
+` as typeof StyledSelectBar;
 
 const AddressOptionsWrapper = styled.div`
     margin-bottom: 16px;
@@ -54,7 +54,7 @@ const AddressOptionsWrapper = styled.div`
 const ReceivingAddressChangesPaymentInfoLabel = styled.div`
     margin-top: 8px;
     font-size: ${variables.FONT_SIZE.SMALL};
-    color: ${props => props.theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
 `;
 
 const Footer = styled.div`

@@ -20,8 +20,9 @@ import {
 import { CurrencyOption, Output } from 'src/types/wallet/sendForm';
 import { MAX_LENGTH } from 'src/constants/suite/inputs';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
-import { NumberInput, Translation } from 'src/components/suite';
-import { TypedValidationRules } from 'src/types/wallet/form';
+import { NumberInput } from 'src/components/suite';
+import { useTranslation } from 'src/hooks/suite';
+import { validateDecimals } from 'src/utils/suite/validation';
 
 const Wrapper = styled.div`
     display: flex;
@@ -135,30 +136,12 @@ export const Fiat = ({ output, outputId }: FiatProps) => {
         ],
     );
 
-    const rules = useMemo<TypedValidationRules>(
-        () => ({
-            required: 'AMOUNT_IS_NOT_SET',
-            validate: (value: string) => {
-                const amountBig = new BigNumber(value);
-                if (amountBig.isNaN()) {
-                    return 'AMOUNT_IS_NOT_NUMBER' as const;
-                }
-                if (amountBig.lt(0)) {
-                    return 'AMOUNT_IS_TOO_LOW' as const;
-                }
-                if (!isDecimalsValid(value, 2)) {
-                    return (
-                        <Translation
-                            key="AMOUNT_IS_NOT_IN_RANGE_DECIMALS"
-                            id="AMOUNT_IS_NOT_IN_RANGE_DECIMALS"
-                            values={{ decimals: 2 }}
-                        />
-                    );
-                }
-            },
-        }),
-        [],
-    );
+    const rules = {
+        required: translationString('AMOUNT_IS_NOT_SET'),
+        validate: {
+            decimals: validateDecimals(translationString, { decimals: 2 }),
+        },
+    };
 
     interface CallbackParams {
         field: {

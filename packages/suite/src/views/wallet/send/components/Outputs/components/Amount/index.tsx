@@ -50,7 +50,7 @@ const SwitchLabel = styled.label`
 const StyledInput = styled(NumberInput)`
     display: flex;
     flex: 1;
-`;
+` as typeof NumberInput; // Styled wrapper doesn't preserve type argument, see https://github.com/styled-components/styled-components/issues/1803#issuecomment-857092410
 
 const Label = styled.div`
     display: flex;
@@ -66,7 +66,7 @@ const Left = styled.div`
 const TokenBalance = styled.div`
     padding: 0px 6px;
     font-size: ${variables.NEUE_FONT_SIZE.TINY};
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
 `;
 
 const TokenBalanceValue = styled.span`

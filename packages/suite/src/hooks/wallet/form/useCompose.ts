@@ -1,5 +1,5 @@
 import { useEffect, useRef, useCallback, useState } from 'react';
-import { UseFormReturn } from 'react-hook-form';
+import { FieldPath, UseFormReturn } from 'react-hook-form';
 
 import { FeeLevel } from '@trezor/connect';
 import { useAsyncDebounce } from '@trezor/react-utils';
@@ -19,22 +19,21 @@ import {
 
 const DEFAULT_FIELD = 'outputs.0.amount';
 
-type Props = UseFormReturn<FormState> & {
+interface Props<TFieldValues extends FormState> extends UseFormReturn<TFieldValues> {
     state?: ComposeActionContext;
-    defaultField?: string;
-};
+    defaultField?: FieldPath<TFieldValues>;
+}
 
 // shareable sub-hook used in useRbfForm and useSendForm (TODO)
 
-export const useCompose = ({
+export const useCompose = <TFieldValues extends FormState>({
     state,
     defaultField,
     getValues,
-    setValue,
     formState: { errors },
-    setError,
     clearErrors,
-}: Props) => {
+    ...props
+}: Props<TFieldValues>) => {
     const [isLoading, setLoading] = useState(false);
     const [composeRequestID, setComposeRequestID] = useState(0);
     const composeRequestIDRef = useRef(composeRequestID);
@@ -49,6 +48,10 @@ export const useCompose = ({
         composeAction: sendFormActions.composeTransaction,
         signAction: sendFormActions.signTransaction,
     });
+
+    // Type assertion allowing to make the hook reusable, see https://stackoverflow.com/a/73624072
+    // This allows the hook to set values and errors for fields shared among multiple forms without passing them as arguments.
+    const { setError, setValue } = props as unknown as UseFormReturn<FormState>;
 
     // compose process
     // call sendFormAction with debounce

@@ -1,15 +1,12 @@
-import type { PaymentFrequency, SavingsKYCStatus, SavingsTrade } from 'invity-api';
+import type { SavingsKYCStatus, SavingsTrade } from 'invity-api';
 import type { WithSelectedAccountLoadedProps } from 'src/components/wallet';
 import type { Account } from 'src/types/wallet';
-import type { Option } from 'src/types/wallet/coinmarketCommonTypes';
+import type { Option, Savings } from 'src/types/wallet/coinmarketCommonTypes';
 import type { SuiteUseFormReturn } from '@suite-common/wallet-types';
 
 export type UseSavingsSetupContinueProps = WithSelectedAccountLoadedProps;
 
-export interface SavingsSetupContinueFormState {
-    paymentFrequency: PaymentFrequency;
-    fiatAmount: string;
-    customFiatAmount: string;
+export interface SavingsSetupContinueFormState extends Savings {
     address?: string;
 }
 

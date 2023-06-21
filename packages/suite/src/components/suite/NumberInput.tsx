@@ -1,5 +1,5 @@
 import React, { useCallback, useLayoutEffect, useRef, useState } from 'react';
-import { useController, UseControllerOptions } from 'react-hook-form';
+import { Control, FieldValues, useController, UseControllerProps } from 'react-hook-form';
 import BigNumber from 'bignumber.js';
 
 import { Input, InputProps } from '@trezor/components';
@@ -64,29 +64,29 @@ const cleanValueString = (value: string, locale: Locale) => {
 
 const DECIMAL_SEPARATORS = [',', '.'];
 
-interface NumberInputProps extends Omit<InputProps, 'onChange' | 'type'> {
-    name: string;
-    rules?: TypedValidationRules;
-    control: UseControllerOptions<Record<string, unknown>>['control'];
+export interface NumberInputProps<TFieldValues extends FieldValues>
+    extends Omit<InputProps, 'defaultValue' | 'name' | 'onChange'>,
+        Omit<UseControllerProps<TFieldValues>, 'rules'> {
     decimalScale?: number;
     onChange?: (value: string) => void;
+    rules?: TypedValidationRules;
 }
 
-export const NumberInput = ({
+export const NumberInput = <TFieldValues extends FieldValues>({
     name,
     rules,
     control,
     onChange: onChangeCallback,
     defaultValue,
     ...props
-}: NumberInputProps) => {
+}: NumberInputProps<TFieldValues>) => {
     const {
         field: { value = '', onChange, ref, ...controlProps },
         fieldState: { invalid },
     } = useController({
         name,
-        control,
-        rules: rules as UseControllerOptions<Record<string, unknown>>['rules'],
+        control: control as Control<FieldValues>,
+        rules: rules as UseControllerProps['rules'],
         defaultValue,
     });
 
