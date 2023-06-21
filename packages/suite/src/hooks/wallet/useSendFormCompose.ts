@@ -134,7 +134,7 @@ export const useSendFormCompose = ({
     // react-hook-form doesn't propagate values immediately. New calculated FormState is available until render tick
     // IMPORTANT NOTE: Processing request without useEffect will use outdated FormState values (FormState before input.onChange)
     // NOTE: this function doesn't have to be wrapped in useCallback since no component is using it as a hook dependency and it will be cleared by garbage collector (useCallback are not)
-    const composeRequest = (field = 'outputs[0].amount') => {
+    const composeRequest = (field = 'outputs.0.amount') => {
         // reset precomposed transactions
         setComposedLevels(undefined);
         // set ref for later use in useEffect which handle composedLevels change
@@ -183,7 +183,7 @@ export const useSendFormCompose = ({
                 } else if (values.outputs) {
                     // setError to the all `Amount` fields, composeField not specified (load draft case)
                     values.outputs.forEach((_, i) => {
-                        setError(`outputs[${i}].amount`, {
+                        setError(`outputs.${i}.amount`, {
                             type: 'compose',
                             message: errorMessage as any,
                         });
@@ -298,7 +298,7 @@ export const useSendFormCompose = ({
         // reset precomposed transactions
         setComposedLevels(undefined);
         // set ref for later use in useEffect which handle composedLevels change
-        composeRequestRef.current = 'outputs[0].amount';
+        composeRequestRef.current = 'outputs.0.amount';
         // set ref for later use in processComposeRequest function
         composeRequestID.current++;
         // clear errors from compose process

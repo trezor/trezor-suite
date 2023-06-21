@@ -127,14 +127,14 @@ export const Amount = ({ output, outputId }: Props) => {
     const theme = useTheme();
     const { shouldSendInSats } = useBitcoinAmountUnit(symbol);
 
-    const inputName = `outputs[${outputId}].amount`;
-    const tokenInputName = `outputs[${outputId}].token`;
+    const inputName = `outputs.${outputId}.amount` as const;
+    const tokenInputName = `outputs.${outputId}.token`;
     const isSetMaxActive = getDefaultValue('setMaxOutputId') === outputId;
     const outputError = errors.outputs ? errors.outputs[outputId] : undefined;
     const error = outputError ? outputError.amount : undefined;
     // corner-case: do not display "setMax" button if FormState got ANY error (setMax probably cannot be calculated)
     const isSetMaxVisible = isSetMaxActive && !error && !Object.keys(errors).length;
-    const maxSwitchId = `outputs[${outputId}].setMax`;
+    const maxSwitchId = `outputs.${outputId}.setMax`;
 
     const amountValue = getDefaultValue(inputName, output.amount || '');
     const tokenValue = getDefaultValue(tokenInputName, output.token);

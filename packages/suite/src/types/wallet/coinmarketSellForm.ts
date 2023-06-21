@@ -14,8 +14,8 @@ import type {
 import type { Option, DefaultCountryOption } from './coinmarketCommonTypes';
 import type { WithSelectedAccountLoadedProps } from 'src/components/wallet';
 
-export const OUTPUT_AMOUNT = 'outputs[0].amount';
-export const CRYPTO_TOKEN = 'outputs[0].token';
+export const OUTPUT_AMOUNT = 'outputs.0.amount';
+export const CRYPTO_TOKEN = 'outputs.0.token';
 export const FIAT_INPUT = 'fiatInput';
 export const FIAT_CURRENCY_SELECT = 'fiatCurrencySelect';
 export const CRYPTO_INPUT = 'cryptoInput';

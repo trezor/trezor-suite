@@ -48,10 +48,10 @@ describe('LTC send form with mocked blockbook', () => {
                 cy.discoveryShouldFinish();
 
                 cy.getTestElement('broadcast-button').click();
-                cy.getTestElement('outputs[0].address').type(
+                cy.getTestElement('outputs.0.address').type(
                     'ltc1q0lqwsyygg9frql6ujjfhevfculsxwledvv6yzc',
                 );
-                cy.getTestElement('outputs[0].setMax').click({ force: true });
+                cy.getTestElement('outputs.0.setMax').click({ force: true });
 
                 cy.getTestElement('@send/review-button').click();
                 cy.getTestElement('@prompts/confirm-on-device');

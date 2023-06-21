@@ -37,8 +37,8 @@ const OpReturn = ({ outputId }: { outputId: number }) => {
         removeOpReturn,
     } = useSendFormContext();
 
-    const inputAsciiName = `outputs[${outputId}].dataAscii`;
-    const inputHexName = `outputs[${outputId}].dataHex`;
+    const inputAsciiName = `outputs.${outputId}.dataAscii` as const;
+    const inputHexName = `outputs.${outputId}.dataHex` as const;
 
     const asciiValue = getDefaultValue(inputAsciiName, outputs[outputId].dataAscii || '');
     const hexValue = getDefaultValue(inputHexName, outputs[outputId].dataHex || '');

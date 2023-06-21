@@ -63,12 +63,12 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
     });
 
     const { descriptor, networkType, symbol } = account;
-    const inputName = `outputs[${outputId}].address`;
+    const inputName = `outputs.${outputId}.address` as const;
     const outputError = errors.outputs ? errors.outputs[outputId] : undefined;
     const addressError = outputError ? outputError.address : undefined;
     const addressValue = getDefaultValue(inputName, output.address || '');
     const recipientId = outputId + 1;
-    const label = watch(`outputs[${outputId}].label`, '');
+    const label = watch(`outputs.${outputId}.label`, '');
     const options = getDefaultValue('options', []);
     const broadcastEnabled = options.includes('broadcast');
     const inputState = getInputState(addressError, addressValue);
@@ -97,13 +97,13 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
             setValue(inputName, protocol.address, { shouldValidate: true });
 
             if (protocol.amount) {
-                setValue(`outputs[${outputId}].amount`, String(protocol.amount), {
+                setValue(`outputs.${outputId}.amount`, String(protocol.amount), {
                     shouldValidate: true,
                 });
             }
 
             // if amount is set compose by amount otherwise compose by address
-            composeTransaction(protocol.amount ? `outputs[${outputId}].amount` : inputName);
+            composeTransaction(protocol.amount ? `outputs.${outputId}.amount` : inputName);
 
             return;
         }
@@ -194,7 +194,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                             value: label,
                         }}
                         onSubmit={(value: string | undefined) => {
-                            setValue(`outputs[${outputId}].label`, value || '');
+                            setValue(`outputs.${outputId}.label`, value || '');
                             setDraftSaveRequest(true);
                         }}
                         visible
@@ -224,7 +224,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                         color={theme.TYPE_LIGHT_GREY}
                         icon="CROSS"
                         useCursorPointer
-                        data-test={`outputs[${outputId}].remove`}
+                        data-test={`outputs.${outputId}.remove`}
                         onClick={() => {
                             removeOutput(outputId);
                             // compose by first Output
@@ -233,7 +233,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                     />
                 ) : undefined
             }
-            onChange={() => composeTransaction(`outputs[${outputId}].amount`)}
+            onChange={() => composeTransaction(`outputs.${outputId}.amount`)}
             bottomText={
                 addressError ? (
                     <InputError error={addressError} />

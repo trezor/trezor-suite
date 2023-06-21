@@ -51,10 +51,10 @@ export const Fiat = ({ output, outputId }: FiatProps) => {
 
     const { shouldSendInSats } = useBitcoinAmountUnit(account.symbol);
 
-    const inputName = `outputs[${outputId}].fiat`;
-    const currencyInputName = `outputs[${outputId}].currency`;
-    const amountInputName = `outputs[${outputId}].amount`;
-    const tokenInputName = `outputs[${outputId}].token`;
+    const inputName = `outputs.${outputId}.fiat` as const;
+    const currencyInputName = `outputs.${outputId}.currency` as const;
+    const amountInputName = `outputs.${outputId}.amount` as const;
+    const tokenInputName = `outputs.${outputId}.token` as const;
     const isSetMaxActive = getDefaultValue('setMaxOutputId') === outputId;
 
     const outputError = errors.outputs ? errors.outputs[outputId] : undefined;

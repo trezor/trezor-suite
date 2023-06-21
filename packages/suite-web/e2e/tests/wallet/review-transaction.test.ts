@@ -125,8 +125,8 @@ describe('Review transaction modal', () => {
                 cy.getTestElement('@amount-select/input').type(`${f.token}{enter}`);
             }
 
-            cy.getTestElement('outputs[0].address').type(f.address);
-            cy.getTestElement('outputs[0].amount').type(f.amount);
+            cy.getTestElement('outputs.0.address').type(f.address);
+            cy.getTestElement('outputs.0.amount').type(f.amount);
             cy.getTestElement('select-bar/custom').click();
             cy.getTestElement('feePerUnit').clear().type(f.fee);
 

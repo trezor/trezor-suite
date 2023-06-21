@@ -15,6 +15,8 @@ import {
     PrecomposedLevelsCardano,
 } from '@suite-common/wallet-types';
 
+const DEFAULT_FIELD = 'outputs.0.amount';
+
 type Props = UseFormMethods<FormState> & {
     state?: ComposeActionContext;
     defaultField?: string;
@@ -110,7 +112,7 @@ export const useCompose = ({
                         type: 'compose',
                         message: errorMessage as any, // setError types is broken? according to ts it accepts only strings, but object or react component could be used as well...
                     });
-                } else if (defaultFieldRef.current !== 'outputs[0].amount') {
+                } else if (defaultFieldRef.current !== DEFAULT_FIELD) {
                     // if defaultField in not an amount (like rbf case, defaultField: selectedFee)
                     // setError to this particular field
                     setError(defaultFieldRef.current, {
@@ -120,7 +122,7 @@ export const useCompose = ({
                 } else if (values.outputs) {
                     // setError to the all `Amount` fields, composeField is not specified (load draft case)
                     values.outputs.forEach((_, i) => {
-                        setError(`outputs[${i}].amount`, {
+                        setError(`outputs.${i}.amount`, {
                             type: 'compose',
                             message: errorMessage as any,
                         });

@@ -37,8 +37,7 @@ const FiatInput = ({ activeInput, setActiveInput }: Props) => {
     } = useCoinmarketSellFormContext();
 
     const fiatInputValue = getValues(FIAT_INPUT);
-    const { outputs } = getValues();
-    const tokenAddress = outputs?.[0]?.token;
+    const tokenAddress = getValues('outputs.0.token');
     const tokenData = account.tokens?.find(t => t.contract === tokenAddress);
 
     const fiatInputRules = useMemo<TypedValidationRules>(

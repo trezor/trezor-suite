@@ -29,7 +29,7 @@ describe('Database migration', () => {
         };
         // this test can be run only in sldev so we ignore baseUrl env variable
         const baseUrl = 'https://suite.corp.sldev.cz/suite-web';
-        const btcAddressInputSelector = 'outputs[0].address';
+        const btcAddressInputSelector = 'outputs.0.address';
         const hiddenWalletSelector = '[data-test^="@switch-device/wallet-on-index"]';
         cy.viewport(1080, 1440);
         cy.task('startEmu', { wipe: true });

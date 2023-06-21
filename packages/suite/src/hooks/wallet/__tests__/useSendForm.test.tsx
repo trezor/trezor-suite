@@ -238,12 +238,12 @@ describe('useSendForm hook', () => {
             if (!callback.getContextValues) throw Error('callback.getContextValues missing');
 
             // check HTML elements after first render
-            expect(findByTestId(/outputs\[.*\].address/).length).toBe(f.initial.outputs.length);
+            expect(findByTestId(/outputs\.[0-9]+\.address/).length).toBe(f.initial.outputs.length);
             expect(callback.getContextValues().getValues()).toMatchObject(f.initial);
 
             await actionSequence(f.actions, a => {
                 // check rendered HTML elements (Output.address input)
-                expect(findByTestId(/outputs\[.*\].address/).length).toBe(
+                expect(findByTestId(/outputs\.[0-9]+\.address/).length).toBe(
                     a.result.formValues.outputs.length,
                 );
                 // validate action result

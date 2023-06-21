@@ -42,7 +42,7 @@ export const useSendFormFields = ({
             if (!output || output.type !== 'payment') return;
             const { fiat, currency } = output;
             if (typeof fiat !== 'string') return; // fiat input not registered (testnet or fiat not available)
-            const inputName = `outputs[${outputIndex}].fiat`;
+            const inputName = `outputs.${outputIndex}.fiat` as const;
             if (!amount) {
                 // reset fiat value (Amount field has error)
                 if (fiat.length > 0) {
@@ -71,7 +71,7 @@ export const useSendFormFields = ({
 
     const setAmount = useCallback(
         (outputIndex: number, amount: string) => {
-            setValue(`outputs[${outputIndex}].amount`, amount, {
+            setValue(`outputs.${outputIndex}.amount`, amount, {
                 shouldValidate: amount.length > 0,
                 shouldDirty: true,
             });
@@ -82,10 +82,10 @@ export const useSendFormFields = ({
 
     const setMax = useCallback(
         (outputIndex: number, active: boolean) => {
-            clearErrors([`outputs[${outputIndex}].amount`, `outputs[${outputIndex}].fiat`]);
+            clearErrors([`outputs.${outputIndex}.amount`, `outputs.${outputIndex}.fiat`]);
             if (!active) {
-                setValue(`outputs[${outputIndex}].amount`, '');
-                setValue(`outputs[${outputIndex}].fiat`, '');
+                setValue(`outputs.${outputIndex}.amount`, '');
+                setValue(`outputs.${outputIndex}.fiat`, '');
             }
             setValue('setMaxOutputId', active ? undefined : outputIndex);
         },
@@ -108,7 +108,7 @@ export const useSendFormFields = ({
         [control, setValue, clearErrors],
     );
 
-    // `outputs[x].fieldName` should be a regular `formState` value from `getValues()` method
+    // `outputs.x.fieldName` should be a regular `formState` value from `getValues()` method
     // however `useFieldArray` doesn't provide it BEFORE input is registered (it will be undefined on first render)
     // use fallbackValue from useFieldArray.fields if so, because `useFieldArray` architecture requires `defaultValue` to be provided for registered inputs
     const getDefaultValue: SendContextValues['getDefaultValue'] = <K extends string, T = undefined>(
