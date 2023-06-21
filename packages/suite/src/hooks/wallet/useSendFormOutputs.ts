@@ -46,7 +46,7 @@ export const useSendFormOutputs = ({
             // react-hook-form somehow keeps cached values which has been set "from the outside" using setValue TODO: investigate more
             // use case example:
             // add second Output > click "send-max" (calculated "max" value will be set after compose) > remove second Output > add second Output again
-            setValue(`outputs[${index}]`, DEFAULT_PAYMENT);
+            setValue(`outputs.${index}`, DEFAULT_PAYMENT);
             outputsFieldArray.remove(index);
         },
         [getValues, setValue, outputsFieldArray],
@@ -75,7 +75,7 @@ export const useSendFormOutputs = ({
         if (values.outputs.length > 1) {
             removeOutput(index);
         } else {
-            clearErrors('outputs[0]');
+            clearErrors('outputs.0');
             reset(
                 {
                     ...values,
@@ -86,25 +86,25 @@ export const useSendFormOutputs = ({
                         },
                     ],
                 },
-                { errors: true },
+                { keepErrors: true },
             );
         }
-        composeRequest('outputs[0].amount');
+        composeRequest('outputs.0.amount');
     };
 
-    // each Output have additional uncontrolled values that needs to be present in FormState
+    // each Output has additional uncontrolled values that need to be present in FormState
     // they need to be registered without any HTMLElement as a "custom" field
     const { fields } = outputsFieldArray;
     useEffect(() => {
         fields.forEach((output, index) => {
-            register({ name: `outputs[${index}].type`, type: 'custom' });
+            register({ name: `outputs.${index}.type`, type: 'custom' });
             // set defaultValues
-            setValue(`outputs[${index}].type`, output.type);
+            setValue(`outputs.${index}.type`, output.type);
         });
         return () => {
             // unregister fields
             fields.forEach((_output, index) => {
-                unregister(`outputs[${index}].type`);
+                unregister(`outputs.${index}.type`);
             });
         };
     }, [fields, register, unregister, setValue]);

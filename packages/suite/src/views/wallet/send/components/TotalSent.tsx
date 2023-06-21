@@ -69,7 +69,7 @@ export const TotalSent = () => {
 
     const selectedFee = getValues().selectedFee || 'normal';
     const transactionInfo = composedLevels ? composedLevels[selectedFee] : undefined;
-    const isTokenTransfer = networkType === 'ethereum' && !!getValues('outputs[0].token');
+    const isTokenTransfer = networkType === 'ethereum' && !!getValues('outputs.0.token');
     const tokenInfo =
         transactionInfo && transactionInfo.type !== 'error' ? transactionInfo.token : undefined;
 

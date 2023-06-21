@@ -64,10 +64,10 @@ describe('Import a BTC csv file', () => {
                 const firstAddress: string = processedData[0].address;
                 const secondAddress: string = processedData[1].address;
                 // process data
-                cy.getTestElement('outputs[0].address')
+                cy.getTestElement('outputs.0.address')
                     .should('be.visible')
                     .should('have.value', firstAddress);
-                cy.getTestElement('outputs[1].address')
+                cy.getTestElement('outputs.1.address')
                     .should('be.visible')
                     .should('have.value', secondAddress);
                 cy.log(secondAddress);

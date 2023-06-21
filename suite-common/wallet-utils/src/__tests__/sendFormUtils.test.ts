@@ -113,7 +113,7 @@ describe('sendForm utils', () => {
                 invalidFieldEmpty: {},
                 invalidArray: [null, true, 1, 'A', {}],
             }),
-        ).toEqual(['outputs[0].amount', 'outputs[1].address', 'topLevelField']);
+        ).toEqual(['outputs.0.amount', 'outputs.1.address', 'topLevelField']);
     });
 
     it('getBitcoinComposeOutputs', () => {

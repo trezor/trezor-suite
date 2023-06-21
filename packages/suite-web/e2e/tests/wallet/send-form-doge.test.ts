@@ -50,8 +50,8 @@ describe('Doge send form with mocked blockbook', () => {
 
             cy.getTestElement('broadcast-button').click();
 
-            cy.getTestElement('outputs[0].address').type('DJk8vtoEuNGtT4YRNoqVxWyRh6kM3s8bzc');
-            cy.getTestElement('outputs[0].amount').type('115568568500');
+            cy.getTestElement('outputs.0.address').type('DJk8vtoEuNGtT4YRNoqVxWyRh6kM3s8bzc');
+            cy.getTestElement('outputs.0.amount').type('115568568500');
             cy.getTestElement('@send/review-button').click();
             cy.getTestElement('@prompts/confirm-on-device');
             cy.task('pressYes');

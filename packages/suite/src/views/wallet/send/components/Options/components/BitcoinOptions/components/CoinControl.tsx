@@ -103,7 +103,7 @@ export const CoinControl = ({ close }: CoinControlProps) => {
     const inputs = isCoinControlEnabled ? selectedUtxos : composedInputs;
     const totalInputs = getTotal(inputs.map(input => Number(input.amount)));
     const totalOutputs = getTotal(
-        outputs.map((_, i) => Number(getDefaultValue(`outputs[${i}].amount`, ''))),
+        outputs.map((_, i) => Number(getDefaultValue(`outputs.${i}.amount`, ''))),
     );
     const totalOutputsInSats = shouldSendInSats
         ? totalOutputs
@@ -111,8 +111,8 @@ export const CoinControl = ({ close }: CoinControlProps) => {
     const missingToInput = totalOutputsInSats - totalInputs;
     const isMissingToAmount = missingToInput > 0; // relevant when the amount field is not validated, e.g. there is an error in the address
     const missingAmountTooBig = missingToInput > Number.MAX_SAFE_INTEGER;
-    const amountHasError = errors.outputs?.some(error => error?.amount); // relevant when input is a number, but there is an error, e.g. decimals in sats
-    const notEnoughFundsSelectedError = !!errors.outputs?.some(
+    const amountHasError = errors.outputs?.some?.(error => error?.amount); // relevant when input is a number, but there is an error, e.g. decimals in sats
+    const notEnoughFundsSelectedError = !!errors.outputs?.some?.(
         error =>
             ((error?.amount as TypedFieldError)?.message as ExtendedMessageDescriptor)?.id ===
             'TR_NOT_ENOUGH_SELECTED',

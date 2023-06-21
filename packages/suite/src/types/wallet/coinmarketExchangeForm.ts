@@ -17,10 +17,10 @@ import type {
 import type { Option } from './coinmarketCommonTypes';
 import type { WithSelectedAccountLoadedProps } from 'src/components/wallet';
 
-export const CRYPTO_INPUT = 'outputs[0].amount';
-export const CRYPTO_TOKEN = 'outputs[0].token';
-export const FIAT_INPUT = 'outputs[0].fiat';
-export const FIAT_CURRENCY = 'outputs[0].currency';
+export const CRYPTO_INPUT = 'outputs.0.amount';
+export const CRYPTO_TOKEN = 'outputs.0.token';
+export const FIAT_INPUT = 'outputs.0.fiat';
+export const FIAT_CURRENCY = 'outputs.0.currency';
 
 export type UseCoinmarketExchangeFormProps = WithSelectedAccountLoadedProps;
 

@@ -31,18 +31,16 @@ describe('Send form for bitcoin', () => {
 
     it('add and remove output in send form, toggle form options, input data', () => {
         // test adding and removing outputs
-        cy.getTestElement('outputs[0].amount').type('0.3');
+        cy.getTestElement('outputs.0.amount').type('0.3');
         cy.getTestElement('add-output').click();
-        cy.getTestElement('outputs[1].amount').type('0.6');
+        cy.getTestElement('outputs.1.amount').type('0.6');
 
-        cy.getTestElement('outputs[0].remove').click();
+        cy.getTestElement('outputs.0.remove').click();
 
         cy.wait(10); // wait for animation
-        cy.getTestElement('outputs[0].amount').should('be.visible'); // 1 output is visible
+        cy.getTestElement('outputs.0.amount').should('be.visible'); // 1 output is visible
 
-        cy.getTestElement('outputs[0].address').type(
-            'bcrt1qkvwu9g3k2pdxewfqr7syz89r3gj557l374sg5v',
-        );
+        cy.getTestElement('outputs.0.address').type('bcrt1qkvwu9g3k2pdxewfqr7syz89r3gj557l374sg5v');
 
         // add locktime
         cy.getTestElement('add-locktime-button').click();
@@ -66,12 +64,12 @@ describe('Send form for bitcoin', () => {
         cy.getTestElement('amount-unit-switch/regtest').click();
 
         // test adding and removing outputs
-        cy.getTestElement('outputs[0].amount').type('600');
+        cy.getTestElement('outputs.0.amount').type('600');
         cy.getTestElement('add-output').click();
-        cy.getTestElement('outputs[1].amount').type('800');
-        cy.getTestElement('outputs[0].remove').click();
+        cy.getTestElement('outputs.1.amount').type('800');
+        cy.getTestElement('outputs.0.remove').click();
         cy.wait(10); // wait for animation
-        cy.getTestElement('outputs[0].amount').should('be.visible'); // 1 output is visible
+        cy.getTestElement('outputs.0.amount').should('be.visible'); // 1 output is visible
 
         // assert final state of form using screenshot
         cy.getTestElement('@wallet/send/outputs-and-options').matchImageSnapshot(
@@ -80,14 +78,12 @@ describe('Send form for bitcoin', () => {
     });
 
     it('send tx with OP_RETURN output', () => {
-        cy.getTestElement('outputs[0].address').type(
-            'bcrt1qkvwu9g3k2pdxewfqr7syz89r3gj557l374sg5v',
-        );
-        cy.getTestElement('outputs[0].amount').type('0.1');
+        cy.getTestElement('outputs.0.address').type('bcrt1qkvwu9g3k2pdxewfqr7syz89r3gj557l374sg5v');
+        cy.getTestElement('outputs.0.amount').type('0.1');
         cy.getTestElement('@send/header-dropdown').click();
         cy.getTestElement('@send/header-dropdown/opreturn').click();
 
-        cy.getTestElement('outputs[1].dataAscii').type('meow');
+        cy.getTestElement('outputs.1.dataAscii').type('meow');
         cy.getTestElement('@send/review-button').click();
         cy.task('pressYes');
         cy.task('pressYes');
