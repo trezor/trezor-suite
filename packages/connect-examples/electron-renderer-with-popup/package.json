@@ -16,7 +16,7 @@
         "productName": "TrezorConnectExample",
         "copyright": "Copyright © year ${author}",
         "asar": false,
-        "electronVersion": "24.3.1",
+        "electronVersion": "24.5.1",
         "directories": {
             "output": "build"
         },
@@ -53,7 +53,7 @@
         }
     },
     "devDependencies": {
-        "electron": "24.3.1",
-        "electron-builder": "^23.6.0"
+        "electron": "24.5.1",
+        "electron-builder": "24.4.0"
     }
 }
