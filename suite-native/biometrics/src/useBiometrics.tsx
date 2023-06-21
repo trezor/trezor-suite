@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { AppState } from 'react-native';
 
 import * as LocalAuthentication from 'expo-local-authentication';
@@ -29,9 +29,16 @@ export const useBiometrics = () => {
     const { isUserAuthenticated, setIsUserAuthenticated } = useIsUserAuthenticated();
     const { setIsBiometricsOverlayVisible } = useIsBiometricsOverlayVisible();
     const appState = useRef(AppState.currentState);
+    const [appStateVisible, setAppStateVisible] = useState(AppState.currentState);
     const goneToBackgroundAtTimestamp = useRef<null | number>(null);
 
     const handleAuthentication = useCallback(async () => {
+        // Stop the authentication flow if the user leaves the app.
+        if (appState.current !== 'active') {
+            LocalAuthentication.cancelAuthenticate();
+            return;
+        }
+
         if (isBiometricsOptionEnabled && !isUserAuthenticated) {
             const result = await authenticate();
 
@@ -81,6 +88,7 @@ export const useBiometrics = () => {
             }
 
             appState.current = nextAppState;
+            setAppStateVisible(appState.current);
         });
 
         return () => subscription.remove();
@@ -97,8 +105,10 @@ export const useBiometrics = () => {
             await handleAuthentication();
         };
 
-        auth();
+        // Ask for authentication only if the app is in active opened state.
+        if (appStateVisible === 'active') auth();
+
         // Only run once on app start from killed state
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isUserAuthenticated, isBiometricsOptionEnabled]);
+    }, [appStateVisible, isUserAuthenticated, isBiometricsOptionEnabled]);
 };
