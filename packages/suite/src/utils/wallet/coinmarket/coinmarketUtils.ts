@@ -1,6 +1,7 @@
 import { Account, Network } from 'src/types/wallet';
 import { NETWORKS } from 'src/config/wallet';
 import TrezorConnect from '@trezor/connect';
+import regional from 'src/constants/wallet/coinmarket/regional';
 import { TrezorDevice } from 'src/types/suite';
 
 const suiteToInvitySymbols = [
@@ -171,4 +172,19 @@ export const getTagAndInfoNote = (quote: { infoNote?: string }) => {
     }
 
     return { tag, infoNote };
+};
+
+export const getDefaultCountry = (country: string = regional.unknownCountry) => {
+    const label = regional.countriesMap.get(country);
+
+    if (!label)
+        return {
+            label: regional.countriesMap.get(regional.unknownCountry)!,
+            value: regional.unknownCountry,
+        };
+
+    return {
+        label,
+        value: country,
+    };
 };

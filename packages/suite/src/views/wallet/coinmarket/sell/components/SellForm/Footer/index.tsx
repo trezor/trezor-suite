@@ -4,7 +4,10 @@ import styled from 'styled-components';
 import { Button, Select, variables, Flag } from '@trezor/components';
 import regional from 'src/constants/wallet/coinmarket/regional';
 import { useCoinmarketSellFormContext } from 'src/hooks/wallet/useCoinmarketSellForm';
-import { getCountryLabelParts } from 'src/utils/wallet/coinmarket/coinmarketUtils';
+import {
+    getCountryLabelParts,
+    getDefaultCountry,
+} from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { Translation } from 'src/components/suite';
 
 import { CountryOption } from 'src/types/wallet/coinmarketCommonTypes';
@@ -72,6 +75,9 @@ const Footer = () => {
         (watch('fiatInput') || watch('cryptoInput')) && !!watch('fiatCurrencySelect').value;
     // used instead of formState.isValid, which is sometimes returning false even if there are no errors
     const formIsValid = Object.keys(errors).length === 0;
+    const defaultCountryOption = quotesRequest?.country
+        ? getDefaultCountry(quotesRequest.country)
+        : defaultCountry;
 
     return (
         <FooterWrapper>
@@ -81,16 +87,9 @@ const Footer = () => {
                 </Label>
                 <Controller
                     control={control}
-                    defaultValue={
-                        quotesRequest?.country
-                            ? {
-                                  label: regional.countriesMap.get(quotesRequest.country),
-                                  value: quotesRequest.country,
-                              }
-                            : defaultCountry
-                    }
+                    defaultValue={defaultCountryOption}
                     name={countrySelect}
-                    render={({ onChange, value }) => (
+                    render={({ field: { onChange, value } }) => (
                         <StyledSelect
                             options={regional.countriesOptions}
                             isSearchable
