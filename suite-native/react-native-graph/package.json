@@ -1,7 +1,7 @@
 {
     "name": "@suite-native/react-native-graph",
     "version": "1.0.0",
-    "description": "Fork of https://github.com/margelo/react-native-graph.",
+    "description": "Fork of https://github.com/margelo/react-native-graph (v. 1.0.2)",
     "private": true,
     "main": "src/index",
     "sideEffects": false,
