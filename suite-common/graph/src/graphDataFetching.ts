@@ -97,7 +97,7 @@ export const getAccountBalanceHistory = async ({
     // TODO: We can get value from redux store instead of fetching it again?
     accountMovementHistoryWithBalance.push({
         time: endTimeFrameTimestamp,
-        cryptoBalance: formatNetworkAmount(accountInfo.payload.balance, coin),
+        cryptoBalance: formatNetworkAmount(accountInfo.payload.availableBalance, coin),
     });
 
     accountBalanceHistoryCache[cacheKey] = accountMovementHistoryWithBalance;
