@@ -32,7 +32,7 @@ export const useFees = ({
     register,
     getValues,
     setValue,
-    errors,
+    formState: { errors },
     clearErrors,
 }: Props) => {
     // local references

@@ -8,12 +8,17 @@ import { getInputState, isInteger } from '@suite-common/wallet-utils';
 import { U_INT_32 } from '@suite-common/wallet-constants';
 import { MAX_LENGTH } from 'src/constants/suite/inputs';
 
-interface Props {
+interface DestinationTagProps {
     close: () => void;
 }
 
-const DestinationTag = ({ close }: Props) => {
-    const { register, getDefaultValue, errors, composeTransaction } = useSendFormContext();
+const DestinationTag = ({ close }: DestinationTagProps) => {
+    const {
+        register,
+        getDefaultValue,
+        formState: { errors },
+        composeTransaction,
+    } = useSendFormContext();
 
     const inputName = 'rippleDestinationTag';
     const inputValue = getDefaultValue(inputName) || '';
@@ -45,6 +50,8 @@ const DestinationTag = ({ close }: Props) => {
             label={<QuestionTooltip label="DESTINATION_TAG" tooltip="DESTINATION_TAG_EXPLAINED" />}
             labelRight={<Icon size={20} icon="CROSS" useCursorPointer onClick={close} />}
             bottomText={<InputError error={error} />}
+            innerRef={inputRef}
+            {...inputField}
         />
     );
 };

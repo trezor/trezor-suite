@@ -57,7 +57,7 @@ export const ReviewButton = () => {
     const { device, isLocked } = useDevice();
     const {
         control,
-        errors,
+        formState: { errors },
         online,
         isLoading,
         signTransaction,

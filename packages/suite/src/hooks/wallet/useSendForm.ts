@@ -116,7 +116,7 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
         shouldUnregister: false,
     });
 
-    const { control, reset, register, getValues, errors, setValue } = useFormMethods;
+    const { control, reset, register, getValues, formState, setValue } = useFormMethods;
 
     // register array fields (outputs array in react-hook-form)
     const outputsFieldArray = useFieldArray<Output>({
@@ -348,11 +348,11 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
     // handle draftSaveRequest
     useEffect(() => {
         if (!draftSaveRequest) return;
-        if (Object.keys(errors).length === 0) {
+        if (Object.keys(formState.errors).length === 0) {
             saveDraft(getValues());
         }
         setDraftSaveRequest(false);
-    }, [draftSaveRequest, setDraftSaveRequest, saveDraft, getValues, errors]);
+    }, [draftSaveRequest, setDraftSaveRequest, saveDraft, getValues, formState.errors]);
 
     useDidUpdate(() => {
         const { outputs } = getValues();

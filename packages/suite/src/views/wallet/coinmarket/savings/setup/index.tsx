@@ -97,7 +97,7 @@ const CoinmarketSavingsSetup = (props: WithSelectedAccountLoadedProps) => {
         fiatAmount,
         fiatCurrency,
         account,
-        errors,
+        formState: { errors },
         canConfirmSetup,
         handleSubmit,
         onSubmit,

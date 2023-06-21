@@ -165,7 +165,6 @@ export const useCoinmarketSellForm = ({
         clearErrors,
         trigger,
         control,
-        errors,
         formState,
     } = methods;
 
@@ -173,12 +172,23 @@ export const useCoinmarketSellForm = ({
 
     useDebounce(
         () => {
-            if (formState.isDirty && !formState.isValidating && Object.keys(errors).length === 0) {
+            if (
+                formState.isDirty &&
+                !formState.isValidating &&
+                Object.keys(formState.errors).length === 0
+            ) {
                 saveDraft(selectedAccount.account.key, values as SellFormState);
             }
         },
         200,
-        [errors, saveDraft, selectedAccount.account.key, values, formState],
+        [
+            saveDraft,
+            selectedAccount.account.key,
+            values,
+            formState.errors,
+            formState.isDirty,
+            formState.isValidating,
+        ],
     );
 
     useEffect(() => {

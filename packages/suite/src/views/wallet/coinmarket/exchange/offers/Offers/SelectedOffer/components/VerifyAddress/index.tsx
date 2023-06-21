@@ -104,7 +104,14 @@ const VerifyAddressComponent = () => {
         receiveSymbol,
     } = useCoinmarketExchangeOffersContext();
     const [selectedAccountOption, setSelectedAccountOption] = useState<AccountSelectOption>();
-    const { register, watch, errors, formState, setValue, control } = useForm<FormState>({
+
+    const {
+        register,
+        watch,
+        formState: { errors, isValid },
+        setValue,
+        control,
+    } = useForm<FormState>({
         mode: 'onChange',
     });
     const deviceModel = getDeviceModel(device);
@@ -125,8 +132,6 @@ const VerifyAddressComponent = () => {
               toCurrency: selectedQuote?.receive,
           }
         : {};
-
-    const formErrors = !formState.isValid;
 
     const { accountTooltipTranslationId, addressTooltipTranslationId } = getTranslationIds(
         selectedAccountOption?.type,
@@ -297,7 +302,7 @@ const VerifyAddressComponent = () => {
                                     confirmTrade(address, extraField);
                                 }
                             }}
-                            isDisabled={formErrors || callInProgress}
+                            isDisabled={!isValid || callInProgress}
                         >
                             <Translation id="TR_EXCHANGE_GO_TO_PAYMENT" />
                         </Button>

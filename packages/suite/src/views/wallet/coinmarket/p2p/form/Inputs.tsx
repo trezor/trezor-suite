@@ -34,8 +34,14 @@ const CoinLabel = styled.div`
 `;
 
 export const Inputs = () => {
-    const { account, errors, control, formState, defaultCurrency, p2pInfo, getValues } =
-        useCoinmarketP2pFormContext();
+    const {
+        account,
+        control,
+        formState: { errors, isSubmitting },
+        defaultCurrency,
+        p2pInfo,
+        getValues,
+    } = useCoinmarketP2pFormContext();
     const fiatInput = 'fiatInput';
     const currencySelect = 'currencySelect';
     const fiatInputValue = getValues(fiatInput);
@@ -44,7 +50,7 @@ export const Inputs = () => {
         () => ({
             validate: (value: string) => {
                 if (!value) {
-                    if (formState.isSubmitting) {
+                    if (isSubmitting) {
                         return <Translation id="TR_P2P_VALIDATION_ERROR_EMPTY" />;
                     }
                     return;
@@ -69,7 +75,7 @@ export const Inputs = () => {
                 }
             },
         }),
-        [formState.isSubmitting],
+        [isSubmitting],
     );
 
     return (

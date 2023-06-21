@@ -169,7 +169,7 @@ export const useRbf = (props: UseRbfProps) => {
 
     // react-hook-form
     const useFormMethods = useForm<FormState>({ mode: 'onChange', shouldUnregister: false });
-    const { reset, register, control, setValue, getValues, errors } = useFormMethods;
+    const { reset, register, control, setValue, getValues, formState } = useFormMethods;
 
     // react-hook-form auto register custom form fields (without HTMLElement)
     useEffect(() => {
@@ -242,7 +242,7 @@ export const useRbf = (props: UseRbfProps) => {
         isLoading,
         register: register as (rules?: TypedValidationRules) => (ref: any) => void,
         control,
-        errors,
+        formState,
         setValue,
         getValues,
         composedLevels,

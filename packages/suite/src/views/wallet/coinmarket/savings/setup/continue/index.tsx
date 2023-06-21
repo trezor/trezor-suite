@@ -71,7 +71,7 @@ const CoinmarketSavingsSetupContinue = (props: WithSelectedAccountLoadedProps) =
         annualSavingsFiatAmount,
         fiatAmount,
         fiatCurrency,
-        errors,
+        formState: { errors },
         isWatchingKYCStatus,
         canConfirmSetup,
         account,

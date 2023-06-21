@@ -58,7 +58,7 @@ const StyledSelect = styled(Select)`
 
 const Footer = () => {
     const {
-        errors,
+        formState: { errors },
         control,
         formState,
         watch,

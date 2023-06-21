@@ -30,7 +30,7 @@ const StyledInput = styled(NumberInput)<{ isToken: boolean }>`
 const SendCryptoInput = () => {
     const {
         control,
-        errors,
+        formState: { errors },
         clearErrors,
         network,
         account,

@@ -19,7 +19,7 @@ const StyledCard = styled(Card)`
 // wrapper for shareable Fees component
 export const SendFees = () => {
     const {
-        errors,
+        formState: { errors },
         register,
         control,
         setValue,

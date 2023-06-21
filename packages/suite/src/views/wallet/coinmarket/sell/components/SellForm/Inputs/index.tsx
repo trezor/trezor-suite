@@ -17,7 +17,7 @@ const EmptyDiv = styled.div`
 
 const Inputs = () => {
     const {
-        errors,
+        formState: { errors },
         trigger,
         watch,
         composeRequest,

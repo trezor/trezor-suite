@@ -23,7 +23,7 @@ interface Props {
 
 const FiatInput = ({ activeInput, setActiveInput }: Props) => {
     const {
-        errors,
+        formState: { errors },
         control,
         formState,
         amountLimits,

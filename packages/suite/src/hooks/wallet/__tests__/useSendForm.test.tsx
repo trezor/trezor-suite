@@ -172,7 +172,11 @@ const actionCallback = (
         );
     }
 
-    const { composedLevels, getValues, errors } = getContextValues();
+    const {
+        composedLevels,
+        getValues,
+        formState: { errors },
+    } = getContextValues();
 
     // validate composedLevels object
     if (Object.prototype.hasOwnProperty.call(result, 'composedLevels')) {

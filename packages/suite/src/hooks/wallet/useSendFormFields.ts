@@ -24,7 +24,7 @@ export const useSendFormFields = ({
     clearErrors,
     fiatRates,
     network,
-    errors,
+    formState: { errors },
 }: Props) => {
     const { shouldSendInSats } = useBitcoinAmountUnit(network.symbol);
 

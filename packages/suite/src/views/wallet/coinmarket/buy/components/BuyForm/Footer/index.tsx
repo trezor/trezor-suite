@@ -54,13 +54,13 @@ const StyledSelect = styled(Select)`
 `;
 
 const Footer = () => {
-    const { errors, control, formState, watch, setAmountLimits, defaultCountry } =
+    const { control, formState, watch, setAmountLimits, defaultCountry } =
         useCoinmarketBuyFormContext();
     const countrySelect = 'countrySelect';
     const hasValues =
         (watch('fiatInput') || watch('cryptoInput')) && !!watch('currencySelect').value;
     // used instead of formState.isValid, which is sometimes returning false even if there are no errors
-    const formIsValid = Object.keys(errors).length === 0;
+    const formIsValid = Object.keys(formState.errors).length === 0;
 
     return (
         <FooterWrapper>
