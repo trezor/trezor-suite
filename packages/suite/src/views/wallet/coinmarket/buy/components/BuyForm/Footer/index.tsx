@@ -72,7 +72,7 @@ const Footer = () => {
                     control={control}
                     defaultValue={defaultCountry}
                     name={countrySelect}
-                    render={({ onChange, value }) => (
+                    render={({ field: { onChange, value } }) => (
                         <StyledSelect
                             data-test="@coinmarket/buy/country-select"
                             options={regional.countriesOptions}

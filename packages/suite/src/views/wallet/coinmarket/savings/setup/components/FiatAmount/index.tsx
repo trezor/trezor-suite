@@ -119,7 +119,7 @@ const FiatAmount = ({
                     control={control}
                     name="fiatAmount"
                     defaultValue={defaultFiatAmount}
-                    render={({ onChange, value }) => (
+                    render={({ field: { onChange, value } }) => (
                         <StyledSelectBar
                             onChange={onChange}
                             selectedOption={value}

@@ -256,7 +256,7 @@ const Inputs = () => {
                             control={control}
                             name={currencySelect}
                             defaultValue={defaultCurrency}
-                            render={({ onChange, value }) => (
+                            render={({ field: { onChange, value } }) => (
                                 <Select
                                     options={FIAT.currencies
                                         .filter(c => buyInfo?.supportedFiatCurrencies.has(c))
@@ -306,7 +306,7 @@ const Inputs = () => {
                                 value: uppercaseSymbol,
                                 label: uppercaseSymbol,
                             }}
-                            render={({ onChange, value }) => (
+                            render={({ field: { onChange, value } }) => (
                                 <Select
                                     onChange={(selected: any) => {
                                         onChange(selected);

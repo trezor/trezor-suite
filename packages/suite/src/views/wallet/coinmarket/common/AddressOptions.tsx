@@ -101,7 +101,7 @@ export const AddressOptions = ({
             control={control}
             name="address"
             defaultValue={value}
-            render={({ ref, ...field }) => (
+            render={({ ...field }) => (
                 <Select
                     {...field}
                     onChange={handleChange}

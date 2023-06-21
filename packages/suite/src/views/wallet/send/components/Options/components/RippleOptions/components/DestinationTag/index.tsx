@@ -50,8 +50,6 @@ const DestinationTag = ({ close }: DestinationTagProps) => {
             label={<QuestionTooltip label="DESTINATION_TAG" tooltip="DESTINATION_TAG_EXPLAINED" />}
             labelRight={<Icon size={20} icon="CROSS" useCursorPointer onClick={close} />}
             bottomText={<InputError error={error} />}
-            innerRef={inputRef}
-            {...inputField}
         />
     );
 };

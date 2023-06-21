@@ -38,7 +38,7 @@ const Label = styled.div`
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     text-transform: capitalize;
     font-size: ${variables.FONT_SIZE.NORMAL};
-    color: ${props => props.theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
     margin-bottom: 11px;
 `;
 
@@ -63,7 +63,7 @@ const FlagWrapper = styled.div`
 const LabelText = styled.div`
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${props => props.theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
 `;
 
 const LinkButton = styled(Button)`
@@ -143,7 +143,7 @@ const CoinmarketSavingsSetup = (props: WithSelectedAccountLoadedProps) => {
                 control={control}
                 name="country"
                 defaultValue={defaultCountryOption}
-                render={({ onChange, value }) => (
+                render={({ field: { onChange, value } }) => (
                     <StyledSelect
                         value={value}
                         label={<Translation id="TR_SAVINGS_UNSUPPORTED_COUNTRY_SELECT_LABEL" />}
@@ -193,7 +193,7 @@ const CoinmarketSavingsSetup = (props: WithSelectedAccountLoadedProps) => {
                         control={control}
                         name="paymentFrequency"
                         defaultValue={defaultPaymentFrequency}
-                        render={({ onChange, value }) => (
+                        render={({ field: { onChange, value } }) => (
                             <FrequencyStyledSelectBar
                                 onChange={onChange}
                                 selectedOption={value}

@@ -130,7 +130,7 @@ const FiatInput = ({ activeInput, setActiveInput }: Props) => {
                               }
                             : defaultCurrency
                     }
-                    render={({ onChange, value }) => (
+                    render={({ field: { value, onChange } }) => (
                         <Select
                             options={FIAT.currencies
                                 .filter(c => sellInfo?.supportedFiatCurrencies.has(c))
