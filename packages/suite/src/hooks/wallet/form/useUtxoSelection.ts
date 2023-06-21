@@ -1,11 +1,11 @@
 import { useEffect, useMemo } from 'react';
-import { UseFormMethods } from 'react-hook-form';
+import { UseFormReturn } from 'react-hook-form';
 
 import { UseSendFormState, ExcludedUtxos, UtxoSelectionContext } from '@suite-common/wallet-types';
 import type { AccountUtxo, PROTO } from '@trezor/connect';
 import { getUtxoOutpoint } from '@suite-common/wallet-utils';
 
-type Props = UseFormMethods &
+type Props = UseFormReturn &
     Pick<UseSendFormState, 'account' | 'composedLevels'> & {
         excludedUtxos: ExcludedUtxos;
         composeRequest: (field?: string) => void;
@@ -32,7 +32,7 @@ export const useUtxoSelection = ({
     // fee level
     const selectedFee = watch('selectedFee');
     // confirmation of spending low-anonymity UTXOs - only relevant for coinjoin account
-    const anonymityWarningChecked = watch('anonymityWarningChecked');
+    const anonymityWarningChecked = !!watch('anonymityWarningChecked');
     // manually selected UTXOs
     const selectedUtxos: AccountUtxo[] = watch('selectedUtxos') || [];
 

@@ -12,7 +12,7 @@ import {
     actionSequence,
 } from 'src/support/tests/hooksHelper';
 
-import { SendContextValues } from 'src/types/wallet/sendForm';
+import { FormState, SendContextValues } from 'src/types/wallet/sendForm';
 import SendIndex from 'src/views/wallet/send';
 import * as fixtures from '../__fixtures__/useSendForm';
 import { useSendFormContext } from '../useSendForm';
@@ -121,7 +121,7 @@ interface Result {
     getAccountInfoCalls?: number; // used in XRP
     getAccountInfoParams?: any; // partial @trezor/connect params
     composedLevels?: any; // partial PrecomposedLevel
-    formValues?: DeepPartial<ReturnType<SendContextValues['getValues']>>;
+    formValues?: DeepPartial<FormState>;
     errors?: any; // partial SendContextValues['errors']
 }
 

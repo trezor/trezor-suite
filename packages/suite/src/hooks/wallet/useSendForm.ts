@@ -118,7 +118,7 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
     const { control, reset, register, getValues, formState, setValue } = useFormMethods;
 
     // register array fields (outputs array in react-hook-form)
-    const outputsFieldArray = useFieldArray<Output>({
+    const outputsFieldArray = useFieldArray({
         control,
         name: 'outputs',
     });
@@ -298,13 +298,11 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
 
                 sendFormUtils.setAmount(outputIndex, formattedAmount);
             }
-            setValue(
-                `outputs[${outputIndex}]`,
-                {
-                    address: protocol.sendForm.address,
-                },
-                { shouldValidate: true },
-            );
+            if (protocol.sendForm.address) {
+                setValue(`outputs.${outputIndex}.address`, protocol.sendForm.address, {
+                    shouldValidate: true,
+                });
+            }
             fillSendForm(false);
             composeRequest();
         }

@@ -1,5 +1,7 @@
 import { useEffect, useRef, useCallback, useState } from 'react';
-import { UseFormMethods } from 'react-hook-form';
+import { UseFormReturn } from 'react-hook-form';
+
+import { FeeLevel } from '@trezor/connect';
 import { useAsyncDebounce } from '@trezor/react-utils';
 import { useActions } from 'src/hooks/suite';
 import * as sendFormActions from 'src/actions/wallet/sendFormActions';
@@ -17,7 +19,7 @@ import {
 
 const DEFAULT_FIELD = 'outputs.0.amount';
 
-type Props = UseFormMethods<FormState> & {
+type Props = UseFormReturn<FormState> & {
     state?: ComposeActionContext;
     defaultField?: string;
 };
@@ -108,14 +110,14 @@ export const useCompose = ({
 
                 if (composeField) {
                     // setError to the field which created `composeRequest`
-                    setError(composeField, {
+                    setError(composeField as FieldPath<FormState>, {
                         type: 'compose',
                         message: errorMessage as any, // setError types is broken? according to ts it accepts only strings, but object or react component could be used as well...
                     });
                 } else if (defaultFieldRef.current !== DEFAULT_FIELD) {
                     // if defaultField in not an amount (like rbf case, defaultField: selectedFee)
                     // setError to this particular field
-                    setError(defaultFieldRef.current, {
+                    setError(defaultFieldRef.current as FieldPath<FormState>, {
                         type: 'compose',
                         message: errorMessage as any,
                     });
@@ -178,7 +180,7 @@ export const useCompose = ({
                 // find nearest possible tx
                 const nearest = Object.keys(composedLevels)
                     .reverse()
-                    .find(key => composedLevels[key].type !== 'error');
+                    .find((key): key is FeeLevel['label'] => composedLevels[key].type !== 'error');
                 // switch to it
                 if (nearest) {
                     composed = composedLevels[nearest];

@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { FeeLevel } from '@trezor/connect';
-import { Control, UseFormMethods } from 'react-hook-form';
+import { Control, UseFormReturn } from 'react-hook-form';
 import { SelectBar, variables } from '@trezor/components';
 import { FiatValue, FormattedCryptoAmount, Translation } from 'src/components/suite';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
@@ -111,7 +111,7 @@ const buildFeeOptions = (levels: FeeLevel[]) =>
         value: label,
     }));
 
-type FormMethods = UseFormMethods<{
+type FormMethods = UseFormReturn<{
     selectedFee?: FeeLevel['label'];
     feePerUnit?: string;
     feeLimit?: string;

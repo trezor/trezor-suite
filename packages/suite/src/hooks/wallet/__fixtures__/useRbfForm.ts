@@ -767,7 +767,7 @@ export const composeAndSign = [
         },
     },
     {
-        description: 'used utxo is to low to do anything with it.',
+        description: 'used utxo is too low to do anything with it.',
         store: {
             selectedAccount: {
                 ...BTC_ACCOUNT,

@@ -30,7 +30,7 @@ const AccountLabelFieldHint = ({ formControl }: AccountLabelFieldHintProps) => {
     return (
         <Box paddingLeft="small">
             <Text variant="label" color="textSubdued">
-                {accountLabel.length} / {MAX_ACCOUNT_LABEL_LENGTH} letters
+                {accountLabel ? accountLabel.length : 0} / {MAX_ACCOUNT_LABEL_LENGTH} letters
             </Text>
         </Box>
     );

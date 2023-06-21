@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
-import { UseFormMethods } from 'react-hook-form';
+import { FieldPath, UseFormReturn } from 'react-hook-form';
 import {
     FormState,
     UseSendFormState,
@@ -15,8 +15,9 @@ import { useActions } from 'src/hooks/suite';
 import { isChanged } from 'src/utils/suite/comparisonUtils';
 import * as sendFormActions from 'src/actions/wallet/sendFormActions';
 import { findComposeErrors } from '@suite-common/wallet-utils';
+import { FeeLevel } from '@trezor/connect';
 
-type Props = UseFormMethods<FormState> & {
+type Props = UseFormReturn<FormState> & {
     state: UseSendFormState;
     excludedUtxos: ExcludedUtxos;
     account: UseSendFormState['account']; // account from the component props !== state.account
@@ -42,7 +43,7 @@ export const useSendFormCompose = ({
 }: Props) => {
     const [composedLevels, setComposedLevels] =
         useState<SendContextValues['composedLevels']>(undefined);
-    const [composeField, setComposeField] = useState<string | undefined>(undefined);
+    const [composeField, setComposeField] = useState<FieldPath<FormState> | undefined>(undefined);
     const [draftSaveRequest, setDraftSaveRequest] = useState(false);
 
     const { composeTransaction } = useActions({
@@ -134,7 +135,7 @@ export const useSendFormCompose = ({
     // react-hook-form doesn't propagate values immediately. New calculated FormState is available until render tick
     // IMPORTANT NOTE: Processing request without useEffect will use outdated FormState values (FormState before input.onChange)
     // NOTE: this function doesn't have to be wrapped in useCallback since no component is using it as a hook dependency and it will be cleared by garbage collector (useCallback are not)
-    const composeRequest = (field = 'outputs.0.amount') => {
+    const composeRequest = (field: FieldPath<FormState> | undefined = 'outputs.0.amount') => {
         // reset precomposed transactions
         setComposedLevels(undefined);
         // set ref for later use in useEffect which handle composedLevels change
@@ -226,7 +227,7 @@ export const useSendFormCompose = ({
             !selectedFee || (typeof setMaxOutputId === 'number' && selectedFee !== 'custom');
         if (shouldSwitch && composed.type === 'error') {
             // find nearest possible tx
-            const nearest = Object.keys(composedLevels).find(
+            const nearest = (Object.keys(composedLevels) as FeeLevel['label'][]).find(
                 key => composedLevels[key].type !== 'error',
             );
             // switch to it
