@@ -152,7 +152,6 @@ export const useCoinmarketSellForm = ({
 
     const methods = useForm<SellFormState>({
         mode: 'onChange',
-        shouldUnregister: false, // NOTE: tracking custom fee inputs
         defaultValues: isDraft ? draft : defaultValues,
     });
 

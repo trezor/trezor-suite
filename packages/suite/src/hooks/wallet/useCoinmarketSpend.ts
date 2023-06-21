@@ -122,7 +122,7 @@ export const useCoinmarketSpend = ({
         }
     }, [state, initState]);
 
-    const useFormMethods = useForm<FormState>({ mode: 'onChange', shouldUnregister: false });
+    const useFormMethods = useForm<FormState>({ mode: 'onChange' });
     const { reset, register } = useFormMethods;
 
     // react-hook-form auto register custom form fields (without HTMLElement)

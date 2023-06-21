@@ -168,7 +168,7 @@ export const useRbf = (props: UseRbfProps) => {
     }, [state, initState]);
 
     // react-hook-form
-    const useFormMethods = useForm<FormState>({ mode: 'onChange', shouldUnregister: false });
+    const useFormMethods = useForm<FormState>({ mode: 'onChange' });
     const { reset, register, control, setValue, getValues, formState } = useFormMethods;
 
     // react-hook-form auto register custom form fields (without HTMLElement)

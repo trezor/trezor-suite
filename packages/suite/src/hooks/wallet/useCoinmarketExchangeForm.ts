@@ -145,7 +145,6 @@ export const useCoinmarketExchangeForm = ({
 
     const methods = useForm<ExchangeFormState>({
         mode: 'onChange',
-        shouldUnregister: false, // NOTE: tracking custom fee inputs
         defaultValues: isDraft ? draft : defaultValues,
     });
     const { reset, register, setValue, getValues, setError, clearErrors, formState, control } =

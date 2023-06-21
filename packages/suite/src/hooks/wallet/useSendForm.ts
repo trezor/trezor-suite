@@ -113,7 +113,6 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
     // register `react-hook-form`, defaultValues are set later in "loadDraft" useEffect block
     const useFormMethods = useForm<FormState>({
         mode: 'onChange',
-        shouldUnregister: false,
     });
 
     const { control, reset, register, getValues, formState, setValue } = useFormMethods;
@@ -334,8 +333,8 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
 
     // register custom form fields (without HTMLElement)
     useEffect(() => {
-        register({ name: 'setMaxOutputId', type: 'custom' });
-        register({ name: 'options', type: 'custom' });
+        register({ name: 'setMaxOutputId', type: 'custom', shouldUnregister: true });
+        register({ name: 'options', type: 'custom', shouldUnregister: true });
     }, [register]);
 
     // handle draft change
