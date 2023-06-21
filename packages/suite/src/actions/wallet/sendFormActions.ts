@@ -30,6 +30,7 @@ import {
     PrecomposedTransactionFinal,
     PrecomposedTransactionFinalCardano,
 } from '@suite-common/wallet-types';
+import { cloneObject } from '@trezor/utils';
 import * as sendFormBitcoinActions from './send/sendFormBitcoinActions';
 import * as sendFormEthereumActions from './send/sendFormEthereumActions';
 import * as sendFormRippleActions from './send/sendFormRippleActions';
@@ -103,19 +104,6 @@ export const removeDraft = () => (dispatch: Dispatch, getState: GetState) => {
     }
 };
 
-// TODO: replace by structuredClone() after updating TS
-const clone = <T>(info: T): T => {
-    const jsonString = JSON.stringify(info);
-
-    if (jsonString === undefined) {
-        // jsonString === undefined IF and only IF obj === undefined
-        // therefore no need to clone
-        return info;
-    }
-
-    return JSON.parse(jsonString);
-};
-
 export const convertDrafts = () => (dispatch: Dispatch, getState: GetState) => {
     const { route } = getState().router;
 
@@ -150,7 +138,7 @@ export const convertDrafts = () => (dispatch: Dispatch, getState: GetState) => {
         const conversionToUse =
             areSatsSelected && areSatsSupported ? amountToSatoshi : formatAmount;
 
-        const updatedDraft = clone(draft);
+        const updatedDraft = cloneObject(draft);
         const decimals = getAccountDecimals(relatedAccount.symbol)!;
 
         updatedDraft.outputs.forEach(output => {

@@ -5,6 +5,7 @@ export * from './arrayToDictionary';
 export * as bufferUtils from './bufferUtils';
 export * from './bytesToHumanReadable';
 export * from './capitalizeFirstLetter';
+export * from './cloneObject';
 export * from './countBytesInString';
 export * from './createDeferred';
 export * from './createTimeoutPromise';
