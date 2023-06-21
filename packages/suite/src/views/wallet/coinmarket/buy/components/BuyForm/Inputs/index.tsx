@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import invityAPI from 'src/services/suite/invityAPI';
 import Bignumber from 'bignumber.js';
@@ -62,17 +62,15 @@ const Inputs = () => {
     const cryptoInput = 'cryptoInput';
     const currencySelect = 'currencySelect';
     const cryptoSelect = 'cryptoSelect';
-    const [activeInput, setActiveInput] = useState<'fiatInput' | 'cryptoInput'>(fiatInput);
-    // if cryptoInput has a valid value, set it as the activeInput
-    if (cryptoInputValue && !errors[cryptoInput] && activeInput === fiatInput) {
-        setActiveInput(cryptoInput);
-    }
 
+    // Trigger validation once amountLimits are loaded after first submit
     useEffect(() => {
-        trigger([activeInput]);
-    }, [activeInput, amountLimits, trigger]);
+        if (amountLimits) {
+            trigger([cryptoInput, fiatInput]);
+        }
+    }, [amountLimits, trigger]);
 
-    const fiatInputValue = getValues('fiatInput');
+    const fiatInputValue = getValues(fiatInput);
 
     const fiatInputRules = useMemo<TypedValidationRules>(
         () => ({
@@ -239,11 +237,7 @@ const Inputs = () => {
                     control={control}
                     noTopLabel
                     rules={fiatInputRules}
-                    onFocus={() => {
-                        setActiveInput(fiatInput);
-                    }}
                     onChange={() => {
-                        setActiveInput(fiatInput);
                         setValue(cryptoInput, '');
                         clearErrors(cryptoInput);
                     }}
@@ -285,9 +279,6 @@ const Inputs = () => {
             <Right>
                 <NumberInput
                     control={control}
-                    onFocus={() => {
-                        setActiveInput(cryptoInput);
-                    }}
                     onChange={() => {
                         setValue(fiatInput, '');
                         clearErrors(fiatInput);

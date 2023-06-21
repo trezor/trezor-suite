@@ -79,41 +79,40 @@ export const Locktime = ({ close }: Props) => {
     const inputName = 'bitcoinLockTime';
     const inputValue = getDefaultValue(inputName) || '';
     const error = errors[inputName];
+    const { ref: inputRef, ...inputField } = register(inputName, {
+        onChange: () => {
+            if (!error) {
+                if (rbfEnabled) toggleOption('bitcoinRBF');
+                if (broadcastEnabled) toggleOption('broadcast');
+            }
+            composeTransaction(inputName);
+        },
+        required: 'LOCKTIME_IS_NOT_SET',
+        validate: (value = '') => {
+            const amountBig = new BigNumber(value);
+            if (amountBig.isNaN()) {
+                return 'LOCKTIME_IS_NOT_NUMBER';
+            }
+            if (amountBig.lte(0)) {
+                return 'LOCKTIME_IS_TOO_LOW';
+            }
+            if (!isInteger(value)) {
+                return 'LOCKTIME_IS_NOT_INTEGER';
+            }
+            // max unix timestamp * 2 (2147483647 * 2)
+            if (amountBig.gt(4294967294)) {
+                return 'LOCKTIME_IS_TOO_BIG';
+            }
+        },
+    });
 
     return (
         <Wrapper>
             <Input
                 inputState={getInputState(error, inputValue)}
                 isMonospace
-                name={inputName}
                 defaultValue={inputValue}
                 maxLength={MAX_LENGTH.BTC_LOCKTIME}
-                innerRef={register({
-                    required: 'LOCKTIME_IS_NOT_SET',
-                    validate: (value: string) => {
-                        const amountBig = new BigNumber(value);
-                        if (amountBig.isNaN()) {
-                            return 'LOCKTIME_IS_NOT_NUMBER';
-                        }
-                        if (amountBig.lte(0)) {
-                            return 'LOCKTIME_IS_TOO_LOW';
-                        }
-                        if (!isInteger(value)) {
-                            return 'LOCKTIME_IS_NOT_INTEGER';
-                        }
-                        // max unix timestamp * 2 (2147483647 * 2)
-                        if (amountBig.gt(4294967294)) {
-                            return 'LOCKTIME_IS_TOO_BIG';
-                        }
-                    },
-                })}
-                onChange={() => {
-                    if (!error) {
-                        if (rbfEnabled) toggleOption('bitcoinRBF');
-                        if (broadcastEnabled) toggleOption('broadcast');
-                    }
-                    composeTransaction(inputName);
-                }}
                 label={
                     <Label>
                         <Icon size={16} icon="CALENDAR" />
@@ -125,6 +124,8 @@ export const Locktime = ({ close }: Props) => {
                 labelRight={<Icon size={18} icon="CROSS" onClick={close} />}
                 bottomText={<InputError error={error} />}
                 data-test="locktime-input"
+                innerRef={inputRef}
+                {...inputField}
             />
             {isFeatureFlagEnabled('RBF') && network.features?.includes('rbf') && (
                 <RbfMessage>

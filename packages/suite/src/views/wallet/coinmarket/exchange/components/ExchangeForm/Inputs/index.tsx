@@ -42,6 +42,7 @@ const Inputs = () => {
     const tokenAddress = outputs?.[0]?.token;
     const tokenData = account.tokens?.find(t => t.contract === tokenAddress);
 
+    // Trigger validation once amountLimits are loaded after first submit
     useEffect(() => {
         trigger([CRYPTO_INPUT]);
     }, [amountLimits, trigger]);

@@ -2,7 +2,7 @@ import { createContext, useContext, useCallback, useState, useEffect } from 'rea
 import { useForm, useWatch } from 'react-hook-form';
 import type { ExchangeTradeQuoteRequest } from 'invity-api';
 import { isChanged } from 'src/utils/suite/comparisonUtils';
-import { useActions, useSelector } from 'src/hooks/suite';
+import { useActions, useSelector, useTranslation } from 'src/hooks/suite';
 import invityAPI from 'src/services/suite/invityAPI';
 import {
     amountToSatoshi,
@@ -143,14 +143,14 @@ export const useCoinmarketExchangeForm = ({
         }
     }, [state, initState, account, network, device, accounts]);
 
-    const methods = useForm<ExchangeFormState>({
+    const methods = useForm({
         mode: 'onChange',
         defaultValues: isDraft ? draft : defaultValues,
     });
     const { reset, register, setValue, getValues, setError, clearErrors, formState, control } =
         methods;
 
-    const values = useWatch<ExchangeFormState>({ control });
+    const values = useWatch({ control });
 
     useDebounce(
         () => {
@@ -181,8 +181,8 @@ export const useCoinmarketExchangeForm = ({
 
     // react-hook-form auto register custom form fields (without HTMLElement)
     useEffect(() => {
-        register({ name: 'options', type: 'custom' });
-        register({ name: 'setMaxOutputId', type: 'custom' });
+        register('options');
+        register('setMaxOutputId');
     }, [register]);
 
     // react-hook-form reset, set default values
@@ -203,6 +203,8 @@ export const useCoinmarketExchangeForm = ({
     });
 
     const [amountLimits, setAmountLimits] = useState<AmountLimits | undefined>(undefined);
+
+    const { translationString } = useTranslation();
 
     const updateFiatValue = useCallback(
         (amount: string) => {
@@ -269,13 +271,11 @@ export const useCoinmarketExchangeForm = ({
         const composed = composedLevels[selectedFeeLevel];
         if (!composed) return;
 
-        if (composed.type === 'error') {
-            if (composed.errorMessage) {
-                setError(CRYPTO_INPUT, {
-                    type: 'compose',
-                    message: composed.errorMessage as any,
-                });
-            }
+        if (composed.type === 'error' && composed.errorMessage) {
+            setError(CRYPTO_INPUT, {
+                type: 'compose',
+                message: translationString(composed.errorMessage.id, composed.errorMessage.values),
+            });
         }
         // set calculated and formatted "max" value to `Amount` input
         else if (composed.type === 'final') {
@@ -296,6 +296,7 @@ export const useCoinmarketExchangeForm = ({
         setValue,
         updateFiatValue,
         selectedFee,
+        translationString,
     ]);
 
     useDidUpdate(() => {

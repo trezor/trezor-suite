@@ -175,6 +175,12 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
         }
     };
 
+    const { ref: inputRef, ...inputField } = register(inputName, {
+        required: 'RECIPIENT_IS_NOT_SET',
+        validate: validateAddress,
+        onChange: () => composeTransaction(`outputs.${outputId}.amount`),
+    });
+
     return (
         <Input
             inputState={inputState}
@@ -233,7 +239,6 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                     />
                 ) : undefined
             }
-            onChange={() => composeTransaction(`outputs.${outputId}.amount`)}
             bottomText={
                 addressError ? (
                     <InputError error={addressError} />
@@ -241,14 +246,11 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                     <AddressLabeling address={addressValue} knownOnly />
                 )
             }
-            name={inputName}
             data-test={inputName}
             defaultValue={addressValue}
             maxLength={MAX_LENGTH.ADDRESS}
-            innerRef={register({
-                required: 'RECIPIENT_IS_NOT_SET',
-                validate: validateAddress,
-            })}
+            innerRef={inputRef}
+            {...inputField}
         />
     );
 };

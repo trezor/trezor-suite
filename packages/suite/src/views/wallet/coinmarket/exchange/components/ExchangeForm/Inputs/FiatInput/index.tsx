@@ -21,7 +21,6 @@ const FiatInput = () => {
         network,
         clearErrors,
         formState: { errors },
-        trigger,
         updateSendCryptoValue,
         setValue,
         getValues,
@@ -63,9 +62,6 @@ const FiatInput = () => {
     return (
         <StyledInput
             control={control}
-            onFocus={() => {
-                trigger([FIAT_INPUT]);
-            }}
             onChange={value => {
                 setValue('setMaxOutputId', undefined);
                 if (fiatError) {

@@ -331,8 +331,8 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
 
     // register custom form fields (without HTMLElement)
     useEffect(() => {
-        register({ name: 'setMaxOutputId', type: 'custom', shouldUnregister: true });
-        register({ name: 'options', type: 'custom', shouldUnregister: true });
+        register('setMaxOutputId', { shouldUnregister: true });
+        register('options', { shouldUnregister: true });
     }, [register]);
 
     // handle draft change

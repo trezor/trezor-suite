@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
+
 import { Input, Button, H3, CollapsibleBox } from '@trezor/components';
 import { Translation, TooltipSymbol } from 'src/components/suite';
 import InputError from 'src/components/wallet/InputError';
@@ -77,8 +78,16 @@ export const CustomBackends = ({ network, onCancel }: CustomBackendsProps) => {
 
     const { symbol: coin } = network;
 
-    const { type, urls, input, changeType, addUrl, removeUrl, save, hasOnlyOnions } =
-        useBackendsForm(coin);
+    const {
+        type,
+        urls,
+        input: { error, name, placeholder, register, reset, validate, value },
+        changeType,
+        addUrl,
+        removeUrl,
+        save,
+        hasOnlyOnions,
+    } = useBackendsForm(coin);
 
     const onSaveClick = () => {
         if (!isTorEnabled && hasOnlyOnions()) {
@@ -109,6 +118,7 @@ export const CustomBackends = ({ network, onCancel }: CustomBackendsProps) => {
 
     const defaultUrls = useDefaultUrls(coin);
     const editable = type !== 'default';
+    const { ref: inputRef, ...inputField } = register(name, { validate });
 
     return (
         <>
@@ -151,12 +161,12 @@ export const CustomBackends = ({ network, onCancel }: CustomBackendsProps) => {
                     <Input
                         type="text"
                         noTopLabel
-                        name={input.name}
-                        data-test={`@settings/advance/${input.name}`}
-                        placeholder={input.placeholder}
-                        innerRef={input.ref}
-                        inputState={input.error ? 'error' : undefined}
-                        bottomText={<InputError error={input.error} />}
+                        data-test={`@settings/advance/${name}`}
+                        placeholder={placeholder}
+                        inputState={error ? 'error' : undefined}
+                        bottomText={<InputError error={error} />}
+                        innerRef={inputRef}
+                        {...inputField}
                     />
                 )}
 
@@ -166,10 +176,10 @@ export const CustomBackends = ({ network, onCancel }: CustomBackendsProps) => {
                         icon="PLUS"
                         data-test="@settings/advance/button/add"
                         onClick={() => {
-                            addUrl(input.value);
-                            input.reset();
+                            addUrl(value);
+                            reset();
                         }}
-                        isDisabled={!!input.error || input.value === ''}
+                        isDisabled={!!error || value === ''}
                     >
                         <Translation id="TR_ADD_NEW_BLOCKBOOK_BACKEND" />
                     </AddUrlButton>
@@ -185,7 +195,7 @@ export const CustomBackends = ({ network, onCancel }: CustomBackendsProps) => {
                 <SaveButton
                     variant="primary"
                     onClick={onSaveClick}
-                    isDisabled={!!input.error}
+                    isDisabled={!!error}
                     data-test="@settings/advance/button/save"
                 >
                     <Translation id="TR_CONFIRM" />

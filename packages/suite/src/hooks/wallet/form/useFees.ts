@@ -54,8 +54,8 @@ export const useFees = ({
 
     // register custom form fields (without HTMLElement)
     useEffect(() => {
-        register({ name: 'selectedFee', type: 'custom', shouldUnregister: true }); // NOTE: custom is not a fee level, its a type of `react-hook-form` field
-        register({ name: 'estimatedFeeLimit', type: 'custom', shouldUnregister: true });
+        register('selectedFee', { shouldUnregister: true });
+        register('estimatedFeeLimit', { shouldUnregister: true });
     }, [register]);
 
     // watch selectedFee change and update local references

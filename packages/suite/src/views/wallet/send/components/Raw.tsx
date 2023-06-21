@@ -12,11 +12,6 @@ import { getInputState, isHexValid } from '@suite-common/wallet-utils';
 import { Network } from 'src/types/wallet';
 import { OpenGuideFromTooltip } from 'src/components/guide';
 
-const Wrapper = styled.div`
-    /* display: flex;
-    padding: 6px 12px; */
-`;
-
 const StyledCard = styled(Card)`
     display: flex;
     flex-direction: row;
@@ -62,28 +57,22 @@ const Raw = ({ network }: { network: Network }) => {
     const inputValue = getValues(inputName) || '';
     const error = errors[inputName];
     const inputState = getInputState(error, inputValue);
+    const { ref: inputRef, ...inputField } = register(inputName, {
+        required: 'RAW_TX_NOT_SET',
+        validate: (value: string) => {
+            if (!isHexValid(value, network.networkType === 'ethereum' ? '0x' : undefined))
+                return 'DATA_NOT_VALID_HEX';
+        },
+    });
 
     return (
-        <Wrapper>
+        <>
             <StyledCard>
                 <Textarea
                     inputState={inputState}
                     isMonospace
-                    name={inputName}
                     data-test={inputName}
                     defaultValue={inputValue}
-                    innerRef={register({
-                        required: 'RAW_TX_NOT_SET',
-                        validate: (value: string) => {
-                            if (
-                                !isHexValid(
-                                    value,
-                                    network.networkType === 'ethereum' ? '0x' : undefined,
-                                )
-                            )
-                                return 'DATA_NOT_VALID_HEX';
-                        },
-                    })}
                     bottomText={<InputError error={error} />}
                     label={
                         <Tooltip
@@ -100,6 +89,8 @@ const Raw = ({ network }: { network: Network }) => {
                         </Tooltip>
                     }
                     labelRight={<Icon size={20} icon="CROSS" onClick={() => sendRaw(false)} />}
+                    innerRef={inputRef}
+                    {...inputField}
                 />
             </StyledCard>
             <ButtonWrapper>
@@ -121,7 +112,7 @@ const Raw = ({ network }: { network: Network }) => {
                     <Translation id="SEND_TRANSACTION" />
                 </ButtonSend>
             </ButtonWrapper>
-        </Wrapper>
+        </>
     );
 };
 

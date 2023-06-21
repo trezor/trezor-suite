@@ -1,7 +1,7 @@
 import { createContext, useContext, useCallback, useState, useEffect } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import type { SellFiatTradeQuoteRequest } from 'invity-api';
-import { useActions, useSelector } from 'src/hooks/suite';
+import { useActions, useSelector, useTranslation } from 'src/hooks/suite';
 import invityAPI from 'src/services/suite/invityAPI';
 import {
     fromFiatCurrency,
@@ -119,9 +119,6 @@ export const useCoinmarketSellForm = ({
     const localCurrencyOption = { value: localCurrency, label: localCurrency.toUpperCase() };
 
     const [state, setState] = useState<ReturnType<typeof useSellState>>(undefined);
-    const [activeInput, setActiveInput] = useState<typeof FIAT_INPUT | typeof CRYPTO_INPUT>(
-        FIAT_INPUT,
-    );
 
     const { saveDraft, getDraft, removeDraft } = useFormDraft<SellFormState>('coinmarket-sell');
     const draft = getDraft(account.key);
@@ -155,17 +152,8 @@ export const useCoinmarketSellForm = ({
         defaultValues: isDraft ? draft : defaultValues,
     });
 
-    const {
-        reset,
-        register,
-        setValue,
-        getValues,
-        setError,
-        clearErrors,
-        trigger,
-        control,
-        formState,
-    } = methods;
+    const { reset, register, setValue, getValues, setError, clearErrors, control, formState } =
+        methods;
 
     const values = useWatch<SellFormState>({ control });
 
@@ -198,9 +186,9 @@ export const useCoinmarketSellForm = ({
 
     // react-hook-form auto register custom form fields (without HTMLElement)
     useEffect(() => {
-        register({ name: 'options', type: 'custom' });
-        register({ name: 'outputs', type: 'custom' });
-        register({ name: 'setMaxOutputId', type: 'custom' });
+        register('options');
+        register('outputs');
+        register('setMaxOutputId');
     }, [register]);
 
     // react-hook-form reset, set default values
@@ -281,6 +269,8 @@ export const useCoinmarketSellForm = ({
         ],
     );
 
+    const { translationString } = useTranslation();
+
     useEffect(() => {
         if (!composedLevels) return;
         const values = getValues();
@@ -289,10 +279,10 @@ export const useCoinmarketSellForm = ({
         const composed = composedLevels[selectedFeeLevel];
         if (!composed) return;
 
-        if (composed.type === 'error' && composed.errorMessage && activeInput === CRYPTO_INPUT) {
+        if (composed.type === 'error' && composed.errorMessage) {
             setError(CRYPTO_INPUT, {
                 type: 'compose',
-                message: composed.errorMessage as any,
+                message: translationString(composed.errorMessage.id, composed.errorMessage.values),
             });
         }
         // set calculated and formatted "max" value to `Amount` input
@@ -312,7 +302,7 @@ export const useCoinmarketSellForm = ({
         setError,
         setValue,
         selectedFee,
-        activeInput,
+        translationString,
     ]);
 
     useDidUpdate(() => {
@@ -350,7 +340,6 @@ export const useCoinmarketSellForm = ({
             const limits = getAmountLimits(request, allQuotes);
             if (limits) {
                 setAmountLimits(limits);
-                trigger([CRYPTO_INPUT, FIAT_INPUT]);
             } else {
                 const [quotes, alternativeQuotes] = processQuotes(allQuotes);
                 saveQuotes(quotes, alternativeQuotes);
@@ -398,8 +387,6 @@ export const useCoinmarketSellForm = ({
         handleClearFormButtonClick,
         formState,
         isDraft,
-        activeInput,
-        setActiveInput,
     };
 };
 
