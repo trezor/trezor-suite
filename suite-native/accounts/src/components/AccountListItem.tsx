@@ -79,7 +79,7 @@ export const AccountListItem = ({ account, areTokensDisplayed = false }: Account
                     network={account.symbol}
                 />
                 <CryptoAmountFormatter
-                    value={account.balance}
+                    value={account.availableBalance}
                     network={account.symbol}
                     isBalance={false}
                     numberOfLines={1}

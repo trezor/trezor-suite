@@ -81,7 +81,7 @@ const TransactionListHeaderContent = ({
     if (isTestnetAccount) {
         return (
             <AccountDetailCryptoValue
-                value={account.balance}
+                value={account.availableBalance}
                 networkSymbol={account.symbol}
                 isBalance={false}
             />
