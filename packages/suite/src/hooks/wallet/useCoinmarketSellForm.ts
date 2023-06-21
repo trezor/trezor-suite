@@ -36,7 +36,7 @@ import { useCoinmarketNavigation } from 'src/hooks/wallet/useCoinmarketNavigatio
 import type { AppState } from 'src/types/suite';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { useDidUpdate } from '@trezor/react-utils';
-import { TypedValidationRules } from '@suite-common/wallet-types';
+import { SuiteUseFormRegister } from '@suite-common/wallet-types';
 
 export const SellFormContext = createContext<SellFormContextValues | null>(null);
 SellFormContext.displayName = 'CoinmarketSellContext';
@@ -363,7 +363,7 @@ export const useCoinmarketSellForm = ({
         defaultCountry,
         defaultCurrency,
         onSubmit,
-        register: register as (rules?: TypedValidationRules) => (ref: any) => void,
+        register: register as SuiteUseFormRegister<SellFormState>,
         sellInfo,
         changeFeeLevel,
         saveQuoteRequest,

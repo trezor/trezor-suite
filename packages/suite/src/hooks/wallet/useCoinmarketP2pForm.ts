@@ -14,7 +14,7 @@ import useDebounce from 'react-use/lib/useDebounce';
 import { isChanged } from 'src/utils/suite/comparisonUtils';
 import { useCoinmarketNavigation } from 'src/hooks/wallet/useCoinmarketNavigation';
 import invityAPI from 'src/services/suite/invityAPI';
-import { TypedValidationRules } from '@suite-common/wallet-types';
+import { SuiteUseFormRegister } from '@suite-common/wallet-types';
 
 export const P2pFormContext = createContext<P2pFormContextValues | null>(null);
 P2pFormContext.displayName = 'CoinmarketP2pContext';
@@ -104,7 +104,7 @@ export const useCoinmarketP2pForm = (props: UseCoinmarketP2pFormProps): P2pFormC
 
     return {
         ...methods,
-        register: register as (rules?: TypedValidationRules) => (ref: any) => void,
+        register: register as SuiteUseFormRegister<FormState>,
         account,
         defaultCountry,
         defaultCurrency,

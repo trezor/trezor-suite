@@ -1,9 +1,8 @@
 import type { PaymentFrequency } from 'invity-api';
 import type { WithSelectedAccountLoadedProps } from 'src/components/wallet';
-import type { TypedValidationRules } from 'src/types/wallet/form';
-import type { UseFormMethods } from 'react-hook-form';
 import type { CountryOption, PaymentFrequencyOption } from 'src/types/wallet/coinmarketCommonTypes';
 import type { Account } from 'src/types/wallet';
+import { SuiteUseFormReturn } from '@suite-common/wallet-types';
 
 export type UseSavingsSetupProps = WithSelectedAccountLoadedProps;
 
@@ -14,8 +13,7 @@ export interface SavingsSetupFormState {
     country?: CountryOption;
 }
 
-export type SavingsSetupContextValues = Omit<UseFormMethods<SavingsSetupFormState>, 'register'> & {
-    register: (rules?: TypedValidationRules) => (ref: any) => void; // TODO: ReturnType of UseFormMethods['register'] union
+export interface SavingsSetupContextValues extends SuiteUseFormReturn<SavingsSetupFormState> {
     onSubmit: (data: SavingsSetupFormState) => void;
     defaultPaymentFrequency?: PaymentFrequency;
     defaultFiatAmount?: string;
@@ -37,7 +35,7 @@ export type SavingsSetupContextValues = Omit<UseFormMethods<SavingsSetupFormStat
     noProviders: boolean;
     userCountry?: string;
     defaultCountryOption?: CountryOption;
-};
+}
 
 export type PaymentFrequencyTranslationId =
     | 'TR_SAVINGS_SETUP_PAYMENT_FREQUENCY_DAILY'

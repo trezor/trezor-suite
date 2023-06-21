@@ -9,10 +9,9 @@ import * as protocolActions from 'src/actions/suite/protocolActions';
 import { AppState } from 'src/types/suite';
 import {
     FormState,
-    Output,
     SendContextValues,
+    SuiteUseFormRegister,
     UseSendFormState,
-    TypedValidationRules,
 } from '@suite-common/wallet-types';
 import {
     getFeeLevels,
@@ -370,7 +369,7 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
     return {
         ...state,
         ...useFormMethods,
-        register: register as (rules?: TypedValidationRules) => (ref: any) => void,
+        register: register as SuiteUseFormRegister<FormState>,
         outputs: outputsFieldArray.fields,
         composedLevels,
         updateContext,
