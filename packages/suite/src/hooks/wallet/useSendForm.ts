@@ -115,7 +115,7 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
         mode: 'onChange',
     });
 
-    const { control, reset, register, getValues, formState, setValue } = useFormMethods;
+    const { control, reset, register, getValues, formState, setValue, trigger } = useFormMethods;
 
     // register array fields (outputs array in react-hook-form)
     const outputsFieldArray = useFieldArray({
@@ -243,7 +243,7 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
         const values = getLoadedValues({ outputs });
         reset(values);
         updateContext({ isLoading: false, isDirty: true });
-        const valid = await control.trigger();
+        const valid = await trigger();
         if (valid) {
             composeRequest();
         }

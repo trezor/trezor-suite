@@ -1,10 +1,5 @@
 import React, { useCallback, useLayoutEffect, useRef, useState } from 'react';
-import {
-    ControllerRenderProps,
-    InputState,
-    useController,
-    UseControllerOptions,
-} from 'react-hook-form';
+import { useController, UseControllerOptions } from 'react-hook-form';
 import BigNumber from 'bignumber.js';
 
 import { Input, InputProps } from '@trezor/components';
@@ -69,14 +64,6 @@ const cleanValueString = (value: string, locale: Locale) => {
 
 const DECIMAL_SEPARATORS = [',', '.'];
 
-type TypedMethods = {
-    field: Omit<ControllerRenderProps<Record<string, unknown>>, 'ref' | 'value'> & {
-        value: string | undefined;
-        ref?: React.RefObject<HTMLInputElement>;
-    };
-    meta: InputState;
-};
-
 interface NumberInputProps extends Omit<InputProps, 'onChange' | 'type'> {
     name: string;
     rules?: TypedValidationRules;
@@ -94,9 +81,9 @@ export const NumberInput = ({
     ...props
 }: NumberInputProps) => {
     const {
-        field: { value = '', onChange, ref: inputRef, ...controlProps },
-        meta: { invalid },
-    }: TypedMethods = useController<Record<string, unknown>>({
+        field: { value = '', onChange, ref, ...controlProps },
+        fieldState: { invalid },
+    } = useController({
         name,
         control,
         rules: rules as UseControllerOptions<Record<string, unknown>>['rules'],
@@ -109,6 +96,7 @@ export const NumberInput = ({
     const [changeHistory, setChangeHistory] = useState<string[]>([value]);
     const [redoHistory, setRedoHistory] = useState<string[]>([]);
 
+    const inputRef = useRef<HTMLInputElement | null>(null);
     const previousFormValueRef = useRef<string | undefined>(value);
     const previousDisplayValueRef = useRef<string | undefined>(displayValue);
 
@@ -118,7 +106,7 @@ export const NumberInput = ({
             const handleSetDisplayValue = (newDisplayValue: string) => {
                 setDisplayValue(newDisplayValue);
 
-                if (!inputRef.current) {
+                if (!inputRef?.current) {
                     return;
                 }
 
@@ -463,7 +451,10 @@ export const NumberInput = ({
         <Input
             {...props}
             {...controlProps}
-            innerRef={inputRef}
+            innerRef={e => {
+                ref(e);
+                inputRef.current = e;
+            }}
             value={displayValue}
             inputMode="decimal"
             onSelect={handleSelect}

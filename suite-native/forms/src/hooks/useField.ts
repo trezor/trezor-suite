@@ -1,4 +1,4 @@
-import { FieldError, useController } from 'react-hook-form';
+import { useController } from 'react-hook-form';
 import { useContext } from 'react';
 
 import { FieldName } from '../types';
@@ -12,23 +12,24 @@ interface UseFieldArgs {
 
 export const useField = ({ name, label, defaultValue }: UseFieldArgs) => {
     // TODO: once react-hook-form is updated to 7+ we can use the `errors` from `fieldState` on useController
-    const { control, errors } = useContext(FormContext);
+    const { control } = useContext(FormContext);
 
-    if (!control || !errors) {
+    if (!control) {
         throw new Error('Field must be used within Form component');
     }
 
-    const error: FieldError | undefined = errors?.[name];
-    // TODO: proper error message resolution using intl
-    const errorMessage = error?.message?.replace(name, label);
-    const hasError = !!error;
     const {
         field: { onBlur, onChange, value },
+        fieldState: { error },
     } = useController({
         name,
         control,
         defaultValue,
     });
+
+    // TODO: proper error message resolution using intl
+    const errorMessage = error?.message?.replace(name, label);
+    const hasError = !!error;
 
     return {
         errorMessage,
