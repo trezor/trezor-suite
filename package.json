@@ -26,7 +26,7 @@
         "suite:dev": "yarn workspace @trezor/suite-web dev",
         "suite:dev:desktop": "yarn workspace @trezor/suite-desktop dev",
         "_______ Testing _______": "Testing, linting, type checking...",
-        "type-check": "yarn nx run-many --target=type-check --skip-nx-cache",
+        "type-check": "yarn nx run-many --target=type-check",
         "type-check:force": "rimraf -rf -- **/libDev && yarn type-check",
         "test:unit": "yarn nx run-many --target=test:unit",
         "lint:js": "yarn nx run-many --target=lint:js",
