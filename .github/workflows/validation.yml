@@ -42,7 +42,7 @@ jobs:
         run: yarn workspace @suite-common/message-system validate-config
       - run: git status
       - name: build libs
-        run: yarn nx:build:libs
+        run: yarn build:libs
       - run: git status
       - name: type check
         run: yarn nx:type-check
