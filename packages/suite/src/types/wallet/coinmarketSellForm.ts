@@ -1,10 +1,9 @@
 import type { AppState } from 'src/types/suite';
-import type { UseFormMethods, FormState as ReactHookFormState } from 'react-hook-form';
+import type { FormState as ReactHookFormState } from 'react-hook-form';
 import type { Account, Network, CoinFiatRates } from 'src/types/wallet';
 import type { FeeLevel } from '@trezor/connect';
 import type { SellFiatTrade, SellFiatTradeQuoteRequest, ExchangeCoinInfo } from 'invity-api';
 import type { CoinmarketSellAction, SellInfo } from 'src/actions/wallet/coinmarketSellActions';
-import type { TypedValidationRules } from './form';
 import type {
     FeeInfo,
     FormState,
@@ -26,13 +25,13 @@ export type UseCoinmarketSellFormProps = WithSelectedAccountLoadedProps;
 
 export type Props = WithSelectedAccountLoadedProps;
 
-export type SellFormState = FormState & {
+export interface SellFormState extends FormState {
     fiatInput?: string;
     fiatCurrencySelect: Option;
     cryptoInput?: string;
     cryptoCurrencySelect: Option;
     countrySelect: Option;
-};
+}
 
 export interface AmountLimits {
     currency: string;
@@ -42,8 +41,7 @@ export interface AmountLimits {
     maxFiat?: number;
 }
 
-export type SellFormContextValues = Omit<UseFormMethods<SellFormState>, 'register'> & {
-    register: (rules?: TypedValidationRules) => (ref: any) => void;
+export type SellFormContextValues = SuiteUseFormReturn<SellFormState> & {
     onSubmit: () => void;
     account: Account;
     defaultCountry: DefaultCountryOption;

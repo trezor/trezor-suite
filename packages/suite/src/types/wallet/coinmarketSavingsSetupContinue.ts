@@ -1,9 +1,8 @@
 import type { PaymentFrequency, SavingsKYCStatus, SavingsTrade } from 'invity-api';
 import type { WithSelectedAccountLoadedProps } from 'src/components/wallet';
-import type { TypedValidationRules } from 'src/types/wallet/form';
-import type { UseFormMethods } from 'react-hook-form';
 import type { Account } from 'src/types/wallet';
 import type { Option } from 'src/types/wallet/coinmarketCommonTypes';
+import type { SuiteUseFormReturn } from '@suite-common/wallet-types';
 
 export type UseSavingsSetupContinueProps = WithSelectedAccountLoadedProps;
 
@@ -14,11 +13,8 @@ export interface SavingsSetupContinueFormState {
     address?: string;
 }
 
-export type SavingsSetupContinueContextValues = Omit<
-    UseFormMethods<SavingsSetupContinueFormState>,
-    'register'
-> & {
-    register: (rules?: TypedValidationRules) => (ref: any) => void; // TODO: ReturnType of UseFormMethods['register'] union
+export interface SavingsSetupContinueContextValues
+    extends SuiteUseFormReturn<SavingsSetupContinueFormState> {
     onSubmit: (data: SavingsSetupContinueFormState) => void;
     annualSavingsFiatAmount: number;
     annualSavingsCryptoAmount: string;
@@ -38,4 +34,4 @@ export type SavingsSetupContinueContextValues = Omit<
     kycFinalStatus?: SavingsKYCStatus;
     selectedProviderName?: string;
     showReceivingAddressChangePaymentInfoLabel: boolean;
-};
+}

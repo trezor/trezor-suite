@@ -41,11 +41,6 @@ export const useSendFormOutputs = ({
                 setValue('setMaxOutputId', setMaxOutputId - 1);
             }
 
-            // TEMP: reset values for the Output which will be removed
-            // react-hook-form somehow keeps cached values which has been set "from the outside" using setValue TODO: investigate more
-            // use case example:
-            // add second Output > click "send-max" (calculated "max" value will be set after compose) > remove second Output > add second Output again
-            setValue(`outputs.${index}`, DEFAULT_PAYMENT);
             outputsFieldArray.remove(index);
         },
         [getValues, setValue, outputsFieldArray],
@@ -64,7 +59,7 @@ export const useSendFormOutputs = ({
                     ...values,
                     outputs: [DEFAULT_OPRETURN],
                 },
-                { errors: true },
+                { keepErrors: true },
             );
         }
     };

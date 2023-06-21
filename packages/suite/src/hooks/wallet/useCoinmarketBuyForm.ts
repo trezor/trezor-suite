@@ -21,7 +21,7 @@ import { useBitcoinAmountUnit } from './useBitcoinAmountUnit';
 import { amountToSatoshi, formatAmount } from '@suite-common/wallet-utils';
 import { useDidUpdate } from '@trezor/react-utils';
 import { CRYPTO_INPUT } from 'src/types/wallet/coinmarketSellForm';
-import { TypedValidationRules } from '@suite-common/wallet-types';
+import { SuiteUseFormRegister } from '@suite-common/wallet-types';
 
 export const BuyFormContext = createContext<BuyFormContextValues | null>(null);
 BuyFormContext.displayName = 'CoinmarketBuyContext';
@@ -170,7 +170,7 @@ export const useCoinmarketBuyForm = (props: UseCoinmarketBuyFormProps): BuyFormC
         onSubmit,
         defaultCountry,
         defaultCurrency,
-        register: register as (rules?: TypedValidationRules) => (ref: any) => void,
+        register: register as SuiteUseFormRegister<FormState>,
         buyInfo,
         exchangeCoinInfo,
         saveQuotes,

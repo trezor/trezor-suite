@@ -1,10 +1,10 @@
 import type { Account, Network } from 'src/types/wallet';
 import type { BuyInfo, saveQuotes, saveTrade } from 'src/actions/wallet/coinmarketBuyActions';
-import type { UseFormMethods, FormState as ReactHookFormState } from 'react-hook-form';
-import type { TypedValidationRules } from './form';
+import type { FormState as ReactHookFormState } from 'react-hook-form';
 import type { DefaultCountryOption, Option } from './coinmarketCommonTypes';
 import type { ExchangeCoinInfo } from 'invity-api';
 import type { WithSelectedAccountLoadedProps } from 'src/components/wallet';
+import { SuiteUseFormReturn } from '@suite-common/wallet-types';
 
 export type UseCoinmarketBuyFormProps = WithSelectedAccountLoadedProps;
 
@@ -26,8 +26,7 @@ export interface AmountLimits {
     maxFiat?: number;
 }
 
-export type BuyFormContextValues = Omit<UseFormMethods<FormState>, 'register'> & {
-    register: (rules?: TypedValidationRules) => (ref: any) => void; // TODO: ReturnType of UseFormMethods['register'] union
+export type BuyFormContextValues = SuiteUseFormReturn<FormState> & {
     onSubmit: () => void;
     account: Account;
     defaultCountry: DefaultCountryOption;

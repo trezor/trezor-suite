@@ -20,7 +20,7 @@ import { SavingsTrade } from 'invity-api';
 import invityAPI from 'src/services/suite/invityAPI';
 import { useCoinmarketNavigation } from 'src/hooks/wallet/useCoinmarketNavigation';
 import { useFormDraft } from 'src/hooks/wallet/useFormDraft';
-import { TypedValidationRules } from '@suite-common/wallet-types';
+import { SuiteUseFormRegister } from '@suite-common/wallet-types';
 
 export const useSavingsSetupContinue = ({
     selectedAccount,
@@ -187,7 +187,7 @@ export const useSavingsSetupContinue = ({
 
     return {
         ...methods,
-        register: register as (rules?: TypedValidationRules) => (ref: any) => void,
+        register: register as SuiteUseFormRegister<SavingsSetupContinueFormState>,
         onSubmit,
         annualSavingsCryptoAmount,
         annualSavingsFiatAmount,

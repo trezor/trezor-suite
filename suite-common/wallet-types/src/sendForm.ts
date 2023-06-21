@@ -3,7 +3,6 @@ import { FieldPath } from 'react-hook-form';
 import { Network } from '@suite-common/wallet-config';
 import { AccountUtxo, FeeLevel, PROTO } from '@trezor/connect';
 
-import { TypedValidationRules } from './form';
 import { Account } from './account';
 import { CoinFiatRates } from './fiatRates';
 import {
@@ -14,6 +13,7 @@ import {
     PrecomposedLevelsCardano,
     RbfTransactionParams,
 } from './transaction';
+import { SuiteUseFormReturn } from './form';
 
 export type FormOptions =
     | 'broadcast'
@@ -24,9 +24,8 @@ export type FormOptions =
     | 'ethereumNonce' // TODO
     | 'rippleDestinationTag';
 
-export type FormState = {
-    outputs: Output[];
-    // output arrays, each element is corresponding with single Output item
+export interface FormState {
+    outputs: Output[]; // output arrays, each element is corresponding with single Output item
     setMaxOutputId?: number;
     selectedFee?: FeeLevel['label'];
     feePerUnit: string; // bitcoin/ethereum/ripple custom fee field (satB/gasPrice/drops)
@@ -45,7 +44,7 @@ export type FormState = {
     hasCoinControlBeenOpened: boolean;
     anonymityWarningChecked?: boolean;
     selectedUtxos: AccountUtxo[];
-};
+}
 
 export type ExcludedUtxos = Record<string, 'low-anonymity' | 'dust' | 'prison' | undefined>;
 

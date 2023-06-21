@@ -22,7 +22,7 @@ import {
 } from 'src/utils/wallet/coinmarket/savingsUtils';
 import { isDesktop } from '@trezor/env-utils';
 import { useFormDraft } from 'src/hooks/wallet/useFormDraft';
-import { TypedValidationRules } from '@suite-common/wallet-types';
+import { SuiteUseFormRegister } from '@suite-common/wallet-types';
 
 export const useSavingsSetup = ({
     selectedAccount,
@@ -250,7 +250,7 @@ export const useSavingsSetup = ({
     return {
         ...methods,
         account,
-        register: register as (rules?: TypedValidationRules) => (ref: any) => void,
+        register: register as SuiteUseFormRegister<SavingsSetupFormState>,
         onSubmit,
         defaultPaymentFrequency: selectedProvider?.defaultPaymentFrequency,
         defaultFiatAmount: selectedProvider?.defaultPaymentAmount?.toString(),
