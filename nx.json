@@ -21,7 +21,8 @@
         "sharedGlobals": [
             "{workspaceRoot}/nx.json",
             "{workspaceRoot}/.yarnrc.yml",
-            "{workspaceRoot}/patches/*.patch"
+            "{workspaceRoot}/patches/*.patch",
+            "{workspaceRoot}/package.json"
         ],
         "default": ["{projectRoot}/**/*", "sharedGlobals"],
         "prod": ["default", "!{projectRoot}/**/*.test.{ts,tsx}"]
@@ -34,7 +35,7 @@
                 "{workspaceRoot}/tsconfig.json",
                 "{workspaceRoot}/tsconfig.lib.json"
             ],
-            "outputs": ["{workspaceRoot}/lib", "{workspaceRoot}/build"]
+            "outputs": ["{projectRoot}/lib", "{projectRoot}/build"]
         },
         "type-check": {
             "dependsOn": ["^build:lib", "^type-check"],
@@ -42,7 +43,8 @@
                 "^prod",
                 "{workspaceRoot}/tsconfig.json",
                 "{workspaceRoot}/tsconfig.lib.json"
-            ]
+            ],
+            "outputs": ["{projectRoot}/libDev"]
         },
         "test:unit": {
             "dependsOn": ["^build:lib"],

@@ -39,7 +39,7 @@
         "g:jest": "cd $INIT_CWD && jest",
         "_______ Nx testing _______": "Nx wrapped commands for testing, linting, type checking...",
         "nx:build:libs": "yarn nx affected --target=build:lib",
-        "nx:type-check": "yarn nx affected --target=type-check --skip-nx-cache",
+        "nx:type-check": "yarn nx affected --target=type-check",
         "nx:test-unit": "yarn nx affected --target=test:unit",
         "nx:lint:js": "yarn nx affected --target=lint:js",
         "nx:lint:styles": "yarn nx affected --target=lint:styles",
