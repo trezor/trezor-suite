@@ -2,6 +2,7 @@ import { combineReducers, createReducer } from '@reduxjs/toolkit';
 import { configureMockStore, testMocks } from '@suite-common/test-utils';
 import { promiseAllSequence } from '@trezor/utils';
 
+import { db } from 'src/storage';
 import { accountsReducer } from 'src/reducers/wallet';
 import { coinjoinReducer } from 'src/reducers/wallet/coinjoinReducer';
 import selectedAccountReducer from 'src/reducers/wallet/selectedAccountReducer';
@@ -86,6 +87,9 @@ const initStore = ({ accounts, coinjoin, devices, selectedAccount }: Wallet = {}
 describe('coinjoinClientActions', () => {
     afterEach(() => {
         jest.clearAllMocks();
+    });
+    beforeAll(async () => {
+        await db.getDB();
     });
 
     fixtures.onCoinjoinRoundChanged.forEach(f => {
