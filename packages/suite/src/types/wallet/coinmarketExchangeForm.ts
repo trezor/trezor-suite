@@ -16,6 +16,7 @@ import type {
 } from 'src/types/wallet/sendForm';
 import type { Option } from './coinmarketCommonTypes';
 import type { WithSelectedAccountLoadedProps } from 'src/components/wallet';
+import { SendContextValues, SuiteUseFormReturn } from '@suite-common/wallet-types';
 
 export const CRYPTO_INPUT = 'outputs.0.amount';
 export const CRYPTO_TOKEN = 'outputs.0.token';
@@ -45,7 +46,7 @@ export type ExchangeFormContextValues = Omit<UseFormMethods<ExchangeFormState>, 
     exchangeInfo?: ExchangeInfo;
     exchangeCoinInfo?: ExchangeCoinInfo[];
     defaultCurrency: Option;
-    composeRequest: (field?: string) => void;
+    composeRequest: SendContextValues['composeTransaction'];
     updateFiatCurrency: (selectedCurrency: { value: string; label: string }) => void;
     updateSendCryptoValue: (fiatValue: string, decimals: number) => void;
     saveQuoteRequest: (request: ExchangeTradeQuoteRequest) => CoinmarketExchangeAction;

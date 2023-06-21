@@ -136,7 +136,7 @@ const VerifyAddressComponent = () => {
 
     const addressDictionary = useAccountAddressDictionary(account);
     const { address } = watch();
-    const accountAddress = addressDictionary[address];
+    const accountAddress = address ? addressDictionary[address] : undefined;
 
     if (!path || !address || !selectedQuote) {
         return null;

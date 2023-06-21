@@ -16,8 +16,8 @@ const InputError = ({ error }: { error?: TypedFieldError }) => {
         return message;
     }
 
-    if (message && typeof message === 'object' && message.id) {
-        return <Translation {...message} />;
+    if (message && 'id' in message && typeof message.id === 'string') {
+        return <Translation {...(message as ExtendedMessageDescriptor)} />;
     }
 
     // fallback

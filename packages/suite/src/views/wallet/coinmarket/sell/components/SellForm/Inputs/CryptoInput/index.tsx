@@ -202,7 +202,7 @@ const CryptoInput = ({ activeInput, setActiveInput }: CryptoInputProps) => {
                                 setValue(FIAT_INPUT, '');
                                 const token = selected.value;
                                 if (token === 'ETH' || token === 'TGOR' || token === 'ETC') {
-                                    setValue(CRYPTO_TOKEN, undefined);
+                                    setValue(CRYPTO_TOKEN, null);
                                     // set own account for non ERC20 transaction
                                     setValue('outputs.0.address', account.descriptor);
                                 } else {

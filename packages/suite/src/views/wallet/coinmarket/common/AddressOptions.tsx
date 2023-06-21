@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import type { AccountAddress } from '@trezor/connect';
 import { Translation, FiatValue, FormattedCryptoAmount } from 'src/components/suite';
 import { variables, Select } from '@trezor/components';
-import { UseFormMethods, Control, Controller } from 'react-hook-form';
+import { UseFormReturn, Control, Controller } from 'react-hook-form';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import type { Account } from 'src/types/wallet';
 import { useAccountAddressDictionary } from 'src/hooks/wallet/useAccounts';
@@ -68,7 +68,7 @@ type FormState = {
     address?: string;
 };
 
-interface Props extends Pick<UseFormMethods<FormState>, 'setValue'> {
+interface Props extends Pick<UseFormReturn<FormState>, 'setValue'> {
     control: Control;
     receiveSymbol?: string;
     account?: Account;

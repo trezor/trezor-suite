@@ -10,7 +10,6 @@ import { isFeatureFlagEnabled } from '@suite-common/suite-utils';
 import { OpenGuideFromTooltip } from 'src/components/guide';
 import { Locktime } from './components/Locktime';
 import { CoinControl } from './components/CoinControl';
-import { FormOptions } from 'src/types/wallet/sendForm';
 
 const Wrapper = styled.div`
     display: flex;
@@ -57,7 +56,7 @@ export const BitcoinOptions = () => {
         setValue,
     } = useSendFormContext();
 
-    const options = useWatch<FormOptions[]>({
+    const options = useWatch({
         name: 'options',
         defaultValue: getDefaultValue('options', []),
         control,

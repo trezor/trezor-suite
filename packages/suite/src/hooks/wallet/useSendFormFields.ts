@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { UseFormMethods } from 'react-hook-form';
+import { FieldPath, UseFormReturn } from 'react-hook-form';
 import { formatNetworkAmount, toFiatCurrency } from '@suite-common/wallet-utils';
 import {
     FormState,
@@ -10,7 +10,7 @@ import {
 import { isFeatureFlagEnabled } from '@suite-common/suite-utils';
 import { useBitcoinAmountUnit } from './useBitcoinAmountUnit';
 
-type Props = UseFormMethods<FormState> & {
+type Props = UseFormReturn<FormState> & {
     fiatRates: UseSendFormState['fiatRates'];
     network: UseSendFormState['network'];
 };
@@ -18,7 +18,6 @@ type Props = UseFormMethods<FormState> & {
 // This hook should be used only as a sub-hook of `useSendForm`
 
 export const useSendFormFields = ({
-    control,
     getValues,
     setValue,
     clearErrors,
@@ -93,34 +92,28 @@ export const useSendFormFields = ({
     );
 
     const resetDefaultValue = useCallback(
-        (fieldName: string) => {
-            // Since some fields are registered conditionally (locktime, rippleDestinationTag etc..)
-            // they will set defaultValue from draft on every mount
-            // to prevent that behavior reset defaultValue in `react-hook-form.control.defaultValuesRef`
-            const { current } = control.defaultValuesRef;
-            // @ts-expect-error: react-hook-form type returns "unknown" (bug?)
-            if (current && current[fieldName]) current[fieldName] = '';
+        (fieldName: FieldPath<FormState>) => {
             // reset current value
             setValue(fieldName, '');
             // clear error
             clearErrors(fieldName);
         },
-        [control, setValue, clearErrors],
+        [setValue, clearErrors],
     );
 
     // `outputs.x.fieldName` should be a regular `formState` value from `getValues()` method
     // however `useFieldArray` doesn't provide it BEFORE input is registered (it will be undefined on first render)
     // use fallbackValue from useFieldArray.fields if so, because `useFieldArray` architecture requires `defaultValue` to be provided for registered inputs
-    const getDefaultValue: SendContextValues['getDefaultValue'] = <K extends string, T = undefined>(
-        fieldName: K,
-        fallbackValue?: T,
+    const getDefaultValue: SendContextValues['getDefaultValue'] = (
+        fieldName: FieldPath<FormState>,
+        fallbackValue?: FieldPath<FormState>,
     ) => {
         if (fallbackValue !== undefined) {
-            const stateValue = getValues<K, T>(fieldName);
+            const stateValue = getValues(fieldName);
             if (stateValue !== undefined) return stateValue;
             return fallbackValue;
         }
-        return getValues<K, T>(fieldName);
+        return getValues(fieldName);
     };
 
     const toggleOption = (option: FormOptions) => {

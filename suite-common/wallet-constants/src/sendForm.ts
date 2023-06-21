@@ -22,8 +22,13 @@ export const DEFAULT_PAYMENT = {
 } as const;
 
 export const DEFAULT_OPRETURN = {
+    address: '',
+    amount: '',
+    fiat: '',
+    currency: { value: 'usd', label: 'USD' },
     type: 'opreturn',
     dataAscii: '',
+    token: null,
     dataHex: '',
 } as const;
 

@@ -13,6 +13,7 @@ import type {
 } from 'src/types/wallet/sendForm';
 import type { Option, DefaultCountryOption } from './coinmarketCommonTypes';
 import type { WithSelectedAccountLoadedProps } from 'src/components/wallet';
+import { SendContextValues, SuiteUseFormReturn } from '@suite-common/wallet-types';
 
 export const OUTPUT_AMOUNT = 'outputs.0.amount';
 export const CRYPTO_TOKEN = 'outputs.0.token';
@@ -52,7 +53,7 @@ export type SellFormContextValues = Omit<UseFormMethods<SellFormState>, 'registe
     sellInfo?: SellInfo;
     exchangeCoinInfo?: ExchangeCoinInfo[];
     localCurrencyOption: { label: string; value: string };
-    composeRequest: (field?: string) => void;
+    composeRequest: SendContextValues<SellFormState>['composeTransaction'];
     saveQuoteRequest: (request: SellFiatTradeQuoteRequest) => CoinmarketSellAction;
     saveQuotes: (
         fixedQuotes: SellFiatTrade[],

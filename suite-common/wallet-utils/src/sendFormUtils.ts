@@ -1,4 +1,11 @@
-import { DeepMap, FieldError, UseFormMethods } from 'react-hook-form';
+import {
+    FieldError,
+    FieldErrors,
+    FieldErrorsImpl,
+    FieldPath,
+    FieldValues,
+    Merge,
+} from 'react-hook-form';
 
 import BigNumber from 'bignumber.js';
 import { Common, Chain, Hardfork } from '@ethereumjs/common';
@@ -192,7 +199,7 @@ export const getFeeLevels = (networkType: Network['networkType'], feeInfo: FeeIn
     return levels;
 };
 
-export const getInputState = (error?: FieldError, value?: string) => {
+export const getInputState = (error?: TypedFieldError, value?: string) => {
     if (error) {
         return 'error';
     }
@@ -202,10 +209,12 @@ export const getInputState = (error?: FieldError, value?: string) => {
     }
 };
 
-export const isLowAnonymityWarning = (
-    outputErrors?: DeepMap<Output, FieldError> | (DeepMap<Output, FieldError> | undefined)[],
+export const isLowAnonymityWarning = <T extends FieldValues>(
+    outputErrors?:
+        | Merge<FieldError, FieldErrorsImpl<T>>
+        | (Merge<FieldError, FieldErrorsImpl<T>> | undefined)[],
 ) => {
-    const isLowAnonymityMessage = (error?: DeepMap<Output, FieldError>) =>
+    const isLowAnonymityMessage = (error?: Merge<FieldError, FieldErrorsImpl<T>>) =>
         ((error?.amount as TypedFieldError)?.message as { id: string })?.id === // TODO: type message as ExtendedMessageDescriptor after https://github.com/trezor/trezor-suite/pull/5647 is merged
         'TR_NOT_ENOUGH_ANONYMIZED_FUNDS_WARNING';
 
@@ -227,16 +236,21 @@ export const getFeeUnits = (networkType: NetworkType) => {
 };
 
 // Find all errors with type='compose' in FormState errors
-export const findComposeErrors = (errors: UseFormMethods['errors'], prefix?: string) => {
-    const composeErrors: string[] = [];
+export const findComposeErrors = <T extends FieldValues>(
+    errors: FieldErrors<T>,
+    prefix?: string,
+) => {
+    const composeErrors: FieldPath<T>[] = [];
     if (!errors || typeof errors !== 'object') return composeErrors;
     Object.keys(errors).forEach(key => {
         const val = errors[key];
         if (val) {
             if (Array.isArray(val)) {
                 // outputs
-                val.forEach((output, index) =>
-                    composeErrors.push(...findComposeErrors(output, `outputs[${index}]`)),
+                val.forEach((output: FieldErrors<Output>, index) =>
+                    composeErrors.push(
+                        ...(findComposeErrors(output, `outputs.${index}`) as FieldPath<T>[]),
+                    ),
                 );
             } else if (
                 typeof val === 'object' &&
@@ -244,7 +258,7 @@ export const findComposeErrors = (errors: UseFormMethods['errors'], prefix?: str
                 val.type === 'compose'
             ) {
                 // regular top level field
-                composeErrors.push(prefix ? `${prefix}.${key}` : key);
+                composeErrors.push((prefix ? `${prefix}.${key}` : key) as FieldPath<T>);
             }
         }
     });

@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import BigNumber from 'bignumber.js';
 import styled, { css } from 'styled-components';
-import { Control, UseFormMethods } from 'react-hook-form';
+import { Control, FieldPath, UseFormReturn } from 'react-hook-form';
 import { Button, Note, variables } from '@trezor/components';
 import { FeeLevel } from '@trezor/connect';
 import { Translation } from 'src/components/suite';
@@ -80,7 +80,7 @@ const SetDefaultLimit = ({ onClick }: { onClick: () => void }) => (
 const FEE_PER_UNIT = 'feePerUnit';
 const FEE_LIMIT = 'feeLimit';
 
-type FormMethods = UseFormMethods<{
+type FormMethods = UseFormReturn<{
     selectedFee?: FeeLevel['label'];
     feePerUnit?: string;
     feeLimit?: string;
@@ -227,7 +227,7 @@ export const CustomFee = ({
                         />
                     </Col>
                 ) : (
-                    <input type="hidden" name={FEE_LIMIT} ref={register()} />
+                    <input type="hidden" {...register(FEE_LIMIT as FieldPath<TFieldValues>)} />
                 )}
                 <Col singleCol={!useFeeLimit}>
                     <StyledNumberInput

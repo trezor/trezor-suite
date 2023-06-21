@@ -1,11 +1,17 @@
 import { useEffect, useRef } from 'react';
-import { UseFormMethods } from 'react-hook-form';
+import { FieldPath, UseFormReturn } from 'react-hook-form';
 import { FeeLevel } from '@trezor/connect';
 import * as walletSettingsActions from 'src/actions/settings/walletSettingsActions';
 import { useActions } from 'src/hooks/suite';
-import { FeeInfo, PrecomposedLevels, PrecomposedLevelsCardano } from 'src/types/wallet/sendForm';
+import {
+    FeeInfo,
+    FormState,
+    PrecomposedLevels,
+    PrecomposedLevelsCardano,
+    SendContextValues,
+} from 'src/types/wallet/sendForm';
 
-type Props = UseFormMethods<{
+type Props = UseFormReturn<{
     selectedFee?: FeeLevel['label'];
     feePerUnit?: string;
     feeLimit?: string;
@@ -15,7 +21,7 @@ type Props = UseFormMethods<{
     feeInfo?: FeeInfo;
     saveLastUsedFee?: boolean;
     onChange?: (prev?: FeeLevel['label'], current?: FeeLevel['label']) => void;
-    composeRequest: (field?: string) => void;
+    composeRequest: SendContextValues['composeTransaction'];
     composedLevels?: PrecomposedLevels | PrecomposedLevelsCardano;
 };
 
@@ -68,7 +74,7 @@ export const useFees = ({
     useEffect(() => {
         if (selectedFeeRef.current !== 'custom') return;
 
-        let updateField: string | undefined;
+        let updateField: FieldPath<FormState> | undefined;
         if (feePerUnitRef.current !== feePerUnit) {
             feePerUnitRef.current = feePerUnit;
             updateField = 'feePerUnit';

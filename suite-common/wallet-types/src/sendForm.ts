@@ -1,4 +1,4 @@
-import { UseFormMethods } from 'react-hook-form';
+import { FieldPath } from 'react-hook-form';
 
 import { Network } from '@suite-common/wallet-config';
 import { AccountUtxo, FeeLevel, PROTO } from '@trezor/connect';
@@ -43,6 +43,7 @@ export type FormState = {
     rbfParams?: RbfTransactionParams;
     isCoinControlEnabled: boolean;
     hasCoinControlBeenOpened: boolean;
+    anonymityWarningChecked?: boolean;
     selectedUtxos: AccountUtxo[];
 };
 
@@ -98,32 +99,31 @@ export interface GetDefaultValue {
     <K, T>(fieldName: K, fallback: T): K extends keyof FormState ? FormState[K] : T;
 }
 
-export type SendContextValues = Omit<UseFormMethods<FormState>, 'register'> &
-    UseSendFormState & {
-        // strongly typed UseFormMethods.register
-        register: (rules?: TypedValidationRules) => (ref: any) => void; // TODO: ReturnType of UseFormMethods['register'] union
-        // additional fields
-        outputs: Partial<Output & { id: string }>[]; // useFieldArray fields
-        updateContext: (value: Partial<UseSendFormState>) => void;
-        resetContext: () => void;
-        composeTransaction: (field?: string) => void;
-        loadTransaction: () => Promise<void>;
-        signTransaction: () => void;
-        // useSendFormFields utils:
-        calculateFiat: (outputIndex: number, amount?: string) => void;
-        setAmount: (outputIndex: number, amount: string) => void;
-        changeFeeLevel: (currentLevel: FeeLevel['label']) => void;
-        resetDefaultValue: (field: string) => void;
-        setMax: (index: number, active: boolean) => void;
-        getDefaultValue: GetDefaultValue;
-        toggleOption: (option: FormOptions) => void;
-        // useSendFormOutputs utils:
-        addOutput: () => void; // useFieldArray append
-        removeOutput: (index: number) => void; // useFieldArray remove
-        addOpReturn: () => void;
-        removeOpReturn: (index: number) => void;
-        // useSendFormCompose
-        setDraftSaveRequest: React.Dispatch<React.SetStateAction<boolean>>;
-        // UTXO selection
-        utxoSelection: UtxoSelectionContext;
-    };
+export type SendContextValues<TFormValues extends FormState = FormState> =
+    SuiteUseFormReturn<TFormValues> &
+        UseSendFormState & {
+            // additional fields
+            outputs: Partial<Output & { id: string }>[]; // useFieldArray fields
+            updateContext: (value: Partial<UseSendFormState>) => void;
+            resetContext: () => void;
+            composeTransaction: (field?: FieldPath<TFormValues>) => void;
+            loadTransaction: () => Promise<void>;
+            signTransaction: () => void;
+            // useSendFormFields utils:
+            calculateFiat: (outputIndex: number, amount?: string) => void;
+            setAmount: (outputIndex: number, amount: string) => void;
+            changeFeeLevel: (currentLevel: FeeLevel['label']) => void;
+            resetDefaultValue: (field: FieldPath<TFormValues>) => void;
+            setMax: (index: number, active: boolean) => void;
+            getDefaultValue: GetDefaultValue;
+            toggleOption: (option: FormOptions) => void;
+            // useSendFormOutputs utils:
+            addOutput: () => void; // useFieldArray append
+            removeOutput: (index: number) => void; // useFieldArray remove
+            addOpReturn: () => void;
+            removeOpReturn: (index: number) => void;
+            // useSendFormCompose
+            setDraftSaveRequest: React.Dispatch<React.SetStateAction<boolean>>;
+            // UTXO selection
+            utxoSelection: UtxoSelectionContext;
+        };

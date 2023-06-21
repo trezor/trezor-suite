@@ -1,9 +1,9 @@
 import React from 'react';
-import { Control, FieldErrors, FieldValues, UseFormMethods } from 'react-hook-form';
+import { Control, FieldErrors, FieldValues, UseFormReturn } from 'react-hook-form';
 
 export interface FormProps<TFieldValues extends FieldValues> {
     children?: React.ReactNode;
-    form: UseFormMethods<TFieldValues>;
+    form: UseFormReturn<TFieldValues>;
 }
 
 interface FormContextValue<TFieldValues extends FieldValues> {
@@ -27,5 +27,9 @@ export const Form = <TFieldValues extends FieldValues>({
         errors: form.formState.errors,
     };
 
-    return <FormContext.Provider value={formContextValue}>{children}</FormContext.Provider>;
+    return (
+        <FormContext.Provider value={formContextValue as FormContextValue<FieldValues>}>
+            {children}
+        </FormContext.Provider>
+    );
 };
