@@ -37,7 +37,7 @@
         "@reduxjs/toolkit": "1.9.5",
         "@rnx-kit/metro-config": "^1.3.5",
         "@sentry/react-native": "5.5.0",
-        "@shopify/react-native-skia": "0.1.188",
+        "@shopify/react-native-skia": "0.1.195",
         "@suite-common/analytics": "workspace:*",
         "@suite-common/connect-init": "workspace:*",
         "@suite-common/formatters": "workspace:*",
