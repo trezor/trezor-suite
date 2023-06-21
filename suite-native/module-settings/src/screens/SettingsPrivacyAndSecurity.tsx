@@ -10,6 +10,7 @@ import {
     authenticate,
     getIsBiometricsFeatureAvailable,
     useIsBiometricsEnabled,
+    useIsBiometricsOverlayVisible,
     useIsUserAuthenticated,
 } from '@suite-native/biometrics';
 import { useAlert } from '@suite-native/alerts';
@@ -96,6 +97,7 @@ const BiometricsSwitchRow = () => {
     const { showAlert } = useAlert();
     const { setIsUserAuthenticated } = useIsUserAuthenticated();
     const { isBiometricsOptionEnabled, setIsBiometricsOptionEnabled } = useIsBiometricsEnabled();
+    const { setIsBiometricsOverlayVisible } = useIsBiometricsOverlayVisible();
 
     const toggleBiometricsOption = async () => {
         const isBiometricsAvailable = await getIsBiometricsFeatureAvailable();
@@ -122,6 +124,7 @@ const BiometricsSwitchRow = () => {
         if (isBiometricsOptionEnabled) {
             setIsBiometricsOptionEnabled(false);
             setIsUserAuthenticated(false);
+            setIsBiometricsOverlayVisible(false);
         } else {
             setIsUserAuthenticated(true);
             setIsBiometricsOptionEnabled(true);

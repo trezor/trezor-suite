@@ -1,8 +1,6 @@
-import { hasHardwareAsync, isEnrolledAsync } from 'expo-local-authentication';
+import { getEnrolledLevelAsync, SecurityLevel } from 'expo-local-authentication';
 
 export const getIsBiometricsFeatureAvailable = async () => {
-    const isHardwareCompatible = await hasHardwareAsync();
-    const areBiometricsEnabled = await isEnrolledAsync();
-
-    return isHardwareCompatible && areBiometricsEnabled;
+    const enrolledLevelAsync = await getEnrolledLevelAsync();
+    return enrolledLevelAsync !== SecurityLevel.NONE;
 };

@@ -1,4 +1,4 @@
-import { atom, useAtom } from 'jotai';
+import { atom, useAtom, useAtomValue } from 'jotai';
 
 import { atomWithUnecryptedStorage } from '@suite-native/storage';
 
@@ -28,9 +28,15 @@ export const useIsBiometricsEnabled = () => {
 };
 
 export const useIsBiometricsOverlayVisible = () => {
-    const [isBiometricsOverlayVisible, setIsBiometricsOverlayVisible] = useAtom(
+    const isBiometricsOptionEnabled = useAtomValue(isBiometricsOptionEnabledAtom);
+    const [isBiometricsOverlayVisible, setBiometricsOverlay] = useAtom(
         isBiometricsOverlayVisibleAtom,
     );
+
+    const setIsBiometricsOverlayVisible = (value: boolean) => {
+        // Change value only if biometrics options is turned on to prevent showing overlay without enabled biometrics.
+        if (isBiometricsOptionEnabled) setBiometricsOverlay(value);
+    };
 
     return {
         isBiometricsOverlayVisible,
