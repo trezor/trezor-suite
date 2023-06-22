@@ -206,7 +206,7 @@ export const init: Module = ({ mainWindow, store }) => {
         mainWindow.webContents.on('did-start-loading', () => {
             dispose();
         });
-        ipcMain.on('app/restart', () => {
+        ipcMain.once('app/restart', () => {
             dispose();
         });
     };
