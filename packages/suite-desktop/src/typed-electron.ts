@@ -1,14 +1,6 @@
 import * as electron from 'electron';
 
-import { TypedEmitter } from '@trezor/utils/lib/typedEventEmitter';
 import * as desktopApi from '@trezor/suite-desktop-api';
-import { InterceptedEvent } from '@trezor/request-manager';
-
-// define events internally sent between src/modules
-interface MainThreadMessages {
-    'module/request-interceptor': InterceptedEvent;
-}
-export const mainThreadEmitter = new TypedEmitter<MainThreadMessages>();
 
 export type StrictIpcMain = desktopApi.StrictIpcMain<
     Omit<Electron.IpcMain, 'handle' | 'handleOnce' | 'removeHandler'>,

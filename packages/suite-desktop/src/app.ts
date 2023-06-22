@@ -13,7 +13,7 @@ import { MIN_HEIGHT, MIN_WIDTH } from './libs/screen';
 import { getBuildInfo, getComputerInfo } from './libs/info';
 import { restartApp } from './libs/app-utils';
 import { clearAppCache, initUserData } from './libs/user-data';
-import { initModules } from './modules';
+import { initModules, mainThreadEmitter } from './modules';
 import { init as initTorModule } from './modules/tor';
 import { createInterceptor } from './libs/request-interceptor';
 import { hangDetect } from './hang-detect';
@@ -145,6 +145,7 @@ const init = async () => {
         mainWindow,
         store,
         interceptor,
+        mainThreadEmitter,
     });
 
     // create handler for handshake/load-modules
@@ -168,6 +169,7 @@ const init = async () => {
         mainWindow,
         store,
         interceptor,
+        mainThreadEmitter,
     });
 
     ipcMain.handle('handshake/load-tor-module', () => loadTorModule());
