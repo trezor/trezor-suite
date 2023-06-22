@@ -3,6 +3,8 @@
 import path from 'path';
 
 import { isNotUndefined } from '@trezor/utils';
+import { TypedEmitter } from '@trezor/utils/lib/typedEventEmitter';
+import { InterceptedEvent } from '@trezor/request-manager';
 import { isDevEnv } from '@suite-common/suite-utils';
 import type { HandshakeClient } from '@trezor/suite-desktop-api';
 
@@ -40,10 +42,18 @@ const MODULES = [
     ...(isDevEnv ? [] : ['csp', 'file-protocol']),
 ];
 
+// define events internally sent between modules
+interface MainThreadMessages {
+    'module/request-interceptor': InterceptedEvent;
+    'module/reset-tor-circuits': Extract<InterceptedEvent, { type: 'CIRCUIT_MISBEHAVING' }>;
+}
+export const mainThreadEmitter = new TypedEmitter<MainThreadMessages>();
+
 export type Dependencies = {
     mainWindow: StrictBrowserWindow;
     store: Store;
     interceptor: RequestInterceptor;
+    mainThreadEmitter: typeof mainThreadEmitter;
 };
 
 type ModuleLoad = (payload: HandshakeClient) => any | Promise<any>;

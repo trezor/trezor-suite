@@ -15,7 +15,6 @@ import { InterceptedEvent } from '@trezor/request-manager';
 import { CoinjoinProcess } from '../libs/processes/CoinjoinProcess';
 import { PowerSaveBlocker } from '../libs/power-save-blocker';
 import { ThreadProxy } from '../libs/thread-proxy';
-import { mainThreadEmitter } from '../typed-electron';
 
 import type { Module } from './index';
 
@@ -23,7 +22,7 @@ const SERVICE_NAME = '@trezor/coinjoin';
 const CLIENT_CHANNEL = 'CoinjoinClient';
 const BACKEND_CHANNEL = 'CoinjoinBackend';
 
-export const init: Module = ({ mainWindow, store }) => {
+export const init: Module = ({ mainWindow, store, mainThreadEmitter }) => {
     const { logger } = global;
 
     const backends: ThreadProxy<CoinjoinBackend>[] = [];

@@ -11,11 +11,9 @@ import { createInterceptor, InterceptedEvent } from '@trezor/request-manager';
 import { isDevEnv } from '@suite-common/suite-utils';
 import { TorStatus } from '@trezor/suite-desktop-api';
 
-import { mainThreadEmitter } from '../typed-electron';
-
 import { Module } from './index';
 
-export const init: Module = ({ mainWindow, store }) => {
+export const init: Module = ({ mainWindow, store, mainThreadEmitter }) => {
     const { logger } = global;
 
     const requestInterceptorEventHandler = (event: InterceptedEvent) => {
