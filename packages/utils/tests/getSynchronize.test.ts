@@ -52,4 +52,14 @@ describe('getSynchronize', () => {
             synchronize(() => sequence(['c', 7])),
         ]);
     });
+
+    it('nested', done => {
+        synchronize(() =>
+            sequence(['a', 3]).then(() => {
+                // 'c' registers after 'a' ended and while 'b' is running
+                delay(2).then(() => synchronize(() => sequence(['c', 3])));
+            }),
+        );
+        synchronize(() => sequence(['b', 8]).then(done));
+    });
 });
