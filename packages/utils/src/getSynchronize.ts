@@ -14,12 +14,15 @@ export const getSynchronize = () => {
     let lock: Promise<any> | undefined;
 
     return <T>(action: () => T | Promise<T>): Promise<T> => {
-        lock = (lock ?? Promise.resolve())
+        const newLock = (lock ?? Promise.resolve())
             .catch(() => {})
             .then(action)
             .finally(() => {
-                lock = undefined;
+                if (lock === newLock) {
+                    lock = undefined;
+                }
             });
+        lock = newLock;
         return lock;
     };
 };
