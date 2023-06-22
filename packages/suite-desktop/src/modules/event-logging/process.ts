@@ -12,4 +12,13 @@ export const init: Module = () => {
             logger.warn('rejection', `Unhandled Rejection: ${e?.toString()}`);
         }
     });
+
+    // Workaround for misleading message: Use `electron --trace-warnings ...` to show where the warning was created
+    // but actually this flag is not working...
+    // https://nodejs.org/api/process.html#process_event_warning
+    process.on('warning', error => {
+        if (error) {
+            logger.warn('warning', `Stack: ${error.stack}`);
+        }
+    });
 };
