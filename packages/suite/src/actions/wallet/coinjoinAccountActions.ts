@@ -439,16 +439,21 @@ const cleanPendingTransactions =
     };
 
 export const fetchAndUpdateAccount =
-    (account: Account) => async (dispatch: Dispatch, getState: GetState) => {
-        if (account.backendType !== 'coinjoin' || account.syncing) return;
+    ({ key: accountKey, symbol }: Account) =>
+    async (dispatch: Dispatch, getState: GetState) => {
         const state = getState();
         // do not sync if any account CoinjoinSession is in critical phase
         if (selectIsAnySessionInCriticalPhase(state)) return;
 
-        const api = await dispatch(coinjoinClientActions.initCoinjoinService(account.symbol));
+        const api = await dispatch(coinjoinClientActions.initCoinjoinService(symbol));
         if (!api) return;
 
         const { backend, client } = api;
+
+        // get fresh account info, mainly so there's nothing between syncing check and startCoinjoinAccountSync
+        const account = selectAccountByKey(getState(), accountKey);
+        if (account?.backendType !== 'coinjoin' || account.syncing) return;
+
         const isInitialUpdate = account.status === 'initial' || account.status === 'error';
         dispatch(accountsActions.startCoinjoinAccountSync(account));
 
