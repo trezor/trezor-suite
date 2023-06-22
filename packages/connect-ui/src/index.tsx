@@ -23,6 +23,7 @@ import {
     BridgeUpdateNotification,
     SuspiciousOriginNotification,
 } from './components/Notification';
+import { SuccessView } from './views/Success';
 
 const Layout = styled.div`
     display: flex;
@@ -86,6 +87,9 @@ export const ConnectUI = ({ postMessage, clearLegacyView }: ConnectUIProps) => {
                     break;
                 case UI.REQUEST_PASSPHRASE:
                     component = <Passphrase {...messages[0]} postMessage={postMessage} />;
+                    break;
+                case 'success':
+                    component = <SuccessView />;
                     break;
                 case 'error':
                     component = <ErrorView {...messages[0]} />;
