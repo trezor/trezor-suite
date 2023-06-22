@@ -51,11 +51,14 @@ const handleMessage = (
 ) => {
     const { data } = event;
     if (!data) return;
-
     // This is message from the window.opener
     if (data.type === POPUP.INIT) {
         init(escapeHtml(data.payload)); // eslint-disable-line @typescript-eslint/no-use-before-define
         return;
+    }
+
+    if (data.type === RESPONSE_EVENT && data.success) {
+        reactEventBus.dispatch({ type: 'success' });
     }
 
     if (
