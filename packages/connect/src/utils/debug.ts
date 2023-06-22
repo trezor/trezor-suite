@@ -41,7 +41,7 @@ class Log {
             level,
             prefix,
             message: args,
-            timestamp: new Date().getTime(),
+            timestamp: Date.now(),
         });
         if (this.messages.length > MAX_ENTRIES) {
             this.messages.shift();
