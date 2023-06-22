@@ -32,6 +32,11 @@ export type InterceptedEvent =
           details: string;
       }
     | {
+          type: 'INTERCEPTED_HEADERS';
+          method: string;
+          details: string;
+      }
+    | {
           type: 'INTERCEPTED_RESPONSE';
           host: string;
           time: number;

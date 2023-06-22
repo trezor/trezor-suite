@@ -1,4 +1,5 @@
 import path from 'path';
+import http from 'http';
 import WebSocket from 'ws';
 import fetch from 'cross-fetch';
 
@@ -227,6 +228,110 @@ describe('Interceptor', () => {
             // and validate state afterward
             const circuits3 = await torController.controlPort.getCircuits();
             expect(circuits3.length).toEqual(0);
+        });
+    });
+
+    describe('Allowed-Headers', () => {
+        // create simple http server and respond with received headers
+        const createHttpServer = () =>
+            new Promise<{ server: http.Server; serverUrl: string; host: string }>(
+                (resolve, reject) => {
+                    const server = http.createServer((request, response) => {
+                        response.setHeader('Content-Type', 'application/json');
+                        response.write(JSON.stringify(request.headers));
+                        response.end();
+                    });
+                    server.unref();
+                    server.on('error', reject);
+                    server.listen(0, () => {
+                        const addr = server.address() as any; // as net.AddressInfo
+                        resolve({
+                            server,
+                            serverUrl: `http://localhost:${addr.port}`,
+                            host: `localhost:${addr.port}`,
+                        });
+                    });
+                },
+            );
+
+        let serverInit: Awaited<ReturnType<typeof createHttpServer>>;
+        beforeAll(async () => {
+            serverInit = await createHttpServer();
+        });
+
+        afterAll(() => new Promise(resolve => serverInit.server.close(resolve)));
+
+        const fetchHeaders = (url: string, options: RequestInit) =>
+            fetch(url, options).then(r => r.json());
+
+        it('POST request headers', async () => {
+            const { serverUrl, host } = serverInit;
+
+            // default headers added by cross-fetch and underlying libs
+            await expect(
+                fetchHeaders(serverUrl, {
+                    method: 'POST',
+                    body: JSON.stringify({ test: 'test' }),
+                    headers: { 'User-Agent': 'TrezorSuite' },
+                }),
+            ).resolves.toEqual({
+                host,
+                accept: '*/*',
+                'accept-encoding': 'gzip,deflate',
+                connection: 'close',
+                'content-length': '15',
+                'content-type': 'text/plain;charset=UTF-8',
+                'user-agent': 'TrezorSuite',
+            });
+
+            // restricted headers
+            await expect(
+                fetchHeaders(serverUrl, {
+                    method: 'POST',
+                    body: JSON.stringify({ test: 'test' }),
+                    headers: {
+                        'User-Agent': 'TrezorSuite',
+                        'Allowed-Headers': 'AcCePt-EnCoDiNg;content-type;Content-Length;HOST', // case insensitive
+                    },
+                }),
+            ).resolves.toEqual({
+                host,
+                'accept-encoding': 'gzip,deflate',
+                'content-length': '15',
+                'content-type': 'text/plain;charset=UTF-8',
+            });
+        });
+
+        it('GET request headers', async () => {
+            const { serverUrl, host } = serverInit;
+
+            // default headers added by cross-fetch and underlying libs
+            await expect(
+                fetchHeaders(serverUrl, {
+                    method: 'GET',
+                    headers: { 'User-Agent': 'TrezorSuite' },
+                }),
+            ).resolves.toEqual({
+                host,
+                accept: '*/*',
+                'accept-encoding': 'gzip,deflate',
+                connection: 'close',
+                'user-agent': 'TrezorSuite',
+            });
+
+            // restricted headers
+            await expect(
+                fetchHeaders(serverUrl, {
+                    method: 'GET',
+                    headers: {
+                        'User-Agent': 'TrezorSuite',
+                        'Allowed-Headers': 'Accept-Encoding;Content-Type;Content-Length;Host',
+                    },
+                }),
+            ).resolves.toEqual({
+                host,
+                'accept-encoding': 'gzip,deflate',
+            });
         });
     });
 
