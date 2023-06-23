@@ -20,7 +20,15 @@ const transformTx =
 
 export const scanAccount = async (
     params: ScanAccountParams & { checkpoints: ScanAccountCheckpoint[] },
-    { client, network, filters, mempool, abortSignal, onProgress }: ScanAccountContext,
+    {
+        client,
+        network,
+        filters,
+        mempool,
+        abortSignal,
+        onProgress,
+        onProgressInfo,
+    }: ScanAccountContext,
 ): Promise<ScanAccountResult> => {
     const xpub = params.descriptor;
     const { checkpoints } = params;
@@ -56,7 +64,8 @@ export const scanAccount = async (
         txs.clear();
 
         if (progress !== undefined) {
-            onProgress({ checkpoint, transactions, info: { progress } });
+            onProgress({ checkpoint, transactions });
+            onProgressInfo({ progress });
         } else if (transactions.length) {
             onProgress({ checkpoint, transactions });
         }
