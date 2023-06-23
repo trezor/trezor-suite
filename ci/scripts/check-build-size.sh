@@ -18,7 +18,7 @@ MAX_ALLOWED_SIZE=$(echo "$OLD_SIZE_FORMATTED * $3" | bc)
 
 echo "new size:$NEW_SIZE"
 echo "old size:$OLD_SIZE"
-echo "max allowed size change coefficient $3"
+echo "max allowed size increase coefficient $3"
 echo "max allowed size: $MAX_ALLOWED_SIZE"
 
 result=$(echo "$NEW_SIZE_FORMATTED < $MAX_ALLOWED_SIZE" | bc)
