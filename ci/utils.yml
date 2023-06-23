@@ -95,4 +95,4 @@ build-sizes:
         ALLOWED_INCREASE_COEFFICIENT: "1.1"
   script:
     - BASE_URL=https://gitlab.com/api/v4/projects/14570634/jobs/artifacts
-    - ./ci/scripts/check-build-size.sh "${BASE_URL}/${BASE_BRANCH}/raw/packages/${ARTIFACT_PATH}?job=${JOB_NAME}" "${BASE_URL}/${CI_COMMIT_REF_NAME}/raw/packages/${ARTIFACT_PATH}?job=${JOB_NAME}" ${ALLOWED_INCREASE_COEFFICIENT}
+    - ./ci/scripts/check-build-size.sh "${BASE_URL}/${BASE_BRANCH}/raw/packages/${ARTIFACT_PATH}?job=${JOB_NAME}" "${BASE_URL}/${CI_COMMIT_REF_NAME}/raw/packages/${ARTIFACT_PATH}?job=${JOB_NAME}" "${ALLOWED_INCREASE_COEFFICIENT}"
