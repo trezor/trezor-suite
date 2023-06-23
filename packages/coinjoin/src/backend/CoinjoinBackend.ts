@@ -14,6 +14,7 @@ import type {
     ScanAccountParams,
     ScanAccountCheckpoint,
     ScanAccountProgress,
+    ScanProgressInfo,
     Transaction,
     AccountCache,
 } from '../types/backend';
@@ -21,6 +22,7 @@ import type {
 interface Events {
     log: LogEvent;
     [event: `progress/${string}`]: ScanAccountProgress;
+    [event: `progress-info/${string}`]: ScanProgressInfo;
 }
 
 export class CoinjoinBackend extends TypedEmitter<Events> {
@@ -49,6 +51,7 @@ export class CoinjoinBackend extends TypedEmitter<Events> {
     scanAccount({ descriptor, progressHandle, checkpoints, cache }: ScanAccountParams) {
         this.abortController = new AbortController();
         const filters = new CoinjoinFilterController(this.client, this.settings);
+        const handle = progressHandle ?? descriptor;
 
         return scanAccount(
             {
@@ -62,8 +65,8 @@ export class CoinjoinBackend extends TypedEmitter<Events> {
                 abortSignal: this.abortController.signal,
                 filters,
                 mempool: this.mempool,
-                onProgress: progress =>
-                    this.emit(`progress/${progressHandle ?? descriptor}`, progress),
+                onProgress: progress => this.emit(`progress/${handle}`, progress),
+                onProgressInfo: info => this.emit(`progress-info/${handle}`, info),
             },
         );
     }

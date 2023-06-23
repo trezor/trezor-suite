@@ -50,6 +50,7 @@ export type ScanAccountContext = {
     filters: FilterController;
     mempool?: MempoolController;
     onProgress: (progress: ScanAccountProgress) => void;
+    onProgressInfo: (info: ScanProgressInfo) => void;
 };
 
 export type ScanAccountCheckpoint = {
@@ -67,7 +68,6 @@ export type ScanProgressInfo = {
 export type ScanAccountProgress = {
     checkpoint: ScanAccountCheckpoint;
     transactions: Transaction[];
-    info?: ScanProgressInfo;
 };
 
 export type ScanAccountParams = {
