@@ -80,10 +80,13 @@ install connect manual:
     <<: *run_everything_rules
 
 build-sizes:
+  stage: utils
   parallel:
     matrix:
       - JOB_NAME: connect-web%20build
-        ARTIFACT_PATH: ["connect-web/build/trezor-connect.js"]
+        ARTIFACT_PATH: "connect-web/build/trezor-connect.js"
+        ALLOWED_INCREASE: "1.1"
+        MAX_ALLOWED_SIZE: "1000"
       - JOB_NAME: connect-web%20build
         ARTIFACT_PATH: ["connect-web/build/iframe.html"]
   script:
