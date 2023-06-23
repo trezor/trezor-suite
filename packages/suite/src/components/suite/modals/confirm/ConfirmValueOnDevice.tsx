@@ -3,13 +3,14 @@ import styled from 'styled-components';
 
 import { Translation, Modal } from 'src/components/suite';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { useDispatch } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { QrCode, QRCODE_PADDING, QRCODE_SIZE } from 'src/components/suite/QrCode';
 import { TrezorDevice } from 'src/types/suite/index';
 import { Button, ConfirmOnDevice, ModalProps, variables } from '@trezor/components';
 import { getDeviceModel } from '@trezor/device-utils';
 import { copyToClipboard } from '@trezor/dom-utils';
 import DeviceDisconnected from './Address/components/DeviceDisconnected';
+import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
 
 const Wrapper = styled.div`
     display: flex;
@@ -72,6 +73,8 @@ export const ConfirmValueOnDevice = ({
 
     const showCopyButton = isConfirmed || !device.connected;
 
+    const isActionAbortable = useSelector(selectIsActionAbortable) || showCopyButton;
+
     const copy = () => {
         const result = copyToClipboard(value);
         if (typeof result !== 'string') {
@@ -81,7 +84,7 @@ export const ConfirmValueOnDevice = ({
 
     return (
         <StyledModal
-            isCancelable
+            isCancelable={isActionAbortable}
             heading={heading}
             modalPrompt={
                 device.connected ? (
