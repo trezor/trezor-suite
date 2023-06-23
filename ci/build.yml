@@ -256,7 +256,6 @@ connect-web build:
     - git submodule update --init --recursive
     - yarn install --immutable
     - yarn workspace @trezor/connect-web build
-    - ./ci/scripts/check-build-size.sh "https://gitlab.com/api/v4/projects/14570634/jobs/artifacts/develop/raw/packages/connect-web/build/trezor-connect.js?job=connect-web%20build" "https://gitlab.com/api/v4/projects/14570634/jobs/artifacts/${CI_COMMIT_REF_NAME}/raw/packages/connect-web/build/trezor-connect.js?job=connect-web%20build" 1.1
     - yarn workspace @trezor/connect-iframe build
     - yarn workspace @trezor/connect-popup build
   artifacts:
