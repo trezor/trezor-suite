@@ -9,7 +9,12 @@ import type {
     BlockbookTransaction,
 } from '../types/backend';
 import type { CoinjoinBackendSettings, Logger } from '../types';
-import { FILTERS_REQUEST_TIMEOUT, HTTP_REQUEST_GAP, HTTP_REQUEST_TIMEOUT } from '../constants';
+import {
+    FILTERS_REQUEST_TIMEOUT,
+    HTTP_REQUEST_GAP,
+    HTTP_REQUEST_TIMEOUT,
+    WS_MESSAGE_TIMEOUT,
+} from '../constants';
 import { CoinjoinWebsocketController, BlockbookWS } from './CoinjoinWebsocketController';
 
 type CoinjoinBackendClientSettings = CoinjoinBackendSettings & {
@@ -135,7 +140,7 @@ export class CoinjoinBackendClient {
                     this.logger?.error(error?.message);
                     throw error;
                 }),
-            { attempts: 3 },
+            { attempts: 3, timeout: WS_MESSAGE_TIMEOUT, gap: HTTP_REQUEST_GAP },
         );
     }
 

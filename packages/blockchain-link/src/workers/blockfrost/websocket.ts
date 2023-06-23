@@ -78,6 +78,11 @@ export class BlockfrostAPI extends TypedEmitter<BlockfrostEvents> {
         );
     }
 
+    private rejectAllPending(code: string, message?: string) {
+        this.messages.forEach(m => m.reject(new CustomError(code, message)));
+        this.messages = [];
+    }
+
     onTimeout() {
         const { ws } = this;
         if (!ws) return;
@@ -89,7 +94,7 @@ export class BlockfrostAPI extends TypedEmitter<BlockfrostEvents> {
                 // empty
             }
         } else {
-            this.messages.forEach(m => m.reject(new CustomError('websocket_timeout')));
+            this.rejectAllPending('websocket_timeout');
             ws.close();
         }
     }
@@ -321,6 +326,9 @@ export class BlockfrostAPI extends TypedEmitter<BlockfrostEvents> {
             this.disconnect();
         }
         this.ws?.removeAllListeners();
+
+        this.rejectAllPending('websocket_runtime_error', 'Websocket closed unexpectedly');
+
         this.removeAllListeners();
     }
 }
