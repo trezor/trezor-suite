@@ -9,7 +9,7 @@ import OutputList from './components/OutputList';
 import Summary from './components/Summary';
 import { isCardanoTx } from 'src/utils/wallet/cardanoUtils';
 import { DeviceModel, getDeviceModel } from '@trezor/device-utils';
-import { selectDevice } from 'src/reducers/suite/suiteReducer';
+import { selectDevice, selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
 import { constructOutputs } from './constructOutputs';
 
 const StyledModal = styled(Modal)`
@@ -35,6 +35,7 @@ export const ReviewTransaction = ({ decision }: ReviewTransactionProps) => {
     const send = useSelector(state => state.wallet.send);
     const fees = useSelector(state => state.wallet.fees);
     const device = useSelector(selectDevice);
+    const isActionAbortable = useSelector(selectIsActionAbortable);
 
     const { cancelSignTx } = useActions({
         cancelSignTx: sendFormActions.cancelSignTx,
@@ -99,6 +100,14 @@ export const ReviewTransaction = ({ decision }: ReviewTransactionProps) => {
 
     const buttonRequestsCount = isCardano ? buttonRequests.length - 1 : buttonRequests.length;
 
+    const onCancel =
+        isActionAbortable || signedTx
+            ? () => {
+                  cancelSignTx();
+                  decision?.resolve(false);
+              }
+            : undefined;
+
     return (
         <StyledModal
             modalPrompt={
@@ -108,10 +117,7 @@ export const ReviewTransaction = ({ decision }: ReviewTransactionProps) => {
                     activeStep={signedTx ? outputs.length + 2 : buttonRequestsCount}
                     deviceModel={deviceModel}
                     successText={<Translation id="TR_CONFIRMED_TX" />}
-                    onCancel={() => {
-                        cancelSignTx();
-                        decision?.resolve(false);
-                    }}
+                    onCancel={onCancel}
                 />
             }
         >
