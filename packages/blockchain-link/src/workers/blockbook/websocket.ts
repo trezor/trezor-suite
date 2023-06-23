@@ -87,6 +87,11 @@ export class BlockbookAPI extends TypedEmitter<BlockbookEvents> {
         );
     }
 
+    private rejectAllPending(code: string, message?: string) {
+        this.messages.forEach(m => m.reject(new CustomError(code, message)));
+        this.messages = [];
+    }
+
     onTimeout() {
         const { ws } = this;
         if (!ws) return;
@@ -98,7 +103,7 @@ export class BlockbookAPI extends TypedEmitter<BlockbookEvents> {
                 // empty
             }
         } else {
-            this.messages.forEach(m => m.reject(new CustomError('websocket_timeout')));
+            this.rejectAllPending('websocket_timeout');
             ws.close();
         }
     }
@@ -428,6 +433,8 @@ export class BlockbookAPI extends TypedEmitter<BlockbookEvents> {
             this.disconnect();
         }
         this.ws?.removeAllListeners();
+
+        this.rejectAllPending('websocket_runtime_error', 'Websocket closed unexpectedly');
     }
 
     dispose() {
