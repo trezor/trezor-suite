@@ -83,6 +83,7 @@ install connect manual:
 # should the size grow by more than ALLOWED_INCREASE_COEFFICIENT this job will fail
 build-sizes:
   stage: utils
+  needs: ["connect-web build"]
   parallel:
     matrix:
       - JOB_NAME: connect-web%20build
