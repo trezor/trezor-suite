@@ -3,7 +3,7 @@ import BigNumber from 'bignumber.js';
 import styled from 'styled-components';
 
 import { Icon, Switch, Warning, variables, useTheme } from '@trezor/components';
-import { FiatValue, Translation, NumberInput } from 'src/components/suite';
+import { FiatValue, Translation, NumberInput, HiddenPlaceholder } from 'src/components/suite';
 import { InputError } from 'src/components/wallet';
 import {
     amountToSatoshi,
@@ -141,7 +141,11 @@ export const Amount = ({ output, outputId }: Props) => {
     const token = findToken(tokens, tokenValue);
 
     const tokenBalance = token ? (
-        <TokenBalanceValue>{`${token.balance} ${token.symbol!.toUpperCase()}`}</TokenBalanceValue>
+        <HiddenPlaceholder>
+            <TokenBalanceValue>{`${
+                token.balance
+            } ${token.symbol!.toUpperCase()}`}</TokenBalanceValue>
+        </HiddenPlaceholder>
     ) : undefined;
 
     let decimals: number;
