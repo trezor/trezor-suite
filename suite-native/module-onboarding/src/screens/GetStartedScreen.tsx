@@ -64,7 +64,7 @@ export const GetStartedScreen = () => {
                 />
             </Box>
             <VStack style={applyStyle(footerStyle)} spacing="medium">
-                <AlertBox title="This requires Trezor hardware wallet and access to the Trezor Suite app." />
+                <AlertBox title="This requires your Trezor hardware wallet and access to Trezor Suite." />
 
                 <OnboardingFooter redirectTarget={handleRedirect} isLastStep />
             </VStack>
