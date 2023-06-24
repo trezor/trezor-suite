@@ -232,13 +232,15 @@ export const exportTransactionsThunk = createThunk(
             account.key,
             allTransactions,
             // add metadata directly to transactions
-        ).map(transaction => ({
-            ...transaction,
-            targets: transaction.targets.map(target => ({
-                ...target,
-                metadataLabel: account.metadata?.outputLabels?.[transaction.txid]?.[target.n],
-            })),
-        }));
+        )
+            .filter(transaction => transaction.blockHeight !== -1)
+            .map(transaction => ({
+                ...transaction,
+                targets: transaction.targets.map(target => ({
+                    ...target,
+                    metadataLabel: account.metadata?.outputLabels?.[transaction.txid]?.[target.n],
+                })),
+            }));
 
         // Prepare data in right format
         const data = await formatData({
