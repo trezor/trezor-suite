@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js';
 import { createContext, useContext, useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
+import { fromWei } from 'web3-utils';
 import { useSelector } from 'src/hooks/suite';
 import { DEFAULT_PAYMENT, DEFAULT_OPRETURN, DEFAULT_VALUES } from '@suite-common/wallet-constants';
 import { TypedValidationRules } from '@suite-common/wallet-types';
@@ -34,11 +35,23 @@ const getBitcoinFeeInfo = (info: FeeInfo, feeRate: string) => {
 
 const getEthereumFeeInfo = (info: FeeInfo, gasPrice: string) => {
     const current = new BigNumber(gasPrice);
-    const minFee = current.plus(1);
+    const minFeeFromNetwork = new BigNumber(
+        fromWei(info.levels[0].feePerUnit, 'gwei'),
+    ).integerValue(BigNumber.ROUND_FLOOR);
+
+    const getMinFee = () => {
+        if (minFeeFromNetwork.lte(current)) {
+            return current.plus(1);
+        }
+        return minFeeFromNetwork;
+    };
+
+    const minFee = getMinFee();
+
     // increase FeeLevel only if it's lower than predefined
     const levels = getFeeLevels('ethereum', info).map(l => ({
         ...l,
-        feePerUnit: current.lte(gasPrice) ? minFee.toString() : gasPrice,
+        feePerUnit: minFee.toString(),
     }));
     return {
         ...info,
