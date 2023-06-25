@@ -4905,10 +4905,6 @@ export default defineMessages({
             'Names can be up to {length} characters and only characters of the English alphabet are allowed.',
         description: 'How many characters may be in device label and of what type.',
     },
-    TR_ONLY_ASCII: {
-        id: 'TR_ONLY_ASCII',
-        defaultMessage: 'Only characters of the English alphabet are allowed.',
-    },
     TR_I_HAVE_ENOUGH_TIME_TO_DO: {
         id: 'TR_I_HAVE_ENOUGH_TIME_TO_DO',
         defaultMessage: 'You have enough time to back up your wallet',
