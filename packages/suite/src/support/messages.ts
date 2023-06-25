@@ -4899,10 +4899,15 @@ export default defineMessages({
         defaultMessage: 'Application',
         description: 'Computer program.',
     },
-    TR_MAX_LABEL_LENGTH_IS: {
-        id: 'TR_MAX_LABEL_LENGTH_IS',
-        defaultMessage: 'Names can be up to {length} characters.',
-        description: 'How many characters may be in device label.',
+    TR_LABEL_REQUIREMENTS: {
+        id: 'TR_LABEL_REQUIREMENTS',
+        defaultMessage:
+            'Names can be up to {length} characters and only characters of the English alphabet are allowed.',
+        description: 'How many characters may be in device label and of what type.',
+    },
+    TR_ONLY_ASCII: {
+        id: 'TR_ONLY_ASCII',
+        defaultMessage: 'Only characters of the English alphabet are allowed.',
     },
     TR_I_HAVE_ENOUGH_TIME_TO_DO: {
         id: 'TR_I_HAVE_ENOUGH_TIME_TO_DO',

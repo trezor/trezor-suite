@@ -1032,7 +1032,7 @@
   "TR_MAKE_SURE_NO_ONE_CAN_PEEK": "Make sure no one can peek over your shoulder and no cameras can see your screen. No one should ever see your recovery seed except you.",
   "TR_MANAGE": "manage",
   "TR_MAXIMUM_PIN_LENGTH": "Enter up to 50 digits.",
-  "TR_MAX_LABEL_LENGTH_IS": "Names can be up to {length} characters.",
+  "TR_LABEL_REQUIREMENTS": "Names can be up to {length} characters and only characters of the English alphabet are allowed.",
   "TR_MAX_MINING_FEE": "Max mining fee",
   "TR_MESSAGE": "Message",
   "TR_MINED_TIME": "Mined Time",

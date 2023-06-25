@@ -1033,7 +1033,7 @@
   "TR_MAKE_SURE_NO_ONE_CAN_PEEK": "誰もあなたの肩越しに覗くことができず、カメラがあなたの画面を見ることができないことを確認してください。 あなた以外の誰もあなたのリカバリーシードを見るべきではありません。",
   "TR_MANAGE": "管理",
   "TR_MAXIMUM_PIN_LENGTH": "最大50桁まで入力してください。",
-  "TR_MAX_LABEL_LENGTH_IS": "名前は {length} 文字までです。",
+  "TR_LABEL_REQUIREMENTS": "名前は {length} 文字までです英語のアルファベットのみ使用可能。",
   "TR_MAX_MINING_FEE": "採掘手数料の上限",
   "TR_MESSAGE": "メッセージ",
   "TR_MINED_TIME": "採掘日時",

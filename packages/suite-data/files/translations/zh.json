@@ -886,7 +886,7 @@
   "TR_MAKE_SURE_NO_ONE_CAN_PEEK": "确保没有人可以从你的肩膀上偷看，没有摄像头可以看到你的屏幕。除了你，任何人都不应该看到你的备份。",
   "TR_MANAGE": "管理",
   "TR_MAXIMUM_PIN_LENGTH": "最多输入50位数字。",
-  "TR_MAX_LABEL_LENGTH_IS": "名称最多可以是 {length} 个字符。",
+  "TR_LABEL_REQUIREMENTS": "名称最多可以是 {length} 个字符并且只允许使用英文字母的字符。",
   "TR_MAX_MINING_FEE": "最大开采费用",
   "TR_MESSAGE": "留言",
   "TR_MINED_TIME": "开采时间",

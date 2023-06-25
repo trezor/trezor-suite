@@ -1031,7 +1031,7 @@
   "TR_MAKE_SURE_NO_ONE_CAN_PEEK": "Ujistěte se, že vám nikdo nemůže nahlédnout přes rameno, nebo že v okolí nejsou žádné kamery pro sledování vaší obrazovky. Nikdo by nikdy neměl vidět váš seed.",
   "TR_MANAGE": "spravovat",
   "TR_MAXIMUM_PIN_LENGTH": "Zadejte až 50 číslic.",
-  "TR_MAX_LABEL_LENGTH_IS": "Maximální délka popisku je {length} znaků",
+  "TR_LABEL_REQUIREMENTS": "Maximální délka popisku je {length} znaků a povoleny jsou pouze znaky anglické abecedy.",
   "TR_MAX_MINING_FEE": "Maximální poplatek za mining",
   "TR_MESSAGE": "Zpráva",
   "TR_MINED_TIME": "Čas těžby",

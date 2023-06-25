@@ -12,6 +12,7 @@ import { DEFAULT_LABEL, MAX_LABEL_LENGTH } from 'src/constants/suite/device';
 import { getDeviceModel } from '@trezor/device-utils';
 import { isHomescreenSupportedOnDevice } from 'src/utils/suite/homescreen';
 import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
+import { isAscii } from '@trezor/utils';
 
 const StyledButton = styled(Button)`
     display: flex;
@@ -74,11 +75,15 @@ const DeviceImageWrapper = styled.div`
 const Heading = styled.div`
     font-size: 48px;
     font-weight: ${variables.FONT_WEIGHT.BOLD};
-    margin-bottom: 32px;
+    margin-bottom: 24px;
 
     @media screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
         font-size: 32px;
     }
+`;
+
+const Description = styled.div`
+    margin-bottom: 5px;
 `;
 
 const SetupActions = styled.div`
@@ -230,30 +235,45 @@ export const FinalStep = () => {
                         </SetupActions>
                     )}
                     {state === 'rename' && (
-                        <SetupActions>
-                            <Input
-                                noTopLabel
-                                noError
-                                value={label}
-                                placeholder={DEFAULT_LABEL}
-                                inputState={label.length > MAX_LABEL_LENGTH ? 'error' : undefined}
-                                onChange={(event: React.FormEvent<HTMLInputElement>) =>
-                                    setLabel(event.currentTarget.value)
-                                }
-                                data-test="@settings/device/label-input"
-                            />
-                            <Button
-                                onClick={async () => {
-                                    await onRename();
-                                }}
-                                isDisabled={
-                                    isDeviceLocked || !label || label.length > MAX_LABEL_LENGTH
-                                }
-                                data-test="@settings/device/label-submit"
-                            >
-                                <Translation id="TR_DEVICE_SETTINGS_DEVICE_EDIT_LABEL" />
-                            </Button>
-                        </SetupActions>
+                        <>
+                            <Description>
+                                <Translation
+                                    id="TR_LABEL_REQUIREMENTS"
+                                    values={{ length: MAX_LABEL_LENGTH }}
+                                />
+                            </Description>
+                            <SetupActions>
+                                <Input
+                                    noTopLabel
+                                    noError
+                                    value={label}
+                                    placeholder={DEFAULT_LABEL}
+                                    inputState={
+                                        label.length > MAX_LABEL_LENGTH || !isAscii(label)
+                                            ? 'error'
+                                            : undefined
+                                    }
+                                    onChange={(event: React.FormEvent<HTMLInputElement>) =>
+                                        setLabel(event.currentTarget.value)
+                                    }
+                                    data-test="@settings/device/label-input"
+                                />
+                                <Button
+                                    onClick={async () => {
+                                        await onRename();
+                                    }}
+                                    isDisabled={
+                                        isDeviceLocked ||
+                                        !label ||
+                                        label.length > MAX_LABEL_LENGTH ||
+                                        !isAscii(label)
+                                    }
+                                    data-test="@settings/device/label-submit"
+                                >
+                                    <Translation id="TR_DEVICE_SETTINGS_DEVICE_EDIT_LABEL" />
+                                </Button>
+                            </SetupActions>
+                        </>
                     )}
 
                     <EnterSuiteButton

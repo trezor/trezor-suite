@@ -14,6 +14,7 @@ import * as deviceSettingsActions from 'src/actions/settings/deviceSettingsActio
 import { MAX_LABEL_LENGTH } from 'src/constants/suite/device';
 import { useAnchor } from 'src/hooks/suite/useAnchor';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
+import { isAscii } from '@trezor/utils';
 
 interface DeviceLabelProps {
     isDeviceLocked: boolean;
@@ -42,10 +43,7 @@ export const DeviceLabel = ({ isDeviceLocked }: DeviceLabelProps) => {
             <TextColumn
                 title={<Translation id="TR_DEVICE_SETTINGS_DEVICE_LABEL" />}
                 description={
-                    <Translation
-                        id="TR_MAX_LABEL_LENGTH_IS"
-                        values={{ length: MAX_LABEL_LENGTH }}
-                    />
+                    <Translation id="TR_LABEL_REQUIREMENTS" values={{ length: MAX_LABEL_LENGTH }} />
                 }
             />
             <ActionColumn>
@@ -53,7 +51,9 @@ export const DeviceLabel = ({ isDeviceLocked }: DeviceLabelProps) => {
                     noTopLabel
                     noError
                     value={label}
-                    inputState={label.length > MAX_LABEL_LENGTH ? 'error' : undefined}
+                    inputState={
+                        label.length > MAX_LABEL_LENGTH || !isAscii(label) ? 'error' : undefined
+                    }
                     onChange={(event: React.FormEvent<HTMLInputElement>) =>
                         setLabel(event.currentTarget.value)
                     }
@@ -68,7 +68,10 @@ export const DeviceLabel = ({ isDeviceLocked }: DeviceLabelProps) => {
                         });
                     }}
                     isDisabled={
-                        isDeviceLocked || label.length > MAX_LABEL_LENGTH || label === device?.label
+                        isDeviceLocked ||
+                        label.length > MAX_LABEL_LENGTH ||
+                        label === device?.label ||
+                        !isAscii(label)
                     }
                     data-test="@settings/device/label-submit"
                 >

@@ -957,7 +957,7 @@
   "TR_MAKE_SURE_NO_ONE_CAN_PEEK": "Assicurati che nessuno possa sbirciare e che nessuna videocamera possa vedere il tuo schermo. Nessuno dovrebbe mai vedere il tuo backup, tranne te.",
   "TR_MANAGE": "gestisci",
   "TR_MAXIMUM_PIN_LENGTH": "Inserisci fino a 50 cifre.",
-  "TR_MAX_LABEL_LENGTH_IS": "I nomi possono essere lunghi fino a {lenght} caratteri.",
+  "TR_LABEL_REQUIREMENTS": "I nomi possono essere lunghi fino a {lenght} caratteri e sono ammessi solo i caratteri dell'alfabeto inglese.",
   "TR_MAX_MINING_FEE": "Commissione massima di mining",
   "TR_MESSAGE": "Messaggio",
   "TR_MINED_TIME": "Tempo di Mining",

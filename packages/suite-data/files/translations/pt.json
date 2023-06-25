@@ -1000,7 +1000,7 @@
   "TR_MAKE_SURE_NO_ONE_CAN_PEEK": "Certifique-se de que ninguém possa espreitar por cima do seu ombro e que nenhuma câmara possa ver o seu ecrã. Ninguém nunca deve ver o seu backup, excepto você.",
   "TR_MANAGE": "gerenciar",
   "TR_MAXIMUM_PIN_LENGTH": "Insira até 50 dígitos.",
-  "TR_MAX_LABEL_LENGTH_IS": "Os nomes podem ter até {length} caracteres.",
+  "TR_LABEL_REQUIREMENTS": "Os nomes podem ter até {length} caracteres e só são permitidos caracteres do alfabeto inglês.",
   "TR_MESSAGE": "Mensagem",
   "TR_MINED_TIME": "Tempo Minado",
   "TR_MOBILE_APP_PROMO_TEXT": "Com mais recursos de segurança",

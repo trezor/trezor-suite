@@ -1033,7 +1033,7 @@
   "TR_MAKE_SURE_NO_ONE_CAN_PEEK": "crwdns24009:0crwdne24009:0",
   "TR_MANAGE": "crwdns24011:0crwdne24011:0",
   "TR_MAXIMUM_PIN_LENGTH": "crwdns29074:0crwdne29074:0",
-  "TR_MAX_LABEL_LENGTH_IS": "crwdns24017:0{length}crwdne24017:0",
+  "TR_LABEL_REQUIREMENTS": "crwdns24017:0{length}crwdne24017:0",
   "TR_MAX_MINING_FEE": "crwdns32386:0crwdne32386:0",
   "TR_MESSAGE": "crwdns24019:0crwdne24019:0",
   "TR_MINED_TIME": "crwdns24021:0crwdne24021:0",

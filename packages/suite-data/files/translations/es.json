@@ -1011,7 +1011,7 @@
   "TR_MAKE_SURE_NO_ONE_CAN_PEEK": "Asegúrate de que nadie puede mirar por encima de tu hombro y de que no hay cámaras que estén viendo tu pantalla. Nadie excepto tú debería ver tu semilla.",
   "TR_MANAGE": "gestionar",
   "TR_MAXIMUM_PIN_LENGTH": "Introduce hasta 50 dígitos.",
-  "TR_MAX_LABEL_LENGTH_IS": "El nombre puede tener hasta {length} caracteres.",
+  "TR_LABEL_REQUIREMENTS": "El nombre puede tener hasta {length} caracteres y sólo se admiten caracteres del alfabeto inglés.",
   "TR_MAX_MINING_FEE": "Comisión máxima de minería",
   "TR_MESSAGE": "Mensaje",
   "TR_MINED_TIME": "Tiempo minado",

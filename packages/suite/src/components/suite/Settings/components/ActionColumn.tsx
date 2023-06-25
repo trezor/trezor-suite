@@ -29,6 +29,10 @@ const InputWrapper = styled.div`
         margin: 0px 0 10px;
         width: 100%;
     }
+
+    input {
+        height: 38px;
+    }
 `;
 
 export const ActionInput = (props: InputProps) => (

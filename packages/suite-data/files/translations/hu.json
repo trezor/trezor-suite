@@ -1020,7 +1020,7 @@
   "TR_MAKE_SURE_NO_ONE_CAN_PEEK": "Győződj meg róla, hogy senki sem kukucskál a vállad fölött és kamerák sem látnak rá a képernyődre. Rajtad kívül senkinek sem szabad a biztonsági mentésedet látnia.",
   "TR_MANAGE": "kezelés",
   "TR_MAXIMUM_PIN_LENGTH": "Akár 50 számjegy is megadható.",
-  "TR_MAX_LABEL_LENGTH_IS": "A név akár {length} karakter hosszúságú is lehet.",
+  "TR_LABEL_REQUIREMENTS": "A név akár {length} karakter hosszúságú is lehet és csak az angol ábécé karakterei engedélyezettek.",
   "TR_MAX_MINING_FEE": "Maximális bányász díj",
   "TR_MESSAGE": "Üzenet",
   "TR_MINED_TIME": "Bányászva",
