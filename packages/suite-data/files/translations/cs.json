@@ -254,6 +254,7 @@
   "TR_ADDRESS_FORMAT": "Správný formát adresy",
   "TR_ADDRESS_MODAL_CLIPBOARD": "Kopírovat adresu",
   "TR_ADDRESS_MODAL_TITLE": "{networkName} adresa pro příjem",
+  "TR_ADDRESS_PHISHING_WARNING": "Abyste zabránili phishingovým útokům, měli byste ověřit adresu v zařízení Trezor. {claim}",
   "TR_ADD_ACCOUNT": "Přidat účet",
   "TR_ADD_HIDDEN_WALLET": "Přidat skrytou peněženku",
   "TR_ADD_NEW_BLOCKBOOK_BACKEND": "Přidat nový",

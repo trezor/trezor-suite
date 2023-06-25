@@ -78,9 +78,15 @@ export const UserContextModal = ({
                 />
             );
         case 'address':
-            return <ConfirmAddress {...payload} onCancel={onCancel} />;
+            return (
+                <ConfirmAddress
+                    {...payload}
+                    verify={() => showAddress(payload.addressPath, payload.value)}
+                    onCancel={onCancel}
+                />
+            );
         case 'xpub':
-            return <ConfirmXpub {...payload} onCancel={onCancel} />;
+            return <ConfirmXpub {...payload} verify={showXpub} onCancel={onCancel} />;
         case 'device-background-gallery':
             return <BackgroundGallery onCancel={onCancel} />;
         case 'wipe-device':

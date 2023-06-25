@@ -1,11 +1,12 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 
 import { Translation, Modal } from 'src/components/suite';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { useDispatch } from 'src/hooks/suite';
+import { useDevice, useDispatch } from 'src/hooks/suite';
+import { applySettings } from 'src/actions/settings/deviceSettingsActions';
+import { ThunkAction } from 'src/types/suite';
 import { QrCode, QRCODE_PADDING, QRCODE_SIZE } from 'src/components/suite/QrCode';
-import { TrezorDevice } from 'src/types/suite/index';
 import { Button, ConfirmOnDevice, ModalProps, variables } from '@trezor/components';
 import { getDeviceModel } from '@trezor/device-utils';
 import { copyToClipboard } from '@trezor/dom-utils';
@@ -50,25 +51,44 @@ const StyledDeviceDisconnected = styled(DeviceDisconnected)`
 `;
 
 export interface ConfirmDeviceScreenProps extends Pick<ModalProps, 'onCancel' | 'heading'> {
-    device: TrezorDevice;
     copyButtonText: React.ReactNode;
     copyButtonDataTest?: string;
     isConfirmed?: boolean;
     value: string;
+    verify: () => ThunkAction;
     valueDataTest?: string;
 }
 
 export const ConfirmValueOnDevice = ({
     copyButtonText,
     copyButtonDataTest,
-    device,
     heading,
     isConfirmed,
+    verify,
     onCancel,
     value,
     valueDataTest,
 }: ConfirmDeviceScreenProps) => {
     const dispatch = useDispatch();
+    const { device } = useDevice();
+
+    useEffect(() => {
+        const verifyAndContinue = async () => {
+            if (!device?.available) {
+                const result = await dispatch(applySettings({ use_passphrase: true }));
+                if (!result || !result.success) return;
+            }
+            if (onCancel) onCancel();
+            dispatch(verify());
+        };
+
+        if (device?.connected) verifyAndContinue();
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [device?.connected]);
+
+    // just to make TS happy
+    if (!device) return null;
 
     const showCopyButton = isConfirmed || !device.connected;
 

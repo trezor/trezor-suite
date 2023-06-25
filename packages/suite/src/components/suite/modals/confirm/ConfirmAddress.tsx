@@ -5,7 +5,7 @@ import { NetworkSymbol } from 'src/types/wallet';
 import { ConfirmValueOnDevice, ConfirmDeviceScreenProps } from './ConfirmValueOnDevice';
 
 interface ConfirmAddressProps
-    extends Pick<ConfirmDeviceScreenProps, 'device' | 'isConfirmed' | 'onCancel' | 'value'> {
+    extends Pick<ConfirmDeviceScreenProps, 'verify' | 'isConfirmed' | 'onCancel' | 'value'> {
     symbol: NetworkSymbol;
 }
 
