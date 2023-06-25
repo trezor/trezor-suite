@@ -131,7 +131,7 @@ const setDeviceMetadataKey = [
     },
 ];
 
-const setAccountMetadataKey = [
+const enhanceAccountWithMetadata = [
     {
         description: `Device without master key`,
         initialState: {
@@ -541,7 +541,7 @@ const init = [
 
 export {
     setDeviceMetadataKey,
-    setAccountMetadataKey,
+    enhanceAccountWithMetadata,
     addDeviceMetadata,
     addAccountMetadata,
     fetchMetadata,

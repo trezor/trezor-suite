@@ -1,3 +1,6 @@
+import { TrezorConnect } from '@trezor/connect';
+import { EncodingVersion } from 'src/types/suite/metadata';
+
 export const ENABLE = '@metadata/enable';
 export const DISABLE = '@metadata/disable';
 export const SET_READY = '@metadata/set-ready';
@@ -12,7 +15,7 @@ export const SET_EDITING = '@metadata/set-editing';
 export const SET_INITIATING = '@metadata/set-initiating';
 
 // todo: use in metadataActions, currently migration is not implemented yet
-export const METADATA_VERSION = '2.0.0';
+export const METADATA_FORMAT_VERSION = '1.0.0';
 
 // @trezor/connect params
 export const ENABLE_LABELING_PATH = "m/10015'/0'";
@@ -36,3 +39,27 @@ export const GOOGLE_IMPLICIT_FLOW_CLIENT_ID =
 
 // dropbox allows authorization code flow for both web and desktop without client secret
 export const DROPBOX_CLIENT_ID = 'wg0yz2pbgjyhoda';
+
+export const METADATA_ENCODING_VERSION: EncodingVersion = 2;
+
+export const CIPHER_KEY_VALUE_CONFIGS: Record<
+    EncodingVersion,
+    Parameters<TrezorConnect['cipherKeyValue']>[0]['bundle'][0]
+> = {
+    1: {
+        path: ENABLE_LABELING_PATH,
+        key: ENABLE_LABELING_KEY,
+        value: ENABLE_LABELING_VALUE,
+        encrypt: true,
+        askOnEncrypt: true,
+        askOnDecrypt: true,
+    },
+    2: {
+        path: ENABLE_LABELING_PATH,
+        key: ENABLE_LABELING_KEY,
+        value: ENABLE_LABELING_VALUE,
+        encrypt: true,
+        askOnEncrypt: false,
+        askOnDecrypt: false,
+    },
+};

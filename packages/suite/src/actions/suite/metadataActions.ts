@@ -13,6 +13,8 @@ import {
     Error as MetadataProviderError,
     OAuthServerEnvironment,
     ProviderErrorAction,
+    AccountMetadata,
+    EncodingVersion,
 } from 'src/types/suite/metadata';
 import { Account } from 'src/types/wallet';
 import * as metadataUtils from 'src/utils/suite/metadata';
@@ -22,6 +24,11 @@ import GoogleProvider from 'src/services/suite/metadata/GoogleProvider';
 import FileSystemProvider from 'src/services/suite/metadata/FileSystemProvider';
 import { createAction } from '@reduxjs/toolkit';
 import { notificationsActions } from '@suite-common/toast-notifications';
+import {
+    CIPHER_KEY_VALUE_CONFIGS,
+    METADATA_ENCODING_VERSION,
+    METADATA_FORMAT_VERSION,
+} from './constants/metadataConstants';
 
 export const setAccountLoaded = createAction(METADATA.ACCOUNT_LOADED, (payload: Account) => ({
     payload,
@@ -247,6 +254,34 @@ export const initProvider = () => (dispatch: Dispatch) => {
     return decision.promise;
 };
 
+const getMetadataFilesList = () => async (dispatch: Dispatch) => {
+    const provider = dispatch(getProvider());
+    if (!provider) {
+        return;
+    }
+
+    const listResponse = await provider.getMetadataFilesList();
+    if (!listResponse.success) {
+        return;
+    }
+
+    // remove the extention
+    const trimmedNames = listResponse.payload?.map(name => name.replace('.mtdt', ''));
+
+    return trimmedNames;
+};
+
+const getMetadataFilesMinimumVersion = (filesList: string[] | undefined) => {
+    let versionNumber = METADATA_ENCODING_VERSION;
+    if (!filesList || !filesList.length) {
+        return versionNumber;
+    }
+
+    versionNumber = filesList.every(name => name.includes('_')) ? 2 : 1;
+
+    return versionNumber;
+};
+
 export const fetchMetadata =
     (deviceState: string) => async (dispatch: Dispatch, getState: GetState) => {
         const provider = dispatch(getProvider());
@@ -276,41 +311,43 @@ export const fetchMetadata =
                 return reject(new Error('metadata not enabled for this device'));
             }
 
-            return provider.getFileContent(device.metadata.fileName).then(result => {
-                // ts-stuff
-                if (device?.metadata?.status !== 'enabled') {
-                    // this should never happen
-                    return reject(new Error('metadata not enabled for this device'));
-                }
-
-                if (!result.success) {
-                    return reject(result);
-                }
-
-                const json = { walletLabel: '' };
-                if (result.payload) {
-                    try {
-                        Object.assign(
-                            json,
-                            metadataUtils.decrypt(
-                                metadataUtils.arrayBufferToBuffer(result.payload),
-                                device.metadata.aesKey,
-                            ),
-                        );
-                    } catch (err) {
-                        const error = provider.error('OTHER_ERROR', err.message);
-                        return reject(error);
+            return provider
+                .getFileContent(`${device.metadata.fileName}_${METADATA_ENCODING_VERSION}`)
+                .then(result => {
+                    // ts-stuff
+                    if (device?.metadata?.status !== 'enabled') {
+                        // this should never happen
+                        return reject(new Error('metadata not enabled for this device'));
                     }
-                }
-                dispatch({
-                    type: METADATA.WALLET_LOADED,
-                    payload: {
-                        deviceState,
-                        walletLabel: json.walletLabel,
-                    },
+
+                    if (!result.success) {
+                        return reject(result);
+                    }
+
+                    const json = { walletLabel: '' };
+                    if (result.payload) {
+                        try {
+                            Object.assign(
+                                json,
+                                metadataUtils.decrypt(
+                                    metadataUtils.arrayBufferToBuffer(result.payload),
+                                    device.metadata.aesKey,
+                                ),
+                            );
+                        } catch (err) {
+                            const error = provider.error('OTHER_ERROR', err.message);
+                            return reject(error);
+                        }
+                    }
+                    dispatch({
+                        type: METADATA.WALLET_LOADED,
+                        payload: {
+                            deviceState,
+                            walletLabel: json.walletLabel,
+                        },
+                    });
+                    resolve();
                 });
-                resolve();
-            });
         });
 
         const accounts = getState().wallet.accounts.filter(
@@ -319,7 +356,9 @@ export const fetchMetadata =
 
         const accountPromises = accounts.map(async account => {
             if (!provider) return; // ts
-            const response = await provider.getFileContent(account.metadata.fileName);
+            const response = await provider.getFileContent(
+                `${account.metadata.fileName}_${METADATA_ENCODING_VERSION}`,
+            );
 
             if (!response.success) {
                 throw new Error(response.error);
@@ -388,17 +427,15 @@ export const fetchMetadata =
         }
     };
 
-export const setAccountMetadataKey =
-    (account: Account) => (dispatch: Dispatch, getState: GetState) => {
-        const { devices } = getState();
-        const device = devices.find(d => d.state === account.deviceState);
-        if (!device || device.metadata.status !== 'enabled') {
+export const enhanceAccountWithMetadata =
+    (account: Account, deviceMetadata: DeviceMetadata | undefined) => (dispatch: Dispatch) => {
+        if (deviceMetadata?.status !== 'enabled') {
             return account;
         }
 
         try {
             const metaKey = metadataUtils.deriveMetadataKey(
-                device.metadata.key,
+                deviceMetadata.key,
                 account.metadata.key,
             );
             const fileName = metadataUtils.deriveFilename(metaKey);
@@ -407,6 +444,7 @@ export const setAccountMetadataKey =
         } catch (error) {
             dispatch(handleProviderError(error, ProviderErrorAction.SAVE));
         }
+
         return account;
     };
 
@@ -414,8 +452,14 @@ export const setAccountMetadataKey =
  * Fill any record in reducer that may have metadata with metadata keys (not values).
  */
 const syncMetadataKeys = () => (dispatch: Dispatch, getState: GetState) => {
+    const { device } = getState().suite;
+
+    if (!device) {
+        return;
+    }
+
     getState().wallet.accounts.forEach(account => {
-        const accountWithMetadata = dispatch(setAccountMetadataKey(account));
+        const accountWithMetadata = dispatch(enhanceAccountWithMetadata(account, device.metadata));
         dispatch(setAccountAdd(accountWithMetadata));
     });
     // note that devices are intentionally omitted here - device receives metadata
@@ -492,12 +536,15 @@ export const addDeviceMetadata =
         try {
             const encrypted = await metadataUtils.encrypt(
                 {
-                    version: '1.0.0',
+                    version: METADATA_FORMAT_VERSION,
                     walletLabel,
                 },
                 device.metadata.aesKey,
             );
-            const result = await provider.setFileContent(device.metadata.fileName, encrypted);
+            const result = await provider.setFileContent(
+                `${device.metadata.fileName}_${METADATA_ENCODING_VERSION}`,
+                encrypted,
+            );
             if (!result.success) {
                 dispatch(handleProviderError(result, ProviderErrorAction.SAVE));
                 return false;
@@ -574,7 +621,7 @@ export const addAccountMetadata =
         // todo: can't this throw? heh?
         const encrypted = await metadataUtils.encrypt(
             {
-                version: '1.0.0',
+                version: METADATA_FORMAT_VERSION,
                 accountLabel: metadata.accountLabel,
                 outputLabels: metadata.outputLabels,
                 addressLabels: metadata.addressLabels,
@@ -582,12 +629,44 @@ export const addAccountMetadata =
             account.metadata.aesKey,
         );
 
-        const result = await provider.setFileContent(account.metadata.fileName, encrypted);
+        const result = await provider.setFileContent(
+            `${account.metadata.fileName}_${METADATA_ENCODING_VERSION}`,
+            encrypted,
+        );
         if (!result.success) {
             dispatch(handleProviderError(result, ProviderErrorAction.SAVE));
             return false;
         }
         return true;
+    };
+
+const obtainEncryptionKey =
+    (encodingVersion: EncodingVersion) => async (_: Dispatch, getState: GetState) => {
+        const { device } = getState().suite;
+        if (!device || !device.state || !device.connected) return;
+
+        const result = await TrezorConnect.cipherKeyValue({
+            device: {
+                path: device.path,
+                state: device.state,
+                instance: device.instance,
+            },
+            useEmptyPassphrase: device.useEmptyPassphrase,
+            ...CIPHER_KEY_VALUE_CONFIGS[encodingVersion],
+        });
+
+        if (result.success) {
+            const [stateAddress] = device.state.split('@'); // address@device_id:instance
+            const metaKey = metadataUtils.deriveMetadataKey(result.payload.value, stateAddress);
+            const fileName = metadataUtils.deriveFilename(metaKey);
+            const aesKey = metadataUtils.deriveAesKey(metaKey);
+
+            return {
+                key: result.payload.value,
+                fileName,
+                aesKey,
+            };
+        }
     };
 
 /**
@@ -598,35 +677,14 @@ export const setDeviceMetadataKey = () => async (dispatch: Dispatch, getState: G
     const { device } = getState().suite;
     if (!device || !device.state || !device.connected) return;
 
-    // mater key already exists
+    // master key already exists
     if (device.metadata.status === 'enabled') return;
 
-    const result = await TrezorConnect.cipherKeyValue({
-        device: {
-            path: device.path,
-            state: device.state,
-            instance: device.instance,
-        },
-        useEmptyPassphrase: device.useEmptyPassphrase,
-        path: METADATA.ENABLE_LABELING_PATH,
-        key: METADATA.ENABLE_LABELING_KEY,
-        value: METADATA.ENABLE_LABELING_VALUE,
-        encrypt: true,
-        askOnEncrypt: true,
-        askOnDecrypt: true,
-    });
+    // get master key from device using the latest encoding version
+    const result = await dispatch(obtainEncryptionKey(METADATA_ENCODING_VERSION));
 
-    if (result.success) {
-        if (!getState().metadata.enabled) {
-            dispatch({
-                type: METADATA.ENABLE,
-            });
-        }
-
-        const [stateAddress] = device.state.split('@'); // address@device_id:instance
-        const metaKey = metadataUtils.deriveMetadataKey(result.payload.value, stateAddress);
-        const fileName = metadataUtils.deriveFilename(metaKey);
-        const aesKey = metadataUtils.deriveAesKey(metaKey);
+    if (result) {
+        const { key, fileName, aesKey } = result;
 
         dispatch({
             type: METADATA.SET_DEVICE_METADATA,
@@ -634,7 +692,7 @@ export const setDeviceMetadataKey = () => async (dispatch: Dispatch, getState: G
                 deviceState: device.state,
                 metadata: {
                     status: 'enabled',
-                    key: result.payload.value,
+                    key,
                     fileName,
                     aesKey,
                 },
@@ -650,7 +708,6 @@ export const setDeviceMetadataKey = () => async (dispatch: Dispatch, getState: G
                 },
             },
         });
-
         // in effort to resolve https://github.com/trezor/trezor-suite/issues/2315
         // also turn of global metadata.enabled setting
         // pros:
@@ -672,6 +729,267 @@ export const addMetadata = (payload: MetadataAddPayload) => (dispatch: Dispatch)
     return dispatch(addAccountMetadata(payload));
 };
 
+type EnabledDeviceMetadata = Extract<DeviceMetadata, { status: 'enabled' }>;
+type MissingDeviceFile = { type: 'device'; state: string } & Pick<
+    EnabledDeviceMetadata,
+    'aesKey' | 'fileName'
+>;
+type MissingAccountFile = { type: 'account' } & Pick<
+    AccountMetadata,
+    'aesKey' | 'fileName' | 'key'
+>;
+type MissingFileInfo = MissingDeviceFile | MissingAccountFile;
+
+// checks if every labelable entity has a file in storage already
+const getMissingFiles =
+    (filesList: string[] | undefined) => (dispatch: Dispatch, getState: GetState) => {
+        const provider = dispatch(getProvider());
+        if (!provider) {
+            return [];
+        }
+
+        const { device } = getState().suite;
+        if (!device || !device.state || !device.connected) {
+            return [];
+        }
+
+        const accounts = getState().wallet.accounts.filter(
+            a => a.deviceState === device.state && a.metadata.fileName,
+        );
+
+        const missingFiles: Array<MissingFileInfo> = [];
+
+        if (
+            'fileName' in device.metadata &&
+            !filesList?.includes(`${device.metadata.fileName}_${METADATA_ENCODING_VERSION}`)
+        ) {
+            missingFiles.push({
+                type: 'device',
+                fileName: device.metadata.fileName,
+                aesKey: device.metadata.aesKey,
+                state: device.state,
+            });
+        }
+
+        accounts.forEach(({ metadata, key }) => {
+            if (!filesList?.includes(`${metadata.fileName}_${METADATA_ENCODING_VERSION}`)) {
+                missingFiles.push({
+                    type: 'account',
+                    fileName: metadata.fileName,
+                    aesKey: metadata.aesKey,
+                    key,
+                });
+            }
+        });
+
+        return missingFiles;
+    };
+
+const createMissingFiles = (missingFiles: Array<MissingFileInfo>) => async (dispatch: Dispatch) => {
+    const provider = await dispatch(getProvider());
+
+    if (!provider) {
+        return { success: false };
+    }
+
+    if (!missingFiles.length) {
+        return { success: true };
+    }
+
+    const promises = missingFiles.map(async ({ fileName, aesKey }) => {
+        const encrypted = await metadataUtils.encrypt(
+            {
+                version: METADATA_FORMAT_VERSION,
+                dummyField: Date.now(),
+            },
+            aesKey,
+        );
+
+        const response = await provider.setFileContent(
+            `${fileName}_${METADATA_ENCODING_VERSION}`,
+            encrypted,
+        );
+
+        if (!response.success) {
+            throw new Error(response.error);
+        }
+    });
+
+    try {
+        await Promise.all(promises);
+
+        return { success: true };
+    } catch (err) {
+        const error = provider.error('OTHER_ERROR', err.message);
+        dispatch(handleProviderError(error, ProviderErrorAction.SAVE));
+
+        return { success: false };
+    }
+};
+
+type MigratedDeviceFile = {
+    newFileName: EnabledDeviceMetadata['fileName'];
+    newAesKey: EnabledDeviceMetadata['aesKey'];
+    data: Pick<EnabledDeviceMetadata, 'walletLabel'>;
+};
+type MigratedAccountFile = {
+    newFileName: AccountMetadata['fileName'];
+    newAesKey: AccountMetadata['aesKey'];
+    data: Pick<AccountMetadata, 'accountLabel' | 'addressLabels' | 'outputLabels'>;
+};
+type MigratedFile = MigratedDeviceFile | MigratedAccountFile;
+
+const migrateMetadataFiles =
+    (missingFiles: Array<MissingFileInfo>) => async (dispatch: Dispatch, getState: GetState) => {
+        // get old keys
+        const deviceMetadata = await dispatch(obtainEncryptionKey(1));
+        // did user confirm labeling on device? or maybe device was not connected
+        // so suite does not have keys and needs to stop here
+        if (!deviceMetadata) {
+            throw new Error('Labeling rejected by the user');
+        }
+        // if yes, get metadata keys to for accounts
+        const { accounts } = getState().wallet;
+        const accountsWithMetadata = accounts.map(account =>
+            dispatch(enhanceAccountWithMetadata(account, { ...deviceMetadata, status: 'enabled' })),
+        );
+
+        // try fetching data for entities with missing files
+        const filesToMigrate: Array<MigratedFile> = [];
+
+        const provider = dispatch(getProvider());
+        if (!provider) {
+            throw new Error('No provider found');
+        }
+
+        const missingDeviceFile = missingFiles.find(
+            ({ type }) => type === 'device',
+        ) as MissingDeviceFile;
+
+        if (missingDeviceFile) {
+            const providerResponse = await provider.getFileContent(deviceMetadata.fileName);
+
+            if (providerResponse.success && providerResponse.payload) {
+                try {
+                    const data = metadataUtils.decrypt(
+                        metadataUtils.arrayBufferToBuffer(providerResponse.payload),
+                        deviceMetadata.aesKey,
+                    );
+
+                    filesToMigrate.push({
+                        newAesKey: missingDeviceFile.aesKey,
+                        newFileName: missingDeviceFile.fileName,
+                        data,
+                    });
+                } catch (err) {
+                    console.error(err);
+                }
+            }
+        }
+
+        const hasMissingAccountFiles = missingFiles.some(({ type }) => type === 'account');
+
+        if (hasMissingAccountFiles) {
+            const accountsWithMissingFiles = accountsWithMetadata.filter(({ key }) =>
+                missingFiles.find(file => {
+                    if (file.type === 'account') {
+                        return file.key === key;
+                    }
+
+                    return false;
+                }),
+            );
+
+            const getDataPromises = accountsWithMissingFiles.map(async ({ key, metadata }) => {
+                const relatedMissingFileInfo = missingFiles.find(
+                    file => file.type === 'account' && file.key === key,
+                ) as MissingFileInfo;
+
+                const providerResponse = await provider.getFileContent(metadata.fileName);
+
+                if (!providerResponse.success) {
+                    dispatch(handleProviderError(providerResponse, ProviderErrorAction.LOAD));
+
+                    throw new Error('Provider error');
+                }
+
+                if (providerResponse.payload) {
+                    try {
+                        const data = metadataUtils.decrypt(
+                            metadataUtils.arrayBufferToBuffer(providerResponse.payload),
+                            metadata.aesKey,
+                        );
+
+                        filesToMigrate.push({
+                            newAesKey: relatedMissingFileInfo?.aesKey,
+                            newFileName: relatedMissingFileInfo?.fileName,
+                            data,
+                        });
+                    } catch (err) {
+                        console.error(err);
+                    }
+                }
+            });
+
+            await Promise.all(getDataPromises);
+        }
+
+        const dummyFiles = missingFiles.filter(({ fileName }) =>
+            filesToMigrate.find(({ newFileName }) => newFileName !== fileName),
+        );
+
+        // create dummy files to match the METADATA_ENCODING_VERSION
+        if (dummyFiles.length) {
+            const { success } = await dispatch(createMissingFiles(dummyFiles));
+
+            if (!success) {
+                throw new Error('Could not create dummy files');
+            }
+        }
+
+        // migrate data to new files
+        const saveDataPromises = filesToMigrate.map(async ({ newAesKey, newFileName, data }) => {
+            const encrypted = await metadataUtils.encrypt(data, newAesKey);
+
+            const result = await provider.setFileContent(
+                `${newFileName}_${METADATA_ENCODING_VERSION}`,
+                encrypted,
+            );
+
+            if (!result.success) {
+                dispatch(handleProviderError(result, ProviderErrorAction.SAVE));
+
+                throw new Error('Provider error');
+            }
+        });
+
+        await Promise.all(saveDataPromises);
+    };
+
+const abortInit = () => (dispatch: Dispatch) => {
+    dispatch({ type: METADATA.SET_INITIATING, payload: false });
+    dispatch({ type: METADATA.SET_EDITING, payload: undefined });
+};
+
+const migrateIfNeeded = () => async (dispatch: Dispatch, getState: GetState) => {
+    const metadataFilesList = await dispatch(getMetadataFilesList());
+    const metadataFilesMimimumVersion = getMetadataFilesMinimumVersion(metadataFilesList);
+
+    // if there were some old files - migrate if needed
+    const isMinimumFileVersionLatest = metadataFilesMimimumVersion === METADATA_ENCODING_VERSION;
+    if (getState().metadata.initiating && !isMinimumFileVersionLatest) {
+        try {
+            const missingFilesInfo = dispatch(getMissingFiles(metadataFilesList));
+
+            if (missingFilesInfo.length) {
+                await dispatch(migrateMetadataFiles(missingFilesInfo));
+            }
+        } catch (error) {
+            dispatch(abortInit());
+        }
+    }
+};
+
 /**
  * init - prepare everything needed to load + decrypt and upload + decrypt metadata. Note that this method
  * consists of number of steps of which not all have to necessarily happen. For example
@@ -684,9 +1002,9 @@ export const addMetadata = (payload: MetadataAddPayload) => (dispatch: Dispatch)
 export const init =
     (force = false) =>
     async (dispatch: Dispatch, getState: GetState) => {
+        // 1. set metadata enabled globally
         const { device } = getState().suite;
 
-        // 1. set metadata enabled globally
         if (!getState().metadata.enabled) {
             dispatch(enableMetadata());
         }
@@ -708,9 +1026,7 @@ export const init =
         // so suite does not have keys and needs to stop here
         if (getState().suite.device?.metadata.status !== 'enabled') {
             // if no, end here
-            dispatch({ type: METADATA.SET_INITIATING, payload: false });
-            dispatch({ type: METADATA.SET_EDITING, payload: undefined });
-
+            dispatch(abortInit());
             return false;
         }
 
@@ -730,12 +1046,13 @@ export const init =
 
             const providerResult = await dispatch(initProvider());
             if (!providerResult) {
-                dispatch({ type: METADATA.SET_INITIATING, payload: false });
-                dispatch({ type: METADATA.SET_EDITING, payload: undefined });
-
+                dispatch(abortInit());
                 return false;
             }
         }
+
+        // 4. get the metadata minimum version to determine a migration is needed
+        await dispatch(migrateIfNeeded());
 
         if (getState().metadata.initiating) {
             await dispatch(fetchMetadata(device?.state));

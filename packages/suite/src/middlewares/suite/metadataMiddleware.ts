@@ -9,7 +9,10 @@ const metadata =
     (next: Dispatch) =>
     (action: Action): Action => {
         if (accountsActions.createAccount.match(action)) {
-            action.payload = api.dispatch(metadataActions.setAccountMetadataKey(action.payload));
+            const { device } = api.getState().suite;
+            action.payload = api.dispatch(
+                metadataActions.enhanceAccountWithMetadata(action.payload, device?.metadata),
+            );
         }
 
         // pass action

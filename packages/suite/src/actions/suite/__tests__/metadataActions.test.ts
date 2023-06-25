@@ -135,12 +135,17 @@ describe('Metadata Actions', () => {
         });
     });
 
-    fixtures.setAccountMetadataKey.forEach(f => {
-        it(`setAccountMetadataKey - ${f.description}`, async () => {
+    fixtures.enhanceAccountWithMetadata.forEach(f => {
+        it(`enhanceAccountWithMetadata - ${f.description}`, async () => {
             // @ts-expect-error
             const store = initStore(getInitialState(f.initialState));
-            // @ts-expect-error Account is not complete
-            const account = await store.dispatch(metadataActions.setAccountMetadataKey(f.account));
+            const account = await store.dispatch(
+                metadataActions.enhanceAccountWithMetadata(
+                    // @ts-expect-error Account is not complete
+                    f.account,
+                    f.initialState.device.metadata,
+                ),
+            );
             expect(account).toMatchObject(f.result);
         });
     });

@@ -40,6 +40,8 @@ export type Tokens = {
     refreshToken?: string;
 };
 
+export type EncodingVersion = 1 | 2;
+
 /**
  * Representation of provider data stored in reducer
  * properties 'tokens' and 'type' are needed to recreate corresponding provider instance
