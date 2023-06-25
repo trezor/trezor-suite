@@ -78,6 +78,7 @@ export const factory = <R extends StrictIpcRenderer<any>>(ipcRenderer?: R): Desk
             }
             return Promise.resolve({ success: false, error: 'invalid params' });
         },
+        metadataGetFiles: () => ipcRenderer.invoke('metadata/get-files'),
 
         // HttpReceiver
         getHttpReceiverAddress: route => {

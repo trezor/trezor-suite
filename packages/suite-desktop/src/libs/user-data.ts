@@ -73,6 +73,28 @@ export const read = async (directory: string, name: string): Promise<InvokeResul
     }
 };
 
+export const readDir = async (directory: string): Promise<InvokeResult<string[]>> => {
+    const dir = path.join(app.getPath('userData'), directory);
+
+    try {
+        await fs.promises.access(dir, fs.constants.R_OK);
+    } catch {
+        await fs.promises.mkdir(dir);
+
+        return { success: true, payload: [] };
+    }
+
+    try {
+        const dirFiles = await fs.promises.readdir(dir);
+        const filteredDirFiles = dirFiles.filter(file => !file.startsWith('.'));
+
+        return { success: true, payload: filteredDirFiles };
+    } catch (error) {
+        global.logger.error('user-data', `Get folder file names failed: ${error.message}`);
+        return { success: false, error: error.message, code: error.code };
+    }
+};
+
 export const clear = async (): Promise<InvokeResult> => {
     const dir = path.normalize(app.getPath('userData'));
     try {

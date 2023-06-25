@@ -172,6 +172,26 @@ class DropboxProvider extends AbstractMetadataProvider {
         }
     }
 
+    async getFilesList() {
+        try {
+            const response = await this.client.filesListFolder({ path: '' });
+
+            if (response.result) {
+                const formattedList = response.result.entries.map(({ name }) => name);
+
+                return this.ok(formattedList);
+            }
+
+            return this.ok(undefined);
+        } catch (error) {
+            if (error?.error?.code === 404) {
+                return this.ok(undefined);
+            }
+
+            return this.handleProviderError(error);
+        }
+    }
+
     async getProviderDetails() {
         const token = this.auth.getRefreshToken();
         if (!token) return this.error('AUTH_ERROR', 'token is missing');
