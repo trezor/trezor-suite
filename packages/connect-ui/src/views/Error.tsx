@@ -122,14 +122,14 @@ const getTroubleshootingTips = (props: ErrorViewProps) => {
             // fallback, last resort tips
             tips.push({
                 icon: 'FINGERPRINT',
-                title: 'Open site in “incognito mode”',
+                title: 'Open site in “Incognito/Private mode”',
                 detail: {
                     steps: [
                         <Step>
                             Go to <Black>File</Black>
                         </Step>,
                         <Step>
-                            Open <Green>New Incognito Window</Green>
+                            Open <Green>New Incognito/Private Window</Green>
                         </Step>,
                     ],
                 },
