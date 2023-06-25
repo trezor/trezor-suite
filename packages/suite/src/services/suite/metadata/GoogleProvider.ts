@@ -96,6 +96,24 @@ class GoogleProvider extends AbstractMetadataProvider {
         }
     }
 
+    async getFilesList() {
+        try {
+            const response = await GoogleClient.list({
+                query: { spaces: 'appDataFolder' },
+            });
+
+            if (response) {
+                const formattedList = response.files.map(({ name }) => name);
+
+                return this.ok(formattedList);
+            }
+
+            return this.ok(undefined);
+        } catch (error) {
+            return this.handleProviderError(error);
+        }
+    }
+
     async getProviderDetails() {
         try {
             const response = await GoogleClient.getTokenInfo();

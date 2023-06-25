@@ -71,6 +71,7 @@ export interface InvokeChannels {
     'handshake/load-tor-module': () => HandshakeTorModule;
     'metadata/read': (options: { file: string }) => InvokeResult<string>;
     'metadata/write': (options: { file: string; content: string }) => InvokeResult;
+    'metadata/get-files': () => InvokeResult<string[]>;
     'server/request-address': (route: string) => string | undefined;
     'tor/toggle': (shouldEnableTor: boolean) => InvokeResult;
     'bridge/toggle': () => InvokeResult;
@@ -109,6 +110,7 @@ export interface DesktopApi {
     // Metadata
     metadataWrite: DesktopApiInvoke<'metadata/write'>;
     metadataRead: DesktopApiInvoke<'metadata/read'>;
+    metadataGetFiles: DesktopApiInvoke<'metadata/get-files'>;
     // HttpReceiver
     getHttpReceiverAddress: DesktopApiInvoke<'server/request-address'>;
     // Tor

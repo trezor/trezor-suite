@@ -2,7 +2,7 @@
  * Metadata feature (save/load metadata locally)
  */
 import { ipcMain } from '../typed-electron';
-import { save, read } from '../libs/user-data';
+import { save, read, readDir } from '../libs/user-data';
 
 import type { Module } from './index';
 
@@ -20,6 +20,12 @@ export const init: Module = () => {
     ipcMain.handle('metadata/read', async (_, message) => {
         logger.info('metadata', `Reading metadata from ${DATA_DIR}/${message.file}`);
         const resp = await read(DATA_DIR, message.file);
+        return resp;
+    });
+
+    ipcMain.handle('metadata/get-files', async () => {
+        logger.info('metadata', `Retrieving metadata file names from ${DATA_DIR}`);
+        const resp = await readDir(DATA_DIR);
         return resp;
     });
 };

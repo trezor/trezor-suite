@@ -115,6 +115,10 @@ export abstract class AbstractMetadataProvider {
      * Upload metadata content in cloud provider for given filename and content
      */
     abstract setFileContent(file: string, content: any): Result<void>;
+    /**
+     * Get a list of metadata file names if any
+     */
+    abstract getFilesList(): Result<string[] | undefined>;
 
     ok(): Success<void>;
     ok<T>(payload: T): Success<T>;

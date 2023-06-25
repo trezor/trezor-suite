@@ -47,6 +47,16 @@ class FileSystemProvider extends AbstractMetadataProvider {
         return this.ok(undefined);
     }
 
+    async getFilesList() {
+        const response = await desktopApi.metadataGetFiles();
+
+        if (!response.success) {
+            return this.error('PROVIDER_ERROR', response.error);
+        }
+
+        return this.ok(response.payload);
+    }
+
     isConnected() {
         return true;
     }
