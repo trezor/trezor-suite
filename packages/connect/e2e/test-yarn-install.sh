@@ -8,6 +8,7 @@ trap "cd .. && rm -rf connect-implementation" EXIT
 
 npm --version
 node --version
+yarn --version
 
 mkdir connect-implementation
 cd connect-implementation
