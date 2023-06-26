@@ -83,7 +83,7 @@ export const prepareAccountsReducer = createReducerWithExtraDeps(
             .addCase(accountsActions.renameAccount, (state, action) => {
                 const { accountKey, accountLabel } = action.payload;
                 const accountByAccountKey = state.find(account => account.key === accountKey);
-                if (accountByAccountKey) accountByAccountKey.metadata.accountLabel = accountLabel;
+                if (accountByAccountKey) accountByAccountKey.accountLabel = accountLabel;
             })
             .addCase(accountsActions.changeAccountVisibility, (state, action) => {
                 update(state, action.payload);
@@ -167,7 +167,7 @@ export const selectAccountLabel = (
 
     if (!account) return null;
 
-    return account.metadata.accountLabel ?? null;
+    return account.accountLabel ?? null;
 };
 
 export const selectAccountNetworkSymbol = (

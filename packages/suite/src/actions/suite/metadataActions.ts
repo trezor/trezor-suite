@@ -75,7 +75,10 @@ const createProviderInstance = (
 ) => {
     switch (type) {
         case 'dropbox':
-            return new DropboxProvider({ token: tokens?.refreshToken, clientId: METADATA.DROPBOX_CLIENT_ID });
+            return new DropboxProvider({
+                token: tokens?.refreshToken,
+                clientId: METADATA.DROPBOX_CLIENT_ID,
+            });
         case 'google':
             return new GoogleProvider(tokens, environment);
         case 'fileSystem':
@@ -323,7 +326,11 @@ export const fetchMetadata =
             }
             const { fileName, aesKey } = device.metadata[METADATA.ENCRYPTION_VERSION] || {};
             if (!fileName || !aesKey) {
-                return reject(new Error(`filename or aesKey of version ${METADATA.ENCRYPTION_VERSION} does not exist for device ${device.path}`));
+                return reject(
+                    new Error(
+                        `filename or aesKey of version ${METADATA.ENCRYPTION_VERSION} does not exist for device ${device.path}`,
+                    ),
+                );
             }
             return providerInstance.getFileContent(fileName).then(result => {
                 // ts-stuff
@@ -339,7 +346,7 @@ export const fetchMetadata =
                 const json = { walletLabel: '' };
                 if (result.payload) {
                     try {
-                        const decryptedData =metadataUtils.decrypt(
+                        const decryptedData = metadataUtils.decrypt(
                             metadataUtils.arrayBufferToBuffer(result.payload),
                             aesKey,
                         );
@@ -372,7 +379,9 @@ export const fetchMetadata =
             if (!provider) return; // ts
             const { fileName, aesKey } = account.metadata[METADATA.ENCRYPTION_VERSION] || {};
             if (!fileName || !aesKey) {
-                console.error(`filename or aesKey of version ${METADATA.ENCRYPTION_VERSION} does not exist for account ${account.path}`);
+                console.error(
+                    `filename or aesKey of version ${METADATA.ENCRYPTION_VERSION} does not exist for account ${account.path}`,
+                );
                 return;
             }
             const response = await providerInstance.getFileContent(fileName);
@@ -387,7 +396,7 @@ export const fetchMetadata =
                 try {
                     // we found associated metadata file for given account, decrypt it
                     // and save its metadata into reducer;
-                    const decryptedData =metadataUtils.decrypt(
+                    const decryptedData = metadataUtils.decrypt(
                         metadataUtils.arrayBufferToBuffer(response.payload),
                         aesKey,
                     );
@@ -509,12 +518,11 @@ export const selectProvider =
 export const connectProvider =
     ({ type, dataType = 'labels' }: { type: MetadataProviderType; dataType?: DataType }) =>
     async (dispatch: Dispatch, getState: GetState) => {
-        
         const providerInstance = createProviderInstance(
-                type,
-                {},
-                getState().suite.settings.debug.oauthServerEnvironment,
-            );
+            type,
+            {},
+            getState().suite.settings.debug.oauthServerEnvironment,
+        );
 
         const isConnected = await providerInstance.isConnected();
         if (!isConnected) {
@@ -652,9 +660,11 @@ export const addAccountMetadata =
         const metadata = fileName ? provider.data[fileName] : undefined;
 
         if (!fileName) {
-            throw new Error(`filename of version ${METADATA.ENCRYPTION_VERSION} does not exist for account ${account.path}`);
+            throw new Error(
+                `filename of version ${METADATA.ENCRYPTION_VERSION} does not exist for account ${account.path}`,
+            );
         }
-        
+
         const nextMetadata = metadata
             ? JSON.parse(JSON.stringify(metadata))
             : {

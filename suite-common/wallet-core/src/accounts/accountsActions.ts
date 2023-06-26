@@ -1,12 +1,7 @@
 import { createAction } from '@reduxjs/toolkit';
 
 import { AccountInfo } from '@trezor/connect';
-import {
-    Account,
-    SelectedAccountStatus,
-    DiscoveryItem,
-    MetadataItem,
-} from '@suite-common/wallet-types';
+import { Account, SelectedAccountStatus, DiscoveryItem } from '@suite-common/wallet-types';
 import {
     enhanceAddresses,
     enhanceTokens,
@@ -41,7 +36,7 @@ const createAccount = createAction(
         discoveryItem: DiscoveryItem,
         accountInfo: AccountInfo,
         imported?: boolean,
-        accountLabel?: MetadataItem,
+        accountLabel?: string,
     ): { payload: Account } => ({
         payload: {
             deviceState,
@@ -81,6 +76,7 @@ const createAccount = createAction(
             metadata: {
                 key: accountInfo.legacyXpub || accountInfo.descriptor,
             },
+            accountLabel,
             imported,
             ...getAccountSpecific(accountInfo, discoveryItem.networkType),
         },

@@ -2,13 +2,14 @@ import * as modalActions from 'src/actions/suite/modalActions';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { GetState, Dispatch } from 'src/types/suite';
 import TrezorConnect, { Success, Unsuccessful } from '@trezor/connect';
+import { selectLabelingDataForSelectedAccount } from 'src/reducers/suite/metadataReducer';
 
 export const openXpubModal =
     (params?: Pick<Extract<modalActions.UserContextPayload, { type: 'xpub' }>, 'isConfirmed'>) =>
     (dispatch: Dispatch, getState: GetState) => {
         const { device } = getState().suite;
         const { account } = getState().wallet.selectedAccount;
-
+        const { accountLabel } = selectLabelingDataForSelectedAccount(getState());
         if (!device || !account) return;
 
         dispatch(
@@ -18,7 +19,7 @@ export const openXpubModal =
                 value: account.descriptor,
                 accountIndex: account.index,
                 symbol: account.symbol,
-                accountLabel: account.metadata.accountLabel,
+                accountLabel,
                 ...params,
             }),
         );

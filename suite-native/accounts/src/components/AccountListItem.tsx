@@ -45,7 +45,7 @@ export const valuesContainerStyle = prepareNativeStyle(utils => ({
 
 export const AccountListItem = ({ account, areTokensDisplayed = false }: AccountListItemProps) => {
     const { applyStyle } = useNativeStyles();
-    const { accountLabel } = account.metadata;
+    const { accountLabel } = account;
 
     const formattedAccountType = useSelector((state: AccountsRootState) =>
         selectFormattedAccountType(state, account.key),

@@ -684,7 +684,7 @@ export const accountSearchFn = (
     account: Account,
     rawSearchString?: string,
     coinFilter?: NetworkSymbol,
-    accountLabel?: string,
+    metadataAccountLabel?: string,
 ) => {
     // if coin filter is active and account symbol doesn't match return false and don't continue the search
     const coinFilterMatch = coinFilter ? account.symbol === coinFilter : true;
@@ -712,7 +712,8 @@ export const accountSearchFn = (
     const matchXRPAlternativeName =
         network?.networkType === 'ripple' && 'ripple'.includes(searchString);
 
-    const metadataMatch = accountLabel?.toLowerCase().includes(searchString);
+    const metadataMatch = !!metadataAccountLabel?.toLowerCase().includes(searchString);
+    const accountLabelMatch = !!account.accountLabel?.toLowerCase().includes(searchString);
 
     return (
         symbolMatch ||
@@ -721,7 +722,8 @@ export const accountSearchFn = (
         descriptorMatch ||
         addressMatch ||
         matchXRPAlternativeName ||
-        metadataMatch
+        metadataMatch ||
+        accountLabelMatch
     );
 };
 

@@ -325,19 +325,17 @@ const addAccountMetadata = [
             value: '', // empty string removes value
         },
         result: [
-            
-                {
-                    payload: {
-                        data: { 'filename-123': { outputLabels: {} } },
-                        provider: {
-                            clientId: 'clientId',
-                            data: { 'filename-123': { outputLabels: { TXID: { '0': 'Foo' } } } },
-                            type: 'dropbox',
-                        },
+            {
+                payload: {
+                    data: { 'filename-123': { outputLabels: {} } },
+                    provider: {
+                        clientId: 'clientId',
+                        data: { 'filename-123': { outputLabels: { TXID: { '0': 'Foo' } } } },
+                        type: 'dropbox',
                     },
-                    type: '@metadata/set-data',
                 },
-            
+                type: '@metadata/set-data',
+            },
         ],
     },
 ];
