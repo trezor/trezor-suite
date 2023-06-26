@@ -1,0 +1,19 @@
+name: "@trezor/request-manager"
+
+on:
+  pull_request:
+    paths:
+      - "packages/request-manager/**"
+      - "packages/utils/**"
+
+jobs:
+  request-manager-e2e-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: recursive
+      - run: yarn install
+      - run: yarn build:libs
+      - name: Run e2e tests
+        run: yarn workspace @trezor/request-manager test:e2e
