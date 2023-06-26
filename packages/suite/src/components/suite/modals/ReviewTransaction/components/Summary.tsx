@@ -9,6 +9,7 @@ import { Account, Network } from 'src/types/wallet';
 import { formatDuration, isFeatureFlagEnabled } from '@suite-common/suite-utils';
 import { PrecomposedTransactionFinal, TxFinalCardano } from 'src/types/wallet/sendForm';
 import { useSelector } from 'src/hooks/suite/useSelector';
+import { selectLabelingDataForSelectedAccount } from 'src/reducers/suite/metadataReducer';
 
 const Wrapper = styled.div`
     padding: 20px 15px 12px;
@@ -209,7 +210,7 @@ const Summary = ({
     ) as string;
 
     const theme = useTheme();
-    const { symbol, metadata, accountType, index } = account;
+    const { symbol, accountType, index } = account;
 
     const { feePerByte } = tx;
     const spentWithoutFee = !tx.token ? new BigNumber(tx.totalSpent).minus(tx.fee).toString() : '';
@@ -220,7 +221,7 @@ const Summary = ({
     const formFeeRate = drafts[currentAccountKey]?.feePerUnit;
     const isFeeCustom = drafts[currentAccountKey]?.selectedFee === 'custom';
     const isComposedFeeRateDifferent = isFeeCustom && formFeeRate !== feePerByte;
-
+    const { accountLabel } = useSelector(selectLabelingDataForSelectedAccount);
     return (
         <Wrapper>
             <SummaryHead>
@@ -243,7 +244,7 @@ const Summary = ({
                 <AccountWrapper>
                     <Icon size={12} color={theme.TYPE_DARK_GREY} icon="WALLET" />
                     <AccountLabel
-                        accountLabel={metadata?.accountLabel}
+                        accountLabel={accountLabel}
                         accountType={accountType}
                         symbol={symbol}
                         index={index}

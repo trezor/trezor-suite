@@ -8,7 +8,7 @@ import { Translation } from 'src/components/suite';
 import { useActions } from 'src/hooks/suite';
 import * as modalActions from 'src/actions/suite/modalActions';
 import { formatNetworkAmount, isTestnet, isTxFeePaid } from '@suite-common/wallet-utils';
-import { AccountMetadata } from 'src/types/suite/metadata';
+import { AccountLabels } from 'src/types/suite/metadata';
 import { Network, WalletAccountTransaction } from 'src/types/wallet';
 import { TransactionTypeIcon } from './components/TransactionTypeIcon';
 import { TransactionHeading } from './components/TransactionHeading';
@@ -81,7 +81,7 @@ interface TransactionItemProps {
     transaction: WalletAccountTransaction;
     isPending: boolean;
     isActionDisabled?: boolean; // Used in "chained transactions" transaction detail modal
-    accountMetadata?: AccountMetadata;
+    accountMetadata?: AccountLabels;
     accountKey: string;
     network: Network;
     className?: string;

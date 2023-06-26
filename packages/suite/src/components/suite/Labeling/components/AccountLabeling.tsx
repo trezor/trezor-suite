@@ -5,6 +5,7 @@ import { AccountLabel } from 'src/components/suite';
 import { Account as WalletAccount } from 'src/types/wallet';
 import { useSelector } from 'src/hooks/suite';
 import { WalletLabeling } from './WalletLabeling';
+import { selectLabelingDataForAccount } from 'src/reducers/suite/metadataReducer';
 
 interface AccountProps {
     account: WalletAccount | WalletAccount[];
@@ -14,16 +15,18 @@ export const AccountLabeling = ({ account }: AccountProps) => {
     const { device, devices } = useSelector(state => ({
         device: state.suite.device,
         devices: state.devices,
+        metadata: state.metadata,
     }));
     const accounts = !Array.isArray(account) ? [account] : account;
+    const { symbol, index, accountType, key } = accounts[0];
+
+    const labels = useSelector(state => selectLabelingDataForAccount(state, key));
 
     if (accounts.length < 1) return null;
 
-    const { metadata, symbol, index, accountType } = accounts[0];
-
     const accountLabel = (
         <AccountLabel
-            accountLabel={metadata?.accountLabel}
+            accountLabel={labels.accountLabel}
             accountType={accountType}
             symbol={symbol}
             index={index}

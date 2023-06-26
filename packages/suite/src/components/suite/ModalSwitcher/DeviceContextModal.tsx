@@ -20,6 +20,7 @@ import {
     ConfirmXpub,
 } from 'src/components/suite/modals';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
+import { selectLabelingDataForSelectedAccount } from 'src/reducers/suite/metadataReducer';
 
 import type { ReduxModalProps } from './types';
 
@@ -31,7 +32,7 @@ export const DeviceContextModal = ({
 }: ReduxModalProps<typeof MODAL.CONTEXT_DEVICE>) => {
     const device = useSelector(state => state.suite.device);
     const account = useSelector(selectSelectedAccount);
-
+    const { accountLabel } = useSelector(selectLabelingDataForSelectedAccount);
     const intl = useIntl();
 
     if (!device) return null;
@@ -103,7 +104,7 @@ export const DeviceContextModal = ({
                     value={account.descriptor}
                     symbol={account.symbol}
                     accountIndex={account.index}
-                    accountLabel={account.metadata.accountLabel}
+                    accountLabel={accountLabel}
                     onCancel={abort}
                 />
             ) : null;

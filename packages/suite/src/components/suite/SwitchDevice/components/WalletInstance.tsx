@@ -11,6 +11,7 @@ import {
 } from 'src/components/suite';
 import { useSelector, useActions } from 'src/hooks/suite';
 import { TrezorDevice, AcquiredDevice } from 'src/types/suite';
+import { selectLabelingDataForWallet } from 'src/reducers/suite/metadataReducer';
 
 import { useFormatters } from '@suite-common/formatters';
 import { Switch, Box, Icon, useTheme, variables } from '@trezor/components';
@@ -124,7 +125,9 @@ export const WalletInstance = ({
     const accountsCount = deviceAccounts.length;
     const instanceBalance = getTotalFiatBalance(deviceAccounts, localCurrency, fiat.coins);
     const isSelected = enabled && selected && !!discoveryProcess;
-
+    const { walletLabel } = useSelector(state =>
+        selectLabelingDataForWallet(state, instance.state),
+    );
     const dataTestBase = `@switch-device/wallet-on-index/${index}`;
 
     return (
@@ -148,9 +151,7 @@ export const WalletInstance = ({
                                     deviceState: instance.state,
                                     defaultValue: instance.state,
                                     value:
-                                        instance?.metadata.status === 'enabled'
-                                            ? instance.metadata.walletLabel
-                                            : '',
+                                        instance?.metadata.status === 'enabled' ? walletLabel : '',
                                 }}
                             />
                         ) : (

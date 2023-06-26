@@ -2,13 +2,14 @@ import React from 'react';
 
 import { Translation } from 'src/components/suite';
 import { ConfirmValueOnDevice, ConfirmDeviceScreenProps } from './ConfirmValueOnDevice';
-import { Account, NetworkSymbol } from 'src/types/wallet/index';
+import { NetworkSymbol } from 'src/types/wallet/index';
+import { AccountLabels } from 'src/types/suite/metadata';
 
 interface ConfirmXpubProps
     extends Pick<ConfirmDeviceScreenProps, 'device' | 'isConfirmed' | 'onCancel' | 'value'> {
     accountIndex: number;
     symbol: NetworkSymbol;
-    accountLabel: Account['metadata']['accountLabel'];
+    accountLabel: AccountLabels['accountLabel'];
 }
 
 export const ConfirmXpub = ({ accountIndex, symbol, accountLabel, ...props }: ConfirmXpubProps) => (

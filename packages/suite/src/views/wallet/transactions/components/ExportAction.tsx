@@ -5,12 +5,14 @@ import { Translation } from 'src/components/suite';
 import { useActions } from 'src/hooks/suite';
 import { SETTINGS } from 'src/config/suite';
 import { useTranslation } from 'src/hooks/suite/useTranslation';
+import { useSelector } from 'src/hooks/suite/useSelector';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { exportTransactionsThunk, fetchTransactionsThunk } from '@suite-common/wallet-core';
 import { ExportFileType } from '@suite-common/wallet-types';
 import { Account } from 'src/types/wallet';
 import { isFeatureFlagEnabled } from '@suite-common/suite-utils';
 import { getTitleForNetwork, getTitleForCoinjoinAccount } from '@suite-common/wallet-utils';
+import { selectLabelingDataForSelectedAccount } from 'src/reducers/suite/metadataReducer';
 
 export interface ExportActionProps {
     account: Account;
@@ -36,6 +38,8 @@ export const ExportAction = ({ account }: ExportActionProps) => {
         });
     }, [account, translationString]);
 
+    const { accountLabel } = useSelector(selectLabelingDataForSelectedAccount);
+
     const runExport = useCallback(
         async (type: ExportFileType) => {
             if (isExportRunning) {
@@ -59,7 +63,7 @@ export const ExportAction = ({ account }: ExportActionProps) => {
                     noLoading: true,
                     recursive: true,
                 });
-                const accountName = account.metadata.accountLabel || getAccountTitle();
+                const accountName = accountLabel || getAccountTitle();
                 await exportTransactions({ account, accountName, type });
             } catch (error) {
                 console.error('Export transaction failed: ', error);
@@ -79,6 +83,7 @@ export const ExportAction = ({ account }: ExportActionProps) => {
             addToast,
             translationString,
             getAccountTitle,
+            accountLabel,
         ],
     );
 
