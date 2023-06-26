@@ -6,6 +6,7 @@ const processDir = path.join(__dirname, './../../suite-data/files/bin/tor/linux-
 const processPath = customTorProcessDir || path.join(processDir, 'tor');
 
 export const torRunner = ({ torParams = [] }: { torParams: string[] }) => {
+    console.log('torRunner', processPath, torParams);
     const process = spawn(processPath, torParams, {
         cwd: processDir,
         stdio: ['ignore', 'ignore', 'ignore'],
