@@ -48,7 +48,6 @@ export const extraDependencies: ExtraDependencies = {
         selectDebugSettings: (state: AppState) => state.suite.settings.debug,
     },
     actions: {
-        setAccountLoadedMetadata: metadataActions.setAccountLoaded,
         setAccountAddMetadata: metadataActions.setAccountAdd,
         setWalletSettingsLocalCurrency: walletSettingsActions.setLocalCurrency,
         changeWalletSettingsNetworks: walletSettingsActions.changeNetworks,

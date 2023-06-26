@@ -69,6 +69,7 @@ export const BTC_ACCOUNT = {
         formattedBalance: '1000 BTC',
         utxo: Object.values(UTXO),
         history: {},
+        metadata: {},
     },
     network: { networkType: 'bitcoin', symbol: 'btc', decimals: 8, features: ['rbf'] },
 };

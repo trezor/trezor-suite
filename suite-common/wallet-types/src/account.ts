@@ -1,4 +1,5 @@
 import { Network, BackendType, NetworkSymbol } from '@suite-common/wallet-config';
+import { LabelableEntityKeysByVersion } from '@suite-common/metadata-types';
 import { AccountInfo, PROTO, TokenInfo } from '@trezor/connect';
 
 export type MetadataItem = string;
@@ -11,15 +12,6 @@ export type TokenInfoBranded = TokenInfo & {
     symbol: TokenSymbol;
     contract: TokenAddress;
 };
-
-export interface AccountMetadata {
-    key: string; // legacy xpub format (btc-like coins) or account descriptor (other coins)
-    fileName: string; // file name in dropbox
-    aesKey: string; // asymmetric key for file encryption
-    accountLabel?: MetadataItem;
-    outputLabels: { [txid: string]: { [index: string]: MetadataItem } };
-    addressLabels: { [address: string]: MetadataItem };
-}
 
 type AccountNetworkSpecific =
     | {
@@ -87,7 +79,7 @@ export type Account = {
     addresses?: AccountInfo['addresses'];
     utxo: AccountInfo['utxo'];
     history: AccountInfo['history'];
-    metadata: AccountMetadata;
+    metadata: LabelableEntityKeysByVersion;
 } & AccountBackendSpecific &
     AccountNetworkSpecific;
 

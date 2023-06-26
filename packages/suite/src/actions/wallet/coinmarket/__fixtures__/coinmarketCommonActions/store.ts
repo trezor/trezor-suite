@@ -36,10 +36,10 @@ export const ACCOUNT: Account = {
     },
     metadata: {
         key: 'C5B245DD2B69C7291',
-        fileName: '',
-        aesKey: '',
-        outputLabels: {},
-        addressLabels: {},
+        1: {
+            fileName: '',
+            aesKey: '',
+        },
     },
     page: undefined,
     misc: undefined,

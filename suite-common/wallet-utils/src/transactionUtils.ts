@@ -7,7 +7,6 @@ import {
     RbfTransactionParams,
     WalletAccountTransaction,
 } from '@suite-common/wallet-types';
-import { AccountMetadata } from '@suite-common/metadata-types';
 import {
     AccountAddress,
     AccountTransaction,
@@ -16,6 +15,7 @@ import {
 } from '@trezor/connect';
 import { SignOperator } from '@suite-common/suite-types';
 import { arrayPartition } from '@trezor/utils';
+import { AccountLabels } from '@suite-common/metadata-types';
 
 import { formatAmount, formatNetworkAmount } from './accountUtils';
 import { toFiatCurrency } from './fiatConverterUtils';
@@ -650,7 +650,7 @@ const groupTransactionIdsByAddress = (transactions: WalletAccountTransaction[]) 
     return addresses;
 };
 
-const groupTransactionsByLabel = (accountMetadata: AccountMetadata) => {
+const groupTransactionsByLabel = (accountMetadata: AccountLabels) => {
     const labels: { [label: string]: string[] } = {};
     const { outputLabels } = accountMetadata;
 
@@ -667,7 +667,7 @@ const groupTransactionsByLabel = (accountMetadata: AccountMetadata) => {
     return labels;
 };
 
-const groupAddressesByLabel = (accountMetadata: AccountMetadata) => {
+const groupAddressesByLabel = (accountMetadata: AccountLabels) => {
     const labels: { [label: string]: string[] } = {};
     const { addressLabels } = accountMetadata;
 
@@ -727,7 +727,7 @@ const numberSearchFilter = (
 const searchDateRegex = new RegExp(/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/);
 export const simpleSearchTransactions = (
     transactions: WalletAccountTransaction[],
-    accountMetadata: AccountMetadata,
+    accountMetadata: AccountLabels,
     search: string,
 ) => {
     // Trim
@@ -844,7 +844,7 @@ export const simpleSearchTransactions = (
 
 export const advancedSearchTransactions = (
     transactions: WalletAccountTransaction[],
-    accountMetadata: AccountMetadata,
+    accountMetadata: AccountLabels,
     search: string,
 ) => {
     // No AND/OR operators, just run a simple search

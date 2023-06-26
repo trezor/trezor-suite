@@ -5,6 +5,7 @@ import * as base58check from 'bs58check';
 
 const CIPHER_TYPE = 'aes-256-gcm';
 const CIPHER_IVSIZE = 96 / 8;
+const AUTH_SIZE = 128 / 8;
 
 export const deriveMetadataKey = (masterKey: string, xpub: string) => {
     const hmac = crypto.createHmac('sha256', Buffer.from(masterKey, 'hex'));
@@ -83,11 +84,10 @@ export const decrypt = (input: Buffer, key: string | Buffer) => {
         key = Buffer.from(key, 'hex');
     }
 
-    const ivsize = CIPHER_IVSIZE;
-    const iv = input.slice(0, ivsize);
+    const iv = input.slice(0, CIPHER_IVSIZE);
     // tag is always 128-bits
-    const authTag = input.slice(ivsize, ivsize + 128 / 8);
-    const cText = input.slice(ivsize + 128 / 8);
+    const authTag = input.slice(CIPHER_IVSIZE, CIPHER_IVSIZE + AUTH_SIZE);
+    const cText = input.slice(CIPHER_IVSIZE + AUTH_SIZE);
     const decipher = crypto.createDecipheriv(CIPHER_TYPE, key, iv);
     const start = decipher.update(cText);
 

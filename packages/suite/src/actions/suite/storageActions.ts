@@ -328,7 +328,11 @@ export const saveMetadata = () => async (_dispatch: Dispatch, getState: GetState
     const { metadata } = getState();
     db.addItem(
         'metadata',
-        { provider: metadata.provider, enabled: metadata.enabled },
+        {
+            providers: metadata.providers,
+            enabled: metadata.enabled,
+            selectedProvider: metadata.selectedProvider,
+        },
         'state',
         true,
     );

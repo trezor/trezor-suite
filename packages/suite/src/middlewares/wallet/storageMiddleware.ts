@@ -55,7 +55,7 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 action.payload.forEach(storageActions.removeAccountWithDependencies(api.getState));
             }
 
-            if (isAnyOf(metadataActions.setAccountLoaded, metadataActions.setAccountAdd)(action)) {
+            if (isAnyOf(metadataActions.setAccountAdd)(action)) {
                 const device = findAccountDevice(action.payload, api.getState().devices);
                 // if device is remembered, and there is a change in account.metadata (metadataActions.setAccountLoaded), update database
                 if (isDeviceRemembered(device)) {
@@ -218,7 +218,8 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 }
                 case METADATA.ENABLE:
                 case METADATA.DISABLE:
-                case METADATA.SET_PROVIDER:
+                case METADATA.ADD_PROVIDER:
+                case METADATA.REMOVE_PROVIDER:
                     api.dispatch(storageActions.saveMetadata());
                     break;
 

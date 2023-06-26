@@ -102,16 +102,10 @@ export const prepareAccountsReducer = createReducerWithExtraDeps(
                 }
             })
             .addCase(extra.actionTypes.storageLoad, extra.reducers.storageLoadAccounts)
-            .addMatcher(
-                isAnyOf(
-                    extra.actions.setAccountLoadedMetadata,
-                    extra.actions.setAccountAddMetadata,
-                ),
-                (state, action) => {
-                    const { payload } = action;
-                    setMetadata(state, payload);
-                },
-            );
+            .addMatcher(isAnyOf(extra.actions.setAccountAddMetadata), (state, action) => {
+                const { payload } = action;
+                setMetadata(state, payload);
+            });
     },
 );
 

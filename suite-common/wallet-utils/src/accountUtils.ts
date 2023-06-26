@@ -669,10 +669,6 @@ export const getFailedAccounts = (discovery: Discovery): Account[] =>
             },
             metadata: {
                 key: descriptor,
-                fileName: '',
-                aesKey: '',
-                outputLabels: {},
-                addressLabels: {},
             },
             ...getAccountSpecific({}, getNetwork(f.symbol)!.networkType),
         };
@@ -688,6 +684,7 @@ export const accountSearchFn = (
     account: Account,
     rawSearchString?: string,
     coinFilter?: NetworkSymbol,
+    accountLabel?: string,
 ) => {
     // if coin filter is active and account symbol doesn't match return false and don't continue the search
     const coinFilterMatch = coinFilter ? account.symbol === coinFilter : true;
@@ -715,7 +712,7 @@ export const accountSearchFn = (
     const matchXRPAlternativeName =
         network?.networkType === 'ripple' && 'ripple'.includes(searchString);
 
-    const metadataMatch = account.metadata.accountLabel?.toLowerCase().includes(searchString);
+    const metadataMatch = accountLabel?.toLowerCase().includes(searchString);
 
     return (
         symbolMatch ||

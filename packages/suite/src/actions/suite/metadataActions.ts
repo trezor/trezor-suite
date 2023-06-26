@@ -13,6 +13,8 @@ import {
     Error as MetadataProviderError,
     OAuthServerEnvironment,
     ProviderErrorAction,
+    Labels,
+    DataType,
 } from 'src/types/suite/metadata';
 import { Account } from 'src/types/wallet';
 import * as metadataUtils from 'src/utils/suite/metadata';
@@ -20,12 +22,10 @@ import * as modalActions from 'src/actions/suite/modalActions';
 import DropboxProvider from 'src/services/suite/metadata/DropboxProvider';
 import GoogleProvider from 'src/services/suite/metadata/GoogleProvider';
 import FileSystemProvider from 'src/services/suite/metadata/FileSystemProvider';
+import { selectSelectedProviderForLabels } from 'src/reducers/suite/metadataReducer';
+
 import { createAction } from '@reduxjs/toolkit';
 import { notificationsActions } from '@suite-common/toast-notifications';
-
-export const setAccountLoaded = createAction(METADATA.ACCOUNT_LOADED, (payload: Account) => ({
-    payload,
-}));
 
 export const setAccountAdd = createAction(METADATA.ACCOUNT_ADD, (payload: Account) => ({
     payload,
@@ -41,28 +41,41 @@ export type MetadataAction =
           payload: { deviceState: string; metadata: DeviceMetadata };
       }
     | {
-          type: typeof METADATA.SET_PROVIDER;
-          payload: MetadataProvider | undefined;
+          type: typeof METADATA.REMOVE_PROVIDER;
+          payload: MetadataProvider;
       }
     | {
-          type: typeof METADATA.WALLET_LOADED | typeof METADATA.WALLET_ADD;
-          payload: { deviceState: string; walletLabel?: string };
+          type: typeof METADATA.ADD_PROVIDER;
+          payload: MetadataProvider;
       }
-    | ReturnType<typeof setAccountLoaded>
+    | {
+          type: typeof METADATA.SET_DATA;
+          payload: {
+              provider: MetadataProvider;
+              data: Record<string, Labels>;
+          };
+      }
+    | {
+          type: typeof METADATA.SET_SELECTED_PROVIDER;
+          payload: {
+              dataType: DataType;
+              clientId: string;
+          };
+      }
     | ReturnType<typeof setAccountAdd>;
 
 // needs to be declared here in top level context because it's not recommended to keep classes instances in redux state (serialization)
 let providerInstance: DropboxProvider | GoogleProvider | FileSystemProvider | undefined;
 const fetchIntervals: { [deviceState: string]: any } = {}; // any because of native at the moment, otherwise number | undefined
 
-const createProvider = (
+const createProviderInstance = (
     type: MetadataProvider['type'],
     tokens: Tokens = {},
     environment: OAuthServerEnvironment = 'production',
 ) => {
     switch (type) {
         case 'dropbox':
-            return new DropboxProvider(tokens?.refreshToken);
+            return new DropboxProvider({ token: tokens?.refreshToken, clientId: METADATA.DROPBOX_CLIENT_ID });
         case 'google':
             return new GoogleProvider(tokens, environment);
         case 'fileSystem':
@@ -79,70 +92,68 @@ const createProvider = (
  * if false - dispose only metadata values
  */
 export const disposeMetadata = (keys?: boolean) => (dispatch: Dispatch, getState: GetState) => {
-    getState().wallet.accounts.forEach(account => {
-        const updatedMetadata = {
-            ...account.metadata,
-            // always remove metadata  values
-            outputLabels: {},
-            addressLabels: {},
-            accountLabel: '',
-        };
-
-        // and sometimes remove also keys (information we can only if device is connected)
-        if (keys) {
-            updatedMetadata.fileName = '';
-            updatedMetadata.aesKey = '';
-        }
-
-        dispatch(
-            setAccountAdd({
-                ...account,
-                metadata: updatedMetadata,
-            }),
-        );
+    const provider = selectSelectedProviderForLabels(getState());
+    if (!provider) {
+        return;
+    }
+    dispatch({
+        type: METADATA.SET_DATA,
+        payload: {
+            provider,
+            data: undefined,
+        },
     });
 
-    getState().devices.forEach(device => {
-        if (device.state) {
-            let updatedMetadata = { ...device.metadata };
+    if (keys) {
+        getState().wallet.accounts.forEach(account => {
+            const updatedAccount = JSON.parse(JSON.stringify(account));
 
-            if (keys) {
+            delete updatedAccount.metadata[METADATA.ENCRYPTION_VERSION];
+            dispatch(setAccountAdd(updatedAccount));
+        });
+
+        getState().devices.forEach(device => {
+            if (device.state) {
                 // set metadata as disabled for this device, remove all metadata related information
-                updatedMetadata = { status: 'disabled' };
-            } else if ('key' in updatedMetadata) {
-                // metadata is still enabled for this device, keys are kept, we are only removing walletLabel here
-                updatedMetadata.walletLabel = '';
+                dispatch({
+                    type: METADATA.SET_DEVICE_METADATA,
+                    payload: {
+                        deviceState: device.state,
+                        metadata: { status: 'disabled' },
+                    },
+                });
             }
-
-            dispatch({
-                type: METADATA.SET_DEVICE_METADATA,
-                payload: {
-                    deviceState: device.state,
-                    metadata: updatedMetadata,
-                },
-            });
-        }
-    });
+        });
+    }
 };
 
 export const disconnectProvider =
-    (removeMetadata = true) =>
+    ({ clientId, removeMetadata = true }: { clientId: string; removeMetadata?: boolean }) =>
     async (dispatch: Dispatch) => {
         Object.values(fetchIntervals).forEach((deviceState, num) => {
             clearInterval(num);
             delete fetchIntervals[deviceState];
         });
 
+        // dispose metadata values (not keys)
+        if (removeMetadata) {
+            dispatch(disposeMetadata());
+        }
+
         /* eslint-disable-next-line @typescript-eslint/no-use-before-define */
-        const provider = dispatch(getProvider());
+        const provider = dispatch(getProviderInstance({ clientId }));
         if (provider) {
             await provider.disconnect();
             providerInstance = undefined;
         }
         // flush reducer
         dispatch({
-            type: METADATA.SET_PROVIDER,
-            payload: undefined,
+            type: METADATA.REMOVE_PROVIDER,
+            payload: provider,
+        });
+        dispatch({
+            type: METADATA.SET_SELECTED_PROVIDER,
+            payload: { dataType: 'labels', clientId: undefined },
         });
 
         analytics.report({
@@ -151,11 +162,6 @@ export const disconnectProvider =
                 provider: '',
             },
         });
-
-        // dispose metadata values (not keys)
-        if (removeMetadata) {
-            dispatch(disposeMetadata());
-        }
     };
 
 /**
@@ -165,69 +171,89 @@ export const disconnectProvider =
  * Error: Upload failed: Access token is invalid
  */
 const handleProviderError =
-    (error: MetadataProviderError, action: string) => (dispatch: Dispatch) => {
+    ({
+        error,
+        action,
+        clientId,
+    }: {
+        error: MetadataProviderError;
+        action: string;
+        clientId?: string;
+    }) =>
+    (dispatch: Dispatch) => {
         // error should be of specified type, but in case it is not (catch is not typed) show generic error
-        if (!error?.code) {
-            // if this happens, it means that there is a hole in error handling and it should be fixed
-            return dispatch(
-                notificationsActions.addToast({
-                    type: 'error',
-                    error: `Labeling action failed. ${error}`,
-                }),
-            );
-        }
-        // handle nicely wrapped errors here
-        switch (error.code) {
-            // possibly programmer errors
-            // something is screwed up, we don't really know what.
-            // react by disabling all metadata and toasting error;
-            case 'ACCESS_ERROR':
-            case 'BAD_INPUT_ERROR':
-            case 'OTHER_ERROR':
-                dispatch(disposeMetadata());
-                dispatch(disconnectProvider());
-                break;
-            case 'PROVIDER_ERROR':
-            case 'RATE_LIMIT_ERROR':
-            case 'AUTH_ERROR':
-                dispatch(disconnectProvider());
-                break;
-            case 'CONNECTIVITY_ERROR':
-            default:
-                break;
-        }
+        // if this happens, it means that there is a hole in error handling and it should be fixed
+        const toastError = error.code
+            ? `${action}: ${error?.error}`
+            : `Labeling action failed. ${error}`;
 
         dispatch(
             notificationsActions.addToast({
                 type: 'error',
-                error: `${action}: ${error?.error}`,
+                error: toastError,
             }),
         );
+
+        if (clientId) {
+            // handle nicely wrapped errors here
+            switch (error.code) {
+                // possibly programmer errors
+                // something is screwed up, we don't really know what.
+                // react by disabling all metadata and toasting error;
+                case 'ACCESS_ERROR':
+                case 'BAD_INPUT_ERROR':
+                case 'OTHER_ERROR':
+                    dispatch(disposeMetadata());
+                    dispatch(
+                        disconnectProvider({
+                            clientId,
+                        }),
+                    );
+                    break;
+                case 'PROVIDER_ERROR':
+                case 'RATE_LIMIT_ERROR':
+                case 'AUTH_ERROR':
+                    dispatch(
+                        disconnectProvider({
+                            clientId,
+                        }),
+                    );
+                    break;
+                case 'CONNECTIVITY_ERROR':
+                default:
+                    break;
+            }
+        }
     };
 
 /**
  * Return already existing instance of AbstractProvider or recreate it from token;
  */
-const getProvider = () => (_dispatch: Dispatch, getState: GetState) => {
-    const state = getState();
-    const { provider } = state.metadata;
-    if (!provider) return;
+const getProviderInstance =
+    ({ clientId }: { clientId: string }) =>
+    (_dispatch: Dispatch, getState: GetState) => {
+        const state = getState();
+        const { providers } = state.metadata;
 
-    // instance already exists but user did not finish log in and decided to use another provider;
-    if (providerInstance && providerInstance.type !== provider.type) {
-        providerInstance = undefined;
-    }
+        const provider = providers.find(p => p.clientId === clientId);
 
-    if (providerInstance) return providerInstance;
+        if (!provider) return;
 
-    providerInstance = createProvider(
-        provider.type,
-        provider.tokens,
-        state.suite.settings.debug.oauthServerEnvironment,
-    );
+        // instance already exists but user did not finish log in and decided to use another provider;
+        if (providerInstance && providerInstance.type !== provider.type) {
+            providerInstance = undefined;
+        }
 
-    return providerInstance;
-};
+        if (providerInstance) return providerInstance;
+
+        providerInstance = createProviderInstance(
+            provider.type,
+            provider.tokens,
+            state.suite.settings.debug.oauthServerEnvironment,
+        );
+
+        return providerInstance;
+    };
 
 export const enableMetadata = (): MetadataAction => ({
     type: METADATA.ENABLE,
@@ -248,11 +274,25 @@ export const initProvider = () => (dispatch: Dispatch) => {
 };
 
 export const fetchMetadata =
-    (deviceState: string) => async (dispatch: Dispatch, getState: GetState) => {
-        const provider = dispatch(getProvider());
-        if (!provider) {
+    (deviceStateArg?: string) => async (dispatch: Dispatch, getState: GetState) => {
+        const provider = selectSelectedProviderForLabels(getState());
+        if (!provider) return;
+
+        const providerInstance = dispatch(
+            getProviderInstance({
+                clientId: provider.clientId,
+            }),
+        );
+        if (!providerInstance) {
             return;
         }
+
+        const deviceState = deviceStateArg || getState().suite.device?.state;
+
+        if (!deviceState) {
+            return;
+        }
+
         const device = getState().devices.find(d => d.state === deviceState);
 
         // device is disconnected or something is wrong with it
@@ -266,17 +306,26 @@ export const fetchMetadata =
 
         // this triggers renewal of access token if needed. Otherwise multiple requests
         // to renew access token are issued by every provider.getFileContent
-        const response = await provider.getProviderDetails();
+        const response = await providerInstance.getProviderDetails();
         if (!response.success) {
-            return dispatch(handleProviderError(response, ProviderErrorAction.LOAD));
+            return dispatch(
+                handleProviderError({
+                    error: response,
+                    action: ProviderErrorAction.LOAD,
+                    clientId: provider.clientId,
+                }),
+            );
         }
 
         const deviceFileContentP = new Promise<void>((resolve, reject) => {
             if (device?.metadata?.status !== 'enabled') {
                 return reject(new Error('metadata not enabled for this device'));
             }
-
-            return provider.getFileContent(device.metadata.fileName).then(result => {
+            const { fileName, aesKey } = device.metadata[METADATA.ENCRYPTION_VERSION] || {};
+            if (!fileName || !aesKey) {
+                return reject(new Error(`filename or aesKey of version ${METADATA.ENCRYPTION_VERSION} does not exist for device ${device.path}`));
+            }
+            return providerInstance.getFileContent(fileName).then(result => {
                 // ts-stuff
                 if (device?.metadata?.status !== 'enabled') {
                     // this should never happen
@@ -290,36 +339,43 @@ export const fetchMetadata =
                 const json = { walletLabel: '' };
                 if (result.payload) {
                     try {
-                        Object.assign(
-                            json,
-                            metadataUtils.decrypt(
-                                metadataUtils.arrayBufferToBuffer(result.payload),
-                                device.metadata.aesKey,
-                            ),
+                        const decryptedData =metadataUtils.decrypt(
+                            metadataUtils.arrayBufferToBuffer(result.payload),
+                            aesKey,
                         );
+
+                        dispatch({
+                            type: METADATA.SET_DATA,
+                            payload: {
+                                provider,
+                                data: {
+                                    [fileName]: decryptedData,
+                                },
+                            },
+                        });
+                        Object.assign(json, decryptedData);
                     } catch (err) {
-                        const error = provider.error('OTHER_ERROR', err.message);
+                        const error = providerInstance.error('OTHER_ERROR', err.message);
                         return reject(error);
                     }
                 }
-                dispatch({
-                    type: METADATA.WALLET_LOADED,
-                    payload: {
-                        deviceState,
-                        walletLabel: json.walletLabel,
-                    },
-                });
+
                 resolve();
             });
         });
 
         const accounts = getState().wallet.accounts.filter(
-            a => a.deviceState === deviceState && a.metadata.fileName,
+            a => a.deviceState === deviceState && a.metadata[METADATA.ENCRYPTION_VERSION]?.fileName,
         );
 
         const accountPromises = accounts.map(async account => {
             if (!provider) return; // ts
-            const response = await provider.getFileContent(account.metadata.fileName);
+            const { fileName, aesKey } = account.metadata[METADATA.ENCRYPTION_VERSION] || {};
+            if (!fileName || !aesKey) {
+                console.error(`filename or aesKey of version ${METADATA.ENCRYPTION_VERSION} does not exist for account ${account.path}`);
+                return;
+            }
+            const response = await providerInstance.getFileContent(fileName);
 
             if (!response.success) {
                 throw new Error(response.error);
@@ -331,33 +387,34 @@ export const fetchMetadata =
                 try {
                     // we found associated metadata file for given account, decrypt it
                     // and save its metadata into reducer;
-                    Object.assign(
-                        json,
-                        metadataUtils.decrypt(
-                            metadataUtils.arrayBufferToBuffer(response.payload),
-                            account.metadata.aesKey,
-                        ),
+                    const decryptedData =metadataUtils.decrypt(
+                        metadataUtils.arrayBufferToBuffer(response.payload),
+                        aesKey,
                     );
-                    // if (json.version === '1.0.0') {
-                    //     TODO: migration
-                    // }
+
+                    Object.assign(json, decryptedData);
+
+                    dispatch({
+                        type: METADATA.SET_DATA,
+                        payload: {
+                            provider,
+                            data: {
+                                [fileName]: json,
+                            },
+                        },
+                    });
                 } catch (err) {
-                    const error = provider.error('OTHER_ERROR', err.message);
-                    return dispatch(handleProviderError(error, ProviderErrorAction.LOAD));
+                    console.error('error fetching labeling for account: ', account.path, err);
+                    const error = providerInstance.error('OTHER_ERROR', err.message);
+                    return dispatch(
+                        handleProviderError({
+                            error,
+                            action: ProviderErrorAction.LOAD,
+                            clientId: provider.clientId,
+                        }),
+                    );
                 }
             }
-
-            dispatch(
-                setAccountLoaded({
-                    ...account,
-                    metadata: {
-                        ...account.metadata,
-                        accountLabel: json.accountLabel,
-                        outputLabels: json.outputLabels,
-                        addressLabels: json.addressLabels,
-                    },
-                }),
-            );
         });
 
         const promises = [deviceFileContentP, ...accountPromises];
@@ -380,11 +437,19 @@ export const fetchMetadata =
             // So that users will not notice that token expired until they will try to add or edit
             // already existing label
             if (fetchIntervals[deviceState]) {
-                return dispatch(disconnectProvider(false));
+                return dispatch(
+                    disconnectProvider({ removeMetadata: false, clientId: provider.clientId }),
+                );
             }
             // If there is no interval set, it means that error occurred in the first fetch
             // in such case, display error notification
-            dispatch(handleProviderError(error, ProviderErrorAction.LOAD));
+            dispatch(
+                handleProviderError({
+                    error,
+                    action: ProviderErrorAction.LOAD,
+                    clientId: provider.clientId,
+                }),
+            );
         }
     };
 
@@ -401,11 +466,18 @@ export const setAccountMetadataKey =
                 device.metadata.key,
                 account.metadata.key,
             );
-            const fileName = metadataUtils.deriveFilename(metaKey);
+            const fileName = `${metadataUtils.deriveFilename(metaKey)}.mtdt`;
+
             const aesKey = metadataUtils.deriveAesKey(metaKey);
-            return { ...account, metadata: { ...account.metadata, fileName, aesKey } };
+            return {
+                ...account,
+                metadata: {
+                    ...account.metadata,
+                    [METADATA.ENCRYPTION_VERSION]: { fileName, aesKey },
+                },
+            };
         } catch (error) {
-            dispatch(handleProviderError(error, ProviderErrorAction.SAVE));
+            dispatch(handleProviderError({ error, action: ProviderErrorAction.SAVE }));
         }
         return account;
     };
@@ -422,43 +494,64 @@ const syncMetadataKeys = () => (dispatch: Dispatch, getState: GetState) => {
     // keys sooner when enabling labeling on device;
 };
 
+export const selectProvider =
+    ({ dataType, clientId }: { dataType: DataType; clientId: string }) =>
+    (dispatch: Dispatch) => {
+        dispatch({
+            type: METADATA.SET_SELECTED_PROVIDER,
+            payload: {
+                dataType,
+                clientId,
+            },
+        });
+    };
+
 export const connectProvider =
-    (type: MetadataProviderType) => async (dispatch: Dispatch, getState: GetState) => {
-        let provider = dispatch(getProvider());
-        if (!provider) {
-            provider = createProvider(
+    ({ type, dataType = 'labels' }: { type: MetadataProviderType; dataType?: DataType }) =>
+    async (dispatch: Dispatch, getState: GetState) => {
+        
+        const providerInstance = createProviderInstance(
                 type,
                 {},
                 getState().suite.settings.debug.oauthServerEnvironment,
             );
-        }
 
-        const isConnected = await provider.isConnected();
+        const isConnected = await providerInstance.isConnected();
         if (!isConnected) {
-            const connectionResult = await provider.connect();
+            const connectionResult = await providerInstance.connect();
             if ('error' in connectionResult) {
                 return connectionResult.error;
             }
         }
 
-        const result = await provider.getProviderDetails();
-
-        if (!result.success) {
-            dispatch(handleProviderError(result, ProviderErrorAction.CONNECT));
+        const providerDetails = await providerInstance.getProviderDetails();
+        if (!providerDetails.success) {
+            dispatch(
+                handleProviderError({
+                    error: providerDetails,
+                    action: ProviderErrorAction.CONNECT,
+                    clientId: providerInstance.clientId,
+                }),
+            );
             return;
         }
 
         dispatch({
-            type: METADATA.SET_PROVIDER,
-            payload: result.payload,
+            type: METADATA.ADD_PROVIDER,
+            payload: {
+                ...providerDetails.payload,
+                data: {},
+            },
         });
 
         analytics.report({
             type: EventType.SettingsGeneralLabelingProvider,
             payload: {
-                provider: result.payload.type,
+                provider: providerDetails.payload.type,
             },
         });
+
+        dispatch(selectProvider({ dataType, clientId: providerInstance.clientId }));
 
         return true;
     };
@@ -467,24 +560,45 @@ export const addDeviceMetadata =
     (payload: Extract<MetadataAddPayload, { type: 'walletLabel' }>) =>
     async (dispatch: Dispatch, getState: GetState) => {
         const device = getState().devices.find(d => d.state === payload.deviceState);
+        const provider = selectSelectedProviderForLabels(getState());
+
         if (!device || device.metadata.status !== 'enabled') return false;
 
+        if (!device || !provider) return false;
+
+        const { fileName, aesKey } = device.metadata[METADATA.ENCRYPTION_VERSION] || {};
+        if (!fileName || !aesKey) {
+            console.error('fileName or aesKey is missing for device', device.state);
+            return;
+        }
+        // todo: not danger overwrite empty?
+        const metadata = fileName ? provider.data[fileName] : undefined;
+
+        const nextMetadata = metadata
+            ? JSON.parse(JSON.stringify(metadata))
+            : {
+                  walletLabel: '',
+              };
         const walletLabel =
             typeof payload.value === 'string' && payload.value.length > 0
                 ? payload.value
                 : undefined;
 
+        nextMetadata.walletLabel = walletLabel;
+
         dispatch({
-            type: METADATA.WALLET_ADD,
+            type: METADATA.SET_DATA,
             payload: {
-                deviceState: payload.deviceState,
-                walletLabel,
+                provider,
+                data: {
+                    [fileName]: nextMetadata,
+                },
             },
         });
 
-        const provider = await dispatch(getProvider());
+        const providerInstance = dispatch(getProviderInstance({ clientId: provider.clientId }));
 
-        if (!provider) {
+        if (!providerInstance) {
             // provider should always be set here
             return false;
         }
@@ -495,17 +609,29 @@ export const addDeviceMetadata =
                     version: '1.0.0',
                     walletLabel,
                 },
-                device.metadata.aesKey,
+                aesKey,
             );
-            const result = await provider.setFileContent(device.metadata.fileName, encrypted);
+            const result = await providerInstance.setFileContent(fileName, encrypted);
             if (!result.success) {
-                dispatch(handleProviderError(result, ProviderErrorAction.SAVE));
+                dispatch(
+                    handleProviderError({
+                        error: result,
+                        action: ProviderErrorAction.SAVE,
+                        clientId: provider.clientId,
+                    }),
+                );
                 return false;
             }
             return true;
         } catch (err) {
-            const error = provider.error('OTHER_ERROR', err.message);
-            return dispatch(handleProviderError(error, ProviderErrorAction.SAVE));
+            const error = providerInstance.error('OTHER_ERROR', err.message);
+            return dispatch(
+                handleProviderError({
+                    error,
+                    action: ProviderErrorAction.SAVE,
+                    clientId: provider.clientId,
+                }),
+            );
         }
     };
 
@@ -518,19 +644,38 @@ export const addAccountMetadata =
     (payload: Exclude<MetadataAddPayload, { type: 'walletLabel' }>, save = true) =>
     async (dispatch: Dispatch, getState: GetState) => {
         const account = getState().wallet.accounts.find(a => a.key === payload.accountKey);
-        if (!account) return false;
-        // clone Account.metadata
-        const metadata = JSON.parse(JSON.stringify(account.metadata));
+        const provider = selectSelectedProviderForLabels(getState());
+        if (!account || !provider) return false;
+
+        // todo: not danger overwrite empty?
+        const fileName = account.metadata?.[METADATA.ENCRYPTION_VERSION]?.fileName;
+        const metadata = fileName ? provider.data[fileName] : undefined;
+
+        if (!fileName) {
+            throw new Error(`filename of version ${METADATA.ENCRYPTION_VERSION} does not exist for account ${account.path}`);
+        }
+        
+        const nextMetadata = metadata
+            ? JSON.parse(JSON.stringify(metadata))
+            : {
+                  outputLabels: {},
+                  addressLabels: {},
+                  accountLabel: '',
+              };
 
         if (payload.type === 'outputLabel') {
             if (typeof payload.value !== 'string' || payload.value.length === 0) {
-                if (!metadata.outputLabels[payload.txid]) return false;
-                delete metadata.outputLabels[payload.txid][payload.outputIndex];
-                if (Object.keys(metadata.outputLabels[payload.txid]).length === 0)
-                    delete metadata.outputLabels[payload.txid];
+                if (!nextMetadata.outputLabels[payload.txid]) return false;
+                delete nextMetadata.outputLabels[payload.txid][payload.outputIndex];
+                if (Object.keys(nextMetadata.outputLabels[payload.txid]).length === 0)
+                    delete nextMetadata.outputLabels[payload.txid];
             } else {
-                if (!metadata.outputLabels[payload.txid]) metadata.outputLabels[payload.txid] = {};
-                metadata.outputLabels[payload.txid][payload.outputIndex] = payload.value;
+                if (!nextMetadata.outputLabels[payload.txid]) {
+                    nextMetadata.outputLabels[payload.txid] = {};
+                }
+
+                nextMetadata.outputLabels[payload.txid][payload.outputIndex] = payload.value;
+
                 // 2.0.0
                 // metadata.outputLabels[payload.txid][payload.outputIndex] = {
                 //     ts,
@@ -541,32 +686,38 @@ export const addAccountMetadata =
 
         if (payload.type === 'addressLabel') {
             if (typeof payload.value !== 'string' || payload.value.length === 0) {
-                delete metadata.addressLabels[payload.defaultValue];
+                delete nextMetadata.addressLabels[payload.defaultValue];
             } else {
-                metadata.addressLabels[payload.defaultValue] = payload.value;
+                nextMetadata.addressLabels[payload.defaultValue] = payload.value;
             }
         }
 
         if (payload.type === 'accountLabel') {
             if (typeof payload.value !== 'string' || payload.value.length === 0) {
-                delete metadata.accountLabel;
+                delete nextMetadata.accountLabel;
             } else {
-                metadata.accountLabel = payload.value;
+                nextMetadata.accountLabel = payload.value;
             }
         }
 
-        dispatch(
-            setAccountAdd({
-                ...account,
-                metadata,
-            }),
-        );
+        dispatch({
+            type: METADATA.SET_DATA,
+            payload: {
+                provider,
+                data: {
+                    [fileName]: nextMetadata,
+                },
+            },
+        });
 
         // we might intentionally skip saving metadata content to persistent storage.
         if (!save) return true;
 
-        const provider = await dispatch(getProvider());
-        if (!provider) {
+        const providerInstance = await dispatch(
+            getProviderInstance({ clientId: provider.clientId }),
+        );
+
+        if (!providerInstance) {
             // provider should always be set here (see init)
             return false;
         }
@@ -575,16 +726,25 @@ export const addAccountMetadata =
         const encrypted = await metadataUtils.encrypt(
             {
                 version: '1.0.0',
-                accountLabel: metadata.accountLabel,
-                outputLabels: metadata.outputLabels,
-                addressLabels: metadata.addressLabels,
+                accountLabel: nextMetadata.accountLabel,
+                outputLabels: nextMetadata.outputLabels,
+                addressLabels: nextMetadata.addressLabels,
             },
-            account.metadata.aesKey,
+            account.metadata[METADATA.ENCRYPTION_VERSION]!.aesKey,
         );
 
-        const result = await provider.setFileContent(account.metadata.fileName, encrypted);
+        const result = await providerInstance.setFileContent(
+            account.metadata[METADATA.ENCRYPTION_VERSION]!.fileName,
+            encrypted,
+        );
         if (!result.success) {
-            dispatch(handleProviderError(result, ProviderErrorAction.SAVE));
+            dispatch(
+                handleProviderError({
+                    error: result,
+                    action: ProviderErrorAction.SAVE,
+                    clientId: provider.clientId,
+                }),
+            );
             return false;
         }
         return true;
@@ -598,7 +758,7 @@ export const setDeviceMetadataKey = () => async (dispatch: Dispatch, getState: G
     const { device } = getState().suite;
     if (!device || !device.state || !device.connected) return;
 
-    // mater key already exists
+    // master key already exists
     if (device.metadata.status === 'enabled') return;
 
     const result = await TrezorConnect.cipherKeyValue({
@@ -633,10 +793,10 @@ export const setDeviceMetadataKey = () => async (dispatch: Dispatch, getState: G
             payload: {
                 deviceState: device.state,
                 metadata: {
+                    ...device.metadata,
                     status: 'enabled',
                     key: result.payload.value,
-                    fileName,
-                    aesKey,
+                    [METADATA.ENCRYPTION_VERSION]: { fileName, aesKey },
                 },
             },
         });
@@ -722,7 +882,7 @@ export const init =
         // 3. connect to provider
         if (
             getState().suite.device?.metadata.status === 'enabled' &&
-            !getState().metadata.provider
+            !getState().metadata.providers?.length
         ) {
             if (!getState().metadata.initiating) {
                 dispatch({ type: METADATA.SET_INITIATING, payload: true });
@@ -738,7 +898,7 @@ export const init =
         }
 
         if (getState().metadata.initiating) {
-            await dispatch(fetchMetadata(device?.state));
+            await dispatch(fetchMetadata(device.state));
             dispatch({ type: METADATA.SET_INITIATING, payload: false });
         }
 

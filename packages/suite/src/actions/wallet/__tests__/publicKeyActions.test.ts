@@ -61,17 +61,20 @@ jest.mock('@trezor/connect', () => {
     };
 });
 
+const device = testMocks.getSuiteDevice({
+    state: 'device-state',
+    connected: true,
+    available: true,
+});
+
 const rootReducer = combineReducers({
     suite: createReducer(
         {
-            device: testMocks.getSuiteDevice({
-                state: 'device-state',
-                connected: true,
-                available: true,
-            }),
+            device,
         },
         () => ({}),
     ),
+    devices: createReducer([device], () => {}),
     wallet: combineReducers({
         selectedAccount: createReducer(
             {
@@ -82,7 +85,17 @@ const rootReducer = combineReducers({
             },
             () => ({}),
         ),
+        accounts: createReducer([{ metadata: {}, networkType: 'bitcoin' }], () => {}),
     }),
+
+    metadata: createReducer(
+        {
+            providers: [],
+            selectedProvider: {},
+            enabled: false,
+        },
+        () => ({}),
+    ),
 });
 
 interface StateOverrides {

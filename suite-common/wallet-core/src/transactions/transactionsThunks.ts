@@ -228,17 +228,27 @@ export const exportTransactionsThunk = createThunk(
         // Get state of transactions
         const allTransactions = selectTransactions(getState());
         const localCurrency = selectors.selectLocalCurrency(getState());
+        
+        const provider = getState().metadata.providers.find(p => p.clientId === state.metadata.selectedProvider.labels);
+        const metadataKeys = account?.metadata[1];
+        let labels = {};
+        if (!metadataKeys || !metadataKeys?.fileName || !provider?.data[metadataKeys.fileName]) {
+            labels={outputLabels:{}};
+        }  else {
+            labels = provider.data[metadataKeys.fileName];
+        }
+
         const transactions = getAccountTransactions(
             account.key,
             allTransactions,
-            // add metadata directly to transactions
         )
             .filter(transaction => transaction.blockHeight !== -1)
             .map(transaction => ({
                 ...transaction,
                 targets: transaction.targets.map(target => ({
                     ...target,
-                    metadataLabel: account.metadata?.outputLabels?.[transaction.txid]?.[target.n],
+                    // @ts-ignore
+                    metadataLabel: labels.outputLabels?.[transaction.txid]?.[target.n],
                 })),
             }));
 

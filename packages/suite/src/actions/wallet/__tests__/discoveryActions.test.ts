@@ -177,7 +177,7 @@ export const getInitialState = (device = SUITE_DEVICE) => ({
         device,
     },
     devices: [device],
-    metadata: { enabled: false }, // don't use labeling in unit:tests
+    metadata: { enabled: false, providers: [] }, // don't use labeling in unit:tests
     wallet: {
         discovery: discoveryReducer(undefined, { type: 'foo' } as any),
         accounts: accountsReducer(undefined, { type: 'foo' } as any),

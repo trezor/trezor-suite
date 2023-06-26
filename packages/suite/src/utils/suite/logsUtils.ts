@@ -33,6 +33,7 @@ import { accountsActions } from '@suite-common/wallet-core';
 
 import { getPhysicalDeviceUniqueIds } from './device';
 import { discoveryActions } from 'src/actions/wallet/discoveryActions';
+import { selectLabelingDataForWallet } from 'src/reducers/suite/metadataReducer';
 
 export const REDACTED_REPLACEMENT = '[redacted]';
 
@@ -194,7 +195,11 @@ export const getApplicationInfo = (state: AppState, hideSensitiveInfo: boolean) 
     discreetMode: state.wallet.settings.discreetMode,
     tor: getIsTorEnabled(state.suite.torStatus),
     torOnionLinks: state.suite.settings.torOnionLinks,
-    labeling: state.metadata.enabled ? state.metadata.provider?.type || 'missing-provider' : '',
+    // todo: duplicated with suite/src/utils/suite/analytics
+    labeling: state.metadata.enabled
+        ? state.metadata.providers.find(p => p.clientId === state.metadata.selectedProvider.labels)
+              ?.type || 'missing-provider'
+        : '',
     analytics: state.analytics.enabled,
     instanceId: hideSensitiveInfo ? REDACTED_REPLACEMENT : state.analytics.instanceId,
     sessionId: hideSensitiveInfo ? REDACTED_REPLACEMENT : state.analytics.sessionId,
@@ -234,7 +239,7 @@ export const getApplicationInfo = (state: AppState, hideSensitiveInfo: boolean) 
             device.metadata.status === 'enabled'
                 ? hideSensitiveInfo
                     ? REDACTED_REPLACEMENT
-                    : device.metadata.walletLabel
+                    : selectLabelingDataForWallet(state).walletLabel
                 : '',
         connected: device.connected,
         remember: device.remember,

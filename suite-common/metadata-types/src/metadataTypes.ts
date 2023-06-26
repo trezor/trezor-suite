@@ -1,3 +1,14 @@
+export interface LabelableEntityKeys {
+    fileName: string; // file name in data provider
+    aesKey: string; // symmetric key for file encryption
+}
+
+export type LabelableEntityKeysByVersion = {
+    [Version in MetadataEncryptionVersion]?: LabelableEntityKeys;
+} & {
+    key: string; // legacy xpub format (btc-like coins) or account descriptor (other coins)
+};
+
 export type MetadataAddPayload =
     | {
           type: 'outputLabel';
@@ -38,19 +49,6 @@ export type MetadataProviderType = 'dropbox' | 'google' | 'fileSystem' | 'sdCard
 export type Tokens = {
     accessToken?: string;
     refreshToken?: string;
-};
-
-/**
- * Representation of provider data stored in reducer
- * properties 'tokens' and 'type' are needed to recreate corresponding provider instance
- * others may be used in UI
- */
-
-export type MetadataProvider = {
-    type: MetadataProviderType;
-    user: string;
-    tokens: Tokens;
-    isCloud: boolean;
 };
 
 /**
@@ -106,7 +104,7 @@ export abstract class AbstractMetadataProvider {
     /**
      * Get details if provider that are supposed to be saved in reducer
      */
-    abstract getProviderDetails(): Result<MetadataProvider>;
+    abstract getProviderDetails(): Result<Omit<MetadataProvider, 'data'>>;
     /**
      * For given filename download metadata file from provider
      */
@@ -143,30 +141,60 @@ export abstract class AbstractMetadataProvider {
     }
 }
 
-export interface AccountMetadata {
-    key: string; // legacy xpub format (btc-like coins) or account descriptor (other coins)
-    fileName: string; // file name in dropbox
-    aesKey: string; // asymmetric key for file encryption
+export interface AccountLabels {
     accountLabel?: MetadataItem;
     outputLabels: { [txid: string]: { [index: string]: MetadataItem } };
     addressLabels: { [address: string]: MetadataItem };
 }
 
+export interface WalletLabels {
+    walletLabel?: string;
+}
+
+export type Labels = AccountLabels | WalletLabels;
+
 export type DeviceMetadata =
     | {
           status: 'disabled' | 'cancelled'; // user rejects "Enable labeling" on device
       }
-    | {
+    | ({
           status: 'enabled';
-          key: string; // master key for all values (Device and Account)
-          fileName: string; // file name in dropbox
-          aesKey: string; // asymmetric key for file encryption
-          walletLabel?: string;
-      };
+      } & LabelableEntityKeysByVersion);
+
+type Data = Record<
+    LabelableEntityKeys['fileName'], // unique "id" for mapping with labelable entitties
+    Labels
+>;
+
+/**
+ * DataType dictates shape of data.
+ * in the future, it could be
+ * 'labels' | 'passwords' | 'contacts'...
+ */
+export type DataType = 'labels';
+
+/**
+ * Representation of provider data stored in reducer
+ * properties 'tokens' and 'type' are needed to recreate corresponding provider instance
+ * others may be used in UI
+ */
+export type MetadataProvider = {
+    type: MetadataProviderType;
+    user: string;
+    tokens: Tokens;
+    isCloud: boolean;
+    // decrypted content of data per provider
+    data: Data;
+    clientId: string;
+};
 
 export interface MetadataState {
     enabled: boolean; // global for all devices
-    provider?: MetadataProvider;
+    providers: MetadataProvider[];
+    // being selected means:
+    // - see data from this provider
+    // - save data to this provider when making changes
+    selectedProvider: { [key in DataType]: MetadataProvider['clientId'] };
     // is there active inline input? only one may be active at time so we save this
     // information in reducer to make it easily accessible in UI.
     // field shall hold default value for which user may add metadata (address, txId, etc...);
@@ -175,3 +203,4 @@ export interface MetadataState {
 }
 
 export type OAuthServerEnvironment = 'production' | 'staging' | 'localhost';
+export type MetadataEncryptionVersion = 1 | 2;

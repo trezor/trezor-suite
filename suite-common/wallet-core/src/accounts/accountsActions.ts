@@ -80,11 +80,6 @@ const createAccount = createAction(
             history: accountInfo.history,
             metadata: {
                 key: accountInfo.legacyXpub || accountInfo.descriptor,
-                fileName: '',
-                aesKey: '',
-                accountLabel,
-                outputLabels: {},
-                addressLabels: {},
             },
             imported,
             ...getAccountSpecific(accountInfo, discoveryItem.networkType),

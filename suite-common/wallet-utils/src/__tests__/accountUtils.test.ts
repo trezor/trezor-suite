@@ -186,11 +186,10 @@ describe('account utils', () => {
             accountType: 'legacy',
             metadata: {
                 key: 'xpub-foo-bar',
-                fileName: '123',
-                aesKey: 'foo',
-                accountLabel: 'meow',
-                outputLabels: {},
-                addressLabels: {},
+                1: {
+                    fileName: '123',
+                    aesKey: 'foo',
+                },
             },
         });
 

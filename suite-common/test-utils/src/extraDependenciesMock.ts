@@ -72,7 +72,6 @@ export const extraDependenciesMock: ExtraDependencies = {
         }),
     },
     actions: {
-        setAccountLoadedMetadata: mockAction('setAccountLoadedMetadata'),
         setAccountAddMetadata: mockAction('setAccountAddMetadata'),
         setWalletSettingsLocalCurrency: mockAction('setWalletSettingsLocalCurrency'),
         changeWalletSettingsNetworks: mockAction('changeWalletSettingsNetworks'),
