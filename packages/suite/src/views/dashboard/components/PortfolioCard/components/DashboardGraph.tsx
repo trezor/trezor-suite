@@ -4,7 +4,7 @@ import { TransactionsGraph, Translation, HiddenPlaceholder } from 'src/component
 import { getUnixTime } from 'date-fns';
 import styled from 'styled-components';
 import { CARD_PADDING_SIZE } from 'src/constants/suite/layout';
-import GraphWorker from 'src/workers/graph';
+import GraphWorker from 'src/support/workers/graph';
 import * as graphActions from 'src/actions/wallet/graphActions';
 import { useActions, useSelector } from 'src/hooks/suite';
 import { Account } from 'src/types/wallet';
