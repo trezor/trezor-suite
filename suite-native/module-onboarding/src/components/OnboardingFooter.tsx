@@ -53,7 +53,7 @@ export const OnboardingFooter = ({ redirectTarget, isLastStep = false }: Onboard
                     Don’t have a Trezor? <Link href="https://trezor.io/" label="Get one here." />
                 </Text>
             </Box>
-            <Button data-testID={`@onboarding/${route.name}/nextBtn`} onPress={handlePress}>
+            <Button testID={`@onboarding/${route.name}/nextBtn`} onPress={handlePress}>
                 {buttonTitle}
             </Button>
         </Stack>

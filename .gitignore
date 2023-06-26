@@ -140,6 +140,10 @@ local.properties
 # Bundle artifact
 *.jsbundle
 
+# suite native E2E artifacts
+suite-native/app/artifacts
+
+
 # Yarn 3
 .yarn/*
 .yarn/cache
