@@ -88,6 +88,7 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
         await updateAll(transaction, 'accounts', account => {
             account.metadata = {
                 key: '',
+                // @ts-expect-error
                 fileName: '',
                 aesKey: '',
                 outputLabels: {},
@@ -374,6 +375,7 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
             // @ts-expect-error (token property removed)
             if (state.provider?.token) {
                 if (isDesktop()) {
+                    // @ts-expect-error (provider removed in later version)
                     state.provider.tokens = {
                         accessToken: '',
                         // @ts-expect-error
@@ -572,6 +574,85 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
             delete account.previousSessions;
 
             return account;
+        });
+    }
+
+    if (oldVersion < 38) {
+        await updateAll(transaction, 'accounts', account => {
+            // @ts-expect-error
+            if (!account.metadata?.fileName || !account.metadata?.aesKey) {
+                return;
+            }
+            account.metadata = {
+                key: account.metadata.key,
+                1: {
+                    // @ts-expect-error
+                    fileName: account.metadata.fileName,
+                    // @ts-expect-error
+                    aesKey: account.metadata.aesKey,
+                },
+            };
+
+            return account;
+        });
+
+        await updateAll(transaction, 'devices', device => {
+            if (
+                device.metadata.status === 'enabled' &&
+                // @ts-expect-error
+                device.metadata.fileName &&
+                // @ts-expect-error
+                device.metadata.aesKey
+            ) {
+                device.metadata = {
+                    key: device.metadata.key,
+                    status: device.metadata.status,
+                    1: {
+                        // @ts-expect-error
+                        fileName: device.metadata.fileName,
+                        // @ts-expect-error
+                        aesKey: device.metadata.aesKey,
+                    },
+                };
+            }
+
+            return device;
+        });
+
+        await updateAll(transaction, 'metadata', metadata => {
+            const updatedMetadata = {
+                selectedProvider: { labels: '' },
+                providers: [],
+                enabled: metadata.enabled,
+            };
+            // @ts-expect-error
+            if (metadata.provider) {
+                // not sure about google client id I selected
+                let clientId: string;
+
+                // @ts-expect-error
+                switch (metadata.provider.type) {
+                    case 'dropbox':
+                        clientId = 'wg0yz2pbgjyhoda';
+                        break;
+                    case 'google':
+                        clientId =
+                            '705190185912-m4mrh55knjbg6gqhi72fr906a6n0b0u1.apps.googleusercontent.com';
+                        break;
+                    case 'fileSystem':
+                        clientId = 'fileSystem';
+                        break;
+                    default:
+                }
+                // @ts-expect-error
+                updatedMetadata.providers[0] = { ...metadata.provider, clientId, data: {} };
+                updatedMetadata.selectedProvider = {
+                    // @ts-expect-error
+                    labels: clientId,
+                };
+            }
+
+            return updatedMetadata;
         });
     }
 };

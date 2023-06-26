@@ -1,5 +1,13 @@
 # Storage changelog
 
+## 38
+
+-   `metadata.provider` replaced with array of `metadata.providers`
+-   `metadata.selectedProvider` field added to select from `metadata.providers`
+-   labeling data are no longer stored with labelable entities (devices, accounts) but are to be found under `metadata.providers[].data`
+-   labeling data (that were previously stored withing accounts/devices object) are not migrated
+    but since data are fetched from providers (which are migrated) it should affect only users that update their suite and use it offline at the same time
+
 ## 37
 
 -   remove persisted coinjoin sessions
