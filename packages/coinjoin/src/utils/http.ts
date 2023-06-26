@@ -12,13 +12,16 @@ export interface RequestOptions extends ScheduleActionParams {
 
 const createHeaders = (options: RequestOptions) => {
     const headers: HeadersInit = {
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json; charset=utf-8',
+        'Accept-Encoding': 'gzip',
     };
-    // add custom header to define TOR identity.
-    // request is intercepted by @trezor/request-manager and requested identity is used to create TOR circuit
-    // header works only in nodejs environment (suite-desktop). browser throws: Refused to set unsafe header "proxy-authorization" error
+    // add custom headers to requests which are intercepted by @trezor/request-manager package.
+    // - Proxy-Authorization: used to create/use TOR circuit
+    // - Allowed-Headers: used to restrict headers sent to wabisabi api
+    // custom headers works only in nodejs environment (suite-desktop). browser throws: Refused to set unsafe header "proxy-authorization" error
     if (options.identity) {
         headers['Proxy-Authorization'] = `Basic ${options.identity}`;
+        headers['Allowed-Headers'] = 'Accept-Encoding;Content-Type;Content-Length;Host';
     }
     // blockbook api requires 'User-Agent' to be set
     // same as in @trezor/blockchain-link/src/workers/blockbook/websocket
