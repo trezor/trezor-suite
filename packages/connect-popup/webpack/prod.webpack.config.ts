@@ -85,6 +85,14 @@ const config: webpack.Configuration = {
             minify: false,
             urls: URLS,
         }),
+        new HtmlWebpackPlugin({
+            chunks: ['popup'],
+            template: `${STATIC_SRC}/log.html`,
+            filename: 'log.html',
+            inject: false,
+            minify: false,
+            urls: URLS,
+        }),
         new CopyPlugin({
             patterns: [
                 {
