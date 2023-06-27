@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+        <meta
+            name="viewport"
+            content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0"
+        />
+        <title>TrezorConnect | Trezor</title>
+        <meta name="description" content="" />
+        <meta name="keywords" content="" />
+        <meta name="author" content="Trezor info@trezor.io" />
+        <meta name="robots" content="noindex, nofollow" />
+        <meta name="title" content="Trezor Connect" />
+        <meta name="theme-color" content="#ffffff" />
+        <meta http-equiv="Pragma" content="no-cache" />
+        <meta http-equiv="Expires" content="-1" />
+        <link href="./popup.css" rel="stylesheet" />
+
+        <!-- suite-like fonts -->
+        <link media="all" rel="stylesheet" href="./fonts/fonts.css" />
+    </head>
+    <body>
+        <h1>TrezorConnect Logger</h1>
+        <div id="logContainer"></div>
+
+        <script type="text/javascript">
+            const logWorker = new SharedWorker('./workers/shared-logger-worker.js');
+
+            function initiateLogs(logArray) {
+                // Create HTML entries for each item in the logArray
+                logArray.forEach(log => {
+                    // Create a log entry container
+                    const logEntry = document.createElement('div');
+                    logEntry.classList.add('log-entry');
+                    logEntry.style = log.css;
+                    logEntry.textContent = JSON.stringify(log, '', 2);
+
+                    // Append the log entry to the logContainer
+                    logContainer.appendChild(logEntry);
+                });
+            }
+
+            logWorker.port.onmessage = function (event) {
+                const { data } = event;
+                switch (data.type) {
+                    case 'get-logs':
+                        initiateLogs(data.payload);
+                        break;
+                    case 'log-entry':
+                        initiateLogs([data.payload]);
+                        break;
+                }
+                // Handle the incoming message from the shared worker
+                const logArray = event.data;
+            };
+
+            logWorker.port.postMessage({ type: 'get-logs' });
+            logWorker.port.postMessage({ type: 'subscribe' });
+        </script>
+    </body>
+</html>
