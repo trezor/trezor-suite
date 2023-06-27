@@ -29,9 +29,9 @@ in
       pkg-config
       pixman cairo giflib libjpeg libpng librsvg pango            # build dependencies for node-canvas
       shellcheck
-      udev
     ] ++ lib.optionals stdenv.isLinux [
       appimagekit nsis openjpeg osslsigncode p7zip squashfsTools  # binaries used by node_module: electron-builder
+      udev  # used by node_module: usb
       # winePackages.minimal
     ] ++ lib.optionals stdenv.isDarwin (with darwin.apple_sdk.frameworks; [
       Cocoa
