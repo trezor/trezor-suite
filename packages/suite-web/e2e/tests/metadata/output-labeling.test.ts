@@ -69,12 +69,11 @@ describe('Metadata - Output labeling', () => {
             cy.getTestElement(`${sentToMyselfEl}/dropdown/edit-label`).click({ force: true });
             cy.getTestElement('@metadata/input').type(' edited{enter}');
 
+            // just check there is copy address button, as of cypress 12.16.0 there is some problem to click on it (breaks tests locally)
             cy.getTestElement(`${sentToMyselfEl}`).click({ force: true });
-            // todo: don't know why this does not end with success in tests but works for me when trying it manually.
-            cy.getTestElement(`${sentToMyselfEl}/dropdown/copy-address`).click({ force: true });
+            cy.getTestElement(`${sentToMyselfEl}/dropdown/copy-address`);
 
             // test that buttons work as well - submit button
-            cy.getTestElement(`${sentToMyselfEl}`).click({ force: true });
             cy.getTestElement(`${sentToMyselfEl}/dropdown/edit-label`).click({ force: true });
             cy.getTestElement('@metadata/input').clear().type('submitted by button');
             cy.getTestElement('@metadata/submit').click({ force: true });
@@ -86,6 +85,28 @@ describe('Metadata - Output labeling', () => {
             cy.getTestElement('@metadata/input').clear().type('write something that wont be saved');
             cy.getTestElement('@metadata/cancel').click({ force: true });
             cy.getTestElement(`${sentToMyselfEl}`).should('contain', 'submitted by button');
+
+            // validate that exporting transactions exports also labels
+            // note: having trouble using here due to inability to scroll to that element, so I am using force here
+            // onAccountsPage.exportDesiredTransactionType('csv');
+            cy.getTestElement('@wallet/accounts/export-transactions/dropdown').click({
+                force: true,
+            });
+            cy.getTestElement(`@wallet/accounts/export-transactions/csv`).click({
+                force: true,
+            });
+
+            cy.wait(1000);
+            cy.task('readDir', Cypress.config('downloadsFolder')).then((dir: any) => {
+                cy.task('readFile', `${Cypress.config('downloadsFolder')}/${dir[0]}`).then(
+                    (file: any) => {
+                        const expectedSubstr =
+                            '1PmVvr5DNVYJygtDT7J312qmxpa5pceu9E;submitted by button';
+                        expect(file).to.include(expectedSubstr);
+                        cy.wrap(file).should('be.a', 'string');
+                    },
+                );
+            });
         });
     });
 });
