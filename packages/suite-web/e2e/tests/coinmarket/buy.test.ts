@@ -44,7 +44,7 @@ describe('Coinmarket buy', () => {
      * 13. Verifies that the buy trade was approved
      * * 14. Goes back to the Buy tab and verifies the transaction is listed under "Trade transactions"
      */
-    it.only('Should buy crypto successfully', () => {
+    it('Should buy crypto successfully', () => {
         const testData = {
             fiatInput: '500',
             quoteBtcValue: '0.02073954',

@@ -89,7 +89,7 @@ describe('TT - Device settings', () => {
         cy.getTestElement('@settings/device/homescreen-upload').should('be.disabled');
     });
 
-    it.only('able to change homescreen in firmware >= 2.5.4', () => {
+    it('able to change homescreen in firmware >= 2.5.4', () => {
         cy.task('startEmu', { wipe: true, version: '2-master' });
         cy.task('setupEmu');
 
