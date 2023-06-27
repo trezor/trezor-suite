@@ -45,6 +45,27 @@ const config: webpack.Configuration = {
                 },
             },
             {
+                test: /sharedLoggerWorker.ts/i,
+                use: [
+                    {
+                        loader: 'worker-loader',
+                        options: {
+                            worker: 'SharedWorker',
+                            // TODO: we are not using contenthash here because we want to use that worker from
+                            // different environments (iframe, popup, connect-web, etc.) and we would not know the
+                            // name of the file.
+                            filename: './workers/shared-logger-worker.js',
+                        },
+                    },
+                    {
+                        loader: 'babel-loader',
+                        options: {
+                            presets: ['@babel/preset-typescript'],
+                        },
+                    },
+                ],
+            },
+            {
                 test: /\workers\/blockbook\/index/i,
                 loader: 'worker-loader',
                 options: {
