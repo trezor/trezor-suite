@@ -219,6 +219,9 @@ export const factory = ({
 
         authorizeCoinjoin: params => call({ ...params, method: 'authorizeCoinjoin' }),
 
+        cancelCoinjoinAuthorization: params =>
+            call({ ...params, method: 'cancelCoinjoinAuthorization' }),
+
         backupDevice: params => call({ ...params, method: 'backupDevice' }),
 
         changePin: params => call({ ...params, method: 'changePin' }),

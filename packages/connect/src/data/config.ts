@@ -184,6 +184,7 @@ export const config = {
             capabilities: ['coinjoin'],
             methods: [
                 'authorizeCoinjoin',
+                'cancelCoinjoinAuthorization',
                 'getOwnershipId',
                 'getOwnershipProof',
                 'setBusy',
