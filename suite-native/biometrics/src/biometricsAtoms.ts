@@ -39,7 +39,7 @@ export const useIsBiometricsOverlayVisible = () => {
 
     const setIsBiometricsOverlayVisible = (value: boolean) => {
         // Change value only if biometrics options is turned on to prevent showing overlay without enabled biometrics.
-        if (isBiometricsOptionEnabled) setBiometricsOverlayVisibleAtomValue(value);
+        setBiometricsOverlayVisibleAtomValue(isBiometricsOptionEnabled ? value : false);
     };
 
     return {
