@@ -15,7 +15,7 @@ const checkLabel = () => {
     cy.getTestElement('@account-menu/btc/normal/0/label').should('contain', 'some account label');
 };
 
-describe('Metadata - metadata files are properly migrated from METADATA_ENCODING_VERSION v1 to v2', () => {
+describe('Metadata - metadata files are properly migrated from ENCRYPTION_VERSION v1 to v2', () => {
     beforeEach(() => {
         cy.viewport(1080, 1440).resetDb();
         cy.task('startEmu', { wipe: true });
