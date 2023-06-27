@@ -1,8 +1,8 @@
 import React from 'react';
 import styled, { useTheme } from 'styled-components';
-import { H3, Icon, variables } from '@trezor/components';
+import { H3, Icon, Progress, variables } from '@trezor/components';
 import { Card, Translation } from 'src/components/suite';
-import { AccountLoadingProgress } from './AccountLoadingProgress';
+import { useAccountLoadingProgress } from './useAccountLoadingProgress';
 import { RotatingFacts } from './RotatingFacts';
 
 const Container = styled(Card)`
@@ -11,6 +11,11 @@ const Container = styled(Card)`
     padding-top: 36px;
     padding-bottom: 36px;
     margin-bottom: 24px;
+`;
+
+const DiscoveryProgress = styled(Progress)`
+    max-width: 440px;
+    margin: 24px 0 28px;
 `;
 
 const FactHeading = styled.div`
@@ -29,6 +34,7 @@ const SparksIcon = styled(Icon)`
 
 export const CoinjoinAccountDiscoveryProgress = () => {
     const theme = useTheme();
+    const { value } = useAccountLoadingProgress();
 
     return (
         <Container>
@@ -36,7 +42,7 @@ export const CoinjoinAccountDiscoveryProgress = () => {
                 <Translation id="TR_LOADING_FUNDS" />
             </H3>
 
-            <AccountLoadingProgress />
+            <DiscoveryProgress max={1} value={value} />
 
             <FactHeading>
                 <SparksIcon icon="EXPERIMENTAL" size={13} color={theme.TYPE_ORANGE} />

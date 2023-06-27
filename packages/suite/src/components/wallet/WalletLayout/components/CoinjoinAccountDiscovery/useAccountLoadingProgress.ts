@@ -1,24 +1,18 @@
-import React, { useEffect, useState } from 'react';
-import styled from 'styled-components';
-import { Progress } from '@trezor/components';
+import { useEffect, useState } from 'react';
 import { CoinjoinService } from 'src/services/coinjoin';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { getAccountProgressHandle } from 'src/utils/wallet/coinjoinUtils';
-
-const DiscoveryProgress = styled(Progress)`
-    max-width: 440px;
-    margin: 24px 0 28px;
-`;
 
 type ProgressInfo = {
     progress?: number;
     message?: string;
 };
 
-export const AccountLoadingProgress = () => {
+export const useAccountLoadingProgress = () => {
     const selectedAccount = useSelector(selectSelectedAccount);
-    const [progress, setProgress] = useState<ProgressInfo>({});
+    const [progress, setProgress] = useState<number>();
+    const [message, setMessage] = useState<string>();
 
     const { symbol: network, backendType } = selectedAccount || {};
     const progressHandle = selectedAccount && getAccountProgressHandle(selectedAccount);
@@ -34,16 +28,19 @@ export const AccountLoadingProgress = () => {
             return;
         }
 
-        const onProgress = ({ info }: { info?: ProgressInfo }) => info && setProgress(info);
+        const onProgressInfo = (info: ProgressInfo) => {
+            if (info.progress) setProgress(info.progress);
+            if (info.message) setMessage(info.message);
+        };
 
-        api.backend.on(`progress/${progressHandle}`, onProgress);
+        api.backend.on(`progress-info/${progressHandle}`, onProgressInfo);
 
         return () => {
-            api.backend.off(`progress/${progressHandle}`, onProgress);
+            api.backend.off(`progress-info/${progressHandle}`, onProgressInfo);
         };
     }, [network, backendType, progressHandle]);
 
-    const value = progress.progress ?? 0;
+    const value = progress ?? 0;
 
-    return <DiscoveryProgress max={1} value={value} />;
+    return { value, message };
 };
