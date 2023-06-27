@@ -806,7 +806,7 @@ const createMissingFiles = (missingFiles: Array<MissingFileInfo>) => async (disp
         );
 
         return {
-            fileName: `${fileName}_${METADATA_ENCODING_VERSION}`,
+            fileName: `${fileName}_${ENCRYPTION_VERSION}`,
             content: encrypted,
         };
     });
