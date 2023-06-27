@@ -287,6 +287,11 @@ const getTrezorConnect = <M>(methods?: M) => {
                 ...getFixture(),
                 _params,
             })),
+            cancelCoinjoinAuthorization: jest.fn(async _params => ({
+                success: true,
+                ...getFixture(),
+                _params,
+            })),
             blockchainSetCustomBackend: jest.fn(async _params => ({
                 success: true,
                 ...getFixture(),

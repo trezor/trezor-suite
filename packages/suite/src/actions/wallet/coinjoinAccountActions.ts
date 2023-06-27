@@ -898,7 +898,7 @@ export const restoreInterruptedCoinjoinSessions =
 
 // called from coinjoin account UI or exceptions like device disconnection, forget wallet/account etc.
 export const stopCoinjoinSession =
-    (accountKey: string) => (dispatch: Dispatch, getState: GetState) => {
+    (accountKey: string) => async (dispatch: Dispatch, getState: GetState) => {
         const account = selectAccountByKey(getState(), accountKey);
 
         if (!account) {
@@ -908,6 +908,24 @@ export const stopCoinjoinSession =
         // get @trezor/coinjoin client if available
         const client = coinjoinClientActions.getCoinjoinClient(account.symbol);
         if (!client) {
+            return;
+        }
+
+        const { device } = getState().suite;
+
+        const result = await TrezorConnect.cancelCoinjoinAuthorization({
+            device,
+            useEmptyPassphrase: device?.useEmptyPassphrase,
+        });
+
+        if (!result.success) {
+            dispatch(
+                notificationsActions.addToast({
+                    type: 'error',
+                    error: `Coinjoin session not stopped: ${result.payload.error}`,
+                }),
+            );
+
             return;
         }
 
