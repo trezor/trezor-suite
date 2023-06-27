@@ -40,7 +40,7 @@ export type Tokens = {
     refreshToken?: string;
 };
 
-export type EncodingVersion = 1 | 2;
+export type MetadataEncryptionVersion = 1 | 2;
 
 export type MetadataFileInfo = {
     fileName: string;

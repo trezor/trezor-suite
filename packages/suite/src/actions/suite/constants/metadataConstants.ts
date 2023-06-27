@@ -1,5 +1,5 @@
 import { TrezorConnect } from '@trezor/connect';
-import { EncodingVersion } from 'src/types/suite/metadata';
+import { MetadataEncryptionVersion } from 'src/types/suite/metadata';
 
 export const ENABLE = '@metadata/enable';
 export const DISABLE = '@metadata/disable';
@@ -40,10 +40,10 @@ export const GOOGLE_IMPLICIT_FLOW_CLIENT_ID =
 // dropbox allows authorization code flow for both web and desktop without client secret
 export const DROPBOX_CLIENT_ID = 'wg0yz2pbgjyhoda';
 
-export const METADATA_ENCODING_VERSION: EncodingVersion = 2;
+export const ENCRYPTION_VERSION: MetadataEncryptionVersion = 2;
 
 export const CIPHER_KEY_VALUE_CONFIGS: Record<
-    EncodingVersion,
+    MetadataEncryptionVersion,
     Parameters<TrezorConnect['cipherKeyValue']>[0]['bundle'][0]
 > = {
     1: {

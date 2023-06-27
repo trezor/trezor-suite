@@ -14,7 +14,7 @@ import {
     OAuthServerEnvironment,
     ProviderErrorAction,
     AccountMetadata,
-    EncodingVersion,
+    MetadataEncryptionVersion,
 } from 'src/types/suite/metadata';
 import { Account } from 'src/types/wallet';
 import * as metadataUtils from 'src/utils/suite/metadata';
@@ -26,7 +26,7 @@ import { createAction } from '@reduxjs/toolkit';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     CIPHER_KEY_VALUE_CONFIGS,
-    METADATA_ENCODING_VERSION,
+    ENCRYPTION_VERSION,
     METADATA_FORMAT_VERSION,
 } from './constants/metadataConstants';
 
@@ -272,7 +272,7 @@ const getMetadataFilesList = () => async (dispatch: Dispatch) => {
 };
 
 const getMetadataFilesMinimumVersion = (filesList: string[] | undefined) => {
-    let versionNumber = METADATA_ENCODING_VERSION;
+    let versionNumber = ENCRYPTION_VERSION;
     if (!filesList || !filesList.length) {
         return versionNumber;
     }
@@ -312,7 +312,7 @@ export const fetchMetadata =
             }
 
             return provider
-                .getFileContent(`${device.metadata.fileName}_${METADATA_ENCODING_VERSION}`)
+                .getFileContent(`${device.metadata.fileName}_${ENCRYPTION_VERSION}`)
                 .then(result => {
                     // ts-stuff
                     if (device?.metadata?.status !== 'enabled') {
@@ -357,7 +357,7 @@ export const fetchMetadata =
         const accountPromises = accounts.map(async account => {
             if (!provider) return; // ts
             const response = await provider.getFileContent(
-                `${account.metadata.fileName}_${METADATA_ENCODING_VERSION}`,
+                `${account.metadata.fileName}_${ENCRYPTION_VERSION}`,
             );
 
             if (!response.success) {
@@ -542,7 +542,7 @@ export const addDeviceMetadata =
                 device.metadata.aesKey,
             );
             const result = await provider.setFileContent(
-                `${device.metadata.fileName}_${METADATA_ENCODING_VERSION}`,
+                `${device.metadata.fileName}_${ENCRYPTION_VERSION}`,
                 encrypted,
             );
             if (!result.success) {
@@ -630,7 +630,7 @@ export const addAccountMetadata =
         );
 
         const result = await provider.setFileContent(
-            `${account.metadata.fileName}_${METADATA_ENCODING_VERSION}`,
+            `${account.metadata.fileName}_${ENCRYPTION_VERSION}`,
             encrypted,
         );
         if (!result.success) {
@@ -641,7 +641,7 @@ export const addAccountMetadata =
     };
 
 const obtainEncryptionKey =
-    (encodingVersion: EncodingVersion) => async (_: Dispatch, getState: GetState) => {
+    (encryptionVersion: MetadataEncryptionVersion) => async (_: Dispatch, getState: GetState) => {
         const { device } = getState().suite;
         if (!device || !device.state || !device.connected) return;
 
@@ -652,7 +652,7 @@ const obtainEncryptionKey =
                 instance: device.instance,
             },
             useEmptyPassphrase: device.useEmptyPassphrase,
-            ...CIPHER_KEY_VALUE_CONFIGS[encodingVersion],
+            ...CIPHER_KEY_VALUE_CONFIGS[encryptionVersion],
         });
 
         if (result.success) {
@@ -681,7 +681,7 @@ export const setDeviceMetadataKey = () => async (dispatch: Dispatch, getState: G
     if (device.metadata.status === 'enabled') return;
 
     // get master key from device using the latest encoding version
-    const result = await dispatch(obtainEncryptionKey(METADATA_ENCODING_VERSION));
+    const result = await dispatch(obtainEncryptionKey(ENCRYPTION_VERSION));
 
     if (result) {
         const { key, fileName, aesKey } = result;
@@ -761,7 +761,7 @@ const getMissingFiles =
 
         if (
             'fileName' in device.metadata &&
-            !filesList?.includes(`${device.metadata.fileName}_${METADATA_ENCODING_VERSION}`)
+            !filesList?.includes(`${device.metadata.fileName}_${ENCRYPTION_VERSION}`)
         ) {
             missingFiles.push({
                 type: 'device',
@@ -772,7 +772,7 @@ const getMissingFiles =
         }
 
         accounts.forEach(({ metadata, key }) => {
-            if (!filesList?.includes(`${metadata.fileName}_${METADATA_ENCODING_VERSION}`)) {
+            if (!filesList?.includes(`${metadata.fileName}_${ENCRYPTION_VERSION}`)) {
                 missingFiles.push({
                     type: 'account',
                     fileName: metadata.fileName,
@@ -940,7 +940,7 @@ const migrateMetadataFiles =
             filesToMigrate.find(({ newFileName }) => newFileName !== fileName),
         );
 
-        // create dummy files to match the METADATA_ENCODING_VERSION
+        // create dummy files to match the ENCRYPTION_VERSION
         if (dummyFiles.length) {
             const { success } = await dispatch(createMissingFiles(dummyFiles));
 
@@ -954,7 +954,7 @@ const migrateMetadataFiles =
             const encrypted = await metadataUtils.encrypt(data, newAesKey);
 
             const result = await provider.setFileContent(
-                `${newFileName}_${METADATA_ENCODING_VERSION}`,
+                `${newFileName}_${ENCRYPTION_VERSION}`,
                 encrypted,
             );
 
@@ -978,7 +978,7 @@ const migrateIfNeeded = () => async (dispatch: Dispatch, getState: GetState) => 
     const metadataFilesMimimumVersion = getMetadataFilesMinimumVersion(metadataFilesList);
 
     // if there were some old files - migrate if needed
-    const isMinimumFileVersionLatest = metadataFilesMimimumVersion === METADATA_ENCODING_VERSION;
+    const isMinimumFileVersionLatest = metadataFilesMimimumVersion === ENCRYPTION_VERSION;
     if (getState().metadata.initiating && !isMinimumFileVersionLatest) {
         try {
             const missingFilesInfo = dispatch(getMissingFiles(metadataFilesList));
