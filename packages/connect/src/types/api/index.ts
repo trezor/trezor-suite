@@ -75,6 +75,7 @@ import { unlockPath } from './unlockPath';
 import { verifyMessage } from './verifyMessage';
 import { wipeDevice } from './wipeDevice';
 import { checkFirmwareAuthenticity } from './checkFirmwareAuthenticity';
+import { cancelCoinjoinAuthorization } from './cancelCoinjoinAuthorization';
 
 export interface TrezorConnect {
     // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/applyFlags.md
@@ -85,6 +86,9 @@ export interface TrezorConnect {
 
     // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/authorizeCoinjoin.md
     authorizeCoinjoin: typeof authorizeCoinjoin;
+
+    // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/cancelCoinjoinAuthorization.md
+    cancelCoinjoinAuthorization: typeof cancelCoinjoinAuthorization;
 
     // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/backupDevice.md
     backupDevice: typeof backupDevice;
