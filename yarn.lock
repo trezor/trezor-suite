@@ -27766,13 +27766,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"postinstall-postinstall@npm:^2.1.0":
-  version: 2.1.0
-  resolution: "postinstall-postinstall@npm:2.1.0"
-  checksum: e1d34252cf8d2c5641c7d2db7426ec96e3d7a975f01c174c68f09ef5b8327bc8d5a9aa2001a45e693db2cdbf69577094d3fe6597b564ad2d2202b65fba76134b
-  languageName: node
-  linkType: hard
-
 "prelude-ls@npm:^1.2.1":
   version: 1.2.1
   resolution: "prelude-ls@npm:1.2.1"
@@ -32915,7 +32908,6 @@ __metadata:
     nx: ^16.3.2
     nx-cloud: 16.0.5
     patch-package: 7.0.0
-    postinstall-postinstall: ^2.1.0
     prettier: 2.8.8
     prettier-eslint: ^15.0.1
     rimraf: ^5.0.1
