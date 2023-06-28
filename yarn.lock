@@ -2006,13 +2006,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@cypress/skip-test@npm:^2.6.1":
-  version: 2.6.1
-  resolution: "@cypress/skip-test@npm:2.6.1"
-  checksum: 48ec912f162563ca8657b6f023b701f66ddc29083ed36ae96cd861087c828046c2abb36c6fa0b316bb74941a17b046ac3b143532218e4cdc6d78d7838a64a141
-  languageName: node
-  linkType: hard
-
 "@cypress/xvfb@npm:^1.2.4":
   version: 1.2.4
   resolution: "@cypress/xvfb@npm:1.2.4"
@@ -8492,7 +8485,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/suite-web@workspace:packages/suite-web"
   dependencies:
-    "@cypress/skip-test": ^2.6.1
     "@sentry/browser": ^7.56.0
     "@suite-common/formatters": "workspace:*"
     "@suite-common/sentry": "workspace:*"

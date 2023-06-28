@@ -26,7 +26,6 @@ import { SuiteAnalyticsEvent } from '@trezor/suite-analytics';
 import { EventPayload, Requests } from './types';
 
 const command = require('cypress-image-snapshot/command');
-const { skipOn, onlyOn } = require('@cypress/skip-test');
 
 const prefixedVisit = (route: string, options?: Partial<Cypress.VisitOptions>) => {
     const baseUrl = Cypress.config('baseUrl');
@@ -152,10 +151,6 @@ Cypress.Commands.add('passThroughInitMetadata', passThroughInitMetadata);
 Cypress.Commands.add('passThroughSetPin', passThroughSetPin);
 // @ts-expect-error
 Cypress.Commands.add('enableRegtestAndGetCoins', enableRegtestAndGetCoins);
-// redux
-// skip tests conditionally
-Cypress.Commands.add('skipOn', skipOn);
-Cypress.Commands.add('onlyOn', onlyOn);
 
 Cypress.Commands.add('text', { prevSubject: true }, subject => subject.text());
 Cypress.Commands.add('createAccountFromMyAccounts', createAccountFromMyAccounts);

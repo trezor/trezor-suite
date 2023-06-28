@@ -27,7 +27,6 @@
         "worker-loader": "^3.0.8"
     },
     "devDependencies": {
-        "@cypress/skip-test": "^2.6.1",
         "@suite-common/test-utils": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",
         "@trezor/connect": "workspace:*",
