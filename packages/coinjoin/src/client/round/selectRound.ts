@@ -84,9 +84,6 @@ export const getAccountCandidates = ({
     prison,
     options: { logger, setSessionPhase },
 }: Pick<SelectRoundProps, 'accounts' | 'coinjoinRounds' | 'prison' | 'options'>) => {
-    // TODO: walk thru all Round[] and search in round events for account input/output scriptPubKey which are not supposed to be there (interrupted round)
-    // if they are in phase 0 put them to prison to cool off so they registration on coordinator will timeout naturally, otherwise prison for longer, they will be banned
-
     // collect outpoints of all currently registered inputs in CoinjoinRounds + inputs in prison
     const registeredOutpoints = coinjoinRounds
         .flatMap(round => round.inputs.concat(round.failed).map(u => u.outpoint))

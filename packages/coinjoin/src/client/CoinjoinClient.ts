@@ -90,12 +90,20 @@ export class CoinjoinClient extends TypedEmitter<CoinjoinClientEvents> {
         }
         this.logger.info(`Register account ~~${account.accountKey}~~`);
 
-        // iterate Status more frequently
-        if (this.accounts.length === 0) {
-            this.status.setMode('enabled');
-        }
+        const candidate = new Account(account, this.network);
+        // walk thru all status Rounds and search in for accounts inputs/outputs which are not supposed to be there. (interrupted round)
+        // detain them if they are not already detained
+        const detained = candidate.findDetainedElements(this.status.rounds);
+        detained.forEach(item => {
+            if (!this.prison.isDetained(item)) {
+                this.prison.detain(item);
+            }
+        });
 
-        this.accounts.push(new Account(account, this.network));
+        this.accounts.push(candidate);
+
+        // iterate Status more frequently
+        this.status.setMode('enabled');
 
         // try to trigger registration immediately without waiting for Status change
         this.onStatusUpdate({

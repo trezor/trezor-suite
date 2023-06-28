@@ -1,7 +1,8 @@
 import { Network } from '@trezor/utxo-lib';
 
 import { getScriptPubKeyFromAddress, prefixScriptPubKey } from '../utils/coordinatorUtils';
-import { AllowedScriptTypes } from '../types/coordinator';
+import { getRoundEvents, compareOutpoint } from '../utils/roundUtils';
+import { AllowedScriptTypes, Round } from '../types/coordinator';
 import { RawLiquidityClue } from '../types/middleware';
 import { RegisterAccountParams } from '../types';
 import { AccountUtxo, AccountAddress } from '../types/account';
@@ -65,6 +66,35 @@ export class Account {
         this.maxCoordinatorFeeRate = account.maxCoordinatorFeeRate;
         this.maxRounds = account.maxRounds;
         this.skipRounds = account.skipRounds;
+    }
+
+    // find inputs/outputs already registered in Round(s)
+    findDetainedElements(rounds: Round[]) {
+        const { accountKey } = this;
+        return rounds.flatMap(round => {
+            if (round.phase > 0) {
+                const registeredInputs = getRoundEvents('InputAdded', round.coinjoinState.events);
+                const registeredOutputs = getRoundEvents('OutputAdded', round.coinjoinState.events);
+                const inputs = registeredInputs
+                    .flatMap(
+                        ({ coin }) =>
+                            this.utxos.find(a => compareOutpoint(a.outpoint, coin.outpoint)) ?? [],
+                    )
+                    .map(input => ({ accountKey, ...input }));
+
+                const outputs = registeredOutputs
+                    .flatMap(
+                        ({ output }) =>
+                            this.changeAddresses.find(
+                                o => output.scriptPubKey === o.scriptPubKey,
+                            ) ?? [],
+                    )
+                    .map(output => ({ accountKey, ...output }));
+
+                return [...inputs, ...outputs];
+            }
+            return [];
+        });
     }
 
     update(account: RegisterAccountParams) {
