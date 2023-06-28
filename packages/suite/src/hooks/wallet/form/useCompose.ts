@@ -189,7 +189,7 @@ export const useCompose = <TFieldValues extends FormState>({
                         // @ts-expect-error: type = error already filtered above
                         const { feePerByte, feeLimit } = composed;
                         setValue('feePerUnit', feePerByte);
-                        setValue('feeLimit', feeLimit);
+                        setValue('feeLimit', feeLimit || '');
                     }
                 }
                 // or do nothing, use default composed tx

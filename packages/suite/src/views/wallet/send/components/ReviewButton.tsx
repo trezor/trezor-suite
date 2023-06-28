@@ -84,7 +84,9 @@ export const ReviewButton = () => {
     const broadcastEnabled = options.includes('broadcast');
     const coinControlOpen = options.includes('utxoSelection');
     const composedTx = composedLevels ? composedLevels[values.selectedFee || 'normal'] : undefined;
-    const isLowAnonymity = isLowAnonymityWarning(errors?.outputs);
+    const isLowAnonymity =
+        Array.isArray(errors.outputs) &&
+        errors.outputs.some(output => isLowAnonymityWarning(output));
     const possibleToSubmit =
         composedTx?.type === 'final' &&
         !isLocked() &&
