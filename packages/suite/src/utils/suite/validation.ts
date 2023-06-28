@@ -61,9 +61,12 @@ export const validateLimits =
                     ? Number(networkAmountToSatoshi(amountLimits.minCrypto.toString(), symbol))
                     : amountLimits.minCrypto;
             }
-            if (minCrypto && Number(value) < minCrypto) {
+            if (amountLimits.minCrypto && Number(value) < minCrypto) {
                 return translationString('TR_VALIDATION_ERROR_MINIMUM_CRYPTO', {
-                    minimum: formatter.format(minCrypto.toString(), { symbol }),
+                    minimum: formatter.format(amountLimits.minCrypto.toString(), {
+                        isBalance: true,
+                        symbol,
+                    }),
                 });
             }
 
@@ -73,9 +76,12 @@ export const validateLimits =
                     ? Number(networkAmountToSatoshi(amountLimits.maxCrypto.toString(), symbol))
                     : amountLimits.maxCrypto;
             }
-            if (maxCrypto && Number(value) > maxCrypto) {
+            if (amountLimits.maxCrypto && Number(value) > maxCrypto) {
                 return translationString('TR_VALIDATION_ERROR_MAXIMUM_CRYPTO', {
-                    maximum: formatter.format(maxCrypto.toString(), { symbol }),
+                    maximum: formatter.format(amountLimits.maxCrypto.toString(), {
+                        isBalance: true,
+                        symbol,
+                    }),
                 });
             }
         }

@@ -4,7 +4,6 @@ import { useForm } from 'react-hook-form';
 import { fromWei } from 'web3-utils';
 import { useSelector } from 'src/hooks/suite';
 import { DEFAULT_PAYMENT, DEFAULT_OPRETURN, DEFAULT_VALUES } from '@suite-common/wallet-constants';
-import { SuiteUseFormRegister } from '@suite-common/wallet-types';
 import { getExcludedUtxos, getFeeLevels } from '@suite-common/wallet-utils';
 import { Account, WalletAccountTransaction } from 'src/types/wallet';
 import { FormState, FeeInfo } from 'src/types/wallet/sendForm';
@@ -240,7 +239,7 @@ export const useRbf = (props: UseRbfProps) => {
     return {
         ...ctxState,
         isLoading,
-        register: register as SuiteUseFormRegister<FormState>,
+        register,
         control,
         formState,
         setValue,

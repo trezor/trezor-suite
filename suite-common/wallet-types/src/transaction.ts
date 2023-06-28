@@ -10,7 +10,7 @@ import {
     CardanoOutput,
 } from '@trezor/connect';
 import { Network, NetworkSymbol } from '@suite-common/wallet-config';
-import { ExtendedMessageDescriptor } from '@suite-common/intl-types';
+import { TranslationKey } from '@suite-common/intl-types';
 
 import { TimestampedRates } from './fiatRates';
 import { Account } from './account';
@@ -72,16 +72,21 @@ export type EthTransactionData = {
 
 export type ExternalOutput = Exclude<ComposeOutput, { type: 'opreturn' } | { address_n: number[] }>;
 
-export type PrecomposedTransactionError = Extract<PrecomposedTransactionBase, { type: 'error' }> & {
-    errorMessage?: ExtendedMessageDescriptor;
+type ComposeError = {
+    errorMessage?: {
+        id: TranslationKey;
+        values?: Record<string, string>;
+    };
 };
+
+export type PrecomposedTransactionError = Extract<PrecomposedTransactionBase, { type: 'error' }> &
+    ComposeError;
 
 export type PrecomposedTransactionErrorCardano = Extract<
     PrecomposedTransactionBaseCardano,
     { type: 'error' }
-> & {
-    errorMessage?: ExtendedMessageDescriptor;
-};
+> &
+    ComposeError;
 
 export type PrecomposedTransactionNonFinal = Extract<
     PrecomposedTransactionBase,

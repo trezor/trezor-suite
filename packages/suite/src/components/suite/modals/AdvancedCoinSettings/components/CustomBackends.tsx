@@ -3,7 +3,6 @@ import styled from 'styled-components';
 
 import { Input, Button, H3, CollapsibleBox } from '@trezor/components';
 import { Translation, TooltipSymbol } from 'src/components/suite';
-import InputError from 'src/components/wallet/InputError';
 import { useSelector, useActions } from 'src/hooks/suite';
 import { toggleTor as toggleTorAction } from 'src/actions/suite/suiteActions';
 import { useDefaultUrls, useBackendsForm } from 'src/hooks/settings/backends';
@@ -164,7 +163,7 @@ export const CustomBackends = ({ network, onCancel }: CustomBackendsProps) => {
                         data-test={`@settings/advance/${name}`}
                         placeholder={placeholder}
                         inputState={error ? 'error' : undefined}
-                        bottomText={<InputError error={error} />}
+                        bottomText={error?.message}
                         innerRef={inputRef}
                         {...inputField}
                     />

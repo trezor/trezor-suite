@@ -258,14 +258,6 @@ export default defineMessages({
         defaultMessage:
             "What you see is close to what you'll get—the amount shown is the best estimate of the final amount you'll receive, with all exchange fees included. For float-rate offers, there may be slight changes between accepting the offer and completing the transaction.",
     },
-    TR_EXCHANGE_VALIDATION_ERROR_MINIMUM_CRYPTO: {
-        defaultMessage: 'Minimum is {minimum}',
-        id: 'TR_EXCHANGE_VALIDATION_ERROR_MINIMUM_CRYPTO',
-    },
-    TR_EXCHANGE_VALIDATION_ERROR_MAXIMUM_CRYPTO: {
-        defaultMessage: 'Maximum is {maximum}',
-        id: 'TR_EXCHANGE_VALIDATION_ERROR_MAXIMUM_CRYPTO',
-    },
     TR_EXCHANGE_SHOW_OFFERS: {
         defaultMessage: 'Compare offers',
         id: 'TR_EXCHANGE_SHOW_OFFERS',
@@ -763,14 +755,6 @@ export default defineMessages({
     TR_REQUIRED_FIELD: {
         defaultMessage: 'Required',
         id: 'TR_REQUIRED_FIELD',
-    },
-    TR_SELL_VALIDATION_ERROR_MINIMUM_CRYPTO: {
-        defaultMessage: 'Minimum is {minimum}',
-        id: 'TR_SELL_VALIDATION_ERROR_MINIMUM_CRYPTO',
-    },
-    TR_SELL_VALIDATION_ERROR_MAXIMUM_CRYPTO: {
-        defaultMessage: 'Maximum is {maximum}',
-        id: 'TR_SELL_VALIDATION_ERROR_MAXIMUM_CRYPTO',
     },
     TR_SELL_VALIDATION_ERROR_MINIMUM_FIAT: {
         defaultMessage: 'Minimum is {minimum} {currency}',
@@ -1278,10 +1262,6 @@ export default defineMessages({
         defaultMessage: 'Amount is required.',
         id: 'TR_SAVINGS_SETUP_CUSTOM_FIAT_AMOUNT_REQUIRED',
     },
-    TR_SAVINGS_SETUP_CUSTOM_FIAT_AMOUNT_INVALID_FORMAT: {
-        defaultMessage: 'Amount must be a number.',
-        id: 'TR_SAVINGS_SETUP_CUSTOM_FIAT_AMOUNT_INVALID_FORMAT',
-    },
     TR_SAVINGS_SETUP_CUSTOM_FIAT_AMOUNT_MINIMUM: {
         defaultMessage: 'Minimum amount is {amount}.',
         id: 'TR_SAVINGS_SETUP_CUSTOM_FIAT_AMOUNT_MINIMUM',
@@ -1676,15 +1656,11 @@ export default defineMessages({
         defaultMessage: 'Offers refresh in',
         id: 'TR_BUY_OFFERS_REFRESH',
     },
-    TR_BUY_VALIDATION_ERROR_EMPTY: {
-        defaultMessage: 'Required',
-        id: 'TR_BUY_VALIDATION_ERROR_EMPTY',
-    },
-    TR_BUY_VALIDATION_ERROR_MINIMUM_CRYPTO: {
+    TR_VALIDATION_ERROR_MINIMUM_CRYPTO: {
         defaultMessage: 'Minimum is {minimum}',
         id: 'TR_BUY_VALIDATION_ERROR_MINIMUM_CRYPTO',
     },
-    TR_BUY_VALIDATION_ERROR_MAXIMUM_CRYPTO: {
+    TR_VALIDATION_ERROR_MAXIMUM_CRYPTO: {
         defaultMessage: 'Maximum is {maximum}',
         id: 'TR_BUY_VALIDATION_ERROR_MAXIMUM_CRYPTO',
     },
@@ -5403,17 +5379,17 @@ export default defineMessages({
             'Taproot is not supported by your firmware version. Please update your device firmware.',
         id: 'RECIPIENT_REQUIRES_UPDATE',
     },
-    RECIPIENT_FORMAT_DEPRECATED: {
-        defaultMessage: 'Unsupported address format. {TR_LEARN_MORE}',
-        id: 'RECIPIENT_FORMAT_DEPRECATED',
+    TR_UNSUPPORTED_ADDRESS_FORMAT: {
+        defaultMessage: 'Unsupported address format.',
+        id: 'TR_UNSUPPORTED_ADDRESS_FORMAT',
     },
-    RECIPIENT_FORMAT_UPPERCASE: {
-        defaultMessage: 'Unsupported address format. <a>Convert to lowercase</a>',
-        id: 'RECIPIENT_FORMAT_UPPERCASE',
+    TR_CONVERT_TO_LOWERCASE: {
+        defaultMessage: 'Convert to lowercase',
+        id: 'TR_CONVERT_TO_LOWERCASE',
     },
-    RECIPIENT_FORMAT_CHECKSUM: {
-        defaultMessage: 'Address is not valid. <a>Convert to checksum address</a>',
-        id: 'RECIPIENT_FORMAT_CHECKSUM',
+    TR_CONVERT_TO_CHECKSUM_ADDRESS: {
+        defaultMessage: 'Convert to checksum address',
+        id: 'TR_CONVERT_TO_CHECKSUM_ADDRESS',
     },
     RECIPIENT_CANNOT_SEND_TO_MYSELF: {
         defaultMessage: 'Cannot send to myself',
@@ -5700,7 +5676,7 @@ export default defineMessages({
         id: 'CUSTOM_FEE_NOT_IN_RANGE',
     },
     CUSTOM_FEE_LIMIT_BELOW_RECOMMENDED: {
-        defaultMessage: 'Gas limit too low {button}',
+        defaultMessage: 'Gas limit too low',
         id: 'CUSTOM_FEE_LIMIT_BELOW_RECOMMENDED',
     },
     CUSTOM_FEE_LIMIT_USE_RECOMMENDED: {

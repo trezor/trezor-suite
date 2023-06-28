@@ -4,7 +4,6 @@ import { useForm } from 'react-hook-form';
 import addressValidator from 'trezor-address-validator';
 import { QuestionTooltip, Translation } from 'src/components/suite';
 import { Input, variables, Image, Button } from '@trezor/components';
-import { InputError } from 'src/components/wallet';
 import { useCoinmarketExchangeOffersContext } from 'src/hooks/wallet/useCoinmarketExchangeOffers';
 import { isHexValid, isInteger } from '@suite-common/wallet-utils';
 import { AddressOptions } from 'src/views/wallet/coinmarket/common/AddressOptions';
@@ -133,11 +132,11 @@ const VerifyAddressComponent = () => {
         : {};
 
     const { ref: networkRef, ...networkField } = register('address', {
-        required: 'TR_EXCHANGE_RECEIVING_ADDRESS_REQUIRED',
+        required: translationString('TR_EXCHANGE_RECEIVING_ADDRESS_REQUIRED'),
         validate: value => {
             if (selectedAccountOption?.type === 'NON_SUITE' && receiveSymbol) {
                 if (value && !addressValidator.validate(value, receiveSymbol)) {
-                    return 'TR_EXCHANGE_RECEIVING_ADDRESS_INVALID';
+                    return translationString('TR_EXCHANGE_RECEIVING_ADDRESS_INVALID');
                 }
             }
         },
@@ -215,7 +214,7 @@ const VerifyAddressComponent = () => {
                             variant="small"
                             readOnly={selectedAccountOption?.type !== 'NON_SUITE'}
                             inputState={errors.address ? 'error' : undefined}
-                            bottomText={<InputError error={errors.address} />}
+                            bottomText={errors.address?.message}
                             innerRef={networkRef}
                             {...networkField}
                         />
@@ -249,7 +248,7 @@ const VerifyAddressComponent = () => {
                                 </Label>
                             }
                             inputState={errors.extraField ? 'error' : undefined}
-                            bottomText={<InputError error={errors.extraField} />}
+                            bottomText={errors.extraField?.message}
                             innerRef={descriptionRef}
                             {...descriptionField}
                         />

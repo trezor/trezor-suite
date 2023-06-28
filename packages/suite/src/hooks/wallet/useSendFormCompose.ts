@@ -11,7 +11,7 @@ import {
     PrecomposedLevelsCardano,
 } from '@suite-common/wallet-types';
 import { useAsyncDebounce } from '@trezor/react-utils';
-import { useActions } from 'src/hooks/suite';
+import { useActions, useTranslation } from 'src/hooks/suite';
 import { isChanged } from 'src/utils/suite/comparisonUtils';
 import * as sendFormActions from 'src/actions/wallet/sendFormActions';
 import { findComposeErrors } from '@suite-common/wallet-utils';
@@ -49,6 +49,7 @@ export const useSendFormCompose = ({
     const { composeTransaction } = useActions({
         composeTransaction: sendFormActions.composeTransaction,
     });
+    const { translationString } = useTranslation();
 
     const composeRequestRef = useRef<string | undefined>(undefined); // input name, caller of compose request
     const composeRequestID = useRef(0); // compose ID, incremented with every compose request
@@ -175,20 +176,17 @@ export const useSendFormCompose = ({
                     return;
                 }
 
+                const formError = {
+                    type: 'compose',
+                    message: translationString(errorMessage.id, errorMessage.values),
+                };
+
                 if (composeField) {
                     // setError to the field which created `composeRequest`
-                    setError(composeField, {
-                        type: 'compose',
-                        message: errorMessage as any, // setError types is broken? according to ts it accepts only strings, but object or react component could be used as well...
-                    });
+                    setError(composeField, formError);
                 } else if (values.outputs) {
                     // setError to the all `Amount` fields, composeField not specified (load draft case)
-                    values.outputs.forEach((_, i) => {
-                        setError(`outputs.${i}.amount`, {
-                            type: 'compose',
-                            message: errorMessage as any,
-                        });
-                    });
+                    values.outputs.forEach((_, i) => setError(`outputs.${i}.amount`, formError));
                 }
                 return;
             }
@@ -208,7 +206,16 @@ export const useSendFormCompose = ({
                 setDraftSaveRequest(true);
             }
         },
-        [composeField, getValues, setAmount, errors, setError, clearErrors, setValue],
+        [
+            composeField,
+            getValues,
+            setAmount,
+            errors,
+            setError,
+            clearErrors,
+            setValue,
+            translationString,
+        ],
     );
 
     // handle composedLevels change, setValues or errors for composeField

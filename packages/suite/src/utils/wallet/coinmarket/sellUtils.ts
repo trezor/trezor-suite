@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import { desktopApi } from '@trezor/suite-desktop-api';
 import { Account } from 'src/types/wallet';
-import { AmountLimits } from 'src/types/wallet/coinmarketSellForm';
+import { AmountLimits } from 'src/types/wallet/coinmarketCommonTypes';
 import { SellFiatTrade, SellFiatTradeQuoteRequest, SellTradeStatus } from 'invity-api';
 import { isDesktop, getLocationOrigin } from '@trezor/env-utils';
 import { ComposedTransactionInfo } from 'src/reducers/wallet/coinmarketReducer';

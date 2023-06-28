@@ -2,12 +2,12 @@ import React from 'react';
 import BigNumber from 'bignumber.js';
 import styled from 'styled-components';
 import { Translation } from 'src/components/suite';
-import { InputError } from 'src/components/wallet';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { Icon, Input, Switch, variables } from '@trezor/components';
 import { getInputState, isInteger } from '@suite-common/wallet-utils';
 import { MAX_LENGTH } from 'src/constants/suite/inputs';
 import { isFeatureFlagEnabled } from '@suite-common/suite-utils';
+import { useTranslation } from 'src/hooks/suite';
 
 const Wrapper = styled.div`
     margin-bottom: 25px;
@@ -73,6 +73,8 @@ export const Locktime = ({ close }: Props) => {
         composeTransaction,
     } = useSendFormContext();
 
+    const { translationString } = useTranslation();
+
     const options = getDefaultValue('options', []);
     const rbfEnabled = options.includes('bitcoinRBF');
     const broadcastEnabled = options.includes('broadcast');
@@ -87,21 +89,21 @@ export const Locktime = ({ close }: Props) => {
             }
             composeTransaction(inputName);
         },
-        required: 'LOCKTIME_IS_NOT_SET',
+        required: translationString('LOCKTIME_IS_NOT_SET'),
         validate: (value = '') => {
             const amountBig = new BigNumber(value);
             if (amountBig.isNaN()) {
-                return 'LOCKTIME_IS_NOT_NUMBER';
+                return translationString('LOCKTIME_IS_NOT_NUMBER');
             }
             if (amountBig.lte(0)) {
-                return 'LOCKTIME_IS_TOO_LOW';
+                return translationString('LOCKTIME_IS_TOO_LOW');
             }
             if (!isInteger(value)) {
-                return 'LOCKTIME_IS_NOT_INTEGER';
+                return translationString('LOCKTIME_IS_NOT_INTEGER');
             }
             // max unix timestamp * 2 (2147483647 * 2)
             if (amountBig.gt(4294967294)) {
-                return 'LOCKTIME_IS_TOO_BIG';
+                return translationString('LOCKTIME_IS_TOO_BIG');
             }
         },
     });
@@ -122,7 +124,7 @@ export const Locktime = ({ close }: Props) => {
                     </Label>
                 }
                 labelRight={<Icon size={18} icon="CROSS" onClick={close} />}
-                bottomText={<InputError error={error} />}
+                bottomText={error?.message}
                 data-test="locktime-input"
                 innerRef={inputRef}
                 {...inputField}

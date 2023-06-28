@@ -2,7 +2,7 @@ import { WithSelectedAccountLoadedProps } from 'src/components/wallet';
 import { Account } from 'src/types/wallet';
 import { DefaultCountryOption, Option } from 'src/types/wallet/coinmarketCommonTypes';
 import { P2pInfo } from 'src/actions/wallet/coinmarketP2pActions';
-import { SuiteUseFormReturn } from '@suite-common/wallet-types';
+import { UseFormReturn } from 'react-hook-form';
 
 export type UseCoinmarketP2pFormProps = WithSelectedAccountLoadedProps;
 
@@ -13,7 +13,7 @@ export type FormState = {
     countrySelect: Option;
 };
 
-export interface P2pFormContextValues extends SuiteUseFormReturn<FormState> {
+export interface P2pFormContextValues extends UseFormReturn<FormState> {
     account: Account;
     defaultCountry: DefaultCountryOption;
     defaultCurrency: Option;

@@ -6,7 +6,7 @@ import type {
     Savings,
 } from 'src/types/wallet/coinmarketCommonTypes';
 import type { Account } from 'src/types/wallet';
-import { SuiteUseFormReturn } from '@suite-common/wallet-types';
+import { UseFormReturn } from 'react-hook-form';
 
 export type UseSavingsSetupProps = WithSelectedAccountLoadedProps;
 
@@ -14,7 +14,7 @@ export interface SavingsSetupFormState extends Savings {
     country?: CountryOption;
 }
 
-export interface SavingsSetupContextValues extends SuiteUseFormReturn<SavingsSetupFormState> {
+export interface SavingsSetupContextValues extends UseFormReturn<SavingsSetupFormState> {
     onSubmit: (data: SavingsSetupFormState) => void;
     defaultPaymentFrequency?: PaymentFrequency;
     defaultFiatAmount?: string;

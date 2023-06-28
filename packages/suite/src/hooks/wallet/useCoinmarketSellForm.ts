@@ -15,7 +15,6 @@ import * as coinmarketCommonActions from 'src/actions/wallet/coinmarket/coinmark
 import {
     SellFormState,
     UseCoinmarketSellFormProps,
-    AmountLimits,
     SellFormContextValues,
     CRYPTO_INPUT,
     FIAT_INPUT,
@@ -36,7 +35,7 @@ import { useCoinmarketNavigation } from 'src/hooks/wallet/useCoinmarketNavigatio
 import type { AppState } from 'src/types/suite';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { useDidUpdate } from '@trezor/react-utils';
-import { SuiteUseFormRegister } from '@suite-common/wallet-types';
+import { AmountLimits } from 'src/types/wallet/coinmarketCommonTypes';
 
 export const SellFormContext = createContext<SellFormContextValues | null>(null);
 SellFormContext.displayName = 'CoinmarketSellContext';
@@ -231,7 +230,7 @@ export const useCoinmarketSellForm = ({
             setValue('setMaxOutputId', undefined, { shouldDirty: true });
             clearErrors(FIAT_INPUT);
             setValue(OUTPUT_AMOUNT, amount || '', { shouldDirty: true });
-            composeRequest();
+            composeRequest(CRYPTO_INPUT);
         },
         [clearErrors, composeRequest, setValue],
     );
@@ -255,7 +254,10 @@ export const useCoinmarketSellForm = ({
                 cryptoValue && shouldSendInSats
                     ? amountToSatoshi(cryptoValue, network.decimals)
                     : cryptoValue;
-            setValue(OUTPUT_AMOUNT, cryptoInputValue || '', { shouldDirty: true });
+            setValue(OUTPUT_AMOUNT, cryptoInputValue || '', {
+                shouldDirty: true,
+                shouldValidate: false,
+            });
             composeRequest(FIAT_INPUT);
         },
         [
@@ -279,14 +281,7 @@ export const useCoinmarketSellForm = ({
         const composed = composedLevels[selectedFeeLevel];
         if (!composed) return;
 
-        if (composed.type === 'error' && composed.errorMessage) {
-            setError(CRYPTO_INPUT, {
-                type: 'compose',
-                message: translationString(composed.errorMessage.id, composed.errorMessage.values),
-            });
-        }
-        // set calculated and formatted "max" value to `Amount` input
-        else if (composed.type === 'final') {
+        if (composed.type === 'final') {
             if (typeof setMaxOutputId === 'number' && composed.max) {
                 setValue(CRYPTO_INPUT, composed.max, { shouldValidate: true, shouldDirty: true });
                 clearErrors(CRYPTO_INPUT);
@@ -354,7 +349,7 @@ export const useCoinmarketSellForm = ({
     const handleClearFormButtonClick = useCallback(() => {
         removeDraft(account.key);
         reset(defaultValues);
-        composeRequest();
+        composeRequest(CRYPTO_INPUT);
     }, [account.key, removeDraft, reset, defaultValues, composeRequest]);
 
     return {
@@ -363,7 +358,7 @@ export const useCoinmarketSellForm = ({
         defaultCountry,
         defaultCurrency,
         onSubmit,
-        register: register as SuiteUseFormRegister<SellFormState>,
+        register,
         sellInfo,
         changeFeeLevel,
         saveQuoteRequest,

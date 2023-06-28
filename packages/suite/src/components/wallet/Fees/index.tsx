@@ -5,6 +5,7 @@ import {
     Control,
     FieldErrors,
     UseFormGetValues,
+    UseFormRegister,
     UseFormReturn,
     UseFormSetValue,
 } from 'react-hook-form';
@@ -12,7 +13,6 @@ import { SelectBar, variables } from '@trezor/components';
 import { FiatValue, FormattedCryptoAmount, Translation } from 'src/components/suite';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { useLayoutSize } from 'src/hooks/suite';
-import { InputError } from 'src/components/wallet';
 import { Account } from 'src/types/wallet';
 import { ExtendedMessageDescriptor } from 'src/types/suite';
 import {
@@ -23,7 +23,7 @@ import {
 } from 'src/types/wallet/sendForm';
 import { CustomFee } from './components/CustomFee';
 import FeeDetails from './components/FeeDetails';
-import { FormState, SuiteUseFormRegister, SuiteUseFormReturn } from '@suite-common/wallet-types';
+import { FormState } from '@suite-common/wallet-types';
 
 const FeeSetupWrapper = styled.div`
     width: 100%;
@@ -120,7 +120,7 @@ const buildFeeOptions = (levels: FeeLevel[]) =>
 export interface FeesProps<TFieldValues extends FormState> {
     account: Account;
     feeInfo: FeeInfo;
-    register: SuiteUseFormReturn<TFieldValues>['register'];
+    register: UseFormRegister<TFieldValues>;
     control: Control<any>;
     setValue: UseFormSetValue<TFieldValues>;
     getValues: UseFormGetValues<TFieldValues>;
@@ -149,9 +149,8 @@ export const Fees = <TFieldValues extends FormState>({
     const isDesktopLayout = layoutSize === 'XLARGE'; // we use slightly different layout on big screens (Fee label, selector and amount in one row)
 
     // Type assertion allowing to make the component reusable, see https://stackoverflow.com/a/73624072.
-    const { getValues, setValue } = props as unknown as UseFormReturn<FormState>;
+    const { getValues, register, setValue } = props as unknown as UseFormReturn<FormState>;
     const errors = props.errors as unknown as FieldErrors<FormState>;
-    const register = props.register as unknown as SuiteUseFormRegister<FormState>;
 
     const selectedOption = getValues('selectedFee') || 'normal';
     const isCustomLevel = selectedOption === 'custom';
@@ -207,11 +206,7 @@ export const Fees = <TFieldValues extends FormState>({
                         </FeeAmount>
                     )}
 
-                    {error && (
-                        <FeeError>
-                            <InputError error={error} />
-                        </FeeError>
-                    )}
+                    {error && <FeeError>{error.message}</FeeError>}
                 </FeeInfoRow>
 
                 {!isDesktopLayout && selectBarComponent}

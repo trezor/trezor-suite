@@ -40,3 +40,14 @@ export type Savings = {
     fiatAmount: string;
     customFiatAmount: string;
 };
+
+export interface CryptoAmountLimits {
+    currency: string;
+    minCrypto?: number;
+    maxCrypto?: number;
+}
+
+export interface AmountLimits extends CryptoAmountLimits {
+    minFiat?: number;
+    maxFiat?: number;
+}

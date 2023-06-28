@@ -2,7 +2,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { desktopApi } from '@trezor/suite-desktop-api';
 import { Account } from 'src/types/wallet';
 import { AppState } from 'src/types/suite';
-import { AmountLimits } from 'src/types/wallet/coinmarketBuyForm';
+import { AmountLimits } from 'src/types/wallet/coinmarketCommonTypes';
 import { BuyTrade, BuyTradeQuoteRequest, BuyTradeStatus } from 'invity-api';
 import { invityApiSymbolToSymbol } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { isDesktop, getLocationOrigin } from '@trezor/env-utils';
