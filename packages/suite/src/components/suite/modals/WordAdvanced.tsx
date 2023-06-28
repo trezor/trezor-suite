@@ -23,10 +23,6 @@ const BottomText = styled.div`
     margin-top: 20px;
 `;
 
-const StyledModal = styled(Modal)`
-    width: 100%;
-`;
-
 interface WordAdvancedProps extends ModalProps {
     count: 6 | 9;
 }
@@ -35,7 +31,7 @@ export const WordAdvanced = ({ count, ...rest }: WordAdvancedProps) => {
     const intl = useIntl();
 
     return (
-        <StyledModal
+        <Modal
             heading={<Translation id="TR_FOLLOW_INSTRUCTIONS_ON_DEVICE" />}
             description={<Translation id="TR_ADVANCED_RECOVERY_TEXT" />}
             onCancel={() => TrezorConnect.cancel(intl.formatMessage(messages.TR_CANCELLED))}
@@ -55,6 +51,6 @@ export const WordAdvanced = ({ count, ...rest }: WordAdvancedProps) => {
                     </P>
                 </BottomText>
             </ContentWrapper>
-        </StyledModal>
+        </Modal>
     );
 };
