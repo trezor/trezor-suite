@@ -1,5 +1,3 @@
-/* eslint-disable import/no-extraneous-dependencies -- react-native and expo-localization have been excluded from the package.json file as a workaround, ensuring that they are not bundled with the suite-desktop app  */
-
 import { Dimensions, Platform } from 'react-native';
 import Config from 'react-native-config';
 
