@@ -12,8 +12,7 @@ import { Common, Chain, Hardfork } from '@ethereumjs/common';
 import { Transaction, TxData } from '@ethereumjs/tx';
 import { fromWei, padLeft, toHex, toWei } from 'web3-utils';
 
-import { TypedFieldError } from '@suite-common/wallet-types';
-import { FIAT } from '@suite-common/suite-config';
+import { fiatCurrencies } from '@suite-common/suite-config';
 import { isFeatureFlagEnabled } from '@suite-common/suite-utils';
 import { Network, NetworkType } from '@suite-common/wallet-config';
 import { EthereumTransaction, TokenInfo, ComposeOutput, PROTO } from '@trezor/connect';
@@ -212,19 +211,8 @@ export const getInputState = (
     }
 };
 
-export const isLowAnonymityWarning = <T extends FieldValues>(
-    outputErrors?:
-        | Merge<FieldError, FieldErrorsImpl<T>>
-        | (Merge<FieldError, FieldErrorsImpl<T>> | undefined)[],
-) => {
-    const isLowAnonymityMessage = (error?: Merge<FieldError, FieldErrorsImpl<T>>) =>
-        ((error?.amount as TypedFieldError)?.message as { id: string })?.id === // TODO: type message as ExtendedMessageDescriptor after https://github.com/trezor/trezor-suite/pull/5647 is merged
-        'TR_NOT_ENOUGH_ANONYMIZED_FUNDS_WARNING';
-
-    return Array.isArray(outputErrors)
-        ? outputErrors?.some(isLowAnonymityMessage)
-        : isLowAnonymityMessage(outputErrors);
-};
+export const isLowAnonymityWarning = (error?: Merge<FieldError, FieldErrorsImpl<Output>>) =>
+    error?.amount?.type === 'anonymity';
 
 export const getFiatRate = (fiatRates: CoinFiatRates | undefined, currency: string) => {
     if (!fiatRates || !fiatRates.current || !fiatRates.current.rates) return;
@@ -442,7 +430,7 @@ export const getDefaultValues = (
 export const buildCurrencyOptions = (selected: CurrencyOption) => {
     const result: CurrencyOption[] = [];
 
-    FIAT.currencies.forEach(currency => {
+    Object.keys(fiatCurrencies).forEach(currency => {
         if (selected.value === currency) {
             return;
         }

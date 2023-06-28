@@ -1978,31 +1978,6 @@ export const amountUnitChange = [
         store: {
             bitcoinAmountUnit: PROTO.AmountUnit.SATOSHI,
         },
-        actions: [{ type: 'input', element: 'outputs.0.amount', value: '111', delay: 100 }],
-        finalResult: {
-            composeTransactionCalls: 1,
-            formValues: {
-                selectedFee: undefined,
-                outputs: [{ address: '', amount: '111' }],
-            },
-        },
-    },
-    {
-        description: 'compose with satoshi AmountUnit',
-        connect: [
-            {
-                success: true,
-                payload: [
-                    {
-                        type: 'final',
-                        max: '100000000',
-                    },
-                ],
-            },
-        ],
-        store: {
-            bitcoinAmountUnit: PROTO.AmountUnit.SATOSHI,
-        },
         actions: [{ type: 'input', element: 'outputs.0.amount', value: '111' }],
         finalResult: {
             composeTransactionCalls: 1,

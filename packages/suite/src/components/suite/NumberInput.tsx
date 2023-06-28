@@ -232,7 +232,12 @@ export const NumberInput = <TFieldValues extends FieldValues>({
 
                 // get the latest error state
                 const hasError =
-                    typeof rules?.validate === 'function' && !!rules?.validate?.(cleanInput, {});
+                    (typeof rules?.validate === 'function' &&
+                        !!rules?.validate?.(cleanInput, {})) ||
+                    (typeof rules?.validate === 'object' &&
+                        Object.values(rules.validate).some(validateFunction =>
+                            validateFunction(cleanInput, {}),
+                        ));
                 // because the form is not updated yet after calling `onChange()`,
                 // the value of `invalid` here is the one before this change has been handled
                 const hasErrorStateChanged = hasError !== invalid;

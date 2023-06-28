@@ -16,6 +16,7 @@ import { isChanged } from 'src/utils/suite/comparisonUtils';
 import * as sendFormActions from 'src/actions/wallet/sendFormActions';
 import { findComposeErrors } from '@suite-common/wallet-utils';
 import { FeeLevel } from '@trezor/connect';
+import { TranslationKey } from 'src/components/suite/Translation';
 
 type Props = UseFormReturn<FormState> & {
     state: UseSendFormState;
@@ -176,8 +177,19 @@ export const useSendFormCompose = ({
                     return;
                 }
 
+                const getErrorType = (translationKey: TranslationKey) => {
+                    switch (translationKey) {
+                        case 'TR_NOT_ENOUGH_ANONYMIZED_FUNDS_WARNING':
+                            return 'anonymity';
+                        case 'TR_NOT_ENOUGH_SELECTED':
+                            return 'coinControl';
+                        default:
+                            return 'compose';
+                    }
+                };
+
                 const formError = {
-                    type: 'compose',
+                    type: getErrorType(errorMessage.id),
                     message: translationString(errorMessage.id, errorMessage.values),
                 };
 
@@ -245,7 +257,7 @@ export const useSendFormCompose = ({
                     // @ts-expect-error: type = error already filtered above
                     const { feePerByte, feeLimit } = composed;
                     setValue('feePerUnit', feePerByte);
-                    setValue('feeLimit', feeLimit);
+                    setValue('feeLimit', feeLimit || '');
                 }
                 setDraftSaveRequest(true);
             }
