@@ -11,7 +11,6 @@ import { getAmountLimits, processQuotes } from 'src/utils/wallet/coinmarket/buyU
 import type {
     FormState,
     UseCoinmarketBuyFormProps,
-    AmountLimits,
     BuyFormContextValues,
 } from 'src/types/wallet/coinmarketBuyForm';
 import { useFormDraft } from 'src/hooks/wallet/useFormDraft';
@@ -21,7 +20,7 @@ import { useBitcoinAmountUnit } from './useBitcoinAmountUnit';
 import { amountToSatoshi, formatAmount } from '@suite-common/wallet-utils';
 import { useDidUpdate } from '@trezor/react-utils';
 import { CRYPTO_INPUT } from 'src/types/wallet/coinmarketSellForm';
-import { SuiteUseFormRegister } from '@suite-common/wallet-types';
+import { AmountLimits } from 'src/types/wallet/coinmarketCommonTypes';
 
 export const BuyFormContext = createContext<BuyFormContextValues | null>(null);
 BuyFormContext.displayName = 'CoinmarketBuyContext';
@@ -170,7 +169,7 @@ export const useCoinmarketBuyForm = (props: UseCoinmarketBuyFormProps): BuyFormC
         onSubmit,
         defaultCountry,
         defaultCurrency,
-        register: register as SuiteUseFormRegister<FormState>,
+        register,
         buyInfo,
         exchangeCoinInfo,
         saveQuotes,

@@ -1,4 +1,4 @@
-import { FieldPath } from 'react-hook-form';
+import { FieldPath, UseFormReturn } from 'react-hook-form';
 
 import { Network } from '@suite-common/wallet-config';
 import { AccountUtxo, FeeLevel, PROTO } from '@trezor/connect';
@@ -13,7 +13,6 @@ import {
     PrecomposedLevelsCardano,
     RbfTransactionParams,
 } from './transaction';
-import { SuiteUseFormReturn } from './form';
 
 export type FormOptions =
     | 'broadcast'
@@ -99,7 +98,7 @@ export interface GetDefaultValue {
 }
 
 export type SendContextValues<TFormValues extends FormState = FormState> =
-    SuiteUseFormReturn<TFormValues> &
+    UseFormReturn<TFormValues> &
         UseSendFormState & {
             // additional fields
             outputs: Partial<Output & { id: string }>[]; // useFieldArray fields

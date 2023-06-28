@@ -87,7 +87,7 @@ const Inputs = () => {
     return (
         <Wrapper responsiveSize="LG">
             <Left>
-                <CryptoInput activeInput={activeInput} setActiveInput={setActiveInput} />
+                <CryptoInput />
             </Left>
             <Middle responsiveSize="LG">
                 {!isLargeLayoutSize && (
@@ -101,7 +101,7 @@ const Inputs = () => {
                 {!isLargeLayoutSize && <EmptyDiv />}
             </Middle>
             <Right>
-                <FiatInput activeInput={activeInput} setActiveInput={setActiveInput} />
+                <FiatInput />
             </Right>
             {isLargeLayoutSize && (
                 <FractionButtons

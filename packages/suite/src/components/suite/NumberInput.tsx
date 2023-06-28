@@ -3,7 +3,6 @@ import { Control, FieldValues, useController, UseControllerProps } from 'react-h
 import BigNumber from 'bignumber.js';
 
 import { Input, InputProps } from '@trezor/components';
-import { TypedValidationRules } from '@suite-common/wallet-types';
 import { localizeNumber } from '@suite-common/wallet-utils';
 import { Locale } from 'src/config/suite/languages';
 import { useSelector } from '../../hooks/suite';
@@ -69,7 +68,7 @@ export interface NumberInputProps<TFieldValues extends FieldValues>
         Omit<UseControllerProps<TFieldValues>, 'rules'> {
     decimalScale?: number;
     onChange?: (value: string) => void;
-    rules?: TypedValidationRules;
+    rules?: UseControllerProps['rules'];
 }
 
 export const NumberInput = <TFieldValues extends FieldValues>({
@@ -86,7 +85,7 @@ export const NumberInput = <TFieldValues extends FieldValues>({
     } = useController({
         name,
         control: control as Control<FieldValues>,
-        rules: rules as UseControllerProps['rules'],
+        rules,
         defaultValue,
     });
 
@@ -232,7 +231,8 @@ export const NumberInput = <TFieldValues extends FieldValues>({
                 onChange(cleanInput);
 
                 // get the latest error state
-                const hasError = !!rules?.validate?.(cleanInput);
+                const hasError =
+                    typeof rules?.validate === 'function' && !!rules?.validate?.(cleanInput, {});
                 // because the form is not updated yet after calling `onChange()`,
                 // the value of `invalid` here is the one before this change has been handled
                 const hasErrorStateChanged = hasError !== invalid;

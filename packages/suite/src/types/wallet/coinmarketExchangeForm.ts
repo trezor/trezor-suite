@@ -1,5 +1,5 @@
 import type { AppState } from 'src/types/suite';
-import type { FormState as ReactHookFormState } from 'react-hook-form';
+import type { FormState as ReactHookFormState, UseFormReturn } from 'react-hook-form';
 import type { Account, Network, CoinFiatRates } from 'src/types/wallet';
 import type { FeeLevel } from '@trezor/connect';
 import type { ExchangeTrade, ExchangeTradeQuoteRequest, ExchangeCoinInfo } from 'invity-api';
@@ -13,9 +13,9 @@ import type {
     PrecomposedLevels,
     PrecomposedLevelsCardano,
 } from 'src/types/wallet/sendForm';
-import type { Option } from './coinmarketCommonTypes';
+import type { CryptoAmountLimits, Option } from './coinmarketCommonTypes';
 import type { WithSelectedAccountLoadedProps } from 'src/components/wallet';
-import { SendContextValues, SuiteUseFormReturn } from '@suite-common/wallet-types';
+import { SendContextValues } from '@suite-common/wallet-types';
 
 export const CRYPTO_INPUT = 'outputs.0.amount';
 export const CRYPTO_TOKEN = 'outputs.0.token';
@@ -30,13 +30,7 @@ export type ExchangeFormState = FormState & {
     sendCryptoSelect: Option;
 };
 
-export interface AmountLimits {
-    currency: string;
-    min?: number;
-    max?: number;
-}
-
-export interface ExchangeFormContextValues extends SuiteUseFormReturn<ExchangeFormState> {
+export interface ExchangeFormContextValues extends UseFormReturn<ExchangeFormState> {
     onSubmit: () => void;
     account: Account;
     isComposing: boolean;
@@ -58,10 +52,10 @@ export interface ExchangeFormContextValues extends SuiteUseFormReturn<ExchangeFo
         account: Account,
         date: string,
     ) => CoinmarketExchangeAction;
-    amountLimits?: AmountLimits;
+    amountLimits?: CryptoAmountLimits;
     composedLevels?: PrecomposedLevels | PrecomposedLevelsCardano;
     fiatRates?: CoinFiatRates;
-    setAmountLimits: (limits?: AmountLimits) => void;
+    setAmountLimits: (limits?: CryptoAmountLimits) => void;
     quotesRequest: AppState['wallet']['coinmarket']['exchange']['quotesRequest'];
     isLoading: boolean;
     updateFiatValue: (amount: string) => void;

@@ -1,25 +1,25 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import invityAPI from 'src/services/suite/invityAPI';
-import Bignumber from 'bignumber.js';
 import { Controller } from 'react-hook-form';
-import { FIAT } from 'src/config/suite';
-import { FormattedCryptoAmount, Translation, NumberInput } from 'src/components/suite';
+import { fiatCurrencies } from '@suite-common/suite-config';
+import { NumberInput } from 'src/components/suite';
 import { getCryptoOptions } from 'src/utils/wallet/coinmarket/buyUtils';
 import { Select, CoinLogo } from '@trezor/components';
 import { buildOption } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { useCoinmarketBuyFormContext } from 'src/hooks/wallet/useCoinmarketBuyForm';
-import {
-    amountToSatoshi,
-    isDecimalsValid,
-    isInteger,
-    getInputState,
-} from '@suite-common/wallet-utils';
-import { InputError } from 'src/components/wallet';
+import { getInputState } from '@suite-common/wallet-utils';
 import { MAX_LENGTH } from 'src/constants/suite/inputs';
 import { Wrapper, Left, Middle, Right, StyledIcon } from 'src/views/wallet/coinmarket';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
-import { TypedValidationRules } from 'src/types/wallet/form';
+import { useTranslation } from 'src/hooks/suite';
+import { useFormatters } from '@suite-common/formatters';
+import {
+    validateDecimals,
+    validateInteger,
+    validateLimits,
+    validateMin,
+} from 'src/utils/suite/validation';
 
 const Option = styled.div`
     display: flex;
@@ -37,6 +37,7 @@ const TokenLogo = styled.img`
 `;
 
 const Inputs = () => {
+    const { translationString } = useTranslation();
     const {
         formState: { errors },
         trigger,
@@ -45,7 +46,6 @@ const Inputs = () => {
         control,
         setValue,
         clearErrors,
-        formState,
         amountLimits,
         buyInfo,
         setAmountLimits,
@@ -55,6 +55,7 @@ const Inputs = () => {
         exchangeCoinInfo,
     } = useCoinmarketBuyFormContext();
     const { shouldSendInSats } = useBitcoinAmountUnit(account.symbol);
+    const { CryptoAmountFormatter } = useFormatters();
 
     const { symbol } = account;
     const uppercaseSymbol = symbol.toUpperCase();
@@ -72,163 +73,40 @@ const Inputs = () => {
 
     const fiatInputValue = getValues(fiatInput);
 
-    const fiatInputRules = useMemo<TypedValidationRules>(
-        () => ({
-            validate: (value: string) => {
-                if (activeInput === fiatInput) {
-                    if (!value) {
-                        if (formState.isSubmitting) {
-                            return <Translation id="TR_BUY_VALIDATION_ERROR_EMPTY" />;
-                        }
-                        return;
-                    }
-
-                    const amountBig = new Bignumber(value);
-                    if (amountBig.isNaN()) {
-                        return <Translation id="AMOUNT_IS_NOT_NUMBER" />;
-                    }
-
-                    if (amountBig.lte(0)) {
-                        return <Translation id="AMOUNT_IS_TOO_LOW" />;
-                    }
-
-                    if (!isDecimalsValid(value, 2)) {
-                        return (
-                            <Translation
-                                id="AMOUNT_IS_NOT_IN_RANGE_DECIMALS"
-                                values={{ decimals: 2 }}
-                            />
-                        );
-                    }
-
-                    if (amountLimits) {
-                        const amount = Number(value);
-                        if (amountLimits.minFiat && amount < amountLimits.minFiat) {
-                            return (
-                                <Translation
-                                    id="TR_BUY_VALIDATION_ERROR_MINIMUM_FIAT"
-                                    values={{
-                                        minimum: amountLimits.minFiat,
-                                        currency: amountLimits.currency,
-                                    }}
-                                />
-                            );
-                        }
-                        if (amountLimits.maxFiat && amount > amountLimits.maxFiat) {
-                            return (
-                                <Translation
-                                    id="TR_BUY_VALIDATION_ERROR_MAXIMUM_FIAT"
-                                    values={{
-                                        maximum: amountLimits.maxFiat,
-                                        currency: amountLimits.currency,
-                                    }}
-                                />
-                            );
-                        }
-                    }
+    const fiatInputRules = {
+        validate: {
+            min: validateMin(translationString),
+            decimals: validateDecimals(translationString, { decimals: 2 }),
+            minFiat: (value: string) => {
+                if (value && amountLimits?.minFiat && Number(value) < amountLimits.minFiat) {
+                    return translationString('TR_BUY_VALIDATION_ERROR_MINIMUM_FIAT', {
+                        minimum: amountLimits.minFiat,
+                        currency: amountLimits.currency,
+                    });
                 }
             },
-        }),
-        [activeInput, amountLimits, formState.isSubmitting],
-    );
-
-    const cryptoInputRules = useMemo<TypedValidationRules>(
-        () => ({
-            validate: (value: string) => {
-                if (activeInput === cryptoInput) {
-                    if (!value) {
-                        if (formState.isSubmitting) {
-                            return <Translation id="TR_BUY_VALIDATION_ERROR_EMPTY" />;
-                        }
-
-                        return;
-                    }
-
-                    const amountBig = new Bignumber(value);
-
-                    if (amountBig.isNaN()) {
-                        return <Translation id="AMOUNT_IS_NOT_NUMBER" />;
-                    }
-
-                    if (shouldSendInSats && !isInteger(value)) {
-                        return 'AMOUNT_IS_NOT_INTEGER';
-                    }
-
-                    if (amountBig.lte(0)) {
-                        return <Translation id="AMOUNT_IS_TOO_LOW" />;
-                    }
-
-                    if (!isDecimalsValid(value, network.decimals)) {
-                        return (
-                            <Translation
-                                id="AMOUNT_IS_NOT_IN_RANGE_DECIMALS"
-                                values={{ decimals: network.decimals }}
-                            />
-                        );
-                    }
-
-                    if (amountLimits) {
-                        const amount = Number(value);
-
-                        let minCrypto = 0;
-                        if (amountLimits.minCrypto) {
-                            minCrypto = shouldSendInSats
-                                ? Number(
-                                      amountToSatoshi(
-                                          amountLimits.minCrypto.toString(),
-                                          network.decimals,
-                                      ),
-                                  )
-                                : amountLimits.minCrypto;
-                        }
-                        if (minCrypto && amount < minCrypto) {
-                            return (
-                                <Translation
-                                    id="TR_BUY_VALIDATION_ERROR_MINIMUM_CRYPTO"
-                                    values={{
-                                        minimum: (
-                                            <FormattedCryptoAmount
-                                                value={amountLimits.minCrypto}
-                                                symbol={amountLimits.currency}
-                                            />
-                                        ),
-                                    }}
-                                />
-                            );
-                        }
-
-                        let maxCrypto = 0;
-                        if (amountLimits.maxCrypto) {
-                            maxCrypto = shouldSendInSats
-                                ? Number(
-                                      amountToSatoshi(
-                                          amountLimits.maxCrypto.toString(),
-                                          network.decimals,
-                                      ),
-                                  )
-                                : amountLimits.maxCrypto;
-                        }
-                        if (maxCrypto && amount > maxCrypto) {
-                            return (
-                                <Translation
-                                    id="TR_BUY_VALIDATION_ERROR_MAXIMUM_CRYPTO"
-                                    values={{
-                                        maximum: (
-                                            <FormattedCryptoAmount
-                                                value={amountLimits.maxCrypto}
-                                                symbol={amountLimits.currency}
-                                            />
-                                        ),
-                                    }}
-                                />
-                            );
-                        }
-                    }
+            maxFiat: (value: string) => {
+                if (value && amountLimits?.maxFiat && Number(value) > amountLimits.maxFiat) {
+                    return translationString('TR_BUY_VALIDATION_ERROR_MAXIMUM_FIAT', {
+                        maximum: amountLimits.maxFiat,
+                        currency: amountLimits.currency,
+                    });
                 }
             },
-        }),
-        [activeInput, amountLimits, formState.isSubmitting, network.decimals, shouldSendInSats],
-    );
+        },
+    };
+    const cryptoInputRules = {
+        validate: {
+            min: validateMin(translationString),
+            integer: validateInteger(translationString, { except: !shouldSendInSats }),
+            decimals: validateDecimals(translationString, { decimals: network.decimals }),
+            limits: validateLimits(translationString, {
+                amountLimits,
+                areSatsUsed: !!shouldSendInSats,
+                formatter: CryptoAmountFormatter,
+            }),
+        },
+    };
 
     return (
         <Wrapper responsiveSize="LG">
@@ -244,7 +122,7 @@ const Inputs = () => {
                     inputState={getInputState(errors.fiatInput, fiatInputValue)}
                     name={fiatInput}
                     maxLength={MAX_LENGTH.AMOUNT}
-                    bottomText={<InputError error={errors[fiatInput]} />}
+                    bottomText={errors[fiatInput]?.message}
                     innerAddon={
                         <Controller
                             control={control}
@@ -252,7 +130,7 @@ const Inputs = () => {
                             defaultValue={defaultCurrency}
                             render={({ field: { onChange, value } }) => (
                                 <Select
-                                    options={FIAT.currencies
+                                    options={Object.keys(fiatCurrencies)
                                         .filter(c => buyInfo?.supportedFiatCurrencies.has(c))
                                         .map((currency: string) => buildOption(currency))}
                                     isSearchable
@@ -288,7 +166,7 @@ const Inputs = () => {
                     noTopLabel
                     maxLength={MAX_LENGTH.AMOUNT}
                     rules={cryptoInputRules}
-                    bottomText={<InputError error={errors[cryptoInput]} />}
+                    bottomText={errors[cryptoInput]?.message}
                     innerAddon={
                         <Controller
                             control={control}

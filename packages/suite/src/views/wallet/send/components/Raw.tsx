@@ -4,9 +4,8 @@ import { useForm } from 'react-hook-form';
 import { analytics, EventType } from '@trezor/suite-analytics';
 
 import { Card, Translation } from 'src/components/suite';
-import { InputError } from 'src/components/wallet';
 import { Textarea, Button, Icon, Tooltip, variables } from '@trezor/components';
-import { useActions } from 'src/hooks/suite';
+import { useActions, useTranslation } from 'src/hooks/suite';
 import * as sendFormActions from 'src/actions/wallet/sendFormActions';
 import { getInputState, isHexValid } from '@suite-common/wallet-utils';
 import { Network } from 'src/types/wallet';
@@ -53,15 +52,17 @@ const Raw = ({ network }: { network: Network }) => {
         pushRawTransaction: sendFormActions.pushRawTransaction,
     });
 
+    const { translationString } = useTranslation();
+
     const inputName = 'rawTx';
     const inputValue = getValues(inputName) || '';
     const error = errors[inputName];
     const inputState = getInputState(error, inputValue);
     const { ref: inputRef, ...inputField } = register(inputName, {
-        required: 'RAW_TX_NOT_SET',
+        required: translationString('RAW_TX_NOT_SET'),
         validate: (value: string) => {
             if (!isHexValid(value, network.networkType === 'ethereum' ? '0x' : undefined))
-                return 'DATA_NOT_VALID_HEX';
+                return translationString('DATA_NOT_VALID_HEX');
         },
     });
 
@@ -73,7 +74,7 @@ const Raw = ({ network }: { network: Network }) => {
                     isMonospace
                     data-test={inputName}
                     defaultValue={inputValue}
-                    bottomText={<InputError error={error} />}
+                    bottomText={error?.message}
                     label={
                         <Tooltip
                             guideAnchor={instance => (

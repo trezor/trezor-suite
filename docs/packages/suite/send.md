@@ -22,7 +22,6 @@
 -   RECIPIENT_IS_NOT_SET (empty field)
 -   RECIPIENT_IS_NOT_VALID (not valid address)
 -   RECIPIENT_CANNOT_SEND_TO_MYSELF (XRP only: cannot send to myself)
--   RECIPIENT_FORMAT_DEPRECATED (LTC/BCH: legacy address format with "3" for LTC or "1" for BCH)
 
 ---
 

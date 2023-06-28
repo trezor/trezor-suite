@@ -1,16 +1,13 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback } from 'react';
 import BigNumber from 'bignumber.js';
 import styled from 'styled-components';
 
 import { Icon, Switch, Warning, variables, useTheme } from '@trezor/components';
 import { FiatValue, Translation, NumberInput, HiddenPlaceholder } from 'src/components/suite';
-import { InputError } from 'src/components/wallet';
 import {
     amountToSatoshi,
     formatNetworkAmount,
     hasNetworkFeatures,
-    isDecimalsValid,
-    isInteger,
     isLowAnonymityWarning,
     getInputState,
     findToken,
@@ -21,7 +18,13 @@ import { MAX_LENGTH } from 'src/constants/suite/inputs';
 import { TokenSelect } from './components/TokenSelect';
 import { Fiat } from './components/Fiat';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
-import { TypedValidationRules } from 'src/types/wallet/form';
+import { useTranslation } from 'src/hooks/suite';
+import {
+    validateDecimals,
+    validateInteger,
+    validateMin,
+    validateReserveOrBalance,
+} from 'src/utils/suite/validation';
 
 const Row = styled.div`
     display: flex;
@@ -109,6 +112,7 @@ interface Props {
     outputId: number;
 }
 export const Amount = ({ output, outputId }: Props) => {
+    const { translationString } = useTranslation();
     const {
         account,
         network,
@@ -122,7 +126,7 @@ export const Amount = ({ output, outputId }: Props) => {
         calculateFiat,
         composeTransaction,
     } = useSendFormContext();
-    const { symbol, tokens, availableBalance, balance } = account;
+    const { symbol, tokens } = account;
 
     const theme = useTheme();
     const { shouldSendInSats } = useBitcoinAmountUnit(symbol);
@@ -161,7 +165,7 @@ export const Amount = ({ output, outputId }: Props) => {
     const symbolToUse = shouldSendInSats ? 'sat' : symbol.toUpperCase();
     const isLowAnonymity = isLowAnonymityWarning(outputError);
     const inputState = isLowAnonymity ? 'warning' : getInputState(error, amountValue);
-    const bottomText = isLowAnonymity ? null : <InputError error={error} />;
+    const bottomText = isLowAnonymity ? undefined : error?.message;
 
     const handleInputChange = useCallback(
         (value: string) => {
@@ -176,39 +180,16 @@ export const Amount = ({ output, outputId }: Props) => {
         [setValue, calculateFiat, composeTransaction, inputName, isSetMaxActive, outputId],
     );
 
-    const cryptoAmountRules = useMemo<TypedValidationRules>(
-        () => ({
-            required: 'AMOUNT_IS_NOT_SET',
-            validate: (value: string) => {
-                if (Number.isNaN(Number(value))) {
-                    return 'AMOUNT_IS_NOT_NUMBER';
-                }
-
-                // ERC20 without decimal places
-                if (!decimals && !isInteger(value)) {
-                    return 'AMOUNT_IS_NOT_INTEGER';
-                }
-
-                if (!isDecimalsValid(value, decimals)) {
-                    return (
-                        <Translation
-                            key="AMOUNT_IS_NOT_IN_RANGE_DECIMALS"
-                            id="AMOUNT_IS_NOT_IN_RANGE_DECIMALS"
-                            values={{ decimals }}
-                        />
-                    );
-                }
-
+    const cryptoAmountRules = {
+        required: translationString('AMOUNT_IS_NOT_SET'),
+        validate: {
+            // allow 0 amount ONLY for ethereum transaction with data
+            min: validateMin(translationString, { except: !!getDefaultValue('ethereumDataHex') }),
+            // ERC20 without decimal places
+            integer: validateInteger(translationString, { except: !!decimals }),
+            decimals: validateDecimals(translationString, { decimals }),
+            dust: (value: string) => {
                 const amountBig = new BigNumber(value);
-
-                if (amountBig.lt(0)) {
-                    return 'AMOUNT_IS_TOO_LOW';
-                }
-
-                // allow 0 amount ONLY for ethereum transaction with data
-                if (amountBig.eq(0) && !getDefaultValue('ethereumDataHex')) {
-                    return 'AMOUNT_IS_TOO_LOW';
-                }
 
                 const rawDust = feeInfo?.dustLimit?.toString();
 
@@ -221,55 +202,18 @@ export const Amount = ({ output, outputId }: Props) => {
                         dust = amountToSatoshi(dust, decimals);
                     }
 
-                    return (
-                        <Translation
-                            key="AMOUNT_IS_BELOW_DUST"
-                            id="AMOUNT_IS_BELOW_DUST"
-                            values={{
-                                dust: `${dust} ${shouldSendInSats ? 'sat' : symbol.toUpperCase()}`,
-                            }}
-                        />
-                    );
-                }
-
-                let formattedAvailableBalance: string;
-
-                if (token) {
-                    formattedAvailableBalance = token.balance || '0';
-                } else {
-                    formattedAvailableBalance = shouldSendInSats
-                        ? availableBalance
-                        : formatNetworkAmount(availableBalance, symbol);
-                }
-
-                if (amountBig.gt(formattedAvailableBalance)) {
-                    const reserve =
-                        account.networkType === 'ripple'
-                            ? formatNetworkAmount(account.misc.reserve, symbol)
-                            : undefined;
-
-                    if (reserve && amountBig.lt(formatNetworkAmount(balance, symbol))) {
-                        return (
-                            <Translation id="AMOUNT_IS_MORE_THAN_RESERVE" values={{ reserve }} />
-                        );
-                    }
-                    return 'AMOUNT_IS_NOT_ENOUGH';
+                    return translationString('AMOUNT_IS_BELOW_DUST', {
+                        dust: `${dust} ${shouldSendInSats ? 'sat' : symbol.toUpperCase()}`,
+                    });
                 }
             },
-        }),
-        [
-            account?.misc,
-            account.networkType,
-            availableBalance,
-            balance,
-            decimals,
-            feeInfo?.dustLimit,
-            getDefaultValue,
-            shouldSendInSats,
-            symbol,
-            token,
-        ],
-    );
+            reserveOrBalance: validateReserveOrBalance(translationString, {
+                account,
+                areSatsUsed: !!shouldSendInSats,
+                tokenAddress: tokenValue,
+            }),
+        },
+    };
 
     return (
         <>

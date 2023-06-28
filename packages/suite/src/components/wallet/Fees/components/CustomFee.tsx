@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import BigNumber from 'bignumber.js';
 import styled, { css } from 'styled-components';
 import {
@@ -6,19 +6,21 @@ import {
     FieldErrors,
     FieldPath,
     UseFormGetValues,
+    UseFormRegister,
     UseFormReturn,
     UseFormSetValue,
 } from 'react-hook-form';
-import { Button, Note, variables } from '@trezor/components';
+import { Note, variables } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 import { NumberInput } from 'src/components/suite/NumberInput';
-import { InputError } from 'src/components/wallet';
-import { getInputState, getFeeUnits, isDecimalsValid, isInteger } from '@suite-common/wallet-utils';
+import { getInputState, getFeeUnits, isInteger } from '@suite-common/wallet-utils';
 import { ETH_DEFAULT_GAS_LIMIT } from '@suite-common/wallet-constants';
 import { FeeInfo } from 'src/types/wallet/sendForm';
-import { TypedValidationRules } from 'src/types/wallet/form';
-import { FormState, SuiteUseFormRegister } from '@suite-common/wallet-types';
+import { FormState } from '@suite-common/wallet-types';
 import { NetworkType } from '@suite-common/wallet-config';
+import { useTranslation } from 'src/hooks/suite';
+import { InputError } from '../../InputError';
+import { validateDecimals } from 'src/utils/suite/validation';
 
 const Wrapper = styled.div`
     display: flex;
@@ -56,34 +58,6 @@ const Units = styled.div`
     color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
 `;
 
-const ButtonWrapper = styled.div`
-    display: flex;
-    justify-content: space-between;
-`;
-
-const StyledButton = styled(Button)`
-    margin-left: 8px;
-    padding: 0;
-    background: none;
-`;
-
-// feeLimit error notification button
-const SetDefaultLimit = ({ onClick }: { onClick: () => void }) => (
-    <ButtonWrapper>
-        <Translation
-            id="CUSTOM_FEE_LIMIT_BELOW_RECOMMENDED"
-            isNested
-            values={{
-                button: (
-                    <StyledButton variant="tertiary" onClick={onClick}>
-                        <Translation id="CUSTOM_FEE_LIMIT_USE_RECOMMENDED" />
-                    </StyledButton>
-                ),
-            }}
-        />
-    </ButtonWrapper>
-);
-
 const FEE_PER_UNIT = 'feePerUnit';
 const FEE_LIMIT = 'feeLimit';
 
@@ -91,7 +65,7 @@ interface CustomFeeProps<TFieldValues extends FormState> {
     networkType: NetworkType;
     feeInfo: FeeInfo;
     errors: FieldErrors<TFieldValues>;
-    register: SuiteUseFormRegister<TFieldValues>;
+    register: UseFormRegister<TFieldValues>;
     control: Control;
     setValue: UseFormSetValue<TFieldValues>;
     getValues: UseFormGetValues<TFieldValues>;
@@ -108,6 +82,8 @@ export const CustomFee = <TFieldValues extends FormState>({
     composedFeePerByte,
     ...props
 }: CustomFeeProps<TFieldValues>) => {
+    const { translationString } = useTranslation();
+
     // Type assertion allowing to make the component reusable, see https://stackoverflow.com/a/73624072.
     const { getValues, setValue } = props as unknown as UseFormReturn<FormState>;
     const errors = props.errors as unknown as FieldErrors<FormState>;
@@ -123,91 +99,61 @@ export const CustomFee = <TFieldValues extends FormState>({
     const feeLimitError = errors.feeLimit;
 
     const useFeeLimit = networkType === 'ethereum';
-    const feeLimitDisabled = false;
-
     const isComposedFeeRateDifferent =
         !feePerUnitError && composedFeePerByte && enteredFeeRate !== composedFeePerByte;
 
-    const feeLimitRules = useMemo<TypedValidationRules>(
-        () => ({
-            required: 'CUSTOM_FEE_IS_NOT_SET',
-            validate: (value: string) => {
+    const sharedRules = {
+        required: translationString('CUSTOM_FEE_IS_NOT_SET'),
+        // allow decimals in ETH since GWEI is not a satoshi
+        validate: (value: string) => {
+            if (['bitcoin', 'ethereum'].includes(networkType) && !isInteger(value)) {
+                return translationString('CUSTOM_FEE_IS_NOT_INTEGER');
+            }
+        },
+    };
+    const feeLimitRules = {
+        ...sharedRules,
+        validate: {
+            ...sharedRules.validate,
+            feeLimit: (value: string) => {
                 const feeBig = new BigNumber(value);
-
-                if (feeBig.isNaN()) {
-                    return 'CUSTOM_FEE_IS_NOT_NUMBER';
-                }
-
-                // allow decimals in ETH since GWEI is not a satoshi
-                if (networkType !== 'ethereum' && networkType !== 'bitcoin' && !isInteger(value)) {
-                    return 'CUSTOM_FEE_IS_NOT_INTEGER';
-                }
-
                 if (feeBig.lt(estimatedFeeLimit)) {
-                    return (
-                        <SetDefaultLimit
-                            onClick={() => {
-                                setValue(FEE_LIMIT, estimatedFeeLimit, {
-                                    shouldValidate: true,
-                                });
-                            }}
-                        />
-                    );
+                    return translationString('CUSTOM_FEE_LIMIT_BELOW_RECOMMENDED');
                 }
             },
-        }),
-        [estimatedFeeLimit, networkType, setValue],
-    );
-
-    const feeRules = useMemo<TypedValidationRules>(
-        () => ({
-            required: 'CUSTOM_FEE_IS_NOT_SET',
-            validate: (value: string) => {
+        },
+    };
+    const feeRules = {
+        ...sharedRules,
+        validate: {
+            ...sharedRules.validate,
+            bitcoinDecimalsLimit: validateDecimals(translationString, {
+                decimals: 2,
+                except: networkType !== 'bitcoin',
+            }),
+            // GWEI: 9 decimal places
+            ethereumDecimalsLimit: validateDecimals(translationString, {
+                decimals: 2,
+                except: networkType !== 'ethereum',
+            }),
+            range: (value: string) => {
                 const feeBig = new BigNumber(value);
-
-                if (feeBig.isNaN()) {
-                    return 'CUSTOM_FEE_IS_NOT_NUMBER';
-                }
-
-                // allow decimals in ETH since GWEI is not a satoshi
-                if (networkType !== 'ethereum' && networkType !== 'bitcoin' && !isInteger(value)) {
-                    return 'CUSTOM_FEE_IS_NOT_INTEGER';
-                }
-
-                if (networkType === 'bitcoin' && !isDecimalsValid(value, 2)) {
-                    return (
-                        <Translation
-                            key="AMOUNT_IS_NOT_IN_RANGE_DECIMALS"
-                            id="AMOUNT_IS_NOT_IN_RANGE_DECIMALS"
-                            values={{ decimals: 2 }}
-                        />
-                    );
-                }
-
-                // GWEI: 9 decimal places
-                if (networkType === 'ethereum' && !isDecimalsValid(value, 9)) {
-                    return (
-                        <Translation
-                            key="AMOUNT_IS_NOT_IN_RANGE_DECIMALS"
-                            id="AMOUNT_IS_NOT_IN_RANGE_DECIMALS"
-                            values={{ decimals: 9 }}
-                        />
-                    );
-                }
-
                 if (feeBig.isGreaterThan(maxFee) || feeBig.isLessThan(minFee)) {
-                    return (
-                        <Translation
-                            key="CUSTOM_FEE_NOT_IN_RANGE"
-                            id="CUSTOM_FEE_NOT_IN_RANGE"
-                            values={{ minFee, maxFee }}
-                        />
-                    );
+                    return translationString('CUSTOM_FEE_NOT_IN_RANGE', { minFee, maxFee });
                 }
             },
-        }),
-        [maxFee, minFee, networkType],
-    );
+        },
+    };
+
+    const feeLimitValidationProps = {
+        onClick: () =>
+            setValue(FEE_LIMIT, estimatedFeeLimit, {
+                shouldValidate: true,
+            }),
+        text: translationString('CUSTOM_FEE_LIMIT_USE_RECOMMENDED'),
+    };
+    const validationButtonProps =
+        feeLimitError?.type === 'feeLimit' ? feeLimitValidationProps : undefined;
 
     return (
         <>
@@ -217,7 +163,6 @@ export const CustomFee = <TFieldValues extends FormState>({
                         <StyledNumberInput
                             control={control}
                             label={<Translation id="TR_GAS_LIMIT" />}
-                            disabled={feeLimitDisabled}
                             isMonospace
                             variant="small"
                             inputState={getInputState(feeLimitError, feeLimitValue)}
@@ -225,7 +170,12 @@ export const CustomFee = <TFieldValues extends FormState>({
                             data-test={FEE_LIMIT}
                             onChange={changeFeeLimit}
                             rules={feeLimitRules}
-                            bottomText={<InputError error={feeLimitError} />}
+                            bottomText={
+                                <InputError
+                                    message={feeLimitError?.message}
+                                    button={validationButtonProps}
+                                />
+                            }
                         />
                     </Col>
                 ) : (
@@ -243,7 +193,7 @@ export const CustomFee = <TFieldValues extends FormState>({
                         name={FEE_PER_UNIT}
                         data-test={FEE_PER_UNIT}
                         rules={feeRules}
-                        bottomText={<InputError error={feePerUnitError} />}
+                        bottomText={feePerUnitError?.message}
                     />
                 </Col>
             </Wrapper>

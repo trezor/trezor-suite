@@ -1,14 +1,12 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback } from 'react';
 import BigNumber from 'bignumber.js';
 import styled from 'styled-components';
 import { Controller } from 'react-hook-form';
 
 import { Select } from '@trezor/components';
-import { InputError } from 'src/components/wallet';
 import { useSendFormContext } from 'src/hooks/wallet';
 import {
     fromFiatCurrency,
-    isDecimalsValid,
     getInputState,
     getFiatRate,
     findToken,
@@ -52,6 +50,8 @@ export const Fiat = ({ output, outputId }: FiatProps) => {
 
     const { shouldSendInSats } = useBitcoinAmountUnit(account.symbol);
 
+    const { translationString } = useTranslation();
+
     const inputName = `outputs.${outputId}.fiat` as const;
     const currencyInputName = `outputs.${outputId}.currency` as const;
     const amountInputName = `outputs.${outputId}.amount` as const;
@@ -75,7 +75,7 @@ export const Fiat = ({ output, outputId }: FiatProps) => {
 
     const isLowAnonymity = isLowAnonymityWarning(outputError);
     const inputState = isLowAnonymity ? 'warning' : getInputState(errorToDisplay, fiatValue);
-    const bottomText = isLowAnonymity ? null : <InputError error={errorToDisplay} />;
+    const bottomText = isLowAnonymity ? null : errorToDisplay?.message;
 
     const handleChange = useCallback(
         (value: string) => {

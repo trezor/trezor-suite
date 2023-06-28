@@ -10,7 +10,6 @@ import {
     PrecomposedLevelsCardano,
     SendContextValues,
 } from 'src/types/wallet/sendForm';
-import { SuiteUseFormRegister } from '@suite-common/wallet-types';
 
 interface Props<TFieldValues extends FormState> extends UseFormReturn<TFieldValues> {
     defaultValue?: FeeLevel['label'];
@@ -45,9 +44,8 @@ export const useFees = <TFieldValues extends FormState>({
     });
 
     // Type assertion allowing to make the component reusable, see https://stackoverflow.com/a/73624072.
-    const { clearErrors, getValues, setValue, watch } =
+    const { clearErrors, getValues, register, setValue, watch } =
         props as unknown as UseFormReturn<FormState>;
-    const register = props.register as SuiteUseFormRegister<FormState>;
 
     // register custom form fields (without HTMLElement)
     useEffect(() => {

@@ -2,10 +2,10 @@ import React from 'react';
 import styled from 'styled-components';
 import { Textarea, Icon } from '@trezor/components';
 import { QuestionTooltip } from 'src/components/suite';
-import { InputError } from 'src/components/wallet';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { getInputState, isHexValid } from '@suite-common/wallet-utils';
 import { MAX_LENGTH } from 'src/constants/suite/inputs';
+import { useTranslation } from 'src/hooks/suite';
 
 const Wrapper = styled.div`
     display: flex;
@@ -35,6 +35,8 @@ const Data = ({ close }: Props) => {
         composeTransaction,
     } = useSendFormContext();
 
+    const { translationString } = useTranslation();
+
     const inputAsciiName = 'ethereumDataAscii';
     const inputHexName = 'ethereumDataHex';
 
@@ -46,7 +48,7 @@ const Data = ({ close }: Props) => {
     const hexError = errors.ethereumDataHex;
 
     const { ref: asciiRef, ...asciiField } = register(inputAsciiName, {
-        required: 'DATA_NOT_SET',
+        required: translationString('DATA_NOT_SET'),
         onChange: event => {
             setValue(inputHexName, Buffer.from(event.target.value, 'ascii').toString('hex'), {
                 shouldValidate: true,
@@ -74,10 +76,10 @@ const Data = ({ close }: Props) => {
             }
             composeTransaction(inputHexName);
         },
-        required: 'DATA_NOT_SET',
+        required: translationString('DATA_NOT_SET'),
         validate: (value = '') => {
-            if (!isHexValid(value, '0x')) return 'DATA_NOT_VALID_HEX';
-            if (value.length > 8192 * 2) return 'DATA_HEX_TOO_BIG'; // 8192 bytes limit for protobuf single message encoding in FW
+            if (!isHexValid(value, '0x')) return translationString('DATA_NOT_VALID_HEX');
+            if (value.length > 8192 * 2) return translationString('DATA_HEX_TOO_BIG'); // 8192 bytes limit for protobuf single message encoding in FW
         },
     });
 
@@ -89,7 +91,7 @@ const Data = ({ close }: Props) => {
                 data-test={inputAsciiName}
                 defaultValue={asciiValue}
                 maxLength={MAX_LENGTH.ETH_DATA}
-                bottomText={<InputError error={asciiError} />}
+                bottomText={asciiError?.message}
                 label={<QuestionTooltip label="DATA_ETH" tooltip="DATA_ETH_TOOLTIP" />}
                 innerRef={asciiRef}
                 {...asciiField}
@@ -101,7 +103,7 @@ const Data = ({ close }: Props) => {
                 data-test={inputHexName}
                 defaultValue={hexValue}
                 maxLength={MAX_LENGTH.ETH_DATA}
-                bottomText={<InputError error={hexError} />}
+                bottomText={hexError?.message}
                 labelRight={
                     <Icon
                         size={20}

@@ -1,8 +1,8 @@
 import type { SavingsKYCStatus, SavingsTrade } from 'invity-api';
+import { UseFormReturn } from 'react-hook-form';
 import type { WithSelectedAccountLoadedProps } from 'src/components/wallet';
 import type { Account } from 'src/types/wallet';
 import type { Option, Savings } from 'src/types/wallet/coinmarketCommonTypes';
-import type { SuiteUseFormReturn } from '@suite-common/wallet-types';
 
 export type UseSavingsSetupContinueProps = WithSelectedAccountLoadedProps;
 
@@ -11,7 +11,7 @@ export interface SavingsSetupContinueFormState extends Savings {
 }
 
 export interface SavingsSetupContinueContextValues
-    extends SuiteUseFormReturn<SavingsSetupContinueFormState> {
+    extends UseFormReturn<SavingsSetupContinueFormState> {
     onSubmit: (data: SavingsSetupContinueFormState) => void;
     annualSavingsFiatAmount: number;
     annualSavingsCryptoAmount: string;

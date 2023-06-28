@@ -1,14 +1,13 @@
-import React, { useCallback, useMemo } from 'react';
-import { InputError } from 'src/components/wallet';
+import React, { useCallback } from 'react';
 import styled from 'styled-components';
 import { CustomPaymentAmountKey } from 'src/constants/wallet/coinmarket/savings';
 import { variables } from '@trezor/components';
 import { Control, Controller, FieldError } from 'react-hook-form';
 import { Translation, NumberInput } from 'src/components/suite';
 import { StyledSelectBar } from 'src/views/wallet/coinmarket';
-import type { TypedValidationRules } from 'src/types/wallet/form';
 import { useFormatters } from '@suite-common/formatters';
 import { Savings } from 'src/types/wallet/coinmarketCommonTypes';
+import { useTranslation } from 'src/hooks/suite';
 
 const StyledInput = styled(NumberInput)`
     display: flex;
@@ -18,7 +17,7 @@ const StyledInput = styled(NumberInput)`
 
 const CustomAmountInputErrorWrapper = styled.div`
     font-size: ${variables.FONT_SIZE.TINY};
-    color: ${props => props.theme.TYPE_RED};
+    color: ${({ theme }) => theme.TYPE_RED};
     margin-top: 6px;
 `;
 
@@ -29,7 +28,7 @@ const Label = styled.div`
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     text-transform: capitalize;
     font-size: ${variables.FONT_SIZE.NORMAL};
-    color: ${props => props.theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
     margin-bottom: 11px;
 `;
 
@@ -55,6 +54,7 @@ const FiatAmount = ({
     control,
 }: FiatAmountProps) => {
     const { FiatAmountFormatter } = useFormatters();
+    const { translationString } = useTranslation();
 
     const rules = {
         required: translationString('TR_SAVINGS_SETUP_CUSTOM_FIAT_AMOUNT_REQUIRED'),
@@ -126,7 +126,7 @@ const FiatAmount = ({
             </div>
 
             <CustomAmountInputErrorWrapper>
-                <InputError error={customFiatAmountError} />
+                {customFiatAmountError?.message}
             </CustomAmountInputErrorWrapper>
         </>
     );

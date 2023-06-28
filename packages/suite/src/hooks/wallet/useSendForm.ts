@@ -7,12 +7,7 @@ import * as walletSettingsActions from 'src/actions/settings/walletSettingsActio
 import * as routerActions from 'src/actions/suite/routerActions';
 import * as protocolActions from 'src/actions/suite/protocolActions';
 import { AppState } from 'src/types/suite';
-import {
-    FormState,
-    SendContextValues,
-    SuiteUseFormRegister,
-    UseSendFormState,
-} from '@suite-common/wallet-types';
+import { FormState, SendContextValues, UseSendFormState } from '@suite-common/wallet-types';
 import {
     getFeeLevels,
     getDefaultValues,
@@ -369,7 +364,7 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
     return {
         ...state,
         ...useFormMethods,
-        register: register as SuiteUseFormRegister<FormState>,
+        register,
         outputs: outputsFieldArray.fields,
         composedLevels,
         updateContext,

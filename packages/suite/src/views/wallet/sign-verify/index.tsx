@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { FieldError } from 'react-hook-form';
 import styled from 'styled-components';
 import {
     Input,
@@ -10,11 +11,14 @@ import {
     SelectBar,
     Tooltip,
 } from '@trezor/components';
-import { InputError, WalletLayout, WalletLayoutHeader } from 'src/components/wallet';
+
+import { WalletLayout, WalletLayoutHeader } from 'src/components/wallet';
 import { CharacterCount, Translation } from 'src/components/suite';
 import { useActions, useDevice, useSelector, useTranslation } from 'src/hooks/suite';
 import * as signVerifyActions from 'src/actions/wallet/signVerifyActions';
 import * as routerActions from 'src/actions/suite/routerActions';
+import { TranslationKey } from 'src/components/suite/Translation';
+
 import { Navigation, NavPages } from './components/Navigation';
 import { SignAddressInput } from './components/SignAddressInput';
 import { ButtonRow, Row } from './components/ButtonRow';
@@ -124,6 +128,14 @@ const SignVerify = () => {
         goto: routerActions.goto,
     });
 
+    const getErrorMessage = (error?: FieldError) =>
+        error ? translationString(error.message as TranslationKey) : undefined;
+
+    const messageError = getErrorMessage(formErrors.message);
+    const pathError = getErrorMessage(formErrors.path);
+    const addressError = getErrorMessage(formErrors.address);
+    const signatureError = getErrorMessage(formErrors.signature);
+
     const { ref: messageRef, ...messageField } = register('message');
     const { ref: signatureRef, ...signatureField } = register('signature');
 
@@ -206,7 +218,7 @@ const SignVerify = () => {
                                 </SwitchWrapper>
                             }
                             inputState={getInputState(formErrors.message, formValues.message)}
-                            bottomText={<InputError error={formErrors.message} />}
+                            bottomText={messageError}
                             rows={4}
                             maxRows={4}
                             data-test="@sign-verify/message"
@@ -228,7 +240,7 @@ const SignVerify = () => {
                                 account={selectedAccount.account}
                                 revealedAddresses={revealedAddresses}
                                 inputState={getInputState(formErrors.path, formValues.path)}
-                                bottomText={<InputError error={formErrors.path} />}
+                                bottomText={pathError}
                                 data-test="@sign-verify/sign-address"
                                 {...pathField}
                             />
@@ -238,7 +250,7 @@ const SignVerify = () => {
                                 label={<Translation id="TR_ADDRESS" />}
                                 type="text"
                                 inputState={getInputState(formErrors.address, formValues.address)}
-                                bottomText={<InputError error={formErrors.address} />}
+                                bottomText={addressError}
                                 data-test="@sign-verify/select-address"
                                 {...addressField}
                             />
@@ -285,7 +297,7 @@ const SignVerify = () => {
                                         formErrors.signature,
                                         formValues.signature,
                                     )}
-                                    bottomText={<InputError error={formErrors.signature} />}
+                                    bottomText={signatureError}
                                     placeholder={translationString(
                                         'TR_SIGNATURE_AFTER_SIGNING_PLACEHOLDER',
                                     )}
@@ -302,7 +314,7 @@ const SignVerify = () => {
                                     formErrors.signature,
                                     formValues.signature,
                                 )}
-                                bottomText={<InputError error={formErrors.signature} />}
+                                bottomText={signatureError}
                                 rows={4}
                                 maxRows={4}
                                 data-test="@sign-verify/signature"

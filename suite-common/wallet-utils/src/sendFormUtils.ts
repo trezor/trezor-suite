@@ -199,7 +199,10 @@ export const getFeeLevels = (networkType: Network['networkType'], feeInfo: FeeIn
     return levels;
 };
 
-export const getInputState = (error?: TypedFieldError, value?: string) => {
+export const getInputState = (
+    error?: FieldError | Merge<FieldError, FieldErrorsImpl<FieldValues>>,
+    value?: string,
+) => {
     if (error) {
         return 'error';
     }

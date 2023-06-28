@@ -1,5 +1,5 @@
 import type { AppState } from 'src/types/suite';
-import type { FormState as ReactHookFormState } from 'react-hook-form';
+import type { FormState as ReactHookFormState, UseFormReturn } from 'react-hook-form';
 import type { Account, Network, CoinFiatRates } from 'src/types/wallet';
 import type { FeeLevel } from '@trezor/connect';
 import type { SellFiatTrade, SellFiatTradeQuoteRequest, ExchangeCoinInfo } from 'invity-api';
@@ -10,9 +10,9 @@ import type {
     PrecomposedLevels,
     PrecomposedLevelsCardano,
 } from 'src/types/wallet/sendForm';
-import type { Option, DefaultCountryOption } from './coinmarketCommonTypes';
+import type { Option, DefaultCountryOption, AmountLimits } from './coinmarketCommonTypes';
 import type { WithSelectedAccountLoadedProps } from 'src/components/wallet';
-import { SendContextValues, SuiteUseFormReturn } from '@suite-common/wallet-types';
+import { SendContextValues } from '@suite-common/wallet-types';
 
 export const OUTPUT_AMOUNT = 'outputs.0.amount';
 export const CRYPTO_TOKEN = 'outputs.0.token';
@@ -33,15 +33,7 @@ export interface SellFormState extends FormState {
     countrySelect: Option;
 }
 
-export interface AmountLimits {
-    currency: string;
-    minCrypto?: number;
-    minFiat?: number;
-    maxCrypto?: number;
-    maxFiat?: number;
-}
-
-export type SellFormContextValues = SuiteUseFormReturn<SellFormState> & {
+export type SellFormContextValues = UseFormReturn<SellFormState> & {
     onSubmit: () => void;
     account: Account;
     defaultCountry: DefaultCountryOption;

@@ -456,7 +456,7 @@ export const composeDebouncedTransaction = [
                 value: 'X',
                 result: {
                     errors: {
-                        outputs: [{ address: { message: 'RECIPIENT_IS_NOT_VALID' } }],
+                        outputs: [{ address: { type: 'valid' } }],
                     },
                 },
             },
@@ -465,7 +465,7 @@ export const composeDebouncedTransaction = [
                 element: 'outputs.0.address',
                 result: {
                     errors: {
-                        outputs: [{ address: { message: 'RECIPIENT_IS_NOT_SET' } }],
+                        outputs: [{ address: { type: 'required' } }],
                     },
                 },
             },
@@ -474,7 +474,7 @@ export const composeDebouncedTransaction = [
             composeTransactionCalls: 0,
             composedLevels: undefined,
             errors: {
-                outputs: [{ address: { message: 'RECIPIENT_IS_NOT_SET' } }],
+                outputs: [{ address: { type: 'required' } }],
             },
         },
     },
@@ -485,7 +485,7 @@ export const composeDebouncedTransaction = [
             composeTransactionCalls: 0,
             composedLevels: undefined,
             errors: {
-                outputs: [{ address: { message: 'RECIPIENT_IS_NOT_VALID' } }],
+                outputs: [{ address: { type: 'valid' } }],
             },
         },
     },
@@ -1616,7 +1616,7 @@ export const feeChange = [
                         feePerUnit: '',
                     },
                     errors: {
-                        feePerUnit: { message: 'CUSTOM_FEE_IS_NOT_SET' },
+                        feePerUnit: { type: 'required' },
                     },
                 },
             },
@@ -1742,7 +1742,7 @@ export const feeChange = [
                         estimatedFeeLimit: '41000',
                     },
                     errors: {
-                        feeLimit: { type: 'validate' }, // limit below recommended error
+                        feeLimit: { type: 'feeLimit' },
                     },
                 },
             },
@@ -1805,7 +1805,7 @@ export const feeChange = [
                         feeLimit: '21',
                     },
                     errors: {
-                        feeLimit: { type: 'validate' }, // limit error
+                        feeLimit: { type: 'feeLimit' },
                     },
                 },
             },
@@ -1926,7 +1926,7 @@ export const feeChange = [
                     },
                     composedLevels: undefined,
                     errors: {
-                        feePerUnit: { message: 'CUSTOM_FEE_IS_NOT_SET' },
+                        feePerUnit: { type: 'required' },
                     },
                 },
             },

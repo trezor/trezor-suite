@@ -15,7 +15,6 @@ import * as coinmarketExchangeActions from 'src/actions/wallet/coinmarketExchang
 import * as coinmarketCommonActions from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
 import {
     ExchangeFormState,
-    AmountLimits,
     ExchangeFormContextValues,
     CRYPTO_INPUT,
     FIAT_INPUT,
@@ -33,7 +32,7 @@ import { useCoinmarketNavigation } from 'src/hooks/wallet/useCoinmarketNavigatio
 import type { AppState } from 'src/types/suite';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { useDidUpdate } from '@trezor/react-utils';
-import { SuiteUseFormRegister } from '@suite-common/wallet-types';
+import { CryptoAmountLimits } from 'src/types/wallet/coinmarketCommonTypes';
 
 export const ExchangeFormContext = createContext<ExchangeFormContextValues | null>(null);
 ExchangeFormContext.displayName = 'CoinmarketExchangeContext';
@@ -202,7 +201,7 @@ export const useCoinmarketExchangeForm = ({
         state,
     });
 
-    const [amountLimits, setAmountLimits] = useState<AmountLimits | undefined>(undefined);
+    const [amountLimits, setAmountLimits] = useState<CryptoAmountLimits | undefined>(undefined);
 
     const { translationString } = useTranslation();
 
@@ -361,7 +360,7 @@ export const useCoinmarketExchangeForm = ({
         account,
         onSubmit,
         updateFiatValue,
-        register: register as SuiteUseFormRegister<ExchangeFormState>,
+        register,
         exchangeInfo,
         changeFeeLevel,
         saveQuoteRequest,
