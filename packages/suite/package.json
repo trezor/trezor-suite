@@ -103,7 +103,7 @@
         "redux-logger": "^3.0.6",
         "redux-thunk": "^2.4.2",
         "semver": "^7.5.2",
-        "styled-components": "^5.3.10",
+        "styled-components": "5.3.6",
         "trezor-address-validator": "^0.4.3",
         "uuid": "^9.0.0",
         "web3-utils": "^1.10.0",

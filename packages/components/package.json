@@ -35,7 +35,7 @@
         "react-svg": "^16.1.17",
         "react-truncate": "^2.4.0",
         "react-use": "^17.4.0",
-        "styled-components": "^5.3.10",
+        "styled-components": "5.3.6",
         "tippy.js": "^6.3.7",
         "zxcvbn": "^4.4.2"
     },

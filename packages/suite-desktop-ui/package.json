@@ -28,7 +28,7 @@
         "react-markdown": "^8.0.7",
         "react-redux": "8.0.7",
         "react-router-dom": "^5.2.0",
-        "styled-components": "^5.3.10"
+        "styled-components": "5.3.6"
     },
     "devDependencies": {
         "@types/react": "18.0.32",
