@@ -23,6 +23,7 @@ module.exports = {
         '!build/**/*.js.map',
         'dist/**/*.js',
         'package.json',
+        '!**/_postinstall.js', // exclude es5-ext protestware
         '!build/static/**/{favicon,icons,bin,browsers}',
         '!bin/firmware',
         '!node_modules/@suite-common',
