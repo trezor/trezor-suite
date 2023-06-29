@@ -225,6 +225,7 @@ transport manual:
       - TEST_FILE: ["methods"]
       - TEST_FILE: ["popup-close"]
       - TEST_FILE: ["popup-error-page"]
+      - TEST_FILE: ["passphrase"]
       - TEST_FILE: ["unchained"]
       - TEST_FILE: ["browser-support"]
       - TEST_FILE: ["install-bridge"]
