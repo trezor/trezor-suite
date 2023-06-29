@@ -36,23 +36,6 @@ export type LogWriter = {
 
 const MAX_ENTRIES = 100;
 
-const stringify = (obj: Record<string, any>) => {
-    let cache: string[] = [];
-    const str = JSON.stringify(obj, (_key, value) => {
-        if (typeof value === 'object' && value !== null) {
-            if (cache.indexOf(value) !== -1) {
-                // Circular reference found, discard key
-                return;
-            }
-            // Store value in our collection
-            cache.push(value);
-        }
-        return value;
-    });
-    cache = [];
-    return str;
-};
-
 class Log {
     prefix: string;
     enabled: boolean;
@@ -79,21 +62,11 @@ class Log {
             timestamp: Date.now(),
         };
 
-        if (this.logWriter) {
-            const { level, prefix, timestamp, ...rest } = message;
+        this.messages.push(message);
 
-            // todo: this method calls post postMessage which serializes object passed in ...args.
-            // if there is cyclic dependency, it simply dies.
-            // this is probably not the right place to call stringify.
-            // on the other hand, catching here is probably the right place to do to make sure that
-            // this not-essential mechanism does not break everything when broken.
+        if (this.logWriter) {
             try {
-                this.logWriter.add({
-                    level,
-                    prefix,
-                    timestamp,
-                    message: JSON.parse(stringify(rest)),
-                });
+                this.logWriter.add(message);
             } catch (err) {
                 // If this error happens it probably means that we are logging an object with a circular reference.
                 // If there is any `device` logged, do it with `device.toMessageObject()` instead.
