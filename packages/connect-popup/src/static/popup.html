@@ -502,8 +502,10 @@
                     >
                 </div>
                 <div class="buttons">
-                    <button class="confirm">Allow once for this session</button>
-                    <button class="cancel">Cancel</button>
+                    <button data-test="@permissions/confirm-button" class="confirm">
+                        Allow once for this session
+                    </button>
+                    <button data-test="@permissions/cancel-button" class="cancel">Cancel</button>
                 </div>
             </div>
             <!-- Permissions: END -->
@@ -2838,7 +2840,7 @@
             <!-- No backup confirmation: END -->
 
             <!-- Export address -->
-            <div class="export-address">
+            <div data-test="@export-address" class="export-address">
                 <div>
                     <h3></h3>
                 </div>
@@ -3133,8 +3135,10 @@
                     </svg>
                 </div>
                 <div class="buttons">
-                    <button class="confirm">Export</button>
-                    <button class="cancel">Cancel</button>
+                    <button data-test="@export-address/confirm-button" class="confirm">
+                        Export
+                    </button>
+                    <button data-test="@export-address/cancel-button" class="cancel">Cancel</button>
                 </div>
             </div>
             <!-- Export address: END -->
