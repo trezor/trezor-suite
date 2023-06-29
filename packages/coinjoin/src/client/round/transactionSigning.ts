@@ -1,3 +1,5 @@
+import { getRandomNumberInRange, arrayShuffle } from '@trezor/utils';
+
 import * as coordinator from '../coordinator';
 import * as middleware from '../middleware';
 import { getRoundEvents, compareOutpoint, getAffiliateRequest } from '../../utils/roundUtils';
@@ -13,7 +15,8 @@ import type { Account } from '../Account';
 import type { Alice } from '../Alice';
 import type { CoinjoinRound, CoinjoinRoundOptions } from '../CoinjoinRound';
 import { CoinjoinTransactionData } from '../../types';
-import { SessionPhase } from '../../enums';
+import { ROUND_MAXIMUM_REQUEST_DELAY } from '../../constants';
+import { SessionPhase, WabiSabiProtocolErrorCode } from '../../enums';
 
 const getTransactionData = (
     round: CoinjoinRound,
@@ -112,20 +115,37 @@ const updateRawLiquidityClue = async (
     });
 };
 
-// TODO: delay
-// TODO: notify wallet about success and create "pending account" state in suite
 const sendTxSignature = async (
     round: CoinjoinRound,
     input: Alice,
     { signal, coordinatorUrl }: CoinjoinRoundOptions,
 ) => {
-    await coordinator.transactionSignature(round.id, input.witnessIndex!, input.witness!, {
-        signal,
-        baseUrl: coordinatorUrl,
-        identity: input.outpoint, // NOTE: recycle input identity
-        delay: 0,
-        deadline: round.phaseDeadline,
-    });
+    const deadline = round.phaseDeadline - Date.now();
+    const delay =
+        deadline > ROUND_MAXIMUM_REQUEST_DELAY
+            ? getRandomNumberInRange(0, ROUND_MAXIMUM_REQUEST_DELAY)
+            : 0;
+
+    await coordinator
+        .transactionSignature(round.id, input.witnessIndex!, input.witness!, {
+            signal,
+            baseUrl: coordinatorUrl,
+            identity: input.outpoint, // NOTE: recycle input identity
+            delay,
+            deadline: round.phaseDeadline,
+        })
+        .catch(error => {
+            if (
+                error instanceof coordinator.WabiSabiProtocolException &&
+                error.errorCode === WabiSabiProtocolErrorCode.WitnessAlreadyProvided
+            ) {
+                // there is a possibility that previous request timed out on the client side but was successfully received by coordinator
+                // ignore this error... it shouldn't break the round
+            } else {
+                throw error;
+            }
+        });
+
     return input;
 };
 
@@ -179,7 +199,9 @@ export const transactionSigning = async (
 
         round.setSessionPhase(SessionPhase.SendingSignature);
 
-        await Promise.all(round.inputs.map(input => sendTxSignature(round, input, options)));
+        await Promise.all(
+            arrayShuffle(round.inputs).map(input => sendTxSignature(round, input, options)),
+        );
 
         round.signedSuccessfully();
         round.setSessionPhase(SessionPhase.AwaitingOtherSignatures);

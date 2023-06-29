@@ -19,6 +19,12 @@ export const STATUS_TIMEOUT = {
 // we are expecting phase to change but server didn't propagate it yet
 export const ROUND_REGISTRATION_END_OFFSET = 2000;
 
+// following https://github.com/zkSNACKs/WalletWasabi/blob/913b16953a965eb922e0ae02a0f71a991a7b9bb7/WalletWasabi/WabiSabi/Client/CoinJoinClient.cs#L31-L34
+// Maximum delay when spreading the requests in time, except input registration requests which
+// timings only depends on the input-reg timeout and signing requests which timings must be larger.
+// This is a maximum cap the delay can be zero if the remaining time is less.
+export const ROUND_MAXIMUM_REQUEST_DELAY = 10000;
+
 // do not register into Round if round.inputRegistrationEnd is below offset
 export const ROUND_SELECTION_REGISTRATION_OFFSET = 30000;
 
