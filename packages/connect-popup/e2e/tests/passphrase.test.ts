@@ -110,10 +110,7 @@ test('introduce passphrase in popup and device rejects it', async ({ page }) => 
     // Confirm Passphrase is correct.
     await TrezorUserEnvLink.api.pressNo();
 
-    await popup.waitForSelector("div[data-test='@connect-ui/error']", {
-        state: 'visible',
-        timeout: 40000,
-    });
+    await popup.waitForSelector("div[data-test='@connect-ui/error']");
 
     await popup.waitForSelector("button[data-test='@connect-ui/error-close-button']");
     await popup.click("button[data-test='@connect-ui/error-close-button']");
