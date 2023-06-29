@@ -251,9 +251,9 @@ export const NumberInput = ({
                 if (hasErrorStateChanged) {
                     // delaying it becase the form needs some time to update the error state
                     // TODO: get rid of `onChangeCallback()` entirely and use the `watch` method from react-hook form
-                    setTimeout(() => {
+                    setImmediate(() => {
                         onChangeCallback?.(cleanInput);
-                    }, 0);
+                    });
                 } else {
                     onChangeCallback?.(cleanInput);
                 }

@@ -183,7 +183,7 @@ export const selectFee = (data: UiRequestSelectFee['payload']) => {
 
     const focusInput = (defaultValue?: string) => {
         const input = container.getElementsByTagName('input')[0];
-        setTimeout(() => {
+        setImmediate(() => {
             // eslint-disable-next-line @typescript-eslint/no-use-before-define
             input.oninput = handleCustomFeeChange;
             if (defaultValue) {
@@ -193,7 +193,7 @@ export const selectFee = (data: UiRequestSelectFee['payload']) => {
                 input.dispatchEvent(event);
             }
             input.focus();
-        }, 1);
+        });
     };
 
     const minFee = data.coinInfo.minFeeSatoshiKb / 1000;

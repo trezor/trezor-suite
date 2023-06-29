@@ -49,9 +49,9 @@ export abstract class BaseWorker<API> {
 
         // send handshake to src/index
         // timeout is required, onmessage handler is set after initialization
-        setTimeout(() => {
+        setImmediate(() => {
             this.post({ id: -1, type: MESSAGES.HANDSHAKE });
-        }, 10);
+        });
     }
 
     debug(...args: any[]) {

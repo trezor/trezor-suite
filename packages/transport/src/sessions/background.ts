@@ -102,7 +102,7 @@ export class SessionsBackground extends TypedEmitter<{
         } finally {
             if (result && result.success && result.payload && 'descriptors' in result.payload) {
                 const { descriptors } = result.payload;
-                setTimeout(() => this.emit('descriptors', descriptors), 0);
+                setImmediate(() => this.emit('descriptors', descriptors));
             }
         }
     }

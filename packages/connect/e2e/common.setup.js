@@ -104,7 +104,7 @@ const initTrezorConnect = async (TrezorUserEnvLink, options) => {
     });
 
     TrezorConnect.on(UI.REQUEST_BUTTON, () => {
-        setTimeout(() => TrezorUserEnvLink.send({ type: 'emulator-press-yes' }), 1);
+        setImmediate(() => TrezorUserEnvLink.send({ type: 'emulator-press-yes' }));
     });
 
     await TrezorConnect.init({

@@ -120,7 +120,7 @@ export const goto =
             // if location is same, but anchor is set (e.g. click on tor icon when in app settings), let's propagate it to redux state
             if (anchor) {
                 // postpone propagation to allow clearing anchor in redux state by click listener
-                setTimeout(() => dispatch(onAnchorChange(anchor)), 0);
+                setImmediate(() => dispatch(onAnchorChange(anchor)));
             }
             return;
         }
