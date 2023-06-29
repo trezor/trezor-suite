@@ -29,7 +29,7 @@
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
         "date-fns": "^2.30.0",
-        "proxy-memoize": "2.0.2"
+        "proxy-memoize": "^2.0.4"
     },
     "devDependencies": {
         "jest": "^26.6.3",
