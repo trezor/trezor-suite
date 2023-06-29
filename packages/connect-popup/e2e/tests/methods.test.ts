@@ -7,13 +7,10 @@ import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 import { fixtures } from './__fixtures__/methods';
 import { buildOverview } from '../support/buildOverview';
 import { ensureDirectoryExists } from '@trezor/node-utils';
+import { log } from '../support/helpers';
 
 const url = process.env.URL || 'http://localhost:8088/';
 const emuScreenshots: Record<string, string> = {};
-
-const log = (...val: string[]) => {
-    console.log(`[===]`, ...val);
-};
 
 const screenshotEmu = async (path: string) => {
     const { response } = await TrezorUserEnvLink.send({

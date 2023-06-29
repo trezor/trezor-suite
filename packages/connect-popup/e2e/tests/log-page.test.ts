@@ -77,9 +77,7 @@ test('log page should contain logs from shared worker', async ({ page, context }
     expect(parsedData.length).toBeGreaterThan(0);
     await download.delete();
 
-    // TODO: this should be fix.
-    expect(errorLogs.length).toBe(1);
-    expect(errorLogs[0]).toContain(
-        'Failed to load resource: the server responded with a status of 404 (Not Found)',
-    );
+    // We want to shout out when there is an error in console, specifically when there is an error
+    // when postMessage is not able to serialize the message, because of circular reference or other.
+    expect(errorLogs.length).toBe(0);
 });
