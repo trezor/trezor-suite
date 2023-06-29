@@ -16,3 +16,7 @@ export const findElementByDataTest = async (page: Page, dataTest: string, timeou
     await page.waitForSelector(`[data-test='${dataTest}']`, { state: 'visible', timeout });
     return page.$(`[data-test='${dataTest}']`);
 };
+
+export const log = (...val: string[]) => {
+    console.log(`[===]`, ...val);
+};
