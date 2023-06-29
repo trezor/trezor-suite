@@ -246,6 +246,18 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                     }
                     break;
                 }
+                case COINJOIN.CLIENT_PRISON_EVENT: {
+                    const affectedAccounts = action.payload.map(inmate => inmate.accountKey);
+                    const state = api.getState();
+                    affectedAccounts.forEach(key => {
+                        const account = selectAccountByKey(state, key);
+                        const device = account && findAccountDevice(account, state.devices);
+                        if (device && isDeviceRemembered(device)) {
+                            api.dispatch(storageActions.saveCoinjoinAccount(key));
+                        }
+                    });
+                    break;
+                }
 
                 default:
                     break;
