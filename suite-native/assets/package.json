@@ -28,7 +28,7 @@
         "@suite-native/navigation": "workspace:*",
         "@trezor/styles": "workspace:*",
         "bignumber.js": "^9.1.1",
-        "proxy-memoize": "2.0.2",
+        "proxy-memoize": "^2.0.4",
         "react": "^18.2.0",
         "react-native": "0.71.8",
         "react-redux": "8.0.7"
