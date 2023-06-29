@@ -23,7 +23,7 @@
     </head>
     <body>
         <h1>TrezorConnect Logger</h1>
-        <div id="logContainer"></div>
+        <div data-test="@log-container" id="logContainer"></div>
 
         <script type="text/javascript">
             const logWorker = new SharedWorker('./workers/shared-logger-worker.js');
