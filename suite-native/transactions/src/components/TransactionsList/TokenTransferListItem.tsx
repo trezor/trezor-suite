@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React from 'react';
 
 import { AccountKey } from '@suite-common/wallet-types';
 import { EthereumTokenTransfer } from '@suite-native/ethereum-tokens';
@@ -43,25 +43,23 @@ export const TokenTransferListItemValues = ({
     </>
 );
 
-export const TokenTransferListItem = memo(
-    ({
-        txid,
-        accountKey,
-        tokenTransfer,
-        includedCoinsCount = 0,
-        isFirst,
-        isLast,
-    }: TokenTransferListItemProps) => (
-        <TransactionListItemContainer
-            tokenTransfer={tokenTransfer}
-            transactionType={tokenTransfer.type}
-            txid={txid}
-            includedCoinsCount={includedCoinsCount}
-            accountKey={accountKey}
-            isFirst={isFirst}
-            isLast={isLast}
-        >
-            <TokenTransferListItemValues tokenTransfer={tokenTransfer} />
-        </TransactionListItemContainer>
-    ),
+export const TokenTransferListItem = ({
+    txid,
+    accountKey,
+    tokenTransfer,
+    includedCoinsCount = 0,
+    isFirst,
+    isLast,
+}: TokenTransferListItemProps) => (
+    <TransactionListItemContainer
+        tokenTransfer={tokenTransfer}
+        transactionType={tokenTransfer.type}
+        txid={txid}
+        includedCoinsCount={includedCoinsCount}
+        accountKey={accountKey}
+        isFirst={isFirst}
+        isLast={isLast}
+    >
+        <TokenTransferListItemValues tokenTransfer={tokenTransfer} />
+    </TransactionListItemContainer>
 );

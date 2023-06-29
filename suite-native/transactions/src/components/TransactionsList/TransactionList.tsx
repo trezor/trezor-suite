@@ -1,18 +1,19 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { SectionList } from 'react-native';
 import { useSelector } from 'react-redux';
 
+import { FlashList } from '@shopify/flash-list';
+
+import { selectIsLoadingTransactions } from '@suite-common/wallet-core';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import { groupTransactionsByDate, MonthKey } from '@suite-common/wallet-utils';
-import { selectIsLoadingTransactions } from '@suite-common/wallet-core';
-import { Loader } from '@suite-native/atoms';
-import { WalletAccountTransaction } from '@suite-native/ethereum-tokens';
+import { Box, Loader } from '@suite-native/atoms';
+import { EthereumTokenTransfer, WalletAccountTransaction } from '@suite-native/ethereum-tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
+import { TransactionsEmptyState } from '../TransactionsEmptyState';
+import { TokenTransferListItem } from './TokenTransferListItem';
 import { TransactionListGroupTitle } from './TransactionListGroupTitle';
 import { TransactionListItem } from './TransactionListItem';
-import { TokenTransferListItem } from './TokenTransferListItem';
-import { TransactionsEmptyState } from '../TransactionsEmptyState';
 
 type AccountTransactionProps = {
     transactions: WalletAccountTransaction[];
@@ -31,15 +32,27 @@ type RenderSectionHeaderParams = {
 
 type RenderTransactionItemParams = {
     item: WalletAccountTransaction;
-    section: { monthKey: MonthKey; data: WalletAccountTransaction[] };
-    index: number;
     accountKey: AccountKey;
     areTokensIncluded: boolean;
+    isFirst: boolean;
+    isLast: boolean;
 };
 
-type RenderTokenTranferItemParams = Omit<RenderTransactionItemParams, 'areTokensIncluded'> & {
-    tokenContract: TokenAddress;
+type EthereumTokenTransferWithTx = EthereumTokenTransfer & {
+    originalTransaction: WalletAccountTransaction;
 };
+
+type RenderTokenTransferItemParams = Omit<
+    RenderTransactionItemParams,
+    'areTokensIncluded' | 'item'
+> & {
+    item: EthereumTokenTransferWithTx;
+    txid: string;
+};
+
+type TransactionListItem =
+    | (EthereumTokenTransferWithTx | MonthKey)
+    | (WalletAccountTransaction | MonthKey);
 
 const sectionListStyle = prepareNativeStyle(utils => ({
     paddingHorizontal: utils.spacings.small,
@@ -52,48 +65,37 @@ const sectionListContainerStyle = prepareNativeStyle(utils => ({
 
 const renderTransactionItem = ({
     item,
-    section,
-    index,
+    isFirst,
+    isLast,
     accountKey,
     areTokensIncluded,
 }: RenderTransactionItemParams) => (
     <TransactionListItem
         key={item.txid}
         transaction={item}
-        isFirst={index === 0}
-        isLast={index === section.data.length - 1}
+        isFirst={isFirst}
+        isLast={isLast}
         accountKey={accountKey}
         areTokensIncluded={areTokensIncluded}
     />
 );
 
 const renderTokenTransferItem = ({
-    item,
-    section,
-    index,
+    item: tokenTransfer,
+    isLast,
+    isFirst,
     accountKey,
-    tokenContract,
-}: RenderTokenTranferItemParams) => {
-    const tokenTransfers = item.tokens.filter(token => token.contract === tokenContract);
-
-    return (
-        <>
-            {tokenTransfers.map((tokenTransfer, transferIndex) => (
-                <TokenTransferListItem
-                    key={tokenTransfer.symbol}
-                    tokenTransfer={tokenTransfer}
-                    txid={item.txid}
-                    accountKey={accountKey}
-                    isFirst={index === 0 && transferIndex === 0}
-                    isLast={
-                        index === section.data.length - 1 &&
-                        transferIndex === tokenTransfers.length - 1
-                    }
-                />
-            ))}
-        </>
-    );
-};
+    txid,
+}: RenderTokenTransferItemParams) => (
+    <TokenTransferListItem
+        key={tokenTransfer.symbol}
+        tokenTransfer={tokenTransfer}
+        txid={txid}
+        accountKey={accountKey}
+        isFirst={isFirst}
+        isLast={isLast}
+    />
+);
 
 const renderSectionHeader = ({ section: { monthKey } }: RenderSectionHeaderParams) => (
     <TransactionListGroupTitle key={monthKey} monthKey={monthKey} />
@@ -111,20 +113,7 @@ export const TransactionList = ({
 }: AccountTransactionProps) => {
     const { applyStyle } = useNativeStyles();
     const isLoadingTransactions = useSelector(selectIsLoadingTransactions);
-    const accountTransactionsByMonth = useMemo(
-        () =>
-            groupTransactionsByDate(transactions, 'month') as {
-                [key: string]: WalletAccountTransaction[];
-                // The typecasting can be removed once the EthereumTokenSymbol is moved
-                // to @suite-common scope and the groupTransactionsByDate is retyped to use this type.
-            },
-        [transactions],
-    );
 
-    const transactionMonthKeys = useMemo(
-        () => Object.keys(accountTransactionsByMonth) as MonthKey[],
-        [accountTransactionsByMonth],
-    );
     const initialPageNumber = Math.ceil((transactions.length || 1) / TX_PER_PAGE);
     const [page, setPage] = useState(initialPageNumber);
 
@@ -143,38 +132,93 @@ export const TransactionList = ({
         }
     }, [fetchMoreTransactions, page]);
 
-    const sectionsData = useMemo(
-        () =>
-            transactionMonthKeys.map(monthKey => ({
+    const data = useMemo((): TransactionListItem[] => {
+        const accountTransactionsByMonth = groupTransactionsByDate(transactions, 'month');
+        const transactionMonthKeys = Object.keys(accountTransactionsByMonth) as MonthKey[];
+
+        if (tokenContract) {
+            return transactionMonthKeys.flatMap(monthKey => [
                 monthKey,
-                data: [...accountTransactionsByMonth[monthKey]],
-            })),
-        [accountTransactionsByMonth, transactionMonthKeys],
+                ...accountTransactionsByMonth[monthKey].flatMap(transaction =>
+                    transaction.tokens
+                        .filter(token => token.contract === tokenContract)
+                        .map(
+                            tokenTransfer =>
+                                ({
+                                    ...tokenTransfer,
+                                    originalTransaction: transaction,
+                                } as EthereumTokenTransferWithTx),
+                        ),
+                ),
+            ]);
+        }
+
+        if (areTokensIncluded) {
+            return transactionMonthKeys.flatMap(monthKey => [
+                monthKey,
+                ...accountTransactionsByMonth[monthKey].flatMap(transaction =>
+                    transaction.tokens.map(
+                        tokenTransfer =>
+                            ({
+                                ...tokenTransfer,
+                                originalTransaction: transaction,
+                            } as EthereumTokenTransferWithTx),
+                    ),
+                ),
+            ]);
+        }
+
+        return transactionMonthKeys.flatMap(monthKey => [
+            monthKey,
+            ...accountTransactionsByMonth[monthKey],
+        ]) as TransactionListItem[];
+    }, [transactions, tokenContract, areTokensIncluded]);
+
+    const renderItem = useCallback(
+        ({ item, index }: { item: TransactionListItem; index: number }) => {
+            if (typeof item === 'string') {
+                return renderSectionHeader({ section: { monthKey: item } });
+            }
+            const isFirstInSection = typeof data.at(index - 1) === 'string';
+            const isLastInSection =
+                typeof data.at(index + 1) === 'string' || index === data.length - 1;
+
+            const getIsTokenTransfer = (
+                itemForCheck: TransactionListItem,
+            ): itemForCheck is EthereumTokenTransferWithTx => 'originalTransaction' in itemForCheck;
+
+            return getIsTokenTransfer(item)
+                ? renderTokenTransferItem({
+                      item,
+                      accountKey,
+                      txid: item.originalTransaction.txid,
+                      isFirst: isFirstInSection,
+                      isLast: isLastInSection,
+                  })
+                : renderTransactionItem({
+                      item,
+                      accountKey,
+                      areTokensIncluded,
+                      isFirst: isFirstInSection,
+                      isLast: isLastInSection,
+                  });
+        },
+        [data, accountKey, areTokensIncluded],
     );
 
     if (isLoadingTransactions) return <Loader />;
 
     return (
-        <SectionList
-            sections={sectionsData}
-            renderItem={({ item, section, index }) =>
-                tokenContract
-                    ? renderTokenTransferItem({ item, section, index, accountKey, tokenContract })
-                    : renderTransactionItem({
-                          item,
-                          section,
-                          index,
-                          accountKey,
-                          areTokensIncluded,
-                      })
-            }
-            style={applyStyle(sectionListStyle)}
-            contentContainerStyle={applyStyle(sectionListContainerStyle)}
-            renderSectionHeader={renderSectionHeader}
-            ListEmptyComponent={<TransactionsEmptyState accountKey={accountKey} />}
-            ListHeaderComponent={listHeaderComponent}
-            onEndReached={handleOnEndReached}
-            stickySectionHeadersEnabled={false}
-        />
+        <Box style={applyStyle(sectionListStyle)}>
+            <FlashList<TransactionListItem>
+                data={data}
+                renderItem={renderItem}
+                contentContainerStyle={applyStyle(sectionListContainerStyle)}
+                ListEmptyComponent={<TransactionsEmptyState accountKey={accountKey} />}
+                ListHeaderComponent={listHeaderComponent}
+                onEndReached={handleOnEndReached}
+                estimatedItemSize={70}
+            />
+        </Box>
     );
 };

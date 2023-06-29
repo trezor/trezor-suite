@@ -28,7 +28,7 @@
         "jotai": "1.9.1",
         "react": "18.2.0",
         "react-native": "0.71.8",
-        "react-native-reanimated": "3.1.0",
+        "react-native-reanimated": "3.3.0",
         "react-redux": "8.0.7"
     },
     "devDependencies": {

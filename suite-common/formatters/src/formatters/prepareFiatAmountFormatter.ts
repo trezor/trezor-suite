@@ -33,4 +33,4 @@ export const prepareFiatAmountFormatter = (config: FormatterConfig) =>
             minimumFractionDigits: minimumFractionDigits ?? 2,
             maximumFractionDigits: maximumFractionDigits ?? 2,
         });
-    });
+    }, 'FiatAmountFormatter');
