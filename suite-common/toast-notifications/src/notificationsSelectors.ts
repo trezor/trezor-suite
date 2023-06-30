@@ -1,27 +1,24 @@
-import { createSelector } from '@reduxjs/toolkit';
 import { memoizeWithArgs } from 'proxy-memoize';
 
 import {
     NotificationId,
     NotificationsRootState,
-    NotificationsState,
     ToastPayload,
     TransactionNotification,
 } from './types';
 
 export const selectNotifications = (state: NotificationsRootState) => state.notifications;
 
-export const selectVisibleNotificationsByType = createSelector(
-    [
-        selectNotifications,
-        (_state: NotificationsRootState, notificationType: ToastPayload[keyof ToastPayload]) =>
-            notificationType,
-    ],
-    (notifications: NotificationsState, notificationType) =>
-        notifications.filter(
-            notification => notification.type === notificationType && !notification.closed,
-        ),
-);
+export const selectVisibleNotificationsByType = (
+    state: NotificationsRootState,
+    notificationType: ToastPayload[keyof ToastPayload],
+) => {
+    const notifications = selectNotifications(state);
+
+    return notifications.filter(
+        notification => notification.type === notificationType && !notification.closed,
+    );
+};
 
 export const selectTransactionNotificationById = memoizeWithArgs(
     (
