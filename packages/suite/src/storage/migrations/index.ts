@@ -605,9 +605,10 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
                 device.metadata.aesKey
             ) {
                 device.metadata = {
-                    key: device.metadata.key,
                     status: device.metadata.status,
                     1: {
+                        // @ts-expect-error
+                        key: device.metadata.key,
                         // @ts-expect-error
                         fileName: device.metadata.fileName,
                         // @ts-expect-error

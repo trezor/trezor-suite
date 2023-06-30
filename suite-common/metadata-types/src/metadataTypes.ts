@@ -3,11 +3,17 @@ export interface LabelableEntityKeys {
     aesKey: string; // symmetric key for file encryption
 }
 
-export type LabelableEntityKeysByVersion = {
+export type DeviceEntityKeys = {
+    [Version in MetadataEncryptionVersion]?: LabelableEntityKeys & { key: string };
+};
+
+export type AccountEntityKeys = {
     [Version in MetadataEncryptionVersion]?: LabelableEntityKeys;
 } & {
     key: string; // legacy xpub format (btc-like coins) or account descriptor (other coins)
 };
+
+export type LabelableEntityKeysByVersion = DeviceEntityKeys | AccountEntityKeys;
 
 export type MetadataAddPayload =
     | {
@@ -159,7 +165,7 @@ export type DeviceMetadata =
       }
     | ({
           status: 'enabled';
-      } & LabelableEntityKeysByVersion);
+      } & DeviceEntityKeys);
 
 type Data = Record<
     LabelableEntityKeys['fileName'], // unique "id" for mapping with labelable entitties

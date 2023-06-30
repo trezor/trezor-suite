@@ -1,5 +1,5 @@
 import { Network, BackendType, NetworkSymbol } from '@suite-common/wallet-config';
-import { LabelableEntityKeysByVersion } from '@suite-common/metadata-types';
+import { AccountEntityKeys } from '@suite-common/metadata-types';
 import { AccountInfo, PROTO, TokenInfo } from '@trezor/connect';
 
 export type MetadataItem = string;
@@ -79,7 +79,7 @@ export type Account = {
     addresses?: AccountInfo['addresses'];
     utxo: AccountInfo['utxo'];
     history: AccountInfo['history'];
-    metadata: LabelableEntityKeysByVersion;
+    metadata: AccountEntityKeys;
     /**
      * accountLabel was introduced by mobile app. In early stage of developement, it was not possible to connect device and work with
      * metadata/labeling feature which requires device for encryption. local accountLabel field was introduced.
