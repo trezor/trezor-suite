@@ -564,4 +564,12 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
         // @ts-expect-error
         backendSettings.delete('trop');
     }
+
+    if (oldVersion < 37) {
+        await updateAll(transaction, 'coinjoinAccounts', account => {
+            delete account.session;
+
+            return account;
+        });
+    }
 };
