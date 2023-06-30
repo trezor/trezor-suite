@@ -1,4 +1,3 @@
-/* eslint-disable import/no-extraneous-dependencies -- react-native has been excluded from the package.json file as a workaround, ensuring that it's not bundled with the suite-desktop app */
 import { NativeModules } from 'react-native';
 
 type TrezorDeviceInfoDebug = {

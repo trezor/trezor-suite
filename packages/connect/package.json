@@ -84,5 +84,13 @@
         "typescript": "4.9.5",
         "webpack": "^5.87.0",
         "ws": "7.5.9"
+    },
+    "peerDependencies": {
+        "react-native": "0.71.8"
+    },
+    "peerDependenciesMeta": {
+        "react-native": {
+            "optional": true
+        }
     }
 }
