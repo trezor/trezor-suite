@@ -1,5 +1,9 @@
 # Storage changelog
 
+## 37
+
+-   remove persisted coinjoin sessions
+
 ## 36
 
 -   token `address` to `contract`
