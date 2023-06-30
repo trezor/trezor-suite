@@ -457,7 +457,7 @@ export const start =
             // if previous discovery status was running (typically after application start or when user added a new account)
             // trigger fetch metadata; necessary to load account labels
             if (discovery.status === DiscoveryStatus.RUNNING) {
-                dispatch(metadataActions.fetchMetadata(deviceState));
+                await dispatch(metadataActions.init());
             }
 
             dispatch(

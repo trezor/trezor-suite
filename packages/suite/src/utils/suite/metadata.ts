@@ -40,6 +40,14 @@ export const deriveFilename = (metadataKey: string) => {
     return firstHalf.toString('hex');
 };
 
+export const deriveFilenameForLabeling = (metaKey: string, encryptionVersion: number) => {
+    const name = deriveFilename(metaKey);
+    // postfixes were added with version 2
+    const postfix = encryptionVersion > 1 ? `_v${encryptionVersion}` : '';
+    const extension = '.mtdt';
+    return `${name}${postfix}${extension}`;
+};
+
 const getRandomIv = (): Promise<Buffer> =>
     new Promise((resolve, reject) => {
         try {

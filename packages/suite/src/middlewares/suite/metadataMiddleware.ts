@@ -22,6 +22,7 @@ const metadata =
                     api.getState().metadata.enabled &&
                     action.payload.metadata.status === 'disabled'
                 ) {
+                    console.debug('metadata init discovery middleware');
                     api.dispatch(metadataActions.init());
                 }
                 break;

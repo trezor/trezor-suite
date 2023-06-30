@@ -1,4 +1,9 @@
-import { MetadataEncryptionVersion } from '@suite-common/metadata-types';
+import {
+    AccountLabels,
+    MetadataEncryptionVersion,
+    WalletLabels,
+} from '@suite-common/metadata-types';
+import { TrezorConnect } from '@trezor/connect';
 
 export const ENABLE = '@metadata/enable';
 export const DISABLE = '@metadata/disable';
@@ -13,8 +18,7 @@ export const SET_INITIATING = '@metadata/set-initiating';
 export const SET_DATA = '@metadata/set-data';
 export const SET_SELECTED_PROVIDER = '@metadata/set-selected-provider';
 
-// todo: use in metadataActions, currently migration is not implemented yet
-export const METADATA_VERSION = '2.0.0';
+export const METADATA_FORMAT_VERSION = '1.0.0';
 
 // @trezor/connect params
 export const ENABLE_LABELING_PATH = "m/10015'/0'";
@@ -39,4 +43,36 @@ export const GOOGLE_IMPLICIT_FLOW_CLIENT_ID =
 // dropbox allows authorization code flow for both web and desktop without client secret
 export const DROPBOX_CLIENT_ID = 'wg0yz2pbgjyhoda';
 
-export const ENCRYPTION_VERSION: MetadataEncryptionVersion = 1;
+export const ENCRYPTION_VERSION: MetadataEncryptionVersion = 2;
+
+export const ENCRYPTION_VERSION_CONFIGS: Record<
+    MetadataEncryptionVersion,
+    Parameters<TrezorConnect['cipherKeyValue']>[0]['bundle'][0]
+> = {
+    1: {
+        path: ENABLE_LABELING_PATH,
+        key: ENABLE_LABELING_KEY,
+        value: ENABLE_LABELING_VALUE,
+        encrypt: true,
+        askOnEncrypt: true,
+        askOnDecrypt: true,
+    },
+    2: {
+        path: ENABLE_LABELING_PATH,
+        key: ENABLE_LABELING_KEY,
+        value: ENABLE_LABELING_VALUE,
+        encrypt: true,
+        askOnEncrypt: false,
+        askOnDecrypt: false,
+    },
+};
+
+export const DEFAULT_ACCOUNT_METADATA: AccountLabels = {
+    accountLabel: '',
+    outputLabels: {},
+    addressLabels: {},
+};
+
+export const DEFAULT_WALLET_METADATA: WalletLabels = {
+    walletLabel: '',
+};
