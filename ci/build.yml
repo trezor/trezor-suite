@@ -90,7 +90,7 @@ suite-web build stable codesign:
     - nix-shell --option system x86_64-darwin --run "yarn install --immutable"
     - nix-shell --option system x86_64-darwin --run "yarn build:libs"
     - nix-shell --option system x86_64-darwin --run "yarn workspace @trezor/suite-desktop build:${platform}"
-    - nix-shell --option system x86_64-darwin --run "bash packages/suite-desktop/scripts/gnupg-sign.sh"
+    - nix-shell --option system x86_64-darwin --run "bash packages/suite-desktop-core/scripts/gnupg-sign.sh"
     - ls -la packages/suite-desktop/build-electron
     - mv packages/suite-desktop/build-electron/* .
     - more latest*.yml | cat
