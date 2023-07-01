@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useLocation, useHistory } from 'react-router';
-import { P, H1, H2, Input, Button } from '@trezor/components';
+import { P, H1, Input, Button } from '@trezor/components';
 
 import { useSelector } from '../hooks';
 

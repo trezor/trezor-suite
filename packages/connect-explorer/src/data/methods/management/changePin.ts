@@ -3,6 +3,7 @@ const docs = 'methods/changePin.md';
 
 export default [
     {
+        docs,
         url: '/method/changePin',
         name,
         submitButton: 'Change PIN',

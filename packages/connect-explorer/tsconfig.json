@@ -2,9 +2,7 @@
     "extends": "../../tsconfig.json",
     "compilerOptions": {
         "noImplicitAny": false,
-        "outDir": "./libDev",
-        "noUnusedLocals": false,
-        "noUnusedParameters": false
+        "outDir": "./libDev"
     },
     "include": [
         ".",

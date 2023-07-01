@@ -58,7 +58,7 @@ const Devices = () => {
         ...trezorConnectActions,
     });
 
-    const { devices, selectedDevice } = connect;
+    const { devices } = connect;
 
     const deviceList = devices.map(dev => (
         <DeviceItem key={dev.path} onClick={() => onSelectDevice(dev.path)}>

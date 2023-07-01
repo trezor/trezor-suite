@@ -1,5 +1,3 @@
-import { select } from './common';
-
 const name = 'ethereumSignTransaction';
 const docs = 'methods/ethereumSignTransaction.md';
 

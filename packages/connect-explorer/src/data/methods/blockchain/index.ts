@@ -24,14 +24,7 @@ const json = `[
         descriptor: 'rPVMhWBsfF9iMXYj3aAzJVkPDTFNSyWdKy',
     },
 ]`;
-const estimateFeeRequest1 = `{
-    blocks: [1],
-    specific: {
-        from: '0x4ac95f18819c17c4b69fa07086e46ff2d098a9cc',
-        to: '0x419c4db4b9e25d6db2ad9691ccb832c8d9fda05e',
-    }
-    feeLevels: 'smart',
-}`;
+
 const estimateFeeRequest = `{
     feeLevels: 'smart',
 }`;

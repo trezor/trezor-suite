@@ -1,5 +1,3 @@
-import { select } from './common';
-
 export default [
     {
         url: '/method/ethereumSignMessage',
