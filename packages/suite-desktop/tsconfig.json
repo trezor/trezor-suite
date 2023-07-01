@@ -5,26 +5,5 @@
         "outDir": "./libDev"
     },
     "include": ["./src", "./e2e", "**/*.json"],
-    "references": [
-        {
-            "path": "../../suite-common/message-system"
-        },
-        { "path": "../../suite-common/sentry" },
-        {
-            "path": "../../suite-common/suite-types"
-        },
-        {
-            "path": "../../suite-common/suite-utils"
-        },
-        { "path": "../coinjoin" },
-        { "path": "../connect" },
-        { "path": "../connect-common" },
-        { "path": "../ipc-proxy" },
-        { "path": "../node-utils" },
-        { "path": "../request-manager" },
-        { "path": "../suite-desktop-api" },
-        { "path": "../urls" },
-        { "path": "../utils" },
-        { "path": "../trezor-user-env-link" }
-    ]
+    "references": []
 }

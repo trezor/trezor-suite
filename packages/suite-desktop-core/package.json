@@ -1,0 +1,53 @@
+{
+    "name": "@trezor/suite-desktop-core",
+    "description": "Trezor Suite desktop application",
+    "version": "1.0.0",
+    "private": true,
+    "author": "SatoshiLabs <info@satoshilabs.com>",
+    "homepage": "https://trezor.io/",
+    "main": "src/app.ts",
+    "scripts": {
+        "build:core": "yarn tsx scripts/build.ts",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "type-check": "tsc --build tsconfig.json && tsc --build scripts/tsconfig.json",
+        "test:unit": "jest",
+        "test:e2e": "yarn xvfb-maybe -- playwright test --config=./e2e/playwright.config.ts"
+    },
+    "dependencies": {
+        "@sentry/electron": "^4.6.0",
+        "@suite-common/message-system": "workspace:*",
+        "@suite-common/sentry": "workspace:*",
+        "@suite-common/suite-types": "workspace:*",
+        "@suite-common/suite-utils": "workspace:*",
+        "@trezor/coinjoin": "workspace:*",
+        "@trezor/connect": "workspace:*",
+        "@trezor/connect-common": "workspace:*",
+        "@trezor/ipc-proxy": "workspace:*",
+        "@trezor/node-utils": "workspace:*",
+        "@trezor/request-manager": "workspace:*",
+        "@trezor/suite-desktop-api": "workspace:*",
+        "@trezor/urls": "workspace:*",
+        "@trezor/utils": "workspace:*",
+        "chalk": "^4.1.2",
+        "electron-localshortcut": "^3.2.1",
+        "electron-store": "^8.1.0",
+        "electron-updater": "6.1.1",
+        "openpgp": "^5.9.0",
+        "systeminformation": "^5.18.3"
+    },
+    "devDependencies": {
+        "@electron/notarize": "1.2.4",
+        "@playwright/test": "^1.35.1",
+        "@trezor/trezor-user-env-link": "workspace:*",
+        "@types/electron-localshortcut": "^3.1.0",
+        "cross-fetch": "^3.1.6",
+        "electron": "24.5.1",
+        "esbuild": "^0.18.6",
+        "glob": "^10.2.7",
+        "jest": "^26.6.3",
+        "rimraf": "^5.0.1",
+        "tsx": "^3.12.7",
+        "typescript": "4.9.5",
+        "xvfb-maybe": "^0.2.1"
+    }
+}

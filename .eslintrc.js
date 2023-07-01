@@ -86,7 +86,7 @@ module.exports = {
                     '**/*.test.{tsx,ts,js}',
                     '**/blockchain-link/tests/**',
                     '**/blockchain-link/webpack/**',
-                    '**/suite-desktop/scripts/**',
+                    '**/suite-desktop-core/**',
                     '**/*e2e/**',
                     '**/suite/src/support/tests/**',
                     '**/suite-data/**',

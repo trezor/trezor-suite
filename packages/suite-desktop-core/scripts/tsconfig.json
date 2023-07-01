@@ -4,7 +4,7 @@
         "isolatedModules": false,
         "outDir": "../libDev/scripts"
     },
-    "include": ["."],
+    "include": [""],
     "references": [
         { "path": "../../suite-desktop" }
     ]
