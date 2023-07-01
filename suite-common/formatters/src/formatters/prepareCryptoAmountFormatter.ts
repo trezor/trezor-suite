@@ -89,4 +89,5 @@ export const prepareCryptoAmountFormatter = (config: FormatterConfig) =>
 
             return formattedValue;
         },
+        'CryptoAmountFormatter',
     );

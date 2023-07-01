@@ -7,4 +7,7 @@ import { FormatterConfig } from '../types';
 export const DATE_FORMAT = 'dd/MM/yyyy';
 
 export const prepareDateFormatter = (_config: FormatterConfig) =>
-    makeFormatter<Date | number, string>(value => format(value, DATE_FORMAT, { locale: enUS }));
+    makeFormatter<Date | number, string>(
+        value => format(value, DATE_FORMAT, { locale: enUS }),
+        'DateFormatter',
+    );

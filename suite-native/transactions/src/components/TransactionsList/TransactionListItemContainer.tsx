@@ -1,4 +1,4 @@
-import React, { memo, ReactNode } from 'react';
+import React, { ReactNode } from 'react';
 import { TouchableOpacity } from 'react-native';
 import { useSelector } from 'react-redux';
 
@@ -117,76 +117,70 @@ const getTransactionTitle = (transactionType: TransactionType, isPending: boolea
     return transactionTitleMap[transactionType];
 };
 
-export const TransactionListItemContainer = memo(
-    ({
-        children,
-        txid,
-        accountKey,
-        isFirst = false,
-        isLast = false,
-        includedCoinsCount,
-        transactionType,
-        networkSymbol,
-        tokenTransfer,
-    }: TransactionListItemContainerProps) => {
-        const { applyStyle } = useNativeStyles();
-        const navigation =
-            useNavigation<
-                StackNavigationProps<RootStackParamList, RootStackRoutes.AccountDetail>
-            >();
+export const TransactionListItemContainer = ({
+    children,
+    txid,
+    accountKey,
+    isFirst = false,
+    isLast = false,
+    includedCoinsCount,
+    transactionType,
+    networkSymbol,
+    tokenTransfer,
+}: TransactionListItemContainerProps) => {
+    const { applyStyle } = useNativeStyles();
+    const navigation =
+        useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes.AccountDetail>>();
 
-        const handleNavigateToTransactionDetail = () => {
-            navigation.navigate(RootStackRoutes.TransactionDetail, {
-                txid,
-                accountKey,
-                tokenTransfer,
-            });
-        };
+    const handleNavigateToTransactionDetail = () => {
+        navigation.navigate(RootStackRoutes.TransactionDetail, {
+            txid,
+            accountKey,
+            tokenTransfer,
+        });
+    };
 
-        const hasIncludedCoins = includedCoinsCount > 0;
-        const includedCoinsLabel = `+${includedCoinsCount} coin${
-            includedCoinsCount > 1 ? 's' : ''
-        }`;
+    const hasIncludedCoins = includedCoinsCount > 0;
+    const includedCoinsLabel = `+${includedCoinsCount} coin${includedCoinsCount > 1 ? 's' : ''}`;
 
-        const { DateTimeFormatter } = useFormatters();
-        const transactionBlockTime = useSelector((state: TransactionsRootState) =>
-            selectTransactionBlockTimeById(state, txid, accountKey),
-        );
+    const { DateTimeFormatter } = useFormatters();
+    const transactionBlockTime = useSelector((state: TransactionsRootState) =>
+        selectTransactionBlockTimeById(state, txid, accountKey),
+    );
 
-        const isTransactionPending = useSelector((state: TransactionsRootState) =>
-            selectIsTransactionPending(state, txid, accountKey),
-        );
+    const isTransactionPending = useSelector((state: TransactionsRootState) =>
+        selectIsTransactionPending(state, txid, accountKey),
+    );
 
-        const iconColor: Color = isTransactionPending ? 'backgroundAlertYellowBold' : 'iconSubdued';
-        const coinSymbol = tokenTransfer?.contract ?? networkSymbol;
-        const transactionTitle = getTransactionTitle(transactionType, isTransactionPending);
+    const iconColor: Color = isTransactionPending ? 'backgroundAlertYellowBold' : 'iconSubdued';
+    const coinSymbol = tokenTransfer?.contract ?? networkSymbol;
+    const transactionTitle = getTransactionTitle(transactionType, isTransactionPending);
 
-        return (
-            <TouchableOpacity
-                onPress={() => handleNavigateToTransactionDetail()}
-                style={applyStyle(transactionListItemContainerStyle, { isFirst, isLast })}
-            >
-                <Box style={applyStyle(descriptionBoxStyle)}>
-                    {coinSymbol && (
-                        <TransactionIcon
-                            symbol={coinSymbol}
-                            transactionType={transactionType}
-                            isAnimated={isTransactionPending}
-                            iconColor={iconColor}
-                        />
-                    )}
-                    <Box marginLeft="medium" flex={1}>
-                        <HStack flexDirection="row" alignItems="center" spacing={4}>
-                            <Text>{transactionTitle}</Text>
-                            {hasIncludedCoins && <Badge label={includedCoinsLabel} size="small" />}
-                        </HStack>
-                        <Text variant="hint" color="textSubdued">
-                            <DateTimeFormatter value={transactionBlockTime} />
-                        </Text>
-                    </Box>
+    return (
+        <TouchableOpacity
+            onPress={() => handleNavigateToTransactionDetail()}
+            style={applyStyle(transactionListItemContainerStyle, { isFirst, isLast })}
+        >
+            <Box style={applyStyle(descriptionBoxStyle)}>
+                {coinSymbol && (
+                    <TransactionIcon
+                        symbol={coinSymbol}
+                        transactionType={transactionType}
+                        isAnimated={isTransactionPending}
+                        iconColor={iconColor}
+                    />
+                )}
+                <Box marginLeft="medium" flex={1}>
+                    <HStack flexDirection="row" alignItems="center" spacing={4}>
+                        <Text>{transactionTitle}</Text>
+                        {hasIncludedCoins && <Badge label={includedCoinsLabel} size="small" />}
+                    </HStack>
+                    <Text variant="hint" color="textSubdued">
+                        <DateTimeFormatter value={transactionBlockTime} />
+                    </Text>
                 </Box>
-                <Box style={applyStyle(valuesContainerStyle)}>{children}</Box>
-            </TouchableOpacity>
-        );
-    },
-);
+            </Box>
+            <Box style={applyStyle(valuesContainerStyle)}>{children}</Box>
+        </TouchableOpacity>
+    );
+};

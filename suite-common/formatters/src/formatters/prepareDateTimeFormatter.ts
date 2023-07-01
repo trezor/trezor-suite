@@ -13,4 +13,4 @@ export const prepareDateTimeFormatter = (config: FormatterConfig) =>
 
         // it's more performant to use just one format than to combine date+time formatter
         return format(value, `${DATE_FORMAT}, ${timeFormat}`, { locale: enUS });
-    });
+    }, 'DateTimeFormatter');
