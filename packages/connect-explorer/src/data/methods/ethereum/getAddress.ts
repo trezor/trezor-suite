@@ -1,5 +1,3 @@
-import { select } from './common';
-
 const name = 'ethereumGetAddress';
 const docs = 'methods/ethereumGetAddress.md';
 const batch = [

@@ -13,7 +13,7 @@ interface CheckboxProps {
 
 const Checkbox = ({ field, onChange }: CheckboxProps) => (
     <Row>
-        <CheckboxComponent onClick={e => onChange(field, !field.value)} isChecked={field.value}>
+        <CheckboxComponent onClick={_e => onChange(field, !field.value)} isChecked={field.value}>
             {field.name}
         </CheckboxComponent>
     </Row>

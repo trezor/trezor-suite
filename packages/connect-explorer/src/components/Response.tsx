@@ -40,7 +40,7 @@ const ClipboardButton = styled.div`
 `;
 
 const CopyToClipboard = props => (
-    <ClipboardButton title="Copy to clipboard" onClick={event => copy(props.data)}>
+    <ClipboardButton title="Copy to clipboard" onClick={_event => copy(props.data)}>
         <svg viewBox="0 0 24 24" preserveAspectRatio="xMidYMid">
             <path d="M 5 2 C 3.9 2 3 2.9 3 4 L 3 17 L 5 17 L 5 4 L 15 4 L 15 2 L 5 2 z M 9 6 C 7.9 6 7 6.9 7 8 L 7 20 C 7 21.1 7.9 22 9 22 L 18 22 C 19.1 22 20 21.1 20 20 L 20 8 C 20 6.9 19.1 6 18 6 L 9 6 z M 9 8 L 18 8 L 18 20 L 9 20 L 9 8 z" />
         </svg>

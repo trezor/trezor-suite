@@ -3,6 +3,7 @@ const docs = 'methods/applySettings.md';
 
 export default [
     {
+        docs,
         url: '/method/applySettings',
         name,
         submitButton: 'Apply settings',

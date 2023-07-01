@@ -85,28 +85,6 @@ const dash = {
 ]`,
 };
 
-const zcash1 = {
-    inputs: `[
-        {
-            address_n: [(44 | 0x80000000) >>> 0, (133 | 0x80000000) >>> 0, (0 | 0x80000000) >>> 0, 0, 2],
-            prev_hash: '84533aa6244bcee68040d851dc4f502838ed3fd9ce838e2e48dbf440e7f4df2a',
-            prev_index: 0,
-        },
-        {
-            address_n: [(44 | 0x80000000) >>> 0, (133 | 0x80000000) >>> 0, (0 | 0x80000000) >>> 0, 1, 0],
-            prev_hash: '84533aa6244bcee68040d851dc4f502838ed3fd9ce838e2e48dbf440e7f4df2a',
-            prev_index: 1,
-        },
-]`,
-    outputs: `[
-        {
-            address: 't1Xin4H451oBDwrKcQeY1VGgMWivLs2hhuR',
-            amount: '10212',
-            script_type: 'PAYTOADDRESS',
-        },
-]`,
-};
-
 // version 3
 const zcash = {
     inputs: `[
@@ -125,41 +103,6 @@ const zcash = {
             script_type: 'PAYTOADDRESS',
         },
     ]`,
-};
-
-const zcash4 = {
-    inputs: `[
-        {
-            address_n: [2147483692, 2147483781, 2147483648, 0, 2],
-            prev_hash: '4264f5f339c9fd498976dabb6d7b8819e112d25a0c1770a0f3ee81de525de8f8',
-            amount: '118540',
-            prev_index: 0,
-        },
-    ]`,
-    outputs: `[
-        {
-            address: 't1fT6Zv1LcPwSwausNAuYGdewv2Mke3nrYo',
-            amount: '926751',
-            script_type: 'PAYTOADDRESS',
-        },
-    ]`,
-};
-
-const doge2 = {
-    inputs: `[
-        {
-            address_n: [(44 | 0x80000000) >>> 0, (3 | 0x80000000) >>> 0, (0 | 0x80000000) >>> 0, 1, 0],
-            prev_index: 12,
-            prev_hash: "0a4cb7d5c27455333701f0e53812e4be56a0272ad7f168279acfed7b065ee118",
-        },
-]`,
-    outputs: `[
-    {
-        address: "D9vbBhmwXgRegm5kVAcx8j6H2GDM87D58T",
-        amount: "11351855234633976",
-        script_type: "PAYTOADDRESS"
-    },
-]`,
 };
 
 const doge = {
