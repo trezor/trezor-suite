@@ -3,6 +3,7 @@ export enum EventType {
     AppInfo = 'app/info',
 
     ViewChange = 'view/change',
+    ViewChangeError = 'view/change-error',
 
     SettingsTracking = 'settings/tracking',
     SettingsPermissions = 'settings/permissions',
