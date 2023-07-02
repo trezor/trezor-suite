@@ -79,6 +79,10 @@ const handleMessage = (
                     detail: 'response-event-error',
                     message: data.payload?.error || 'Unknown error',
                 });
+                analytics.report({
+                    type: EventType.ViewChangeError,
+                    payload: { code: data.payload?.code || 'Code missing' },
+                });
                 return;
         }
     }

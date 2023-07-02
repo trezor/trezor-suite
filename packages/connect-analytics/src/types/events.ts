@@ -52,6 +52,12 @@ export type ConnectAnalyticsEvent =
           };
       }
     | {
+          type: EventType.ViewChangeError;
+          payload: {
+              code: string;
+          };
+      }
+    | {
           type: EventType.WalletType;
           payload: {
               type: 'hidden' | 'standard';
