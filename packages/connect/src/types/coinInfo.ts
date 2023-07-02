@@ -67,7 +67,6 @@ export interface BitcoinNetworkInfo extends Common {
 
 export interface EthereumNetworkInfo extends Common {
     type: 'ethereum';
-    chain: string;
     chainId: number;
     defaultFees: Array<{
         label: 'high' | 'normal' | 'low';
