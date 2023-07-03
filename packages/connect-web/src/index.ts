@@ -194,7 +194,7 @@ const call: CallMethod = async params => {
                 if (['Init_IframeBlocked', 'Init_IframeTimeout'].includes(error.code)) {
                     _popupManager.postMessage(createUiMessage(UI.IFRAME_FAILURE));
                 } else {
-                    _popupManager.close();
+                    _popupManager.clear();
                 }
             }
             return createErrorMessage(error);
@@ -235,7 +235,7 @@ const call: CallMethod = async params => {
     } catch (error) {
         _log.error('__call error', error);
         if (_popupManager) {
-            _popupManager.close();
+            _popupManager.clear();
         }
         return createErrorMessage(error);
     }
