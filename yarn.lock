@@ -8152,7 +8152,6 @@ __metadata:
     karma-sourcemap-loader: ^0.4.0
     karma-webpack: ^5.0.0
     randombytes: 2.1.0
-    react-native: 0.71.8
     rimraf: ^5.0.1
     ts-node: ^10.9.1
     tsx: ^3.12.7
