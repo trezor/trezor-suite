@@ -5,6 +5,7 @@ import { accountsReducer } from 'src/reducers/wallet';
 import { coinjoinReducer } from 'src/reducers/wallet/coinjoinReducer';
 import selectedAccountReducer from 'src/reducers/wallet/selectedAccountReducer';
 import * as coinjoinAccountActions from '../coinjoinAccountActions';
+import * as coinjoinClientActions from '../coinjoinClientActions';
 import * as fixtures from '../__fixtures__/coinjoinAccountActions';
 import { CoinjoinService } from 'src/services/coinjoin/coinjoinService';
 
@@ -105,7 +106,7 @@ describe('coinjoinAccountActions', () => {
                 await CoinjoinService.createInstance({ network: f.client as any });
             }
 
-            await store.dispatch(coinjoinAccountActions.stopCoinjoinSession(f.param));
+            await store.dispatch(coinjoinClientActions.stopCoinjoinSession(f.param));
 
             const actions = store.getActions();
             expect(actions.map(a => a.type)).toEqual(f.result.actions);

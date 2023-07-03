@@ -3,10 +3,10 @@ import styled, { css } from 'styled-components';
 import { Icon, IconType, useTheme, variables } from '@trezor/components';
 import { TranslationKey } from '@suite-common/intl-types';
 import { Translation } from 'src/components/suite';
-import { toggleAutopauseCoinjoin } from 'src/actions/wallet/coinjoinAccountActions';
 import { useSelector } from 'src/hooks/suite/useSelector';
-import { selectIsSessionAutopaused } from 'src/reducers/wallet/coinjoinReducer';
+import { selectIsSessionAutostopped } from 'src/reducers/wallet/coinjoinReducer';
 import { useDispatch } from 'src/hooks/suite/useDispatch';
+import { toggleAutostopCoinjoin } from 'src/actions/wallet/coinjoinAccountActions';
 
 const TRANSITION_CONFIG = '0.1s ease';
 
@@ -96,29 +96,29 @@ const getButtonConfig = (
             return {
                 icon: 'CROSS',
                 iconSize: 9,
-                text: 'TR_DISABLE_AUTOPAUSE_COINJOIN',
+                text: 'TR_DISABLE_AUTOSTOP_COINJOIN',
             };
         }
         return {
             icon: 'CHECK',
             iconSize: 10,
-            text: 'TR_AUTOPAUSE_COINJOIN_ENABLED',
+            text: 'TR_AUTOSTOP_COINJOIN_ENABLED',
         };
     }
 
     return {
-        icon: 'PAUSE',
-        iconSize: 5,
-        text: 'TR_ENABLE_AUTOPAUSE_COINJOIN',
+        icon: 'STOP',
+        iconSize: 7,
+        text: 'TR_ENABLE_AUTOSTOP_COINJOIN',
     };
 };
 
-interface AutoPauseButtonProps {
+interface AutoStopButtonProps {
     relatedAccountKey: string;
 }
 
-export const AutoPauseButton = ({ relatedAccountKey }: AutoPauseButtonProps) => {
-    const isActivated = useSelector(state => selectIsSessionAutopaused(state, relatedAccountKey));
+export const AutoStopButton = ({ relatedAccountKey }: AutoStopButtonProps) => {
+    const isActivated = useSelector(state => selectIsSessionAutostopped(state, relatedAccountKey));
     const [isHovered, setIsHovered] = useState(false);
 
     const theme = useTheme();
@@ -126,7 +126,7 @@ export const AutoPauseButton = ({ relatedAccountKey }: AutoPauseButtonProps) => 
 
     const handleClick = () => {
         setIsHovered(current => !current);
-        dispatch(toggleAutopauseCoinjoin(relatedAccountKey));
+        dispatch(toggleAutostopCoinjoin(relatedAccountKey));
     };
 
     const { icon, iconSize, text } = getButtonConfig(isActivated, isHovered);
