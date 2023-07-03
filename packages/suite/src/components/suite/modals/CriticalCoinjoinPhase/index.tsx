@@ -7,7 +7,7 @@ import { selectCoinjoinAccountByKey } from 'src/reducers/wallet/coinjoinReducer'
 import { PhaseProgress } from './PhaseProgress';
 import { ROUND_PHASE_MESSAGES } from 'src/constants/suite/coinjoin';
 import { useCoinjoinSessionPhase } from 'src/hooks/wallet';
-import { AutoPauseButton } from './AutoPauseButton';
+import { AutoStopButton } from './AutoStopButton';
 
 const StyledModal = styled(Modal)`
     width: 520px;
@@ -88,7 +88,7 @@ export const CriticalCoinjoinPhase = ({ relatedAccountKey }: CriticalCoinjoinPha
                 sessionPhase={sessionPhase}
             />
 
-            <AutoPauseButton relatedAccountKey={relatedAccountKey} />
+            <AutoStopButton relatedAccountKey={relatedAccountKey} />
         </StyledModal>
     );
 };

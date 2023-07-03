@@ -321,7 +321,7 @@ const restoreSession = (
 
     delete account.session.paused;
     delete account.session.interrupted;
-    delete account.session.isAutoPauseEnabled;
+    delete account.session.isAutoStopEnabled;
     delete account.session.timeEnded;
     account.session.timeCreated = Date.now();
 };
@@ -441,9 +441,9 @@ const updateDebugMode = (
     }
 };
 
-const enableSessionAutopause = (
+const enableSessionAutostop = (
     draft: CoinjoinState,
-    payload: ExtractActionPayload<typeof COINJOIN.SESSION_AUTOPAUSE>,
+    payload: ExtractActionPayload<typeof COINJOIN.SESSION_AUTOSTOP>,
 ) => {
     const session = getAccount(draft, payload.accountKey)?.session;
 
@@ -451,7 +451,7 @@ const enableSessionAutopause = (
         return;
     }
 
-    session.isAutoPauseEnabled = payload.isAutopaused;
+    session.isAutoStopEnabled = payload.isAutostopped;
 };
 
 const addAnonymityLevel = (
@@ -562,8 +562,8 @@ export const coinjoinReducer = (
             case COINJOIN.SESSION_PAUSE:
                 pauseSession(draft, action.payload);
                 break;
-            case COINJOIN.SESSION_AUTOPAUSE:
-                enableSessionAutopause(draft, action.payload);
+            case COINJOIN.SESSION_AUTOSTOP:
+                enableSessionAutostop(draft, action.payload);
                 break;
             case COINJOIN.SESSION_RESTORE:
                 restoreSession(draft, action.payload);
@@ -989,8 +989,8 @@ export const selectCurrentSessionDeadlineInfo = (state: CoinjoinRootState) => {
 export const selectIsPublic = (state: CoinjoinRootState) =>
     selectFeatureConfig(state, Feature.coinjoin)?.isPublic !== false;
 
-export const selectIsSessionAutopaused = (state: CoinjoinRootState, accountKey: string) => {
+export const selectIsSessionAutostopped = (state: CoinjoinRootState, accountKey: string) => {
     const currentState = selectSessionByAccountKey(state, accountKey);
 
-    return !!currentState?.isAutoPauseEnabled;
+    return !!currentState?.isAutoStopEnabled;
 };

@@ -287,6 +287,51 @@ export const pauseCoinjoinSession =
         dispatch(coinjoinSessionPause(accountKey, interrupted));
     };
 
+// called from coinjoin account UI or exceptions like device disconnection, forget wallet/account etc.
+export const stopCoinjoinSession =
+    (accountKey: string) => async (dispatch: Dispatch, getState: GetState) => {
+        const account = selectAccountByKey(getState(), accountKey);
+
+        if (!account) {
+            return;
+        }
+
+        // get @trezor/coinjoin client if available
+        const client = getCoinjoinClient(account.symbol);
+        if (!client) {
+            return;
+        }
+
+        const { device } = getState().suite;
+
+        const result = await TrezorConnect.cancelCoinjoinAuthorization({
+            device,
+            useEmptyPassphrase: device?.useEmptyPassphrase,
+        });
+
+        if (!result.success) {
+            dispatch(
+                notificationsActions.addToast({
+                    type: 'error',
+                    error: `Coinjoin session not stopped: ${result.payload.error}`,
+                }),
+            );
+
+            return;
+        }
+
+        // unregister account in @trezor/coinjoin
+        client.unregisterAccount(account.key);
+
+        // dispatch data to reducer
+        dispatch({
+            type: COINJOIN.ACCOUNT_UNREGISTER,
+            payload: {
+                accountKey,
+            },
+        });
+    };
+
 export const onCoinjoinRoundChanged =
     ({ round }: CoinjoinRoundEvent) =>
     async (dispatch: Dispatch, getState: GetState) => {
@@ -349,14 +394,14 @@ export const onCoinjoinRoundChanged =
                     });
                 }
 
-                const accountsWithAutopause = coinjoinAccountsWithSession.filter(
+                const accountsWithAutostop = coinjoinAccountsWithSession.filter(
                     ({ key, session }) =>
                         !accountsReachingMaxRounds.find(accout => accout.key === key) &&
-                        session?.isAutoPauseEnabled,
+                        session?.isAutoStopEnabled,
                 );
 
-                accountsWithAutopause.forEach(({ key }) => {
-                    dispatch(pauseCoinjoinSession(key));
+                accountsWithAutostop.forEach(({ key }) => {
+                    dispatch(stopCoinjoinSession(key));
                 });
             } else if (
                 round.phase > RoundPhase.InputRegistration &&

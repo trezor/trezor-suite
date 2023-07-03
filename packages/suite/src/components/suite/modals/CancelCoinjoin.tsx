@@ -5,7 +5,7 @@ import { useSelector } from 'src/hooks/suite/useSelector';
 import { Modal, Translation } from '..';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 import { useDispatch } from 'src/hooks/suite';
-import { stopCoinjoinSession } from 'src/actions/wallet/coinjoinAccountActions';
+import { stopCoinjoinSession } from 'src/actions/wallet/coinjoinClientActions';
 
 const StyledModal = styled(Modal)`
     width: 435px;
