@@ -135,8 +135,9 @@ const RESTORE_SESSION_B_ACTIONS = [
 
 export const fixtures = [
     {
-        description: 'pause coinjoin session when remembered device disconnects',
+        description: 'stopping coinjoin session when remembered device disconnects',
         state: DEFAULT_STATE,
+        client: 'btc' as NetworkSymbol,
         action: {
             type: DEVICE.DISCONNECT,
             payload: {
@@ -145,10 +146,9 @@ export const fixtures = [
         },
         expectedActions: [
             {
-                type: COINJOIN.SESSION_PAUSE,
+                type: COINJOIN.ACCOUNT_UNREGISTER,
                 payload: {
                     accountKey: 'account-A-key',
-                    interrupted: false,
                 },
             },
         ],
