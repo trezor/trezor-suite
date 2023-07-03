@@ -61,18 +61,24 @@ const handleMessage = (
         reactEventBus.dispatch({ type: 'success' });
     }
 
-    if (
-        data.type === RESPONSE_EVENT &&
-        !data.success &&
-        data.payload?.code !== 'Transport_Missing'
-    ) {
-        const errorMessage = data.payload?.error || 'Unknown error';
-        reactEventBus.dispatch({
-            type: 'error',
-            detail: 'response-event-error',
-            message: errorMessage,
-        });
-        return;
+    if (data.type === RESPONSE_EVENT && !data.success) {
+        switch (data.payload?.code) {
+            case 'Transport_Missing':
+                // Ignore this error. It is handled after.
+                break;
+            case 'Method_PermissionsNotGranted':
+            case 'Method_Cancel':
+                // User canceled process, close popup.
+                window.close();
+                break;
+            default:
+                reactEventBus.dispatch({
+                    type: 'error',
+                    detail: 'response-event-error',
+                    message: data.payload?.error || 'Unknown error',
+                });
+                return;
+        }
     }
 
     // This is message from the window.opener
