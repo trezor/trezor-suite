@@ -7411,6 +7411,10 @@ export default defineMessages({
         id: 'TR_PAUSE',
         defaultMessage: 'Pause',
     },
+    TR_STOP: {
+        id: 'TR_STOP',
+        defaultMessage: 'Stop',
+    },
     TR_CANCEL_COINJOIN: {
         id: 'TR_CANCEL_COINJOIN',
         defaultMessage: 'Cancel coinjoin',
@@ -7966,18 +7970,6 @@ export default defineMessages({
         defaultMessage:
             'If your account balance is below the recommended minimum ({crypto}) coinjoin may be uneconomical. Press <b>Cancel</b> to go back and add more funds, or <b>I understand</b> to proceed with the coinjoin.',
     },
-    TR_ENABLE_AUTOPAUSE_COINJOIN: {
-        id: 'TR_ENABLE_AUTOPAUSE_COINJOIN',
-        defaultMessage: 'Pause coinjoin after this round',
-    },
-    TR_AUTOPAUSE_COINJOIN_ENABLED: {
-        id: 'TR_AUTOPAUSE_COINJOIN_ENABLED',
-        defaultMessage: 'Coinjoin will be paused after this round',
-    },
-    TR_DISABLE_AUTOPAUSE_COINJOIN: {
-        id: 'TR_DISABLE_AUTOPAUSE_COINJOIN',
-        defaultMessage: "Don't pause",
-    },
     TR_AMOUNT_SENT: {
         id: 'TR_AMOUNT_SENT',
         defaultMessage: 'Amount sent',
@@ -8026,5 +8018,17 @@ export default defineMessages({
         id: 'TR_CANDIDATE_TRANSACTION_EXPLANATION',
         defaultMessage:
             "You've signed the transaction, but it still needs signatures from all participants. We can't guarantee transaction processing unless everyone signs.",
+    },
+    TR_ENABLE_AUTOSTOP_COINJOIN: {
+        id: 'TR_ENABLE_AUTOSTOP_COINJOIN',
+        defaultMessage: 'Stop coinjoin after this round',
+    },
+    TR_AUTOSTOP_COINJOIN_ENABLED: {
+        id: 'TR_AUTOSTOP_COINJOIN_ENABLED',
+        defaultMessage: 'Coinjoin will be stopped after this round',
+    },
+    TR_DISABLE_AUTOSTOP_COINJOIN: {
+        id: 'TR_DISABLE_AUTOSTOP_COINJOIN',
+        defaultMessage: "Don't stop",
     },
 });

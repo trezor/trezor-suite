@@ -62,7 +62,7 @@ const PlayIcon = styled(Icon)`
     margin-left: 4px;
 `;
 
-const PauseIcon = styled(Icon)`
+const StyledIcon = styled(Icon)`
     ${iconBase};
 `;
 
@@ -72,14 +72,14 @@ interface ProgressContentProps {
 }
 
 export const ProgressContent = ({ accountKey, isWheelHovered }: ProgressContentProps) => {
-    const { isSessionActive, isPaused, isLoading, isAllPrivate, isAccountEmpty } = useSelector(
+    const { isSessionActive, isLoading, isPaused, isAllPrivate, isAccountEmpty } = useSelector(
         selectCurrentCoinjoinWheelStates,
     );
     const { sessionDeadline } = useSelector(selectCurrentSessionDeadlineInfo);
     const roundsDurationInHours = useSelector(selectRoundsDurationInHours);
 
     const theme = useTheme();
-    const { isCoinjoinSessionBlocked, coinjoinSessionBlocker } =
+    const { coinjoinSessionBlocker, isCoinjoinSessionBlocked } =
         useCoinjoinSessionBlockers(accountKey);
 
     const getProgressContent = () => {
@@ -89,9 +89,9 @@ export const ProgressContent = ({ accountKey, isWheelHovered }: ProgressContentP
         };
 
         const isLoadingIndicatorShown =
-            isLoading || (isSessionActive && !sessionDeadline && !isPaused);
-        const isPausedAndHovered = isPaused && isWheelHovered && !isCoinjoinSessionBlocked;
-        const isPausedOrRunningAndHovered = isPaused || (isSessionActive && isWheelHovered);
+            isLoading || (isSessionActive && !sessionDeadline && !isCoinjoinSessionBlocked);
+        const isRunningAndHovered = isSessionActive && isWheelHovered;
+        const isRunningAndBlocked = isSessionActive && isCoinjoinSessionBlocked && isPaused;
 
         if (isAccountEmpty || coinjoinSessionBlocker === 'ANONYMITY_ERROR') {
             return <PlayIcon icon="PLAY" {...iconConfig} />;
@@ -112,20 +112,20 @@ export const ProgressContent = ({ accountKey, isWheelHovered }: ProgressContentP
             );
         }
 
-        if (isPausedAndHovered) {
+        if (isRunningAndBlocked) {
             return (
                 <>
-                    <PlayIcon icon="PLAY" {...iconConfig} />
-                    <Translation id="TR_RESUME" />
+                    <StyledIcon icon="PAUSE" {...iconConfig} />
+                    <Translation id="TR_PAUSED" />
                 </>
             );
         }
 
-        if (isPausedOrRunningAndHovered) {
+        if (isRunningAndHovered) {
             return (
                 <>
-                    <PauseIcon icon="PAUSE" {...iconConfig} />
-                    <Translation id={isPaused ? 'TR_PAUSED' : 'TR_PAUSE'} />
+                    <StyledIcon icon="STOP" {...iconConfig} />
+                    <Translation id="TR_STOP" />
                 </>
             );
         }
@@ -157,7 +157,7 @@ export const ProgressContent = ({ accountKey, isWheelHovered }: ProgressContentP
     };
 
     return (
-        <Container isWide={(isSessionActive && !isPaused) || isLoading}>
+        <Container isWide={isSessionActive || isLoading}>
             <CenteringContainer>{getProgressContent()}</CenteringContainer>
         </Container>
     );
