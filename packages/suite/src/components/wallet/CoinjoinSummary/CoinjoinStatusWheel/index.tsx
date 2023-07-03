@@ -1,15 +1,13 @@
-import React, { useCallback } from 'react';
-import { useDispatch } from 'react-redux';
+import React from 'react';
 import styled from 'styled-components';
-import { variables, Card } from '@trezor/components';
-import { restoreCoinjoinSession } from 'src/actions/wallet/coinjoinAccountActions';
-import { useCoinjoinSessionBlockers } from 'src/hooks/coinjoin/useCoinjoinSessionBlockers';
+import { variables, Card, Button, useTheme } from '@trezor/components';
 import { ProgressWheel } from './ProgressWheel';
 import { StatusMessage } from './StatusMessage';
-import { SessionControlsMenu } from './SessionControlsMenu';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { selectCurrentCoinjoinWheelStates } from 'src/reducers/wallet/coinjoinReducer';
-import { pauseCoinjoinSession } from 'src/actions/wallet/coinjoinClientActions';
+import { Translation } from 'src/components/suite';
+import { useDispatch } from 'src/hooks/suite';
+import { stopCoinjoinSession } from 'src/actions/wallet/coinjoinClientActions';
 
 const Container = styled(Card)<{ isWide?: boolean }>`
     position: relative;
@@ -25,41 +23,43 @@ const Container = styled(Card)<{ isWide?: boolean }>`
     text-align: center;
 `;
 
+const StopButton = styled(Button)`
+    /* 23px button height + 7 margin = 30 height of StatusMessage */
+    margin-top: 7px;
+    background: none;
+`;
+
 interface CoinjoinStatusWheelProps {
     accountKey: string;
 }
 
 export const CoinjoinStatusWheel = ({ accountKey }: CoinjoinStatusWheelProps) => {
-    const { isPaused, isSessionActive, isResumeBlockedByLastingIssue } = useSelector(
+    const { isSessionActive, isResumeBlockedByLastingIssue, isPaused, isLoading } = useSelector(
         selectCurrentCoinjoinWheelStates,
     );
 
-    const { isCoinjoinSessionBlocked } = useCoinjoinSessionBlockers(accountKey);
-
+    const theme = useTheme();
     const dispatch = useDispatch();
-
-    const togglePause = useCallback(() => {
-        if (isCoinjoinSessionBlocked) {
-            return;
-        }
-
-        if (isPaused) {
-            dispatch(restoreCoinjoinSession(accountKey));
-        } else {
-            dispatch(pauseCoinjoinSession(accountKey));
-        }
-    }, [isCoinjoinSessionBlocked, isPaused, dispatch, accountKey]);
 
     return (
         <Container isWide={isSessionActive}>
-            {isSessionActive && (
-                <SessionControlsMenu accountKey={accountKey} togglePause={togglePause} />
-            )}
-
-            <ProgressWheel accountKey={accountKey} togglePause={togglePause} />
+            <ProgressWheel accountKey={accountKey} />
 
             {isSessionActive && !isResumeBlockedByLastingIssue && (
                 <StatusMessage accountKey={accountKey} />
+            )}
+
+            {isPaused && !isLoading && (
+                <StopButton
+                    variant="tertiary"
+                    icon="STOP"
+                    alignIcon="right"
+                    size={10}
+                    color={theme.TYPE_LIGHT_GREY}
+                    onClick={() => dispatch(stopCoinjoinSession(accountKey))}
+                >
+                    <Translation id="TR_STOP" />
+                </StopButton>
             )}
         </Container>
     );

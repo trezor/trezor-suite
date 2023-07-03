@@ -91,6 +91,7 @@ export const ICONS = {
     SHOW: require('../../images/icons/show.svg'),
     SHUFFLE: require('../../images/icons/shuffle.svg'),
     SIGNATURE: require('../../images/icons/signature.svg'),
+    STOP: require('../../images/icons/stop.svg'),
     TREZOR_T1: require('../../images/icons/trezor_t1.svg'),
     TREZOR_TT: require('../../images/icons/trezor_tt.svg'),
     TREZOR_TR: require('../../images/icons/trezor_tr.svg'),

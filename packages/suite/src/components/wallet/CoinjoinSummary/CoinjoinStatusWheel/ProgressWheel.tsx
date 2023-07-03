@@ -13,6 +13,7 @@ import { useCoinjoinSessionBlockers } from 'src/hooks/coinjoin/useCoinjoinSessio
 import { goto } from 'src/actions/suite/routerActions';
 import { Translation } from 'src/components/suite/Translation';
 import { openModal } from 'src/actions/suite/modalActions';
+import { stopCoinjoinSession } from 'src/actions/wallet/coinjoinClientActions';
 
 const getOutlineSvg = (theme: DefaultTheme) =>
     `url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='100' ry='100' stroke='${theme.TYPE_LIGHT_GREY.replace(
@@ -136,10 +137,9 @@ const Wheel = styled.div<{
 
 interface ProgressWheelProps {
     accountKey: string;
-    togglePause: () => void;
 }
 
-export const ProgressWheel = ({ accountKey, togglePause }: ProgressWheelProps) => {
+export const ProgressWheel = ({ accountKey }: ProgressWheelProps) => {
     const {
         isSessionActive,
         isPaused,
@@ -166,7 +166,7 @@ export const ProgressWheel = ({ accountKey, togglePause }: ProgressWheelProps) =
         }
 
         if (isSessionActive) {
-            togglePause();
+            dispatch(stopCoinjoinSession(accountKey));
 
             return;
         }
@@ -183,8 +183,8 @@ export const ProgressWheel = ({ accountKey, togglePause }: ProgressWheelProps) =
         isAllPrivate,
         isAccountEmpty,
         isSessionActive,
-        togglePause,
         dispatch,
+        accountKey,
         isCoinjoinUneco,
     ]);
 
