@@ -1,5 +1,6 @@
 import { test, Page } from '@playwright/test';
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
+import { findElementByDataTest, waitAndClick } from '../support/helpers';
 
 const url = process.env.URL || 'http://localhost:8088/';
 const bridgeVersion = '2.0.31';
@@ -28,29 +29,25 @@ test('input passphrase in popup and device accepts it', async ({ page }) => {
     await TrezorUserEnvLink.api.startBridge(bridgeVersion);
 
     await page.goto(`${url}#/method/getAddress`);
-    await page.waitForSelector("button[data-test='@submit-button']", { state: 'visible' });
+    await findElementByDataTest(page, '@submit-button');
 
     [popup] = await Promise.all([
         page.waitForEvent('popup'),
         page.click("button[data-test='@submit-button']"),
     ]);
 
-    await popup.waitForSelector("button[data-test='@analytics/continue-button']", {
-        state: 'visible',
-        timeout: 40000,
-    });
-    await popup.click("button[data-test='@analytics/continue-button']");
+    await findElementByDataTest(popup, '@analytics/continue-button', 40 * 1000);
 
-    await popup.waitForSelector("button[data-test='@permissions/confirm-button']", {
-        state: 'visible',
-    });
-
-    await popup.click("button[data-test='@permissions/confirm-button']");
-    await popup.click("button[data-test='@export-address/confirm-button']");
+    await waitAndClick(popup, [
+        '@analytics/continue-button',
+        '@permissions/confirm-button',
+        '@export-address/confirm-button',
+    ]);
 
     (await popup.waitForSelector("input[data-test='@passphrase/input']")).type('abc');
 
-    await popup.click("button[data-test='@passphrase/hidden/submit-button']");
+    await waitAndClick(popup, ['@passphrase/hidden/submit-button']);
+
     // Accept to see Passphrase.
     await TrezorUserEnvLink.api.pressYes();
 
@@ -77,39 +74,259 @@ test('introduce passphrase in popup and device rejects it', async ({ page }) => 
     await TrezorUserEnvLink.api.startBridge(bridgeVersion);
 
     await page.goto(`${url}#/method/getAddress`);
-    await page.waitForSelector("button[data-test='@submit-button']", { state: 'visible' });
+    await findElementByDataTest(page, '@submit-button');
 
     [popup] = await Promise.all([
         page.waitForEvent('popup'),
         page.click("button[data-test='@submit-button']"),
     ]);
 
-    await popup.waitForSelector("button[data-test='@analytics/continue-button']", {
-        state: 'visible',
-        timeout: 40000,
-    });
-    await popup.click("button[data-test='@analytics/continue-button']");
+    await findElementByDataTest(popup, '@analytics/continue-button', 40 * 1000);
 
-    await popup.waitForSelector("button[data-test='@permissions/confirm-button']", {
-        state: 'visible',
-    });
-
-    await popup.click("button[data-test='@permissions/confirm-button']");
-    await popup.click("button[data-test='@export-address/confirm-button']");
+    await waitAndClick(popup, [
+        '@analytics/continue-button',
+        '@permissions/confirm-button',
+        '@export-address/confirm-button',
+    ]);
 
     (await popup.waitForSelector("input[data-test='@passphrase/input']")).type('abc');
 
-    await popup.click("button[data-test='@passphrase/hidden/submit-button']");
+    await waitAndClick(popup, ['@passphrase/hidden/submit-button']);
+
+    // Accept to see Passphrase.
+    await TrezorUserEnvLink.api.pressYes();
+
+    // Cancel Passphrase is incorrect.
+    await TrezorUserEnvLink.api.pressNo();
+
+    await waitAndClick(popup, ['@connect-ui/error-close-button']);
+
+    await page.waitForSelector('text=Failure_ActionCancelled');
+});
+
+test('introduce passphrase successfully next time should not ask for it', async ({ page }) => {
+    await TrezorUserEnvLink.api.stopBridge();
+    await TrezorUserEnvLink.api.stopEmu();
+    await TrezorUserEnvLink.api.startEmu({
+        wipe: true,
+    });
+    await TrezorUserEnvLink.api.setupEmu({
+        mnemonic: 'alcohol woman abuse must during monitor noble actual mixed trade anger aisle',
+        pin: '',
+        passphrase_protection: true,
+        label: 'My Trevor',
+        needs_backup: false,
+    });
+    await TrezorUserEnvLink.api.startBridge(bridgeVersion);
+
+    await page.goto(`${url}#/method/getAddress`);
+    await findElementByDataTest(page, '@submit-button');
+
+    [popup] = await Promise.all([
+        page.waitForEvent('popup'),
+        page.click("button[data-test='@submit-button']"),
+    ]);
+
+    await findElementByDataTest(popup, '@analytics/continue-button', 40 * 1000);
+
+    await waitAndClick(popup, [
+        '@analytics/continue-button',
+        '@permissions/confirm-button',
+        '@export-address/confirm-button',
+    ]);
+
+    (await popup.waitForSelector("input[data-test='@passphrase/input']")).type('abc');
+
+    await waitAndClick(popup, ['@passphrase/hidden/submit-button']);
+
     // Accept to see Passphrase.
     await TrezorUserEnvLink.api.pressYes();
 
     // Confirm Passphrase is correct.
-    await TrezorUserEnvLink.api.pressNo();
+    await TrezorUserEnvLink.api.pressYes();
 
-    await popup.waitForSelector("div[data-test='@connect-ui/error']");
+    // Confirm right address is displayed.
+    await TrezorUserEnvLink.api.pressYes();
 
-    await popup.waitForSelector("button[data-test='@connect-ui/error-close-button']");
-    await popup.click("button[data-test='@connect-ui/error-close-button']");
+    // Wait for submit button
+    await findElementByDataTest(page, '@submit-button');
 
-    await page.waitForSelector('text=Failure_ActionCancelled');
+    // Click on submit button
+    [popup] = await Promise.all([
+        page.waitForEvent('popup'),
+        page.click("button[data-test='@submit-button']"),
+    ]);
+
+    await waitAndClick(popup, ['@permissions/confirm-button', '@export-address/confirm-button']);
+
+    // Popup should display address and ask user to confirm it without asking again for passphrase.
+    await findElementByDataTest(popup, '@check-address-on-device');
+});
+
+test('introduce passphrase successfully reload 3rd party it should ask again for passphrase', async ({
+    page,
+}) => {
+    await TrezorUserEnvLink.api.stopBridge();
+    await TrezorUserEnvLink.api.stopEmu();
+    await TrezorUserEnvLink.api.startEmu({
+        wipe: true,
+    });
+    await TrezorUserEnvLink.api.setupEmu({
+        mnemonic: 'alcohol woman abuse must during monitor noble actual mixed trade anger aisle',
+        pin: '',
+        passphrase_protection: true,
+        label: 'My Trevor',
+        needs_backup: false,
+    });
+    await TrezorUserEnvLink.api.startBridge(bridgeVersion);
+
+    await page.goto(`${url}#/method/getAddress`);
+    await findElementByDataTest(page, '@submit-button');
+
+    [popup] = await Promise.all([
+        page.waitForEvent('popup'),
+        page.click("button[data-test='@submit-button']"),
+    ]);
+
+    await findElementByDataTest(popup, '@analytics/continue-button', 40 * 1000);
+
+    await waitAndClick(popup, [
+        '@analytics/continue-button',
+        '@permissions/confirm-button',
+        '@export-address/confirm-button',
+    ]);
+
+    (await popup.waitForSelector("input[data-test='@passphrase/input']")).type('abc');
+
+    await waitAndClick(popup, ['@passphrase/hidden/submit-button']);
+
+    // Accept to see Passphrase.
+    await TrezorUserEnvLink.api.pressYes();
+
+    // Confirm Passphrase is correct.
+    await TrezorUserEnvLink.api.pressYes();
+
+    // Confirm right address is displayed.
+    await TrezorUserEnvLink.api.pressYes();
+
+    // Reload page
+    await page.reload();
+
+    // Wait for submit button
+    await findElementByDataTest(page, '@submit-button');
+
+    // Click on submit button
+    [popup] = await Promise.all([
+        page.waitForEvent('popup'),
+        page.click("button[data-test='@submit-button']"),
+    ]);
+
+    await waitAndClick(popup, ['@permissions/confirm-button', '@export-address/confirm-button']);
+
+    // Popup should go to passphrase screen
+    await popup.waitForSelector("input[data-test='@passphrase/input']");
+});
+
+test.only('passphrase mismatch', async ({ page }) => {
+    await TrezorUserEnvLink.api.stopBridge();
+    await TrezorUserEnvLink.api.stopEmu();
+    await TrezorUserEnvLink.api.startEmu({
+        wipe: true,
+    });
+    await TrezorUserEnvLink.api.setupEmu({
+        mnemonic: 'alcohol woman abuse must during monitor noble actual mixed trade anger aisle',
+        pin: '',
+        passphrase_protection: true,
+        label: 'My Trevor',
+        needs_backup: false,
+    });
+    await TrezorUserEnvLink.api.startBridge(bridgeVersion);
+
+    await page.goto(`${url}#/method/getAddress`);
+
+    // this is a little hack.
+    // connect-explorer does not allow setting commonParams. but we can inject!
+    // send device.state for passphrase 'abc'
+    await page.addScriptTag({
+        content: `
+          window.TrezorConnect.getAddress({
+                path: "m/49'/0'/0'/0/0",
+                device: {
+                    instance: 1,
+                    state: 'mjwfkJT4pnEoLCQu5tHMfjBmmggDNQxCz7@355C817510C0EABF2F147145:1',
+                }
+            }).then(res => console.log(res)).catch(err => console.log(err));
+    `,
+    });
+
+    [popup] = await Promise.all([page.waitForEvent('popup')]);
+
+    await waitAndClick(popup, [
+        '@analytics/continue-button',
+        '@permissions/confirm-button',
+        '@export-address/confirm-button',
+    ]);
+
+    // use different passphrase (not corresponding to device.state)
+    (await popup.waitForSelector("input[data-test='@passphrase/input']")).type('cba');
+    await waitAndClick(popup, ['@passphrase/hidden/submit-button']);
+    // Accept to see Passphrase.
+    await TrezorUserEnvLink.api.pressYes();
+    // Confirm Passphrase is correct.
+    await TrezorUserEnvLink.api.pressYes();
+
+    await waitAndClick(popup, ['@invalid-passphrase/try-again', '@permissions/confirm-button']);
+    // Input right passphrase.
+    (await popup.waitForSelector("input[data-test='@passphrase/input']")).type('abc');
+
+    await waitAndClick(popup, ['@passphrase/hidden/submit-button']);
+
+    // Accept to see Passphrase.
+    await TrezorUserEnvLink.api.pressYes();
+
+    // Confirm Passphrase is correct.
+    await TrezorUserEnvLink.api.pressYes();
+
+    // Confirm right address is displayed.
+    await TrezorUserEnvLink.api.pressYes();
+
+    // Reload page to force to ask for passphrase again.
+    await page.reload();
+
+    // Testing what happens on 'use this passphrase button'.
+
+    // this is a little hack.
+    // connect-explorer does not allow setting commonParams. but we can inject!
+    // send device.state for passphrase 'abc'
+    await page.addScriptTag({
+        content: `
+          window.TrezorConnect.getAddress({
+                path: "m/49'/0'/0'/0/0",
+                device: {
+                    instance: 1,
+                    state: 'mjwfkJT4pnEoLCQu5tHMfjBmmggDNQxCz7@355C817510C0EABF2F147145:1',
+                }
+            }).then(res => console.log(res)).catch(err => console.log(err));
+    `,
+    });
+
+    [popup] = await Promise.all([page.waitForEvent('popup')]);
+
+    await waitAndClick(popup, ['@permissions/confirm-button', '@export-address/confirm-button']);
+
+    // Use different passphrase (not corresponding to device.state)
+    (await popup.waitForSelector("input[data-test='@passphrase/input']")).type('cba');
+
+    await waitAndClick(popup, ['@passphrase/hidden/submit-button']);
+
+    // Accept to see Passphrase.
+    await TrezorUserEnvLink.api.pressYes();
+    // Confirm Passphrase is correct.
+    await TrezorUserEnvLink.api.pressYes();
+
+    // It display mismatch error, and we accept to use this passphrase.
+    await waitAndClick(popup, ['@invalid-passphrase/use-this-passphrase']);
+
+    // Confirm right address is displayed.
+    await TrezorUserEnvLink.api.pressYes();
 });
