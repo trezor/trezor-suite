@@ -274,7 +274,7 @@
             <!-- Passphrase: END -->
 
             <!-- invalid passphrase -->
-            <div class="invalid-passphrase">
+            <div data-test="@invalid-passphrase" class="invalid-passphrase">
                 <div>
                     <h3>Passphrase doesn't match</h3>
                     <p>Looks like You have set a different passphrase</p>
@@ -474,8 +474,16 @@
                 </div>
 
                 <div class="buttons">
-                    <button class="confirm retry">No, Try again</button>
-                    <button class="cancel useCurrent" tabindex="4">Yes, use this passphrase</button>
+                    <button data-test="@invalid-passphrase/try-again" class="confirm retry">
+                        No, Try again
+                    </button>
+                    <button
+                        data-test="@invalid-passphrase/use-this-passphrase"
+                        class="cancel useCurrent"
+                        tabindex="4"
+                    >
+                        Yes, use this passphrase
+                    </button>
                 </div>
             </div>
             <!-- invalid passphrase: END -->
@@ -3144,7 +3152,7 @@
             <!-- Export address: END -->
 
             <!-- Check address on device -->
-            <div class="check-address">
+            <div data-test="@check-address-on-device" class="check-address">
                 <svg width="12px" height="35px" viewBox="0 0 20 57">
                     <g stroke="none" stroke-width="1" fill="none" transform="translate(1, 1)">
                         <path
