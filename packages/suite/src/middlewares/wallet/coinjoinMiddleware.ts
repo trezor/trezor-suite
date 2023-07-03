@@ -134,7 +134,7 @@ export const coinjoinMiddleware =
         // Pause coinjoin session when device disconnects.
         // This is not treated a temporary interruption with automatic restore because the user probably disconnects the device willingly.
         if (action.type === DEVICE.DISCONNECT && action.payload.id) {
-            api.dispatch(coinjoinAccountActions.pauseCoinjoinSessionByDeviceId(action.payload.id));
+            api.dispatch(coinjoinAccountActions.stopCoinjoinSessionByDeviceId(action.payload.id));
         }
 
         // Pause/restore coinjoin session when Suite goes offline/online.
