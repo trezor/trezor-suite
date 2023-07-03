@@ -207,26 +207,29 @@ describe('coinjoinClientActions', () => {
     });
 
     it('clientEmitException from coinjoinMiddleware', async () => {
-        const store = initStore({
-            accounts: [
-                testMocks.getWalletAccount({
-                    deviceState: 'device-state',
-                    accountType: 'coinjoin',
-                    key: 'btc-account1',
-                    symbol: 'btc',
-                }),
-            ],
-            coinjoin: {
+        const initializeStore = () =>
+            initStore({
                 accounts: [
-                    {
+                    testMocks.getWalletAccount({
+                        deviceState: 'device-state',
+                        accountType: 'coinjoin',
                         key: 'btc-account1',
                         symbol: 'btc',
-                        session: { roundPhase: 1, signedRounds: [], maxRounds: 10 },
-                        previousSessions: [],
-                    },
+                    }),
                 ],
-            } as any,
-        });
+                coinjoin: {
+                    accounts: [
+                        {
+                            key: 'btc-account1',
+                            symbol: 'btc',
+                            session: { roundPhase: 1, signedRounds: [], maxRounds: 10 },
+                            previousSessions: [],
+                        },
+                    ],
+                } as any,
+            });
+
+        const store = initializeStore();
 
         const cli = await store.dispatch(initCoinjoinService('btc'));
 
@@ -256,8 +259,10 @@ describe('coinjoinClientActions', () => {
         store.dispatch({ type: 'device-disconnect', payload: { id: 'device-id' } });
         expect(cli.client.emit).toBeCalledTimes(3);
 
-        restoreSession();
-        store.dispatch({
+        // previous action stops the session
+        const store2 = initializeStore();
+
+        store2.dispatch({
             type: '@common/wallet-core/accounts/removeAccount',
             payload: [{ key: 'btc-account1' }],
         });
