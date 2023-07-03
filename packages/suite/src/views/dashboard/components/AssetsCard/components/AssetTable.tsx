@@ -10,7 +10,7 @@ import {
     Ticker,
     Translation,
 } from 'src/components/suite';
-import { CoinBalance } from 'src/components/wallet';
+import { CoinBalance, CoinmarketBuyButton } from 'src/components/wallet';
 import { isTestnet } from '@suite-common/wallet-utils';
 import * as routerActions from 'src/actions/suite/routerActions';
 import { useActions, useAccountSearch, useLoadingSkeleton } from 'src/hooks/suite';
@@ -110,8 +110,13 @@ const FiatBalanceWrapper = styled.span`
 
 const ExchangeRateWrapper = styled(Col)`
     font-variant-numeric: tabular-nums;
-    margin-right: 25px;
     padding-right: 0px;
+`;
+
+const BuyButtonWrapper = styled(Col)`
+    justify-content: right;
+    margin-right: 25px;
+    padding-right: 0;
 `;
 
 interface AssetTableProps {
@@ -184,6 +189,14 @@ export const AssetTable = React.memo(
                 <ExchangeRateWrapper isLastRow={isLastRow}>
                     {!isTestnet(symbol) && <Ticker symbol={symbol} />}
                 </ExchangeRateWrapper>
+                <BuyButtonWrapper isLastRow={isLastRow}>
+                    {!isTestnet(symbol) && (
+                        <CoinmarketBuyButton
+                            symbol={symbol}
+                            dataTest={`@dashboard/assets/table/${symbol}/buy-button`}
+                        />
+                    )}
+                </BuyButtonWrapper>
             </>
         );
     },
@@ -211,6 +224,9 @@ export const AssetTableSkeleton = (props: { animate?: boolean }) => {
             <ExchangeRateWrapper isLastRow>
                 <SkeletonRectangle animate={animate} />
             </ExchangeRateWrapper>
+            <BuyButtonWrapper isLastRow>
+                <SkeletonRectangle animate={animate} />
+            </BuyButtonWrapper>
         </>
     );
 };

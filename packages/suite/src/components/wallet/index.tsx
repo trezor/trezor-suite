@@ -40,6 +40,7 @@ import type { WithCoinmarketProps, WithSelectedAccountLoadedProps } from './hocs
 import { AccountException } from './AccountException';
 import { AccountTopPanel } from './AccountTopPanel';
 import { CoinjoinExplanation } from './CoinjoinExplanation';
+import { CoinmarketBuyButton } from './CoinmarketBuyButton';
 
 export {
     Title,
@@ -79,6 +80,7 @@ export {
     AccountException,
     AccountTopPanel,
     CoinjoinExplanation,
+    CoinmarketBuyButton,
 };
 
 export type { WithCoinmarketProps, WithSelectedAccountLoadedProps };

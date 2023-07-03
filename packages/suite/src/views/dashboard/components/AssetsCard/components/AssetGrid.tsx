@@ -10,7 +10,7 @@ import {
     Ticker,
     Translation,
 } from 'src/components/suite';
-import { CoinBalance } from 'src/components/wallet';
+import { CoinBalance, CoinmarketBuyButton } from 'src/components/wallet';
 import { isTestnet } from '@suite-common/wallet-utils';
 import * as routerActions from 'src/actions/suite/routerActions';
 import { useActions, useAccountSearch, useLoadingSkeleton } from 'src/hooks/suite';
@@ -35,7 +35,7 @@ const CoinNameWrapper = styled.div`
 const UpperRowWrapper = styled.div`
     display: flex;
     justify-content: space-between;
-    padding: 0px 15px 15px 15px;
+    padding: 15px 0;
     border-bottom: 1px solid ${({ theme }) => theme.STROKE_GREY};
 `;
 
@@ -83,6 +83,10 @@ const FiatBalanceWrapper = styled.span`
     margin-left: 0.5ch;
 `;
 
+const TickerWrapper = styled.div`
+    align-self: center;
+`;
+
 interface AssetGridProps {
     network: Network;
     failed: boolean;
@@ -119,8 +123,17 @@ export const AssetGrid = React.memo(({ network, failed, cryptoValue }: AssetGrid
 
                     <Coin>{name}</Coin>
                 </CoinNameWrapper>
-
-                {!isTestnet(symbol) && <Ticker symbol={symbol} />}
+                {!isTestnet(symbol) && (
+                    <>
+                        <TickerWrapper>
+                            <Ticker symbol={symbol} />
+                        </TickerWrapper>
+                        <CoinmarketBuyButton
+                            symbol={symbol}
+                            dataTest={`@dashboard/assets/grid/${symbol}/buy-button`}
+                        />
+                    </>
+                )}
             </UpperRowWrapper>
 
             {!failed ? (
@@ -163,9 +176,11 @@ export const AssetGridSkeleton = (props: { animate?: boolean }) => {
                     <LogoWrapper>
                         <SkeletonCircle />
                     </LogoWrapper>
-
                     <SkeletonRectangle animate={animate} />
                 </CoinNameWrapper>
+
+                <SkeletonRectangle animate={animate} />
+                <SkeletonRectangle animate={animate} />
             </UpperRowWrapper>
 
             <CryptoBalanceWrapper>

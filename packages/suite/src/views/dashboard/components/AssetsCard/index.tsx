@@ -53,7 +53,7 @@ const Header = styled.div`
 const Grid = styled.div`
     display: grid;
     overflow: hidden;
-    grid-template-columns: 2fr 2fr 1fr;
+    grid-template-columns: 2fr 2fr 1fr 1fr;
 `;
 
 const GridWrapper = styled.div`
@@ -139,11 +139,13 @@ const AssetsCard = () => {
                 <ActionsWrapper>
                     <Icon
                         icon="TABLE"
+                        data-test="@dashboard/assets/table-icon"
                         onClick={() => setFlag('dashboardAssetsGridMode', false)}
                         color={!dashboardAssetsGridMode ? colors.BG_GREEN : colors.TYPE_LIGHT_GREY}
                     />
                     <Icon
                         icon="GRID"
+                        data-test="@dashboard/assets/grid-icon"
                         onClick={() => setFlag('dashboardAssetsGridMode', true)}
                         color={dashboardAssetsGridMode ? colors.BG_GREEN : colors.TYPE_LIGHT_GREY}
                     />
@@ -176,6 +178,8 @@ const AssetsCard = () => {
                             <Header>
                                 <Translation id="TR_EXCHANGE_RATE" />
                             </Header>
+                            {/* empty column */}
+                            <Header />
                             {assetsData.map((asset, i) => (
                                 <AssetTable
                                     key={asset.symbol}
@@ -188,7 +192,6 @@ const AssetsCard = () => {
                             {discoveryInProgress && <AssetTableSkeleton />}
                         </Grid>
                     </AnimatePresence>
-
                     {isError && (
                         <InfoMessage>
                             <StyledIcon icon="WARNING" color={theme.TYPE_RED} size={14} />
