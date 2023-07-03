@@ -45,6 +45,24 @@ describe('Dashboard', () => {
         // QA todo: discreet @dashboard/security-card/toggle-discreet/button
     });
 
+    it('Assets table buy button', () => {
+        cy.getTestElement('@dashboard/assets/table-icon').click();
+        cy.getTestElement('@dashboard/assets/table/btc/buy-button').click();
+        cy.getTestElement('@coinmarket/buy/crypto-currency-select/input').should(
+            'contain.text',
+            'BTC',
+        );
+    });
+
+    it('Assets grid buy button', () => {
+        cy.getTestElement('@dashboard/assets/grid-icon').click();
+        cy.getTestElement('@dashboard/assets/grid/btc/buy-button').click();
+        cy.getTestElement('@coinmarket/buy/crypto-currency-select/input').should(
+            'contain.text',
+            'BTC',
+        );
+    });
+
     // QA todo: test for graph
     // QA todo: dashboard appearance for seed with tx history vs seed without tx history
 });
