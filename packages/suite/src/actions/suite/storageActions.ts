@@ -4,7 +4,7 @@ import * as suiteActions from 'src/actions/suite/suiteActions';
 import {
     serializeDiscovery,
     serializeDevice,
-    serializeCoinjoinSession,
+    serializeCoinjoinAccount,
 } from 'src/utils/suite/storage';
 import type { AppState, Dispatch, GetState, TrezorDevice } from 'src/types/suite';
 import type { Account, Network } from 'src/types/wallet';
@@ -54,8 +54,7 @@ export const saveCoinjoinAccount =
     (accountKey: string) => async (_: Dispatch, getState: GetState) => {
         const coinjoinAccount = selectCoinjoinAccountByKey(getState(), accountKey);
         if (!coinjoinAccount || !(await db.isAccessible())) return;
-        const serializedAccount = serializeCoinjoinSession(coinjoinAccount);
-        delete serializedAccount.transactionCandidates; // do not store tx candidates
+        const serializedAccount = serializeCoinjoinAccount(coinjoinAccount);
 
         return db.addItem('coinjoinAccounts', serializedAccount, accountKey, true);
     };
