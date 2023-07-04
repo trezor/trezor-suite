@@ -46,6 +46,7 @@ import { usePanGesture } from './hooks/usePanGesture';
 import { getYForX } from './GetYForX';
 import { hexToRgba } from './utils/hexToRgba';
 import { DefaultGraphEvent } from './DefaultGraphEvent';
+import { useEventTooltipProps } from './hooks/useEventTooltipProps';
 
 const INDICATOR_RADIUS = 7;
 const INDICATOR_BORDER_MULTIPLIER = 1.3;
@@ -75,6 +76,8 @@ export function AnimatedLineGraph<TEventPayload extends object>({
     BottomAxisLabel,
     events,
     EventComponent = DefaultGraphEvent,
+    EventTooltipComponent,
+    onEventHover,
     ...props
 }: AnimatedLineGraphProps<TEventPayload>): React.ReactElement {
     const [width, setWidth] = useState(0);
@@ -84,6 +87,10 @@ export function AnimatedLineGraph<TEventPayload extends object>({
     const [eventsWithCords, setEventsWithCords] = useState<
         GraphEventWithCords<TEventPayload>[] | null
     >(null);
+    const { eventTooltipProps, handleDisplayEventTooltip } = useEventTooltipProps(
+        eventsWithCords,
+        onEventHover,
+    );
 
     const { gesture, isActive, x } = usePanGesture({
         enabled: enablePanGesture,
@@ -503,16 +510,19 @@ export function AnimatedLineGraph<TEventPayload extends object>({
                                 />
                             )}
 
+                            {/* Render Event Component for every event. */}
                             {EventComponent != null && eventsWithCords && (
                                 <Group>
-                                    {eventsWithCords?.map(event => (
+                                    {eventsWithCords?.map((event, index) => (
                                         <EventComponent
                                             key={event.date.getTime()}
+                                            index={index}
                                             isGraphActive={isActive}
                                             fingerX={circleX}
                                             eventX={event.x}
                                             eventY={event.y}
                                             color={color}
+                                            onEventHover={handleDisplayEventTooltip}
                                             {...event.payload}
                                         />
                                     ))}
@@ -559,6 +569,11 @@ export function AnimatedLineGraph<TEventPayload extends object>({
                     )}
                 </Reanimated.View>
             </GestureDetector>
+
+            {/* Tooltip displayed on hover on EventComponent. */}
+            {EventTooltipComponent && eventTooltipProps && (
+                <EventTooltipComponent {...eventTooltipProps} />
+            )}
         </View>
     );
 }

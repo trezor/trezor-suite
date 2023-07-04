@@ -6,28 +6,51 @@ import { A } from '@mobily/ts-belt';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 
 import { getMultipleAccountBalanceHistoryWithFiat } from './graphDataFetching';
-import { AccountItem, FiatGraphPoint, FiatGraphPointWithCryptoBalance } from './types';
+import {
+    AccountItem,
+    FiatGraphPoint,
+    FiatGraphPointWithCryptoBalance,
+    GroupedBalanceMovementEvent,
+} from './types';
+import { getAccountMovementEvents } from './graphBalanceEvents';
 
 export type CommonUseGraphParams = {
     fiatCurrency: FiatCurrencyCode;
 };
 
+type useGraphForAccountsParams<TIsPortfolioGraph extends boolean = boolean> =
+    CommonUseGraphParams & {
+        accounts: AccountItem[];
+        endOfTimeFrameDate: Date;
+        startOfTimeFrameDate: StartOfTimeFrameDate;
+        isPortfolioGraph: TIsPortfolioGraph;
+    };
+
+type CommonUseGraphReturnType = {
+    graphEvents?: GroupedBalanceMovementEvent[];
+    isLoading: boolean;
+    error: string | null;
+    refetch: () => void;
+};
+
 // if start date is null we are fetching all data till first account movement
 type StartOfTimeFrameDate = Date | null;
 
-export const useGraphForAccounts = ({
-    accounts,
-    fiatCurrency,
-    endOfTimeFrameDate,
-    startOfTimeFrameDate,
-}: CommonUseGraphParams & {
-    accounts: AccountItem[];
-    endOfTimeFrameDate: Date;
-    startOfTimeFrameDate: StartOfTimeFrameDate;
-}) => {
+export function useGraphForAccounts(params: useGraphForAccountsParams<false>): {
+    graphPoints: FiatGraphPointWithCryptoBalance[];
+} & CommonUseGraphReturnType;
+export function useGraphForAccounts(params: useGraphForAccountsParams<true>): {
+    graphPoints: FiatGraphPoint[];
+} & CommonUseGraphReturnType;
+export function useGraphForAccounts(params: useGraphForAccountsParams): {
+    graphPoints: FiatGraphPoint[] | FiatGraphPointWithCryptoBalance[];
+} & CommonUseGraphReturnType {
+    const { accounts, fiatCurrency, endOfTimeFrameDate, startOfTimeFrameDate, isPortfolioGraph } =
+        params;
     const [graphPoints, setGraphPoints] = useState<
-        FiatGraphPointWithCryptoBalance[] | FiatGraphPoint[]
+        FiatGraphPoint[] | FiatGraphPointWithCryptoBalance[]
     >([]);
+    const [graphEvents, setGraphEvents] = useState<GroupedBalanceMovementEvent[]>();
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [refetchToken, setRefetchToken] = useState(0);
@@ -44,9 +67,9 @@ export const useGraphForAccounts = ({
             setError('Graph is not available for testnet coins.');
         }
 
-        let shouldSetPoints = true;
+        let shouldSetValues = true;
 
-        const getGraphPoints = async () => {
+        const getGraphValues = async () => {
             if (accounts.length === 0) return;
 
             setIsLoading(true);
@@ -59,8 +82,20 @@ export const useGraphForAccounts = ({
                     endOfTimeFrameDate,
                 });
 
-                if (shouldSetPoints) {
+                let events;
+
+                // Process transaction events only for the single account detail graph.
+                if (!isPortfolioGraph) {
+                    events = await getAccountMovementEvents({
+                        account: accounts[0],
+                        startOfTimeFrameDate,
+                        endOfTimeFrameDate,
+                    });
+                }
+
+                if (shouldSetValues) {
                     setGraphPoints(points);
+                    setGraphEvents(events);
                     setError(null);
                 }
             } catch (err) {
@@ -70,15 +105,22 @@ export const useGraphForAccounts = ({
             setIsLoading(false);
         };
 
-        getGraphPoints();
+        getGraphValues();
 
         return () => {
-            shouldSetPoints = false;
+            shouldSetValues = false;
         };
-    }, [accounts, fiatCurrency, refetchToken, endOfTimeFrameDate, startOfTimeFrameDate]);
+    }, [
+        accounts,
+        fiatCurrency,
+        refetchToken,
+        endOfTimeFrameDate,
+        startOfTimeFrameDate,
+        isPortfolioGraph,
+    ]);
 
-    return { graphPoints, isLoading, error, refetch };
-};
+    return { graphPoints, graphEvents, isLoading, error, refetch };
+}
 
 export const useGetTimeFrameForHistoryHours = (hoursToHistory: number | null) =>
     useMemo(() => {

@@ -61,7 +61,6 @@ export function StaticLineGraph({
 
     return (
         <View {...props} style={style} onLayout={onLayout}>
-            {/* Fix for react-native-skia's incorrect type declarations */}
             <Canvas style={styles.svg}>
                 <Path
                     path={path}

@@ -32,8 +32,8 @@ export const AccountDetailGraph = ({ accountKey }: AccountDetailGraphProps) => {
 
     const setSelectedPoint = useSetAtom(selectedPointAtom);
     const setReferencePoint = useSetAtom(referencePointAtom);
-    const lastPoint = A.last(graphPoints as FiatGraphPointWithCryptoBalance[]);
-    const firstPoint = A.head(graphPoints as FiatGraphPointWithCryptoBalance[]);
+    const lastPoint = A.last(graphPoints);
+    const firstPoint = A.head(graphPoints);
 
     const setInitialSelectedPoints = useCallback(() => {
         if (lastPoint && firstPoint) {
@@ -50,10 +50,11 @@ export const AccountDetailGraph = ({ accountKey }: AccountDetailGraphProps) => {
                 <Graph<FiatGraphPointWithCryptoBalance>
                     onPointSelected={setSelectedPoint}
                     onGestureEnd={setInitialSelectedPoints}
-                    points={graphPoints as FiatGraphPointWithCryptoBalance[]}
+                    points={graphPoints}
                     loading={isLoading}
                     error={error}
                     onTryAgain={refetch}
+                    events={graphEvents}
                 />
                 <TimeSwitch
                     selectedTimeFrame={hoursToHistory}

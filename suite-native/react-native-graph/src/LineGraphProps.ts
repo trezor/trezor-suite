@@ -21,13 +21,21 @@ export type GraphEventWithCords<TEventPayload extends object> = GraphEvent<TEven
     y: number;
 };
 
-export interface EventComponentProps {
+export type EventComponentProps<TEventPayload extends object = object> = {
     isGraphActive: SharedValue<boolean>;
     fingerX: SharedValue<number>;
+    index: number;
     eventX: number;
     eventY: number;
     color: string;
-}
+    onEventHover?: (index: number, willBeTooltipDisplayed: boolean) => void;
+} & TEventPayload;
+
+export type EventTooltipComponentProps<TEventPayload extends object = object> = {
+    eventX: number;
+    eventY: number;
+    eventPayload: TEventPayload;
+};
 
 export type GraphRange = Partial<GraphPathRange>;
 
@@ -139,7 +147,16 @@ export type AnimatedLineGraphProps<TEventPayload extends object> = BaseLineGraph
     /**
      * The element that renders each event of the graph.
      */
-    EventComponent?: React.ComponentType<EventComponentProps & TEventPayload> | null;
+    EventComponent?: React.ComponentType<EventComponentProps<TEventPayload>> | null;
+    /**
+     * The element that gets rendered on hover on an EventComponent element.
+     */
+    EventTooltipComponent?: React.ComponentType<EventTooltipComponentProps<TEventPayload>> | null;
+
+    /**
+     * Called once the user hover on EventComponent element.
+     */
+    onEventHover?: () => void;
 };
 
 export type LineGraphProps<TEventPayload extends object> =
