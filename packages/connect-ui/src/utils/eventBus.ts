@@ -3,14 +3,12 @@ import { PopupHandshake, UI_REQUEST, Device } from '@trezor/connect';
 import { TransportEventProps } from '../views/Transport';
 import { PassphraseEventProps } from '../views/Passphrase';
 import { ErrorViewProps } from '../views/Error';
-import { SuccessViewProps } from '../views/Success';
 
 export type ConnectUIEventProps =
     // connect-core events
     | TransportEventProps
     | PassphraseEventProps
     | ErrorViewProps
-    | SuccessViewProps
     | PopupHandshake
     | { type: typeof UI_REQUEST.DEVICE_NEEDS_BACKUP; device: Device }
     | { type: typeof UI_REQUEST.FIRMWARE_OUTDATED; device: Device }
