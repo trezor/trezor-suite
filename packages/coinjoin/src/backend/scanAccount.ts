@@ -1,3 +1,4 @@
+import { createCooldown } from '@trezor/utils';
 import { transformTransaction } from '@trezor/blockchain-link-utils/lib/blockbook';
 
 import { getBlockMultiFilter } from './filters';
@@ -11,6 +12,7 @@ import type {
     ScanAccountContext,
     ScanAccountResult,
 } from '../types/backend';
+import { CHECKPOINT_COOLDOWN } from '../constants';
 
 const transformTx =
     (xpub: string, { receive, change }: CoinjoinAddressController) =>
@@ -36,12 +38,13 @@ export const scanAccount = async (
     const addresses = new CoinjoinAddressController(xpub, network, checkpoints[0], params.cache);
 
     let checkpoint = checkpoints[0];
+    const checkpointCooldown = createCooldown(CHECKPOINT_COOLDOWN);
 
     const txs = new Set<BlockbookTransaction>();
 
-    const everyFilter = filters.getFilterIterator({ checkpoints }, { abortSignal });
+    const everyFilter = filters.getFilterIterator({ checkpoints }, { abortSignal, onProgressInfo });
     // eslint-disable-next-line no-restricted-syntax
-    for await (const { filter, blockHash, blockHeight, progress } of everyFilter) {
+    for await (const { filter, blockHash, blockHeight } of everyFilter) {
         const isMatch = getBlockMultiFilter(filter, blockHash);
         const scripts = addresses.receive.concat(addresses.change).map(({ script }) => script);
 
@@ -63,10 +66,7 @@ export const scanAccount = async (
 
         txs.clear();
 
-        if (progress !== undefined) {
-            onProgress({ checkpoint, transactions });
-            onProgressInfo({ progress });
-        } else if (transactions.length) {
+        if (checkpointCooldown() || transactions.length) {
             onProgress({ checkpoint, transactions });
         }
     }
@@ -76,7 +76,7 @@ export const scanAccount = async (
         if (mempool.status === 'stopped') {
             await mempool.start();
             pending = await mempool
-                .init(addresses)
+                .init(addresses, onProgressInfo)
                 .then(transactions => transactions.map(transformTx(xpub, addresses)));
         } else {
             await mempool.update();
