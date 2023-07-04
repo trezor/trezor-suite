@@ -7562,6 +7562,22 @@ export default defineMessages({
         id: 'TR_COINJOIN_ACCOUNT_RESCAN_ACTION',
         defaultMessage: 'Rescan account',
     },
+    TR_COINJOIN_DISCOVERY_BLOCK_FETCHING: {
+        id: 'TR_COINJOIN_DISCOVERY_BLOCK_FETCHING',
+        defaultMessage: 'Fetching block filters',
+    },
+    TR_COINJOIN_DISCOVERY_MEMPOOL_FETCHING: {
+        id: 'TR_COINJOIN_DISCOVERY_MEMPOOL_FETCHING',
+        defaultMessage: 'Fetching mempool filters',
+    },
+    TR_COINJOIN_DISCOVERY_BLOCK_PROGRESS: {
+        id: 'TR_COINJOIN_DISCOVERY_BLOCK_PROGRESS',
+        defaultMessage: '{current} out of {total} blocks scanned',
+    },
+    TR_COINJOIN_DISCOVERY_MEMPOOL_PROGRESS: {
+        id: 'TR_COINJOIN_DISCOVERY_MEMPOOL_PROGRESS',
+        defaultMessage: '{current} out of {total} transactions analyzed',
+    },
     TR_LOADING_FUNDS: {
         id: 'TR_LOADING_FUNDS',
         defaultMessage: 'Loading Funds...',
