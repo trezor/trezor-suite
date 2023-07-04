@@ -123,7 +123,7 @@ describe('ended', () => {
 
         expect(logger.error).toBeCalledTimes(1);
         expect(logger.error).toBeCalledWith(expect.stringMatching(/Missing affiliate request/));
-        expect(round.prison.inmates.length).toEqual(1);
+        expect(round.prison.inmates.length).toEqual(2); // input + output are detained
     });
 
     it('NotAllAlicesSign by this instance (missing witnesses)', () => {
@@ -164,7 +164,7 @@ describe('ended', () => {
 
         expect(logger.error).toBeCalledTimes(1);
         expect(logger.error).toBeCalledWith(expect.stringMatching(/Missing signed inputs/));
-        expect(round.prison.inmates.length).toEqual(1);
+        expect(round.prison.inmates.length).toEqual(2); // input + output are detained
     });
 
     it('NotAllAlicesSign by this instance (other)', () => {
@@ -205,7 +205,7 @@ describe('ended', () => {
 
         expect(logger.error).toBeCalledTimes(1);
         expect(logger.error).toBeCalledWith(expect.stringMatching(/This should never happen/));
-        expect(round.prison.inmates.length).toEqual(1);
+        expect(round.prison.inmates.length).toEqual(2); // input + output are detained
     });
 
     it('AbortedNotEnoughAlicesSigned by other instance (no blame round)', () => {
