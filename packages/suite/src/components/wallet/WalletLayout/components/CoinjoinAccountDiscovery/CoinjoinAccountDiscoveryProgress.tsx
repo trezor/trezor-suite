@@ -1,9 +1,12 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import styled, { useTheme } from 'styled-components';
 import { H3, Icon, Progress, variables } from '@trezor/components';
+import { localizeNumber } from '@suite-common/wallet-utils';
 import { Card, Translation } from 'src/components/suite';
 import { useAccountLoadingProgress } from './useAccountLoadingProgress';
 import { RotatingFacts } from './RotatingFacts';
+import { useSelector } from 'src/hooks/suite';
+import { selectLanguage } from 'src/reducers/suite/suiteReducer';
 
 const Container = styled(Card)`
     flex-direction: column;
@@ -13,9 +16,26 @@ const Container = styled(Card)`
     margin-bottom: 24px;
 `;
 
+const Subheader = styled.div`
+    display: flex;
+    align-items: center;
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    font-size: ${variables.FONT_SIZE.SMALL};
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    text-align: center;
+    margin-top: 8px;
+    :empty:before {
+        content: '\\200b'; /* zero-width space to preserve the height of empty div */
+    }
+`;
+
 const DiscoveryProgress = styled(Progress)`
     max-width: 440px;
-    margin: 24px 0 28px;
+    margin: 18px 0 28px;
+
+    ${Progress.Value} {
+        transition: width 30s cubic-bezier(0.3, 1, 0.3, 1);
+    }
 `;
 
 const FactHeading = styled.div`
@@ -34,15 +54,27 @@ const SparksIcon = styled(Icon)`
 
 export const CoinjoinAccountDiscoveryProgress = () => {
     const theme = useTheme();
-    const { value } = useAccountLoadingProgress();
+    const locale = useSelector(selectLanguage);
+    const { messageId, outOf, progress } = useAccountLoadingProgress();
+    const messageValues = useMemo(
+        () =>
+            outOf && {
+                current: localizeNumber(outOf.current, locale),
+                total: localizeNumber(outOf.total, locale),
+            },
+        [outOf, locale],
+    );
 
     return (
         <Container>
             <H3>
                 <Translation id="TR_LOADING_FUNDS" />
             </H3>
+            <Subheader>
+                {messageId && <Translation id={messageId} values={messageValues} />}
+            </Subheader>
 
-            <DiscoveryProgress max={1} value={value} />
+            <DiscoveryProgress max={1.01} value={progress} />
 
             <FactHeading>
                 <SparksIcon icon="EXPERIMENTAL" size={13} color={theme.TYPE_ORANGE} />
