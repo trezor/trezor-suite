@@ -87,17 +87,25 @@ const registerInput = async (
                     signal.dispatchEvent(new Event('abort'));
                 }
                 if (error.errorCode === WabiSabiProtocolErrorCode.InputBanned) {
+                    const sentenceEnd =
+                        'bannedUntil' in error.exceptionData
+                            ? new Date(error.exceptionData.bannedUntil).getTime() - Date.now()
+                            : 60 * 60 * 1000; // try again in 1 hour
                     round.prison.detain(input, {
                         errorCode: WabiSabiProtocolErrorCode.InputBanned,
-                        sentenceEnd: 60 * 60 * 1000, // try again in an hour
+                        sentenceEnd,
                     });
                 }
                 if (error.errorCode === WabiSabiProtocolErrorCode.InputLongBanned) {
                     // track blacklist ban if it happens
                     logger.error(error.message);
+                    const sentenceEnd =
+                        'bannedUntil' in error.exceptionData
+                            ? new Date(error.exceptionData.bannedUntil).getTime() - Date.now()
+                            : 10 * 24 * 60 * 60 * 1000; // try again in 10 days
                     round.prison.detain(input, {
                         errorCode: WabiSabiProtocolErrorCode.InputLongBanned,
-                        sentenceEnd: Infinity, // forever locked
+                        sentenceEnd,
                     });
                 }
             }

@@ -6,11 +6,18 @@ import { httpPost, RequestOptions } from '../utils/http';
 
 export type { RequestOptions } from '../utils/http';
 
+export type ExceptionData =
+    | {
+          Type: 'InputBannedExceptionData';
+          bannedUntil: string;
+      }
+    | { Type: string };
+
 export class WabiSabiProtocolException extends Error {
     type: string;
     errorCode?: WabiSabiProtocolErrorCode;
     description: string;
-    exceptionData: { Type: string };
+    exceptionData: ExceptionData;
 
     // NOTE: coordinator/middleware error shape
     // {type: string, errorCode: string, description: string, exceptionData: { Type: string } }
