@@ -58,7 +58,9 @@ const handleMessage = (
     }
 
     if (data.type === RESPONSE_EVENT && data.success) {
-        reactEventBus.dispatch({ type: 'success' });
+        // When success we can close popup.
+        window.close();
+        return;
     }
 
     if (data.type === RESPONSE_EVENT && !data.success) {
