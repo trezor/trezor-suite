@@ -31,7 +31,7 @@ import {
     Shadow,
 } from '@shopify/react-native-skia';
 
-import type { AnimatedLineGraphProps } from './LineGraphProps';
+import type { AnimatedLineGraphProps, GraphEventWithCords } from './LineGraphProps';
 import { SelectionDot as DefaultSelectionDot } from './SelectionDot';
 import {
     createGraphPath,
@@ -45,13 +45,14 @@ import { getSixDigitHex } from './utils/getSixDigitHex';
 import { usePanGesture } from './hooks/usePanGesture';
 import { getYForX } from './GetYForX';
 import { hexToRgba } from './utils/hexToRgba';
+import { DefaultGraphEvent } from './DefaultGraphEvent';
 
 const INDICATOR_RADIUS = 7;
 const INDICATOR_BORDER_MULTIPLIER = 1.3;
 const INDICATOR_PULSE_BLUR_RADIUS_SMALL = INDICATOR_RADIUS * INDICATOR_BORDER_MULTIPLIER;
 const INDICATOR_PULSE_BLUR_RADIUS_BIG = INDICATOR_RADIUS * INDICATOR_BORDER_MULTIPLIER + 20;
 
-export function AnimatedLineGraph({
+export function AnimatedLineGraph<TEventPayload extends object>({
     points: allPoints,
     color,
     gradientFillColors,
@@ -72,11 +73,17 @@ export function AnimatedLineGraph({
     verticalPadding = lineThickness,
     TopAxisLabel,
     BottomAxisLabel,
+    events,
+    EventComponent = DefaultGraphEvent,
     ...props
-}: AnimatedLineGraphProps): React.ReactElement {
+}: AnimatedLineGraphProps<TEventPayload>): React.ReactElement {
     const [width, setWidth] = useState(0);
     const [height, setHeight] = useState(0);
     const interpolateProgress = useValue(0);
+
+    const [eventsWithCords, setEventsWithCords] = useState<
+        GraphEventWithCords<TEventPayload>[] | null
+    >(null);
 
     const { gesture, isActive, x } = usePanGesture({
         enabled: enablePanGesture,
@@ -238,6 +245,7 @@ export function AnimatedLineGraph({
         }
 
         setCommandsChanged(commandsChanged + 1);
+        setEventsWithCords(null);
 
         runSpring(
             interpolateProgress,
@@ -247,6 +255,19 @@ export function AnimatedLineGraph({
                 stiffness: 500,
                 damping: 400,
                 velocity: 0,
+            },
+            () => {
+                // Calculate graph event coordinates when the interpolation ends.
+                if (events) {
+                    const eventsWithCords: GraphEventWithCords<TEventPayload>[] = [];
+                    events.forEach(e => {
+                        const eventX =
+                            getXInRange(drawingWidth, e.date, pathRange.x) + horizontalPadding;
+                        const eventY = getYForX(commands.value, eventX) ?? 0;
+                        eventsWithCords.push({ ...e, x: eventX, y: eventY });
+                    });
+                    setEventsWithCords(eventsWithCords);
+                }
             },
         );
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -263,6 +284,7 @@ export function AnimatedLineGraph({
         straightLine,
         verticalPadding,
         width,
+        events,
     ]);
 
     const gradientColors = useMemo(() => {
@@ -479,6 +501,22 @@ export function AnimatedLineGraph({
                                     circleX={circleX}
                                     circleY={circleY}
                                 />
+                            )}
+
+                            {EventComponent != null && eventsWithCords && (
+                                <Group>
+                                    {eventsWithCords?.map(event => (
+                                        <EventComponent
+                                            key={event.date.getTime()}
+                                            isGraphActive={isActive}
+                                            fingerX={circleX}
+                                            eventX={event.x}
+                                            eventY={event.y}
+                                            color={color}
+                                            {...event.payload}
+                                        />
+                                    ))}
+                                </Group>
                             )}
 
                             {indicatorVisible && (
