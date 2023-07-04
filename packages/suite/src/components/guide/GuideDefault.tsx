@@ -27,6 +27,9 @@ const FeedbackButton = styled.button`
     background: none;
     transition: ${props =>
         `background ${props.theme.HOVER_TRANSITION_TIME} ${props.theme.HOVER_TRANSITION_EFFECT}`};
+    /* speficy position and z-index so that GuideButton does not interfere */
+    position: relative;
+    z-index: ${variables.Z_INDEX.GUIDE};
 
     :hover,
     :focus {
@@ -61,6 +64,14 @@ export const GuideDefault = () => {
         indexNode: state.guide.indexNode,
     }));
 
+    const handleFeedbackButtonClick = () => {
+        setView('SUPPORT_FEEDBACK_SELECTION');
+        analytics.report({
+            type: EventType.GuideFeedbackNavigation,
+            payload: { type: 'overview' },
+        });
+    };
+
     return (
         <ViewWrapper>
             <Header label={<Translation id="TR_GUIDE_VIEW_HEADLINE_LEARN_AND_DISCOVER" />} />
@@ -73,16 +84,11 @@ export const GuideDefault = () => {
                     />
                 )}
             </Content>
-            <FeedbackLinkWrapper
-                onClick={() => {
-                    setView('SUPPORT_FEEDBACK_SELECTION');
-                    analytics.report({
-                        type: EventType.GuideFeedbackNavigation,
-                        payload: { type: 'overview' },
-                    });
-                }}
-            >
-                <FeedbackButton data-test="@guide/button-feedback">
+            <FeedbackLinkWrapper>
+                <FeedbackButton
+                    data-test="@guide/button-feedback"
+                    onClick={handleFeedbackButtonClick}
+                >
                     <Icon icon="FEEDBACK" size={16} color={theme.TYPE_LIGHT_GREY} />
                     <FeedbackButtonLabel>
                         <Translation id="TR_GUIDE_SUPPORT_AND_FEEDBACK" />
