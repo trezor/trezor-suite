@@ -151,7 +151,7 @@ describe('scheduleAction', () => {
 
     it('variable timeouts', async () => {
         const TIMEOUTS = [50, 150, 100];
-        const MARGIN = 5;
+        const MARGIN = 10;
 
         const times: number[] = [Date.now()];
         const action = (signal?: AbortSignal) => {

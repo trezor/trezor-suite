@@ -7,6 +7,7 @@ export * from './bytesToHumanReadable';
 export * from './capitalizeFirstLetter';
 export * from './cloneObject';
 export * from './countBytesInString';
+export * from './createCooldown';
 export * from './createDeferred';
 export * from './createTimeoutPromise';
 export * as enumUtils from './enumUtils';
