@@ -1,8 +1,8 @@
-// Minimum number of blocks after which 'progress' event is fired by scanAccount
-export const PROGRESS_BATCH_SIZE_MIN = 10;
+// minimum time span (in ms) after which discovery checkpoint is emitted by scanAccount
+export const CHECKPOINT_COOLDOWN = 10000;
 
-// Maximum number of blocks after which 'progress' event is fired by scanAccount
-export const PROGRESS_BATCH_SIZE_MAX = 10000;
+// minimum time span (in ms) after which progress info is emitted by scanAccount
+export const PROGRESS_INFO_COOLDOWN = 1000;
 
 export const DISCOVERY_LOOKOUT = 20;
 

@@ -14,6 +14,7 @@ import type {
 
 import type { CoinjoinBackendClient } from '../backend/CoinjoinBackendClient';
 import type { MempoolController } from '../backend/CoinjoinMempoolController';
+import type { FilterController } from '../backend/CoinjoinFilterController';
 
 export type { BlockbookTransaction, VinVout, EnhancedVinVout };
 export type { Address, Utxo, Transaction, AccountAddresses };
@@ -50,7 +51,7 @@ export type ScanAccountContext = {
     filters: FilterController;
     mempool?: MempoolController;
     onProgress: (progress: ScanAccountProgress) => void;
-    onProgressInfo: (info: ScanProgressInfo) => void;
+    onProgressInfo: OnProgressInfo;
 };
 
 export type ScanAccountCheckpoint = {
@@ -60,10 +61,22 @@ export type ScanAccountCheckpoint = {
     changeCount: number;
 };
 
-export type ScanProgressInfo = {
-    progress?: number;
-    message?: string;
-};
+export type ScanProgressInfo =
+    | {
+          stage: 'block';
+          activity: 'fetch' | 'scan-fetch' | 'scan';
+          batchFrom: number;
+          progress?: { current: number; from: number; to: number };
+      } // scan is always one batch behind fetch
+    | { stage: 'block'; progress: { current: number; from: number; to: number } }
+    | {
+          stage: 'mempool';
+          activity: 'fetch' | 'scan';
+          progress?: { current: number; total: number; iteration: number };
+      }
+    | { stage: 'mempool'; progress: { current: number; total: number; iteration: number } };
+
+export type OnProgressInfo = (info: ScanProgressInfo) => void;
 
 export type ScanAccountProgress = {
     checkpoint: ScanAccountCheckpoint;
@@ -93,18 +106,8 @@ export type FilterControllerParams = {
 
 export type FilterControllerContext = {
     abortSignal?: AbortSignal;
+    onProgressInfo?: OnProgressInfo;
 };
-
-type IteratedBlockFilter = BlockFilter & {
-    progress?: number;
-};
-
-export interface FilterController {
-    getFilterIterator(
-        params?: FilterControllerParams,
-        context?: FilterControllerContext,
-    ): AsyncGenerator<IteratedBlockFilter>;
-}
 
 export type FilterClient = Pick<CoinjoinBackendClient, 'fetchFilters'>;
 

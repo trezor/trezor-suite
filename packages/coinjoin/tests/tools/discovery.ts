@@ -35,7 +35,9 @@ export const getAccountInfo = async ({
     );
 
     backend.on(`progress-info/${descriptor}`, e => {
-        if (e.progress) console.log('⌛', new Date().toLocaleTimeString(), e.progress, e.message);
+        const now = new Date().toLocaleTimeString();
+        if ('activity' in e) console.log('🔄', now, e.stage, e.activity);
+        if (e.progress) console.log('⌛', now, e.progress.current);
     });
 
     backend.on(`progress/${descriptor}`, e => {
