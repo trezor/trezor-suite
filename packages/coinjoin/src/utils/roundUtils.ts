@@ -1,4 +1,5 @@
 import { bufferutils, Transaction, Network } from '@trezor/utxo-lib';
+import { getRandomNumberInRange } from '@trezor/utils';
 
 import {
     COORDINATOR_FEE_RATE_FALLBACK,
@@ -6,6 +7,7 @@ import {
     MIN_ALLOWED_AMOUNT_FALLBACK,
     PLEBS_DONT_PAY_THRESHOLD_FALLBACK,
     ROUND_REGISTRATION_END_OFFSET,
+    ROUND_MAXIMUM_REQUEST_DELAY,
 } from '../constants';
 import { RoundPhase } from '../enums';
 import { CoinjoinTransactionData } from '../types';
@@ -66,6 +68,15 @@ export const readTimeSpan = (ts: string) => {
 
     return date.getTime() - now;
 };
+
+export const scheduleDelay = (
+    deadline: number,
+    minimumDelay = 0,
+    maximumDelay = ROUND_MAXIMUM_REQUEST_DELAY,
+) =>
+    deadline > minimumDelay && deadline > maximumDelay
+        ? getRandomNumberInRange(minimumDelay, maximumDelay)
+        : minimumDelay;
 
 // NOTE: deadlines are not accurate. phase may change earlier
 // accept CoinjoinRound or modified coordinator Round (see estimatePhaseDeadline below)
