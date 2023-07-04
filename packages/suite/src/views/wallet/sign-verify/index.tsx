@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FieldError } from 'react-hook-form';
 import styled from 'styled-components';
 import {
@@ -14,9 +14,9 @@ import {
 
 import { WalletLayout, WalletLayoutHeader } from 'src/components/wallet';
 import { CharacterCount, Translation } from 'src/components/suite';
-import { useActions, useDevice, useSelector, useTranslation } from 'src/hooks/suite';
-import * as signVerifyActions from 'src/actions/wallet/signVerifyActions';
-import * as routerActions from 'src/actions/suite/routerActions';
+import { useDevice, useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
+import { sign, verify } from 'src/actions/wallet/signVerifyActions';
+import { goto } from 'src/actions/suite/routerActions';
 import { TranslationKey } from 'src/components/suite/Translation';
 
 import { Navigation, NavPages } from './components/Navigation';
@@ -30,7 +30,6 @@ import {
     MAX_LENGTH_SIGNATURE,
 } from 'src/hooks/wallet/sign-verify/useSignVerifyForm';
 import { getInputState } from '@suite-common/wallet-utils';
-import { Account } from 'src/types/wallet';
 
 const SwitchWrapper = styled.label`
     display: flex;
@@ -92,14 +91,31 @@ const Copybutton = styled(Button)`
     top: -2px;
 `;
 
-const SignVerify = () => {
-    const { selectedAccount, revealedAddresses } = useSelector(state => ({
-        selectedAccount: state.wallet.selectedAccount,
-        revealedAddresses: state.wallet.receive,
-    }));
+const formatOptions = [
+    { value: false, label: <Translation id="TR_BIP_SIG_FORMAT" /> },
+    {
+        value: true,
+        label: <Translation id="TR_COMPATIBILITY_SIG_FORMAT" />,
+    },
+];
 
+const tooltipContent = (
+    <Translation
+        id="TR_FORMAT_TOOLTIP"
+        values={{
+            FormatDescription: chunks => <FormatDescription>{chunks}</FormatDescription>,
+            span: chunks => <span>{chunks}</span>,
+        }}
+    />
+);
+
+const SignVerify = () => {
     const [page, setPage] = useState<NavPages>('sign');
     const [isCompleted, setIsCompleted] = useState(false);
+
+    const selectedAccount = useSelector(state => state.wallet.selectedAccount);
+    const revealedAddresses = useSelector(state => state.wallet.receive);
+    const dispatch = useDispatch();
 
     const isSignPage = page === 'sign';
 
@@ -116,17 +132,11 @@ const SignVerify = () => {
         addressField,
         pathField,
         isElectrumField,
-    } = useSignVerifyForm(isSignPage, selectedAccount.account as Account);
+    } = useSignVerifyForm(isSignPage, selectedAccount.account!);
 
     const { isLocked } = useDevice();
     const { translationString } = useTranslation();
     const { canCopy, copy } = useCopySignedMessage(formValues, selectedAccount.network?.name);
-
-    const { sign, verify, goto } = useActions({
-        sign: signVerifyActions.sign,
-        verify: signVerifyActions.verify,
-        goto: routerActions.goto,
-    });
 
     const getErrorMessage = (error?: FieldError) =>
         error ? translationString(error.message as TranslationKey) : undefined;
@@ -139,6 +149,17 @@ const SignVerify = () => {
     const { ref: messageRef, ...messageField } = register('message');
     const { ref: signatureRef, ...signatureField } = register('signature');
 
+    const signatureProps = {
+        label: translationString('TR_SIGNATURE'),
+        inputState: getInputState(formErrors.signature, formValues.signature) as ReturnType<
+            typeof getInputState
+        >,
+        bottomText: signatureError,
+        'data-test': '@sign-verify/signature',
+        innerRef: signatureRef,
+        ...signatureField,
+    };
+
     useEffect(() => {
         if (isSignPage && formValues.signature) return;
 
@@ -149,50 +170,25 @@ const SignVerify = () => {
         const { address, path, message, signature, hex, isElectrum } = data;
 
         if (isSignPage) {
-            const result = await sign(path, message, hex, isElectrum);
+            const result = await dispatch(sign(path, message, hex, isElectrum));
 
             if (result) {
                 formSetSignature(result);
                 setIsCompleted(true);
             }
         } else {
-            const result = await verify(address, message, signature, hex);
+            const result = await dispatch(verify(address, message, signature, hex));
 
             if (result) setIsCompleted(true);
         }
     };
 
-    const tooltipContent = (
-        <Translation
-            id="TR_FORMAT_TOOLTIP"
-            values={{
-                FormatDescription: chunks => <FormatDescription>{chunks}</FormatDescription>,
-                span: chunks => <span>{chunks}</span>,
-            }}
-        />
-    );
-
-    const formatOptions = useMemo(
-        () => [
-            { value: false, label: <Translation id="TR_BIP_SIG_FORMAT" /> },
-            {
-                value: true,
-                label: <Translation id="TR_COMPATIBILITY_SIG_FORMAT" />,
-            },
-        ],
-        [],
-    );
-
-    const closeScreen = useCallback(
-        (withCopy?: boolean) => {
-            if (withCopy) {
-                copy();
-            }
-
-            goto('wallet-index', { preserveParams: true });
-        },
-        [copy, goto],
-    );
+    const closeScreen = (withCopy?: boolean) => {
+        if (withCopy) {
+            copy();
+        }
+        dispatch(goto('wallet-index', { preserveParams: true }));
+    };
 
     return (
         <WalletLayout title="TR_NAV_SIGN_VERIFY" account={selectedAccount}>
@@ -288,38 +284,22 @@ const SignVerify = () => {
                                 )}
 
                                 <Input
-                                    label={<Translation id="TR_SIGNATURE" />}
                                     maxLength={MAX_LENGTH_SIGNATURE}
                                     type="text"
                                     readOnly={isSignPage}
                                     isDisabled={!formValues.signature?.length}
-                                    inputState={getInputState(
-                                        formErrors.signature,
-                                        formValues.signature,
-                                    )}
-                                    bottomText={signatureError}
                                     placeholder={translationString(
                                         'TR_SIGNATURE_AFTER_SIGNING_PLACEHOLDER',
                                     )}
-                                    data-test="@sign-verify/signature"
-                                    innerRef={signatureRef}
-                                    {...signatureField}
+                                    {...signatureProps}
                                 />
                             </>
                         ) : (
                             <Textarea
-                                label={<Translation id="TR_SIGNATURE" />}
                                 maxLength={MAX_LENGTH_SIGNATURE}
-                                inputState={getInputState(
-                                    formErrors.signature,
-                                    formValues.signature,
-                                )}
-                                bottomText={signatureError}
                                 rows={4}
                                 maxRows={4}
-                                data-test="@sign-verify/signature"
-                                innerRef={signatureRef}
-                                {...signatureField}
+                                {...signatureProps}
                             >
                                 <CharacterCount
                                     current={formValues.signature?.length || 0}
