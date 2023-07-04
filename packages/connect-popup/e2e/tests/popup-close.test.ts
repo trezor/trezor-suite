@@ -217,4 +217,59 @@ test.beforeAll(async () => {
         await popup.waitForSelector('div[data-test="@connect-ui/loader"]');
         // todo: there is no message into client about the fact that popup was unloaded
     });
+
+    test('when user cancels permissions in popup it closes automatically', async ({ page }) => {
+        await TrezorUserEnvLink.api.pressYes();
+        await TrezorUserEnvLink.api.pressYes();
+        await TrezorUserEnvLink.api.pressYes();
+        await popup.click("button[data-test='@connect-ui/success-close-button']");
+
+        await page.goto(`${url}#/method/getAddress`);
+        await page.waitForSelector("button[data-test='@submit-button']", { state: 'visible' });
+        [popup] = await Promise.all([
+            page.waitForEvent('popup'),
+            page.click("button[data-test='@submit-button']"),
+        ]);
+
+        popupClosedPromise = new Promise(resolve => {
+            popup.on('close', () => resolve(undefined));
+        });
+
+        await popup.waitForLoadState('load');
+        await popup.waitForSelector('button.confirm', { state: 'visible', timeout: 40000 });
+        await popup.waitForSelector("button[data-test='@permissions/confirm-button']");
+        // We are testing that when cancel permissions, popup is closed automatically.
+        await popup.click("button[data-test='@permissions/cancel-button']");
+        // Wait for popup to close.
+        await popupClosedPromise;
+    });
+
+    test('when user cancels Export Bitcoin address dialog in popup it closes automatically', async ({
+        page,
+    }) => {
+        await TrezorUserEnvLink.api.pressYes();
+        await TrezorUserEnvLink.api.pressYes();
+        await TrezorUserEnvLink.api.pressYes();
+        await popup.click("button[data-test='@connect-ui/success-close-button']");
+
+        await page.goto(`${url}#/method/getAddress`);
+        await page.waitForSelector("button[data-test='@submit-button']", { state: 'visible' });
+        [popup] = await Promise.all([
+            page.waitForEvent('popup'),
+            page.click("button[data-test='@submit-button']"),
+        ]);
+        popupClosedPromise = new Promise(resolve => {
+            popup.on('close', () => resolve(undefined));
+        });
+
+        await popup.waitForLoadState('load');
+        await popup.waitForSelector('button.confirm', { state: 'visible', timeout: 40000 });
+        await popup.waitForSelector("button[data-test='@permissions/confirm-button']");
+        await popup.click("button[data-test='@permissions/confirm-button']");
+        await popup.waitForSelector("button[data-test='@export-address/cancel-button']");
+        // We are testing that when cancel Export Bitcoin address, popup is closed automatically.
+        await popup.click("button[data-test='@export-address/cancel-button']");
+        // Wait for popup to close.
+        await popupClosedPromise;
+    });
 });
