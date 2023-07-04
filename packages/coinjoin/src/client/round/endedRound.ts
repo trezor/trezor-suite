@@ -1,4 +1,4 @@
-import { enumUtils } from '@trezor/utils';
+import { enumUtils, getRandomNumberInRange } from '@trezor/utils';
 
 import type { CoinjoinRound, CoinjoinRoundOptions } from '../CoinjoinRound';
 import { EndRoundState, WabiSabiProtocolErrorCode } from '../../enums';
@@ -48,10 +48,18 @@ export const ended = (round: CoinjoinRound, { logger, network }: CoinjoinRoundOp
             // not signed because of other reason however
             logger.error(`Round not signed. This should never happen.`);
         }
-        inputs.forEach(input =>
-            prison.detain(input, {
-                roundId: id,
-                errorCode: WabiSabiProtocolErrorCode.InputBanned,
+
+        // assume that inputs are not banned but just noted.
+        // all depends on the coordinator `AllowNotedInputRegistration` flag which is not visible in the Status
+        // https://github.com/zkSNACKs/WalletWasabi/blob/master/WalletWasabi/WabiSabi/Backend/Rounds/Arena.Partial.cs#L414
+        // give used inputs/outputs some random cool off time and try again,
+        // repeated input-registration will tell if they are really banned,
+        // make sure that addresses registered in round are recycled (reset Infinity sentence)
+        const minute = 60 * 1000;
+        const sentenceEnd = getRandomNumberInRange(5 * minute, 10 * minute);
+        [...inputs, ...addresses].forEach(vinvout =>
+            prison.detain(vinvout, {
+                sentenceEnd,
             }),
         );
     } else if (endRoundState === EndRoundState.NotAllAlicesSign) {
