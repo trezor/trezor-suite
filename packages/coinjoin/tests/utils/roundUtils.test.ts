@@ -4,6 +4,7 @@ import {
     estimatePhaseDeadline,
     transformStatus,
     getAffiliateRequest,
+    scheduleDelay,
 } from '../../src/utils/roundUtils';
 import { ROUND_REGISTRATION_END_OFFSET } from '../../src/constants';
 import { DEFAULT_ROUND, STATUS_EVENT, STATUS_TRANSFORMED } from '../fixtures/round.fixture';
@@ -118,5 +119,17 @@ describe('roundUtils', () => {
                 '106bf94e6c325e3f9a8627ac6a8ebe71f322edcde26b43add515d81fc306a309a914ff0e7cfc75b05fc1cddbb60f0f5594642991a23f19b4a4794000d4169db2',
             coinjoin_flags_array: [1, 1],
         });
+    });
+
+    it('scheduleDelay', () => {
+        const d1 = scheduleDelay(20000, 3000);
+        expect(d1).toBeGreaterThanOrEqual(3000);
+        expect(d1).toBeLessThanOrEqual(10000);
+
+        const d2 = scheduleDelay(1000, 3000);
+        expect(d2).toEqual(3000); // deadline < min
+
+        const d3 = scheduleDelay(1000, 0, 5000);
+        expect(d3).toEqual(0); // deadline < max
     });
 });

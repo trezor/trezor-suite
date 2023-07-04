@@ -1,8 +1,13 @@
-import { getRandomNumberInRange, arrayShuffle } from '@trezor/utils';
+import { arrayShuffle } from '@trezor/utils';
 
 import * as coordinator from '../coordinator';
 import * as middleware from '../middleware';
-import { getRoundEvents, compareOutpoint, getAffiliateRequest } from '../../utils/roundUtils';
+import {
+    getRoundEvents,
+    compareOutpoint,
+    getAffiliateRequest,
+    scheduleDelay,
+} from '../../utils/roundUtils';
 import {
     mergePubkeys,
     sortInputs,
@@ -15,7 +20,6 @@ import type { Account } from '../Account';
 import type { Alice } from '../Alice';
 import type { CoinjoinRound, CoinjoinRoundOptions } from '../CoinjoinRound';
 import { CoinjoinTransactionData } from '../../types';
-import { ROUND_MAXIMUM_REQUEST_DELAY } from '../../constants';
 import { SessionPhase, WabiSabiProtocolErrorCode } from '../../enums';
 
 const getTransactionData = (
@@ -120,18 +124,12 @@ const sendTxSignature = async (
     input: Alice,
     { signal, coordinatorUrl }: CoinjoinRoundOptions,
 ) => {
-    const deadline = round.phaseDeadline - Date.now();
-    const delay =
-        deadline > ROUND_MAXIMUM_REQUEST_DELAY
-            ? getRandomNumberInRange(0, ROUND_MAXIMUM_REQUEST_DELAY)
-            : 0;
-
     await coordinator
         .transactionSignature(round.id, input.witnessIndex!, input.witness!, {
             signal,
             baseUrl: coordinatorUrl,
             identity: input.outpoint, // NOTE: recycle input identity
-            delay,
+            delay: scheduleDelay(round.phaseDeadline - Date.now()),
             deadline: round.phaseDeadline,
         })
         .catch(error => {

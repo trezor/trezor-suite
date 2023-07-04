@@ -245,7 +245,7 @@ const findCredentialsForTarget = (
     return candidate ? [candidate[0], candidate[1]] : undefined;
 };
 
-interface Bob {
+export interface Bob {
     accountKey: string;
     amount: number;
     amountCredentials: middleware.Credentials[];
