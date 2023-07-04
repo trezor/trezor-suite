@@ -1,8 +1,8 @@
 import { NetworkSymbol } from '@suite-common/wallet-config';
 
 export type FiatGraphPoint = {
-    timestamp: number;
-    fiatBalance: number;
+    date: Date;
+    value: number;
 };
 
 export type FiatGraphPointWithCryptoBalance = {

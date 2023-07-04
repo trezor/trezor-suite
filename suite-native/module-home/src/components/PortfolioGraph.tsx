@@ -1,9 +1,9 @@
-import React, { useCallback, useEffect, useMemo } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
 import { useSetAtom } from 'jotai';
 
-import { useGraphForAllAccounts, enhanceGraphPoints, Graph, TimeSwitch } from '@suite-native/graph';
+import { useGraphForAllAccounts, Graph, TimeSwitch } from '@suite-native/graph';
 import { selectFiatCurrency } from '@suite-native/module-settings';
 
 import {
@@ -18,12 +18,11 @@ export const PortfolioGraph = () => {
         useGraphForAllAccounts({
             fiatCurrency: fiatCurrency.label,
         });
-    const enhancedPoints = useMemo(() => enhanceGraphPoints(graphPoints), [graphPoints]);
     const setSelectedPoint = useSetAtom(selectedPointAtom);
     const setReferencePoint = useSetAtom(referencePointAtom);
 
-    const lastPoint = enhancedPoints[enhancedPoints.length - 1];
-    const firstPoint = enhancedPoints[0];
+    const lastPoint = graphPoints[graphPoints.length - 1];
+    const firstPoint = graphPoints[0];
 
     const setInitialSelectedPoints = useCallback(() => {
         if (lastPoint && firstPoint) {
@@ -39,7 +38,7 @@ export const PortfolioGraph = () => {
             <PortfolioGraphHeader />
 
             <Graph
-                points={enhancedPoints}
+                points={graphPoints}
                 loading={isLoading}
                 onPointSelected={setSelectedPoint}
                 onGestureEnd={setInitialSelectedPoints}

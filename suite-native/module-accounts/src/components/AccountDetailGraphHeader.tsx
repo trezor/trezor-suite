@@ -7,13 +7,13 @@ import { Box, Divider, Text } from '@suite-native/atoms';
 import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import {
     emptyGraphPoint,
-    EnhancedGraphPointWithCryptoBalance,
     GraphDateFormatter,
     percentageDiff,
     PriceChangeIndicator,
 } from '@suite-native/graph';
 import { FiatAmountFormatter } from '@suite-native/formatters';
 import { NetworkSymbol } from '@suite-common/wallet-config';
+import { FiatGraphPointWithCryptoBalance } from '@suite-common/graph';
 
 import { AccountDetailCryptoValue } from './AccountDetailCryptoValue';
 
@@ -21,10 +21,10 @@ type AccountBalanceProps = {
     accountKey: string;
 };
 
-export const selectedPointAtom = atom<EnhancedGraphPointWithCryptoBalance>(emptyGraphPoint);
+export const selectedPointAtom = atom<FiatGraphPointWithCryptoBalance>(emptyGraphPoint);
 
 // reference is usually first point, same as Revolut does in their app
-export const referencePointAtom = atom<EnhancedGraphPointWithCryptoBalance>(emptyGraphPoint);
+export const referencePointAtom = atom<FiatGraphPointWithCryptoBalance>(emptyGraphPoint);
 
 const percentageChangeAtom = atom(get => {
     const selectedPoint = get(selectedPointAtom);
@@ -66,7 +66,7 @@ export const AccountDetailGraphHeader = ({ accountKey }: AccountBalanceProps) =>
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
-    const { originalDate: firstPointDate } = useAtomValue(referencePointAtom);
+    const { date: firstPointDate } = useAtomValue(referencePointAtom);
 
     if (!account) return null;
 
