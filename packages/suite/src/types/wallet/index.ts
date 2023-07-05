@@ -28,7 +28,7 @@ export type { Icon } from './iconTypes';
 export type { BackendType, CustomBackend } from './backend';
 export type { CoinFiatRates, TickerId } from 'src/types/wallet/fiatRates';
 export type { Discovery } from 'src/reducers/wallet/discoveryReducer';
-export type DiscoveryStatus =
+export type DiscoveryStatusType =
     | {
           status: 'loading';
           type: 'waiting-for-device' | 'auth' | 'auth-confirm' | 'discovery';

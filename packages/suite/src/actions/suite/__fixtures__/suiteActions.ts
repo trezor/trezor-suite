@@ -1,9 +1,9 @@
 import { DEVICE, TRANSPORT } from '@trezor/connect';
 import { SUITE, MODAL } from 'src/actions/suite/constants';
-import { DISCOVERY } from 'src/actions/wallet/constants';
 import * as suiteActions from '../suiteActions';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { TorStatus } from 'src/types/suite';
+import { discoveryActions } from 'src/actions/wallet/discoveryActions';
 
 const { getSuiteDevice, getConnectDevice } = global.JestMocks;
 
@@ -182,19 +182,19 @@ const reducerActions = [
         ],
     },
     {
-        description: `DISCOVERY.START/DISCOVERY.STOP + DISCOVERY.START/DISCOVERY.COMPLETE`,
+        description: `startDiscovery/stopDiscovery + startDiscovery/completeDiscovery`,
         actions: [
             {
-                type: DISCOVERY.START,
+                type: discoveryActions.startDiscovery.type,
             },
             {
-                type: DISCOVERY.STOP,
+                type: discoveryActions.stopDiscovery.type,
             },
             {
-                type: DISCOVERY.START,
+                type: discoveryActions.startDiscovery.type,
             },
             {
-                type: DISCOVERY.COMPLETE,
+                type: discoveryActions.completeDiscovery.type,
             },
         ],
         result: [

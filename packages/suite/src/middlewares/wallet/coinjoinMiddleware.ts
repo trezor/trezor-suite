@@ -1,15 +1,11 @@
 import type { MiddlewareAPI } from 'redux';
-import { arrayDistinct } from '@trezor/utils';
-import { UI, DEVICE } from '@trezor/connect';
-import { SessionPhase } from '@trezor/coinjoin/lib/enums';
-import { addToast } from '@suite-common/toast-notifications';
 import { SUITE, ROUTER } from 'src/actions/suite/constants';
 import {
     SESSION_ROUND_CHANGED,
     SET_DEBUG_SETTINGS,
     SESSION_TX_BROADCASTED,
 } from 'src/actions/wallet/constants/coinjoinConstants';
-import { COINJOIN, DISCOVERY } from 'src/actions/wallet/constants';
+import { COINJOIN } from 'src/actions/wallet/constants';
 import * as coinjoinAccountActions from 'src/actions/wallet/coinjoinAccountActions';
 import * as coinjoinClientActions from 'src/actions/wallet/coinjoinClientActions';
 import * as storageActions from 'src/actions/suite/storageActions';
@@ -17,18 +13,14 @@ import { CoinjoinService } from 'src/services/coinjoin';
 import type { AppState, Action, Dispatch } from 'src/types/suite';
 import { CoinjoinConfig, RoundPhase } from 'src/types/wallet/coinjoin';
 import {
-    accountsActions,
-    blockchainActions,
-    selectAccountByKey,
-    transactionsActions,
-} from '@suite-common/wallet-core';
-import {
     selectCoinjoinAccountByKey,
     selectIsAnySessionInCriticalPhase,
     selectIsAccountWithSessionInCriticalPhaseByAccountKey,
     selectIsCoinjoinBlockedByTor,
     selectCoinjoinSessionBlockerByAccountKey,
 } from 'src/reducers/wallet/coinjoinReducer';
+import { discoveryActions } from 'src/actions/wallet/discoveryActions';
+import { isAnyOf } from '@reduxjs/toolkit';
 
 import {
     Feature,
@@ -36,6 +28,16 @@ import {
     selectIsFeatureDisabled,
     messageSystemActions,
 } from '@suite-common/message-system';
+import {
+    accountsActions,
+    blockchainActions,
+    selectAccountByKey,
+    transactionsActions,
+} from '@suite-common/wallet-core';
+import { addToast } from '@suite-common/toast-notifications';
+import { SessionPhase } from '@trezor/coinjoin/lib/enums';
+import { UI, DEVICE } from '@trezor/connect';
+import { arrayDistinct } from '@trezor/utils';
 
 export const coinjoinMiddleware =
     (api: MiddlewareAPI<Dispatch, AppState>) =>
@@ -116,9 +118,12 @@ export const coinjoinMiddleware =
             }
         }
 
-        if (action.type === DISCOVERY.START || blockchainActions.synced.match(action)) {
+        if (isAnyOf(discoveryActions.startDiscovery, blockchainActions.synced)(action)) {
             const state = api.getState();
-            const symbol = action.type === DISCOVERY.START ? undefined : action.payload.symbol;
+            const symbol =
+                action.type === discoveryActions.startDiscovery.type
+                    ? undefined
+                    : action.payload.symbol;
             const isCoinjoinBlockedByTor = selectIsCoinjoinBlockedByTor(state);
             if (!isCoinjoinBlockedByTor) {
                 // find all coinjoin accounts (for specific network when initiating action is network-specific)

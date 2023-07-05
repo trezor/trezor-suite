@@ -1,5 +1,4 @@
 import produce from 'immer';
-
 import { STORAGE, METADATA } from 'src/actions/suite/constants';
 import { Action } from 'src/types/suite';
 import { MetadataState } from 'src/types/suite/metadata';
@@ -39,9 +38,11 @@ const metadataReducer = (state = initialState, action: Action): MetadataState =>
         }
     });
 
+export const selectMetadata = (state: MetadataRootState) => state.metadata;
+
 // is everything ready (more or less) to add label?
 export const selectIsLabelingAvailable = (state: MetadataRootState) => {
-    const { enabled, provider } = state.metadata;
+    const { enabled, provider } = selectMetadata(state);
     const device = selectDevice(state);
 
     return !!(enabled && device?.metadata?.status === 'enabled' && provider);

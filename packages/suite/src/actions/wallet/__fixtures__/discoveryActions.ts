@@ -191,7 +191,7 @@ export const fixtures = [
 // 8. Second bundle is completed without interruption. Created accounts: ["m/84'/0'/0'", "m/84'/0'/1'", "m/49'/0'/0'", "m/44'/0'/0'"....], Discovery process requests for another bundle.
 // 9. TrezorConnect.getAccountInfo received third bundle. Bundle starts with ["m/84'/0'/2'", "m/49'/0'/1'", "m/44'/0'/1'"...]
 // 10. Account "m/84'/0'/2'" is created in reducer, interruption is triggered from test, TrezorConnect is requested for "m/49'/0'/1'" and throws error...
-// ...and so on, until discovery calls DISCOVERY.COMPLETE action
+// ...and so on, until discovery calls completeDiscovery action
 export const interruptionFixtures = [
     {
         description:

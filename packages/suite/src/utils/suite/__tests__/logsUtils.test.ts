@@ -5,7 +5,9 @@ import {
     redactDiscovery,
     REDACTED_REPLACEMENT,
 } from 'src/utils/suite/logsUtils';
-import { DISCOVERY } from 'src/actions/wallet/constants';
+import { discoveryActions } from 'src/actions/wallet/discoveryActions';
+
+import { DiscoveryStatus } from '@suite-common/wallet-constants';
 
 describe('logsUtils', () => {
     const account = global.JestMocks.getWalletAccount({
@@ -17,7 +19,7 @@ describe('logsUtils', () => {
     const device = global.JestMocks.getSuiteDevice();
     const discovery = {
         deviceState: 'n3G5TV6d5D8nMjWTDUdjLmyFv5LtycJxT6@1945380BFC121301C978931C:1',
-        status: DISCOVERY.STATUS.COMPLETED,
+        status: DiscoveryStatus.COMPLETED,
     };
 
     describe('redactAccount', () => {
@@ -70,12 +72,12 @@ describe('logsUtils', () => {
             expect(
                 redactAction({
                     datetime: 'Fri, 01 Jul 2022 10:07:17 GMT',
-                    type: DISCOVERY.COMPLETE,
+                    type: discoveryActions.completeDiscovery.type,
                     payload: discovery,
                 }),
             ).toEqual({
                 datetime: 'Fri, 01 Jul 2022 10:07:17 GMT',
-                type: DISCOVERY.COMPLETE,
+                type: discoveryActions.completeDiscovery.type,
                 payload: { ...discovery, deviceState: REDACTED_REPLACEMENT },
             });
         });

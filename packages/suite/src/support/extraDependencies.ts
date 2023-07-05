@@ -1,20 +1,20 @@
-import { ExtraDependencies } from '@suite-common/redux-utils';
-import { NetworkSymbol } from '@suite-common/wallet-config';
-import { TransactionsState, BlockchainState } from '@suite-common/wallet-core';
 import { saveAs } from 'file-saver';
-
-import { STORAGE } from '../actions/suite/constants';
 import { StorageLoadAction } from 'src/actions/suite/storageActions';
-import type { FiatRatesState } from '@suite-common/wallet-core';
-import { AppState } from '../types/suite';
-import { getAccountKey } from '@suite-common/wallet-utils';
 import * as metadataActions from 'src/actions/suite/metadataActions';
 import * as cardanoStakingActions from 'src/actions/wallet/cardanoStakingActions';
 import * as walletSettingsActions from 'src/actions/settings/walletSettingsActions';
 import { selectIsPendingTransportEvent } from 'src/reducers/suite/deviceReducer';
-import * as suiteActions from '../actions/suite/suiteActions';
-import { resolveStaticPath } from '@suite-common/suite-utils';
 import { fixLoadedCoinjoinAccount } from 'src/utils/wallet/coinjoinUtils';
+import { NetworkSymbol } from 'src/types/wallet';
+
+import { resolveStaticPath } from '@suite-common/suite-utils';
+import { getAccountKey } from '@suite-common/wallet-utils';
+import type { BlockchainState, FiatRatesState, TransactionsState } from '@suite-common/wallet-core';
+import { ExtraDependencies } from '@suite-common/redux-utils';
+
+import * as suiteActions from '../actions/suite/suiteActions';
+import { AppState } from '../types/suite';
+import { STORAGE } from '../actions/suite/constants';
 
 const connectSrc = resolveStaticPath('connect/');
 // 'https://localhost:8088/';
@@ -83,6 +83,7 @@ export const extraDependencies: ExtraDependencies = {
         storageLoadFiatRates: (state: FiatRatesState, { payload }: StorageLoadAction) => {
             state.coins = payload.fiatRates;
         },
+        storageLoadDiscovery: (_, { payload }: StorageLoadAction) => payload.discovery,
     },
     utils: {
         saveAs: (data, fileName) => saveAs(data, fileName),

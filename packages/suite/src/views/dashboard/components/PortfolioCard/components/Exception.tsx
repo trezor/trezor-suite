@@ -1,6 +1,6 @@
 import React from 'react';
+
 import styled from 'styled-components';
-import { variables, Button, IconProps, H3, Image } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 import { useDevice, useActions } from 'src/hooks/suite';
 import * as discoveryActions from 'src/actions/wallet/discoveryActions';
@@ -8,8 +8,10 @@ import * as deviceSettingsActions from 'src/actions/settings/deviceSettingsActio
 import * as suiteActions from 'src/actions/suite/suiteActions';
 import * as modalActions from 'src/actions/suite/modalActions';
 import * as routerActions from 'src/actions/suite/routerActions';
+import type { Discovery, DiscoveryStatusType } from 'src/types/wallet';
+
 import * as accountUtils from '@suite-common/wallet-utils';
-import type { Discovery, DiscoveryStatus } from 'src/types/wallet';
+import { variables, Button, IconProps, H3, Image } from '@trezor/components';
 
 const Wrapper = styled.div`
     display: flex;
@@ -87,7 +89,7 @@ const Container = ({ title, description, cta, dataTestBase }: ContainerProps) =>
 };
 
 interface ExceptionProps {
-    exception: Extract<DiscoveryStatus, { status: 'exception' }>;
+    exception: Extract<DiscoveryStatusType, { status: 'exception' }>;
     discovery?: Discovery;
 }
 

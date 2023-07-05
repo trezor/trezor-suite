@@ -25,6 +25,7 @@ import type { UiEvent, DeviceEvent, TransportEvent, BlockchainEvent } from '@tre
 import { transactionsActions } from '@suite-common/wallet-core';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { messageSystemActions } from '@suite-common/message-system';
+import { discoveryActions } from 'src/actions/wallet/discoveryActions';
 
 // reexport
 export type { ExtendedMessageDescriptor } from 'src/components/suite/Translation/components/BaseTranslation';
@@ -54,6 +55,8 @@ export type MessageSystemAction = ReturnType<
 >;
 type AnalyticsAction = ReturnType<(typeof analyticsActions)[keyof typeof analyticsActions]>;
 
+type DiscoveryAction = ReturnType<(typeof discoveryActions)[keyof typeof discoveryActions]>;
+
 // all actions from all apps used to properly type Dispatch.
 export type Action =
     | TrezorConnectEvents
@@ -75,7 +78,8 @@ export type Action =
     | DesktopUpdateAction
     | MessageSystemAction
     | GuideAction
-    | ProtocolAction;
+    | ProtocolAction
+    | DiscoveryAction;
 
 export type ThunkAction = TAction<any, AppState, any, Action>;
 

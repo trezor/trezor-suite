@@ -1,10 +1,12 @@
 import React from 'react';
-import { Button, Tooltip, ButtonProps, useTheme } from '@trezor/components';
+
 import { Translation } from 'src/components/suite';
 import { TrezorDevice } from 'src/types/suite';
 import { useActions, useDiscovery } from 'src/hooks/suite';
-import { DISCOVERY } from 'src/actions/wallet/constants';
 import * as modalActions from 'src/actions/suite/modalActions';
+
+import { Button, Tooltip, ButtonProps, useTheme } from '@trezor/components';
+import { DiscoveryStatus } from '@suite-common/wallet-constants';
 
 interface Props extends ButtonProps {
     device: TrezorDevice | undefined;
@@ -29,7 +31,7 @@ const AddAccountButton = ({ device, isDisabled, noButtonLabel, closeMenu, ...res
     const { openModal } = useActions({
         openModal: modalActions.openModal,
     });
-    const discoveryIsRunning = discovery ? discovery.status <= DISCOVERY.STATUS.STOPPING : false;
+    const discoveryIsRunning = discovery ? discovery.status <= DiscoveryStatus.STOPPING : false;
 
     // TODO: add more cases when adding account is not possible
     const addAccountDisabled =
