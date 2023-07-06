@@ -6,7 +6,7 @@ import { promiseAllSequence } from '@trezor/utils';
 import type { Logger } from '../types';
 import type { BlockbookTransaction, MempoolClient } from '../types/backend';
 import type { AddressController } from './CoinjoinAddressController';
-import { getMempoolAddressScript, getMempoolFilter } from './filters';
+import { getMempoolAddressScript, getMempoolMultiFilter } from './filters';
 import { getAllTxAddresses } from './backendUtils';
 import { MEMPOOL_PURGE_CYCLE } from '../constants';
 
@@ -94,7 +94,7 @@ export class CoinjoinMempoolController implements MempoolController {
             .fetchMempoolFilters()
             .then(res =>
                 Object.entries(res).map(
-                    ([txid, filter]) => [txid, getMempoolFilter(filter, txid)] as const,
+                    ([txid, filter]) => [txid, getMempoolMultiFilter(filter, txid)] as const,
                 ),
             );
 
@@ -117,17 +117,25 @@ export class CoinjoinMempoolController implements MempoolController {
             return [...this.mempool.values()];
         }
 
-        const findTxs = async ({ address }: { address: string }) => {
-            const script = getMempoolAddressScript(address, this.network);
-            const txids = filters.filter(([, isMatch]) => isMatch(script)).map(([txid]) => txid);
-            await addTxs(txids);
-            return this.addressTxids.get(address) ?? [];
-        };
-
+        const findTxs = ({ address }: { address: string }) => this.addressTxids.get(address) ?? [];
         const set = new Set<string>();
         const onTxs = (txids: string[]) => txids.forEach(set.add, set);
         await promiseAllSequence(
-            addressControllers.map(controller => () => controller.analyze(findTxs, onTxs)),
+            addressControllers.map(controller => async () => {
+                let checked = 0;
+                while (controller.addresses.length !== checked) {
+                    const scripts = controller.addresses
+                        .slice(checked)
+                        .map(({ address }) => getMempoolAddressScript(address, this.network));
+                    checked = controller.addresses.length;
+                    const txids = filters
+                        .filter(([, matchAny]) => matchAny(scripts))
+                        .map(([txid]) => txid);
+                    // eslint-disable-next-line no-await-in-loop
+                    await addTxs(txids);
+                    controller.analyze(findTxs, onTxs);
+                }
+            }),
         );
         this.lastPurge = new Date().getTime();
         return Array.from(set, txid => this.mempool.get(txid)!);

@@ -1,12 +1,11 @@
 import { transformTransaction } from '@trezor/blockchain-link-utils/lib/blockbook';
 
-import { getBlockFilter } from './filters';
+import { getBlockMultiFilter } from './filters';
 import { doesTxContainAddress } from './backendUtils';
 import { CoinjoinAddressController } from './CoinjoinAddressController';
 import type {
     Transaction,
     AccountAddress,
-    BlockbookBlock,
     BlockbookTransaction,
     ScanAccountParams,
     ScanAccountCheckpoint,
@@ -53,23 +52,18 @@ export const scanAccount = async (
     const everyFilter = filters.getFilterIterator({ checkpoints }, { abortSignal });
     // eslint-disable-next-line no-restricted-syntax
     for await (const { filter, blockHash, blockHeight, progress } of everyFilter) {
-        const isMatch = getBlockFilter(filter, blockHash);
+        const isMatch = getBlockMultiFilter(filter, blockHash);
+        const scripts = receive.addresses.concat(change.addresses).map(({ script }) => script);
 
-        let block: BlockbookBlock | undefined;
-        const findTxs = async ({ script, address }: AccountAddress) => {
-            if (isMatch(script)) {
-                if (!block) {
-                    block = await client.fetchBlock(blockHeight, { signal: abortSignal });
-                }
-                return block.txs.filter(doesTxContainAddress(address));
-            }
-            return [];
-        };
-
-        const onTxs = (transactions: BlockbookTransaction[]) => transactions.forEach(txs.add, txs);
-
-        await receive.analyze(findTxs, onTxs);
-        await change.analyze(findTxs, onTxs);
+        if (isMatch(scripts)) {
+            const block = await client.fetchBlock(blockHeight, { signal: abortSignal });
+            const findTxs = ({ address }: AccountAddress) =>
+                block.txs.filter(doesTxContainAddress(address));
+            const onTxs = (transactions: BlockbookTransaction[]) =>
+                transactions.forEach(txs.add, txs);
+            await receive.analyze(findTxs, onTxs);
+            await change.analyze(findTxs, onTxs);
+        }
 
         const transactions = Array.from(
             txs,
