@@ -15,6 +15,7 @@ module.exports = {
     productName: 'Trezor Suite',
     copyright: 'Copyright © ${author}',
     asar: true,
+    asarUnpack: ['**/*.node'],
     directories: {
         output: 'build-electron',
     },
