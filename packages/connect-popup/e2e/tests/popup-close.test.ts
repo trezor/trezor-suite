@@ -1,6 +1,7 @@
 import { test, expect, Page } from '@playwright/test';
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 import { createDeferred, Deferred } from '@trezor/utils';
+import { waitAndClick } from '../support/helpers';
 
 const url = process.env.URL || 'http://localhost:8088/';
 
@@ -103,7 +104,13 @@ test.beforeAll(async () => {
     // Finish verify message in afterEach. This is here to prove that after the first
     // failed attempt it is possible to retry successfully without any weird bug/race condition/edge-case
     // we are validating here this commit https://github.com/trezor/connect/commit/fc60c3c03d6e689f3de2d518cc51f62e649a20e2
-    test.afterEach(async ({ page }) => {
+    test.afterEach(async ({ page }, testInfo) => {
+        // For tests including annotation `skip-after-flow` we don't want to run this.
+        const skipAfterFlow = testInfo.annotations.find(
+            annotation => annotation.type === 'skip-after-flow',
+        );
+        if (skipAfterFlow) return;
+
         await page.goto(`${url}#/method/verifyMessage`);
         await page.waitForSelector("button[data-test='@submit-button']", { state: 'visible' });
         [popup] = await Promise.all([
@@ -281,6 +288,36 @@ test.beforeAll(async () => {
         // We are testing that when cancel Export Bitcoin address, popup is closed automatically.
         await popup.click("button[data-test='@export-address/cancel-button']");
         // Wait for popup to close.
+        await popupClosedPromise;
+    });
+
+    test('popup should close when third party is closed', async ({ page }) => {
+        test.info().annotations.push({ type: 'skip-after-flow' });
+        await TrezorUserEnvLink.api.pressYes();
+        await TrezorUserEnvLink.api.pressYes();
+        await TrezorUserEnvLink.api.pressYes();
+
+        popupClosedPromise = new Promise(resolve => {
+            popup.on('close', () => resolve(undefined));
+        });
+
+        await popupClosedPromise;
+
+        await page.goto(`${url}#/method/getAddress`);
+        await page.waitForSelector("button[data-test='@submit-button']", { state: 'visible' });
+        [popup] = await Promise.all([
+            page.waitForEvent('popup'),
+            page.click("button[data-test='@submit-button']"),
+        ]);
+        popupClosedPromise = new Promise(resolve => {
+            popup.on('close', () => resolve(undefined));
+        });
+
+        await waitAndClick(popup, ['@permissions/confirm-button']);
+
+        // Closing page with 3rd party so we make sure that popup is closed automatically.
+        await page.close();
+        // Wait for popup to close to consider the test successful.
         await popupClosedPromise;
     });
 });
