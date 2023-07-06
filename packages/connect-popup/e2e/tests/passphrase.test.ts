@@ -59,10 +59,6 @@ test('input passphrase in popup and device accepts it', async ({ page }) => {
 
     // Confirm right address is displayed.
     await TrezorUserEnvLink.api.pressYes();
-
-    await popup.waitForSelector("button[data-test='@connect-ui/success-close-button']");
-
-    await popup.click("button[data-test='@connect-ui/success-close-button']");
 });
 
 test('introduce passphrase in popup and device rejects it', async ({ page }) => {
