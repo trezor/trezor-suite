@@ -10,10 +10,6 @@ type BareAddress = {
 
 export interface AddressController {
     addresses: BareAddress[];
-    analyze<T>(
-        getTxs: (address: BareAddress) => Promise<T[]>,
-        onTxs?: (txs: T[]) => void,
-    ): Promise<void>;
     analyze<T>(getTxs: (address: BareAddress) => T[], onTxs?: (txs: T[]) => void): void;
 }
 
@@ -46,14 +42,9 @@ export class CoinjoinAddressController implements AddressController {
         this.derived = this.deriveMore(0, initialCount);
     }
 
-    async analyze<T>(
-        getTxs: (address: AccountAddress) => T[] | Promise<T[]>,
-        onTxs?: (txs: T[]) => void,
-    ) {
+    analyze<T>(getTxs: (address: AccountAddress) => T[], onTxs?: (txs: T[]) => void) {
         for (let i = 0; i < this.derived.length; ++i) {
-            const maybePromise = getTxs(this.derived[i]);
-            // eslint-disable-next-line no-await-in-loop
-            const txs = 'then' in maybePromise ? await maybePromise : maybePromise;
+            const txs = getTxs(this.derived[i]);
             if (txs.length) {
                 onTxs?.(txs);
                 const missing = this.lookout + i + 1 - this.derived.length;

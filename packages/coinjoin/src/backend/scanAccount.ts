@@ -61,8 +61,8 @@ export const scanAccount = async (
                 block.txs.filter(doesTxContainAddress(address));
             const onTxs = (transactions: BlockbookTransaction[]) =>
                 transactions.forEach(txs.add, txs);
-            await receive.analyze(findTxs, onTxs);
-            await change.analyze(findTxs, onTxs);
+            receive.analyze(findTxs, onTxs);
+            change.analyze(findTxs, onTxs);
         }
 
         const transactions = Array.from(

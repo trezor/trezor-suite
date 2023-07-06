@@ -41,15 +41,6 @@ describe('CoinjoinAddressController', () => {
         expect(controller.addresses.map(getAddress)).toStrictEqual(SEGWIT_RECEIVE_ADDRESSES);
     });
 
-    it('derive more async', async () => {
-        await controller.analyze(({ address }) =>
-            new Promise(resolve => setTimeout(resolve, 1)).then(() =>
-                address === SEGWIT_RECEIVE_ADDRESSES[1] ? [true] : [],
-            ),
-        );
-        expect(controller.addresses.map(getAddress)).toStrictEqual(SEGWIT_RECEIVE_ADDRESSES);
-    });
-
     it('collect txs', () => {
         const result: number[] = [];
         controller.analyze(
