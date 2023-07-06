@@ -38,3 +38,15 @@ export const getBlockFilter = (filterHex: string, blockHash: string) =>
 
 export const getMempoolFilter = (filterHex: string, txid: string) =>
     getFilter(filterHex, Buffer.from(txid, 'hex'));
+
+const getMultiFilter = (filterHex: string, keyBuffer: Buffer) => {
+    const filter = createFilter(Buffer.from(filterHex, 'hex'));
+    const key = keyBuffer.slice(0, KEY_SIZE);
+    return (scripts: Buffer[]) => filter.matchAny(key, scripts);
+};
+
+export const getBlockMultiFilter = (filterHex: string, blockHash: string) =>
+    getMultiFilter(filterHex, Buffer.from(blockHash, 'hex').reverse());
+
+export const getMempoolMultiFilter = (filterHex: string, txid: string) =>
+    getMultiFilter(filterHex, Buffer.from(txid, 'hex'));

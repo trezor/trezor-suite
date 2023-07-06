@@ -9,6 +9,7 @@ declare module 'golomb' {
         m: Number;
         data: Buffer;
         match(key: Buffer, script: Buffer): boolean;
+        matchAny(key: Buffer, items: Buffer[]): boolean;
         static fromItems(P: Number, key: Buffer, items: Buffer[]): Golomb;
         static fromBytes(N: Number, P: Number, data: Buffer): Golomb;
         static fromNBytes(P: Number, data: Buffer): Golomb;
