@@ -142,7 +142,7 @@ export const SupportFeedbackSelection = () => {
                         data-test="@guide/feedback/bug"
                     >
                         <ButtonImage
-                            src={resolveStaticPath('images/png/Recovery@2x.png')}
+                            src={resolveStaticPath('images/png/recovery@2x.png')}
                             width="48"
                             height="48"
                             alt=""
@@ -168,7 +168,7 @@ export const SupportFeedbackSelection = () => {
                         data-test="@guide/feedback/suggestion"
                     >
                         <ButtonImage
-                            src={resolveStaticPath('images/png/Understand@2x.png')}
+                            src={resolveStaticPath('images/png/understand@2x.png')}
                             width="48"
                             height="48"
                             alt=""
