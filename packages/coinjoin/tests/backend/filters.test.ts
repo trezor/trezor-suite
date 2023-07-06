@@ -3,6 +3,7 @@ import { networks } from '@trezor/utxo-lib';
 import {
     getBlockAddressScript,
     getBlockFilter,
+    getBlockMultiFilter,
     getMempoolAddressScript,
     getMempoolFilter,
 } from '../../src/backend/filters';
@@ -207,6 +208,26 @@ describe('Golomb filtering', () => {
             const script = getBlockAddressScript(TAPROOT_CHANGE_0, NETWORK);
             const filter = getBlockFilter(BLOCK_162.filter, BLOCK_162.hash);
             expect(filter(script)).toBe(true);
+        });
+
+        it('Multifilter hit', () => {
+            const filter = getBlockMultiFilter(BLOCK_108.filter, BLOCK_108.hash);
+            const scripts = [
+                getBlockAddressScript(TAPROOT_RECEIVE_0, NETWORK),
+                getBlockAddressScript(COINJOIN_CHANGE_0, NETWORK),
+                getBlockAddressScript(TAPROOT_CHANGE_0, NETWORK),
+            ];
+            expect(filter(scripts)).toBe(true);
+        });
+
+        it('Multifilter miss', () => {
+            const filter = getBlockMultiFilter(BLOCK_106.filter, BLOCK_106.hash);
+            const scripts = [
+                getBlockAddressScript(TAPROOT_RECEIVE_0, NETWORK),
+                getBlockAddressScript(COINJOIN_CHANGE_0, NETWORK),
+                getBlockAddressScript(TAPROOT_CHANGE_0, NETWORK),
+            ];
+            expect(filter(scripts)).toBe(false);
         });
     });
 
