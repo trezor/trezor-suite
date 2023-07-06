@@ -222,10 +222,16 @@ test.beforeAll(async () => {
         await TrezorUserEnvLink.api.pressYes();
         await TrezorUserEnvLink.api.pressYes();
         await TrezorUserEnvLink.api.pressYes();
-        await popup.click("button[data-test='@connect-ui/success-close-button']");
+
+        popupClosedPromise = new Promise(resolve => {
+            popup.on('close', () => resolve(undefined));
+        });
+
+        await popupClosedPromise;
 
         await page.goto(`${url}#/method/getAddress`);
         await page.waitForSelector("button[data-test='@submit-button']", { state: 'visible' });
+
         [popup] = await Promise.all([
             page.waitForEvent('popup'),
             page.click("button[data-test='@submit-button']"),
@@ -250,7 +256,12 @@ test.beforeAll(async () => {
         await TrezorUserEnvLink.api.pressYes();
         await TrezorUserEnvLink.api.pressYes();
         await TrezorUserEnvLink.api.pressYes();
-        await popup.click("button[data-test='@connect-ui/success-close-button']");
+
+        popupClosedPromise = new Promise(resolve => {
+            popup.on('close', () => resolve(undefined));
+        });
+
+        await popupClosedPromise;
 
         await page.goto(`${url}#/method/getAddress`);
         await page.waitForSelector("button[data-test='@submit-button']", { state: 'visible' });
