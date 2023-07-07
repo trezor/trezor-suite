@@ -31,7 +31,7 @@ export class CoinjoinBackendClient {
 
     protected blockbookRequestId;
 
-    private readonly identityWabisabi = 'WabisabiApi';
+    private identityWabisabi = 'WabisabiApi';
     private readonly identitiesBlockbook = [
         'Blockbook_1',
         'Blockbook_2',
@@ -173,7 +173,8 @@ export class CoinjoinBackendClient {
 
     protected async handleFiltersResponse(response: Response): Promise<BlockFilterResponse> {
         switch (response.status) {
-            case 204: // Provided hash is a tip
+            // Provided hash is a tip
+            case 204:
                 return { status: 'up-to-date' };
             case 200: {
                 const result: { bestHeight: number; filters: string[] } = await response.json();
@@ -193,13 +194,19 @@ export class CoinjoinBackendClient {
                     filters,
                 };
             }
-            case 404: // hash does not exist, probably reorg
+            // hash does not exist, probably reorg
+            case 404:
                 return { status: 'not-found' };
-            default: {
-                const error = await response.json().catch(() => response.statusText);
-                throw new Error(`${response.status}: ${error}`);
+            // possibly blocked by cloudflare
+            case 403: {
+                const [identity] = this.identityWabisabi.split(':');
+                // set random password to reset TOR circuit for this identity
+                this.identityWabisabi = `${identity}:${Math.random()}`;
             }
+            // no default
         }
+        const error = await response.json().catch(() => response.statusText);
+        throw new Error(`${response.status}: ${error}`);
     }
 
     fetchMempoolTxids(options?: RequestOptions): Promise<string[]> {
