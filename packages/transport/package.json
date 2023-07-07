@@ -61,7 +61,7 @@
         "json-stable-stringify": "^1.0.2",
         "long": "^4.0.0",
         "prettier": "2.8.8",
-        "protobufjs": "6.11.3",
+        "protobufjs": "7.2.4",
         "usb": "^2.9.0"
     }
 }
