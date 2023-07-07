@@ -290,6 +290,9 @@ test.only('passphrase mismatch', async ({ page }) => {
     // Confirm right address is displayed.
     await TrezorUserEnvLink.api.pressYes();
 
+    // Wait for element in connect-explorer before reloading it.
+    await findElementByDataTest(page, '@submit-button');
+
     // Reload page to force to ask for passphrase again.
     await page.reload();
 
