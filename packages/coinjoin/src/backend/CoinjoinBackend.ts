@@ -5,16 +5,13 @@ import { CoinjoinFilterController } from './CoinjoinFilterController';
 import { CoinjoinMempoolController } from './CoinjoinMempoolController';
 import { DISCOVERY_LOOKOUT, DISCOVERY_LOOKOUT_EXTENDED } from '../constants';
 import { scanAccount } from './scanAccount';
-import { scanAddress } from './scanAddress';
 import { getAccountInfo } from './getAccountInfo';
 import { createPendingTransaction } from './createPendingTx';
 import { deriveAddresses, isTaprootAddress } from './backendUtils';
 import { getNetwork } from '../utils/settingsUtils';
 import type { CoinjoinBackendSettings, LogEvent, Logger, LogLevel } from '../types';
 import type {
-    ScanAddressParams,
     ScanAccountParams,
-    ScanAddressCheckpoint,
     ScanAccountCheckpoint,
     ScanAccountProgress,
     Transaction,
@@ -71,28 +68,6 @@ export class CoinjoinBackend extends TypedEmitter<Events> {
         );
     }
 
-    scanAddress({ descriptor, progressHandle, checkpoints }: ScanAddressParams) {
-        this.abortController = new AbortController();
-        const filters = new CoinjoinFilterController(this.client, this.settings);
-
-        return scanAddress(
-            { descriptor, checkpoints: this.getCheckpoints(checkpoints) },
-            {
-                client: this.client,
-                network: this.network,
-                abortSignal: this.abortController.signal,
-                filters,
-                mempool: this.mempool,
-                onProgress: progress =>
-                    this.emit(`progress/${progressHandle ?? descriptor}`, {
-                        ...progress,
-                        // TODO resolve this correctly
-                        checkpoint: { ...progress.checkpoint, receiveCount: -1, changeCount: -1 },
-                    }),
-            },
-        );
-    }
-
     getAccountInfo(
         descriptor: string,
         transactions: Transaction[],
@@ -109,15 +84,6 @@ export class CoinjoinBackend extends TypedEmitter<Events> {
         return Promise.resolve(accountInfo);
     }
 
-    getAddressInfo(address: string, transactions: Transaction[]) {
-        const addressInfo = getAccountInfo({
-            descriptor: address,
-            transactions,
-            network: this.network,
-        });
-        return Promise.resolve(addressInfo);
-    }
-
     createPendingTransaction(...args: Parameters<typeof createPendingTransaction>) {
         return Promise.resolve(createPendingTransaction(...args));
     }
@@ -131,8 +97,7 @@ export class CoinjoinBackend extends TypedEmitter<Events> {
         this.mempool.stop();
     }
 
-    private getCheckpoints<T extends ScanAddressCheckpoint>(checkpoints: T[] | undefined): T[];
-    private getCheckpoints(checkpoints: any[] = []) {
+    private getCheckpoints(checkpoints: ScanAccountCheckpoint[] = []) {
         if (checkpoints.find(({ blockHeight }) => blockHeight <= this.settings.baseBlockHeight)) {
             throw new Error('Cannot get checkpoint which precedes base block.');
         }
