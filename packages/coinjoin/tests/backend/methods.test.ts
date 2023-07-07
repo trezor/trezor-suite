@@ -3,7 +3,6 @@ import { networks } from '@trezor/utxo-lib';
 
 import { DISCOVERY_LOOKOUT } from '../../src/constants';
 import { scanAccount } from '../../src/backend/scanAccount';
-import { scanAddress } from '../../src/backend/scanAddress';
 import { getAccountInfo } from '../../src/backend/getAccountInfo';
 import { CoinjoinFilterController } from '../../src/backend/CoinjoinFilterController';
 import { CoinjoinMempoolController } from '../../src/backend/CoinjoinMempoolController';
@@ -57,34 +56,6 @@ describe(`CoinjoinBackend methods`, () => {
         fetchFiltersMock.mockClear();
         fetchBlockMock.mockClear();
         client.setFixture(FIXTURES.BLOCKS);
-    });
-
-    it('scanAddress', async () => {
-        let txs: Transaction[] = [];
-
-        const { pending } = await scanAddress(
-            {
-                descriptor: FIXTURES.SEGWIT_RECEIVE_ADDRESSES[0],
-                checkpoints: [EMPTY_CHECKPOINT],
-            },
-            getContext(progress => {
-                txs = txs.concat(progress.transactions);
-            }),
-        );
-
-        const info = getAccountInfo({
-            descriptor: FIXTURES.SEGWIT_RECEIVE_ADDRESSES[0],
-            network: networks.regtest,
-            transactions: txs.concat(pending),
-        });
-
-        expect(info).toMatchObject(FIXTURES.SEGWIT_RECEIVE_RESULT);
-
-        const filters = await getRequestedFilters();
-        expect(filters).toEqual([1, 2, 3, 4, 5, 6, 7, 8]);
-
-        const blocks = getRequestedBlocks();
-        expect(blocks).toEqual([1, 2, 4, 6, 7, 8]);
     });
 
     it('scanAccount at once', async () => {

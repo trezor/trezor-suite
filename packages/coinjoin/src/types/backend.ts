@@ -43,28 +43,18 @@ export type BlockFilterResponse =
           filters: BlockFilter[];
       };
 
-type MethodContext = {
+export type ScanAccountContext = {
     client: CoinjoinBackendClient;
     network: Network;
     abortSignal?: AbortSignal;
-};
-
-type ScanContext<T> = MethodContext & {
     filters: FilterController;
     mempool?: MempoolController;
-    onProgress: (progress: T) => void;
+    onProgress: (progress: ScanAccountProgress) => void;
 };
 
-export type ScanAddressContext = ScanContext<ScanAddressProgress>;
-
-export type ScanAccountContext = ScanContext<ScanAccountProgress>;
-
-export type ScanAddressCheckpoint = {
+export type ScanAccountCheckpoint = {
     blockHash: string;
     blockHeight: number;
-};
-
-export type ScanAccountCheckpoint = ScanAddressCheckpoint & {
     receiveCount: number;
     changeCount: number;
 };
@@ -74,15 +64,11 @@ export type ScanProgressInfo = {
     message?: string;
 };
 
-type ScanProgress<T> = {
-    checkpoint: T;
+export type ScanAccountProgress = {
+    checkpoint: ScanAccountCheckpoint;
     transactions: Transaction[];
     info?: ScanProgressInfo;
 };
-
-export type ScanAddressProgress = ScanProgress<ScanAddressCheckpoint>;
-
-export type ScanAccountProgress = ScanProgress<ScanAccountCheckpoint>;
 
 export type ScanAccountParams = {
     descriptor: string;
@@ -91,21 +77,10 @@ export type ScanAccountParams = {
     cache?: AccountCache;
 };
 
-export type ScanAddressParams = {
-    descriptor: string;
-    progressHandle?: string;
-    checkpoints?: ScanAddressCheckpoint[];
-};
-
 export type ScanAccountResult = {
     pending: Transaction[];
     checkpoint: ScanAccountCheckpoint;
     cache?: AccountCache;
-};
-
-export type ScanAddressResult = {
-    pending: Transaction[];
-    checkpoint: ScanAddressCheckpoint;
 };
 
 export type FilterControllerParams = {
@@ -138,14 +113,11 @@ export type MempoolClient = Pick<
     'fetchMempoolFilters' | 'fetchTransaction' | 'subscribeMempoolTxs' | 'unsubscribeMempoolTxs'
 >;
 
-export type AddressInfo = AccountInfoBase & {
+export type AccountInfo = AccountInfoBase & {
     history: AccountInfoBase['history'] & {
         transactions: NonNullable<AccountInfoBase['history']['transactions']>;
     };
     utxo: Utxo[];
-};
-
-export type AccountInfo = AddressInfo & {
     addresses: NonNullable<AccountInfoBase['addresses']>;
 };
 
