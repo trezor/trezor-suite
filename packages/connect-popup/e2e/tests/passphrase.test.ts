@@ -12,8 +12,6 @@ test.beforeAll(async () => {
 // popup window reference
 let popup: Page;
 
-console.log('just to trigger ci');
-
 // Debug mode does not have to be enable since it is default in connect-explorer
 test('input passphrase in popup and device accepts it', async ({ page }) => {
     await TrezorUserEnvLink.api.stopBridge();

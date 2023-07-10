@@ -29,6 +29,8 @@ import { isPhishingDomain } from './utils/isPhishingDomain';
 
 let handshakeTimeout: ReturnType<typeof setTimeout>;
 
+console.log('this should trigger CI');
+
 // browser built-in functionality to quickly and safely escape the string
 const escapeHtml = (payload: any) => {
     if (!payload) return;
