@@ -66,7 +66,7 @@ export const ConnectDevicePromptManager = ({
     if (!transport?.type) {
         // No transport layer available to communicate with the device => we should offer downloading the Bridge. (Eg. firefox user without bridge installed)
         // It shouldn't happen in Chrome and desktop app as bridge is built-in and there should be WebUSB as a fallback
-        // In normal circumstances transport.type is "bridge" or "WebUsbPlugin".
+        // In normal circumstances transport.type is "BridgeTransport" or "WebUsbTransport".
         content = <NoTransport />;
     } else if (!isDetectingDevice) {
         // Transport layer is available, but still no device detected (show WebUSB "check for devices" button if possible and provide helpful tips)
