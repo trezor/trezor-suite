@@ -1,5 +1,6 @@
 import { networks } from '@trezor/utxo-lib';
 
+import { AccountAddress } from '../../src/types/backend';
 import { CoinjoinMempoolController } from '../../src/backend/CoinjoinMempoolController';
 import { MockMempoolClient } from '../mocks/MockMempoolClient';
 import {
@@ -27,10 +28,12 @@ describe('CoinjoinMempoolController', () => {
         expect(mempool.getTransactions()).toEqual(TXS);
         expect(
             mempool.getTransactions({
-                addresses: [{ address: ADDRESS }],
-                analyze: async (getTxs, onTxs) => {
-                    const txs = getTxs({ address: ADDRESS });
-                    onTxs?.('then' in txs ? await txs : txs);
+                receive: [{ address: ADDRESS } as AccountAddress],
+                change: [],
+                analyze: (getTxs, onTxs) => {
+                    const txs = getTxs({ address: ADDRESS } as AccountAddress);
+                    onTxs?.(txs);
+                    return { receive: [], change: [] };
                 },
             }),
         ).toEqual(TXS_MATCH);

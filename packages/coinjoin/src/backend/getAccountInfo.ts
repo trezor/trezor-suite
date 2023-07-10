@@ -2,16 +2,16 @@ import type { Network } from '@trezor/utxo-lib';
 import { sortTxsFromLatest } from '@trezor/blockchain-link-utils';
 import { sumAddressValues } from '@trezor/blockchain-link/lib/workers/electrum/methods/getAccountInfo';
 
-import { isTxConfirmed, doesTxContainAddress, deriveAddresses } from './backendUtils';
+import { isTxConfirmed, doesTxContainAddress } from './backendUtils';
 import type {
     Transaction,
     AccountInfo,
     ScanAccountCheckpoint,
-    Address,
     PrederivedAddress,
     AccountCache,
 } from '../types/backend';
 import { getAccountUtxo } from './getAccountUtxo';
+import { CoinjoinAddressController } from './CoinjoinAddressController';
 
 const PAGE_SIZE_DEFAULT = 25;
 
@@ -37,15 +37,9 @@ const getDelta = ({ type, amount, fee }: Transaction) => {
 
 const sumBalance = (current: number, tx: Transaction) => current + getDelta(tx);
 
-const deriveTxAddresses = (
-    descriptor: string,
-    type: 'receive' | 'change',
-    count: number,
-    prederived: PrederivedAddress[] | undefined,
-    network: Network,
-    transactions: Transaction[],
-): Address[] =>
-    deriveAddresses(prederived, descriptor, type, 0, count, network).map(({ address, path }) => {
+const enhanceAddress =
+    (transactions: Transaction[]) =>
+    ({ address, path }: PrederivedAddress) => {
         const txs = transactions.filter(tx => doesTxContainAddress(address)(tx.details));
         const sent = sumAddressValues(txs, address, tx => tx.details.vin);
         const received = sumAddressValues(txs, address, tx => tx.details.vout);
@@ -57,7 +51,7 @@ const deriveTxAddresses = (
             sent: txs.length ? sent.toString() : undefined,
             received: txs.length ? received.toString() : undefined,
         };
-    });
+    };
 
 type GetAccountInfoParams = {
     descriptor: string;
@@ -79,22 +73,16 @@ export const getAccountInfo = (params: GetAccountInfoParams): AccountInfo => {
     const txsFromLatest = sortTxsFromLatest(transactions);
     const txsFromOldest = txsFromLatest.slice().reverse();
 
-    const receive = deriveTxAddresses(
+    const addressController = new CoinjoinAddressController(
         descriptor,
-        'receive',
-        params.checkpoint.receiveCount,
-        params.cache?.receivePrederived,
         network,
-        txsConfirmed,
+        params.checkpoint,
+        params.cache,
     );
-    const change = deriveTxAddresses(
-        descriptor,
-        'change',
-        params.checkpoint.changeCount,
-        params.cache?.changePrederived,
-        network,
-        txsConfirmed,
-    );
+
+    const receive = addressController.receive.map(enhanceAddress(txsConfirmed));
+    const change = addressController.change.map(enhanceAddress(txsConfirmed));
+
     const addresses = {
         change,
         unused: receive.filter(({ transfers }) => !transfers),

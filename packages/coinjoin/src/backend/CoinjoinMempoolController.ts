@@ -12,13 +12,10 @@ import { MEMPOOL_PURGE_CYCLE } from '../constants';
 
 type MempoolStatus = 'stopped' | 'running';
 
-export type MempoolController = {
-    get status(): MempoolStatus;
-    start(): Promise<void>;
-    init(...addressControllers: AddressController[]): Promise<BlockbookTransaction[]>;
-    update(force?: boolean): Promise<void>;
-    getTransactions(...addressControllers: AddressController[]): BlockbookTransaction[];
-};
+export type MempoolController = Pick<
+    CoinjoinMempoolController,
+    'status' | 'start' | 'init' | 'update' | 'getTransactions'
+>;
 
 type CoinjoinMempoolControllerSettings = {
     client: MempoolClient;
@@ -27,7 +24,7 @@ type CoinjoinMempoolControllerSettings = {
     logger?: Logger;
 };
 
-export class CoinjoinMempoolController implements MempoolController {
+export class CoinjoinMempoolController {
     private readonly client;
     private readonly network;
     private readonly mempool;
@@ -89,7 +86,7 @@ export class CoinjoinMempoolController implements MempoolController {
         }
     }
 
-    async init(...addressControllers: AddressController[]) {
+    async init(addressController?: AddressController) {
         const filters = await this.client
             .fetchMempoolFilters()
             .then(res =>
@@ -111,7 +108,7 @@ export class CoinjoinMempoolController implements MempoolController {
                     ),
             );
 
-        if (!addressControllers.length) {
+        if (!addressController) {
             await addTxs(filters.map(([txid]) => txid));
             this.lastPurge = new Date().getTime();
             return [...this.mempool.values()];
@@ -120,23 +117,19 @@ export class CoinjoinMempoolController implements MempoolController {
         const findTxs = ({ address }: { address: string }) => this.addressTxids.get(address) ?? [];
         const set = new Set<string>();
         const onTxs = (txids: string[]) => txids.forEach(set.add, set);
-        await promiseAllSequence(
-            addressControllers.map(controller => async () => {
-                let checked = 0;
-                while (controller.addresses.length !== checked) {
-                    const scripts = controller.addresses
-                        .slice(checked)
-                        .map(({ address }) => getMempoolAddressScript(address, this.network));
-                    checked = controller.addresses.length;
-                    const txids = filters
-                        .filter(([, matchAny]) => matchAny(scripts))
-                        .map(([txid]) => txid);
-                    // eslint-disable-next-line no-await-in-loop
-                    await addTxs(txids);
-                    controller.analyze(findTxs, onTxs);
-                }
-            }),
-        );
+
+        let { receive, change } = addressController;
+        while (receive.length || change.length) {
+            const scripts = receive
+                .concat(change)
+                .map(({ address }) => getMempoolAddressScript(address, this.network));
+            const txids = filters.filter(([, matchAny]) => matchAny(scripts)).map(([txid]) => txid);
+            // eslint-disable-next-line no-await-in-loop
+            await addTxs(txids);
+            const newlyDerived = addressController.analyze(findTxs, onTxs);
+            ({ receive, change } = newlyDerived);
+        }
+
         this.lastPurge = new Date().getTime();
         return Array.from(set, txid => this.mempool.get(txid)!);
     }
@@ -169,14 +162,15 @@ export class CoinjoinMempoolController implements MempoolController {
         this.lastPurge = now;
     }
 
-    getTransactions(...addressControllers: AddressController[]) {
-        if (!addressControllers.length) return Array.from(this.mempool.values());
+    getTransactions(addressController?: AddressController) {
+        if (!addressController) return Array.from(this.mempool.values());
 
         const set = new Set<string>();
-        const findTxs = ({ address }: { address: string }) => this.addressTxids.get(address) ?? [];
-        const onTxs = (txids: string[]) => txids.forEach(set.add, set);
 
-        addressControllers.forEach(controller => controller.analyze(findTxs, onTxs));
+        addressController.analyze(
+            ({ address }) => this.addressTxids.get(address) ?? [],
+            txids => txids.forEach(set.add, set),
+        );
 
         return Array.from(set, txid => this.mempool.get(txid)!);
     }

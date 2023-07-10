@@ -5,17 +5,15 @@ import { doesTxContainAddress } from './backendUtils';
 import { CoinjoinAddressController } from './CoinjoinAddressController';
 import type {
     Transaction,
-    AccountAddress,
     BlockbookTransaction,
     ScanAccountParams,
     ScanAccountCheckpoint,
     ScanAccountContext,
     ScanAccountResult,
 } from '../types/backend';
-import { DISCOVERY_LOOKOUT, DISCOVERY_LOOKOUT_EXTENDED } from '../constants';
 
 const transformTx =
-    (xpub: string, receive: AccountAddress[], change: AccountAddress[]) =>
+    (xpub: string, { receive, change }: CoinjoinAddressController) =>
     (tx: BlockbookTransaction) =>
         // It doesn't matter for transformTransaction which receive addrs are used and which are unused
         transformTransaction(xpub, { used: receive, unused: [], change }, tx);
@@ -27,23 +25,7 @@ export const scanAccount = async (
     const xpub = params.descriptor;
     const { checkpoints } = params;
 
-    const receive = new CoinjoinAddressController(
-        xpub,
-        'receive',
-        DISCOVERY_LOOKOUT,
-        network,
-        checkpoints[0].receiveCount,
-        params.cache?.receivePrederived,
-    );
-
-    const change = new CoinjoinAddressController(
-        xpub,
-        'change',
-        DISCOVERY_LOOKOUT_EXTENDED,
-        network,
-        checkpoints[0].changeCount,
-        params.cache?.changePrederived,
-    );
+    const addresses = new CoinjoinAddressController(xpub, network, checkpoints[0], params.cache);
 
     let checkpoint = checkpoints[0];
 
@@ -53,27 +35,22 @@ export const scanAccount = async (
     // eslint-disable-next-line no-restricted-syntax
     for await (const { filter, blockHash, blockHeight, progress } of everyFilter) {
         const isMatch = getBlockMultiFilter(filter, blockHash);
-        const scripts = receive.addresses.concat(change.addresses).map(({ script }) => script);
+        const scripts = addresses.receive.concat(addresses.change).map(({ script }) => script);
 
         if (isMatch(scripts)) {
             const block = await client.fetchBlock(blockHeight, { signal: abortSignal });
-            const findTxs = ({ address }: AccountAddress) =>
-                block.txs.filter(doesTxContainAddress(address));
-            const onTxs = (transactions: BlockbookTransaction[]) =>
-                transactions.forEach(txs.add, txs);
-            receive.analyze(findTxs, onTxs);
-            change.analyze(findTxs, onTxs);
+            addresses.analyze(
+                ({ address }) => block.txs.filter(doesTxContainAddress(address)),
+                transactions => transactions.forEach(txs.add, txs),
+            );
         }
 
-        const transactions = Array.from(
-            txs,
-            transformTx(xpub, receive.addresses, change.addresses),
-        );
+        const transactions = Array.from(txs, transformTx(xpub, addresses));
         checkpoint = {
             blockHash,
             blockHeight,
-            receiveCount: receive.addresses.length,
-            changeCount: change.addresses.length,
+            receiveCount: addresses.receive.length,
+            changeCount: addresses.change.length,
         };
 
         txs.clear();
@@ -90,24 +67,20 @@ export const scanAccount = async (
         if (mempool.status === 'stopped') {
             await mempool.start();
             pending = await mempool
-                .init(receive, change)
-                .then(transactions =>
-                    transactions.map(transformTx(xpub, receive.addresses, change.addresses)),
-                );
+                .init(addresses)
+                .then(transactions => transactions.map(transformTx(xpub, addresses)));
         } else {
             await mempool.update();
-            pending = mempool
-                .getTransactions(receive, change)
-                .map(transformTx(xpub, receive.addresses, change.addresses));
+            pending = mempool.getTransactions(addresses).map(transformTx(xpub, addresses));
         }
 
-        checkpoint.receiveCount = receive.addresses.length;
-        checkpoint.changeCount = change.addresses.length;
+        checkpoint.receiveCount = addresses.receive.length;
+        checkpoint.changeCount = addresses.change.length;
     }
 
     const cache = {
-        receivePrederived: receive.addresses.map(({ address, path }) => ({ address, path })),
-        changePrederived: change.addresses.map(({ address, path }) => ({ address, path })),
+        receivePrederived: addresses.receive.map(({ address, path }) => ({ address, path })),
+        changePrederived: addresses.change.map(({ address, path }) => ({ address, path })),
     };
 
     return {
