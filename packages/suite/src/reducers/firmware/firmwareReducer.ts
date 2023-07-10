@@ -1,10 +1,13 @@
-import produce from 'immer';
-import { UI, Device } from '@trezor/connect';
+import type { AcquiredDevice, FirmwareType } from 'src/types/suite';
+import { firmwareActions } from 'src/actions/firmware/firmwareActions';
+import { isAnyOf, PayloadAction } from '@reduxjs/toolkit';
+import { AppState, ButtonRequest, TrezorDevice } from 'src/types/suite';
+import { addButtonRequest } from 'src/actions/suite/suiteActions';
 
-import { FIRMWARE } from 'src/actions/firmware/constants';
-import { SUITE, STORAGE } from 'src/actions/suite/constants';
+import { Device, UI } from '@trezor/connect';
+import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 
-import type { Action, AcquiredDevice, FirmwareType } from 'src/types/suite';
+type RootState = Pick<AppState, 'firmware'>;
 
 type FirmwareUpdateCommon = {
     installingProgress?: number;
@@ -48,8 +51,8 @@ export type FirmwareStatus =
 
 export type FirmwareUpdateState =
     | (FirmwareUpdateCommon & {
-          error: undefined;
-          status: FirmwareStatus;
+          error: string | undefined;
+          status: FirmwareStatus | 'error';
       })
     | (FirmwareUpdateCommon & {
           status: 'error';
@@ -71,87 +74,100 @@ const initialState: FirmwareUpdateState = {
     useDevkit: false,
 };
 
-const firmwareUpdate = (
-    state: FirmwareUpdateState = initialState,
-    action: Action,
-): FirmwareUpdateState =>
-    produce(state, draft => {
-        switch (action.type) {
-            case STORAGE.LOAD:
-                if (action.payload.firmware?.firmwareHashInvalid) {
-                    draft.firmwareHashInvalid = action.payload.firmware.firmwareHashInvalid;
+export const prepareFirmwareReducer = createReducerWithExtraDeps(initialState, (builder, extra) => {
+    builder
+        .addCase(firmwareActions.setStatus, (state, { payload }) => {
+            state.status = payload;
+            if (payload === 'started') {
+                if (state.intermediaryInstalled) {
+                    // Once intermediary fw is installed we trigger installation of subsequent fw update,
+                    // It will set firmware.status to 'started' again and this will make sure the progress will be restarted
+                    // even before we get UI.FIRMWARE_PROGRESS (which will be fired later)
+                    state.installingProgress = 0;
+                    state.subsequentInstalling = true;
                 }
-                break;
-            case FIRMWARE.SET_UPDATE_STATUS:
-                draft.status = action.payload;
-                if (action.payload === 'started') {
-                    if (draft.intermediaryInstalled) {
-                        // Once intermediary fw is installed we trigger installation of subsequent fw update,
-                        // It will set firmware.status to 'started' again and this will make sure the progress will be restarted
-                        // even before we get UI.FIRMWARE_PROGRESS (which will be fired later)
-                        draft.installingProgress = 0;
-                        draft.subsequentInstalling = true;
-                    }
-                    draft.error = undefined;
+                state.error = undefined;
+            }
+        })
+        .addCase(firmwareActions.setHash, (state, { payload }) => {
+            state.firmwareHash = payload.hash;
+            state.firmwareChallenge = payload.challenge;
+        })
+        .addCase(firmwareActions.setHashInvalid, (state, { payload }) => {
+            state.firmwareHashInvalid.push(payload);
+            state.status = 'error';
+        })
+        .addCase(firmwareActions.setError, (state, { payload }) => {
+            state.error = payload;
+            if (payload) {
+                state.status = 'error';
+            }
+        })
+        .addCase(firmwareActions.setTargetRelease, (state, { payload }) => {
+            state.targetRelease = payload;
+        })
+        .addCase(firmwareActions.toggleHasSeed, state => {
+            state.hasSeed = !state.hasSeed;
+        })
+        .addCase(
+            firmwareActions.setIntermediaryInstalled,
+            (state, { payload }: PayloadAction<boolean>) => {
+                state.intermediaryInstalled = payload;
+                if (state.targetRelease) {
+                    delete state.targetRelease.intermediaryVersion;
                 }
-                break;
-            case FIRMWARE.SET_HASH:
-                draft.firmwareHash = action.payload.hash;
-                draft.firmwareChallenge = action.payload.challenge;
-                break;
-            case FIRMWARE.SET_HASH_INVALID:
-                draft.firmwareHashInvalid.push(action.payload);
-                draft.status = 'error';
-                break;
-            case FIRMWARE.SET_ERROR:
-                draft.error = action.payload;
-                if (action.payload) {
-                    draft.status = 'error';
+            },
+        )
+        .addCase(firmwareActions.setTargetType, (state, { payload }) => {
+            state.targetType = payload;
+        })
+        .addCase(firmwareActions.rememberPreviousDevice, (state, { payload }) => {
+            state.prevDevice = payload;
+        })
+        .addCase(firmwareActions.setIsCustomFirmware, (state, { payload }) => {
+            state.isCustom = payload;
+        })
+        .addCase(firmwareActions.resetReducer, state => ({
+            ...initialState,
+            firmwareHashInvalid: state.firmwareHashInvalid,
+            useDevkit: state.useDevkit,
+        }))
+        .addCase(firmwareActions.toggleUseDevkit, (state, { payload }) => {
+            state.useDevkit = payload;
+        })
+        .addMatcher(
+            isAnyOf(addButtonRequest),
+            (
+                state,
+                action: PayloadAction<{
+                    device: TrezorDevice | undefined;
+                    buttonRequest?: ButtonRequest;
+                }>,
+            ) => {
+                if (action.payload.buttonRequest?.code === 'ButtonRequest_FirmwareUpdate') {
+                    state.status = 'waiting-for-confirmation';
                 }
-                break;
-            case FIRMWARE.SET_TARGET_RELEASE:
-                draft.targetRelease = action.payload;
-                break;
-            case FIRMWARE.TOGGLE_HAS_SEED:
-                draft.hasSeed = !state.hasSeed;
-                break;
-            case FIRMWARE.SET_INTERMEDIARY_INSTALLED:
-                draft.intermediaryInstalled = action.payload;
-                if (draft.targetRelease) {
-                    delete draft.targetRelease.intermediaryVersion;
-                }
-                break;
-            case FIRMWARE.SET_TARGET_TYPE:
-                draft.targetType = action.payload;
-                break;
-            case SUITE.ADD_BUTTON_REQUEST:
-                if (action.payload?.code === 'ButtonRequest_FirmwareUpdate') {
-                    draft.status = 'waiting-for-confirmation';
-                }
-                break;
-            case UI.FIRMWARE_PROGRESS:
-                draft.installingProgress = action.payload.progress;
-                draft.status = 'installing';
-                break;
-            case FIRMWARE.REMEMBER_PREVIOUS_DEVICE:
-                draft.prevDevice = action.payload;
-                break;
-            case FIRMWARE.SET_IS_CUSTOM:
-                draft.isCustom = action.payload;
-                break;
-            case FIRMWARE.RESET_REDUCER:
-                return {
-                    ...initialState,
-                    firmwareHashInvalid: draft.firmwareHashInvalid,
-                    useDevkit: draft.useDevkit,
-                };
-            case FIRMWARE.TOGGLE_USE_DEVKIT:
-                draft.useDevkit = action.payload;
-                break;
-            default:
+            },
+        )
+        .addMatcher(
+            action => action.type === UI.FIRMWARE_PROGRESS,
+            (state, action) => {
+                state.installingProgress = action.payload.progress;
+                state.status = 'installing';
+            },
+        )
+        .addMatcher(
+            action => action.type === extra.actionTypes.storageLoad,
+            extra.reducers.storageLoadFirmware,
+        );
+});
 
-            // no default
-        }
-    });
-
-export default firmwareUpdate;
+export const selectFirmware = (state: RootState) => state.firmware;
+export const selectTargetRelease = (state: RootState) => state.firmware.targetRelease;
+export const selectPrevDevice = (state: RootState) => state.firmware.prevDevice;
+export const selectUseDevkit = (state: RootState) => state.firmware.useDevkit;
+export const selectIntermediaryInstalled = (state: RootState) =>
+    state.firmware.intermediaryInstalled;
+export const selectFirmwareChallenge = (state: RootState) => state.firmware.firmwareChallenge;
+export const selectFirmwareHash = (state: RootState) => state.firmware.firmwareHash;
+export const selectIsCustomFirmware = (state: RootState) => state.firmware.isCustom;

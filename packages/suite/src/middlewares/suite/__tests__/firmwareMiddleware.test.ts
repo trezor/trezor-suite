@@ -1,12 +1,13 @@
 import { configureStore } from 'src/support/tests/configureStore';
-
 import { SUITE } from 'src/actions/suite/constants';
-import { FIRMWARE } from 'src/actions/firmware/constants';
-import firmwareReducer from 'src/reducers/firmware/firmwareReducer';
+import { prepareFirmwareReducer } from 'src/reducers/firmware/firmwareReducer';
 import routerReducer from 'src/reducers/suite/routerReducer';
 import modalReducer from 'src/reducers/suite/modalReducer';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
 import firmwareMiddleware from 'src/middlewares/firmware/firmwareMiddleware';
+import { firmwareActions } from 'src/actions/firmware/firmwareActions';
+
+import { extraDependencies } from '../../../support/extraDependencies';
 
 const { getSuiteDevice } = global.JestMocks;
 
@@ -16,13 +17,18 @@ type FirmwareState = ReturnType<typeof firmwareReducer>;
 type RouterState = ReturnType<typeof routerReducer>;
 type SuiteState = ReturnType<typeof suiteReducer>;
 
+const firmwareReducer = prepareFirmwareReducer(extraDependencies);
+
 const getInitialState = (
     router?: Partial<RouterState>,
     firmware?: Partial<FirmwareState>,
     suite?: Partial<SuiteState>,
 ) => ({
     firmware: {
-        ...firmwareReducer(undefined, { type: FIRMWARE.RESET_REDUCER }),
+        ...firmwareReducer(undefined, {
+            type: firmwareActions.resetReducer.type,
+            payload: undefined,
+        }),
         ...firmware,
     },
     router: {
@@ -48,7 +54,6 @@ const initStore = (state: State) => {
     store.subscribe(() => {
         const action = store.getActions().pop();
         const { firmware, suite } = store.getState();
-        // @ts-expect-error
         store.getState().firmware = firmwareReducer(firmware, action);
         store.getState().suite = suiteReducer(suite, action);
 
@@ -75,7 +80,7 @@ describe('firmware middleware', () => {
         const result = store.getActions();
         expect(result).toEqual([
             { type: SUITE.UPDATE_SELECTED_DEVICE, payload: undefined },
-            { type: FIRMWARE.SET_UPDATE_STATUS, payload: 'reconnect-in-normal' },
+            { type: firmwareActions.setStatus.type, payload: 'reconnect-in-normal' },
         ]);
     });
 
@@ -96,7 +101,7 @@ describe('firmware middleware', () => {
         const result = store.getActions();
         expect(result).toEqual([
             { type: SUITE.UPDATE_SELECTED_DEVICE, payload: getSuiteDevice({ connected: false }) },
-            { type: FIRMWARE.SET_UPDATE_STATUS, payload: 'reconnect-in-normal' },
+            { type: firmwareActions.setStatus.type, payload: 'reconnect-in-normal' },
         ]);
     });
 
@@ -125,7 +130,7 @@ describe('firmware middleware', () => {
                 type: SUITE.SELECT_DEVICE,
                 payload: getSuiteDevice({ connected: true, mode: 'bootloader' }),
             },
-            { type: FIRMWARE.SET_UPDATE_STATUS, payload: 'started' },
+            { type: firmwareActions.setStatus.type, payload: 'started' },
         ]);
     });
 
@@ -151,7 +156,7 @@ describe('firmware middleware', () => {
                 type: SUITE.SELECT_DEVICE,
                 payload: getSuiteDevice({ firmware: 'valid', connected: true }),
             },
-            { type: FIRMWARE.SET_UPDATE_STATUS, payload: 'validation' },
+            { type: firmwareActions.setStatus.type, payload: 'validation' },
         ]);
     });
 
@@ -188,7 +193,7 @@ describe('firmware middleware', () => {
         );
 
         await store.dispatch({
-            type: FIRMWARE.SET_UPDATE_STATUS,
+            type: firmwareActions.setStatus.type,
             payload: 'waiting-for-bootloader',
             firmwareChallenge: '123',
             firmwareHash: '345',
@@ -196,6 +201,6 @@ describe('firmware middleware', () => {
 
         const result = store.getActions();
         result.shift();
-        expect(result[0].type).toEqual(FIRMWARE.SET_TARGET_RELEASE);
+        expect(result[0].type).toEqual(firmwareActions.setTargetRelease.type);
     });
 });

@@ -2,13 +2,17 @@
 /* eslint-disable global-require */
 
 import { configureStore } from 'src/support/tests/configureStore';
-
-import firmwareReducer from 'src/reducers/firmware/firmwareReducer';
+import { prepareFirmwareReducer } from 'src/reducers/firmware/firmwareReducer';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
-import { ArrayElement } from '@trezor/type-utils';
-import { actions, reducerActions } from '../__fixtures__/firmwareActions';
 import { TrezorDevice } from 'src/types/suite';
+import { extraDependencies } from 'src/support/extraDependencies';
+
+import { ArrayElement } from '@trezor/type-utils';
 import { DeviceModel } from '@trezor/device-utils';
+
+import { actions, reducerActions } from '../__fixtures__/firmwareActions';
+
+const firmwareReducer = prepareFirmwareReducer(extraDependencies);
 
 type Fixture = ArrayElement<typeof actions>;
 

@@ -1,204 +1,71 @@
+import { Dispatch, GetState, AcquiredDevice, FirmwareType } from 'src/types/suite';
+import { createAction } from '@reduxjs/toolkit';
+import {
+    FirmwareStatus,
+    selectFirmwareChallenge,
+    selectFirmwareHash,
+    selectIsCustomFirmware,
+} from 'src/reducers/firmware/firmwareReducer';
+import { selectDevice } from 'src/reducers/suite/suiteReducer';
+
 import TrezorConnect, { Device, Unsuccessful } from '@trezor/connect';
 import { analytics, EventType } from '@trezor/suite-analytics';
-import { resolveStaticPath } from '@suite-common/suite-utils';
-
-import { FIRMWARE } from 'src/actions/firmware/constants';
-import { isDesktop } from '@trezor/env-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 
-import { Dispatch, GetState, AppState, AcquiredDevice, FirmwareType } from 'src/types/suite';
-import type { Await } from '@trezor/type-utils';
-import {
-    getFirmwareVersion,
-    getBootloaderVersion,
-    getDeviceModel,
-    DeviceModel,
-} from '@trezor/device-utils';
+const MODULE_PREFIX = '@firmware';
 
-export type FirmwareAction =
-    | {
-          type: typeof FIRMWARE.SET_UPDATE_STATUS;
-          payload: ReturnType<GetState>['firmware']['status'];
-      }
-    | { type: typeof FIRMWARE.SET_HASH; payload: { hash: string; challenge: string } }
-    | { type: typeof FIRMWARE.SET_HASH_INVALID; payload: string }
-    | { type: typeof FIRMWARE.SET_TARGET_RELEASE; payload: AcquiredDevice['firmwareRelease'] }
-    | { type: typeof FIRMWARE.RESET_REDUCER }
-    | { type: typeof FIRMWARE.ENABLE_REDUCER; payload: boolean }
-    | { type: typeof FIRMWARE.SET_INTERMEDIARY_INSTALLED; payload: boolean }
-    | { type: typeof FIRMWARE.SET_TARGET_TYPE; payload: FirmwareType }
-    | { type: typeof FIRMWARE.SET_ERROR; payload?: string }
-    | { type: typeof FIRMWARE.TOGGLE_HAS_SEED }
-    | { type: typeof FIRMWARE.REMEMBER_PREVIOUS_DEVICE; payload: Device }
-    | { type: typeof FIRMWARE.SET_IS_CUSTOM; payload: boolean }
-    | { type: typeof FIRMWARE.TOGGLE_USE_DEVKIT; payload: boolean };
+const setStatus = createAction(
+    `${MODULE_PREFIX}/set-update-status`,
+    (payload: FirmwareStatus | 'error') => ({ payload }),
+);
 
-export const resetReducer = (): FirmwareAction => ({
-    type: FIRMWARE.RESET_REDUCER,
-});
+const setHash = createAction(
+    `${MODULE_PREFIX}/set-hash`,
+    (payload: { hash: string; challenge: string }) => ({ payload }),
+);
 
-export const setStatus = (payload: AppState['firmware']['status']): FirmwareAction => ({
-    type: FIRMWARE.SET_UPDATE_STATUS,
+const setHashInvalid = createAction(`${MODULE_PREFIX}/set-hash-invalid`, (payload: string) => ({
     payload,
-});
+}));
 
-export const setTargetRelease = (payload: AcquiredDevice['firmwareRelease']): FirmwareAction => ({
-    type: FIRMWARE.SET_TARGET_RELEASE,
+const setError = createAction(`${MODULE_PREFIX}/set-error`, (payload?: string) => ({
     payload,
-});
+}));
 
-/**
- * This action will install firmware from the given binary, or the latest
- * possible firmware if the given binary is undefined. The function is not
- * directly exported due to type safety.
- */
-const firmwareInstall =
-    (fwBinary?: ArrayBuffer, firmwareType?: FirmwareType) =>
-    async (dispatch: Dispatch, getState: GetState) => {
-        const { device } = getState().suite;
-        const { targetRelease, prevDevice, useDevkit, intermediaryInstalled } = getState().firmware;
+const setTargetRelease = createAction(
+    `${MODULE_PREFIX}/set-target-release`,
+    (payload: AcquiredDevice['firmwareRelease']) => ({ payload }),
+);
 
-        if (fwBinary) {
-            dispatch({ type: FIRMWARE.SET_IS_CUSTOM, payload: true });
-        }
+const toggleHasSeed = createAction(`${MODULE_PREFIX}/toggle-has-seed`);
 
-        if (!device || !device.connected || !device.features) {
-            dispatch({ type: FIRMWARE.SET_ERROR, payload: 'no device connected' });
-            return;
-        }
+const setIntermediaryInstalled = createAction(
+    `${MODULE_PREFIX}/set-intermediary-installed`,
+    (payload: boolean) => ({ payload }),
+);
 
-        if (device.mode !== 'bootloader') {
-            dispatch({
-                type: FIRMWARE.SET_ERROR,
-                payload: 'device must be connected in bootloader mode',
-            });
-            return;
-        }
+const setTargetType = createAction(`${MODULE_PREFIX}/set-target-type`, (payload: FirmwareType) => ({
+    payload,
+}));
 
-        dispatch(setStatus('started'));
+const rememberPreviousDevice = createAction(
+    `${MODULE_PREFIX}/remember-previous-device`,
+    (payload: Device) => ({ payload }),
+);
 
-        const deviceModel = getDeviceModel(device);
+const setIsCustomFirmware = createAction(`${MODULE_PREFIX}/set-is-custom`, (payload: boolean) => ({
+    payload,
+}));
 
-        const fromFwVersion =
-            prevDevice && prevDevice.features && prevDevice.firmware !== 'none'
-                ? getFirmwareVersion(prevDevice)
-                : 'none';
-        const fromBlVersion = getBootloaderVersion(device);
+const resetReducer = createAction(`${MODULE_PREFIX}/reset-reducer`);
 
-        let updateResponse: Await<ReturnType<typeof TrezorConnect.firmwareUpdate>>;
-        let analyticsPayload;
-
-        if (fwBinary) {
-            console.warn(`Installing custom firmware`);
-
-            // todo: what about firmware hash ?
-            analyticsPayload = {};
-            updateResponse = await TrezorConnect.firmwareUpdate({
-                keepSession: false,
-                skipFinalReload: true,
-                device: {
-                    path: device.path,
-                },
-                binary: fwBinary,
-            });
-        } else {
-            // for update (in firmware modal) target release is set. otherwise use device.firmwareRelease
-            const toRelease = targetRelease || device.firmwareRelease;
-
-            if (!toRelease) return;
-
-            const { release, intermediaryVersion } = toRelease;
-
-            // update to same variant as is currently installed or to the regular one if device does not have any fw (new/wiped device),
-            // unless the user wants to switch firmware type
-            let toBitcoinOnlyFirmware = firmwareType === FirmwareType.BitcoinOnly;
-            if (!firmwareType) {
-                toBitcoinOnlyFirmware = !prevDevice
-                    ? false
-                    : prevDevice.firmwareType === 'bitcoin-only';
-            }
-
-            const targetFirmwareVersion = release.version.join('.');
-
-            console.warn(
-                intermediaryVersion
-                    ? `Cannot install latest firmware. Will install intermediary v${intermediaryVersion} instead.`
-                    : `Installing ${
-                          toBitcoinOnlyFirmware ? FirmwareType.BitcoinOnly : FirmwareType.Universal
-                      } firmware ${targetFirmwareVersion}.`,
-            );
-
-            analyticsPayload = {
-                toFwVersion: targetFirmwareVersion,
-                toBtcOnly: toBitcoinOnlyFirmware,
-            };
-
-            // temporarily save target firmware type so that it can be displayed during installation and restart
-            // the value resets to undefined on firmwareActions.resetReducer() - doing it here would be too early because we need to keep it during the restart
-            if (firmwareType) {
-                dispatch({ type: FIRMWARE.SET_TARGET_TYPE, payload: firmwareType });
-            }
-
-            // FW binaries are stored in "*/static/connect/data/firmware/*/*.bin". see "connect-common" package
-            const baseUrl = `${
-                isDesktop() ? getState().desktop?.paths.binDir : resolveStaticPath('connect/data')
-            }${useDevkit ? '/devkit' : ''}`;
-
-            updateResponse = await TrezorConnect.firmwareUpdate({
-                keepSession: false,
-                skipFinalReload: true,
-                device: {
-                    path: device.path,
-                },
-                baseUrl,
-                btcOnly: toBitcoinOnlyFirmware,
-                version: release.version,
-                intermediaryVersion,
-            });
-            if (updateResponse.success) {
-                if (intermediaryVersion) {
-                    dispatch({ type: FIRMWARE.SET_INTERMEDIARY_INSTALLED, payload: true });
-                } else if (intermediaryInstalled) {
-                    // set to false so validateFirmwareHash can be triggerd from firmwareMiddleware
-                    dispatch({ type: FIRMWARE.SET_INTERMEDIARY_INSTALLED, payload: false });
-                }
-            }
-        }
-
-        analytics.report({
-            type: EventType.DeviceUpdateFirmware,
-            payload: {
-                fromFwVersion,
-                fromBlVersion,
-                error: !updateResponse.success ? updateResponse.payload.error : '',
-                ...analyticsPayload,
-            },
-        });
-
-        if (!updateResponse.success) {
-            return dispatch({ type: FIRMWARE.SET_ERROR, payload: updateResponse.payload.error });
-        }
-        dispatch({ type: FIRMWARE.SET_HASH, payload: updateResponse.payload });
-
-        // T1
-        // ask user to unplug device if BL < 1.10.0 (see firmwareMiddleware), BL starting with 1.10.0 will automatically restart itself just like on TT
-        // TT without pin
-        // ask user to wait until device reboots
-        dispatch(
-            setStatus(
-                deviceModel === DeviceModel.T1 && device.features.minor_version < 10
-                    ? 'unplug'
-                    : 'wait-for-reboot',
-            ),
-        );
-    };
-
-export const firmwareUpdate = (firmwareType?: FirmwareType) =>
-    firmwareInstall(undefined, firmwareType);
+const toggleUseDevkit = createAction(`${MODULE_PREFIX}/toggle-use-devkit`, (payload: boolean) => ({
+    payload,
+}));
 
 const handleFwHashError = (dispatch: Dispatch, getFirmwareHashResponse: Unsuccessful) => {
     dispatch({
-        type: FIRMWARE.SET_ERROR,
+        type: setError.type,
         payload: `${getFirmwareHashResponse.payload.error}. Unable to validate firmware hash. If you want to check authenticity of newly installed firmware please proceed to device settings and reinstall firmware.`,
     });
     analytics.report({
@@ -211,11 +78,11 @@ const handleFwHashError = (dispatch: Dispatch, getFirmwareHashResponse: Unsucces
 
 const handleFwHashMismatch = (dispatch: Dispatch, device: Device) => {
     dispatch({
-        type: FIRMWARE.SET_HASH_INVALID,
+        type: setHashInvalid.type,
         // device.id should always be present here (device is initialized and in normal mode) during successful TrezorConnect.getFirmwareHash call
         payload: device.id!,
     });
-    dispatch({ type: FIRMWARE.SET_ERROR, payload: 'Invalid hash' });
+    dispatch({ type: setError.type, payload: 'Invalid hash' });
     analytics.report({
         type: EventType.FirmwareValidateHashMismatch,
     });
@@ -228,7 +95,9 @@ const handleFwHashMismatch = (dispatch: Dispatch, device: Device) => {
 export const validateFirmwareHash =
     (device: Device) => async (dispatch: Dispatch, getState: GetState) => {
         const { app: prevApp } = getState().router;
-        const { firmwareChallenge, firmwareHash, isCustom } = getState().firmware;
+        const firmwareChallenge = selectFirmwareChallenge(getState());
+        const firmwareHash = selectFirmwareHash(getState());
+        const isCustom = selectIsCustomFirmware(getState());
 
         if (!firmwareChallenge || !firmwareHash) {
             // prevent false positives of invalid firmware hash. this should never happen though
@@ -294,7 +163,7 @@ export const validateFirmwareHash =
     };
 
 export const checkFirmwareAuthenticity = () => async (dispatch: Dispatch, getState: GetState) => {
-    const { device } = getState().suite;
+    const device = selectDevice(getState());
     if (!device) {
         throw new Error('device is not connected');
     }
@@ -326,19 +195,8 @@ export const checkFirmwareAuthenticity = () => async (dispatch: Dispatch, getSta
     }
 };
 
-export const firmwareCustom = (fwBinary: ArrayBuffer) => firmwareInstall(fwBinary);
-
-export const toggleHasSeed = (): FirmwareAction => ({
-    type: FIRMWARE.TOGGLE_HAS_SEED,
-});
-
-export const rememberPreviousDevice = (device: Device) => ({
-    type: FIRMWARE.REMEMBER_PREVIOUS_DEVICE,
-    payload: device,
-});
-
 export const rebootToBootloader = () => async (dispatch: Dispatch, getState: GetState) => {
-    const { device } = getState().suite;
+    const device = selectDevice(getState());
 
     if (!device) return;
 
@@ -355,7 +213,17 @@ export const rebootToBootloader = () => async (dispatch: Dispatch, getState: Get
     return response;
 };
 
-export const toggleUseDevkit = (useDevkit: boolean): FirmwareAction => ({
-    type: FIRMWARE.TOGGLE_USE_DEVKIT,
-    payload: useDevkit,
-});
+export const firmwareActions = {
+    setStatus,
+    setHash,
+    setHashInvalid,
+    setError,
+    setTargetRelease,
+    toggleHasSeed,
+    setIntermediaryInstalled,
+    setTargetType,
+    rememberPreviousDevice,
+    setIsCustomFirmware,
+    resetReducer,
+    toggleUseDevkit,
+};

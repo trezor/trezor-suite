@@ -1,9 +1,10 @@
 import { MiddlewareAPI } from 'redux';
 import { SUITE } from 'src/actions/suite/constants';
 import { AppState, Action, Dispatch } from 'src/types/suite';
-import TrezorConnect, { UI } from '@trezor/connect';
 import { addButtonRequest, removeButtonRequests } from 'src/actions/suite/suiteActions';
 import { ONBOARDING } from 'src/actions/onboarding/constants';
+
+import TrezorConnect, { UI } from '@trezor/connect';
 
 const buttonRequest =
     (api: MiddlewareAPI<Dispatch, AppState>) =>
@@ -62,14 +63,22 @@ const buttonRequest =
             case UI.REQUEST_PIN:
             case UI.INVALID_PIN:
                 api.dispatch(
-                    addButtonRequest(api.getState().suite.device, {
-                        code: action.payload.type ? action.payload.type : action.type,
+                    addButtonRequest({
+                        buttonRequest: {
+                            code: action.payload.type ? action.payload.type : action.type,
+                        },
+                        device: api.getState().suite.device,
                     }),
                 );
                 break;
             case UI.REQUEST_BUTTON: {
                 const { device: _, ...request } = action.payload;
-                api.dispatch(addButtonRequest(api.getState().suite.device, request));
+                api.dispatch(
+                    addButtonRequest({
+                        device: api.getState().suite.device,
+                        buttonRequest: request,
+                    }),
+                );
                 break;
             }
             case SUITE.LOCK_DEVICE:

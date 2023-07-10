@@ -1,16 +1,18 @@
 import React from 'react';
 
-import { Switch } from '@trezor/components';
 import { ActionColumn, SectionItem, TextColumn } from 'src/components/suite/Settings';
 import { useSelector, useDispatch } from 'src/hooks/suite';
-import { toggleUseDevkit } from 'src/actions/firmware/firmwareActions';
+import { firmwareActions } from 'src/actions/firmware/firmwareActions';
+import { selectUseDevkit } from 'src/reducers/firmware/firmwareReducer';
+
+import { Switch } from '@trezor/components';
 
 export const Devkit = () => {
     const dispatch = useDispatch();
-    const useDevkit = useSelector(state => state.firmware.useDevkit);
+    const useDevkit = useSelector(selectUseDevkit);
 
     const onChangeRegularCheck = () => {
-        dispatch(toggleUseDevkit(!useDevkit));
+        dispatch(firmwareActions.toggleUseDevkit(!useDevkit));
     };
 
     return (

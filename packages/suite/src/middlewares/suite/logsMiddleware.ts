@@ -148,7 +148,7 @@ const log =
                         addLog({
                             type: action.type,
                             payload: {
-                                code: action.payload.code,
+                                code: action.payload.buttonRequest?.code,
                             },
                         }),
                     );
