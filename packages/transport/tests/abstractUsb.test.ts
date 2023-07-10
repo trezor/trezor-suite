@@ -170,6 +170,29 @@ describe('Usb', () => {
             expect(res2.success).toEqual(false);
         });
 
+        it('handleDescriptorsChange', () => {
+            const spy = jest.fn();
+            transport.on('transport-update', spy);
+
+            transport.handleDescriptorsChange([{ path: '1', session: null }]);
+
+            expect(spy).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    connected: [{ path: '1', session: null }],
+                    didUpdate: true,
+                    descriptors: [{ path: '1', session: null }],
+                }),
+            );
+            transport.handleDescriptorsChange([]);
+            expect(spy).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    disconnected: [{ path: '1', session: null }],
+                    didUpdate: true,
+                    descriptors: [],
+                }),
+            );
+        });
+
         it('enumerate', async () => {
             const res = await transport.enumerate().promise;
             expect(res).toEqual({
@@ -204,6 +227,49 @@ describe('Usb', () => {
             });
 
             expect(spy).toHaveBeenCalledTimes(0);
+        });
+
+        it('acquire. transport listening. missing descriptor', async () => {
+            sessionsBackground.removeAllListeners();
+            const enumerateResult = await transport.enumerate().promise;
+            expect(enumerateResult.success).toEqual(true);
+            // @ts-expect-error
+            transport.handleDescriptorsChange(enumerateResult.payload);
+
+            transport.listen();
+
+            // set some initial descriptors
+            const acquireCall = transport.acquire({ input: { path: '123', previous: null } });
+
+            setTimeout(() => {
+                sessionsClient.emit('descriptors', [{ path: '321', session: '1' }]);
+            }, 1);
+
+            const res = await acquireCall.promise;
+
+            expect(res).toMatchObject({
+                success: false,
+                error: 'device disconnected during action',
+            });
+        });
+
+        it('acquire. transport listening. unexpected session', async () => {
+            sessionsBackground.removeAllListeners();
+            const enumerateResult = await transport.enumerate().promise;
+            expect(enumerateResult.success).toEqual(true);
+            // @ts-expect-error
+            transport.handleDescriptorsChange(enumerateResult.payload);
+
+            transport.listen();
+
+            // set some initial descriptors
+            const acquireCall = transport.acquire({ input: { path: '123' } });
+            setTimeout(() => {
+                sessionsClient.emit('descriptors', [{ path: '123', session: '2' }]);
+            }, 1);
+
+            const res = await acquireCall.promise;
+            expect(res).toMatchObject({ success: false, error: 'wrong previous session' });
         });
 
         it('call error - called without acquire.', async () => {
