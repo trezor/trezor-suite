@@ -17,4 +17,4 @@ jobs:
       - run: yarn install
       - run: yarn build:libs
       - name: Run connect popup test
-        run: './docker/docker-connect-popup-test.sh "${{ inputs.test-name }}"'
+        run: "./docker/docker-connect-popup-test.sh ${{ inputs.test-name }}"
