@@ -18,6 +18,7 @@ import { showXpub } from 'src/actions/wallet/publicKeyActions';
 import { NETWORKS } from 'src/config/wallet';
 import { CoinjoinLogs } from 'src/components/wallet/PrivacyAccount/CoinjoinLogs';
 import { CoinjoinSetup } from 'src/components/wallet/PrivacyAccount/CoinjoinSetup';
+import { CoinjoinTestLargeTx } from 'src/components/wallet/PrivacyAccount/CoinjoinTestLargeTx';
 import { RescanAccount } from 'src/components/wallet/PrivacyAccount/RescanAccount';
 
 const Heading = styled.h3`
@@ -107,6 +108,7 @@ const Details = () => {
                         <Heading>
                             <Translation id="TR_COINJOIN_SETUP_HEADING" />
                         </Heading>
+                        <CoinjoinTestLargeTx account={account} device={device} />
                         <CoinjoinSetup accountKey={account.key} />
                     </>
                 )}
