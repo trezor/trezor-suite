@@ -1,0 +1,20 @@
+name: "Test Trezor popup with Trezor Explorer"
+
+on:
+  workflow_call:
+    inputs:
+      test-name:
+        description: "Test name to be run (e.g. `analytics` or `popup-close`)"
+        type: "string"
+        required: true
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: recursive
+      - run: yarn install
+      - run: yarn build:libs
+      - name: Run connect popup test
+        run: './docker/docker-connect-popup-test.sh "${{ inputs.test-name }}"'

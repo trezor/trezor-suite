@@ -1,0 +1,85 @@
+name: "@trezor/connect-popup test"
+
+on:
+  push:
+    paths:
+      - "packages/connect/**"
+      - "packages/connect-popup/**"
+      - "packages/connect-iframe/**"
+      - "packages/connect-web/**"
+      - "packages/connect-analytics/**"
+      - "packages/connect-common/**"
+      - "packages/connect-ui/**"
+      - "packages/crypto-utils/**"
+      - "packages/urls/**"
+  push:
+    branches:
+      - develop
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [16.x, 18.x]
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: recursive
+      - name: node ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: yarn
+          cache-dependency-path: "**/yarn.lock"
+      - run: sed -i "/\"node\"/d" package.json
+      - run: yarn install
+      - run: yarn build:libs
+
+  analytics:
+    needs: [build]
+    uses: ./.github/workflows/connect-popup-test-params.yml
+    with:
+      test-name: "analytics"
+
+  browser-support:
+    needs: [build]
+    uses: ./.github/workflows/connect-popup-test-params.yml
+    with:
+      test-name: "browser-support"
+
+  install-bridge:
+    needs: [build]
+    uses: ./.github/workflows/connect-popup-test-params.yml
+    with:
+      test-name: "install-bridge"
+
+  methods:
+    needs: [build]
+    uses: ./.github/workflows/connect-popup-test-params.yml
+    with:
+      test-name: "methods"
+
+  passphrase:
+    needs: [build]
+    uses: ./.github/workflows/connect-popup-test-params.yml
+    with:
+      test-name: "passphrase"
+
+  popup-close:
+    needs: [build]
+    uses: ./.github/workflows/connect-popup-test-params.yml
+    with:
+      test-name: "popup-close"
+
+  popup-error-page:
+    needs: [build]
+    uses: ./.github/workflows/connect-popup-test-params.yml
+    with:
+      test-name: "popup-error-page"
+
+  unchained:
+    needs: [build]
+    uses: ./.github/workflows/connect-popup-test-params.yml
+    with:
+      test-name: "unchained"
