@@ -6,6 +6,11 @@ import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 import { SUITE, METADATA } from 'src/actions/suite/constants';
 import * as deviceUtils from 'src/utils/suite/device';
 import type { TrezorDevice, AcquiredDevice, ButtonRequest } from 'src/types/suite';
+import { AnyAction, PayloadAction } from '@reduxjs/toolkit';
+
+import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
+
+import { Device, DEVICE, Features } from '@trezor/connect';
 
 type State = TrezorDevice[];
 const initialState: State = [];
@@ -323,8 +328,14 @@ const createInstance = (draft: State, device: TrezorDevice) => {
  * @param {State} draft
  * @param {TrezorDevice} device
  * @param {boolean} remember
+ * @param {boolean} forceRemember
  */
-const remember = (draft: State, device: TrezorDevice, remember: boolean, forceRemember?: true) => {
+const rememberDevice = (
+    draft: State,
+    device: TrezorDevice,
+    remember: boolean,
+    forceRemember = true,
+) => {
     // only acquired devices
     if (!device || !device.features) return;
     draft.forEach(d => {
@@ -395,80 +406,105 @@ export const prepareDeviceReducer = createReducerWithExtraDeps(initialState, (bu
         )
         .addMatcher(
             action => action.type === DEVICE.CONNECT || action.type === DEVICE.CONNECT_UNACQUIRED,
-            (state, action) => {
-                connectDevice(state, action.payload);
+            (state, { payload }: PayloadAction<Device>) => {
+                connectDevice(state, payload);
             },
         )
         .addMatcher(
             action => action.type === DEVICE.CHANGED,
-            (state, action) => {
-                changeDevice(state, action.payload, { connected: true, available: true });
+            (state, { payload }: PayloadAction<Device | TrezorDevice>) => {
+                changeDevice(state, payload, { connected: true, available: true });
             },
         )
         .addMatcher(
             action => action.type === DEVICE.DISCONNECT,
-            (state, action) => {
-                disconnectDevice(state, action.payload);
+            (state, { payload }: PayloadAction<Device>) => {
+                disconnectDevice(state, payload);
             },
         )
         .addMatcher(
             action => action.type === SUITE.SELECT_DEVICE,
-            (state, action) => {
-                updateTimestamp(state, action.payload);
+            (state, { payload }: PayloadAction<TrezorDevice | undefined>) => {
+                updateTimestamp(state, payload);
             },
         )
         .addMatcher(
             action => action.type === SUITE.UPDATE_PASSPHRASE_MODE,
-            (state, action) => {
-                changePassphraseMode(state, action.payload, action.hidden, action.alwaysOnDevice);
+            (
+                state,
+                {
+                    payload,
+                    hidden,
+                    alwaysOnDevice,
+                }: PayloadAction<TrezorDevice> & { hidden: boolean; alwaysOnDevice: boolean },
+            ) => {
+                changePassphraseMode(state, payload, hidden, alwaysOnDevice);
             },
         )
         .addMatcher(
             action => action.type === SUITE.AUTH_DEVICE,
-            (state, action) => {
+            (state, action: PayloadAction<TrezorDevice> & { state: string }) => {
                 authDevice(state, action.payload, action.state);
             },
         )
         .addMatcher(
             action => action.type === SUITE.AUTH_FAILED,
-            (state, action) => {
-                authFailed(state, action.payload);
+            (state, { payload }: PayloadAction<TrezorDevice>) => {
+                authFailed(state, payload);
             },
         )
         .addMatcher(
             action => action.type === SUITE.RECEIVE_AUTH_CONFIRM,
-            (state, action) => {
-                authConfirm(state, action.payload, action.success);
+            (state, { payload, success }: PayloadAction<TrezorDevice> & { success: boolean }) => {
+                authConfirm(state, payload, success);
             },
         )
         .addMatcher(
             action => action.type === SUITE.CREATE_DEVICE_INSTANCE,
-            (state, action) => {
-                createInstance(state, action.payload);
+            (state, { payload }: PayloadAction<TrezorDevice>) => {
+                createInstance(state, payload);
             },
         )
         .addMatcher(
             action => action.type === SUITE.REMEMBER_DEVICE,
-            (state, action) => {
-                remember(state, action.payload, action.remember, action.forceRemember);
+            (
+                state,
+                {
+                    payload,
+                    remember,
+                    forceRemember,
+                }: PayloadAction<TrezorDevice> & { remember: boolean; forceRemember: boolean },
+            ) => {
+                rememberDevice(state, payload, remember, forceRemember);
             },
         )
         .addMatcher(
             action => action.type === SUITE.FORGET_DEVICE,
-            (state, action) => {
-                forget(state, action.payload);
+            (state, { payload }: PayloadAction<TrezorDevice>) => {
+                forget(state, payload);
             },
         )
         .addMatcher(
             action => action.type === SUITE.ADD_BUTTON_REQUEST,
-            (state, action) => {
-                addButtonRequest(state, action.payload.device, action.payload.buttonRequest);
+            (
+                state,
+                {
+                    payload,
+                    buttonRequest,
+                }: PayloadAction<TrezorDevice | undefined> & { buttonRequest?: ButtonRequest },
+            ) => {
+                addButtonRequest(state, payload, buttonRequest);
             },
         )
         .addMatcher(
             action => action.type === METADATA.SET_DEVICE_METADATA,
-            (state, action) => {
-                setMetadata(state, action.payload.deviceState, action.payload.metadata);
+            (
+                state,
+                {
+                    payload,
+                }: PayloadAction<{ deviceState: string; metadata: TrezorDevice['metadata'] }>,
+            ) => {
+                setMetadata(state, payload.deviceState, payload.metadata);
             },
         );
 });
