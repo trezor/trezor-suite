@@ -80,6 +80,13 @@ export class PopupManager extends EventEmitter {
             return;
         }
 
+        // When requesting a popup window and there is a reference to popup window and it is not locked
+        // we close it so we can open a new one.
+        // This is necessary when popup window is in error state and we want to open a new one.
+        if (this.popupWindow && !this.locked) {
+            this.popupWindow.close();
+        }
+
         const openFn = this.open.bind(this);
         this.locked = true;
 
