@@ -29,7 +29,7 @@
         "json-schema-to-typescript": "^13.0.2",
         "jws": "^4.0.0",
         "proxy-memoize": "2.0.2",
-        "semver": "^7.5.2"
+        "semver": "^7.5.3"
     },
     "devDependencies": {
         "@suite-common/test-utils": "workspace:*",
