@@ -126,7 +126,9 @@ if (Cypress.env('SNAPSHOT')) {
         failureThresholdType: 'percent', // percent of image or number of pixels
     });
 } else {
-    Cypress.Commands.add('matchImageSnapshot', () => cy.log('skipping image snapshot'));
+    Cypress.Commands.add('matchImageSnapshot', () => {
+        cy.log('skipping image snapshot');
+    });
 }
 
 Cypress.Commands.add('prefixedVisit', prefixedVisit);
