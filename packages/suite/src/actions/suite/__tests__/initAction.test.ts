@@ -22,7 +22,7 @@ import { SUITE, ROUTER } from 'src/actions/suite/constants';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
 import modalReducer from 'src/reducers/suite/modalReducer';
 import routerReducer from 'src/reducers/suite/routerReducer';
-import deviceReducer from 'src/reducers/suite/deviceReducer';
+import { prepareDeviceReducer } from 'src/reducers/suite/deviceReducer';
 import metadataReducer from 'src/reducers/suite/metadataReducer';
 import walletReducers from 'src/reducers/wallet';
 import { init } from 'src/actions/suite/initAction';
@@ -34,6 +34,7 @@ import { appChanged } from '../suiteActions';
 
 const analyticsReducer = prepareAnalyticsReducer(extraDependencies);
 const messageSystemReducer = prepareMessageSystemReducer(extraDependencies);
+const deviceReducer = prepareDeviceReducer(extraDependencies);
 
 process.env.JWS_PUBLIC_KEY = DEV_JWS_PUBLIC_KEY;
 jest.mock('@trezor/connect', () => global.JestMocks.getTrezorConnect({}));

@@ -1,5 +1,4 @@
 import { Reducer } from '@reduxjs/toolkit';
-
 import { extraDependencies } from 'src/support/extraDependencies';
 
 import { prepareAnalyticsReducer } from '@suite-common/analytics';
@@ -9,7 +8,7 @@ import { logsSlice } from '@suite-common/logger';
 
 import router from './routerReducer';
 import suite from './suiteReducer';
-import devices from './deviceReducer';
+import { prepareDeviceReducer } from './deviceReducer';
 import modal from './modalReducer';
 import resize from './resizeReducer';
 import metadata from './metadataReducer';
@@ -20,6 +19,8 @@ import protocol from './protocolReducer';
 const analytics = prepareAnalyticsReducer(extraDependencies);
 // Type annotation as workaround for typecheck error "The inferred type of 'default' cannot be named..."
 const messageSystem: Reducer = prepareMessageSystemReducer(extraDependencies);
+
+const devices = prepareDeviceReducer(extraDependencies);
 
 export default {
     suite,

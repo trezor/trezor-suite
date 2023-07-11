@@ -3,16 +3,19 @@
 import fs from 'fs';
 import path from 'path';
 import { configureStore } from 'src/support/tests/configureStore';
-
 import metadataReducer from 'src/reducers/suite/metadataReducer';
 import suiteReducer, { SuiteState } from 'src/reducers/suite/suiteReducer';
-import deviceReducer from 'src/reducers/suite/deviceReducer';
-import { STORAGE, MODAL } from '../constants';
-import * as metadataActions from '../metadataActions';
-import * as fixtures from '../__fixtures__/metadataActions';
+import { prepareDeviceReducer } from 'src/reducers/suite/deviceReducer';
 import DropboxProvider from 'src/services/suite/metadata/DropboxProvider';
 import suiteMiddleware from 'src/middlewares/suite/suiteMiddleware';
 import { accountsReducer } from 'src/reducers/wallet';
+import { extraDependencies } from 'src/support/extraDependencies';
+
+import { STORAGE, MODAL } from '../constants';
+import * as metadataActions from '../metadataActions';
+import * as fixtures from '../__fixtures__/metadataActions';
+
+const deviceReducer = prepareDeviceReducer(extraDependencies);
 
 jest.mock('@trezor/connect', () => {
     let fixture: any;

@@ -1,12 +1,15 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 /* eslint-disable global-require */
 import { configureStore } from 'src/support/tests/configureStore';
+import suiteReducer from 'src/reducers/suite/suiteReducer';
+import { prepareDeviceReducer } from 'src/reducers/suite/deviceReducer';
+import { SUITE } from 'src/actions/suite/constants';
+import { extraDependencies } from 'src/support/extraDependencies';
 
 import { DEVICE_EVENT, UI_EVENT, TRANSPORT_EVENT, BLOCKCHAIN_EVENT } from '@trezor/connect';
-import suiteReducer from 'src/reducers/suite/suiteReducer';
-import deviceReducer from 'src/reducers/suite/deviceReducer';
-import { SUITE } from 'src/actions/suite/constants';
 import { connectInitThunk } from '@suite-common/connect-init';
+
+const deviceReducer = prepareDeviceReducer(extraDependencies);
 
 jest.mock('@trezor/connect', () => {
     let fixture: any;

@@ -2,9 +2,13 @@
 /* eslint-disable global-require */
 
 import { configureStore } from 'src/support/tests/configureStore';
-import fixtures from '../__fixtures__/deviceSettings';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
-import deviceReducer from 'src/reducers/suite/deviceReducer';
+import { prepareDeviceReducer } from 'src/reducers/suite/deviceReducer';
+import { extraDependencies } from 'src/support/extraDependencies';
+
+import fixtures from '../__fixtures__/deviceSettings';
+
+const deviceReducer = prepareDeviceReducer(extraDependencies);
 
 const { getSuiteDevice } = global.JestMocks;
 

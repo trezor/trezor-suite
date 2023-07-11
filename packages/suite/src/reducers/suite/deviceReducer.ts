@@ -1,10 +1,11 @@
-import produce from 'immer';
+import { AnyAction } from '@reduxjs/toolkit';
 
 import { Device, DEVICE, Features } from '@trezor/connect';
+import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 
-import { SUITE, STORAGE, METADATA } from 'src/actions/suite/constants';
+import { SUITE, METADATA } from 'src/actions/suite/constants';
 import * as deviceUtils from 'src/utils/suite/device';
-import type { TrezorDevice, AcquiredDevice, Action, ButtonRequest } from 'src/types/suite';
+import type { TrezorDevice, AcquiredDevice, ButtonRequest } from 'src/types/suite';
 
 type State = TrezorDevice[];
 const initialState: State = [];
@@ -386,56 +387,91 @@ const setMetadata = (draft: State, state: string, metadata: TrezorDevice['metada
     device.metadata = metadata;
 };
 
-const deviceReducer = (state: State = initialState, action: Action): State =>
-    produce(state, draft => {
-        switch (action.type) {
-            case STORAGE.LOAD:
-                return action.payload.devices;
-            case DEVICE.CONNECT:
-            case DEVICE.CONNECT_UNACQUIRED:
-                connectDevice(draft, action.payload);
-                break;
-            case DEVICE.CHANGED:
-                changeDevice(draft, action.payload, { connected: true, available: true });
-                break;
-            case DEVICE.DISCONNECT:
-                disconnectDevice(draft, action.payload);
-                break;
-            case SUITE.SELECT_DEVICE:
-                updateTimestamp(draft, action.payload);
-                break;
-            case SUITE.UPDATE_PASSPHRASE_MODE:
-                changePassphraseMode(draft, action.payload, action.hidden, action.alwaysOnDevice);
-                break;
-            case SUITE.AUTH_DEVICE:
-                authDevice(draft, action.payload, action.state);
-                break;
-            case SUITE.AUTH_FAILED:
-                authFailed(draft, action.payload);
-                break;
-            case SUITE.RECEIVE_AUTH_CONFIRM:
-                authConfirm(draft, action.payload, action.success);
-                break;
-            case SUITE.CREATE_DEVICE_INSTANCE:
-                createInstance(draft, action.payload);
-                break;
-            case SUITE.REMEMBER_DEVICE:
-                remember(draft, action.payload, action.remember, action.forceRemember);
-                break;
-            case SUITE.FORGET_DEVICE:
-                forget(draft, action.payload);
-                break;
-            case SUITE.ADD_BUTTON_REQUEST:
-                addButtonRequest(draft, action.payload.device, action.payload.buttonRequest);
-                break;
-            case METADATA.SET_DEVICE_METADATA:
-                setMetadata(draft, action.payload.deviceState, action.payload.metadata);
-                break;
-            // no default
-        }
-    });
+export const prepareDeviceReducer = createReducerWithExtraDeps(initialState, (builder, extra) => {
+    builder
+        .addMatcher(
+            action => action.type === extra.actionTypes.storageLoad,
+            (_, action: AnyAction) => action.payload.devices,
+        )
+        .addMatcher(
+            action => action.type === DEVICE.CONNECT || action.type === DEVICE.CONNECT_UNACQUIRED,
+            (state, action) => {
+                connectDevice(state, action.payload);
+            },
+        )
+        .addMatcher(
+            action => action.type === DEVICE.CHANGED,
+            (state, action) => {
+                changeDevice(state, action.payload, { connected: true, available: true });
+            },
+        )
+        .addMatcher(
+            action => action.type === DEVICE.DISCONNECT,
+            (state, action) => {
+                disconnectDevice(state, action.payload);
+            },
+        )
+        .addMatcher(
+            action => action.type === SUITE.SELECT_DEVICE,
+            (state, action) => {
+                updateTimestamp(state, action.payload);
+            },
+        )
+        .addMatcher(
+            action => action.type === SUITE.UPDATE_PASSPHRASE_MODE,
+            (state, action) => {
+                changePassphraseMode(state, action.payload, action.hidden, action.alwaysOnDevice);
+            },
+        )
+        .addMatcher(
+            action => action.type === SUITE.AUTH_DEVICE,
+            (state, action) => {
+                authDevice(state, action.payload, action.state);
+            },
+        )
+        .addMatcher(
+            action => action.type === SUITE.AUTH_FAILED,
+            (state, action) => {
+                authFailed(state, action.payload);
+            },
+        )
+        .addMatcher(
+            action => action.type === SUITE.RECEIVE_AUTH_CONFIRM,
+            (state, action) => {
+                authConfirm(state, action.payload, action.success);
+            },
+        )
+        .addMatcher(
+            action => action.type === SUITE.CREATE_DEVICE_INSTANCE,
+            (state, action) => {
+                createInstance(state, action.payload);
+            },
+        )
+        .addMatcher(
+            action => action.type === SUITE.REMEMBER_DEVICE,
+            (state, action) => {
+                remember(state, action.payload, action.remember, action.forceRemember);
+            },
+        )
+        .addMatcher(
+            action => action.type === SUITE.FORGET_DEVICE,
+            (state, action) => {
+                forget(state, action.payload);
+            },
+        )
+        .addMatcher(
+            action => action.type === SUITE.ADD_BUTTON_REQUEST,
+            (state, action) => {
+                addButtonRequest(state, action.payload.device, action.payload.buttonRequest);
+            },
+        )
+        .addMatcher(
+            action => action.type === METADATA.SET_DEVICE_METADATA,
+            (state, action) => {
+                setMetadata(state, action.payload.deviceState, action.payload.metadata);
+            },
+        );
+});
 
 export const selectDevices = (state: DeviceRootState) => state.devices;
 export const selectIsPendingTransportEvent = (state: DeviceRootState) => state.devices.length < 1;
-
-export default deviceReducer;

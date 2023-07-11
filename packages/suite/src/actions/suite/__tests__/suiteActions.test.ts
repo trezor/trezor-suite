@@ -3,13 +3,13 @@
 // unit test for suite actions
 // data provided by TrezorConnect are mocked
 
-import { prepareFirmwareReducer } from '@suite-common/wallet-core';
 import { connectInitThunk } from '@suite-common/connect-init';
 import { DEVICE } from '@trezor/connect';
+import { prepareFirmwareReducer } from '@suite-common/wallet-core';
 
 import { configureStore } from 'src/support/tests/configureStore';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
-import deviceReducer from 'src/reducers/suite/deviceReducer';
+import { prepareDeviceReducer } from 'src/reducers/suite/deviceReducer';
 import routerReducer from 'src/reducers/suite/routerReducer';
 import modalReducer from 'src/reducers/suite/modalReducer';
 import { discardMockedConnectInitActions } from 'src/utils/suite/storage';
@@ -22,6 +22,8 @@ import fixtures from '../__fixtures__/suiteActions';
 const { getSuiteDevice } = global.JestMocks;
 
 const firmwareReducer = prepareFirmwareReducer(extraDependencies);
+
+const deviceReducer = prepareDeviceReducer(extraDependencies);
 
 jest.mock('@trezor/connect', () => {
     let fixture: any;
