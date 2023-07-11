@@ -159,3 +159,6 @@ buck-out/
 packages/suite-data/files/browser-detection
 packages/suite-data/files/guide
 packages/suite-data/files/translations/master.json
+
+# lottie animations
+packages/suite/**/lottie/*.json
