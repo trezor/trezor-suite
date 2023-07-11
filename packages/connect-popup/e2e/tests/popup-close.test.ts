@@ -1,7 +1,7 @@
 import { test, expect, Page } from '@playwright/test';
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 import { createDeferred, Deferred } from '@trezor/utils';
-import { waitAndClick } from '../support/helpers';
+import { findElementByDataTest, waitAndClick } from '../support/helpers';
 
 const url = process.env.URL || 'http://localhost:8088/';
 
@@ -291,7 +291,69 @@ test.beforeAll(async () => {
         await popupClosedPromise;
     });
 
+    test('popup should close and open new one when popup is in error state and user triggers new call', async ({
+        page,
+    }) => {
+        await TrezorUserEnvLink.api.pressNo();
+
+        // Error page is displayed.
+        await findElementByDataTest(popup, '@connect-ui/error');
+
+        await waitAndClick(page, ['@submit-button']);
+
+        // Currently open popup should be closed.
+        await popupClosedPromise;
+
+        // New popup should be opened. To handle the new request
+        [popup] = await Promise.all([page.waitForEvent('popup')]);
+
+        // We cancel the request since we already tested what we wanted.
+        await waitAndClick(popup, ['@permissions/cancel-button']);
+    });
+
+    test('popup should be focused when a call is in progress and user triggers new call', async ({
+        page,
+    }) => {
+        await TrezorUserEnvLink.api.pressYes();
+        await TrezorUserEnvLink.api.pressYes();
+        await TrezorUserEnvLink.api.pressYes();
+
+        popupClosedPromise = new Promise(resolve => {
+            popup.on('close', () => resolve(undefined));
+        });
+
+        await popupClosedPromise;
+
+        await page.goto(`${url}#/method/getAddress`);
+        await page.waitForSelector("button[data-test='@submit-button']", { state: 'visible' });
+        [popup] = await Promise.all([
+            page.waitForEvent('popup'),
+            page.click("button[data-test='@submit-button']"),
+        ]);
+
+        popupClosedPromise = new Promise(resolve => {
+            popup.on('close', () => resolve(undefined));
+        });
+
+        await popup.waitForSelector("button[data-test='@permissions/confirm-button']");
+
+        await waitAndClick(popup, ['@permissions/confirm-button']);
+
+        // Click in 3rd party to trigger new call. But instead of new call it should focus on open popup.
+        await waitAndClick(page, ['@submit-button']);
+
+        // Popup should keep its reference and state so we should be able to find confirm button for export-address.
+        await waitAndClick(popup, ['@export-address/confirm-button']);
+
+        // Confirm right address is displayed.
+        await TrezorUserEnvLink.api.pressYes();
+
+        // Popup should be closed now.
+        await popupClosedPromise;
+    });
+
     test('popup should close when third party is closed', async ({ page }) => {
+        // We need to skip the after flow because this test closes 3rd party window and there is not window to continue with.
         test.info().annotations.push({ type: 'skip-after-flow' });
         await TrezorUserEnvLink.api.pressYes();
         await TrezorUserEnvLink.api.pressYes();
