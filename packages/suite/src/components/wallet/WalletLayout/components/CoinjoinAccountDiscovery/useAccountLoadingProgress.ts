@@ -13,7 +13,7 @@ const MEMPOOL_THRESHOLD = 0.85;
 type ProgressInfoReducerState = {
     messageId?: TranslationKey;
     progress: number;
-    stage?: string;
+    stage?: 'block' | 'mempool';
     outOf?: { current: number; total: number };
 };
 
@@ -65,7 +65,7 @@ const progressInfoReducer = (
 
 export const useAccountLoadingProgress = () => {
     const selectedAccount = useSelector(selectSelectedAccount);
-    const [{ stage, ...progressInfo }, dispatchProgressInfo] = useReducer(progressInfoReducer, {
+    const [progressInfo, dispatchProgressInfo] = useReducer(progressInfoReducer, {
         progress: 0,
     });
 
