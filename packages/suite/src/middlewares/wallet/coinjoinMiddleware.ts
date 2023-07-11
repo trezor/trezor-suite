@@ -149,10 +149,10 @@ export const coinjoinMiddleware =
                     );
                 } else {
                     // pause **only** if not in critical phase
-                    api.dispatch(coinjoinAccountActions.interruptAllCoinjoinSessions());
+                    api.dispatch(coinjoinAccountActions.pauseAllCoinjoinSessions());
                 }
             } else if (action.payload === true) {
-                api.dispatch(coinjoinAccountActions.restoreInterruptedCoinjoinSessions());
+                api.dispatch(coinjoinAccountActions.restorePausedCoinjoinSessions());
             }
         }
 
@@ -167,9 +167,9 @@ export const coinjoinMiddleware =
                         ),
                     );
                 }
-                api.dispatch(coinjoinAccountActions.interruptAllCoinjoinSessions());
+                api.dispatch(coinjoinAccountActions.pauseAllCoinjoinSessions());
             } else if (action.payload === 'Enabled') {
-                api.dispatch(coinjoinAccountActions.restoreInterruptedCoinjoinSessions());
+                api.dispatch(coinjoinAccountActions.restorePausedCoinjoinSessions());
             }
         }
 
@@ -183,9 +183,9 @@ export const coinjoinMiddleware =
                 const isAccountInCriticalPhase =
                     selectIsAccountWithSessionInCriticalPhaseByAccountKey(state, accountKey);
                 if (!isAccountInCriticalPhase) {
-                    api.dispatch(coinjoinClientActions.pauseCoinjoinSession(accountKey, true));
+                    api.dispatch(coinjoinClientActions.pauseCoinjoinSession(accountKey));
                 }
-            } else if (status === 'ready' && session?.interrupted) {
+            } else if (status === 'ready' && session?.paused) {
                 const account = selectAccountByKey(state, accountKey);
                 if (account) {
                     const blocker = selectCoinjoinSessionBlockerByAccountKey(state, account.key);
@@ -203,7 +203,7 @@ export const coinjoinMiddleware =
             if (!locks.includes(SUITE.LOCK_TYPE.DEVICE) && !locks.includes(SUITE.LOCK_TYPE.UI)) {
                 const previousRoute = state.router.settingsBackRoute.name;
                 if (previousRoute === 'wallet-send') {
-                    api.dispatch(coinjoinAccountActions.restoreInterruptedCoinjoinSessions());
+                    api.dispatch(coinjoinAccountActions.restorePausedCoinjoinSessions());
                 } else {
                     const accountKey = state.wallet.selectedAccount.account?.key;
                     if (accountKey) {
@@ -213,9 +213,7 @@ export const coinjoinMiddleware =
                             !session?.paused &&
                             !session?.starting
                         ) {
-                            api.dispatch(
-                                coinjoinClientActions.pauseCoinjoinSession(accountKey, true),
-                            );
+                            api.dispatch(coinjoinClientActions.pauseCoinjoinSession(accountKey));
                         }
                     }
                 }
@@ -265,7 +263,7 @@ export const coinjoinMiddleware =
                     action.payload.round.phase === RoundPhase.Ended;
 
                 if (!isAnySessionInCriticalPhase || hasCriticalPhaseJustEnded) {
-                    api.dispatch(coinjoinAccountActions.interruptAllCoinjoinSessions());
+                    api.dispatch(coinjoinAccountActions.pauseAllCoinjoinSessions());
                 }
             }
         }
@@ -276,14 +274,14 @@ export const coinjoinMiddleware =
 
         if (action.type === COINJOIN.CLIENT_SESSION_PHASE) {
             const { accountKeys } = action.payload;
-            const isAlredyInterrupted = api
+            const isAlreadyPaused = api
                 .getState()
                 .wallet.coinjoin.accounts.find(({ key }) => key === accountKeys[0])
-                ?.session?.interrupted;
+                ?.session?.paused;
 
-            if (action.payload.phase === SessionPhase.CriticalError && !isAlredyInterrupted) {
+            if (action.payload.phase === SessionPhase.CriticalError && !isAlreadyPaused) {
                 action.payload.accountKeys.forEach(key =>
-                    api.dispatch(coinjoinClientActions.pauseCoinjoinSession(key, true)),
+                    api.dispatch(coinjoinClientActions.pauseCoinjoinSession(key)),
                 );
                 api.dispatch(addToast({ type: 'coinjoin-interrupted' }));
             }

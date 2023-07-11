@@ -163,12 +163,11 @@ export const setDebugSettings = (payload: CoinjoinDebugSettings) =>
         payload,
     } as const);
 
-export const coinjoinSessionPause = (accountKey: string, interrupted: boolean) =>
+export const coinjoinSessionPause = (accountKey: string) =>
     ({
         type: COINJOIN.SESSION_PAUSE,
         payload: {
             accountKey,
-            interrupted,
         },
     } as const);
 
@@ -270,8 +269,7 @@ export const closeCriticalPhaseModal = () => (dispatch: Dispatch) => {
 
 // called from coinjoin account UI or exceptions like device disconnection, forget wallet/account etc.
 export const pauseCoinjoinSession =
-    (accountKey: string, interrupted = false) =>
-    (dispatch: Dispatch, getState: GetState) => {
+    (accountKey: string) => (dispatch: Dispatch, getState: GetState) => {
         const account = selectAccountByKey(getState(), accountKey);
 
         if (!account) {
@@ -284,7 +282,7 @@ export const pauseCoinjoinSession =
         client?.unregisterAccount(accountKey);
 
         // dispatch data to reducer
-        dispatch(coinjoinSessionPause(accountKey, interrupted));
+        dispatch(coinjoinSessionPause(accountKey));
     };
 
 // called from coinjoin account UI or exceptions like device disconnection, forget wallet/account etc.
