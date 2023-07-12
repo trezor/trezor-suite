@@ -1,7 +1,7 @@
 import produce from 'immer';
 import BigNumber from 'bignumber.js';
 
-import { CoinjoinStatusEvent, getInputSize, getOutputSize } from '@trezor/coinjoin';
+import { getInputSize, getOutputSize } from '@trezor/coinjoin';
 import { PartialRecord } from '@trezor/type-utils';
 import { STORAGE } from 'src/actions/suite/constants';
 import { Account, AccountKey } from '@suite-common/wallet-types';
@@ -10,6 +10,7 @@ import {
     RoundPhase,
     CoinjoinDebugSettings,
     CoinjoinConfig,
+    CoinjoinClientInstance,
 } from 'src/types/wallet/coinjoin';
 import { COINJOIN } from 'src/actions/wallet/constants';
 import { Action } from 'src/types/suite';
@@ -48,15 +49,6 @@ import {
     selectFeatureConfig,
 } from '@suite-common/message-system';
 import { SelectedAccountRootState, selectSelectedAccount } from './selectedAccountReducer';
-
-export interface CoinjoinClientInstance
-    extends Pick<
-        CoinjoinStatusEvent,
-        'coordinationFeeRate' | 'allowedInputAmounts' | 'feeRateMedian'
-    > {
-    rounds: { id: string; phase: RoundPhase }[]; // store only slice of Round in reducer. may be extended in the future
-    status: 'loading' | 'loaded';
-}
 
 export interface CoinjoinState {
     accounts: CoinjoinAccount[];
@@ -344,6 +336,7 @@ const createClient = (
 ) => {
     draft.clients[payload.symbol] = {
         ...transformCoinjoinStatus(payload.status),
+        version: payload.version,
         status: 'loaded',
     };
 };
