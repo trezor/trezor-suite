@@ -151,27 +151,6 @@ export const useCoinmarketExchangeForm = ({
 
     const values = useWatch({ control });
 
-    useDebounce(
-        () => {
-            if (
-                formState.isDirty &&
-                !formState.isValidating &&
-                Object.keys(formState.errors).length === 0
-            ) {
-                saveDraft(account.key, values as ExchangeFormState);
-            }
-        },
-        200,
-        [
-            saveDraft,
-            account.key,
-            values,
-            formState.errors,
-            formState.isDirty,
-            formState.isValidating,
-        ],
-    );
-
     useEffect(() => {
         if (!isChanged(defaultValues, values)) {
             removeDraft(account.key);
@@ -200,6 +179,29 @@ export const useCoinmarketExchangeForm = ({
         ...methods,
         state,
     });
+
+    useDebounce(
+        () => {
+            if (
+                formState.isDirty &&
+                !formState.isValidating &&
+                Object.keys(formState.errors).length === 0 &&
+                !isComposing
+            ) {
+                saveDraft(account.key, values as ExchangeFormState);
+            }
+        },
+        200,
+        [
+            saveDraft,
+            account.key,
+            values,
+            formState.errors,
+            formState.isDirty,
+            formState.isValidating,
+            isComposing,
+        ],
+    );
 
     const [amountLimits, setAmountLimits] = useState<CryptoAmountLimits | undefined>(undefined);
 
