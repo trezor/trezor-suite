@@ -995,16 +995,6 @@ export class Core extends EventEmitter {
 }
 
 /**
- * Init instance of Core event emitter.
- * @returns {Core}
- * @memberof Core
- */
-export const initCore = () => {
-    _core = new Core();
-    return _core;
-};
-
-/**
  * Module initialization.
  * This will download the config.json, init Core emitter instance.
  * Returns Core, an event emitter instance.
@@ -1012,11 +1002,11 @@ export const initCore = () => {
  * @returns {Promise<Core>}
  * @memberof Core
  */
-export const init = async (settings: ConnectSettings) => {
+export const initCore = async (settings: ConnectSettings) => {
     try {
         await DataManager.load(settings);
         enableLog(DataManager.getSettings('debug'));
-        initCore();
+        _core = new Core();
 
         // If we're not in popup mode, set the interaction timeout to 0 (= disabled)
         _interactionTimeout = new InteractionTimeout(
