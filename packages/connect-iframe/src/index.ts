@@ -21,7 +21,7 @@ import {
     CoreMessage,
     PostMessageEvent,
 } from '@trezor/connect';
-import { Core, init as initCore, initTransport } from '@trezor/connect/src/core';
+import { Core, initCore, initTransport } from '@trezor/connect/src/core';
 import { DataManager } from '@trezor/connect/src/data/DataManager';
 import { config } from '@trezor/connect/src/data/config';
 import { initLog } from '@trezor/connect/src/utils/debug';

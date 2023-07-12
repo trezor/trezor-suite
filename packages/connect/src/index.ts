@@ -1,7 +1,7 @@
 import EventEmitter from 'events';
 
 import { createDeferred, Deferred } from '@trezor/utils';
-import { Core, init as initCore, initTransport } from './core';
+import { Core, initCore, initTransport } from './core';
 import { factory } from './factory';
 import { parseConnectSettings } from './data/connectSettings';
 import { initLog } from './utils/debug';
