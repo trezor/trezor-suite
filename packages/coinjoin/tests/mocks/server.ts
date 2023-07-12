@@ -66,6 +66,13 @@ const DEFAULT = {
         signature: 'AA',
     },
     // coordinator
+    'api/Software/versions': {
+        clientVersion: '0',
+        BackenMajordVersion: '0',
+        LegalDocumentsVersion: '0',
+        ww2LegalDocumentsVersion: '0',
+        commitHash: '000000',
+    },
     status: {
         roundStates: [DEFAULT_ROUND],
         coinJoinFeeRateMedians: FEE_RATE_MEDIANS,
@@ -127,7 +134,7 @@ const readRequest = (request: http.IncomingMessage) =>
             data += chunk;
         });
         request.on('end', () => {
-            resolve(JSON.parse(data));
+            resolve(data ? JSON.parse(data) : {});
         });
     });
 
@@ -146,7 +153,7 @@ const handleRequest = (
         return;
     }
 
-    const url = request.url?.split('/').pop();
+    const url = request.url?.substring(1);
     const defaultResponse = DEFAULT[url as keyof typeof DEFAULT] ?? {};
     if (typeof defaultResponse === 'function') {
         const r = defaultResponse.call(null, requestData);
@@ -197,6 +204,7 @@ export interface MockedServer extends Exclude<http.Server, 'addListener'> {
     requestOptions: {
         network: any;
         coordinatorName: string;
+        wabisabiBackendUrl: string;
         coordinatorUrl: string;
         middlewareUrl: string;
         signal: AbortSignal;
@@ -234,11 +242,14 @@ export const createServer = async () => {
 
     server.listen(port);
 
+    const url = `http://localhost:${port}/`;
+
     server.requestOptions = {
         network: 'test',
         coordinatorName: 'CoinJoinCoordinatorIdentifier',
-        coordinatorUrl: `http://localhost:${port}/`,
-        middlewareUrl: `http://localhost:${port}/`,
+        wabisabiBackendUrl: url,
+        coordinatorUrl: url,
+        middlewareUrl: url,
         signal: new AbortController().signal,
         logger: {
             debug: () => {},

@@ -2,9 +2,15 @@ import { TypedEmitter } from '@trezor/utils/lib/typedEventEmitter';
 
 import * as coordinator from './coordinator';
 import { transformStatus } from '../utils/roundUtils';
+import { coordinatorRequest } from './coordinatorRequest';
 import { STATUS_TIMEOUT } from '../constants';
 import { RoundPhase } from '../enums';
-import { CoinjoinClientSettings, CoinjoinStatusEvent, LogEvent } from '../types';
+import {
+    CoinjoinClientSettings,
+    CoinjoinStatusEvent,
+    LogEvent,
+    CoinjoinClientVersion,
+} from '../types';
 import { Round } from '../types/coordinator';
 
 type StatusMode = keyof typeof STATUS_TIMEOUT;
@@ -188,7 +194,7 @@ export class Status extends TypedEmitter<StatusEvents> {
         return this.runningAffiliateServer;
     }
 
-    getStatus(attempts?: number) {
+    getStatus() {
         if (!this.enabled) return Promise.resolve();
 
         const identity = this.identities[Math.floor(Math.random() * this.identities.length)];
@@ -197,7 +203,6 @@ export class Status extends TypedEmitter<StatusEvents> {
                 baseUrl: this.settings.coordinatorUrl,
                 signal: this.abortController.signal,
                 identity,
-                attempts,
             })
             .then(status => {
                 // explicitly catch processStatus errors
@@ -212,17 +217,41 @@ export class Status extends TypedEmitter<StatusEvents> {
             });
     }
 
+    private getVersion() {
+        return coordinatorRequest<coordinator.SoftwareVersion>('api/Software/versions', undefined, {
+            method: 'GET',
+            baseUrl: this.settings.wabisabiBackendUrl,
+            signal: this.abortController.signal,
+            identity: this.identities[0],
+            attempts: 3, // schedule 3 attempts on start
+        })
+            .then(version =>
+                version
+                    ? ({
+                          majorVersion: version.BackenMajordVersion,
+                          commitHash: version.commitHash,
+                          legalDocumentsVersion: version.ww2LegalDocumentsVersion,
+                      } as CoinjoinClientVersion)
+                    : undefined,
+            )
+            .catch(error => {
+                this.log('warn', `getVersion: ${error.message}`);
+            });
+    }
+
     start() {
         this.abortController = new AbortController();
         this.enabled = true;
-        // schedule 3 attempts on start
-        return this.getStatus(3).then(status => {
-            if (status) {
-                // start lifecycle only if status is present
-                this.setStatusTimeout();
-            }
-            return status;
-        });
+
+        return this.getVersion().then(version =>
+            this.getStatus().then(status => {
+                if (version && status) {
+                    // start lifecycle only if status is present
+                    this.setStatusTimeout();
+                    return { ...status, version };
+                }
+            }),
+        );
     }
 
     stop() {
