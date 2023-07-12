@@ -1,6 +1,7 @@
 import TrezorConnect from '@trezor/connect';
 import {
     CoinjoinStatusEvent,
+    CoinjoinClientVersion,
     CoinjoinRoundEvent,
     SerializedCoinjoinRound,
     CoinjoinRequestEvent,
@@ -52,12 +53,16 @@ export const clientDisable = (symbol: Account['symbol']) =>
         },
     } as const);
 
-const clientEnableSuccess = (symbol: Account['symbol'], status: CoinjoinStatusEvent) =>
+const clientEnableSuccess = (
+    symbol: Account['symbol'],
+    { version, ...status }: CoinjoinStatusEvent & { version: CoinjoinClientVersion },
+) =>
     ({
         type: COINJOIN.CLIENT_ENABLE_SUCCESS,
         payload: {
             symbol,
             status,
+            version,
         },
     } as const);
 
