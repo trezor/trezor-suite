@@ -215,6 +215,7 @@ export const ReceiveOptions = (props: Props) => {
                 />
             }
             menuIsOpen={menuIsOpen}
+            isOverlapped
         />
     );
 };
