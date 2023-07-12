@@ -11,6 +11,12 @@ export interface CoinjoinStatusEvent {
     allowedInputAmounts: AllowedRange;
 }
 
+export interface CoinjoinClientVersion {
+    majorVersion: string;
+    commitHash: string;
+    legalDocumentsVersion: string;
+}
+
 export interface CoinjoinClientEvents {
     status: CoinjoinStatusEvent;
     prison: CoinjoinPrisonEvents['change'];

@@ -12,6 +12,14 @@ export interface CoinjoinStatus {
     };
 }
 
+export interface SoftwareVersion {
+    clientVersion: string;
+    BackenMajordVersion: string; // NOTE: typo is intentional https://github.com/zkSNACKs/WalletWasabi/blob/18edb38d4fb0a3ce75ff161e47d4b50fa9f71575/WalletWasabi/Backend/Models/Responses/VersionsResponse.cs#L9
+    LegalDocumentsVersion: string;
+    ww2LegalDocumentsVersion: string;
+    commitHash: string;
+}
+
 export interface CredentialsResponseValidation {
     transcript: any;
     presented: any[];

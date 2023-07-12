@@ -2,7 +2,7 @@ import { scheduleAction, enumUtils } from '@trezor/utils';
 
 import { HTTP_REQUEST_TIMEOUT } from '../constants';
 import { WabiSabiProtocolErrorCode } from '../enums';
-import { httpPost, RequestOptions } from '../utils/http';
+import { httpPost, httpGet, RequestOptions } from '../utils/http';
 
 export type { RequestOptions } from '../utils/http';
 
@@ -44,7 +44,7 @@ const parseResult = (headers: Headers, text: string) => {
 // Requests to wasabi coordinator and middleware (CoinjoinClientLibrary bin)
 export const coordinatorRequest = async <R = void>(
     url: string,
-    body: Record<string, any>,
+    body: Record<string, any> | undefined,
     options: RequestOptions = {},
 ): Promise<R> => {
     const baseUrl = options.baseUrl || '';
@@ -60,7 +60,8 @@ export const coordinatorRequest = async <R = void>(
     const request = async (signal?: AbortSignal) => {
         let response;
         try {
-            response = await httpPost(`${baseUrl}${url}`, body, { ...options, signal });
+            const method = options.method === 'GET' ? httpGet : httpPost;
+            response = await method(`${baseUrl}${url}`, body, { ...options, signal });
         } catch (e) {
             // NOTE: this code probably belongs to @trezor/request-manager package since errors are tightly related to TOR
             // catch errors from:
