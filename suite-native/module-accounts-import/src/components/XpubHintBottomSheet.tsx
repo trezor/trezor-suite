@@ -71,7 +71,6 @@ export const XpubHintBottomSheet = ({
     const networkAssets = networkToAssetsMap[networkType];
     const { title, text, video } = networkAssets ?? defaultAssets;
 
-
     return (
         <BottomSheet title={title} isVisible={isVisible} onClose={handleClose}>
             <Box paddingTop="small" justifyContent="space-between">

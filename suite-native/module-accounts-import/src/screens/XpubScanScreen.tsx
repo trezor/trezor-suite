@@ -64,12 +64,16 @@ export const XpubScanScreen = ({
 
     useFocusEffect(resetToDefaultValues);
 
+    const { networkType, name: networkName } = networks[networkSymbol];
+    const inputLabel = networkTypeToInputLabelMap[networkType];
+
     const goToAccountImportScreen = ({ xpubAddress }: XpubFormValues) => {
-        if (xpubAddress && networkSymbol !== 'eth' && isAddressValid(xpubAddress, networkSymbol)) {
+        const isCoinWithXpub = networkType === 'bitcoin';
+
+        if (xpubAddress && isCoinWithXpub && isAddressValid(xpubAddress, networkSymbol)) {
             showAlert({
-                title: 'This is your BTC receive address',
-                description:
-                    'To check the balance of your BTC coin, scan your BTC public key (XPUB).',
+                title: 'This is your receive address',
+                description: 'To check the balance of your coin, scan your public key (XPUB).',
                 icon: 'warningCircle',
                 pictogramVariant: 'red',
                 primaryButtonTitle: 'Got it',
@@ -115,8 +119,6 @@ export const XpubScanScreen = ({
             networkSymbol,
         });
     };
-    const { networkType, name: networkName } = networks[networkSymbol];
-    const inputLabel = networkTypeToInputLabelMap[networkType];
 
     return (
         <Screen
@@ -124,7 +126,7 @@ export const XpubScanScreen = ({
             footer={
                 <XpubHint
                     networkType={networkType}
-                    handleOpen={() => setIsHintSheetVisible(!isHintSheetVisible)}
+                    handleOpen={() => setIsHintSheetVisible(true)}
                 />
             }
         >
@@ -169,7 +171,7 @@ export const XpubScanScreen = ({
             <XpubHintBottomSheet
                 networkType={networkType}
                 isVisible={isHintSheetVisible}
-                handleClose={() => setIsHintSheetVisible(!isHintSheetVisible)}
+                handleClose={() => setIsHintSheetVisible(false)}
             />
         </Screen>
     );
