@@ -29,7 +29,6 @@ export class CoinjoinMempoolController {
     private readonly network;
     private readonly mempool;
     private readonly addressTxids;
-    private readonly logger;
     private readonly filter;
     private readonly onTxAdd;
     private readonly onTxRemove;
@@ -41,12 +40,11 @@ export class CoinjoinMempoolController {
         return this._status;
     }
 
-    constructor({ client, network, filter, logger }: CoinjoinMempoolControllerSettings) {
+    constructor({ client, network, filter }: CoinjoinMempoolControllerSettings) {
         this.client = client;
         this.network = network;
         this.mempool = new Map<string, BlockbookTransaction>();
         this.addressTxids = new Map<string, string[]>();
-        this.logger = logger;
         this.filter = filter;
         this.onTxAdd = this.onTransactionAdd.bind(this);
         this.onTxRemove = this.onTransactionRemove.bind(this);
@@ -60,7 +58,6 @@ export class CoinjoinMempoolController {
     private onTransactionAdd(tx: BlockbookTransaction) {
         const filteredAddresses = getAllTxAddresses(tx).filter(this.filter ?? (() => true));
         if (filteredAddresses.length) {
-            this.logger?.debug(`WS mempool ${tx.txid}`);
             this.mempool.set(tx.txid, tx);
             filteredAddresses.forEach(address => {
                 const record = this.addressTxids.get(address);

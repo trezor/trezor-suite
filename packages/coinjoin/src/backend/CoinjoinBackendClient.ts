@@ -135,11 +135,7 @@ export class CoinjoinBackendClient {
         ...params: Parameters<BlockbookWS[T]>
     ) {
         return scheduleAction(
-            signal =>
-                this.blockbookWS({ ...options, signal }, method, ...params).catch(error => {
-                    this.logger?.error(error?.message);
-                    throw error;
-                }),
+            signal => this.blockbookWS({ ...options, signal }, method, ...params),
             { attempts: 3, timeout: WS_MESSAGE_TIMEOUT, gap: HTTP_REQUEST_GAP },
         );
     }
@@ -235,12 +231,7 @@ export class CoinjoinBackendClient {
                 this.wabisabiGet(path, query, {
                     ...options,
                     signal, // "global" signal is overriden by signal passed from scheduleAction
-                })
-                    .then(handler.bind(this))
-                    .catch(error => {
-                        this.logger?.error(error?.message);
-                        throw error;
-                    }),
+                }).then(handler.bind(this)),
             { attempts: 3, timeout: HTTP_REQUEST_TIMEOUT, gap: HTTP_REQUEST_GAP, ...options }, // default attempts/timeout could be overriden by options
         );
     }
