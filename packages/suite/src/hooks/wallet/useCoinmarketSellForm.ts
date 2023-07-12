@@ -156,27 +156,6 @@ export const useCoinmarketSellForm = ({
 
     const values = useWatch<SellFormState>({ control });
 
-    useDebounce(
-        () => {
-            if (
-                formState.isDirty &&
-                !formState.isValidating &&
-                Object.keys(formState.errors).length === 0
-            ) {
-                saveDraft(selectedAccount.account.key, values as SellFormState);
-            }
-        },
-        200,
-        [
-            saveDraft,
-            selectedAccount.account.key,
-            values,
-            formState.errors,
-            formState.isDirty,
-            formState.isValidating,
-        ],
-    );
-
     useEffect(() => {
         if (!isChanged(defaultValues, values)) {
             removeDraft(account.key);
@@ -206,6 +185,29 @@ export const useCoinmarketSellForm = ({
         ...methods,
         state,
     });
+
+    useDebounce(
+        () => {
+            if (
+                formState.isDirty &&
+                !formState.isValidating &&
+                Object.keys(formState.errors).length === 0 &&
+                !isComposing
+            ) {
+                saveDraft(selectedAccount.account.key, values as SellFormState);
+            }
+        },
+        200,
+        [
+            saveDraft,
+            selectedAccount.account.key,
+            values,
+            formState.errors,
+            formState.isDirty,
+            formState.isValidating,
+            isComposing,
+        ],
+    );
 
     const [amountLimits, setAmountLimits] = useState<AmountLimits | undefined>(undefined);
 
