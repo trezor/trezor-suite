@@ -13,7 +13,7 @@ export type PictogramVariant = 'green' | 'red' | 'yellow';
 type PictogramProps = {
     variant: PictogramVariant;
     icon: IconName;
-    title: string | ReactNode;
+    title: ReactNode;
     subtitle?: string;
 };
 

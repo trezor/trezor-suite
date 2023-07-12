@@ -15,12 +15,15 @@ import {
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { yup } from '@trezor/validation';
 import { NetworkType, networks } from '@suite-common/wallet-config';
+import { isAddressValid } from '@suite-common/wallet-utils';
+import { useAlert } from '@suite-native/alerts';
 
 import { XpubImportSection } from '../components/XpubImportSection';
 import { AccountImportHeader } from '../components/AccountImportHeader';
 import { DevXpub } from '../components/DevXpub';
 import { SelectableNetworkItem } from '../components/SelectableNetworkItem';
 import { XpubHint } from '../components/XpubHint';
+import { XpubHintBottomSheet } from '../components/XpubHintBottomSheet';
 
 const networkTypeToInputLabelMap: Record<NetworkType, string> = {
     bitcoin: 'Enter public key (XPUB) manually',
@@ -46,13 +49,14 @@ export const XpubScanScreen = ({
 }: StackProps<AccountsImportStackParamList, AccountsImportStackRoutes.XpubScan>) => {
     const { applyStyle } = useNativeStyles();
     const [_, setIsCameraRequested] = useState<boolean>(false);
-
+    const { showAlert, hideAlert } = useAlert();
     const form = useForm<XpubFormValues>({
         validation: xpubFormValidationSchema,
     });
     const { handleSubmit, setValue, watch, reset } = form;
     const watchXpubAddress = watch('xpubAddress');
     const { networkSymbol } = route.params;
+    const [isHintSheetVisible, setIsHintSheetVisible] = useState(false);
 
     const resetToDefaultValues = useCallback(() => {
         setIsCameraRequested(false);
@@ -61,6 +65,24 @@ export const XpubScanScreen = ({
     useFocusEffect(resetToDefaultValues);
 
     const goToAccountImportScreen = ({ xpubAddress }: XpubFormValues) => {
+        if (xpubAddress && networkSymbol !== 'eth' && isAddressValid(xpubAddress, networkSymbol)) {
+            showAlert({
+                title: 'This is your BTC receive address',
+                description:
+                    'To check the balance of your BTC coin, scan your BTC public key (XPUB).',
+                icon: 'warningCircle',
+                pictogramVariant: 'red',
+                primaryButtonTitle: 'Got it',
+                onPressPrimaryButton: () => null,
+                secondaryButtonTitle: 'Where to find it?',
+                onPressSecondaryButton: () => {
+                    hideAlert();
+                    setIsHintSheetVisible(true);
+                },
+            });
+            return;
+        }
+
         navigation.navigate(AccountsImportStackRoutes.AccountImportLoading, {
             xpubAddress,
             networkSymbol,
@@ -76,7 +98,7 @@ export const XpubScanScreen = ({
                 onXpubFormSubmit();
             }
         },
-        [watchXpubAddress, onXpubFormSubmit, setValue],
+        [watchXpubAddress, setValue, onXpubFormSubmit],
     );
 
     useEffect(() => {
@@ -99,7 +121,12 @@ export const XpubScanScreen = ({
     return (
         <Screen
             header={<AccountImportHeader activeStep={2} />}
-            footer={<XpubHint networkType={networkType} />}
+            footer={
+                <XpubHint
+                    networkType={networkType}
+                    handleOpen={() => setIsHintSheetVisible(!isHintSheetVisible)}
+                />
+            }
         >
             <Card>
                 <SelectableNetworkItem
@@ -139,6 +166,11 @@ export const XpubScanScreen = ({
                     <DevXpub symbol={networkSymbol} onSelect={goToAccountImportScreen} />
                 )}
             </Box>
+            <XpubHintBottomSheet
+                networkType={networkType}
+                isVisible={isHintSheetVisible}
+                handleClose={() => setIsHintSheetVisible(!isHintSheetVisible)}
+            />
         </Screen>
     );
 };
