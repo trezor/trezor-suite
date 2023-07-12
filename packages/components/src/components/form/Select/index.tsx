@@ -37,6 +37,7 @@ const selectStyle = (
     minWidth: string,
     theme: SuiteThemeColors,
     inputState?: InputState,
+    isOverlapped?: boolean,
 ): StylesConfig<Option, boolean> => ({
     singleValue: base => ({
         ...base,
@@ -131,7 +132,12 @@ const selectStyle = (
     }),
     menuPortal: base => ({
         ...base,
-        zIndex: Z_INDEX.GUIDE_BUTTON,
+        /*
+        Menu is rendered inside a portal so that it can overlap a Modal - unlike other elements that make the Modal scrollable instead.
+        Its z-index is set on par with the Modal so that the menu is visible when a Select is inside of a Modal.
+        In a special case when an open Select menu is meant to be overlapped by a Modal, the portal's z-index must be decreased.
+        */
+        zIndex: isOverlapped ? Z_INDEX.BASE : Z_INDEX.MODAL,
     }),
     menuList: base => ({
         ...base,
@@ -225,6 +231,7 @@ const isOptionGrouped = (x: OptionsOrGroups<Option, GroupBase<Option>>): x is Gr
 interface CommonProps extends Omit<ReactSelectProps<Option>, 'onChange'> {
     withDropdownIndicator?: boolean;
     isClean?: boolean;
+    isOverlapped?: boolean;
     label?: React.ReactNode;
     wrapperProps?: Record<string, any>;
     variant?: InputVariant;
@@ -251,6 +258,7 @@ export const Select = ({
     className,
     wrapperProps,
     isClean = false,
+    isOverlapped = false,
     label,
     variant = 'large',
     noError = true,
@@ -433,7 +441,7 @@ export const Select = ({
                 onKeyDown={onKeyDown}
                 classNamePrefix={reactSelectClassNamePrefix}
                 openMenuOnFocus
-                menuPortalTarget={document.body}
+                menuPortalTarget={document.getElementById('modal-window')}
                 styles={selectStyle(
                     isSearchable,
                     withDropdownIndicator,
@@ -443,6 +451,7 @@ export const Select = ({
                     minWidth,
                     theme,
                     inputState,
+                    isOverlapped,
                 )}
                 onChange={handleOnChange}
                 isSearchable={isSearchable}
