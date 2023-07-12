@@ -4259,9 +4259,21 @@ export default defineMessages({
         defaultMessage: 'Not supported',
         description: 'Firmware with missing capability (eg: LTC on Bitcoin-only FW, XRP on T1...)',
     },
-    FW_CAPABILITY_NO_SUPPORT: {
-        id: 'FW_CAPABILITY_NO_SUPPORT',
+    FW_CAPABILITY_NO_SUPPORT_T1: {
+        id: 'FW_CAPABILITY_NO_SUPPORT_T1',
         defaultMessage: 'Not supported on Model One',
+        description:
+            'Similar to missing capability but tested on different level (coin info is missing in trezor-connect)',
+    },
+    FW_CAPABILITY_NO_SUPPORT_TT: {
+        id: 'FW_CAPABILITY_NO_SUPPORT_TT',
+        defaultMessage: 'Not supported on Model T',
+        description:
+            'Similar to missing capability but tested on different level (coin info is missing in trezor-connect)',
+    },
+    FW_CAPABILITY_NO_SUPPORT_TR: {
+        id: 'FW_CAPABILITY_NO_SUPPORT_TR',
+        defaultMessage: 'Not supported on Model R',
         description:
             'Similar to missing capability but tested on different level (coin info is missing in trezor-connect)',
     },
