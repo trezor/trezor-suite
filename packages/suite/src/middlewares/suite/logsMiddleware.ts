@@ -8,7 +8,6 @@ import {
     ROUTER,
     SUITE,
 } from 'src/actions/suite/constants';
-import { DISCOVERY } from 'src/actions/wallet/constants';
 import { WALLET_SETTINGS } from 'src/actions/settings/constants';
 import * as walletSettingsActions from 'src/actions/settings/walletSettingsActions';
 import { redactTransactionIdFromAnchor } from 'src/utils/suite/analytics';
@@ -17,6 +16,7 @@ import { addLog } from '@suite-common/logger';
 import { TRANSPORT, DEVICE } from '@trezor/connect';
 import { redactUserPathFromString } from '@trezor/utils';
 import { analyticsActions } from '@suite-common/analytics';
+import { discoveryActions } from 'src/actions/wallet/discoveryActions';
 
 const log =
     (api: MiddlewareAPI<Dispatch, AppState>) =>
@@ -76,7 +76,7 @@ const log =
             case SUITE.AUTH_DEVICE:
             case DEVICE.CONNECT:
             case DEVICE.DISCONNECT:
-            case DISCOVERY.COMPLETE:
+            case discoveryActions.completeDiscovery.type:
             case SUITE.UPDATE_SELECTED_DEVICE:
             case SUITE.REMEMBER_DEVICE:
                 api.dispatch(

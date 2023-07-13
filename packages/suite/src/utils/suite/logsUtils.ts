@@ -1,5 +1,4 @@
 import { Account, Discovery } from 'src/types/wallet';
-import { DISCOVERY } from 'src/actions/wallet/constants';
 import { SUITE } from 'src/actions/suite/constants';
 import { AppState, TrezorDevice } from 'src/types/suite';
 import {
@@ -33,6 +32,7 @@ import { DeepPartial } from '@trezor/type-utils';
 import { accountsActions } from '@suite-common/wallet-core';
 
 import { getPhysicalDeviceUniqueIds } from './device';
+import { discoveryActions } from 'src/actions/wallet/discoveryActions';
 
 export const REDACTED_REPLACEMENT = '[redacted]';
 
@@ -131,7 +131,7 @@ export const redactAction = (action: LogEntry) => {
         case SUITE.REMEMBER_DEVICE:
             payload = redactDevice(action.payload);
             break;
-        case DISCOVERY.COMPLETE:
+        case discoveryActions.completeDiscovery.type:
             payload = redactDiscovery(action.payload);
             break;
         default:

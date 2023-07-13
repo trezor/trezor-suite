@@ -2,12 +2,15 @@ import React from 'react';
 import { act } from '@testing-library/react';
 import { renderWithProviders } from 'src/support/tests/hooksHelper';
 
-import discoveryReducer from 'src/reducers/wallet/discoveryReducer';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
 import { useDiscovery } from '../useDiscovery';
 import { actions } from '../__fixtures__/useDiscovery';
 import { configureMockStore } from '@suite-common/test-utils';
 import { combineReducers } from 'redux';
+import { prepareDiscoveryReducer } from 'src/reducers/wallet/discoveryReducer';
+import { extraDependencies } from 'src/support/extraDependencies';
+
+const discoveryReducer = prepareDiscoveryReducer(extraDependencies);
 
 export const getInitialState = (action: any = { type: 'initial' }) => ({
     wallet: {

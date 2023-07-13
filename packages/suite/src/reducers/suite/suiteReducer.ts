@@ -5,7 +5,6 @@ import { Action, TrezorDevice, Lock, TorBootstrap, TorStatus } from 'src/types/s
 
 import { variables } from '@trezor/components';
 import { SUITE, STORAGE } from 'src/actions/suite/constants';
-import { DISCOVERY } from 'src/actions/wallet/constants';
 import type { Locale } from 'src/config/suite/languages';
 import { isWeb, getWindowWidth } from '@trezor/env-utils';
 import { ensureLocale } from 'src/utils/suite/l10n';
@@ -15,6 +14,7 @@ import type { InvityServerEnvironment } from '@suite-common/invity';
 import { getDeviceModel } from '@trezor/device-utils';
 import { getStatus } from 'src/utils/suite/device';
 import { getIsTorEnabled, getIsTorLoading } from 'src/utils/suite/tor';
+import { discoveryActions } from 'src/actions/wallet/discoveryActions';
 
 export interface SuiteRootState {
     suite: SuiteState;
@@ -235,11 +235,12 @@ const suiteReducer = (state: SuiteState = initialState, action: Action): SuiteSt
                 changeLock(draft, SUITE.LOCK_TYPE.ROUTER, action.payload);
                 break;
 
-            case DISCOVERY.START:
+            case discoveryActions.startDiscovery.type:
                 changeLock(draft, SUITE.LOCK_TYPE.DEVICE, true);
                 break;
-            case DISCOVERY.STOP:
-            case DISCOVERY.COMPLETE:
+
+            case discoveryActions.completeDiscovery.type:
+            case discoveryActions.stopDiscovery.type:
                 changeLock(draft, SUITE.LOCK_TYPE.DEVICE, false);
                 break;
 

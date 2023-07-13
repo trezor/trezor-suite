@@ -12,12 +12,12 @@ import {
 import { getSuiteReadyPayload } from 'src/utils/suite/analytics';
 import { addSentryBreadcrumb, setSentryContext, setSentryTag } from 'src/utils/suite/sentry';
 import { AppState, Action, Dispatch } from 'src/types/suite';
-import { DISCOVERY } from 'src/actions/wallet/constants';
 
 import { getBootloaderVersion, getDeviceModel, getFirmwareVersion } from '@trezor/device-utils';
 import { DEVICE, TRANSPORT } from '@trezor/connect';
 import { accountsActions, blockchainActions } from '@suite-common/wallet-core';
 import { analyticsActions } from '@suite-common/analytics';
+import { discoveryActions } from 'src/actions/wallet/discoveryActions';
 
 const deviceContextName = 'trezor-device';
 
@@ -42,7 +42,7 @@ const breadcrumbActions = [
     DEVICE.DISCONNECT,
     accountsActions.createAccount.type,
     accountsActions.updateAccount.type,
-    DISCOVERY.COMPLETE,
+    discoveryActions.completeDiscovery.type,
     SUITE.UPDATE_SELECTED_DEVICE,
     SUITE.REMEMBER_DEVICE,
     METADATA.SET_PROVIDER,

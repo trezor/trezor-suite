@@ -1,5 +1,5 @@
 import { ObjectValues } from '@trezor/type-utils';
-import { STATUS as discoveryStatus } from '@suite-common/wallet-constants';
+import { DiscoveryStatus } from '@suite-common/wallet-constants';
 import { Network } from '@suite-common/wallet-config';
 import { Deferred } from '@trezor/utils';
 
@@ -12,7 +12,7 @@ export interface Discovery {
     total: number;
     loaded: number;
     bundleSize: number;
-    status: ObjectValues<typeof discoveryStatus>;
+    status: ObjectValues<typeof DiscoveryStatus>;
     // coins which failed to load
     failed: {
         symbol: Network['symbol'];
