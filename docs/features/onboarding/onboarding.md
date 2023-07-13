@@ -197,7 +197,7 @@ User proceeds by clicking "Install firmware" CTA. Since the device without firmw
 
 ##### Intermediary firmware
 
-Trezor One is shipped with bootloader version `1.4.0` (note that we will send newer one in 2022). Such devices cannot be upgraded to latest firmware directly. First we'll install so called intermediary firmware (and set flag `firmware.intermediaryInstalled` to true), which will bump bootloader to newer version. After installation is completed the user will be asked to reconnect the device in normal mode (which is standard procedure after installing a regular firmware). However, because intermediary firmware only bumps bootloader and doesn't install any firmware, device will be in bootloader mode regardless of how the user reconnects it.
+T1 is shipped with bootloader version `1.4.0` (note that we will send newer one in 2022). Such devices cannot be upgraded to latest firmware directly. First we'll install so called intermediary firmware (and set flag `firmware.intermediaryInstalled` to true), which will bump bootloader to newer version. After installation is completed the user will be asked to reconnect the device in normal mode (which is standard procedure after installing a regular firmware). However, because intermediary firmware only bumps bootloader and doesn't install any firmware, device will be in bootloader mode regardless of how the user reconnects it.
 
 In firmwareMiddleware we detect such a device thanks to `intermediaryInstalled` flag and the fact that it was connected in bootloader mode despite the instructions for connecting in normal mode.
 Then it triggers an installation of subsequent firmware, which will be the latest firmware available. It will follow basically same flow as with the first installation.
@@ -205,7 +205,7 @@ At the end of the process the user will be asked to reconnect the device in norm
 
 ##### WebUSB
 
-Support for the WebUSB came pretty late for Trezor One (bootloader [1.6.0](https://github.com/trezor/trezor-firmware/blob/master/legacy/bootloader/CHANGELOG.md#160-september-2018) bundled with FW [1.7.1](https://github.com/trezor/trezor-firmware/blob/master/legacy/firmware/CHANGELOG.md#170-september-2018)). Currently shipped devices won't support WebUSB out of-the-box and user won't be able to pair such device. In this case user needs to install Trezor Bridge. After finishing fw upgrade WebUSB support will be available.
+Support for the WebUSB came pretty late for T1 (bootloader [1.6.0](https://github.com/trezor/trezor-firmware/blob/master/legacy/bootloader/CHANGELOG.md#160-september-2018) bundled with FW [1.7.1](https://github.com/trezor/trezor-firmware/blob/master/legacy/firmware/CHANGELOG.md#170-september-2018)). Currently shipped devices won't support WebUSB out of-the-box and user won't be able to pair such device. In this case user needs to install Trezor Bridge. After finishing fw upgrade WebUSB support will be available.
 
 #### Caveats
 

@@ -24,7 +24,7 @@ function sanitizeData(data: any): any {
 /**
  * Calculates the domain_separator_hash and message_hash from an EIP-712 Typed Data object.
  *
- * The Trezor Model One does not currently support constructing the hash on the device,
+ * T1 does not currently support constructing the hash on the device,
  * so this function pre-computes them.
  *
  * @template {sigUtil.TypedMessage} T
