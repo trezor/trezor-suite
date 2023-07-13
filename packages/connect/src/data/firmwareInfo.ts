@@ -169,7 +169,7 @@ const getSafeReleases = ({ features, releases }: GetInfoProps) => {
         return filterSafeListByBootloader(releases, firmwareVersion);
     }
     if (major_version === 1 && bootloader_mode) {
-        // model one does not know its firmware, we need to filter by bootloader. this has the consequence
+        // T1 does not know its firmware, we need to filter by bootloader. this has the consequence
         // that we do not know if the version we find in the end is newer than the actual installed version
         return filterSafeListByBootloader(releases, firmwareVersion);
     }
