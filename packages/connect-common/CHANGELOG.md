@@ -1,6 +1,6 @@
 # 0.0.15
 
--   a926901a6 chore: unify Trezor T and 1 names
+-   a926901a6 chore: unify T1 and TT names
 -   211ac5ef3 chore(coins.json): remove old eth testnets
 
 # 0.0.14
