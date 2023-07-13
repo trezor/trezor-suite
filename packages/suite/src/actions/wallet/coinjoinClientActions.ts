@@ -301,26 +301,26 @@ export const stopCoinjoinSession =
             return;
         }
 
-        const { device } = getState().suite;
-
-        const result = await TrezorConnect.cancelCoinjoinAuthorization({
-            device,
-            useEmptyPassphrase: device?.useEmptyPassphrase,
-        });
-
-        if (!result.success) {
-            dispatch(
-                notificationsActions.addToast({
-                    type: 'error',
-                    error: `Coinjoin session not stopped: ${result.payload.error}`,
-                }),
-            );
-
-            return;
-        }
-
         // unregister account in @trezor/coinjoin
         client.unregisterAccount(account.key);
+
+        const { device } = getState().suite;
+
+        if (device?.connected) {
+            const result = await TrezorConnect.cancelCoinjoinAuthorization({
+                device,
+                useEmptyPassphrase: device?.useEmptyPassphrase,
+            });
+
+            if (!result.success) {
+                dispatch(
+                    notificationsActions.addToast({
+                        type: 'error',
+                        error: `Cancel coinjoin authorization ${result.payload.error}`,
+                    }),
+                );
+            }
+        }
 
         // dispatch data to reducer
         dispatch({
