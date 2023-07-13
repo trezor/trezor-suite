@@ -47,6 +47,15 @@ export const init: Module = ({ mainWindow, store, mainThreadEmitter }) => {
         }
     };
 
+    const sentryError = (network: string, payload: string) => {
+        withScope(scope => {
+            scope.clear(); // scope is also cleared in beforeSend sentry handler, this is just to be safe.
+            scope.setTag(coinjoinReportTag, true);
+            scope.setTag(coinjoinNetworkTag, network);
+            captureMessage(payload, scope);
+        });
+    };
+
     const powerSaveBlocker = new PowerSaveBlocker();
 
     logger.debug(SERVICE_NAME, `Starting service`);
@@ -66,6 +75,9 @@ export const init: Module = ({ mainWindow, store, mainThreadEmitter }) => {
             );
 
             backend.on('log', ({ level, payload }) => {
+                if (level === 'error') {
+                    sentryError(settings.network, payload);
+                }
                 (logger as any)[level](SERVICE_NAME, `${BACKEND_CHANNEL} ${payload}`);
             });
 
@@ -106,12 +118,7 @@ export const init: Module = ({ mainWindow, store, mainThreadEmitter }) => {
             const client = new CoinjoinClient(settings);
             client.on('log', ({ level, payload }) => {
                 if (level === 'error') {
-                    withScope(scope => {
-                        scope.clear(); // scope is also cleared in beforeSend sentry handler, this is just to be safe.
-                        scope.setTag(coinjoinReportTag, true);
-                        scope.setTag(coinjoinNetworkTag, settings.network);
-                        captureMessage(payload, scope);
-                    });
+                    sentryError(settings.network, payload);
                 }
                 logger[level](SERVICE_NAME, `${CLIENT_CHANNEL} ${payload}`);
             });
