@@ -11,7 +11,7 @@ describe.skip('Recovery - dry run', () => {
         cy.passThroughInitialRun();
     });
 
-    it('Dry run with model One', () => {
+    it('Dry run with T1', () => {
         cy.getTestElement('@settings/device/check-seed-button').click();
         cy.getTestElement('@recovery/user-understands-checkbox').click();
         cy.getTestElement('@recovery/start-button').click();

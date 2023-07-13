@@ -16,7 +16,7 @@ Package `@trezor/connect-common` is a public NPM package used as dependency of `
 
 1. Remove older binaries so they are not bundled in the desktop app any more, but always keep:
 
-    - the intermediary FW for Trezor Model One [packages/connect-common/files/firmware/1/trezor-inter-1.10.0.bin](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-common/files/firmware/1/trezor-inter-1.10.0.bin)
+    - the intermediary FW for T1 [packages/connect-common/files/firmware/1/trezor-inter-1.10.0.bin](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-common/files/firmware/1/trezor-inter-1.10.0.bin)
     - and 2.1.1 for TT [packages/connect-common/files/firmware/2/trezor-2.1.1.bin](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-common/files/firmware/2/trezor-2.1.1.bin)
 
     See [#4262](https://github.com/trezor/trezor-suite/issues/4262) for explanation.
