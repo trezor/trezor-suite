@@ -15,6 +15,7 @@ import {
     getSessionDeadline,
     getEstimatedTimePerRound,
 } from 'src/utils/wallet/coinjoinUtils';
+import { getOsName } from '@trezor/env-utils';
 import { CoinjoinService } from 'src/services/coinjoin';
 import { selectAccountByKey } from '@suite-common/wallet-core';
 import { getUtxoOutpoint } from '@suite-common/wallet-utils';
@@ -596,10 +597,11 @@ export const signCoinjoinTx =
                             return;
                         }
 
+                        const fwVersion = `${device?.features?.major_version}.${device?.features?.minor_version}.${device?.features?.patch_version}-${device?.features?.revision}`;
                         utxos.forEach(u => {
                             response.inputs.push({
                                 outpoint: u.outpoint,
-                                error: signTx.payload.error,
+                                error: `${fwVersion} (${getOsName()}) ${signTx.payload.error}`,
                             });
                         });
 
