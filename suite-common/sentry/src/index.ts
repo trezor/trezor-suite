@@ -6,7 +6,7 @@ import { redactUserPathFromString } from '@trezor/utils';
 
 export const allowReportTag = 'allowReport';
 export const coinjoinReportTag = 'coinjoinReport';
-export const coinjoinNetworktTag = 'coinjoinNetwork';
+export const coinjoinNetworkTag = 'coinjoinNetwork';
 
 /**
  * Full user path could be part of reported error in some cases and we want to actively filter username out.
@@ -52,7 +52,7 @@ const beforeSend: Options['beforeSend'] = event => {
             level: event.level,
             tags: {
                 coinjoinReport: true,
-                coinjoinNetworktTag: event.tags?.[coinjoinNetworktTag],
+                coinjoinNetworkTag: event.tags?.[coinjoinNetworkTag],
             },
         };
     }
