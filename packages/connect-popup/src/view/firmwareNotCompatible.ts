@@ -2,6 +2,7 @@
 
 import { UI, createUiResponse, UiRequestUnexpectedDeviceMode } from '@trezor/connect';
 import { showView, postMessage, getState } from './common';
+import { getFirmwareVersion } from '@trezor/device-utils';
 
 export const firmwareNotCompatible = (device: UiRequestUnexpectedDeviceMode['payload']) => {
     const view = showView('firmware-not-compatible');
@@ -13,7 +14,6 @@ export const firmwareNotCompatible = (device: UiRequestUnexpectedDeviceMode['pay
     }
 
     if (!device.features) return;
-    const { features } = device;
 
     const fwVersion = view.getElementsByClassName('fw-version')[0];
     const identity = view.getElementsByClassName('fw-identity') as HTMLCollectionOf<HTMLElement>;
@@ -22,7 +22,7 @@ export const firmwareNotCompatible = (device: UiRequestUnexpectedDeviceMode['pay
     const confirmButton = view.getElementsByClassName('confirm')[0] as HTMLButtonElement;
     const cancelButton = view.getElementsByClassName('cancel')[0] as HTMLButtonElement;
 
-    fwVersion.innerHTML = `${features.major_version}.${features.minor_version}.${features.patch_version}`;
+    fwVersion.innerHTML = getFirmwareVersion(device);
     for (let i = 0; i < identity.length; i++) {
         identity[i].innerText = developer;
     }

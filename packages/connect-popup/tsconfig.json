@@ -11,6 +11,7 @@
         { "path": "../connect-common" },
         { "path": "../connect-ui" },
         { "path": "../crypto-utils" },
+        { "path": "../device-utils" },
         { "path": "../urls" },
         { "path": "../node-utils" },
         { "path": "../trezor-user-env-link" },

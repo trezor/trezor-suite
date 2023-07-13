@@ -9,6 +9,7 @@ import TrezorConnect, {
 } from '@trezor/connect';
 import { SUITE_BRIDGE_URL, SUITE_UDEV_URL, TREZOR_SUPPORT_URL } from '@trezor/urls';
 import { container, getState, showView, postMessage } from './common';
+import { getDeviceModel } from '@trezor/device-utils';
 
 const initWebUsbButton = (webusb: boolean, showLoader: boolean) => {
     if (!webusb) return;
@@ -96,12 +97,13 @@ export const selectDevice = (payload: UiRequestSelectDevice['payload']) => {
         }
 
         const deviceIcon = document.createElement('span');
-        deviceIcon.className = 'icon';
+        deviceIcon.className = 'trezor_icon';
 
-        if (device.features) {
-            if (device.features.major_version === 2) {
-                deviceIcon.classList.add('model-t');
-            }
+        const deviceModel = getDeviceModel(device);
+        if (deviceModel) {
+            deviceIcon.classList.add(`trezor_icon_t${deviceModel.toLowerCase()}`);
+        } else {
+            deviceIcon.classList.add('trezor_icon_unknown');
         }
 
         const deviceName = document.createElement('span');
@@ -138,7 +140,6 @@ export const selectDevice = (payload: UiRequestSelectDevice['payload']) => {
                     explanationContent = `Please install <a href="${SUITE_BRIDGE_URL}" target="_blank" rel="noreferrer noopener" onclick="window.closeWindow();">Bridge</a> to use Trezor device.`;
                 }
                 deviceButton.disabled = true;
-                deviceIcon.classList.add('unknown');
                 deviceName.textContent = 'Unrecognized device';
                 explanation.innerHTML = `${device.error}<br />${explanationContent}`;
             }
