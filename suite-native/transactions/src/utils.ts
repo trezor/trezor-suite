@@ -2,21 +2,41 @@ import { A, G, pipe } from '@mobily/ts-belt';
 
 import { EnhancedVinVout, Target } from '@trezor/blockchain-link-types';
 
-export const mapTransactionInputsOutputsToAddresses = (
-    inputsOutputs: EnhancedVinVout[] | Target[],
-) =>
+import { VinVoutAddress, AddressesType } from './types';
+
+export const mapTransactionInputsOutputsToAddresses = ({
+    inputsOutputs,
+    addressesType,
+    isSentTransactionType,
+}: {
+    inputsOutputs: EnhancedVinVout[] | Target[];
+    addressesType: AddressesType;
+    isSentTransactionType: boolean;
+}) =>
     pipe(
         inputsOutputs,
-        A.map(target => target.addresses),
+        A.map(target => {
+            const isChangeAddress =
+                (isSentTransactionType &&
+                    addressesType === 'outputs' &&
+                    (target.isAccountOwned || target.isAccountTarget)) ??
+                false;
+            return target.addresses?.map(
+                (address): VinVoutAddress => ({
+                    address,
+                    isChangeAddress,
+                }),
+            );
+        }),
         A.filter(G.isNotNullable),
         A.concatMany,
     );
 
 export const sortTargetAddressesToBeginning = (
-    addresses: readonly string[],
-    targetAddresses: readonly string[],
+    addresses: readonly VinVoutAddress[],
+    targetAddresses: readonly VinVoutAddress[],
 ) =>
     A.concat(
         A.intersection(addresses, targetAddresses),
         A.difference(addresses, targetAddresses),
-    ) as string[];
+    ) as VinVoutAddress[];

@@ -1,4 +1,5 @@
 export * from './icons';
+export * from './tokenIcons';
 export * from './components/CryptoIcon';
 export * from './components/CryptoIconWithPercentage';
 export * from './components/FlagIcon';
