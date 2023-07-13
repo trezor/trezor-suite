@@ -1,5 +1,7 @@
 import React from 'react';
 
+import { G } from '@mobily/ts-belt';
+
 import { TextProps } from '@suite-native/atoms';
 import { useFormatters } from '@suite-common/formatters';
 import { networks, NetworkSymbol } from '@suite-common/wallet-config';
@@ -8,7 +10,7 @@ import { FormatterProps } from '../types';
 import { EmptyAmountText } from './EmptyAmountText';
 import { AmountText } from './AmountText';
 
-type CryptoToFiatAmountFormatterProps = FormatterProps<string | null> &
+type CryptoToFiatAmountFormatterProps = FormatterProps<string | null | number> &
     TextProps & {
         network: NetworkSymbol;
         isBalance?: boolean;
@@ -30,7 +32,8 @@ export const CryptoAmountFormatter = ({
 
     const maxDisplayedDecimals = networks[network].decimals;
 
-    const formattedValue = formatter.format(value, {
+    const stringValue = G.isNumber(value) ? value.toString() : value;
+    const formattedValue = formatter.format(stringValue, {
         isBalance,
         maxDisplayedDecimals,
         symbol: network,

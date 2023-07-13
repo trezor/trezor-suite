@@ -73,6 +73,7 @@ export const getAccountBalanceHistory = async ({
             groupBy: 1,
             // we don't need currencies at all here, this will just reduce transferred data size
             // TODO: doesn't work at all, fix it in connect or blockchain-link?
+            // issue: https://github.com/trezor/trezor-suite/issues/8888
             currencies: ['usd'],
         }),
         TrezorConnect.getAccountInfo({ coin, descriptor }),
@@ -154,7 +155,7 @@ export const getMultipleAccountBalanceHistoryWithFiat = async ({
     endOfTimeFrameDate: Date;
     numberOfPoints?: number;
     fiatCurrency: FiatCurrencyCode;
-}) => {
+}): Promise<FiatGraphPoint[] | FiatGraphPointWithCryptoBalance[]> => {
     const accountsWithBalanceHistory = await Promise.all(
         accounts.map(({ coin, descriptor }) =>
             getAccountBalanceHistory({

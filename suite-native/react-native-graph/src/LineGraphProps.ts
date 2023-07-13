@@ -11,6 +11,32 @@ export interface GraphPoint {
     date: Date;
 }
 
+export type GraphEvent<TEventPayload extends object> = {
+    payload: TEventPayload;
+    date: Date;
+};
+
+export type GraphEventWithCords<TEventPayload extends object> = GraphEvent<TEventPayload> & {
+    x: number;
+    y: number;
+};
+
+export type EventComponentProps<TEventPayload extends object = object> = {
+    isGraphActive: SharedValue<boolean>;
+    fingerX: SharedValue<number>;
+    index: number;
+    eventX: number;
+    eventY: number;
+    color: string;
+    onEventHover?: (index: number, willBeTooltipDisplayed: boolean) => void;
+} & TEventPayload;
+
+export type EventTooltipComponentProps<TEventPayload extends object = object> = {
+    eventX: number;
+    eventY: number;
+    eventPayload: TEventPayload;
+};
+
 export type GraphRange = Partial<GraphPathRange>;
 
 export interface SelectionDotProps {
@@ -54,7 +80,8 @@ interface BaseLineGraphProps extends ViewProps {
 export type StaticLineGraphProps = BaseLineGraphProps & {
     /* any static-only line graph props? */
 };
-export type AnimatedLineGraphProps = BaseLineGraphProps & {
+
+export type AnimatedLineGraphProps<TEventPayload extends object> = BaseLineGraphProps & {
     /**
      * Whether to enable Graph scrubbing/pan gesture.
      */
@@ -111,8 +138,27 @@ export type AnimatedLineGraphProps = BaseLineGraphProps & {
      * The element that gets rendered below the Graph (usually the "min" point/value of the Graph)
      */
     BottomAxisLabel?: () => React.ReactElement | null;
+
+    /**
+     * All points to be marked in the graph. The position will be calculated based on the `date` property according to points of the graph.
+     */
+    events?: GraphEvent<TEventPayload>[];
+
+    /**
+     * The element that renders each event of the graph.
+     */
+    EventComponent?: React.ComponentType<EventComponentProps<TEventPayload>> | null;
+    /**
+     * The element that gets rendered on hover on an EventComponent element.
+     */
+    EventTooltipComponent?: React.ComponentType<EventTooltipComponentProps<TEventPayload>> | null;
+
+    /**
+     * Called once the user hover on EventComponent element.
+     */
+    onEventHover?: () => void;
 };
 
-export type LineGraphProps =
-    | ({ animated: true } & AnimatedLineGraphProps)
+export type LineGraphProps<TEventPayload extends object> =
+    | ({ animated: true } & AnimatedLineGraphProps<TEventPayload>)
     | ({ animated: false } & StaticLineGraphProps);

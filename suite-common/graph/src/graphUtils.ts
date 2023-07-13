@@ -81,9 +81,9 @@ export const mapCryptoBalanceMovementToFixedTimeFrame = ({
             const fiatRate = fiatRatePoint.rates[fiatCurrency] ?? 0;
 
             return {
-                timestamp: fiatRatePoint.time,
+                date: fromUnixTime(fiatRatePoint.time),
                 cryptoBalance: cryptoBalance.toFixed(),
-                fiatBalance: cryptoBalance.multipliedBy(fiatRate).toNumber(),
+                value: cryptoBalance.multipliedBy(fiatRate).toNumber(),
             };
         }),
     );
@@ -94,20 +94,18 @@ export const mergeMultipleFiatBalanceHistories = (
     pipe(
         fiatBalancesHistories,
         A.flat,
-        A.groupBy(fiatBalancePoint => fiatBalancePoint.timestamp),
+        A.groupBy(fiatBalancePoint => getUnixTime(fiatBalancePoint.date)),
         D.mapWithKey((timestamp, fiatBalancePoints) => {
             const fiatBalance = fiatBalancePoints
                 ? A.reduce(
                       fiatBalancePoints,
                       0,
-                      (acc, fiatBalancePoint) => acc + fiatBalancePoint.fiatBalance,
+                      (acc, fiatBalancePoint) => acc + fiatBalancePoint.value,
                   )
                 : 0;
             return {
-                // Shouldn't be necessary according to types but it is string in the end
-                // TODO: fix types of @mobily/ts-belt https://github.com/mobily/ts-belt/issues/57
-                timestamp: Number(timestamp),
-                fiatBalance,
+                date: fromUnixTime(timestamp),
+                value: fiatBalance,
             };
         }),
         D.values,
