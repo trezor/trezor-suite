@@ -235,8 +235,18 @@ export class CoinjoinRound extends TypedEmitter<Events> {
         const [inputs, failed] = arrayPartition(this.inputs, input => !input.error);
         this.inputs = inputs;
 
-        // do not pass failed inputs from InputRegistration to further phases
-        if (this.phase > RoundPhase.InputRegistration) {
+        if (this.phase === RoundPhase.InputRegistration && failed.length > 0) {
+            // strictly follow the result of `middleware.selectInputsForRound` algorithm
+            // if **any** input registration fails for **any** reason exclude all inputs related to this account
+            const failedAccounts = failed.map(input => input.accountKey).filter(arrayDistinct);
+            this.inputs = inputs.filter(input => {
+                const shouldBeExcluded = failedAccounts.includes(input.accountKey);
+                if (shouldBeExcluded) {
+                    input.clearConfirmationInterval();
+                }
+                return !shouldBeExcluded;
+            });
+        } else if (this.phase > RoundPhase.InputRegistration) {
             failed.forEach(input =>
                 this.prison.detain(input, {
                     roundId: this.id,
