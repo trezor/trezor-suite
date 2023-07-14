@@ -9410,6 +9410,7 @@ __metadata:
   resolution: "@trezor/connect-popup@workspace:packages/connect-popup"
   dependencies:
     "@playwright/test": ^1.35.1
+    "@trezor/components": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/connect-analytics": "workspace:*"
     "@trezor/connect-common": "workspace:*"
