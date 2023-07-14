@@ -1,4 +1,4 @@
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import ReactSelect, {
     components as ReactSelectComponents,
     Props as ReactSelectProps,
@@ -13,6 +13,7 @@ import ReactSelect, {
 } from 'react-select';
 import styled, { css } from 'styled-components';
 import { darken } from 'polished';
+
 import { NEUE_FONT_SIZE, FONT_WEIGHT, FONT_SIZE, Z_INDEX } from '../../../config/variables';
 import { animations } from '../../../config';
 import { useTheme } from '../../../utils';
@@ -25,6 +26,7 @@ import {
     INPUT_BORDER_WIDTH,
     getInputStateTextColor,
 } from '../InputStyles';
+import { MODAL_CONTENT_ID } from '../../Modal';
 
 const reactSelectClassNamePrefix = 'react-select';
 
@@ -131,7 +133,7 @@ const selectStyle = (
     }),
     menuPortal: base => ({
         ...base,
-        zIndex: Z_INDEX.GUIDE_BUTTON,
+        zIndex: Z_INDEX.MODAL /* Necessary to be visible inside a Modal */,
     }),
     menuList: base => ({
         ...base,
@@ -265,12 +267,11 @@ export const Select = ({
     'data-test': dataTest,
     ...props
 }: SelectProps) => {
+    const [menuPortalTarget, setMenuPortalTarget] = useState<HTMLElement | null>(null);
     const selectRef = useRef<SelectInstance<Option, boolean>>(null);
-
-    const theme = useTheme();
-
     const lastKeyPressTimestamp = useRef(0);
     const searchedTerm = useRef('');
+    const theme = useTheme();
 
     const findOption = useCallback((options: Options<Option>, query: string) => {
         let foundOption;
@@ -303,11 +304,6 @@ export const Select = ({
             });
         }
     }, []);
-
-    const closeMenuOnScroll = useCallback(
-        (e: Event) => !(e.target as Element)?.className?.startsWith(reactSelectClassNamePrefix),
-        [],
-    );
 
     const onKeyDown = useCallback(
         async (event: React.KeyboardEvent) => {
@@ -361,6 +357,26 @@ export const Select = ({
         },
         [findOption, scrollToOption, useKeyPressScroll],
     );
+
+    // Check if the select is within a modal. If so, render it inside a portal so that it can overflow the modal.
+    // The inputRef is deeply nested so we iterate with while loop until wee reach the parentElement or max depth.
+    // The depth has a limit so that it does not iterate over the entire DOM.
+    // The depth limit has a buffer of 2 iterations in case the select is wrapped. (Minimum depth is 4.)
+    useEffect(() => {
+        let parent = selectRef.current?.inputRef?.parentElement;
+        let count = 0;
+        while (parent) {
+            if (parent.id === MODAL_CONTENT_ID) {
+                setMenuPortalTarget(document.body);
+                break;
+            }
+            if (count > 5) {
+                break;
+            }
+            parent = parent.parentElement;
+            count++;
+        }
+    }, []);
 
     const Control = useCallback(
         (controlProps: ControlProps<Option>) => (
@@ -433,7 +449,9 @@ export const Select = ({
                 onKeyDown={onKeyDown}
                 classNamePrefix={reactSelectClassNamePrefix}
                 openMenuOnFocus
-                menuPortalTarget={document.body}
+                closeMenuOnScroll={() => true}
+                menuPosition="fixed" // Required for closeMenuOnScroll to work properly when near page bottom
+                menuPortalTarget={menuPortalTarget}
                 styles={selectStyle(
                     isSearchable,
                     withDropdownIndicator,
@@ -446,7 +464,6 @@ export const Select = ({
                 )}
                 onChange={handleOnChange}
                 isSearchable={isSearchable}
-                closeMenuOnScroll={closeMenuOnScroll}
                 menuIsOpen={menuIsOpen}
                 {...props}
                 components={{ Control, Option, GroupHeading, ...components }}
