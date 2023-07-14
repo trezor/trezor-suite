@@ -6691,7 +6691,7 @@ __metadata:
     "@suite-common/wallet-config": "workspace:*"
     "@trezor/connect": "workspace:*"
     jest: ^26.6.3
-    proxy-memoize: ^2.0.4
+    proxy-memoize: 2.0.2
     typescript: 4.9.5
   languageName: unknown
   linkType: soft
@@ -6740,7 +6740,7 @@ __metadata:
     "@trezor/utils": "workspace:*"
     date-fns: ^2.30.0
     jest: ^26.6.3
-    proxy-memoize: ^2.0.4
+    proxy-memoize: 2.0.2
     typescript: 4.9.5
   languageName: unknown
   linkType: soft
@@ -6876,7 +6876,7 @@ __metadata:
     "@trezor/styles": "workspace:*"
     bignumber.js: ^9.1.1
     jest: ^26.6.3
-    proxy-memoize: ^2.0.4
+    proxy-memoize: 2.0.2
     react: ^18.2.0
     react-native: 0.71.8
     react-redux: 8.0.7
@@ -6950,7 +6950,7 @@ __metadata:
     "@suite-native/fiat-rates": "workspace:*"
     "@suite-native/module-settings": "workspace:*"
     "@trezor/blockchain-link": "workspace:*"
-    proxy-memoize: ^2.0.4
+    proxy-memoize: 2.0.2
     react: 18.2.0
   languageName: unknown
   linkType: soft
@@ -6970,7 +6970,7 @@ __metadata:
     "@suite-common/wallet-utils": "workspace:*"
     "@trezor/connect": "workspace:*"
     date-fns: ^2.30.0
-    proxy-memoize: ^2.0.4
+    proxy-memoize: 2.0.2
   languageName: unknown
   linkType: soft
 
@@ -7571,7 +7571,7 @@ __metadata:
     "@trezor/theme": "workspace:*"
     jest: ^26.6.3
     jotai: 1.9.1
-    proxy-memoize: ^2.0.4
+    proxy-memoize: 2.0.2
     react: 18.2.0
     react-native: 0.71.8
     react-native-gesture-handler: ^2.9.0
@@ -27979,13 +27979,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"proxy-compare@npm:2.5.1":
-  version: 2.5.1
-  resolution: "proxy-compare@npm:2.5.1"
-  checksum: c7cc151ac255150bcb24becde6495b3e399416c31991af377ce082255b51f07eaeb5d861bf8bf482703e92f88b90a5892ad57d3153ea29450d03ef921683d9fa
-  languageName: node
-  linkType: hard
-
 "proxy-from-env@npm:1.0.0":
   version: 1.0.0
   resolution: "proxy-from-env@npm:1.0.0"
@@ -28006,15 +27999,6 @@ __metadata:
   dependencies:
     proxy-compare: 2.4.0
   checksum: 3cfb54fdd3032959de0c4da7bb7c85713bfa92d442841a6882a5ed20bd2dab0c629194615988e9b7dfdb8885183b8ab28817ed7205e912e7e285f031efdb8443
-  languageName: node
-  linkType: hard
-
-"proxy-memoize@npm:^2.0.4":
-  version: 2.0.4
-  resolution: "proxy-memoize@npm:2.0.4"
-  dependencies:
-    proxy-compare: 2.5.1
-  checksum: d97b5cf6c50ebe050c5ff7ecd0bb040423d0ba41deb5795d421a34159deb12fbd9d99792fb9108ffe03e6ada225d863b2d31f51f2230bf4fcb2761f30987c7d7
   languageName: node
   linkType: hard
 
