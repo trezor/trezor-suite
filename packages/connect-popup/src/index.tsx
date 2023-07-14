@@ -12,6 +12,7 @@ import {
     MethodResponseMessage,
 } from '@trezor/connect';
 import { config } from '@trezor/connect/lib/data/config';
+import { initLog, initSharedLogger } from '@trezor/connect/lib/utils/debug';
 
 import { reactEventBus } from '@trezor/connect-ui/src/utils/eventBus';
 import { analytics, EventType } from '@trezor/connect-analytics';
@@ -26,6 +27,9 @@ import {
     renderConnectUI,
 } from './view/common';
 import { isPhishingDomain } from './utils/isPhishingDomain';
+
+const log = initLog('@trezor/connect-popup');
+initSharedLogger('./workers/shared-logger-worker.js');
 
 let handshakeTimeout: ReturnType<typeof setTimeout>;
 
@@ -216,6 +220,8 @@ const handleMessage = (
 
 // handle POPUP.INIT message from window.opener
 const init = async (payload: PopupInit['payload']) => {
+    log.debug('popup init');
+
     if (!payload) return;
 
     if (!payload.systemInfo) {
@@ -254,6 +260,7 @@ const handshake = (handshake: PopupHandshake) => {
     if (isPhishingDomain(payload.settings.origin || '')) {
         reactEventBus.dispatch({ type: 'phishing-domain' });
     }
+    log.debug('handshake done');
 };
 
 const onLoad = () => {
