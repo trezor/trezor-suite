@@ -247,6 +247,26 @@ connect-popup manual:
     <<: *run_everything_rules
   when: manual
 
+connect-popup legacy:
+  extends: .e2e connect-popup
+  needs:
+    - install
+    - connect-web build
+  retry: 0
+  variables:
+    COMPOSE_PROJECT_NAME: $CI_JOB_ID
+    COMPOSE_FILE: ./docker/docker-compose.connect-popup-ci.yml
+    # It will use connect version from npm legacy version with current popup.
+    URL: ${DEV_SERVER_URL}/connect/npm-release/connect-${CONNECT_VERSION}/?trezor-connect-src=${DEV_SERVER_URL}/connect/${CI_COMMIT_REF_NAME}/
+    TEST_FILE: $TEST_FILE
+  parallel:
+    matrix:
+      - CONNECT_VERSION: "9.0.11"
+        TEST_FILE: ["methods", "browser-support", "popup-close-legacy"]
+  except:
+    <<: *run_everything_rules
+  when: manual
+
 .connect:
   stage: integration testing
   dependencies:

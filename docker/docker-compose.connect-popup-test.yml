@@ -25,6 +25,7 @@ services:
       - connect-explorer-dev
     network_mode: service:trezor-user-env-unix
     environment:
+      - URL=$URL
       - LOCAL_USER_ID=$LOCAL_USER_ID
       - DISPLAY=$DISPLAY
       - HEADLESS=false
