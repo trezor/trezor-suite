@@ -1,17 +1,22 @@
-import type { AppState } from 'src/types/suite';
 import { discoveryActions } from 'src/actions/wallet/discoveryActions';
 import { PayloadAction } from '@reduxjs/toolkit';
 
 import { createDeferred } from '@trezor/utils';
 import type { Discovery as CommonDiscovery } from '@suite-common/wallet-types';
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
-import { DiscoveryStatus } from '@suite-common/wallet-constants';
 
 export type Discovery = CommonDiscovery;
 
 export type PartialDiscovery = { deviceState: string } & Partial<Discovery>;
 
 export type DiscoveryState = Discovery[];
+
+export type DiscoveryRootState = {
+    wallet: {
+        discovery: DiscoveryState;
+    };
+};
+
 const initialState: DiscoveryState = [];
 
 const update = (draft: DiscoveryState, payload: PartialDiscovery, resolve?: boolean) => {
@@ -96,28 +101,10 @@ export const prepareDiscoveryReducer = createReducerWithExtraDeps(
     },
 );
 
-type RootState = Pick<AppState, 'wallet' | 'suite'>;
-
-export const selectDiscovery = (state: RootState) => state.wallet.discovery;
+export const selectDiscovery = (state: DiscoveryRootState) => state.wallet.discovery;
 
 // Get discovery process for deviceState.
-export const selectDiscoveryByDeviceState = (state: RootState, deviceState: string | undefined) =>
-    deviceState ? state.wallet.discovery.find(d => d.deviceState === deviceState) : undefined;
-
-export const selectDiscoveryForDevice = (state: RootState) =>
-    selectDiscoveryByDeviceState(state, state.suite.device?.state);
-
-/**
- * Helper selector called from components
- * return `true` if discovery process is running/completed and `authConfirm` is required
- */
-export const selectIsDiscoveryAuthConfirmationRequired = (state: RootState) => {
-    const discovery = selectDiscoveryForDevice(state);
-
-    return (
-        discovery &&
-        discovery.authConfirm &&
-        (discovery.status < DiscoveryStatus.STOPPING ||
-            discovery.status === DiscoveryStatus.COMPLETED)
-    );
-};
+export const selectDiscoveryByDeviceState = (
+    state: DiscoveryRootState,
+    deviceState: string | undefined,
+) => (deviceState ? state.wallet.discovery.find(d => d.deviceState === deviceState) : undefined);

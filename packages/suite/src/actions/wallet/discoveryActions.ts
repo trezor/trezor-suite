@@ -1,9 +1,8 @@
 import {
     Discovery,
     PartialDiscovery,
-    selectDiscoveryByDeviceState,
-    selectDiscoveryForDevice,
     selectDiscovery,
+    selectDiscoveryByDeviceState,
 } from 'src/reducers/wallet/discoveryReducer';
 import { SUITE } from 'src/actions/suite/constants';
 import * as metadataActions from 'src/actions/suite/metadataActions';
@@ -14,7 +13,7 @@ import { Account } from 'src/types/wallet';
 import { getDerivationType } from 'src/utils/wallet/cardanoUtils';
 import { createAction } from '@reduxjs/toolkit';
 import { selectEnabledNetworks } from 'src/reducers/wallet/settingsReducer';
-import { selectDevice } from 'src/reducers/suite/suiteReducer';
+import { selectDevice, selectDiscoveryForDevice } from 'src/reducers/suite/suiteReducer';
 import { selectMetadata } from 'src/reducers/suite/metadataReducer';
 
 import { DiscoveryItem } from '@suite-common/wallet-types';
