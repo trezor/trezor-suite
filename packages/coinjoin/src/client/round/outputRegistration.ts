@@ -136,6 +136,9 @@ export const outputRegistration = async (
 ) => {
     const { logger } = options;
 
+    // in case of error we want to know it it happened during credential-issuance (outputDecomposition) or output-registration
+    let phaseStep = 0;
+
     logger.info(`outputRegistration: ~~${round.id}~~`);
     // TODO:
     // - decide if there is only 1 account registered should i abaddon this round and blame it on some "youngest" input?
@@ -144,6 +147,9 @@ export const outputRegistration = async (
         round.setSessionPhase(SessionPhase.RegisteringOutputs);
         // decompose output amounts for all registered inputs grouped by Account
         const decomposedGroup = await outputDecomposition(round, accounts, options);
+
+        // first step completed
+        phaseStep = 1;
 
         await Promise.all(
             decomposedGroup.map(({ accountKey, outputs }) => {
@@ -169,7 +175,7 @@ export const outputRegistration = async (
         // NOTE: if anything goes wrong in this process this Round will be corrupted for all the users
         // registered inputs will probably be banned
         const message = `Output registration in ~~${round.id}~~ failed: ${error.message}`;
-        logger.error(`Output registration failed: ${error.message}`);
+        logger.error(`Output registration failed: (${phaseStep}) ${error.message}`);
         round.setSessionPhase(SessionPhase.OutputRegistrationFailed);
 
         round.inputs.forEach(input => input.setError(new Error(message)));
