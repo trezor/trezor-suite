@@ -1039,7 +1039,7 @@
   "TR_MISSING_TO_FEE": "Není vybrán dostatek prostředků na pokrytí poplatku",
   "TR_MISSING_TO_INPUT": "{amount} chybí k vašemu vstupu (bez poplatku)",
   "TR_MOBILE_APP_PROMO_TEXT": "S více bezpečnostními funkcemi",
-  "TR_MOBILE_APP_PROMO_TEXT_FOOTER": "Synchronizujte a sledujte své účtu na telefonu s <b>Trezor Suite Lite</b>",
+  "TR_MOBILE_APP_PROMO_TEXT_FOOTER": "Synchronizujte a sledujte své účty na telefonu s <b>Trezor Suite Lite</b>",
   "TR_MORE_ROUNDS_NEEDED": "Potřebujeme ještě několik kol",
   "TR_MORE_ROUNDS_NEEDED_DESCRIPTION": "V rámci vyhrazených kol se nám nepodařilo zajistit požadovanou anonymitu. Spusťte prosím další coinjoin. Nebudete platit žádný servisní poplatek dvakrát.",
   "TR_MY_ACCOUNTS": "Moje účty",
