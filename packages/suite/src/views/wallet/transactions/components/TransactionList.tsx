@@ -12,7 +12,7 @@ import {
     groupJointTransactions,
     getAccountNetwork,
 } from '@suite-common/wallet-utils';
-import { SETTINGS } from 'src/config/suite';
+import { SETTINGS } from '@suite-common/suite-config';
 import { WalletAccountTransaction, Account } from 'src/types/wallet';
 import { TransactionListActions } from './TransactionListActions';
 import TransactionItem from 'src/components/wallet/TransactionItem';

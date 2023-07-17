@@ -1,13 +1,11 @@
 import { configureStore } from 'src/support/tests/configureStore';
-
 import { PROTOCOL } from 'src/actions/suite/constants';
-import protocolMiddleware from '../protocolMiddleware';
 import protocolReducer from 'src/reducers/suite/protocolReducer';
-import {
-    NotificationEntry,
-    notificationsActions,
-    notificationsReducer,
-} from '@suite-common/toast-notifications';
+
+import { NotificationEntry } from '@suite-common/suite-types';
+import { notificationsActions, notificationsReducer } from '@suite-common/toast-notifications';
+
+import protocolMiddleware from '../protocolMiddleware';
 
 const middlewares = [protocolMiddleware];
 

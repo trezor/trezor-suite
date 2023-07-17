@@ -2,7 +2,9 @@
     "extends": "../../tsconfig.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
+        { "path": "../intl-types" },
         { "path": "../metadata-types" },
+        { "path": "../suite-constants" },
         { "path": "../wallet-config" },
         { "path": "../../packages/connect" },
         { "path": "../../packages/env-utils" }

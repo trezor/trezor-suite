@@ -3,7 +3,7 @@ import { Loader, Dropdown } from '@trezor/components';
 import { analytics, EventType } from '@trezor/suite-analytics';
 import { Translation } from 'src/components/suite';
 import { useActions } from 'src/hooks/suite';
-import { SETTINGS } from 'src/config/suite';
+import { SETTINGS } from '@suite-common/suite-config';
 import { useTranslation } from 'src/hooks/suite/useTranslation';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { exportTransactionsThunk, fetchTransactionsThunk } from '@suite-common/wallet-core';

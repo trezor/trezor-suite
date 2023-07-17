@@ -6,7 +6,7 @@ import {
 } from 'src/reducers/wallet/discoveryReducer';
 import { SUITE } from 'src/actions/suite/constants';
 import * as metadataActions from 'src/actions/suite/metadataActions';
-import { SETTINGS } from 'src/config/suite';
+import { SETTINGS } from '@suite-common/suite-config';
 import { NETWORKS } from 'src/config/wallet';
 import { Dispatch, GetState, TrezorDevice } from 'src/types/suite';
 import { Account } from 'src/types/wallet';

@@ -1,8 +1,8 @@
 import { createThunk } from '@suite-common/redux-utils';
+import { NotificationEntry } from '@suite-common/suite-types';
 
 import { ACTION_PREFIX, notificationsActions } from './notificationsActions';
 import { selectNotifications } from './notificationsSelectors';
-import { NotificationEntry } from './types';
 
 const findTransactionEvents = (descriptor: string, notifications: NotificationEntry[]) =>
     notifications.filter(

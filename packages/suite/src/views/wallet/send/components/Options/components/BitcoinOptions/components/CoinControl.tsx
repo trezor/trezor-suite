@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { fetchTransactionsThunk } from '@suite-common/wallet-core';
 import { amountToSatoshi, formatNetworkAmount } from '@suite-common/wallet-utils';
 import { FormattedCryptoAmount, Translation } from 'src/components/suite';
-import { SETTINGS } from 'src/config/suite';
+import { SETTINGS } from '@suite-common/suite-config';
 import { useActions, useSelector } from 'src/hooks/suite';
 import { Pagination } from 'src/components/wallet';
 import { useTheme, Checkbox, Icon, Switch, variables } from '@trezor/components';

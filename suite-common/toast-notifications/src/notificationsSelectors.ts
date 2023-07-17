@@ -5,7 +5,7 @@ import {
     NotificationsRootState,
     ToastPayload,
     TransactionNotification,
-} from './types';
+} from '@suite-common/suite-types';
 
 export const selectNotifications = (state: NotificationsRootState) => state.notifications;
 

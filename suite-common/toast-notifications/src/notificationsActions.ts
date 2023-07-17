@@ -1,9 +1,14 @@
 import { createAction } from '@reduxjs/toolkit';
 
 import { createActionWithExtraDeps } from '@suite-common/redux-utils';
+import {
+    NotificationId,
+    NotificationEntry,
+    NotificationEventPayload,
+    ToastPayload,
+} from '@suite-common/suite-types';
 
 import { selectVisibleNotificationsByType } from './notificationsSelectors';
-import { NotificationId, NotificationEntry, NotificationEventPayload, ToastPayload } from './types';
 
 export const ACTION_PREFIX = '@common/in-app-notifications';
 

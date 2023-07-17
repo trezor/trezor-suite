@@ -2,7 +2,7 @@ import React, { useState, useCallback, useRef, useEffect } from 'react';
 import styled, { css } from 'styled-components';
 import { Input, Icon, useTheme, Tooltip, KEYBOARD_CODE } from '@trezor/components';
 import { useActions } from 'src/hooks/suite';
-import { SETTINGS } from 'src/config/suite';
+import { SETTINGS } from '@suite-common/suite-config';
 import { useTranslation } from 'src/hooks/suite/useTranslation';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { Account } from 'src/types/wallet';

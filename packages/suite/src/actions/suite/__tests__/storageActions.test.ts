@@ -18,7 +18,7 @@ import storageMiddleware from 'src/middlewares/wallet/storageMiddleware';
 import { coinjoinReducer } from 'src/reducers/wallet/coinjoinReducer';
 import { getAccountTransactions, getAccountIdentifier } from '@suite-common/wallet-utils';
 import { AppState } from 'src/types/suite';
-import { SETTINGS } from 'src/config/suite';
+import { SETTINGS } from '@suite-common/suite-config';
 import { preloadStore } from 'src/support/suite/preloadStore';
 import { prepareDiscoveryReducer } from 'src/reducers/wallet/discoveryReducer';
 import { extraDependencies } from 'src/support/extraDependencies';

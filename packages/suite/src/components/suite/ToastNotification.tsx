@@ -1,13 +1,16 @@
 import React, { useLayoutEffect, useRef, useState } from 'react';
+
 import styled, { css } from 'styled-components';
-import { Button, Icon, useTheme, variables } from '@trezor/components';
 import { Translation } from 'src/components/suite';
-import { notificationsActions, NotificationEntry } from '@suite-common/toast-notifications';
 import { useActions } from 'src/hooks/suite';
 import { getNotificationIcon, getVariantColor } from 'src/utils/suite//notification';
 import NotificationRenderer, {
     NotificationViewProps,
 } from 'src/components/suite/NotificationRenderer';
+
+import { NotificationEntry } from '@suite-common/suite-types';
+import { notificationsActions } from '@suite-common/toast-notifications';
+import { Button, Icon, useTheme, variables } from '@trezor/components';
 
 const Wrapper = styled.div<Pick<NotificationViewProps, 'variant'> & { isTall: boolean }>`
     display: flex;

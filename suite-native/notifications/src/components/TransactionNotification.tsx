@@ -20,11 +20,13 @@ import {
 import { Icon } from '@suite-common/icons';
 import {
     notificationsActions,
-    TransactionNotificationType,
-    NotificationId,
     selectTransactionNotificationById,
-    NotificationsRootState,
 } from '@suite-common/toast-notifications';
+import {
+    NotificationsRootState,
+    NotificationId,
+    TransactionNotificationType,
+} from '@suite-common/suite-types';
 
 import { Notification } from './Notification';
 import { TransactionNotificationDescription } from './TransactionNotificationDescription';

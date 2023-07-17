@@ -3,7 +3,7 @@ import { GRAPH } from 'src/actions/wallet/constants';
 import { STORAGE } from 'src/actions/suite/constants';
 import { WalletAction, Account } from 'src/types/wallet';
 import { Action as SuiteAction } from 'src/types/suite';
-import { SETTINGS } from 'src/config/suite';
+import { SETTINGS } from '@suite-common/suite-config';
 
 import { accountsActions } from '@suite-common/wallet-core';
 import { GraphData, AccountIdentifier, GraphRange, GraphScale } from '../../types/wallet/graph';

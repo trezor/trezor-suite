@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import NotificationGroup from './components/NotificationGroup';
 import { Translation } from 'src/components/suite';
-import { SETTINGS } from 'src/config/suite';
+import { SETTINGS } from '@suite-common/suite-config';
 
 const Wrapper = styled.div`
     width: 100%;

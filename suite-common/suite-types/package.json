@@ -11,7 +11,9 @@
     },
     "dependencies": {
         "@reduxjs/toolkit": "1.9.5",
+        "@suite-common/intl-types": "workspace:*",
         "@suite-common/metadata-types": "workspace:*",
+        "@suite-common/suite-constants": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/env-utils": "workspace:*",

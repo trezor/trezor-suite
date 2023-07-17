@@ -1,7 +1,9 @@
 import type { ComponentType } from 'react';
-import type { IconProps, ButtonProps } from '@trezor/components';
-import type { NotificationEntry } from '@suite-common/toast-notifications';
+
 import type { ExtendedMessageDescriptor, ToastNotificationVariant } from 'src/types/suite';
+
+import type { IconProps, ButtonProps } from '@trezor/components';
+import { NotificationEntry } from '@suite-common/suite-types';
 
 export interface NotificationViewProps {
     notification: NotificationEntry;
