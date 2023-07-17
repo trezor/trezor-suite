@@ -135,7 +135,12 @@ export class TorControlPort {
                     resolve({ success: false, payload });
                 }
             });
-            this.write(command);
+
+            try {
+                this.write(command);
+            } catch (error) {
+                return { success: false, payload: error };
+            }
         });
     }
 
