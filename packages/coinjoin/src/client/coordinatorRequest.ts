@@ -22,7 +22,7 @@ export class WabiSabiProtocolException extends Error {
     // NOTE: coordinator/middleware error shape
     // {type: string, errorCode: string, description: string, exceptionData: { Type: string } }
     constructor(error: Record<string, any>) {
-        super(error.errorCode);
+        super(`${error.errorCode} ${error.description}`);
         this.type = error.type;
         this.errorCode = enumUtils.getValueByKey(WabiSabiProtocolErrorCode, error.errorCode);
         this.description = error.description;
