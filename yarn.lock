@@ -8464,7 +8464,7 @@ __metadata:
     react-intl: ^6.4.4
     react-native: 0.71.8
     react-native-config: ^1.5.0
-    react-native-flipper: 0.201.0
+    react-native-flipper: 0.164.0
     react-native-gesture-handler: ^2.9.0
     react-native-mmkv: ^2.7.0
     react-native-reanimated: 3.3.0
@@ -28606,13 +28606,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-flipper@npm:0.201.0":
-  version: 0.201.0
-  resolution: "react-native-flipper@npm:0.201.0"
+"react-native-flipper@npm:0.164.0":
+  version: 0.164.0
+  resolution: "react-native-flipper@npm:0.164.0"
   peerDependencies:
     react: ^16.8.0 || ^17.0.0 || ^18.0.0
     react-native: ">0.62.0"
-  checksum: 20163a4a724d3afba540e2b66367a85d133f99b2469ba1488028a64523e7dd29bd93b5af06ae4580b108bf67f20e6fc534a34c10214fd93b2952a9128b7a04ed
+  checksum: 8730d7349bec27a23558760320082bd89b07fb404a87bf039a8d852455f28e4d5419f093bb7900ff5f6d85488274cfb246278b6700878bcabe574d5aacd88dac
   languageName: node
   linkType: hard
 
