@@ -4,10 +4,8 @@
 // data provided by TrezorConnect are mocked
 
 import { configureStore } from 'src/support/tests/configureStore';
-import {
-    prepareDiscoveryReducer,
-    selectIsDiscoveryAuthConfirmationRequired,
-} from 'src/reducers/wallet/discoveryReducer';
+import { prepareDiscoveryReducer } from 'src/reducers/wallet/discoveryReducer';
+import { selectIsDiscoveryAuthConfirmationRequired } from 'src/reducers/suite/suiteReducer';
 import walletSettingsReducer from 'src/reducers/wallet/settingsReducer';
 import { accountsReducer } from 'src/reducers/wallet';
 import * as walletSettingsActions from 'src/actions/settings/walletSettingsActions';

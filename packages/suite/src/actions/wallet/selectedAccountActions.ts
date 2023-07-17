@@ -1,5 +1,5 @@
 import { ROUTER, SUITE } from 'src/actions/suite/constants';
-import { selectDiscoveryForDevice } from 'src/reducers/wallet/discoveryReducer';
+import { selectDiscoveryForDevice } from 'src/reducers/suite/suiteReducer';
 import * as metadataActions from 'src/actions/suite/metadataActions';
 import * as comparisonUtils from 'src/utils/suite/comparisonUtils';
 import { getSelectedAccount } from 'src/utils/wallet/accountUtils';

@@ -1,6 +1,6 @@
 import { MiddlewareAPI } from 'redux';
 import * as graphActions from 'src/actions/wallet/graphActions';
-import { selectDiscoveryForDevice } from 'src/reducers/wallet/discoveryReducer';
+import { selectDiscoveryForDevice } from 'src/reducers/suite/suiteReducer';
 import { AppState, Action, Dispatch } from 'src/types/suite';
 import { discoveryActions } from 'src/actions/wallet/discoveryActions';
 

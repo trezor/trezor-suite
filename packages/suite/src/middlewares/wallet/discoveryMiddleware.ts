@@ -3,7 +3,7 @@ import { SUITE, ROUTER, MODAL } from 'src/actions/suite/constants';
 import * as walletSettingsActions from 'src/actions/settings/walletSettingsActions';
 import * as suiteActions from 'src/actions/suite/suiteActions';
 import * as discoveryActions from 'src/actions/wallet/discoveryActions';
-import { selectDiscoveryForDevice } from 'src/reducers/wallet/discoveryReducer';
+import { selectDiscoveryForDevice } from 'src/reducers/suite/suiteReducer';
 import { getApp } from 'src/utils/suite/router';
 import { AppState, Action, Dispatch } from 'src/types/suite';
 
