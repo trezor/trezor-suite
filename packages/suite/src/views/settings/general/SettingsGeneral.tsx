@@ -4,10 +4,12 @@ import { SettingsLayout } from 'src/components/settings';
 import { SettingsSection } from 'src/components/suite/Settings';
 import { Translation } from 'src/components/suite';
 import { useLayoutSize, useSelector } from 'src/hooks/suite';
-import { isDesktop, isWeb } from '@trezor/env-utils';
-
 import { selectDevice, selectTorState } from 'src/reducers/suite/suiteReducer';
 import { selectEnabledNetworks } from 'src/reducers/wallet/settingsReducer';
+
+import { isDesktop, isWeb } from '@trezor/env-utils';
+import { networksCompatibility } from '@suite-common/wallet-config';
+
 import { Language } from './Language';
 import { Fiat } from './Fiat';
 import { Labeling } from './Labeling';
@@ -22,7 +24,6 @@ import { ClearStorage } from './ClearStorage';
 import { VersionWithUpdate } from './VersionWithUpdate';
 import { EarlyAccess } from './EarlyAccess';
 import { BitcoinAmountUnit } from './BitcoinAmountUnit';
-import { NETWORKS } from 'src/config/wallet';
 import { DesktopSuiteBanner } from './DesktopSuiteBanner';
 
 export const SettingsGeneral = () => {
@@ -35,7 +36,7 @@ export const SettingsGeneral = () => {
 
     const { isMobileLayout } = useLayoutSize();
 
-    const hasBitcoinNetworks = NETWORKS.some(
+    const hasBitcoinNetworks = networksCompatibility.some(
         ({ symbol, features }) =>
             enabledNetworks.includes(symbol) && features?.includes('amount-unit'),
     );

@@ -1,7 +1,8 @@
 import routes, { Route, RouterAppWithParams } from 'src/constants/suite/routes';
-import { WalletParams as CommonWalletParams } from '@suite-common/wallet-types';
 import history from 'src/support/history';
-import { NETWORKS } from 'src/config/wallet';
+
+import { WalletParams as CommonWalletParams } from '@suite-common/wallet-types';
+import { networksCompatibility } from '@suite-common/wallet-config';
 
 // Prefix a url with ASSET_PREFIX (eg. name of the branch in CI)
 // Useful with next.js Router.push() that accepts `as` prop as second arg
@@ -44,7 +45,7 @@ const validateWalletParams = (url: string): CommonWalletParams => {
     if (!hash) return;
     const [symbol, index, type] = hash.split('/').filter(p => p.length > 0);
     if (!symbol || !index) return;
-    const network = NETWORKS.find(
+    const network = networksCompatibility.find(
         n => n.symbol === symbol && (n.accountType || 'normal') === (type || 'normal'),
     );
 

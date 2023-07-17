@@ -6,17 +6,16 @@ import {
 } from 'src/reducers/wallet/discoveryReducer';
 import { SUITE } from 'src/actions/suite/constants';
 import * as metadataActions from 'src/actions/suite/metadataActions';
-import { NETWORKS } from 'src/config/wallet';
 import { Dispatch, GetState, TrezorDevice } from 'src/types/suite';
-import { Account } from 'src/types/wallet';
 import { createAction } from '@reduxjs/toolkit';
 import { selectEnabledNetworks } from 'src/reducers/wallet/settingsReducer';
 import { selectDevice, selectDiscoveryForDevice } from 'src/reducers/suite/suiteReducer';
 import { selectMetadata } from 'src/reducers/suite/metadataReducer';
 
+import { networksCompatibility } from '@suite-common/wallet-config';
+import { Account, DiscoveryItem } from '@suite-common/wallet-types';
 import { getDerivationType, isTrezorConnectBackendType } from '@suite-common/wallet-utils';
 import { SETTINGS } from '@suite-common/suite-config';
-import { DiscoveryItem } from '@suite-common/wallet-types';
 import { accountsActions } from '@suite-common/wallet-core';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { getDeviceModel, getFirmwareVersion } from '@trezor/device-utils';
@@ -147,7 +146,7 @@ const handleProgress =
     };
 
 const filterUnavailableNetworks = (enabledNetworks: Account['symbol'][], device?: TrezorDevice) =>
-    NETWORKS.filter(n => {
+    networksCompatibility.filter(n => {
         const firmwareVersion = getFirmwareVersion(device);
         const deviceModel = getDeviceModel(device);
 

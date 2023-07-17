@@ -1,18 +1,21 @@
 import React from 'react';
+
 import styled, { useTheme } from 'styled-components';
 import BigNumber from 'bignumber.js';
-import { NETWORKS } from 'src/config/wallet';
 import { Section } from 'src/components/dashboard';
-import { AssetTable, AssetTableSkeleton } from './components/AssetTable';
-import { AssetGrid, AssetGridSkeleton } from './components/AssetGrid';
 import { Account, Network } from 'src/types/wallet';
-import { variables, Icon, Button, colors, LoadingContent } from '@trezor/components';
 import { Card, Translation } from 'src/components/suite';
 import { useDiscovery, useActions, useSelector } from 'src/hooks/suite';
 import { useAccounts } from 'src/hooks/wallet';
 import * as suiteActions from 'src/actions/suite/suiteActions';
 import * as routerActions from 'src/actions/suite/routerActions';
 import { AnimatePresence } from 'framer-motion';
+
+import { variables, Icon, Button, colors, LoadingContent } from '@trezor/components';
+import { networksCompatibility } from '@suite-common/wallet-config';
+
+import { AssetGrid, AssetGridSkeleton } from './components/AssetGrid';
+import { AssetTable, AssetTableSkeleton } from './components/AssetTable';
 
 const StyledCard = styled(Card)`
     flex-direction: column;
@@ -98,7 +101,7 @@ const AssetsCard = () => {
 
     const assetsData: assetType[] = networks
         .map(symbol => {
-            const network = NETWORKS.find(n => n.symbol === symbol && !n.accountType);
+            const network = networksCompatibility.find(n => n.symbol === symbol && !n.accountType);
             if (!network) {
                 console.error('unknown network');
                 return null;

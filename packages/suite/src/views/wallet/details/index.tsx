@@ -1,24 +1,25 @@
 import React from 'react';
-import styled from 'styled-components';
 
-import { P, variables } from '@trezor/components';
-import { HELP_CENTER_XPUB_URL } from '@trezor/urls';
+import styled from 'styled-components';
 import { WalletLayout } from 'src/components/wallet';
 import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 import { Card, Translation } from 'src/components/suite';
+import { ActionColumn, Row, TextColumn, ActionButton } from 'src/components/suite/Settings';
+import { CARD_PADDING_SIZE } from 'src/constants/suite/layout';
+import { showXpub } from 'src/actions/wallet/publicKeyActions';
+import { CoinjoinLogs } from 'src/components/wallet/PrivacyAccount/CoinjoinLogs';
+import { CoinjoinSetup } from 'src/components/wallet/PrivacyAccount/CoinjoinSetup';
+import { RescanAccount } from 'src/components/wallet/PrivacyAccount/RescanAccount';
+
+import { networksCompatibility } from '@suite-common/wallet-config';
 import {
     getAccountTypeName,
     getAccountTypeTech,
     getAccountTypeUrl,
     getAccountTypeDesc,
 } from '@suite-common/wallet-utils';
-import { ActionColumn, Row, TextColumn, ActionButton } from 'src/components/suite/Settings';
-import { CARD_PADDING_SIZE } from 'src/constants/suite/layout';
-import { showXpub } from 'src/actions/wallet/publicKeyActions';
-import { NETWORKS } from 'src/config/wallet';
-import { CoinjoinLogs } from 'src/components/wallet/PrivacyAccount/CoinjoinLogs';
-import { CoinjoinSetup } from 'src/components/wallet/PrivacyAccount/CoinjoinSetup';
-import { RescanAccount } from 'src/components/wallet/PrivacyAccount/RescanAccount';
+import { HELP_CENTER_XPUB_URL } from '@trezor/urls';
+import { P, variables } from '@trezor/components';
 
 const Heading = styled.h3`
     color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
@@ -83,7 +84,7 @@ const Details = () => {
     // check if all network types
     const accountTypes =
         account.networkType === 'bitcoin'
-            ? NETWORKS.filter(n => n.symbol === account.symbol)
+            ? networksCompatibility.filter(n => n.symbol === account.symbol)
             : undefined;
     // display type name only if there is more than 1 network type
     const accountTypeName =

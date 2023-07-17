@@ -3,10 +3,10 @@ import React from 'react';
 import styled from 'styled-components';
 import { HiddenPlaceholder, Sign } from 'src/components/suite';
 import { NetworkSymbol } from 'src/types/wallet';
-import { NETWORKS } from 'src/config/wallet';
 import { useSelector } from 'src/hooks/suite';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 
+import { networksCompatibility } from '@suite-common/wallet-config';
 import { SignValue } from '@suite-common/suite-types';
 import {
     formatCoinBalance,
@@ -60,7 +60,7 @@ export const FormattedCryptoAmount = ({
 
     const lowerCaseSymbol = symbol?.toLowerCase();
     const { features: networkFeatures, testnet: isTestnet } =
-        NETWORKS.find(network => network.symbol === lowerCaseSymbol) ?? {};
+        networksCompatibility.find(network => network.symbol === lowerCaseSymbol) ?? {};
 
     const areSatsSupported = !!networkFeatures?.includes('amount-unit');
 

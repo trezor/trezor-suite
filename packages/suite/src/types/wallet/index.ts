@@ -16,12 +16,12 @@ import { CardanoStakingAction } from 'src/actions/wallet/cardanoStakingActions';
 import { PollingAction } from 'src/actions/wallet/pollingActions';
 import { CoinjoinAccountAction } from 'src/actions/wallet/coinjoinAccountActions';
 import { CoinjoinClientAction } from 'src/actions/wallet/coinjoinClientActions';
-import { NETWORKS } from 'src/config/wallet';
 
+import { networksCompatibility } from '@suite-common/wallet-config';
 import { ArrayElement } from '@trezor/type-utils';
 import { accountsActions, fiatRatesActions, blockchainActions } from '@suite-common/wallet-core';
 
-export type Network = ArrayElement<typeof NETWORKS>;
+export type Network = ArrayElement<typeof networksCompatibility>;
 export type NetworkSymbol = Network['symbol'];
 // reexport
 export type { Icon } from './iconTypes';

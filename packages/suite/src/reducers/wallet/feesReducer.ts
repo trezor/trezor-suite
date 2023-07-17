@@ -1,7 +1,8 @@
 import produce from 'immer';
 import { FeeInfo } from 'src/types/wallet/sendForm';
-import { NETWORKS } from 'src/config/wallet';
 import { Network, WalletAction } from 'src/types/wallet';
+
+import { networksCompatibility } from '@suite-common/wallet-config';
 import { blockchainActions } from '@suite-common/wallet-core';
 
 // type Symbol = Network['symbol'] | 'erc20';
@@ -20,7 +21,7 @@ const initialStatePredefined: Partial<State> = {
 };
 
 // fill initial state, those values will be changed by BLOCKCHAIN.UPDATE_FEE action
-export const initialState = NETWORKS.reduce((state, network) => {
+export const initialState = networksCompatibility.reduce((state, network) => {
     if (network.accountType) return state;
     state[network.symbol] = {
         blockHeight: 0,

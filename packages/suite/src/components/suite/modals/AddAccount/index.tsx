@@ -1,16 +1,18 @@
 import React, { useState } from 'react';
+
 import styled from 'styled-components';
-import { Button } from '@trezor/components';
 import { Translation, Modal } from 'src/components/suite';
-import { NETWORKS } from 'src/config/wallet';
 import { Account, Network } from 'src/types/wallet';
 import { TrezorDevice } from 'src/types/suite';
 import { useSelector, useActions, useDispatch } from 'src/hooks/suite';
-import { accountsActions } from '@suite-common/wallet-core';
 import * as walletSettingsActions from 'src/actions/settings/walletSettingsActions';
 import * as routerActions from 'src/actions/suite/routerActions';
-import { arrayPartition } from '@trezor/utils';
 import { selectIsPublic } from 'src/reducers/wallet/coinjoinReducer';
+
+import { arrayPartition } from '@trezor/utils';
+import { accountsActions } from '@suite-common/wallet-core';
+import { networksCompatibility } from '@suite-common/wallet-config';
+import { Button } from '@trezor/components';
 
 import { AccountTypeSelect } from './components/AccountTypeSelect';
 import { SelectNetwork } from './components/SelectNetwork';
@@ -55,7 +57,7 @@ export const AddAccount = ({ device, onCancel, symbol, noRedirect }: Props) => {
     const isCoinjoinVisible = isCoinjoinPublic || debug.showDebugMenu;
 
     // Collect all Networks without "accountType" (normal)
-    const internalNetworks = NETWORKS.filter(n => !n.accountType && !n.isHidden);
+    const internalNetworks = networksCompatibility.filter(n => !n.accountType && !n.isHidden);
 
     // applied only when changing account in coinmarket exchange receive options context so far
     const networkPinned = !!symbol;
@@ -82,7 +84,7 @@ export const AddAccount = ({ device, onCancel, symbol, noRedirect }: Props) => {
 
     const handleNetworkSelection = (symbol?: Network['symbol']) => {
         if (symbol) {
-            const networkToSelect = NETWORKS.find(n => n.symbol === symbol);
+            const networkToSelect = networksCompatibility.find(n => n.symbol === symbol);
 
             // To prevent account type selection reset
             const alreadySelected =
@@ -128,7 +130,8 @@ export const AddAccount = ({ device, onCancel, symbol, noRedirect }: Props) => {
     // Collect possible accountTypes
     const accountTypes =
         selectedNetworkEnabled && selectedNetwork?.networkType === 'bitcoin'
-            ? NETWORKS.filter(n => n.symbol === selectedNetwork.symbol)
+            ? networksCompatibility
+                  .filter(n => n.symbol === selectedNetwork.symbol)
                   /**
                    * Filter out coinjoin account type if it is not visible.
                    * Visibility of coinjoin account type depends on coinjoin feature config in message system.

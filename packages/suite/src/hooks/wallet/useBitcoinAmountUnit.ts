@@ -1,10 +1,10 @@
-import { PROTO } from '@trezor/connect';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { useActions } from 'src/hooks/suite/useActions';
 import * as walletSettingsActions from 'src/actions/settings/walletSettingsActions';
-
-import { NETWORKS } from 'src/config/wallet';
 import { NetworkSymbol } from 'src/types/wallet';
+
+import { networksCompatibility } from '@suite-common/wallet-config';
+import { PROTO } from '@trezor/connect';
 
 export const useBitcoinAmountUnit = (symbol?: NetworkSymbol) => {
     const bitcoinAmountUnit = useSelector(state => state.wallet.settings.bitcoinAmountUnit);
@@ -23,9 +23,9 @@ export const useBitcoinAmountUnit = (symbol?: NetworkSymbol) => {
 
     const areUnitsSupportedByNetwork =
         symbol &&
-        NETWORKS.find(({ symbol: networkSymbol }) => networkSymbol === symbol)?.features?.includes(
-            'amount-unit',
-        );
+        networksCompatibility
+            .find(({ symbol: networkSymbol }) => networkSymbol === symbol)
+            ?.features?.includes('amount-unit');
 
     return {
         bitcoinAmountUnit,
