@@ -87,7 +87,6 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                         }
                     />
                 )}
-
                 {/* AMOUNT */}
                 {(tx.targets.length || tx.type === 'joint') && (
                     <AmountRow
@@ -97,9 +96,8 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                                 value={amount.abs().toString()}
                                 symbol={tx.symbol}
                                 signValue={
-                                    getTxOperation(tx.type, true) || amount.isLessThan(0)
-                                        ? 'negative'
-                                        : 'positive'
+                                    getTxOperation(tx.type, true) ||
+                                    (amount.isLessThan(0) ? 'negative' : 'positive')
                                 }
                             />
                         }
@@ -116,7 +114,6 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                         }
                     />
                 )}
-
                 {cardanoWithdrawal && (
                     <AmountRow
                         firstColumn={<Translation id="TR_TX_WITHDRAWAL" />}
@@ -138,7 +135,6 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                         fourthColumn={<FiatValue amount={cardanoWithdrawal} symbol={tx.symbol} />}
                     />
                 )}
-
                 {cardanoDeposit && (
                     <AmountRow
                         firstColumn={<Translation id="TR_TX_DEPOSIT" />}
@@ -160,7 +156,6 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                         fourthColumn={<FiatValue amount={cardanoDeposit} symbol={tx.symbol} />}
                     />
                 )}
-
                 {tx.internalTransfers.map((transfer, i) => (
                     <AmountRow
                         // eslint-disable-next-line react/no-array-index-key
@@ -191,7 +186,6 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                         }
                     />
                 ))}
-
                 {tx.tokens.map((transfer, i) => (
                     <AmountRow
                         // eslint-disable-next-line react/no-array-index-key
@@ -227,7 +221,6 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                         }
                     />
                 ))}
-
                 {/* TX FEE */}
                 {isTxFeePaid(tx) && (
                     <AmountRow
