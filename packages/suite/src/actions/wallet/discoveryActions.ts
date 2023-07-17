@@ -6,20 +6,19 @@ import {
 } from 'src/reducers/wallet/discoveryReducer';
 import { SUITE } from 'src/actions/suite/constants';
 import * as metadataActions from 'src/actions/suite/metadataActions';
-import { SETTINGS } from '@suite-common/suite-config';
 import { NETWORKS } from 'src/config/wallet';
 import { Dispatch, GetState, TrezorDevice } from 'src/types/suite';
 import { Account } from 'src/types/wallet';
-import { getDerivationType } from 'src/utils/wallet/cardanoUtils';
 import { createAction } from '@reduxjs/toolkit';
 import { selectEnabledNetworks } from 'src/reducers/wallet/settingsReducer';
 import { selectDevice, selectDiscoveryForDevice } from 'src/reducers/suite/suiteReducer';
 import { selectMetadata } from 'src/reducers/suite/metadataReducer';
 
+import { getDerivationType, isTrezorConnectBackendType } from '@suite-common/wallet-utils';
+import { SETTINGS } from '@suite-common/suite-config';
 import { DiscoveryItem } from '@suite-common/wallet-types';
 import { accountsActions } from '@suite-common/wallet-core';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { isTrezorConnectBackendType } from '@suite-common/wallet-utils';
 import { getDeviceModel, getFirmwareVersion } from '@trezor/device-utils';
 import TrezorConnect, { BundleProgress, AccountInfo, UI } from '@trezor/connect';
 import { versionUtils } from '@trezor/utils';

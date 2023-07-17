@@ -1,5 +1,4 @@
 import { CARDANO, PROTO } from '@trezor/connect';
-
 import {
     composeTxPlan,
     getAddressType,
@@ -20,7 +19,8 @@ import {
     isPoolOverSaturated,
     formatMaxOutputAmount,
     getChangeAddressParameters,
-} from '../cardanoUtils';
+} from '@suite-common/wallet-utils';
+
 import * as fixtures from '../__fixtures__/cardanoUtils';
 
 describe('cardano utils', () => {

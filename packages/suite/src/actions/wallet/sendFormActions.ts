@@ -1,6 +1,12 @@
-import TrezorConnect, { PROTO, SignedTransaction } from '@trezor/connect';
 import BigNumber from 'bignumber.js';
+import * as modalActions from 'src/actions/suite/modalActions';
+import * as metadataActions from 'src/actions/suite/metadataActions';
+import { SEND } from 'src/actions/wallet/constants';
+import { Dispatch, GetState } from 'src/types/suite';
+import { Account } from 'src/types/wallet';
+import { MetadataAddPayload } from 'src/types/suite/metadata';
 
+import TrezorConnect, { PROTO, SignedTransaction } from '@trezor/connect';
 import {
     accountsActions,
     addFakePendingCardanoTxThunk,
@@ -9,9 +15,6 @@ import {
     syncAccountsWithBlockchainThunk,
 } from '@suite-common/wallet-core';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import * as modalActions from 'src/actions/suite/modalActions';
-import * as metadataActions from 'src/actions/suite/metadataActions';
-import { SEND } from 'src/actions/wallet/constants';
 import {
     formatNetworkAmount,
     getPendingAccount,
@@ -20,10 +23,8 @@ import {
     formatAmount,
     getAccountDecimals,
     hasNetworkFeatures,
+    isCardanoTx,
 } from '@suite-common/wallet-utils';
-import { isCardanoTx } from 'src/utils/wallet/cardanoUtils';
-import { Dispatch, GetState } from 'src/types/suite';
-import { Account } from 'src/types/wallet';
 import {
     FormState,
     ComposeActionContext,
@@ -34,7 +35,6 @@ import { cloneObject } from '@trezor/utils';
 import * as sendFormBitcoinActions from './send/sendFormBitcoinActions';
 import * as sendFormEthereumActions from './send/sendFormEthereumActions';
 import * as sendFormRippleActions from './send/sendFormRippleActions';
-import { MetadataAddPayload } from 'src/types/suite/metadata';
 import * as sendFormCardanoActions from './send/sendFormCardanoActions';
 
 export type SendFormAction =

@@ -1,14 +1,19 @@
 import React, { useEffect } from 'react';
 import { Controller } from 'react-hook-form';
-import { Select, variables } from '@trezor/components';
 import { components } from 'react-select';
+
 import styled from 'styled-components';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { Account } from 'src/types/wallet';
 import { Output } from 'src/types/wallet/sendForm';
-import { getShortFingerprint } from 'src/utils/wallet/cardanoUtils';
 import { useSelector } from 'src/hooks/suite';
-import { enhanceTokensWithRates, sortTokensWithRates } from '@suite-common/wallet-utils';
+
+import {
+    getShortFingerprint,
+    enhanceTokensWithRates,
+    sortTokensWithRates,
+} from '@suite-common/wallet-utils';
+import { Select, variables } from '@trezor/components';
 
 interface Option {
     label: string;

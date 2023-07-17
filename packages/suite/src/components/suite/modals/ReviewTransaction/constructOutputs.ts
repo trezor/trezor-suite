@@ -1,10 +1,12 @@
 import { TrezorDevice } from 'src/types/suite/index';
-import { CardanoOutput } from '@trezor/connect';
 import { FormState, PrecomposedTransactionFinal, TxFinalCardano } from 'src/types/wallet/sendForm';
 import { Account } from 'src/types/wallet/index';
-import { getShortFingerprint, isCardanoTx } from 'src/utils/wallet/cardanoUtils';
-import { OutputProps } from './components/Output';
 import { fromWei } from 'web3-utils';
+
+import { CardanoOutput } from '@trezor/connect';
+import { getShortFingerprint, isCardanoTx } from '@suite-common/wallet-utils';
+
+import { OutputProps } from './components/Output';
 import { getIsUpdatedSendFlow } from './components/getIsUpdatedSendFlow';
 
 const getCardanoTokenBundle = (account: Account, output: CardanoOutput) => {

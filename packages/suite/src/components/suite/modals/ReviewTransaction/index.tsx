@@ -1,15 +1,18 @@
 import React, { useState } from 'react';
+
 import styled from 'styled-components';
-import { ConfirmOnDevice, variables } from '@trezor/components';
 import { Translation, Modal } from 'src/components/suite';
 import { useActions, useSelector } from 'src/hooks/suite';
 import { UserContextPayload } from 'src/actions/suite/modalActions';
 import * as sendFormActions from 'src/actions/wallet/sendFormActions';
+import { selectDevice, selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
+
+import { isCardanoTx } from '@suite-common/wallet-utils';
+import { DeviceModel, getDeviceModel } from '@trezor/device-utils';
+import { ConfirmOnDevice, variables } from '@trezor/components';
+
 import OutputList from './components/OutputList';
 import Summary from './components/Summary';
-import { isCardanoTx } from 'src/utils/wallet/cardanoUtils';
-import { DeviceModel, getDeviceModel } from '@trezor/device-utils';
-import { selectDevice, selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
 import { constructOutputs } from './constructOutputs';
 
 const StyledModal = styled(Modal)`

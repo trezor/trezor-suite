@@ -1,4 +1,4 @@
-import type { types } from '@fivebinaries/coin-selection';
+import { types } from '@fivebinaries/coin-selection';
 import BigNumber from 'bignumber.js';
 
 import {
@@ -18,7 +18,7 @@ import {
     formatAmount,
     formatNetworkAmount,
     networkAmountToSatoshi,
-} from '@suite-common/wallet-utils';
+} from './accountUtils';
 
 export const loadCardanoLib = async () => {
     const lib = await import(
