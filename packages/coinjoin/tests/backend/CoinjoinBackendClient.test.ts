@@ -24,7 +24,7 @@ describe('CoinjoinBackendClient', () => {
     it.only('blockbook backends rotation', async () => {
         let lastBackend = '';
         (client as any).websockets = {
-            getOrCreate: (url: string) => {
+            getOrCreate: ({ url }: { url: string }) => {
                 [lastBackend] = (url as string).split('/');
                 return new Proxy({}, { get: (_, b) => b !== 'then' && (() => undefined) });
             },
