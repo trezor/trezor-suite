@@ -18,7 +18,7 @@ const result = await TrezorConnect.init(params);
 -   `interactionTimeout` - _optional_ `number`, default `600`. Time in seconds after which popup automatically closes.
 -   `lazyLoad` - _optional_ `boolean`, default `false`. Postpone iframe creation until TrezorConnect is called for the first time.
 -   `popup` - _optional_ `boolean`, default `true`. Projects running on trusted domains (trezor.io) are not required to use popup. For other domains this option is ignored.
--   `transports` — \_optional `'(BridgeTransport' | 'WebUsbTransport)[]'`, Array of transports that should be use. If not provided, TrezorConnect will chose a reasonable
+-   `transports` — \_optional `'(BridgeTransport' | 'WebUsbTransport | 'NodeUsbTransport')[]'`, Array of transports that should be use. If not provided, TrezorConnect will chose a reasonable
     default based on your environment.
 -   `webusb` — _deprecated_ `boolean`, default `true`. Allow webusb. Deprecated, you should use `transports` instead.
 
