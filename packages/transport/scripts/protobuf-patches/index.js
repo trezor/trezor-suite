@@ -52,6 +52,7 @@ const RULE_PATCH = {
     'Features.fw_patch': 'required',
     'Features.fw_vendor': 'required',
     'Features.model': 'required',
+    'Features.internal_model': 'required',
     'Features.unfinished_backup': 'required',
     'Features.no_backup': 'required',
     'Features.recovery_mode': 'required',
