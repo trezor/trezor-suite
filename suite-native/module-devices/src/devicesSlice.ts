@@ -34,7 +34,9 @@ export const hiddenDevice: TrezorDevice = {
         firmware_present: null,
         needs_backup: false,
         flags: 0,
+        // TODO: use DeviceModel, DeviceInternalModel enums
         model: 'T',
+        internal_model: 'T2T1',
         fw_major: null,
         fw_minor: null,
         fw_patch: null,

@@ -17,7 +17,7 @@ import {
     BlockchainNetworks,
 } from '@suite-common/wallet-types';
 import { networksCompatibility } from '@suite-common/wallet-config';
-import { DeviceModel } from '@trezor/device-utils';
+import { DeviceModel, DeviceInternalModel } from '@trezor/device-utils';
 
 // in-memory implementation of indexedDB
 import 'fake-indexeddb/auto';
@@ -111,6 +111,7 @@ const getDeviceFeatures = (feat?: Partial<Features>): Features => ({
     needs_backup: false,
     flags: 0,
     model: DeviceModel.TT,
+    internal_model: DeviceInternalModel.TT,
     fw_major: null,
     fw_minor: null,
     fw_patch: null,
