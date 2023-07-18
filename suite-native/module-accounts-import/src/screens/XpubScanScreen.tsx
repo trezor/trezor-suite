@@ -68,9 +68,11 @@ export const XpubScanScreen = ({
     const inputLabel = networkTypeToInputLabelMap[networkType];
 
     const goToAccountImportScreen = ({ xpubAddress }: XpubFormValues) => {
-        const isCoinWithXpub = networkType === 'bitcoin';
-
-        if (xpubAddress && isCoinWithXpub && isAddressValid(xpubAddress, networkSymbol)) {
+        if (
+            xpubAddress &&
+            networkType !== 'ethereum' &&
+            isAddressValid(xpubAddress, networkSymbol)
+        ) {
             showAlert({
                 title: 'This is your receive address',
                 description: 'To check the balance of your coin, scan your public key (XPUB).',
