@@ -10,6 +10,7 @@ import {
     parseCapabilities,
     getUnavailableCapabilities,
     parseRevision,
+    ensureInternalModelFeature,
 } from '../utils/deviceFeaturesUtils';
 import { versionCompare } from '../utils/versionUtils';
 import { create as createDeferred, Deferred } from '../utils/deferred';
@@ -518,9 +519,14 @@ export class Device extends TypedEmitter<DeviceEvents> {
         const revision = parseRevision(feat);
         feat.revision = revision;
 
-        // old T1 is missing features.model
+        // Fix missing model and internal_model in older fw, model has to be fixed first
+        // 1. - old T1 is missing features.model
         if (!feat.model && feat.major_version === 1) {
             feat.model = '1';
+        }
+        // 2. - old fw does not include internal_model. T1 does not report it yet, TT starts in 2.6.0, T2B1 reports it from beginning
+        if (!feat.internal_model) {
+            feat.internal_model = ensureInternalModelFeature(feat.model);
         }
 
         this.features = feat;
