@@ -1548,7 +1548,7 @@ export type Features = {
     busy?: boolean;
     homescreen_format?: HomescreenFormat;
     hide_passphrase_from_host?: boolean;
-    internal_model?: string;
+    internal_model: string;
     unit_color?: number;
     unit_btconly?: boolean;
     homescreen_width?: number;
