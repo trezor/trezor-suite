@@ -6,7 +6,12 @@ import { Coin, Translation } from 'src/components/suite';
 import { useDevice, useSelector } from 'src/hooks/suite';
 import { getCoinUnavailabilityMessage } from 'src/utils/suite/device';
 import type { Network } from 'src/types/wallet';
-import { getDeviceModel, getFirmwareVersion, isDeviceInBootloaderMode } from '@trezor/device-utils';
+import {
+    getDeviceModel,
+    getDeviceDisplayName,
+    getFirmwareVersion,
+    isDeviceInBootloaderMode,
+} from '@trezor/device-utils';
 
 const Wrapper = styled.div`
     width: 100%;
@@ -33,6 +38,7 @@ const CoinsList = ({
 
     const { device, isLocked } = useDevice();
     const locked = !!device && isLocked();
+    const deviceModel = getDeviceModel(device);
 
     return (
         <Wrapper>
@@ -46,7 +52,6 @@ const CoinsList = ({
                 const note = backend ? 'TR_CUSTOM_BACKEND' : label;
 
                 const firmwareVersion = getFirmwareVersion(device);
-                const deviceModel = getDeviceModel(device);
 
                 const supportField = deviceModel && support?.[deviceModel];
                 const supportedBySuite =
@@ -71,13 +76,22 @@ const CoinsList = ({
                     !supportedBySuite;
                 const unavailabilityTooltip =
                     !!unavailable && !isBootloaderMode && getCoinUnavailabilityMessage(unavailable);
-                const anyTooltip = lockedTooltip || unavailabilityTooltip || tooltip;
+                const tooltipString = lockedTooltip || unavailabilityTooltip || tooltip;
 
                 return (
                     <Tooltip
                         key={symbol}
                         placement="top"
-                        content={anyTooltip && <Translation id={anyTooltip} />}
+                        content={
+                            tooltipString && (
+                                <Translation
+                                    id={tooltipString}
+                                    values={{
+                                        deviceDisplayName: getDeviceDisplayName(deviceModel),
+                                    }}
+                                />
+                            )
+                        }
                     >
                         <Coin
                             symbol={symbol}
