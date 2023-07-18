@@ -14,6 +14,7 @@ export type PartialDevice = Partial<{
         initialized: boolean | null;
         no_backup: boolean | null;
         model: string | null;
+        internal_model: string | null;
     };
     firmwareType: string | null;
 }>;

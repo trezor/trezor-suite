@@ -22,6 +22,7 @@ export const getDeviceFeatures = (feat?: Partial<Features>): Features => ({
     needs_backup: false,
     flags: 0,
     model: 'T',
+    internal_model: 'T2T1',
     fw_major: null,
     fw_minor: null,
     fw_patch: null,
