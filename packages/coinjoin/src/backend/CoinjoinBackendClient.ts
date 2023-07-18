@@ -9,12 +9,7 @@ import type {
     BlockbookTransaction,
 } from '../types/backend';
 import type { CoinjoinBackendSettings, Logger } from '../types';
-import {
-    FILTERS_REQUEST_TIMEOUT,
-    HTTP_REQUEST_GAP,
-    HTTP_REQUEST_TIMEOUT,
-    WS_MESSAGE_TIMEOUT,
-} from '../constants';
+import { FILTERS_REQUEST_TIMEOUT, HTTP_REQUEST_GAP, HTTP_REQUEST_TIMEOUT } from '../constants';
 import { CoinjoinWebsocketController, BlockbookWS } from './CoinjoinWebsocketController';
 
 type CoinjoinBackendClientSettings = CoinjoinBackendSettings & {
@@ -84,15 +79,18 @@ export class CoinjoinBackendClient {
     }
 
     fetchMempoolFilters(timestamp?: number, options?: RequestOptions) {
-        return this.fetchFromBlockbook(options, 'getMempoolFilters', timestamp).then(
-            ({ entries }) => entries ?? {},
-        );
+        return this.fetchFromBlockbook(
+            { ...options, timeout: FILTERS_REQUEST_TIMEOUT },
+            'getMempoolFilters',
+            timestamp,
+        ).then(({ entries }) => entries ?? {});
     }
 
     private reconnect = async () => {
         let api;
         try {
-            api = await this.websockets.getOrCreate(this.blockbookUrls[0]);
+            const [url] = this.blockbookUrls;
+            api = await this.websockets.getOrCreate({ url });
         } catch {
             this.emitter.emit('mempoolDisconnected');
             return;
@@ -107,7 +105,8 @@ export class CoinjoinBackendClient {
         listener: (tx: BlockbookTransaction) => void,
         onDisconnect?: () => void,
     ) {
-        const api = await this.websockets.getOrCreate(this.blockbookUrls[0]);
+        const [url] = this.blockbookUrls;
+        const api = await this.websockets.getOrCreate({ url });
         api.on('mempool', listener);
         if (onDisconnect) this.emitter.once('mempoolDisconnected', onDisconnect);
         if (api.listenerCount('mempool') === 1) {
@@ -120,7 +119,8 @@ export class CoinjoinBackendClient {
         listener: (tx: BlockbookTransaction) => void,
         onDisconnect?: () => void,
     ) {
-        const api = await this.websockets.getOrCreate(this.blockbookUrls[0]);
+        const [url] = this.blockbookUrls;
+        const api = await this.websockets.getOrCreate({ url });
         api.off('mempool', listener);
         if (onDisconnect) this.emitter.off('mempoolDisconnected', onDisconnect);
         if (!api.listenerCount('mempool')) {
@@ -136,18 +136,17 @@ export class CoinjoinBackendClient {
     ) {
         return scheduleAction(
             signal => this.blockbookWS({ ...options, signal }, method, ...params),
-            { attempts: 3, timeout: WS_MESSAGE_TIMEOUT, gap: HTTP_REQUEST_GAP },
+            { attempts: 3, timeout: HTTP_REQUEST_TIMEOUT, gap: HTTP_REQUEST_GAP, ...options },
         );
     }
 
     protected async blockbookWS<T extends keyof BlockbookWS>(
-        options: RequestOptions | undefined,
+        { identity, timeout }: RequestOptions = {},
         method: T,
         ...params: Parameters<BlockbookWS[T]>
     ): Promise<Awaited<ReturnType<BlockbookWS[T]>>> {
         const url = this.blockbookUrls[this.blockbookRequestId++ % this.blockbookUrls.length];
-        const identity = options?.identity;
-        const api = await this.websockets.getOrCreate(url, identity);
+        const api = await this.websockets.getOrCreate({ url, timeout, identity });
         this.logger?.debug(`WS ${method} ${params} ${this.websockets.getSocketId(url, identity)}`);
         return (api[method] as any).apply(api, params);
     }

@@ -77,7 +77,11 @@ export const scanAccount = async (
             await mempool.start();
             pending = await mempool
                 .init(addresses, onProgressInfo)
-                .then(transactions => transactions.map(transformTx(xpub, addresses)));
+                .then(transactions => transactions.map(transformTx(xpub, addresses)))
+                .catch(err => {
+                    mempool.stop();
+                    throw err;
+                });
         } else {
             await mempool.update();
             pending = mempool.getTransactions(addresses).map(transformTx(xpub, addresses));
