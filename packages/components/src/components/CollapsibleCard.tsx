@@ -173,7 +173,6 @@ export const CollapsibleCard = ({
     description,
     image,
     children,
-    className,
     variant = 'large',
     expanded = true,
     expandable = false,
@@ -218,7 +217,6 @@ export const CollapsibleCard = ({
             expandable={expandable}
             variant={variant}
             withImage={!!image}
-            className={className}
             nested={nested}
             animate={expanded ? 'expanded' : 'closed'}
             transition={{ duration: 0.4, ease: motionConfig.motionEasing.transition }}

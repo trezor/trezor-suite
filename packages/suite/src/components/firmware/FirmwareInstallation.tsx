@@ -66,6 +66,10 @@ export const FirmwareInstallation = ({
 
             case 'done':
             case 'partially-done':
+                if (status === 'done' && deviceModelInternal === DeviceModelInternal.T2B1) {
+                    return;
+                }
+
                 return (
                     <Button
                         variant="primary"
@@ -78,7 +82,7 @@ export const FirmwareInstallation = ({
             default:
                 return undefined;
         }
-    }, [status, isWebUSB, getContinueAction, standaloneFwUpdate]);
+    }, [status, isWebUSB, getContinueAction, standaloneFwUpdate, deviceModelInternal]);
 
     return (
         <>
