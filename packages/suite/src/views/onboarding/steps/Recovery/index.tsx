@@ -44,7 +44,7 @@ export const RecoveryStep = () => {
 
     if (status === 'initial') {
         // 1. step where users chooses number of words in case of T1
-        // In case of TT and model T2B1 show CTA button to start the process
+        // In case of TT and T2B1 show CTA button to start the process
         if (deviceModel === DeviceModel.T1) {
             // T1
             return (

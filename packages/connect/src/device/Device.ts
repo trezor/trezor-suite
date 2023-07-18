@@ -514,7 +514,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
             feat.session_id = this.features.session_id;
         }
         feat.unlocked = feat.unlocked ?? true;
-        // fix inconsistency of revision attribute between T1 and T2
+        // fix inconsistency of revision attribute between T1 and old TT fw
         const revision = parseRevision(feat);
         feat.revision = revision;
 
