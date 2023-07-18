@@ -4,7 +4,7 @@
 // this test is only a proof of concept of how to run T2B1 tests in suite and also how to run tests using url in general.
 // TODOS:
 // - focus this test on testing what is different from TT: (background image, display rotation)
-// - implement these differences in suite in the first place. both suite and model T2B1 will happily accept
+// - implement these differences in suite in the first place. both suite and T2B1 will happily accept
 //   request to change display rotation but it has no effect. It should be at least hidden on client.
 // https://github.com/trezor/trezor-suite/issues/6567
 
