@@ -2,7 +2,7 @@
 
 import { UiRequestUnexpectedDeviceMode } from '@trezor/connect';
 import { showView } from './common';
-import { DeviceModel, getDeviceModel } from '@trezor/device-utils';
+import { getDeviceDisplayName, getDeviceModel } from '@trezor/device-utils';
 
 export const firmwareNotSupported = (device: UiRequestUnexpectedDeviceMode['payload']) => {
     const view = showView('firmware-not-supported');
@@ -19,22 +19,8 @@ export const firmwareNotSupported = (device: UiRequestUnexpectedDeviceMode['payl
     // universal message "Coin is not supported" is replaced by
     const h3 = view.getElementsByTagName('h3')[0];
 
-    // TODO: T2B1 translation string
     if (deviceModel) {
-        let deviceString = '';
-
-        switch (deviceModel) {
-            case DeviceModel.T1:
-                deviceString = 'Trezor Model One';
-                break;
-            case DeviceModel.TT:
-                deviceString = 'Trezor Model T';
-                break;
-            case DeviceModel.T2B1:
-                deviceString = 'Trezor Model R';
-                break;
-            // no default
-        }
-        h3.innerHTML = `${deviceString} is not supported`;
+        const deviceDisplayName = getDeviceDisplayName(deviceModel);
+        h3.innerHTML = `${deviceDisplayName} is not supported`;
     }
 };
