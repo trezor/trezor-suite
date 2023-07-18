@@ -1,3 +1,12 @@
+# 2.1.14
+
+-   fix(coinjoin): pending ws message closing recovery (0171cf3ef)
+-   chore(deps): update (a21a081ba)
+-   chore(blockchain-link): remove ts-loader from blockchain-link (3b117830a)
+-   fix(blockchain-link): browser and native Websocket error message (e160101f5)
+-   fix(blockchain-link): handle Websocket ping rejection (b9940b6e9)
+-   chore(blockchain-link): define missing extraneous dependencies (83230e063)
+
 # 2.1.12
 
 -   5711aa998 feat(blockchain-link): add getMempoolFilters method
