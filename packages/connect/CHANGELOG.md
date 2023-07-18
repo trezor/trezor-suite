@@ -1,3 +1,11 @@
+# 9.1.0
+
+-   feat(connect): add cancelCoinjoinAuthorization method
+-   feat(connect): added nodeusb transport. TrezorConnect is now capable of communicating with Trezor devices without using TrezorBridge (in node.js environment).
+-   feat(connect-popup): when a call to TrezorConnect returns `success: false` popup remains opened and displays error page instead.
+-   feat(connect-popup): add no-backup warning to getPublicKey method
+-   fix(connect): respect useEmptyPassphrase param in cipherKeyValue method
+
 # 9.0.11
 
 -   fix(connect-web): fix imports from connect
