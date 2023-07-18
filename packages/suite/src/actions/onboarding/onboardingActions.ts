@@ -1,12 +1,14 @@
 import { OnboardingAnalytics } from '@trezor/suite-analytics';
+import TrezorConnect from '@trezor/connect';
 
 import { ONBOARDING } from 'src/actions/onboarding/constants';
 import * as STEP from 'src/constants/onboarding/steps';
 import { AnyStepId, AnyPath } from 'src/types/onboarding';
 import steps from 'src/config/onboarding/steps';
 import { findNextStep, findPrevStep, isStepInPath } from 'src/utils/onboarding/steps';
-
 import { GetState, Dispatch } from 'src/types/suite';
+import { selectDevice } from 'src/reducers/suite/suiteReducer';
+import { DeviceTutorialStatus } from 'src/reducers/onboarding/onboardingReducer';
 
 export type OnboardingAction =
     | {
@@ -35,6 +37,10 @@ export type OnboardingAction =
     | {
           type: typeof ONBOARDING.ANALYTICS;
           payload: Partial<OnboardingAnalytics>;
+      }
+    | {
+          type: typeof ONBOARDING.SET_TUTORIAL_STATUS;
+          payload: DeviceTutorialStatus;
       };
 
 const goToStep = (stepId: AnyStepId): OnboardingAction => ({
@@ -109,6 +115,26 @@ const updateAnalytics = (payload: Partial<OnboardingAnalytics>): OnboardingActio
     payload,
 });
 
+const setDeviceTutorialStatus = (status: DeviceTutorialStatus): OnboardingAction => ({
+    type: ONBOARDING.SET_TUTORIAL_STATUS,
+    payload: status,
+});
+
+const beginOnbordingTutorial = () => async (dispatch: Dispatch, getState: GetState) => {
+    const device = selectDevice(getState());
+    if (!device) return;
+
+    dispatch(setDeviceTutorialStatus('active'));
+
+    const { success } = await TrezorConnect.showDeviceTutorial({ device });
+
+    if (success) {
+        dispatch(setDeviceTutorialStatus('completed'));
+    } else {
+        dispatch(setDeviceTutorialStatus('cancelled'));
+    }
+};
+
 export {
     enableOnboardingReducer,
     goToNextStep,
@@ -119,4 +145,6 @@ export {
     removePath,
     resetOnboarding,
     updateAnalytics,
+    setDeviceTutorialStatus,
+    beginOnbordingTutorial,
 };

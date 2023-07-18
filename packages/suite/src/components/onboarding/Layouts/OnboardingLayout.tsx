@@ -44,6 +44,8 @@ const ContentWrapper = styled.div`
 `;
 
 const Header = styled.div`
+    position: sticky;
+    top: 0;
     display: flex;
     width: 100%;
     padding: 10px;
@@ -51,6 +53,9 @@ const Header = styled.div`
     align-items: center;
     flex-direction: column;
     max-width: ${MAX_WIDTH};
+    background: ${({ theme }) => theme.BG_LIGHT_GREY};
+    box-shadow: 0px 14px 10px 4px ${({ theme }) => theme.BG_LIGHT_GREY};
+    z-index: ${variables.Z_INDEX.BASE};
 
     ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
         padding: 0px 20px;

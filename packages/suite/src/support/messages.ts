@@ -8002,4 +8002,28 @@ export default defineMessages({
         id: 'TR_DISABLE_AUTOSTOP_COINJOIN',
         defaultMessage: "Don't stop",
     },
+    TR_TREZOR_DEVICE_TUTORIAL_HEADING: {
+        id: 'TR_TREZOR_DEVICE_TUTORIAL_HEADING',
+        defaultMessage: 'Know your Trezor',
+    },
+    TR_TREZOR_DEVICE_TUTORIAL_DESCRIPTION: {
+        id: 'TR_TREZOR_DEVICE_TUTORIAL_DESCRIPTION',
+        defaultMessage: 'Learn how to use your device with the help of a short tutorial',
+    },
+    TR_CONTINUE_ON_TREZOR: {
+        id: 'TR_CONTINUE_ON_TREZOR',
+        defaultMessage: 'Continue on Trezor',
+    },
+    TR_TREZOR_DEVICE_TUTORIAL_COMPLETED_HEADING: {
+        id: 'TR_TREZOR_DEVICE_TUTORIAL_COMPLETED_HEADING',
+        defaultMessage: 'Tutorial completed',
+    },
+    TR_TREZOR_DEVICE_TUTORIAL_CANCELED_HEADING: {
+        id: 'TR_TREZOR_DEVICE_TUTORIAL_CANCELED_HEADING',
+        defaultMessage: 'Tutorial canceled',
+    },
+    TR_RESTART_TREZOR_DEVICE_TUTORIAL: {
+        id: 'TR_RESTART_TREZOR_DEVICE_TUTORIAL',
+        defaultMessage: 'Restart tutorial',
+    },
 });

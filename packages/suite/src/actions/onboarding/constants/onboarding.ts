@@ -5,3 +5,4 @@ export const REMOVE_PATH = '@onboarding/remove-path';
 export const RESET_ONBOARDING = '@onboarding/reset-onboarding';
 export const ENABLE_ONBOARDING_REDUCER = '@onboarding/enable-onboarding-reducer';
 export const ANALYTICS = '@onboarding/analytics';
+export const SET_TUTORIAL_STATUS = '@onboarding/set-tutorial-status';

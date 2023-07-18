@@ -29,6 +29,7 @@ const ContentWrapper = styled(motion.div)`
 
 interface ConnectDevicePromptManagerProps {
     device: TrezorDevice | undefined;
+    className?: string;
     children?: React.ReactNode;
 }
 
@@ -42,6 +43,7 @@ interface ConnectDevicePromptManagerProps {
  */
 export const ConnectDevicePromptManager = ({
     device,
+    className,
     children,
 }: ConnectDevicePromptManagerProps) => {
     const { transport } = useSelector(state => ({
@@ -79,7 +81,7 @@ export const ConnectDevicePromptManager = ({
     }
 
     return (
-        <Wrapper>
+        <Wrapper className={className}>
             <ConnectDevicePrompt
                 connected={isDetectingDevice}
                 showWarning={deviceInUnexpectedState}

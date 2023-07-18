@@ -11,11 +11,14 @@ import {
 import { useSelector, useFirmware, useOnboarding } from 'src/hooks/suite';
 import { TrezorDevice } from 'src/types/suite';
 import { getFirmwareType, getFirmwareVersion } from '@trezor/device-utils';
+import { DeviceTutorial } from 'src/components/firmware/DeviceTutorial';
+import { selectOnboardingTutorialStatus } from 'src/reducers/onboarding/onboardingReducer';
 
 const FirmwareStep = () => {
     const { device } = useSelector(state => ({
         device: state.suite.device,
     }));
+    const isTutorialOffered = useSelector(selectOnboardingTutorialStatus);
     const { goToNextStep, updateAnalytics } = useOnboarding();
     const {
         status,
@@ -118,7 +121,12 @@ const FirmwareStep = () => {
         case 'reconnect-in-normal': // only relevant for T1, TT auto restarts itself
         case 'partially-done': // only relevant for T1, updating from very old fw is done in 2 fw updates, partially-done means first update was installed
         case 'done':
-            return <FirmwareInstallation cachedDevice={cachedDevice} onSuccess={goToNextStep} />;
+            return (
+                <>
+                    <FirmwareInstallation cachedDevice={cachedDevice} onSuccess={goToNextStep} />
+                    {!!isTutorialOffered && <DeviceTutorial />}
+                </>
+            );
         default:
             // 'ensure' type completeness
             throw new Error(`state "${status}" is not handled here`);

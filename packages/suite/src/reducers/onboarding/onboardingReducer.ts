@@ -8,6 +8,12 @@ import { Action } from 'src/types/suite';
 
 import type { AnyStepId, AnyPath } from 'src/types/onboarding';
 
+export interface OnboardingRootState {
+    onboarding: OnboardingState;
+}
+
+export type DeviceTutorialStatus = 'active' | 'completed' | 'cancelled' | null;
+
 export interface OnboardingState {
     reducerEnabled: boolean;
     prevDevice: Device | null;
@@ -15,6 +21,7 @@ export interface OnboardingState {
     activeSubStep: string | null;
     path: AnyPath[];
     onboardingAnalytics: Partial<OnboardingAnalytics>;
+    tutorialStatus: DeviceTutorialStatus;
 }
 
 const initialState: OnboardingState = {
@@ -29,6 +36,7 @@ const initialState: OnboardingState = {
     activeSubStep: null,
     path: [],
     onboardingAnalytics: {},
+    tutorialStatus: null,
 };
 
 const addPath = (path: AnyPath, state: OnboardingState) => {
@@ -73,11 +81,18 @@ const onboarding = (state: OnboardingState = initialState, action: Action) => {
             case ONBOARDING.ANALYTICS:
                 draft.onboardingAnalytics = { ...state.onboardingAnalytics, ...action.payload };
                 break;
+            case ONBOARDING.SET_TUTORIAL_STATUS:
+                draft.tutorialStatus = action.payload;
+                break;
+
             case ONBOARDING.RESET_ONBOARDING:
                 return initialState;
             //  no default
         }
     });
 };
+
+export const selectOnboardingTutorialStatus = (state: OnboardingRootState) =>
+    state.onboarding.tutorialStatus;
 
 export default onboarding;
