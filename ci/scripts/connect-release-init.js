@@ -70,7 +70,7 @@ const initConnectRelease = () => {
             const PACKAGE_PATH = path.join(ROOT, 'packages', packageName);
             const PACKAGE_JSON_PATH = path.join(PACKAGE_PATH, 'package.json');
 
-            exec('yarn', ['bump', semver, `./packages/${packageName}/package.json`]);
+            exec('yarn', ['bump', 'patch', `./packages/${packageName}/package.json`]);
 
             const rawPackageJSON = fs.readFileSync(PACKAGE_JSON_PATH);
             const packageJSON = JSON.parse(rawPackageJSON);
@@ -110,7 +110,7 @@ const initConnectRelease = () => {
         });
     }
 
-    exec('yarn', ['workspace', '@trezor/connect', 'version:patch']);
+    exec('yarn', ['workspace', '@trezor/connect', `version:${semver}`]);
 
     const PACKAGE_PATH = path.join(ROOT, 'packages', 'connect');
     const PACKAGE_JSON_PATH = path.join(PACKAGE_PATH, 'package.json');
