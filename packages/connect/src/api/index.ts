@@ -2,6 +2,7 @@ export { default as applyFlags } from './applyFlags';
 export { default as applySettings } from './applySettings';
 export { default as authorizeCoinjoin } from './authorizeCoinjoin';
 export { default as cancelCoinjoinAuthorization } from './cancelCoinjoinAuthorization';
+export { default as showDeviceTutorial } from './showDeviceTutorial';
 export { default as backupDevice } from './backupDevice';
 export { default as binanceGetAddress } from './binanceGetAddress';
 export { default as binanceGetPublicKey } from './binanceGetPublicKey';
