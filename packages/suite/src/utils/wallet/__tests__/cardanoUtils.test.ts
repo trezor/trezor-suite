@@ -1,10 +1,10 @@
 import { CARDANO, PROTO } from '@trezor/connect';
+import { getDerivationType } from '@suite-common/wallet-utils';
 
 import {
     composeTxPlan,
     getAddressType,
     getDelegationCertificates,
-    getDerivationType,
     getNetworkId,
     getProtocolMagic,
     getShortFingerprint,
