@@ -29,7 +29,8 @@ describe('Database migration', () => {
         };
         // this test can be run only in sldev so we ignore baseUrl env variable
         const baseUrl = 'https://suite.corp.sldev.cz/suite-web';
-        const btcAddressInputSelector = 'outputs.0.address';
+        const btcAddressInputSelector = 'outputs[0].address';
+        const workaroundBtcAddressInputSelector = 'outputs.0.address';
         const hiddenWalletSelector = '[data-test^="@switch-device/wallet-on-index"]';
         cy.viewport(1080, 1440);
         cy.task('startEmu', { wipe: true });
@@ -136,7 +137,8 @@ describe('Database migration', () => {
 
         // checking the Send form
         cy.getTestElement('@wallet/menu/wallet-send').click();
-        cy.getTestElement(btcAddressInputSelector)
+        // TODO: remove this workaround after the "old" version also uses the new data-testid attribute
+        cy.getTestElement(workaroundBtcAddressInputSelector)
             .should('be.visible')
             .invoke('attr', 'value')
             .should('eq', testData.btcAddress);
