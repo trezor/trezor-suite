@@ -192,5 +192,10 @@ export const config = {
             ],
             min: ['1.12.1', '2.5.3'],
         },
+        {
+            methods: ['showDeviceTutorial'],
+            min: ['0', '2.6.1'],
+            comment: ['Only on T2B1'],
+        },
     ],
 };
