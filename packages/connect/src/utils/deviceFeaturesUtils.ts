@@ -139,3 +139,14 @@ export const parseRevision = (features: Features) => {
      */
     return /^([a-f0-9])*$/gi.test(revisionUtf8) ? revisionUtf8 : revision;
 };
+
+export const ensureInternalModelFeature = (model: Features['model']) => {
+    switch (model.toUpperCase()) {
+        case '1':
+            return 'T1B1';
+        case 'T':
+            return 'T2T1';
+        default:
+            return '';
+    }
+};
