@@ -15,6 +15,7 @@ import { Network, NetworkSymbol } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
 import {
     CoinjoinAccount,
+    CoinjoinConfig,
     CoinjoinDiscoveryCheckpoint,
     CoinjoinSessionParameters,
 } from 'src/types/wallet/coinjoin';
@@ -189,28 +190,10 @@ export const updateLastAnonymityReportTimestamp = (accountKey: string) =>
         payload: { accountKey },
     } as const);
 
-export const updateCoinjoinConfig = ({
-    averageAnonymityGainPerRound,
-    roundsFailRateBuffer,
-    roundsDurationInHours,
-    maxMiningFeeModifier,
-    maxFeePerVbyte,
-}: {
-    averageAnonymityGainPerRound: number;
-    roundsFailRateBuffer: number;
-    roundsDurationInHours: number;
-    maxMiningFeeModifier: number;
-    maxFeePerVbyte?: number;
-}) =>
+export const updateCoinjoinConfig = (payload: Partial<CoinjoinConfig>) =>
     ({
         type: COINJOIN.UPDATE_CONFIG,
-        payload: {
-            averageAnonymityGainPerRound,
-            roundsFailRateBuffer,
-            roundsDurationInHours,
-            maxMiningFeeModifier,
-            maxFeePerVbyte,
-        },
+        payload,
     } as const);
 
 export type CoinjoinAccountAction =

@@ -42,6 +42,8 @@ import {
     SKIP_ROUNDS_BY_DEFAULT,
     FEE_RATE_MEDIAN_FALLBACK,
     MAX_MINING_FEE_MODIFIER,
+    ZKSNACKS_LEGAL_DOCUMENTS_VERSION,
+    TREZOR_LEGAL_DOCUMENTS_VERSION,
 } from 'src/services/coinjoin';
 import { accountsActions, AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import {
@@ -79,6 +81,7 @@ export const initialState: CoinjoinState = {
         roundsDurationInHours: ESTIMATED_HOURS_PER_ROUND,
         maxMiningFeeModifier: MAX_MINING_FEE_MODIFIER,
         maxFeePerVbyte: undefined,
+        legalDocumentsVersion: TREZOR_LEGAL_DOCUMENTS_VERSION,
     },
 };
 
@@ -171,6 +174,12 @@ const createSession = (
         timeCreated: Date.now(),
         sessionPhaseQueue: [],
         signedRounds: [],
+    };
+    account.agreedToLegalDocumentVersions = {
+        trezor: draft.config.legalDocumentsVersion,
+        zkSNACKs:
+            draft.clients[account.symbol]?.version?.legalDocumentsVersion ??
+            ZKSNACKS_LEGAL_DOCUMENTS_VERSION,
     };
 };
 
@@ -921,16 +930,17 @@ export const selectCoinjoinSessionBlockerByAccountKey = (
 
 export const selectCurrentCoinjoinWheelStates = (state: CoinjoinRootState) => {
     const { notAnonymized } = selectCurrentCoinjoinBalanceBreakdown(state);
-    const session = selectCurrentCoinjoinSession(state);
     const { key, balance } = selectSelectedAccount(state) || {};
+    const coinjoinAccount = selectCoinjoinAccountByKey(state, key || '');
+    const coinjoinClient = selectCoinjoinClient(state, key || '');
     const sessionProgress = selectSessionProgressByAccountKey(state, key || '');
 
     const coinjoinSessionBlocker = selectCoinjoinSessionBlockerByAccountKey(state, key || '');
 
-    const { paused } = session || {};
+    const { paused } = coinjoinAccount?.session || {};
 
     // session states
-    const isSessionActive = !!session;
+    const isSessionActive = !!coinjoinAccount?.session;
     const isPaused = !!paused;
     const isLoading = coinjoinSessionBlocker === 'SESSION_STARTING';
 
@@ -939,6 +949,16 @@ export const selectCurrentCoinjoinWheelStates = (state: CoinjoinRootState) => {
     const isNonePrivate = sessionProgress === 0;
     const isAllPrivate = notAnonymized === '0';
     const isCoinjoinUneco = !!balance && new BigNumber(balance).lt(UNECONOMICAL_COINJOIN_THRESHOLD);
+
+    const agreedToLegalDocumentVersions = coinjoinAccount?.agreedToLegalDocumentVersions;
+    const latestTezorLegalDocumentVersion = state.wallet.coinjoin.config.legalDocumentsVersion;
+    const latestZkSNACKsLegalDocumentVersion =
+        coinjoinClient?.version?.legalDocumentsVersion ?? ZKSNACKS_LEGAL_DOCUMENTS_VERSION;
+
+    const isLegalDocumentConfirmed =
+        agreedToLegalDocumentVersions &&
+        agreedToLegalDocumentVersions.zkSNACKs === latestZkSNACKsLegalDocumentVersion &&
+        agreedToLegalDocumentVersions.trezor === latestTezorLegalDocumentVersion;
 
     // error state
     const isResumeBlockedByLastingIssue =
@@ -954,6 +974,7 @@ export const selectCurrentCoinjoinWheelStates = (state: CoinjoinRootState) => {
         isAllPrivate,
         isResumeBlockedByLastingIssue,
         isCoinjoinUneco,
+        isLegalDocumentConfirmed,
     };
 };
 
