@@ -11,7 +11,7 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { selectTransactionAddresses, AddressesType } from '../../selectors';
 
-type TransactionDetailInputsSheetProps = {
+type TransactionDetailAddressesSheetProps = {
     isVisible: boolean;
     txid: string;
     accountKey: AccountKey;
@@ -59,7 +59,7 @@ export const TransactionDetailAddressesSheet = ({
     onClose,
     txid,
     accountKey,
-}: TransactionDetailInputsSheetProps) => {
+}: TransactionDetailAddressesSheetProps) => {
     const [displayedAddressesType, setDisplayedAddressesType] = useState<AddressesType>('inputs');
 
     const inputAddresses = useSelector((state: TransactionsRootState) =>

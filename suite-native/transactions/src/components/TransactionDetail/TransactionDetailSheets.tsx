@@ -62,7 +62,8 @@ export const TransactionDetailSheets = ({
                 )}
                 <TransactionDetailInputsSheet
                     isVisible={expandedSheet === 'inputs'}
-                    transaction={transaction}
+                    txid={transaction.txid}
+                    accountKey={accountKey}
                     onSheetVisibilityChange={() => toggleSheet('inputs')}
                 />
             </VStack>
