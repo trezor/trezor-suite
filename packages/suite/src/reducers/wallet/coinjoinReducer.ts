@@ -104,7 +104,6 @@ const createAccount = (
         key: account.key,
         symbol: account.symbol,
         rawLiquidityClue: null, // NOTE: liquidity clue is calculated from tx history. default value is `null`
-        previousSessions: [],
     };
     const index = draft.accounts.findIndex(a => a.key === account.key);
     if (index < 0) draft.accounts.push(coinjoinAccount);
@@ -271,13 +270,7 @@ const completeSession = (
     payload: ExtractActionPayload<typeof COINJOIN.SESSION_COMPLETED>,
 ) => {
     const account = getAccount(draft, payload.accountKey);
-    if (!account) return;
-    if (account.session) {
-        account.previousSessions.push({
-            ...account.session,
-            timeEnded: Date.now(),
-            sessionPhaseQueue: [],
-        });
+    if (account?.session) {
         delete account.session;
     }
 };
@@ -287,12 +280,7 @@ const stopSession = (
     payload: ExtractActionPayload<typeof COINJOIN.ACCOUNT_UNREGISTER>,
 ) => {
     const account = getAccount(draft, payload.accountKey);
-    if (!account) return;
-    if (account.session) {
-        account.previousSessions.push({
-            ...account.session,
-            timeEnded: Date.now(),
-        });
+    if (account?.session) {
         delete account.session;
     }
 };
