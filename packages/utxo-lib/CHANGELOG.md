@@ -1,3 +1,7 @@
+# 1.0.8
+
+-   feat(utxo-lib): support ltc address derivation (9ac099f56)
+
 # 1.0.6
 
 -   819c019d1 chore: use workspace:\* everywhere
