@@ -1,3 +1,12 @@
+# 9.0.10
+
+-   chore(utils): optimized promiseAllSequence (971fd1d8b)
+-   feat(utils): add createCooldown util (8294ffaf0)
+-   fix(suite): deep-clone form values before assignment in reducer to prevent RHF bug (dc8de1075)
+-   fix(utils): getSynchronize concurrency (a8074a5f6)
+-   chore(utils): remove unused abortable promise (f5e57314f)
+-   feat(utils): getSynchronize (0b988ff59)
+
 # 9.0.9
 
 -   feat(utils): add TypedEmitter class (12ef63319)
