@@ -1,3 +1,8 @@
+# 0.0.17
+
+-   chore: forgotten renaming to T1/TT (5decd0839)
+-   chore: unify trezor names in docs/comments (74290aab3)
+
 # 0.0.15
 
 -   a926901a6 chore: unify T1 and TT names
