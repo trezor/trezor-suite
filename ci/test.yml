@@ -222,13 +222,13 @@ transport manual:
   interruptible: true
   parallel:
     matrix:
-      - TEST_FILE: ["methods"]
-      - TEST_FILE: ["popup-close"]
-      - TEST_FILE: ["popup-error-page"]
-      - TEST_FILE: ["passphrase"]
-      - TEST_FILE: ["unchained"]
-      - TEST_FILE: ["browser-support"]
-      - TEST_FILE: ["install-bridge"]
+      - TEST_FILE: ["methods.test"]
+      - TEST_FILE: ["popup-close.test"]
+      - TEST_FILE: ["popup-error-page.test"]
+      - TEST_FILE: ["passphrase.test"]
+      - TEST_FILE: ["unchained.test"]
+      - TEST_FILE: ["browser-support.test"]
+      - TEST_FILE: ["install-bridge.test"]
 
 connect-popup:
   extends: .e2e connect-popup
