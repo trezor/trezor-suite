@@ -160,7 +160,23 @@ export const confirmationInterval = (
     });
 
     return {
-        abort: () => controller.abort(),
+        abort: () => {
+            controller.abort();
+
+            // We only need to unregister if Alice wouldn't be removed automatically by the coordinator - otherwise just leave it there.
+            const wouldBeRemovedByBackend = round.phaseDeadline - intervalDelay - Date.now() > 0;
+            if (!wouldBeRemovedByBackend && input.registrationData) {
+                coordinator
+                    .inputUnregistration(round.id, input.registrationData.aliceId, {
+                        signal: options.signal,
+                        baseUrl: options.coordinatorUrl,
+                        identity: input.outpoint,
+                    })
+                    .catch(() => {
+                        // ignore if unregistration fails
+                    });
+            }
+        },
         promise,
     };
 };
