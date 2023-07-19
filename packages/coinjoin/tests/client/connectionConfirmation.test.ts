@@ -193,6 +193,39 @@ describe('connectionConfirmation', () => {
             });
     });
 
+    it('connection-confirmation interval aborted, Alice unregistered', done => {
+        const alice = createInput('account-A', 'A1', {
+            registrationData: {
+                aliceId: '01A1-01a1',
+            },
+            realAmountCredentials: {},
+            realVsizeCredentials: {},
+        });
+
+        const interval = confirmationInterval(
+            createCoinjoinRound([alice], {
+                ...server?.requestOptions,
+                roundParameters: {
+                    connectionConfirmationTimeout: '0d 0h 0m 2s', // intervalDelay = 1 sec
+                },
+                round: {
+                    phaseDeadline: Date.now() + 1000, // phase will end in less than intervalDelay
+                },
+            }),
+            alice,
+            server?.requestOptions,
+        );
+
+        server?.addListener('test-request', ({ url, resolve }) => {
+            resolve();
+            if (url.includes('input-unregistration')) {
+                done();
+            }
+        });
+
+        interval.abort();
+    });
+
     it('404 error in coordinator connection-confirmation', async () => {
         server?.addListener('test-request', ({ url, data, resolve, reject }) => {
             if (url.includes('connection-confirmation')) {

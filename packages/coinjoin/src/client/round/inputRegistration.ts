@@ -181,13 +181,6 @@ const registerInput = async (
 
         return input;
     } catch (error) {
-        // TODO: try to unregister if post processing fails?
-        // await coordinator.inputUnregistration(round.id, registrationData.aliceId, {
-        //     // signal,
-        //     baseUrl: coordinatorUrl,
-        //     identity: input.outpoint,
-        // });
-
         input.setError(error);
         return input;
     }
