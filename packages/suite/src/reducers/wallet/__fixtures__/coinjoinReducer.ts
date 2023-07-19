@@ -6,7 +6,6 @@ const account = {
     key: 'A',
     symbol: 'test',
     targetAnonymity: 20,
-    previousSessions: [],
     session: {
         maxCoordinatorFeeRate: 0.003,
         maxFeePerKvbyte: 2000,

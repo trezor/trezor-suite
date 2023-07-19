@@ -568,6 +568,8 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
     if (oldVersion < 37) {
         await updateAll(transaction, 'coinjoinAccounts', account => {
             delete account.session;
+            // @ts-expect-error previousSessions field is removed
+            delete account.previousSessions;
 
             return account;
         });

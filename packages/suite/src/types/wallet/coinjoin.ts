@@ -67,7 +67,6 @@ export interface CoinjoinAccount {
     setup?: CoinjoinSetup; // unless enabled, account uses default (recommended) values
     rawLiquidityClue: RegisterAccountParams['rawLiquidityClue'];
     session?: CoinjoinSession; // current/active authorized session
-    previousSessions: CoinjoinSession[]; // history
     checkpoints?: CoinjoinDiscoveryCheckpoint[];
     anonymityGains?: AnonymityGains;
     transactionCandidates?: CoinjoinTxCandidate[];
