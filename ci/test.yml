@@ -262,7 +262,7 @@ connect-popup legacy:
   parallel:
     matrix:
       - CONNECT_VERSION: "9.0.11"
-        TEST_FILE: ["methods", "browser-support", "popup-close-legacy"]
+        TEST_FILE: ["methods.test", "browser-support.test", "popup-close-legacy.test"]
   except:
     <<: *run_everything_rules
   when: manual
