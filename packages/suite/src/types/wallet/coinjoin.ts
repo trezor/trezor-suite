@@ -76,6 +76,11 @@ export interface CoinjoinTxCandidate {
     roundId: string;
 }
 
+export interface CoinjoinLegalDocuments {
+    zkSNACKs: string;
+    trezor: string;
+}
+
 export interface CoinjoinAccount {
     key: string; // reference to wallet Account.key
     symbol: NetworkSymbol;
@@ -86,6 +91,7 @@ export interface CoinjoinAccount {
     anonymityGains?: AnonymityGains;
     transactionCandidates?: CoinjoinTxCandidate[];
     prison?: Record<string, Omit<CoinjoinPrisonInmate, 'id' | 'accountKey'>>;
+    agreedToLegalDocumentVersions?: CoinjoinLegalDocuments;
 }
 
 export type CoinjoinServerEnvironment = 'public' | 'staging' | 'localhost';
@@ -101,4 +107,5 @@ export interface CoinjoinConfig {
     roundsDurationInHours: number;
     maxMiningFeeModifier: number;
     maxFeePerVbyte?: number;
+    legalDocumentsVersion: string;
 }

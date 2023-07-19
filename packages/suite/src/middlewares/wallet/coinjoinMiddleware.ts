@@ -231,22 +231,25 @@ export const coinjoinMiddleware =
             const incomingConfig = selectFeatureConfig(state, Feature.coinjoin);
 
             if (incomingConfig) {
-                const config = {
-                    ...state.wallet.coinjoin.config,
-                };
+                const { config } = state.wallet.coinjoin;
+                const updatedConfig: Partial<typeof config> = {};
 
                 // Iterate over existing config and replace the value from remote config only if it's valid number.
-                (Object.keys(config) as Array<keyof CoinjoinConfig>).forEach(
-                    (key: keyof CoinjoinConfig) => {
-                        const value = Number(incomingConfig[key]);
+                (Object.keys(config) as Array<keyof CoinjoinConfig>).forEach(key => {
+                    const value = incomingConfig[key];
 
-                        if (!Number.isNaN(value)) {
-                            config[key] = value;
-                        }
-                    },
-                );
+                    if (
+                        config[key] !== value &&
+                        ((typeof config[key] === 'string' && typeof value === 'string') ||
+                            (typeof config[key] !== 'string' && typeof value === 'number'))
+                    ) {
+                        Object.assign(updatedConfig, { [key]: value });
+                    }
+                });
 
-                api.dispatch(coinjoinAccountActions.updateCoinjoinConfig(config));
+                if (Object.keys(updatedConfig).length > 0) {
+                    api.dispatch(coinjoinAccountActions.updateCoinjoinConfig(updatedConfig));
+                }
             }
         }
 
