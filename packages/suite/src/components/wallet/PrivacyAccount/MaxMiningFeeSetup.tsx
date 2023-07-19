@@ -7,7 +7,7 @@ import { coinjoinAccountUpdateMaxMiningFee } from 'src/actions/wallet/coinjoinAc
 import { SetupSlider } from './SetupSlider';
 import {
     selectDefaultMaxMiningFeeByAccountKey,
-    selectfeeRateMedianByAccountKey,
+    selectFeeRateMedianByAccountKey,
 } from 'src/reducers/wallet/coinjoinReducer';
 
 const min = 1;
@@ -25,7 +25,7 @@ interface MaxMiningFeeSetupProps {
 }
 
 export const MaxMiningFeeSetup = ({ accountKey, maxMiningFee }: MaxMiningFeeSetupProps) => {
-    const feeRateMedian = useSelector(state => selectfeeRateMedianByAccountKey(state, accountKey));
+    const feeRateMedian = useSelector(state => selectFeeRateMedianByAccountKey(state, accountKey));
     const defaultMaxMiningFee = useSelector(state =>
         selectDefaultMaxMiningFeeByAccountKey(state, accountKey),
     );
