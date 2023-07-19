@@ -25,7 +25,7 @@ case SUITE.ADD_BUTTON_REQUEST:
       }
 ```
 
-Another usage is in "Setup Pin" step, where the device, through button request, will let us know if user should enter pin for the first time or 2nd time (for confirmation). It is also leveraged outside of Onboarding everytime user needs to enter a PIN. Thanks to these button we can reuse the same component that will adjust just based on these button requests.
+Another usage is in "Setup Pin" step, where the device, through button request, will let us know if user should enter pin for the first time or 2nd time (for confirmation). It is also leveraged outside of Onboarding every time user needs to enter a PIN. Thanks to these buttons we can reuse the same component that will adjust just based on these button requests.
 
 In onboarding, we clear this array after each step (handled in `buttonRequestMiddleware`).
 
@@ -69,7 +69,7 @@ Invalid device states:
 
 -   Device connected, but in bootloader mode
 -   Device connected, but unreadable
--   [Seedless device setup](https://trezor.io/learn/a/seedless-setup) is not not supported in Suite (not to be confused with regular device without seed).
+-   [Seedless device setup](https://trezor.io/learn/a/seedless-setup) is not supported in Suite (not to be confused with regular device without seed).
 
 Invalid transport states:
 
@@ -137,7 +137,7 @@ Active sub step of firmware step is stored in `status` field. Explanation of eac
 
 ### Note about normal and bootloader mode
 
-Device can be connected in “normal” mode or in “bootloader" mode which you access through pressing left button on T1/T2B1 (both buttons on old T1 fw) or swiping on touchscreen in case of TT during connecting usb cable to the device. Before starting the installation process, user needs to disconnect the device and reconnect it in bootloader mode.
+Device can be connected in “normal” mode or in “bootloader" mode which you access by pressing left button on T1/T2B1 (both buttons on old T1 fw) or swiping on touchscreen in case of TT during connecting usb cable to the device. Before starting the installation process, user needs to disconnect the device and reconnect it in bootloader mode.
 
 From the technical perspective, these two modes are seen as 2 different devices and there is no way we can tell that the device, which was reconnected in bootloader mode is indeed the same device which was before connected in normal mode. This basically means that if you are updating a firmware with a device connected via webUSB you will need to do pairing process twice.
 When device is in bootloader mode `device.features.major_version`, `device.features.minor_version`, `device.features.patch_version` is version of a bootloader, not a firmware.
@@ -233,7 +233,7 @@ User chooses between generating a new seed or seed recovery.
 -   Single seed
 -   Shamir (only available on TT/T2B1)
 
-At first it might seems that both options are doing exactly the same, real difference between these two will present itself in [Backup seed step](##Backup-seed)
+At first it might seem that both options are doing exactly the same, real difference between these two will present itself in [Backup seed step](##Backup-seed)
 
 ### Recovery from mnemonic
 
@@ -258,7 +258,7 @@ The entire process is done on device. All we need to do in Suite UI is to show g
 
 #### T1
 
-Process consist of clicking "Next" button too many times and writing down words displayed on a trusty seed card. During this process we will display "Confirm on Trezor" prompt and instructions.
+Process consists of clicking "Next" button too many times and writing down words displayed on a trusty seed card. During this process we will display "Confirm on Trezor" prompt and instructions.
 
 This step is optional and can be skipped and finished later from Suite settings.
 

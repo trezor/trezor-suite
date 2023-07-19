@@ -6,7 +6,7 @@ Definitions of all messages are stored in [messages.ts](https://github.com/trezo
 To allow non-developers to edit these messages through user-friendly interface, we upload them to [Crowdin](https://crowdin.com/project/trezor-suite) via their [CLI](https://github.com/crowdin/crowdin-cli).
 
 After strings have been translated we use Crowdin CLI again to download the translated json files to [suite-data package](https://github.com/trezor/trezor-suite/tree/develop/packages/suite-data/files/translations).
-To finish the process these files need to be commited to the repository.
+To finish the process these files need to be committed to the repository.
 
 ## Message definitions
 
@@ -146,7 +146,7 @@ To extract message definitions from Suite into `master.json` file run:
 yarn workspace @trezor/suite translations:extract
 ```
 
-The newly created `master.json` file is generated from `messages.ts` and serves only as a base for translations in Crowdin, therefore it is not commited into Git repository.
+The newly created `master.json` file is generated from `messages.ts` and serves only as a base for translations in Crowdin, therefore it is not committed into Git repository.
 
 ### Upload
 
