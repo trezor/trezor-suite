@@ -42,7 +42,7 @@
 | development (sldev)   | `com.trezor.suite.dev` | `Trezor Suite Dev`   | `@trezor/suite-desktop-dev`   |
 | local                 | `com.github.Electron`  | `Trezor Suite Local` | `@trezor/suite-desktop-local` |
 
-Suite app name and ID are set by the environment so that Suite uses different user data dir and it's not mixed between environments. The main benefit is that you can switch back and forth between Suite dev versions without losing your remembered production wallets. One disadvantage of this solution is checking of other instance running is not so straitforward between environments.
+Suite app name and ID are set by the environment so that Suite uses different user data dir and it's not mixed between environments. The main benefit is that you can switch back and forth between Suite dev versions without losing your remembered production wallets. One disadvantage of this solution is checking of other instance running is not so straightforward between environments.
 
 Same concept (user data separated by environment) works on web out of the box (storage per domain name).
 
