@@ -120,7 +120,7 @@ export const getFiatRatesForNetworkInTimeFrame = async (
     networkSymbol: NetworkSymbol,
     fiatCurrency: FiatCurrencyCode,
 ) => {
-    const cacheKey = `${networkSymbol}-${JSON.stringify(timestamps)}`;
+    const cacheKey = `${networkSymbol}-${fiatCurrency}-${JSON.stringify(timestamps)}`;
 
     if (fiatRatesCache[cacheKey]) {
         return fiatRatesCache[cacheKey];
