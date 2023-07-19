@@ -7016,6 +7016,7 @@ __metadata:
   resolution: "@suite-native/graph@workspace:suite-native/graph"
   dependencies:
     "@mobily/ts-belt": ^3.13.1
+    "@reduxjs/toolkit": 1.9.5
     "@shopify/react-native-skia": 0.1.188
     "@suite-common/formatters": "workspace:*"
     "@suite-common/graph": "workspace:*"
@@ -7028,7 +7029,7 @@ __metadata:
     "@suite-native/atoms": "workspace:*"
     "@suite-native/formatters": "workspace:*"
     "@suite-native/react-native-graph": "workspace:*"
-    "@suite-native/state": "workspace:*"
+    "@suite-native/storage": "workspace:*"
     "@suite-native/theme": "workspace:*"
     "@trezor/styles": "workspace:*"
     "@trezor/suite-data": "workspace:*"
@@ -7458,6 +7459,7 @@ __metadata:
     "@suite-common/wallet-core": "workspace:*"
     "@suite-native/config": "workspace:*"
     "@suite-native/fiat-rates": "workspace:*"
+    "@suite-native/graph": "workspace:*"
     "@suite-native/logger": "workspace:*"
     "@suite-native/message-system": "workspace:*"
     "@suite-native/module-devices": "workspace:*"

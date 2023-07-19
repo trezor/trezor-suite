@@ -23,6 +23,7 @@
         },
         { "path": "../config" },
         { "path": "../fiat-rates" },
+        { "path": "../graph" },
         { "path": "../logger" },
         { "path": "../message-system" },
         { "path": "../module-devices" },

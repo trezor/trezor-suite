@@ -6,7 +6,6 @@ import enMessages from '@trezor/suite-data/files/translations/en.json';
 import { useActiveColorScheme } from '@suite-native/theme';
 import { createRenderer, StylesProvider } from '@trezor/styles';
 import { prepareNativeTheme } from '@trezor/theme';
-import { StoreProvider } from '@suite-native/state';
 
 type ProviderProps = {
     children: React.ReactNode;
@@ -14,7 +13,10 @@ type ProviderProps = {
 
 const renderer = createRenderer();
 
-const GraphContextProviderContent = ({ children }: ProviderProps) => {
+// Since react native skia `Canvas` is using its own renderer, the  React Native context
+// is not available directly. This component re-injects the needed context providers.
+// read more: https://shopify.github.io/react-native-skia/docs/canvas/contexts
+export const GraphContextProvider = ({ children }: ProviderProps) => {
     const colorVariant = useActiveColorScheme();
     const theme = prepareNativeTheme({ colorVariant });
 
@@ -26,11 +28,3 @@ const GraphContextProviderContent = ({ children }: ProviderProps) => {
         </IntlProvider>
     );
 };
-// Since react native skia `Canvas` is using its own renderer, the  React Native context
-// is not available directly. This component re-injects the needed context providers.
-// read more: https://shopify.github.io/react-native-skia/docs/canvas/contexts
-export const GraphContextProvider = ({ children }: ProviderProps) => (
-    <StoreProvider>
-        <GraphContextProviderContent>{children}</GraphContextProviderContent>
-    </StoreProvider>
-);

@@ -17,18 +17,11 @@ type AccountDetailGraphProps = {
 
 export const AccountDetailGraph = ({ accountKey }: AccountDetailGraphProps) => {
     const fiatCurrency = useSelector(selectFiatCurrency);
-    const {
-        graphPoints,
-        graphEvents,
-        error,
-        isLoading,
-        refetch,
-        setHoursToHistory,
-        hoursToHistory,
-    } = useGraphForSingleAccount({
-        accountKey,
-        fiatCurrency: fiatCurrency.label,
-    });
+    const { graphPoints, graphEvents, error, isLoading, refetch, onSelectTimeFrame, timeframe } =
+        useGraphForSingleAccount({
+            accountKey,
+            fiatCurrency: fiatCurrency.label,
+        });
 
     const setSelectedPoint = useSetAtom(selectedPointAtom);
     const setReferencePoint = useSetAtom(referencePointAtom);
@@ -56,10 +49,7 @@ export const AccountDetailGraph = ({ accountKey }: AccountDetailGraphProps) => {
                     onTryAgain={refetch}
                     events={graphEvents}
                 />
-                <TimeSwitch
-                    selectedTimeFrame={hoursToHistory}
-                    onSelectTimeFrame={setHoursToHistory}
-                />
+                <TimeSwitch selectedTimeFrame={timeframe} onSelectTimeFrame={onSelectTimeFrame} />
             </Box>
         </Box>
     );
