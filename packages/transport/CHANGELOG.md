@@ -1,3 +1,14 @@
+# 1.1.13
+
+-   test(transport): extend unit tests (99e12c7be)
+-   fix(transport): race condition in listen (6cd72cb60)
+-   chore(transport): update messages (7bc259f8b)
+-   feat(transport): add nodeusb transport (f0cee52f2)
+-   chore(deps): update (a21a081ba)
+-   chore(transport): reuse typed event emitter from utils (379c82dd3)
+-   chore(request-manager,transport,connect-plugin-stelar): fix extraneous dependencies (68bf1d451)
+-   chore(transport): refactor (f7b97fb68)
+
 # 1.1.11
 
 -   819c019d1 chore: use workspace:\* everywhere
