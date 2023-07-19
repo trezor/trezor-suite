@@ -71,7 +71,7 @@ describe('inputRegistration', () => {
         server?.addListener('test-request', ({ url, data, resolve }) => {
             if (
                 url.endsWith('/input-registration') &&
-                (data.input === 'A1' || data.input === 'B1')
+                (data.Input === 'A1' || data.Input === 'B1')
             ) {
                 // first input from each account is remixed (no coordinator fee)
                 resolve({
@@ -83,7 +83,7 @@ describe('inputRegistration', () => {
                 resolve({
                     realCredentialRequests: {
                         credentialsRequest: {
-                            delta: data.amountsToRequest[0],
+                            Delta: data.amountsToRequest[0],
                         },
                     },
                 });
@@ -137,30 +137,30 @@ describe('inputRegistration', () => {
 
         response.inputs.forEach(input => {
             if (input.outpoint === 'A1') {
-                expect(input.realAmountCredentials?.credentialsRequest.delta).toEqual(123448017); // remix
-                expect(input.realVsizeCredentials?.credentialsRequest.delta).toEqual(187);
+                expect(input.realAmountCredentials?.credentialsRequest.Delta).toEqual(123448017); // remix
+                expect(input.realVsizeCredentials?.credentialsRequest.Delta).toEqual(187);
             }
             if (input.outpoint === 'B1') {
-                expect(input.realAmountCredentials?.credentialsRequest.delta).toEqual(123449307); // remix
-                expect(input.realVsizeCredentials?.credentialsRequest.delta).toEqual(197);
+                expect(input.realAmountCredentials?.credentialsRequest.Delta).toEqual(123449307); // remix
+                expect(input.realVsizeCredentials?.credentialsRequest.Delta).toEqual(197);
             }
 
             if (input.outpoint === 'A2') {
-                expect(input.realAmountCredentials?.credentialsRequest.delta).toEqual(123077647); // coordinator fee
-                expect(input.realVsizeCredentials?.credentialsRequest.delta).toEqual(187);
+                expect(input.realAmountCredentials?.credentialsRequest.Delta).toEqual(123077647); // coordinator fee
+                expect(input.realVsizeCredentials?.credentialsRequest.Delta).toEqual(187);
             }
             if (input.outpoint === 'B2') {
-                expect(input.realAmountCredentials?.credentialsRequest.delta).toEqual(123078937); // coordinator fee
-                expect(input.realVsizeCredentials?.credentialsRequest.delta).toEqual(197);
+                expect(input.realAmountCredentials?.credentialsRequest.Delta).toEqual(123078937); // coordinator fee
+                expect(input.realVsizeCredentials?.credentialsRequest.Delta).toEqual(197);
             }
 
             if (input.outpoint === 'A3') {
-                expect(input.realAmountCredentials?.credentialsRequest.delta).toEqual(991227); // plebs
-                expect(input.realVsizeCredentials?.credentialsRequest.delta).toEqual(187);
+                expect(input.realAmountCredentials?.credentialsRequest.Delta).toEqual(991227); // plebs
+                expect(input.realVsizeCredentials?.credentialsRequest.Delta).toEqual(187);
             }
             if (input.outpoint === 'B3') {
-                expect(input.realAmountCredentials?.credentialsRequest.delta).toEqual(992517); // plebs
-                expect(input.realVsizeCredentials?.credentialsRequest.delta).toEqual(197);
+                expect(input.realAmountCredentials?.credentialsRequest.Delta).toEqual(992517); // plebs
+                expect(input.realVsizeCredentials?.credentialsRequest.Delta).toEqual(197);
             }
             input.clearConfirmationInterval();
         });
@@ -169,7 +169,7 @@ describe('inputRegistration', () => {
     it('error in coordinator input-registration', async () => {
         server?.addListener('test-request', ({ url, data, resolve, reject }) => {
             if (url.endsWith('/input-registration')) {
-                if (data.ownershipProof === '01A2') {
+                if (data.OwnershipProof === '01A2') {
                     reject(500, { error: 'ExpectedRuntimeError' });
                 }
             }

@@ -47,7 +47,7 @@ describe('connectionConfirmation', () => {
         const spy = jest.fn();
         server?.addListener('test-request', ({ url, data, resolve }) => {
             if (url.includes('connection-confirmation')) {
-                spy(data.aliceId);
+                spy(data.AliceId);
             }
             resolve();
         });
@@ -196,7 +196,7 @@ describe('connectionConfirmation', () => {
     it('404 error in coordinator connection-confirmation', async () => {
         server?.addListener('test-request', ({ url, data, resolve, reject }) => {
             if (url.includes('connection-confirmation')) {
-                if (data.aliceId === '01A2-01a2') {
+                if (data.AliceId === '01A2-01a2') {
                     reject(404);
                 }
             }

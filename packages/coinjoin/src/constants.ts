@@ -60,4 +60,7 @@ export const MAX_ALLOWED_AMOUNT_FALLBACK = 134375000000;
 // affiliation flag:
 // - sent coordinator/ready-to-sign request **only** when Alice pays coordination fee
 // - check if Trezor affiliate server is running in status.affiliateInformation.runningAffiliateServers
-export const AFFILIATION_ID = 'trezor';
+export const AFFILIATION_ID = {
+    trezor: 'trezor',
+    wasabi: 'WalletWasabi',
+};

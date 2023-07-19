@@ -34,14 +34,14 @@ const registerOutput = async (
     const delay = scheduleDelay(Math.floor(remainingTime * 0.8));
 
     const outputAmountCredentials = await middleware.getRealCredentials(
-        [0, 0],
+        [], // NOTE: sending empty amountToRequest **will not** create credentialToRequest object which **should not** be sent to coordinator in output-registration request
         amountCredentials,
         round.amountCredentialIssuerParameters,
         roundParameters.maxAmountCredentialValue,
         { signal, baseUrl: middlewareUrl },
     );
     const outputVsizeCredentials = await middleware.getRealCredentials(
-        [0, 0],
+        [],
         vsizeCredentials,
         round.vsizeCredentialIssuerParameters,
         roundParameters.maxVsizeCredentialValue,
@@ -95,7 +95,7 @@ const registerOutput = async (
                     }
                     if (error.errorCode === WabiSabiProtocolErrorCode.NotEnoughFunds) {
                         logger.error(
-                            `NotEnoughFunds. Amount: ${amountCredentials[0].value} Delta: ${outputAmountCredentials.credentialsRequest.delta} FeeRate: ${roundParameters.miningFeeRate}`,
+                            `NotEnoughFunds. Amount: ${amountCredentials[0].value} Delta: ${outputAmountCredentials.credentialsRequest.Delta} FeeRate: ${roundParameters.miningFeeRate}`,
                         );
                     }
                 }
