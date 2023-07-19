@@ -24,9 +24,9 @@ const DEFAULT = {
         return {
             realCredentialRequests: {
                 credentialsRequest: {
-                    delta: data.amountsToRequest[0],
-                    presented: data.credentialsToPresent,
-                    requested: data.amountsToRequest,
+                    Delta: data.amountsToRequest[0],
+                    Presented: data.credentialsToPresent,
+                    Requested: data.amountsToRequest,
                 },
             },
         };
@@ -34,14 +34,14 @@ const DEFAULT = {
     'get-zero-credential-requests': {
         zeroCredentialRequests: {
             credentialsRequest: {
-                delta: 0,
-                presented: [],
-                requested: [{ ma: '00' }, { ma: '01' }],
-                proofs: [{}, {}],
+                Delta: 0,
+                Presented: [],
+                Requested: [{ ma: '00' }, { ma: '01' }],
+                Proofs: [{}, {}],
             },
             credentialsResponseValidation: {
-                presented: [],
-                requested: [
+                Presented: [],
+                Requested: [
                     { ma: '00', value: 0 },
                     { ma: '01', value: 0 },
                 ],
@@ -90,20 +90,20 @@ const DEFAULT = {
         },
     },
     'credential-issuance': (data?: RequestData): RequestData => {
-        if (!data || !data.realAmountCredentialRequests) {
+        if (!data || !data.RealAmountCredentialRequests) {
             return {};
         }
         return {
-            realAmountCredentials: data.realAmountCredentialRequests.requested.map((a: number) => ({
+            realAmountCredentials: data.RealAmountCredentialRequests.Requested.map((a: number) => ({
                 value: a,
             })),
-            realVsizeCredentials: data.realVsizeCredentialRequests.requested.map((a: number) => ({
+            realVsizeCredentials: data.RealVsizeCredentialRequests.Requested.map((a: number) => ({
                 value: a,
             })),
-            zeroAmountCredentials: data.zeroAmountCredentialRequests.requested.map(() => ({
+            zeroAmountCredentials: data.ZeroAmountCredentialRequests.Requested.map(() => ({
                 value: 0,
             })),
-            zeroVsizeCredentials: data.zeroVsizeCredentialsRequests.requested.map(() => ({
+            zeroVsizeCredentials: data.ZeroVsizeCredentialsRequests.Requested.map(() => ({
                 value: 0,
             })),
         };

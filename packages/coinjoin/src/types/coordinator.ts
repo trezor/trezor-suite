@@ -1,7 +1,7 @@
 import { RoundPhase, EndRoundState } from '../enums';
 import { AFFILIATION_ID } from '../constants';
 
-export type AffiliationId = typeof AFFILIATION_ID;
+export type AffiliationId = keyof typeof AFFILIATION_ID;
 
 export interface CoinjoinStatus {
     roundStates: Round[];
@@ -21,16 +21,16 @@ export interface SoftwareVersion {
 }
 
 export interface CredentialsResponseValidation {
-    transcript: any;
+    transcript: Record<string, any>;
     presented: any[];
     requested: any[];
 }
 
 export interface CredentialsRequestData {
-    delta: number;
-    presented: any[];
-    requested: any[];
-    proofs: any[];
+    Delta: number;
+    Presented: any[];
+    Proofs: any[];
+    Requested: any[];
 }
 
 export interface ZeroCredentials {

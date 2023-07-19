@@ -286,7 +286,7 @@ describe('transactionSigning', () => {
         server?.addListener('test-request', ({ url, resolve, data, reject }) => {
             if (url.endsWith('/transaction-signature')) {
                 spy();
-                if (data.inputIndex === 1) {
+                if (data.InputIndex === 1) {
                     if (!alreadyProvided) {
                         alreadyProvided = true;
                         reject(403); // Simulate cloudflare error. Enforce to repeat the request

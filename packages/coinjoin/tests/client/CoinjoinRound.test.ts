@@ -131,7 +131,7 @@ describe(`CoinjoinRound`, () => {
 
     it('end Round if any input-registration fails and there is only one account', async () => {
         server?.addListener('test-request', ({ url, data, resolve, reject }) => {
-            if (url.endsWith('/input-registration') && data.input === 'A2') {
+            if (url.endsWith('/input-registration') && data.Input === 'A2') {
                 // fail on second input
                 reject(500, { errorCode: 'InputBanned', exceptionData: {} });
             }
@@ -155,7 +155,7 @@ describe(`CoinjoinRound`, () => {
 
     it('exclude all account inputs from the Round if any input-registration fails', async () => {
         server?.addListener('test-request', ({ url, data, resolve, reject }) => {
-            if (url.endsWith('/input-registration') && data.input === 'B2') {
+            if (url.endsWith('/input-registration') && data.Input === 'B2') {
                 // fail on second input of account-B
                 reject(500, { errorCode: 'InputBanned', exceptionData: {} });
             }
