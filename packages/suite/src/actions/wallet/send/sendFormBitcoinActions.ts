@@ -53,11 +53,11 @@ export const composeTransaction =
         // FeeLevels in rbf form are increased by original/prev rate
         // decrease it since the calculation (in connect) is based on the baseFee not the prev rate
         const origRate = formValues.rbfParams
-            ? parseInt(formValues.rbfParams.feeRate, 10)
+            ? parseFloat(formValues.rbfParams.feeRate)
             : undefined;
         if (origRate) {
             predefinedLevels.forEach(l => {
-                l.feePerUnit = Number(parseInt(l.feePerUnit, 10) - origRate).toString();
+                l.feePerUnit = Number(parseFloat(l.feePerUnit) - origRate).toString();
             });
         }
 

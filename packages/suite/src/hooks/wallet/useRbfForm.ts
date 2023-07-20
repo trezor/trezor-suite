@@ -122,7 +122,7 @@ const useRbfState = ({ tx, finalize, chainedTxs }: UseRbfProps, currentState: bo
     let { baseFee } = tx.rbfParams;
     if (chainedTxs.length > 0) {
         // increase baseFee, pay for all child chained transactions
-        baseFee = chainedTxs.reduce((f, ctx) => f + parseInt(ctx.fee, 10), baseFee);
+        baseFee = chainedTxs.reduce((f, ctx) => f + parseFloat(ctx.fee), baseFee);
     }
 
     const rbfParams = {
