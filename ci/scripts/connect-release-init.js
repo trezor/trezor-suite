@@ -57,8 +57,6 @@ const splitByNewlines = input => input.split('\n');
 const findIndexByCommit = (commitArr, searchString) =>
     commitArr.findIndex(commit => commit.includes(searchString));
 
-const formArrayToText = arr => arr.join('\n');
-
 const initConnectRelease = () => {
     const checkResult = checkPackageDependencies('connect');
 
@@ -179,7 +177,13 @@ const initConnectRelease = () => {
     // Creating a comment only if there are commits to add since last connect release.
     if (connectGitLogIndex !== -1) {
         connectGitLogArr.splice(connectGitLogIndex, connectGitLogArr.length - connectGitLogIndex);
-        const connectGitLogText = formArrayToText(connectGitLogArr);
+        // In array `connectGitLogArr` each item string contains " at the beginning and " at the end, let's remove those characters.
+        const cleanConnectGitLogArr = connectGitLogArr.map(line => line.slice(1, -1));
+        const connectGitLogText = cleanConnectGitLogArr.reduce(
+            (acc, line) => `${acc}\n${line}`,
+            '',
+        );
+
         comment({
             prNumber,
             body: connectGitLogText,
