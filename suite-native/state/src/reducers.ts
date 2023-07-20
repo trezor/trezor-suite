@@ -9,7 +9,7 @@ import { prepareFiatRatesReducer } from '@suite-native/fiat-rates';
 import { devicesReducer } from '@suite-native/module-devices';
 import { appSettingsReducer, appSettingsPersistWhitelist } from '@suite-native/module-settings';
 import { logsSlice } from '@suite-common/logger';
-import { preparePersistReducer } from '@suite-native/storage';
+import { migrateAccountLabel, preparePersistReducer } from '@suite-native/storage';
 import { prepareAnalyticsReducer } from '@suite-common/analytics';
 import { prepareMessageSystemReducer } from '@suite-common/message-system';
 import { notificationsReducer } from '@suite-common/toast-notifications';
@@ -45,6 +45,14 @@ export const prepareRootReducers = async () => {
         persistedKeys: ['accounts', 'transactions'],
         key: 'wallet',
         version: 2,
+        migrations: {
+            2: (oldState: any) => {
+                const oldAccountsState: { accounts: any } = { accounts: oldState.accounts };
+                const migratedAccounts = migrateAccountLabel(oldAccountsState.accounts);
+                const migratedState = { ...oldState, accounts: migratedAccounts };
+                return migratedState;
+            },
+        },
     });
 
     const analyticsPersistedReducer = await preparePersistReducer({

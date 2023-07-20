@@ -4,3 +4,5 @@ export * from './contexts';
 export * from './StorageProvider';
 export * from './storage';
 export * from './atomWithUnecryptedStorage';
+
+export * from './migrations/account/v2';
