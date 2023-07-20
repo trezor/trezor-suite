@@ -1,6 +1,6 @@
 import { CustomError } from '@trezor/blockchain-link-types/lib/constants/errors';
 import { MESSAGES, RESPONSES } from '@trezor/blockchain-link-types/lib/constants';
-import { BaseWorker, CONTEXT, ContextType } from '../base';
+import { BaseWorker, CONTEXT, ContextType } from '../baseWorker';
 import * as M from './methods';
 import * as L from './listeners';
 import { createSocket } from './sockets';

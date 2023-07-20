@@ -2,7 +2,7 @@ import { throwError } from '@trezor/utils';
 import { RESPONSES } from '@trezor/blockchain-link-types/lib/constants';
 import { createAddressManager, getTransactions } from '../utils';
 import { transformTransaction } from '../../../../../blockchain-link-utils/lib/blockbook';
-import type { BaseWorker } from '../../base';
+import type { BaseWorker } from '../../baseWorker';
 import type {
     ElectrumAPI,
     HistoryTx,
