@@ -15,6 +15,7 @@ type CryptoToFiatAmountFormatterProps = FormatterProps<string | null | number> &
         network: NetworkSymbol;
         isBalance?: boolean;
         isDiscreetText?: boolean;
+        decimals?: number;
     };
 
 export const CryptoAmountFormatter = ({
@@ -24,13 +25,14 @@ export const CryptoAmountFormatter = ({
     isDiscreetText = true,
     variant = 'hint',
     color = 'textSubdued',
+    decimals,
     ...textProps
 }: CryptoToFiatAmountFormatterProps) => {
     const { CryptoAmountFormatter: formatter } = useFormatters();
 
     if (!value) return <EmptyAmountText />;
 
-    const maxDisplayedDecimals = networks[network].decimals;
+    const maxDisplayedDecimals = decimals ?? networks[network].decimals;
 
     const stringValue = G.isNumber(value) ? value.toString() : value;
     const formattedValue = formatter.format(stringValue, {

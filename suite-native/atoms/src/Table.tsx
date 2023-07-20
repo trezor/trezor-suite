@@ -1,6 +1,7 @@
 import React, { ReactNode } from 'react';
 
 import { Box } from './Box';
+import { HStack } from './Stack';
 import { Text } from './Text';
 
 type TableProps = {
@@ -10,11 +11,7 @@ type TdProps = {
     children?: ReactNode;
 };
 
-export const Td = ({ children }: TdProps) => (
-    <Box flex={1}>
-        <Text variant="hint">{children}</Text>
-    </Box>
-);
+export const Td = ({ children }: TdProps) => <Box flex={1}>{children}</Box>;
 
 export const Th = ({ children }: TdProps) => (
     <Box flex={1}>
@@ -24,9 +21,9 @@ export const Th = ({ children }: TdProps) => (
     </Box>
 );
 export const Tr = ({ children }: TableProps) => (
-    <Box flexDirection="row" justifyContent="space-between" marginVertical="small">
+    <HStack flexDirection="row" justifyContent="space-between" marginVertical="small">
         {children}
-    </Box>
+    </HStack>
 );
 
 export const Table = ({ children }: TableProps) => <Box>{children}</Box>;
