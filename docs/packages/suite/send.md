@@ -42,7 +42,6 @@
 ### Amount errors:
 
 -   AMOUNT_IS_NOT_SET (empty field)
--   AMOUNT_IS_NOT_NUMBER (not valid number)
 -   AMOUNT_IS_TOO_LOW (lower/equal than zero + ETH exception: 0 amount is possible ONLY for tx with DATA)
 -   AMOUNT_IS_BELOW_DUST lower than network dust limit
 -   AMOUNT_IS_NOT_ENOUGH (not enough funds on account)
@@ -64,7 +63,6 @@
 ### Fiat errors:
 
 -   AMOUNT_IS_NOT_SET (empty field)
--   AMOUNT_IS_NOT_NUMBER
 -   AMOUNT_IS_TOO_LOW (lower than 0, 0 is still possible if recalculated amount is lower than 1 cent)
 -   AMOUNT_IS_NOT_IN_RANGE_DECIMALS (max. 2 decimals allowed)
 
@@ -84,7 +82,6 @@
 ### Fee errors (custom level):
 
 -   CUSTOM_FEE_IS_NOT_SET (empty field)
--   CUSTOM_FEE_IS_NOT_NUMBER
 -   CUSTOM_FEE_IS_NOT_INTEGER (BTC and XRP: decimals not allowed)
 -   AMOUNT_IS_NOT_IN_RANGE_DECIMALS (ETH only: decimals are allowed but with max. 9 decimals - GWEI is not satoshi)
 -   CUSTOM_FEE_NOT_IN_RANGE (must be between minFee and maxFee specified in coins.json, in @trezor/connect)

@@ -982,10 +982,6 @@ export default defineMessages({
         defaultMessage: 'Pending',
         id: 'TR_BUY_STATUS_PENDING',
     },
-    TR_P2P_VALIDATION_ERROR_EMPTY: {
-        defaultMessage: 'Required',
-        id: 'TR_P2P_VALIDATION_ERROR_EMPTY',
-    },
     TR_P2P_WORTH_OF: {
         defaultMessage: 'worth of',
         id: 'TR_P2P_WORTH_OF',
@@ -5414,10 +5410,6 @@ export default defineMessages({
         defaultMessage: 'Amount is not an integer',
         id: 'AMOUNT_IS_NOT_INTEGER',
     },
-    AMOUNT_IS_NOT_NUMBER: {
-        defaultMessage: 'Enter a number (e.g. 1.5)',
-        id: 'AMOUNT_IS_NOT_NUMBER',
-    },
     AMOUNT_IS_NOT_SET: {
         defaultMessage: 'Amount is not set',
         id: 'AMOUNT_IS_NOT_SET',
@@ -5661,10 +5653,6 @@ export default defineMessages({
     CUSTOM_FEE_IS_NOT_SET: {
         defaultMessage: 'How much do you want to spend on fee to make this transaction go through.',
         id: 'CUSTOM_FEE_IS_NOT_SET',
-    },
-    CUSTOM_FEE_IS_NOT_NUMBER: {
-        defaultMessage: 'Enter a number',
-        id: 'CUSTOM_FEE_IS_NOT_NUMBER',
     },
     CUSTOM_FEE_IS_NOT_INTEGER: {
         defaultMessage: 'Enter a whole number',
@@ -7381,10 +7369,6 @@ export default defineMessages({
         description: 'As in "{time} Left"',
         defaultMessage: 'left',
     },
-    TR_PAUSE: {
-        id: 'TR_PAUSE',
-        defaultMessage: 'Pause',
-    },
     TR_STOP: {
         id: 'TR_STOP',
         defaultMessage: 'Stop',
@@ -7408,10 +7392,6 @@ export default defineMessages({
     TR_PAUSED: {
         id: 'TR_PAUSED',
         defaultMessage: 'Paused',
-    },
-    TR_RESUME: {
-        id: 'TR_RESUME',
-        defaultMessage: 'Resume',
     },
     TR_ANONYMIZATION_PAUSED: {
         id: 'TR_ANONYMIZATION_PAUSED',
