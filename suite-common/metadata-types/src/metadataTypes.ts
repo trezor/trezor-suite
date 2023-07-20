@@ -161,7 +161,7 @@ export type Labels = AccountLabels | WalletLabels;
 
 export type DeviceMetadata =
     | {
-          status: 'disabled' | 'cancelled'; // user rejects "Enable labeling" on device
+          status: 'disabled';
       }
     | ({
           status: 'enabled';

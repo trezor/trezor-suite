@@ -29,36 +29,6 @@ const setDeviceMetadataKey = [
         },
     },
     {
-        description: `Master key cancelled`,
-        connect: {
-            success: false,
-        },
-        initialState: {
-            metadata: { enabled: true, providers: [] },
-            device: { state: 'device-state', connected: true, metadata: { status: 'disabled' } },
-        },
-        result: [
-            {
-                type: METADATA.SET_DEVICE_METADATA,
-                payload: {
-                    metadata: {
-                        status: 'cancelled',
-                    },
-                },
-            },
-            {
-                type: SUITE.UPDATE_SELECTED_DEVICE,
-                payload: {
-                    state: 'device-state',
-                    metadata: { status: 'cancelled' },
-                },
-            },
-            {
-                type: METADATA.DISABLE,
-            },
-        ],
-    },
-    {
         description: `Master key successfully generated`,
         initialState: {
             metadata: { enabled: true, providers: [] },
@@ -360,7 +330,7 @@ const fetchMetadata = [
                 },
                 providers: [],
             },
-            device: { state: 'device-state', metadata: { status: 'cancelled' } },
+            device: { state: 'device-state', metadata: { status: 'disabled' } },
             accounts: [],
         },
         params: 'device-state',
@@ -572,7 +542,6 @@ const init = [
             metadata: { enabled: false, providers: [], selectedProvider: {} },
             suite: { online: true },
         },
-        params: true,
         result: [
             { type: '@metadata/enable' },
             { type: '@metadata/set-initiating', payload: true },

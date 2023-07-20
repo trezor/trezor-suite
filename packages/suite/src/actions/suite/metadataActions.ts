@@ -821,16 +821,6 @@ export const setDeviceMetadataKey =
                 },
             });
         } else {
-            dispatch({
-                type: METADATA.SET_DEVICE_METADATA,
-                payload: {
-                    deviceState: device.state,
-                    metadata: {
-                        status: 'cancelled',
-                    },
-                },
-            });
-
             // in effort to resolve https://github.com/trezor/trezor-suite/issues/2315
             // also turn of global metadata.enabled setting
             // pros:
@@ -1037,79 +1027,74 @@ const handleEncryptionVersionMigration = () => async (dispatch: Dispatch, getSta
  * are skipped and user will be asked again either after authorization process or when user
  * tries to add new label.
  */
-export const init =
-    (force = false) =>
-    async (dispatch: Dispatch, getState: GetState) => {
-        const { device } = getState().suite;
+export const init = () => async (dispatch: Dispatch, getState: GetState) => {
+    const { device } = getState().suite;
 
-        // 1. set metadata enabled globally
-        if (!getState().metadata.enabled) {
-            dispatch(enableMetadata());
-        }
+    // 1. set metadata enabled globally
+    if (!getState().metadata.enabled) {
+        dispatch(enableMetadata());
+    }
 
-        if (!device?.state) {
-            return false;
-        }
+    if (!device?.state) {
+        return false;
+    }
 
-        dispatch({ type: METADATA.SET_INITIATING, payload: true });
+    dispatch({ type: METADATA.SET_INITIATING, payload: true });
 
-        // 2. set device metadata key (master key). Sometimes, if state is not present
-        if (
-            device.metadata.status === 'disabled' ||
-            (device.metadata.status === 'cancelled' && force && device?.connected)
-        ) {
-            await dispatch(setDeviceMetadataKey(METADATA.ENCRYPTION_VERSION));
-        }
+    // 2. set device metadata key (master key). Sometimes, if state is not present
+    if (device.metadata.status === 'disabled') {
+        await dispatch(setDeviceMetadataKey(METADATA.ENCRYPTION_VERSION));
+    }
 
-        // did user confirm labeling on device? or maybe device was not connected
-        // so suite does not have keys and needs to stop here
-        if (getState().suite.device?.metadata.status !== 'enabled') {
-            // if no, end here
+    // did user confirm labeling on device? or maybe device was not connected
+    // so suite does not have keys and needs to stop here
+    if (getState().suite.device?.metadata.status !== 'enabled') {
+        // if no, end here
+        dispatch({ type: METADATA.SET_INITIATING, payload: false });
+        dispatch({ type: METADATA.SET_EDITING, payload: undefined });
+
+        return false;
+    }
+    // if yes, add metadata keys to accounts
+    if (getState().metadata.initiating) {
+        dispatch(syncMetadataKeys(METADATA.ENCRYPTION_VERSION));
+    }
+
+    // 3. connect to provider
+    if (
+        getState().suite.device?.metadata.status === 'enabled' &&
+        !getState().metadata.providers?.length
+    ) {
+        const providerResult = await dispatch(initProvider());
+        if (!providerResult) {
             dispatch({ type: METADATA.SET_INITIATING, payload: false });
             dispatch({ type: METADATA.SET_EDITING, payload: undefined });
 
             return false;
         }
-        // if yes, add metadata keys to accounts
-        if (getState().metadata.initiating) {
-            dispatch(syncMetadataKeys(METADATA.ENCRYPTION_VERSION));
-        }
+    }
 
-        // 3. connect to provider
-        if (
-            getState().suite.device?.metadata.status === 'enabled' &&
-            !getState().metadata.providers?.length
-        ) {
-            const providerResult = await dispatch(initProvider());
-            if (!providerResult) {
-                dispatch({ type: METADATA.SET_INITIATING, payload: false });
-                dispatch({ type: METADATA.SET_EDITING, payload: undefined });
+    // 4. migration
+    await dispatch(handleEncryptionVersionMigration());
+    // 5. fetch metadata
+    await dispatch(fetchAndSaveMetadata(device.state));
+    if (getState().metadata.initiating) {
+        dispatch({ type: METADATA.SET_INITIATING, payload: false });
+    }
 
-                return false;
+    // 6. if interval for watching provider is not set, create it
+    if (device.state && !fetchIntervals[device.state]) {
+        fetchIntervals[device.state] = setInterval(() => {
+            const { device } = getState().suite;
+            if (!getState().suite.online || !device?.state) {
+                return;
             }
-        }
+            dispatch(fetchAndSaveMetadata(device.state));
+        }, METADATA.FETCH_INTERVAL);
+    }
 
-        // 4. migration
-        await dispatch(handleEncryptionVersionMigration());
-        // 5. fetch metadata
-        await dispatch(fetchAndSaveMetadata(device.state));
-        if (getState().metadata.initiating) {
-            dispatch({ type: METADATA.SET_INITIATING, payload: false });
-        }
-
-        // 6. if interval for watching provider is not set, create it
-        if (device.state && !fetchIntervals[device.state]) {
-            fetchIntervals[device.state] = setInterval(() => {
-                const { device } = getState().suite;
-                if (!getState().suite.online || !device?.state) {
-                    return;
-                }
-                dispatch(fetchAndSaveMetadata(device.state));
-            }, METADATA.FETCH_INTERVAL);
-        }
-
-        return true;
-    };
+    return true;
+};
 
 export const setEditing = (payload: string | undefined): MetadataAction => ({
     type: METADATA.SET_EDITING,

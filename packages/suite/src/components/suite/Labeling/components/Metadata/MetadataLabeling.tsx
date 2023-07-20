@@ -248,7 +248,7 @@ export const MetadataLabeling = (props: Props) => {
             !isLabelingAvailable
         ) {
             // provide force=true argument (user wants to enable metadata)
-            init(true);
+            init();
         }
         setEditing(props.payload.defaultValue);
     };

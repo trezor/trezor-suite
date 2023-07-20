@@ -274,7 +274,7 @@ describe('Metadata Actions', () => {
             // @ts-expect-error
             const store = initStore(getInitialState(f.initialState));
             // @ts-expect-error, params
-            const result = await store.dispatch(metadataActions.init(f.params));
+            const result = await store.dispatch(metadataActions.init());
             if (!f.result) {
                 expect(store.getActions().length).toEqual(0);
             } else {
