@@ -143,6 +143,7 @@ const useRbfState = ({ tx, finalize, chainedTxs }: UseRbfProps, currentState: bo
         feeInfo,
         excludedUtxos,
         chainedTxs,
+        shouldSendInSats,
         formValues: {
             ...DEFAULT_VALUES,
             outputs,

@@ -58,8 +58,15 @@ const ArrowIcon = styled(Icon)`
 `;
 
 export const DecreasedOutputs = () => {
-    const { formValues, account, getValues, setValue, composedLevels, composeRequest } =
-        useRbfContext();
+    const {
+        formValues,
+        account,
+        getValues,
+        setValue,
+        composedLevels,
+        composeRequest,
+        shouldSendInSats,
+    } = useRbfContext();
     const { selectedFee, setMaxOutputId } = getValues();
     if (typeof setMaxOutputId !== 'number') return null; // no set-max means that no output was decreased
 
@@ -116,7 +123,14 @@ export const DecreasedOutputs = () => {
                                                 values={{
                                                     value: (
                                                         <FormattedCryptoAmount
-                                                            value={o.amount}
+                                                            value={
+                                                                shouldSendInSats
+                                                                    ? formatNetworkAmount(
+                                                                          o.amount,
+                                                                          account.symbol,
+                                                                      )
+                                                                    : o.amount
+                                                            }
                                                             symbol={account.symbol}
                                                         />
                                                     ),
