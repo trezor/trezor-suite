@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
-/* eslint-disable global-require */
 import fs from 'fs';
 import path from 'path';
 import { configureStore } from 'src/support/tests/configureStore';
@@ -122,8 +120,6 @@ const initStore = (state: State) => {
 describe('Metadata Actions', () => {
     fixtures.setDeviceMetadataKey.forEach(f => {
         it(`setDeviceMetadataKey - ${f.description}`, async () => {
-            // set fixtures in @trezor/connect
-            require('@trezor/connect').setTestFixtures(f.connect);
             // @ts-expect-error
             const store = initStore(getInitialState(f.initialState));
             await store.dispatch(metadataActions.setDeviceMetadataKey());
