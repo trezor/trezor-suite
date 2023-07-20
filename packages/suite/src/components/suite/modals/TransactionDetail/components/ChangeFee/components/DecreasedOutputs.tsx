@@ -5,8 +5,8 @@ import { Icon, variables, RadioButton, motionAnimation } from '@trezor/component
 import { Translation, FormattedCryptoAmount, HiddenPlaceholder } from 'src/components/suite';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { useRbfContext } from 'src/hooks/wallet/useRbfForm';
-import GreyCard from '../GreyCard';
-import WarnHeader from '../WarnHeader';
+import { GreyCard } from './GreyCard';
+import { WarnHeader } from './WarnHeader';
 
 const OutputsWrapper = styled.div`
     display: flex;
@@ -57,7 +57,7 @@ const ArrowIcon = styled(Icon)`
     }
 `;
 
-const DecreasedOutputs = () => {
+export const DecreasedOutputs = () => {
     const { formValues, account, getValues, setValue, composedLevels, composeRequest } =
         useRbfContext();
     const { selectedFee, setMaxOutputId } = getValues();
@@ -137,5 +137,3 @@ const DecreasedOutputs = () => {
         </AnimatePresence>
     );
 };
-
-export default DecreasedOutputs;
