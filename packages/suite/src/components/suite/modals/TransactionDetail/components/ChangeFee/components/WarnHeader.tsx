@@ -25,7 +25,7 @@ interface Props {
     children?: React.ReactNode;
 }
 
-const WarnHeader = (props: Props) => {
+export const WarnHeader = (props: Props) => {
     const theme = useTheme();
 
     return (
@@ -38,5 +38,3 @@ const WarnHeader = (props: Props) => {
         </Header>
     );
 };
-
-export default WarnHeader;

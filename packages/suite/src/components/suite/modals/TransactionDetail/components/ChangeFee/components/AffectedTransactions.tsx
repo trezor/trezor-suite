@@ -7,8 +7,8 @@ import { FormattedCryptoAmount, Sign, Translation, FormattedDate } from 'src/com
 import { useRbfContext } from 'src/hooks/wallet/useRbfForm';
 import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
 import { truncateMiddle } from '@trezor/utils';
-import GreyCard from '../GreyCard';
-import WarnHeader from '../WarnHeader';
+import { GreyCard } from './GreyCard';
+import { WarnHeader } from './WarnHeader';
 
 const ChainedTxs = styled.div`
     display: flex;
@@ -58,7 +58,7 @@ const Bullet = styled.div`
     color: ${props => props.theme.TYPE_LIGHT_GREY};
 `;
 
-const AffectedTransactions = ({ showChained }: { showChained: () => void }) => {
+export const AffectedTransactions = ({ showChained }: { showChained: () => void }) => {
     const theme = useTheme();
     const { isMobileLayout } = useLayoutSize();
     const { network, chainedTxs } = useRbfContext();
@@ -123,5 +123,3 @@ const AffectedTransactions = ({ showChained }: { showChained: () => void }) => {
         </GreyCard>
     );
 };
-
-export default AffectedTransactions;
