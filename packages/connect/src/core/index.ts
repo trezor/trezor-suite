@@ -31,7 +31,7 @@ import {
 } from '../events';
 import { getMethod } from './method';
 import { resolveAfter } from '../utils/promiseUtils';
-import { initLog, enableLog, setLogWriter } from '../utils/debug';
+import { initLog, enableLog, setLogWriter, LogWriter } from '../utils/debug';
 import { dispose as disposeBackend } from '../backend/BlockchainLink';
 import { InteractionTimeout } from '../utils/interactionTimeout';
 
@@ -1018,9 +1018,9 @@ export class Core extends EventEmitter {
  * @returns {Promise<Core>}
  * @memberof Core
  */
-export const initCore = async (settings: ConnectSettings, logWriter?: any) => {
-    if (logWriter) {
-        setLogWriter(logWriter);
+export const initCore = async (settings: ConnectSettings, logWriterFactory?: () => LogWriter) => {
+    if (logWriterFactory) {
+        setLogWriter(logWriterFactory);
     }
     try {
         await DataManager.load(settings);

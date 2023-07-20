@@ -41,7 +41,7 @@ class Log {
     enabled: boolean;
     css: string;
     messages: LogMessage[];
-    logWriter: any;
+    logWriter: LogWriter | undefined;
 
     constructor(prefix: string, enabled: boolean, logWriter?: LogWriter) {
         this.prefix = prefix;
@@ -70,8 +70,7 @@ class Log {
             } catch (err) {
                 // If this error happens it probably means that we are logging an object with a circular reference.
                 // If there is any `device` logged, do it with `device.toMessageObject()` instead.
-                // TODO: maybe we should shout out this error to make sure we do not pass circular references to the log.
-                console.error('There was an error adding log message', err);
+                console.error('There was an error adding log message', err, message);
             }
         }
         if (this.messages.length > MAX_ENTRIES) {
@@ -117,18 +116,18 @@ class Log {
 }
 
 const _logs: { [k: string]: Log } = {};
-let writer: any;
+let writer: LogWriter | undefined;
 
 export const initLog = (prefix: string, enabled?: boolean, logWriter?: LogWriter) => {
-    const finalWriter = logWriter || writer;
-    const instance = new Log(prefix, !!enabled, finalWriter);
+    const instanceWriter = logWriter || writer;
+    const instance = new Log(prefix, !!enabled, instanceWriter);
     _logs[prefix] = instance;
     return instance;
 };
 
-export const setLogWriter = (logWriter: any) => {
+export const setLogWriter = (logWriterFactory: () => LogWriter) => {
     Object.keys(_logs).forEach(key => {
-        writer = logWriter();
+        writer = logWriterFactory();
         _logs[key].setWriter(writer);
     });
 };
@@ -152,15 +151,4 @@ export const getLog = () => {
     });
     logs.sort((a, b) => a.timestamp - b.timestamp);
     return logs;
-};
-
-export const initSharedLogger = (connectSrc: string) => {
-    const workerUrl = `${connectSrc}workers/shared-logger-worker.js`;
-    const worker = new SharedWorker(workerUrl);
-    worker.port.start();
-    const logWriterFactory = (): LogWriter => ({
-        add: (message: LogMessage) =>
-            worker.port.postMessage({ type: 'add-log', data: JSON.parse(JSON.stringify(message)) }),
-    });
-    setLogWriter(logWriterFactory);
 };
