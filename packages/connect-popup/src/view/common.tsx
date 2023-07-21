@@ -121,6 +121,10 @@ export const initMessageChannel = async (
             new Promise<boolean>(resolve => setTimeout(() => resolve(false), 1000)),
         ]);
 
+    const iframe = getIframeElement();
+    if (!iframe) {
+        throw ERRORS.TypedError('Popup_ConnectionMissing');
+    }
     // iframe requested communication via BroadcastChannel.
     if (broadcastId) {
         try {
@@ -136,7 +140,7 @@ export const initMessageChannel = async (
 
             // POPUP.HANDSHAKE successfully received back from the iframe
             if (await broadcastHandshake) {
-                setState({ broadcast, systemInfo });
+                setState({ broadcast, systemInfo, iframe });
                 return;
             }
 
@@ -146,11 +150,6 @@ export const initMessageChannel = async (
         } catch (error) {
             // silent error. use MessageChannel as fallback communication
         }
-    }
-
-    const iframe = getIframeElement();
-    if (!iframe) {
-        throw ERRORS.TypedError('Popup_ConnectionMissing');
     }
 
     // create MessageChannel and assign message listener
