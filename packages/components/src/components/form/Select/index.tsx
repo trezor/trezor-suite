@@ -218,6 +218,10 @@ const BottomText = styled.div<Pick<SelectProps, 'inputState'>>`
     min-height: 27px;
 `;
 
+// Prevent closing the menu when scrolling through options.
+const closeMenuOnScroll = (e: Event) =>
+    !(e.target as Element)?.className?.startsWith(reactSelectClassNamePrefix);
+
 type Option = any;
 
 /** Custom Type Guards to check if options are grouped or not */
@@ -449,7 +453,7 @@ export const Select = ({
                 onKeyDown={onKeyDown}
                 classNamePrefix={reactSelectClassNamePrefix}
                 openMenuOnFocus
-                closeMenuOnScroll={() => true}
+                closeMenuOnScroll={closeMenuOnScroll}
                 menuPosition="fixed" // Required for closeMenuOnScroll to work properly when near page bottom
                 menuPortalTarget={menuPortalTarget}
                 styles={selectStyle(
