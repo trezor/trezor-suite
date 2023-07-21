@@ -56,12 +56,16 @@ export const config = {
             url: './data/bridge/releases.json',
         },
         {
-            name: 'firmware-t1',
-            url: './data/firmware/1/releases.json',
+            name: 'firmware-t1b1',
+            url: './data/firmware/t1b1/releases.json',
         },
         {
-            name: 'firmware-t2',
-            url: './data/firmware/2/releases.json',
+            name: 'firmware-t2t1',
+            url: './data/firmware/t2t1/releases.json',
+        },
+        {
+            name: 'firmware-t2b1',
+            url: './data/firmware/t2b1/releases.json',
         },
     ],
     messages: './data/messages/messages.json',
