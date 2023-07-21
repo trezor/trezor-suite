@@ -2,6 +2,7 @@
 
 import { test, expect, Page, devices } from '@playwright/test';
 import { ensureDirectoryExists } from '@trezor/node-utils';
+import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
 const url = process.env.URL || 'http://localhost:8088/';
 
@@ -24,6 +25,12 @@ const openPopup = async (page: Page) =>
             page.click("button[data-test='@submit-button']"),
         ])
     )[0];
+
+test.beforeAll(async () => {
+    await TrezorUserEnvLink.connect();
+    await TrezorUserEnvLink.api.stopBridge();
+    await TrezorUserEnvLink.api.stopEmu();
+});
 
 test('unsupported browser', async ({ browser }) => {
     const context = await browser.newContext({
@@ -57,7 +64,7 @@ test('outdated-browser', async ({ browser }) => {
     await popup.click('text=I acknowledge and wish to continue');
     // only after this check react renders
     await popup.waitForSelector('#reactRenderIn');
-    await popup.waitForSelector('text=Install bridge');
+    await popup.waitForSelector('text=Pair devices');
     await popup.close();
     await page.close();
     await context.close();

@@ -9,7 +9,8 @@ import { buildOverview } from '../support/buildOverview';
 import { ensureDirectoryExists } from '@trezor/node-utils';
 import { log } from '../support/helpers';
 
-const url = process.env.URL || 'http://localhost:8088/';
+const url = `${process.env.URL || 'http://localhost:8088/'}?trust-issues=true`;
+
 const emuScreenshots: Record<string, string> = {};
 
 const screenshotEmu = async (path: string) => {
