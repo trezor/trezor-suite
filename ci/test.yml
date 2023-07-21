@@ -229,7 +229,8 @@ transport manual:
       - TEST_FILE: ["log-page.test"]
       - TEST_FILE: ["unchained.test"]
       - TEST_FILE: ["browser-support.test"]
-      - TEST_FILE: ["install-bridge.test"]
+      - TEST_FILE: ["transport.test"]
+      - TEST_FILE: ["permissions.test"]
 
 connect-popup:
   extends: .e2e connect-popup

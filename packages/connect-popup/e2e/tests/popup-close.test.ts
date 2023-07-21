@@ -3,7 +3,7 @@ import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 import { createDeferred, Deferred } from '@trezor/utils';
 import { findElementByDataTest, waitAndClick } from '../support/helpers';
 
-const url = process.env.URL || 'http://localhost:8088/';
+const url = `${process.env.URL || 'http://localhost:8088/'}?trust-issues=true`;
 
 const WAIT_AFTER_TEST = 3000; // how long test should wait for more potential trezord requests
 
