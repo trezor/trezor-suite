@@ -4,6 +4,7 @@
     "references": [
         {
             "path": "../../suite-common/suite-types"
-        }
+        },
+        { "path": "../../packages/connect" }
     ]
 }

@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import { TrezorDevice } from '@suite-common/suite-types';
+import { DeviceModelInternal } from '@trezor/connect';
 
 export const HIDDEN_DEVICE_ID = 'hiddenDeviceWithImportedAccounts';
 export const HIDDEN_DEVICE_STATE = `state@${HIDDEN_DEVICE_ID}:1`;
@@ -34,9 +35,8 @@ export const hiddenDevice: TrezorDevice = {
         firmware_present: null,
         needs_backup: false,
         flags: 0,
-        // TODO: use DeviceModel, DeviceInternalModel enums
         model: 'T',
-        internal_model: 'T2T1',
+        internal_model: DeviceModelInternal.T2T1,
         fw_major: null,
         fw_minor: null,
         fw_patch: null,

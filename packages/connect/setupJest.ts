@@ -1,6 +1,6 @@
 /* WARNING! This file should be imported ONLY in tests! */
 
-import type { Features, FirmwareRelease } from './src/types';
+import { DeviceModelInternal, type Features, type FirmwareRelease } from './src/types';
 
 export const getDeviceFeatures = (feat?: Partial<Features>): Features => ({
     vendor: 'trezor.io',
@@ -22,7 +22,7 @@ export const getDeviceFeatures = (feat?: Partial<Features>): Features => ({
     needs_backup: false,
     flags: 0,
     model: 'T',
-    internal_model: 'T2T1',
+    internal_model: DeviceModelInternal.T2T1,
     fw_major: null,
     fw_minor: null,
     fw_patch: null,

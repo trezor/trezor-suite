@@ -11,6 +11,9 @@
         "type-check": "tsc --build",
         "build:lib": "rimraf lib && yarn tsc --build ./tsconfig.lib.json"
     },
+    "dependencies": {
+        "@trezor/connect": "workspace:*"
+    },
     "devDependencies": {
         "typescript": "4.9.5"
     }

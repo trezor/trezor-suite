@@ -14,6 +14,7 @@
     "dependencies": {
         "@reduxjs/toolkit": "1.9.5",
         "@suite-common/suite-types": "workspace:*",
+        "@trezor/connect": "workspace:*",
         "react": "18.2.0"
     },
     "devDependencies": {
