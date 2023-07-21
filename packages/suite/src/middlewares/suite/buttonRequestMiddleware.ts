@@ -63,22 +63,14 @@ const buttonRequest =
             case UI.REQUEST_PIN:
             case UI.INVALID_PIN:
                 api.dispatch(
-                    addButtonRequest({
-                        buttonRequest: {
-                            code: action.payload.type ? action.payload.type : action.type,
-                        },
-                        device: api.getState().suite.device,
+                    addButtonRequest(api.getState().suite.device, {
+                        code: action.payload.type ? action.payload.type : action.type,
                     }),
                 );
                 break;
             case UI.REQUEST_BUTTON: {
                 const { device: _, ...request } = action.payload;
-                api.dispatch(
-                    addButtonRequest({
-                        device: api.getState().suite.device,
-                        buttonRequest: request,
-                    }),
-                );
+                api.dispatch(addButtonRequest(api.getState().suite.device, request));
                 break;
             }
             case SUITE.LOCK_DEVICE:
