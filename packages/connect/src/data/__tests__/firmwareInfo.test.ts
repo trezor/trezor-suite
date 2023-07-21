@@ -1,13 +1,14 @@
 import { getReleases, parseFirmware, getFirmwareStatus } from '../firmwareInfo';
-import * as releases2 from '@trezor/connect-common/files/firmware/2/releases.json';
+import * as releases2 from '@trezor/connect-common/files/firmware/t2t1/releases.json';
+import { DeviceModelInternal } from '../../types';
 
 describe('data/firmwareInfo', () => {
     beforeEach(() => {
-        parseFirmware(releases2, 2);
+        parseFirmware(releases2, DeviceModelInternal.T2T1);
     });
 
     test('getReleases', () => {
-        expect(getReleases(2)[0]).toMatchObject({
+        expect(getReleases(DeviceModelInternal.T2T1)[0]).toMatchObject({
             ...releases2[0],
             url: expect.any(String),
             url_bitcoinonly: expect.any(String),

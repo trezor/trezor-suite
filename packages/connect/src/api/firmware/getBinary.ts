@@ -31,7 +31,7 @@ export const getBinary = ({
 
     if (intermediaryVersion) {
         return httpRequest(
-            `${baseUrl}/firmware/1/trezor-inter-v${intermediaryVersion}.bin`,
+            `${baseUrl}/firmware/t1b1/trezor-t1b1-inter-v${intermediaryVersion}.bin`,
             'binary',
         );
     }

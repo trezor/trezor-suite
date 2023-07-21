@@ -95,7 +95,7 @@ export default class FirmwareUpdate extends AbstractMethod<'firmwareUpdate', Par
                 binary = await getBinary({
                     // features and releases are used for sanity checking
                     features: device.features,
-                    releases: getReleases(device.features.major_version),
+                    releases: getReleases(device.features?.internal_model),
                     // version argument is used to find and fetch concrete release from releases list
                     version: params.version,
                     btcOnly: params.btcOnly,
