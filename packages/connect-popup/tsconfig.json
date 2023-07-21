@@ -13,6 +13,7 @@
         { "path": "../connect-ui" },
         { "path": "../crypto-utils" },
         { "path": "../device-utils" },
+        { "path": "../transport" },
         { "path": "../urls" },
         { "path": "../node-utils" },
         { "path": "../trezor-user-env-link" },
