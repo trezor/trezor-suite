@@ -23,9 +23,9 @@ const result = await TrezorConnect.firmwareUpdate(params);
 
 ### Notable firmware ranges
 
-It is not possible to install whatever version of a new firmware in all cases. Some specific firmware
+It is not possible to install directly whatever version of a new firmware in all cases. Some specific firmware
 versions might be installed only on device which already run a version which is not lower then x.y.z.
-These rules are generally expressed by `bootloader_version` and `min_bootloader_version` in [releases.json document](https://data.trezor.io/firmware/1/releases.json)
+These rules are generally expressed by `bootloader_version` and `min_bootloader_version` in [releases.json document](https://data.trezor.io/firmware/t1b1/releases.json)
 
 Here is a list of notable firmware ranges. `1.11.1` was the latest firmware at the time of writing this docs.
 
