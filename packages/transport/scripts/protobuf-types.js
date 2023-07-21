@@ -1,15 +1,10 @@
-// flowtype only
-// flowtype doesn't have `enum` declarations like typescript
-
 const fs = require('fs');
 const path = require('path');
 
 const json = require('../messages.json');
 const { RULE_PATCH, TYPE_PATCH, DEFINITION_PATCH, SKIP, UINT_TYPE } = require('./protobuf-patches');
 
-const args = process.argv.slice(2);
-
-const isTypescript = args.includes('typescript');
+const INDENT = ' '.repeat(4);
 
 // proto types to javascript types
 const FIELD_TYPES = {
@@ -39,27 +34,21 @@ const ENUM_KEYS = [
 ];
 
 const parseEnum = (itemName, item) => {
-    const value = [];
     const IS_KEY = ENUM_KEYS.includes(itemName);
+
     // declare enum
-    if (IS_KEY) {
-        value.push(`export enum Enum_${itemName} {`);
-    } else {
-        value.push(`export enum ${itemName} {`);
-    }
+    const enumName = IS_KEY ? `Enum_${itemName}` : itemName;
+    const value = [`export enum ${enumName} {`];
 
     // declare fields
-    Object.entries(item.values).forEach(([name, id]) => {
-        value.push(`    ${name} = ${id},`);
-    });
+    value.push(...Object.entries(item.values).map(([name, id]) => `${INDENT}${name} = ${id},`));
+
     // close enum declaration
-    value.push('}');
+    value.push('}', '');
 
     if (IS_KEY) {
-        value.push(`export type ${itemName} = keyof typeof Enum_${itemName};`);
+        value.push(`export type ${itemName} = keyof typeof ${enumName};`, '');
     }
-    // empty line
-    value.push('');
 
     types.push({
         type: 'enum',
@@ -168,11 +157,17 @@ const content = types.flatMap(t => (t ? [t.value] : [])).join('\n');
 
 const lines = []; // string[]
 
-lines.push('// This file is auto generated from data/messages/message.json');
-lines.push('');
+lines.push('// This file is auto generated from data/messages/message.json', '');
 lines.push('// custom type uint32/64 may be represented as string');
-lines.push(`export type ${UINT_TYPE} = string | number;`);
-lines.push('');
+lines.push(`export type ${UINT_TYPE} = string | number;`, '');
+lines.push(
+    `export enum DeviceModelInternal {
+    T1B1 = 'T1B1',
+    T2T1 = 'T2T1',
+    T2B1 = 'T2B1',
+}`,
+    '',
+);
 lines.push(content);
 
 // create custom definition

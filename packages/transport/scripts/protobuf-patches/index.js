@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 
 const UINT_TYPE = 'UintType';
+const DeviceModelInternal = 'DeviceModelInternal';
 
 // type rule fixes, ideally it should not be here
 const RULE_PATCH = {
@@ -111,6 +112,7 @@ const TYPE_PATCH = {
     'Features.auto_lock_delay_ms': 'number | null',
     'Features.display_rotation': 'number | null',
     'Features.experimental_features': 'boolean | null',
+    'Features.internal_model': DeviceModelInternal,
     'HDNodePathType.node': 'HDNodeType | string',
     'FirmwareUpload.payload': 'Buffer | ArrayBuffer',
     'EthereumGetAddress.encoded_network': 'ArrayBuffer',
