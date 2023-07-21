@@ -9,8 +9,12 @@ packages/suite-data/files/bin/tor/mac-*/tor filter=lfs diff=lfs merge=lfs -text
 packages/suite-data/files/bin/tor/win-*/*.dll filter=lfs diff=lfs merge=lfs -text
 packages/suite-data/files/bin/tor/win-*/tor.exe filter=lfs diff=lfs merge=lfs -text
 packages/integration-tests/projects/suite-web/snapshots/** filter=lfs diff=lfs merge=lfs -text
-packages/connect-common/files/firmware/1/*.bin filter=lfs diff=lfs merge=lfs -text
-packages/connect-common/files/firmware/2/*.bin filter=lfs diff=lfs merge=lfs -text
+packages/connect-common/files/firmware/t1b1/*.bin filter=lfs diff=lfs merge=lfs -text
+packages/connect-common/files/firmware/t2b1/*.bin filter=lfs diff=lfs merge=lfs -text
+packages/connect-common/files/firmware/t2t1/*.bin filter=lfs diff=lfs merge=lfs -text
+packages/connect-common/files/devkit/firmware/t1b1/*.bin filter=lfs diff=lfs merge=lfs -text
+packages/connect-common/files/devkit/firmware/t2b1/*.bin filter=lfs diff=lfs merge=lfs -text
+packages/connect-common/files/devkit/firmware/t2t1/*.bin filter=lfs diff=lfs merge=lfs -text
 # Changelog to be merged via union always.
 CHANGELOG.md merge=union
 packages/suite-data/files/bin/coinjoin/linux-arm64/WalletWasabi.WabiSabiClientLibrary filter=lfs diff=lfs merge=lfs -text
