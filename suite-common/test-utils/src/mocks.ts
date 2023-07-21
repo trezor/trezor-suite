@@ -1,7 +1,7 @@
 /* WARNING! This file should be imported ONLY in tests! */
 /* eslint-disable require-await */
 
-import { AccountUtxo, Device, Features } from '@trezor/connect';
+import { AccountUtxo, Device, Features, DeviceModelInternal } from '@trezor/connect';
 import {
     TrezorDevice,
     GuideNode,
@@ -17,7 +17,7 @@ import {
     BlockchainNetworks,
 } from '@suite-common/wallet-types';
 import { networksCompatibility } from '@suite-common/wallet-config';
-import { DeviceModel, DeviceInternalModel } from '@trezor/device-utils';
+import { DeviceModel } from '@trezor/device-utils';
 
 // in-memory implementation of indexedDB
 import 'fake-indexeddb/auto';
@@ -111,7 +111,7 @@ const getDeviceFeatures = (feat?: Partial<Features>): Features => ({
     needs_backup: false,
     flags: 0,
     model: DeviceModel.TT,
-    internal_model: DeviceInternalModel.TT,
+    internal_model: DeviceModelInternal.T2T1,
     fw_major: null,
     fw_minor: null,
     fw_patch: null,

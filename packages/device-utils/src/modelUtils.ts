@@ -1,3 +1,5 @@
+import { DeviceModelInternal } from '@trezor/connect';
+
 import { PartialDevice } from './types';
 
 export enum DeviceModel {
@@ -7,20 +9,13 @@ export enum DeviceModel {
     UNKNOWN = '',
 }
 
-export enum DeviceInternalModel {
-    T1 = 'T1B1',
-    TT = 'T2T1',
-    T2B1 = 'T2B1',
-    UNKNOWN = '',
-}
-
-export const getDeviceDisplayName = (deviceModel: DeviceModel) => {
-    switch (deviceModel) {
-        case DeviceModel.T1:
+export const getDeviceDisplayName = (deviceModelInternal?: DeviceModelInternal) => {
+    switch (deviceModelInternal) {
+        case DeviceModelInternal.T1B1:
             return 'Trezor Model One';
-        case DeviceModel.TT:
+        case DeviceModelInternal.T2T1:
             return 'Trezor Model T';
-        case DeviceModel.T2B1:
+        case DeviceModelInternal.T2B1:
             return 'Trezor Model R';
         default:
             console.error('Unknown Trezor device');

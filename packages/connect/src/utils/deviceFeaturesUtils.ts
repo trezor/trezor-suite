@@ -1,7 +1,7 @@
 import { versionCompare } from './versionUtils';
 import { PROTO } from '../constants';
 import { config } from '../data/config';
-import type { Features, CoinInfo, UnavailableCapabilities } from '../types';
+import { Features, CoinInfo, UnavailableCapabilities, DeviceModelInternal } from '../types';
 
 const DEFAULT_CAPABILITIES_T1: PROTO.Capability[] = [
     'Capability_Bitcoin',
@@ -140,13 +140,12 @@ export const parseRevision = (features: Features) => {
     return /^([a-f0-9])*$/gi.test(revisionUtf8) ? revisionUtf8 : revision;
 };
 
-export const ensureInternalModelFeature = (model: Features['model']) => {
+export const ensureInternalModelFeature = (model: Features['model']): DeviceModelInternal => {
     switch (model.toUpperCase()) {
-        case '1':
-            return 'T1B1';
         case 'T':
-            return 'T2T1';
+            return DeviceModelInternal.T2T1;
+        case '1':
         default:
-            return '';
+            return DeviceModelInternal.T1B1;
     }
 };

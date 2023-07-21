@@ -53,6 +53,7 @@ const CoinsList = ({
 
                 const firmwareVersion = getFirmwareVersion(device);
 
+                // TODO
                 const supportField = deviceModel && support?.[deviceModel];
                 const supportedBySuite =
                     !firmwareVersion ||
@@ -87,7 +88,9 @@ const CoinsList = ({
                                 <Translation
                                     id={tooltipString}
                                     values={{
-                                        deviceDisplayName: getDeviceDisplayName(deviceModel),
+                                        deviceDisplayName: getDeviceDisplayName(
+                                            device?.features?.internal_model,
+                                        ),
                                     }}
                                 />
                             )
