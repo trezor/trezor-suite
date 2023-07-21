@@ -6,7 +6,7 @@ import { parseFirmware } from './firmwareInfo';
 import { parseBridgeJSON } from './transportInfo';
 import { config } from './config';
 
-import type { ConnectSettings } from '../types';
+import { ConnectSettings, DeviceModelInternal } from '../types';
 
 type AssetCollection = { [key: string]: JSON };
 
@@ -40,8 +40,9 @@ export class DataManager {
         });
 
         // parse firmware definitions
-        parseFirmware(this.assets['firmware-t1'], 1);
-        parseFirmware(this.assets['firmware-t2'], 2);
+        parseFirmware(this.assets['firmware-t1b1'], DeviceModelInternal.T1B1);
+        parseFirmware(this.assets['firmware-t2t1'], DeviceModelInternal.T2T1);
+        parseFirmware(this.assets['firmware-t2b1'], DeviceModelInternal.T2B1);
     }
 
     static getProtobufMessages() {
