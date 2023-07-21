@@ -24,6 +24,18 @@ export const getEnv = () => {
 
 declare let global: any;
 
+const processQueryString = (url: string, keys: string[]) => {
+    const searchParams = new URLSearchParams(url);
+    const result: Record<string, string> = {};
+    const paramArray = Array.from(searchParams.entries());
+    paramArray.forEach(([key, value]) => {
+        if (keys.includes(key)) {
+            result[key] = decodeURIComponent(value);
+        }
+    });
+    return result;
+};
+
 /**
  * Settings from host
  * @param input Partial<ConnectSettings>
@@ -43,15 +55,21 @@ export const parseConnectSettings = (input: Partial<ConnectSettings> = {}): Conn
         settings.debug = true;
     }
 
-    // For debugging purposes `connectSrc` could be defined in url query of hosting page. Usage:
-    // https://3rdparty-page.com/?trezor-connect-src=https://localhost:8088/
     if (typeof window !== 'undefined' && typeof window.location?.search === 'string') {
-        const vars = window.location.search.split('&');
-        const customUrl = vars.find(v => v.indexOf('trezor-connect-src') >= 0);
-        if (customUrl) {
-            const [, connectSrc] = customUrl.split('=');
-            settings.connectSrc = decodeURIComponent(connectSrc);
+        const query = processQueryString(window.location.search, [
+            'trezor-connect-src',
+            'trust-issues',
+        ]);
+        // For debugging purposes `connectSrc` could be defined in url query of hosting page. Usage:
+        // https://3rdparty-page.com/?trezor-connect-src=https://localhost:8088/
+        if (query['trezor-connect-src']) {
             settings.debug = true;
+            settings.connectSrc = query['trezor-connect-src'];
+        }
+
+        // Even if connect is running on trusted domain we can override it with `trust-issues=true` query param.
+        if (query['trust-issues'] === 'true') {
+            settings.trustedHost = false;
         }
     }
 

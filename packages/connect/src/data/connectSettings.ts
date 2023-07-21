@@ -67,6 +67,11 @@ export const parseConnectSettings = (input: Partial<ConnectSettings> = {}) => {
         }
     }
 
+    // trust level can only be lowered by implementator!
+    if (input.trustedHost === false) {
+        settings.trustedHost = input.trustedHost;
+    }
+
     if (typeof input.connectSrc === 'string' && input.connectSrc?.startsWith('http')) {
         settings.connectSrc = corsValidator(input.connectSrc);
     } else if (settings.trustedHost) {

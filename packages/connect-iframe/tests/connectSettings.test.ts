@@ -1,6 +1,7 @@
 import { parseConnectSettings } from '../src/connectSettings';
 
 declare let window: any; // Window['location'] types doesn't allow location mocks
+declare let navigator: any;
 
 describe('connect-iframe parseConnectSettings', () => {
     const { location } = window;
@@ -12,6 +13,7 @@ describe('connect-iframe parseConnectSettings', () => {
             href: 'https://connect.trezor.io',
             toString: () => 'https://connect.trezor.io',
         };
+        navigator.usb = {};
     });
     afterAll(() => {
         window.location = location; // restore default
@@ -28,8 +30,10 @@ describe('connect-iframe parseConnectSettings', () => {
         });
     });
 
-    it('WebUsbTransport disabled in popup mode', () => {
-        expect(parseConnectSettings({ transports: ['WebUsbTransport'] }, '')).toMatchObject({
+    it('WebUsbTransport disabled when host origin does not match iframe origin', () => {
+        expect(
+            parseConnectSettings({ transports: ['WebUsbTransport'] }, 'www.hostorigin.meow'),
+        ).toMatchObject({
             transports: [],
         });
 
@@ -53,7 +57,7 @@ describe('connect-iframe parseConnectSettings', () => {
         });
 
         expect(parseConnectSettings({ popup: true, debug: true }, '')).toMatchObject({
-            trustedHost: false,
+            trustedHost: true,
             popup: true,
             debug: true,
         });
@@ -71,7 +75,7 @@ describe('connect-iframe parseConnectSettings', () => {
         expect(
             parseConnectSettings({ popup: true, debug: true }, 'https://connect.trezor.io'),
         ).toMatchObject({
-            trustedHost: false,
+            trustedHost: true, // because of whitelisted origin
             popup: true,
             debug: true, // because of whitelisted origin
         });
