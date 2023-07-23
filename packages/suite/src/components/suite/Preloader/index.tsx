@@ -7,7 +7,7 @@ import PrerequisiteScreen from './components/PrerequisiteScreen';
 import { useDiscovery, useSelector, useActions } from 'src/hooks/suite';
 import { Onboarding } from 'src/views/onboarding';
 import { getPrerequisites } from 'src/utils/suite/prerequisites';
-import ErrorPage from 'src/views/suite/error';
+import { ErrorPage } from 'src/views/suite/ErrorPage';
 import { useGuideKeyboard } from 'src/hooks/guide';
 import { init } from 'src/actions/suite/initAction';
 
