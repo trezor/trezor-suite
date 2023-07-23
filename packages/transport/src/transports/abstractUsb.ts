@@ -48,7 +48,7 @@ export abstract class AbstractUsbTransport extends AbstractTransport {
         this.transportInterface.on('transport-interface-change', devices => {
             // 2. we signal this to sessions background
             this.sessionsClient.enumerateDone({
-                paths: devices.map(d => d.path),
+                paths: devices,
             });
         });
         // 3. based on 2.sessions background distributes information about descriptors change to all clients

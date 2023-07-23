@@ -15,12 +15,19 @@ type ConstructorParams = ConstructorParameters<typeof AbstractInterface>[0] & {
     usbInterface: USB;
 };
 
+type TransportInterfaceDevice = {
+    session?: null | string;
+    path: string;
+    device: USBDevice;
+};
+
 /**
  * Local error. We cast it to "device disconnected during action" from bridge as it means the same
  */
 const INTERFACE_DEVICE_DISCONNECTED = 'The device was disconnected.' as const;
 
-export class UsbInterface extends AbstractInterface<USBDevice> {
+export class UsbInterface extends AbstractInterface {
+    devices: TransportInterfaceDevice[] = [];
     usbInterface: ConstructorParams['usbInterface'];
 
     constructor({ usbInterface, logger }: ConstructorParams) {
@@ -34,7 +41,10 @@ export class UsbInterface extends AbstractInterface<USBDevice> {
 
         this.usbInterface.onconnect = event => {
             this.devices = [...this.devices, ...this.createDevices([event.device])];
-            this.emit('transport-interface-change', this.devices);
+            this.emit(
+                'transport-interface-change',
+                this.devices.map(d => d.path),
+            );
         };
 
         this.usbInterface.ondisconnect = event => {
@@ -50,7 +60,10 @@ export class UsbInterface extends AbstractInterface<USBDevice> {
             const index = this.devices.findIndex(d => d.path === device.serialNumber);
             if (index > -1) {
                 this.devices.splice(index, 1);
-                this.emit('transport-interface-change', this.devices);
+                this.emit(
+                    'transport-interface-change',
+                    this.devices.map(d => d.path),
+                );
             } else {
                 this.emit('transport-interface-error', ERRORS.DEVICE_NOT_FOUND);
                 this.logger.error('device that should be removed does not exist in state');
