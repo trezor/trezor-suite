@@ -4,12 +4,6 @@ import { success, error, unknownError } from '../utils/result';
 
 import * as ERRORS from '../errors';
 
-type TransportInterfaceDevice<DeviceType> = {
-    session?: null | string;
-    path: string;
-    device: DeviceType;
-};
-
 type ConstructorParams = {
     logger?: Logger;
 };
@@ -20,11 +14,10 @@ type ConstructorParams = {
  * - navigator.usb
  * This is not public API. Only a building block which is used in src/transports
  */
-export abstract class AbstractInterface<DeviceType> extends TypedEmitter<{
-    'transport-interface-change': TransportInterfaceDevice<DeviceType>[];
+export abstract class AbstractInterface extends TypedEmitter<{
+    'transport-interface-change': string[];
     'transport-interface-error': typeof ERRORS.DEVICE_NOT_FOUND | typeof ERRORS.DEVICE_UNREADABLE;
 }> {
-    devices: TransportInterfaceDevice<DeviceType>[] = [];
     logger: Logger;
 
     constructor({ logger }: ConstructorParams) {
@@ -55,6 +48,7 @@ export abstract class AbstractInterface<DeviceType> extends TypedEmitter<{
         | typeof ERRORS.INTERFACE_DATA_TRANSFER
         | typeof ERRORS.DEVICE_DISCONNECTED_DURING_ACTION
         | typeof ERRORS.UNEXPECTED_ERROR
+        | typeof ERRORS.ABORTED_BY_TIMEOUT
     >;
 
     /**
