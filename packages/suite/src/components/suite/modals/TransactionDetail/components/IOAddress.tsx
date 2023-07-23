@@ -1,5 +1,5 @@
 import { HiddenPlaceholder } from 'src/components/suite/HiddenPlaceholder';
-import { Icon, Link, useTheme } from '@trezor/components';
+import { Icon, Link, useTheme, variables } from '@trezor/components';
 import React, { useState } from 'react';
 import { copyToClipboard } from '@trezor/dom-utils';
 import styled, { css } from 'styled-components';
@@ -28,23 +28,32 @@ const onHoverTextOverflowContainerHover = css`
     }
 `;
 
-const TextOverflowContainer = styled.div`
+const TextOverflowContainer = styled.div<{ isWalletAddress: boolean }>`
     position: relative;
     display: inline-flex;
-    max-width: 100%;
+    max-width: ${({ isWalletAddress }) => (isWalletAddress ? '40ch' : '100%')};
     overflow: hidden;
     color: ${({ theme }) => theme.TYPE_DARK_GREY};
-    cursor: pointer;
+    cursor: ${({ isWalletAddress }) => (isWalletAddress ? 'text' : 'cursor')};
     user-select: none;
+    color: ${({ isWalletAddress }) => (isWalletAddress ? '#959596' : '#eaebed')};
 
     @media (hover: none) {
-        ${onHoverTextOverflowContainerHover}
+        ${({ isWalletAddress }) => !isWalletAddress && onHoverTextOverflowContainerHover}
     }
 
     :hover,
     :focus {
-        ${onHoverTextOverflowContainerHover}
+        ${({ isWalletAddress }) => !isWalletAddress && onHoverTextOverflowContainerHover}
     }
+
+    ${({ isWalletAddress }) =>
+        isWalletAddress &&
+        css`
+            @media screen and (max-width: ${variables.SCREEN_SIZE.XL}) {
+                max-width: 70%;
+            }
+        `}
 `;
 
 const SpanTextStart = styled.span`
@@ -61,9 +70,16 @@ const SpanTextEnd = styled.span`
 interface IOAddressProps {
     explorerUrl?: string;
     txAddress?: string;
+    showCopyIcon?: boolean;
+    isWalletAddress?: boolean;
 }
 
-export const IOAddress = ({ txAddress, explorerUrl }: IOAddressProps) => {
+export const IOAddress = ({
+    txAddress,
+    explorerUrl,
+    showCopyIcon = true,
+    isWalletAddress = false,
+}: IOAddressProps) => {
     const [isClicked, setIsClicked] = useState(false);
     const theme = useTheme();
 
@@ -80,6 +96,7 @@ export const IOAddress = ({ txAddress, explorerUrl }: IOAddressProps) => {
     return (
         <HiddenPlaceholder>
             <TextOverflowContainer
+                isWalletAddress={isWalletAddress}
                 onMouseLeave={() => setIsClicked(false)}
                 data-test="@tx-detail/txid-value"
                 id={txAddress}
@@ -92,9 +109,15 @@ export const IOAddress = ({ txAddress, explorerUrl }: IOAddressProps) => {
                         <SpanTextEnd onClick={copy}>{txAddress.slice(-4)}</SpanTextEnd>
                     </>
                 )}
-                <IconWrapper onClick={copy}>
-                    <Icon icon={isClicked ? 'CHECK' : 'COPY'} size={12} color={theme.BG_WHITE} />
-                </IconWrapper>
+                {showCopyIcon && (
+                    <IconWrapper onClick={copy}>
+                        <Icon
+                            icon={isClicked ? 'CHECK' : 'COPY'}
+                            size={12}
+                            color={theme.BG_WHITE}
+                        />
+                    </IconWrapper>
+                )}
                 {explorerUrl ? (
                     <IconWrapper>
                         <Link size="tiny" variant="nostyle" href={`${explorerUrl}${txAddress}`}>

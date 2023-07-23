@@ -1,6 +1,6 @@
 import React from 'react';
 
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { HiddenPlaceholder, Sign } from 'src/components/suite';
 import { NetworkSymbol } from 'src/types/wallet';
 import { NETWORKS } from 'src/config/wallet';
@@ -25,8 +25,19 @@ const Value = styled.span`
     text-overflow: ellipsis;
 `;
 
-const Symbol = styled.span`
+const Symbol = styled.span<{
+    isTruncated?: boolean;
+}>`
     word-break: initial;
+    ${({ isTruncated }) =>
+        isTruncated &&
+        css`
+            display: inline-block;
+            white-space: nowrap;
+            overflow: clip;
+            text-overflow: ellipsis;
+            max-width: 8ch;
+        `}
 `;
 
 export interface FormattedCryptoAmountProps {
@@ -38,6 +49,7 @@ export interface FormattedCryptoAmountProps {
     isRawString?: boolean;
     'data-test'?: string;
     className?: string;
+    isTruncated?: boolean;
 }
 
 export const FormattedCryptoAmount = ({
@@ -49,6 +61,7 @@ export const FormattedCryptoAmount = ({
     isRawString,
     'data-test': dataTest,
     className,
+    isTruncated,
 }: FormattedCryptoAmountProps) => {
     const locale = useSelector(state => state.suite.settings.language);
 
@@ -95,7 +108,7 @@ export const FormattedCryptoAmount = ({
 
             <Value data-test={dataTest}>{formattedValue}</Value>
 
-            {symbol && <Symbol>&nbsp;{formattedSymbol}</Symbol>}
+            {symbol && <Symbol isTruncated={isTruncated}>&nbsp;{formattedSymbol}</Symbol>}
         </Container>
     );
 

@@ -59,6 +59,7 @@ export const TokenTransfer = ({
                         value={formatAmount(transfer.amount, transfer.decimals)}
                         symbol={transfer.symbol}
                         signValue={operation}
+                        isTruncated
                     />
                 )
             }

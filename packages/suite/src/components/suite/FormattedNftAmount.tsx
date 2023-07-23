@@ -18,7 +18,7 @@ const Symbol = styled.div`
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    max-width: 120px;
+    max-width: 8ch;
 `;
 
 const StyledTrezorLink = styled(TrezorLink)`
@@ -35,7 +35,7 @@ const Id = styled.div`
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    max-width: 145px;
+    max-width: 10ch;
 `;
 
 export interface FormattedNftAmountProps {

@@ -4,6 +4,7 @@ import { WalletAccountTransaction } from 'src/types/wallet';
 import { ArrayElement } from '@trezor/type-utils';
 import { Translation, AddressLabeling } from 'src/components/suite';
 import { AccountMetadata } from 'src/types/suite/metadata';
+import { IOAddress } from 'src/components/suite/modals/TransactionDetail/components/IOAddress';
 
 const TruncatedSpan = styled.span<{ isBlurred?: boolean }>`
     overflow: hidden;
@@ -37,8 +38,13 @@ export const TargetAddressLabel = ({ target, type, accountMetadata }: TargetAddr
                     // eslint-disable-next-line react/no-array-index-key
                     <AddressLabeling key={i} address={a} />
                 ) : (
-                    // eslint-disable-next-line react/no-array-index-key
-                    <span key={i}>{accountMetadata?.addressLabels[a] || a}</span>
+                    <IOAddress
+                        // eslint-disable-next-line react/no-array-index-key
+                        key={i}
+                        txAddress={accountMetadata?.addressLabels[a] || a}
+                        showCopyIcon={false}
+                        isWalletAddress
+                    />
                 ),
             )}
         </TruncatedSpan>

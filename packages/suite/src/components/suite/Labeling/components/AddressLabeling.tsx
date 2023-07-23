@@ -2,6 +2,7 @@ import React from 'react';
 import { findAccountsByAddress } from '@suite-common/wallet-utils';
 import { useSelector } from 'src/hooks/suite';
 import { AccountLabeling } from './AccountLabeling';
+import { IOAddress } from '../../modals/TransactionDetail/components/IOAddress';
 
 interface AddressLabelingProps {
     address?: string | null;
@@ -18,7 +19,9 @@ export const AddressLabeling = ({ address, knownOnly }: AddressLabelingProps) =>
     const relevantAccounts = findAccountsByAddress(address, accounts);
 
     if (relevantAccounts.length < 1) {
-        return !knownOnly ? <span>{address}</span> : null;
+        return !knownOnly ? (
+            <IOAddress txAddress={address} showCopyIcon={false} isWalletAddress />
+        ) : null;
     }
 
     return <AccountLabeling account={relevantAccounts[0]} />;
