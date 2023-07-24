@@ -42,3 +42,12 @@ export const deriveAddresses = (
         : [];
     return prederived.slice(fromPrederived, fromPrederived + countPrederived).concat(derived);
 };
+
+// https://github.com/websockets/ws/blob/0b235e0f9b650b1bdcbdb974cbeaaaa6a0797855/lib/websocket.js#L891
+export const isWsError403 = (error: Error) => error?.message === 'Unexpected server response: 403';
+
+// Randomize identity password to reset TOR circuit for this identity
+export const resetIdentityCircuit = (identity: string) => {
+    const [user] = identity.split(':');
+    return `${user}:${Math.random().toString(36).slice(2)}`;
+};

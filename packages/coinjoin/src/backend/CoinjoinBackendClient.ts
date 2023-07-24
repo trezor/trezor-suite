@@ -11,6 +11,7 @@ import type {
 import type { CoinjoinBackendSettings, Logger } from '../types';
 import { FILTERS_REQUEST_TIMEOUT, HTTP_REQUEST_GAP, HTTP_REQUEST_TIMEOUT } from '../constants';
 import { CoinjoinWebsocketController, BlockbookWS } from './CoinjoinWebsocketController';
+import { isWsError403, resetIdentityCircuit } from './backendUtils';
 
 type CoinjoinBackendClientSettings = CoinjoinBackendSettings & {
     timeout?: number;
@@ -135,9 +136,22 @@ export class CoinjoinBackendClient {
         ...params: Parameters<BlockbookWS[T]>
     ) {
         return scheduleAction(
-            signal => this.blockbookWS({ ...options, signal }, method, ...params),
+            signal =>
+                this.blockbookWS({ ...options, signal }, method, ...params).catch(
+                    this.onBlockbookWSError(options),
+                ),
             { attempts: 3, timeout: HTTP_REQUEST_TIMEOUT, gap: HTTP_REQUEST_GAP, ...options },
         );
+    }
+
+    private onBlockbookWSError(options?: RequestOptions) {
+        return (error: Error) => {
+            // switch identity in case of 403 (possibly blocked by Cloudflare)
+            if (isWsError403(error) && options?.identity) {
+                options.identity = resetIdentityCircuit(options.identity);
+            }
+            throw error;
+        };
     }
 
     protected async blockbookWS<T extends keyof BlockbookWS>(
@@ -192,16 +206,11 @@ export class CoinjoinBackendClient {
             // hash does not exist, probably reorg
             case 404:
                 return { status: 'not-found' };
-            // possibly blocked by cloudflare
-            case 403: {
-                const [identity] = this.identityWabisabi.split(':');
-                // set random password to reset TOR circuit for this identity
-                this.identityWabisabi = `${identity}:${Math.random()}`;
+            default: {
+                const error = await response.json().catch(() => response.statusText);
+                throw new Error(`${response.status}: ${error}`);
             }
-            // no default
         }
-        const error = await response.json().catch(() => response.statusText);
-        throw new Error(`${response.status}: ${error}`);
     }
 
     fetchMempoolTxids(options?: RequestOptions): Promise<string[]> {
@@ -227,12 +236,21 @@ export class CoinjoinBackendClient {
     ): Promise<T> {
         return scheduleAction(
             signal =>
-                this.wabisabiGet(path, query, {
-                    ...options,
-                    signal, // "global" signal is overriden by signal passed from scheduleAction
-                }).then(handler.bind(this)),
+                this.wabisabiGet(path, query, { ...options, signal }) // "global" signal is overriden by signal passed from scheduleAction
+                    .then(this.onWabisabiGetResponse(options))
+                    .then(handler.bind(this)),
             { attempts: 3, timeout: HTTP_REQUEST_TIMEOUT, gap: HTTP_REQUEST_GAP, ...options }, // default attempts/timeout could be overriden by options
         );
+    }
+
+    private onWabisabiGetResponse(options?: RequestOptions) {
+        return (response: Response) => {
+            // switch identity in case of 403 (possibly blocked by Cloudflare)
+            if (response.status === 403 && options?.identity) {
+                options.identity = resetIdentityCircuit(options.identity);
+            }
+            return response;
+        };
     }
 
     protected wabisabiGet(path: string, query?: Record<string, any>, options?: RequestOptions) {

@@ -2,6 +2,7 @@ import { BlockbookAPI } from '@trezor/blockchain-link/lib/workers/blockbook/webs
 
 import { HTTP_REQUEST_TIMEOUT } from '../constants';
 import type { Logger } from '../types';
+import { isWsError403, resetIdentityCircuit } from './backendUtils';
 
 export type BlockbookWS = Pick<
     BlockbookAPI,
@@ -26,7 +27,7 @@ type CoinjoinWebsocketParams = {
 };
 
 export class CoinjoinWebsocketController {
-    private readonly defaultIdentity = 'Default';
+    private defaultIdentity = 'WebsocketDefault';
 
     protected readonly sockets: { [id: SocketId]: BlockbookAPI } = {};
     protected readonly logger;
@@ -56,6 +57,9 @@ export class CoinjoinWebsocketController {
             } catch (err) {
                 delete this.sockets[socketId];
                 socket.dispose();
+                if (isWsError403(err) && identity === this.defaultIdentity) {
+                    this.defaultIdentity = resetIdentityCircuit(this.defaultIdentity);
+                }
                 throw err;
             }
             this.logger?.debug(`WS OPENED ${socketId}`);
