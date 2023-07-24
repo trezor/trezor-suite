@@ -41,6 +41,8 @@ const TransactionAddressAmount = ({
                     network={symbol}
                     isBalance={false}
                     variant="label"
+                    numberOfLines={1}
+                    adjustsFontSizeToFit
                 />
             ) : (
                 <EthereumTokenAmountFormatter
@@ -48,6 +50,8 @@ const TransactionAddressAmount = ({
                     symbol={symbol}
                     decimals={decimals}
                     variant="label"
+                    numberOfLines={1}
+                    adjustsFontSizeToFit
                 />
             ))}
     </Box>
