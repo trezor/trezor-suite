@@ -12,12 +12,7 @@ interface UseExcludedUtxosProps extends GetExcludedUtxosProps {
  * Returns utxos which should be automatically excluded while composingTransaction.
  * Response format: { utxo_outpoint: exclusion_reason }
  */
-export const useExcludedUtxos = ({
-    account,
-    dustLimit,
-    targetAnonymity,
-    prison,
-}: UseExcludedUtxosProps) =>
+export const useExcludedUtxos = ({ account, dustLimit, targetAnonymity }: UseExcludedUtxosProps) =>
     useMemo(
         () =>
             getExcludedUtxos({
@@ -25,7 +20,6 @@ export const useExcludedUtxos = ({
                 anonymitySet: account.addresses?.anonymitySet,
                 dustLimit,
                 targetAnonymity,
-                prison,
             }),
-        [account.utxo, account.addresses?.anonymitySet, dustLimit, targetAnonymity, prison],
+        [account.utxo, account.addresses?.anonymitySet, dustLimit, targetAnonymity],
     );

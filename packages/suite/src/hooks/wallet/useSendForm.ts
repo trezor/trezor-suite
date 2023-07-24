@@ -156,7 +156,6 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
         account: state.account,
         dustLimit: state.coinFees.dustLimit,
         targetAnonymity: props.targetAnonymity,
-        prison: props.prison,
     });
 
     // declare sendFormUtils, sub-hook of useSendForm
