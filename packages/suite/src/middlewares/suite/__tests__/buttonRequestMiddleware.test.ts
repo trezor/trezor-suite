@@ -100,17 +100,15 @@ describe('buttonRequest middleware', () => {
             { type: UI.REQUEST_BUTTON, payload: { code: 'ButtonRequest_ProtectCall' } },
             {
                 type: SUITE.ADD_BUTTON_REQUEST,
-                payload: { code: 'ButtonRequest_ProtectCall' },
-                device,
+                payload: { buttonRequest: { code: 'ButtonRequest_ProtectCall' }, device },
             },
             { type: UI.REQUEST_PIN, payload: { type: 'PinMatrixRequestType_NewFirst', device } },
             {
                 type: SUITE.ADD_BUTTON_REQUEST,
-                payload: { code: 'PinMatrixRequestType_NewFirst' },
-                device,
+                payload: { buttonRequest: { code: 'PinMatrixRequestType_NewFirst' }, device },
             },
             { type: SUITE.LOCK_DEVICE, payload: false },
-            { type: SUITE.ADD_BUTTON_REQUEST, device },
+            { type: SUITE.ADD_BUTTON_REQUEST, payload: { device } },
         ]);
     });
 });

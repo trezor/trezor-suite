@@ -434,7 +434,7 @@ const deviceReducer = (state: State = initialState, action: Action): State =>
                 forget(draft, action.payload);
                 break;
             case SUITE.ADD_BUTTON_REQUEST:
-                addButtonRequest(draft, action.device, action.payload);
+                addButtonRequest(draft, action.payload.device, action.payload.buttonRequest);
                 break;
             case METADATA.SET_DEVICE_METADATA:
                 setMetadata(draft, action.payload.deviceState, action.payload.metadata);

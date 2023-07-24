@@ -143,12 +143,12 @@ const log =
                 );
                 break;
             case SUITE.ADD_BUTTON_REQUEST:
-                if (action.payload) {
+                if (action.payload.buttonRequest) {
                     api.dispatch(
                         addLog({
                             type: action.type,
                             payload: {
-                                code: action.payload.code,
+                                code: action.payload.buttonRequest.code,
                             },
                         }),
                     );

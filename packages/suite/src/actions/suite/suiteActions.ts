@@ -78,8 +78,10 @@ export type SuiteAction =
     | { type: typeof SUITE.APP_CHANGED; payload: AppState['router']['app'] }
     | {
           type: typeof SUITE.ADD_BUTTON_REQUEST;
-          device: TrezorDevice | undefined;
-          payload?: ButtonRequest;
+          payload: {
+              device: TrezorDevice | undefined;
+              buttonRequest?: ButtonRequest;
+          };
       }
     | {
           type: typeof SUITE.SET_THEME;
@@ -98,17 +100,17 @@ export const desktopHandshake = (payload: HandshakeElectron): SuiteAction => ({
 
 export const removeButtonRequests = createAction(
     SUITE.ADD_BUTTON_REQUEST,
-    (device: TrezorDevice | undefined) => ({
-        device,
-        payload: null, // Refactor: the device should be sent within payload
+    ({ device }: { device: TrezorDevice | null }) => ({
+        payload: {
+            device,
+        },
     }),
 );
 
 export const addButtonRequest = createAction(
     SUITE.ADD_BUTTON_REQUEST,
-    (device: TrezorDevice | undefined, payload: ButtonRequest) => ({
+    (payload: { device: TrezorDevice | undefined; buttonRequest: ButtonRequest }) => ({
         payload,
-        device,
     }),
 );
 

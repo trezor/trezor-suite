@@ -283,7 +283,7 @@ export const reducerActions = [
         initialState: {},
         action: {
             type: SUITE.ADD_BUTTON_REQUEST,
-            payload: { code: 'ButtonRequest_FirmwareUpdate' },
+            payload: { buttonRequest: { code: 'ButtonRequest_FirmwareUpdate' } },
         },
         result: {
             state: {

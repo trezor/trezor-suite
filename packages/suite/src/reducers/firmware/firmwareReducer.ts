@@ -1,4 +1,4 @@
-import type { AcquiredDevice, FirmwareType } from 'src/types/suite';
+import type { AcquiredDevice, FirmwareType, TrezorDevice } from 'src/types/suite';
 import { firmwareActions } from 'src/actions/firmware/firmwareActions';
 import { isAnyOf, PayloadAction } from '@reduxjs/toolkit';
 import { AppState, ButtonRequest } from 'src/types/suite';
@@ -137,8 +137,16 @@ export const prepareFirmwareReducer = createReducerWithExtraDeps(initialState, (
         })
         .addMatcher(
             isAnyOf(addButtonRequest),
-            (state, { payload }: PayloadAction<ButtonRequest>) => {
-                if (payload?.code === 'ButtonRequest_FirmwareUpdate') {
+            (
+                state,
+                {
+                    payload,
+                }: PayloadAction<{
+                    device?: TrezorDevice;
+                    buttonRequest: ButtonRequest;
+                }>,
+            ) => {
+                if (payload.buttonRequest?.code === 'ButtonRequest_FirmwareUpdate') {
                     state.status = 'waiting-for-confirmation';
                 }
             },
