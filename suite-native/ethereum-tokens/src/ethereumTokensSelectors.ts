@@ -22,7 +22,7 @@ import {
 import { selectFiatCurrencyCode, SettingsSliceRootState } from '@suite-native/module-settings';
 import { isEthereumAccountSymbol } from '@suite-common/wallet-utils';
 
-import { WalletAccountTransaction } from './types';
+import { EthereumTokenTransfer, WalletAccountTransaction } from './types';
 
 export const selectEthereumAccountTokenInfo = (
     state: AccountsRootState,
@@ -100,6 +100,14 @@ export const selectEthereumTokenHasFiatRates = (
 const isNotZeroAmountTranfer = (tokenTranfer: TokenTransfer) =>
     tokenTranfer.amount !== '' && tokenTranfer.amount !== '0';
 
+/** Is not a transaction with zero amount and no internal transfers. */
+const isNotEmptyTransaction = (transaction: WalletAccountTransaction) =>
+    transaction.amount !== '0' ||
+    (G.isArray(transaction.internalTransfers) && A.isNotEmpty(transaction.internalTransfers));
+
+const isTransactionWithTokenTransfers = (transaction: WalletAccountTransaction) =>
+    G.isArray(transaction.tokens) && A.isNotEmpty(transaction.tokens);
+
 const selectAccountTransactionsWithTokensWithFiatRates = memoizeWithArgs(
     (
         state: TransactionsRootState & FiatRatesRootState & SettingsSliceRootState,
@@ -124,14 +132,13 @@ const selectAccountTransactionsWithTokensWithFiatRates = memoizeWithArgs(
                         ...tokenTransfer,
                         symbol: tokenTransfer.symbol,
                     })),
-                ),
+                ) as EthereumTokenTransfer[],
             })),
             A.filter(
                 transaction =>
-                    transaction.amount !== '0' ||
+                    isNotEmptyTransaction(transaction) ||
                     (areTokenOnlyTransactionsIncluded &&
-                        G.isArray(transaction.tokens) &&
-                        A.isNotEmpty(transaction.tokens)),
+                        isTransactionWithTokenTransfers(transaction)),
             ),
         ) as WalletAccountTransaction[],
     { size: 500 },
