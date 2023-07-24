@@ -73,16 +73,16 @@ export const RadioButton = ({
         if (disabled) return;
         onClick(event);
     };
-    const handleKeyboard = (event: React.KeyboardEvent<HTMLElement>) => {
+    const handleKeyUp = (event: React.KeyboardEvent<HTMLElement>) => {
         if (event.code === KEYBOARD_CODE.SPACE) {
-            onClick(event);
+            handleClick(event);
         }
     };
 
     return (
         <Wrapper
             onClick={handleClick}
-            onKeyUp={handleKeyboard}
+            onKeyUp={handleKeyUp}
             tabIndex={0}
             disabled={disabled}
             data-checked={isChecked}
