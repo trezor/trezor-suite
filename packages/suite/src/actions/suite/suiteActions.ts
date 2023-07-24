@@ -96,10 +96,13 @@ export const desktopHandshake = (payload: HandshakeElectron): SuiteAction => ({
     payload,
 });
 
-export const removeButtonRequests = (device: TrezorDevice | undefined) => ({
-    type: SUITE.ADD_BUTTON_REQUEST,
-    device,
-});
+export const removeButtonRequests = createAction(
+    SUITE.ADD_BUTTON_REQUEST,
+    (device: TrezorDevice | undefined) => ({
+        device,
+        payload: null, // Refactor: the device should be sent within payload
+    }),
+);
 
 export const addButtonRequest = createAction(
     SUITE.ADD_BUTTON_REQUEST,
