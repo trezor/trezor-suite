@@ -17,6 +17,7 @@ import {
     isDeviceInBootloaderMode,
 } from '@trezor/device-utils';
 import { analyticsActions } from '@suite-common/analytics';
+import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     selectAnonymityGainToReportByAccountKey,
     selectCoinjoinAccountByKey,
@@ -210,6 +211,14 @@ const analyticsMiddleware =
                 }
                 break;
             }
+            case notificationsActions.addErrorToastWithAnalytics.type:
+                analytics.report({
+                    type: EventType.ToastError,
+                    payload: {
+                        error: action.payload.error,
+                    },
+                });
+                break;
 
             default:
                 break;

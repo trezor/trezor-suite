@@ -80,4 +80,6 @@ export enum EventType {
 
     GetDesktopApp = 'promo/desktop',
     GetMobileApp = 'promo/mobile',
+
+    ToastError = 'toast/error',
 }

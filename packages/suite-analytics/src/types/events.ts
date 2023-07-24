@@ -379,4 +379,10 @@ export type SuiteAnalyticsEvent =
           payload: {
               platform: 'ios' | 'android';
           };
+      }
+    | {
+          type: EventType.ToastError;
+          payload: {
+              error?: string;
+          };
       };

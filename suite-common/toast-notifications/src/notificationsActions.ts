@@ -36,6 +36,17 @@ export const addToast = createActionWithExtraDeps(
     }),
 );
 
+export const addErrorToastWithAnalytics = createActionWithExtraDeps(
+    `${ACTION_PREFIX}/addErrorToast`,
+    (payload: ToastPayload, { getState, extra }): NotificationEntry => ({
+        context: 'toast',
+        id: new Date().getTime(),
+        device: extra.selectors.selectCurrentDevice(getState()),
+        seen: true,
+        ...payload,
+    }),
+);
+
 // Adds a Toast if there is not one of same type visible.
 export const addToastOnce = createActionWithExtraDeps(
     `${ACTION_PREFIX}/addToastOnce`,
@@ -63,6 +74,7 @@ export const notificationsActions = {
     resetUnseen,
     remove,
     addToast,
+    addErrorToastWithAnalytics,
     addEvent,
     addToastOnce,
 };
