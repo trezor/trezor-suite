@@ -7,6 +7,7 @@ import {
     BridgeTransport,
     WebUsbTransport,
     NodeUsbTransport,
+    UdpTransport,
     Transport,
     TRANSPORT,
     Descriptor,
@@ -102,6 +103,14 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> {
                                 latestVersion: getBridgeInfo().version.join('.'),
                                 messages: this.messages,
                                 logger: transportLogger,
+                            }),
+                        );
+                        break;
+                    case 'UdpTransport':
+                        this.transports.push(
+                            new UdpTransport({
+                                logger: transportLogger,
+                                messages: this.messages,
                             }),
                         );
                         break;

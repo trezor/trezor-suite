@@ -29,6 +29,7 @@ export const Transport = () => {
 
         if (isDesktop()) {
             transports.push('NodeUsbTransport');
+            transports.push('UdpTransport');
         } else {
             transports.push('WebUsbTransport');
         }

@@ -28,3 +28,7 @@ export { WebUsbTransport } from './transports/webusb';
 
 // node only
 export { NodeUsbTransport } from './transports/nodeusb';
+export { SessionsBackground } from './sessions/background';
+export { SessionsClient } from './sessions/client';
+
+export { UdpTransport } from './transports/udp';
