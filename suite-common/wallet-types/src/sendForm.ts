@@ -45,7 +45,7 @@ export interface FormState {
     selectedUtxos: AccountUtxo[];
 }
 
-export type ExcludedUtxos = Record<string, 'low-anonymity' | 'dust' | 'prison' | undefined>;
+export type ExcludedUtxos = Record<string, 'low-anonymity' | 'dust' | undefined>;
 
 // local state of @wallet-hooks/useSendForm
 export type UseSendFormState = {

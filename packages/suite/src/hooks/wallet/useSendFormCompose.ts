@@ -102,6 +102,7 @@ export const useSendFormCompose = ({
                 network: state.network,
                 feeInfo: state.feeInfo,
                 excludedUtxos,
+                prison,
             });
         };
 
@@ -123,6 +124,7 @@ export const useSendFormCompose = ({
     }, [
         account,
         excludedUtxos,
+        prison,
         state.network,
         state.feeInfo,
         updateContext,

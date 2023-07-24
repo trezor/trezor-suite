@@ -76,7 +76,10 @@ export const composeTransaction =
         // unspendable utxos are defined in `useSendForm` hook
         const utxo = formValues.isCoinControlEnabled
             ? formValues.selectedUtxos?.map(u => ({ ...u, required: true }))
-            : account.utxo.filter(u => (u as any).required || !excludedUtxos?.[getUtxoOutpoint(u)]);
+            : account.utxo.filter(u => {
+                  const outpoint = getUtxoOutpoint(u);
+                  return (u as any).required || (!excludedUtxos?.[outpoint] && !prison?.[outpoint]);
+              });
 
         // certain change addresses might be temporary blocked by coinjoin process
         // exclude addresses which exists in "prison" dataset (see coinjoinReducer/selectBlockedUtxosByAccountKey)
