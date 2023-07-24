@@ -13,15 +13,21 @@ import { selectEthereumTokenHasFiatRates } from '@suite-native/ethereum-tokens';
 import { SettingsSliceRootState } from '@suite-native/module-settings';
 
 import { mapTransactionInputsOutputsToAddresses, sortTargetAddressesToBeginning } from './utils';
-
-export type AddressesType = 'inputs' | 'outputs';
+import { AddressesType, VinVoutAddress } from './types';
 
 const selectTransactionTargetAddresses = memoizeWithArgs(
     (state: TransactionsRootState, txid: string, accountKey: AccountKey) => {
-        const transactionTargets = selectTransactionTargets(state, txid, accountKey);
-        if (G.isNullable(transactionTargets)) return [];
+        const transaction = selectTransactionByTxidAndAccountKey(state, txid, accountKey);
 
-        return mapTransactionInputsOutputsToAddresses(transactionTargets);
+        const transactionTargets = selectTransactionTargets(state, txid, accountKey);
+        if (G.isNullable(transaction) || G.isNullable(transactionTargets)) return [];
+
+        const isSentTransactionType = transaction.type === 'sent';
+        return mapTransactionInputsOutputsToAddresses({
+            inputsOutputs: transactionTargets,
+            addressesType: 'outputs',
+            isSentTransactionType,
+        });
     },
     { size: 50 },
 );
@@ -32,15 +38,21 @@ export const selectTransactionAddresses = memoizeWithArgs(
         txid: string,
         accountKey: AccountKey,
         addressesType: AddressesType,
-    ): string[] => {
+    ): VinVoutAddress[] => {
         const transaction = selectTransactionByTxidAndAccountKey(state, txid, accountKey);
 
         if (G.isNullable(transaction)) return [];
 
-        const inputsOrOutputs =
+        const inputsOutputs =
             addressesType === 'inputs' ? transaction.details.vin : transaction.details.vout;
 
-        const addresses = mapTransactionInputsOutputsToAddresses(inputsOrOutputs);
+        const isSentTransactionType = transaction.type === 'sent';
+
+        const addresses = mapTransactionInputsOutputsToAddresses({
+            inputsOutputs,
+            addressesType,
+            isSentTransactionType,
+        });
 
         const targetAddresses = selectTransactionTargetAddresses(state, txid, accountKey);
 
