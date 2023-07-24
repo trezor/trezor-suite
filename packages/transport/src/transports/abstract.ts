@@ -58,7 +58,11 @@ export abstract class AbstractTransport extends TypedEmitter<{
         | typeof ERRORS.WRONG_RESULT_TYPE
         | typeof ERRORS.UNEXPECTED_ERROR;
 }> {
-    public abstract name: 'BridgeTransport' | 'NodeUsbTransport' | 'WebUsbTransport';
+    public abstract name:
+        | 'BridgeTransport'
+        | 'NodeUsbTransport'
+        | 'WebUsbTransport'
+        | 'UdpTransport';
     /**
      * transports with "external element" such as bridge can be outdated.
      */
