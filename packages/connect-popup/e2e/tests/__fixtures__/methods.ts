@@ -184,7 +184,7 @@ const composeTransaction = [
                 screenshot: {
                     name: 'select-fee-default-screen',
                 },
-                next: 'text=Custom >> visible=true',
+                next: '.custom-fee >> visible=true',
             },
             {
                 selector: '.send-button >> visible=true',
