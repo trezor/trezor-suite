@@ -2,7 +2,7 @@ import React from 'react';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import { Dimensions } from 'react-native';
 
-import { N } from '@mobily/ts-belt';
+import { G, N } from '@mobily/ts-belt';
 
 import { Card, Text } from '@suite-native/atoms';
 import { CryptoAmountFormatter, SignValueFormatter } from '@suite-native/formatters';
@@ -104,7 +104,7 @@ export const TransactionEventTooltip = ({
                         networkSymbol={networkSymbol}
                     />
                 )}
-                {totalAmount && (
+                {G.isNotNullable(totalAmount) && (
                     <EventTooltipRow
                         title="In total"
                         signValue={totalAmount}

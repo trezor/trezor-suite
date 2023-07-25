@@ -30,7 +30,7 @@ export const CryptoAmountFormatter = ({
 }: CryptoToFiatAmountFormatterProps) => {
     const { CryptoAmountFormatter: formatter } = useFormatters();
 
-    if (!value) return <EmptyAmountText />;
+    if (G.isNullable(value)) return <EmptyAmountText />;
 
     const maxDisplayedDecimals = decimals ?? networks[network].decimals;
 
