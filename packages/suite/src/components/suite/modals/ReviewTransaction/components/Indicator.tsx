@@ -18,12 +18,12 @@ const Dot = styled.div<{ color: string }>`
     background: ${props => props.color};
 `;
 
-export interface Props {
+export interface IndicatorProps {
     state?: 'success' | 'active';
     size?: number;
 }
 
-const Indicator = ({ state, size = 24 }: Props) => {
+const Indicator = ({ state, size = 24 }: IndicatorProps) => {
     const theme = useTheme();
 
     return (

@@ -25,14 +25,19 @@ const RefreshTime = styled.div`
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
 `;
 
-interface Props {
+interface CoinmarketRefreshTimeProps {
     isLoading: boolean;
     seconds: number;
     refetchInterval: number;
     label: ReactElement;
 }
 
-const CoinmarketRefreshTime = ({ isLoading, seconds, refetchInterval, label }: Props) => (
+const CoinmarketRefreshTime = ({
+    isLoading,
+    seconds,
+    refetchInterval,
+    label,
+}: CoinmarketRefreshTimeProps) => (
     <Wrapper>
         {!isLoading && <RefreshLabel>{label}</RefreshLabel>}
         <RefreshTime>

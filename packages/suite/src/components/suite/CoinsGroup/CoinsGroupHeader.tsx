@@ -35,7 +35,7 @@ const SettingsWrapper = styled.div<{ disabled: boolean }>`
     }
 `;
 
-interface Props {
+interface CoinsGroupHeaderProps {
     isAtLeastOneActive: boolean;
     settingsMode: boolean;
     toggleSettingsMode?: () => void;
@@ -45,7 +45,7 @@ export const CoinsGroupHeader = ({
     isAtLeastOneActive,
     settingsMode,
     toggleSettingsMode,
-}: Props) => (
+}: CoinsGroupHeaderProps) => (
     <Wrapper>
         {settingsMode && <Translation id="TR_SELECT_COIN_FOR_SETTINGS" />}
         <SettingsWrapper onClick={toggleSettingsMode} disabled={!isAtLeastOneActive}>

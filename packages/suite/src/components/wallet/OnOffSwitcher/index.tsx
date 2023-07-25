@@ -22,12 +22,12 @@ const EqualSign = styled.div`
     padding: 0 4px;
 `;
 
-interface Props {
+interface OnOffSwitcherProps {
     isOn: boolean;
     hasEqualSign?: boolean;
 }
 
-const OnOffSwitcher = ({ isOn = true, hasEqualSign = true }: Props) => (
+const OnOffSwitcher = ({ isOn = true, hasEqualSign = true }: OnOffSwitcherProps) => (
     <Wrapper>
         {hasEqualSign && <EqualSign> = </EqualSign>}
         {isOn ? (

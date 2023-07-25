@@ -21,12 +21,12 @@ const StyledButton = styled.button`
     line-height: 1;
 `;
 
-type Props = {
+type TruncateProps = {
     children: React.ReactNode;
     lines?: number;
 };
 
-const Truncate = ({ children, lines = 1 }: Props) => {
+const Truncate = ({ children, lines = 1 }: TruncateProps) => {
     const theme = useTheme();
     const [expanded, setExpanded] = useState(false);
     const [truncated, setTruncated] = useState(false);

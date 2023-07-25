@@ -11,7 +11,7 @@ const A_SIZES = {
     tiny: FONT_SIZE.TINY,
 };
 
-const A = styled.a<Props>`
+const A = styled.a<LinkProps>`
     font-size: ${props => (props.size ? A_SIZES[props.size] : 'inherit')};
     text-decoration: none;
     cursor: pointer;
@@ -48,7 +48,7 @@ const IconWrapper = styled.div`
     margin-left: 4px;
 `;
 
-interface Props {
+interface LinkProps {
     href?: string;
     to?: any;
     target?: string;
@@ -61,7 +61,7 @@ interface Props {
     iconProps?: IconProps;
 }
 
-const Link = ({ icon, iconProps, ...props }: Props) => {
+const Link = ({ icon, iconProps, ...props }: LinkProps) => {
     const theme = useTheme();
     return (
         <A
@@ -93,5 +93,5 @@ const Link = ({ icon, iconProps, ...props }: Props) => {
         </A>
     );
 };
-export type { Props as LinkProps };
+export type { LinkProps };
 export { Link };

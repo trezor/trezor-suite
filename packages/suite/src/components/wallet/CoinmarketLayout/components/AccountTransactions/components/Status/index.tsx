@@ -14,12 +14,6 @@ import {
     SavingsTradeItemStatus,
 } from 'invity-api';
 
-interface Props {
-    trade: Trade['data'];
-    tradeType: Trade['tradeType'];
-    className?: string;
-}
-
 const Wrapper = styled.div<{ color: string }>`
     display: flex;
     color: ${props => props.color};
@@ -163,7 +157,13 @@ type StatusData =
     | ReturnType<typeof getSpendTradeData>
     | ReturnType<typeof getSavingsTradeData>;
 
-const Status = ({ trade, className, tradeType }: Props) => {
+interface StatusProps {
+    trade: Trade['data'];
+    tradeType: Trade['tradeType'];
+    className?: string;
+}
+
+const Status = ({ trade, className, tradeType }: StatusProps) => {
     const theme = useTheme();
     let data: StatusData;
     switch (tradeType) {

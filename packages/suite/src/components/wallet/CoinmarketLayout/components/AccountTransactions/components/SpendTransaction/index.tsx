@@ -7,13 +7,6 @@ import { CoinmarketProviderInfo } from 'src/components/wallet';
 import { SellProviderInfo } from 'invity-api';
 import { TradeSpend } from 'src/types/wallet/coinmarketCommonTypes';
 
-interface Props {
-    trade: TradeSpend;
-    providers?: {
-        [name: string]: SellProviderInfo;
-    };
-}
-
 const Wrapper = styled.div`
     display: flex;
     flex: 1;
@@ -79,7 +72,14 @@ const ProviderColumn = styled(Column)`
     max-width: 330px;
 `;
 
-const SpendTransaction = ({ trade, providers }: Props) => {
+interface SpendTransactionProps {
+    trade: TradeSpend;
+    providers?: {
+        [name: string]: SellProviderInfo;
+    };
+}
+
+const SpendTransaction = ({ trade, providers }: SpendTransactionProps) => {
     const { date, data, tradeType } = trade;
     const { exchange } = data;
     const { cryptoAmount, cryptoCurrency, paymentId } = data;

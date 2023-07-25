@@ -17,12 +17,12 @@ const Label = styled.span`
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
-interface Props {
+interface DelimiterFormProps {
     value?: string;
     onChange: (value?: string) => void;
 }
 
-export const DelimiterForm = ({ value, onChange }: Props) => {
+export const DelimiterForm = ({ value, onChange }: DelimiterFormProps) => {
     const [custom, setCustom] = useState(false);
     const inputRef = useRef<HTMLInputElement | null>(null);
 

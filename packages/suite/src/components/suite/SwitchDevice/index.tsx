@@ -19,7 +19,6 @@ const DeviceItemsWrapper = styled.div`
 `;
 
 export const SwitchDevice = ({ cancelable, onCancel }: ForegroundAppProps) => {
-    const router = useSelector(state => state.router);
     const selectedDevice = useSelector(state => state.suite.device);
     const devices = useSelector(state => state.devices);
     const transport = useSelector(state => state.suite.transport);

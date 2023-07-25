@@ -13,12 +13,12 @@ const Left = styled.div`
 
 const Right = styled.div``;
 
-interface Props {
+interface HeaderProps {
     left: ReactElement;
     right?: ReactElement;
 }
 
-const Header = ({ left, right }: Props) => (
+const Header = ({ left, right }: HeaderProps) => (
     <Wrapper>
         {left && <Left>{left}</Left>}
         {right && <Right>{right}</Right>}

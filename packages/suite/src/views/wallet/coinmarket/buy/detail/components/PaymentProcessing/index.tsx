@@ -20,11 +20,11 @@ const StyledLink = styled(Link)`
     margin-top: 50px;
 `;
 
-interface Props {
+interface PaymentProcessingProps {
     supportUrl?: string;
 }
 
-const PaymentProcessing = ({ supportUrl }: Props) => (
+const PaymentProcessing = ({ supportUrl }: PaymentProcessingProps) => (
     <Wrapper>
         <Loader />
         <Title>

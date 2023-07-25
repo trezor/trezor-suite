@@ -5,7 +5,7 @@ import { formatNetworkAmount, formatAmount, isTestnet } from '@suite-common/wall
 import { BTC_LOCKTIME_VALUE } from '@suite-common/wallet-constants';
 import { Network, NetworkSymbol } from 'src/types/wallet';
 import { TokenInfo } from '@trezor/connect';
-import Indicator, { Props as IndicatorProps } from './Indicator';
+import Indicator, { IndicatorProps } from './Indicator';
 import OutputElement, { OutputElementLine } from './OutputElement';
 import type { Account } from 'src/types/wallet';
 

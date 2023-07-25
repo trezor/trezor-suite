@@ -32,7 +32,7 @@ const IconAnimated = styled(Icon)`
     }
 `;
 
-type Props = {
+type SelectNetworkProps = {
     networks: Network[];
     networkCanChange: boolean;
     selectedNetworks: Network['symbol'][];
@@ -44,7 +44,7 @@ export const SelectNetwork = ({
     networkCanChange,
     selectedNetworks,
     handleNetworkSelection,
-}: Props) => {
+}: SelectNetworkProps) => {
     const resetNetworkSelection = () => {
         if (networkCanChange) {
             handleNetworkSelection();

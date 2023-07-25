@@ -189,7 +189,7 @@ const ReviewRbfLeftDetailsLineRight = styled.div<{ color: string; uppercase?: bo
   `};
 `;
 
-interface Props {
+interface SummaryProps {
     estimateTime?: number;
     tx: PrecomposedTransactionFinal | TxFinalCardano;
     account: Account;
@@ -209,7 +209,7 @@ const Summary = ({
     detailsOpen,
     isRbfAction,
     onDetailsClick,
-}: Props) => {
+}: SummaryProps) => {
     const drafts = useSelector(state => state.wallet.send.drafts);
     const currentAccountKey = useSelector(
         state => state.wallet.selectedAccount.account?.key,

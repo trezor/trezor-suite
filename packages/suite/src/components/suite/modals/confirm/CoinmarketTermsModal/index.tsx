@@ -60,7 +60,7 @@ const FooterContent = styled.div`
     place-content: center;
 `;
 
-export type Props = {
+export type CoinmarketTermsModalProps = {
     decision: Deferred<boolean>;
     onCancel: () => void;
     type: 'BUY' | 'SELL' | 'EXCHANGE' | 'EXCHANGE_DEX' | 'SAVINGS' | 'P2P';
@@ -77,7 +77,7 @@ export const CoinmarketTermsModal = ({
     cryptoCurrency,
     toCryptoCurrency,
     fromCryptoCurrency,
-}: Props) => {
+}: CoinmarketTermsModalProps) => {
     const providerName = provider || 'unknown provider';
     const lowercaseType = type.toLowerCase();
     return (

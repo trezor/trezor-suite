@@ -13,12 +13,6 @@ import { getTagAndInfoNote } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { CoinmarketCryptoAmount } from 'src/views/wallet/coinmarket/common/CoinmarketCryptoAmount';
 import { CoinmarketFiatAmount } from 'src/views/wallet/coinmarket/common/CoinmarketFiatAmount';
 
-interface Props {
-    className?: string;
-    quote: SellFiatTrade;
-    amountInCrypto: boolean;
-}
-
 const Wrapper = styled.div`
     display: flex;
     flex-direction: column;
@@ -232,7 +226,13 @@ export function getQuoteError(quote: SellFiatTrade, amountInCrypto: boolean) {
     return '';
 }
 
-const Quote = ({ className, quote, amountInCrypto }: Props) => {
+interface QuoteProps {
+    className?: string;
+    quote: SellFiatTrade;
+    amountInCrypto: boolean;
+}
+
+const Quote = ({ className, quote, amountInCrypto }: QuoteProps) => {
     const theme = useTheme();
     const { selectQuote, sellInfo, needToRegisterOrVerifyBankAccount } =
         useCoinmarketSellOffersContext();

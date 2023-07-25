@@ -49,7 +49,7 @@ const Divider = styled.div`
     margin: 30px 0px 36px 0px;
 `;
 
-interface Props {
+interface AccountExceptionLayoutProps {
     title: JSX.Element | string;
     description?: JSX.Element | string;
     image?: Extract<ImageProps, { image: any }>['image'];
@@ -58,7 +58,7 @@ interface Props {
     actionComponent?: JSX.Element;
 }
 
-const AccountExceptionLayout = (props: Props) => (
+const AccountExceptionLayout = (props: AccountExceptionLayoutProps) => (
     <StyledCard>
         {props.image && <StyledImage image={props.image} />}
         {props.imageComponent && props.imageComponent}

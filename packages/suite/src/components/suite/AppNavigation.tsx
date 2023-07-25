@@ -190,7 +190,7 @@ export type AppNavigationItem = {
     isHidden?: boolean;
 };
 
-interface Props {
+interface AppNavigationProps {
     items: AppNavigationItem[];
     primaryContent?: React.ReactNode;
     maxWidth?: 'small' | 'default';
@@ -214,7 +214,7 @@ const isSubsection = (routeName: Route['name']): boolean =>
 const isSecondaryMenuOverflown = ({ primary, secondary, wrapper }: MenuWidths) =>
     primary + secondary >= wrapper;
 
-export const AppNavigation = ({ items, primaryContent, maxWidth, inView }: Props) => {
+export const AppNavigation = ({ items, primaryContent, maxWidth, inView }: AppNavigationProps) => {
     const [condensedSecondaryMenuVisible, setCondensedSecondaryMenuVisible] =
         useState<boolean>(false);
     const wrapper = useRef<HTMLDivElement>(null);

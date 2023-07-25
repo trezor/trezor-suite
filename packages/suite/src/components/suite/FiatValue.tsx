@@ -57,7 +57,7 @@ type FiatValueProps = (DefaultSourceProps | CustomSourceProps) & { className?: s
  * The function will be called (and rendered) with 1 object param: {fiatValue, fiatRateValue, fiatRateTimestamp}.
  *
  *  In case of custom source of fiat rates returned timestamp is always null;
- * @param {Props} { amount, symbol, fiatCurrency, ...props }
+ * @param {FiatValuePropsProps} { amount, symbol, fiatCurrency, ...props }
  * @returns
  */
 export const FiatValue = ({

@@ -54,11 +54,11 @@ const Content = styled.div`
         max-height: 100%;
     }
 `;
-interface Props {
+interface NotificationsProps {
     onCancel?: () => void;
 }
 
-const Notifications = (props: Props) => {
+const Notifications = (props: NotificationsProps) => {
     const notifications = useSelector(state => state.notifications);
     const [selectedTab, setSelectedTab] = useState<'important' | 'all'>('important');
     const theme = useTheme();

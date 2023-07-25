@@ -12,12 +12,12 @@ const StyledModal = styled(Modal)`
     width: 600px;
 `;
 
-type Props = {
+type ImportTransactionProps = {
     onCancel: () => any;
     decision: Extract<UserContextPayload, { type: 'import-transaction' }>['decision'];
 };
 
-export const ImportTransaction = ({ onCancel, decision }: Props) => {
+export const ImportTransaction = ({ onCancel, decision }: ImportTransactionProps) => {
     // const [mode, setMode] = useState<'upload' | 'form'>('upload'); // TODO: upload or textarea form? (fallback for upload)
     const [delimiter, setDelimiter] = useState<string | undefined>(undefined);
 

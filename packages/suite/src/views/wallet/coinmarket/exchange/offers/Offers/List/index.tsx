@@ -66,12 +66,12 @@ const RatesRow = styled.div`
     align-items: center;
 `;
 
-interface Props {
+interface ListProps {
     quotes?: ExchangeTrade[];
     type: 'float' | 'fixed' | 'dex';
 }
 
-const List = ({ quotes, type }: Props) => {
+const List = ({ quotes, type }: ListProps) => {
     const {
         quotesRequest,
         account: { symbol },

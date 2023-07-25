@@ -44,11 +44,11 @@ const SmallModal = styled(Modal)`
     width: 600px;
 `;
 
-type Props = {
+interface PassphraseProps {
     device: TrezorDevice;
-};
+}
 
-export const Passphrase = ({ device }: Props) => {
+export const Passphrase = ({ device }: PassphraseProps) => {
     const [submitted, setSubmitted] = useState(false);
     const devices = useSelector(state => state.devices);
     const authConfirmation =

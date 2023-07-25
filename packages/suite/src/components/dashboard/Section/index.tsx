@@ -19,13 +19,13 @@ const Title = styled(H3)`
 
 const Actions = styled.div``;
 
-interface Props extends React.HTMLAttributes<HTMLDivElement> {
+interface SectionProps extends React.HTMLAttributes<HTMLDivElement> {
     heading: ReactElement;
     actions?: ReactElement;
 }
 
 const Section = React.forwardRef(
-    ({ heading, actions, children, ...rest }: Props, ref: React.Ref<HTMLDivElement>) => (
+    ({ heading, actions, children, ...rest }: SectionProps, ref: React.Ref<HTMLDivElement>) => (
         <Wrapper {...rest} ref={ref}>
             <Header>
                 {heading && <Title>{heading}</Title>}

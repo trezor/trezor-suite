@@ -10,14 +10,6 @@ import QuestionTooltip from 'src/components/suite/QuestionTooltip';
 import { ExchangeInfo } from 'src/actions/wallet/coinmarketExchangeActions';
 import invityAPI from 'src/services/suite/invityAPI';
 
-interface Props {
-    selectedQuote: ExchangeTrade;
-    transactionId?: string;
-    exchangeInfo?: ExchangeInfo;
-    account: Account;
-    receiveAccount?: Account;
-}
-
 const Wrapper = styled.div`
     margin: 0 0 0 30px;
 
@@ -124,13 +116,21 @@ const AccountType = styled.span`
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
+interface CoinmarketExchangeOfferInfoProps {
+    selectedQuote: ExchangeTrade;
+    transactionId?: string;
+    exchangeInfo?: ExchangeInfo;
+    account: Account;
+    receiveAccount?: Account;
+}
+
 const CoinmarketExchangeOfferInfo = ({
     selectedQuote,
     transactionId,
     exchangeInfo,
     account,
     receiveAccount,
-}: Props) => {
+}: CoinmarketExchangeOfferInfoProps) => {
     const { exchange, receiveStringAmount, receive, sendStringAmount, send } = selectedQuote;
     const provider =
         exchangeInfo?.providerInfos && exchange ? exchangeInfo?.providerInfos[exchange] : undefined;

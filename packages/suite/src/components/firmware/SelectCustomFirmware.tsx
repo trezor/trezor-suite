@@ -24,12 +24,12 @@ const InstallButton = styled(Button)`
     margin: 36px auto 0;
 `;
 
-type Props = {
+type SelectCustomFirmwareProps = {
     device?: TrezorDevice;
     onSuccess: (fw: ArrayBuffer) => void;
 };
 
-export const SelectCustomFirmware = ({ device, onSuccess }: Props) => {
+export const SelectCustomFirmware = ({ device, onSuccess }: SelectCustomFirmwareProps) => {
     const [firmwareBinary, setFirmwareBinary] = useState<ArrayBuffer>();
 
     const onFirmwareUpload = async (

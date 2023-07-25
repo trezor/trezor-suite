@@ -14,7 +14,7 @@ const MessageWrapper = styled.span`
     text-decoration: underline solid red;
 `;
 
-export interface Props {
+export interface HelperTooltipProps {
     messageId?: string;
     isNested?: boolean;
     language?: string;
@@ -25,7 +25,13 @@ export interface Props {
 /**
  * When translationMode is enabled wraps a message with a Tooltip and adds styling to provide visual hint for translators
  */
-const HelperTooltip = ({ messageId, isNested, language, translationMode, children }: Props) => {
+const HelperTooltip = ({
+    messageId,
+    isNested,
+    language,
+    translationMode,
+    children,
+}: HelperTooltipProps) => {
     const locale = language?.replace('-', '') || 'en';
     // don't wrap with tooltip for messages that are nested in another message
     // fixes https://github.com/trezor/trezor-suite/issues/1509

@@ -20,12 +20,12 @@ const Body = styled.div`
     flex: 1;
 `;
 
-interface Props {
+interface WarnHeaderProps {
     action?: React.ReactNode;
     children?: React.ReactNode;
 }
 
-export const WarnHeader = (props: Props) => {
+export const WarnHeader = (props: WarnHeaderProps) => {
     const theme = useTheme();
 
     return (

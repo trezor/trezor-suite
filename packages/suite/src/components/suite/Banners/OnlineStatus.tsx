@@ -3,11 +3,11 @@ import * as React from 'react';
 import { Translation } from 'src/components/suite';
 import { Banner } from './Banner';
 
-interface Props {
+interface OnlineStatusProps {
     isOnline: boolean;
 }
 
-const OnlineStatus = ({ isOnline }: Props) => {
+const OnlineStatus = ({ isOnline }: OnlineStatusProps) => {
     if (isOnline) return null;
 
     return <Banner variant="critical" body={<Translation id="TR_YOU_WERE_DISCONNECTED_DOT" />} />;

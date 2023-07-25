@@ -15,7 +15,7 @@ const Wrapper = styled.div`
     flex-direction: column;
 `;
 
-interface Props {
+interface UnexpectedStateProps {
     children: JSX.Element;
     prerequisite?: PrerequisiteType;
     prerequisitesGuidePadded?: boolean;
@@ -24,7 +24,11 @@ interface Props {
 /**
  * This component handles unexpected device states across various steps in the onboarding.
  */
-const UnexpectedState = ({ children, prerequisite, prerequisitesGuidePadded }: Props) => {
+const UnexpectedState = ({
+    children,
+    prerequisite,
+    prerequisitesGuidePadded,
+}: UnexpectedStateProps) => {
     const { device } = useSelector(s => s.suite);
     const { prevDevice, activeStepId, showPinMatrix } = useOnboarding();
     const activeStep = steps.find(s => s.id === activeStepId);

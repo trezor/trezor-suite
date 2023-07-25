@@ -34,7 +34,7 @@ const Text = styled.div`
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
-interface Props {
+interface CoinmarketProviderInfoProps {
     exchange?: string;
     providers?: {
         [name: string]: {
@@ -44,7 +44,7 @@ interface Props {
     };
 }
 
-const CoinmarketProviderInfo = ({ exchange, providers }: Props) => {
+const CoinmarketProviderInfo = ({ exchange, providers }: CoinmarketProviderInfoProps) => {
     const provider = providers && exchange ? providers[exchange] : null;
     return (
         <Wrapper>

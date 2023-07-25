@@ -14,14 +14,6 @@ import { CoinmarketProviderInfo, CoinmarketPaymentType } from 'src/components/wa
 import { useWatchSavingsTrade } from 'src/hooks/wallet/useCoinmarket';
 import type { Account } from 'src/types/wallet';
 
-interface Props {
-    trade: TradeSavings;
-    account: Account;
-    providers?: {
-        [name: string]: SavingsProviderInfo;
-    };
-}
-
 const Wrapper = styled.div`
     display: flex;
     flex: 1;
@@ -102,7 +94,15 @@ const Arrow = styled.div`
     padding: 0 11px;
 `;
 
-const SavingsTransaction = ({ trade, providers, account }: Props) => {
+interface SavingsTransactionProps {
+    trade: TradeSavings;
+    account: Account;
+    providers?: {
+        [name: string]: SavingsProviderInfo;
+    };
+}
+
+const SavingsTransaction = ({ trade, providers, account }: SavingsTransactionProps) => {
     const theme = useTheme();
 
     useWatchSavingsTrade(account, trade);

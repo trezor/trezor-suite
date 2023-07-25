@@ -99,7 +99,7 @@ const Line = styled.div`
     /* border-top: 1px solid ${({ theme }) => theme.STROKE_GREY}; */
 `;
 
-interface Props extends CardProps {
+interface SecurityCardProps extends CardProps {
     variant: 'primary' | 'secondary';
     icon: IconProps['icon'];
     heading: React.ReactNode;
@@ -112,7 +112,7 @@ interface Props extends CardProps {
     };
 }
 
-const SecurityCard = ({ variant, icon, heading, description, cta, ...rest }: Props) => {
+const SecurityCard = ({ variant, icon, heading, description, cta, ...rest }: SecurityCardProps) => {
     const theme = useTheme();
     return (
         <Wrapper {...rest}>
@@ -174,5 +174,5 @@ const SecurityCard = ({ variant, icon, heading, description, cta, ...rest }: Pro
     );
 };
 
-export type { Props as SecurityCardProps };
+export type { SecurityCardProps };
 export { SecurityCard };

@@ -8,13 +8,6 @@ import { CoinmarketProviderInfo } from 'src/components/wallet';
 import { P2pProviderInfo, P2pQuote, P2pQuotesRequest } from 'invity-api';
 import { Avatar } from '../Avatar';
 
-interface Props {
-    account: Account;
-    providers?: { [name: string]: P2pProviderInfo };
-    quotesRequest: P2pQuotesRequest;
-    selectedQuote: P2pQuote;
-}
-
 const Wrapper = styled.div`
     display: flex;
     flex-direction: column;
@@ -91,7 +84,19 @@ const Dark = styled.div`
     color: ${({ theme }) => theme.TYPE_DARK_GREY};
 `;
 
-export const OfferDetails = ({ account, providers, quotesRequest, selectedQuote }: Props) => {
+interface OfferDetailsProps {
+    account: Account;
+    providers?: { [name: string]: P2pProviderInfo };
+    quotesRequest: P2pQuotesRequest;
+    selectedQuote: P2pQuote;
+}
+
+export const OfferDetails = ({
+    account,
+    providers,
+    quotesRequest,
+    selectedQuote,
+}: OfferDetailsProps) => {
     const { FiatAmountFormatter } = useFormatters();
     const { amount, currency } = quotesRequest;
     const { provider, trader, paymentWindowMinutes, confirmations } = selectedQuote;

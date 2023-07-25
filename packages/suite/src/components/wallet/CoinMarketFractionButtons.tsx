@@ -22,13 +22,17 @@ const SmallButton = styled(Button).attrs(props => ({
     margin-right: 10px;
 `;
 
-interface Props {
+interface FractionButtonsProps {
     onFractionClick: (divisor: number) => void;
     onAllClick: () => void;
     disabled?: boolean;
 }
 
-export const FractionButtons = ({ disabled, onFractionClick, onAllClick }: Props) => (
+export const FractionButtons = ({
+    disabled,
+    onFractionClick,
+    onAllClick,
+}: FractionButtonsProps) => (
     <Wrapper>
         <Left>
             <SmallButton isDisabled={disabled} onClick={() => onFractionClick(4)}>

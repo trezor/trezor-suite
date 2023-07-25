@@ -3,7 +3,7 @@ import styled, { css } from 'styled-components';
 import { variables } from '../../../config';
 import { ParagraphSize } from '../../../support/types';
 
-const getLineHeight = (size: Props['size']) => {
+const getLineHeight = (size: PProps['size']) => {
     switch (size) {
         case 'small':
             return '18px';
@@ -14,7 +14,7 @@ const getLineHeight = (size: Props['size']) => {
     }
 };
 
-const getWeight = (size: Props['weight']) => {
+const getWeight = (size: PProps['weight']) => {
     switch (size) {
         case 'normal':
             return variables.FONT_WEIGHT.REGULAR;
@@ -33,7 +33,7 @@ const P_SIZES: { [key: string]: string } = {
     tiny: variables.FONT_SIZE.TINY,
 };
 
-const Paragraph = styled.div<Props>`
+const Paragraph = styled.div<PProps>`
     font-size: ${props => P_SIZES[props.size || 'normal']};
     line-height: ${props => getLineHeight(props.size)};
     color: ${({ size, theme }) => (size === 'tiny' ? theme.TYPE_LIGHT_GREY : theme.TYPE_DARK_GREY)};
@@ -46,7 +46,7 @@ const Paragraph = styled.div<Props>`
         `}
 `;
 
-interface Props extends React.HTMLAttributes<HTMLDivElement> {
+interface PProps extends React.HTMLAttributes<HTMLDivElement> {
     children: React.ReactNode;
     className?: string;
     size?: ParagraphSize;
@@ -61,11 +61,11 @@ const P = ({
     weight = 'normal',
     textAlign,
     ...rest
-}: Props) => (
+}: PProps) => (
     <Paragraph className={className} size={size} textAlign={textAlign} weight={weight} {...rest}>
         {children}
     </Paragraph>
 );
 
-export type { Props as PProps };
+export type { PProps };
 export { P };

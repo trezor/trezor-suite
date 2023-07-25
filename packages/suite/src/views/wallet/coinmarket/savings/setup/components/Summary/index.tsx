@@ -42,7 +42,7 @@ const Crypto = styled.div`
     display: flex;
 `;
 
-interface Props {
+interface SummaryProps {
     fiatCurrency?: string;
     annualSavingsFiatAmount: number;
     annualSavingsCryptoAmount: string;
@@ -54,7 +54,7 @@ const Summary = ({
     annualSavingsCryptoAmount,
     annualSavingsFiatAmount,
     fiatCurrency,
-}: Props) => (
+}: SummaryProps) => (
     <SummaryWrapper>
         <Left>
             <Translation id="TR_SAVINGS_SETUP_SUMMARY_LABEL" />
