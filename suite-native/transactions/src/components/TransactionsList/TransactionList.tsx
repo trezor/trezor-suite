@@ -153,26 +153,11 @@ export const TransactionList = ({
             ]);
         }
 
-        if (areTokensIncluded) {
-            return transactionMonthKeys.flatMap(monthKey => [
-                monthKey,
-                ...accountTransactionsByMonth[monthKey].flatMap(transaction =>
-                    transaction.tokens.map(
-                        tokenTransfer =>
-                            ({
-                                ...tokenTransfer,
-                                originalTransaction: transaction,
-                            } as EthereumTokenTransferWithTx),
-                    ),
-                ),
-            ]);
-        }
-
         return transactionMonthKeys.flatMap(monthKey => [
             monthKey,
             ...accountTransactionsByMonth[monthKey],
         ]) as TransactionListItem[];
-    }, [transactions, tokenContract, areTokensIncluded]);
+    }, [transactions, tokenContract]);
 
     const renderItem = useCallback(
         ({ item, index }: { item: TransactionListItem; index: number }) => {
