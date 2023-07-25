@@ -183,7 +183,7 @@ const call: CallMethod = async params => {
         if (!_popupManager) {
             _popupManager = initPopupManager();
         }
-        _popupManager.request(true);
+        _popupManager.request();
 
         // auto init with default settings
         try {

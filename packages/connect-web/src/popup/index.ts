@@ -64,7 +64,7 @@ export class PopupManager extends EventEmitter {
         window.addEventListener('message', this.handleMessage, false);
     }
 
-    request(lazyLoad = false) {
+    request() {
         // popup request
         // TODO: ie - open immediately and hide it but post handshake after timeout
 
@@ -84,17 +84,16 @@ export class PopupManager extends EventEmitter {
         // we close it so we can open a new one.
         // This is necessary when popup window is in error state and we want to open a new one.
         if (this.popupWindow && !this.locked) {
-            this.popupWindow.close();
+            this.close();
         }
 
         const openFn = this.open.bind(this);
         this.locked = true;
 
-        const timeout =
-            lazyLoad || this.settings.env === 'webextension' ? 1 : POPUP_REQUEST_TIMEOUT;
+        const timeout = this.settings.env === 'webextension' ? 1 : POPUP_REQUEST_TIMEOUT;
         this.requestTimeout = window.setTimeout(() => {
             this.requestTimeout = 0;
-            openFn(lazyLoad);
+            openFn();
         }, timeout);
     }
 
@@ -102,11 +101,11 @@ export class PopupManager extends EventEmitter {
         this.locked = false;
     }
 
-    open(lazyLoad?: boolean) {
+    open() {
         const src = this.settings.popupSrc;
 
         this.popupPromise = createDeferred(POPUP.LOADED);
-        this.openWrapper(lazyLoad ? `${src}#loading` : src);
+        this.openWrapper(src);
 
         this.closeInterval = window.setInterval(() => {
             if (!this.popupWindow) return;
