@@ -89,7 +89,8 @@ export const ProgressContent = ({ accountKey, isWheelHovered }: ProgressContentP
         };
 
         const isLoadingIndicatorShown =
-            isLoading || (isSessionActive && !sessionDeadline && !isCoinjoinSessionBlocked);
+            isLoading ||
+            (isSessionActive && !sessionDeadline && !isCoinjoinSessionBlocked && !isWheelHovered);
         const isRunningAndHovered = isSessionActive && isWheelHovered;
         const isRunningAndBlocked = isSessionActive && isCoinjoinSessionBlocked && isPaused;
 
