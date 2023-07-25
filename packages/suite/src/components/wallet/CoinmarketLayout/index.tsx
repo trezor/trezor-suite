@@ -21,13 +21,17 @@ const BottomContent = styled.div`
     flex-direction: column;
 `;
 
-interface Props {
+interface CoinmarketLayoutProps {
     children: ReactNode;
     selectedAccount: SelectedAccountLoaded;
     onClearFormButtonClick?: () => void;
 }
 
-const CoinmarketLayout = ({ children, selectedAccount, onClearFormButtonClick }: Props) => (
+const CoinmarketLayout = ({
+    children,
+    selectedAccount,
+    onClearFormButtonClick,
+}: CoinmarketLayoutProps) => (
     <WalletLayout title="TR_NAV_TRADE" account={selectedAccount}>
         <WalletLayoutHeader title="TR_NAV_TRADE">
             {onClearFormButtonClick && (

@@ -12,14 +12,19 @@ const NoRatesMessage = styled.div`
     text-transform: none;
 `;
 
-interface Props extends Partial<typeof Tooltip> {
+interface NoRatesTooltipProps extends Partial<typeof Tooltip> {
     customText?: React.ComponentProps<typeof Translation>['id'];
     customTooltip?: React.ComponentProps<typeof Translation>['id'];
     iconOnly?: boolean;
     className?: string;
 }
 
-const NoRatesTooltip = ({ customText, iconOnly, customTooltip, className }: Props) => (
+const NoRatesTooltip = ({
+    customText,
+    iconOnly,
+    customTooltip,
+    className,
+}: NoRatesTooltipProps) => (
     <NoRatesMessage className={className}>
         {!iconOnly && <Translation id={customText || 'TR_FIAT_RATES_NOT_AVAILABLE'} />}
         <TooltipSymbol

@@ -58,11 +58,11 @@ const Description = styled.div`
     color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
 `;
 
-interface Props {
+interface LocktimeProps {
     close: () => void;
 }
 
-export const Locktime = ({ close }: Props) => {
+export const Locktime = ({ close }: LocktimeProps) => {
     const {
         network,
         register,

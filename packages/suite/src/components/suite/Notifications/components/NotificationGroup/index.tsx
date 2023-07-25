@@ -31,10 +31,10 @@ const EmptyHeadline = styled.div`
 const EmptyDescriptionP = styled(P)`
     color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
 `;
-interface Props {
+interface NotificationGroupProps {
     notifications: AppState['notifications'];
 }
-const NotificationGroup = (props: Props) => {
+const NotificationGroup = (props: NotificationGroupProps) => {
     const { seenNotifications, unseenNotifications } = getSeenAndUnseenNotifications(
         props.notifications,
     );

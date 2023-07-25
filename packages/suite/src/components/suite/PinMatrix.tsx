@@ -32,13 +32,13 @@ const Col = styled.div`
     width: 100%;
     max-width: ${PIN_MATRIX_MAX_WIDTH};
 `;
-interface Props {
+interface PinMatrixProps {
     device: TrezorDevice;
     hideExplanation?: boolean;
     invalid?: boolean;
 }
 
-export const PinMatrix = ({ device, hideExplanation, invalid }: Props) => {
+export const PinMatrix = ({ device, hideExplanation, invalid }: PinMatrixProps) => {
     const theme = useTheme();
     const [submitted, setSubmitted] = useState(false);
     const dispatch = useDispatch();

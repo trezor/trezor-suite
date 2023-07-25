@@ -13,11 +13,11 @@ const StyledModal = styled(Modal)`
     width: 600px;
 `;
 
-interface Props {
+interface DatabaseUpgradeModalProps {
     variant: 'blocking' | 'blocked';
 }
 
-const DatabaseUpgradeModal = (props: Props) => (
+const DatabaseUpgradeModal = (props: DatabaseUpgradeModalProps) => (
     <StyledModal
         heading={
             <Translation

@@ -158,10 +158,6 @@ const Content = ({ children }: Props) => (
     </motion.div>
 );
 
-interface Props {
-    children: React.ReactNode;
-}
-
 export const MoreCoins = ({ children }: Props) => {
     const [isExpanded, setExpanded] = useState(false);
     return (

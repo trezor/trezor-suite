@@ -54,11 +54,11 @@ const getPasswordScore = async (password: string) => {
     return zxcvbn.default(password).score;
 };
 
-interface Props {
+interface PasswordStrengthIndicatorProps {
     password: string;
 }
 
-const PasswordStrengthIndicator = ({ password }: Props) => {
+const PasswordStrengthIndicator = ({ password }: PasswordStrengthIndicatorProps) => {
     const [score, setScore] = useState<OptionalZXCVBNScore>();
     useEffect(() => {
         const runScoring = async () => {

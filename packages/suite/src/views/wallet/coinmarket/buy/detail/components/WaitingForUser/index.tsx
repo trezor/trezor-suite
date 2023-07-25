@@ -37,12 +37,6 @@ const PaymentButton = styled(Button)`
     margin-top: 30px;
 `;
 
-interface Props {
-    trade: BuyTrade;
-    account: Account;
-    providerName?: string;
-}
-
 const getTranslations = (tradeStatus: BuyTradeStatus | undefined) => {
     if (tradeStatus === 'WAITING_FOR_USER') {
         return {
@@ -58,7 +52,13 @@ const getTranslations = (tradeStatus: BuyTradeStatus | undefined) => {
     } as const;
 };
 
-const WaitingForUser = ({ trade, account, providerName }: Props) => {
+interface WaitingForUserProps {
+    trade: BuyTrade;
+    account: Account;
+    providerName?: string;
+}
+
+const WaitingForUser = ({ trade, account, providerName }: WaitingForUserProps) => {
     const [isWorking, setIsWorking] = useState(false);
     const dispatch = useDispatch();
 

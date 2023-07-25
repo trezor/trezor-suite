@@ -43,12 +43,12 @@ const StyledButtonPin = styled(ButtonPin)<{ blur?: boolean }>`
         `}
 `;
 
-interface Props {
+interface PinInputProps {
     isSubmitting: boolean;
     onPinSubmit: (pin: string) => void;
 }
 
-const PinInput = ({ isSubmitting, onPinSubmit }: Props) => {
+const PinInput = ({ isSubmitting, onPinSubmit }: PinInputProps) => {
     const [pin, setPin] = useState('');
 
     const onPinBackspace = useCallback(() => {

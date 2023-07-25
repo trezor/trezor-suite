@@ -31,14 +31,19 @@ const StyledTooltip = styled(Tooltip)`
     width: 100%;
 `;
 
-interface Props {
+interface AddWalletButtonProps {
     device: TrezorDevice;
     instances: AcquiredDevice[];
     addDeviceInstance: (instance: TrezorDevice) => Promise<void>;
     selectDeviceInstance: (instance: TrezorDevice) => void;
 }
 
-const AddWalletButton = ({ device, instances, addDeviceInstance, selectDeviceInstance }: Props) => {
+const AddWalletButton = ({
+    device,
+    instances,
+    addDeviceInstance,
+    selectDeviceInstance,
+}: AddWalletButtonProps) => {
     const hasAtLeastOneWallet = instances.find(d => d.state);
     // Find a "standard wallet" among user's wallet instances. If no such wallet is found, the variable is undefined.
     const emptyPassphraseWalletExists = instances.find(d => d.useEmptyPassphrase && d.state);

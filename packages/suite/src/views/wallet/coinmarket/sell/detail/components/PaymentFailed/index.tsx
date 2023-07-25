@@ -36,13 +36,13 @@ const StyledLink = styled(Link)`
     margin-bottom: 30px;
 `;
 
-interface Props {
+interface PaymentFailedProps {
     transactionId?: string;
     supportUrl?: string;
     account: Account;
 }
 
-const PaymentFailed = ({ transactionId, supportUrl, account }: Props) => {
+const PaymentFailed = ({ transactionId, supportUrl, account }: PaymentFailedProps) => {
     const dispatch = useDispatch();
 
     const goToSell = () =>

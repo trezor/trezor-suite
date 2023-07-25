@@ -14,12 +14,12 @@ const StyledInput = styled(Input)`
     box-sizing: border-box;
 `;
 
-interface Props {
+interface InputPinProps {
     value: string;
     onDeleteClick: (event?: React.MouseEvent<any>) => void;
 }
 
-const InputPin = ({ value, onDeleteClick }: Props) => {
+const InputPin = ({ value, onDeleteClick }: InputPinProps) => {
     const theme = useTheme();
 
     return (

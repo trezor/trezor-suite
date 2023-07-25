@@ -24,7 +24,7 @@ const Actions = styled.div<{ isActive: boolean }>`
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
-interface Props {
+interface PaginationProps {
     currentPage: number;
     isLastPage?: boolean;
     hasPages?: boolean;
@@ -41,7 +41,7 @@ export const Pagination = ({
     perPage,
     totalItems,
     ...rest
-}: Props) => {
+}: PaginationProps) => {
     const totalPages = Math.ceil(totalItems / perPage);
     const showPrevious = currentPage > 1;
     // array of int used for creating all page buttons

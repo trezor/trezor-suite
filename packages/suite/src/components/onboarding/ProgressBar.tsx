@@ -85,7 +85,7 @@ const Divider = styled.div`
     }
 `;
 
-interface Props {
+interface ProgressBarProps {
     steps: {
         key: string;
         label?: React.ReactNode;
@@ -94,7 +94,7 @@ interface Props {
     className?: string;
 }
 
-export const ProgressBar = ({ steps, activeStep, className }: Props) => {
+export const ProgressBar = ({ steps, activeStep, className }: ProgressBarProps) => {
     const theme = useTheme();
     return (
         <ProgressBarWrapper className={className}>

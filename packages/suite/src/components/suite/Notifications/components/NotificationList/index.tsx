@@ -11,11 +11,11 @@ const Wrapper = styled.div`
     max-width: 100%;
 `;
 
-interface Props {
+interface NotificationListProps {
     notifications: AppState['notifications'];
 }
 
-const NotificationList = ({ notifications }: Props) => (
+const NotificationList = ({ notifications }: NotificationListProps) => (
     <Wrapper>
         {notifications.map(n => (
             <NotificationRenderer key={n.id} notification={n} render={NotificationView} />

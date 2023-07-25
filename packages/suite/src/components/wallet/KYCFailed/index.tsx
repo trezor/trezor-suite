@@ -24,11 +24,11 @@ const Description = styled.div`
     line-height: 18px;
 `;
 
-interface Props {
+interface KYCFailedProps {
     providerName?: string;
 }
 
-const KYCFailed = ({ providerName }: Props) => (
+const KYCFailed = ({ providerName }: KYCFailedProps) => (
     <StyledCard>
         <Icon>
             <Image image="WARNING" />

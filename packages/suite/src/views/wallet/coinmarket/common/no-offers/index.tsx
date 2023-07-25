@@ -5,14 +5,6 @@ import { CoinmarketRefreshTime } from 'src/components/wallet';
 import { Button, Image } from '@trezor/components';
 import { InvityAPIReloadQuotesAfterSeconds } from 'src/constants/wallet/coinmarket/metadata';
 
-interface Props {
-    coinmarketRefreshTimeIsLoading: boolean;
-    coinmarketRefreshTimeSeconds: number;
-    onBackButtonClick: () => void;
-    onReloadOffersButtonClick: () => void;
-    hasLoadingFailed: boolean;
-}
-
 const NoOffersWrapper = styled.div`
     display: flex;
     justify-content: center;
@@ -44,13 +36,21 @@ const ButtonsWrapper = styled.div`
     }
 `;
 
+interface NoOffersProps {
+    coinmarketRefreshTimeIsLoading: boolean;
+    coinmarketRefreshTimeSeconds: number;
+    onBackButtonClick: () => void;
+    onReloadOffersButtonClick: () => void;
+    hasLoadingFailed: boolean;
+}
+
 const NoOffers = ({
     coinmarketRefreshTimeIsLoading,
     coinmarketRefreshTimeSeconds,
     onBackButtonClick,
     onReloadOffersButtonClick,
     hasLoadingFailed,
-}: Props) => (
+}: NoOffersProps) => (
     <NoOffersWrapper>
         <NoOffersImage>
             <Image image="CLOUDY" />

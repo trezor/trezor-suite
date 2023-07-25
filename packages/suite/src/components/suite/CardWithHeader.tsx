@@ -43,7 +43,7 @@ const Title = styled.div`
 
 const Description = styled.div``;
 
-export interface Props {
+export interface CardWithHeaderProps {
     children?: React.ReactNode;
     customHeader?: React.ReactNode;
     title?: string | React.ReactNode;
@@ -62,7 +62,7 @@ export const CardWithHeader = ({
     noVerticalPadding,
     customHeader,
     ...rest
-}: Props) => (
+}: CardWithHeaderProps) => (
     <Wrapper>
         {title && (
             <Header>

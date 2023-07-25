@@ -107,11 +107,11 @@ const StyledWarning = styled(Warning)`
     margin-bottom: 8px;
 `;
 
-interface Props {
+interface AmountProps {
     output: Partial<Output>;
     outputId: number;
 }
-export const Amount = ({ output, outputId }: Props) => {
+export const Amount = ({ output, outputId }: AmountProps) => {
     const { translationString } = useTranslation();
     const {
         account,

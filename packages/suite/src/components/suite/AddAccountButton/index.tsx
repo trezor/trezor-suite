@@ -8,13 +8,6 @@ import { openModal } from 'src/actions/suite/modalActions';
 import { Button, Tooltip, ButtonProps, useTheme } from '@trezor/components';
 import { DiscoveryStatus } from '@suite-common/wallet-constants';
 
-interface Props extends ButtonProps {
-    device: TrezorDevice | undefined;
-    noButtonLabel?: boolean;
-    closeMenu?: () => void;
-    isDisabled?: boolean;
-}
-
 const getExplanationMessage = (device: TrezorDevice | undefined, discoveryIsRunning: boolean) => {
     let message;
     if (device && !device.connected) {
@@ -25,7 +18,20 @@ const getExplanationMessage = (device: TrezorDevice | undefined, discoveryIsRunn
     return message;
 };
 
-const AddAccountButton = ({ device, isDisabled, noButtonLabel, closeMenu, ...rest }: Props) => {
+interface AddAccountButtonProps extends ButtonProps {
+    device: TrezorDevice | undefined;
+    noButtonLabel?: boolean;
+    closeMenu?: () => void;
+    isDisabled?: boolean;
+}
+
+const AddAccountButton = ({
+    device,
+    isDisabled,
+    noButtonLabel,
+    closeMenu,
+    ...rest
+}: AddAccountButtonProps) => {
     const theme = useTheme();
     const { discovery } = useDiscovery();
     const dispatch = useDispatch();

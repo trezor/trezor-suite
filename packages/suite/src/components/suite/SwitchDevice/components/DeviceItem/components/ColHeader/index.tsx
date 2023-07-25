@@ -16,13 +16,13 @@ const Text = styled.span`
     text-transform: uppercase;
 `;
 
-interface Props {
+interface ColHeaderProps {
     children?: React.ReactNode;
     tooltipContent?: TooltipProps['content'];
     tooltipOpenGuide?: TooltipProps['guideAnchor'];
 }
 
-const ColHeader = ({ children, tooltipContent, tooltipOpenGuide, ...rest }: Props) => (
+const ColHeader = ({ children, tooltipContent, tooltipOpenGuide, ...rest }: ColHeaderProps) => (
     <Wrapper {...rest}>
         {tooltipContent ? (
             <Tooltip maxWidth={285} content={tooltipContent} guideAnchor={tooltipOpenGuide} dashed>

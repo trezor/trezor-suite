@@ -5,13 +5,17 @@ import { Translation } from 'src/components/suite/Translation';
 const Wrapper = styled.div``;
 const Content = styled.div``;
 
-interface Props {
+interface VerifyAddressTooltipProps {
     isConnected: boolean;
     isAvailable: boolean;
     addressUnverified: boolean;
 }
 
-const VerifyAddressTooltip = ({ isConnected, isAvailable, addressUnverified }: Props) => (
+const VerifyAddressTooltip = ({
+    isConnected,
+    isAvailable,
+    addressUnverified,
+}: VerifyAddressTooltipProps) => (
     <Wrapper>
         {addressUnverified && (
             <Content>

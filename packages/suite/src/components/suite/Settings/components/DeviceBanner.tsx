@@ -55,7 +55,7 @@ interface DeviceBannerProps {
 export const DeviceBanner = ({ title, description }: DeviceBannerProps) => {
     const { device } = useDevice();
 
-    const transport = useSelector(state => (state.suite.transport);
+    const transport = useSelector(state => state.suite.transport);
 
     const isWebUsbTransport = isWebUsb(transport);
 

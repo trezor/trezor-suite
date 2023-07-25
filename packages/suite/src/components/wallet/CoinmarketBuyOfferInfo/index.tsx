@@ -12,15 +12,6 @@ import { Translation, AccountLabeling } from 'src/components/suite';
 import { CoinmarketCryptoAmount } from 'src/views/wallet/coinmarket/common/CoinmarketCryptoAmount';
 import { CoinmarketFiatAmount } from 'src/views/wallet/coinmarket/common/CoinmarketFiatAmount';
 
-interface Props {
-    selectedQuote: BuyTrade;
-    transactionId?: string;
-    providers?: {
-        [name: string]: BuyProviderInfo;
-    };
-    account: Account;
-}
-
 const Wrapper = styled.div`
     display: flex;
     flex-direction: column;
@@ -101,7 +92,21 @@ const TransactionIdWrapper = styled.div`
     max-width: 350px;
 `;
 
-const CoinmarketBuyOfferInfo = ({ selectedQuote, transactionId, providers, account }: Props) => {
+interface CoinmarketBuyOfferInfoProps {
+    selectedQuote: BuyTrade;
+    transactionId?: string;
+    providers?: {
+        [name: string]: BuyProviderInfo;
+    };
+    account: Account;
+}
+
+const CoinmarketBuyOfferInfo = ({
+    selectedQuote,
+    transactionId,
+    providers,
+    account,
+}: CoinmarketBuyOfferInfoProps) => {
     const {
         receiveStringAmount,
         receiveCurrency,

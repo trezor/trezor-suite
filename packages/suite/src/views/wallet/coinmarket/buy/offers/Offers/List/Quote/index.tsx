@@ -13,12 +13,6 @@ import { getTagAndInfoNote } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { CoinmarketCryptoAmount } from 'src/views/wallet/coinmarket/common/CoinmarketCryptoAmount';
 import { CoinmarketFiatAmount } from 'src/views/wallet/coinmarket/common/CoinmarketFiatAmount';
 
-interface Props {
-    className?: string;
-    quote: BuyTrade;
-    wantCrypto: boolean;
-}
-
 const Wrapper = styled.div`
     display: flex;
     flex-direction: column;
@@ -143,6 +137,12 @@ const StyledQuestionTooltip = styled(QuestionTooltip)`
     color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
 `;
 
+interface QuoteProps {
+    className?: string;
+    quote: BuyTrade;
+    wantCrypto: boolean;
+}
+
 export function getQuoteError(quote: BuyTrade, wantCrypto: boolean) {
     if (quote.error) {
         if (wantCrypto) {
@@ -228,7 +228,7 @@ export function getQuoteError(quote: BuyTrade, wantCrypto: boolean) {
     return '';
 }
 
-const Quote = ({ className, quote, wantCrypto }: Props) => {
+const Quote = ({ className, quote, wantCrypto }: QuoteProps) => {
     const theme = useTheme();
     const { selectQuote, providersInfo } = useCoinmarketBuyOffersContext();
     const { tag, infoNote } = getTagAndInfoNote(quote);

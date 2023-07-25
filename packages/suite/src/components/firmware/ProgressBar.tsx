@@ -39,7 +39,7 @@ const Percentage = styled.div`
     height: 24px;
 `;
 
-interface Props {
+interface ProgressBarProps {
     current: number; // current progress
     total: number; // total number of increments
     label: React.ReactNode;
@@ -55,7 +55,7 @@ export const ProgressBar = ({
     maintainCompletedState,
     fakeProgressDuration,
     fakeProgressBarrier = 90,
-}: Props) => {
+}: ProgressBarProps) => {
     const theme = useTheme();
     const [storedProgress, setStoreProgress] = useState(0);
     const progress = (100 / total) * current;
