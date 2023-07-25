@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { transparentize } from 'polished';
 
 import { selectAccountTransactionsWithNulls } from '@suite-common/wallet-core';
+import { isSameUtxo } from '@suite-common/wallet-utils';
 import { useSelector } from 'src/hooks/suite';
 import { Icon, variables, IconType } from '@trezor/components';
 import type { AccountUtxo } from '@trezor/connect';
@@ -68,7 +69,7 @@ export const UtxoSelectionList = ({
 
     const isChecked = (utxo: AccountUtxo) =>
         isCoinControlEnabled
-            ? selectedUtxos.some(u => u.txid === utxo.txid && u.vout === utxo.vout)
+            ? selectedUtxos.some(selected => isSameUtxo(selected, utxo))
             : composedInputs.some(u => u.prev_hash === utxo.txid && u.prev_index === utxo.vout);
 
     return (

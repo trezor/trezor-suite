@@ -1,6 +1,12 @@
 import BigNumber from 'bignumber.js';
 
-import { AccountInfo, AccountAddresses, AccountAddress, AccountTransaction } from '@trezor/connect';
+import {
+    AccountInfo,
+    AccountAddresses,
+    AccountAddress,
+    AccountTransaction,
+    AccountUtxo,
+} from '@trezor/connect';
 import { arrayDistinct, bufferUtils } from '@trezor/utils';
 import {
     networksCompatibility as NETWORKS,
@@ -917,3 +923,6 @@ export const readUtxoOutpoint = (outpoint: string) => {
     const vout = buffer.readUInt32LE(txid.length);
     return { txid: txid.toString('hex'), vout };
 };
+
+export const isSameUtxo = (a: AccountUtxo, b: AccountUtxo) =>
+    a.txid === b.txid && a.vout === b.vout;
