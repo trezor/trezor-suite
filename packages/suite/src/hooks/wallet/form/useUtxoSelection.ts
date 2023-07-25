@@ -41,7 +41,26 @@ export const useUtxoSelection = ({
     // confirmation of spending low-anonymity UTXOs - only relevant for coinjoin account
     const anonymityWarningChecked = !!watch('anonymityWarningChecked');
     // manually selected UTXOs
-    const selectedUtxos: AccountUtxo[] = watch('selectedUtxos') || [];
+    const selectedUtxos = watch('selectedUtxos', []);
+
+    // watch changes of account utxos, exclude spent utxos from the subset of selectedUtxos
+    useEffect(() => {
+        if (isCoinControlEnabled && selectedUtxos.length > 0) {
+            const spentUtxos = selectedUtxos.filter(
+                selectedUtxo =>
+                    !account.utxo?.some(
+                        u => selectedUtxo.txid === u.txid && selectedUtxo.vout === u.vout,
+                    ),
+            );
+            if (spentUtxos.length > 0) {
+                setValue(
+                    'selectedUtxos',
+                    selectedUtxos.filter(u => !spentUtxos.includes(u)),
+                );
+                composeRequest();
+            }
+        }
+    }, [isCoinControlEnabled, selectedUtxos, account.utxo, setValue, composeRequest]);
 
     const spendableUtxos: AccountUtxo[] = [];
     const lowAnonymityUtxos: AccountUtxo[] = [];
