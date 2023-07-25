@@ -29,8 +29,8 @@ const Header = styled.div`
 `;
 
 const Circle = styled.div`
-    border: 1px solid ${props => props.theme.STROKE_GREY};
-    background: ${props => props.theme.BG_WHITE};
+    border: 1px solid ${({ theme }) => theme.STROKE_GREY};
+    background: ${({ theme }) => theme.BG_WHITE};
     width: 58px;
     height: 58px;
     border-radius: 50%;
@@ -42,7 +42,7 @@ const Circle = styled.div`
 `;
 
 const Title = styled.div`
-    color: ${props => props.theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
     width: 200px;
     margin-top: 30px;
     min-height: 44px;
@@ -53,7 +53,7 @@ const Title = styled.div`
 
 const Description = styled.div`
     font-size: ${variables.FONT_SIZE.SMALL};
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     text-align: center;
     width: 200px;
     margin-top: 7px;
@@ -87,7 +87,7 @@ const CheckIconWrapper = styled.div`
     height: 16px;
     top: 10px;
     right: 8px;
-    background: ${props => props.theme.BG_GREEN};
+    background: ${({ theme }) => theme.BG_GREEN};
 `;
 
 const Line = styled.div`
@@ -95,8 +95,8 @@ const Line = styled.div`
     width: 100%;
     height: 1px;
     margin: 10px 0;
-    background: ${props => props.theme.STROKE_GREY};
-    /* border-top: 1px solid ${props => props.theme.STROKE_GREY}; */
+    background: ${({ theme }) => theme.STROKE_GREY};
+    /* border-top: 1px solid ${({ theme }) => theme.STROKE_GREY}; */
 `;
 
 interface Props extends CardProps {

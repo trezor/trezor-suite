@@ -62,7 +62,7 @@ const Wrapper = styled.div`
     border-radius: 8px;
     padding: 14px 18px 14px 18px;
     align-items: center;
-    background: ${props => props.theme.STROKE_GREY};
+    background: ${({ theme }) => theme.STROKE_GREY};
     margin-bottom: 8px;
 `;
 
@@ -79,7 +79,7 @@ const Body = styled.div`
     justify-content: space-between;
     align-items: center;
     width: 100%;
-    color: ${props => props.theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     font-size: ${variables.FONT_SIZE.SMALL};
 `;
@@ -88,17 +88,18 @@ const NotificationButton = styled(Button)<{
     notificationVariant: NotificationCardProps['variant'];
 }>`
     margin-left: 16px;
-    color: ${props => props.theme.TYPE_WHITE};
+    color: ${({ theme }) => theme.TYPE_WHITE};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     font-size: ${variables.FONT_SIZE.SMALL};
-    background: ${props => getMainColor(props.notificationVariant, props.theme)};
+    background: ${({ notificationVariant, theme }) => getMainColor(notificationVariant, theme)};
     height: 30px;
 
     &:hover,
     &:focus,
     &:active {
-        color: ${props => props.theme.TYPE_WHITE};
-        background: ${props => getHoverColor(props.notificationVariant, props.theme)};
+        color: ${({ theme }) => theme.TYPE_WHITE};
+        background: ${({ notificationVariant, theme }) =>
+            getHoverColor(notificationVariant, theme)};
     }
 `;
 

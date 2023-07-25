@@ -29,7 +29,7 @@ const WalletsWrapper = styled.div`
 const Divider = styled.div`
     margin: 16px 16px;
     height: 1px;
-    background: ${props => props.theme.STROKE_GREY};
+    background: ${({ theme }) => theme.STROKE_GREY};
 `;
 
 export type PassphraseEventProps = Extract<UiEvent, { type: 'ui-request_passphrase' }>;

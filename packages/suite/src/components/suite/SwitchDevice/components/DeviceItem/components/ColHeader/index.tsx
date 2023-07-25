@@ -4,7 +4,7 @@ import { Tooltip, TooltipProps, variables } from '@trezor/components';
 
 const Wrapper = styled.div`
     display: flex;
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     align-items: center;
     justify-content: center;
 `;

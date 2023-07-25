@@ -17,7 +17,7 @@ const TypeInfo = styled.div`
     padding-top: 2px;
     align-items: center;
     font-size: ${variables.FONT_SIZE.TINY};
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     margin-left: 1ch;
 `;
 

@@ -15,7 +15,7 @@ const ChainedTxs = styled.div`
     flex-direction: column;
     padding-top: 24px;
     margin-top: 24px;
-    border-top: 1px solid ${props => props.theme.STROKE_GREY};
+    border-top: 1px solid ${({ theme }) => theme.STROKE_GREY};
 `;
 
 const TxRow = styled.div`
@@ -29,7 +29,7 @@ const IconWrapper = styled.div`
 `;
 
 const Text = styled.span`
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     font-size: ${variables.FONT_SIZE.SMALL};
     font-variant-numeric: tabular-nums;
@@ -55,7 +55,7 @@ const Amount = styled(Text)`
 const Bullet = styled.div`
     margin-left: 8px;
     margin-right: 8px;
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
 `;
 
 export const AffectedTransactions = ({ showChained }: { showChained: () => void }) => {

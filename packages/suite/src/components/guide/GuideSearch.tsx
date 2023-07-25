@@ -44,7 +44,7 @@ const StyledInput = styled(Input)`
         background-color: ${({ theme }) => theme.BG_GREY_ALT};
         border-radius: 8px;
         height: 40px;
-        border-color: ${props => props.theme.BG_GREY_ALT};
+        border-color: ${({ theme }) => theme.BG_GREY_ALT};
         transition: border-color 0.2s;
 
         :focus {

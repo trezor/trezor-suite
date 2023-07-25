@@ -7,7 +7,7 @@ import { variables, motionAnimation } from '@trezor/components';
 export const MIN_ROW_HEIGHT = '23px';
 
 const FiatAmount = styled.span`
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     line-height: 1.57;
@@ -45,7 +45,7 @@ const StyledHiddenPlaceholder = styled(props => <HiddenPlaceholder {...props} />
 const TargetAddress = styled(motion.div)`
     display: flex;
     flex: 1;
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     overflow: hidden;
@@ -75,7 +75,7 @@ const TimelineDot = styled.div`
     width: 3px;
     height: 3px;
     border-radius: 50%;
-    background: ${props => props.theme.TYPE_LIGHT_GREY};
+    background: ${({ theme }) => theme.TYPE_LIGHT_GREY};
 `;
 
 const TimelineLine = styled.div<{ show: boolean; top?: boolean }>`

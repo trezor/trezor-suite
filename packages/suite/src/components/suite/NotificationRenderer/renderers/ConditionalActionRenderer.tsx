@@ -6,7 +6,7 @@ import type { NotificationRendererProps } from '../types';
 
 const Header = styled.div`
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     margin-top: 1px;
 `;
 

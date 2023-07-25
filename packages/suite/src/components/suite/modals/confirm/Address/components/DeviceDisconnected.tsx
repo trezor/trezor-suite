@@ -7,7 +7,7 @@ import { Translation } from 'src/components/suite';
 const Wrapper = styled.div`
     display: flex;
     text-align: left;
-    background: ${props => props.theme.BG_GREY};
+    background: ${({ theme }) => theme.BG_GREY};
     align-items: center;
     border-radius: 8px;
     width: 100%;

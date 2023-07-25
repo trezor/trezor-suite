@@ -7,7 +7,7 @@ const Wrapper = styled.div`
     display: flex;
     width: 100%;
     justify-content: center;
-    background: ${props => props.theme.BG_LIGHT_GREY};
+    background: ${({ theme }) => theme.BG_LIGHT_GREY};
     padding: 24px 32px 10px 32px;
     z-index: ${variables.Z_INDEX.PAGE_HEADER};
 
@@ -30,7 +30,7 @@ const BasicInfo = styled.div`
 
 const Title = styled(H1)`
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-    color: ${props => props.theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
     white-space: nowrap;
     overflow: hidden;
 `;

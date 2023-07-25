@@ -15,7 +15,7 @@ const A = styled.a<Props>`
     font-size: ${props => (props.size ? A_SIZES[props.size] : 'inherit')};
     text-decoration: none;
     cursor: pointer;
-    color: ${props => props.theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
     font-weight: 500;
     display: inline-flex;
     align-items: center;

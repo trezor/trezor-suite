@@ -12,8 +12,8 @@ const Button = styled.button`
     width: 100%;
 
     border-radius: 5px;
-    border: 1px solid ${props => props.theme.BG_GREY};
-    background: ${props => props.theme.BG_GREY};
+    border: 1px solid ${({ theme }) => theme.BG_GREY};
+    background: ${({ theme }) => theme.BG_GREY};
 
     &:first-child {
         margin-left: 0px;
@@ -23,7 +23,7 @@ const Button = styled.button`
     }
 
     &:hover {
-        background: ${props => props.theme.BG_LIGHT_GREEN};
+        background: ${({ theme }) => theme.BG_LIGHT_GREEN};
     }
 
     &:before {
@@ -32,13 +32,13 @@ const Button = styled.button`
         content: ' ';
         position: absolute;
         border-radius: 100%;
-        background: ${props => props.theme.TYPE_DARK_GREY};
+        background: ${({ theme }) => theme.TYPE_DARK_GREY};
         top: calc(50% - 3px);
         left: calc(50% - 3px);
     }
 
     &:hover:before {
-        background: ${props => props.theme.TYPE_GREEN};
+        background: ${({ theme }) => theme.TYPE_GREEN};
     }
 `;
 

@@ -16,7 +16,7 @@ import TranslationMode from './TranslationMode';
 import FirmwareHashMismatch from './FirmwareHashMismatch';
 
 const Wrapper = styled.div`
-    background: ${props => props.theme.BG_WHITE};
+    background: ${({ theme }) => theme.BG_WHITE};
 `;
 
 const Banners = () => {

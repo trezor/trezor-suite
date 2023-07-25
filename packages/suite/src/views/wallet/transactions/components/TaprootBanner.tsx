@@ -7,8 +7,8 @@ const StyledCard = styled(Card)`
     width: 100%;
     margin-bottom: 48px;
     padding: 24px 28px 24px 18px;
-    border-left: 10px solid ${props => props.theme.TYPE_GREEN};
-    box-shadow: 0 2px 5px 0 ${props => props.theme.BOX_SHADOW_BLACK_20};
+    border-left: 10px solid ${({ theme }) => theme.TYPE_GREEN};
+    box-shadow: 0 2px 5px 0 ${({ theme }) => theme.BOX_SHADOW_BLACK_20};
 `;
 
 const Heading = styled.div`
@@ -27,7 +27,7 @@ const Point = styled.div`
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: 500;
     text-align: center;
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
 
     & + & {
         margin-top: 10px;
@@ -35,7 +35,7 @@ const Point = styled.div`
 `;
 
 const Dark = styled.span`
-    color: ${props => props.theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
 `;
 
 const StyledIcon = styled(Icon)`
@@ -45,7 +45,7 @@ const StyledIcon = styled(Icon)`
 const Divider = styled.div`
     width: 100%;
     height: 1px;
-    background: ${props => props.theme.STROKE_GREY};
+    background: ${({ theme }) => theme.STROKE_GREY};
     margin: 16px 0px 20px 0px;
 `;
 

@@ -73,7 +73,7 @@ const StyledImage = styled(Image)`
 const Amount = styled.div`
     display: flex;
     font-size: ${variables.FONT_SIZE.TINY};
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
@@ -89,8 +89,8 @@ const FakeInput = styled.div`
     min-height: 61px;
     align-items: center;
     border-radius: 4px;
-    border: solid 2px ${props => props.theme.STROKE_GREY};
-    background: ${props => props.theme.BG_WHITE};
+    border: solid 2px ${({ theme }) => theme.STROKE_GREY};
+    background: ${({ theme }) => theme.BG_WHITE};
 `;
 
 const ButtonWrapper = styled.div`
@@ -98,7 +98,7 @@ const ButtonWrapper = styled.div`
     align-items: center;
     justify-content: center;
     padding-top: 20px;
-    border-top: 1px solid ${props => props.theme.STROKE_GREY};
+    border-top: 1px solid ${({ theme }) => theme.STROKE_GREY};
     margin: 20px 0;
 `;
 
@@ -107,7 +107,7 @@ const Confirmed = styled.div`
     height: 60px;
     font-size: ${variables.FONT_SIZE.BIG};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    background: ${props => props.theme.BG_GREY};
+    background: ${({ theme }) => theme.BG_GREY};
     align-items: center;
     justify-content: center;
     margin-top: 27px;

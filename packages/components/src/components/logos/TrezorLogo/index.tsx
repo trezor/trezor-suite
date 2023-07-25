@@ -15,7 +15,7 @@ const SvgWrapper = styled.div<Omit<TrezorLogoProps, 'type'>>`
 `;
 
 const StyledReactSVG = styled(ReactSVG)`
-    color: ${props => props.theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
 `;
 
 export interface TrezorLogoProps extends React.ImgHTMLAttributes<HTMLImageElement> {

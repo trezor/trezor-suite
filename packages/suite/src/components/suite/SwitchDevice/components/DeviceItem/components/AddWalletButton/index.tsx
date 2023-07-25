@@ -16,7 +16,7 @@ const AddWallet = styled.div`
 const StyledButton = styled(Button)`
     padding: 16px;
     justify-content: center;
-    border: 1px dashed ${props => props.theme.STROKE_GREY};
+    border: 1px dashed ${({ theme }) => theme.STROKE_GREY};
     border-radius: 8px;
     background: transparent;
 

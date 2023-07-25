@@ -9,8 +9,8 @@ interface Props {
 const AbsoluteWrapper = styled.aside`
     width: ${variables.LAYOUT_SIZE.MENU_SECONDARY_WIDTH};
     flex: 0 0 auto;
-    background: ${props => props.theme.BG_WHITE};
-    border-right: 1px solid ${props => props.theme.STROKE_GREY};
+    background: ${({ theme }) => theme.BG_WHITE};
+    border-right: 1px solid ${({ theme }) => theme.STROKE_GREY};
     height: 100%;
     overflow: auto;
 `;

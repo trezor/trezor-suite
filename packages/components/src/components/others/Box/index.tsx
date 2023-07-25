@@ -12,15 +12,15 @@ const Wrapper = styled.div<{ state: BoxProps['state'] }>`
     flex: 1;
     border-radius: 8px;
     padding: 16px 14px;
-    border: solid 1px ${props => props.theme.STROKE_GREY};
+    border: solid 1px ${({ theme }) => theme.STROKE_GREY};
 
-    ${props =>
-        props.state &&
+    ${({ state, theme }) =>
+        state &&
         css`
-            border-left: 6px solid ${getInputStateTextColor(props.state, props.theme)};
+            border-left: 6px solid ${getInputStateTextColor(state, theme)};
         `}
-    ${props =>
-        !props.state &&
+    ${({ state }) =>
+        !state &&
         css`
             padding-left: 20px;
         `}

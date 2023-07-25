@@ -15,7 +15,7 @@ const Wrapper = styled.div`
     display: flex;
     flex-direction: column;
     border-radius: 8px;
-    background: ${props => props.theme.BG_GREY};
+    background: ${({ theme }) => theme.BG_GREY};
     min-width: 190px;
     width: 225px;
     justify-content: flex-start;
@@ -35,7 +35,7 @@ const SummaryHead = styled.div`
 `;
 
 const IconWrapper = styled.div`
-    background-color: ${props => props.theme.BG_WHITE};
+    background-color: ${({ theme }) => theme.BG_WHITE};
     padding: 4px;
     border-radius: 100px;
     position: relative;
@@ -70,7 +70,7 @@ const Headline = styled.div`
 
 const AccountWrapper = styled.div`
     font-size: 12px;
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     display: flex;
     margin-top: 5px;
     word-break: normal;
@@ -82,7 +82,7 @@ const AccountWrapper = styled.div`
 `;
 
 const Separator = styled.div`
-    border-top: 1px solid ${props => props.theme.STROKE_GREY};
+    border-top: 1px solid ${({ theme }) => theme.STROKE_GREY};
     margin: 10px 0 0;
     padding: 0 0 10px;
     width: 100%;
@@ -127,7 +127,7 @@ const TxDetailsButton = styled.button<{ detailsOpen: boolean }>`
     align-items: center;
     justify-content: space-between;
     font-size: 10px;
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     transition: background 0.1s;
     background: ${({ theme, detailsOpen }) =>
         detailsOpen && darken(theme.HOVER_DARKEN_FILTER, theme.STROKE_LIGHT_GREY)};
@@ -169,7 +169,7 @@ const ReviewRbfLeftDetailsLineLeft = styled.div`
     display: flex;
     margin: 0 5% 0 0;
     width: 50%;
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
 
     & > div:first-child {
         margin: 1px 5px 0 0;

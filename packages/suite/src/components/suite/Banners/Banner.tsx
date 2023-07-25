@@ -29,8 +29,8 @@ const getIcon = (variant: BannerProps['variant'], theme: SuiteThemeColors) => {
 
 const Wrapper = styled.div<{ variant: BannerProps['variant'] }>`
     display: flex;
-    background: ${props => getBgColor(props.variant, props.theme)};
-    color: ${props => props.theme.TYPE_WHITE};
+    background: ${({ theme, variant }) => getBgColor(variant, theme)};
+    color: ${({ theme }) => theme.TYPE_WHITE};
     padding: 7px 9px;
     font-weight: 600;
     border-radius: 10px;

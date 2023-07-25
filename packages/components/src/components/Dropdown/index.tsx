@@ -29,7 +29,7 @@ const MasterLinkComponent = styled.button<{
     right: 10px;
     font-size: 11px;
     letter-spacing: 0.4px;
-    color: ${props => props.theme.TYPE_GREEN};
+    color: ${({ theme }) => theme.TYPE_GREEN};
     font-weight: ${FONT_WEIGHT.BOLD};
     text-transform: uppercase;
     display: flex;
@@ -65,8 +65,8 @@ const Menu = styled.ul<MenuProps>`
     position: absolute;
     flex: 1;
     min-width: ${props => props.minWidth}px;
-    box-shadow: 0 2px 7px 0 ${props => props.theme.BOX_SHADOW_BLACK_15},
-        0 2px 3px 0 ${props => props.theme.BOX_SHADOW_BLACK_5};
+    box-shadow: 0 2px 7px 0 ${({ theme }) => theme.BOX_SHADOW_BLACK_15},
+        0 2px 3px 0 ${({ theme }) => theme.BOX_SHADOW_BLACK_5};
     padding: ${props => props.topPadding}px ${props => props.horizontalPadding}px
         ${props => props.bottomPadding}px;
     border-radius: 10px;
@@ -85,7 +85,7 @@ const Menu = styled.ul<MenuProps>`
         props.alignMenu === 'top-left' || props.alignMenu === 'top-right'
             ? `-${props.offset}px`
             : `${props.offset}px`};
-    background: ${props => props.theme.BG_WHITE};
+    background: ${({ theme }) => theme.BG_WHITE};
     overflow: hidden;
 
     ${props =>
@@ -131,7 +131,7 @@ const Menu = styled.ul<MenuProps>`
 `;
 
 const Group = styled.li`
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     font-size: ${FONT_SIZE.TINY};
     font-weight: ${FONT_WEIGHT.MEDIUM};
     padding: 10px 16px 10px 16px;

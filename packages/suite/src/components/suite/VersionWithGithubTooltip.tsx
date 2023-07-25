@@ -17,13 +17,13 @@ const VersionButton = styled(Button)<{ isDev?: boolean }>`
     ${({ isDev }) =>
         isDev &&
         css`
-            color: ${props => props.theme.TYPE_WHITE};
-            background: ${props => props.theme.BUTTON_RED};
+            color: ${({ theme }) => theme.TYPE_WHITE};
+            background: ${({ theme }) => theme.BUTTON_RED};
 
             :hover,
             :active,
             :focus {
-                background: ${props => props.theme.BUTTON_RED_HOVER};
+                background: ${({ theme }) => theme.BUTTON_RED_HOVER};
             }
         `};
 `;

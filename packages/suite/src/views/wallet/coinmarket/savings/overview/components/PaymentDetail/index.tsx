@@ -29,7 +29,7 @@ const IconWrapper = styled.div`
 `;
 
 const PaymentItem = styled.div`
-    border: 1px solid ${props => props.theme.STROKE_GREY};
+    border: 1px solid ${({ theme }) => theme.STROKE_GREY};
     border-radius: 8px;
     display: flex;
     flex-direction: column;
@@ -42,13 +42,13 @@ const PaymentItem = styled.div`
 const PaymentItemDate = styled.div`
     margin: 4px 0;
     padding: 9px 38px;
-    border-right: 1px solid ${props => props.theme.STROKE_GREY};
+    border-right: 1px solid ${({ theme }) => theme.STROKE_GREY};
     width: 25%;
 `;
 
 const PaymentItemStatus = styled.div<{ isNextUp: boolean; isPaymentInfoAvailable: boolean }>`
-    margin: ${props => (props.isPaymentInfoAvailable ? '13px 38px' : '0 auto')};
-    color: ${props => (props.isNextUp ? props.theme.TYPE_ORANGE : props.theme.TYPE_LIGHT_GREY)};
+    margin: ${({ isPaymentInfoAvailable }) => (isPaymentInfoAvailable ? '13px 38px' : '0 auto')};
+    color: ${({ isNextUp, theme }) => (isNextUp ? theme.TYPE_ORANGE : theme.TYPE_LIGHT_GREY)};
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -70,7 +70,7 @@ const PaymentItemStatusIconReactSVG = styled(Image)<{ isNextUp: boolean }>`
         display: flex;
     }
     & path {
-        fill: ${props => (props.isNextUp ? props.theme.TYPE_ORANGE : props.theme.TYPE_LIGHT_GREY)};
+        fill: ${({ isNextUp, theme }) => (isNextUp ? theme.TYPE_ORANGE : theme.TYPE_LIGHT_GREY)};
     }
 `;
 
@@ -84,7 +84,7 @@ const PaymentInfoItemLabel = styled.div`
     font-weight: 600;
     font-size: 12px;
     line-height: 24px;
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
 `;
 const PaymentInfoItemValue = styled.div`
     display: flex;
@@ -101,7 +101,7 @@ const Row = styled.div`
     justify-content: space-between;
     text-align: center;
     ${PaymentItem} &:nth-child(2) {
-        border-top: 1px solid ${props => props.theme.STROKE_GREY};
+        border-top: 1px solid ${({ theme }) => theme.STROKE_GREY};
     }
 `;
 

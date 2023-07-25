@@ -8,7 +8,7 @@ const Wrapper = styled.div`
 `;
 
 const Left = styled.div`
-    color: ${props => props.theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
 `;
 
 const Right = styled.div``;

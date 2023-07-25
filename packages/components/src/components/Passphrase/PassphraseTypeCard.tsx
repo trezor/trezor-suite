@@ -37,7 +37,7 @@ const Wrapper = styled.div<Pick<PassphraseTypeCardProps, 'type' | 'singleColModa
         !props.singleColModal &&
         css`
             padding: 12px;
-            /* border: solid 1px ${props => props.theme.STROKE_GREY}; */
+            /* border: solid 1px ${({ theme }) => theme.STROKE_GREY}; */
         `}
 
     ${props =>
@@ -50,8 +50,8 @@ const Wrapper = styled.div<Pick<PassphraseTypeCardProps, 'type' | 'singleColModa
 const IconWrapper = styled.div<Pick<PassphraseTypeCardProps, 'type'>>`
     width: 38px;
     height: 38px;
-    background: ${props =>
-        props.type === 'standard' ? props.theme.BG_LIGHT_GREEN : props.theme.BG_GREY};
+    background: ${({ theme, type }) =>
+        type === 'standard' ? theme.BG_LIGHT_GREEN : theme.BG_GREY};
     border-radius: 8px;
     display: flex;
     justify-content: center;
@@ -75,7 +75,7 @@ const ArrowCol = styled(Col)`
 const WalletTitle = styled.div<{ withMargin: boolean }>`
     display: flex;
     font-size: ${variables.FONT_SIZE.NORMAL};
-    color: ${props => props.theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
     font-weight: 500;
     line-height: 1.5;
     align-items: center;
@@ -84,7 +84,7 @@ const WalletTitle = styled.div<{ withMargin: boolean }>`
 
 const Description = styled.div<Pick<PassphraseTypeCardProps, 'authConfirmation'>>`
     display: flex;
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     font-size: ${variables.FONT_SIZE.TINY};
     line-height: 1.33;
 `;
@@ -104,7 +104,7 @@ const Spacer = styled.div`
 `;
 
 const PassphraseInput = styled(Input)`
-    color: ${props => props.theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
     font-size: ${variables.FONT_SIZE.SMALL};
 `;
 
@@ -131,7 +131,7 @@ const ActionButton = styled(Button)`
 const OnDeviceActionButton = styled(ActionButton)`
     background: transparent;
     text-decoration: underline;
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
 
     &:first-child {
         margin-top: 0px;
@@ -140,7 +140,7 @@ const OnDeviceActionButton = styled(ActionButton)`
     &:hover,
     &:focus,
     &:active {
-        color: ${props => props.theme.TYPE_LIGHT_GREY};
+        color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
         background: transparent;
     }
 `;
@@ -149,7 +149,7 @@ const Content = styled.div`
     display: flex;
     flex: 1;
     margin: 8px 12px;
-    color: ${props => props.theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
     font-size: ${variables.FONT_SIZE.SMALL};
 `;
 

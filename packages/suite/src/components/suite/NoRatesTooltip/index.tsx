@@ -6,7 +6,7 @@ import { Tooltip, variables } from '@trezor/components';
 const NoRatesMessage = styled.div`
     display: flex;
     align-items: center;
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     font-size: ${variables.FONT_SIZE.TINY};
     font-weight: ${variables.FONT_WEIGHT.REGULAR};
     text-transform: none;

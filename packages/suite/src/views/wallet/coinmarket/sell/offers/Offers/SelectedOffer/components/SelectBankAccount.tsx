@@ -30,7 +30,7 @@ const StyledQuestionTooltip = styled(QuestionTooltip)`
 
 const CustomLabel = styled(Label)`
     padding: 12px 0;
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
 `;
 
 const LabelText = styled.div``;
@@ -51,7 +51,7 @@ const AccountInfo = styled.div`
 
 const AccountName = styled.div`
     display: flex;
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
 `;
 
 const AccountNumber = styled.div`
@@ -63,11 +63,11 @@ const AccountVerified = styled.div`
     display: flex;
     justify-content: flex-end;
     font-size: ${variables.FONT_SIZE.TINY};
-    color: ${props => props.theme.TYPE_GREEN};
+    color: ${({ theme }) => theme.TYPE_GREEN};
 `;
 
 const AccountNotVerified = styled(AccountVerified)`
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
 `;
 
 const ButtonWrapper = styled.div`
@@ -75,7 +75,7 @@ const ButtonWrapper = styled.div`
     align-items: center;
     justify-content: center;
     padding-top: 20px;
-    border-top: 1px solid ${props => props.theme.STROKE_GREY};
+    border-top: 1px solid ${({ theme }) => theme.STROKE_GREY};
     margin: 20px 0;
 `;
 

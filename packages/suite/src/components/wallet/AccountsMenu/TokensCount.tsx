@@ -9,8 +9,8 @@ const ButtonBadge = styled(Button)`
     font-size: 10px;
     line-height: 1;
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-    background: ${props => props.theme.STROKE_GREY_ALT};
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    background: ${({ theme }) => theme.STROKE_GREY_ALT};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
 `;
 
 interface TokensCountProps {

@@ -24,7 +24,7 @@ const SummaryRow = styled.div`
     display: flex;
     align-items: center;
     justify-content: space-between;
-    color: ${props => props.theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
     font-size: ${variables.FONT_SIZE.NORMAL};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     padding: 10px 0;
@@ -41,7 +41,7 @@ const Divider = styled.div`
 const DividerLine = styled.div`
     height: 1px;
     flex: 1;
-    background: ${props => props.theme.STROKE_GREY};
+    background: ${({ theme }) => theme.STROKE_GREY};
 `;
 
 const Left = styled.div`
@@ -57,7 +57,7 @@ const Right = styled.div`
 const StyledQuestionTooltip = styled(QuestionTooltip)`
     padding-left: 4px;
     padding-top: 1px;
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
 `;
 
 const RatesRow = styled.div`

@@ -33,14 +33,14 @@ const Divider = styled.div`
 const DividerLine = styled.div`
     height: 1px;
     flex: 1;
-    background: ${props => props.theme.STROKE_GREY};
+    background: ${({ theme }) => theme.STROKE_GREY};
 `;
 
 const DividerLeft = styled(DividerLine)``;
 const DividerRight = styled(DividerLine)``;
 
 const Currency = styled.div`
-    color: ${props => props.theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
     text-transform: uppercase;
     padding-left: 3px;
 `;
@@ -49,12 +49,12 @@ const DividerMiddle = styled.div`
     display: flex;
     align-items: center;
     padding: 5px 20px;
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     font-size: ${variables.FONT_SIZE.SMALL};
     border-radius: 25px;
-    border: 1px solid ${props => props.theme.STROKE_GREY};
-    background: ${props => props.theme.BG_WHITE};
+    border: 1px solid ${({ theme }) => theme.STROKE_GREY};
+    background: ${({ theme }) => theme.BG_WHITE};
     text-align: center;
 `;
 

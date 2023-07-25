@@ -17,7 +17,7 @@ const Description = styled.span`
     font-size: ${variables.FONT_SIZE.NORMAL};
     font-weight: 500;
     text-align: center;
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
 `;
 
 const StyledImage = styled(props => <Image {...props} />)`
@@ -45,7 +45,7 @@ const ActionButton = styled(Button)`
 const Divider = styled.div`
     width: 100%;
     height: 1px;
-    background: ${props => props.theme.STROKE_GREY};
+    background: ${({ theme }) => theme.STROKE_GREY};
     margin: 30px 0px 36px 0px;
 `;
 

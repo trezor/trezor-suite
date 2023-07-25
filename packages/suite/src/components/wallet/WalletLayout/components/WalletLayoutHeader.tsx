@@ -30,7 +30,7 @@ const HeaderRight = styled.div`
 
 const StyledTitle = styled(H2)`
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-    color: ${props => props.theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
 `;
 
 type WalletLayoutHeaderProps = {

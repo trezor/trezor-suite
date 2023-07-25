@@ -27,7 +27,7 @@ const FooterSkeletonWrapper = styled(FooterWrapper)`
 
 const Divider = styled(Wrapper)`
     display: flex;
-    border-top: 1px solid ${props => props.theme.STROKE_GREY};
+    border-top: 1px solid ${({ theme }) => theme.STROKE_GREY};
     padding: 0;
 `;
 

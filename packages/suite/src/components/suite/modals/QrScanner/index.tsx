@@ -42,7 +42,7 @@ const CameraPlaceholder = styled.div`
     padding: 40px;
     height: 100%;
     border-radius: 16px;
-    background: ${props => props.theme.BG_GREY};
+    background: ${({ theme }) => theme.BG_GREY};
 `;
 
 const Error = styled.div`
@@ -58,7 +58,7 @@ const ErrorTitle = styled(P)`
 `;
 const ErrorMessage = styled.span`
     text-align: center;
-    color: ${props => props.theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
 `;
 
 const IconWrapper = styled.div`

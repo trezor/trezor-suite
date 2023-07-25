@@ -8,7 +8,7 @@ const Wrapper = styled.div<{ isGuideOpen?: boolean }>`
     display: flex;
     flex-direction: column;
     align-items: center;
-    background: ${props => props.theme.BG_GREY};
+    background: ${({ theme }) => theme.BG_GREY};
     padding: 20px 24px;
     margin-right: 34px;
     width: 100%;
@@ -37,7 +37,7 @@ const ItemIconWrapper = styled.div`
 
 const ItemText = styled.div`
     width: 100%;
-    color: ${props => props.theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     padding: 26px 0px;

@@ -16,8 +16,8 @@ const Wrapper = styled.div<{ size?: string; isHoverable?: boolean }>`
         height: 100%;
         transform: scale(0.5);
         border-radius: 8px;
-        transition: ${props =>
-            `all ${props.theme.HOVER_TRANSITION_TIME} ${props.theme.HOVER_TRANSITION_EFFECT}`};
+        transition: ${({ theme }) =>
+            `all ${theme.HOVER_TRANSITION_TIME} ${theme.HOVER_TRANSITION_EFFECT}`};
 
         background-color: transparent;
         pointer-events: none;
@@ -32,10 +32,10 @@ const Wrapper = styled.div<{ size?: string; isHoverable?: boolean }>`
             :active {
                 :after {
                     transform: scale(1);
-                    background-color: ${props =>
+                    background-color: ${({ theme }) =>
                         transparentize(
-                            props.theme.HOVER_TRANSPARENTIZE_FILTER,
-                            props.theme.HOVER_PRIMER_COLOR,
+                            theme.HOVER_TRANSPARENTIZE_FILTER,
+                            theme.HOVER_PRIMER_COLOR,
                         )};
                 }
             }

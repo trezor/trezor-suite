@@ -29,7 +29,7 @@ const MenuHeader = styled.div<{ isInline?: boolean }>`
     display: flex;
     flex-direction: column;
     /* justify-content: center; */
-    background: ${props => props.theme.BG_WHITE};
+    background: ${({ theme }) => theme.BG_WHITE};
 
     ${props =>
         props.isInline &&
@@ -62,12 +62,12 @@ const Search = styled.div`
     justify-content: space-between;
     padding: 8px 0px;
 
-    background: ${props => props.theme.BG_WHITE};
+    background: ${({ theme }) => theme.BG_WHITE};
 `;
 
 const Heading = styled(H2)<{ isInline?: boolean }>`
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${props => props.theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
     ${props =>
         props.isInline &&
         css`
@@ -84,12 +84,12 @@ const ExpandedMobileWrapper = styled.div`
     display: flex;
     position: absolute;
     flex-direction: column;
-    background: ${props => props.theme.BG_WHITE};
+    background: ${({ theme }) => theme.BG_WHITE};
     z-index: ${variables.Z_INDEX.EXPANDABLE_NAVIGATION};
     width: 100%;
     max-height: 80vh;
     overflow-y: auto;
-    box-shadow: 0 4px 10px 0 ${props => props.theme.BOX_SHADOW_BLACK_20};
+    box-shadow: 0 4px 10px 0 ${({ theme }) => theme.BOX_SHADOW_BLACK_20};
     border-bottom-left-radius: 4px;
     border-bottom-right-radius: 4px;
     padding: 0px 16px;
@@ -111,7 +111,7 @@ const NoResults = styled.div`
     display: flex;
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     justify-content: center;
     text-align: center;
     margin: 36px 0px;

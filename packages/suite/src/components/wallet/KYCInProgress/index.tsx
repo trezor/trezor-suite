@@ -20,7 +20,7 @@ const Header = styled.div`
     line-height: 28px;
 `;
 const Description = styled.div`
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     font-size: 14px;
     line-height: 18px;
 `;

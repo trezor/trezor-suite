@@ -15,7 +15,7 @@ const In = styled.div`
     display: flex;
     align-items: center;
     padding-right: 10px;
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
 `;
 
 export const Clear = () => {

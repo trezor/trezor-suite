@@ -12,8 +12,8 @@ const Wrapper = styled.div`
 const PageItem = styled.div<{ isActive?: boolean }>`
     cursor: pointer;
     font-size: ${variables.FONT_SIZE.SMALL};
-    background: ${props => (props.isActive ? props.theme.BG_GREEN : 'transparent')};
-    color: ${props => (props.isActive ? props.theme.TYPE_WHITE : props.theme.TYPE_GREEN)};
+    background: ${({ isActive, theme }) => (isActive ? theme.BG_GREEN : 'transparent')};
+    color: ${({ isActive, theme }) => (isActive ? theme.TYPE_WHITE : theme.TYPE_GREEN)};
     padding: 4px 8px;
     border-radius: 2px;
 `;

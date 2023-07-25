@@ -33,8 +33,8 @@ const StyledContainer = styled(BaseToastContainer)`
     .Toastify__toast {
         border-radius: 8px;
         box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.19);
-        color: ${props => props.theme.TYPE_DARK_GREY};
-        background: ${props => props.theme.BG_WHITE};
+        color: ${({ theme }) => theme.TYPE_DARK_GREY};
+        background: ${({ theme }) => theme.BG_WHITE};
         padding: 0px;
         font-family: 'TT Hoves', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue',
             Arial, sans-serif;

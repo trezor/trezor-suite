@@ -24,7 +24,7 @@ const IconWrapper = styled.div`
 
 const IconText = styled.div`
     padding-bottom: 10px;
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
 `;
 
 storiesOf('Icons', module).add(

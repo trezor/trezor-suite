@@ -5,7 +5,7 @@ import { Icon, useTheme, variables } from '@trezor/components';
 const Header = styled.div`
     display: flex;
     margin-top: 4px;
-    color: ${props => props.theme.TYPE_ORANGE};
+    color: ${({ theme }) => theme.TYPE_ORANGE};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     font-size: ${variables.FONT_SIZE.TINY};
     align-items: center;

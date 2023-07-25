@@ -37,7 +37,7 @@ export const Content = styled.div`
 `;
 
 export const Description = styled(props => <HiddenPlaceholder {...props} />)`
-    color: ${props => props.theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
     font-size: ${variables.FONT_SIZE.NORMAL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     line-height: 1.5;

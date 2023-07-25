@@ -15,9 +15,9 @@ const Wrapper = styled.div<LoaderProps>`
 const StyledLoader = styled.div<{ size: number; strokeWidth: number }>`
     position: relative;
     text-indent: -9999em;
-    border-top: ${props => `${props.strokeWidth}px`} solid ${props => props.theme.TYPE_GREEN};
-    border-right: ${props => `${props.strokeWidth}px`} solid ${props => props.theme.TYPE_GREEN};
-    border-bottom: ${props => `${props.strokeWidth}px`} solid ${props => props.theme.TYPE_GREEN};
+    border-top: ${props => `${props.strokeWidth}px`} solid ${({ theme }) => theme.TYPE_GREEN};
+    border-right: ${props => `${props.strokeWidth}px`} solid ${({ theme }) => theme.TYPE_GREEN};
+    border-bottom: ${props => `${props.strokeWidth}px`} solid ${({ theme }) => theme.TYPE_GREEN};
     border-left: ${props => `${props.strokeWidth}px`} solid transparent;
     transform: translateZ(0);
     animation: ${SPIN} 1s infinite linear;
