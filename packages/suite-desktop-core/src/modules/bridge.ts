@@ -10,6 +10,8 @@ import type { Module, Dependencies } from './index';
 const bridgeDev = app.commandLine.hasSwitch('bridge-dev');
 const bridgeTest = app.commandLine.hasSwitch('bridge-test');
 
+export const SERVICE_NAME = 'bridge';
+
 const handleBridgeStatus = async (
     bridge: BridgeProcess,
     mainWindow: Dependencies['mainWindow'],
@@ -27,7 +29,7 @@ const load = async ({ store, mainWindow }: Dependencies) => {
     const bridge = new BridgeProcess();
 
     app.on('before-quit', () => {
-        logger.info('bridge', 'Stopping (app quit)');
+        logger.info(SERVICE_NAME, 'Stopping (app quit)');
         bridge.stop();
     });
 
@@ -63,7 +65,7 @@ const load = async ({ store, mainWindow }: Dependencies) => {
     }
 
     try {
-        logger.info('bridge', `Starting (Dev: ${b2t(bridgeDev)})`);
+        logger.info(SERVICE_NAME, `Starting (Dev: ${b2t(bridgeDev)})`);
         if (bridgeDev) {
             await bridge.startDev();
         } else if (bridgeTest) {
@@ -73,7 +75,7 @@ const load = async ({ store, mainWindow }: Dependencies) => {
         }
         handleBridgeStatus(bridge, mainWindow);
     } catch (err) {
-        logger.error('bridge', `Start failed: ${err.message}`);
+        logger.error(SERVICE_NAME, `Start failed: ${err.message}`);
     }
 };
 

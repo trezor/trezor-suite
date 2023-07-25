@@ -2,22 +2,24 @@ import { app } from 'electron';
 
 import type { Module } from '../index';
 
+export const SERVICE_NAME = 'app';
+
 export const init: Module = () => {
     const { logger } = global;
 
     app.on('ready', () => {
-        logger.info('app', 'Ready');
+        logger.info(SERVICE_NAME, 'Ready');
     });
 
     app.on('before-quit', () => {
-        logger.info('app', 'Quitting');
+        logger.info(SERVICE_NAME, 'Quitting');
     });
 
     app.on('window-all-closed', () => {
-        logger.info('app', 'All windows closed');
+        logger.info(SERVICE_NAME, 'All windows closed');
     });
 
     app.on('child-process-gone', (_, { type, reason }) => {
-        logger.error('app', `Child process (${type}) gone (reason: ${reason})`);
+        logger.error(SERVICE_NAME, `Child process (${type}) gone (reason: ${reason})`);
     });
 };

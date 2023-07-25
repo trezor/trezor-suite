@@ -18,7 +18,8 @@ import { ThreadProxy } from '../libs/thread-proxy';
 
 import type { Module } from './index';
 
-const SERVICE_NAME = '@trezor/coinjoin';
+export const SERVICE_NAME = '@trezor/coinjoin';
+
 const CLIENT_CHANNEL = 'CoinjoinClient';
 const BACKEND_CHANNEL = 'CoinjoinBackend';
 

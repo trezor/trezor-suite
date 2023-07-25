@@ -11,23 +11,25 @@ import { createInterceptor, InterceptedEvent } from '@trezor/request-manager';
 import { isDevEnv } from '@suite-common/suite-utils';
 import { TorStatus } from '@trezor/suite-desktop-api';
 
-import { Module } from './index';
+import type { Module } from './index';
+
+export const SERVICE_NAME = 'request-interceptor';
 
 export const init: Module = ({ mainWindow, store, mainThreadEmitter }) => {
     const { logger } = global;
 
     const requestInterceptorEventHandler = (event: InterceptedEvent) => {
         if (event.type === 'INTERCEPTED_REQUEST') {
-            logger.debug('request-interceptor', `${event.method} - ${event.details}`);
+            logger.debug(SERVICE_NAME, `${event.method} - ${event.details}`);
         }
         if (event.type === 'INTERCEPTED_RESPONSE') {
             logger.debug(
-                'request-interceptor',
+                SERVICE_NAME,
                 `request to ${event.host} took ${event.time}ms and responded with status code ${event.statusCode}`,
             );
         }
         if (event.type === 'NETWORK_MISBEHAVING') {
-            logger.debug('request-interceptor', 'networks is misbehaving');
+            logger.debug(SERVICE_NAME, 'networks is misbehaving');
             mainWindow.webContents.send('tor/status', {
                 type: TorStatus.Misbehaving,
             });

@@ -15,7 +15,7 @@ import { b2t } from '../libs/utils';
 import { verifySignature } from '../libs/update-checker';
 import { getReleaseNotes } from '../libs/github';
 
-import { Module } from './index';
+import type { Module } from './index';
 
 // Runtime flags
 const enableUpdater = app.commandLine.hasSwitch('enable-updater');
@@ -23,21 +23,23 @@ const disableUpdater = app.commandLine.hasSwitch('disable-updater');
 const preReleaseFlag = app.commandLine.hasSwitch('pre-release');
 const feedURL = app.commandLine.getSwitchValue('updater-url');
 
+export const SERVICE_NAME = 'auto-updater';
+
 export const init: Module = ({ mainWindow, store }) => {
     const { logger } = global;
     if (!isFeatureFlagEnabled('DESKTOP_AUTO_UPDATER') && !enableUpdater) {
-        logger.info('auto-updater', 'Disabled via feature flag');
+        logger.info(SERVICE_NAME, 'Disabled via feature flag');
         return;
     }
 
     if (isFeatureFlagEnabled('DESKTOP_AUTO_UPDATER') && disableUpdater) {
-        logger.info('auto-updater', 'Disabled via command line parameter');
+        logger.info(SERVICE_NAME, 'Disabled via command line parameter');
         return;
     }
 
     // If APPIMAGE is not set on Linux, the auto updater can't handle that
     if (process.platform === 'linux' && process.env.APPIMAGE === undefined && !isDevEnv) {
-        logger.warn('auto-updater', 'APPIMAGE is not defined, skipping auto updater');
+        logger.warn(SERVICE_NAME, 'APPIMAGE is not defined, skipping auto updater');
         return;
     }
 
@@ -54,16 +56,13 @@ export const init: Module = ({ mainWindow, store }) => {
 
     if (feedURL) {
         autoUpdater.setFeedURL(feedURL);
-        logger.warn('auto-updater', [`Feed url: ${feedURL}`]);
+        logger.warn(SERVICE_NAME, [`Feed url: ${feedURL}`]);
     }
 
-    logger.info(
-        'auto-updater',
-        `Is looking for pre-releases? (${b2t(autoUpdater.allowPrerelease)})`,
-    );
+    logger.info(SERVICE_NAME, `Is looking for pre-releases? (${b2t(autoUpdater.allowPrerelease)})`);
 
     autoUpdater.on('checking-for-update', () => {
-        logger.info('auto-updater', 'Checking for update');
+        logger.info(SERVICE_NAME, 'Checking for update');
         mainWindow.webContents.send('update/checking');
     });
 
@@ -76,9 +75,9 @@ export const init: Module = ({ mainWindow, store }) => {
                     ? { prerelease: false, body: releaseNotes?.toString() }
                     : await getReleaseNotes(version);
             } catch (error) {
-                logger.error('auto-updater', 'Fetching release notes failed!');
+                logger.error(SERVICE_NAME, 'Fetching release notes failed!');
             } finally {
-                logger.warn('auto-updater', [
+                logger.warn(SERVICE_NAME, [
                     'Update is available:',
                     `- Update version: ${version}`,
                     `- Prerelease: ${release?.prerelease}`,
@@ -102,7 +101,7 @@ export const init: Module = ({ mainWindow, store }) => {
     );
 
     autoUpdater.on('update-not-available', ({ version, releaseDate }: UpdateInfo) => {
-        logger.info('auto-updater', [
+        logger.info(SERVICE_NAME, [
             'No new update is available:',
             `- Last version: ${version}`,
             `- Last release date: ${releaseDate}`,
@@ -120,13 +119,13 @@ export const init: Module = ({ mainWindow, store }) => {
     });
 
     autoUpdater.on('error', (err: Error) => {
-        logger.error('auto-updater', `An error happened: ${err.toString()}`);
+        logger.error(SERVICE_NAME, `An error happened: ${err.toString()}`);
         mainWindow.webContents.send('update/error', err);
     });
 
     autoUpdater.on('download-progress', (progressObj: ProgressInfo) => {
         logger.debug(
-            'auto-updater',
+            SERVICE_NAME,
             `Downloading ${progressObj.percent}% (${bytesToHumanReadable(
                 progressObj.transferred,
             )}/${bytesToHumanReadable(progressObj.total)})`,
@@ -137,7 +136,7 @@ export const init: Module = ({ mainWindow, store }) => {
     autoUpdater.on('update-downloaded', async (info: UpdateDownloadedEvent) => {
         const { version, releaseDate, downloadedFile, releaseNotes } = info;
 
-        logger.info('auto-updater', [
+        logger.info(SERVICE_NAME, [
             'Update downloaded:',
             `- Last version: ${version}`,
             `- Last release date: ${releaseDate}`,
@@ -155,7 +154,7 @@ export const init: Module = ({ mainWindow, store }) => {
                 feedURL,
             });
 
-            logger.info('auto-updater', 'Signature of update file is valid');
+            logger.info(SERVICE_NAME, 'Signature of update file is valid');
 
             mainWindow.webContents.send('update/downloaded', {
                 version,
@@ -167,12 +166,12 @@ export const init: Module = ({ mainWindow, store }) => {
             unlinkSync(downloadedFile);
             mainWindow.webContents.send('update/error', err);
 
-            logger.error('auto-updater', `Signature check of update file failed: ${err.message}`);
-            logger.info('auto-updater', `Unlink downloaded file ${downloadedFile}`);
+            logger.error(SERVICE_NAME, `Signature check of update file failed: ${err.message}`);
+            logger.info(SERVICE_NAME, `Unlink downloaded file ${downloadedFile}`);
         }
 
         logger.info(
-            'auto-updater',
+            SERVICE_NAME,
             `Is configured to auto update after app quit? ${autoUpdater.autoInstallOnAppQuit}`,
         );
     });
@@ -182,12 +181,12 @@ export const init: Module = ({ mainWindow, store }) => {
             isManualCheck = true;
         }
 
-        logger.info('auto-updater', `Update checking request (manual: ${b2t(isManualCheck)})`);
+        logger.info(SERVICE_NAME, `Update checking request (manual: ${b2t(isManualCheck)})`);
         autoUpdater.checkForUpdates();
     });
 
     ipcMain.on('update/download', async () => {
-        logger.info('auto-updater', 'Download requested');
+        logger.info(SERVICE_NAME, 'Download requested');
 
         mainWindow.webContents.send('update/downloading', {
             percent: 0,
@@ -200,14 +199,14 @@ export const init: Module = ({ mainWindow, store }) => {
 
         try {
             await autoUpdater.downloadUpdate(updateCancellationToken);
-            logger.info('auto-updater', 'Update downloaded');
+            logger.info(SERVICE_NAME, 'Update downloaded');
         } catch {
-            logger.info('auto-updater', 'Update cancelled');
+            logger.info(SERVICE_NAME, 'Update cancelled');
         }
     });
 
     ipcMain.on('update/install', () => {
-        logger.info('auto-updater', 'Restart and update request');
+        logger.info(SERVICE_NAME, 'Restart and update request');
 
         setImmediate(() => {
             // Removing listeners & closing window (https://github.com/electron-userland/electron-builder/issues/1604)
@@ -222,7 +221,7 @@ export const init: Module = ({ mainWindow, store }) => {
 
     ipcMain.on('update/cancel', () => {
         logger.info(
-            'auto-updater',
+            SERVICE_NAME,
             `Cancel update request (in progress: ${b2t(!!updateCancellationToken)})`,
         );
         if (updateCancellationToken) {
@@ -231,7 +230,7 @@ export const init: Module = ({ mainWindow, store }) => {
     });
 
     ipcMain.on('update/allow-prerelease', (_, value = true) => {
-        logger.info('auto-updater', `${value ? 'allow' : 'disable'} prerelease!`);
+        logger.info(SERVICE_NAME, `${value ? 'allow' : 'disable'} prerelease!`);
         mainWindow.webContents.send('update/allow-prerelease', value);
         const settings = store.getUpdateSettings();
         store.setUpdateSettings({ ...settings, allowPrerelease: value });
@@ -248,7 +247,7 @@ export const init: Module = ({ mainWindow, store }) => {
         const { savedCurrentVersion } = settings;
         const currentVersion = app.getVersion();
         logger.debug(
-            'auto-updater',
+            SERVICE_NAME,
             `Version of application before this launch: ${savedCurrentVersion}, current app version: ${currentVersion}`,
         );
 

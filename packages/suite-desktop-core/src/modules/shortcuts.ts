@@ -4,13 +4,15 @@ import { restartApp } from '../libs/app-utils';
 
 import type { Module } from './index';
 
+export const SERVICE_NAME = 'shortcuts';
+
 export const init: Module = ({ mainWindow }) => {
     const { logger } = global;
 
     const openDevToolsShortcuts = ['F12', 'CommandOrControl+Shift+I', 'CommandOrControl+Alt+I'];
     openDevToolsShortcuts.forEach(shortcut => {
         electronLocalshortcut.register(mainWindow, shortcut, () => {
-            logger.info('shortcuts', `${shortcut} pressed to open/close DevTools`);
+            logger.info(SERVICE_NAME, `${shortcut} pressed to open/close DevTools`);
 
             if (mainWindow.webContents.isDevToolsOpened()) {
                 mainWindow.webContents.closeDevTools();
@@ -23,7 +25,7 @@ export const init: Module = ({ mainWindow }) => {
     const reloadAppShortcuts = ['F5', 'CommandOrControl+R'];
     reloadAppShortcuts.forEach(shortcut => {
         electronLocalshortcut.register(mainWindow, shortcut, () => {
-            logger.info('shortcuts', `${shortcut} pressed to reload app`);
+            logger.info(SERVICE_NAME, `${shortcut} pressed to reload app`);
             mainWindow.webContents.reload();
         });
     });
@@ -31,7 +33,7 @@ export const init: Module = ({ mainWindow }) => {
     const hardReloadAppShortcuts = ['Shift+F5', 'CommandOrControl+Shift+R'];
     hardReloadAppShortcuts.forEach(shortcut => {
         electronLocalshortcut.register(mainWindow, shortcut, () => {
-            logger.info('shortcuts', `${shortcut} pressed to hard reload app`);
+            logger.info(SERVICE_NAME, `${shortcut} pressed to hard reload app`);
             mainWindow.webContents.reloadIgnoringCache();
         });
     });
@@ -39,7 +41,7 @@ export const init: Module = ({ mainWindow }) => {
     const restartAppShortcuts = ['Option+F5', 'Alt+F5', 'Option+Shift+R', 'Alt+Shift+R'];
     restartAppShortcuts.forEach(shortcut => {
         electronLocalshortcut.register(mainWindow, shortcut, () => {
-            logger.info('shortcuts', `${shortcut} pressed to restart app`);
+            logger.info(SERVICE_NAME, `${shortcut} pressed to restart app`);
             restartApp();
         });
     });

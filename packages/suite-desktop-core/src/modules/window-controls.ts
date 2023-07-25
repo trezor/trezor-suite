@@ -3,7 +3,9 @@
  */
 import { app, ipcMain } from '../typed-electron';
 
-import { Module } from './index';
+import type { Module } from './index';
+
+export const SERVICE_NAME = 'window-control';
 
 export const init: Module = ({ mainWindow }) => {
     const { logger } = global;
@@ -15,13 +17,13 @@ export const init: Module = ({ mainWindow }) => {
 
         // restore window after click on the Dock icon
         app.on('activate', () => {
-            logger.info('window-control', 'Showing main window on activate');
+            logger.info(SERVICE_NAME, 'Showing main window on activate');
             mainWindow.show();
         });
         // hide window to the Dock
         // this event listener will be removed by app.on('before-quit')
         mainWindow.on('close', event => {
-            logger.info('window-control', 'Hiding the app after the main window has been closed');
+            logger.info(SERVICE_NAME, 'Hiding the app after the main window has been closed');
 
             event.preventDefault();
             // this is a workaround for black screen issue when trying to close an maximized window
@@ -35,7 +37,7 @@ export const init: Module = ({ mainWindow }) => {
     } else {
         // other platform just kills the app
         app.on('window-all-closed', () => {
-            logger.info('window-control', 'Quitting app after all windows have been closed');
+            logger.info(SERVICE_NAME, 'Quitting app after all windows have been closed');
             app.quit();
         });
     }
@@ -45,41 +47,41 @@ export const init: Module = ({ mainWindow }) => {
     });
 
     mainWindow.on('maximize', () => {
-        logger.debug('window-control', 'Maximize');
+        logger.debug(SERVICE_NAME, 'Maximize');
     });
 
     mainWindow.on('unmaximize', () => {
-        logger.debug('window-control', 'Unmaximize');
+        logger.debug(SERVICE_NAME, 'Unmaximize');
     });
 
     mainWindow.on('enter-full-screen', () => {
         // do not log on Linux as it is triggered constantly with each movement in fullscreen mode
         if (process.platform !== 'linux') {
-            logger.debug('window-control', 'Enter full screen');
+            logger.debug(SERVICE_NAME, 'Enter full screen');
         }
     });
 
     mainWindow.on('leave-full-screen', () => {
         // do not log on Linux as it is triggered constantly with each movement in windowed mode
         if (process.platform !== 'linux') {
-            logger.debug('window-control', 'Leave full screen');
+            logger.debug(SERVICE_NAME, 'Leave full screen');
         }
     });
 
     mainWindow.on('moved', () => {
-        logger.debug('window-control', 'Moved');
+        logger.debug(SERVICE_NAME, 'Moved');
     });
 
     mainWindow.on('focus', () => {
-        logger.debug('window-control', 'Focus');
+        logger.debug(SERVICE_NAME, 'Focus');
     });
 
     mainWindow.on('blur', () => {
-        logger.debug('window-control', 'Blur');
+        logger.debug(SERVICE_NAME, 'Blur');
     });
 
     ipcMain.on('app/focus', () => {
-        logger.debug('window-control', 'Focus requested');
+        logger.debug(SERVICE_NAME, 'Focus requested');
         app.focus({ steal: true });
     });
 };

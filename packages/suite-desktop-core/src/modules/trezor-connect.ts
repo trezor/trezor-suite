@@ -5,7 +5,7 @@ import { createIpcProxyHandler, IpcProxyHandlerOptions } from '@trezor/ipc-proxy
 
 import type { Module } from './index';
 
-const SERVICE_NAME = '@trezor/connect';
+export const SERVICE_NAME = '@trezor/connect';
 
 export const init: Module = ({ store }) => {
     const { logger } = global;

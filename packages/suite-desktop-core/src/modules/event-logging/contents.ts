@@ -1,37 +1,39 @@
 import { app } from 'electron';
 
-import { Module } from '../index';
+import type { Module } from '../index';
 
 const logUI = app.commandLine.hasSwitch('log-ui');
+
+export const SERVICE_NAME = 'content';
 
 export const init: Module = ({ mainWindow }) => {
     const { logger } = global;
 
     mainWindow.webContents.on('did-fail-load', (_, errorCode, errorDescription, validatedUrl) => {
         logger.error(
-            'content',
+            SERVICE_NAME,
             `Failure to load ${validatedUrl} (${errorCode} - ${errorDescription})`,
         );
     });
 
     mainWindow.webContents.on('will-navigate', (_, url) => {
-        logger.info('content', `Navigate to ${url}`);
+        logger.info(SERVICE_NAME, `Navigate to ${url}`);
     });
 
     mainWindow.webContents.on('render-process-gone', (_, { reason }) => {
-        logger.error('content', `Render process gone (reason: ${reason})`);
+        logger.error(SERVICE_NAME, `Render process gone (reason: ${reason})`);
     });
 
     let unresponsiveStart = 0;
     mainWindow.webContents.on('unresponsive', () => {
         unresponsiveStart = +new Date();
-        logger.warn('content', 'Unresponsive');
+        logger.warn(SERVICE_NAME, 'Unresponsive');
     });
 
     mainWindow.webContents.on('responsive', () => {
         if (unresponsiveStart !== 0) {
             logger.warn(
-                'content',
+                SERVICE_NAME,
                 `Responsive again after ${(+new Date() - unresponsiveStart / 1000).toFixed(1)}s`,
             );
             unresponsiveStart = 0;
@@ -39,11 +41,11 @@ export const init: Module = ({ mainWindow }) => {
     });
 
     mainWindow.webContents.on('devtools-opened', () => {
-        logger.info('content', `Dev tools opened`);
+        logger.info(SERVICE_NAME, `Dev tools opened`);
     });
 
     mainWindow.webContents.on('devtools-closed', () => {
-        logger.info('content', `Dev tools closed`);
+        logger.info(SERVICE_NAME, `Dev tools closed`);
     });
 
     if (logUI) {
