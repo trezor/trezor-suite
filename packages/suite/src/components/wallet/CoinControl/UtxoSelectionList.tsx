@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import { transparentize } from 'polished';
 
 import { selectAccountTransactionsWithNulls } from '@suite-common/wallet-core';
-import { isSameUtxo } from '@suite-common/wallet-utils';
 import { useSelector } from 'src/hooks/suite';
 import { Icon, variables, IconType } from '@trezor/components';
 import type { AccountUtxo } from '@trezor/connect';
@@ -41,7 +40,7 @@ const StyledIcon = styled(Icon)<{ backgroundColor?: string }>`
     padding: 20px;
 `;
 
-interface Props {
+interface UtxoSelectionListProps {
     description: React.ReactNode;
     heading: React.ReactNode;
     icon: IconType;
@@ -57,20 +56,12 @@ export const UtxoSelectionList = ({
     iconColor,
     utxos,
     withHeader,
-}: Props) => {
-    const {
-        account,
-        utxoSelection: { composedInputs, isCoinControlEnabled, selectedUtxos },
-    } = useSendFormContext();
+}: UtxoSelectionListProps) => {
+    const { account } = useSendFormContext();
 
     const accountTransactions = useSelector(state =>
         selectAccountTransactionsWithNulls(state, account.key),
     );
-
-    const isChecked = (utxo: AccountUtxo) =>
-        isCoinControlEnabled
-            ? selectedUtxos.some(selected => isSameUtxo(selected, utxo))
-            : composedInputs.some(u => u.prev_hash === utxo.txid && u.prev_index === utxo.vout);
 
     return (
         <Wrapper>
@@ -91,7 +82,6 @@ export const UtxoSelectionList = ({
             {utxos.map(utxo => (
                 <UtxoSelection
                     key={`${utxo.txid}-${utxo.vout}`}
-                    isChecked={isChecked(utxo)}
                     transaction={accountTransactions.find(
                         transaction => transaction?.txid === utxo.txid,
                     )}

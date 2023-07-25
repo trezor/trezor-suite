@@ -10,7 +10,7 @@ import {
     MetadataLabeling,
     Translation,
 } from 'src/components/suite';
-import { formatNetworkAmount } from '@suite-common/wallet-utils';
+import { formatNetworkAmount, isSameUtxo } from '@suite-common/wallet-utils';
 import { useActions, useSelector } from 'src/hooks/suite';
 import { useTheme, Checkbox, FluidSpinner, Tooltip, variables } from '@trezor/components';
 import type { AccountUtxo } from '@trezor/connect';
@@ -124,16 +124,15 @@ const StyledFiatValue = styled(FiatValue)`
 `;
 
 interface UtxoSelectionProps {
-    isChecked: boolean;
     transaction?: WalletAccountTransaction;
     utxo: AccountUtxo;
 }
 
-export const UtxoSelection = ({ isChecked, transaction, utxo }: UtxoSelectionProps) => {
+export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
     const {
         account,
         network,
-        utxoSelection: { selectedUtxos, toggleUtxoSelection },
+        utxoSelection: { selectedUtxos, composedInputs, toggleUtxoSelection, isCoinControlEnabled },
     } = useSendFormContext();
 
     const coordinatorData = useSelector(state => state.wallet.coinjoin.clients[account.symbol]);
@@ -160,10 +159,13 @@ export const UtxoSelection = ({ isChecked, transaction, utxo }: UtxoSelectionPro
         : 'TR_AMOUNT_TOO_BIG_FOR_COINJOIN';
     const isPendingTransaction = utxo.confirmations === 0;
     const isChangeAddress = utxo.path.split('/').at(-2) === '1'; // change address always has a 1 on the penultimate level of the derivation path
-    const amountInBtc = (Number(utxo.amount) / 10 ** network.decimals).toString();
     const outputLabel = outputLabels?.[utxo.txid]?.[utxo.vout];
     const isLabelingPossible = device?.metadata.status === 'enabled' || device?.connected;
     const anonymity = account.addresses?.anonymitySet?.[utxo.address];
+
+    const isChecked = isCoinControlEnabled
+        ? selectedUtxos.some(selected => isSameUtxo(selected, utxo))
+        : composedInputs.some(u => u.prev_hash === utxo.txid && u.prev_index === utxo.vout);
 
     const handleCheckbox = () => toggleUtxoSelection(utxo);
     const showTransactionDetail: React.MouseEventHandler = e => {
@@ -239,7 +241,10 @@ export const UtxoSelection = ({ isChecked, transaction, utxo }: UtxoSelectionPro
                             </TransactionDetail>
                         </VisibleOnHover>
                     )}
-                    <StyledFiatValue amount={amountInBtc} symbol={network.symbol} />
+                    <StyledFiatValue
+                        amount={formatNetworkAmount(utxo.amount, account.symbol, false)}
+                        symbol={network.symbol}
+                    />
                 </BottomRow>
             </Body>
         </Wrapper>
