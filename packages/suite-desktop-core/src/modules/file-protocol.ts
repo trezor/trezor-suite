@@ -14,7 +14,7 @@ export const init: Module = ({ mainWindow }) => {
     // Point to the right directory for file protocol requests
     session.defaultSession.protocol.interceptFileProtocol(FILE_PROTOCOL, (request, callback) => {
         let url = request.url.substring(FILE_PROTOCOL.length + 1);
-        url = path.join(__dirname, '..', '..', 'build', url);
+        url = path.join(__dirname, '..', 'build', url);
         callback(url);
     });
 

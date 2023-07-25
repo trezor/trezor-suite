@@ -29,10 +29,6 @@ const sentryRelease = `${suiteVersion}.${PROJECT}${
     isCodesignBuild ? '.codesign' : ''
 }.${gitRevision}`;
 
-// Get all modules (used as entry points)
-const modulePath = path.join(source, 'modules');
-const modules = sync(`${modulePath}/**/*.ts`).map(m => `modules${m.replace(modulePath, '')}`);
-
 const threadPath = path.join(source, 'threads');
 const threads = sync(`${threadPath}/**/*.ts`).map(u => `threads${u.replace(threadPath, '')}`);
 
@@ -67,7 +63,7 @@ const devDependencies = Object.keys(pkg.devDependencies);
 const electronExternalDependencies = [...dependencies, ...devDependencies];
 
 build({
-    entryPoints: ['app.ts', 'preload.ts', ...modules, ...threads].map(f => path.join(source, f)),
+    entryPoints: ['app.ts', 'preload.ts', ...threads].map(f => path.join(source, f)),
     platform: 'node',
     bundle: true,
     target: 'node18.14.0', // Electron 24

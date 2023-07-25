@@ -1,5 +1,3 @@
-/* eslint-disable import/no-dynamic-require */
-/* eslint-disable global-require */
 import path from 'path';
 
 import { isNotUndefined } from '@trezor/utils';
@@ -10,36 +8,61 @@ import type { HandshakeClient } from '@trezor/suite-desktop-api';
 
 import { StrictBrowserWindow } from '../typed-electron';
 import type { Store } from '../libs/store';
+import * as eventLogging from './event-logging';
+import * as eventLoggingProcess from './event-logging/process';
+import * as eventLoggingApp from './event-logging/app';
+import * as eventLoggingContents from './event-logging/contents';
+import * as crashRecover from './crash-recover';
+import * as menu from './menu';
+import * as shortcuts from './shortcuts';
+import * as requestFilter from './request-filter';
+import * as externalLinks from './external-links';
+import * as windowControls from './window-controls';
+import * as theme from './theme';
+import * as httpReceiverModule from './http-receiver';
+import * as metadata from './metadata';
+import * as bridge from './bridge';
+import * as customProtocols from './custom-protocols';
+import * as autoUpdater from './auto-updater';
+import * as store from './store';
+import * as udevInstall from './udev-install';
+import * as userData from './user-data';
+import * as trezorConnect from './trezor-connect';
+import * as devTools from './dev-tools';
+import * as requestInterceptor from './request-interceptor';
+import * as coinjoin from './coinjoin';
+import * as csp from './csp';
+import * as fileProtocol from './file-protocol';
 
 // General modules (both dev & prod)
 const MODULES = [
     // Event Logging
-    'event-logging/index',
-    'event-logging/process',
-    'event-logging/app',
-    'event-logging/contents',
+    eventLogging,
+    eventLoggingProcess,
+    eventLoggingApp,
+    eventLoggingContents,
     // Standard modules
-    'crash-recover',
-    'menu',
-    'shortcuts',
-    'request-filter',
-    'external-links',
-    'window-controls',
-    'theme',
-    'http-receiver',
-    'metadata',
-    'bridge',
-    'custom-protocols',
-    'auto-updater',
-    'store',
-    'udev-install',
-    'user-data',
-    'trezor-connect',
-    'dev-tools',
-    'request-interceptor',
-    'coinjoin',
+    crashRecover,
+    menu,
+    shortcuts,
+    requestFilter,
+    externalLinks,
+    windowControls,
+    theme,
+    httpReceiverModule,
+    metadata,
+    bridge,
+    customProtocols,
+    autoUpdater,
+    store,
+    udevInstall,
+    userData,
+    trezorConnect,
+    devTools,
+    requestInterceptor,
+    coinjoin,
     // Modules used only in dev/prod mode
-    ...(isDevEnv ? [] : ['csp', 'file-protocol']),
+    ...(isDevEnv ? [] : [csp, fileProtocol]),
 ];
 
 // define events internally sent between modules
@@ -62,27 +85,27 @@ type ModuleInit = (dependencies: Dependencies) => ModuleLoad | void;
 
 export type Module = ModuleInit;
 
-export const initModules = async (dependencies: Dependencies) => {
+export const initModules = (dependencies: Dependencies) => {
     const { logger } = global;
 
     logger.info('modules', `Initializing ${MODULES.length} modules`);
 
-    const modules = await Promise.all(
-        MODULES.map(async moduleToInit => {
-            logger.debug('modules', `Initializing ${moduleToInit}`);
-            try {
-                const m = await require(`./modules/${moduleToInit}`);
-                const initModule: Module = m.init;
-                const loadModule = initModule(dependencies);
-                if (loadModule) {
-                    return [moduleToInit, loadModule] as const;
-                }
-            } catch (err) {
-                logger.error('modules', `Couldn't initialize ${moduleToInit} (${err.toString()})`);
+    const modules = MODULES.map(moduleToInit => {
+        logger.debug('modules', `Initializing ${moduleToInit.SERVICE_NAME}`);
+        try {
+            const initModule: Module = moduleToInit.init;
+            const loadModule = initModule(dependencies);
+            if (loadModule) {
+                return [moduleToInit, loadModule] as const;
             }
-        }),
-    );
-
+        } catch (err) {
+            logger.error(
+                'modules',
+                `Couldn't initialize ${moduleToInit.SERVICE_NAME} (${err.toString()})`,
+            );
+        }
+        return undefined;
+    });
     logger.info('modules', 'All modules initialized');
 
     const modulesToLoad = modules.filter(isNotUndefined);
@@ -90,21 +113,22 @@ export const initModules = async (dependencies: Dependencies) => {
         let loaded = 0;
         return Promise.all(
             modulesToLoad.map(async ([moduleToLoad, loadModule]) => {
-                logger.debug('modules', `Loading ${moduleToLoad}`);
+                const moduleName = moduleToLoad.SERVICE_NAME;
+                logger.debug('modules', `Loading ${moduleName}`);
                 try {
                     const payload = await loadModule(handshake);
-                    logger.debug('modules', `Loaded ${moduleToLoad}`);
+                    logger.debug('modules', `Loaded ${moduleName}`);
                     dependencies.mainWindow.webContents.send('handshake/event', {
                         type: 'progress',
-                        message: `${moduleToLoad} loaded`,
+                        message: `${moduleName} loaded`,
                         progress: {
                             current: ++loaded,
                             total: modulesToLoad.length,
                         },
                     });
-                    return [moduleToLoad, payload] as const;
+                    return [moduleName, payload] as const;
                 } catch (err) {
-                    logger.error('modules', `Couldn't load ${moduleToLoad} (${err?.toString()})`);
+                    logger.error('modules', `Couldn't load ${moduleName} (${err?.toString()})`);
                     dependencies.mainWindow.webContents.send('handshake/event', {
                         type: 'error',
                         message: `${moduleToLoad} error`,
@@ -119,10 +143,10 @@ export const initModules = async (dependencies: Dependencies) => {
             .then(results => Object.fromEntries(results.filter(isNotUndefined)))
             .then(
                 ({
-                    'custom-protocols': protocol,
-                    'auto-updater': desktopUpdate,
-                    'user-data': { dir: userDir },
-                    'http-receiver': { url: httpReceiver },
+                    [customProtocols.SERVICE_NAME]: protocol,
+                    [autoUpdater.SERVICE_NAME]: desktopUpdate,
+                    [userData.SERVICE_NAME]: { dir: userDir },
+                    [httpReceiverModule.SERVICE_NAME]: { url: httpReceiver },
                 }) => ({
                     protocol,
                     desktopUpdate,

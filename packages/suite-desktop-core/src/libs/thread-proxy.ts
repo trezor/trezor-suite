@@ -6,7 +6,7 @@ import { createDeferred, Deferred, promiseAllSequence } from '@trezor/utils';
 
 import { isValidThreadResponse, isValidThreadEvent, ThreadRequestType } from './thread';
 
-const THREADS_DIR_PATH = path.join(__dirname, '..', 'threads');
+const THREADS_DIR_PATH = path.join(__dirname, 'threads');
 
 type ThreadProxySettings = {
     name: string;
