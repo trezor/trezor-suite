@@ -26,7 +26,7 @@ describe('CoinjoinBackendClient', () => {
         (client as any).websockets = {
             getOrCreate: ({ url }: { url: string }) => {
                 [lastBackend] = (url as string).split('/');
-                return new Proxy({}, { get: (_, b) => b !== 'then' && (() => undefined) });
+                return new Proxy({}, { get: (_, b, c) => b !== 'then' && (() => c) });
             },
             getSocketId: () => undefined,
         };
