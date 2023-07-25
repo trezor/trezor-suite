@@ -18,6 +18,8 @@ const fileExists = async (filePath: string) => {
     return false;
 };
 
+export const SERVICE_NAME = 'udev';
+
 export const init: Module = () => {
     ipcMain.handle('udev/install', async () => {
         const { logger, resourcesPath } = global;
@@ -25,10 +27,10 @@ export const init: Module = () => {
         const userRules = path.join(app.getPath('userData'), FILE_NAME);
         const distRules = path.join('/etc/udev/rules.d/', FILE_NAME);
 
-        logger.info('udev', `Installing ${resourceRules} > ${userRules} > ${distRules}`);
+        logger.info(SERVICE_NAME, `Installing ${resourceRules} > ${userRules} > ${distRules}`);
 
         if (await fileExists(distRules)) {
-            logger.error('udev', `/etc/udev rules already installed: ${distRules}`);
+            logger.error(SERVICE_NAME, `/etc/udev rules already installed: ${distRules}`);
 
             // /etc/udev already exists, break here.
             // TODO: should override anyway?
@@ -37,31 +39,31 @@ export const init: Module = () => {
 
         if (!(await fileExists(userRules))) {
             try {
-                logger.info('udev', `Create user data rules: ${userRules}`);
+                logger.info(SERVICE_NAME, `Create user data rules: ${userRules}`);
                 // copy rules from app resources (/tmp/...) to user data files (~/.cache/...)
                 // this step is required. `pkexec` returns "Permission denied" error when copying directly from app resources.
                 await fs.promises.copyFile(resourceRules, userRules);
                 // chmod to read-only
                 await fs.promises.chmod(userRules, 0o444);
             } catch (error) {
-                logger.error('udev', `User data rules error ${error}`);
+                logger.error(SERVICE_NAME, `User data rules error ${error}`);
                 return { success: false, error: `${error}` };
             }
         }
 
         return new Promise(resolve => {
-            logger.info('udev', `Copy rules from ${userRules} to ${distRules}`);
+            logger.info(SERVICE_NAME, `Copy rules from ${userRules} to ${distRules}`);
             // request superuser permissions and copy from user data files to /etc/udev
             // NOTE: https://github.blog/2021-06-10-privilege-escalation-polkit-root-on-linux-with-bug/
             const pkexec = spawn('pkexec', ['cp', userRules, distRules]);
 
             pkexec.on('error', error => {
-                logger.error('udev', `pkexec error ${error}`);
+                logger.error(SERVICE_NAME, `pkexec error ${error}`);
                 resolve({ success: false, error: `pkexec error ${error.message}` });
             });
 
             pkexec.on('exit', code => {
-                logger.debug('udev', `pkexec exit with code ${code}`);
+                logger.debug(SERVICE_NAME, `pkexec exit with code ${code}`);
                 if (code === 0) {
                     resolve({ success: true });
                 } else if (code === 126) {

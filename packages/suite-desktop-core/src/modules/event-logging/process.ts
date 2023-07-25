@@ -1,5 +1,7 @@
 import type { Module } from '../index';
 
+export const SERVICE_NAME = 'event-logging/process';
+
 export const init: Module = () => {
     const { logger } = global;
 

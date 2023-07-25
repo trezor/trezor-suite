@@ -7,6 +7,8 @@ import { isValidProtocol } from '../libs/protocol';
 
 import type { Module } from './index';
 
+export const SERVICE_NAME = 'custom-protocols';
+
 export const init: Module = ({ mainWindow }) => {
     const { logger } = global;
 
@@ -15,7 +17,7 @@ export const init: Module = ({ mainWindow }) => {
 
     const sendProtocolInfo = (protocol: string) => {
         if (isValidProtocol(protocol, protocols)) {
-            logger.debug('custom-protocols', `Send custom protocol to browser window: ${protocol}`);
+            logger.debug(SERVICE_NAME, `Send custom protocol to browser window: ${protocol}`);
             mainWindow.webContents.send('protocol/open', protocol);
         }
     };
@@ -35,7 +37,7 @@ export const init: Module = ({ mainWindow }) => {
                 const protocol = urls[0];
 
                 global.logger.debug(
-                    'custom-protocols',
+                    SERVICE_NAME,
                     `App is running and handling '${protocol}' custom protocol (Linux, Windows)`,
                 );
 
@@ -48,7 +50,7 @@ export const init: Module = ({ mainWindow }) => {
     app.on('open-url', (event, url) => {
         event.preventDefault();
 
-        logger.debug('custom-protocols', 'App is running and handling custom protocol (macOS)');
+        logger.debug(SERVICE_NAME, 'App is running and handling custom protocol (macOS)');
 
         if (mainWindow.isMinimized()) {
             mainWindow.restore();
@@ -72,10 +74,7 @@ export const init: Module = ({ mainWindow }) => {
         const { argv } = process;
 
         if (argv[1]) {
-            logger.debug(
-                'custom-protocols',
-                'App is launched via custom protocol (Linux, Windows)',
-            );
+            logger.debug(SERVICE_NAME, 'App is launched via custom protocol (Linux, Windows)');
 
             if (isValidProtocol(argv[1], protocols)) {
                 return firstRunOnly(argv[1]);

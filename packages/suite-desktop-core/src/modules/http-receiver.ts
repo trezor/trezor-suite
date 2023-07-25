@@ -4,7 +4,9 @@
 import { app, ipcMain } from '../typed-electron';
 import { HttpReceiver } from '../libs/http-receiver';
 
-import { Module } from './index';
+import type { Module } from './index';
+
+export const SERVICE_NAME = 'http-receiver';
 
 export const init: Module = ({ mainWindow }) => {
     const { logger } = global;
@@ -45,7 +47,7 @@ export const init: Module = ({ mainWindow }) => {
         });
 
         app.on('before-quit', () => {
-            logger.info('http-receiver', 'Stopping server (app quit)');
+            logger.info(SERVICE_NAME, 'Stopping server (app quit)');
             receiver.stop();
         });
 
@@ -54,7 +56,7 @@ export const init: Module = ({ mainWindow }) => {
             receiver.getRouteAddress(pathname),
         );
 
-        logger.info('http-receiver', 'Starting server');
+        logger.info(SERVICE_NAME, 'Starting server');
         await receiver.start();
 
         return receiver.getInfo();

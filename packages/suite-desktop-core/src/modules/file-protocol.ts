@@ -8,6 +8,8 @@ import { FILE_PROTOCOL, APP_SRC } from '../libs/constants';
 
 import type { Module } from './index';
 
+export const SERVICE_NAME = 'file-protocol';
+
 export const init: Module = ({ mainWindow }) => {
     // Point to the right directory for file protocol requests
     session.defaultSession.protocol.interceptFileProtocol(FILE_PROTOCOL, (request, callback) => {

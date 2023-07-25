@@ -16,6 +16,8 @@ const setThemeManually = (theme: SuiteThemeVariant, store: Store) => {
     store.setThemeSettings(theme);
 };
 
+export const SERVICE_NAME = 'theme';
+
 export const init: Module = () => {
     const { logger } = global;
 
@@ -23,7 +25,7 @@ export const init: Module = () => {
 
     const theme = store.getThemeSettings();
     if (theme !== 'system') {
-        logger.info('theme', `Setting app window UI theme to ${theme}.`);
+        logger.info(SERVICE_NAME, `Setting app window UI theme to ${theme}.`);
         nativeTheme.themeSource = theme;
     }
 

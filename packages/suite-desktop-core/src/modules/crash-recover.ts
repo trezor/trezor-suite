@@ -2,7 +2,7 @@ import { app, dialog } from 'electron';
 
 import { restartApp } from '../libs/app-utils';
 
-import { Module } from './index';
+import type { Module } from './index';
 
 // Reasons for prompting a restart
 const unexpectedReasons = [
@@ -10,6 +10,8 @@ const unexpectedReasons = [
     'oom', // Out of memory
     'launch-failure', // Process couldn't launch
 ];
+
+export const SERVICE_NAME = 'crash-recover';
 
 export const init: Module = ({ mainWindow }) => {
     // Check if the renderer process got unexpectedly terminated

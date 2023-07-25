@@ -6,7 +6,9 @@ import { HandlerDetails } from 'electron/main';
 
 import * as config from '../config';
 
-import { Module } from './index';
+import type { Module } from './index';
+
+export const SERVICE_NAME = 'external-links';
 
 export const init: Module = ({ mainWindow, store }) => {
     const { logger } = global;
@@ -17,12 +19,12 @@ export const init: Module = ({ mainWindow, store }) => {
 
         // https://benjamin-altpeter.de/shell-openexternal-dangers/
         if (!config.allowedProtocols.includes(protocol)) {
-            logger.error('external-links', `Protocol '${protocol}' not allowed`);
+            logger.error(SERVICE_NAME, `Protocol '${protocol}' not allowed`);
             return { action: 'deny' };
         }
 
         if (config.oauthUrls.some(u => url.startsWith(u))) {
-            logger.info('external-links', `${url} was allowed (OAuth list)`);
+            logger.info(SERVICE_NAME, `${url} was allowed (OAuth list)`);
         }
 
         if (url !== mainWindow.webContents.getURL()) {
@@ -36,7 +38,7 @@ export const init: Module = ({ mainWindow, store }) => {
                 });
                 const cancel = result === 0;
                 logger.info(
-                    'external-links',
+                    SERVICE_NAME,
                     `${url} was ${cancel ? 'not ' : ''}allowed by user in TOR mode`,
                 );
 
@@ -45,7 +47,7 @@ export const init: Module = ({ mainWindow, store }) => {
                     return { action: 'deny' };
                 }
             }
-            logger.info('external-links', `${url} opened in default browser`);
+            logger.info(SERVICE_NAME, `${url} opened in default browser`);
         }
 
         // open URL in the user's default browser instead of headless browser window

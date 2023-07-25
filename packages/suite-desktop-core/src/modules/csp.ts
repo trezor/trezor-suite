@@ -6,13 +6,15 @@ import { session } from 'electron';
 
 import * as config from '../config';
 
-import { Module } from './index';
+import type { Module } from './index';
+
+export const SERVICE_NAME = 'csp';
 
 export const init: Module = () => {
     const { logger } = global;
 
     session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
-        logger.debug('csp', `Header applied to ${details.url}`);
+        logger.debug(SERVICE_NAME, `Header applied to ${details.url}`);
         callback({
             responseHeaders: {
                 'Content-Security-Policy': [config.cspRules.join(';')],
