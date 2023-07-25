@@ -1,13 +1,5 @@
-import TrezorConnect, { PROTO } from '@trezor/connect';
 import { GetState, Dispatch } from 'src/types/suite';
-import { notificationsActions } from '@suite-common/toast-notifications';
 import * as modalActions from 'src/actions/suite/modalActions';
-import {
-    COINMARKET_BUY,
-    COINMARKET_EXCHANGE,
-    COINMARKET_SAVINGS,
-    COINMARKET_COMMON,
-} from '../constants';
 import { getUnusedAddressFromAccount } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { Account } from 'src/types/wallet';
 import { ComposedTransactionInfo } from 'src/reducers/wallet/coinmarketReducer';
@@ -17,20 +9,29 @@ import {
     getProtocolMagic,
     getNetworkId,
     getAddressType,
-    getDerivationType,
 } from 'src/utils/wallet/cardanoUtils';
-
 import { submitRequestForm as envSubmitRequestForm } from 'src/utils/suite/env';
-import { isDesktop } from '@trezor/env-utils';
 import * as formDraftActions from 'src/actions/wallet/formDraftActions';
+
+import { isDesktop } from '@trezor/env-utils';
+import { notificationsActions } from '@suite-common/toast-notifications';
+import TrezorConnect, { PROTO } from '@trezor/connect';
 import {
     amountToSatoshi,
     formatAmount,
     getAccountDecimals,
     hasNetworkFeatures,
     parseFormDraftKey,
+    getDerivationType,
 } from '@suite-common/wallet-utils';
 import { Output } from '@suite-common/wallet-types/src';
+
+import {
+    COINMARKET_BUY,
+    COINMARKET_EXCHANGE,
+    COINMARKET_SAVINGS,
+    COINMARKET_COMMON,
+} from '../constants';
 
 export type CoinmarketCommonAction =
     | {

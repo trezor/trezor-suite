@@ -1,5 +1,3 @@
-import TrezorConnect, { PROTO } from '@trezor/connect';
-import { formatNetworkAmount, isTestnet } from '@suite-common/wallet-utils';
 import {
     getChangeAddressParameters,
     getTtl,
@@ -9,8 +7,11 @@ import {
     transformUtxos,
     formatMaxOutputAmount,
     loadCardanoLib,
-    getDerivationType,
 } from 'src/utils/wallet/cardanoUtils';
+import { Dispatch, GetState } from 'src/types/suite';
+
+import TrezorConnect, { PROTO } from '@trezor/connect';
+import { formatNetworkAmount, isTestnet, getDerivationType } from '@suite-common/wallet-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     FormState,
@@ -18,7 +19,6 @@ import {
     PrecomposedLevelsCardano,
     PrecomposedTransactionFinalCardano,
 } from '@suite-common/wallet-types';
-import { Dispatch, GetState } from 'src/types/suite';
 
 export const composeTransaction =
     (formValues: FormState, formState: ComposeActionContext) =>
