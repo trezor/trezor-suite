@@ -55,7 +55,7 @@ const BoxRich = styled(motion.div)<{ $maxWidth: string | number }>`
     padding: 24px;
     background: ${props => props.theme.BG_WHITE_ALT};
     color: ${props => props.theme.TYPE_DARK_GREY};
-    border-radius: 5px;
+    border-radius: 8px;
     font-size: ${variables.FONT_SIZE.NORMAL};
     text-align: left;
     box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.2);
