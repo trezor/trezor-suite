@@ -4889,6 +4889,16 @@ export default defineMessages({
         defaultMessage: 'Localization',
         description: 'Used as language localization (translation of the application)',
     },
+    TR_LOCALIZATION_COMMUNITY: {
+        id: 'TR_LOCALIZATION_COMMUNITY',
+        defaultMessage: 'Community translation',
+        description: 'The translation is maintained by the community',
+    },
+    TR_LOCALIZATION_OFFICIAL: {
+        id: 'TR_LOCALIZATION_OFFICIAL',
+        defaultMessage: 'Official language',
+        description: 'Officially supported language',
+    },
     TR_APP: {
         id: 'TR_APP',
         defaultMessage: 'App',
