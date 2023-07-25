@@ -200,31 +200,6 @@ export const coinjoinMiddleware =
             }
         }
 
-        // Pause/restore coinjoin session depending on current route.
-        // Device may be locked by another connect call, so check on LOCK_DEVICE action as well.
-        if (action.type === ROUTER.LOCATION_CHANGE || action.type === SUITE.LOCK_DEVICE) {
-            const state = api.getState();
-            const { locks } = state.suite;
-            if (!locks.includes(SUITE.LOCK_TYPE.DEVICE) && !locks.includes(SUITE.LOCK_TYPE.UI)) {
-                const previousRoute = state.router.settingsBackRoute.name;
-                if (previousRoute === 'wallet-send') {
-                    api.dispatch(coinjoinAccountActions.restorePausedCoinjoinSessions());
-                } else {
-                    const accountKey = state.wallet.selectedAccount.account?.key;
-                    if (accountKey) {
-                        const session = selectCoinjoinAccountByKey(state, accountKey)?.session;
-                        if (
-                            state.router.route?.name === 'wallet-send' &&
-                            !session?.paused &&
-                            !session?.starting
-                        ) {
-                            api.dispatch(coinjoinClientActions.pauseCoinjoinSession(accountKey));
-                        }
-                    }
-                }
-            }
-        }
-
         if (action.type === messageSystemActions.updateValidMessages.type) {
             const state = api.getState();
 

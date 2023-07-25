@@ -1,4 +1,4 @@
-import { ROUTER, SUITE } from 'src/actions/suite/constants';
+import { SUITE } from 'src/actions/suite/constants';
 import { accountsActions } from '@suite-common/wallet-core';
 import { SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { AnonymitySet } from '@trezor/blockchain-link';
@@ -168,48 +168,6 @@ export const fixtures = [
         action: {
             type: SUITE.TOR_STATUS,
             payload: 'Enabled',
-        },
-        expectedActions: RESTORE_SESSION_B_ACTIONS,
-    },
-    {
-        description: 'interrupt current coinjoin session when user enters send form',
-        state: DEFAULT_STATE,
-        action: {
-            type: ROUTER.LOCATION_CHANGE,
-            payload: {
-                route: {
-                    name: 'wallet-send',
-                },
-            },
-        },
-        expectedActions: [
-            {
-                type: COINJOIN.SESSION_PAUSE,
-                payload: {
-                    accountKey: 'account-B-key',
-                },
-            },
-        ],
-    },
-    {
-        description: 'restore all interrupted coinjoin sessions when user leaves send form',
-        state: STATE_WITH_INTERRUPTED_SESSION,
-        client: 'btc' as NetworkSymbol,
-        connect: [
-            {
-                success: true,
-            },
-        ],
-        action: {
-            type: ROUTER.LOCATION_CHANGE,
-            payload: {
-                route: {
-                    name: 'settings-index',
-                },
-                settingsBackRoute: {
-                    name: 'wallet-send',
-                },
-            },
         },
         expectedActions: RESTORE_SESSION_B_ACTIONS,
     },
