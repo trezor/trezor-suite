@@ -2484,7 +2484,7 @@ export default defineMessages({
         id: 'TR_ENTER_PIN',
     },
     TR_ENTER_PIN_ON_DEVICE_LABEL: {
-        defaultMessage: 'Enter PIN on {deviceLabel}',
+        defaultMessage: 'Enter PIN',
         id: 'TR_ENTER_PIN_ON_DEVICE_LABEL',
     },
     TR_ENTER_SEED_WORDS_INSTRUCTION: {
@@ -3356,7 +3356,7 @@ export default defineMessages({
         id: 'TR_TESTNET_COINS_LABEL',
     },
     TR_THE_PIN_LAYOUT_IS_DISPLAYED: {
-        defaultMessage: 'Check your Trezor screen for the keypad layout.',
+        defaultMessage: 'Check your <b>{deviceLabel}</b> screen for the keypad layout.',
         id: 'TR_THE_PIN_LAYOUT_IS_DISPLAYED',
     },
     TR_THIS_HIDDEN_WALLET_IS_EMPTY: {
