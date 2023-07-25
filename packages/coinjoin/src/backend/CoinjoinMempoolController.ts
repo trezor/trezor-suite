@@ -1,13 +1,13 @@
 /* eslint no-underscore-dangle: ["error", { "allowAfterThis": true }] */
 
 import type { Network } from '@trezor/utxo-lib';
-import { createCooldown, promiseAllSequence } from '@trezor/utils';
+import { arrayDistinct, createCooldown, promiseAllSequence } from '@trezor/utils';
 
 import type { Logger } from '../types';
 import type { BlockbookTransaction, MempoolClient, OnProgressInfo } from '../types/backend';
 import type { AddressController } from './CoinjoinAddressController';
 import { getMempoolAddressScript, getMempoolMultiFilter } from './filters';
-import { getAllTxAddresses } from './backendUtils';
+import { getAllTxAddresses, isDoublespend } from './backendUtils';
 import { MEMPOOL_PURGE_CYCLE, PROGRESS_INFO_COOLDOWN } from '../constants';
 
 type MempoolStatus = 'stopped' | 'running';
@@ -58,7 +58,17 @@ export class CoinjoinMempoolController {
     private onTransactionAdd(tx: BlockbookTransaction) {
         const filteredAddresses = getAllTxAddresses(tx).filter(this.filter ?? (() => true));
         if (filteredAddresses.length) {
+            const collidingTxids = filteredAddresses
+                .flatMap(address => this.addressTxids.get(address) ?? [])
+                .filter(arrayDistinct)
+                .map(txid => this.mempool.get(txid)!)
+                .filter(t => isDoublespend(tx, t))
+                .map(t => t.txid);
+
+            collidingTxids.forEach(this.onTxRemove);
+
             this.mempool.set(tx.txid, tx);
+
             filteredAddresses.forEach(address => {
                 const record = this.addressTxids.get(address);
                 if (record) record.push(tx.txid);
