@@ -9,7 +9,7 @@ const Info = styled(P).attrs(() => ({
     size: 'small',
     textAlign: 'left',
 }))`
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     margin: 20px 0;
 `;
 

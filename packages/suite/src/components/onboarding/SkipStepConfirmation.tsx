@@ -10,7 +10,7 @@ import { useOnboarding } from 'src/hooks/suite';
 const Wrapper = styled.div`
     display: flex;
     width: 100%;
-    color: ${props => props.theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
     font-size: ${variables.NEUE_FONT_SIZE.NORMAL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     padding: 16px 0px;

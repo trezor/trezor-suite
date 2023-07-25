@@ -19,7 +19,7 @@ const ChainedTransactionItem = styled(TransactionItem)`
     padding: 0px 40px;
     cursor: pointer;
     &:hover {
-        background: ${props => props.theme.BG_GREY};
+        background: ${({ theme }) => theme.BG_GREY};
     }
 `;
 

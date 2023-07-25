@@ -7,8 +7,8 @@ import { NetworkSymbol } from 'src/types/wallet';
 const SummaryWrapper = styled.div`
     display: flex;
     justify-content: space-between;
-    border-top: 1px solid ${props => props.theme.BG_GREY};
-    border-bottom: 1px solid ${props => props.theme.BG_GREY};
+    border-top: 1px solid ${({ theme }) => theme.BG_GREY};
+    border-bottom: 1px solid ${({ theme }) => theme.BG_GREY};
     margin: 34px 0;
     padding: 14px 0;
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
@@ -29,7 +29,7 @@ const Right = styled.div`
 const StyledFiatValue = styled(FiatValue)`
     font-size: 20px;
     line-height: 28px;
-    color: ${props => props.theme.TYPE_GREEN};
+    color: ${({ theme }) => theme.TYPE_GREEN};
     justify-content: end;
     display: flex;
 `;
@@ -37,7 +37,7 @@ const StyledFiatValue = styled(FiatValue)`
 const Crypto = styled.div`
     font-size: 20px;
     line-height: 28px;
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     justify-content: end;
     display: flex;
 `;

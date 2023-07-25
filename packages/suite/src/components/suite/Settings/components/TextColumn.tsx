@@ -28,7 +28,7 @@ const ButtonLink = styled(Button)`
 `;
 
 const Description = styled.div`
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     margin-bottom: 12px;
     margin-top: 12px;
     font-size: ${variables.FONT_SIZE.SMALL};

@@ -18,7 +18,7 @@ const StepWrapper = styled.div<{ active: boolean }>`
     padding: 0 20px;
     align-items: center;
     align-self: center;
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     font-size: ${variables.NEUE_FONT_SIZE.NORMAL};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
 
@@ -26,10 +26,10 @@ const StepWrapper = styled.div<{ active: boolean }>`
         padding: 0;
     }
 
-    ${props =>
-        props.active &&
+    ${({ active, theme }) =>
+        active &&
         css`
-            color: ${props.theme.TYPE_GREEN};
+            color: ${theme.TYPE_GREEN};
         `}
 `;
 
@@ -37,7 +37,7 @@ const IconWrapper = styled.div<{ stepCompleted?: boolean; active?: boolean }>`
     display: flex;
     width: 32px;
     height: 32px;
-    background: ${props => props.theme.BG_GREY};
+    background: ${({ theme }) => theme.BG_GREY};
     align-items: center;
     justify-content: center;
     border-radius: 50%;
@@ -46,15 +46,15 @@ const IconWrapper = styled.div<{ stepCompleted?: boolean; active?: boolean }>`
     ${props =>
         props.stepCompleted &&
         css`
-            background: ${props => props.theme.BG_LIGHT_GREY};
+            background: ${({ theme }) => theme.BG_LIGHT_GREY};
         `}
 
-    ${props =>
-        props.active &&
+    ${({ active, theme }) =>
+        active &&
         css`
-            background: ${props.theme.BG_WHITE};
-            box-shadow: 0 2px 5px 0 ${props.theme.BOX_SHADOW_BLACK_20};
-            color: ${props.theme.TYPE_GREEN};
+            background: ${theme.BG_WHITE};
+            box-shadow: 0 2px 5px 0 ${theme.BOX_SHADOW_BLACK_20};
+            color: ${theme.TYPE_GREEN};
         `}
 `;
 
@@ -62,7 +62,7 @@ const Label = styled.div`
     text-align: center;
     margin: 10px 0 0 0;
     display: block;
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     font-size: ${variables.NEUE_FONT_SIZE.TINY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 
@@ -73,7 +73,7 @@ const Label = styled.div`
 
 const Divider = styled.div`
     flex-grow: 1;
-    border-bottom: 1px solid ${props => props.theme.STROKE_GREY};
+    border-bottom: 1px solid ${({ theme }) => theme.STROKE_GREY};
     margin: 20px;
 
     @media (max-width: ${variables.SCREEN_SIZE.XL}) {

@@ -9,7 +9,7 @@ import TrezorLink from 'src/components/suite/TrezorLink';
 import styled from 'styled-components';
 
 const StyledTrezorLink = styled(TrezorLink)`
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
 `;
 
 const PreOnboardingSetup = () => {

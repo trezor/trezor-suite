@@ -13,7 +13,7 @@ const Wrapper = styled.div<{ shouldHighlight?: boolean }>`
 
     &:not(:first-child) {
         > div {
-            border-top: 1px solid ${props => props.theme.STROKE_GREY};
+            border-top: 1px solid ${({ theme }) => theme.STROKE_GREY};
         }
     }
 

@@ -19,14 +19,14 @@ const Wrapper = styled.div`
     flex: 1;
     align-items: center;
     margin-bottom: 20px;
-    border: 1px solid ${props => props.theme.STROKE_GREY};
+    border: 1px solid ${({ theme }) => theme.STROKE_GREY};
     border-radius: 4px;
     padding: 12px 0;
 
     &:hover {
-        background: ${props => props.theme.BG_WHITE};
-        border: 1px solid ${props => props.theme.TYPE_WHITE};
-        box-shadow: 0 1px 2px 0 ${props => props.theme.BOX_SHADOW_BLACK_20};
+        background: ${({ theme }) => theme.BG_WHITE};
+        border: 1px solid ${({ theme }) => theme.TYPE_WHITE};
+        box-shadow: 0 1px 2px 0 ${({ theme }) => theme.BOX_SHADOW_BLACK_20};
     }
 
     @media screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
@@ -37,7 +37,7 @@ const Wrapper = styled.div`
 const Row = styled.div`
     display: flex;
     align-items: center;
-    color: ${props => props.theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
@@ -54,7 +54,7 @@ const Amount = styled.div``;
 const SmallRow = styled.div`
     padding-top: 8px;
     display: flex;
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     font-size: ${variables.FONT_SIZE.TINY};
 `;
@@ -69,7 +69,7 @@ const StyledStatus = styled(Status)`
 
 const TradeID = styled.span`
     padding-left: 5px;
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     overflow: hidden;
     text-overflow: ellipsis;

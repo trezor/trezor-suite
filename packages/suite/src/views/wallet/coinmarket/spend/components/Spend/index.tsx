@@ -16,7 +16,7 @@ const ProviderInfo = styled.div`
     display: flex;
     align-items: center;
     margin-bottom: 15px;
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
 `;
 
 const IframeWrapper = styled.div`
@@ -24,7 +24,7 @@ const IframeWrapper = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 1px solid ${props => props.theme.STROKE_GREY};
+    border: 1px solid ${({ theme }) => theme.STROKE_GREY};
 `;
 
 const WebContent = styled.div`

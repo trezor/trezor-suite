@@ -5,7 +5,7 @@ import { variables } from '@trezor/components';
 const StyledSpan = styled.span`
     cursor: pointer;
     text-decoration: underline;
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     font-size: ${variables.FONT_SIZE.SMALL};
 `;

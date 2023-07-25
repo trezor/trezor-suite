@@ -55,7 +55,7 @@ const BuyColumn = styled(Column)`
         border-left: 0;
     }
 
-    border-left: 1px solid ${props => props.theme.STROKE_GREY};
+    border-left: 1px solid ${({ theme }) => theme.STROKE_GREY};
 `;
 
 const ProviderColumn = styled(Column)`

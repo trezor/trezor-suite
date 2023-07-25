@@ -21,7 +21,7 @@ const FlagWrapper = styled.div`
 const LabelText = styled.div`
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${props => props.theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
 `;
 
 const StyledRight = styled(Right)`
@@ -35,7 +35,7 @@ const Label = styled.div`
     align-items: center;
     white-space: nowrap;
     padding-top: 1px;
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 

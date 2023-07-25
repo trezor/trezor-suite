@@ -34,7 +34,7 @@ const Wrapper = styled.div`
 const Header = styled.div`
     display: flex;
     align-items: center;
-    border-bottom: 1px solid ${props => props.theme.STROKE_GREY};
+    border-bottom: 1px solid ${({ theme }) => theme.STROKE_GREY};
     margin-bottom: 5px;
     padding: 15px 24px;
     max-width: 340px;
@@ -42,7 +42,7 @@ const Header = styled.div`
 
 const AccountText = styled.div`
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${props => props.theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
     padding-left: 7px;
 `;
 
@@ -52,7 +52,7 @@ const Info = styled.div`
     min-width: 350px;
     margin: 0 0 10px 30px;
     min-height: 200px;
-    border: 1px solid ${props => props.theme.STROKE_GREY};
+    border: 1px solid ${({ theme }) => theme.STROKE_GREY};
     border-radius: 4px;
 
     @media screen and (max-width: ${variables.SCREEN_SIZE.LG}) {
@@ -67,7 +67,7 @@ const LeftColumn = styled.div`
     flex: 1;
     text-transform: uppercase;
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     align-self: center;
 `;
 
@@ -87,11 +87,11 @@ const Dark = styled.div`
     justify-content: flex-end;
     flex: 1;
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-    color: ${props => props.theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
 `;
 
 const RowWithBorder = styled(Row)`
-    border-bottom: 1px solid ${props => props.theme.STROKE_GREY};
+    border-bottom: 1px solid ${({ theme }) => theme.STROKE_GREY};
     margin-bottom: 10px;
     padding-bottom: 10px;
 `;

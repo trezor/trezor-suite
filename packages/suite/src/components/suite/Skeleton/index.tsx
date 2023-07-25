@@ -47,8 +47,8 @@ export const shimmerEffect = css`
     animation: ${SHINE} 1.5s ease infinite;
     background: linear-gradient(
         90deg,
-        ${props =>
-            `${props.theme.GRADIENT_SKELETON_START}, ${props.theme.BG_GREY_ALT}, ${props.theme.GRADIENT_SKELETON_START}`}
+        ${({ theme }) =>
+            `${theme.GRADIENT_SKELETON_START}, ${theme.BG_GREY_ALT}, ${theme.GRADIENT_SKELETON_START}`}
     );
     background-size: 200%;
 `;
@@ -56,7 +56,7 @@ export const shimmerEffect = css`
 const SkeletonRectangle = styled.div<SkeletonProps>`
     width: ${props => props.width ?? '80px'};
     height: ${props => props.height ?? '20px'};
-    background: ${props => props.background ?? props.theme.BG_GREY_ALT};
+    background: ${({ background, theme }) => background ?? theme.BG_GREY_ALT};
     border-radius: ${props => props.borderRadius ?? '4px'};
     background-size: 200%;
 
@@ -71,7 +71,7 @@ const SkeletonCircle = styled.div<SkeletonProps>`
     width: ${props => props.size ?? '24px'};
     height: ${props => props.size ?? '24px'};
     border-radius: ${props => props.size ?? '24px'};
-    background: ${props => props.background ?? props.theme.BG_GREY_ALT};
+    background: ${({ background, theme }) => background ?? theme.BG_GREY_ALT};
     background-size: 200%;
 
     ${props =>

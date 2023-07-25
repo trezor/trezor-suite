@@ -27,7 +27,7 @@ const Wrapper = styled.div`
 `;
 
 const AccountText = styled.div`
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     padding-left: 7px;
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
@@ -39,7 +39,7 @@ const Info = styled.div`
 
     padding-top: 10px;
     min-height: 200px;
-    border: 1px solid ${props => props.theme.STROKE_GREY};
+    border: 1px solid ${({ theme }) => theme.STROKE_GREY};
     border-radius: 4px;
 
     @media screen and (max-width: ${variables.SCREEN_SIZE.LG}) {
@@ -55,7 +55,7 @@ const LeftColumn = styled.div`
     font-size: ${variables.FONT_SIZE.SMALL};
     text-transform: uppercase;
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
 `;
 
 const RightColumn = styled.div`
@@ -63,7 +63,7 @@ const RightColumn = styled.div`
     justify-content: flex-end;
     flex: 1;
     font-size: ${variables.FONT_SIZE.TINY};
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
 `;
 
 const Row = styled.div`
@@ -85,12 +85,12 @@ const Dark = styled.div`
     justify-content: flex-end;
     flex: 1;
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-    color: ${props => props.theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
 `;
 
 const RowWithBorder = styled(Row)`
-    border-top: 1px solid ${props => props.theme.STROKE_GREY};
-    border-bottom: 1px solid ${props => props.theme.STROKE_GREY};
+    border-top: 1px solid ${({ theme }) => theme.STROKE_GREY};
+    border-bottom: 1px solid ${({ theme }) => theme.STROKE_GREY};
     margin-bottom: 0px;
     margin-top: 10px;
     padding-bottom: 10px;
@@ -102,7 +102,7 @@ const Middle = styled.div`
     justify-content: center;
     align-items: center;
     flex: 1;
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
@@ -119,7 +119,7 @@ const InvityCoinLogo = styled.img`
 `;
 
 const AccountType = styled.span`
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     padding-left: 5px;
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;

@@ -27,7 +27,7 @@ const baseStyles = css`
     line-height: normal;
     letter-spacing: normal;
     ${(props: Props) => props.fontWeight && fontWeightStyle}
-    color: ${props => props.theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
 
     ${props =>
         !props.noMargin &&

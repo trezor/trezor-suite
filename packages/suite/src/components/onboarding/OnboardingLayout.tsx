@@ -96,7 +96,7 @@ const ProgressBarRow = styled.div`
 const Content = styled.div`
     display: flex;
     flex-direction: column;
-    color: ${props => props.theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
     justify-content: center;
     align-items: center;
     max-width: ${MAX_WIDTH};

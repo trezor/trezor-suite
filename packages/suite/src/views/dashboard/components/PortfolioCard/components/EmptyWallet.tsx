@@ -22,7 +22,7 @@ const Content = styled.div`
 `;
 
 const Title = styled(H3)`
-    color: ${props => props.theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
     margin-bottom: 30px;
 
     @media (max-width: ${variables.SCREEN_SIZE.MD}) {
@@ -36,7 +36,7 @@ const StyledImage = styled(props => <Image {...props} />)`
 `;
 
 const SecurityItem = styled.div`
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     font-size: ${variables.FONT_SIZE.SMALL};
 
     & + & {

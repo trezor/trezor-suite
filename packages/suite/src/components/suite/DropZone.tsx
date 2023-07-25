@@ -144,14 +144,14 @@ const Wrapper = styled.div`
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    border: 2px dashed ${props => props.theme.STROKE_GREY};
+    border: 2px dashed ${({ theme }) => theme.STROKE_GREY};
     border-radius: 8px;
     cursor: pointer;
     min-height: 250px;
     transition: background-color 0.3s;
     &:hover,
     &.dragging {
-        background: ${props => props.theme.BG_GREY};
+        background: ${({ theme }) => theme.BG_GREY};
     }
     * {
         pointer-events: none;

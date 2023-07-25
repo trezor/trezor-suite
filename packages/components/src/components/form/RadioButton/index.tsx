@@ -48,7 +48,7 @@ const Label = styled.div`
     padding-left: 12px;
     padding-top: 2px;
     justify-content: left;
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     font-weight: ${FONT_WEIGHT.MEDIUM};
     font-size: ${FONT_SIZE.SMALL};
     line-height: 22px;

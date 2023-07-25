@@ -51,7 +51,7 @@ const SummaryRow = styled.div`
 `;
 
 const OrigAmount = styled.div`
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     font-size: ${variables.FONT_SIZE.SMALL};
 `;
 

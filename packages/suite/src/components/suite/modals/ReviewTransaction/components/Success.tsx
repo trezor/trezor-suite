@@ -22,7 +22,7 @@ const IconWrapper = styled.div`
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    border: 2px solid ${props => props.theme.STROKE_LIGHT_GREY};
+    border: 2px solid ${({ theme }) => theme.STROKE_LIGHT_GREY};
     border-radius: 75px;
     padding: 2px 0 0px 2px;
 `;

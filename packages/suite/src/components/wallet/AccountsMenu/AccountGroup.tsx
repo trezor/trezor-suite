@@ -6,13 +6,13 @@ import { Account } from 'src/types/wallet';
 import { AnimationWrapper } from './AnimationWrapper';
 
 const Wrapper = styled.div`
-    background: ${props => props.theme.BG_WHITE};
+    background: ${({ theme }) => theme.BG_WHITE};
 `;
 
 const HeaderWrapper = styled.div`
     position: sticky;
     top: 0;
-    background: ${props => props.theme.BG_WHITE};
+    background: ${({ theme }) => theme.BG_WHITE};
 `;
 
 const ChevronIcon = styled(Icon)`
@@ -32,8 +32,8 @@ const Header = styled.header<{ isOpen: boolean; onClick?: () => void }>`
     text-transform: uppercase;
     font-size: ${variables.FONT_SIZE.TINY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${props => props.theme.TYPE_DARK_GREY};
-    border-top: 1px solid ${props => props.theme.STROKE_GREY};
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
+    border-top: 1px solid ${({ theme }) => theme.STROKE_GREY};
 
     :hover {
         ${ChevronIcon} {

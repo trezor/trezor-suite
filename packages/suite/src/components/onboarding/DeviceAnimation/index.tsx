@@ -43,7 +43,7 @@ const Wrapper = styled.div<{ size?: number; shape?: Shape }>`
 const StyledLottie = styled(Lottie)`
     width: 100%;
     height: 100%;
-    background: ${props => props.theme.BG_GREY};
+    background: ${({ theme }) => theme.BG_GREY};
 `;
 
 const StyledVideo = styled.video`

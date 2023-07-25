@@ -17,14 +17,14 @@ const Box = styled.div`
     display: flex;
     flex-direction: column;
     padding: 18px 26px;
-    border: 1px solid ${props => props.theme.STROKE_GREY};
+    border: 1px solid ${({ theme }) => theme.STROKE_GREY};
     border-radius: 8px;
 `;
 
 const Inner = styled.div`
     display: flex;
     & + & {
-        border-top: 1px solid ${props => props.theme.STROKE_GREY};
+        border-top: 1px solid ${({ theme }) => theme.STROKE_GREY};
         margin-top: 28px;
         padding-top: 22px;
     }
@@ -51,7 +51,7 @@ const RateWrapper = styled.div`
 const Rate = styled.div`
     margin: 1px 20px 0 0;
     font-size: ${variables.NEUE_FONT_SIZE.SMALL};
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
 `;
 
 const Amount = styled.div`
@@ -71,7 +71,7 @@ const StyledCryptoAmount = styled.div`
 
 const StyledFiatValue = styled.div`
     font-size: ${variables.NEUE_FONT_SIZE.SMALL};
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
 `;
 
 const FinalizeWarning = styled(Card)`
@@ -83,8 +83,8 @@ const FinalizeWarning = styled(Card)`
     text-align: center;
     align-items: center;
     justify-content: center;
-    color: ${props => props.theme.TYPE_DARK_GREY};
-    background: ${props => props.theme.BG_GREY};
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
+    background: ${({ theme }) => theme.BG_GREY};
     font-size: ${variables.NEUE_FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
@@ -95,7 +95,7 @@ const InfoIcon = styled(Icon)`
 
 const Red = styled.span`
     margin-left: 2px;
-    color: ${props => props.theme.TYPE_RED};
+    color: ${({ theme }) => theme.TYPE_RED};
     font-weight: ${variables.FONT_WEIGHT.BOLD};
 `;
 

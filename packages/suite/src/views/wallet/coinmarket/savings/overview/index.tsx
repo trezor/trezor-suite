@@ -57,7 +57,7 @@ const HeaderBlock = styled.div`
     height: 120px;
 `;
 const Setup = styled(HeaderBlock)`
-    background-color: ${props => props.theme.BG_GREY};
+    background-color: ${({ theme }) => theme.BG_GREY};
     padding: 21px;
     border-radius: 8px;
     margin-right: 12px;
@@ -74,14 +74,14 @@ const StyledFiatValue = styled(FiatValue)`
 const Period = styled.div`
     font-size: 16px;
     line-height: 24px;
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
 `;
 
 const SoFarSaved = styled.div`
     display: flex;
     flex-direction: column;
     align-items: flex-end;
-    background-color: ${props => props.theme.BG_WHITE};
+    background-color: ${({ theme }) => theme.BG_WHITE};
     padding: 21px 0 0 21px;
     width: 100%;
 `;
@@ -89,14 +89,14 @@ const SoFarSaved = styled.div`
 const Crypto = styled.div`
     font-size: 20px;
     line-height: 28px;
-    color: ${props => props.theme.TYPE_GREEN};
+    color: ${({ theme }) => theme.TYPE_GREEN};
     display: flex;
 `;
 
 const Fiat = styled(HiddenPlaceholder)`
     font-size: 20px;
     line-height: 28px;
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     display: flex;
 `;
 
@@ -113,7 +113,7 @@ const StyledIcon = styled(Icon)`
         width: 26px;
         height: 26px;
         border-radius: 50%;
-        background: ${props => darken(0.1)(props.theme.BG_GREY)};
+        background: ${({ theme }) => darken(0.1)(theme.BG_GREY)};
     }
 `;
 

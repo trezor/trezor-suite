@@ -21,14 +21,14 @@ const Header = styled.div`
 const Description = styled.div`
     font-size: 14px;
     line-height: 24px;
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     margin-bottom: 13px;
 `;
 
 const Divider = styled.div`
     height: 1px;
     width: 100%;
-    border: 1px solid ${props => props.theme.BG_GREY};
+    border: 1px solid ${({ theme }) => theme.BG_GREY};
 `;
 
 const Setup = styled.div`
@@ -43,7 +43,7 @@ const Setup = styled.div`
 const Values = styled.div`
     font-size: 16px;
     line-height: 24px;
-    color: ${props => props.theme.TYPE_GREEN};
+    color: ${({ theme }) => theme.TYPE_GREEN};
 `;
 
 const PaymentInfoOverview = styled.div`
@@ -63,7 +63,7 @@ const PaymentInfoItemLabel = styled.div`
     font-weight: 600;
     font-size: 12px;
     line-height: 24px;
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
 `;
 const PaymentInfoItemValue = styled.div`
     display: flex;

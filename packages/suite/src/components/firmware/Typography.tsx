@@ -13,7 +13,7 @@ interface Props {
 }
 
 const StyledP = styled(OrigP)`
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
 `;
 
 export const P = (props: Props) => (
@@ -29,7 +29,7 @@ const StyledH2 = styled(OrigH2)<{ isGreen?: boolean }>`
     ${props =>
         props.isGreen &&
         css`
-            color: ${props => props.theme.TYPE_GREEN};
+            color: ${({ theme }) => theme.TYPE_GREEN};
         `};
 `;
 

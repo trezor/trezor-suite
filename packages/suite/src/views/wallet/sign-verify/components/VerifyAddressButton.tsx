@@ -31,7 +31,7 @@ const ButtonWrapper = styled.button`
     cursor: pointer;
 
     :hover {
-        background-color: ${props => props.theme.BG_WHITE_ALT_HOVER};
+        background-color: ${({ theme }) => theme.BG_WHITE_ALT_HOVER};
 
         > div {
             max-width: 100px;

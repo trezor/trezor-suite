@@ -6,7 +6,7 @@ import { Image } from '@trezor/components';
 
 const StyledCard = styled(SavingsKYCCard)`
     background: rgba(239, 65, 65, 0.1);
-    color: ${props => props.theme.BG_RED};
+    color: ${({ theme }) => theme.BG_RED};
 `;
 
 const Icon = styled.div`

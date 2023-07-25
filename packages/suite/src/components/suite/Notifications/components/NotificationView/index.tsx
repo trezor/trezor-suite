@@ -22,7 +22,7 @@ const Item = styled.div`
     padding: 16px 0px;
 
     & + & {
-        border-top: 1px solid ${props => props.theme.STROKE_GREY};
+        border-top: 1px solid ${({ theme }) => theme.STROKE_GREY};
     }
 `;
 

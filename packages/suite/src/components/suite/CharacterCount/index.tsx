@@ -7,7 +7,7 @@ const Wrapper = styled.div`
     bottom: 35px;
     right: 15px;
     font-size: ${variables.FONT_SIZE.TINY};
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
 `;
 
 const CharacterCount = ({

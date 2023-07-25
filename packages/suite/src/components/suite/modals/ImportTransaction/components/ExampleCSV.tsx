@@ -15,7 +15,7 @@ const Wrapper = styled.div`
 
 const ExpandWrapper = styled(motion.div)`
     width: 100%;
-    background: ${props => props.theme.BG_GREY};
+    background: ${({ theme }) => theme.BG_GREY};
     border-radius: 8px;
     overflow: hidden;
     margin-top: 8px;
@@ -26,7 +26,7 @@ const ExpandWrapper = styled(motion.div)`
 const ExpandButton = styled.div`
     display: flex;
     cursor: pointer;
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: 500;
     justify-content: space-between;

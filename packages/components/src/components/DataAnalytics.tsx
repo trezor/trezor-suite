@@ -32,7 +32,7 @@ const Label = styled.span`
     margin-left: 20px;
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${props => props.theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
     align-items: center;
     display: flex;
 `;
@@ -40,7 +40,7 @@ const Label = styled.span`
 const Heading = styled(H1)`
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-    color: ${props => props.theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
     margin-bottom: 16px;
     text-align: left;
 `;
@@ -48,7 +48,7 @@ const Heading = styled(H1)`
 const Description = styled.span`
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
 
     margin-bottom: 20px;
     /* text-align: center; */

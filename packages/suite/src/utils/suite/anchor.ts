@@ -33,7 +33,7 @@ export const anchorOutlineStyles = css<{ shouldHighlight?: boolean }>`
     ${props =>
         props.shouldHighlight &&
         css`
-            outline: solid 3px ${props => props.theme.TYPE_ORANGE};
-            background: ${props => props.theme.TYPE_LIGHT_ORANGE};
+            outline: solid 3px ${({ theme }) => theme.TYPE_ORANGE};
+            background: ${({ theme }) => theme.TYPE_LIGHT_ORANGE};
         `}
 `;

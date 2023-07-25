@@ -28,8 +28,8 @@ const OpenGuideInner = styled.span`
 
 const BoxDefault = styled(motion.div)<{ $maxWidth: string | number }>`
     padding: 8px;
-    background: ${props => props.theme.BG_TOOLTIP};
-    color: ${props => props.theme.TYPE_WHITE};
+    background: ${({ theme }) => theme.BG_TOOLTIP};
+    color: ${({ theme }) => theme.TYPE_WHITE};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     border-radius: 10px;
     font-size: ${variables.FONT_SIZE.TINY};
@@ -40,7 +40,7 @@ const BoxDefault = styled(motion.div)<{ $maxWidth: string | number }>`
     @media all and (min-width: ${variables.SCREEN_SIZE.MD}) {
         &:hover ${OpenGuideInner} {
             border-radius: 26px;
-            background-color: ${props => transparentize(0.85, props.theme.TYPE_ORANGE)};
+            background-color: ${({ theme }) => transparentize(0.85, theme.TYPE_ORANGE)};
             & > a span:first-child {
                 max-width: 100px;
             }
@@ -53,8 +53,8 @@ const BoxDefault = styled(motion.div)<{ $maxWidth: string | number }>`
 
 const BoxRich = styled(motion.div)<{ $maxWidth: string | number }>`
     padding: 24px;
-    background: ${props => props.theme.BG_WHITE_ALT};
-    color: ${props => props.theme.TYPE_DARK_GREY};
+    background: ${({ theme }) => theme.BG_WHITE_ALT};
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
     border-radius: 8px;
     font-size: ${variables.FONT_SIZE.NORMAL};
     text-align: left;
@@ -65,9 +65,8 @@ const BoxRich = styled(motion.div)<{ $maxWidth: string | number }>`
 const Content = styled.div<{ dashed?: boolean; cursor: Cursor }>`
     & > * {
         cursor: ${props => props.cursor};
-        ${props =>
-            props.dashed &&
-            `border-bottom: 1.5px dashed ${transparentize(0.66, props.theme.TYPE_LIGHT_GREY)};`}
+        ${({ dashed, theme }) =>
+            dashed && `border-bottom: 1.5px dashed ${transparentize(0.66, theme.TYPE_LIGHT_GREY)};`}
     }
 `;
 
@@ -80,7 +79,7 @@ const ReadMoreLink = styled(Link)`
 
 const StyledTooltipTitle = styled.span`
     display: inline-flex;
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     margin-bottom: 8px;

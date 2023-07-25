@@ -6,7 +6,7 @@ import { StoryColumn } from '../../support/Story';
 
 const CoinName = styled.div`
     margin-bottom: 0.5rem;
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
 `;
 
 interface WrapperProps {

@@ -9,13 +9,13 @@ const { FONT_WEIGHT, FONT_SIZE } = variables;
 const NavLink = styled.div<{ active?: boolean }>`
     cursor: pointer;
     font-size: ${FONT_SIZE.NORMAL};
-    color: ${props => (props.active ? props.theme.TYPE_GREEN : props.theme.TYPE_LIGHT_GREY)};
+    color: ${({ active, theme }) => (active ? theme.TYPE_GREEN : theme.TYPE_LIGHT_GREY)};
     font-weight: ${FONT_WEIGHT.MEDIUM};
     display: flex;
     align-items: center;
     padding: 14px 6px 12px 6px;
     white-space: nowrap;
-    border-bottom: 2px solid ${props => (props.active ? props.theme.BG_GREEN : 'transparent')};
+    border-bottom: 2px solid ${({ active, theme }) => (active ? theme.BG_GREEN : 'transparent')};
     transition: border-color 0.1s;
 
     :hover {
@@ -92,7 +92,7 @@ const Navigation = styled.div`
         height: 0;
     }
 
-    border-bottom: 1px solid ${props => props.theme.STROKE_GREY};
+    border-bottom: 1px solid ${({ theme }) => theme.STROKE_GREY};
 `;
 
 type WalletLayoutNavigationProps = {

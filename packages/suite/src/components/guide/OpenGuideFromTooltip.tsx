@@ -13,7 +13,7 @@ const OpenGuideLink = styled(TrezorLink)`
 `;
 
 const StyledText = styled.span`
-    color: ${props => props.theme.TYPE_ORANGE};
+    color: ${({ theme }) => theme.TYPE_ORANGE};
     font-weight: 500;
     overflow: hidden;
     max-width: 0;
@@ -28,7 +28,7 @@ const StyledIconWrap = styled.span`
     justify-content: center;
     transition: all 0.3s ease-in-out;
     border-radius: 50%;
-    background-color: ${props => transparentize(0.85, props.theme.TYPE_ORANGE)};
+    background-color: ${({ theme }) => transparentize(0.85, theme.TYPE_ORANGE)};
 `;
 
 type OpenGuideFromTooltipProps = {

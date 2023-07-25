@@ -12,7 +12,7 @@ const Wrapper = styled.div`
     display: flex;
     flex-direction: column;
     &:not(:first-child) {
-        border-top: 1px solid ${props => props.theme.STROKE_GREY};
+        border-top: 1px solid ${({ theme }) => theme.STROKE_GREY};
     }
 `;
 

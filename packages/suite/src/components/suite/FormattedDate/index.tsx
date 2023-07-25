@@ -5,12 +5,12 @@ import styled from 'styled-components';
 const Bullet = styled.span`
     margin-left: 0.5ch;
     margin-right: 0.5ch;
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
 `;
 
 const HourWrapper = styled.div<Pick<BulletProps, 'timeLightColor'>>`
     display: inline-flex;
-    color: ${props => (props.timeLightColor ? props.theme.TYPE_LIGHT_GREY : 'inherit')};
+    color: ${({ theme, timeLightColor }) => (timeLightColor ? theme.TYPE_LIGHT_GREY : 'inherit')};
 `;
 
 const Timestamp = styled.span`

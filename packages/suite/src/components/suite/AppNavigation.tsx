@@ -24,7 +24,7 @@ const Wrapper = styled.div<{ subRoute: boolean | undefined; inView?: boolean }>`
     width: 100%;
     z-index: ${variables.Z_INDEX.STICKY_BAR};
     display: flex;
-    background: ${props => props.theme.BG_LIGHT_GREY};
+    background: ${({ theme }) => theme.BG_LIGHT_GREY};
     justify-content: center;
     position: sticky;
     top: 0;
@@ -77,7 +77,7 @@ const KeepWidth = styled.div<{ maxWidth?: string; inView?: boolean }>`
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background: ${props => props.theme.BG_LIGHT_GREY};
+    background: ${({ theme }) => theme.BG_LIGHT_GREY};
     width: 100%;
     max-width: ${props => (props.maxWidth === 'default' ? MAX_WIDTH : MAX_WIDTH_WALLET_CONTENT)};
 `;
@@ -107,16 +107,13 @@ const MenuElement = styled.div<{ isActive: boolean }>`
     position: relative;
     height: ${SECONDARY_PANEL_HEIGHT};
     font-size: ${FONT_SIZE.NORMAL};
-    color: ${props =>
-        props.isActive
-            ? props => props.theme.TYPE_DARK_GREY
-            : props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ isActive, theme }) => (isActive ? theme.TYPE_DARK_GREY : theme.TYPE_LIGHT_GREY)};
     font-weight: ${FONT_WEIGHT.MEDIUM};
     display: flex;
     align-items: center;
     white-space: nowrap;
     border-bottom: 2px solid
-        ${props => (props.isActive ? props => props.theme.TYPE_DARK_GREY : 'transparent')};
+        ${({ isActive, theme }) => (isActive ? theme.TYPE_DARK_GREY : 'transparent')};
     margin-right: 20px;
 
     :first-child {
@@ -142,8 +139,8 @@ const InnerWrap = styled.div`
     justify-content: center;
     align-content: center;
     padding: 0 16px;
-    border-bottom: 1px solid ${props => props.theme.STROKE_GREY};
-    background: ${props => props.theme.BG_LIGHT_GREY};
+    border-bottom: 1px solid ${({ theme }) => theme.STROKE_GREY};
+    background: ${({ theme }) => theme.BG_LIGHT_GREY};
 `;
 
 const IconWrapper = styled.div`

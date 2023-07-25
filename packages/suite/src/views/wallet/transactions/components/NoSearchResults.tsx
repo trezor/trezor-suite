@@ -7,7 +7,7 @@ import { getRandomNumberInRange } from '@trezor/utils';
 const NoResults = styled(Card)`
     display: flex;
     text-align: center;
-    color: ${props => props.theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
     font-size: ${variables.FONT_SIZE.NORMAL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
@@ -16,7 +16,7 @@ const Examples = styled.div`
     display: flex;
     flex-direction: column;
     margin-top: 12px;
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     font-size: ${variables.FONT_SIZE.SMALL};
     font-style: italic;
 `;

@@ -4,7 +4,7 @@ import { useTheme, Icon, Input, CoinLogo } from '@trezor/components';
 import { useSelector, useAccountSearch, useTranslation } from 'src/hooks/suite';
 
 const Wrapper = styled.div`
-    background: ${props => props.theme.BG_WHITE};
+    background: ${({ theme }) => theme.BG_WHITE};
     width: 100%;
     margin-top: 16px;
 `;
@@ -20,9 +20,9 @@ const OuterCircle = styled.div<{ isSelected?: boolean; isMobile?: boolean }>`
     justify-content: center;
     align-items: center;
     padding: 3px;
-    background: ${props => props.theme.BG_WHITE};
+    background: ${({ theme }) => theme.BG_WHITE};
     border-radius: 50%;
-    border: 2px solid ${props => (props.isSelected ? props.theme.BG_GREEN : 'transparent')};
+    border: 2px solid ${({ isSelected, theme }) => (isSelected ? theme.BG_GREEN : 'transparent')};
     transition: all 0.3;
     cursor: pointer;
 
@@ -43,8 +43,8 @@ const InputWrapper = styled.div<{ showCoinFilter: boolean }>`
 
 const StyledInput = styled(Input)`
     && {
-        background-color: ${props => props.theme.BG_GREY_ALT};
-        border-color: ${props => props.theme.BG_GREY_ALT};
+        background-color: ${({ theme }) => theme.BG_GREY_ALT};
+        border-color: ${({ theme }) => theme.BG_GREY_ALT};
         transition: border-color 0.2s;
 
         :focus {

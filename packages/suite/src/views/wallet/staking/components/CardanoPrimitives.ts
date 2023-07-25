@@ -27,7 +27,7 @@ export const Column = styled.div`
 
 export const Title = styled.div`
     display: flex;
-    color: ${props => props.theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
     font-size: ${variables.FONT_SIZE.NORMAL};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     align-items: center;
@@ -43,7 +43,7 @@ export const Actions = styled.div`
 `;
 
 export const Text = styled.div`
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     margin-bottom: 8px;
     margin-top: 8px;
     font-size: ${variables.FONT_SIZE.SMALL};
@@ -60,12 +60,12 @@ export const Content = styled.div`
 
 export const Value = styled.div`
     font-size: ${variables.FONT_SIZE.NORMAL};
-    color: ${props => props.theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     font-variant-numeric: tabular-nums slashed-zero;
     width: fit-content;
-    background: ${props => props.theme.BG_LIGHT_GREY};
-    border: 1px solid ${props => props.theme.STROKE_GREY};
+    background: ${({ theme }) => theme.BG_LIGHT_GREY};
+    border: 1px solid ${({ theme }) => theme.STROKE_GREY};
     border-radius: 8px;
     word-break: break-all;
     padding: 10px;

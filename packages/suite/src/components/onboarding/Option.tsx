@@ -6,15 +6,15 @@ const Wrapper = styled.div`
     display: flex;
     padding: 24px 16px 24px 24px;
     border-radius: 5px;
-    border: solid 1px ${props => props.theme.STROKE_GREY};
+    border: solid 1px ${({ theme }) => theme.STROKE_GREY};
     align-items: center;
     width: 100%;
     cursor: pointer;
     transition: all 0.3s;
 
     :hover {
-        box-shadow: 0 6px 40px 0 ${props => props.theme.BOX_SHADOW_OPTION_CARD};
-        border: 1px solid ${props => props.theme.STROKE_GREY_ALT};
+        box-shadow: 0 6px 40px 0 ${({ theme }) => theme.BOX_SHADOW_OPTION_CARD};
+        border: 1px solid ${({ theme }) => theme.STROKE_GREY_ALT};
     }
 `;
 
@@ -25,14 +25,14 @@ const Content = styled.div`
 `;
 
 const Heading = styled.span`
-    color: ${props => props.theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     font-size: ${variables.FONT_SIZE.NORMAL};
 `;
 
 const Description = styled.span`
     margin-top: 5px;
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     font-size: ${variables.FONT_SIZE.SMALL};
 `;

@@ -24,7 +24,7 @@ const CheckboxTitle = styled.p`
 
 const CheckboxText = styled.div`
     font-size: ${FONT_SIZE.SMALL};
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
 `;
 
 interface CheckItemProps {

@@ -18,7 +18,7 @@ const StyledButton = styled(Button)`
 `;
 
 const StyledP = styled(P)`
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
 `;
 
 const StyledImage = styled(Image)`

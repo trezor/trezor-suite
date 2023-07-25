@@ -7,7 +7,7 @@ import * as deviceUtils from 'src/utils/suite/device';
 import { TrezorDevice } from 'src/types/suite';
 
 const GrayNotificationCard = styled(NotificationCard)`
-    background: ${props => props.theme.BG_GREY};
+    background: ${({ theme }) => theme.BG_GREY};
     margin-bottom: 0px;
 `;
 interface Props {

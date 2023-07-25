@@ -8,7 +8,7 @@ const Wrapper = styled.div`
     display: flex;
     align-items: center;
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
 `;
 
 const StyledLink = styled(Link)`
