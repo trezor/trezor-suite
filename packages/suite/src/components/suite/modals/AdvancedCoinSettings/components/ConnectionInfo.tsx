@@ -11,14 +11,13 @@ const Wrapper = styled(P)`
     text-align: left;
 `;
 
-interface Props {
+interface ConnectionInfoProps {
     coin: Network['symbol'];
 }
 
-const ConnectionInfo = ({ coin }: Props) => {
-    const { blockchain } = useSelector(state => ({
-        blockchain: state.wallet.blockchain,
-    }));
+const ConnectionInfo = ({ coin }: ConnectionInfoProps) => {
+    const blockchain = useSelector(state => state.wallet.blockchain);
+
     const { connected, url, blockHash: hash, blockHeight: height, version } = blockchain[coin];
     return (
         <Wrapper size="small">

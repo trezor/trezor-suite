@@ -7,10 +7,8 @@ import type { Account, Discovery } from 'src/types/wallet';
 export const useAccounts = (discovery?: Discovery) => {
     const [accounts, setAccounts] = useState<Account[]>([]);
 
-    const { device, accountsState } = useSelector(state => ({
-        device: state.suite.device,
-        accountsState: state.wallet.accounts,
-    }));
+    const device = useSelector(state => state.suite.device);
+    const accountsState = useSelector(state => state.wallet.accounts);
 
     useEffect(() => {
         if (device) {
@@ -27,10 +25,9 @@ export const useAccounts = (discovery?: Discovery) => {
 };
 
 export const useFastAccounts = () => {
-    const { device, accounts } = useSelector(state => ({
-        device: state.suite.device,
-        accounts: state.wallet.accounts,
-    }));
+    const device = useSelector(state => state.suite.device);
+    const accounts = useSelector(state => state.wallet.accounts);
+
     const deviceAccounts = useMemo(
         () => (device ? accountUtils.getAllAccounts(device.state, accounts) : []),
         [accounts, device],

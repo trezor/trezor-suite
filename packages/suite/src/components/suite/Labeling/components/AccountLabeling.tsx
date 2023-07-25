@@ -11,10 +11,9 @@ interface AccountProps {
 }
 
 export const AccountLabeling = ({ account }: AccountProps) => {
-    const { device, devices } = useSelector(state => ({
-        device: state.suite.device,
-        devices: state.devices,
-    }));
+    const device = useSelector(state => state.suite.device);
+    const devices = useSelector(state => state.devices);
+
     const accounts = !Array.isArray(account) ? [account] : account;
 
     if (accounts.length < 1) return null;

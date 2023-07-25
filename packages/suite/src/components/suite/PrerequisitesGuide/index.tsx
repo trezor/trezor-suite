@@ -58,11 +58,9 @@ export const PrerequisitesGuide = ({
     padded,
     allowSwitchDevice,
 }: PrerequisitesGuideProps) => {
-    const { device, transport, devices } = useSelector(state => ({
-        device: state.suite.device,
-        devices: state.devices.length,
-        transport: state.suite.transport,
-    }));
+    const device = useSelector(state => state.suite.device);
+    const devices = useSelector(state => state.devices.length);
+    const transport = useSelector(state => state.suite.transport);
 
     const isWebUsbTransport = isWebUsb(transport);
 

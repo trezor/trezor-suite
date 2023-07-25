@@ -5,10 +5,8 @@ import { Translation } from 'src/components/suite';
 import { useGuideLoadPage } from 'src/hooks/guide';
 
 export const GuidePage = () => {
-    const { currentNode, language } = useSelector(state => ({
-        currentNode: state.guide.currentNode,
-        language: state.suite.settings.language,
-    }));
+    const currentNode = useSelector(state => state.guide.currentNode);
+    const language = useSelector(state => state.suite.settings.language);
 
     const { markdown, hasError } = useGuideLoadPage(currentNode, language);
 

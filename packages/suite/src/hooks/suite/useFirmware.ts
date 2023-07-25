@@ -10,10 +10,8 @@ import { FirmwareStatus, selectFirmware } from 'src/reducers/firmware/firmwareRe
 export const useFirmware = () => {
     const dispatch = useDispatch();
     const firmware = useSelector(selectFirmware);
-    const { transport, modal } = useSelector(state => ({
-        modal: state.modal,
-        transport: state.suite.transport,
-    }));
+    const transport = useSelector(state => state.suite.transport);
+    const modal = useSelector(state => state.modal);
 
     const showFingerprintCheck =
         modal.context === MODAL.CONTEXT_DEVICE &&

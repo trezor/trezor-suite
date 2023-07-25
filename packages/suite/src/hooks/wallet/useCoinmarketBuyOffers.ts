@@ -41,25 +41,13 @@ export const useOffers = ({ selectedAccount }: UseOffersProps) => {
         goto: routerActions.goto,
     });
 
-    const {
-        invityServerEnvironment,
-        device,
-        quotes,
-        alternativeQuotes,
-        quotesRequest,
-        isFromRedirect,
-        addressVerified,
-        providersInfo,
-    } = useSelector(state => ({
-        invityServerEnvironment: state.suite.settings.debug.invityServerEnvironment,
-        device: state.suite.device,
-        quotes: state.wallet.coinmarket.buy.quotes,
-        alternativeQuotes: state.wallet.coinmarket.buy.alternativeQuotes,
-        quotesRequest: state.wallet.coinmarket.buy.quotesRequest,
-        isFromRedirect: state.wallet.coinmarket.buy.isFromRedirect,
-        addressVerified: state.wallet.coinmarket.buy.addressVerified,
-        providersInfo: state.wallet.coinmarket.buy.buyInfo?.providerInfos,
-    }));
+    const invityServerEnvironment = useSelector(
+        state => state.suite.settings.debug.invityServerEnvironment,
+    );
+    const device = useSelector(state => state.suite.device);
+    const { addressVerified, alternativeQuotes, buyInfo, isFromRedirect, quotes, quotesRequest } =
+        useSelector(state => state.wallet.coinmarket.buy);
+
     const [innerQuotes, setInnerQuotes] = useState<BuyTrade[] | undefined>(quotes);
     const [innerAlternativeQuotes, setInnerAlternativeQuotes] = useState<BuyTrade[] | undefined>(
         alternativeQuotes,
@@ -112,7 +100,7 @@ export const useOffers = ({ selectedAccount }: UseOffersProps) => {
     });
 
     const selectQuote = async (quote: BuyTrade) => {
-        const provider = providersInfo && quote.exchange ? providersInfo[quote.exchange] : null;
+        const provider = buyInfo && quote.exchange ? buyInfo.providerInfos[quote.exchange] : null;
         if (quotesRequest) {
             const result = await openCoinmarketBuyConfirmModal(
                 provider?.companyName,
@@ -186,7 +174,7 @@ export const useOffers = ({ selectedAccount }: UseOffersProps) => {
         selectedQuote,
         verifyAddress,
         device,
-        providersInfo,
+        providersInfo: buyInfo?.providerInfos,
         quotesRequest,
         addressVerified,
         quotes: innerQuotes,

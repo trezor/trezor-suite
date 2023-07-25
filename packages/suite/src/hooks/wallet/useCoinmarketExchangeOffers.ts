@@ -64,29 +64,21 @@ export const useOffers = ({ selectedAccount }: UseCoinmarketExchangeFormProps) =
         verifyAddress: coinmarketExchangeActions.verifyAddress,
     });
 
+    const invityServerEnvironment = useSelector(
+        state => state.suite.settings.debug.invityServerEnvironment,
+    );
+    const accounts = useSelector(state => state.wallet.accounts);
+    const device = useSelector(state => state.suite.device);
     const {
-        invityServerEnvironment,
+        addressVerified,
+        dexQuotes,
         exchangeCoinInfo,
-        accounts,
-        device,
+        exchangeInfo,
         fixedQuotes,
         floatQuotes,
-        dexQuotes,
         quotesRequest,
-        addressVerified,
-        exchangeInfo,
-    } = useSelector(state => ({
-        invityServerEnvironment: state.suite.settings.debug.invityServerEnvironment,
-        exchangeCoinInfo: state.wallet.coinmarket.exchange.exchangeCoinInfo,
-        accounts: state.wallet.accounts,
-        device: state.suite.device,
-        fixedQuotes: state.wallet.coinmarket.exchange.fixedQuotes,
-        floatQuotes: state.wallet.coinmarket.exchange.floatQuotes,
-        dexQuotes: state.wallet.coinmarket.exchange.dexQuotes,
-        quotesRequest: state.wallet.coinmarket.exchange.quotesRequest,
-        addressVerified: state.wallet.coinmarket.exchange.addressVerified,
-        exchangeInfo: state.wallet.coinmarket.exchange.exchangeInfo,
-    }));
+    } = useSelector(state => state.wallet.coinmarket.exchange);
+
     const [innerFixedQuotes, setInnerFixedQuotes] = useState<ExchangeTrade[] | undefined>(
         fixedQuotes,
     );

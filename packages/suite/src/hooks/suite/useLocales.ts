@@ -6,9 +6,7 @@ import { useSelector } from 'src/hooks/suite';
 
 export const useLocales = () => {
     const [locale, setLocale] = useState<Locale>();
-    const { language } = useSelector(state => ({
-        language: state.suite.settings.language,
-    }));
+    const language = useSelector(state => state.suite.settings.language);
 
     useEffect(() => {
         let active = true;

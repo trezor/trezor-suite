@@ -9,7 +9,7 @@ import { useSelector } from 'src/hooks/suite';
 const FiatRateWrapper = styled.span`
     display: flex;
     align-items: center;
-    color: ${props => props.theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
     font-size: ${variables.NEUE_FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
 `;
@@ -18,21 +18,21 @@ const LastUpdate = styled.div`
     text-transform: none;
 `;
 
-interface Props {
+interface TickerProps {
     symbol: string;
     tooltipPos?: 'top' | 'bottom';
 }
-const Ticker = ({ symbol, tooltipPos = 'top' }: Props) => {
+const Ticker = ({ symbol, tooltipPos = 'top' }: TickerProps) => {
+    const rates = useSelector(state => state.wallet.fiat.coins.find(r => r.symbol === symbol));
+    const localCurrency = useSelector(state => state.wallet.settings.localCurrency);
     const theme = useTheme();
-    const rateAge = (timestamp: number) => differenceInMinutes(new Date(timestamp), new Date());
-    const { rates, localCurrency } = useSelector(state => ({
-        rates: state.wallet.fiat.coins.find(r => r.symbol === symbol),
-        localCurrency: state.wallet.settings.localCurrency,
-    }));
+
     const lastWeekRates = rates?.lastWeek?.tickers ?? [];
     const currentRate = rates?.current?.rates?.[localCurrency];
     const lastWeekRate = lastWeekRates[0]?.rates?.[localCurrency];
     const rateGoingUp = currentRate && lastWeekRate ? currentRate >= lastWeekRate : false;
+
+    const rateAge = (timestamp: number) => differenceInMinutes(new Date(timestamp), new Date());
 
     return (
         <FiatValue amount="1" symbol={symbol}>

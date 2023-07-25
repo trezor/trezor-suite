@@ -19,10 +19,9 @@ const Row = styled.span`
 const getIcon = (symbol?: Network['symbol']) => symbol && <CoinLogo symbol={symbol} size={24} />;
 
 const useActionAllowed = (path: string, network?: Network['symbol']) => {
-    const { selectedAccount } = useSelector(state => ({
-        selectedAccount: state.wallet.selectedAccount,
-    }));
+    const selectedAccount = useSelector(state => state.wallet.selectedAccount);
     const pathMatch = useRouteMatch(`${process.env.ASSET_PREFIX || ''}${path}`);
+
     return !!pathMatch && selectedAccount?.network?.symbol === network;
 };
 

@@ -20,7 +20,7 @@ const Wrapper = styled.div`
     flex: 1;
     width: 100%;
     min-height: 150px;
-    background: ${props => props.theme.BG_WHITE};
+    background: ${({ theme }) => theme.BG_WHITE};
 `;
 
 const Main = styled.div`
@@ -28,7 +28,7 @@ const Main = styled.div`
     margin: 0 30px;
     justify-content: space-between;
     padding: 20px 0;
-    border-bottom: 1px solid ${props => props.theme.STROKE_GREY};
+    border-bottom: 1px solid ${({ theme }) => theme.STROKE_GREY};
 
     @media (max-width: ${variables.SCREEN_SIZE.SM}) {
         flex-direction: column;
@@ -74,14 +74,14 @@ const Column = styled.div<ColumnProps>`
     flex: 1;
     flex-direction: column;
     justify-content: flex-start;
-    max-width: ${props => (props.maxWidth ? props.maxWidth : '100%')};
+    max-width: ${({ maxWidth }) => maxWidth ?? '100%'};
 `;
 
 const Heading = styled.div`
     display: flex;
     text-transform: uppercase;
     align-items: center;
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     padding-bottom: 9px;
 `;
@@ -97,7 +97,7 @@ const StyledButton = styled(Button)`
 const Value = styled.div`
     display: flex;
     align-items: center;
-    color: ${props => props.theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
@@ -105,8 +105,8 @@ const Footer = styled.div`
     margin: 0 30px;
     padding: 10px 0;
     padding-top: 23px;
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
-    border-top: 1px solid ${props => props.theme.STROKE_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    border-top: 1px solid ${({ theme }) => theme.STROKE_GREY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     font-size: ${variables.FONT_SIZE.SMALL};
 
@@ -119,8 +119,8 @@ const ErrorFooter = styled.div`
     display: flex;
     margin: 0 30px;
     padding: 20px 0;
-    border-top: 1px solid ${props => props.theme.STROKE_GREY};
-    color: ${props => props.theme.TYPE_RED};
+    border-top: 1px solid ${({ theme }) => theme.STROKE_GREY};
+    color: ${({ theme }) => theme.TYPE_RED};
 
     @media (max-width: ${variables.SCREEN_SIZE.SM}) {
         margin: 0 20px;
@@ -135,26 +135,17 @@ const IconWrapper = styled.div`
     padding-right: 3px;
 `;
 
-const ErrorText = styled.div``;
-
 const StyledQuestionTooltip = styled(QuestionTooltip)`
     padding-left: 4px;
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
 `;
 
 const DexFooter = styled.div`
     display: flex;
     margin: 0 30px;
     padding: 20px 0;
-    border-top: 1px solid ${props => props.theme.STROKE_GREY};
+    border-top: 1px solid ${({ theme }) => theme.STROKE_GREY};
 `;
-
-const DexText = styled.div``;
-
-interface Props {
-    className?: string;
-    quote: ExchangeTrade;
-}
 
 function getQuoteError(quote: ExchangeTrade) {
     const cryptoAmount = Number(quote.sendStringAmount);
@@ -184,7 +175,12 @@ function getQuoteError(quote: ExchangeTrade) {
     return quote.error;
 }
 
-const Quote = ({ className, quote }: Props) => {
+interface QuoteProps {
+    className?: string;
+    quote: ExchangeTrade;
+}
+
+const Quote = ({ className, quote }: QuoteProps) => {
     const { FiatAmountFormatter } = useFormatters();
 
     const theme = useTheme();
@@ -192,11 +188,12 @@ const Quote = ({ className, quote }: Props) => {
 
     const { account, selectQuote, exchangeInfo, callInProgress } =
         useCoinmarketExchangeOffersContext();
-    const { feePerByte, fiat, localCurrency } = useSelector(state => ({
-        feePerByte: state.wallet.coinmarket.composedTransactionInfo.composed?.feePerByte,
-        fiat: state.wallet.fiat,
-        localCurrency: state.wallet.settings.localCurrency,
-    }));
+
+    const feePerByte = useSelector(
+        state => state.wallet.coinmarket.composedTransactionInfo.composed?.feePerByte,
+    );
+    const fiat = useSelector(state => state.wallet.fiat);
+    const localCurrency = useSelector(state => state.wallet.settings.localCurrency);
 
     const { tag, infoNote } = getTagAndInfoNote(quote);
     const { exchange, receive, receiveStringAmount } = quote;
@@ -277,7 +274,7 @@ const Quote = ({ className, quote }: Props) => {
             </Details>
             {approvalFee && swapFee && localCurrency && (
                 <DexFooter>
-                    <DexText>
+                    <div>
                         <Translation
                             id="TR_EXCHANGE_DEX_OFFER_FEE_INFO"
                             values={{
@@ -311,7 +308,7 @@ const Quote = ({ className, quote }: Props) => {
                                 ),
                             }}
                         />
-                    </DexText>
+                    </div>
                 </DexFooter>
             )}
             {errorQuote && (
@@ -319,7 +316,7 @@ const Quote = ({ className, quote }: Props) => {
                     <IconWrapper>
                         <StyledIcon icon="CROSS" size={12} color={theme.TYPE_RED} />
                     </IconWrapper>
-                    <ErrorText>{noFundsForFeesError || getQuoteError(quote)}</ErrorText>
+                    <div>{noFundsForFeesError || getQuoteError(quote)}</div>
                 </ErrorFooter>
             )}
 
