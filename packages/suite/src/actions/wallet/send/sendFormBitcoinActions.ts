@@ -82,7 +82,7 @@ export const composeTransaction =
               });
 
         // certain change addresses might be temporary blocked by coinjoin process
-        // exclude addresses which exists in "prison" dataset (see coinjoinReducer/selectBlockedUtxosByAccountKey)
+        // exclude addresses which exists in "prison" dataset (see coinjoinReducer/selectRegisteredUtxosByAccountKey)
         const changeAddresses = prison
             ? account.addresses.change.filter(a => !prison[a.address])
             : account.addresses.change;

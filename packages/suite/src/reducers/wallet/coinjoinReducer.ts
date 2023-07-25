@@ -232,7 +232,12 @@ const addTxCandidate = (
 ) => {
     const account = getAccount(draft, payload.accountKey);
     if (!account) return;
-    account.transactionCandidates = [{ roundId: payload.roundId }];
+    if (!account.transactionCandidates) {
+        account.transactionCandidates = [];
+    }
+    if (!account.transactionCandidates.some(tx => tx.roundId !== payload.roundId)) {
+        account.transactionCandidates.push({ roundId: payload.roundId });
+    }
 };
 
 const removeTxCandidate = (
@@ -651,22 +656,20 @@ export const selectCurrentCoinjoinBalanceBreakdown = (state: CoinjoinRootState) 
     return balanceBreakdown;
 };
 
-export const selectPrisonByAccountKey = (state: CoinjoinRootState, accountKey: AccountKey) => {
-    const coinjoinAccount = selectCoinjoinAccountByKey(state, accountKey);
-    if (!coinjoinAccount) return;
-    return coinjoinAccount.prison;
-};
-
-export const selectBlockedUtxosByAccountKey = (
+export const selectRegisteredUtxosByAccountKey = (
     state: CoinjoinRootState,
     accountKey: AccountKey,
 ) => {
-    const prison = selectPrisonByAccountKey(state, accountKey);
-    if (!prison) return;
+    const coinjoinAccount = selectCoinjoinAccountByKey(state, accountKey);
+    if (!coinjoinAccount?.prison) return;
+    const { prison, session, transactionCandidates } = coinjoinAccount;
     return Object.keys(prison).reduce<typeof prison>((result, key) => {
         const inmate = prison[key];
         // select **only** inmates with assigned roundId (signed in current round or promised to future blaming round)
-        if (inmate.roundId) {
+        if (
+            inmate.roundId &&
+            (session || transactionCandidates?.some(tx => tx.roundId === inmate.roundId))
+        ) {
             result[key] = inmate;
         }
         return result;

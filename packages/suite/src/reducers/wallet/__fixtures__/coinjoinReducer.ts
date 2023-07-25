@@ -21,7 +21,7 @@ const account = {
     },
 };
 
-export default [
+export const actionFixtures = [
     {
         description: 'updateSessionPhase initial',
         initialState: {
@@ -160,5 +160,64 @@ export default [
                 },
             ],
         },
+    },
+];
+
+export const selectorFixtures = [
+    {
+        description: 'missing prison object',
+        selector: 'selectRegisteredUtxosByAccountKey' as const,
+        selectorArgs: [account.key],
+        initialState: {
+            ...initialState,
+            accounts: [account],
+        },
+        result: undefined,
+    },
+    {
+        description: 'with one blocked input',
+        selector: 'selectRegisteredUtxosByAccountKey' as const,
+        selectorArgs: [account.key],
+        initialState: {
+            ...initialState,
+            accounts: [
+                {
+                    ...account,
+                    prison: { A0: { roundId: '00' }, A1: { reason: 'this will not be picked' } },
+                },
+            ],
+        },
+        result: { A0: { roundId: '00' } },
+    },
+    {
+        description: 'with two blocked inputs (no session but with tx candidate)',
+        selector: 'selectRegisteredUtxosByAccountKey' as const,
+        selectorArgs: [account.key],
+        initialState: {
+            ...initialState,
+            accounts: [
+                {
+                    ...account,
+                    prison: {
+                        A0: { roundId: '00' },
+                        A1: { roundId: '11', reason: 'this will not be picked' },
+                        A2: { roundId: '00' },
+                    },
+                    session: undefined,
+                    transactionCandidates: [{ roundId: '00' }],
+                },
+            ],
+        },
+        result: { A0: { roundId: '00' }, A2: { roundId: '00' } },
+    },
+    {
+        description: 'with blocked input ignored (no session + no tx candidate)',
+        selector: 'selectRegisteredUtxosByAccountKey' as const,
+        selectorArgs: [account.key],
+        initialState: {
+            ...initialState,
+            accounts: [{ ...account, prison: { A0: { roundId: '00' } }, session: undefined }],
+        },
+        result: {},
     },
 ];
