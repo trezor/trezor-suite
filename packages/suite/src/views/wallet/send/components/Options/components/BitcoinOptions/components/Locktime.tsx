@@ -2,12 +2,12 @@ import React from 'react';
 import BigNumber from 'bignumber.js';
 import styled from 'styled-components';
 import { Translation } from 'src/components/suite';
-import { InputError } from 'src/components/wallet';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { Icon, Input, Switch, variables } from '@trezor/components';
 import { getInputState, isInteger } from '@suite-common/wallet-utils';
 import { MAX_LENGTH } from 'src/constants/suite/inputs';
 import { isFeatureFlagEnabled } from '@suite-common/suite-utils';
+import { useTranslation } from 'src/hooks/suite';
 
 const Wrapper = styled.div`
     margin-bottom: 25px;
@@ -69,9 +69,11 @@ export const Locktime = ({ close }: Props) => {
         getDefaultValue,
         setValue,
         toggleOption,
-        errors,
+        formState: { errors },
         composeTransaction,
     } = useSendFormContext();
+
+    const { translationString } = useTranslation();
 
     const options = getDefaultValue('options', []);
     const rbfEnabled = options.includes('bitcoinRBF');
@@ -79,41 +81,40 @@ export const Locktime = ({ close }: Props) => {
     const inputName = 'bitcoinLockTime';
     const inputValue = getDefaultValue(inputName) || '';
     const error = errors[inputName];
+    const { ref: inputRef, ...inputField } = register(inputName, {
+        onChange: () => {
+            if (!error) {
+                if (rbfEnabled) toggleOption('bitcoinRBF');
+                if (broadcastEnabled) toggleOption('broadcast');
+            }
+            composeTransaction(inputName);
+        },
+        required: translationString('LOCKTIME_IS_NOT_SET'),
+        validate: (value = '') => {
+            const amountBig = new BigNumber(value);
+            if (amountBig.isNaN()) {
+                return translationString('LOCKTIME_IS_NOT_NUMBER');
+            }
+            if (amountBig.lte(0)) {
+                return translationString('LOCKTIME_IS_TOO_LOW');
+            }
+            if (!isInteger(value)) {
+                return translationString('LOCKTIME_IS_NOT_INTEGER');
+            }
+            // max unix timestamp * 2 (2147483647 * 2)
+            if (amountBig.gt(4294967294)) {
+                return translationString('LOCKTIME_IS_TOO_BIG');
+            }
+        },
+    });
 
     return (
         <Wrapper>
             <Input
                 inputState={getInputState(error, inputValue)}
                 isMonospace
-                name={inputName}
                 defaultValue={inputValue}
                 maxLength={MAX_LENGTH.BTC_LOCKTIME}
-                innerRef={register({
-                    required: 'LOCKTIME_IS_NOT_SET',
-                    validate: (value: string) => {
-                        const amountBig = new BigNumber(value);
-                        if (amountBig.isNaN()) {
-                            return 'LOCKTIME_IS_NOT_NUMBER';
-                        }
-                        if (amountBig.lte(0)) {
-                            return 'LOCKTIME_IS_TOO_LOW';
-                        }
-                        if (!isInteger(value)) {
-                            return 'LOCKTIME_IS_NOT_INTEGER';
-                        }
-                        // max unix timestamp * 2 (2147483647 * 2)
-                        if (amountBig.gt(4294967294)) {
-                            return 'LOCKTIME_IS_TOO_BIG';
-                        }
-                    },
-                })}
-                onChange={() => {
-                    if (!error) {
-                        if (rbfEnabled) toggleOption('bitcoinRBF');
-                        if (broadcastEnabled) toggleOption('broadcast');
-                    }
-                    composeTransaction(inputName);
-                }}
                 label={
                     <Label>
                         <Icon size={16} icon="CALENDAR" />
@@ -123,8 +124,10 @@ export const Locktime = ({ close }: Props) => {
                     </Label>
                 }
                 labelRight={<Icon size={18} icon="CROSS" onClick={close} />}
-                bottomText={<InputError error={error} />}
+                bottomText={error?.message}
                 data-test="locktime-input"
+                innerRef={inputRef}
+                {...inputField}
             />
             {isFeatureFlagEnabled('RBF') && network.features?.includes('rbf') && (
                 <RbfMessage>

@@ -82,7 +82,7 @@ platform :android do
   end
 
   desc "Build Debug build."
-  lane :debug do |options|
+  lane :debugging do |options|
     gradle(task: 'clean', project_dir: ANDROID_PATH)
 
     gradle(

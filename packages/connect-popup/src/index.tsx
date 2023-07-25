@@ -65,6 +65,10 @@ const handleMessage = (
 
     if (data.type === RESPONSE_EVENT && !data.success) {
         switch (data.payload?.code) {
+            case 'Device_CallInProgress':
+                // Ignoring when device call is in progress.
+                // User triggers new call but device call is in progress PopupManager will focus popup.
+                break;
             case 'Transport_Missing':
                 // Ignore this error. It is handled after.
                 break;

@@ -1,4 +1,6 @@
 import { db } from 'src/storage';
+import { FieldValues } from 'react-hook-form';
+
 import { notificationsActions } from '@suite-common/toast-notifications';
 import * as suiteActions from 'src/actions/suite/suiteActions';
 import {
@@ -11,12 +13,10 @@ import type { Account, Network } from 'src/types/wallet';
 import type { Discovery } from 'src/reducers/wallet/discoveryReducer';
 import type { FormState } from 'src/types/wallet/sendForm';
 import type { Trade } from 'src/types/wallet/coinmarketCommonTypes';
-import type { FormDraft, FormDraftKeyPrefix } from 'src/types/wallet/form';
+import type { FormDraftKeyPrefix } from '@suite-common/wallet-types';
 import type { PreloadStoreAction } from 'src/support/suite/preloadStore';
-
 import { getFormDraftKey } from '@suite-common/wallet-utils';
 import { FormDraftPrefixKeyValues } from '@suite-common/wallet-constants';
-
 import { STORAGE } from './constants';
 import { GraphData } from '../../types/wallet/graph';
 import { deviceGraphDataFilterFn } from '../../utils/wallet/graphUtils';
@@ -94,7 +94,7 @@ export const saveCoinjoinDebugSettings = () => async (_dispatch: Dispatch, getSt
 
 // send form drafts end
 
-export const saveFormDraft = async (key: string, draft: FormDraft) => {
+export const saveFormDraft = async (key: string, draft: FieldValues) => {
     if (!(await db.isAccessible())) return;
     return db.addItem('formDrafts', draft, key, true);
 };

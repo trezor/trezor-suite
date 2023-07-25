@@ -110,15 +110,21 @@ export const TransactionDetailValuesSheet = ({
                         <Th>Input</Th>
                         <Td>
                             <CryptoToFiatAmountFormatter
+                                variant="hint"
                                 value={transaction.details.totalInput}
                                 network={transaction.symbol}
                                 customRates={transaction.rates}
+                                numberOfLines={1}
+                                adjustsFontSizeToFit
                             />
                         </Td>
                         <Td>
                             <CryptoToFiatAmountFormatter
+                                variant="hint"
                                 value={transaction.details.totalInput}
                                 network={transaction.symbol}
+                                numberOfLines={1}
+                                adjustsFontSizeToFit
                             />
                         </Td>
                     </Tr>
@@ -126,15 +132,21 @@ export const TransactionDetailValuesSheet = ({
                         <Th>Fee</Th>
                         <Td>
                             <CryptoToFiatAmountFormatter
+                                variant="hint"
                                 value={transaction.fee}
                                 network={transaction.symbol}
                                 customRates={transaction.rates}
+                                numberOfLines={1}
+                                adjustsFontSizeToFit
                             />
                         </Td>
                         <Td>
                             <CryptoToFiatAmountFormatter
+                                variant="hint"
                                 value={transaction.fee}
                                 network={transaction.symbol}
+                                numberOfLines={1}
+                                adjustsFontSizeToFit
                             />
                         </Td>
                     </Tr>
@@ -142,15 +154,21 @@ export const TransactionDetailValuesSheet = ({
                         <Th>Total</Th>
                         <Td>
                             <CryptoToFiatAmountFormatter
+                                variant="hint"
                                 value={transaction.amount}
                                 network={transaction.symbol}
                                 customRates={transaction.rates}
+                                numberOfLines={1}
+                                adjustsFontSizeToFit
                             />
                         </Td>
                         <Td>
                             <CryptoToFiatAmountFormatter
+                                variant="hint"
                                 value={transaction.amount}
                                 network={transaction.symbol}
+                                numberOfLines={1}
+                                adjustsFontSizeToFit
                             />
                         </Td>
                     </Tr>

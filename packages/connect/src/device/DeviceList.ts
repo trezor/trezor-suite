@@ -202,7 +202,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> {
                     const device = this.devices[path];
                     const methodStillRunning = !device?.commands?.disposed;
 
-                    if (methodStillRunning) {
+                    if (device && methodStillRunning) {
                         device.keepSession = false;
                     }
                 });
@@ -210,10 +210,11 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> {
                 diff.releasedElsewhere.forEach(async descriptor => {
                     const path = descriptor.path.toString();
                     const device = this.devices[path];
+                    await resolveAfter(1000, null).promise;
+
                     if (device) {
                         // after device was released in another window wait for a while (the other window might
                         // have the intention of acquiring it again)
-                        await resolveAfter(1000, null).promise;
                         // and if the device is still reelased and has never been acquired before, acquire it here.
                         if (!device.isUsed() && device.isUnacquired() && !device.isInconsistent()) {
                             _log.debug('Create device from unacquired', device);
@@ -251,7 +252,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> {
                 diff.disconnected.forEach(descriptor => {
                     const path = descriptor.path.toString();
                     const device = this.devices[path];
-                    if (device != null) {
+                    if (device) {
                         device.disconnect();
                         delete this.devices[path];
                         this.emit(DEVICE.DISCONNECT, device.toMessageObject());
@@ -462,9 +463,12 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> {
                 error.message === TRANSPORT_ERROR.INTERFACE_UNABLE_TO_OPEN_DEVICE
             ) {
                 // do nothing
-                // it's a race condition between "device_changed" and "device_disconnected"
-                // todo: emit device.disconnect from here? otherwise there stays a pending device
-                // that can't be worked with
+                // For example:
+                // 1. connect device
+                // 2. _createAndSaveDevice => handle => _takeAndCreateDevice => device.run()
+                // 3. disconnect device
+                // 4. some of the above mentioned errors is returned.
+                delete this.devices[path];
             } else if (error.message === TRANSPORT_ERROR.SESSION_WRONG_PREVIOUS) {
                 this.enumerate();
                 this._handleUsedElsewhere(descriptor);
@@ -493,7 +497,6 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> {
     private async _takeAndCreateDevice(descriptor: Descriptor) {
         const device = Device.fromDescriptor(this.transport, descriptor);
         const path = descriptor.path.toString();
-
         this.devices[path] = device;
         const promise = device.run();
         await promise;

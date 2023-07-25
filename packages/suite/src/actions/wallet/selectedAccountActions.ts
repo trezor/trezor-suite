@@ -1,15 +1,16 @@
 import { ROUTER, SUITE } from 'src/actions/suite/constants';
-import { DISCOVERY } from 'src/actions/wallet/constants';
-
-import { selectDiscoveryForDevice } from 'src/reducers/wallet/discoveryReducer';
+import { selectDiscoveryForDevice } from 'src/reducers/suite/suiteReducer';
 import * as metadataActions from 'src/actions/suite/metadataActions';
 import * as comparisonUtils from 'src/utils/suite/comparisonUtils';
 import { getSelectedAccount } from 'src/utils/wallet/accountUtils';
+import { Action, Dispatch, GetState, AppState } from 'src/types/suite';
+
 import { accountsActions, blockchainActions } from '@suite-common/wallet-core';
 import { getAccountNetwork } from '@suite-common/wallet-utils';
 import { SelectedAccountStatus } from '@suite-common/wallet-types';
+import { DiscoveryStatus } from '@suite-common/wallet-constants';
 
-import { Action, Dispatch, GetState, AppState } from 'src/types/suite';
+import { discoveryActions } from './discoveryActions';
 
 const getAccountState = (state: AppState): SelectedAccountStatus => {
     const { device } = state.suite;
@@ -134,7 +135,7 @@ const getAccountState = (state: AppState): SelectedAccountStatus => {
         };
     }
 
-    if (discovery.status !== DISCOVERY.STATUS.COMPLETED) {
+    if (discovery.status !== DiscoveryStatus.COMPLETED) {
         return {
             status: 'loading',
             loader: 'account-loading',
@@ -170,7 +171,13 @@ const actions = [
     blockchainActions.connected.type,
     blockchainActions.reconnectTimeoutStart.type,
     blockchainActions.updateFee.type,
-    ...Object.values(DISCOVERY).filter(v => typeof v === 'string'),
+    discoveryActions.stopDiscovery.type,
+    discoveryActions.interruptDiscovery.type,
+    discoveryActions.createDiscovery.type,
+    discoveryActions.startDiscovery.type,
+    discoveryActions.updateDiscovery.type,
+    discoveryActions.removeDiscovery.type,
+    discoveryActions.completeDiscovery.type,
 ];
 
 /*

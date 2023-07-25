@@ -1,8 +1,8 @@
-// Minimum number of blocks after which 'progress' event is fired by scanAccount
-export const PROGRESS_BATCH_SIZE_MIN = 10;
+// minimum time span (in ms) after which discovery checkpoint is emitted by scanAccount
+export const CHECKPOINT_COOLDOWN = 10000;
 
-// Maximum number of blocks after which 'progress' event is fired by scanAccount
-export const PROGRESS_BATCH_SIZE_MAX = 10000;
+// minimum time span (in ms) after which progress info is emitted by scanAccount
+export const PROGRESS_INFO_COOLDOWN = 1000;
 
 export const DISCOVERY_LOOKOUT = 20;
 
@@ -30,9 +30,6 @@ export const ROUND_SELECTION_REGISTRATION_OFFSET = 30000;
 
 // max output count
 export const ROUND_SELECTION_MAX_OUTPUTS = 20;
-
-// custom timeout for websocket messages
-export const WS_MESSAGE_TIMEOUT = 60000;
 
 // custom timeout for http requests (default is 50000 ms)
 export const HTTP_REQUEST_TIMEOUT = 35000;

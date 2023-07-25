@@ -1,14 +1,8 @@
 import React, { useCallback, useLayoutEffect, useRef, useState } from 'react';
-import {
-    ControllerRenderProps,
-    InputState,
-    useController,
-    UseControllerOptions,
-} from 'react-hook-form';
+import { Control, FieldValues, useController, UseControllerProps } from 'react-hook-form';
 import BigNumber from 'bignumber.js';
 
 import { Input, InputProps } from '@trezor/components';
-import { TypedValidationRules } from '@suite-common/wallet-types';
 import { localizeNumber } from '@suite-common/wallet-utils';
 import { Locale } from 'src/config/suite/languages';
 import { useSelector } from '../../hooks/suite';
@@ -69,37 +63,29 @@ const cleanValueString = (value: string, locale: Locale) => {
 
 const DECIMAL_SEPARATORS = [',', '.'];
 
-type TypedMethods = {
-    field: Omit<ControllerRenderProps<Record<string, unknown>>, 'ref' | 'value'> & {
-        value: string | undefined;
-        ref?: React.RefObject<HTMLInputElement>;
-    };
-    meta: InputState;
-};
-
-interface NumberInputProps extends Omit<InputProps, 'onChange' | 'type'> {
-    name: string;
-    rules?: TypedValidationRules;
-    control: UseControllerOptions<Record<string, unknown>>['control'];
+export interface NumberInputProps<TFieldValues extends FieldValues>
+    extends Omit<InputProps, 'defaultValue' | 'name' | 'onChange'>,
+        Omit<UseControllerProps<TFieldValues>, 'rules'> {
     decimalScale?: number;
     onChange?: (value: string) => void;
+    rules?: UseControllerProps['rules'];
 }
 
-export const NumberInput = ({
+export const NumberInput = <TFieldValues extends FieldValues>({
     name,
     rules,
     control,
     onChange: onChangeCallback,
     defaultValue,
     ...props
-}: NumberInputProps) => {
+}: NumberInputProps<TFieldValues>) => {
     const {
-        field: { value = '', onChange, ref: inputRef, ...controlProps },
-        meta: { invalid },
-    }: TypedMethods = useController<Record<string, unknown>>({
+        field: { value = '', onChange, ref, ...controlProps },
+        fieldState: { invalid },
+    } = useController({
         name,
-        control,
-        rules: rules as UseControllerOptions<Record<string, unknown>>['rules'],
+        control: control as Control<FieldValues>,
+        rules,
         defaultValue,
     });
 
@@ -109,6 +95,7 @@ export const NumberInput = ({
     const [changeHistory, setChangeHistory] = useState<string[]>([value]);
     const [redoHistory, setRedoHistory] = useState<string[]>([]);
 
+    const inputRef = useRef<HTMLInputElement | null>(null);
     const previousFormValueRef = useRef<string | undefined>(value);
     const previousDisplayValueRef = useRef<string | undefined>(displayValue);
 
@@ -118,7 +105,7 @@ export const NumberInput = ({
             const handleSetDisplayValue = (newDisplayValue: string) => {
                 setDisplayValue(newDisplayValue);
 
-                if (!inputRef.current) {
+                if (!inputRef?.current) {
                     return;
                 }
 
@@ -244,7 +231,13 @@ export const NumberInput = ({
                 onChange(cleanInput);
 
                 // get the latest error state
-                const hasError = !!rules?.validate?.(cleanInput);
+                const hasError =
+                    (typeof rules?.validate === 'function' &&
+                        !!rules?.validate?.(cleanInput, {})) ||
+                    (typeof rules?.validate === 'object' &&
+                        Object.values(rules.validate).some(validateFunction =>
+                            validateFunction(cleanInput, {}),
+                        ));
                 // because the form is not updated yet after calling `onChange()`,
                 // the value of `invalid` here is the one before this change has been handled
                 const hasErrorStateChanged = hasError !== invalid;
@@ -463,7 +456,10 @@ export const NumberInput = ({
         <Input
             {...props}
             {...controlProps}
-            innerRef={inputRef}
+            innerRef={e => {
+                ref(e);
+                inputRef.current = e;
+            }}
             value={displayValue}
             inputMode="decimal"
             onSelect={handleSelect}

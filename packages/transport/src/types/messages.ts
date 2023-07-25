@@ -554,8 +554,8 @@ export type FirmwareErase = {
 
 // FirmwareRequest
 export type FirmwareRequest = {
-    offset?: number;
-    length?: number;
+    offset: number;
+    length: number;
 };
 
 // FirmwareUpload
@@ -1073,6 +1073,15 @@ export enum DebugButton {
     INFO = 2,
 }
 
+export enum DebugPhysicalButton {
+    LEFT_BTN = 0,
+    MIDDLE_BTN = 1,
+    RIGHT_BTN = 2,
+}
+
+// DebugLinkResetDebugEvents
+export type DebugLinkResetDebugEvents = {};
+
 // EosGetPublicKey
 export type EosGetPublicKey = {
     address_n: number[];
@@ -1459,8 +1468,9 @@ export enum Enum_SafetyCheckLevel {
 export type SafetyCheckLevel = keyof typeof Enum_SafetyCheckLevel;
 
 export enum Enum_HomescreenFormat {
-    Toif144x144 = 1,
-    Jpeg240x240 = 2,
+    Toif = 1,
+    Jpeg = 2,
+    ToiG = 3,
 }
 export type HomescreenFormat = keyof typeof Enum_HomescreenFormat;
 
@@ -1538,6 +1548,11 @@ export type Features = {
     busy?: boolean;
     homescreen_format?: HomescreenFormat;
     hide_passphrase_from_host?: boolean;
+    internal_model: string;
+    unit_color?: number;
+    unit_btconly?: boolean;
+    homescreen_width?: number;
+    homescreen_height?: number;
 };
 
 // LockDevice
@@ -1728,6 +1743,9 @@ export type UnlockedPathRequest = {
     mac?: string;
 };
 
+// ShowDeviceTutorial
+export type ShowDeviceTutorial = {};
+
 export enum MoneroNetworkType {
     MAINNET = 0,
     TESTNET = 1,
@@ -1874,12 +1892,6 @@ export type NEMDecryptMessage = {
 export type NEMDecryptedMessage = {
     payload: string;
 };
-
-// experimental_message
-export type experimental_message = {};
-
-// experimental_field
-export type experimental_field = {};
 
 // RippleGetAddress
 export type RippleGetAddress = {
@@ -2222,6 +2234,12 @@ export type TezosSignedTx = {
     operation_hash: string;
 };
 
+// experimental_message
+export type experimental_message = {};
+
+// experimental_field
+export type experimental_field = {};
+
 // custom connect definitions
 export type MessageType = {
     BinanceGetAddress: BinanceGetAddress;
@@ -2336,6 +2354,7 @@ export type MessageType = {
     SignedIdentity: SignedIdentity;
     GetECDHSessionKey: GetECDHSessionKey;
     ECDHSessionKey: ECDHSessionKey;
+    DebugLinkResetDebugEvents: DebugLinkResetDebugEvents;
     EosGetPublicKey: EosGetPublicKey;
     EosPublicKey: EosPublicKey;
     EosTxHeader: EosTxHeader;
@@ -2424,6 +2443,7 @@ export type MessageType = {
     Nonce: Nonce;
     UnlockPath: UnlockPath;
     UnlockedPathRequest: UnlockedPathRequest;
+    ShowDeviceTutorial: ShowDeviceTutorial;
     NEMGetAddress: NEMGetAddress;
     NEMAddress: NEMAddress;
     NEMTransactionCommon: NEMTransactionCommon;
@@ -2440,8 +2460,6 @@ export type MessageType = {
     NEMSignedTx: NEMSignedTx;
     NEMDecryptMessage: NEMDecryptMessage;
     NEMDecryptedMessage: NEMDecryptedMessage;
-    experimental_message: experimental_message;
-    experimental_field: experimental_field;
     RippleGetAddress: RippleGetAddress;
     RippleAddress: RippleAddress;
     RipplePayment: RipplePayment;
@@ -2481,6 +2499,8 @@ export type MessageType = {
     TezosBallotOp: TezosBallotOp;
     TezosSignTx: TezosSignTx;
     TezosSignedTx: TezosSignedTx;
+    experimental_message: experimental_message;
+    experimental_field: experimental_field;
 };
 
 export type MessageKey = keyof MessageType;

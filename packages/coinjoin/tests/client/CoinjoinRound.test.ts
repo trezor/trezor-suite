@@ -129,6 +129,57 @@ describe(`CoinjoinRound`, () => {
         expect(logger.error).toBeCalledWith(expect.stringMatching(/Output registration failed/));
     });
 
+    it('end Round if any input-registration fails and there is only one account', async () => {
+        server?.addListener('test-request', ({ url, data, resolve, reject }) => {
+            if (url.endsWith('/input-registration') && data.input === 'A2') {
+                // fail on second input
+                reject(500, { errorCode: 'InputBanned', exceptionData: {} });
+            }
+            resolve();
+        });
+
+        const round = createCoinjoinRound(
+            [
+                createInput('account-A', 'A1', { ownershipProof: '01A1' }),
+                createInput('account-A', 'A2', { ownershipProof: '01A2' }),
+                createInput('account-A', 'A3', { ownershipProof: '01A3' }),
+            ],
+            server?.requestOptions,
+        );
+
+        await round.process([]);
+
+        expect(round.phase).toBe(4); // RoundPhase.Ended
+        expect(round.inputs.length).toBe(0); // all inputs are removed
+    });
+
+    it('exclude all account inputs from the Round if any input-registration fails', async () => {
+        server?.addListener('test-request', ({ url, data, resolve, reject }) => {
+            if (url.endsWith('/input-registration') && data.input === 'B2') {
+                // fail on second input of account-B
+                reject(500, { errorCode: 'InputBanned', exceptionData: {} });
+            }
+            resolve();
+        });
+
+        const round = createCoinjoinRound(
+            [
+                createInput('account-A', 'A1', { ownershipProof: '01A1' }),
+                createInput('account-B', 'B1', { ownershipProof: '01B1' }),
+                createInput('account-A', 'A2', { ownershipProof: '01A2' }),
+                createInput('account-B', 'B2', { ownershipProof: '01B2' }),
+            ],
+            server?.requestOptions,
+        );
+
+        await round.process([]);
+
+        expect(round.phase).toBe(0); // RoundPhase did not ended
+        expect(round.inputs.map(i => i.outpoint)).toEqual(['A1', 'A2']); // inputs from the account-A are still in the Round
+
+        round.unregisterAccount('account-A'); // unregister account-A to stop confirmationInterval
+    });
+
     it('onPhaseChange lock cool off resolved', async () => {
         const delayMock = jest
             .spyOn(trezorUtils, 'getRandomNumberInRange')

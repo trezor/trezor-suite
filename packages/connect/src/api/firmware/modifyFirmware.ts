@@ -13,7 +13,7 @@ export const shouldStripFwHeaders = (features: Features) => {
     if (features.major_version === 2) return false;
 
     // -----------------------
-    // Model One modifications
+    // T1 modifications
     // -----------------------
 
     // any version installed on bootloader 1.8.0 must be sliced of the first 256 bytes (containing old firmware header)

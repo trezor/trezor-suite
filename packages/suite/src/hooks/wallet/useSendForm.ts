@@ -7,13 +7,7 @@ import * as walletSettingsActions from 'src/actions/settings/walletSettingsActio
 import * as routerActions from 'src/actions/suite/routerActions';
 import * as protocolActions from 'src/actions/suite/protocolActions';
 import { AppState } from 'src/types/suite';
-import {
-    FormState,
-    Output,
-    SendContextValues,
-    UseSendFormState,
-    TypedValidationRules,
-} from '@suite-common/wallet-types';
+import { FormState, SendContextValues, UseSendFormState } from '@suite-common/wallet-types';
 import {
     getFeeLevels,
     getDefaultValues,
@@ -113,13 +107,12 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
     // register `react-hook-form`, defaultValues are set later in "loadDraft" useEffect block
     const useFormMethods = useForm<FormState>({
         mode: 'onChange',
-        shouldUnregister: false,
     });
 
-    const { control, reset, register, getValues, errors, setValue } = useFormMethods;
+    const { control, reset, register, getValues, formState, setValue, trigger } = useFormMethods;
 
     // register array fields (outputs array in react-hook-form)
-    const outputsFieldArray = useFieldArray<Output>({
+    const outputsFieldArray = useFieldArray({
         control,
         name: 'outputs',
     });
@@ -163,7 +156,6 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
         account: state.account,
         dustLimit: state.coinFees.dustLimit,
         targetAnonymity: props.targetAnonymity,
-        prison: props.prison,
     });
 
     // declare sendFormUtils, sub-hook of useSendForm
@@ -244,7 +236,7 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
         const values = getLoadedValues({ outputs });
         reset(values);
         updateContext({ isLoading: false, isDirty: true });
-        const valid = await control.trigger();
+        const valid = await trigger();
         if (valid) {
             composeRequest();
         }
@@ -299,13 +291,11 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
 
                 sendFormUtils.setAmount(outputIndex, formattedAmount);
             }
-            setValue(
-                `outputs[${outputIndex}]`,
-                {
-                    address: protocol.sendForm.address,
-                },
-                { shouldValidate: true },
-            );
+            if (protocol.sendForm.address) {
+                setValue(`outputs.${outputIndex}.address`, protocol.sendForm.address, {
+                    shouldValidate: true,
+                });
+            }
             fillSendForm(false);
             composeRequest();
         }
@@ -334,8 +324,8 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
 
     // register custom form fields (without HTMLElement)
     useEffect(() => {
-        register({ name: 'setMaxOutputId', type: 'custom' });
-        register({ name: 'options', type: 'custom' });
+        register('setMaxOutputId', { shouldUnregister: true });
+        register('options', { shouldUnregister: true });
     }, [register]);
 
     // handle draft change
@@ -348,11 +338,11 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
     // handle draftSaveRequest
     useEffect(() => {
         if (!draftSaveRequest) return;
-        if (Object.keys(errors).length === 0) {
+        if (Object.keys(formState.errors).length === 0) {
             saveDraft(getValues());
         }
         setDraftSaveRequest(false);
-    }, [draftSaveRequest, setDraftSaveRequest, saveDraft, getValues, errors]);
+    }, [draftSaveRequest, setDraftSaveRequest, saveDraft, getValues, formState.errors]);
 
     useDidUpdate(() => {
         const { outputs } = getValues();
@@ -373,7 +363,7 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
     return {
         ...state,
         ...useFormMethods,
-        register: register as (rules?: TypedValidationRules) => (ref: any) => void,
+        register,
         outputs: outputsFieldArray.fields,
         composedLevels,
         updateContext,

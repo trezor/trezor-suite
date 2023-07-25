@@ -222,13 +222,13 @@ transport manual:
   interruptible: true
   parallel:
     matrix:
-      - TEST_FILE: ["methods"]
-      - TEST_FILE: ["popup-close"]
-      - TEST_FILE: ["popup-error-page"]
-      - TEST_FILE: ["passphrase"]
-      - TEST_FILE: ["unchained"]
-      - TEST_FILE: ["browser-support"]
-      - TEST_FILE: ["install-bridge"]
+      - TEST_FILE: ["methods.test"]
+      - TEST_FILE: ["popup-close.test"]
+      - TEST_FILE: ["popup-error-page.test"]
+      - TEST_FILE: ["passphrase.test"]
+      - TEST_FILE: ["unchained.test"]
+      - TEST_FILE: ["browser-support.test"]
+      - TEST_FILE: ["install-bridge.test"]
 
 connect-popup:
   extends: .e2e connect-popup
@@ -243,6 +243,26 @@ connect-popup manual:
   needs:
     - install
     - connect-web build
+  except:
+    <<: *run_everything_rules
+  when: manual
+
+connect-popup legacy:
+  extends: .e2e connect-popup
+  needs:
+    - install
+    - connect-web build
+  retry: 0
+  variables:
+    COMPOSE_PROJECT_NAME: $CI_JOB_ID
+    COMPOSE_FILE: ./docker/docker-compose.connect-popup-ci.yml
+    # It will use connect version from npm legacy version with current popup.
+    URL: ${DEV_SERVER_URL}/connect/npm-release/connect-${CONNECT_VERSION}/?trezor-connect-src=${DEV_SERVER_URL}/connect/${CI_COMMIT_REF_NAME}/
+    TEST_FILE: $TEST_FILE
+  parallel:
+    matrix:
+      - CONNECT_VERSION: "9.0.11"
+        TEST_FILE: ["methods.test", "browser-support.test", "popup-close-legacy.test"]
   except:
     <<: *run_everything_rules
   when: manual

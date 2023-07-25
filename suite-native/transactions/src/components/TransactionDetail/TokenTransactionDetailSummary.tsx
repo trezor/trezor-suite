@@ -6,6 +6,7 @@ import { VStack } from '@suite-native/atoms';
 
 import { TransactionDetailAddressesSection } from './TransactionDetailAddressesSection';
 import { TransactionDetailStatusSection } from './TransactionDetailStatusSection';
+import { VinVoutAddress } from '../../types';
 
 export const TokenTransactionDetailSummary = ({
     accountKey,
@@ -17,19 +18,29 @@ export const TokenTransactionDetailSummary = ({
     txid: string;
     tokenTransfer: EthereumTokenTransfer;
     onShowMore: () => void;
-}) => (
-    <VStack>
-        <TransactionDetailAddressesSection
-            addressesType="inputs"
-            addresses={[tokenTransfer.from]}
-            icon={tokenTransfer.contract}
-            onShowMore={onShowMore}
-        />
-        <TransactionDetailStatusSection txid={txid} accountKey={accountKey} />
-        <TransactionDetailAddressesSection
-            addressesType="outputs"
-            addresses={[tokenTransfer.to]}
-            onShowMore={onShowMore}
-        />
-    </VStack>
-);
+}) => {
+    // Token transfer has always only one address, so we need to wrap it to an array.
+    const inputAddresses: VinVoutAddress[] = [
+        { address: tokenTransfer.from, isChangeAddress: false },
+    ];
+    const outputAddresses: VinVoutAddress[] = [
+        { address: tokenTransfer.to, isChangeAddress: false },
+    ];
+
+    return (
+        <VStack>
+            <TransactionDetailAddressesSection
+                addressesType="inputs"
+                addresses={inputAddresses}
+                icon={tokenTransfer.contract}
+                onShowMore={onShowMore}
+            />
+            <TransactionDetailStatusSection txid={txid} accountKey={accountKey} />
+            <TransactionDetailAddressesSection
+                addressesType="outputs"
+                addresses={outputAddresses}
+                onShowMore={onShowMore}
+            />
+        </VStack>
+    );
+};

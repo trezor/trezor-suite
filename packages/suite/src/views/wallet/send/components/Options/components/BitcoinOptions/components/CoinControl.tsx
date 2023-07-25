@@ -6,14 +6,12 @@ import { amountToSatoshi, formatNetworkAmount } from '@suite-common/wallet-utils
 import { FormattedCryptoAmount, Translation } from 'src/components/suite';
 import { SETTINGS } from 'src/config/suite';
 import { useActions, useSelector } from 'src/hooks/suite';
-import { ExtendedMessageDescriptor } from 'src/types/suite';
 import { Pagination } from 'src/components/wallet';
 import { useTheme, Checkbox, Icon, Switch, variables } from '@trezor/components';
 import { UtxoSelectionList } from 'src/components/wallet/CoinControl/UtxoSelectionList';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { selectCurrentTargetAnonymity } from 'src/reducers/wallet/coinjoinReducer';
-import { TypedFieldError } from 'src/types/wallet/form';
 
 const Row = styled.div`
     align-items: center;
@@ -73,7 +71,7 @@ export const CoinControl = ({ close }: CoinControlProps) => {
 
     const {
         account,
-        errors,
+        formState: { errors },
         getDefaultValue,
         network,
         outputs,
@@ -103,7 +101,7 @@ export const CoinControl = ({ close }: CoinControlProps) => {
     const inputs = isCoinControlEnabled ? selectedUtxos : composedInputs;
     const totalInputs = getTotal(inputs.map(input => Number(input.amount)));
     const totalOutputs = getTotal(
-        outputs.map((_, i) => Number(getDefaultValue(`outputs[${i}].amount`, ''))),
+        outputs.map((_, i) => Number(getDefaultValue(`outputs.${i}.amount`, ''))),
     );
     const totalOutputsInSats = shouldSendInSats
         ? totalOutputs
@@ -111,11 +109,9 @@ export const CoinControl = ({ close }: CoinControlProps) => {
     const missingToInput = totalOutputsInSats - totalInputs;
     const isMissingToAmount = missingToInput > 0; // relevant when the amount field is not validated, e.g. there is an error in the address
     const missingAmountTooBig = missingToInput > Number.MAX_SAFE_INTEGER;
-    const amountHasError = errors.outputs?.some(error => error?.amount); // relevant when input is a number, but there is an error, e.g. decimals in sats
-    const notEnoughFundsSelectedError = !!errors.outputs?.some(
-        error =>
-            ((error?.amount as TypedFieldError)?.message as ExtendedMessageDescriptor)?.id ===
-            'TR_NOT_ENOUGH_SELECTED',
+    const amountHasError = errors.outputs?.some?.(error => error?.amount); // relevant when input is a number, but there is an error, e.g. decimals in sats
+    const notEnoughFundsSelectedError = !!errors.outputs?.some?.(
+        error => error?.amount?.type === 'coinControl',
     );
     const isMissingVisible =
         isCoinControlEnabled &&

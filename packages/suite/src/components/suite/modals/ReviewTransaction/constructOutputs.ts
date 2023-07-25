@@ -4,7 +4,7 @@ import { FormState, PrecomposedTransactionFinal, TxFinalCardano } from 'src/type
 import { Account } from 'src/types/wallet/index';
 import { getShortFingerprint, isCardanoTx } from 'src/utils/wallet/cardanoUtils';
 import { OutputProps } from './components/Output';
-import { fromWei } from 'web3-utils';
+import { fromWei, toWei } from 'web3-utils';
 import { getIsUpdatedSendFlow } from './components/getIsUpdatedSendFlow';
 
 const getCardanoTokenBundle = (account: Account, output: CardanoOutput) => {
@@ -234,10 +234,13 @@ const constructNewFlow = ({
     }
 
     if (networkType === 'ethereum') {
-        // formatted to be alligned with the device, feePerByte is stired in Gwei
+        // device shows ether, precomposedTx.feePerByte is in gwei
+        const wei = toWei(precomposedTx.feePerByte, 'gwei'); // from gwei to wei
+        const ether = fromWei(wei, 'ether'); // from wei to ether
+
         outputs.push({
             type: 'gas',
-            value: fromWei(precomposedTx.feePerByte, 'Gwei'),
+            value: ether,
         });
     }
 

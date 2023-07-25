@@ -1,51 +1,69 @@
-import { versionUtils } from '@trezor/utils';
 import {
     Discovery,
     PartialDiscovery,
     selectDiscovery,
-    selectDiscoveryForDevice,
+    selectDiscoveryByDeviceState,
 } from 'src/reducers/wallet/discoveryReducer';
-import TrezorConnect, { BundleProgress, AccountInfo, UI } from '@trezor/connect';
-import { notificationsActions } from '@suite-common/toast-notifications';
 import { SUITE } from 'src/actions/suite/constants';
-import { accountsActions } from '@suite-common/wallet-core';
 import * as metadataActions from 'src/actions/suite/metadataActions';
-import { DISCOVERY } from 'src/actions/wallet/constants';
-import { SETTINGS } from 'src/config/suite';
 import { NETWORKS } from 'src/config/wallet';
 import { Dispatch, GetState, TrezorDevice } from 'src/types/suite';
 import { Account } from 'src/types/wallet';
+import { createAction } from '@reduxjs/toolkit';
+import { selectEnabledNetworks } from 'src/reducers/wallet/settingsReducer';
+import { selectDevice, selectDiscoveryForDevice } from 'src/reducers/suite/suiteReducer';
+import { selectMetadata } from 'src/reducers/suite/metadataReducer';
+
+import { getDerivationType, isTrezorConnectBackendType } from '@suite-common/wallet-utils';
 import { DiscoveryItem } from '@suite-common/wallet-types';
-import { getDerivationType } from 'src/utils/wallet/cardanoUtils';
-import { isTrezorConnectBackendType } from '@suite-common/wallet-utils';
+import { accountsActions } from '@suite-common/wallet-core';
+import { notificationsActions } from '@suite-common/toast-notifications';
 import { getDeviceModel, getFirmwareVersion } from '@trezor/device-utils';
+import TrezorConnect, { BundleProgress, AccountInfo, UI } from '@trezor/connect';
+import { versionUtils } from '@trezor/utils';
+import { DiscoveryStatus } from '@suite-common/wallet-constants';
+import { settingsCommonConfig } from '@suite-common/suite-config';
+
+const MODULE_PREFIX = '@common/wallet-core/discovery';
 
 export type DiscoveryAction =
-    | { type: typeof DISCOVERY.CREATE; payload: Discovery }
-    | { type: typeof DISCOVERY.START; payload: Discovery }
-    | { type: typeof DISCOVERY.UPDATE; payload: PartialDiscovery }
-    | { type: typeof DISCOVERY.INTERRUPT; payload: PartialDiscovery }
-    | { type: typeof DISCOVERY.STOP; payload: PartialDiscovery }
-    | { type: typeof DISCOVERY.COMPLETE; payload: PartialDiscovery }
-    | { type: typeof DISCOVERY.REMOVE; payload: PartialDiscovery };
-
-type UpdateActionType =
-    | typeof DISCOVERY.UPDATE
-    | typeof DISCOVERY.INTERRUPT
-    | typeof DISCOVERY.STOP
-    | typeof DISCOVERY.COMPLETE;
+    | { type: typeof createDiscovery.type; payload: Discovery }
+    | { type: typeof startDiscovery.type; payload: Discovery }
+    | { type: typeof updateDiscovery.type; payload: PartialDiscovery }
+    | { type: typeof completeDiscovery.type; payload: PartialDiscovery }
+    | { type: typeof removeDiscovery.type; payload: PartialDiscovery };
 
 type ProgressEvent = BundleProgress<AccountInfo | null>['payload'];
 
 const LIMIT = 10;
 
-export const update = (
-    payload: PartialDiscovery,
-    type: UpdateActionType = DISCOVERY.UPDATE,
-): DiscoveryAction => ({
-    type,
+export const createDiscovery = createAction(`${MODULE_PREFIX}/create`, payload => ({ payload }));
+
+export const startDiscovery = createAction(`${MODULE_PREFIX}/start`, payload => ({ payload }));
+
+export const interruptDiscovery = createAction(`${MODULE_PREFIX}/interrupt`, payload => ({
     payload,
-});
+}));
+
+export const completeDiscovery = createAction(`${MODULE_PREFIX}/complete`, payload => ({
+    payload,
+}));
+
+export const stopDiscovery = createAction(`${MODULE_PREFIX}/stop`, payload => ({
+    payload,
+}));
+
+export const removeDiscovery = createAction(
+    `${MODULE_PREFIX}/remove`,
+    (deviceState: string): { payload: string } => ({
+        payload: deviceState,
+    }),
+);
+
+export const updateDiscovery = createAction(
+    `${MODULE_PREFIX}/update`,
+    (payload: PartialDiscovery) => ({ payload }),
+);
 
 const calculateProgress =
     (discovery: Discovery) =>
@@ -81,10 +99,10 @@ const handleProgress =
     (event: ProgressEvent, deviceState: string, item: DiscoveryItem, metadataEnabled: boolean) =>
     (dispatch: Dispatch, getState: GetState) => {
         // get fresh discovery data
-        const discovery = selectDiscovery(getState(), deviceState);
+        const discovery = selectDiscoveryByDeviceState(getState(), deviceState);
         // ignore progress event when:
         // 1. discovery is not running (interrupted/stopped/complete)
-        if (!discovery || discovery.status >= DISCOVERY.STATUS.STOPPING) return;
+        if (!discovery || discovery.status >= DiscoveryStatus.STOPPING) return;
         // 2. account network is no longer part of discovery (network disabled in wallet settings)
         if (!discovery.networks.includes(item.coin)) return;
         // process event
@@ -119,7 +137,7 @@ const handleProgress =
 
         // update discovery
         dispatch(
-            update({
+            updateDiscovery({
                 ...progress,
                 authConfirm,
                 bundleSize: discovery.bundleSize - 1,
@@ -162,7 +180,7 @@ const getBundle =
         // progress event wasn't emitted from '@trezor/connect' so there are no accounts, neither loaded or failed
         // return empty bundle to complete discovery
         if (
-            discovery.status === DISCOVERY.STATUS.RUNNING &&
+            discovery.status === DiscoveryStatus.RUNNING &&
             !accounts.length &&
             !discovery.failed.length
         ) {
@@ -203,7 +221,7 @@ const getBundle =
                     coin: configNetwork.symbol,
                     details: 'txs',
                     index,
-                    pageSize: SETTINGS.TXS_PER_PAGE,
+                    pageSize: settingsCommonConfig.TXS_PER_PAGE,
                     accountType,
                     networkType: configNetwork.networkType,
                     derivationType: getDerivationType(accountType),
@@ -214,8 +232,9 @@ const getBundle =
     };
 
 export const updateNetworkSettings = () => (dispatch: Dispatch, getState: GetState) => {
-    const { enabledNetworks } = getState().wallet.settings;
-    const { discovery } = getState().wallet;
+    const enabledNetworks = selectEnabledNetworks(getState());
+    const discovery = selectDiscovery(getState());
+
     discovery.forEach(d => {
         const device = getState().devices.find(dev => dev.state === d.deviceState);
         const networks = filterUnavailableNetworks(enabledNetworks, device).map(n => n.symbol);
@@ -228,7 +247,7 @@ export const updateNetworkSettings = () => (dispatch: Dispatch, getState: GetSta
             }),
         );
         dispatch(
-            update({
+            updateDiscovery({
                 ...progress,
                 networks,
                 failed: [],
@@ -284,15 +303,12 @@ const getAvailableCardanoDerivations =
             }
 
             dispatch(
-                update(
-                    {
-                        deviceState,
-                        status: DISCOVERY.STATUS.STOPPED,
-                        error,
-                        errorCode: code,
-                    },
-                    DISCOVERY.STOP,
-                ),
+                stopDiscovery({
+                    deviceState,
+                    status: DiscoveryStatus.STOPPED,
+                    error,
+                    errorCode: code,
+                }),
             );
             return;
         }
@@ -316,16 +332,16 @@ const getAvailableCardanoDerivations =
 
 export const create =
     (deviceState: string, device: TrezorDevice) => (dispatch: Dispatch, getState: GetState) => {
-        const { enabledNetworks } = getState().wallet.settings;
+        const enabledNetworks = selectEnabledNetworks(getState());
         const networks = filterUnavailableNetworks(enabledNetworks, device).map(n => n.symbol);
 
         dispatch({
-            type: DISCOVERY.CREATE,
+            type: createDiscovery.type,
             payload: {
                 deviceState,
                 authConfirm: !device.useEmptyPassphrase,
                 index: 0,
-                status: DISCOVERY.STATUS.IDLE,
+                status: DiscoveryStatus.IDLE,
                 total: LIMIT * networks.length,
                 bundleSize: 0,
                 loaded: 0,
@@ -335,20 +351,13 @@ export const create =
         });
     };
 
-export const remove = (deviceState: string): DiscoveryAction => ({
-    type: DISCOVERY.REMOVE,
-    payload: {
-        deviceState,
-    },
-});
-
 export const start =
     () =>
     async (dispatch: Dispatch, getState: GetState): Promise<void> => {
-        const { device } = getState().suite;
-        const { metadata } = getState();
-
+        const device = selectDevice(getState());
+        const metadata = selectMetadata(getState());
         const discovery = selectDiscoveryForDevice(getState());
+
         if (!device) {
             dispatch(
                 notificationsActions.addToast({
@@ -358,6 +367,7 @@ export const start =
             );
             return;
         }
+
         if (device.authConfirm) {
             dispatch(
                 notificationsActions.addToast({
@@ -367,6 +377,7 @@ export const start =
             );
             return;
         }
+
         if (!discovery) {
             dispatch(
                 notificationsActions.addToast({
@@ -382,8 +393,8 @@ export const start =
 
         // start process
         if (
-            discovery.status === DISCOVERY.STATUS.IDLE ||
-            discovery.status > DISCOVERY.STATUS.STOPPING
+            discovery.status === DiscoveryStatus.IDLE ||
+            discovery.status > DiscoveryStatus.STOPPING
         ) {
             // metadata are enabled in settings but metadata master key does not exist for this device
             // try to generate device metadata master key if passphrase is not used
@@ -391,12 +402,11 @@ export const start =
                 await dispatch(metadataActions.init());
             }
 
-            // start discovery
             dispatch({
-                type: DISCOVERY.START,
+                type: startDiscovery.type,
                 payload: {
                     ...discovery,
-                    status: DISCOVERY.STATUS.RUNNING,
+                    status: DiscoveryStatus.RUNNING,
                 },
             });
         }
@@ -418,7 +428,7 @@ export const start =
                 return;
             }
             dispatch({
-                type: DISCOVERY.UPDATE,
+                type: updateDiscovery.type,
                 payload: {
                     ...discovery,
                     availableCardanoDerivations,
@@ -431,7 +441,7 @@ export const start =
 
         // discovery process complete
         if (bundle.length === 0) {
-            if (discovery.status <= DISCOVERY.STATUS.RUNNING && device.connected) {
+            if (discovery.status <= DiscoveryStatus.RUNNING && device.connected) {
                 // call getFeatures to release device session
                 await TrezorConnect.getFeatures({
                     device,
@@ -445,24 +455,25 @@ export const start =
 
             // if previous discovery status was running (typically after application start or when user added a new account)
             // trigger fetch metadata; necessary to load account labels
-            if (discovery.status === DISCOVERY.STATUS.RUNNING) {
+            if (discovery.status === DiscoveryStatus.RUNNING) {
                 dispatch(metadataActions.fetchMetadata(deviceState));
             }
 
             dispatch(
-                update(
-                    {
-                        deviceState,
-                        status: DISCOVERY.STATUS.COMPLETED,
-                    },
-                    DISCOVERY.COMPLETE,
-                ),
+                completeDiscovery({
+                    deviceState,
+                    status: DiscoveryStatus.COMPLETED,
+                }),
             );
             return;
         }
 
         dispatch(
-            update({ deviceState, bundleSize: bundle.length, status: DISCOVERY.STATUS.RUNNING }),
+            updateDiscovery({
+                deviceState,
+                bundleSize: bundle.length,
+                status: DiscoveryStatus.RUNNING,
+            }),
         );
 
         // handle @trezor/connect event
@@ -486,7 +497,7 @@ export const start =
         // process response
         if (result.success) {
             // fetch fresh data from reducer
-            const currentDiscovery = selectDiscovery(getState(), deviceState);
+            const currentDiscovery = selectDiscoveryByDeviceState(getState(), deviceState);
             if (!currentDiscovery) return;
             // discovery process is still in authConfirm mode (not changed by handleProgress function)
             // and there is at least one used account in response
@@ -499,7 +510,7 @@ export const start =
                 result.payload.find(a => a && !a.empty)
             ) {
                 dispatch(
-                    update({
+                    updateDiscovery({
                         deviceState,
                         authConfirm: false,
                     }),
@@ -507,10 +518,10 @@ export const start =
                 // try to generate device metadata master key
                 await dispatch(metadataActions.init());
             }
-            if (currentDiscovery.status === DISCOVERY.STATUS.RUNNING) {
+            if (currentDiscovery.status === DiscoveryStatus.RUNNING) {
                 await dispatch(start()); // try next index
-            } else if (currentDiscovery.status === DISCOVERY.STATUS.STOPPING) {
-                dispatch(update({ deviceState, status: DISCOVERY.STATUS.STOPPED }, DISCOVERY.STOP));
+            } else if (currentDiscovery.status === DiscoveryStatus.STOPPING) {
+                dispatch(stopDiscovery({ deviceState, status: DiscoveryStatus.STOPPED }));
             } else {
                 dispatch(
                     notificationsActions.addToast({
@@ -553,7 +564,7 @@ export const start =
                     );
 
                     dispatch(
-                        update({
+                        updateDiscovery({
                             ...progress,
                             bundleSize: discovery.bundleSize - failed.length,
                             failed,
@@ -579,15 +590,12 @@ export const start =
             const error =
                 result.payload.error !== 'discovery_interrupted' ? result.payload.error : undefined;
             dispatch(
-                update(
-                    {
-                        deviceState,
-                        status: DISCOVERY.STATUS.STOPPED,
-                        error,
-                        errorCode: result.payload.code,
-                    },
-                    DISCOVERY.STOP,
-                ),
+                stopDiscovery({
+                    deviceState,
+                    status: DiscoveryStatus.STOPPED,
+                    error,
+                    errorCode: result.payload.code,
+                }),
             );
 
             if (error) {
@@ -600,10 +608,10 @@ export const stop = () => (dispatch: Dispatch, getState: GetState) => {
     const discovery = selectDiscoveryForDevice(getState());
     if (discovery && discovery.running) {
         dispatch(
-            update(
-                { deviceState: discovery.deviceState, status: DISCOVERY.STATUS.STOPPING },
-                DISCOVERY.INTERRUPT,
-            ),
+            interruptDiscovery({
+                deviceState: discovery.deviceState,
+                status: DiscoveryStatus.STOPPING,
+            }),
         );
         TrezorConnect.cancel('discovery_interrupted');
 
@@ -621,10 +629,20 @@ export const restart = () => async (dispatch: Dispatch, getState: GetState) => {
         }),
     );
     dispatch(
-        update({
+        updateDiscovery({
             ...progress,
             failed: [],
         }),
     );
     await dispatch(start());
+};
+
+export const discoveryActions = {
+    createDiscovery,
+    startDiscovery,
+    removeDiscovery,
+    updateDiscovery,
+    completeDiscovery,
+    stopDiscovery,
+    interruptDiscovery,
 };

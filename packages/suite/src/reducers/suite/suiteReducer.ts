@@ -1,20 +1,23 @@
 import produce from 'immer';
-import { TRANSPORT, TransportInfo, ConnectSettings } from '@trezor/connect';
-import { SuiteThemeVariant } from '@trezor/suite-desktop-api';
 import { Action, TrezorDevice, Lock, TorBootstrap, TorStatus } from 'src/types/suite';
-
-import { variables } from '@trezor/components';
 import { SUITE, STORAGE } from 'src/actions/suite/constants';
-import { DISCOVERY } from 'src/actions/wallet/constants';
 import type { Locale } from 'src/config/suite/languages';
-import { isWeb, getWindowWidth } from '@trezor/env-utils';
 import { ensureLocale } from 'src/utils/suite/l10n';
-import { getNumberFromPixelString, versionUtils } from '@trezor/utils';
 import type { OAuthServerEnvironment } from 'src/types/suite/metadata';
-import type { InvityServerEnvironment } from '@suite-common/invity';
-import { getDeviceModel } from '@trezor/device-utils';
 import { getStatus } from 'src/utils/suite/device';
 import { getIsTorEnabled, getIsTorLoading } from 'src/utils/suite/tor';
+import { discoveryActions } from 'src/actions/wallet/discoveryActions';
+
+import { getDeviceModel } from '@trezor/device-utils';
+import type { InvityServerEnvironment } from '@suite-common/invity';
+import { getNumberFromPixelString, versionUtils } from '@trezor/utils';
+import { isWeb, getWindowWidth } from '@trezor/env-utils';
+import { variables } from '@trezor/components';
+import { SuiteThemeVariant } from '@trezor/suite-desktop-api';
+import { TRANSPORT, TransportInfo, ConnectSettings } from '@trezor/connect';
+import { DiscoveryStatus } from '@suite-common/wallet-constants';
+
+import { selectDiscoveryByDeviceState, DiscoveryRootState } from '../wallet/discoveryReducer';
 
 export interface SuiteRootState {
     suite: SuiteState;
@@ -235,11 +238,12 @@ const suiteReducer = (state: SuiteState = initialState, action: Action): SuiteSt
                 changeLock(draft, SUITE.LOCK_TYPE.ROUTER, action.payload);
                 break;
 
-            case DISCOVERY.START:
+            case discoveryActions.startDiscovery.type:
                 changeLock(draft, SUITE.LOCK_TYPE.DEVICE, true);
                 break;
-            case DISCOVERY.STOP:
-            case DISCOVERY.COMPLETE:
+
+            case discoveryActions.completeDiscovery.type:
+            case discoveryActions.stopDiscovery.type:
                 changeLock(draft, SUITE.LOCK_TYPE.DEVICE, false);
                 break;
 
@@ -292,5 +296,25 @@ export const selectIsActionAbortable = (state: SuiteRootState) =>
     state.suite.transport?.type === 'BridgeTransport'
         ? versionUtils.isNewerOrEqual(state.suite.transport?.version as string, '2.0.31')
         : true; // WebUSB
+
+export const selectDiscoveryForDevice = (state: DiscoveryRootState & { suite: SuiteState }) =>
+    selectDiscoveryByDeviceState(state, state.suite.device?.state);
+
+/**
+ * Helper selector called from components
+ * return `true` if discovery process is running/completed and `authConfirm` is required
+ */
+export const selectIsDiscoveryAuthConfirmationRequired = (
+    state: DiscoveryRootState & { suite: SuiteState },
+) => {
+    const discovery = selectDiscoveryForDevice(state);
+
+    return (
+        discovery &&
+        discovery.authConfirm &&
+        (discovery.status < DiscoveryStatus.STOPPING ||
+            discovery.status === DiscoveryStatus.COMPLETED)
+    );
+};
 
 export default suiteReducer;

@@ -2,26 +2,21 @@ import { MiddlewareAPI } from 'redux';
 import { db } from 'src/storage';
 import { WALLET_SETTINGS } from 'src/actions/settings/constants';
 import * as walletSettingsActions from 'src/actions/settings/walletSettingsActions';
-import {
-    DISCOVERY,
-    GRAPH,
-    SEND,
-    COINMARKET_COMMON,
-    FORM_DRAFT,
-} from 'src/actions/wallet/constants';
+import { GRAPH, SEND, COINMARKET_COMMON, FORM_DRAFT } from 'src/actions/wallet/constants';
 import * as COINJOIN from 'src/actions/wallet/constants/coinjoinConstants';
 import * as storageActions from 'src/actions/suite/storageActions';
 import { SUITE, METADATA, STORAGE } from 'src/actions/suite/constants';
-import { messageSystemActions } from '@suite-common/message-system';
 import { FIRMWARE } from 'src/actions/firmware/constants';
-import { selectDiscovery } from 'src/reducers/wallet/discoveryReducer';
+import { selectDiscoveryByDeviceState } from 'src/reducers/wallet/discoveryReducer';
 import * as metadataActions from 'src/actions/suite/metadataActions';
 import { isDeviceRemembered } from 'src/utils/suite/device';
 import { serializeDiscovery } from 'src/utils/suite/storage';
 import type { AppState, Action as SuiteAction, Dispatch } from 'src/types/suite';
 import type { WalletAction } from 'src/types/wallet';
 import { isAnyOf } from '@reduxjs/toolkit';
+import { discoveryActions } from 'src/actions/wallet/discoveryActions';
 
+import { messageSystemActions } from '@suite-common/message-system';
 import {
     accountsActions,
     blockchainActions,
@@ -109,6 +104,44 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 api.dispatch(storageActions.saveBackend(action.payload.coin));
             }
 
+            if (
+                isAnyOf(
+                    discoveryActions.updateDiscovery,
+                    discoveryActions.interruptDiscovery,
+                    discoveryActions.completeDiscovery,
+                    discoveryActions.stopDiscovery,
+                )(action)
+            ) {
+                const { deviceState } = action.payload;
+                const device = api.getState().devices.find(d => d.state === deviceState);
+                // update discovery for remembered device
+                if (isDeviceRemembered(device)) {
+                    const discovery = selectDiscoveryByDeviceState(api.getState(), deviceState);
+                    if (discovery) {
+                        storageActions.saveDiscovery([serializeDiscovery(discovery)]);
+                    }
+                }
+            }
+
+            if (
+                isAnyOf(
+                    messageSystemActions.fetchSuccessUpdate,
+                    messageSystemActions.dismissMessage,
+                )(action)
+            ) {
+                api.dispatch(storageActions.saveMessageSystem());
+            }
+
+            if (
+                isAnyOf(
+                    analyticsActions.initAnalytics,
+                    analyticsActions.enableAnalytics,
+                    analyticsActions.disableAnalytics,
+                )(action)
+            ) {
+                api.dispatch(storageActions.saveAnalytics());
+            }
+
             switch (action.type) {
                 case SUITE.REMEMBER_DEVICE:
                     api.dispatch(
@@ -123,22 +156,6 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 case SUITE.FORGET_DEVICE:
                     api.dispatch(storageActions.forgetDevice(action.payload));
                     break;
-
-                case DISCOVERY.UPDATE:
-                case DISCOVERY.INTERRUPT:
-                case DISCOVERY.STOP:
-                case DISCOVERY.COMPLETE: {
-                    const { deviceState } = action.payload;
-                    const device = api.getState().devices.find(d => d.state === deviceState);
-                    // update discovery for remembered device
-                    if (isDeviceRemembered(device)) {
-                        const discovery = selectDiscovery(api.getState(), deviceState);
-                        if (discovery) {
-                            storageActions.saveDiscovery([serializeDiscovery(discovery)]);
-                        }
-                    }
-                    break;
-                }
 
                 case SUITE.UPDATE_SELECTED_DEVICE:
                     if (isDeviceRemembered(action.payload) && action.payload.mode === 'normal') {
@@ -173,12 +190,6 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                     break;
                 }
 
-                case analyticsActions.initAnalytics.type:
-                case analyticsActions.enableAnalytics.type:
-                case analyticsActions.disableAnalytics.type:
-                    api.dispatch(storageActions.saveAnalytics());
-                    break;
-
                 case GRAPH.ACCOUNT_GRAPH_SUCCESS:
                 case GRAPH.ACCOUNT_GRAPH_FAIL: {
                     const device = api
@@ -209,11 +220,6 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 case METADATA.DISABLE:
                 case METADATA.SET_PROVIDER:
                     api.dispatch(storageActions.saveMetadata());
-                    break;
-
-                case messageSystemActions.fetchSuccessUpdate.type:
-                case messageSystemActions.dismissMessage.type:
-                    api.dispatch(storageActions.saveMessageSystem());
                     break;
 
                 case FORM_DRAFT.STORE_DRAFT: {

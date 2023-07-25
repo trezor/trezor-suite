@@ -1,7 +1,9 @@
 import { useEffect, useRef, useCallback, useState } from 'react';
-import { UseFormMethods } from 'react-hook-form';
+import { FieldPath, UseFormReturn } from 'react-hook-form';
+
+import { FeeLevel } from '@trezor/connect';
 import { useAsyncDebounce } from '@trezor/react-utils';
-import { useActions } from 'src/hooks/suite';
+import { useActions, useTranslation } from 'src/hooks/suite';
 import * as sendFormActions from 'src/actions/wallet/sendFormActions';
 import { findComposeErrors } from '@suite-common/wallet-utils';
 import {
@@ -15,29 +17,31 @@ import {
     PrecomposedLevelsCardano,
 } from '@suite-common/wallet-types';
 
-type Props = UseFormMethods<FormState> & {
+const DEFAULT_FIELD = 'outputs.0.amount';
+
+interface Props<TFieldValues extends FormState> extends UseFormReturn<TFieldValues> {
     state?: ComposeActionContext;
-    defaultField?: string;
-};
+    defaultField?: FieldPath<TFieldValues>;
+}
 
 // shareable sub-hook used in useRbfForm and useSendForm (TODO)
 
-export const useCompose = ({
+export const useCompose = <TFieldValues extends FormState>({
     state,
     defaultField,
     getValues,
-    setValue,
-    errors,
-    setError,
+    formState: { errors },
     clearErrors,
-}: Props) => {
+    ...props
+}: Props<TFieldValues>) => {
     const [isLoading, setLoading] = useState(false);
     const [composeRequestID, setComposeRequestID] = useState(0);
     const composeRequestIDRef = useRef(composeRequestID);
-    const defaultFieldRef = useRef(defaultField || 'outputs[0].amount');
+    const defaultFieldRef = useRef(defaultField || DEFAULT_FIELD);
     const [composedLevels, setComposedLevels] =
         useState<SendContextValues['composedLevels']>(undefined);
     const [composeField, setComposeField] = useState<string | undefined>(undefined);
+    const { translationString } = useTranslation();
 
     // actions
     const debounce = useAsyncDebounce();
@@ -45,6 +49,10 @@ export const useCompose = ({
         composeAction: sendFormActions.composeTransaction,
         signAction: sendFormActions.signTransaction,
     });
+
+    // Type assertion allowing to make the hook reusable, see https://stackoverflow.com/a/73624072
+    // This allows the hook to set values and errors for fields shared among multiple forms without passing them as arguments.
+    const { setError, setValue } = props as unknown as UseFormReturn<FormState>;
 
     // compose process
     // call sendFormAction with debounce
@@ -104,26 +112,22 @@ export const useCompose = ({
                     return;
                 }
 
+                const formError = {
+                    type: 'compose',
+                    message: translationString(errorMessage.id, errorMessage.values),
+                };
+
                 if (composeField) {
                     // setError to the field which created `composeRequest`
-                    setError(composeField, {
-                        type: 'compose',
-                        message: errorMessage as any, // setError types is broken? according to ts it accepts only strings, but object or react component could be used as well...
-                    });
-                } else if (defaultFieldRef.current !== 'outputs[0].amount') {
+                    setError(composeField as FieldPath<FormState>, formError);
+                } else if (defaultFieldRef.current !== DEFAULT_FIELD) {
                     // if defaultField in not an amount (like rbf case, defaultField: selectedFee)
                     // setError to this particular field
-                    setError(defaultFieldRef.current, {
-                        type: 'compose',
-                        message: errorMessage as any,
-                    });
+                    setError(defaultFieldRef.current as FieldPath<FormState>, formError);
                 } else if (values.outputs) {
                     // setError to the all `Amount` fields, composeField is not specified (load draft case)
                     values.outputs.forEach((_, i) => {
-                        setError(`outputs[${i}].amount`, {
-                            type: 'compose',
-                            message: errorMessage as any,
-                        });
+                        setError(`outputs.${i}.amount`, formError);
                     });
                 }
                 return;
@@ -137,7 +141,7 @@ export const useCompose = ({
             // update feeLimit field if present (calculated from ethereum data size)
             setValue('estimatedFeeLimit', composed.estimatedFeeLimit);
         },
-        [composeField, getValues, setValue, errors, setError, clearErrors],
+        [composeField, getValues, setValue, errors, setError, clearErrors, translationString],
     );
 
     // called from the useFees sub-hook
@@ -176,7 +180,7 @@ export const useCompose = ({
                 // find nearest possible tx
                 const nearest = Object.keys(composedLevels)
                     .reverse()
-                    .find(key => composedLevels[key].type !== 'error');
+                    .find((key): key is FeeLevel['label'] => composedLevels[key].type !== 'error');
                 // switch to it
                 if (nearest) {
                     composed = composedLevels[nearest];
@@ -185,7 +189,7 @@ export const useCompose = ({
                         // @ts-expect-error: type = error already filtered above
                         const { feePerByte, feeLimit } = composed;
                         setValue('feePerUnit', feePerByte);
-                        setValue('feeLimit', feeLimit);
+                        setValue('feeLimit', feeLimit || '');
                     }
                 }
                 // or do nothing, use default composed tx

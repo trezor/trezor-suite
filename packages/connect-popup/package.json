@@ -17,6 +17,7 @@
         "@trezor/connect-common": "workspace:*",
         "@trezor/connect-ui": "workspace:*",
         "@trezor/crypto-utils": "workspace:*",
+        "@trezor/device-utils": "workspace:*",
         "@trezor/urls": "workspace:*",
         "eth-phishing-detect": "^1.2.0",
         "react-dom": "18.2.0"

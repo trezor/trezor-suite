@@ -35,8 +35,8 @@ const IconWrapper = styled.div<
         return isChecked ? $color || theme.BG_GREEN : theme.BG_WHITE;
     }};
     border: 2px solid
-        ${({ $color, isChecked, theme }) =>
-            isChecked ? $color || theme.BG_GREEN : theme.STROKE_GREY};
+        ${({ $color, isChecked, isDisabled, theme }) =>
+            isChecked && !isDisabled ? $color || theme.BG_GREEN : theme.STROKE_GREY};
     transition: border 0.1s ease-in-out;
 
     :hover,
@@ -58,15 +58,6 @@ const Label = styled.div`
     text-align: left;
 `;
 
-const handleKeyboard = (
-    event: React.KeyboardEvent<HTMLElement>,
-    onClick: CheckboxProps['onClick'],
-) => {
-    if (event.code === KEYBOARD_CODE.SPACE) {
-        onClick(event);
-    }
-};
-
 export interface CheckboxProps extends React.HTMLAttributes<HTMLDivElement> {
     color?: string;
     isChecked?: boolean;
@@ -84,13 +75,21 @@ export const Checkbox = ({
 }: CheckboxProps) => {
     const theme = useTheme();
 
-    const handleClick = isDisabled ? undefined : onClick;
+    const handleClick: CheckboxProps['onClick'] = event => {
+        if (isDisabled) return;
+        onClick(event);
+    };
+    const handleKeyUp = (event: React.KeyboardEvent<HTMLElement>) => {
+        if (event.code === KEYBOARD_CODE.SPACE) {
+            handleClick(event);
+        }
+    };
 
     return (
         <Wrapper
             isDisabled={isDisabled}
             onClick={handleClick}
-            onKeyUp={event => handleKeyboard(event, onClick)}
+            onKeyUp={handleKeyUp}
             tabIndex={0}
             {...rest}
         >

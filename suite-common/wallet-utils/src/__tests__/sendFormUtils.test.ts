@@ -101,19 +101,26 @@ describe('sendForm utils', () => {
         expect(
             findComposeErrors({
                 someField: { type: 'validate' },
+                // @ts-expect-error: should not fail TODO
                 outputs: [
                     { amount: { type: 'compose' }, address: { type: 'validate' } },
                     { amount: { type: 'validate' }, address: { type: 'compose' } },
                 ],
                 topLevelField: { type: 'compose' },
+                // @ts-expect-error: params
                 invalidFieldNull: null,
+                // @ts-expect-error: params
                 invalidFieldBool: true,
+                // @ts-expect-error: params
                 invalidFieldNumber: 1,
+                // @ts-expect-error: params
                 invalidFieldString: 'A',
+                // should fail?
                 invalidFieldEmpty: {},
+                // @ts-expect-error: params
                 invalidArray: [null, true, 1, 'A', {}],
             }),
-        ).toEqual(['outputs[0].amount', 'outputs[1].address', 'topLevelField']);
+        ).toEqual(['outputs.0.amount', 'outputs.1.address', 'topLevelField']);
     });
 
     it('getBitcoinComposeOutputs', () => {

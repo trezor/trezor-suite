@@ -1,36 +1,39 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
-import {
-    amountToSatoshi,
-    formatAmount,
-    formatNetworkAmount,
-    isDecimalsValid,
-    isInteger,
-    getInputState,
-} from '@suite-common/wallet-utils';
+import { FieldValues } from 'react-hook-form';
+import { getInputState } from '@suite-common/wallet-utils';
 import { useCoinmarketExchangeFormContext } from 'src/hooks/wallet/useCoinmarketExchangeForm';
-import { FormattedCryptoAmount, Translation, NumberInput } from 'src/components/suite';
+import { NumberInput, NumberInputProps } from 'src/components/suite';
 import SendCryptoSelect from './SendCryptoSelect';
-import { InputError } from 'src/components/wallet';
-import Bignumber from 'bignumber.js';
 import { MAX_LENGTH } from 'src/constants/suite/inputs';
 import { CRYPTO_INPUT, CRYPTO_TOKEN, FIAT_INPUT } from 'src/types/wallet/coinmarketExchangeForm';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
-import { TypedValidationRules } from 'src/types/wallet/form';
+import { useTranslation } from 'src/hooks/suite';
+import {
+    validateDecimals,
+    validateInteger,
+    validateLimits,
+    validateMin,
+    validateReserveOrBalance,
+} from 'src/utils/suite/validation';
+import { useFormatters } from '@suite-common/formatters';
 
 const StyledInput = styled(NumberInput)<{ isToken: boolean }>`
-    ${props =>
-        !props.isToken && {
+    ${({ isToken }) =>
+        !isToken && {
             'border-top-right-radius': 0,
             'border-bottom-right-radius': 0,
             'padding-right': '105px',
         }}
-`;
+` as <T extends FieldValues>(
+    props: NumberInputProps<T> & { isToken: boolean },
+) => React.ReactElement; // Styled wrapper doesn't preserve type argument, see https://github.com/styled-components/styled-components/issues/1803#issuecomment-1181765843
 
 const SendCryptoInput = () => {
+    const { translationString } = useTranslation();
     const {
         control,
-        errors,
+        formState: { errors },
         clearErrors,
         network,
         account,
@@ -41,19 +44,11 @@ const SendCryptoInput = () => {
         setValue,
     } = useCoinmarketExchangeFormContext();
     const { shouldSendInSats } = useBitcoinAmountUnit(account.symbol);
-    const { symbol, tokens } = account;
+    const { CryptoAmountFormatter } = useFormatters();
 
     const tokenAddress = getValues(CRYPTO_TOKEN);
-    const tokenData = tokens?.find(t => t.contract === tokenAddress);
+    const tokenData = account.tokens?.find(t => t.contract === tokenAddress);
 
-    const conversion = shouldSendInSats ? amountToSatoshi : formatAmount;
-    const formattedAvailableBalance = tokenData
-        ? tokenData.balance || '0'
-        : conversion(account.availableBalance, network.decimals);
-    const reserve =
-        account.networkType === 'ripple'
-            ? formatNetworkAmount(account.misc.reserve, account.symbol)
-            : undefined;
     const decimals = tokenData ? tokenData.decimals : network.decimals;
 
     const { outputs } = getValues();
@@ -66,122 +61,25 @@ const SendCryptoInput = () => {
     const amountError = errors.outputs?.[0]?.amount;
     const fiatError = errors.outputs?.[0]?.fiat;
 
-    const cryptoInputRules = useMemo<TypedValidationRules>(
-        () => ({
-            validate: (value: string) => {
-                const amountBig = new Bignumber(value);
-                if (value) {
-                    if (amountBig.isNaN()) {
-                        return 'AMOUNT_IS_NOT_NUMBER';
-                    }
-
-                    if (shouldSendInSats && !isInteger(value)) {
-                        return 'AMOUNT_IS_NOT_INTEGER';
-                    }
-
-                    if (amountBig.lte(0)) {
-                        return 'AMOUNT_IS_TOO_LOW';
-                    }
-
-                    if (amountLimits) {
-                        const amount = Number(value);
-
-                        let minCrypto = 0;
-                        if (amountLimits.min) {
-                            minCrypto = shouldSendInSats
-                                ? Number(
-                                      amountToSatoshi(
-                                          amountLimits.min.toString(),
-                                          network.decimals,
-                                      ),
-                                  )
-                                : amountLimits.min;
-                        }
-                        if (minCrypto && amount < minCrypto) {
-                            return (
-                                <Translation
-                                    id="TR_EXCHANGE_VALIDATION_ERROR_MINIMUM_CRYPTO"
-                                    values={{
-                                        minimum: (
-                                            <FormattedCryptoAmount
-                                                value={amountLimits.min}
-                                                symbol={amountLimits.currency}
-                                            />
-                                        ),
-                                    }}
-                                />
-                            );
-                        }
-
-                        let maxCrypto = 0;
-                        if (amountLimits.max) {
-                            maxCrypto = shouldSendInSats
-                                ? Number(
-                                      amountToSatoshi(
-                                          amountLimits.max.toString(),
-                                          network.decimals,
-                                      ),
-                                  )
-                                : amountLimits.max;
-                        }
-                        if (maxCrypto && amount > maxCrypto) {
-                            return (
-                                <Translation
-                                    id="TR_EXCHANGE_VALIDATION_ERROR_MAXIMUM_CRYPTO"
-                                    values={{
-                                        maximum: (
-                                            <FormattedCryptoAmount
-                                                value={amountLimits.max}
-                                                symbol={amountLimits.currency}
-                                            />
-                                        ),
-                                    }}
-                                />
-                            );
-                        }
-                    }
-
-                    if (amountBig.gt(formattedAvailableBalance)) {
-                        if (reserve && amountBig.lt(formatNetworkAmount(account.balance, symbol))) {
-                            return (
-                                <Translation
-                                    key="AMOUNT_IS_MORE_THAN_RESERVE"
-                                    id="AMOUNT_IS_MORE_THAN_RESERVE"
-                                    values={{ reserve }}
-                                />
-                            );
-                        }
-                        return 'AMOUNT_IS_NOT_ENOUGH';
-                    }
-
-                    // ERC20 without decimal places
-                    if (!decimals && !isInteger(value)) {
-                        return 'AMOUNT_IS_NOT_INTEGER';
-                    }
-
-                    if (!isDecimalsValid(value, decimals)) {
-                        return (
-                            <Translation
-                                key="AMOUNT_IS_NOT_IN_RANGE_DECIMALS"
-                                id="AMOUNT_IS_NOT_IN_RANGE_DECIMALS"
-                                values={{ decimals }}
-                            />
-                        );
-                    }
-                }
-            },
-        }),
-        [
-            account.balance,
-            amountLimits,
-            decimals,
-            formattedAvailableBalance,
-            network.decimals,
-            reserve,
-            shouldSendInSats,
-            symbol,
-        ],
-    );
+    const cryptoInputRules = {
+        validate: {
+            min: validateMin(translationString),
+            integer: validateInteger(translationString, {
+                except: !shouldSendInSats || !!decimals,
+            }),
+            limits: validateLimits(translationString, {
+                amountLimits,
+                areSatsUsed: !!shouldSendInSats,
+                formatter: CryptoAmountFormatter,
+            }),
+            reserveOrBalance: validateReserveOrBalance(translationString, {
+                account,
+                areSatsUsed: !!shouldSendInSats,
+                tokenAddress,
+            }),
+            decimals: validateDecimals(translationString, { decimals }),
+        },
+    };
 
     return (
         <StyledInput
@@ -199,7 +97,7 @@ const SendCryptoInput = () => {
             maxLength={MAX_LENGTH.AMOUNT}
             isToken={!!tokenData}
             rules={cryptoInputRules}
-            bottomText={<InputError error={amountError} />}
+            bottomText={amountError?.message}
             innerAddon={<SendCryptoSelect />}
         />
     );

@@ -140,46 +140,42 @@ export class BridgeTransport extends AbstractTransport {
 
     // https://github.dev/trezor/trezord-go/blob/f559ee5079679aeb5f897c65318d3310f78223ca/core/core.go#L420
     public acquire({ input }: { input: AcquireInput }) {
-        return this.scheduleAction(async signal => {
-            const previous = input.previous == null ? 'null' : input.previous;
+        return this.scheduleAction(
+            async signal => {
+                const previous = input.previous == null ? 'null' : input.previous;
 
-            if (this.listening) {
-                // listenPromise is resolved on next listen
-                this.listenPromise[input.path] = createDeferred<string>();
-                // acquire promise is resolved after acquire returns
-                // this.acquiredPromise[input.path] = createDeferred<string>();
-            }
+                if (this.listening) {
+                    // listenPromise is resolved on next listen
+                    this.listenPromise[input.path] = createDeferred();
+                }
 
-            const response = await this._post('/acquire', {
-                params: `${input.path}/${previous}`,
-                timeout: true,
-                signal,
-            });
-
-            if (this.acquirePromise) {
-                this.acquirePromise.resolve(undefined);
-            }
-
-            if (!response.success) {
-                return response;
-            }
-
-            this.acquiredUnconfirmed[input.path] = response.payload;
-
-            if (!this.listenPromise[input.path]) {
-                return this.success(response.payload);
-            }
-
-            return this.listenPromise[input.path].promise
-                .then(sessionConfirmedByListen => {
-                    delete this.listenPromise[input.path];
-                    return this.success(sessionConfirmedByListen);
-                })
-                .catch(err => {
-                    delete this.listenPromise[input.path];
-                    return this.error({ error: err.message });
+                const response = await this._post('/acquire', {
+                    params: `${input.path}/${previous}`,
+                    timeout: true,
+                    signal,
                 });
-        });
+
+                if (this.acquirePromise) {
+                    this.acquirePromise.resolve(undefined);
+                }
+
+                if (!response.success) {
+                    return response;
+                }
+
+                this.acquiredUnconfirmed[input.path] = response.payload;
+
+                if (!this.listenPromise[input.path]) {
+                    return this.success(response.payload);
+                }
+
+                return this.listenPromise[input.path].promise.finally(() => {
+                    delete this.listenPromise[input.path];
+                });
+            },
+            undefined,
+            [ERRORS.DEVICE_DISCONNECTED_DURING_ACTION, ERRORS.SESSION_WRONG_PREVIOUS],
+        );
     }
 
     // https://github.dev/trezor/trezord-go/blob/f559ee5079679aeb5f897c65318d3310f78223ca/core/core.go#L354

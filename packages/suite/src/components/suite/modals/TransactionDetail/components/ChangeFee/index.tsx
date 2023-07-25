@@ -4,10 +4,10 @@ import { Card, Icon, variables } from '@trezor/components';
 import { Translation, FiatValue, FormattedCryptoAmount } from 'src/components/suite';
 import { useRbf, RbfContext, UseRbfProps } from 'src/hooks/wallet/useRbfForm';
 import { formatNetworkAmount, getFeeUnits } from '@suite-common/wallet-utils';
-import Fees from './components/Fees';
-import AffectedTransactions from './components/AffectedTransactions';
-import DecreasedOutputs from './components/DecreasedOutputs';
-import ReplaceButton from './components/ReplaceButton';
+import { RbfFees } from './components/RbfFees';
+import { AffectedTransactions } from './components/AffectedTransactions';
+import { DecreasedOutputs } from './components/DecreasedOutputs';
+import { ReplaceButton } from './components/ReplaceButton';
 
 const Wrapper = styled.div`
     margin: 12px 0;
@@ -145,7 +145,7 @@ export const ChangeFee = (props: ChangeFeeProps) => {
                         </Content>
                     </Inner>
                     <Inner>
-                        <Fees />
+                        <RbfFees />
                     </Inner>
                     <DecreasedOutputs />
                     {contextValues.chainedTxs.length > 0 && (

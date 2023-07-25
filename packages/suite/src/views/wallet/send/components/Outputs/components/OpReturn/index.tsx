@@ -2,11 +2,11 @@ import React from 'react';
 import styled from 'styled-components';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { Translation } from 'src/components/suite';
-import { InputError } from 'src/components/wallet';
 import { Textarea, Icon, Tooltip } from '@trezor/components';
 import { getInputState, isHexValid } from '@suite-common/wallet-utils';
 import { OpenGuideFromTooltip } from 'src/components/guide';
 import { MAX_LENGTH } from 'src/constants/suite/inputs';
+import { useTranslation } from 'src/hooks/suite';
 
 const Wrapper = styled.div`
     display: flex;
@@ -32,13 +32,15 @@ const OpReturn = ({ outputId }: { outputId: number }) => {
         outputs,
         getDefaultValue,
         setValue,
-        errors,
+        formState: { errors },
         composeTransaction,
         removeOpReturn,
     } = useSendFormContext();
 
-    const inputAsciiName = `outputs[${outputId}].dataAscii`;
-    const inputHexName = `outputs[${outputId}].dataHex`;
+    const { translationString } = useTranslation();
+
+    const inputAsciiName = `outputs.${outputId}.dataAscii` as const;
+    const inputHexName = `outputs.${outputId}.dataHex` as const;
 
     const asciiValue = getDefaultValue(inputAsciiName, outputs[outputId].dataAscii || '');
     const hexValue = getDefaultValue(inputHexName, outputs[outputId].dataHex || '');
@@ -47,27 +49,39 @@ const OpReturn = ({ outputId }: { outputId: number }) => {
     const asciiError = outputError ? outputError.dataAscii : undefined;
     const hexError = outputError ? outputError.dataHex : undefined;
 
+    const { ref: asciiRef, ...asciiField } = register(inputAsciiName, {
+        onChange: event => {
+            setValue(inputHexName, Buffer.from(event.target.value, 'ascii').toString('hex'), {
+                shouldValidate: true,
+            });
+            composeTransaction(inputAsciiName);
+        },
+        required: translationString('DATA_NOT_SET'),
+    });
+    const { ref: hexRef, ...hexField } = register(inputHexName, {
+        onChange: event => {
+            setValue(
+                inputAsciiName,
+                !hexError ? Buffer.from(event.target.value, 'hex').toString('ascii') : '',
+            );
+            composeTransaction(inputHexName);
+        },
+        required: translationString('DATA_NOT_SET'),
+        validate: (value = '') => {
+            if (!isHexValid(value)) return translationString('DATA_NOT_VALID_HEX');
+            if (value.length > 80 * 2) return translationString('DATA_HEX_TOO_BIG');
+        },
+    });
+
     return (
         <Wrapper>
             <Textarea
                 inputState={getInputState(asciiError, asciiValue)}
                 isMonospace
-                name={inputAsciiName}
                 data-test={inputAsciiName}
                 defaultValue={asciiValue}
                 maxLength={MAX_LENGTH.OP_RETURN}
-                innerRef={register({
-                    required: 'DATA_NOT_SET',
-                })}
-                onChange={event => {
-                    setValue(
-                        inputHexName,
-                        Buffer.from(event.target.value, 'ascii').toString('hex'),
-                        { shouldValidate: true },
-                    );
-                    composeTransaction(inputAsciiName);
-                }}
-                bottomText={<InputError error={asciiError} />}
+                bottomText={asciiError?.message}
                 label={
                     <Label>
                         <Tooltip
@@ -84,33 +98,22 @@ const OpReturn = ({ outputId }: { outputId: number }) => {
                         </Tooltip>
                     </Label>
                 }
+                innerRef={asciiRef}
+                {...asciiField}
             />
             <Space> = </Space>
             <Textarea
                 inputState={getInputState(hexError, hexValue)}
                 isMonospace
-                name={inputHexName}
                 data-test={inputHexName}
                 defaultValue={hexValue}
                 maxLength={MAX_LENGTH.OP_RETURN}
-                innerRef={register({
-                    required: 'DATA_NOT_SET',
-                    validate: (value: string) => {
-                        if (!isHexValid(value)) return 'DATA_NOT_VALID_HEX';
-                        if (value.length > 80 * 2) return 'DATA_HEX_TOO_BIG';
-                    },
-                })}
-                onChange={event => {
-                    setValue(
-                        inputAsciiName,
-                        !hexError ? Buffer.from(event.target.value, 'hex').toString('ascii') : '',
-                    );
-                    composeTransaction(inputHexName);
-                }}
-                bottomText={<InputError error={hexError} />}
+                bottomText={hexError?.message}
                 labelRight={
                     <Icon size={20} icon="CROSS" onClick={() => removeOpReturn(outputId)} />
                 }
+                innerRef={hexRef}
+                {...hexField}
             />
         </Wrapper>
     );

@@ -1,12 +1,8 @@
 import React from 'react';
-import styled from 'styled-components';
-import { analytics, EventType } from '@trezor/suite-analytics';
 
-import { Switch, Box, Icon, useTheme, variables } from '@trezor/components';
-import { getAllAccounts, getTotalFiatBalance } from '@suite-common/wallet-utils';
+import styled from 'styled-components';
 import * as suiteActions from 'src/actions/suite/suiteActions';
-import { useFormatters } from '@suite-common/formatters';
-import { selectDiscovery } from 'src/reducers/wallet/discoveryReducer';
+import { selectDiscoveryByDeviceState } from 'src/reducers/wallet/discoveryReducer';
 import {
     WalletLabeling,
     Translation,
@@ -15,6 +11,11 @@ import {
 } from 'src/components/suite';
 import { useSelector, useActions } from 'src/hooks/suite';
 import { TrezorDevice, AcquiredDevice } from 'src/types/suite';
+
+import { useFormatters } from '@suite-common/formatters';
+import { Switch, Box, Icon, useTheme, variables } from '@trezor/components';
+import { getAllAccounts, getTotalFiatBalance } from '@suite-common/wallet-utils';
+import { analytics, EventType } from '@trezor/suite-analytics';
 
 const InstanceType = styled.div`
     display: flex;
@@ -115,7 +116,9 @@ export const WalletInstance = ({
     const { FiatAmountFormatter } = useFormatters();
     const theme = useTheme();
 
-    const discoveryProcess = useSelector(state => selectDiscovery(state, instance.state));
+    const discoveryProcess = useSelector(state =>
+        selectDiscoveryByDeviceState(state, instance.state),
+    );
 
     const deviceAccounts = getAllAccounts(instance.state, accounts);
     const accountsCount = deviceAccounts.length;

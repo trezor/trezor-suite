@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+
+import { A } from '@mobily/ts-belt';
 
 import { AccountKey } from '@suite-common/wallet-types';
 import { BottomSheet, Box, Button, Card, Text, Toggle, VStack } from '@suite-native/atoms';
@@ -9,9 +11,11 @@ import { useCopyToClipboard } from '@suite-native/helpers';
 import { Icon } from '@suite-common/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { selectTransactionAddresses, AddressesType } from '../../selectors';
+import { selectTransactionAddresses } from '../../selectors';
+import { ChangeAddressesHeader } from './ChangeAddressesHeader';
+import { AddressesType, VinVoutAddress } from '../../types';
 
-type TransactionDetailInputsSheetProps = {
+type TransactionDetailAddressesSheetProps = {
     isVisible: boolean;
     txid: string;
     accountKey: AccountKey;
@@ -54,12 +58,22 @@ const AddressRow = ({ address }: { address: string }) => {
     );
 };
 
+const AddressesListCard = ({ addresses }: { addresses: VinVoutAddress[] }) => (
+    <Card>
+        <VStack spacing="medium">
+            {addresses.map(({ address }) => (
+                <AddressRow key={address} address={address} />
+            ))}
+        </VStack>
+    </Card>
+);
+
 export const TransactionDetailAddressesSheet = ({
     isVisible,
     onClose,
     txid,
     accountKey,
-}: TransactionDetailInputsSheetProps) => {
+}: TransactionDetailAddressesSheetProps) => {
     const [displayedAddressesType, setDisplayedAddressesType] = useState<AddressesType>('inputs');
 
     const inputAddresses = useSelector((state: TransactionsRootState) =>
@@ -71,6 +85,14 @@ export const TransactionDetailAddressesSheet = ({
 
     const displayedAddresses =
         displayedAddressesType === 'inputs' ? inputAddresses : outputAddresses;
+
+    const { targetAddresses, changeAddresses } = useMemo(
+        () => ({
+            targetAddresses: displayedAddresses.filter(({ isChangeAddress }) => !isChangeAddress),
+            changeAddresses: displayedAddresses.filter(({ isChangeAddress }) => isChangeAddress),
+        }),
+        [displayedAddresses],
+    );
 
     const toggleAddresses = () => {
         setDisplayedAddressesType(displayedAddressesType === 'inputs' ? 'outputs' : 'inputs');
@@ -91,13 +113,16 @@ export const TransactionDetailAddressesSheet = ({
                     rightLabel={formatAddressLabel('outputs', outputAddresses.length)}
                 />
                 <Box marginVertical="medium">
-                    <Card>
-                        <VStack spacing="medium">
-                            {displayedAddresses.map(address => (
-                                <AddressRow key={address} address={address} />
-                            ))}
-                        </VStack>
-                    </Card>
+                    <VStack spacing="medium">
+                        <AddressesListCard addresses={targetAddresses} />
+
+                        {A.isNotEmpty(changeAddresses) && (
+                            <>
+                                <ChangeAddressesHeader addressesCount={changeAddresses.length} />
+                                <AddressesListCard addresses={changeAddresses} />
+                            </>
+                        )}
+                    </VStack>
                     <Box marginTop="large" paddingHorizontal="small">
                         <Button size="large" onPress={onClose}>
                             Close

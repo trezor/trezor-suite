@@ -3,9 +3,9 @@ import { Fees } from 'src/components/wallet/Fees';
 import { useRbfContext } from 'src/hooks/wallet/useRbfForm';
 
 // wrapper for shareable Fees component
-const RbfFees = () => {
+export const RbfFees = () => {
     const {
-        errors,
+        formState: { errors },
         register,
         control,
         setValue,
@@ -32,5 +32,3 @@ const RbfFees = () => {
         />
     );
 };
-
-export default RbfFees;

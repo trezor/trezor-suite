@@ -84,8 +84,15 @@ const buildOptions = (
 };
 
 const ReceiveCryptoSelect = () => {
-    const { control, setAmountLimits, exchangeInfo, exchangeCoinInfo, account, getValues, errors } =
-        useCoinmarketExchangeFormContext();
+    const {
+        control,
+        setAmountLimits,
+        exchangeInfo,
+        exchangeCoinInfo,
+        account,
+        getValues,
+        formState: { errors },
+    } = useCoinmarketExchangeFormContext();
 
     const customSearch = (
         option: { data: { label: string; value: string; name: string } },
@@ -103,12 +110,13 @@ const ReceiveCryptoSelect = () => {
     const { outputs, receiveCryptoSelect } = getValues();
     const token = outputs?.[0]?.token;
     const tokenData = account.tokens?.find(t => t.contract === token);
+
     return (
         <Wrapper>
             <Controller
                 control={control}
                 name="receiveCryptoSelect"
-                render={({ onChange, value }) => (
+                render={({ field: { onChange, value } }) => (
                     <Select
                         inputState={getInputState(
                             errors.receiveCryptoSelect,

@@ -57,8 +57,6 @@ const splitByNewlines = input => input.split('\n');
 const findIndexByCommit = (commitArr, searchString) =>
     commitArr.findIndex(commit => commit.includes(searchString));
 
-const formArrayToText = arr => arr.join('\n');
-
 const initConnectRelease = () => {
     const checkResult = checkPackageDependencies('connect');
 
@@ -70,7 +68,7 @@ const initConnectRelease = () => {
             const PACKAGE_PATH = path.join(ROOT, 'packages', packageName);
             const PACKAGE_JSON_PATH = path.join(PACKAGE_PATH, 'package.json');
 
-            exec('yarn', ['bump', semver, `./packages/${packageName}/package.json`]);
+            exec('yarn', ['bump', 'patch', `./packages/${packageName}/package.json`]);
 
             const rawPackageJSON = fs.readFileSync(PACKAGE_JSON_PATH);
             const packageJSON = JSON.parse(rawPackageJSON);
@@ -83,12 +81,12 @@ const initConnectRelease = () => {
             const CHANGELOG_PATH = path.join(PACKAGE_PATH, 'CHANGELOG.md');
 
             const newCommits = [];
-            commitsArr.forEach(commit => {
+            for (let commit of commitsArr) {
                 if (commit.includes(`npm-release: @trezor/${packageName}`)) {
-                    return;
+                    break;
                 }
                 newCommits.push(commit.replaceAll('"', ''));
-            });
+            }
 
             if (newCommits.length) {
                 if (!fs.existsSync(CHANGELOG_PATH)) {
@@ -97,7 +95,7 @@ const initConnectRelease = () => {
 
                 let changelog = fs.readFileSync(CHANGELOG_PATH, 'utf-8');
 
-                changelog = `# ${version}\n\n${newCommits.join('')}\n\n${changelog}`;
+                changelog = `# ${version}\n\n${newCommits.join('\n')}\n\n${changelog}`;
                 fs.writeFileSync(CHANGELOG_PATH, changelog, 'utf-8');
 
                 exec('yarn', ['prettier', '--write', CHANGELOG_PATH]);
@@ -110,7 +108,7 @@ const initConnectRelease = () => {
         });
     }
 
-    exec('yarn', ['workspace', '@trezor/connect', 'version:patch']);
+    exec('yarn', ['workspace', '@trezor/connect', `version:${semver}`]);
 
     const PACKAGE_PATH = path.join(ROOT, 'packages', 'connect');
     const PACKAGE_JSON_PATH = path.join(PACKAGE_PATH, 'package.json');
@@ -179,7 +177,13 @@ const initConnectRelease = () => {
     // Creating a comment only if there are commits to add since last connect release.
     if (connectGitLogIndex !== -1) {
         connectGitLogArr.splice(connectGitLogIndex, connectGitLogArr.length - connectGitLogIndex);
-        const connectGitLogText = formArrayToText(connectGitLogArr);
+        // In array `connectGitLogArr` each item string contains " at the beginning and " at the end, let's remove those characters.
+        const cleanConnectGitLogArr = connectGitLogArr.map(line => line.slice(1, -1));
+        const connectGitLogText = cleanConnectGitLogArr.reduce(
+            (acc, line) => `${acc}\n${line}`,
+            '',
+        );
+
         comment({
             prNumber,
             body: connectGitLogText,

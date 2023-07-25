@@ -1,27 +1,40 @@
-import React, { isValidElement } from 'react';
-import { Translation } from 'src/components/suite';
-import { ExtendedMessageDescriptor } from 'src/types/suite';
-import { TypedFieldError } from 'src/types/wallet/form';
+import React from 'react';
+import styled from 'styled-components';
 
-const InputError = ({ error }: { error?: TypedFieldError }) => {
-    if (!error) return null;
+import { Button } from '@trezor/components';
+import { Translation, TrezorLink } from 'src/components/suite';
 
-    const { type, message } = error;
+const Wrapper = styled.div`
+    display: flex;
+    gap: 8px;
+`;
 
-    if (typeof message === 'string') {
-        return <Translation id={message as ExtendedMessageDescriptor['id']} />;
-    }
+const StyledButton = styled(Button)`
+    padding-bottom: 0;
+    padding-top: 0;
+`;
 
-    if (isValidElement(message)) {
-        return message;
-    }
+interface InputErrorProps {
+    button?:
+        | { onClick: React.MouseEventHandler<HTMLButtonElement>; text: string }
+        | { url: string };
+    message?: string;
+}
 
-    if (message && typeof message === 'object' && message.id) {
-        return <Translation {...message} />;
-    }
-
-    // fallback
-    return <>{`Unknown InputError: ${type}`}</>;
-};
-
-export default InputError;
+export const InputError = ({ button, message }: InputErrorProps) => (
+    <Wrapper>
+        {message}
+        {button &&
+            ('url' in button ? (
+                <TrezorLink variant="nostyle" href={button.url}>
+                    <StyledButton variant="tertiary" icon="EXTERNAL_LINK" alignIcon="right">
+                        <Translation id="TR_LEARN_MORE" />
+                    </StyledButton>
+                </TrezorLink>
+            ) : (
+                <StyledButton variant="tertiary" onClick={button.onClick}>
+                    {button.text}
+                </StyledButton>
+            ))}
+    </Wrapper>
+);

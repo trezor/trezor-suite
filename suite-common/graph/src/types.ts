@@ -1,8 +1,8 @@
 import { NetworkSymbol } from '@suite-common/wallet-config';
 
 export type FiatGraphPoint = {
-    timestamp: number;
-    fiatBalance: number;
+    date: Date;
+    value: number;
 };
 
 export type FiatGraphPointWithCryptoBalance = {
@@ -12,4 +12,25 @@ export type FiatGraphPointWithCryptoBalance = {
 export type AccountItem = {
     coin: NetworkSymbol;
     descriptor: string;
+};
+
+export type BalanceMovementEvent = {
+    date: number;
+    payload: {
+        received: number;
+        sent: number;
+    };
+};
+
+export type GroupedBalanceMovementEventPayload = {
+    received: number;
+    sent: number;
+    sentTransactionsCount: number;
+    receivedTransactionsCount: number;
+    networkSymbol: NetworkSymbol;
+};
+
+export type GroupedBalanceMovementEvent = {
+    date: Date;
+    payload: GroupedBalanceMovementEventPayload;
 };

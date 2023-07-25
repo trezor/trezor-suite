@@ -1,15 +1,22 @@
 import { useEffect, useMemo } from 'react';
-import { UseFormMethods } from 'react-hook-form';
+import { UseFormReturn } from 'react-hook-form';
 
-import { UseSendFormState, ExcludedUtxos, UtxoSelectionContext } from '@suite-common/wallet-types';
+import {
+    UseSendFormState,
+    ExcludedUtxos,
+    UtxoSelectionContext,
+    SendContextValues,
+    FormState,
+} from '@suite-common/wallet-types';
 import type { AccountUtxo, PROTO } from '@trezor/connect';
 import { getUtxoOutpoint } from '@suite-common/wallet-utils';
 
-type Props = UseFormMethods &
-    Pick<UseSendFormState, 'account' | 'composedLevels'> & {
-        excludedUtxos: ExcludedUtxos;
-        composeRequest: (field?: string) => void;
-    };
+interface UtxoSelectionContextProps
+    extends UseFormReturn<FormState>,
+        Pick<UseSendFormState, 'account' | 'composedLevels'> {
+    excludedUtxos: ExcludedUtxos;
+    composeRequest: SendContextValues['composeTransaction'];
+}
 
 export const useUtxoSelection = ({
     account,
@@ -19,12 +26,12 @@ export const useUtxoSelection = ({
     register,
     setValue,
     watch,
-}: Props): UtxoSelectionContext => {
+}: UtxoSelectionContextProps): UtxoSelectionContext => {
     // register custom form field (without HTMLElement)
     useEffect(() => {
-        register({ name: 'isCoinControlEnabled', type: 'custom' });
-        register({ name: 'selectedUtxos', type: 'custom' });
-        register({ name: 'anonymityWarningChecked', type: 'custom' });
+        register('isCoinControlEnabled');
+        register('selectedUtxos');
+        register('anonymityWarningChecked');
     }, [register]);
 
     // has coin control been enabled manually?
@@ -32,7 +39,7 @@ export const useUtxoSelection = ({
     // fee level
     const selectedFee = watch('selectedFee');
     // confirmation of spending low-anonymity UTXOs - only relevant for coinjoin account
-    const anonymityWarningChecked = watch('anonymityWarningChecked');
+    const anonymityWarningChecked = !!watch('anonymityWarningChecked');
     // manually selected UTXOs
     const selectedUtxos: AccountUtxo[] = watch('selectedUtxos') || [];
 

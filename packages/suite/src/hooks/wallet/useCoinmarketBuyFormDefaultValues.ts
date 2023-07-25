@@ -1,21 +1,14 @@
 import { BuyInfo } from 'src/actions/wallet/coinmarketBuyActions';
 import { useMemo } from 'react';
-import regional from 'src/constants/wallet/coinmarket/regional';
 import { Account } from 'src/types/wallet';
-import { buildOption } from 'src/utils/wallet/coinmarket/coinmarketUtils';
+import { buildOption, getDefaultCountry } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 
 export const useCoinmarketBuyFormDefaultValues = (
     accountSymbol: Account['symbol'],
     buyInfo?: BuyInfo,
 ) => {
-    const country = buyInfo?.buyInfo?.country || regional.unknownCountry;
-    const defaultCountry = useMemo(
-        () => ({
-            label: regional.countriesMap.get(country),
-            value: country,
-        }),
-        [country],
-    );
+    const country = buyInfo?.buyInfo?.country;
+    const defaultCountry = useMemo(() => getDefaultCountry(country), [country]);
     const defaultCurrencyInfo = buyInfo?.buyInfo?.suggestedFiatCurrency;
     const defaultCurrency = useMemo(
         () =>

@@ -1,4 +1,4 @@
-import { Button, Icon, H3 } from '@trezor/components';
+import { Button, Icon } from '@trezor/components';
 import React from 'react';
 import { Modal, Translation } from 'src/components/suite';
 import styled from 'styled-components';
@@ -10,13 +10,6 @@ const ContentWrapper = styled.div`
 `;
 const TermsText = styled.div`
     padding-bottom: 20px;
-`;
-const Header = styled(H3)`
-    display: flex;
-    width: 100%;
-    padding: 10px 0;
-    align-items: baseline;
-    color: ${props => props.theme.TYPE_DARK_GREY};
 `;
 
 const StyledIcon = styled(Icon)`
@@ -92,17 +85,15 @@ export const CoinmarketTermsModal = ({
             isCancelable
             onCancel={onCancel}
             heading={
-                <Header>
-                    <Translation
-                        id={`TR_${type}_MODAL_FOR_YOUR_SAFETY`}
-                        values={{
-                            provider: providerName,
-                            cryptocurrency: cryptoCurrency,
-                            toCrypto: toCryptoCurrency,
-                            fromCrypto: fromCryptoCurrency,
-                        }}
-                    />
-                </Header>
+                <Translation
+                    id={`TR_${type}_MODAL_FOR_YOUR_SAFETY`}
+                    values={{
+                        provider: providerName,
+                        cryptocurrency: cryptoCurrency,
+                        toCrypto: toCryptoCurrency,
+                        fromCrypto: fromCryptoCurrency,
+                    }}
+                />
             }
             bottomBar={
                 <FooterContent>

@@ -45,7 +45,7 @@ const StyledSelectBar = styled(SelectBar)`
 
 const FrequencyStyledSelectBar = styled(StyledSelectBar)`
     margin-bottom: 26px;
-`;
+` as typeof StyledSelectBar;
 
 const AddressOptionsWrapper = styled.div`
     margin-bottom: 16px;
@@ -54,7 +54,7 @@ const AddressOptionsWrapper = styled.div`
 const ReceivingAddressChangesPaymentInfoLabel = styled.div`
     margin-top: 8px;
     font-size: ${variables.FONT_SIZE.SMALL};
-    color: ${props => props.theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
 `;
 
 const Footer = styled.div`
@@ -71,7 +71,7 @@ const CoinmarketSavingsSetupContinue = (props: WithSelectedAccountLoadedProps) =
         annualSavingsFiatAmount,
         fiatAmount,
         fiatCurrency,
-        errors,
+        formState: { errors },
         isWatchingKYCStatus,
         canConfirmSetup,
         account,
@@ -115,7 +115,7 @@ const CoinmarketSavingsSetupContinue = (props: WithSelectedAccountLoadedProps) =
                 control={control}
                 name="paymentFrequency"
                 defaultValue={savingsTrade?.paymentFrequency}
-                render={({ onChange, value }) => (
+                render={({ field: { onChange, value } }) => (
                     <FrequencyStyledSelectBar
                         onChange={onChange}
                         selectedOption={value}

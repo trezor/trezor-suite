@@ -1,7 +1,7 @@
 import { MiddlewareAPI } from 'redux';
 import BigNumber from 'bignumber.js';
 import { SUITE, ROUTER } from 'src/actions/suite/constants';
-import { COINJOIN, DISCOVERY } from 'src/actions/wallet/constants';
+import { COINJOIN } from 'src/actions/wallet/constants';
 import { getPhysicalDeviceCount } from 'src/utils/suite/device';
 import { getSuiteReadyPayload, redactTransactionIdFromAnchor } from 'src/utils/suite/analytics';
 import type { AppState, Action, Dispatch } from 'src/types/suite';
@@ -22,6 +22,7 @@ import {
     selectCoinjoinAccountByKey,
 } from 'src/reducers/wallet/coinjoinReducer';
 import { updateLastAnonymityReportTimestamp } from 'src/actions/wallet/coinjoinAccountActions';
+import { discoveryActions } from 'src/actions/wallet/discoveryActions';
 
 /*
     In analytics middleware we may intercept actions we would like to log. For example:
@@ -102,7 +103,7 @@ const analyticsMiddleware =
             case DEVICE.DISCONNECT:
                 analytics.report({ type: EventType.DeviceDisconnect });
                 break;
-            case DISCOVERY.COMPLETE: {
+            case discoveryActions.completeDiscovery.type: {
                 const accountsWithTransactions = state.wallet.accounts
                     .filter(account => account.history.total + (account.history.unconfirmed || 0))
                     .reduce((acc: { [key: string]: number }, obj) => {

@@ -23,6 +23,8 @@ PODS:
     - ExpoModulesCore
   - ExpoClipboard (4.1.1):
     - ExpoModulesCore
+  - ExpoHaptics (12.4.0):
+    - ExpoModulesCore
   - ExpoLocalAuthentication (13.4.0):
     - ExpoModulesCore
   - ExpoLocalization (14.1.1):
@@ -378,7 +380,7 @@ PODS:
     - react-native-config/App (= 1.5.0)
   - react-native-config/App (1.5.0):
     - React-Core
-  - react-native-flipper (0.201.0):
+  - react-native-flipper (0.164.0):
     - React-Core
   - react-native-mmkv (2.7.0):
     - MMKV (>= 1.2.13)
@@ -544,6 +546,7 @@ DEPENDENCIES:
   - Expo (from `../../../node_modules/expo`)
   - ExpoBrightness (from `../../../node_modules/expo-brightness/ios`)
   - ExpoClipboard (from `../../../node_modules/expo-clipboard/ios`)
+  - ExpoHaptics (from `../../../node_modules/expo-haptics/ios`)
   - ExpoLocalAuthentication (from `../../../node_modules/expo-local-authentication/ios`)
   - ExpoLocalization (from `../../../node_modules/expo-localization/ios`)
   - ExpoModulesCore (from `../../../node_modules/expo-modules-core`)
@@ -667,6 +670,8 @@ EXTERNAL SOURCES:
     :path: "../../../node_modules/expo-brightness/ios"
   ExpoClipboard:
     :path: "../../../node_modules/expo-clipboard/ios"
+  ExpoHaptics:
+    :path: "../../../node_modules/expo-haptics/ios"
   ExpoLocalAuthentication:
     :path: "../../../node_modules/expo-local-authentication/ios"
   ExpoLocalization:
@@ -784,6 +789,7 @@ SPEC CHECKSUMS:
   Expo: 79deb55f33fab1b232232868a74713772943238d
   ExpoBrightness: 13a6108d77641ad310b7873438a0260f9eedfe5c
   ExpoClipboard: 8a36a8376ab93df9050c14577e9e0fcb805e9114
+  ExpoHaptics: 360af6898407ee4e8265d30a1a8fb16491a660eb
   ExpoLocalAuthentication: de5f50fae4fa643a3fc6b404d61a2ab36b5acf20
   ExpoLocalization: f26cd431ad9ea3533c5b08c4fabd879176a794bb
   ExpoModulesCore: 79392ab654019ea3aadeae308919c3d9dd97879c
@@ -826,7 +832,7 @@ SPEC CHECKSUMS:
   React-jsinspector: c712f9e3bb9ba4122d6b82b4f906448b8a281580
   React-logger: 342f358b8decfbf8f272367f4eacf4b6154061be
   react-native-config: 5330c8258265c1e5fdb8c009d2cabd6badd96727
-  react-native-flipper: 18d15fc2a82b4bb3270b6dd8100d99a8c32cb3b1
+  react-native-flipper: c33a4995958ef12a2b2f8290d63bed7adeed7634
   react-native-mmkv: a2a40a0458bdbc9d43c4e7752ecfc5e3a87b66dd
   react-native-restart: 7595693413fe3ca15893702f2c8306c62a708162
   react-native-safe-area-context: 39c2d8be3328df5d437ac1700f4f3a4f75716acc

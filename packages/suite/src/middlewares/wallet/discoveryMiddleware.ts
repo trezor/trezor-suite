@@ -1,14 +1,15 @@
 import { MiddlewareAPI } from 'redux';
-import TrezorConnect, { UI } from '@trezor/connect';
 import { SUITE, ROUTER, MODAL } from 'src/actions/suite/constants';
-import { DISCOVERY } from 'src/actions/wallet/constants';
 import * as walletSettingsActions from 'src/actions/settings/walletSettingsActions';
 import * as suiteActions from 'src/actions/suite/suiteActions';
 import * as discoveryActions from 'src/actions/wallet/discoveryActions';
-import { selectDiscoveryForDevice } from 'src/reducers/wallet/discoveryReducer';
-import { accountsActions, disableAccountsThunk } from '@suite-common/wallet-core';
+import { selectDiscoveryForDevice } from 'src/reducers/suite/suiteReducer';
 import { getApp } from 'src/utils/suite/router';
 import { AppState, Action, Dispatch } from 'src/types/suite';
+
+import { accountsActions, disableAccountsThunk } from '@suite-common/wallet-core';
+import TrezorConnect, { UI } from '@trezor/connect';
+import { DiscoveryStatus } from '@suite-common/wallet-constants';
 
 const discoveryMiddleware =
     (api: MiddlewareAPI<Dispatch, AppState>) =>
@@ -18,11 +19,11 @@ const discoveryMiddleware =
         const prevDiscovery = selectDiscoveryForDevice(prevState);
         const discoveryIsRunning =
             prevDiscovery &&
-            prevDiscovery.status > DISCOVERY.STATUS.IDLE &&
-            prevDiscovery.status < DISCOVERY.STATUS.STOPPING;
+            prevDiscovery.status > DiscoveryStatus.IDLE &&
+            prevDiscovery.status < DiscoveryStatus.STOPPING;
 
         if (action.type === SUITE.FORGET_DEVICE && action.payload.state) {
-            api.dispatch(discoveryActions.remove(action.payload.state));
+            api.dispatch(discoveryActions.removeDiscovery(action.payload.state));
         }
 
         // temporary workaround, needs to be changed in @trezor/connect
@@ -129,7 +130,7 @@ const discoveryMiddleware =
             // from discovery point of view it's irrelevant if authConfirm fails
             // it's a device matter now
             api.dispatch(
-                discoveryActions.update({
+                discoveryActions.updateDiscovery({
                     deviceState: action.payload.state,
                     authConfirm: false,
                 }),
@@ -152,8 +153,8 @@ const discoveryMiddleware =
                 !device.authFailed &&
                 !device.authConfirm &&
                 discovery &&
-                (discovery.status === DISCOVERY.STATUS.IDLE ||
-                    discovery.status >= DISCOVERY.STATUS.STOPPED)
+                (discovery.status === DiscoveryStatus.IDLE ||
+                    discovery.status >= DiscoveryStatus.STOPPED)
             ) {
                 api.dispatch(discoveryActions.start());
             }

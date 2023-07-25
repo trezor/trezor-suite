@@ -5,8 +5,8 @@ import { Icon, variables, RadioButton, motionAnimation } from '@trezor/component
 import { Translation, FormattedCryptoAmount, HiddenPlaceholder } from 'src/components/suite';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { useRbfContext } from 'src/hooks/wallet/useRbfForm';
-import GreyCard from '../GreyCard';
-import WarnHeader from '../WarnHeader';
+import { GreyCard } from './GreyCard';
+import { WarnHeader } from './WarnHeader';
 
 const OutputsWrapper = styled.div`
     display: flex;
@@ -57,9 +57,16 @@ const ArrowIcon = styled(Icon)`
     }
 `;
 
-const DecreasedOutputs = () => {
-    const { formValues, account, getValues, setValue, composedLevels, composeRequest } =
-        useRbfContext();
+export const DecreasedOutputs = () => {
+    const {
+        formValues,
+        account,
+        getValues,
+        setValue,
+        composedLevels,
+        composeRequest,
+        shouldSendInSats,
+    } = useRbfContext();
     const { selectedFee, setMaxOutputId } = getValues();
     if (typeof setMaxOutputId !== 'number') return null; // no set-max means that no output was decreased
 
@@ -116,7 +123,14 @@ const DecreasedOutputs = () => {
                                                 values={{
                                                     value: (
                                                         <FormattedCryptoAmount
-                                                            value={o.amount}
+                                                            value={
+                                                                shouldSendInSats
+                                                                    ? formatNetworkAmount(
+                                                                          o.amount,
+                                                                          account.symbol,
+                                                                      )
+                                                                    : o.amount
+                                                            }
                                                             symbol={account.symbol}
                                                         />
                                                     ),
@@ -137,5 +151,3 @@ const DecreasedOutputs = () => {
         </AnimatePresence>
     );
 };
-
-export default DecreasedOutputs;

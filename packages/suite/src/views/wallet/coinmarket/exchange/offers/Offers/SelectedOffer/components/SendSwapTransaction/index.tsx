@@ -12,11 +12,10 @@ import {
     useTheme,
     variables,
 } from '@trezor/components';
-import { TypedFieldError } from 'src/types/wallet/form';
 import { useCoinmarketExchangeOffersContext } from 'src/hooks/wallet/useCoinmarketExchangeOffers';
-import { InputError } from 'src/components/wallet';
 import useDebounce from 'react-use/lib/useDebounce';
 import BigNumber from 'bignumber.js';
+import { FieldError } from 'react-hook-form';
 
 const Wrapper = styled.div`
     display: flex;
@@ -159,7 +158,7 @@ const SendSwapTransactionComponent = () => {
     const [slippageSettings, setSlippageSettings] = useState(false);
     const [slippage, setSlippage] = useState(selectedQuote?.swapSlippage || '1');
     const [customSlippage, setCustomSlippage] = useState(slippage);
-    const [customSlippageError, setCustomSlippageError] = useState<TypedFieldError | undefined>();
+    const [customSlippageError, setCustomSlippageError] = useState<FieldError | undefined>();
     useDebounce(
         () => {
             if (
@@ -300,7 +299,7 @@ const SendSwapTransactionComponent = () => {
                                     name="CustomSlippage"
                                     data-test="CustomSlippage"
                                     onChange={changeCustomSlippage}
-                                    bottomText={<InputError error={customSlippageError} />}
+                                    bottomText={customSlippageError?.message}
                                 />
                             </RightColumn>
                         )}

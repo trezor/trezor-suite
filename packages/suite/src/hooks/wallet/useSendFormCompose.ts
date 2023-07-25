@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
-import { UseFormMethods } from 'react-hook-form';
+import { FieldPath, UseFormReturn } from 'react-hook-form';
 import {
     FormState,
     UseSendFormState,
@@ -11,12 +11,14 @@ import {
     PrecomposedLevelsCardano,
 } from '@suite-common/wallet-types';
 import { useAsyncDebounce } from '@trezor/react-utils';
-import { useActions } from 'src/hooks/suite';
+import { useActions, useTranslation } from 'src/hooks/suite';
 import { isChanged } from 'src/utils/suite/comparisonUtils';
 import * as sendFormActions from 'src/actions/wallet/sendFormActions';
 import { findComposeErrors } from '@suite-common/wallet-utils';
+import { FeeLevel } from '@trezor/connect';
+import { TranslationKey } from 'src/components/suite/Translation';
 
-type Props = UseFormMethods<FormState> & {
+type Props = UseFormReturn<FormState> & {
     state: UseSendFormState;
     excludedUtxos: ExcludedUtxos;
     account: UseSendFormState['account']; // account from the component props !== state.account
@@ -31,7 +33,7 @@ export const useSendFormCompose = ({
     getValues,
     setValue,
     setError,
-    errors,
+    formState: { errors },
     clearErrors,
     state,
     account,
@@ -42,12 +44,13 @@ export const useSendFormCompose = ({
 }: Props) => {
     const [composedLevels, setComposedLevels] =
         useState<SendContextValues['composedLevels']>(undefined);
-    const [composeField, setComposeField] = useState<string | undefined>(undefined);
+    const [composeField, setComposeField] = useState<FieldPath<FormState> | undefined>(undefined);
     const [draftSaveRequest, setDraftSaveRequest] = useState(false);
 
     const { composeTransaction } = useActions({
         composeTransaction: sendFormActions.composeTransaction,
     });
+    const { translationString } = useTranslation();
 
     const composeRequestRef = useRef<string | undefined>(undefined); // input name, caller of compose request
     const composeRequestID = useRef(0); // compose ID, incremented with every compose request
@@ -99,6 +102,7 @@ export const useSendFormCompose = ({
                 network: state.network,
                 feeInfo: state.feeInfo,
                 excludedUtxos,
+                prison,
             });
         };
 
@@ -120,6 +124,7 @@ export const useSendFormCompose = ({
     }, [
         account,
         excludedUtxos,
+        prison,
         state.network,
         state.feeInfo,
         updateContext,
@@ -134,7 +139,7 @@ export const useSendFormCompose = ({
     // react-hook-form doesn't propagate values immediately. New calculated FormState is available until render tick
     // IMPORTANT NOTE: Processing request without useEffect will use outdated FormState values (FormState before input.onChange)
     // NOTE: this function doesn't have to be wrapped in useCallback since no component is using it as a hook dependency and it will be cleared by garbage collector (useCallback are not)
-    const composeRequest = (field = 'outputs[0].amount') => {
+    const composeRequest = (field: FieldPath<FormState> | undefined = 'outputs.0.amount') => {
         // reset precomposed transactions
         setComposedLevels(undefined);
         // set ref for later use in useEffect which handle composedLevels change
@@ -174,20 +179,28 @@ export const useSendFormCompose = ({
                     return;
                 }
 
+                const getErrorType = (translationKey: TranslationKey) => {
+                    switch (translationKey) {
+                        case 'TR_NOT_ENOUGH_ANONYMIZED_FUNDS_WARNING':
+                            return 'anonymity';
+                        case 'TR_NOT_ENOUGH_SELECTED':
+                            return 'coinControl';
+                        default:
+                            return 'compose';
+                    }
+                };
+
+                const formError = {
+                    type: getErrorType(errorMessage.id),
+                    message: translationString(errorMessage.id, errorMessage.values),
+                };
+
                 if (composeField) {
                     // setError to the field which created `composeRequest`
-                    setError(composeField, {
-                        type: 'compose',
-                        message: errorMessage as any, // setError types is broken? according to ts it accepts only strings, but object or react component could be used as well...
-                    });
+                    setError(composeField, formError);
                 } else if (values.outputs) {
                     // setError to the all `Amount` fields, composeField not specified (load draft case)
-                    values.outputs.forEach((_, i) => {
-                        setError(`outputs[${i}].amount`, {
-                            type: 'compose',
-                            message: errorMessage as any,
-                        });
-                    });
+                    values.outputs.forEach((_, i) => setError(`outputs.${i}.amount`, formError));
                 }
                 return;
             }
@@ -207,7 +220,16 @@ export const useSendFormCompose = ({
                 setDraftSaveRequest(true);
             }
         },
-        [composeField, getValues, setAmount, errors, setError, clearErrors, setValue],
+        [
+            composeField,
+            getValues,
+            setAmount,
+            errors,
+            setError,
+            clearErrors,
+            setValue,
+            translationString,
+        ],
     );
 
     // handle composedLevels change, setValues or errors for composeField
@@ -226,7 +248,7 @@ export const useSendFormCompose = ({
             !selectedFee || (typeof setMaxOutputId === 'number' && selectedFee !== 'custom');
         if (shouldSwitch && composed.type === 'error') {
             // find nearest possible tx
-            const nearest = Object.keys(composedLevels).find(
+            const nearest = (Object.keys(composedLevels) as FeeLevel['label'][]).find(
                 key => composedLevels[key].type !== 'error',
             );
             // switch to it
@@ -237,7 +259,7 @@ export const useSendFormCompose = ({
                     // @ts-expect-error: type = error already filtered above
                     const { feePerByte, feeLimit } = composed;
                     setValue('feePerUnit', feePerByte);
-                    setValue('feeLimit', feeLimit);
+                    setValue('feeLimit', feeLimit || '');
                 }
                 setDraftSaveRequest(true);
             }
@@ -298,7 +320,7 @@ export const useSendFormCompose = ({
         // reset precomposed transactions
         setComposedLevels(undefined);
         // set ref for later use in useEffect which handle composedLevels change
-        composeRequestRef.current = 'outputs[0].amount';
+        composeRequestRef.current = 'outputs.0.amount';
         // set ref for later use in processComposeRequest function
         composeRequestID.current++;
         // clear errors from compose process

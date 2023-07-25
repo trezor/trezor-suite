@@ -57,7 +57,7 @@ export const prepareCryptoAmountFormatter = (config: FormatterConfig) =>
 
             let formattedValue: string = value;
 
-            // balances are not in sats, but already formatted to BTC so we need to convert it to  back to sats if needed
+            // balances are not in sats, but already formatted to BTC so we need to convert it back to sats if needed
             if (
                 isBalance &&
                 areAmountUnitsSupported &&

@@ -36,7 +36,7 @@ export const ReceiveTextHint = ({ onShowAddress }: ReceiveTextHintProps) => {
                             </Text>
                         }
                         subtitle="For an extra layer of security, use Trezor Suite with your Trezor hardware
-                    wallet to verify the receiving address."
+                    wallet to verify the receive address."
                     />
                 </Box>
             </Card>

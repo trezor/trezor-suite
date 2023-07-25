@@ -258,14 +258,6 @@ export default defineMessages({
         defaultMessage:
             "What you see is close to what you'll get—the amount shown is the best estimate of the final amount you'll receive, with all exchange fees included. For float-rate offers, there may be slight changes between accepting the offer and completing the transaction.",
     },
-    TR_EXCHANGE_VALIDATION_ERROR_MINIMUM_CRYPTO: {
-        defaultMessage: 'Minimum is {minimum}',
-        id: 'TR_EXCHANGE_VALIDATION_ERROR_MINIMUM_CRYPTO',
-    },
-    TR_EXCHANGE_VALIDATION_ERROR_MAXIMUM_CRYPTO: {
-        defaultMessage: 'Maximum is {maximum}',
-        id: 'TR_EXCHANGE_VALIDATION_ERROR_MAXIMUM_CRYPTO',
-    },
     TR_EXCHANGE_SHOW_OFFERS: {
         defaultMessage: 'Compare offers',
         id: 'TR_EXCHANGE_SHOW_OFFERS',
@@ -764,14 +756,6 @@ export default defineMessages({
         defaultMessage: 'Required',
         id: 'TR_REQUIRED_FIELD',
     },
-    TR_SELL_VALIDATION_ERROR_MINIMUM_CRYPTO: {
-        defaultMessage: 'Minimum is {minimum}',
-        id: 'TR_SELL_VALIDATION_ERROR_MINIMUM_CRYPTO',
-    },
-    TR_SELL_VALIDATION_ERROR_MAXIMUM_CRYPTO: {
-        defaultMessage: 'Maximum is {maximum}',
-        id: 'TR_SELL_VALIDATION_ERROR_MAXIMUM_CRYPTO',
-    },
     TR_SELL_VALIDATION_ERROR_MINIMUM_FIAT: {
         defaultMessage: 'Minimum is {minimum} {currency}',
         id: 'TR_SELL_VALIDATION_ERROR_MINIMUM_FIAT',
@@ -997,10 +981,6 @@ export default defineMessages({
     TR_BUY_STATUS_PENDING: {
         defaultMessage: 'Pending',
         id: 'TR_BUY_STATUS_PENDING',
-    },
-    TR_P2P_VALIDATION_ERROR_EMPTY: {
-        defaultMessage: 'Required',
-        id: 'TR_P2P_VALIDATION_ERROR_EMPTY',
     },
     TR_P2P_WORTH_OF: {
         defaultMessage: 'worth of',
@@ -1277,10 +1257,6 @@ export default defineMessages({
     TR_SAVINGS_SETUP_CUSTOM_FIAT_AMOUNT_REQUIRED: {
         defaultMessage: 'Amount is required.',
         id: 'TR_SAVINGS_SETUP_CUSTOM_FIAT_AMOUNT_REQUIRED',
-    },
-    TR_SAVINGS_SETUP_CUSTOM_FIAT_AMOUNT_INVALID_FORMAT: {
-        defaultMessage: 'Amount must be a number.',
-        id: 'TR_SAVINGS_SETUP_CUSTOM_FIAT_AMOUNT_INVALID_FORMAT',
     },
     TR_SAVINGS_SETUP_CUSTOM_FIAT_AMOUNT_MINIMUM: {
         defaultMessage: 'Minimum amount is {amount}.',
@@ -1676,15 +1652,11 @@ export default defineMessages({
         defaultMessage: 'Offers refresh in',
         id: 'TR_BUY_OFFERS_REFRESH',
     },
-    TR_BUY_VALIDATION_ERROR_EMPTY: {
-        defaultMessage: 'Required',
-        id: 'TR_BUY_VALIDATION_ERROR_EMPTY',
-    },
-    TR_BUY_VALIDATION_ERROR_MINIMUM_CRYPTO: {
+    TR_VALIDATION_ERROR_MINIMUM_CRYPTO: {
         defaultMessage: 'Minimum is {minimum}',
         id: 'TR_BUY_VALIDATION_ERROR_MINIMUM_CRYPTO',
     },
-    TR_BUY_VALIDATION_ERROR_MAXIMUM_CRYPTO: {
+    TR_VALIDATION_ERROR_MAXIMUM_CRYPTO: {
         defaultMessage: 'Maximum is {maximum}',
         id: 'TR_BUY_VALIDATION_ERROR_MAXIMUM_CRYPTO',
     },
@@ -4261,9 +4233,9 @@ export default defineMessages({
     },
     FW_CAPABILITY_NO_SUPPORT: {
         id: 'FW_CAPABILITY_NO_SUPPORT',
-        defaultMessage: 'Not supported on Model One',
+        defaultMessage: 'Not supported on {deviceDisplayName}',
         description:
-            'Similar to missing capability but tested on different level (coin info is missing in trezor-connect)',
+            'Similar to missing capability but tested on different level (coin info is missing in trezor-connect). {deviceDisplayName} can be e.g. Trezor Model One, so make the translation accordingly',
     },
     FW_CAPABILITY_UPDATE_REQUIRED: {
         id: 'FW_CAPABILITY_UPDATE_REQUIRED',
@@ -4302,7 +4274,6 @@ export default defineMessages({
     MODAL_ADD_ACCOUNT_COINJOIN_NO_SUPPORT: {
         id: 'MODAL_ADD_ACCOUNT_COINJOIN_NO_SUPPORT',
         defaultMessage: 'Coinjoin is supported only on Trezor Model T',
-        description: 'TODO Model R',
     },
     MODAL_ADD_ACCOUNT_COINJOIN_UPDATE_REQUIRED: {
         id: 'MODAL_ADD_ACCOUNT_COINJOIN_UPDATE_REQUIRED',
@@ -5413,17 +5384,17 @@ export default defineMessages({
             'Taproot is not supported by your firmware version. Please update your device firmware.',
         id: 'RECIPIENT_REQUIRES_UPDATE',
     },
-    RECIPIENT_FORMAT_DEPRECATED: {
-        defaultMessage: 'Unsupported address format. {TR_LEARN_MORE}',
-        id: 'RECIPIENT_FORMAT_DEPRECATED',
+    TR_UNSUPPORTED_ADDRESS_FORMAT: {
+        defaultMessage: 'Unsupported address format.',
+        id: 'TR_UNSUPPORTED_ADDRESS_FORMAT',
     },
-    RECIPIENT_FORMAT_UPPERCASE: {
-        defaultMessage: 'Unsupported address format. <a>Convert to lowercase</a>',
-        id: 'RECIPIENT_FORMAT_UPPERCASE',
+    TR_CONVERT_TO_LOWERCASE: {
+        defaultMessage: 'Convert to lowercase',
+        id: 'TR_CONVERT_TO_LOWERCASE',
     },
-    RECIPIENT_FORMAT_CHECKSUM: {
-        defaultMessage: 'Address is not valid. <a>Convert to checksum address</a>',
-        id: 'RECIPIENT_FORMAT_CHECKSUM',
+    TR_CONVERT_TO_CHECKSUM_ADDRESS: {
+        defaultMessage: 'Convert to checksum address',
+        id: 'TR_CONVERT_TO_CHECKSUM_ADDRESS',
     },
     RECIPIENT_CANNOT_SEND_TO_MYSELF: {
         defaultMessage: 'Cannot send to myself',
@@ -5448,10 +5419,6 @@ export default defineMessages({
     AMOUNT_IS_NOT_INTEGER: {
         defaultMessage: 'Amount is not an integer',
         id: 'AMOUNT_IS_NOT_INTEGER',
-    },
-    AMOUNT_IS_NOT_NUMBER: {
-        defaultMessage: 'Enter a number (e.g. 1.5)',
-        id: 'AMOUNT_IS_NOT_NUMBER',
     },
     AMOUNT_IS_NOT_SET: {
         defaultMessage: 'Amount is not set',
@@ -5697,10 +5664,6 @@ export default defineMessages({
         defaultMessage: 'How much do you want to spend on fee to make this transaction go through.',
         id: 'CUSTOM_FEE_IS_NOT_SET',
     },
-    CUSTOM_FEE_IS_NOT_NUMBER: {
-        defaultMessage: 'Enter a number',
-        id: 'CUSTOM_FEE_IS_NOT_NUMBER',
-    },
     CUSTOM_FEE_IS_NOT_INTEGER: {
         defaultMessage: 'Enter a whole number',
         id: 'CUSTOM_FEE_IS_NOT_INTEGER',
@@ -5710,7 +5673,7 @@ export default defineMessages({
         id: 'CUSTOM_FEE_NOT_IN_RANGE',
     },
     CUSTOM_FEE_LIMIT_BELOW_RECOMMENDED: {
-        defaultMessage: 'Gas limit too low {button}',
+        defaultMessage: 'Gas limit too low',
         id: 'CUSTOM_FEE_LIMIT_BELOW_RECOMMENDED',
     },
     CUSTOM_FEE_LIMIT_USE_RECOMMENDED: {
@@ -6918,7 +6881,6 @@ export default defineMessages({
         id: 'TR_TROUBLESHOOTING_TIP_CABLE_DESCRIPTION',
         defaultMessage:
             'The cable must be fully inserted. If you have a Model T, the cable should "click" into place.',
-        description: 'TODO Model T2B1',
     },
     TR_TROUBLESHOOTING_TIP_USB_PORT_TITLE: {
         id: 'TR_TROUBLESHOOTING_TIP_USB_PORT_TITLE',
@@ -7417,10 +7379,6 @@ export default defineMessages({
         description: 'As in "{time} Left"',
         defaultMessage: 'left',
     },
-    TR_PAUSE: {
-        id: 'TR_PAUSE',
-        defaultMessage: 'Pause',
-    },
     TR_STOP: {
         id: 'TR_STOP',
         defaultMessage: 'Stop',
@@ -7444,10 +7402,6 @@ export default defineMessages({
     TR_PAUSED: {
         id: 'TR_PAUSED',
         defaultMessage: 'Paused',
-    },
-    TR_RESUME: {
-        id: 'TR_RESUME',
-        defaultMessage: 'Resume',
     },
     TR_ANONYMIZATION_PAUSED: {
         id: 'TR_ANONYMIZATION_PAUSED',
@@ -7595,6 +7549,22 @@ export default defineMessages({
     TR_COINJOIN_ACCOUNT_RESCAN_ACTION: {
         id: 'TR_COINJOIN_ACCOUNT_RESCAN_ACTION',
         defaultMessage: 'Rescan account',
+    },
+    TR_COINJOIN_DISCOVERY_BLOCK_FETCHING: {
+        id: 'TR_COINJOIN_DISCOVERY_BLOCK_FETCHING',
+        defaultMessage: 'Fetching block filters',
+    },
+    TR_COINJOIN_DISCOVERY_MEMPOOL_FETCHING: {
+        id: 'TR_COINJOIN_DISCOVERY_MEMPOOL_FETCHING',
+        defaultMessage: 'Fetching mempool filters',
+    },
+    TR_COINJOIN_DISCOVERY_BLOCK_PROGRESS: {
+        id: 'TR_COINJOIN_DISCOVERY_BLOCK_PROGRESS',
+        defaultMessage: '{current} out of {total} blocks scanned',
+    },
+    TR_COINJOIN_DISCOVERY_MEMPOOL_PROGRESS: {
+        id: 'TR_COINJOIN_DISCOVERY_MEMPOOL_PROGRESS',
+        defaultMessage: '{current} out of {total} transactions analyzed',
     },
     TR_LOADING_FUNDS: {
         id: 'TR_LOADING_FUNDS',

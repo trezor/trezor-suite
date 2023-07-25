@@ -14,7 +14,7 @@ const FiatSelect = () => {
             control={control}
             name={FIAT_CURRENCY}
             defaultValue={defaultCurrency}
-            render={({ onChange, value }) => (
+            render={({ field: { onChange, value } }) => (
                 <Select
                     onChange={(selected: any) => {
                         onChange(selected);

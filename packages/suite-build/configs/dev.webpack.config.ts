@@ -25,6 +25,7 @@ const config: webpack.Configuration = {
         new WebpackPluginServe({
             port: DEV_PORTS[project],
             hmr: true,
+            host: 'localhost',
             static: distPath,
             progress: true,
             historyFallback: {

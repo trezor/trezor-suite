@@ -5,7 +5,7 @@ import { Checkbox } from '.';
 
 export default {
     title: 'Form/Checkbox',
-    args: { label: 'Checkbox', isChecked: false },
+    args: { label: 'Checkbox', isChecked: false, isDisabled: false },
 };
 
 export const Basic = ({ ...args }) => {
@@ -13,7 +13,7 @@ export const Basic = ({ ...args }) => {
     const handleIsChecked = () => updateArgs({ isChecked: !isChecked });
 
     return (
-        <Checkbox isChecked={isChecked} onClick={handleIsChecked}>
+        <Checkbox isChecked={isChecked} isDisabled={args.isDisabled} onClick={handleIsChecked}>
             {args.label}
         </Checkbox>
     );

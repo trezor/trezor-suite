@@ -39,7 +39,7 @@ const SendCryptoSelect = () => {
             control={control}
             name="sendCryptoSelect"
             defaultValue={sendCryptoOptions[0]}
-            render={({ onChange, value }) => (
+            render={({ field: { onChange, value } }) => (
                 <Select
                     onChange={(selected: any) => {
                         setValue('setMaxOutputId', undefined);
@@ -49,16 +49,16 @@ const SendCryptoSelect = () => {
                         setValue(FIAT_INPUT, '');
                         const token = selected.value;
                         if (token === 'ETH' || token === 'TGOR' || token === 'ETC') {
-                            setValue(CRYPTO_TOKEN, undefined);
+                            setValue(CRYPTO_TOKEN, null);
                             // set own account for non ERC20 transaction
-                            setValue('outputs[0].address', account.descriptor);
+                            setValue('outputs.0.address', account.descriptor);
                         } else {
                             // set the address of the token to the output
                             const symbol = invityApiSymbolToSymbol(token).toLowerCase();
                             const tokenData = tokens?.find(t => t.symbol === symbol);
-                            setValue(CRYPTO_TOKEN, tokenData?.contract);
+                            setValue(CRYPTO_TOKEN, tokenData?.contract ?? null);
                             // set token address for ERC20 transaction to estimate the fees more precisely
-                            setValue('outputs[0].address', tokenData?.contract);
+                            setValue('outputs.0.address', tokenData?.contract ?? '');
                         }
                         composeRequest();
                     }}

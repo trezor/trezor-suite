@@ -1,6 +1,6 @@
 import { BlockbookAPI } from '@trezor/blockchain-link/lib/workers/blockbook/websocket';
 
-import { WS_MESSAGE_TIMEOUT } from '../constants';
+import { HTTP_REQUEST_TIMEOUT } from '../constants';
 import type { Logger } from '../types';
 
 export type BlockbookWS = Pick<
@@ -19,6 +19,12 @@ type CoinjoinWebsocketControllerSettings = {
     logger?: Logger;
 };
 
+type CoinjoinWebsocketParams = {
+    url: string;
+    timeout?: number;
+    identity?: string;
+};
+
 export class CoinjoinWebsocketController {
     private readonly defaultIdentity = 'Default';
 
@@ -29,12 +35,16 @@ export class CoinjoinWebsocketController {
         this.logger = logger;
     }
 
-    async getOrCreate(url: string, identity = this.defaultIdentity): Promise<BlockbookAPI> {
+    async getOrCreate({
+        url,
+        timeout = HTTP_REQUEST_TIMEOUT,
+        identity = this.defaultIdentity,
+    }: CoinjoinWebsocketParams): Promise<BlockbookAPI> {
         const socketId = this.getSocketId(url, identity);
         let socket = this.sockets[socketId];
         if (!socket) {
             socket = new BlockbookAPI({
-                timeout: WS_MESSAGE_TIMEOUT,
+                timeout,
                 url,
                 headers: { 'Proxy-Authorization': `Basic ${identity}` },
             });

@@ -14,8 +14,8 @@ describe('coinmarket/exchange utils', () => {
         expect(getAmountLimits(MIN_MAX_QUOTES_OK)).toBe(undefined);
         expect(getAmountLimits(MIN_MAX_QUOTES_LOW)).toStrictEqual({
             currency: 'LTC',
-            max: undefined,
-            min: 0.35121471511608626,
+            maxCrypto: undefined,
+            minCrypto: 0.35121471511608626,
         });
         expect(getAmountLimits(MIN_MAX_QUOTES_CANNOT_TRADE)).toBe(undefined);
     });

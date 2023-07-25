@@ -1,3 +1,5 @@
+import { fromUnixTime } from 'date-fns';
+
 import {
     AccountHistoryBalancePoint,
     AccountWithBalanceHistory,
@@ -111,29 +113,29 @@ describe('Graph utils', () => {
             }),
         ).toStrictEqual([
             {
-                timestamp: 0,
+                date: fromUnixTime(0),
                 cryptoBalance: '1',
-                fiatBalance: 2,
+                value: 2,
             },
             {
-                timestamp: 5,
+                date: fromUnixTime(5),
                 cryptoBalance: '3',
-                fiatBalance: 6,
+                value: 6,
             },
             {
-                timestamp: 10,
+                date: fromUnixTime(10),
                 cryptoBalance: '8',
-                fiatBalance: 24,
+                value: 24,
             },
             {
-                timestamp: 15,
+                date: fromUnixTime(15),
                 cryptoBalance: '7',
-                fiatBalance: 28,
+                value: 28,
             },
             {
-                timestamp: 20,
+                date: fromUnixTime(20),
                 cryptoBalance: '10',
-                fiatBalance: 20,
+                value: 20,
             },
         ] as FiatGraphPointWithCryptoBalance[]);
     });
@@ -209,29 +211,29 @@ describe('Graph utils', () => {
             }),
         ).toStrictEqual([
             {
-                timestamp: 0,
+                date: fromUnixTime(0),
                 cryptoBalance: '30',
-                fiatBalance: 60,
+                value: 60,
             },
             {
-                timestamp: 5,
+                date: fromUnixTime(5),
                 cryptoBalance: '3',
-                fiatBalance: 6,
+                value: 6,
             },
             {
-                timestamp: 10,
+                date: fromUnixTime(10),
                 cryptoBalance: '3',
-                fiatBalance: 9,
+                value: 9,
             },
             {
-                timestamp: 15,
+                date: fromUnixTime(15),
                 cryptoBalance: '3',
-                fiatBalance: 12,
+                value: 12,
             },
             {
-                timestamp: 20,
+                date: fromUnixTime(20),
                 cryptoBalance: '10',
-                fiatBalance: 20,
+                value: 20,
             },
         ]);
     });
@@ -277,7 +279,11 @@ describe('Graph utils', () => {
                 fiatCurrency: 'eur',
             }),
         ).toStrictEqual(
-            fiatRates.map(({ time }) => ({ timestamp: time, cryptoBalance: '0', fiatBalance: 0 })),
+            fiatRates.map(({ time }) => ({
+                date: fromUnixTime(time),
+                cryptoBalance: '0',
+                value: 0,
+            })),
         );
     });
 
@@ -285,50 +291,50 @@ describe('Graph utils', () => {
         const fiatBalancesHistories: Array<FiatGraphPointWithCryptoBalance[]> = [
             [
                 {
-                    timestamp: 0,
+                    date: fromUnixTime(0),
                     cryptoBalance: '1',
-                    fiatBalance: 2,
+                    value: 2,
                 },
                 {
-                    timestamp: 5,
+                    date: fromUnixTime(5),
                     cryptoBalance: '2',
-                    fiatBalance: 6,
+                    value: 6,
                 },
             ],
             [
                 {
-                    timestamp: 0,
+                    date: fromUnixTime(0),
                     cryptoBalance: '3',
-                    fiatBalance: 5,
+                    value: 5,
                 },
                 {
-                    timestamp: 5,
+                    date: fromUnixTime(5),
                     cryptoBalance: '4',
-                    fiatBalance: 3,
+                    value: 3,
                 },
             ],
             [
                 {
-                    timestamp: 0,
+                    date: fromUnixTime(0),
                     cryptoBalance: '5',
-                    fiatBalance: 1,
+                    value: 1,
                 },
                 {
-                    timestamp: 5,
+                    date: fromUnixTime(5),
                     cryptoBalance: '6',
-                    fiatBalance: 1,
+                    value: 1,
                 },
             ],
         ];
 
         expect(mergeMultipleFiatBalanceHistories(fiatBalancesHistories)).toStrictEqual([
             {
-                timestamp: 0,
-                fiatBalance: 8,
+                date: fromUnixTime(0),
+                value: 8,
             },
             {
-                timestamp: 5,
-                fiatBalance: 10,
+                date: fromUnixTime(5),
+                value: 10,
             },
         ]);
     });

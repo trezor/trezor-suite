@@ -10,10 +10,12 @@ import * as coinjoinClientActions from './coinjoinClientActions';
 import { CoinjoinService, COORDINATOR_FEE_RATE_MULTIPLIER } from 'src/services/coinjoin';
 import { getAccountProgressHandle, getRegisterAccountParams } from 'src/utils/wallet/coinjoinUtils';
 import { Dispatch, GetState } from 'src/types/suite';
+import { isDevEnv } from '@suite-common/suite-utils';
 import { Network, NetworkSymbol } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
 import {
     CoinjoinAccount,
+    CoinjoinConfig,
     CoinjoinDiscoveryCheckpoint,
     CoinjoinSessionParameters,
 } from 'src/types/wallet/coinjoin';
@@ -188,28 +190,10 @@ export const updateLastAnonymityReportTimestamp = (accountKey: string) =>
         payload: { accountKey },
     } as const);
 
-export const updateCoinjoinConfig = ({
-    averageAnonymityGainPerRound,
-    roundsFailRateBuffer,
-    roundsDurationInHours,
-    maxMiningFeeModifier,
-    maxFeePerVbyte,
-}: {
-    averageAnonymityGainPerRound: number;
-    roundsFailRateBuffer: number;
-    roundsDurationInHours: number;
-    maxMiningFeeModifier: number;
-    maxFeePerVbyte?: number;
-}) =>
+export const updateCoinjoinConfig = (payload: Partial<CoinjoinConfig>) =>
     ({
         type: COINJOIN.UPDATE_CONFIG,
-        payload: {
-            averageAnonymityGainPerRound,
-            roundsFailRateBuffer,
-            roundsDurationInHours,
-            maxMiningFeeModifier,
-            maxFeePerVbyte,
-        },
+        payload,
     } as const);
 
 export type CoinjoinAccountAction =
@@ -241,6 +225,9 @@ const EMPTY_ACCOUNT_INFO = {
     page: { index: 1, size: 25, total: 1 },
     utxo: [],
 };
+
+const log = (...params: any[]) => isDevEnv && console.log(...params);
+const warn = (...params: any[]) => isDevEnv && console.warn(...params);
 
 const getCheckpoints = (
     account: Extract<Account, { backendType: 'coinjoin' }>,
@@ -312,7 +299,7 @@ const coinjoinAccountCheckReorg =
             (checkpoint.blockHeight === previousCheckpoint.blockHeight &&
                 checkpoint.blockHash !== previousCheckpoint.blockHash)
         ) {
-            console.log(
+            log(
                 `CoinjoinAccount reorg: ${previousCheckpoint.blockHeight}:${previousCheckpoint.blockHash} -> ${checkpoint.blockHeight}:${checkpoint.blockHash}`,
             );
             const txs = getAccountTransactions(
@@ -531,7 +518,7 @@ export const fetchAndUpdateAccount =
 
             dispatch(accountsActions.endCoinjoinAccountSync(account, 'ready'));
         } catch (error) {
-            console.error(error);
+            backend.emit('log', { level: 'error', payload: error?.toString() });
             // 'error' when no previous discovery was successful, 'out-of-sync' otherwise
             const status = isInitialUpdate ? 'error' : 'out-of-sync';
             dispatch(accountsActions.endCoinjoinAccountSync(account, status));
@@ -621,7 +608,7 @@ export const createCoinjoinAccount =
             ),
         );
 
-        console.log(`CoinjoinAccount created: ${getAccountProgressHandle(account.payload)}`);
+        log(`CoinjoinAccount created: ${getAccountProgressHandle(account.payload)}`);
 
         // birthdate optimization
         const checkpoint = await api.backend.getAccountCheckpoint(account.payload.descriptor);
@@ -959,7 +946,7 @@ export const logCoinjoinAccounts = () => (_: Dispatch, getState: GetState) => {
             const cjAccount = cjAccounts.find(({ key }) => key === account.key);
             const checkpoints = cjAccount?.checkpoints?.map(cp => cp.blockHeight);
             const txs = transactions[account.key];
-            console.log(
+            log(
                 `CoinjoinAccount remembered: ${handle}, checkpoints: ${checkpoints}, transactions: ${txs?.length}`,
             );
         });
@@ -968,6 +955,6 @@ export const logCoinjoinAccounts = () => (_: Dispatch, getState: GetState) => {
         .forEach(cjAccount => {
             const handle = getAccountProgressHandle(cjAccount);
             const checkpoints = cjAccount.checkpoints?.map(cp => cp.blockHeight);
-            console.warn(`CoinjoinAccount residue: ${handle}, checkpoints: ${checkpoints}`);
+            warn(`CoinjoinAccount residue: ${handle}, checkpoints: ${checkpoints}`);
         });
 };

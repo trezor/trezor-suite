@@ -44,7 +44,7 @@ export const SelectTrigger = ({
 }: SelectTriggerProps) => {
     const { applyStyle } = useNativeStyles();
 
-    const shouldDisplaySeparator = !G.isNull(value) && !G.isUndefined(valueLabel);
+    const formattedValue = !G.isNullable(valueLabel) ? `${valueLabel} · ${value}` : value;
 
     return (
         <TouchableOpacity onPress={handlePress} style={applyStyle(selectStyle)}>
@@ -56,14 +56,9 @@ export const SelectTrigger = ({
                 )}
                 <Box flexDirection="row" alignItems="center">
                     <Text numberOfLines={1}>
-                        {shouldDisplaySeparator && (
-                            <>
-                                <Box style={applyStyle(iconWrapperStyle)}>{icon}</Box>
-                                <Text>{valueLabel} · </Text>
-                            </>
-                        )}
+                        {icon && <Box style={applyStyle(iconWrapperStyle)}>{icon}</Box>}
                         <Text numberOfLines={1} ellipsizeMode="tail">
-                            {value ?? label}
+                            {formattedValue ?? label}
                         </Text>
                     </Text>
                 </Box>

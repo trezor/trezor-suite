@@ -3,19 +3,18 @@ import React from 'react';
 import { Atom, useAtomValue } from 'jotai';
 
 import { useFormatters } from '@suite-common/formatters';
+import { FiatGraphPoint } from '@suite-common/graph';
 
-import { EnhancedGraphPoint } from '../utils';
-
-type SelectedPointAtom = Atom<EnhancedGraphPoint>;
+type SelectedPointAtom = Atom<FiatGraphPoint>;
 
 type GraphDateFormatterProps = {
     firstPointDate: Date;
-    selectedPointAtom: Atom<EnhancedGraphPoint>;
+    selectedPointAtom: Atom<FiatGraphPoint>;
 };
 
 const WeekFormatter = ({ selectedPointAtom }: { selectedPointAtom: SelectedPointAtom }) => {
     const { DateTimeFormatter } = useFormatters();
-    const { originalDate: value } = useAtomValue(selectedPointAtom);
+    const { date: value } = useAtomValue(selectedPointAtom);
 
     return <DateTimeFormatter value={value} />;
 };
@@ -23,7 +22,7 @@ const WeekFormatter = ({ selectedPointAtom }: { selectedPointAtom: SelectedPoint
 const OtherDateFormatter = ({ selectedPointAtom }: { selectedPointAtom: SelectedPointAtom }) => {
     const { DateFormatter } = useFormatters();
 
-    const { originalDate: value } = useAtomValue(selectedPointAtom);
+    const { date: value } = useAtomValue(selectedPointAtom);
     return <DateFormatter value={value} />;
 };
 

@@ -1,21 +1,21 @@
 import type { AppState } from 'src/types/suite';
-import type { UseFormMethods, FormState as ReactHookFormState } from 'react-hook-form';
+import type { FormState as ReactHookFormState, UseFormReturn } from 'react-hook-form';
 import type { Account, Network, CoinFiatRates } from 'src/types/wallet';
 import type { FeeLevel } from '@trezor/connect';
 import type { SellFiatTrade, SellFiatTradeQuoteRequest, ExchangeCoinInfo } from 'invity-api';
 import type { CoinmarketSellAction, SellInfo } from 'src/actions/wallet/coinmarketSellActions';
-import type { TypedValidationRules } from './form';
 import type {
     FeeInfo,
     FormState,
     PrecomposedLevels,
     PrecomposedLevelsCardano,
 } from 'src/types/wallet/sendForm';
-import type { Option, DefaultCountryOption } from './coinmarketCommonTypes';
+import type { Option, DefaultCountryOption, AmountLimits } from './coinmarketCommonTypes';
 import type { WithSelectedAccountLoadedProps } from 'src/components/wallet';
+import { SendContextValues } from '@suite-common/wallet-types';
 
-export const OUTPUT_AMOUNT = 'outputs[0].amount';
-export const CRYPTO_TOKEN = 'outputs[0].token';
+export const OUTPUT_AMOUNT = 'outputs.0.amount';
+export const CRYPTO_TOKEN = 'outputs.0.token';
 export const FIAT_INPUT = 'fiatInput';
 export const FIAT_CURRENCY_SELECT = 'fiatCurrencySelect';
 export const CRYPTO_INPUT = 'cryptoInput';
@@ -25,24 +25,15 @@ export type UseCoinmarketSellFormProps = WithSelectedAccountLoadedProps;
 
 export type Props = WithSelectedAccountLoadedProps;
 
-export type SellFormState = FormState & {
+export interface SellFormState extends FormState {
     fiatInput?: string;
     fiatCurrencySelect: Option;
     cryptoInput?: string;
     cryptoCurrencySelect: Option;
     countrySelect: Option;
-};
-
-export interface AmountLimits {
-    currency: string;
-    minCrypto?: number;
-    minFiat?: number;
-    maxCrypto?: number;
-    maxFiat?: number;
 }
 
-export type SellFormContextValues = Omit<UseFormMethods<SellFormState>, 'register'> & {
-    register: (rules?: TypedValidationRules) => (ref: any) => void;
+export type SellFormContextValues = UseFormReturn<SellFormState> & {
     onSubmit: () => void;
     account: Account;
     defaultCountry: DefaultCountryOption;
@@ -52,7 +43,7 @@ export type SellFormContextValues = Omit<UseFormMethods<SellFormState>, 'registe
     sellInfo?: SellInfo;
     exchangeCoinInfo?: ExchangeCoinInfo[];
     localCurrencyOption: { label: string; value: string };
-    composeRequest: (field?: string) => void;
+    composeRequest: SendContextValues<SellFormState>['composeTransaction'];
     saveQuoteRequest: (request: SellFiatTradeQuoteRequest) => CoinmarketSellAction;
     saveQuotes: (
         fixedQuotes: SellFiatTrade[],
@@ -73,6 +64,4 @@ export type SellFormContextValues = Omit<UseFormMethods<SellFormState>, 'registe
     handleClearFormButtonClick: () => void;
     formState: ReactHookFormState<FormState>;
     isDraft: boolean;
-    activeInput: 'fiatInput' | 'cryptoInput';
-    setActiveInput: React.Dispatch<React.SetStateAction<SellFormContextValues['activeInput']>>;
 };

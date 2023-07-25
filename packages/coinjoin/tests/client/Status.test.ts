@@ -56,14 +56,16 @@ describe('Status', () => {
         jest.useFakeTimers();
 
         const setTimeoutSpy = jest.spyOn(global, 'setTimeout');
-        const coordinatorRequestSpy = jest
-            .spyOn(http, 'coordinatorRequest')
-            .mockImplementation(() =>
-                Promise.resolve({
-                    ...STATUS_EVENT,
-                    roundStates: [{ ...DEFAULT_ROUND }],
-                }),
-            );
+        const coordinatorRequestSpy = jest.fn();
+        jest.spyOn(http, 'coordinatorRequest').mockImplementation(url => {
+            if (url === 'status') {
+                coordinatorRequestSpy();
+            }
+            return Promise.resolve({
+                ...STATUS_EVENT,
+                roundStates: [{ ...DEFAULT_ROUND }],
+            });
+        });
 
         status = new Status(server?.requestOptions);
         await status.start();
@@ -110,16 +112,16 @@ describe('Status', () => {
         jest.useFakeTimers();
 
         const setTimeoutSpy = jest.spyOn(global, 'setTimeout');
-        const coordinatorRequestSpy = jest
-            .spyOn(http, 'coordinatorRequest')
-            .mockImplementation(() =>
-                Promise.resolve({
-                    ...STATUS_EVENT,
-                    roundStates: [
-                        { ...DEFAULT_ROUND, phase: coordinatorRequestSpy.mock.calls.length },
-                    ], // increment phase on each request to trigger update event
-                }),
-            );
+        const coordinatorRequestSpy = jest.fn();
+        jest.spyOn(http, 'coordinatorRequest').mockImplementation(url => {
+            if (url === 'status') {
+                coordinatorRequestSpy();
+            }
+            return Promise.resolve({
+                ...STATUS_EVENT,
+                roundStates: [{ ...DEFAULT_ROUND, phase: coordinatorRequestSpy.mock.calls.length }], // increment phase on each request to trigger update event
+            });
+        });
 
         const half = STATUS_TIMEOUT.enabled / 2;
 
@@ -151,10 +153,12 @@ describe('Status', () => {
 
     it('Status identities', async () => {
         const identities: string[] = [];
-        jest.spyOn(http, 'coordinatorRequest').mockImplementation((_a, _b, options) => {
-            const id = options?.identity;
-            if (id && !identities.includes(id)) {
-                identities.push(id);
+        jest.spyOn(http, 'coordinatorRequest').mockImplementation((url, _b, options) => {
+            if (url === 'status') {
+                const id = options?.identity;
+                if (id && !identities.includes(id)) {
+                    identities.push(id);
+                }
             }
             return Promise.resolve({
                 ...STATUS_EVENT,
@@ -220,19 +224,23 @@ describe('Status', () => {
         jest.spyOn(STATUS_TIMEOUT, 'registered', 'get').mockReturnValue(250 as any);
 
         let request = 0;
-        server?.addListener('test-request', ({ resolve }) => {
-            if (request === 6) {
-                resolve({
-                    ...STATUS_EVENT,
-                    roundStates: [{ ...DEFAULT_ROUND, phase: 1 }],
-                });
+        server?.addListener('test-request', ({ url, resolve }) => {
+            if (url.endsWith('/status')) {
+                if (request === 6) {
+                    resolve({
+                        ...STATUS_EVENT,
+                        roundStates: [{ ...DEFAULT_ROUND, phase: 1 }],
+                    });
+                } else if (request > 0 && request % 2 === 0) {
+                    // timeout error on every second request
+                    setTimeout(resolve, 500);
+                } else {
+                    resolve();
+                }
+                request++;
             } else {
-                setTimeout(
-                    resolve,
-                    request % 2 === 0 ? 500 : 0, // timeout error on every second request
-                );
+                resolve();
             }
-            request++;
         });
 
         status = new Status(server?.requestOptions);
@@ -265,21 +273,23 @@ describe('Status', () => {
 
         const affiliateDataBase64 = Buffer.from('{}', 'utf-8').toString('base64');
 
-        const coordinatorRequestSpy = jest
-            .spyOn(http, 'coordinatorRequest')
-            .mockImplementation(() =>
-                Promise.resolve({
-                    ...STATUS_EVENT,
-                    roundStates: [{ ...round }], // NOTE: always return new reference for the Round from mock
-                    affiliateInformation: {
-                        ...AFFILIATE_INFO,
-                        affiliateData:
-                            coordinatorRequestSpy.mock.calls.length > 3 // return affiliateData after 3rd iteration
-                                ? { [round.id]: { trezor: affiliateDataBase64 } }
-                                : AFFILIATE_INFO.affiliateData,
-                    },
-                }),
-            );
+        const coordinatorRequestSpy = jest.fn();
+        jest.spyOn(http, 'coordinatorRequest').mockImplementation(url => {
+            if (url === 'status') {
+                coordinatorRequestSpy();
+            }
+            return Promise.resolve({
+                ...STATUS_EVENT,
+                roundStates: [{ ...round }], // NOTE: always return new reference for the Round from mock
+                affiliateInformation: {
+                    ...AFFILIATE_INFO,
+                    affiliateData:
+                        coordinatorRequestSpy.mock.calls.length > 3 // return affiliateData after 3rd iteration
+                            ? { [round.id]: { trezor: affiliateDataBase64 } }
+                            : AFFILIATE_INFO.affiliateData,
+                },
+            });
+        });
 
         jest.useFakeTimers();
 
@@ -315,6 +325,7 @@ describe('Status', () => {
                     roundStates: [{}],
                 });
             }
+            resolve();
         });
 
         status = new Status(server?.requestOptions);

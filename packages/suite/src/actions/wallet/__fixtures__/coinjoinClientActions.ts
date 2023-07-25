@@ -141,7 +141,6 @@ export const onCoinjoinRoundChanged = [
                     {
                         key: 'a',
                         session: { signedRounds: ['1', '2'], maxRounds: 2 },
-                        previousSessions: [],
                     },
                 ],
             },
@@ -177,7 +176,6 @@ export const onCoinjoinRoundChanged = [
                     {
                         key: 'a',
                         session: { signedRounds: ['1', '2'], maxRounds: 2 },
-                        previousSessions: [],
                     },
                 ],
             },
@@ -218,7 +216,6 @@ export const onCoinjoinRoundChanged = [
                     {
                         key: 'a',
                         session: { signedRounds: ['1', '2'], maxRounds: 2 },
-                        previousSessions: [],
                     },
                 ],
             },

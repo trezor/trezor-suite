@@ -105,8 +105,6 @@ export const useSignVerifyForm = (isSignPage: boolean, account: Account) => {
         control,
         name: 'hex',
     });
-    const messageRef = register();
-    const signatureRef = register();
     const { field: isElectrumField } = useController({
         control,
         name: 'isElectrum',
@@ -114,9 +112,9 @@ export const useSignVerifyForm = (isSignPage: boolean, account: Account) => {
 
     useEffect(() => {
         if (formValues.message) {
-            if (control?.fieldsRef?.current?.message) trigger('message');
+            trigger('message');
         }
-    }, [trigger, formValues.message, formValues.hex, control?.fieldsRef]);
+    }, [trigger, formValues.message, formValues.hex]);
 
     useEffect(() => {
         if (isSignPage) setValue('signature', '');
@@ -145,8 +143,7 @@ export const useSignVerifyForm = (isSignPage: boolean, account: Account) => {
         formValues,
         formErrors: errors,
         formSetSignature: (value: string) => setValue('signature', value),
-        messageRef,
-        signatureRef,
+        register,
         hexField: {
             isChecked: hexField.value,
             onChange: hexField.onChange,

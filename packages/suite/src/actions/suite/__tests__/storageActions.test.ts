@@ -12,7 +12,6 @@ import { accountsReducer, fiatRatesReducer, transactionsReducer } from 'src/redu
 import walletSettingsReducer from 'src/reducers/wallet/settingsReducer';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
 import deviceReducer from 'src/reducers/suite/deviceReducer';
-import discoveryReducer from 'src/reducers/wallet/discoveryReducer';
 import sendFormReducer from 'src/reducers/wallet/sendFormReducer';
 import graphReducer from 'src/reducers/wallet/graphReducer';
 import storageMiddleware from 'src/middlewares/wallet/storageMiddleware';
@@ -21,8 +20,12 @@ import { getAccountTransactions, getAccountIdentifier } from '@suite-common/wall
 import { AppState } from 'src/types/suite';
 import { SETTINGS } from 'src/config/suite';
 import { preloadStore } from 'src/support/suite/preloadStore';
+import { prepareDiscoveryReducer } from 'src/reducers/wallet/discoveryReducer';
+import { extraDependencies } from 'src/support/extraDependencies';
 
 const { getSuiteDevice, getWalletAccount, getWalletTransaction } = global.JestMocks;
+
+const discoveryReducer = prepareDiscoveryReducer(extraDependencies);
 
 // TODO: add method in suite-storage for deleting all stored data (done as a static method on SuiteDB), call it after each test
 // TODO: test deleting device instances on parent device forget
@@ -256,7 +259,7 @@ describe('Storage actions', () => {
 
         // update discovery object
         store.dispatch(
-            discoveryActions.update({
+            discoveryActions.updateDiscovery({
                 deviceState: dev2.state!,
                 networks: ['btc', 'ltc'],
             }),

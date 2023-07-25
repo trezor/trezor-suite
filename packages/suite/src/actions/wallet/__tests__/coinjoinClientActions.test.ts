@@ -223,7 +223,6 @@ describe('coinjoinClientActions', () => {
                             key: 'btc-account1',
                             symbol: 'btc',
                             session: { roundPhase: 1, signedRounds: [], maxRounds: 10 },
-                            previousSessions: [],
                         },
                     ],
                 } as any,

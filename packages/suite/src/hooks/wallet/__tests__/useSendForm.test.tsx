@@ -12,7 +12,7 @@ import {
     actionSequence,
 } from 'src/support/tests/hooksHelper';
 
-import { SendContextValues } from 'src/types/wallet/sendForm';
+import { FormState, SendContextValues } from 'src/types/wallet/sendForm';
 import SendIndex from 'src/views/wallet/send';
 import * as fixtures from '../__fixtures__/useSendForm';
 import { useSendFormContext } from '../useSendForm';
@@ -121,7 +121,7 @@ interface Result {
     getAccountInfoCalls?: number; // used in XRP
     getAccountInfoParams?: any; // partial @trezor/connect params
     composedLevels?: any; // partial PrecomposedLevel
-    formValues?: DeepPartial<ReturnType<SendContextValues['getValues']>>;
+    formValues?: DeepPartial<FormState>;
     errors?: any; // partial SendContextValues['errors']
 }
 
@@ -172,7 +172,11 @@ const actionCallback = (
         );
     }
 
-    const { composedLevels, getValues, errors } = getContextValues();
+    const {
+        composedLevels,
+        getValues,
+        formState: { errors },
+    } = getContextValues();
 
     // validate composedLevels object
     if (Object.prototype.hasOwnProperty.call(result, 'composedLevels')) {
@@ -234,12 +238,12 @@ describe('useSendForm hook', () => {
             if (!callback.getContextValues) throw Error('callback.getContextValues missing');
 
             // check HTML elements after first render
-            expect(findByTestId(/outputs\[.*\].address/).length).toBe(f.initial.outputs.length);
+            expect(findByTestId(/outputs\.[0-9]+\.address/).length).toBe(f.initial.outputs.length);
             expect(callback.getContextValues().getValues()).toMatchObject(f.initial);
 
             await actionSequence(f.actions, a => {
                 // check rendered HTML elements (Output.address input)
-                expect(findByTestId(/outputs\[.*\].address/).length).toBe(
+                expect(findByTestId(/outputs\.[0-9]+\.address/).length).toBe(
                     a.result.formValues.outputs.length,
                 );
                 // validate action result

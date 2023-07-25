@@ -1,20 +1,20 @@
 /* eslint no-underscore-dangle: ["error", { "allowAfterThis": true }] */
 
 import type { Network } from '@trezor/utxo-lib';
-import { promiseAllSequence } from '@trezor/utils';
+import { createCooldown, promiseAllSequence } from '@trezor/utils';
 
 import type { Logger } from '../types';
-import type { BlockbookTransaction, MempoolClient } from '../types/backend';
+import type { BlockbookTransaction, MempoolClient, OnProgressInfo } from '../types/backend';
 import type { AddressController } from './CoinjoinAddressController';
 import { getMempoolAddressScript, getMempoolMultiFilter } from './filters';
 import { getAllTxAddresses } from './backendUtils';
-import { MEMPOOL_PURGE_CYCLE } from '../constants';
+import { MEMPOOL_PURGE_CYCLE, PROGRESS_INFO_COOLDOWN } from '../constants';
 
 type MempoolStatus = 'stopped' | 'running';
 
 export type MempoolController = Pick<
     CoinjoinMempoolController,
-    'status' | 'start' | 'init' | 'update' | 'getTransactions'
+    'status' | 'start' | 'stop' | 'init' | 'update' | 'getTransactions'
 >;
 
 type CoinjoinMempoolControllerSettings = {
@@ -29,7 +29,6 @@ export class CoinjoinMempoolController {
     private readonly network;
     private readonly mempool;
     private readonly addressTxids;
-    private readonly logger;
     private readonly filter;
     private readonly onTxAdd;
     private readonly onTxRemove;
@@ -41,12 +40,11 @@ export class CoinjoinMempoolController {
         return this._status;
     }
 
-    constructor({ client, network, filter, logger }: CoinjoinMempoolControllerSettings) {
+    constructor({ client, network, filter }: CoinjoinMempoolControllerSettings) {
         this.client = client;
         this.network = network;
         this.mempool = new Map<string, BlockbookTransaction>();
         this.addressTxids = new Map<string, string[]>();
-        this.logger = logger;
         this.filter = filter;
         this.onTxAdd = this.onTransactionAdd.bind(this);
         this.onTxRemove = this.onTransactionRemove.bind(this);
@@ -60,7 +58,6 @@ export class CoinjoinMempoolController {
     private onTransactionAdd(tx: BlockbookTransaction) {
         const filteredAddresses = getAllTxAddresses(tx).filter(this.filter ?? (() => true));
         if (filteredAddresses.length) {
-            this.logger?.debug(`WS mempool ${tx.txid}`);
             this.mempool.set(tx.txid, tx);
             filteredAddresses.forEach(address => {
                 const record = this.addressTxids.get(address);
@@ -86,7 +83,9 @@ export class CoinjoinMempoolController {
         }
     }
 
-    async init(addressController?: AddressController) {
+    async init(addressController?: AddressController, onProgressInfo?: OnProgressInfo) {
+        onProgressInfo?.({ stage: 'mempool', activity: 'fetch' });
+
         const filters = await this.client
             .fetchMempoolFilters()
             .then(res =>
@@ -95,21 +94,25 @@ export class CoinjoinMempoolController {
                 ),
             );
 
-        const addTxs = (txids: string[]) =>
-            promiseAllSequence(
-                txids
-                    .filter(txid => !this.mempool.has(txid))
-                    .map(
-                        txid => () =>
-                            this.client
-                                .fetchTransaction(txid)
-                                .then(this.onTxAdd)
-                                .catch(() => {}),
-                    ),
-            );
+        onProgressInfo?.({ stage: 'mempool', activity: 'scan' });
+
+        const addTx = async (txid: string) => {
+            if (!this.mempool.has(txid)) {
+                await this.client
+                    .fetchTransaction(txid)
+                    .then(this.onTxAdd)
+                    .catch(() => {});
+            }
+        };
 
         if (!addressController) {
-            await addTxs(filters.map(([txid]) => txid));
+            await promiseAllSequence(
+                filters.map(
+                    ([txid]) =>
+                        () =>
+                            addTx(txid),
+                ),
+            );
             this.lastPurge = new Date().getTime();
             return [...this.mempool.values()];
         }
@@ -117,17 +120,31 @@ export class CoinjoinMempoolController {
         const findTxs = ({ address }: { address: string }) => this.addressTxids.get(address) ?? [];
         const set = new Set<string>();
         const onTxs = (txids: string[]) => txids.forEach(set.add, set);
+        const progressCooldown = createCooldown(PROGRESS_INFO_COOLDOWN);
 
         let { receive, change } = addressController;
+        let iteration = 0;
         while (receive.length || change.length) {
             const scripts = receive
                 .concat(change)
                 .map(({ address }) => getMempoolAddressScript(address, this.network));
-            const txids = filters.filter(([, matchAny]) => matchAny(scripts)).map(([txid]) => txid);
+
             // eslint-disable-next-line no-await-in-loop
-            await addTxs(txids);
+            await promiseAllSequence(
+                // eslint-disable-next-line no-loop-func
+                filters.map(([txid, matchAny], index) => async () => {
+                    if (matchAny(scripts)) await addTx(txid);
+                    if (progressCooldown())
+                        onProgressInfo?.({
+                            stage: 'mempool',
+                            progress: { current: index, total: filters.length, iteration },
+                        });
+                }),
+            );
+
             const newlyDerived = addressController.analyze(findTxs, onTxs);
             ({ receive, change } = newlyDerived);
+            iteration++;
         }
 
         this.lastPurge = new Date().getTime();

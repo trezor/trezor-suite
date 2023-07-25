@@ -54,8 +54,13 @@ const StyledSelect = styled(Select)`
 `;
 
 export const Footer = () => {
-    const { errors, control, formState, watch, defaultCountry, p2pInfo } =
-        useCoinmarketP2pFormContext();
+    const {
+        control,
+        formState: { errors, isSubmitting },
+        watch,
+        defaultCountry,
+        p2pInfo,
+    } = useCoinmarketP2pFormContext();
     const countrySelect = 'countrySelect';
     const hasValues = watch('fiatInput') && !!watch('currencySelect').value;
     // used instead of formState.isValid, which is sometimes returning false even if there are no errors
@@ -71,7 +76,7 @@ export const Footer = () => {
                     control={control}
                     defaultValue={defaultCountry}
                     name={countrySelect}
-                    render={({ onChange, value }) => (
+                    render={({ field: { onChange, value } }) => (
                         <StyledSelect
                             options={regional.countriesOptions.filter(
                                 c =>
@@ -106,8 +111,8 @@ export const Footer = () => {
             </Left>
             <StyledRight>
                 <StyledButton
-                    isDisabled={!(formIsValid && hasValues) || formState.isSubmitting}
-                    isLoading={formState.isSubmitting}
+                    isDisabled={!(formIsValid && hasValues) || isSubmitting}
+                    isLoading={isSubmitting}
                     type="submit"
                     data-test="@coinmarket/p2p/compare-button"
                 >

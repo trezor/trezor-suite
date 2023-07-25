@@ -438,7 +438,7 @@ export class DeviceCommands {
         if (res.type === 'Failure') {
             const { code } = res.message;
             let { message } = res.message;
-            // Model One does not send any message in firmware update
+            // T1 does not send any message in firmware update
             // https://github.com/trezor/trezor-firmware/issues/1334
             // @ts-expect-error, TODO: https://github.com/trezor/trezor-suite/issues/5299
             if (code === 'Failure_FirmwareError' && !message) {

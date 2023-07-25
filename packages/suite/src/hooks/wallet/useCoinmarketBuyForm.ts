@@ -11,7 +11,6 @@ import { getAmountLimits, processQuotes } from 'src/utils/wallet/coinmarket/buyU
 import type {
     FormState,
     UseCoinmarketBuyFormProps,
-    AmountLimits,
     BuyFormContextValues,
 } from 'src/types/wallet/coinmarketBuyForm';
 import { useFormDraft } from 'src/hooks/wallet/useFormDraft';
@@ -21,7 +20,7 @@ import { useBitcoinAmountUnit } from './useBitcoinAmountUnit';
 import { amountToSatoshi, formatAmount } from '@suite-common/wallet-utils';
 import { useDidUpdate } from '@trezor/react-utils';
 import { CRYPTO_INPUT } from 'src/types/wallet/coinmarketSellForm';
-import { TypedValidationRules } from '@suite-common/wallet-types';
+import { AmountLimits } from 'src/types/wallet/coinmarketCommonTypes';
 
 export const BuyFormContext = createContext<BuyFormContextValues | null>(null);
 BuyFormContext.displayName = 'CoinmarketBuyContext';
@@ -70,7 +69,7 @@ export const useCoinmarketBuyForm = (props: UseCoinmarketBuyFormProps): BuyFormC
         defaultValues: isDraft ? draft : defaultValues,
     });
 
-    const { register, control, formState, errors, reset, setValue, getValues } = methods;
+    const { register, control, formState, reset, setValue, getValues } = methods;
     const values = useWatch<FormState>({ control });
 
     useEffect(() => {
@@ -99,12 +98,24 @@ export const useCoinmarketBuyForm = (props: UseCoinmarketBuyFormProps): BuyFormC
 
     useDebounce(
         () => {
-            if (formState.isDirty && !formState.isValidating && Object.keys(errors).length === 0) {
+            if (
+                formState.isDirty &&
+                !formState.isValidating &&
+                Object.keys(formState.errors).length === 0
+            ) {
                 saveDraft(account.key, values as FormState);
             }
         },
         200,
-        [errors, saveDraft, account.key, values, shouldSendInSats],
+        [
+            formState.errors,
+            formState.isDirty,
+            formState.isValidating,
+            saveDraft,
+            account.key,
+            values,
+            shouldSendInSats,
+        ],
     );
     useEffect(() => {
         if (!isChanged(defaultValues, values)) {
@@ -158,7 +169,7 @@ export const useCoinmarketBuyForm = (props: UseCoinmarketBuyFormProps): BuyFormC
         onSubmit,
         defaultCountry,
         defaultCurrency,
-        register: register as (rules?: TypedValidationRules) => (ref: any) => void,
+        register,
         buyInfo,
         exchangeCoinInfo,
         saveQuotes,

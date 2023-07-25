@@ -2006,13 +2006,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@cypress/skip-test@npm:^2.6.1":
-  version: 2.6.1
-  resolution: "@cypress/skip-test@npm:2.6.1"
-  checksum: 48ec912f162563ca8657b6f023b701f66ddc29083ed36ae96cd861087c828046c2abb36c6fa0b316bb74941a17b046ac3b143532218e4cdc6d78d7838a64a141
-  languageName: node
-  linkType: hard
-
 "@cypress/xvfb@npm:^1.2.4":
   version: 1.2.4
   resolution: "@cypress/xvfb@npm:1.2.4"
@@ -3366,12 +3359,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hookform/resolvers@npm:1.3.8":
-  version: 1.3.8
-  resolution: "@hookform/resolvers@npm:1.3.8"
+"@hookform/resolvers@npm:3.1.0":
+  version: 3.1.0
+  resolution: "@hookform/resolvers@npm:3.1.0"
   peerDependencies:
-    react-hook-form: ">=6.6.0"
-  checksum: bf200a923273af954b4652c426c976a4b0a9b2b1d6976791a8c7fdcfa0784df3fbf5e6253bcf9f86f4ac17afe2e523df499f7d03e319dcae6bf2e136c6580a08
+    react-hook-form: ^7.0.0
+  checksum: 8f6690e514e645dd2a38baf573e7a62a9555c95d6a27f84216be7b3ae4cdc1c09111d6f7a38250612e46aa9d562ccec63db9306ec179156381583b444bf552c2
   languageName: node
   linkType: hard
 
@@ -6698,7 +6691,7 @@ __metadata:
     "@suite-common/wallet-config": "workspace:*"
     "@trezor/connect": "workspace:*"
     jest: ^26.6.3
-    proxy-memoize: ^2.0.4
+    proxy-memoize: 2.0.2
     typescript: 4.9.5
   languageName: unknown
   linkType: soft
@@ -6747,7 +6740,7 @@ __metadata:
     "@trezor/utils": "workspace:*"
     date-fns: ^2.30.0
     jest: ^26.6.3
-    proxy-memoize: ^2.0.4
+    proxy-memoize: 2.0.2
     typescript: 4.9.5
   languageName: unknown
   linkType: soft
@@ -6765,7 +6758,7 @@ __metadata:
     "@trezor/utils": "workspace:*"
     jest: ^26.6.3
     react: 18.2.0
-    react-hook-form: 6.15.7
+    react-hook-form: 7.44.3
     typescript: 4.9.5
   languageName: unknown
   linkType: soft
@@ -6796,7 +6789,7 @@ __metadata:
     jest: ^26.6.3
     pdfmake: ^0.2.7
     react: 18.2.0
-    react-hook-form: 6.15.7
+    react-hook-form: 7.44.3
     trezor-address-validator: ^0.4.3
     typescript: 4.9.5
     web3-utils: ^1.10.0
@@ -6883,7 +6876,7 @@ __metadata:
     "@trezor/styles": "workspace:*"
     bignumber.js: ^9.1.1
     jest: ^26.6.3
-    proxy-memoize: ^2.0.4
+    proxy-memoize: 2.0.2
     react: ^18.2.0
     react-native: 0.71.8
     react-redux: 8.0.7
@@ -6957,7 +6950,7 @@ __metadata:
     "@suite-native/fiat-rates": "workspace:*"
     "@suite-native/module-settings": "workspace:*"
     "@trezor/blockchain-link": "workspace:*"
-    proxy-memoize: ^2.0.4
+    proxy-memoize: 2.0.2
     react: 18.2.0
   languageName: unknown
   linkType: soft
@@ -6977,7 +6970,7 @@ __metadata:
     "@suite-common/wallet-utils": "workspace:*"
     "@trezor/connect": "workspace:*"
     date-fns: ^2.30.0
-    proxy-memoize: ^2.0.4
+    proxy-memoize: 2.0.2
   languageName: unknown
   linkType: soft
 
@@ -6985,6 +6978,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/formatters@workspace:suite-native/formatters"
   dependencies:
+    "@mobily/ts-belt": ^3.13.1
     "@suite-common/formatters": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
@@ -7009,10 +7003,10 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/forms@workspace:suite-native/forms"
   dependencies:
-    "@hookform/resolvers": 1.3.8
+    "@hookform/resolvers": 3.1.0
     "@suite-native/atoms": "workspace:*"
     react: 18.2.0
-    react-hook-form: 6.15.7
+    react-hook-form: 7.44.3
     yup: ^0.32.11
   languageName: unknown
   linkType: soft
@@ -7026,6 +7020,7 @@ __metadata:
     "@suite-common/formatters": "workspace:*"
     "@suite-common/graph": "workspace:*"
     "@suite-common/icons": "workspace:*"
+    "@suite-common/suite-types": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
@@ -7033,11 +7028,17 @@ __metadata:
     "@suite-native/atoms": "workspace:*"
     "@suite-native/formatters": "workspace:*"
     "@suite-native/react-native-graph": "workspace:*"
+    "@suite-native/state": "workspace:*"
+    "@suite-native/theme": "workspace:*"
     "@trezor/styles": "workspace:*"
+    "@trezor/suite-data": "workspace:*"
+    "@trezor/theme": "workspace:*"
     date-fns: ^2.30.0
+    expo-haptics: ^12.4.0
     jest: ^26.6.3
     jotai: 1.9.1
     react: 18.2.0
+    react-intl: ^6.4.2
     react-native: 0.71.8
     react-native-reanimated: 3.3.0
     react-redux: 8.0.7
@@ -7148,6 +7149,7 @@ __metadata:
     "@react-navigation/native-stack": ^6.9.11
     "@reduxjs/toolkit": 1.9.5
     "@suite-common/fiat-services": "workspace:*"
+    "@suite-common/graph": "workspace:*"
     "@suite-common/icons": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
@@ -7173,7 +7175,7 @@ __metadata:
     date-fns: ^2.30.0
     jotai: 1.9.1
     react: 18.2.0
-    react-hook-form: 6.15.7
+    react-hook-form: 7.44.3
     react-native: 0.71.8
     react-native-reanimated: 3.3.0
     react-redux: 8.0.7
@@ -7226,6 +7228,7 @@ __metadata:
     "@react-navigation/native": ^6.1.3
     "@react-navigation/native-stack": ^6.9.11
     "@suite-common/formatters": "workspace:*"
+    "@suite-common/graph": "workspace:*"
     "@suite-common/icons": "workspace:*"
     "@suite-native/assets": "workspace:*"
     "@suite-native/atoms": "workspace:*"
@@ -7568,7 +7571,7 @@ __metadata:
     "@trezor/theme": "workspace:*"
     jest: ^26.6.3
     jotai: 1.9.1
-    proxy-memoize: ^2.0.4
+    proxy-memoize: 2.0.2
     react: 18.2.0
     react-native: 0.71.8
     react-native-gesture-handler: ^2.9.0
@@ -7966,6 +7969,7 @@ __metadata:
     "@trezor/connect-common": "workspace:*"
     "@trezor/connect-ui": "workspace:*"
     "@trezor/crypto-utils": "workspace:*"
+    "@trezor/device-utils": "workspace:*"
     "@trezor/node-utils": "workspace:*"
     "@trezor/trezor-user-env-link": "workspace:*"
     "@trezor/urls": "workspace:*"
@@ -8446,6 +8450,7 @@ __metadata:
     expo-barcode-scanner: ^12.3.1
     expo-brightness: ^11.2.1
     expo-clipboard: ^4.1.1
+    expo-haptics: ^12.4.0
     expo-localization: ^14.1.1
     expo-navigation-bar: ^2.1.1
     expo-random: ^13.1.1
@@ -8460,7 +8465,7 @@ __metadata:
     react-intl: ^6.4.4
     react-native: 0.71.8
     react-native-config: ^1.5.0
-    react-native-flipper: 0.201.0
+    react-native-flipper: 0.164.0
     react-native-gesture-handler: ^2.9.0
     react-native-mmkv: ^2.7.0
     react-native-reanimated: 3.3.0
@@ -8492,7 +8497,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/suite-web@workspace:packages/suite-web"
   dependencies:
-    "@cypress/skip-test": ^2.6.1
     "@sentry/browser": ^7.56.0
     "@suite-common/formatters": "workspace:*"
     "@suite-common/sentry": "workspace:*"
@@ -8546,7 +8550,7 @@ __metadata:
     "@fivebinaries/coin-selection": 2.1.0
     "@formatjs/cli": ^6.1.3
     "@formatjs/intl": 2.9.0
-    "@hookform/resolvers": 1.3.8
+    "@hookform/resolvers": 3.1.0
     "@reduxjs/toolkit": 1.9.5
     "@sentry/core": ^7.56.0
     "@suite-common/analytics": "workspace:*"
@@ -8633,7 +8637,7 @@ __metadata:
     react-dom: 18.2.0
     react-focus-lock: ^2.9.4
     react-helmet: ^6.1.0
-    react-hook-form: 6.15.7
+    react-hook-form: 7.44.3
     react-intl: ^6.4.4
     react-markdown: ^8.0.7
     react-qr-reader: ^2.2.1
@@ -17657,6 +17661,15 @@ __metadata:
   peerDependencies:
     expo: "*"
   checksum: 813c424fbb521bfc00e1116deaa5a7c65ac1cb85ac78f5472ab2946e061fb0c0053a5bc7c5309545dc9f42d59faf9bd19eb1c2d895c59768f095c114241ac1e0
+  languageName: node
+  linkType: hard
+
+"expo-haptics@npm:^12.4.0":
+  version: 12.4.0
+  resolution: "expo-haptics@npm:12.4.0"
+  peerDependencies:
+    expo: "*"
+  checksum: 2578a44baf7b5517a1440d0af60124f0f45157f0e425dcc9a6a10997da734692c8425214ce299dee82cdfdb4b954c96489eef3bb2535a9a62e7460d6f517a52a
   languageName: node
   linkType: hard
 
@@ -27967,13 +27980,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"proxy-compare@npm:2.5.1":
-  version: 2.5.1
-  resolution: "proxy-compare@npm:2.5.1"
-  checksum: c7cc151ac255150bcb24becde6495b3e399416c31991af377ce082255b51f07eaeb5d861bf8bf482703e92f88b90a5892ad57d3153ea29450d03ef921683d9fa
-  languageName: node
-  linkType: hard
-
 "proxy-from-env@npm:1.0.0":
   version: 1.0.0
   resolution: "proxy-from-env@npm:1.0.0"
@@ -27994,15 +28000,6 @@ __metadata:
   dependencies:
     proxy-compare: 2.4.0
   checksum: 3cfb54fdd3032959de0c4da7bb7c85713bfa92d442841a6882a5ed20bd2dab0c629194615988e9b7dfdb8885183b8ab28817ed7205e912e7e285f031efdb8443
-  languageName: node
-  linkType: hard
-
-"proxy-memoize@npm:^2.0.4":
-  version: 2.0.4
-  resolution: "proxy-memoize@npm:2.0.4"
-  dependencies:
-    proxy-compare: 2.5.1
-  checksum: d97b5cf6c50ebe050c5ff7ecd0bb040423d0ba41deb5795d421a34159deb12fbd9d99792fb9108ffe03e6ada225d863b2d31f51f2230bf4fcb2761f30987c7d7
   languageName: node
   linkType: hard
 
@@ -28443,12 +28440,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-hook-form@npm:6.15.7":
-  version: 6.15.7
-  resolution: "react-hook-form@npm:6.15.7"
+"react-hook-form@npm:7.44.3":
+  version: 7.44.3
+  resolution: "react-hook-form@npm:7.44.3"
   peerDependencies:
-    react: ^16.8.0 || ^17
-  checksum: 5692288ef64409cf8e2591fb515d54d5d1f6ed67d29dd29aae88e4e6d46bd2289a6c6f3fdd069b9e692f19b25bbf0136887d33219015631b3cc7db6e7897eb5c
+    react: ^16.8.0 || ^17 || ^18
+  checksum: 8dc97e705d28d842c60fd79b0f07b8b045c458c234e3bf422baab87a844d0ebecbdf3e349538eaaa5c12366cd85169f60a52ed84dd31cdd99729899e424548bf
   languageName: node
   linkType: hard
 
@@ -28497,7 +28494,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-intl@npm:^6.4.4":
+"react-intl@npm:^6.4.2, react-intl@npm:^6.4.4":
   version: 6.4.4
   resolution: "react-intl@npm:6.4.4"
   dependencies:
@@ -28610,13 +28607,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-flipper@npm:0.201.0":
-  version: 0.201.0
-  resolution: "react-native-flipper@npm:0.201.0"
+"react-native-flipper@npm:0.164.0":
+  version: 0.164.0
+  resolution: "react-native-flipper@npm:0.164.0"
   peerDependencies:
     react: ^16.8.0 || ^17.0.0 || ^18.0.0
     react-native: ">0.62.0"
-  checksum: 20163a4a724d3afba540e2b66367a85d133f99b2469ba1488028a64523e7dd29bd93b5af06ae4580b108bf67f20e6fc534a34c10214fd93b2952a9128b7a04ed
+  checksum: 8730d7349bec27a23558760320082bd89b07fb404a87bf039a8d852455f28e4d5419f093bb7900ff5f6d85488274cfb246278b6700878bcabe574d5aacd88dac
   languageName: node
   linkType: hard
 

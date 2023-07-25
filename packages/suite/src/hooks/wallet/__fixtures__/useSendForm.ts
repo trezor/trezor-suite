@@ -293,7 +293,7 @@ export const addingOutputs = [
             },
             {
                 type: 'click',
-                element: 'outputs[0].remove',
+                element: 'outputs.0.remove',
                 result: {
                     formValues: {
                         outputs: [{ address: '' }],
@@ -351,7 +351,7 @@ export const addingOutputs = [
             },
             {
                 type: 'click',
-                element: 'outputs[0].remove',
+                element: 'outputs.0.remove',
                 result: {
                     formValues: {
                         outputs: [{ address: 'B' }, { address: '' }],
@@ -411,7 +411,7 @@ export const addingOutputs = [
             },
             {
                 type: 'click',
-                element: 'outputs[0].remove',
+                element: 'outputs.0.remove',
                 result: {
                     formValues: {
                         outputs: [{ address: 'B' }, { address: '' }],
@@ -452,20 +452,20 @@ export const composeDebouncedTransaction = [
         actions: [
             {
                 type: 'input',
-                element: 'outputs[0].address',
+                element: 'outputs.0.address',
                 value: 'X',
                 result: {
                     errors: {
-                        outputs: [{ address: { message: 'RECIPIENT_IS_NOT_VALID' } }],
+                        outputs: [{ address: { type: 'valid' } }],
                     },
                 },
             },
             {
                 type: 'input',
-                element: 'outputs[0].address',
+                element: 'outputs.0.address',
                 result: {
                     errors: {
-                        outputs: [{ address: { message: 'RECIPIENT_IS_NOT_SET' } }],
+                        outputs: [{ address: { type: 'required' } }],
                     },
                 },
             },
@@ -474,18 +474,18 @@ export const composeDebouncedTransaction = [
             composeTransactionCalls: 0,
             composedLevels: undefined,
             errors: {
-                outputs: [{ address: { message: 'RECIPIENT_IS_NOT_SET' } }],
+                outputs: [{ address: { type: 'required' } }],
             },
         },
     },
     {
         description: 'compose with validation errors (Address invalid)',
-        actions: [{ type: 'input', element: 'outputs[0].address', value: 'FOO', delay: 1 }],
+        actions: [{ type: 'input', element: 'outputs.0.address', value: 'FOO', delay: 1 }],
         finalResult: {
             composeTransactionCalls: 0,
             composedLevels: undefined,
             errors: {
-                outputs: [{ address: { message: 'RECIPIENT_IS_NOT_VALID' } }],
+                outputs: [{ address: { type: 'valid' } }],
             },
         },
     },
@@ -495,7 +495,7 @@ export const composeDebouncedTransaction = [
             success: false,
             payload: { error: 'error' },
         },
-        actions: [{ type: 'input', element: 'outputs[0].amount', value: '1' }],
+        actions: [{ type: 'input', element: 'outputs.0.amount', value: '1' }],
         finalResult: {
             composeTransactionCalls: 1,
             composedLevels: undefined,
@@ -511,7 +511,7 @@ export const composeDebouncedTransaction = [
                 },
             ],
         },
-        actions: [{ type: 'input', element: 'outputs[0].amount', value: '111', delay: 100 }],
+        actions: [{ type: 'input', element: 'outputs.0.amount', value: '111', delay: 100 }],
         finalResult: {
             composeTransactionCalls: 1,
             composedLevels: {
@@ -540,7 +540,7 @@ export const composeDebouncedTransaction = [
                 payload: [{ type: 'nonfinal', totalSpent: '11100000000' }],
             }, // delay in @trezor/connect response, greater than typing delay
         ],
-        actions: [{ type: 'input', element: 'outputs[0].amount', value: '111', delay: 310 }], // delay greater than composeDebounced timeout
+        actions: [{ type: 'input', element: 'outputs.0.amount', value: '111', delay: 310 }], // delay greater than composeDebounced timeout
         finalResult: {
             composeTransactionCalls: 3,
             composedLevels: {
@@ -584,11 +584,11 @@ export const setMax = [
         actions: [
             {
                 type: 'hover',
-                element: 'outputs[0].amount',
+                element: 'outputs.0.amount',
             },
             {
                 type: 'click',
-                element: 'outputs[0].setMax',
+                element: 'outputs.0.setMax',
                 result: {
                     composeTransactionCalls: 1,
                     composeTransactionParams: {
@@ -741,11 +741,11 @@ export const setMax = [
         actions: [
             {
                 type: 'hover',
-                element: 'outputs[0].amount',
+                element: 'outputs.0.amount',
             },
             {
                 type: 'click',
-                element: 'outputs[0].setMax',
+                element: 'outputs.0.setMax',
                 result: {
                     composeTransactionCalls: 1,
                     composeTransactionParams: {
@@ -762,7 +762,7 @@ export const setMax = [
             },
             {
                 type: 'input',
-                element: 'outputs[0].address',
+                element: 'outputs.0.address',
                 value: '3AnYTd2FGxJLNKL1AzxfW3FJMntp9D2KKX',
                 result: {
                     composeTransactionParams: {
@@ -830,7 +830,7 @@ export const setMax = [
         actions: [
             {
                 type: 'input',
-                element: 'outputs[0].address',
+                element: 'outputs.0.address',
                 value: '3AnYTd2FGxJLNKL1AzxfW3FJMntp9D2KKX',
                 result: {
                     composeTransactionCalls: 0,
@@ -839,11 +839,11 @@ export const setMax = [
             },
             {
                 type: 'hover',
-                element: 'outputs[0].amount',
+                element: 'outputs.0.amount',
             },
             {
                 type: 'click',
-                element: 'outputs[0].setMax',
+                element: 'outputs.0.setMax',
                 result: {
                     composeTransactionCalls: 1,
                     formValues: {
@@ -886,7 +886,7 @@ export const setMax = [
             // fill address in second output
             {
                 type: 'input',
-                element: 'outputs[1].address',
+                element: 'outputs.1.address',
                 value: '3AnYTd2FGxJLNKL1AzxfW3FJMntp9D2KKX',
                 result: {
                     formValues: {
@@ -903,7 +903,7 @@ export const setMax = [
                     composeTransactionParams: {
                         outputs: [
                             // corner-case: send-max was changed to send-max-noaddress
-                            // see sendFormUtils.getBitcoinComposeOutput
+                            // see sendFormUtils.getBitcoinComposeOutputs
                             {
                                 type: 'send-max-noaddress',
                                 address: '3AnYTd2FGxJLNKL1AzxfW3FJMntp9D2KKX',
@@ -915,7 +915,7 @@ export const setMax = [
             // disable send max
             {
                 type: 'click',
-                element: 'outputs[0].setMax',
+                element: 'outputs.0.setMax',
                 result: {
                     formValues: {
                         setMaxOutputId: undefined,
@@ -923,7 +923,7 @@ export const setMax = [
                     composeTransactionParams: {
                         outputs: [
                             // corner-case: external was changed to noaddress
-                            // see sendFormUtils.getBitcoinComposeOutput
+                            // see sendFormUtils.getBitcoinComposeOutputs
                             {
                                 type: 'noaddress',
                                 address: '3AnYTd2FGxJLNKL1AzxfW3FJMntp9D2KKX',
@@ -936,7 +936,7 @@ export const setMax = [
             // fill fiat in second output
             {
                 type: 'input',
-                element: 'outputs[1].fiat',
+                element: 'outputs.1.fiat',
                 value: '0.20',
                 result: {
                     formValues: {
@@ -972,7 +972,7 @@ export const setMax = [
             // remove second output
             // {
             //     type: 'click',
-            //     element: 'outputs[1].remove',
+            //     element: 'outputs.1.remove',
             //     result: {
             //         composeTransactionParams: {
             //             outputs: [
@@ -1616,7 +1616,7 @@ export const feeChange = [
                         feePerUnit: '',
                     },
                     errors: {
-                        feePerUnit: { message: 'CUSTOM_FEE_IS_NOT_SET' },
+                        feePerUnit: { type: 'required' },
                     },
                 },
             },
@@ -1715,7 +1715,7 @@ export const feeChange = [
             },
             {
                 type: 'input',
-                element: 'outputs[0].amount',
+                element: 'outputs.0.amount',
                 value: '.1',
                 expectRerender: true, // caused by feeLimit set in useFees sub hook
                 result: {
@@ -1742,7 +1742,7 @@ export const feeChange = [
                         estimatedFeeLimit: '41000',
                     },
                     errors: {
-                        feeLimit: { type: 'validate' }, // limit below recommended error
+                        feeLimit: { type: 'feeLimit' },
                     },
                 },
             },
@@ -1805,7 +1805,7 @@ export const feeChange = [
                         feeLimit: '21',
                     },
                     errors: {
-                        feeLimit: { type: 'validate' }, // limit error
+                        feeLimit: { type: 'feeLimit' },
                     },
                 },
             },
@@ -1926,7 +1926,7 @@ export const feeChange = [
                     },
                     composedLevels: undefined,
                     errors: {
-                        feePerUnit: { message: 'CUSTOM_FEE_IS_NOT_SET' },
+                        feePerUnit: { type: 'required' },
                     },
                 },
             },
@@ -1978,32 +1978,7 @@ export const amountUnitChange = [
         store: {
             bitcoinAmountUnit: PROTO.AmountUnit.SATOSHI,
         },
-        actions: [{ type: 'input', element: 'outputs[0].amount', value: '111', delay: 100 }],
-        finalResult: {
-            composeTransactionCalls: 1,
-            formValues: {
-                selectedFee: undefined,
-                outputs: [{ address: '', amount: '111' }],
-            },
-        },
-    },
-    {
-        description: 'compose with satoshi AmountUnit',
-        connect: [
-            {
-                success: true,
-                payload: [
-                    {
-                        type: 'final',
-                        max: '100000000',
-                    },
-                ],
-            },
-        ],
-        store: {
-            bitcoinAmountUnit: PROTO.AmountUnit.SATOSHI,
-        },
-        actions: [{ type: 'input', element: 'outputs[0].amount', value: '111' }],
+        actions: [{ type: 'input', element: 'outputs.0.amount', value: '111' }],
         finalResult: {
             composeTransactionCalls: 1,
             formValues: {
@@ -2028,11 +2003,11 @@ export const amountUnitChange = [
         actions: [
             {
                 type: 'hover',
-                element: 'outputs[0].amount',
+                element: 'outputs.0.amount',
             },
             {
                 type: 'click',
-                element: 'outputs[0].setMax',
+                element: 'outputs.0.setMax',
                 result: {
                     composeTransactionCalls: 1,
                     composeTransactionParams: {

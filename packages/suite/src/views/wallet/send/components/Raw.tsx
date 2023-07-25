@@ -4,18 +4,12 @@ import { useForm } from 'react-hook-form';
 import { analytics, EventType } from '@trezor/suite-analytics';
 
 import { Card, Translation } from 'src/components/suite';
-import { InputError } from 'src/components/wallet';
 import { Textarea, Button, Icon, Tooltip, variables } from '@trezor/components';
-import { useActions } from 'src/hooks/suite';
+import { useActions, useTranslation } from 'src/hooks/suite';
 import * as sendFormActions from 'src/actions/wallet/sendFormActions';
 import { getInputState, isHexValid } from '@suite-common/wallet-utils';
 import { Network } from 'src/types/wallet';
 import { OpenGuideFromTooltip } from 'src/components/guide';
-
-const Wrapper = styled.div`
-    /* display: flex;
-    padding: 6px 12px; */
-`;
 
 const StyledCard = styled(Card)`
     display: flex;
@@ -41,7 +35,12 @@ const ButtonSend = styled(Button)`
 `;
 
 const Raw = ({ network }: { network: Network }) => {
-    const { register, getValues, setValue, errors } = useForm({
+    const {
+        register,
+        getValues,
+        setValue,
+        formState: { errors },
+    } = useForm({
         mode: 'onChange',
         defaultValues: {
             rawTx: '',
@@ -53,33 +52,29 @@ const Raw = ({ network }: { network: Network }) => {
         pushRawTransaction: sendFormActions.pushRawTransaction,
     });
 
+    const { translationString } = useTranslation();
+
     const inputName = 'rawTx';
     const inputValue = getValues(inputName) || '';
     const error = errors[inputName];
     const inputState = getInputState(error, inputValue);
+    const { ref: inputRef, ...inputField } = register(inputName, {
+        required: translationString('RAW_TX_NOT_SET'),
+        validate: (value: string) => {
+            if (!isHexValid(value, network.networkType === 'ethereum' ? '0x' : undefined))
+                return translationString('DATA_NOT_VALID_HEX');
+        },
+    });
 
     return (
-        <Wrapper>
+        <>
             <StyledCard>
                 <Textarea
                     inputState={inputState}
                     isMonospace
-                    name={inputName}
                     data-test={inputName}
                     defaultValue={inputValue}
-                    innerRef={register({
-                        required: 'RAW_TX_NOT_SET',
-                        validate: (value: string) => {
-                            if (
-                                !isHexValid(
-                                    value,
-                                    network.networkType === 'ethereum' ? '0x' : undefined,
-                                )
-                            )
-                                return 'DATA_NOT_VALID_HEX';
-                        },
-                    })}
-                    bottomText={<InputError error={error} />}
+                    bottomText={error?.message}
                     label={
                         <Tooltip
                             guideAnchor={instance => (
@@ -95,6 +90,8 @@ const Raw = ({ network }: { network: Network }) => {
                         </Tooltip>
                     }
                     labelRight={<Icon size={20} icon="CROSS" onClick={() => sendRaw(false)} />}
+                    innerRef={inputRef}
+                    {...inputField}
                 />
             </StyledCard>
             <ButtonWrapper>
@@ -116,7 +113,7 @@ const Raw = ({ network }: { network: Network }) => {
                     <Translation id="SEND_TRANSACTION" />
                 </ButtonSend>
             </ButtonWrapper>
-        </Wrapper>
+        </>
     );
 };
 

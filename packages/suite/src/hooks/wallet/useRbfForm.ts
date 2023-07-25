@@ -1,9 +1,9 @@
 import BigNumber from 'bignumber.js';
 import { createContext, useContext, useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
+import { fromWei } from 'web3-utils';
 import { useSelector } from 'src/hooks/suite';
 import { DEFAULT_PAYMENT, DEFAULT_OPRETURN, DEFAULT_VALUES } from '@suite-common/wallet-constants';
-import { TypedValidationRules } from '@suite-common/wallet-types';
 import { getExcludedUtxos, getFeeLevels } from '@suite-common/wallet-utils';
 import { Account, WalletAccountTransaction } from 'src/types/wallet';
 import { FormState, FeeInfo } from 'src/types/wallet/sendForm';
@@ -34,11 +34,23 @@ const getBitcoinFeeInfo = (info: FeeInfo, feeRate: string) => {
 
 const getEthereumFeeInfo = (info: FeeInfo, gasPrice: string) => {
     const current = new BigNumber(gasPrice);
-    const minFee = current.plus(1);
+    const minFeeFromNetwork = new BigNumber(
+        fromWei(info.levels[0].feePerUnit, 'gwei'),
+    ).integerValue(BigNumber.ROUND_FLOOR);
+
+    const getMinFee = () => {
+        if (minFeeFromNetwork.lte(current)) {
+            return current.plus(1);
+        }
+        return minFeeFromNetwork;
+    };
+
+    const minFee = getMinFee();
+
     // increase FeeLevel only if it's lower than predefined
     const levels = getFeeLevels('ethereum', info).map(l => ({
         ...l,
-        feePerUnit: current.lte(gasPrice) ? minFee.toString() : gasPrice,
+        feePerUnit: minFee.toString(),
     }));
     return {
         ...info,
@@ -110,7 +122,7 @@ const useRbfState = ({ tx, finalize, chainedTxs }: UseRbfProps, currentState: bo
     let { baseFee } = tx.rbfParams;
     if (chainedTxs.length > 0) {
         // increase baseFee, pay for all child chained transactions
-        baseFee = chainedTxs.reduce((f, ctx) => f + parseInt(ctx.fee, 10), baseFee);
+        baseFee = chainedTxs.reduce((f, ctx) => f + parseFloat(ctx.fee), baseFee);
     }
 
     const rbfParams = {
@@ -131,6 +143,7 @@ const useRbfState = ({ tx, finalize, chainedTxs }: UseRbfProps, currentState: bo
         feeInfo,
         excludedUtxos,
         chainedTxs,
+        shouldSendInSats,
         formValues: {
             ...DEFAULT_VALUES,
             outputs,
@@ -155,14 +168,14 @@ export const useRbf = (props: UseRbfProps) => {
     }, [state, initState]);
 
     // react-hook-form
-    const useFormMethods = useForm<FormState>({ mode: 'onChange', shouldUnregister: false });
-    const { reset, register, control, setValue, getValues, errors } = useFormMethods;
+    const useFormMethods = useForm<FormState>({ mode: 'onChange' });
+    const { reset, register, control, setValue, getValues, formState } = useFormMethods;
 
     // react-hook-form auto register custom form fields (without HTMLElement)
     useEffect(() => {
-        register({ name: 'outputs', type: 'custom' });
-        register({ name: 'setMaxOutputId', type: 'custom' });
-        register({ name: 'options', type: 'custom' });
+        register('outputs');
+        register('setMaxOutputId');
+        register('options');
     }, [register]);
 
     // react-hook-form reset, set default values
@@ -227,9 +240,9 @@ export const useRbf = (props: UseRbfProps) => {
     return {
         ...ctxState,
         isLoading,
-        register: register as (rules?: TypedValidationRules) => (ref: any) => void,
+        register,
         control,
-        errors,
+        formState,
         setValue,
         getValues,
         composedLevels,

@@ -118,6 +118,8 @@ export const AssetItem = React.memo(
                             <CryptoAmountFormatter
                                 value={cryptoCurrencyValue}
                                 network={cryptoCurrencySymbol}
+                                // Every asset crypto amount is rounded to 8 decimals to prevent UI overflow.
+                                decimals={8}
                             />
                         </Box>
                     </Box>

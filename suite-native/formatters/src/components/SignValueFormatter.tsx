@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { Text, TextProps } from '@suite-native/atoms';
-import { useFormatters } from '@suite-common/formatters';
+import { isSignValuePositive, useFormatters } from '@suite-common/formatters';
 import { SignValue } from '@suite-common/suite-types';
 
 import { FormatterProps } from '../types';
@@ -13,11 +13,10 @@ export const SignValueFormatter = ({ value, ...textProps }: SignValueFormatterPr
 
     if (!value) return null;
 
+    const signColor = isSignValuePositive(value) ? 'textSecondaryHighlight' : 'textAlertRed';
+
     return (
-        <Text
-            {...textProps}
-            color={value === 'positive' ? 'textSecondaryHighlight' : 'textAlertRed'}
-        >
+        <Text {...textProps} color={signColor}>
             {/* Trailing whitespace to offset a following value. */}
             <Formatter value={value} />{' '}
         </Text>

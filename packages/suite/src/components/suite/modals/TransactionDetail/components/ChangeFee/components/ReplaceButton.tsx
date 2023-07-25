@@ -15,7 +15,7 @@ const StyledButton = styled(Button)`
     min-width: 30%;
 `;
 
-const ReplaceButton = ({ finalize }: { finalize: boolean }) => {
+export const ReplaceButton = ({ finalize }: { finalize: boolean }) => {
     const { device, isLocked } = useDevice();
     const { isLoading, signTransaction, getValues, composedLevels } = useRbfContext();
 
@@ -36,5 +36,3 @@ const ReplaceButton = ({ finalize }: { finalize: boolean }) => {
         </Wrapper>
     );
 };
-
-export default ReplaceButton;

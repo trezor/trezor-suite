@@ -1,12 +1,14 @@
 import React from 'react';
+
 import styled from 'styled-components';
-import { H1, variables } from '@trezor/components';
 import { Translation } from 'src/components/suite/Translation';
 import { DeviceConfirmImage } from 'src/components/suite/images/DeviceConfirmImage';
 import { useSelector } from 'src/hooks/suite';
-import { selectIsDiscoveryAuthConfirmationRequired } from 'src/reducers/wallet/discoveryReducer';
+import { selectIsDiscoveryAuthConfirmationRequired } from 'src/reducers/suite/suiteReducer';
 import type { TrezorDevice } from 'src/types/suite';
 import { DevicePromptModal } from 'src/components/suite/Modal/DevicePromptModal';
+
+import { H1, variables } from '@trezor/components';
 
 const StyledDevicePromptModal = styled(DevicePromptModal)`
     width: 360px;

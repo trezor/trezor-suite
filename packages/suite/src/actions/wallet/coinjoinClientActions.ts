@@ -1,6 +1,7 @@
 import TrezorConnect from '@trezor/connect';
 import {
     CoinjoinStatusEvent,
+    CoinjoinClientVersion,
     CoinjoinRoundEvent,
     SerializedCoinjoinRound,
     CoinjoinRequestEvent,
@@ -15,6 +16,7 @@ import {
     getSessionDeadline,
     getEstimatedTimePerRound,
 } from 'src/utils/wallet/coinjoinUtils';
+import { getOsName } from '@trezor/env-utils';
 import { CoinjoinService } from 'src/services/coinjoin';
 import { selectAccountByKey } from '@suite-common/wallet-core';
 import { getUtxoOutpoint } from '@suite-common/wallet-utils';
@@ -51,12 +53,16 @@ export const clientDisable = (symbol: Account['symbol']) =>
         },
     } as const);
 
-const clientEnableSuccess = (symbol: Account['symbol'], status: CoinjoinStatusEvent) =>
+const clientEnableSuccess = (
+    symbol: Account['symbol'],
+    { version, ...status }: CoinjoinStatusEvent & { version: CoinjoinClientVersion },
+) =>
     ({
         type: COINJOIN.CLIENT_ENABLE_SUCCESS,
         payload: {
             symbol,
             status,
+            version,
         },
     } as const);
 
@@ -300,26 +306,26 @@ export const stopCoinjoinSession =
             return;
         }
 
-        const { device } = getState().suite;
-
-        const result = await TrezorConnect.cancelCoinjoinAuthorization({
-            device,
-            useEmptyPassphrase: device?.useEmptyPassphrase,
-        });
-
-        if (!result.success) {
-            dispatch(
-                notificationsActions.addToast({
-                    type: 'error',
-                    error: `Coinjoin session not stopped: ${result.payload.error}`,
-                }),
-            );
-
-            return;
-        }
-
         // unregister account in @trezor/coinjoin
         client.unregisterAccount(account.key);
+
+        const { device } = getState().suite;
+
+        if (device?.connected) {
+            const result = await TrezorConnect.cancelCoinjoinAuthorization({
+                device,
+                useEmptyPassphrase: device?.useEmptyPassphrase,
+            });
+
+            if (!result.success) {
+                dispatch(
+                    notificationsActions.addToast({
+                        type: 'error',
+                        error: `Cancel coinjoin authorization ${result.payload.error}`,
+                    }),
+                );
+            }
+        }
 
         // dispatch data to reducer
         dispatch({
@@ -639,10 +645,11 @@ export const signCoinjoinTx =
                             return;
                         }
 
+                        const fwVersion = `${device?.features?.major_version}.${device?.features?.minor_version}.${device?.features?.patch_version}-${device?.features?.revision}`;
                         utxos.forEach(u => {
                             response.inputs.push({
                                 outpoint: u.outpoint,
-                                error: signTx.payload.error,
+                                error: `${fwVersion} (${getOsName()}) ${signTx.payload.error}`,
                             });
                         });
 

@@ -1,14 +1,12 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback } from 'react';
 import BigNumber from 'bignumber.js';
 import styled from 'styled-components';
 import { Controller } from 'react-hook-form';
 
 import { Select } from '@trezor/components';
-import { InputError } from 'src/components/wallet';
 import { useSendFormContext } from 'src/hooks/wallet';
 import {
     fromFiatCurrency,
-    isDecimalsValid,
     getInputState,
     getFiatRate,
     findToken,
@@ -20,8 +18,9 @@ import {
 import { CurrencyOption, Output } from 'src/types/wallet/sendForm';
 import { MAX_LENGTH } from 'src/constants/suite/inputs';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
-import { NumberInput, Translation } from 'src/components/suite';
-import { TypedValidationRules } from 'src/types/wallet/form';
+import { NumberInput } from 'src/components/suite';
+import { useTranslation } from 'src/hooks/suite';
+import { validateDecimals } from 'src/utils/suite/validation';
 
 const Wrapper = styled.div`
     display: flex;
@@ -30,17 +29,17 @@ const Wrapper = styled.div`
     justify-content: flex-start;
 `;
 
-interface Props {
+interface FiatProps {
     output: Partial<Output>;
     outputId: number;
 }
 
-export const Fiat = ({ output, outputId }: Props) => {
+export const Fiat = ({ output, outputId }: FiatProps) => {
     const {
         account,
         network,
         fiatRates,
-        errors,
+        formState: { errors },
         clearErrors,
         getDefaultValue,
         control,
@@ -51,10 +50,12 @@ export const Fiat = ({ output, outputId }: Props) => {
 
     const { shouldSendInSats } = useBitcoinAmountUnit(account.symbol);
 
-    const inputName = `outputs[${outputId}].fiat`;
-    const currencyInputName = `outputs[${outputId}].currency`;
-    const amountInputName = `outputs[${outputId}].amount`;
-    const tokenInputName = `outputs[${outputId}].token`;
+    const { translationString } = useTranslation();
+
+    const inputName = `outputs.${outputId}.fiat` as const;
+    const currencyInputName = `outputs.${outputId}.currency` as const;
+    const amountInputName = `outputs.${outputId}.amount` as const;
+    const tokenInputName = `outputs.${outputId}.token` as const;
     const isSetMaxActive = getDefaultValue('setMaxOutputId') === outputId;
 
     const outputError = errors.outputs ? errors.outputs[outputId] : undefined;
@@ -74,7 +75,7 @@ export const Fiat = ({ output, outputId }: Props) => {
 
     const isLowAnonymity = isLowAnonymityWarning(outputError);
     const inputState = isLowAnonymity ? 'warning' : getInputState(errorToDisplay, fiatValue);
-    const bottomText = isLowAnonymity ? null : <InputError error={errorToDisplay} />;
+    const bottomText = isLowAnonymity ? null : errorToDisplay?.message;
 
     const handleChange = useCallback(
         (value: string) => {
@@ -135,38 +136,22 @@ export const Fiat = ({ output, outputId }: Props) => {
         ],
     );
 
-    const rules = useMemo<TypedValidationRules>(
-        () => ({
-            required: 'AMOUNT_IS_NOT_SET',
-            validate: (value: string) => {
-                const amountBig = new BigNumber(value);
-                if (amountBig.isNaN()) {
-                    return 'AMOUNT_IS_NOT_NUMBER' as const;
-                }
-                if (amountBig.lt(0)) {
-                    return 'AMOUNT_IS_TOO_LOW' as const;
-                }
-                if (!isDecimalsValid(value, 2)) {
-                    return (
-                        <Translation
-                            key="AMOUNT_IS_NOT_IN_RANGE_DECIMALS"
-                            id="AMOUNT_IS_NOT_IN_RANGE_DECIMALS"
-                            values={{ decimals: 2 }}
-                        />
-                    );
-                }
-            },
-        }),
-        [],
-    );
+    const rules = {
+        required: translationString('AMOUNT_IS_NOT_SET'),
+        validate: {
+            decimals: validateDecimals(translationString, { decimals: 2 }),
+        },
+    };
 
     interface CallbackParams {
-        onChange: (value: CurrencyOption) => void;
-        value: any;
+        field: {
+            onChange: (...event: any[]) => void;
+            value: any;
+        };
     }
 
     const renderCurrencySelect = useCallback(
-        ({ onChange, value }: CallbackParams) => (
+        ({ field: { onChange, value } }: CallbackParams) => (
             <Select
                 options={buildCurrencyOptions(value)}
                 value={value}

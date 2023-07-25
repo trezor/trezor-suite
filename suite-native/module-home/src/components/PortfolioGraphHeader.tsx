@@ -6,19 +6,19 @@ import { Box, Text } from '@suite-native/atoms';
 import { FiatAmountFormatter } from '@suite-native/formatters';
 import {
     emptyGraphPoint,
-    EnhancedGraphPoint,
     GraphDateFormatter,
     percentageDiff,
     PriceChangeIndicator,
 } from '@suite-native/graph';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { FiatGraphPoint } from '@suite-common/graph';
 
 // use atomic jotai structure for absolute minimum re-renders and maximum performance
 // otherwise graph will be freezing on slower device while point swipe gesture
-export const selectedPointAtom = atom<EnhancedGraphPoint>(emptyGraphPoint);
+export const selectedPointAtom = atom<FiatGraphPoint>(emptyGraphPoint);
 
 // reference is usually first point, same as Revolut does in their app
-export const referencePointAtom = atom<EnhancedGraphPoint>(emptyGraphPoint);
+export const referencePointAtom = atom<FiatGraphPoint>(emptyGraphPoint);
 
 const percentageChangeAtom = atom(get => {
     const selectedPoint = get(selectedPointAtom);
@@ -58,7 +58,7 @@ const Balance = () => {
 
 export const PortfolioGraphHeader = () => {
     const { applyStyle } = useNativeStyles();
-    const { originalDate: firstPointDate } = useAtomValue(referencePointAtom);
+    const { date: firstPointDate } = useAtomValue(referencePointAtom);
 
     return (
         <Box flexDirection="row" justifyContent="center" marginTop="large">

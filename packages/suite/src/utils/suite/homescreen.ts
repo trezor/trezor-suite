@@ -230,6 +230,6 @@ export const isHomescreenSupportedOnDevice = (device: TrezorDevice) => {
 
     return (
         deviceModel !== DeviceModel.TT ||
-        (deviceModel === DeviceModel.TT && device.features?.homescreen_format === 'Jpeg240x240')
+        (deviceModel === DeviceModel.TT && device.features?.homescreen_format)
     );
 };

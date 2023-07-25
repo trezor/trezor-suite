@@ -80,6 +80,13 @@ export class PopupManager extends EventEmitter {
             return;
         }
 
+        // When requesting a popup window and there is a reference to popup window and it is not locked
+        // we close it so we can open a new one.
+        // This is necessary when popup window is in error state and we want to open a new one.
+        if (this.popupWindow && !this.locked) {
+            this.popupWindow.close();
+        }
+
         const openFn = this.open.bind(this);
         this.locked = true;
 
@@ -89,10 +96,6 @@ export class PopupManager extends EventEmitter {
             this.requestTimeout = 0;
             openFn(lazyLoad);
         }, timeout);
-    }
-
-    cancel() {
-        this.close();
     }
 
     unlock() {
@@ -110,19 +113,18 @@ export class PopupManager extends EventEmitter {
             if (this.settings.env === 'webextension') {
                 chrome.tabs.get(this.popupWindow.id, tab => {
                     if (!tab) {
-                        this.close();
-                        this.emit(POPUP.CLOSED);
+                        this.clear();
                     }
                 });
             } else if (this.popupWindow.closed) {
-                this.close();
+                this.clear();
                 this.emit(POPUP.CLOSED);
             }
         }, POPUP_CLOSE_INTERVAL);
 
         // open timeout will be cancelled by POPUP.BOOTSTRAP message
         this.openTimeout = setTimeout(() => {
-            this.close();
+            this.clear();
             showPopupRequest(this.open.bind(this), () => {
                 this.emit(POPUP.CLOSED);
             });
@@ -207,7 +209,7 @@ export class PopupManager extends EventEmitter {
             const errorMessage =
                 data.payload && typeof data.payload.error === 'string' ? data.payload.error : null;
             this.emit(POPUP.CLOSED, errorMessage ? `Popup error: ${errorMessage}` : null);
-            this.close();
+            this.clear();
         } else if (data.type === POPUP.LOADED) {
             if (this.popupPromise) {
                 this.popupPromise.resolve();
@@ -240,8 +242,7 @@ export class PopupManager extends EventEmitter {
                 },
             );
         } else if (data.type === POPUP.CLOSE_WINDOW) {
-            this.emit(POPUP.CLOSED);
-            this.close();
+            this.clear();
         }
     }
 
@@ -260,7 +261,7 @@ export class PopupManager extends EventEmitter {
             const errorMessage =
                 data.payload && typeof data.payload.error === 'string' ? data.payload.error : null;
             this.emit(POPUP.CLOSED, errorMessage ? `Popup error: ${errorMessage}` : null);
-            this.close();
+            this.clear();
         } else if (data.type === POPUP.LOADED) {
             if (this.popupPromise) {
                 this.popupPromise.resolve();
@@ -282,11 +283,11 @@ export class PopupManager extends EventEmitter {
             // note this settings and iframe.ConnectSettings could be different (especially: origin, popup, webusb, debug)
             // now popup is able to load assets
         } else if (data.type === POPUP.CANCEL_POPUP_REQUEST || data.type === UI.CLOSE_UI_WINDOW) {
-            this.close();
+            this.clear();
         }
     }
 
-    close() {
+    clear() {
         this.locked = false;
         this.popupPromise = undefined;
 
@@ -314,7 +315,9 @@ export class PopupManager extends EventEmitter {
             chrome.tabs.update(this.extensionTabId, { active: true });
             this.extensionTabId = 0;
         }
+    }
 
+    close() {
         if (!this.popupWindow) return;
 
         if (this.settings.env === 'webextension') {
@@ -324,10 +327,11 @@ export class PopupManager extends EventEmitter {
             chrome.tabs.remove(this.popupWindow.id, () => {
                 _e = chrome.runtime.lastError;
             });
-        } else if (!this.settings.debug) {
-            this.popupWindow.close();
-            this.popupWindow = null;
+            return;
         }
+
+        this.popupWindow.close();
+        this.popupWindow = null;
     }
 
     async postMessage(message: CoreMessage) {
@@ -335,7 +339,7 @@ export class PopupManager extends EventEmitter {
         // maybe popup request wasn't handled
         // ignore "ui_request_window" type
         if (!this.popupWindow && message.type !== UI.REQUEST_UI_WINDOW && this.openTimeout) {
-            this.close();
+            this.clear();
             showPopupRequest(this.open.bind(this), () => {
                 this.emit(POPUP.CLOSED);
             });

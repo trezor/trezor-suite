@@ -7,7 +7,6 @@ import { useDevice } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { isLowAnonymityWarning } from '@suite-common/wallet-utils';
 import { Translation } from 'src/components/suite/Translation';
-import { FormOptions } from 'src/types/wallet/sendForm';
 
 const StyledWarning = styled(Warning)`
     margin-top: 8px;
@@ -57,7 +56,7 @@ export const ReviewButton = () => {
     const { device, isLocked } = useDevice();
     const {
         control,
-        errors,
+        formState: { errors },
         online,
         isLoading,
         signTransaction,
@@ -73,7 +72,7 @@ export const ReviewButton = () => {
         },
     } = useSendFormContext();
 
-    const options = useWatch<FormOptions[]>({
+    const options = useWatch({
         name: 'options',
         defaultValue: getDefaultValue('options', []),
         control,
@@ -85,7 +84,9 @@ export const ReviewButton = () => {
     const broadcastEnabled = options.includes('broadcast');
     const coinControlOpen = options.includes('utxoSelection');
     const composedTx = composedLevels ? composedLevels[values.selectedFee || 'normal'] : undefined;
-    const isLowAnonymity = isLowAnonymityWarning(errors?.outputs);
+    const isLowAnonymity =
+        Array.isArray(errors.outputs) &&
+        errors.outputs.some(output => isLowAnonymityWarning(output));
     const possibleToSubmit =
         composedTx?.type === 'final' &&
         !isLocked() &&

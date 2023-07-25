@@ -1,7 +1,7 @@
 import produce from 'immer';
 import BigNumber from 'bignumber.js';
 
-import { CoinjoinStatusEvent, getInputSize, getOutputSize } from '@trezor/coinjoin';
+import { getInputSize, getOutputSize } from '@trezor/coinjoin';
 import { PartialRecord } from '@trezor/type-utils';
 import { STORAGE } from 'src/actions/suite/constants';
 import { Account, AccountKey } from '@suite-common/wallet-types';
@@ -10,6 +10,7 @@ import {
     RoundPhase,
     CoinjoinDebugSettings,
     CoinjoinConfig,
+    CoinjoinClientInstance,
 } from 'src/types/wallet/coinjoin';
 import { COINJOIN } from 'src/actions/wallet/constants';
 import { Action } from 'src/types/suite';
@@ -27,6 +28,8 @@ import {
     getRoundPhaseFromSessionPhase,
     transformCoinjoinStatus,
     calculateAverageAnonymityGainPerRound,
+    getMaxRounds,
+    getSkipRounds,
 } from 'src/utils/wallet/coinjoinUtils';
 import {
     CLIENT_STATUS_FALLBACK,
@@ -39,6 +42,8 @@ import {
     SKIP_ROUNDS_BY_DEFAULT,
     FEE_RATE_MEDIAN_FALLBACK,
     MAX_MINING_FEE_MODIFIER,
+    ZKSNACKS_LEGAL_DOCUMENTS_VERSION,
+    TREZOR_LEGAL_DOCUMENTS_VERSION,
 } from 'src/services/coinjoin';
 import { accountsActions, AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import {
@@ -48,15 +53,6 @@ import {
     selectFeatureConfig,
 } from '@suite-common/message-system';
 import { SelectedAccountRootState, selectSelectedAccount } from './selectedAccountReducer';
-
-export interface CoinjoinClientInstance
-    extends Pick<
-        CoinjoinStatusEvent,
-        'coordinationFeeRate' | 'allowedInputAmounts' | 'feeRateMedian'
-    > {
-    rounds: { id: string; phase: RoundPhase }[]; // store only slice of Round in reducer. may be extended in the future
-    status: 'loading' | 'loaded';
-}
 
 export interface CoinjoinState {
     accounts: CoinjoinAccount[];
@@ -85,6 +81,7 @@ export const initialState: CoinjoinState = {
         roundsDurationInHours: ESTIMATED_HOURS_PER_ROUND,
         maxMiningFeeModifier: MAX_MINING_FEE_MODIFIER,
         maxFeePerVbyte: undefined,
+        legalDocumentsVersion: TREZOR_LEGAL_DOCUMENTS_VERSION,
     },
 };
 
@@ -104,7 +101,6 @@ const createAccount = (
         key: account.key,
         symbol: account.symbol,
         rawLiquidityClue: null, // NOTE: liquidity clue is calculated from tx history. default value is `null`
-        previousSessions: [],
     };
     const index = draft.accounts.findIndex(a => a.key === account.key);
     if (index < 0) draft.accounts.push(coinjoinAccount);
@@ -178,6 +174,12 @@ const createSession = (
         timeCreated: Date.now(),
         sessionPhaseQueue: [],
         signedRounds: [],
+    };
+    account.agreedToLegalDocumentVersions = {
+        trezor: draft.config.legalDocumentsVersion,
+        zkSNACKs:
+            draft.clients[account.symbol]?.version?.legalDocumentsVersion ??
+            ZKSNACKS_LEGAL_DOCUMENTS_VERSION,
     };
 };
 
@@ -271,13 +273,7 @@ const completeSession = (
     payload: ExtractActionPayload<typeof COINJOIN.SESSION_COMPLETED>,
 ) => {
     const account = getAccount(draft, payload.accountKey);
-    if (!account) return;
-    if (account.session) {
-        account.previousSessions.push({
-            ...account.session,
-            timeEnded: Date.now(),
-            sessionPhaseQueue: [],
-        });
+    if (account?.session) {
         delete account.session;
     }
 };
@@ -287,12 +283,7 @@ const stopSession = (
     payload: ExtractActionPayload<typeof COINJOIN.ACCOUNT_UNREGISTER>,
 ) => {
     const account = getAccount(draft, payload.accountKey);
-    if (!account) return;
-    if (account.session) {
-        account.previousSessions.push({
-            ...account.session,
-            timeEnded: Date.now(),
-        });
+    if (account?.session) {
         delete account.session;
     }
 };
@@ -356,6 +347,7 @@ const createClient = (
 ) => {
     draft.clients[payload.symbol] = {
         ...transformCoinjoinStatus(payload.status),
+        version: payload.version,
         status: 'loaded',
     };
 };
@@ -629,8 +621,8 @@ export const selectCoinjoinClient = (state: CoinjoinRootState, accountKey: Accou
 };
 
 export const selectSessionByAccountKey = (state: CoinjoinRootState, accountKey: AccountKey) => {
-    const coinjoinAccounts = selectCoinjoinAccounts(state);
-    return coinjoinAccounts.find(account => account.key === accountKey)?.session;
+    const coinjoinAccount = selectCoinjoinAccountByKey(state, accountKey);
+    return coinjoinAccount?.session;
 };
 
 export const selectTargetAnonymityByAccountKey = (
@@ -757,7 +749,7 @@ export const selectIsAccountWithSessionByAccountKey = (
     return coinjoinAccounts.find(a => a.key === accountKey && a.session && !a.session.paused);
 };
 
-export const selectfeeRateMedianByAccountKey = (
+export const selectFeeRateMedianByAccountKey = (
     state: CoinjoinRootState,
     accountKey: AccountKey,
 ) => {
@@ -769,7 +761,7 @@ export const selectDefaultMaxMiningFeeByAccountKey = (
     state: CoinjoinRootState,
     accountKey: AccountKey,
 ) => {
-    const feeRateMedian = selectfeeRateMedianByAccountKey(state, accountKey);
+    const feeRateMedian = selectFeeRateMedianByAccountKey(state, accountKey);
     const maxMiningFeeModifier = selectMaxMiningFeeModifier(state);
     const maxMiningFeeConfig = selectMaxMiningFeeConfig(state); // value defined in message system config has priority over default value (but not over custom value set by user)
     return maxMiningFeeConfig ?? getMaxFeePerVbyte(feeRateMedian, maxMiningFeeModifier);
@@ -790,7 +782,8 @@ export const selectIsNothingToAnonymizeByAccountKey = (
 ) => {
     const minAllowedInputWithFee = selectMinAllowedInputWithFee(state, accountKey);
     const account = selectAccountByKey(state, accountKey);
-    const targetAnonymity = selectTargetAnonymityByAccountKey(state, accountKey) ?? 1;
+    const targetAnonymity =
+        selectTargetAnonymityByAccountKey(state, accountKey) ?? DEFAULT_TARGET_ANONYMITY;
 
     const anonymitySet = account?.addresses?.anonymitySet || {};
     const utxos = account?.utxo || [];
@@ -806,7 +799,8 @@ export const selectWeightedAnonymityByAccountKey = (
     accountKey: AccountKey,
 ) => {
     const account = selectAccountByKey(state, accountKey);
-    const targetAnonymity = selectTargetAnonymityByAccountKey(state, accountKey) || 0;
+    const targetAnonymity =
+        selectTargetAnonymityByAccountKey(state, accountKey) ?? DEFAULT_TARGET_ANONYMITY;
 
     const anonymitySet = account?.addresses?.anonymitySet || {};
     const utxos = account?.utxo || [];
@@ -827,7 +821,8 @@ export const selectRoundsNeededByAccountKey = (
     accountKey: AccountKey,
 ) => {
     const coinjoinAccount = selectCoinjoinAccountByKey(state, accountKey);
-    const targetAnonymity = selectTargetAnonymityByAccountKey(state, accountKey) || 0;
+    const targetAnonymity =
+        selectTargetAnonymityByAccountKey(state, accountKey) ?? DEFAULT_TARGET_ANONYMITY;
     const weightedAnonymity = selectWeightedAnonymityByAccountKey(state, accountKey);
     const defaultAnonymityGainPerRound = state.wallet.coinjoin.config.averageAnonymityGainPerRound;
 
@@ -935,16 +930,17 @@ export const selectCoinjoinSessionBlockerByAccountKey = (
 
 export const selectCurrentCoinjoinWheelStates = (state: CoinjoinRootState) => {
     const { notAnonymized } = selectCurrentCoinjoinBalanceBreakdown(state);
-    const session = selectCurrentCoinjoinSession(state);
     const { key, balance } = selectSelectedAccount(state) || {};
+    const coinjoinAccount = selectCoinjoinAccountByKey(state, key || '');
+    const coinjoinClient = selectCoinjoinClient(state, key || '');
     const sessionProgress = selectSessionProgressByAccountKey(state, key || '');
 
     const coinjoinSessionBlocker = selectCoinjoinSessionBlockerByAccountKey(state, key || '');
 
-    const { paused } = session || {};
+    const { paused } = coinjoinAccount?.session || {};
 
     // session states
-    const isSessionActive = !!session;
+    const isSessionActive = !!coinjoinAccount?.session;
     const isPaused = !!paused;
     const isLoading = coinjoinSessionBlocker === 'SESSION_STARTING';
 
@@ -953,6 +949,16 @@ export const selectCurrentCoinjoinWheelStates = (state: CoinjoinRootState) => {
     const isNonePrivate = sessionProgress === 0;
     const isAllPrivate = notAnonymized === '0';
     const isCoinjoinUneco = !!balance && new BigNumber(balance).lt(UNECONOMICAL_COINJOIN_THRESHOLD);
+
+    const agreedToLegalDocumentVersions = coinjoinAccount?.agreedToLegalDocumentVersions;
+    const latestTezorLegalDocumentVersion = state.wallet.coinjoin.config.legalDocumentsVersion;
+    const latestZkSNACKsLegalDocumentVersion =
+        coinjoinClient?.version?.legalDocumentsVersion ?? ZKSNACKS_LEGAL_DOCUMENTS_VERSION;
+
+    const isLegalDocumentConfirmed =
+        agreedToLegalDocumentVersions &&
+        agreedToLegalDocumentVersions.zkSNACKs === latestZkSNACKsLegalDocumentVersion &&
+        agreedToLegalDocumentVersions.trezor === latestTezorLegalDocumentVersion;
 
     // error state
     const isResumeBlockedByLastingIssue =
@@ -968,7 +974,42 @@ export const selectCurrentCoinjoinWheelStates = (state: CoinjoinRootState) => {
         isAllPrivate,
         isResumeBlockedByLastingIssue,
         isCoinjoinUneco,
+        isLegalDocumentConfirmed,
     };
+};
+
+// return tuple of arguments used by startCoinjoinSession action
+export const selectStartCoinjoinSessionArguments = (
+    state: CoinjoinRootState,
+    accountKey: AccountKey,
+) => {
+    const selectedAccount = selectSelectedAccount(state);
+    const coinjoinAccount = selectCoinjoinAccountByKey(state, accountKey);
+    const coinjoinClient = selectCoinjoinClient(state, accountKey);
+    const roundsNeeded = selectRoundsNeededByAccountKey(state, accountKey);
+    const roundsFailRateBuffer = selectRoundsFailRateBuffer(state);
+    const defaultMaxMiningFee = selectDefaultMaxMiningFeeByAccountKey(state, accountKey);
+    const targetAnonymity =
+        selectTargetAnonymityByAccountKey(state, accountKey) ?? DEFAULT_TARGET_ANONYMITY;
+
+    if (!selectedAccount || !coinjoinAccount || !coinjoinClient) return;
+
+    const maxFeePerKvbyte = (coinjoinAccount.setup?.maxFeePerVbyte ?? defaultMaxMiningFee) * 1000; // Transform to kvB.
+    const maxRounds = getMaxRounds(roundsNeeded, roundsFailRateBuffer);
+    const skipRounds = getSkipRounds(
+        coinjoinAccount.setup ? coinjoinAccount.setup.skipRounds : SKIP_ROUNDS_BY_DEFAULT,
+    );
+
+    return [
+        selectedAccount,
+        {
+            maxCoordinatorFeeRate: coinjoinClient?.coordinationFeeRate.rate,
+            maxFeePerKvbyte,
+            maxRounds,
+            skipRounds,
+            targetAnonymity,
+        },
+    ] as const;
 };
 
 export const selectCurrentSessionDeadlineInfo = (state: CoinjoinRootState) => {

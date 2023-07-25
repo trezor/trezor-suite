@@ -50,6 +50,7 @@ describe(`CoinjoinBackend methods`, () => {
         mempool: new CoinjoinMempoolController({ client, network: networks.regtest }),
         network: networks.regtest,
         onProgress,
+        onProgressInfo: () => {},
     });
 
     beforeEach(() => {

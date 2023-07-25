@@ -5,7 +5,8 @@ import { Canvas, ImageSVG, useSVG } from '@shopify/react-native-skia';
 import { networks } from '@suite-common/wallet-config';
 import { TokenAddress } from '@suite-common/wallet-types';
 
-import { CryptoIconName, cryptoIcons, TokenIconName, tokenIcons, genericTokenIcon } from '../icons';
+import { CryptoIconName, cryptoIcons } from '../icons';
+import { genericTokenIcon, TokenIconName, tokenIcons } from '../tokenIcons';
 
 export type CoinSymbol = CryptoIconName | TokenAddress;
 
