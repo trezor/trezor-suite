@@ -33,6 +33,10 @@ BuyFormContext.displayName = 'CoinmarketBuyContext';
 export const useCoinmarketBuyForm = ({
     selectedAccount,
 }: UseCoinmarketBuyFormProps): BuyFormContextValues => {
+    const buyInfo = useSelector(state => state.wallet.coinmarket.buy.buyInfo);
+    const exchangeCoinInfo = useSelector(
+        state => state.wallet.coinmarket.exchange.exchangeCoinInfo,
+    );
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -45,11 +49,6 @@ export const useCoinmarketBuyForm = ({
     const { saveDraft, getDraft, removeDraft } = useFormDraft<FormState>('coinmarket-buy');
     const draft = getDraft(account.key);
     const isDraft = !!draft;
-
-    const { buyInfo, exchangeCoinInfo } = useSelector(state => ({
-        buyInfo: state.wallet.coinmarket.buy.buyInfo,
-        exchangeCoinInfo: state.wallet.coinmarket.exchange.exchangeCoinInfo,
-    }));
 
     const { shouldSendInSats } = useBitcoinAmountUnit(account.symbol);
     const { defaultValues, defaultCountry, defaultCurrency } = useCoinmarketBuyFormDefaultValues(

@@ -26,7 +26,7 @@ const NoTransactions = styled.div`
     display: flex;
     justify-content: center;
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
 `;
 
 const StyledH2 = styled(H2)`
@@ -39,25 +39,22 @@ const TransactionCount = styled.div`
     margin-top: 6px;
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     font-size: ${variables.FONT_SIZE.SMALL};
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
 `;
 
 const AccountTransactions = () => {
-    const {
-        selectedAccount,
-        allTransactions,
-        buyProviders,
-        exchangeProviders,
-        sellProviders,
-        savingsProviders,
-    } = useSelector(state => ({
-        selectedAccount: state.wallet.selectedAccount,
-        allTransactions: state.wallet.coinmarket.trades,
-        buyProviders: state.wallet.coinmarket.buy.buyInfo?.providerInfos,
-        exchangeProviders: state.wallet.coinmarket.exchange.exchangeInfo?.providerInfos,
-        sellProviders: state.wallet.coinmarket.sell.sellInfo?.providerInfos,
-        savingsProviders: state.wallet.coinmarket.savings.savingsInfo?.providerInfos,
-    }));
+    const selectedAccount = useSelector(state => state.wallet.selectedAccount);
+    const allTransactions = useSelector(state => state.wallet.coinmarket.trades);
+    const buyProviders = useSelector(state => state.wallet.coinmarket.buy.buyInfo?.providerInfos);
+    const exchangeProviders = useSelector(
+        state => state.wallet.coinmarket.exchange.exchangeInfo?.providerInfos,
+    );
+    const sellProviders = useSelector(
+        state => state.wallet.coinmarket.sell.sellInfo?.providerInfos,
+    );
+    const savingsProviders = useSelector(
+        state => state.wallet.coinmarket.savings.savingsInfo?.providerInfos,
+    );
 
     if (selectedAccount.status !== 'loaded') {
         return null;

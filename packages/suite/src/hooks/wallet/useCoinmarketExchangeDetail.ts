@@ -11,12 +11,14 @@ import invityAPI from 'src/services/suite/invityAPI';
 export const useCoinmarketExchangeDetail = ({
     selectedAccount,
 }: UseCoinmarketExchangeDetailProps) => {
+    const invityServerEnvironment = useSelector(
+        state => state.suite.settings.debug.invityServerEnvironment,
+    );
+    const trades = useSelector(state => state.wallet.coinmarket.trades);
+    const transactionId = useSelector(state => state.wallet.coinmarket.exchange.transactionId);
+
     const { account } = selectedAccount;
-    const { invityServerEnvironment, trades, transactionId } = useSelector(state => ({
-        invityServerEnvironment: state.suite.settings.debug.invityServerEnvironment,
-        trades: state.wallet.coinmarket.trades,
-        transactionId: state.wallet.coinmarket.exchange.transactionId,
-    }));
+
     const exchangeTrade = trades.find(
         trade => trade.tradeType === 'exchange' && trade.key === transactionId,
     ) as TradeExchange;

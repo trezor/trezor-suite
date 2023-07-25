@@ -13,13 +13,10 @@ const StyledTrezorLink = styled(TrezorLink)`
 `;
 
 const PreOnboardingSetup = () => {
-    const { activeSubStep } = useOnboarding();
-    const { confirmed } = useSelector(state => ({
-        confirmed: state.analytics.confirmed,
-    }));
-
-    const { goToSubStep, rerun } = useOnboarding();
+    const confirmed = useSelector(state => state.analytics.confirmed);
     const recovery = useSelector(state => state.recovery);
+
+    const { activeSubStep, goToSubStep, rerun } = useOnboarding();
 
     const onConfirm = (trackingEnabled: boolean) => {
         if (trackingEnabled) {

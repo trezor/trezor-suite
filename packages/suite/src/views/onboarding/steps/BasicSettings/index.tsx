@@ -7,12 +7,13 @@ import { AdvancedSetup } from './AdvancedSetup';
 import { getIsTorLoading } from 'src/utils/suite/tor';
 
 const BasicSettings = () => {
-    const { noNetworkEnabled, isTorLoading } = useSelector(state => ({
-        noNetworkEnabled: !state.wallet.settings.enabledNetworks.length,
-        isTorLoading: getIsTorLoading(state.suite.torStatus),
-    }));
+    const enabledNetworks = useSelector(state => state.wallet.settings.enabledNetworks);
+    const torStatus = useSelector(state => state.suite.torStatus);
 
     const { goToNextStep } = useOnboarding();
+
+    const noNetworkEnabled = !enabledNetworks.length;
+    const isTorLoading = getIsTorLoading(torStatus);
 
     return (
         <BasicSettingsStepBox

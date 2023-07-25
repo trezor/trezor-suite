@@ -15,27 +15,19 @@ export const useSavingsOverview = ({
     selectedAccount,
 }: UseSavingsOverviewProps): SavingsOverviewContextValues => {
     const { account } = selectedAccount;
+
     const { navigateToSavingsSetupContinue } = useCoinmarketNavigation(account);
 
+    const trades = useSelector(state => state.wallet.coinmarket.trades);
+    const fiat = useSelector(state => state.wallet.fiat);
     const {
+        isSavingsTradeLoading,
         isWatchingKYCStatus,
         kycFinalStatus,
         savingsTrade,
-        selectedProvider,
         savingsTradePayments,
-        isSavingsTradeLoading,
-        trades,
-        fiat,
-    } = useSelector(state => ({
-        isWatchingKYCStatus: state.wallet.coinmarket.savings.isWatchingKYCStatus,
-        kycFinalStatus: state.wallet.coinmarket.savings.kycFinalStatus,
-        savingsTrade: state.wallet.coinmarket.savings.savingsTrade,
-        selectedProvider: state.wallet.coinmarket.savings.selectedProvider,
-        savingsTradePayments: state.wallet.coinmarket.savings.savingsTradePayments,
-        isSavingsTradeLoading: state.wallet.coinmarket.savings.isSavingsTradeLoading,
-        trades: state.wallet.coinmarket.trades,
-        fiat: state.wallet.fiat,
-    }));
+        selectedProvider,
+    } = useSelector(state => state.wallet.coinmarket.savings);
 
     const savingsCryptoSum = trades.reduce((previous: BigNumber, current: Trade) => {
         if (

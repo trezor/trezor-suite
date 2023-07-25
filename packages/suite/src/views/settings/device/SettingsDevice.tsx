@@ -40,9 +40,8 @@ const deviceSettingsUnavailable = (device?: TrezorDevice, transport?: Partial<Tr
 
 export const SettingsDevice = () => {
     const { device, isLocked } = useDevice();
-    const { transport } = useSelector(state => ({
-        transport: state.suite.transport,
-    }));
+    const transport = useSelector(state => state.suite.transport);
+
     const deviceUnavailable = !device?.features;
     const isDeviceLocked = isLocked();
     const bootloaderMode = device?.mode === 'bootloader';

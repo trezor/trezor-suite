@@ -14,8 +14,8 @@ const LogWrapper = styled.pre`
     height: 380px;
     width: 100%;
     overflow: auto;
-    background-color: ${props => props.theme.BG_LIGHT_GREY};
-    color: ${props => props.theme.TYPE_DARK_GREY};
+    background-color: ${({ theme }) => theme.BG_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
     font-size: ${variables.FONT_SIZE.TINY};
     text-align: left;
     word-break: break-all;
@@ -46,9 +46,7 @@ export const ApplicationLog = ({ onCancel }: ApplicationLogProps) => {
     const [hideSensitiveInfo, setHideSensitiveInfo] = useState(false);
     const logs = useSelector(selectLogs);
 
-    const { state } = useSelector(state => ({
-        state,
-    }));
+    const state = useSelector(state => state);
 
     const actionLog = getApplicationLog(logs, hideSensitiveInfo);
     const applicationInfo = getApplicationInfo(state, hideSensitiveInfo);

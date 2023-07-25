@@ -4,9 +4,7 @@ import { buildOption, getDefaultCountry } from 'src/utils/wallet/coinmarket/coin
 import { P2pInfo } from 'src/actions/wallet/coinmarketP2pActions';
 
 export const useCoinmarketP2pFormDefaultValues = (p2pInfo?: P2pInfo) => {
-    const { localCurrency } = useSelector(state => ({
-        localCurrency: state.wallet.settings.localCurrency,
-    }));
+    const localCurrency = useSelector(state => state.wallet.settings.localCurrency);
 
     const country = p2pInfo?.country;
     const suggestedFiatCurrency = p2pInfo?.suggestedFiatCurrency || localCurrency;

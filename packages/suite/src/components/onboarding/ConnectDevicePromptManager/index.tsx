@@ -46,9 +46,8 @@ export const ConnectDevicePromptManager = ({
     className,
     children,
 }: ConnectDevicePromptManagerProps) => {
-    const { transport } = useSelector(state => ({
-        transport: state.suite.transport,
-    }));
+    const transport = useSelector(state => state.suite.transport);
+
     const deviceStatus = getConnectedDeviceStatus(device);
     const isDetectingDevice =
         (device && device.features && device.connected) || deviceStatus === 'unreadable';

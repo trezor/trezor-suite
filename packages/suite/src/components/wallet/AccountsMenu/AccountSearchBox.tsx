@@ -74,10 +74,8 @@ export const AccountSearchBox = (props: AccountSearchBoxProps) => {
     const theme = useTheme();
     const { translationString } = useTranslation();
     const { coinFilter, setCoinFilter, searchString, setSearchString } = useAccountSearch();
-    const { enabledNetworks, device } = useSelector(state => ({
-        enabledNetworks: state.wallet.settings.enabledNetworks,
-        device: state.suite.device,
-    }));
+    const enabledNetworks = useSelector(state => state.wallet.settings.enabledNetworks);
+    const device = useSelector(state => state.suite.device);
 
     const unavailableCapabilities = device?.unavailableCapabilities ?? {};
     const supportedNetworks = enabledNetworks.filter(symbol => !unavailableCapabilities[symbol]);

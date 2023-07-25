@@ -77,10 +77,8 @@ type TransactionDetailProps = {
 };
 
 export const TransactionDetail = ({ tx, rbfForm, onCancel }: TransactionDetailProps) => {
-    const { blockchain, transactions } = useSelector(state => ({
-        blockchain: state.wallet.blockchain[tx.symbol],
-        transactions: state.wallet.transactions.transactions,
-    }));
+    const blockchain = useSelector(state => state.wallet.blockchain[tx.symbol]);
+    const transactions = useSelector(state => state.wallet.transactions.transactions);
 
     const [section, setSection] = useState<'CHANGE_FEE' | 'DETAILS'>(
         rbfForm ? 'CHANGE_FEE' : 'DETAILS',

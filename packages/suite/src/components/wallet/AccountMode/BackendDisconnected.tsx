@@ -57,11 +57,9 @@ const DisconnectedNotification = ({
 };
 
 const Disconnected = () => {
-    const { blockchain, selectedAccount, online } = useSelector(state => ({
-        blockchain: state.wallet.blockchain,
-        selectedAccount: state.wallet.selectedAccount,
-        online: state.suite.online,
-    }));
+    const blockchain = useSelector(state => state.wallet.blockchain);
+    const selectedAccount = useSelector(state => state.wallet.selectedAccount);
+    const online = useSelector(state => state.suite.online);
 
     if (!online) return null;
 

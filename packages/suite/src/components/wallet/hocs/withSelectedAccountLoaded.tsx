@@ -19,9 +19,7 @@ export const withSelectedAccountLoaded = (
     const { title } = options;
     const displayName = WrappedComponent.displayName || WrappedComponent.name || 'Component';
     const Component = () => {
-        const { selectedAccount } = useSelector(state => ({
-            selectedAccount: state.wallet.selectedAccount,
-        }));
+        const selectedAccount = useSelector(state => state.wallet.selectedAccount);
 
         if (selectedAccount.status !== 'loaded') {
             return <WalletLayout title={title} account={selectedAccount} />;

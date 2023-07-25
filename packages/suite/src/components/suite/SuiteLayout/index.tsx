@@ -57,8 +57,8 @@ const Columns = styled.div`
 const AppWrapper = styled.div`
     display: flex;
     flex: 1;
-    color: ${props => props.theme.TYPE_DARK_GREY};
-    background: ${props => props.theme.BG_GREY};
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
+    background: ${({ theme }) => theme.BG_GREY};
     flex-direction: column;
     overflow-x: auto;
     overflow-y: scroll;
@@ -94,11 +94,9 @@ type SuiteLayoutProps = {
 };
 
 export const SuiteLayout = ({ children }: SuiteLayoutProps) => {
-    const { url, anchor, initialRun } = useSelector(state => ({
-        url: state.router.url,
-        anchor: state.router.anchor,
-        initialRun: state.suite.flags.initialRun,
-    }));
+    const url = useSelector(state => state.router.url);
+    const anchor = useSelector(state => state.router.anchor);
+    const initialRun = useSelector(state => state.suite.flags.initialRun);
 
     const { isMobileLayout, layoutSize } = useLayoutSize();
     const { isGuideOpen, isModalOpen } = useGuide();

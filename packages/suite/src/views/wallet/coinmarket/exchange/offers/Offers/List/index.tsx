@@ -76,9 +76,8 @@ const List = ({ quotes, type }: Props) => {
         quotesRequest,
         account: { symbol },
     } = useCoinmarketExchangeOffersContext();
-    const { fee } = useSelector(state => ({
-        fee: state.wallet.coinmarket.composedTransactionInfo.composed?.fee,
-    }));
+    const fee = useSelector(state => state.wallet.coinmarket.composedTransactionInfo.composed?.fee);
+
     if (!quotesRequest || !quotes) return null;
 
     return (

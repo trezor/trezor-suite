@@ -36,11 +36,9 @@ const getForegroundAppAction = (route: ForegroundAppRoute, params: Partial<Modal
 
 export const usePreferredModal = () => {
     const { getDiscoveryStatus } = useDiscovery();
-    const { route, params, modal } = useSelector(state => ({
-        route: state.router.route,
-        params: state.router.params as Partial<ModalAppParams>,
-        modal: state.modal,
-    }));
+    const route = useSelector(state => state.router.route);
+    const params = useSelector(state => state.router.params as Partial<ModalAppParams>);
+    const modal = useSelector(state => state.modal);
 
     if (route && isForegroundApp(route) && hasPriority(route)) {
         return getForegroundAppAction(route, params);

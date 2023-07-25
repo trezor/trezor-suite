@@ -60,9 +60,7 @@ const MotionGuide = styled(motion.div)`
 `;
 
 export const GuidePanel = () => {
-    const { activeView } = useSelector(state => ({
-        activeView: state.guide.view,
-    }));
+    const activeView = useSelector(state => state.guide.view);
 
     const { isGuideOpen, closeGuide } = useGuide();
 

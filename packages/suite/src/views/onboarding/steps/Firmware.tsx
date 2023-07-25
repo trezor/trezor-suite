@@ -15,9 +15,7 @@ import { DeviceTutorial } from 'src/components/firmware/DeviceTutorial';
 import { selectOnboardingTutorialStatus } from 'src/reducers/onboarding/onboardingReducer';
 
 const FirmwareStep = () => {
-    const { device } = useSelector(state => ({
-        device: state.suite.device,
-    }));
+    const device = useSelector(state => state.suite.device);
     const isTutorialOffered = useSelector(selectOnboardingTutorialStatus);
     const { goToNextStep, updateAnalytics } = useOnboarding();
     const {
