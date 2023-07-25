@@ -28,6 +28,14 @@ export const isTaprootTx = (tx: VinVoutAddressTx, network: Network) =>
 export const doesTxContainAddress = (address: string) => (tx: VinVoutAddressTx) =>
     doesAnyAddressFulfill(tx, addr => addr === address);
 
+export const isDoublespend = (
+    { vin: vinA }: { vin: VinVout[] },
+    { vin: vinB }: { vin: VinVout[] },
+) =>
+    vinA.some(({ txid: txidA, vout: voutA = 0 }) =>
+        vinB.some(({ txid: txidB, vout: voutB = 0 }) => txidA === txidB && voutA === voutB),
+    );
+
 export const deriveAddresses = (
     prederived: PrederivedAddress[] = [],
     ...[descriptor, type, from, count, network]: Parameters<typeof deriveNewAddresses>
