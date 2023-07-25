@@ -59,6 +59,14 @@ const Text = styled.div`
 
 const StyledTooltip = styled(Tooltip)`
     display: inline-block;
+
+    ${variables.SCREEN_QUERY.MOBILE} {
+        pointer-events: none;
+
+        span {
+            text-decoration: none;
+        }
+    }
 `;
 
 const OuterActions = styled.div`
@@ -90,7 +98,11 @@ const SecurityCheck = () => {
                     id="TR_ONBOARDING_DEVICE_CHECK_1"
                     values={{
                         strong: chunks => (
-                            <StyledTooltip rich content={<Hologram device={device} />}>
+                            <StyledTooltip
+                                placement="left"
+                                rich
+                                content={<Hologram device={device} />}
+                            >
                                 <Underline>{chunks}</Underline>
                             </StyledTooltip>
                         ),

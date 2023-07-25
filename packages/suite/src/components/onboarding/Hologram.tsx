@@ -11,6 +11,7 @@ import { getPackagingUrl } from 'src/utils/suite/device';
 const Wrapper = styled.div`
     display: flex;
     flex-direction: column;
+    width: 300px;
 `;
 
 const HologramHeading = styled.span`
@@ -30,7 +31,9 @@ const AnimationWrapper = styled.div`
 `;
 
 const StyledWarning = styled(Warning)`
-    font-size: ${variables.FONT_SIZE.SMALL};
+    width: calc(100% + 16px);
+    margin: 0px -8px;
+    font-size: ${variables.FONT_SIZE.TINY};
 `;
 
 interface HologramProps {
