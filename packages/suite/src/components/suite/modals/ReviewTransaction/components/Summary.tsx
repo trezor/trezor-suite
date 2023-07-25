@@ -133,6 +133,13 @@ const TxDetailsButton = styled.button<{ detailsOpen: boolean }>`
         detailsOpen && darken(theme.HOVER_DARKEN_FILTER, theme.STROKE_LIGHT_GREY)};
     cursor: pointer;
 
+    ${variables.MEDIA_QUERY.DARK_THEME} {
+        background: ${({ theme, detailsOpen }) =>
+            detailsOpen
+                ? darken(theme.HOVER_DARKEN_FILTER, theme.STROKE_LIGHT_GREY)
+                : theme.BG_LIGHT_GREY};
+    }
+
     :hover {
         background: ${({ theme }) => theme.STROKE_GREY};
     }
