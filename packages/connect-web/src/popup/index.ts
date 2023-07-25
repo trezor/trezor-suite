@@ -112,6 +112,8 @@ export class PopupManager extends EventEmitter {
             if (this.settings.env === 'webextension') {
                 chrome.tabs.get(this.popupWindow.id, tab => {
                     if (!tab) {
+                        // If no reference to popup window, it was closed by user or by this.close() method.
+                        this.emit(POPUP.CLOSED);
                         this.clear();
                     }
                 });
