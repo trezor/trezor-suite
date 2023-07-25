@@ -222,9 +222,6 @@ const init = async (payload: PopupInit['payload']) => {
         payload.systemInfo = getSystemInfo(config.supportedBrowsers);
     }
 
-    // reset loading hash
-    window.location.hash = '';
-
     const isBrowserSupported = await view.initBrowserView(payload.systemInfo);
     if (!isBrowserSupported) {
         return;
