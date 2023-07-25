@@ -1023,7 +1023,7 @@
   "TR_TESTNET_COINS": "Pieces en testnet",
   "TR_TESTNET_COINS_DESCRIPTION": "Ces pièces ne sont utilisées que pour les tests et ne contiennent aucune valeur.",
   "TR_TESTNET_COINS_LABEL": "Piece de test",
-  "TR_THE_PIN_LAYOUT_IS_DISPLAYED": "La disposition du code PIN est affichée sur votre Trezor.",
+  "TR_THE_PIN_LAYOUT_IS_DISPLAYED": "L'écran <b>{deviceLabel}</b> affiche la disposition du code PIN.",
   "TR_THIS_HIDDEN_WALLET_IS_EMPTY": "Ce portefeuille caché est vide. Pour vous assurer que vous êtes bien dans le portefeuille correct, confirmez la phrase secrète",
   "TR_THIS_HIDDEN_WALLET_IS_EMPTY_SOURCE": "Ce portefeuille caché est vide. Pour vous assurer que vous êtes bien dans le portefeuille correct, sélectionnez la source de la phrase secrète",
   "TR_THIS_INSTANCE_IS_BLOCKING": "Cette instance bloque une mise à jour de la base de données",

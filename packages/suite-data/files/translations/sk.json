@@ -649,7 +649,7 @@
   "TR_TESTNET_COINS": "Mince Testnet",
   "TR_TESTNET_COINS_DESCRIPTION": "Tieto mince sa používajú len na testovanie a nemajú žiadnu hodnotu.",
   "TR_TESTNET_COINS_LABEL": "TEST COIN",
-  "TR_THE_PIN_LAYOUT_IS_DISPLAYED": "Na obrazovke zariadenia Trezor si pozrite rozloženie klávesnice.",
+  "TR_THE_PIN_LAYOUT_IS_DISPLAYED": "Na obrazovke zariadenia <b>{deviceLabel}</b> si pozrite rozloženie klávesnice.",
   "TR_THIS_HIDDEN_WALLET_IS_EMPTY": "Táto skrytá peňaženka je prázdna. Ak sa chcete uistiť, že ste v správnej skrytej peňaženke, zadajte prístupovú frázu znova.",
   "TR_THIS_HIDDEN_WALLET_IS_EMPTY_SOURCE": "Táto skrytá peňaženka je prázdna. Ak sa chcete uistiť, že ste v správnej skrytej peňaženke, zadajte znova prístupovú frázu na Trezor.",
   "TR_THIS_INSTANCE_IS_BLOCKING": "Táto inštancia blokuje aktualizáciu databázy",
