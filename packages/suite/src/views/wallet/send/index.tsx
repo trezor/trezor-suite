@@ -14,7 +14,7 @@ import { ReviewButton } from './components/ReviewButton';
 import Raw from './components/Raw';
 import {
     selectTargetAnonymityByAccountKey,
-    selectBlockedUtxosByAccountKey,
+    selectRegisteredUtxosByAccountKey,
 } from 'src/reducers/wallet/coinjoinReducer';
 
 const StyledCard = styled(Card)`
@@ -44,7 +44,7 @@ const SendLoaded = ({ children, selectedAccount }: SendLoadedProps) => {
         sendRaw: state.wallet.send.sendRaw,
         metadataEnabled: state.metadata.enabled && !!state.metadata.provider,
         targetAnonymity: selectTargetAnonymityByAccountKey(state, selectedAccount.account.key),
-        prison: selectBlockedUtxosByAccountKey(state, selectedAccount.account.key),
+        prison: selectRegisteredUtxosByAccountKey(state, selectedAccount.account.key),
     }));
 
     const sendContextValues = useSendForm({ ...props, selectedAccount });
