@@ -2,19 +2,30 @@ import React from 'react';
 import { desktopApi } from '@trezor/suite-desktop-api';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from 'src/components/suite/Settings';
 import { Translation } from 'src/components/suite';
-import * as storageActions from 'src/actions/suite/storageActions';
-import * as routerActions from 'src/actions/suite/routerActions';
-import { useActions } from 'src/hooks/suite';
+import { removeDatabase } from 'src/actions/suite/storageActions';
+import { goto } from 'src/actions/suite/routerActions';
+import { useDispatch } from 'src/hooks/suite';
 import { useAnchor } from 'src/hooks/suite/useAnchor';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { reloadApp } from 'src/utils/suite/reload';
 
 export const ClearStorage = () => {
-    const { removeDatabase, goto } = useActions({
-        removeDatabase: storageActions.removeDatabase,
-        goto: routerActions.goto,
-    });
+    const dispatch = useDispatch();
+
     const { anchorRef, shouldHighlight } = useAnchor(SettingsAnchor.ClearStorage);
+
+    const hanldeClick = async () => {
+        localStorage.clear();
+        dispatch(removeDatabase());
+        if (desktopApi.available) {
+            // Reset the desktop-specific store.
+            desktopApi.clearStore();
+        } else {
+            // redirect to / and reload the web
+            await dispatch(goto('suite-index'));
+        }
+        reloadApp();
+    };
 
     return (
         <SectionItem
@@ -28,18 +39,7 @@ export const ClearStorage = () => {
             />
             <ActionColumn>
                 <ActionButton
-                    onClick={async () => {
-                        localStorage.clear();
-                        removeDatabase();
-                        if (desktopApi.available) {
-                            // Reset the desktop-specific store.
-                            desktopApi.clearStore();
-                        } else {
-                            // redirect to / and reload the web
-                            await goto('suite-index');
-                        }
-                        reloadApp();
-                    }}
+                    onClick={hanldeClick}
                     variant="secondary"
                     data-test="@settings/reset-app-button"
                 >

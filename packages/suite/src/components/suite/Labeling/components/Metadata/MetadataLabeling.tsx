@@ -2,8 +2,8 @@ import React, { useEffect, useState, useMemo, useRef } from 'react';
 import styled from 'styled-components';
 
 import { Button, Icon, useTheme } from '@trezor/components';
-import { useActions, useDiscovery, useSelector } from 'src/hooks/suite';
-import * as metadataActions from 'src/actions/suite/metadataActions';
+import { useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
+import { addMetadata, init, setEditing } from 'src/actions/suite/metadataActions';
 import { MetadataAddPayload } from 'src/types/suite/metadata';
 import { Translation } from 'src/components/suite';
 import { Props, ExtendedProps, DropdownMenuItem } from './definitions';
@@ -59,11 +59,11 @@ const SuccessButton = styled(Button)`
     cursor: wait;
     margin-left: 12px;
     width: auto;
-    background-color: ${props => props.theme.BG_LIGHT_GREEN};
-    color: ${props => props.theme.BG_GREEN};
+    background-color: ${({ theme }) => theme.BG_LIGHT_GREEN};
+    color: ${({ theme }) => theme.BG_GREEN};
     :hover {
-        color: ${props => props.theme.BG_GREEN};
-        background-color: ${props => props.theme.BG_LIGHT_GREEN};
+        color: ${({ theme }) => theme.BG_GREEN};
+        background-color: ${({ theme }) => theme.BG_LIGHT_GREEN};
     }
 `;
 
@@ -206,15 +206,12 @@ const getLocalizedActions = (type: MetadataAddPayload['type']) => {
  */
 export const MetadataLabeling = (props: Props) => {
     const metadata = useSelector(state => state.metadata);
+    const dispatch = useDispatch();
     const { isDiscoveryRunning, device } = useDiscovery();
     const [showSuccess, setShowSuccess] = useState(false);
     const [pending, setPending] = useState(false);
-    const { addMetadata, init, setEditing } = useActions({
-        addMetadata: metadataActions.addMetadata,
-        init: metadataActions.init,
-        setEditing: metadataActions.setEditing,
-    });
     const theme = useTheme();
+
     const l10nLabelling = getLocalizedActions(props.payload.type);
     const dataTestBase = `@metadata/${props.payload.type}/${props.payload.defaultValue}`;
     const actionButtonsDisabled = isDiscoveryRunning || pending;
@@ -248,9 +245,9 @@ export const MetadataLabeling = (props: Props) => {
             !isLabelingAvailable
         ) {
             // provide force=true argument (user wants to enable metadata)
-            init(true);
+            dispatch(init(true));
         }
-        setEditing(props.payload.defaultValue);
+        dispatch(setEditing(props.payload.defaultValue));
     };
 
     let dropdownItems: DropdownMenuItem[] = [
@@ -266,13 +263,16 @@ export const MetadataLabeling = (props: Props) => {
         dropdownItems = [...dropdownItems, ...props.dropdownOptions];
     }
 
+    const handleBlur = () => dispatch(setEditing(undefined));
     const onSubmit = async (value: string | undefined) => {
         isSubscribedToSubmitResult.current = props.payload.defaultValue;
         setPending(true);
-        const result = await addMetadata({
-            ...props.payload,
-            value: value || undefined,
-        });
+        const result = await dispatch(
+            addMetadata({
+                ...props.payload,
+                value: value || undefined,
+            }),
+        );
         // props.payload.defaultValue might change during next render, this comparison
         // ensures that success state does not appear if it is no longer relevant
         if (isSubscribedToSubmitResult.current === props.payload.defaultValue) {
@@ -327,7 +327,7 @@ export const MetadataLabeling = (props: Props) => {
                     <ButtonLikeLabelWithDropdown
                         editActive={editActive}
                         onSubmit={props.onSubmit || onSubmit}
-                        onBlur={() => setEditing(undefined)}
+                        onBlur={handleBlur}
                         data-test={dataTestBase}
                         {...props}
                         dropdownOptions={dropdownItems}
@@ -358,7 +358,7 @@ export const MetadataLabeling = (props: Props) => {
                     <TextLikeLabel
                         editActive={editActive}
                         onSubmit={props.onSubmit || onSubmit}
-                        onBlur={() => setEditing(undefined)}
+                        onBlur={handleBlur}
                         data-test={dataTestBase}
                         {...props}
                     />

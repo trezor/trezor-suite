@@ -2,25 +2,19 @@ import React, { useState } from 'react';
 
 import { Button, Switch } from '@trezor/components';
 import { ActionColumn, SectionItem, TextColumn } from 'src/components/suite/Settings';
-import { useFirmware, useActions, useSelector } from 'src/hooks/suite';
-import * as suiteActions from 'src/actions/suite/suiteActions';
+import { useDispatch, useFirmware, useSelector } from 'src/hooks/suite';
+import { setDebugMode } from 'src/actions/suite/suiteActions';
 
 export const CheckFirmwareAuthenticity = () => {
     const [inProgress, setInProgress] = useState(false);
 
     const { checkFirmwareAuthenticity } = useFirmware();
-    const { setDebugMode } = useActions({
-        setDebugMode: suiteActions.setDebugMode,
-    });
-    const { debug } = useSelector(state => ({
-        debug: state.suite.settings.debug,
-    }));
 
-    const onChangeRegularCheck = (state?: boolean) => {
-        setDebugMode({
-            checkFirmwareAuthenticity: state,
-        });
-    };
+    const debug = useSelector(state => state.suite.settings.debug);
+    const dispatch = useDispatch();
+
+    const onChangeRegularCheck = (state?: boolean) =>
+        dispatch(setDebugMode({ checkFirmwareAuthenticity: state }));
 
     const onCheckFirmwareAuthenticity = async () => {
         setInProgress(true);

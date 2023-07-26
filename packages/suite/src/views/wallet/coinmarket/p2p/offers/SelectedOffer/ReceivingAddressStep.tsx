@@ -1,11 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
-import { useActions, useDevice } from 'src/hooks/suite';
+import { useDevice, useDispatch } from 'src/hooks/suite';
 import { Translation } from 'src/components/suite';
-import * as routerActions from 'src/actions/suite/routerActions';
+import { goto } from 'src/actions/suite/routerActions';
 import { Button, variables } from '@trezor/components';
 import { useCoinmarketP2pOffersContext } from 'src/hooks/wallet/useCoinmarketP2pOffers';
-import * as receiveActions from 'src/actions/wallet/receiveActions';
+import { showAddress } from 'src/actions/wallet/receiveActions';
 import { getUnusedAddressFromAccount } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 
 const Wrapper = styled.div`
@@ -54,7 +54,7 @@ const Overlay = styled.div`
     background-image: linear-gradient(
         to right,
         rgba(0, 0, 0, 0) 0%,
-        ${props => props.theme.BG_WHITE} 120px
+        ${({ theme }) => theme.BG_WHITE} 120px
     );
 `;
 
@@ -80,18 +80,18 @@ export const ReceivingAddressStep = () => {
     const { isLocked } = useDevice();
     const { providers, account, selectedQuote, callInProgress, goToProvider, providerVisited } =
         useCoinmarketP2pOffersContext();
-    const { address: unusedAddress, path } = getUnusedAddressFromAccount(account);
+    const dispatch = useDispatch();
 
-    const { goto, showAddress } = useActions({
-        goto: routerActions.goto,
-        showAddress: receiveActions.showAddress,
-    });
+    const { address: unusedAddress, path } = getUnusedAddressFromAccount(account);
 
     if (!providers || !selectedQuote || !unusedAddress) {
         return null;
     }
 
     const providerName = providers[selectedQuote.provider].companyName;
+
+    const handleAddressReveal = () => dispatch(showAddress(path, unusedAddress));
+    const goToP2p = () => dispatch(goto('wallet-coinmarket-p2p', { preserveParams: true }));
 
     return (
         <Wrapper>
@@ -110,7 +110,7 @@ export const ReceivingAddressStep = () => {
                             icon="TREZOR_LOGO"
                             isDisabled={isLocked()}
                             isLoading={isLocked()}
-                            onClick={() => showAddress(path, unusedAddress)}
+                            onClick={handleAddressReveal}
                         >
                             <Translation id="TR_P2P_REVEAL_ADDRESS" />
                         </StyledButton>
@@ -136,9 +136,7 @@ export const ReceivingAddressStep = () => {
                     <Translation id="TR_P2P_GO_TO_PROVIDER" values={{ providerName }} />
                 </StyledButton>
                 {providerVisited && (
-                    <StyledButton
-                        onClick={() => goto('wallet-coinmarket-p2p', { preserveParams: true })}
-                    >
+                    <StyledButton onClick={goToP2p}>
                         <Translation id="TR_P2P_BACK_TO_ACCOUNT" />
                     </StyledButton>
                 )}

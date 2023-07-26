@@ -1,6 +1,6 @@
-import * as routerActions from 'src/actions/suite/routerActions';
+import { goto } from 'src/actions/suite/routerActions';
 import { MAX_WIDTH } from 'src/constants/suite/layout';
-import { useActions, useSelector } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { AccountLabeling } from 'src/components/suite';
 import { Icon, variables } from '@trezor/components';
 import React from 'react';
@@ -11,8 +11,8 @@ const Wrapper = styled.div`
     display: flex;
     width: 100%;
     justify-content: center;
-    background: ${props => props.theme.BG_LIGHT_GREY};
-    border-bottom: 1px solid ${props => props.theme.STROKE_GREY};
+    background: ${({ theme }) => theme.BG_LIGHT_GREY};
+    border-bottom: 1px solid ${({ theme }) => theme.STROKE_GREY};
 `;
 
 const Content = styled.div`
@@ -33,7 +33,7 @@ const Left = styled.div`
     display: flex;
     flex: 1;
     align-items: center;
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
 `;
 
@@ -55,27 +55,24 @@ const StyledIcon = styled(Icon)`
     margin-right: 12px;
 `;
 
-interface Props {
+interface CoinmarketTopPanelProps {
     backRoute: Route['name'];
 }
 
-const CoinmarketTopPanel = ({ backRoute }: Props) => {
-    const { goto } = useActions({
-        goto: routerActions.goto,
-    });
-
+const CoinmarketTopPanel = ({ backRoute }: CoinmarketTopPanelProps) => {
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
+    const dispatch = useDispatch();
+
     if (selectedAccount.status !== 'loaded') return null;
     const { account } = selectedAccount;
+
+    const goBack = () => dispatch(goto(backRoute, { params: selectedAccount.params }));
 
     return (
         <Wrapper>
             <Content>
                 <Left>
-                    <Back
-                        onClick={() => goto(backRoute, { params: selectedAccount.params })}
-                        data-test="@coinmarket/back"
-                    >
+                    <Back onClick={goBack} data-test="@coinmarket/back">
                         <StyledIcon icon="ARROW_LEFT" />
                         <AccountLabeling account={account} />
                     </Back>

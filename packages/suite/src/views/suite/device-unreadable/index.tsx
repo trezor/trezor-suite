@@ -1,20 +1,23 @@
 // TODO: remove whole file, replaced by @suite-components/PrerequisitesGuide/components/DeviceUnreadable
 
 import React from 'react';
-import * as routerActions from 'src/actions/suite/routerActions';
+import { goto } from 'src/actions/suite/routerActions';
 import { Button } from '@trezor/components';
 import { DeviceInvalidModeLayout, Translation } from 'src/components/suite';
-import { useActions } from 'src/hooks/suite';
+import { useDispatch } from 'src/hooks/suite';
 
 export const DeviceUnreadable = () => {
-    const { goto } = useActions({ goto: routerActions.goto });
+    const dispatch = useDispatch();
+
+    const handleClick = () => dispatch(goto('suite-bridge'));
+
     return (
         <DeviceInvalidModeLayout
             data-test="@device-invalid-mode/unreadable"
             title={<Translation id="TR_UNREADABLE" />}
             text={<Translation id="TR_UNREADABLE_EXPLAINED" />}
             resolveButton={
-                <Button onClick={() => goto('suite-bridge')}>
+                <Button onClick={handleClick}>
                     <Translation id="TR_SEE_DETAILS" />
                 </Button>
             }

@@ -3,7 +3,7 @@ import { Firmware } from 'src/views/firmware';
 import { FirmwareCustom } from 'src/views/firmware/FirmwareCustom';
 import { Recovery } from 'src/views/recovery';
 import { Backup } from 'src/views/backup';
-import { useActions } from 'src/hooks/suite';
+import { useDispatch } from 'src/hooks/suite';
 import { closeModalApp } from 'src/actions/suite/routerActions';
 import { InstallBridge } from 'src/views/suite/bridge';
 import { UdevRules } from 'src/views/suite/udev';
@@ -46,16 +46,15 @@ type ForegroundAppModalProps = {
 
 /** Modals (foreground applications) initiated by redux state.router.route */
 export const ForegroundAppModal = ({ app, cancelable }: ForegroundAppModalProps) => {
-    const actions = useActions({
-        closeModalApp,
-    });
+    const dispatch = useDispatch();
+
+    const onCancel = () => dispatch(closeModalApp());
 
     // check if current route is a "foreground application" marked as isForegroundApp in router config
     // display it above requested physical route (route in url) or as fullscreen app
     // pass common params to "foreground application"
     // every app is dealing with "prerequisites" and other params (like action modals) on they own.
     const ForegroundApp = getForegroundApp(app);
-    return (
-        ForegroundApp && <ForegroundApp cancelable={cancelable} onCancel={actions.closeModalApp} />
-    );
+
+    return ForegroundApp && <ForegroundApp cancelable={cancelable} onCancel={onCancel} />;
 };

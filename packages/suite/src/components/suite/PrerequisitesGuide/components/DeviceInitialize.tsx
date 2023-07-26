@@ -1,26 +1,21 @@
 import React from 'react';
 import { Button } from '@trezor/components';
 import { Translation, TroubleshootingTips } from 'src/components/suite';
-import { useActions } from 'src/hooks/suite';
-import * as routerActions from 'src/actions/suite/routerActions';
-import * as onboardingActions from 'src/actions/onboarding/onboardingActions';
+import { useDispatch } from 'src/hooks/suite';
+import { goto } from 'src/actions/suite/routerActions';
+import { enableOnboardingReducer, resetOnboarding } from 'src/actions/onboarding/onboardingActions';
 
 export const DeviceInitialize = () => {
-    const { goto, resetOnboarding, enableOnboardingReducer } = useActions({
-        // todo: there could be an utility action wrapping all these 3
-        goto: routerActions.goto,
-        resetOnboarding: onboardingActions.resetOnboarding,
-        enableOnboardingReducer: onboardingActions.enableOnboardingReducer,
-    });
+    const dispatch = useDispatch();
 
     const handleCtaClick = (e: React.MouseEvent) => {
         e.stopPropagation();
         // in case this prerequisite (device-initialize) is displayed inside onboarding app we need to reset onboarding state
-        resetOnboarding();
+        dispatch(resetOnboarding());
         // and resetting state disables onboarding reducer so we need to enable it again
-        enableOnboardingReducer(true);
+        dispatch(enableOnboardingReducer(true));
 
-        goto('onboarding-index');
+        dispatch(goto('onboarding-index'));
     };
 
     return (

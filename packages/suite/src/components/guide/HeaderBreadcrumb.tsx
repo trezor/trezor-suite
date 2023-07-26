@@ -3,8 +3,8 @@ import styled from 'styled-components';
 import { darken } from 'polished';
 import { analytics, EventType } from '@trezor/suite-analytics';
 
-import { useActions, useSelector } from 'src/hooks/suite';
-import * as guideActions from 'src/actions/suite/guideActions';
+import { useDispatch, useSelector } from 'src/hooks/suite';
+import { openNode, setView } from 'src/actions/suite/guideActions';
 import { variables } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 import TrezorLink from 'src/components/suite/TrezorLink';
@@ -44,21 +44,17 @@ const CategoryLink = styled(TrezorLink)`
 `;
 
 export const HeaderBreadcrumb = () => {
-    const { language, indexNode, currentNode } = useSelector(state => ({
-        language: state.suite.settings.language,
-        indexNode: state.guide.indexNode,
-        currentNode: state.guide.currentNode,
-    }));
+    const language = useSelector(state => state.suite.settings.language);
+    const indexNode = useSelector(state => state.guide.indexNode);
+    const currentNode = useSelector(state => state.guide.currentNode);
+    const dispatch = useDispatch();
 
-    const { setView, openNode } = useActions({
-        setView: guideActions.setView,
-        openNode: guideActions.openNode,
-    });
+    const goToDashboard = () => dispatch(setView('GUIDE_DEFAULT'));
 
     // if no parent available, offer navigation to guide dashboard
     const FallbackBreadcrumb = (
         <BreadcrumbWrapper>
-            <CategoryLink onClick={() => setView('GUIDE_DEFAULT')}>
+            <CategoryLink onClick={goToDashboard}>
                 <Translation id="TR_GUIDE_DASHBOARD" />
             </CategoryLink>
         </BreadcrumbWrapper>
@@ -73,7 +69,7 @@ export const HeaderBreadcrumb = () => {
     if (!parentNodes.length) return FallbackBreadcrumb;
 
     const navigateToCategory = (node: GuideCategory) => {
-        openNode(node);
+        dispatch(openNode(node));
         analytics.report({
             type: EventType.GuideHeaderNavigation,
             payload: {
@@ -84,7 +80,7 @@ export const HeaderBreadcrumb = () => {
     };
 
     const navigateToGuideDashboard = () => {
-        setView('GUIDE_DEFAULT');
+        dispatch(setView('GUIDE_DEFAULT'));
         analytics.report({
             type: EventType.GuideHeaderNavigation,
             payload: {

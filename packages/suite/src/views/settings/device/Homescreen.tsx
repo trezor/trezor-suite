@@ -5,9 +5,9 @@ import { HOMESCREEN_EDITOR_URL } from '@trezor/urls';
 import { Translation } from 'src/components/suite';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from 'src/components/suite/Settings';
 import { Tooltip, variables } from '@trezor/components';
-import { useDevice, useActions } from 'src/hooks/suite';
-import * as modalActions from 'src/actions/suite/modalActions';
-import * as deviceSettingsActions from 'src/actions/settings/deviceSettingsActions';
+import { useDevice, useDispatch } from 'src/hooks/suite';
+import { openModal } from 'src/actions/suite/modalActions';
+import { applySettings } from 'src/actions/settings/deviceSettingsActions';
 import {
     deviceModelInformation,
     imagePathToHex,
@@ -39,7 +39,7 @@ const Col = styled.div`
 `;
 
 const ValidationMessage = styled.div`
-    color: ${props => props.theme.TYPE_ORANGE};
+    color: ${({ theme }) => theme.TYPE_ORANGE};
     font-size: ${variables.FONT_SIZE.NORMAL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
@@ -63,16 +63,13 @@ interface HomescreenProps {
 }
 
 export const Homescreen = ({ isDeviceLocked }: HomescreenProps) => {
-    const { device } = useDevice();
-    const { applySettings, openModal } = useActions({
-        applySettings: deviceSettingsActions.applySettings,
-        openModal: modalActions.openModal,
-    });
-    const fileInputElement = useRef<HTMLInputElement>(null);
-    const { anchorRef, shouldHighlight } = useAnchor(SettingsAnchor.Homescreen);
-
     const [customHomescreen, setCustomHomescreen] = useState('');
     const [validationError, setValidationError] = useState<ImageValidationError | undefined>();
+
+    const dispatch = useDispatch();
+    const { device } = useDevice();
+    const fileInputElement = useRef<HTMLInputElement>(null);
+    const { anchorRef, shouldHighlight } = useAnchor(SettingsAnchor.Homescreen);
 
     if (!device?.features) {
         return null;
@@ -103,11 +100,11 @@ export const Homescreen = ({ isDeviceLocked }: HomescreenProps) => {
     const onChangeHomescreen = async () => {
         const hex = await imagePathToHex(customHomescreen, deviceModelInternal);
 
-        await applySettings({
-            homescreen: hex,
-        });
+        await dispatch(applySettings({ homescreen: hex }));
         resetUpload();
     };
+
+    const openGallery = () => dispatch(openModal({ type: 'device-background-gallery' }));
 
     const isSupportedHomescreen = isHomescreenSupportedOnDevice(device);
 
@@ -174,11 +171,7 @@ export const Homescreen = ({ isDeviceLocked }: HomescreenProps) => {
                         }
                     >
                         <StyledActionButton
-                            onClick={() =>
-                                openModal({
-                                    type: 'device-background-gallery',
-                                })
-                            }
+                            onClick={openGallery}
                             isDisabled={isDeviceLocked || !isSupportedHomescreen}
                             data-test="@settings/device/homescreen-gallery"
                             variant="secondary"

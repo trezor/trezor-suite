@@ -3,8 +3,8 @@ import styled from 'styled-components';
 
 import { Input, Button, H3, CollapsibleBox } from '@trezor/components';
 import { Translation, TooltipSymbol } from 'src/components/suite';
-import { useSelector, useActions } from 'src/hooks/suite';
-import { toggleTor as toggleTorAction } from 'src/actions/suite/suiteActions';
+import { useDispatch, useSelector } from 'src/hooks/suite';
+import { toggleTor } from 'src/actions/suite/suiteActions';
 import { useDefaultUrls, useBackendsForm } from 'src/hooks/settings/backends';
 import ConnectionInfo from './ConnectionInfo';
 import { BackendInput } from './BackendInput';
@@ -69,11 +69,8 @@ interface CustomBackendsProps {
 export const CustomBackends = ({ network, onCancel }: CustomBackendsProps) => {
     const { isTorEnabled } = useSelector(selectTorState);
     const blockchain = useSelector(state => state.wallet.blockchain);
+    const dispatch = useDispatch();
     const [torModalOpen, setTorModalOpen] = useState(false);
-
-    const { toggleTor } = useActions({
-        toggleTor: toggleTorAction,
-    });
 
     const { symbol: coin } = network;
 
@@ -100,7 +97,7 @@ export const CustomBackends = ({ network, onCancel }: CustomBackendsProps) => {
     const onTorResult = async (result: TorResult) => {
         switch (result) {
             case 'enable-tor':
-                await toggleTor(true);
+                await dispatch(toggleTor(true));
 
                 setTorModalOpen(false);
                 save();

@@ -2,8 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 import { Translation, TroubleshootingTips } from 'src/components/suite';
 import { Button } from '@trezor/components';
-import { useActions } from 'src/hooks/suite';
-import * as routerActions from 'src/actions/suite/routerActions';
+import { useDispatch } from 'src/hooks/suite';
+import { goto } from 'src/actions/suite/routerActions';
 import { TrezorDevice } from 'src/types/suite';
 import { pickByDeviceModel } from '@trezor/device-utils';
 import { DeviceModelInternal } from '@trezor/connect';
@@ -18,10 +18,11 @@ interface DeviceBootloaderProps {
 
 /* User connected the device in bootloader mode, but in order to continue it needs to be in normal mode */
 export const DeviceBootloader = ({ device }: DeviceBootloaderProps) => {
-    const { goto } = useActions({
-        goto: routerActions.goto,
-    });
+    const dispatch = useDispatch();
+
     const deviceModelInternal = device?.features?.internal_model;
+
+    const gotToDeviceSettings = () => dispatch(goto('settings-device'));
 
     const tips = [
         {
@@ -44,15 +45,7 @@ export const DeviceBootloader = ({ device }: DeviceBootloaderProps) => {
             heading: <Translation id="TR_WIPE_OR_UPDATE" />,
             description: <Translation id="TR_WIPE_OR_UPDATE_DESCRIPTION" />,
             noBullet: true,
-            action: (
-                <Button
-                    onClick={() => {
-                        goto('settings-device');
-                    }}
-                    icon="SETTINGS"
-                    size={20}
-                />
-            ),
+            action: <Button onClick={gotToDeviceSettings} icon="SETTINGS" size={20} />,
         },
     ];
 

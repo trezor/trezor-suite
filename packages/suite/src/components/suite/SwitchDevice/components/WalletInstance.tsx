@@ -1,15 +1,15 @@
 import React from 'react';
-
 import styled from 'styled-components';
-import * as suiteActions from 'src/actions/suite/suiteActions';
-import { selectDiscoveryByDeviceState } from 'src/reducers/wallet/discoveryReducer';
+
+import { forgetDevice, toggleRememberDevice } from 'src/actions/suite/suiteActions';
 import {
     WalletLabeling,
     Translation,
     MetadataLabeling,
     HiddenPlaceholder,
 } from 'src/components/suite';
-import { useSelector, useActions } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
+import { selectDiscoveryByDeviceState } from 'src/reducers/wallet/discoveryReducer';
 import { TrezorDevice, AcquiredDevice } from 'src/types/suite';
 
 import { useFormatters } from '@suite-common/formatters';
@@ -19,7 +19,7 @@ import { analytics, EventType } from '@trezor/suite-analytics';
 
 const InstanceType = styled.div`
     display: flex;
-    color: ${props => props.theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     font-size: ${variables.FONT_SIZE.NORMAL};
     line-height: 1.5;
@@ -35,7 +35,7 @@ const Wrapper = styled(Box)`
     display: flex;
     width: 100%;
     align-items: center;
-    background: ${props => props.theme.BG_WHITE};
+    background: ${({ theme }) => theme.BG_WHITE};
 
     & + & {
         margin-top: 10px;
@@ -58,16 +58,16 @@ const Wrapper = styled(Box)`
 const InstanceTitle = styled.div`
     font-weight: 500;
     line-height: 1.57;
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     font-size: ${variables.FONT_SIZE.SMALL};
     font-variant-numeric: tabular-nums;
 `;
 
 const Col = styled.div<{ grow?: number; centerItems?: boolean }>`
     display: flex;
-    flex-grow: ${props => props.grow || 0};
+    flex-grow: ${({ grow }) => grow || 0};
     flex-direction: column;
-    align-items: ${props => (props.centerItems ? 'center' : 'flex-start')};
+    align-items: ${({ centerItems }) => (centerItems ? 'center' : 'flex-start')};
 
     :first-child {
         cursor: pointer;
@@ -102,16 +102,11 @@ export const WalletInstance = ({
     index,
     ...rest
 }: WalletInstanceProps) => {
-    const { toggleRememberDevice, forgetDevice } = useActions({
-        toggleRememberDevice: suiteActions.toggleRememberDevice,
-        forgetDevice: suiteActions.forgetDevice,
-    });
-    const { accounts, fiat, localCurrency, editing } = useSelector(state => ({
-        accounts: state.wallet.accounts,
-        fiat: state.wallet.fiat,
-        localCurrency: state.wallet.settings.localCurrency,
-        editing: state.metadata.editing,
-    }));
+    const accounts = useSelector(state => state.wallet.accounts);
+    const fiat = useSelector(state => state.wallet.fiat);
+    const localCurrency = useSelector(state => state.wallet.settings.localCurrency);
+    const editing = useSelector(state => state.metadata.editing);
+    const dispatch = useDispatch();
 
     const { FiatAmountFormatter } = useFormatters();
     const theme = useTheme();
@@ -126,6 +121,14 @@ export const WalletInstance = ({
     const isSelected = enabled && selected && !!discoveryProcess;
 
     const dataTestBase = `@switch-device/wallet-on-index/${index}`;
+
+    const handleRememberChange = () => dispatch(toggleRememberDevice(instance));
+    const handleEject = () => {
+        dispatch(forgetDevice(instance));
+        analytics.report({
+            type: EventType.SwitchDeviceEject,
+        });
+    };
 
     return (
         <Wrapper
@@ -188,7 +191,7 @@ export const WalletInstance = ({
                     <SwitchCol>
                         <Switch
                             isChecked={!!instance.remember}
-                            onChange={() => toggleRememberDevice(instance)}
+                            onChange={handleRememberChange}
                             dataTest={`${dataTestBase}/toggle-remember-switch`}
                         />
                     </SwitchCol>
@@ -200,12 +203,7 @@ export const WalletInstance = ({
                             size={22}
                             color={theme.TYPE_LIGHT_GREY}
                             hoverColor={theme.TYPE_DARK_GREY}
-                            onClick={() => {
-                                forgetDevice(instance);
-                                analytics.report({
-                                    type: EventType.SwitchDeviceEject,
-                                });
-                            }}
+                            onClick={handleEject}
                         />
                     </ColEject>
                 </>

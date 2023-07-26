@@ -4,9 +4,9 @@ import {
     P2pFormContextValues,
     UseCoinmarketP2pFormProps,
 } from 'src/types/wallet/coinmarketP2pForm';
-import { useActions, useSelector } from 'src/hooks/suite';
-import * as coinmarketP2pActions from 'src/actions/wallet/coinmarketP2pActions';
-import * as coinmarketCommonActions from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
+import { useDispatch, useSelector } from 'src/hooks/suite';
+import { saveQuotes, saveQuotesRequest } from 'src/actions/wallet/coinmarketP2pActions';
+import { loadInvityData } from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
 import { useCoinmarketP2pFormDefaultValues } from 'src/hooks/wallet/useCoinmarketP2pFormDefaultValues';
 import { useForm, useWatch } from 'react-hook-form';
 import { useFormDraft } from 'src/hooks/wallet/useFormDraft';
@@ -18,27 +18,22 @@ import invityAPI from 'src/services/suite/invityAPI';
 export const P2pFormContext = createContext<P2pFormContextValues | null>(null);
 P2pFormContext.displayName = 'CoinmarketP2pContext';
 
-export const useCoinmarketP2pForm = (props: UseCoinmarketP2pFormProps): P2pFormContextValues => {
-    const { loadInvityData, saveQuotesRequest, saveQuotes } = useActions({
-        loadInvityData: coinmarketCommonActions.loadInvityData,
-        saveQuotesRequest: coinmarketP2pActions.saveQuotesRequest,
-        saveQuotes: coinmarketP2pActions.saveQuotes,
-    });
+export const useCoinmarketP2pForm = ({
+    selectedAccount,
+}: UseCoinmarketP2pFormProps): P2pFormContextValues => {
+    const p2pInfo = useSelector(state => state.wallet.coinmarket.p2p.p2pInfo);
+    const dispatch = useDispatch();
 
     useEffect(() => {
-        loadInvityData();
-    }, [loadInvityData]);
+        dispatch(loadInvityData());
+    }, [dispatch]);
 
-    const { selectedAccount } = props;
     const { account } = selectedAccount;
     const { navigateToP2pOffers } = useCoinmarketNavigation(account);
     const { getDraft, saveDraft, removeDraft } = useFormDraft<FormState>('coinmarket-p2p');
     const draft = getDraft(account.key);
     const isDraft = !!draft;
 
-    const { p2pInfo } = useSelector(state => ({
-        p2pInfo: state.wallet.coinmarket.p2p.p2pInfo,
-    }));
     const { defaultValues, defaultCountry, defaultCurrency } =
         useCoinmarketP2pFormDefaultValues(p2pInfo);
     const methods = useForm<FormState>({

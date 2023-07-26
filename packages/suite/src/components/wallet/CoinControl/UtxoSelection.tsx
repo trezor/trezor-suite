@@ -2,7 +2,7 @@ import React from 'react';
 import styled, { css } from 'styled-components';
 import { darken } from 'polished';
 
-import * as modalActions from 'src/actions/suite/modalActions';
+import { openModal } from 'src/actions/suite/modalActions';
 import {
     FiatValue,
     FormattedCryptoAmount,
@@ -10,7 +10,7 @@ import {
     Translation,
 } from 'src/components/suite';
 import { formatNetworkAmount, isSameUtxo } from '@suite-common/wallet-utils';
-import { useActions, useSelector } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useTheme, Checkbox, FluidSpinner, Tooltip, variables } from '@trezor/components';
 import type { AccountUtxo } from '@trezor/connect';
 import { TransactionTimestamp, UtxoAnonymity } from 'src/components/wallet';
@@ -89,7 +89,7 @@ const BottomRow = styled(Row)`
 
 const Dot = styled.div`
     border-radius: 50%;
-    background: ${props => props.theme.TYPE_LIGHT_GREY};
+    background: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     height: 3px;
     width: 3px;
 `;
@@ -157,9 +157,7 @@ export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
     const outputLabels = useSelector(
         state => state.wallet.selectedAccount.account?.metadata.outputLabels,
     );
-    const { openModal } = useActions({
-        openModal: modalActions.openModal,
-    });
+    const dispatch = useDispatch();
 
     const theme = useTheme();
 
@@ -180,7 +178,7 @@ export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
     const showTransactionDetail: React.MouseEventHandler = e => {
         e.stopPropagation(); // do not trigger the checkbox
         if (transaction) {
-            openModal({ type: 'transaction-detail', tx: transaction });
+            dispatch(openModal({ type: 'transaction-detail', tx: transaction }));
         }
     };
 

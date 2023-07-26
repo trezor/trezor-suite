@@ -12,10 +12,10 @@ import {
 import { Translation } from 'src/components/suite';
 import { BackupSeedCards } from 'src/components/backup';
 import { canContinue } from 'src/utils/backup';
-import { useSelector, useActions } from 'src/hooks/suite';
-import * as onboardingActions from 'src/actions/onboarding/onboardingActions';
-import * as backupActions from 'src/actions/backup/backupActions';
-import * as routerActions from 'src/actions/suite/routerActions';
+import { useDispatch, useSelector } from 'src/hooks/suite';
+import { goToNextStep, updateAnalytics } from 'src/actions/onboarding/onboardingActions';
+import { backupDevice } from 'src/actions/backup/backupActions';
+import { goto } from 'src/actions/suite/routerActions';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
 
@@ -25,19 +25,13 @@ const StyledImage = styled(Image)`
 
 export const BackupStep = () => {
     const [showSkipConfirmation, setShowSkipConfirmation] = useState(false);
-    const { goToNextStep, backupDevice, goto, updateAnalytics } = useActions({
-        goToNextStep: onboardingActions.goToNextStep,
-        backupDevice: backupActions.backupDevice,
-        goto: routerActions.goto,
-        updateAnalytics: onboardingActions.updateAnalytics,
-    });
-    const { backup, locks, device } = useSelector(state => ({
-        backup: state.backup,
-        locks: state.suite.locks,
-        device: state.suite.device,
-    }));
-    const deviceModelInternal = device?.features?.internal_model;
+    const backup = useSelector(state => state.backup);
+    const device = useSelector(state => state.suite.device);
+    const locks = useSelector(state => state.suite.locks);
     const isActionAbortable = useSelector(selectIsActionAbortable);
+    const dispatch = useDispatch();
+
+    const deviceModelInternal = device?.features?.internal_model;
 
     if (!deviceModelInternal) {
         return null;
@@ -58,8 +52,8 @@ export const BackupStep = () => {
                         <OnboardingButtonCta
                             data-test="@backup/start-button"
                             onClick={() => {
-                                updateAnalytics({ backup: 'create' });
-                                backupDevice();
+                                dispatch(updateAnalytics({ backup: 'create' }));
+                                dispatch(backupDevice());
                             }}
                             isDisabled={!canContinue(backup.userConfirmed, locks)}
                         >
@@ -70,7 +64,7 @@ export const BackupStep = () => {
                         <OnboardingButtonSkip
                             data-test="@onboarding/exit-app-button"
                             onClick={() => {
-                                updateAnalytics({ backup: 'skip' });
+                                dispatch(updateAnalytics({ backup: 'skip' }));
                                 setShowSkipConfirmation(true);
                             }}
                         >
@@ -103,7 +97,7 @@ export const BackupStep = () => {
                     innerActions={
                         <OnboardingButtonCta
                             data-test="@backup/close-button"
-                            onClick={() => goToNextStep()}
+                            onClick={() => dispatch(goToNextStep())}
                             isDisabled={!canContinue(backup.userConfirmed)}
                         >
                             <Translation id="TR_BACKUP_FINISHED_BUTTON" />
@@ -122,7 +116,9 @@ export const BackupStep = () => {
                     innerActions={
                         <OnboardingButtonCta
                             onClick={() => {
-                                goto('settings-device', { anchor: SettingsAnchor.WipeDevice });
+                                dispatch(
+                                    goto('settings-device', { anchor: SettingsAnchor.WipeDevice }),
+                                );
                             }}
                         >
                             <Translation id="TR_GO_TO_SETTINGS" />

@@ -11,9 +11,9 @@ import {
     PrecomposedLevelsCardano,
 } from '@suite-common/wallet-types';
 import { useAsyncDebounce } from '@trezor/react-utils';
-import { useActions, useTranslation } from 'src/hooks/suite';
+import { useDispatch, useTranslation } from 'src/hooks/suite';
 import { isChanged } from 'src/utils/suite/comparisonUtils';
-import * as sendFormActions from 'src/actions/wallet/sendFormActions';
+import { composeTransaction } from 'src/actions/wallet/sendFormActions';
 import { findComposeErrors } from '@suite-common/wallet-utils';
 import { FeeLevel } from '@trezor/connect';
 import { TranslationKey } from 'src/components/suite/Translation';
@@ -50,9 +50,8 @@ export const useSendFormCompose = ({
     const [composeField, setComposeField] = useState<FieldPath<FormState> | undefined>(undefined);
     const [draftSaveRequest, setDraftSaveRequest] = useState(false);
 
-    const { composeTransaction } = useActions({
-        composeTransaction: sendFormActions.composeTransaction,
-    });
+    const dispatch = useDispatch();
+
     const { translationString } = useTranslation();
 
     const composeRequestID = useRef(0); // compose ID, incremented with every compose request
@@ -65,13 +64,15 @@ export const useSendFormCompose = ({
             setLoading(true);
             setComposedLevels(undefined);
 
-            const result = await composeTransaction(values, {
-                account,
-                network: state.network,
-                feeInfo: state.feeInfo,
-                excludedUtxos,
-                prison,
-            });
+            const result = await dispatch(
+                composeTransaction(values, {
+                    account,
+                    network: state.network,
+                    feeInfo: state.feeInfo,
+                    excludedUtxos,
+                    prison,
+                }),
+            );
 
             if (result) {
                 setComposedLevels(result);
@@ -80,15 +81,7 @@ export const useSendFormCompose = ({
                 setLoading(false);
             }
         },
-        [
-            account,
-            prison,
-            excludedUtxos,
-            state.network,
-            state.feeInfo,
-            composeTransaction,
-            setLoading,
-        ],
+        [account, dispatch, prison, excludedUtxos, setLoading, state.network, state.feeInfo],
     );
 
     // Create a compose request
@@ -119,13 +112,15 @@ export const useSendFormCompose = ({
                 // save draft (it could be changed later, after composing)
                 setDraftSaveRequest(true);
 
-                return composeTransaction(values, {
-                    account,
-                    network: state.network,
-                    feeInfo: state.feeInfo,
-                    excludedUtxos,
-                    prison,
-                });
+                return dispatch(
+                    composeTransaction(values, {
+                        account,
+                        network: state.network,
+                        feeInfo: state.feeInfo,
+                        excludedUtxos,
+                        prison,
+                    }),
+                );
             });
 
             // RACE-CONDITION NOTE:
@@ -145,7 +140,7 @@ export const useSendFormCompose = ({
         },
         [
             debounce,
-            composeTransaction,
+            dispatch,
             setLoading,
             errors,
             clearErrors,

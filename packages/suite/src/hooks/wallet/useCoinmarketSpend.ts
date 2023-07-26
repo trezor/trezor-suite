@@ -68,11 +68,10 @@ export const useCoinmarketSpend = ({
 
     const { account, network } = selectedAccount;
     const { shouldSendInSats } = useBitcoinAmountUnit(account.symbol);
-    const { sellInfo, language, fees } = useSelector(state => ({
-        sellInfo: state.wallet.coinmarket.sell.sellInfo,
-        language: state.suite.settings.language,
-        fees: state.wallet.fees,
-    }));
+    const sellInfo = useSelector(state => state.wallet.coinmarket.sell.sellInfo);
+    const language = useSelector(state => state.suite.settings.language);
+    const fees = useSelector(state => state.wallet.fees);
+
     const country = sellInfo?.sellList?.country;
     const isLoading = !sellInfo || !voucherSiteUrl;
     const provider = sellInfo?.sellList?.providers.filter(p => p.type === 'Voucher')[0];

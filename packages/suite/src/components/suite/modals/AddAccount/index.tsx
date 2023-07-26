@@ -5,10 +5,10 @@ import { Translation, Modal } from 'src/components/suite';
 import { NETWORKS } from 'src/config/wallet';
 import { Account, Network } from 'src/types/wallet';
 import { TrezorDevice } from 'src/types/suite';
-import { useSelector, useActions, useDispatch } from 'src/hooks/suite';
+import { useSelector, useDispatch } from 'src/hooks/suite';
 import { accountsActions } from '@suite-common/wallet-core';
-import * as walletSettingsActions from 'src/actions/settings/walletSettingsActions';
-import * as routerActions from 'src/actions/suite/routerActions';
+import { changeCoinVisibility } from 'src/actions/settings/walletSettingsActions';
+import { goto } from 'src/actions/suite/routerActions';
 import { arrayPartition } from '@trezor/utils';
 import { selectIsPublic } from 'src/reducers/wallet/coinjoinReducer';
 
@@ -26,32 +26,21 @@ const Expander = styled.div`
     display: flex;
     flex: 1;
 `;
-interface Props {
+interface AddAccountProps {
     device: TrezorDevice;
     onCancel: () => void;
     symbol?: Account['symbol'];
     noRedirect?: boolean;
 }
 
-export const AddAccount = ({ device, onCancel, symbol, noRedirect }: Props) => {
-    const dispatch = useDispatch();
-    const { changeCoinVisibility, goto } = useActions({
-        changeCoinVisibility: walletSettingsActions.changeCoinVisibility,
-        goto: routerActions.goto,
-    });
-    const {
-        app,
-        debug,
-        accounts,
-        enabledNetworks: enabledNetworksSymbols,
-    } = useSelector(state => ({
-        app: state.router.app,
-        accounts: state.wallet.accounts,
-        debug: state.suite.settings.debug,
-        enabledNetworks: state.wallet.settings.enabledNetworks,
-    }));
-
+export const AddAccount = ({ device, onCancel, symbol, noRedirect }: AddAccountProps) => {
+    const accounts = useSelector(state => state.wallet.accounts);
+    const app = useSelector(state => state.router.app);
+    const debug = useSelector(state => state.suite.settings.debug);
+    const enabledNetworksSymbols = useSelector(state => state.wallet.settings.enabledNetworks);
     const isCoinjoinPublic = useSelector(selectIsPublic);
+    const dispatch = useDispatch();
+
     const isCoinjoinVisible = isCoinjoinPublic || debug.showDebugMenu;
 
     // Collect all Networks without "accountType" (normal)
@@ -99,16 +88,18 @@ export const AddAccount = ({ device, onCancel, symbol, noRedirect }: Props) => {
     const onEnableNetwork = () => {
         onCancel();
         if (selectedNetwork) {
-            changeCoinVisibility(selectedNetwork.symbol, true);
+            dispatch(changeCoinVisibility(selectedNetwork.symbol, true));
             if (app === 'wallet' && !noRedirect) {
                 // redirect to account only if added from "wallet" app
-                goto('wallet-index', {
-                    params: {
-                        symbol: selectedNetwork.symbol,
-                        accountIndex: 0,
-                        accountType: 'normal',
-                    },
-                });
+                dispatch(
+                    goto('wallet-index', {
+                        params: {
+                            symbol: selectedNetwork.symbol,
+                            accountIndex: 0,
+                            accountType: 'normal',
+                        },
+                    }),
+                );
             }
         }
     };
@@ -142,13 +133,15 @@ export const AddAccount = ({ device, onCancel, symbol, noRedirect }: Props) => {
         dispatch(accountsActions.changeAccountVisibility(account));
         if (app === 'wallet' && !noRedirect) {
             // redirect to account only if added from "wallet" app
-            goto('wallet-index', {
-                params: {
-                    symbol: account.symbol,
-                    accountIndex: account.index,
-                    accountType: account.accountType,
-                },
-            });
+            dispatch(
+                goto('wallet-index', {
+                    params: {
+                        symbol: account.symbol,
+                        accountIndex: account.index,
+                        accountType: account.accountType,
+                    },
+                }),
+            );
         }
     };
 

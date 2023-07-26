@@ -5,7 +5,7 @@ import { capitalizeFirstLetter } from '@trezor/utils';
 import { Input, useTheme, Icon, Button, Tooltip } from '@trezor/components';
 import { AddressLabeling, Translation, MetadataLabeling } from 'src/components/suite';
 import { scanQrRequest } from 'src/actions/wallet/sendFormActions';
-import { useActions, useDevice, useTranslation } from 'src/hooks/suite';
+import { useDevice, useDispatch, useTranslation } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { getProtocolInfo } from 'src/utils/suite/protocol';
 import {
@@ -43,7 +43,7 @@ interface AddressProps {
 
 export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
     const [addressDeprecatedUrl, setAddressDeprecatedUrl] = useState<string | undefined>(undefined);
-
+    const dispatch = useDispatch();
     const theme = useTheme();
     const { device } = useDevice();
     const {
@@ -58,11 +58,6 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
         watch,
         setDraftSaveRequest,
     } = useSendFormContext();
-    const { openQrModal, addToast } = useActions({
-        openQrModal: scanQrRequest,
-        addToast: notificationsActions.addToast,
-    });
-
     const { translationString } = useTranslation();
 
     const { descriptor, networkType, symbol } = account;
@@ -82,7 +77,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
     const inputState = getInputState(addressError, addressValue);
 
     const handleQrClick = useCallback(async () => {
-        const uri = await openQrModal();
+        const uri = await dispatch(scanQrRequest());
 
         if (typeof uri !== 'string') {
             return;
@@ -94,10 +89,12 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
             const isSymbolValidProtocol = PROTOCOL_TO_NETWORK[protocol.scheme] === symbol;
 
             if (!isSymbolValidProtocol) {
-                addToast({
-                    type: 'qr-incorrect-coin-scheme-protocol',
-                    coin: capitalizeFirstLetter(protocol.scheme),
-                });
+                dispatch(
+                    notificationsActions.addToast({
+                        type: 'qr-incorrect-coin-scheme-protocol',
+                        coin: capitalizeFirstLetter(protocol.scheme),
+                    }),
+                );
 
                 return;
             }
@@ -120,11 +117,9 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
 
             composeTransaction(inputName);
         } else {
-            addToast({
-                type: 'qr-incorrect-address',
-            });
+            dispatch(notificationsActions.addToast({ type: 'qr-incorrect-address' }));
         }
-    }, [composeTransaction, inputName, amountInputName, openQrModal, setValue, symbol, addToast]);
+    }, [amountInputName, composeTransaction, dispatch, inputName, setValue, symbol]);
 
     const getValidationButtonProps = () => {
         switch (addressError?.type) {

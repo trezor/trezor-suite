@@ -2,8 +2,8 @@ import React from 'react';
 import { OnboardingButtonCta } from 'src/components/onboarding';
 import { SelectWordCount, SelectRecoveryType, SelectRecoveryWord } from 'src/components/recovery';
 import { Translation } from 'src/components/suite';
-import * as onboardingActions from 'src/actions/onboarding/onboardingActions';
-import { useActions, useRecovery, useSelector } from 'src/hooks/suite';
+import { goToNextStep, updateAnalytics } from 'src/actions/onboarding/onboardingActions';
+import { useDispatch, useRecovery, useSelector } from 'src/hooks/suite';
 import RecoveryStepBox from './RecoveryStepBox';
 import { pickByDeviceModel } from '@trezor/device-utils';
 import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
@@ -18,16 +18,9 @@ const InProgressRecoveryStepBox = styled(RecoveryStepBox)<{
 `;
 
 export const RecoveryStep = () => {
-    const { goToNextStep, updateAnalytics } = useActions({
-        goToNextStep: onboardingActions.goToNextStep,
-        updateAnalytics: onboardingActions.updateAnalytics,
-    });
-
     const isActionAbortable = useSelector(selectIsActionAbortable);
-
-    const { device } = useSelector(state => ({
-        device: state.suite.device,
-    }));
+    const device = useSelector(state => state.suite.device);
+    const dispatch = useDispatch();
 
     const {
         status,
@@ -95,19 +88,19 @@ export const RecoveryStep = () => {
 
     if (status === 'select-recovery-type') {
         // 2. step: Standard recovery (user enters recovery seed word by word on host) or Advanced recovery (user types words on a device)
+        const handleSelect = (type: 'standard' | 'advanced') => {
+            setAdvancedRecovery(type === 'advanced');
+            dispatch(updateAnalytics({ recoveryType: type }));
+            recoverDevice();
+        };
+
         return (
             <RecoveryStepBox
                 key={status} // to properly rerender in translation mode
                 heading={<Translation id="TR_SELECT_RECOVERY_METHOD" />}
                 description={<Translation id="TR_RECOVERY_TYPES_DESCRIPTION" />}
             >
-                <SelectRecoveryType
-                    onSelect={(type: 'standard' | 'advanced') => {
-                        setAdvancedRecovery(type === 'advanced');
-                        updateAnalytics({ recoveryType: type });
-                        recoverDevice();
-                    }}
-                />
+                <SelectRecoveryType onSelect={handleSelect} />
             </RecoveryStepBox>
         );
     }
@@ -165,6 +158,8 @@ export const RecoveryStep = () => {
 
     if (device && device.mode === 'normal') {
         // Ready to continue to the next step
+        const handleClick = () => dispatch(goToNextStep('set-pin'));
+
         return (
             <RecoveryStepBox
                 key={status} // to properly rerender in translation mode
@@ -172,7 +167,7 @@ export const RecoveryStep = () => {
                 innerActions={
                     <OnboardingButtonCta
                         data-test="@onboarding/recovery/continue-button"
-                        onClick={() => goToNextStep('set-pin')}
+                        onClick={handleClick}
                     >
                         <Translation id="TR_CONTINUE" />
                     </OnboardingButtonCta>

@@ -2,14 +2,9 @@ import React from 'react';
 import styled from 'styled-components';
 import { Button, Image } from '@trezor/components';
 import { Translation, Modal } from 'src/components/suite';
-import * as suiteActions from 'src/actions/suite/suiteActions';
-import { useDevice, useActions } from 'src/hooks/suite';
+import { authorizeDevice, switchDuplicatedDevice } from 'src/actions/suite/suiteActions';
+import { useDevice, useDispatch } from 'src/hooks/suite';
 import { TrezorDevice } from 'src/types/suite';
-
-type Props = {
-    device: TrezorDevice;
-    duplicate: TrezorDevice;
-};
 
 const StyledImage = styled(Image)`
     margin: 14px 0px;
@@ -28,13 +23,20 @@ const StyledModal = styled(Modal)`
     }
 `;
 
-export const PassphraseDuplicate = ({ device, duplicate }: Props) => {
+type PassphraseDuplicateProps = {
+    device: TrezorDevice;
+    duplicate: TrezorDevice;
+};
+
+export const PassphraseDuplicate = ({ device, duplicate }: PassphraseDuplicateProps) => {
+    const dispatch = useDispatch();
     const { isLocked } = useDevice();
+
     const isDeviceLocked = isLocked();
-    const { switchDuplicatedDevice, authorizeDevice } = useActions({
-        switchDuplicatedDevice: suiteActions.switchDuplicatedDevice,
-        authorizeDevice: suiteActions.authorizeDevice,
-    });
+
+    const handleSwitchDevice = () => dispatch(switchDuplicatedDevice(device, duplicate));
+    const handleAuthorizeDevice = () => dispatch(authorizeDevice());
+
     return (
         <StyledModal
             heading={<Translation id="TR_WALLET_DUPLICATE_TITLE" />}
@@ -44,14 +46,14 @@ export const PassphraseDuplicate = ({ device, duplicate }: Props) => {
                 <>
                     <Button
                         variant="primary"
-                        onClick={() => switchDuplicatedDevice(device, duplicate)}
+                        onClick={handleSwitchDevice}
                         isDisabled={isDeviceLocked}
                     >
                         <Translation id="TR_WALLET_DUPLICATE_SWITCH" />
                     </Button>
                     <Button
                         variant="secondary"
-                        onClick={authorizeDevice}
+                        onClick={handleAuthorizeDevice}
                         isDisabled={isDeviceLocked}
                     >
                         <Translation id="TR_WALLET_DUPLICATE_RETRY" />

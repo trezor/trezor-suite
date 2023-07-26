@@ -6,8 +6,8 @@ import { BuyTrade, BuyTradeStatus } from 'invity-api';
 import { Account } from 'src/types/wallet';
 import invityAPI from 'src/services/suite/invityAPI';
 import { createTxLink } from 'src/utils/wallet/coinmarket/buyUtils';
-import * as coinmarketCommonActions from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
-import { useActions } from 'src/hooks/suite';
+import { submitRequestForm } from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
+import { useDispatch } from 'src/hooks/suite';
 
 const Wrapper = styled.div`
     display: flex;
@@ -26,16 +26,12 @@ const Description = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     margin: 17px 0 10px 0;
     max-width: 200px;
     text-align: center;
 `;
-
-// const CancelButton = styled(Button)`
-//     margin-top: 15px;
-// `;
 
 const PaymentButton = styled(Button)`
     margin-top: 30px;
@@ -64,19 +60,16 @@ const getTranslations = (tradeStatus: BuyTradeStatus | undefined) => {
 
 const WaitingForUser = ({ trade, account, providerName }: Props) => {
     const [isWorking, setIsWorking] = useState(false);
-    const { submitRequestForm } = useActions({
-        submitRequestForm: coinmarketCommonActions.submitRequestForm,
-    });
+    const dispatch = useDispatch();
 
     const goToPayment = async () => {
         setIsWorking(true);
         const returnUrl = await createTxLink(trade, account);
         const response = await invityAPI.getBuyTradeForm({ trade, returnUrl });
         if (response) {
-            submitRequestForm(response.form);
+            dispatch(submitRequestForm(response.form));
         }
     };
-    // const cancelTrade = () => {};
 
     const translations = getTranslations(trade.status);
 
@@ -92,10 +85,7 @@ const WaitingForUser = ({ trade, account, providerName }: Props) => {
             <PaymentButton onClick={goToPayment} isLoading={isWorking} isDisabled={isWorking}>
                 <Translation id={translations.buttonTextTranslationId} />
             </PaymentButton>
-            {/* TODO add a possibility in the future to cancel the transaction by the user
-            <CancelButton isWhite variant="tertiary" onClick={cancelTrade}>
-                <Translation id="TR_BUY_DETAIL_SUBMITTED_CANCEL" />
-            </CancelButton> */}
+            {/* TODO add a possibility in the future to cancel the transaction by the user */}
         </Wrapper>
     );
 };

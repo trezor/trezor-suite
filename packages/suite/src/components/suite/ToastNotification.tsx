@@ -3,7 +3,7 @@ import styled, { css } from 'styled-components';
 import { Button, Icon, useTheme, variables } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 import { notificationsActions, NotificationEntry } from '@suite-common/toast-notifications';
-import { useActions } from 'src/hooks/suite';
+import { useDispatch } from 'src/hooks/suite';
 import { getNotificationIcon, getVariantColor } from 'src/utils/suite//notification';
 import NotificationRenderer, {
     NotificationViewProps,
@@ -61,12 +61,8 @@ const ToastNotification = ({
     notification: { type, id },
 }: NotificationViewProps) => {
     const [isTall, setIsTall] = useState(false);
-
-    const { closeNotification } = useActions({
-        closeNotification: notificationsActions.close,
-    });
-
     const theme = useTheme();
+    const dispatch = useDispatch();
     const wrapperRef = useRef<HTMLDivElement>(null);
 
     useLayoutEffect(() => {
@@ -82,7 +78,7 @@ const ToastNotification = ({
     const defaultIcon = icon ?? getNotificationIcon(variant);
 
     const handleCancelClick = () => {
-        closeNotification(id);
+        dispatch(notificationsActions.close(id));
         onCancel?.();
     };
 

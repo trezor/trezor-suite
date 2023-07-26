@@ -2,9 +2,13 @@ import React from 'react';
 import styled from 'styled-components';
 import { SellProviderInfo } from 'invity-api';
 import { useWatchSellTrade } from 'src/hooks/wallet/useCoinmarket';
-import * as routerActions from 'src/actions/suite/routerActions';
-import * as coinmarketCommonActions from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
-import * as coinmarketSellActions from 'src/actions/wallet/coinmarketSellActions';
+import { goto } from 'src/actions/suite/routerActions';
+import { saveComposedTransactionInfo } from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
+import {
+    saveQuoteRequest,
+    saveTransactionId,
+    setIsFromRedirect,
+} from 'src/actions/wallet/coinmarketSellActions';
 import { useTheme, variables, Icon, Button } from '@trezor/components';
 import { CoinmarketPaymentType, CoinmarketProviderInfo } from 'src/components/wallet';
 import { Account } from 'src/types/wallet';
@@ -16,29 +20,21 @@ import {
 } from 'src/components/suite';
 import { TradeSell } from 'src/types/wallet/coinmarketCommonTypes';
 import Status from '../Status';
-import { useActions, useSelector } from 'src/hooks/suite';
-
-interface Props {
-    trade: TradeSell;
-    account: Account;
-    providers?: {
-        [name: string]: SellProviderInfo;
-    };
-}
+import { useDispatch, useSelector } from 'src/hooks/suite';
 
 const Wrapper = styled.div`
     display: flex;
     flex: 1;
     align-items: center;
     margin-bottom: 20px;
-    border: 1px solid ${props => props.theme.STROKE_GREY};
+    border: 1px solid ${({ theme }) => theme.STROKE_GREY};
     border-radius: 4px;
     padding: 12px 0;
 
     &:hover {
-        background: ${props => props.theme.BG_WHITE};
-        border: 1px solid ${props => props.theme.TYPE_WHITE};
-        box-shadow: 0 1px 2px 0 ${props => props.theme.BOX_SHADOW_BLACK_20};
+        background: ${({ theme }) => theme.BG_WHITE};
+        border: 1px solid ${({ theme }) => theme.TYPE_WHITE};
+        box-shadow: 0 1px 2px 0 ${({ theme }) => theme.BOX_SHADOW_BLACK_20};
     }
 
     @media screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
@@ -69,7 +65,7 @@ const SellColumn = styled(Column)`
         border-left: 0;
     }
 
-    border-left: 1px solid ${props => props.theme.STROKE_GREY};
+    border-left: 1px solid ${({ theme }) => theme.STROKE_GREY};
 `;
 
 const ProviderColumn = styled(Column)`
@@ -78,7 +74,7 @@ const ProviderColumn = styled(Column)`
 
 const TradeID = styled.span`
     padding-left: 5px;
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     overflow: hidden;
     text-overflow: ellipsis;
@@ -87,7 +83,7 @@ const TradeID = styled.span`
 const Row = styled.div`
     display: flex;
     align-items: center;
-    color: ${props => props.theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
@@ -103,7 +99,7 @@ const RowSecond = styled(Row)`
 const SmallRow = styled.div`
     padding-top: 8px;
     display: flex;
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     font-size: ${variables.FONT_SIZE.TINY};
 `;
@@ -112,39 +108,31 @@ const SmallRowStatus = styled(SmallRow)`
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
 `;
 
-const Amount = styled.div``;
-
 const Arrow = styled.div`
     display: flex;
     align-items: center;
     padding: 0 11px;
 `;
 
-const SellTransaction = ({ trade, providers, account }: Props) => {
-    const theme = useTheme();
-    const {
-        goto,
-        saveTransactionDetailId,
-        setSellIsFromRedirect,
-        saveSellQuoteRequest,
-        saveComposedTransactionInfo,
-    } = useActions({
-        goto: routerActions.goto,
-        saveTransactionDetailId: coinmarketSellActions.saveTransactionId,
-        setSellIsFromRedirect: coinmarketSellActions.setIsFromRedirect,
-        saveSellQuoteRequest: coinmarketSellActions.saveQuoteRequest,
-        saveComposedTransactionInfo: coinmarketCommonActions.saveComposedTransactionInfo,
-    });
-    const { composed, selectedFee } = useSelector(state => ({
-        composed: state.wallet.coinmarket.composedTransactionInfo.composed,
-        selectedFee: state.wallet.coinmarket.composedTransactionInfo.selectedFee,
-        fees: state.wallet.fees,
-    }));
+interface SellTransactionProps {
+    trade: TradeSell;
+    account: Account;
+    providers?: {
+        [name: string]: SellProviderInfo;
+    };
+}
 
+const SellTransaction = ({ trade, providers, account }: SellTransactionProps) => {
+    const theme = useTheme();
+    const { composed, selectedFee } = useSelector(
+        state => state.wallet.coinmarket.composedTransactionInfo,
+    );
+    const dispatch = useDispatch();
     useWatchSellTrade(account, trade);
 
     const { date, data } = trade;
     const {
+        amountInCrypto,
         fiatStringAmount,
         fiatCurrency,
         cryptoStringAmount,
@@ -154,39 +142,47 @@ const SellTransaction = ({ trade, providers, account }: Props) => {
     } = data;
 
     const viewDetail = () => {
-        saveTransactionDetailId(trade.key || '');
+        dispatch(saveTransactionId(trade.key || ''));
         if (trade.data.status === 'SUBMITTED' || trade.data.status === 'SEND_CRYPTO') {
             // continue to the sell flow
-            saveSellQuoteRequest({
-                amountInCrypto: trade.data.amountInCrypto || false,
-                fiatCurrency: trade.data.fiatCurrency || '',
-                cryptoCurrency: trade.data.cryptoCurrency || '',
-            });
-            setSellIsFromRedirect(true);
+            dispatch(
+                saveQuoteRequest({
+                    amountInCrypto: amountInCrypto || false,
+                    fiatCurrency: fiatCurrency || '',
+                    cryptoCurrency: cryptoCurrency || '',
+                }),
+            );
+            dispatch(setIsFromRedirect(true));
             // use fee selected by user or normal
-            saveComposedTransactionInfo({
-                selectedFee: selectedFee || 'normal',
-                composed: composed || {
-                    feePerByte: '',
-                    fee: '',
-                },
-            });
-            goto('wallet-coinmarket-sell-offers', {
+            dispatch(
+                saveComposedTransactionInfo({
+                    selectedFee: selectedFee || 'normal',
+                    composed: composed || {
+                        feePerByte: '',
+                        fee: '',
+                    },
+                }),
+            );
+            dispatch(
+                goto('wallet-coinmarket-sell-offers', {
+                    params: {
+                        symbol: account.symbol,
+                        accountIndex: account.index,
+                        accountType: account.accountType,
+                    },
+                }),
+            );
+            return;
+        }
+        dispatch(
+            goto('wallet-coinmarket-sell-detail', {
                 params: {
                     symbol: account.symbol,
                     accountIndex: account.index,
                     accountType: account.accountType,
                 },
-            });
-            return;
-        }
-        goto('wallet-coinmarket-sell-detail', {
-            params: {
-                symbol: account.symbol,
-                accountIndex: account.index,
-                accountType: account.accountType,
-            },
-        });
+            }),
+        );
     };
 
     return (
@@ -197,11 +193,11 @@ const SellTransaction = ({ trade, providers, account }: Props) => {
                     <Arrow>
                         <Icon color={theme.TYPE_LIGHT_GREY} size={13} icon="ARROW_RIGHT" />
                     </Arrow>
-                    <Amount>
+                    <div>
                         <HiddenPlaceholder>
                             {fiatStringAmount} {fiatCurrency}
                         </HiddenPlaceholder>
-                    </Amount>
+                    </div>
                 </Row>
                 <SmallRowStatus>
                     {trade.tradeType.toUpperCase()} • <FormattedDate value={date} date time /> •{' '}

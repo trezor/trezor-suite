@@ -5,8 +5,8 @@ import { getFirmwareType, getFirmwareVersion } from '@trezor/device-utils';
 
 import { CharacterCount, Translation } from 'src/components/suite';
 import { Textarea, Select, variables, Button, CollapsibleBox } from '@trezor/components';
-import { useActions, useDevice, useSelector } from 'src/hooks/suite';
-import * as guideActions from 'src/actions/suite/guideActions';
+import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
+import { sendFeedback, setView } from 'src/actions/suite/guideActions';
 import { ViewWrapper, Header, Content } from 'src/components/guide';
 import { Rating, FeedbackCategory, FeedbackType, UserData } from '@suite-common/suite-types';
 import {
@@ -23,7 +23,7 @@ const Headline = styled.div`
     font-size: ${variables.FONT_SIZE.TINY};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     text-align: left;
-    color: ${props => props.theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
     padding: 0 0 11px;
     width: 100%;
 `;
@@ -51,19 +51,19 @@ const RatingItem = styled.button<{ selected?: boolean }>`
     display: flex;
     justify-content: center;
     align-items: center;
-    border: 1px solid ${props => props.theme.STROKE_GREY};
+    border: 1px solid ${({ theme }) => theme.STROKE_GREY};
     cursor: pointer;
     font-size: 30px;
     background-color: inherit;
 
-    ${props =>
-        props.selected &&
+    ${({ selected, theme }) =>
+        selected &&
         css`
-            background: ${props.theme.BG_GREEN};
-            border: 1px solid ${props.theme.BG_GREEN};
+            background: ${theme.BG_GREEN};
+            border: 1px solid ${theme.BG_GREEN};
 
             &:hover {
-                background: ${props.theme.BG_GREEN};
+                background: ${theme.BG_GREEN};
             }
         `};
 `;
@@ -76,7 +76,7 @@ const AnonymousDataItem = styled.li`
     margin-bottom: 4px;
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${props => props.theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
 `;
 
 type RatingItem = {
@@ -120,11 +120,7 @@ type FeedbackProps = {
 
 export const Feedback = ({ type }: FeedbackProps) => {
     const { device } = useDevice();
-    const { setView, sendFeedback } = useActions({
-        setView: guideActions.setView,
-        sendFeedback: guideActions.sendFeedback,
-    });
-
+    const dispatch = useDispatch();
     const router = useSelector(state => state.router);
     const [description, setDescription] = React.useState('');
     const [rating, setRating] = React.useState<RatingItem>();
@@ -183,6 +179,7 @@ export const Feedback = ({ type }: FeedbackProps) => {
         firmwareType = getFirmwareType(device);
     }
 
+    const goBack = () => dispatch(setView('SUPPORT_FEEDBACK_SELECTION'));
     const onSubmit = useCallback(() => {
         const userData: UserData = {
             platform: getEnvironment(),
@@ -197,37 +194,41 @@ export const Feedback = ({ type }: FeedbackProps) => {
             firmware_type: firmwareType,
         };
         if (type === 'BUG') {
-            sendFeedback({
-                type: 'BUG',
-                payload: {
-                    description,
-                    // By the time of submission a category must be selected.
-                    // Otherwise the submit button would be disabled.
-                    category: category!,
-                    ...userData,
-                },
-            });
+            dispatch(
+                sendFeedback({
+                    type: 'BUG',
+                    payload: {
+                        description,
+                        // By the time of submission a category must be selected.
+                        // Otherwise the submit button would be disabled.
+                        category: category!,
+                        ...userData,
+                    },
+                }),
+            );
         } else {
-            sendFeedback({
-                type: 'SUGGESTION',
-                payload: {
-                    description,
-                    rating: rating?.id,
-                    ...userData,
-                },
-            });
+            dispatch(
+                sendFeedback({
+                    type: 'SUGGESTION',
+                    payload: {
+                        description,
+                        rating: rating?.id,
+                        ...userData,
+                    },
+                }),
+            );
         }
-        setView('GUIDE_DEFAULT');
+        dispatch(setView('GUIDE_DEFAULT'));
         analytics.report({
             type: EventType.GuideFeedbackSubmit,
             payload: { type: type === 'BUG' ? 'bug' : 'suggestion' },
         });
-    }, [device, firmwareType, type, setView, sendFeedback, description, category, rating?.id]);
+    }, [device, dispatch, firmwareType, type, description, category, rating?.id]);
 
     return (
         <ViewWrapper>
             <Header
-                back={() => setView('SUPPORT_FEEDBACK_SELECTION')}
+                back={goBack}
                 label={
                     type === 'BUG' ? (
                         <Translation id="TR_GUIDE_VIEW_HEADLINE_REPORT_BUG" />

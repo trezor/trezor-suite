@@ -4,35 +4,27 @@ import { ExchangeProviderInfo } from 'invity-api';
 import { Button, Icon, variables, useTheme } from '@trezor/components';
 import { CoinmarketProviderInfo } from 'src/components/wallet';
 import { TradeExchange } from 'src/types/wallet/coinmarketCommonTypes';
-import * as routerActions from 'src/actions/suite/routerActions';
-import * as coinmarketExchangeActions from 'src/actions/wallet/coinmarketExchangeActions';
+import { goto } from 'src/actions/suite/routerActions';
+import { saveTransactionId } from 'src/actions/wallet/coinmarketExchangeActions';
 import { Account } from 'src/types/wallet';
 import { useWatchExchangeTrade } from 'src/hooks/wallet/useCoinmarket';
 import Status from '../Status';
 import { Translation, FormattedDate, FormattedCryptoAmount } from 'src/components/suite';
-import { useActions } from 'src/hooks/suite';
-
-interface Props {
-    trade: TradeExchange;
-    account: Account;
-    providers?: {
-        [name: string]: ExchangeProviderInfo;
-    };
-}
+import { useDispatch } from 'src/hooks/suite';
 
 const Wrapper = styled.div`
     display: flex;
     flex: 1;
     align-items: center;
     margin-bottom: 20px;
-    border: 1px solid ${props => props.theme.STROKE_GREY};
+    border: 1px solid ${({ theme }) => theme.STROKE_GREY};
     border-radius: 4px;
     padding: 12px 0;
 
     &:hover {
-        background: ${props => props.theme.BG_WHITE};
-        border: 1px solid ${props => props.theme.TYPE_WHITE};
-        box-shadow: 0 1px 2px 0 ${props => props.theme.BOX_SHADOW_BLACK_20};
+        background: ${({ theme }) => theme.BG_WHITE};
+        border: 1px solid ${({ theme }) => theme.TYPE_WHITE};
+        box-shadow: 0 1px 2px 0 ${({ theme }) => theme.BOX_SHADOW_BLACK_20};
     }
 
     @media screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
@@ -72,7 +64,7 @@ const ProviderColumn = styled(Column)`
 
 const TradeID = styled.span`
     padding-left: 5px;
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     overflow: hidden;
     text-overflow: ellipsis;
@@ -81,14 +73,14 @@ const TradeID = styled.span`
 const Row = styled.div`
     display: flex;
     align-items: center;
-    color: ${props => props.theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
 const SmallRow = styled.div`
     padding-top: 8px;
     display: flex;
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     font-size: ${variables.FONT_SIZE.TINY};
     white-space: nowrap;
@@ -106,26 +98,33 @@ const Arrow = styled.div`
     padding: 0 11px;
 `;
 
-const ExchangeTransaction = ({ trade, providers, account }: Props) => {
+interface ExchangeTransactionProps {
+    trade: TradeExchange;
+    account: Account;
+    providers?: {
+        [name: string]: ExchangeProviderInfo;
+    };
+}
+
+const ExchangeTransaction = ({ trade, providers, account }: ExchangeTransactionProps) => {
+    const dispatch = useDispatch();
     const theme = useTheme();
-    const { goto, saveTransactionId } = useActions({
-        goto: routerActions.goto,
-        saveTransactionId: coinmarketExchangeActions.saveTransactionId,
-    });
     useWatchExchangeTrade(account, trade);
 
     const { date, data } = trade;
     const { send, sendStringAmount, receive, receiveStringAmount, exchange } = data;
 
     const viewDetail = async () => {
-        await saveTransactionId(trade.key || '');
-        goto('wallet-coinmarket-exchange-detail', {
-            params: {
-                symbol: account.symbol,
-                accountIndex: account.index,
-                accountType: account.accountType,
-            },
-        });
+        await dispatch(saveTransactionId(trade.key || ''));
+        dispatch(
+            goto('wallet-coinmarket-exchange-detail', {
+                params: {
+                    symbol: account.symbol,
+                    accountIndex: account.index,
+                    accountType: account.accountType,
+                },
+            }),
+        );
     };
 
     return (

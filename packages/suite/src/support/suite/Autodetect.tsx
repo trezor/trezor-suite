@@ -6,14 +6,11 @@ import { setTheme as setThemeAction } from 'src/actions/suite/suiteActions';
 import * as languageActions from 'src/actions/settings/languageActions';
 
 const Autodetect = () => {
-    const { autodetectTheme, autodetectLanguage, currentTheme, currentLanguage } = useSelector(
-        state => ({
-            autodetectTheme: state.suite.settings.autodetect.theme,
-            autodetectLanguage: state.suite.settings.autodetect.language,
-            currentTheme: state.suite.settings.theme.variant,
-            currentLanguage: state.suite.settings.language,
-        }),
-    );
+    const autodetectTheme = useSelector(state => state.suite.settings.autodetect.theme);
+    const autodetectLanguage = useSelector(state => state.suite.settings.autodetect.language);
+    const currentTheme = useSelector(state => state.suite.settings.theme.variant);
+    const currentLanguage = useSelector(state => state.suite.settings.language);
+
     const { setTheme, setLanguage } = useActions({
         setTheme: setThemeAction,
         setLanguage: languageActions.setLanguage,

@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
 import { CoinmarketLayout, withSelectedAccountLoaded } from 'src/components/wallet';
 import type { AppState, ExtendedMessageDescriptor } from 'src/types/suite';
-import { useActions } from 'src/hooks/suite';
-import * as coinmarketCommonActions from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
+import { useDispatch } from 'src/hooks/suite';
+import { loadInvityData } from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
 
 interface ComponentProps {
     selectedAccount: AppState['wallet']['selectedAccount'];
@@ -22,13 +22,11 @@ export const withCoinmarket = (
 ) => {
     const displayName = WrappedComponent.displayName || WrappedComponent.name || 'Component';
     const Component = withSelectedAccountLoaded(({ selectedAccount }) => {
-        const { loadInvityData } = useActions({
-            loadInvityData: coinmarketCommonActions.loadInvityData,
-        });
+        const dispatch = useDispatch();
 
         useEffect(() => {
-            loadInvityData();
-        }, [loadInvityData]);
+            dispatch(loadInvityData());
+        }, [dispatch]);
 
         return (
             <CoinmarketLayout selectedAccount={selectedAccount}>

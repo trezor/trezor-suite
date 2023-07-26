@@ -4,8 +4,8 @@ import { analytics, EventType } from '@trezor/suite-analytics';
 import { Translation } from 'src/components/suite';
 import { ActionColumn, SectionItem, TextColumn } from 'src/components/suite/Settings';
 import { Switch } from '@trezor/components';
-import { useDevice, useActions } from 'src/hooks/suite';
-import * as deviceSettingsActions from 'src/actions/settings/deviceSettingsActions';
+import { useDevice, useDispatch } from 'src/hooks/suite';
+import { changePin } from 'src/actions/settings/deviceSettingsActions';
 import { useAnchor } from 'src/hooks/suite/useAnchor';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 
@@ -14,13 +14,22 @@ interface PinProtectionProps {
 }
 
 export const PinProtection = ({ isDeviceLocked }: PinProtectionProps) => {
+    const dispatch = useDispatch();
     const { device } = useDevice();
-    const { changePin } = useActions({
-        changePin: deviceSettingsActions.changePin,
-    });
     const { anchorRef, shouldHighlight } = useAnchor(SettingsAnchor.PinProtection);
 
     const pinProtection = device?.features?.pin_protection ?? null;
+
+    const handleChange = () => {
+        dispatch(changePin({ remove: !!pinProtection }));
+        analytics.report({
+            type: EventType.SettingsDeviceChangePinProtection,
+            payload: {
+                remove: pinProtection,
+            },
+        });
+    };
+
     return (
         <SectionItem
             data-test="@settings/device/pin-protection"
@@ -34,15 +43,7 @@ export const PinProtection = ({ isDeviceLocked }: PinProtectionProps) => {
             <ActionColumn>
                 <Switch
                     isChecked={!!pinProtection}
-                    onChange={() => {
-                        changePin({ remove: !!pinProtection });
-                        analytics.report({
-                            type: EventType.SettingsDeviceChangePinProtection,
-                            payload: {
-                                remove: pinProtection,
-                            },
-                        });
-                    }}
+                    onChange={handleChange}
                     isDisabled={isDeviceLocked}
                     dataTest="@settings/device/pin-switch"
                 />

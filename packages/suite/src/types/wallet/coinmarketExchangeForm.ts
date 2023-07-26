@@ -2,18 +2,15 @@ import type { AppState } from 'src/types/suite';
 import type { FormState as ReactHookFormState, UseFormReturn } from 'react-hook-form';
 import type { Account, Network, CoinFiatRates } from 'src/types/wallet';
 import type { FeeLevel } from '@trezor/connect';
-import type { ExchangeTrade, ExchangeTradeQuoteRequest, ExchangeCoinInfo } from 'invity-api';
-import type {
-    ExchangeInfo,
-    CoinmarketExchangeAction,
-} from 'src/actions/wallet/coinmarketExchangeActions';
+import type { ExchangeCoinInfo } from 'invity-api';
+import type { ExchangeInfo } from 'src/actions/wallet/coinmarketExchangeActions';
 import type {
     FeeInfo,
     FormState,
     PrecomposedLevels,
     PrecomposedLevelsCardano,
 } from 'src/types/wallet/sendForm';
-import type { CryptoAmountLimits, Option } from './coinmarketCommonTypes';
+import type { AmountLimits, CryptoAmountLimits, Option } from './coinmarketCommonTypes';
 import type { WithSelectedAccountLoadedProps } from 'src/components/wallet';
 import { SendContextValues } from '@suite-common/wallet-types';
 
@@ -41,18 +38,7 @@ export interface ExchangeFormContextValues extends UseFormReturn<ExchangeFormSta
     composeRequest: SendContextValues['composeTransaction'];
     updateFiatCurrency: (selectedCurrency: { value: string; label: string }) => void;
     updateSendCryptoValue: (fiatValue: string, decimals: number) => void;
-    saveQuoteRequest: (request: ExchangeTradeQuoteRequest) => CoinmarketExchangeAction;
-    saveQuotes: (
-        fixedQuotes: ExchangeTrade[],
-        floatQuotes: ExchangeTrade[],
-        dexQuotes: ExchangeTrade[],
-    ) => CoinmarketExchangeAction;
-    saveTrade: (
-        exchangeTrade: ExchangeTrade,
-        account: Account,
-        date: string,
-    ) => CoinmarketExchangeAction;
-    amountLimits?: CryptoAmountLimits;
+    amountLimits?: AmountLimits;
     composedLevels?: PrecomposedLevels | PrecomposedLevelsCardano;
     fiatRates?: CoinFiatRates;
     setAmountLimits: (limits?: CryptoAmountLimits) => void;

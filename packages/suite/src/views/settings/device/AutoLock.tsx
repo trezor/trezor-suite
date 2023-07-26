@@ -3,8 +3,8 @@ import { analytics, EventType } from '@trezor/suite-analytics';
 
 import { Translation } from 'src/components/suite';
 import { ActionColumn, ActionSelect, SectionItem, TextColumn } from 'src/components/suite/Settings';
-import { useActions, useDevice, useLocales } from 'src/hooks/suite';
-import * as deviceSettingsActions from 'src/actions/settings/deviceSettingsActions';
+import { useDevice, useDispatch, useLocales } from 'src/hooks/suite';
+import { applySettings } from 'src/actions/settings/deviceSettingsActions';
 import { formatDurationStrict } from '@suite-common/suite-utils';
 import { useAnchor } from 'src/hooks/suite/useAnchor';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
@@ -28,11 +28,8 @@ interface AutoLockProps {
 }
 
 export const AutoLock = ({ isDeviceLocked }: AutoLockProps) => {
-    const { applySettings } = useActions({
-        applySettings: deviceSettingsActions.applySettings,
-    });
+    const dispatch = useDispatch();
     const { anchorRef, shouldHighlight } = useAnchor(SettingsAnchor.Autolock);
-
     const { device } = useDevice();
     const locale = useLocales();
 
@@ -45,6 +42,18 @@ export const AutoLock = ({ isDeviceLocked }: AutoLockProps) => {
     const AUTO_LOCK_OPTIONS = {
         label: <Translation id="TR_DEVICE_SETTINGS_AFTER_DELAY" />,
         options: Object.values(AUTO_LOCK_TIMES).map(time => buildAutoLockOption(time, locale)),
+    };
+
+    const handleChange = (option: { value: number; label: string }) => {
+        const value = option.value * 1000;
+
+        dispatch(applySettings({ auto_lock_delay_ms: value }));
+        analytics.report({
+            type: EventType.SettingsDeviceUpdateAutoLock,
+            payload: {
+                value,
+            },
+        });
     };
 
     return (
@@ -62,19 +71,7 @@ export const AutoLock = ({ isDeviceLocked }: AutoLockProps) => {
                     hideTextCursor
                     useKeyPressScroll
                     placeholder=""
-                    onChange={(option: { value: number; label: string }) => {
-                        const value = option.value * 1000;
-
-                        applySettings({
-                            auto_lock_delay_ms: value,
-                        });
-                        analytics.report({
-                            type: EventType.SettingsDeviceUpdateAutoLock,
-                            payload: {
-                                value,
-                            },
-                        });
-                    }}
+                    onChange={handleChange}
                     options={[AUTO_LOCK_OPTIONS]}
                     value={AUTO_LOCK_OPTIONS.options.find(
                         option => autoLockDelay && autoLockDelay / 1000 === option.value,

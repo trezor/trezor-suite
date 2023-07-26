@@ -4,8 +4,13 @@ import { Button, H2, P, Image, variables } from '@trezor/components';
 import { SelectWordCount, SelectRecoveryType } from 'src/components/recovery';
 import { Loading, Translation, CheckItem, TrezorLink, Modal } from 'src/components/suite';
 import { ReduxModal } from 'src/components/suite/ModalSwitcher/ReduxModal';
-import * as recoveryActions from 'src/actions/recovery/recoveryActions';
-import { useDevice, useSelector, useActions } from 'src/hooks/suite';
+import {
+    checkSeed,
+    setAdvancedRecovery,
+    setStatus,
+    setWordsCount,
+} from 'src/actions/recovery/recoveryActions';
+import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 import type { ForegroundAppProps } from 'src/types/suite';
 import type { WordCount } from 'src/types/recovery';
 import { InstructionStep } from 'src/components/suite/InstructionStep';
@@ -59,29 +64,22 @@ const VerticalCenter = styled.div`
 `;
 
 export const Recovery = ({ onCancel }: ForegroundAppProps) => {
-    const { recovery, modal } = useSelector(state => ({
-        recovery: state.recovery,
-        modal: state.modal,
-    }));
-    const actions = useActions({
-        checkSeed: recoveryActions.checkSeed,
-        setStatus: recoveryActions.setStatus,
-        setWordsCount: recoveryActions.setWordsCount,
-        setAdvancedRecovery: recoveryActions.setAdvancedRecovery,
-    });
+    const recovery = useSelector(state => state.recovery);
+    const modal = useSelector(state => state.modal);
+    const dispatch = useDispatch();
     const { device, isLocked } = useDevice();
     const [understood, setUnderstood] = useState(false);
 
     const intl = useIntl();
 
     const onSetWordsCount = (count: WordCount) => {
-        actions.setWordsCount(count);
-        actions.setStatus('select-recovery-type');
+        dispatch(setWordsCount(count));
+        dispatch(setStatus('select-recovery-type'));
     };
 
     const onSetRecoveryType = (type: 'standard' | 'advanced') => {
-        actions.setAdvancedRecovery(type === 'advanced');
-        actions.checkSeed();
+        dispatch(setAdvancedRecovery(type === 'advanced'));
+        dispatch(checkSeed());
     };
 
     const deviceModelInternal = device?.features?.internal_model;
@@ -117,8 +115,8 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
                 <StyledButton
                     onClick={() =>
                         deviceModelInternal === DeviceModelInternal.T1B1
-                            ? actions.setStatus('select-word-count')
-                            : actions.checkSeed()
+                            ? dispatch(setStatus('select-word-count'))
+                            : dispatch(checkSeed())
                     }
                     isDisabled={!understood || isLocked()}
                     data-test="@recovery/start-button"

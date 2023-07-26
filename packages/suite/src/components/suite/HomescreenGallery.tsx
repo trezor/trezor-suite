@@ -4,9 +4,9 @@ import { analytics, EventType } from '@trezor/suite-analytics';
 import { resolveStaticPath } from '@suite-common/suite-utils';
 
 import { homescreensBW64x128, homescreensColor240x240 } from 'src/constants/suite/homescreens';
-import * as deviceSettingsActions from 'src/actions/settings/deviceSettingsActions';
+import { applySettings } from 'src/actions/settings/deviceSettingsActions';
 import { imagePathToHex } from 'src/utils/suite/homescreen';
-import { useActions, useDevice } from 'src/hooks/suite';
+import { useDevice, useDispatch } from 'src/hooks/suite';
 import { DeviceModelInternal } from '@trezor/connect';
 
 type AnyImageName = (typeof homescreensBW64x128)[number] | (typeof homescreensColor240x240)[number];
@@ -40,8 +40,9 @@ type HomescreenGalleryProps = {
 };
 
 export const HomescreenGallery = ({ onConfirm }: HomescreenGalleryProps) => {
+    const dispatch = useDispatch();
     const { device, isLocked } = useDevice();
-    const { applySettings } = useActions({ applySettings: deviceSettingsActions.applySettings });
+
     const deviceModelInternal = device?.features?.internal_model;
 
     if (!deviceModelInternal) return null;
@@ -51,7 +52,7 @@ export const HomescreenGallery = ({ onConfirm }: HomescreenGalleryProps) => {
 
         const hex = await imagePathToHex(imagePath, deviceModelInternal);
 
-        applySettings({ homescreen: hex });
+        dispatch(applySettings({ homescreen: hex }));
 
         if (onConfirm) {
             onConfirm();

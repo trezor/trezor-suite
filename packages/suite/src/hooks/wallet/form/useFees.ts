@@ -1,8 +1,8 @@
 import { useEffect, useRef } from 'react';
 import { FieldPath, UseFormReturn } from 'react-hook-form';
 import { FeeLevel } from '@trezor/connect';
-import * as walletSettingsActions from 'src/actions/settings/walletSettingsActions';
-import { useActions } from 'src/hooks/suite';
+import { setLastUsedFeeLevel } from 'src/actions/settings/walletSettingsActions';
+import { useDispatch } from 'src/hooks/suite';
 import {
     FeeInfo,
     FormState,
@@ -32,16 +32,14 @@ export const useFees = <TFieldValues extends FormState>({
     formState: { errors },
     ...props
 }: Props<TFieldValues>) => {
+    const dispatch = useDispatch();
+
     // local references
     const selectedFeeRef = useRef(defaultValue);
     const feePerUnitRef = useRef<string | undefined>('');
     const feeLimitRef = useRef<string | undefined>('');
     const estimatedFeeLimitRef = useRef<string | undefined>('');
     const saveLastUsedFeeRef = useRef(saveLastUsedFee);
-
-    const { setLastUsedFeeLevel } = useActions({
-        setLastUsedFeeLevel: walletSettingsActions.setLastUsedFeeLevel,
-    });
 
     // Type assertion allowing to make the component reusable, see https://stackoverflow.com/a/73624072.
     const { clearErrors, getValues, register, setValue, watch } =
@@ -92,17 +90,12 @@ export const useFees = <TFieldValues extends FormState>({
                 !errors.feePerUnit &&
                 !errors.feeLimit
             ) {
-                setLastUsedFeeLevel({ label: 'custom', feePerUnit, feeLimit, blocks: -1 });
+                dispatch(
+                    setLastUsedFeeLevel({ label: 'custom', feePerUnit, feeLimit, blocks: -1 }),
+                );
             }
         }
-    }, [
-        feePerUnit,
-        feeLimit,
-        errors.feePerUnit,
-        errors.feeLimit,
-        composeRequest,
-        setLastUsedFeeLevel,
-    ]);
+    }, [dispatch, feePerUnit, feeLimit, errors.feePerUnit, errors.feeLimit, composeRequest]);
 
     // watch estimatedFee change
     const estimatedFeeLimit = watch('estimatedFeeLimit');
@@ -163,7 +156,7 @@ export const useFees = <TFieldValues extends FormState>({
         // save last used fee
         if (level !== 'custom' && saveLastUsedFeeRef.current) {
             const nextLevel = feeInfo.levels.find(l => l.label === (level || 'normal'))!;
-            setLastUsedFeeLevel(nextLevel);
+            dispatch(setLastUsedFeeLevel(nextLevel));
         }
 
         selectedFeeRef.current = selectedFee;

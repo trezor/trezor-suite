@@ -5,7 +5,7 @@ import { analytics, EventType } from '@trezor/suite-analytics';
 import { Translation, Notifications } from 'src/components/suite';
 import { Dropdown, DropdownRef, variables } from '@trezor/components';
 import { ActionItem } from './ActionItem';
-import { useActions } from 'src/hooks/suite';
+import { useDispatch } from 'src/hooks/suite';
 import { notificationsActions } from '@suite-common/toast-notifications';
 
 const Wrapper = styled.div`
@@ -35,9 +35,7 @@ export const NavNotifications = ({
     const [open, setOpen] = useState(false);
     const dropdownRef = useRef<DropdownRef>();
 
-    const { resetUnseen } = useActions({
-        resetUnseen: notificationsActions.resetUnseen,
-    });
+    const dispatch = useDispatch();
 
     const handleToggleChange = useCallback(
         (isToggled: boolean) => {
@@ -45,7 +43,7 @@ export const NavNotifications = ({
                 setOpen(true);
             } else {
                 // if the dropdown is going to be closed, mark all notifications as seen and "deactivate" ActionItem
-                resetUnseen();
+                dispatch(notificationsActions.resetUnseen());
                 setOpen(false);
             }
 
@@ -56,7 +54,7 @@ export const NavNotifications = ({
                 },
             });
         },
-        [resetUnseen],
+        [dispatch],
     );
 
     return (

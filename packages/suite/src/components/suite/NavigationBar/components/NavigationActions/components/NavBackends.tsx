@@ -4,10 +4,9 @@ import styled from 'styled-components';
 import { Dropdown, DropdownRef, CoinLogo, variables } from '@trezor/components';
 import { Translation, StatusLight } from 'src/components/suite';
 import { ActionItem } from './ActionItem';
-import { useActions, useSelector } from 'src/hooks/suite';
-import { goto as gotoAction } from 'src/actions/suite/routerActions';
-import { openModal as openModalAction } from 'src/actions/suite/modalActions';
-
+import { useDispatch, useSelector } from 'src/hooks/suite';
+import { goto } from 'src/actions/suite/routerActions';
+import { openModal } from 'src/actions/suite/modalActions';
 import { BlockchainState } from '@suite-common/wallet-core';
 import type { CustomBackend } from 'src/types/wallet';
 
@@ -38,7 +37,7 @@ const RowWrapper = styled.div`
         > span:last-child {
             font-weight: ${variables.FONT_WEIGHT.MEDIUM};
             font-size: ${variables.FONT_SIZE.SMALL};
-            color: ${props => props.theme.TYPE_LIGHT_GREY};
+            color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
             text-transform: capitalize;
         }
     }
@@ -79,13 +78,10 @@ type NavBackendsProps = {
 export const NavBackends = ({ customBackends }: NavBackendsProps) => {
     const [open, setOpen] = useState(false);
     const dropdownRef = useRef<DropdownRef>();
-    const { blockchain } = useSelector(state => ({
-        blockchain: state.wallet.blockchain,
-    }));
-    const { goto, openModal } = useActions({
-        goto: gotoAction,
-        openModal: openModalAction,
-    });
+    const blockchain = useSelector(state => state.wallet.blockchain);
+    const dispatch = useDispatch();
+
+    const goToCoinsSettings = () => dispatch(goto('settings-coins'));
 
     return (
         <Wrapper>
@@ -97,7 +93,7 @@ export const NavBackends = ({ customBackends }: NavBackendsProps) => {
                 topPadding={0}
                 minWidth={230}
                 masterLink={{
-                    callback: () => goto('settings-coins'),
+                    callback: goToCoinsSettings,
                     label: <Translation id="TR_MANAGE" />,
                     icon: 'ARROW_RIGHT_LONG',
                 }}
@@ -109,10 +105,12 @@ export const NavBackends = ({ customBackends }: NavBackendsProps) => {
                             key: backend.coin,
                             label: <BackendRow backend={backend} blockchain={blockchain} />,
                             callback: () =>
-                                openModal({
-                                    type: 'advanced-coin-settings',
-                                    coin: backend.coin,
-                                }),
+                                dispatch(
+                                    openModal({
+                                        type: 'advanced-coin-settings',
+                                        coin: backend.coin,
+                                    }),
+                                ),
                         })),
                     },
                     {

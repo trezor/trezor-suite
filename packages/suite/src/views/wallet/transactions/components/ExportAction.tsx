@@ -2,7 +2,7 @@ import React, { useState, useCallback } from 'react';
 import { Loader, Dropdown } from '@trezor/components';
 import { analytics, EventType } from '@trezor/suite-analytics';
 import { Translation } from 'src/components/suite';
-import { useActions } from 'src/hooks/suite';
+import { useDispatch } from 'src/hooks/suite';
 import { SETTINGS } from 'src/config/suite';
 import { useTranslation } from 'src/hooks/suite/useTranslation';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -17,14 +17,9 @@ export interface ExportActionProps {
 }
 
 export const ExportAction = ({ account }: ExportActionProps) => {
-    const { translationString } = useTranslation();
-    const { addToast, fetchTransactions, exportTransactions } = useActions({
-        addToast: notificationsActions.addToast,
-        fetchTransactions: fetchTransactionsThunk,
-        exportTransactions: exportTransactionsThunk,
-    });
-
     const [isExportRunning, setIsExportRunning] = useState(false);
+    const dispatch = useDispatch();
+    const { translationString } = useTranslation();
 
     const getAccountTitle = useCallback(() => {
         if (account.accountType === 'coinjoin') {
@@ -52,34 +47,30 @@ export const ExportAction = ({ account }: ExportActionProps) => {
 
             setIsExportRunning(true);
             try {
-                await fetchTransactions({
-                    accountKey: account.key,
-                    page: 2,
-                    perPage: SETTINGS.TXS_PER_PAGE,
-                    noLoading: true,
-                    recursive: true,
-                });
+                await dispatch(
+                    fetchTransactionsThunk({
+                        accountKey: account.key,
+                        page: 2,
+                        perPage: SETTINGS.TXS_PER_PAGE,
+                        noLoading: true,
+                        recursive: true,
+                    }),
+                );
                 const accountName = account.metadata.accountLabel || getAccountTitle();
-                await exportTransactions({ account, accountName, type });
+                await dispatch(exportTransactionsThunk({ account, accountName, type }));
             } catch (error) {
                 console.error('Export transaction failed: ', error);
-                addToast({
-                    type: 'error',
-                    error: translationString('TR_EXPORT_FAIL'),
-                });
+                dispatch(
+                    notificationsActions.addToast({
+                        type: 'error',
+                        error: translationString('TR_EXPORT_FAIL'),
+                    }),
+                );
             } finally {
                 setIsExportRunning(false);
             }
         },
-        [
-            isExportRunning,
-            fetchTransactions,
-            account,
-            exportTransactions,
-            addToast,
-            translationString,
-            getAccountTitle,
-        ],
+        [isExportRunning, account, dispatch, translationString, getAccountTitle],
     );
 
     if (!isFeatureFlagEnabled('EXPORT_TRANSACTIONS')) {

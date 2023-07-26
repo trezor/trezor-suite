@@ -5,8 +5,8 @@ import { analytics, EventType } from '@trezor/suite-analytics';
 
 import { Card, Translation } from 'src/components/suite';
 import { Textarea, Button, Icon, Tooltip, variables } from '@trezor/components';
-import { useActions, useTranslation } from 'src/hooks/suite';
-import * as sendFormActions from 'src/actions/wallet/sendFormActions';
+import { useDispatch, useTranslation } from 'src/hooks/suite';
+import { pushRawTransaction, sendRaw } from 'src/actions/wallet/sendFormActions';
 import { getInputState, isHexValid } from '@suite-common/wallet-utils';
 import { Network } from 'src/types/wallet';
 import { OpenGuideFromTooltip } from 'src/components/guide';
@@ -34,7 +34,11 @@ const ButtonSend = styled(Button)`
     margin-bottom: 5px;
 `;
 
-const Raw = ({ network }: { network: Network }) => {
+interface RawProps {
+    network: Network;
+}
+
+const Raw = ({ network }: RawProps) => {
     const {
         register,
         getValues,
@@ -46,12 +50,7 @@ const Raw = ({ network }: { network: Network }) => {
             rawTx: '',
         },
     });
-
-    const { sendRaw, pushRawTransaction } = useActions({
-        sendRaw: sendFormActions.sendRaw,
-        pushRawTransaction: sendFormActions.pushRawTransaction,
-    });
-
+    const dispatch = useDispatch();
     const { translationString } = useTranslation();
 
     const inputName = 'rawTx';
@@ -65,6 +64,20 @@ const Raw = ({ network }: { network: Network }) => {
                 return translationString('DATA_NOT_VALID_HEX');
         },
     });
+
+    const cancel = () => dispatch(sendRaw(false));
+    const send = async () => {
+        const result = await dispatch(pushRawTransaction(inputValue, network.symbol));
+        if (result) {
+            setValue(inputName, '');
+            analytics.report({
+                type: EventType.SendRawTransaction,
+                payload: {
+                    networkSymbol: network.symbol,
+                },
+            });
+        }
+    };
 
     return (
         <>
@@ -89,27 +102,13 @@ const Raw = ({ network }: { network: Network }) => {
                             <Translation id="SEND_RAW_TRANSACTION" />
                         </Tooltip>
                     }
-                    labelRight={<Icon size={20} icon="CROSS" onClick={() => sendRaw(false)} />}
+                    labelRight={<Icon size={20} icon="CROSS" onClick={cancel} />}
                     innerRef={inputRef}
                     {...inputField}
                 />
             </StyledCard>
             <ButtonWrapper>
-                <ButtonSend
-                    isDisabled={inputState !== 'success'}
-                    onClick={async () => {
-                        const result = await pushRawTransaction(inputValue, network.symbol);
-                        if (result) {
-                            setValue(inputName, '');
-                            analytics.report({
-                                type: EventType.SendRawTransaction,
-                                payload: {
-                                    networkSymbol: network.symbol,
-                                },
-                            });
-                        }
-                    }}
-                >
+                <ButtonSend isDisabled={inputState !== 'success'} onClick={send}>
                     <Translation id="SEND_TRANSACTION" />
                 </ButtonSend>
             </ButtonWrapper>

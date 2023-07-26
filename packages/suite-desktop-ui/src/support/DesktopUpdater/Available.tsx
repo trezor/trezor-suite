@@ -1,28 +1,28 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import ReactMarkdown from 'react-markdown';
 
 import styled from 'styled-components';
 import { Translation, Modal } from 'src/components/suite';
-import { useActions } from 'src/hooks/suite';
+import { useDispatch } from 'src/hooks/suite';
 import { getReleaseUrl } from 'src/services/github';
-import * as desktopUpdateActions from 'src/actions/suite/desktopUpdateActions';
+import { download } from 'src/actions/suite/desktopUpdateActions';
 
 import { Button, H2, variables, Link } from '@trezor/components';
 import { desktopApi, UpdateInfo } from '@trezor/suite-desktop-api';
 
 const GreenH2 = styled(H2)`
     text-align: left;
-    color: ${props => props.theme.TYPE_GREEN};
+    color: ${({ theme }) => theme.TYPE_GREEN};
 `;
 
 const ChangelogWrapper = styled.div`
     margin: 20px 0px;
-    background: ${props => props.theme.BG_GREY};
+    background: ${({ theme }) => theme.BG_GREY};
     border-radius: 8px;
     max-height: 400px;
     overflow-y: auto;
     padding: 16px 20px;
-    color: ${props => props.theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     text-align: left;
@@ -105,14 +105,12 @@ interface AvailableProps {
 }
 
 export const Available = ({ hideWindow, isCancelable, latest }: AvailableProps) => {
-    const { download } = useActions({
-        download: desktopUpdateActions.download,
-    });
+    const dispatch = useDispatch();
 
-    const downloadUpdate = useCallback(() => {
-        download();
+    const downloadUpdate = () => {
+        dispatch(download());
         desktopApi.downloadUpdate();
-    }, [download]);
+    };
 
     return (
         <StyledModal

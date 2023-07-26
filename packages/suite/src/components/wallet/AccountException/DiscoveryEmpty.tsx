@@ -1,7 +1,7 @@
 import React from 'react';
-import * as modalActions from 'src/actions/suite/modalActions';
-import * as routerActions from 'src/actions/suite/routerActions';
-import { useDevice, useActions } from 'src/hooks/suite';
+import { openModal } from 'src/actions/suite/modalActions';
+import { goto } from 'src/actions/suite/routerActions';
+import { useDevice, useDispatch } from 'src/hooks/suite';
 import { Translation } from 'src/components/suite';
 import { AccountExceptionLayout } from 'src/components/wallet';
 
@@ -10,14 +10,19 @@ import { AccountExceptionLayout } from 'src/components/wallet';
  * see: @wallet-actions/selectedAccountActions
  */
 const DiscoveryEmpty = () => {
+    const dispatch = useDispatch();
     const { device, isLocked } = useDevice();
-    const { openModal, goto } = useActions({
-        openModal: modalActions.openModal,
-        goto: routerActions.goto,
-    });
 
     const isDeviceLocked = isLocked();
     const isDisabled = !device || !device.connected || device.authFailed || device.authConfirm;
+
+    const goToCoinsSettings = () => dispatch(goto('settings-coins'));
+    const addAccount = () =>
+        openModal({
+            type: 'add-account',
+            device: device!,
+        });
+
     return (
         <AccountExceptionLayout
             title={<Translation id="TR_ACCOUNT_EXCEPTION_DISCOVERY_EMPTY" />}
@@ -29,18 +34,14 @@ const DiscoveryEmpty = () => {
                     variant: 'secondary',
                     isLoading: isDeviceLocked,
                     isDisabled,
-                    onClick: () => goto('settings-coins'),
+                    onClick: goToCoinsSettings,
                     children: <Translation id="TR_COIN_SETTINGS" />,
                 },
                 {
                     key: '2',
                     isLoading: isDeviceLocked,
                     isDisabled,
-                    onClick: () =>
-                        openModal({
-                            type: 'add-account',
-                            device: device!,
-                        }),
+                    onClick: addAccount,
                     children: <Translation id="TR_ADD_ACCOUNT" />,
                 },
             ]}

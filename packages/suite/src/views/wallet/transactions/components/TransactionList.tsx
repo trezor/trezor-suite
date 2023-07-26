@@ -5,7 +5,7 @@ import useDebounce from 'react-use/lib/useDebounce';
 import { Stack } from 'src/components/suite/Skeleton';
 import { Translation } from 'src/components/suite';
 import { Section } from 'src/components/dashboard';
-import { useSelector, useActions } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import {
     groupTransactionsByDate,
     advancedSearchTransactions,
@@ -46,10 +46,9 @@ export const TransactionList = ({
     account,
     symbol,
 }: TransactionListProps) => {
-    const { anchor, localCurrency } = useSelector(state => ({
-        localCurrency: state.wallet.settings.localCurrency,
-        anchor: state.router.anchor,
-    }));
+    const localCurrency = useSelector(state => state.wallet.settings.localCurrency);
+    const anchor = useSelector(state => state.router.anchor);
+    const dispatch = useDispatch();
 
     const network = getAccountNetwork(account);
 
@@ -57,10 +56,6 @@ export const TransactionList = ({
     const [search, setSearch] = useState('');
     const [searchedTransactions, setSearchedTransactions] = useState(transactions);
     const [hasFetchedAll, setHasFetchedAll] = useState(false);
-
-    const { fetchTransactions } = useActions({
-        fetchTransactions: fetchTransactionsThunk,
-    });
 
     const sectionRef = useRef<HTMLDivElement>(null);
 
@@ -75,16 +70,18 @@ export const TransactionList = ({
 
     useEffect(() => {
         if (anchor && !hasFetchedAll) {
-            fetchTransactions({
-                accountKey: account.key,
-                page: 2,
-                perPage: SETTINGS.TXS_PER_PAGE,
-                noLoading: true,
-                recursive: true,
-            });
+            dispatch(
+                fetchTransactionsThunk({
+                    accountKey: account.key,
+                    page: 2,
+                    perPage: SETTINGS.TXS_PER_PAGE,
+                    noLoading: true,
+                    recursive: true,
+                }),
+            );
             setHasFetchedAll(true);
         }
-    }, [anchor, fetchTransactions, account, hasFetchedAll]);
+    }, [anchor, account, dispatch, hasFetchedAll]);
 
     // Pagination
     const perPage = SETTINGS.TXS_PER_PAGE;
@@ -103,7 +100,7 @@ export const TransactionList = ({
         setSelectedPage(page);
 
         if (!isSearching) {
-            fetchTransactions({ accountKey: account.key, page, perPage });
+            dispatch(fetchTransactionsThunk({ accountKey: account.key, page, perPage }));
         }
 
         if (sectionRef.current) {

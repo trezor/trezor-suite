@@ -1,10 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
-import * as routerActions from 'src/actions/suite/routerActions';
-import { useSelector, useActions } from 'src/hooks/suite';
+import { goto } from 'src/actions/suite/routerActions';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { WalletLayoutNavigation, WalletLayoutNavLink } from 'src/components/wallet';
 import { getTitleForNetwork } from '@suite-common/wallet-utils';
 import { Translation } from 'src/components/suite';
+import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 
 const SavingsWalletLayoutNavLinkWrapper = styled.div`
     display: flex;
@@ -12,23 +13,24 @@ const SavingsWalletLayoutNavLinkWrapper = styled.div`
     padding-left: 42px;
 `;
 
-const Navigation = () => {
-    const items = [
-        { route: 'wallet-coinmarket-buy', title: 'TR_NAV_BUY' },
-        { route: 'wallet-coinmarket-sell', title: 'TR_NAV_SELL' },
-        { route: 'wallet-coinmarket-exchange', title: 'TR_NAV_EXCHANGE' },
-        { route: 'wallet-coinmarket-spend', title: 'TR_NAV_SPEND' },
-    ] as const;
+const items = [
+    { route: 'wallet-coinmarket-buy', title: 'TR_NAV_BUY' },
+    { route: 'wallet-coinmarket-sell', title: 'TR_NAV_SELL' },
+    { route: 'wallet-coinmarket-exchange', title: 'TR_NAV_EXCHANGE' },
+    { route: 'wallet-coinmarket-spend', title: 'TR_NAV_SPEND' },
+] as const;
+const p2pRoute = 'wallet-coinmarket-p2p';
 
-    const { routeName, account, p2pSupportedCoins, savingsProviders } = useSelector(state => ({
-        routeName: state.router.route?.name,
-        account: state.wallet.selectedAccount?.account,
-        p2pSupportedCoins: state.wallet.coinmarket.p2p.p2pInfo?.supportedCoins,
-        savingsProviders: state.wallet.coinmarket.savings.savingsInfo?.savingsList?.providers,
-    }));
-    const { goto } = useActions({
-        goto: routerActions.goto,
-    });
+const Navigation = () => {
+    const routeName = useSelector(state => state.router.route?.name);
+    const account = useSelector(selectSelectedAccount);
+    const p2pSupportedCoins = useSelector(
+        state => state.wallet.coinmarket.p2p.p2pInfo?.supportedCoins,
+    );
+    const savingsProviders = useSelector(
+        state => state.wallet.coinmarket.savings.savingsInfo?.savingsList?.providers,
+    );
+    const dispatch = useDispatch();
 
     const showP2pTab = account && p2pSupportedCoins && p2pSupportedCoins.has(account.symbol);
     const showSavingsTab =
@@ -40,7 +42,13 @@ const Navigation = () => {
                 savingsProvider.tradedCoins.includes(account.symbol.toUpperCase()),
         );
 
-    const p2pRoute = 'wallet-coinmarket-p2p';
+    const goToP2p = () => dispatch(goto(p2pRoute, { preserveParams: true }));
+    const goToSavingsSetup = () =>
+        dispatch(
+            goto('wallet-coinmarket-savings-setup', {
+                preserveParams: true,
+            }),
+        );
 
     return (
         <WalletLayoutNavigation>
@@ -51,7 +59,7 @@ const Navigation = () => {
                         key={route}
                         title={title}
                         active={routeName === route}
-                        onClick={() => goto(route, { preserveParams: true })}
+                        onClick={() => dispatch(goto(route, { preserveParams: true }))}
                     />
                 ))}
                 {showP2pTab && (
@@ -59,7 +67,7 @@ const Navigation = () => {
                         key={p2pRoute}
                         title="TR_NAV_P2P"
                         active={routeName === p2pRoute}
-                        onClick={() => goto(p2pRoute, { preserveParams: true })}
+                        onClick={goToP2p}
                     />
                 )}
                 {showSavingsTab && (
@@ -74,9 +82,7 @@ const Navigation = () => {
                             }}
                             badge="TR_NAV_SAVINGS_BADGE"
                             active={!!routeName?.startsWith('wallet-coinmarket-savings')}
-                            onClick={() =>
-                                goto('wallet-coinmarket-savings-setup', { preserveParams: true })
-                            }
+                            onClick={goToSavingsSetup}
                         />
                     </SavingsWalletLayoutNavLinkWrapper>
                 )}

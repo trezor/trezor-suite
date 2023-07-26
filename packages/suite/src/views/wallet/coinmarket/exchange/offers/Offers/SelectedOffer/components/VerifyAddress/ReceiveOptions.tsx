@@ -8,8 +8,8 @@ import {
     AccountLabeling,
     FormattedCryptoAmount,
 } from 'src/components/suite';
-import { useActions } from 'src/hooks/suite';
-import * as modalActions from 'src/actions/suite/modalActions';
+import { useDispatch } from 'src/hooks/suite';
+import { openModal } from 'src/actions/suite/modalActions';
 import { useCoinmarketExchangeOffersContext } from 'src/hooks/wallet/useCoinmarketExchangeOffers';
 import { getUnusedAddressFromAccount } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import type { UseFormReturn } from 'react-hook-form';
@@ -38,7 +38,7 @@ const FiatWrapper = styled.div`
 const Amount = styled.div`
     display: flex;
     font-size: ${variables.FONT_SIZE.TINY};
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
@@ -53,7 +53,7 @@ const Option = styled.div`
 `;
 
 const AccountType = styled.span`
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     padding-left: 5px;
 `;
 
@@ -66,16 +66,14 @@ type FormState = {
     address?: string;
 };
 
-type Props = Pick<UseFormReturn<FormState>, 'setValue'> & {
+type ReceiveOptionsProps = Pick<UseFormReturn<FormState>, 'setValue'> & {
     selectedAccountOption?: AccountSelectOption;
     setSelectedAccountOption: (o: AccountSelectOption) => void;
 };
 
-export const ReceiveOptions = (props: Props) => {
+export const ReceiveOptions = (props: ReceiveOptionsProps) => {
     const theme = useTheme();
-    const { openModal } = useActions({
-        openModal: modalActions.openModal,
-    });
+    const dispatch = useDispatch();
     const { device, suiteReceiveAccounts, receiveSymbol, setReceiveAccount } =
         useCoinmarketExchangeOffersContext();
     const [menuIsOpen, setMenuIsOpen] = useState<boolean | undefined>(undefined);
@@ -107,12 +105,14 @@ export const ReceiveOptions = (props: Props) => {
         if (account.type === 'ADD_SUITE') {
             if (device) {
                 setMenuIsOpen(true);
-                openModal({
-                    type: 'add-account',
-                    device: device!,
-                    symbol: receiveSymbol as Account['symbol'],
-                    noRedirect: true,
-                });
+                dispatch(
+                    openModal({
+                        type: 'add-account',
+                        device: device!,
+                        symbol: receiveSymbol as Account['symbol'],
+                        noRedirect: true,
+                    }),
+                );
             }
         } else {
             selectAccountOption(account);
@@ -129,9 +129,7 @@ export const ReceiveOptions = (props: Props) => {
 
     return (
         <Select
-            onChange={(selected: any) => {
-                onChangeAccount(selected);
-            }}
+            onChange={(selected: any) => onChangeAccount(selected)}
             value={selectedAccountOption}
             isClearable={false}
             options={selectAccountOptions}

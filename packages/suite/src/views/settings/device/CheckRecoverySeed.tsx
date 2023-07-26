@@ -2,8 +2,8 @@ import React from 'react';
 
 import { Translation } from 'src/components/suite';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from 'src/components/suite/Settings';
-import { useDevice, useActions } from 'src/hooks/suite';
-import * as routerActions from 'src/actions/suite/routerActions';
+import { useDevice, useDispatch } from 'src/hooks/suite';
+import { goto } from 'src/actions/suite/routerActions';
 import { useAnchor } from 'src/hooks/suite/useAnchor';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { getCheckBackupUrl } from 'src/utils/suite/device';
@@ -13,14 +13,14 @@ interface CheckRecoverySeedProps {
 }
 
 export const CheckRecoverySeed = ({ isDeviceLocked }: CheckRecoverySeedProps) => {
+    const dispatch = useDispatch();
     const { device } = useDevice();
-    const { goto } = useActions({
-        goto: routerActions.goto,
-    });
     const { anchorRef, shouldHighlight } = useAnchor(SettingsAnchor.CheckRecoverySeed);
 
     const needsBackup = !!device?.features?.needs_backup;
     const learnMoreUrl = getCheckBackupUrl(device);
+
+    const handleClick = () => dispatch(goto('recovery-index', { params: { cancelable: true } }));
 
     return (
         <SectionItem
@@ -36,7 +36,7 @@ export const CheckRecoverySeed = ({ isDeviceLocked }: CheckRecoverySeedProps) =>
             <ActionColumn>
                 <ActionButton
                     data-test="@settings/device/check-seed-button"
-                    onClick={() => goto('recovery-index', { params: { cancelable: true } })}
+                    onClick={handleClick}
                     isDisabled={isDeviceLocked || needsBackup}
                     variant="secondary"
                 >

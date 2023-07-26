@@ -4,8 +4,8 @@ import { getFirmwareVersion } from '@trezor/device-utils';
 
 import { Translation, TrezorLink } from 'src/components/suite';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from 'src/components/suite/Settings';
-import { useDevice, useActions } from 'src/hooks/suite';
-import * as routerActions from 'src/actions/suite/routerActions';
+import { useDevice, useDispatch } from 'src/hooks/suite';
+import { goto } from 'src/actions/suite/routerActions';
 import { getChangelogUrl, getFwUpdateVersion } from 'src/utils/suite/device';
 import { Button, Tooltip } from '@trezor/components';
 import { AcquiredDevice } from 'src/types/suite';
@@ -56,10 +56,8 @@ interface FirmwareVersionProps {
 }
 
 export const FirmwareVersion = ({ isDeviceLocked }: FirmwareVersionProps) => {
+    const dispatch = useDispatch();
     const { device } = useDevice();
-    const { goto } = useActions({
-        goto: routerActions.goto,
-    });
     const { anchorRef, shouldHighlight } = useAnchor(SettingsAnchor.FirmwareVersion);
 
     if (!device?.features) {
@@ -72,7 +70,7 @@ export const FirmwareVersion = ({ isDeviceLocked }: FirmwareVersionProps) => {
     const changelogUrl = getChangelogUrl(device, revision);
     const githubButtonIcon = revision ? 'EXTERNAL_LINK' : undefined;
 
-    const handleUpdate = () => goto('firmware-index', { params: { cancelable: true } });
+    const handleUpdate = () => dispatch(goto('firmware-index', { params: { cancelable: true } }));
 
     const GithubButton = () => (
         <Button variant="tertiary" icon={githubButtonIcon} alignIcon="right" disabled={!revision}>

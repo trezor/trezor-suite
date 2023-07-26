@@ -1,18 +1,18 @@
 import React from 'react';
 import { Translation } from 'src/components/suite';
 import { AccountExceptionLayout } from 'src/components/wallet';
-import { useDiscovery, useActions } from 'src/hooks/suite';
-import * as discoveryActions from 'src/actions/wallet/discoveryActions';
+import { useDiscovery, useDispatch } from 'src/hooks/suite';
+import { restart } from 'src/actions/wallet/discoveryActions';
 
 /**
  * Handler for discovery "hard" error (other than bundle-error)
  * see: @wallet-actions/selectedAccountActions
  */
 const DiscoveryFailed = () => {
+    const dispatch = useDispatch();
     const { discovery } = useDiscovery();
-    const { restart } = useActions({
-        restart: discoveryActions.restart,
-    });
+
+    const handleClick = () => dispatch(restart());
 
     return (
         <AccountExceptionLayout
@@ -23,7 +23,7 @@ const DiscoveryFailed = () => {
                 {
                     key: '1',
                     icon: 'REFRESH',
-                    onClick: restart,
+                    onClick: handleClick,
                     children: <Translation id="TR_RETRY" />,
                 },
             ]}

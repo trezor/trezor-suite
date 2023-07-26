@@ -1,17 +1,17 @@
 import React from 'react';
-
 import styled from 'styled-components';
-import { Translation } from 'src/components/suite';
-import { useDevice, useActions } from 'src/hooks/suite';
-import * as discoveryActions from 'src/actions/wallet/discoveryActions';
-import * as deviceSettingsActions from 'src/actions/settings/deviceSettingsActions';
-import * as suiteActions from 'src/actions/suite/suiteActions';
-import * as modalActions from 'src/actions/suite/modalActions';
-import * as routerActions from 'src/actions/suite/routerActions';
-import type { Discovery, DiscoveryStatusType } from 'src/types/wallet';
 
 import * as accountUtils from '@suite-common/wallet-utils';
 import { variables, Button, IconProps, H3, Image } from '@trezor/components';
+
+import { Translation } from 'src/components/suite';
+import { useDevice, useDispatch } from 'src/hooks/suite';
+import { restart as restartDiscovery } from 'src/actions/wallet/discoveryActions';
+import { applySettings } from 'src/actions/settings/deviceSettingsActions';
+import { authConfirm, authorizeDevice } from 'src/actions/suite/suiteActions';
+import { openModal } from 'src/actions/suite/modalActions';
+import { goto } from 'src/actions/suite/routerActions';
+import type { Discovery, DiscoveryStatusType } from 'src/types/wallet';
 
 const Wrapper = styled.div`
     display: flex;
@@ -23,12 +23,12 @@ const Wrapper = styled.div`
 `;
 
 const Title = styled(H3)`
-    color: ${props => props.theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
 `;
 
 const Description = styled.div`
     font-size: ${variables.FONT_SIZE.SMALL};
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     text-align: center;
 `;
 
@@ -112,22 +112,16 @@ const discoveryFailedMessage = (discovery?: Discovery) => {
 };
 
 export const Exception = ({ exception, discovery }: ExceptionProps) => {
+    const dispatch = useDispatch();
     const { device } = useDevice();
-    const actions = useActions({
-        authorizeDevice: suiteActions.authorizeDevice,
-        authConfirm: suiteActions.authConfirm,
-        goto: routerActions.goto,
-        openModal: modalActions.openModal,
-        restartDiscovery: discoveryActions.restart,
-        applySettings: deviceSettingsActions.applySettings,
-    });
+
     switch (exception.type) {
         case 'auth-failed':
             return (
                 <Container
                     title="TR_ACCOUNT_EXCEPTION_AUTH_ERROR"
                     description="TR_ACCOUNT_EXCEPTION_AUTH_ERROR_DESC"
-                    cta={{ action: actions.authorizeDevice }}
+                    cta={{ action: () => dispatch(authorizeDevice()) }}
                     dataTestBase={exception.type}
                 />
             );
@@ -136,7 +130,7 @@ export const Exception = ({ exception, discovery }: ExceptionProps) => {
                 <Container
                     title="TR_AUTH_CONFIRM_FAILED_TITLE"
                     description="TR_AUTH_CONFIRM_FAILED_DESC"
-                    cta={{ action: actions.authConfirm }}
+                    cta={{ action: () => dispatch(authConfirm()) }}
                     dataTestBase={exception.type}
                 />
             );
@@ -147,17 +141,19 @@ export const Exception = ({ exception, discovery }: ExceptionProps) => {
                     description="TR_ACCOUNT_EXCEPTION_DISCOVERY_EMPTY_DESC"
                     cta={[
                         {
-                            action: () => actions.goto('settings-coins'),
+                            action: () => dispatch(goto('settings-coins')),
                             variant: 'secondary',
                             icon: 'SETTINGS',
                             label: 'TR_COIN_SETTINGS',
                         },
                         {
                             action: () =>
-                                actions.openModal({
-                                    type: 'add-account',
-                                    device: device!,
-                                }),
+                                dispatch(
+                                    openModal({
+                                        type: 'add-account',
+                                        device: device!,
+                                    }),
+                                ),
                             label: 'TR_ADD_ACCOUNT',
                         },
                     ]}
@@ -174,7 +170,7 @@ export const Exception = ({ exception, discovery }: ExceptionProps) => {
                             values={{ details: discoveryFailedMessage(discovery) }}
                         />
                     }
-                    cta={{ action: actions.restartDiscovery, icon: 'REFRESH' }}
+                    cta={{ action: () => dispatch(restartDiscovery()), icon: 'REFRESH' }}
                     dataTestBase={exception.type}
                 />
             );
@@ -191,10 +187,10 @@ export const Exception = ({ exception, discovery }: ExceptionProps) => {
                     cta={{
                         action: async () => {
                             // enable passphrase
-                            const result = await actions.applySettings({ use_passphrase: true });
+                            const result = await dispatch(applySettings({ use_passphrase: true }));
                             if (!result || !result.success) return;
                             // restart discovery
-                            actions.restartDiscovery();
+                            dispatch(restartDiscovery());
                         },
                         label: 'TR_ACCOUNT_ENABLE_PASSPHRASE',
                     }}

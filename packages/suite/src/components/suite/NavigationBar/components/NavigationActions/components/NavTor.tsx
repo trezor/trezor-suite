@@ -3,8 +3,8 @@ import styled from 'styled-components';
 
 import { Translation } from 'src/components/suite';
 import { ActionItem, IndicatorStatus } from './ActionItem';
-import { useActions } from 'src/hooks/suite';
-import * as routerActions from 'src/actions/suite/routerActions';
+import { useDispatch } from 'src/hooks/suite';
+import { goto } from 'src/actions/suite/routerActions';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 
 const Wrapper = styled.div`
@@ -17,9 +17,9 @@ interface NavTorProps {
 }
 
 export const NavTor = ({ indicator }: NavTorProps) => {
-    const { goto } = useActions({
-        goto: routerActions.goto,
-    });
+    const dispatch = useDispatch();
+
+    const handleClick = () => dispatch(goto('settings-index', { anchor: SettingsAnchor.Tor }));
 
     return (
         <Wrapper>
@@ -27,7 +27,7 @@ export const NavTor = ({ indicator }: NavTorProps) => {
                 label={<Translation id="TR_TOR" />}
                 icon="TOR"
                 indicator={indicator}
-                onClick={() => goto('settings-index', { anchor: SettingsAnchor.Tor })}
+                onClick={handleClick}
             />
         </Wrapper>
     );

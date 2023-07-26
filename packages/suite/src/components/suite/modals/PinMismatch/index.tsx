@@ -2,8 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 import { Button, Image } from '@trezor/components';
 import { Translation, Modal, ModalProps } from 'src/components/suite';
-import * as deviceSettingsActions from 'src/actions/settings/deviceSettingsActions';
-import { useActions } from 'src/hooks/suite';
+import { changePin } from 'src/actions/settings/deviceSettingsActions';
+import { useDispatch } from 'src/hooks/suite';
 
 const StyledImage = styled(Image)`
     margin: 48px auto;
@@ -14,9 +14,10 @@ const StyledModal = styled(Modal)`
 `;
 
 export const PinMismatch = (props: ModalProps) => {
-    const { changePin } = useActions({ changePin: deviceSettingsActions.changePin });
+    const dispatch = useDispatch();
+
     const onTryAgain = () => {
-        changePin({});
+        dispatch(changePin({}));
     };
 
     return (

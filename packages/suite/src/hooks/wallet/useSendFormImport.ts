@@ -1,7 +1,7 @@
-import * as sendFormActions from 'src/actions/wallet/sendFormActions';
-import { useActions } from 'src/hooks/suite';
+import { importRequest } from 'src/actions/wallet/sendFormActions';
+import { useDispatch } from 'src/hooks/suite';
 import { DEFAULT_PAYMENT } from '@suite-common/wallet-constants';
-import { FIAT } from 'src/config/suite';
+import { fiatCurrencies } from '@suite-common/suite-config';
 import { fromFiatCurrency, toFiatCurrency } from '@suite-common/wallet-utils';
 import { UseSendFormState, Output } from 'src/types/wallet/sendForm';
 
@@ -15,13 +15,11 @@ type Props = {
 // This hook should be used only as a sub-hook of `useSendForm`
 
 export const useSendFormImport = ({ network, tokens, localCurrencyOption, fiatRates }: Props) => {
-    const { importRequest } = useActions({
-        importRequest: sendFormActions.importRequest,
-    });
+    const dispatch = useDispatch();
 
     const importTransaction = async () => {
         // open ImportTransaction modal and get parsed csv
-        const result = await importRequest();
+        const result = await dispatch(importRequest());
         if (!result) return; // cancelled
 
         const outputs = result.map(item => {
@@ -54,7 +52,7 @@ export const useSendFormImport = ({ network, tokens, localCurrencyOption, fiatRa
                             ) || '';
                     }
                 } else if (
-                    FIAT.currencies.find(c => c === currency) &&
+                    Object.keys(fiatCurrencies).find(c => c === currency) &&
                     fiatRates &&
                     fiatRates.current &&
                     Object.keys(fiatRates.current.rates).includes(currency)

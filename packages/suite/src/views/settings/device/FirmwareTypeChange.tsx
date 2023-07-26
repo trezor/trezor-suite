@@ -3,8 +3,8 @@ import styled from 'styled-components';
 
 import { Translation, TrezorLink } from 'src/components/suite';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from 'src/components/suite/Settings';
-import { useDevice, useActions } from 'src/hooks/suite';
-import * as routerActions from 'src/actions/suite/routerActions';
+import { useDevice, useDispatch } from 'src/hooks/suite';
+import { goto } from 'src/actions/suite/routerActions';
 import { Button } from '@trezor/components';
 import { useAnchor } from 'src/hooks/suite/useAnchor';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
@@ -27,11 +27,8 @@ interface FirmwareTypeProps {
 }
 
 export const FirmwareTypeChange = ({ isDeviceLocked }: FirmwareTypeProps) => {
+    const dispatch = useDispatch();
     const { device } = useDevice();
-    const { goto } = useActions({
-        goto: routerActions.goto,
-    });
-
     const { anchorRef, shouldHighlight } = useAnchor(SettingsAnchor.FirmwareType);
 
     if (!device?.features) {
@@ -43,11 +40,7 @@ export const FirmwareTypeChange = ({ isDeviceLocked }: FirmwareTypeProps) => {
     const actionButtonId =
         device.firmwareType === 'bitcoin-only' ? 'TR_SWITCH_TO_UNIVERSAL' : 'TR_SWITCH_TO_BITCOIN';
 
-    const handleAction = () => {
-        goto('firmware-type', {
-            params: { cancelable: true },
-        });
-    };
+    const handleAction = () => dispatch(goto('firmware-type', { params: { cancelable: true } }));
 
     return (
         <SectionItem

@@ -1,8 +1,8 @@
 import React from 'react';
 import { Translation } from 'src/components/suite';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from 'src/components/suite/Settings';
-import { useActions } from 'src/hooks/suite';
-import * as modalActions from 'src/actions/suite/modalActions';
+import { useDispatch } from 'src/hooks/suite';
+import { openModal } from 'src/actions/suite/modalActions';
 import { useAnchor } from 'src/hooks/suite/useAnchor';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 
@@ -11,10 +11,11 @@ interface SafetyChecksProps {
 }
 
 export const SafetyChecks = ({ isDeviceLocked }: SafetyChecksProps) => {
-    const { openModal } = useActions({
-        openModal: modalActions.openModal,
-    });
+    const dispatch = useDispatch();
+
     const { anchorRef, shouldHighlight } = useAnchor(SettingsAnchor.SafetyChecks);
+
+    const handleClick = () => dispatch(openModal({ type: 'safety-checks' }));
 
     return (
         <SectionItem
@@ -29,9 +30,7 @@ export const SafetyChecks = ({ isDeviceLocked }: SafetyChecksProps) => {
             <ActionColumn>
                 <ActionButton
                     variant="secondary"
-                    onClick={() => {
-                        openModal({ type: 'safety-checks' });
-                    }}
+                    onClick={handleClick}
                     data-test="@settings/device/safety-checks-button"
                     isDisabled={isDeviceLocked}
                 >

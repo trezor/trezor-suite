@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { useActions, useDevice } from 'src/hooks/suite';
+import { useDevice, useDispatch } from 'src/hooks/suite';
 import { RadioButton, Button, H3, P, Warning } from '@trezor/components';
 import { Translation, Modal, ModalProps } from 'src/components/suite';
-import * as deviceSettingsActions from 'src/actions/settings/deviceSettingsActions';
+import { applySettings } from 'src/actions/settings/deviceSettingsActions';
 
 const StyledButton = styled(Button)`
     min-width: 230px;
@@ -36,8 +36,10 @@ const StyledWarning = styled(Warning)`
  */
 export const SafetyChecks = ({ onCancel }: ModalProps) => {
     const { device, isLocked } = useDevice();
-    const { applySettings } = useActions({ applySettings: deviceSettingsActions.applySettings });
     const [level, setLevel] = useState(device?.features?.safety_checks || undefined);
+    const dispatch = useDispatch();
+
+    const confirm = () => dispatch(applySettings({ safety_checks: level }));
 
     return (
         <Modal
@@ -46,9 +48,7 @@ export const SafetyChecks = ({ onCancel }: ModalProps) => {
             heading={<Translation id="TR_SAFETY_CHECKS_MODAL_TITLE" />}
             bottomBar={
                 <StyledButton
-                    onClick={() => {
-                        applySettings({ safety_checks: level });
-                    }}
+                    onClick={confirm}
                     // Only allow confirming when the value will be changed.
                     isDisabled={isLocked() || level === device?.features?.safety_checks}
                     data-test="@safety-checks-apply"

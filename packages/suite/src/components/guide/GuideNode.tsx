@@ -5,8 +5,8 @@ import { analytics, EventType } from '@trezor/suite-analytics';
 import { resolveStaticPath } from '@suite-common/suite-utils';
 
 import { Icon, variables, useTheme } from '@trezor/components';
-import { useActions, useSelector } from 'src/hooks/suite';
-import * as guideActions from 'src/actions/suite/guideActions';
+import { useDispatch, useSelector } from 'src/hooks/suite';
+import { openNode } from 'src/actions/suite/guideActions';
 import { GuideNode as GuideNodeType } from '@suite-common/suite-types';
 import { getNodeTitle } from 'src/utils/suite/guide';
 
@@ -42,7 +42,7 @@ const Label = styled.div<{ isBold: boolean }>`
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${({ isBold }) =>
         isBold ? variables.FONT_WEIGHT.DEMI_BOLD : variables.FONT_WEIGHT.MEDIUM};
-    color: ${props => props.theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
     overflow: hidden;
     line-height: 16px;
     flex: 1;
@@ -71,19 +71,13 @@ type GuideNodeProps = {
 };
 
 export const GuideNode = ({ node, description }: GuideNodeProps) => {
-    const { language } = useSelector(state => ({
-        language: state.suite.settings.language,
-    }));
+    const language = useSelector(state => state.suite.settings.language);
+    const dispatch = useDispatch();
 
     const theme = useTheme();
 
-    const { openNode } = useActions({
-        setView: guideActions.setView,
-        openNode: guideActions.openNode,
-    });
-
     const navigateToNode = () => {
-        openNode(node);
+        dispatch(openNode(node));
         analytics.report({
             type: EventType.GuideNodeNavigation,
             payload: {

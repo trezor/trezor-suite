@@ -3,7 +3,13 @@ import styled from 'styled-components';
 import { BuyProviderInfo, BuyTradeQuoteRequest } from 'invity-api';
 import invityAPI from 'src/services/suite/invityAPI';
 import { useWatchBuyTrade } from 'src/hooks/wallet/useCoinmarket';
-import * as coinmarketBuyActions from 'src/actions/wallet/coinmarketBuyActions';
+import {
+    clearQuotes,
+    saveCachedAccountInfo,
+    saveQuoteRequest,
+    saveQuotes,
+    saveTransactionDetailId,
+} from 'src/actions/wallet/coinmarketBuyActions';
 import { useTheme, variables, Icon, Button } from '@trezor/components';
 import { CoinmarketPaymentType, CoinmarketProviderInfo } from 'src/components/wallet';
 import { Account } from 'src/types/wallet';
@@ -16,30 +22,22 @@ import {
 import { getStatusMessage, processQuotes } from 'src/utils/wallet/coinmarket/buyUtils';
 import { TradeBuy } from 'src/types/wallet/coinmarketCommonTypes';
 import Status from '../Status';
-import { useSelector, useActions } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useCoinmarketNavigation } from 'src/hooks/wallet/useCoinmarketNavigation';
-
-interface Props {
-    trade: TradeBuy;
-    account: Account;
-    providers?: {
-        [name: string]: BuyProviderInfo;
-    };
-}
 
 const Wrapper = styled.div`
     display: flex;
     flex: 1;
     align-items: center;
     margin-bottom: 20px;
-    border: 1px solid ${props => props.theme.STROKE_GREY};
+    border: 1px solid ${({ theme }) => theme.STROKE_GREY};
     border-radius: 4px;
     padding: 12px 0;
 
     &:hover {
-        background: ${props => props.theme.BG_WHITE};
-        border: 1px solid ${props => props.theme.TYPE_WHITE};
-        box-shadow: 0 1px 2px 0 ${props => props.theme.BOX_SHADOW_BLACK_20};
+        background: ${({ theme }) => theme.BG_WHITE};
+        border: 1px solid ${({ theme }) => theme.TYPE_WHITE};
+        box-shadow: 0 1px 2px 0 ${({ theme }) => theme.BOX_SHADOW_BLACK_20};
     }
 
     @media screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
@@ -70,7 +68,7 @@ const BuyColumn = styled(Column)`
         border-left: 0;
     }
 
-    border-left: 1px solid ${props => props.theme.STROKE_GREY};
+    border-left: 1px solid ${({ theme }) => theme.STROKE_GREY};
 `;
 
 const ProviderColumn = styled(Column)`
@@ -79,7 +77,7 @@ const ProviderColumn = styled(Column)`
 
 const TradeID = styled.span`
     padding-left: 5px;
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     overflow: hidden;
     text-overflow: ellipsis;
@@ -88,7 +86,7 @@ const TradeID = styled.span`
 const Row = styled.div`
     display: flex;
     align-items: center;
-    color: ${props => props.theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
@@ -104,7 +102,7 @@ const RowSecond = styled(Row)`
 const SmallRow = styled.div`
     padding-top: 8px;
     display: flex;
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     font-size: ${variables.FONT_SIZE.TINY};
 `;
@@ -121,24 +119,20 @@ const Arrow = styled.div`
     padding: 0 11px;
 `;
 
-const BuyTransaction = ({ trade, providers, account }: Props) => {
+interface BuyTransactionProps {
+    trade: TradeBuy;
+    account: Account;
+    providers?: {
+        [name: string]: BuyProviderInfo;
+    };
+}
+
+const BuyTransaction = ({ trade, providers, account }: BuyTransactionProps) => {
+    const [isGettingOffers, setIsGettingOffers] = useState(false);
+    const dispatch = useDispatch();
     const theme = useTheme();
-    const {
-        saveTransactionDetailId,
-        saveQuotes,
-        clearQuotes,
-        saveQuoteRequest,
-        saveCachedAccountInfo,
-    } = useActions({
-        saveTransactionDetailId: coinmarketBuyActions.saveTransactionDetailId,
-        saveQuotes: coinmarketBuyActions.saveQuotes,
-        clearQuotes: coinmarketBuyActions.clearQuotes,
-        saveQuoteRequest: coinmarketBuyActions.saveQuoteRequest,
-        saveCachedAccountInfo: coinmarketBuyActions.saveCachedAccountInfo,
-    });
     const { navigateToBuyOffers, navigateToBuyDetail } = useCoinmarketNavigation(account);
     const country = useSelector(state => state.wallet.coinmarket.buy.buyInfo?.buyInfo?.country);
-    const [isGettingOffers, setIsGettingOffers] = useState(false);
     useWatchBuyTrade(account, trade);
 
     const { date, data } = trade;
@@ -157,26 +151,26 @@ const BuyTransaction = ({ trade, providers, account }: Props) => {
     const getOffers = async () => {
         setIsGettingOffers(true);
         const request: BuyTradeQuoteRequest = {
-            fiatCurrency: data.fiatCurrency || '',
-            receiveCurrency: data.receiveCurrency || '',
-            fiatStringAmount: data.fiatStringAmount || '',
+            fiatCurrency: fiatCurrency || '',
+            receiveCurrency: receiveCurrency || '',
+            fiatStringAmount: fiatStringAmount || '',
             wantCrypto: false,
             country,
         };
-        saveQuoteRequest(request);
-        saveCachedAccountInfo(account.symbol, account.index, account.accountType);
+        dispatch(saveQuoteRequest(request));
+        dispatch(saveCachedAccountInfo(account.symbol, account.index, account.accountType));
         const allQuotes = await invityAPI.getBuyQuotes(request);
         if (allQuotes) {
             const [quotes, alternativeQuotes] = processQuotes(allQuotes);
-            saveQuotes(quotes, alternativeQuotes);
+            dispatch(saveQuotes(quotes, alternativeQuotes));
         } else {
-            clearQuotes();
+            dispatch(clearQuotes());
         }
         navigateToBuyOffers();
     };
 
     const handleViewDetailsButtonClick = () => {
-        saveTransactionDetailId(trade.key || '');
+        dispatch(saveTransactionDetailId(trade.key || ''));
         navigateToBuyDetail();
     };
 

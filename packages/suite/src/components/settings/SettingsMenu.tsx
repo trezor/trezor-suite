@@ -2,9 +2,9 @@ import React, { useMemo, useState } from 'react';
 import styled, { css } from 'styled-components';
 
 import { CloseButton, Translation, AppNavigationPanel, AppNavigation } from 'src/components/suite';
-import { useActions, useSelector } from 'src/hooks/suite';
-import * as routerActions from 'src/actions/suite/routerActions';
-import * as suiteActions from 'src/actions/suite/suiteActions';
+import { useDispatch, useSelector } from 'src/hooks/suite';
+import { goto } from 'src/actions/suite/routerActions';
+import { setDebugMode } from 'src/actions/suite/suiteActions';
 import { FADE_IN } from '@trezor/components/src/config/animations';
 import { AppNavigationItem } from 'src/components/suite/AppNavigation';
 import { desktopApi } from '@trezor/suite-desktop-api';
@@ -26,19 +26,40 @@ const CloseButtonSticky = styled(CloseButton)<{ isAppNavigationPanelInView?: boo
         `}
 `;
 export const SettingsMenu = () => {
-    const { setDebugMode, goto } = useActions({
-        goto: routerActions.goto,
-        setDebugMode: suiteActions.setDebugMode,
-    });
-
-    const { settingsBackRoute, showDebugMenu, initialRun } = useSelector(state => ({
-        settingsBackRoute: state.router.settingsBackRoute,
-        showDebugMenu: state.suite.settings.debug.showDebugMenu,
-        initialRun: state.suite.flags.initialRun,
-    }));
-
     // show debug menu item after 5 clicks on "Settings" heading
     const [clickCounter, setClickCounter] = useState<number>(0);
+
+    const settingsBackRoute = useSelector(state => state.router.settingsBackRoute);
+    const showDebugMenu = useSelector(state => state.suite.settings.debug.showDebugMenu);
+    const initialRun = useSelector(state => state.suite.flags.initialRun);
+    const dispatch = useDispatch();
+
+    const handleTitleClick = () => {
+        setClickCounter(prev => prev + 1);
+
+        if (clickCounter === 4) {
+            setClickCounter(0);
+            dispatch(setDebugMode({ showDebugMenu: !showDebugMenu }));
+            if (desktopApi.available) {
+                desktopApi.configLogger(
+                    showDebugMenu
+                        ? {} // Reset to default values.
+                        : {
+                              level: 'debug',
+                              options: {
+                                  writeToDisk: true,
+                              },
+                          },
+                );
+            }
+        }
+    };
+    const handleClose = () =>
+        dispatch(
+            goto(initialRun ? 'onboarding-index' : settingsBackRoute.name, {
+                params: settingsBackRoute.params,
+            }),
+        );
 
     const appNavItems = useMemo<Array<AppNavigationItem>>(
         () => [
@@ -47,21 +68,21 @@ export const SettingsMenu = () => {
                 title: <Translation id="TR_GENERAL" />,
                 position: 'primary',
                 'data-test': '@settings/menu/general',
-                callback: () => goto('settings-index', { preserveParams: true }),
+                callback: () => dispatch(goto('settings-index', { preserveParams: true })),
             },
             {
                 id: 'settings-device',
                 title: <Translation id="TR_DEVICE" />,
                 position: 'primary',
                 'data-test': '@settings/menu/device',
-                callback: () => goto('settings-device', { preserveParams: true }),
+                callback: () => dispatch(goto('settings-device', { preserveParams: true })),
             },
             {
                 id: 'settings-coins',
                 title: <Translation id="TR_COINS" />,
                 position: 'primary',
                 'data-test': '@settings/menu/wallet',
-                callback: () => goto('settings-coins', { preserveParams: true }),
+                callback: () => dispatch(goto('settings-coins', { preserveParams: true })),
             },
             {
                 id: 'settings-debug',
@@ -69,10 +90,10 @@ export const SettingsMenu = () => {
                 position: 'primary',
                 isHidden: !showDebugMenu,
                 'data-test': '@settings/menu/debug',
-                callback: () => goto('settings-debug', { preserveParams: true }),
+                callback: () => dispatch(goto('settings-debug', { preserveParams: true })),
             },
         ],
-        [showDebugMenu, goto],
+        [dispatch, showDebugMenu],
     );
 
     return (
@@ -82,26 +103,7 @@ export const SettingsMenu = () => {
                 <span
                     aria-hidden="true"
                     data-test="@settings/menu/title"
-                    onClick={() => {
-                        setClickCounter(prev => prev + 1);
-
-                        if (clickCounter === 4) {
-                            setClickCounter(0);
-                            setDebugMode({ showDebugMenu: !showDebugMenu });
-                            if (desktopApi.available) {
-                                desktopApi.configLogger(
-                                    showDebugMenu
-                                        ? {} // Reset to default values.
-                                        : {
-                                              level: 'debug',
-                                              options: {
-                                                  writeToDisk: true,
-                                              },
-                                          },
-                                );
-                            }
-                        }
-                    }}
+                    onClick={handleTitleClick}
                 >
                     <Translation id="TR_SETTINGS" />
                 </span>
@@ -111,11 +113,7 @@ export const SettingsMenu = () => {
                 <CloseButtonWrapper isAppNavigationPanelInView={isAppNavigationPanelInView}>
                     <CloseButtonSticky
                         isAppNavigationPanelInView={isAppNavigationPanelInView}
-                        onClick={() =>
-                            initialRun
-                                ? goto('onboarding-index')
-                                : goto(settingsBackRoute.name, { params: settingsBackRoute.params })
-                        }
+                        onClick={handleClose}
                         data-test="@settings/menu/close"
                     />
                 </CloseButtonWrapper>

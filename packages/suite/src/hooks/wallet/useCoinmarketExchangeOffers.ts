@@ -340,7 +340,6 @@ export const useOffers = ({ selectedAccount }: UseCoinmarketExchangeFormProps) =
         exchangeInfo,
         exchangeStep,
         setExchangeStep,
-        saveTrade,
         quotesRequest,
         addressVerified,
         fixedQuotes: innerFixedQuotes,

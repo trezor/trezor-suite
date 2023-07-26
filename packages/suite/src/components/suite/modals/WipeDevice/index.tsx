@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Button, Image } from '@trezor/components';
 import { Translation, CheckItem, Modal } from 'src/components/suite';
-import * as deviceSettingsActions from 'src/actions/settings/deviceSettingsActions';
-import { useDevice, useActions } from 'src/hooks/suite';
+import { wipeDevice } from 'src/actions/settings/deviceSettingsActions';
+import { useDevice, useDispatch } from 'src/hooks/suite';
 
 const Row = styled.div`
     display: flex;
@@ -41,9 +41,12 @@ type WipeDeviceProps = {
 export const WipeDevice = ({ onCancel }: WipeDeviceProps) => {
     const [checkbox1, setCheckbox1] = useState(false);
     const [checkbox2, setCheckbox2] = useState(false);
-    const { wipeDevice } = useActions({ wipeDevice: deviceSettingsActions.wipeDevice });
+
+    const dispatch = useDispatch();
 
     const { isLocked } = useDevice();
+
+    const handleWipeDevice = () => dispatch(wipeDevice());
 
     return (
         <StyledModal
@@ -54,7 +57,7 @@ export const WipeDevice = ({ onCancel }: WipeDeviceProps) => {
             bottomBar={
                 <Button
                     variant="danger"
-                    onClick={wipeDevice}
+                    onClick={handleWipeDevice}
                     isDisabled={isLocked() || !checkbox1 || !checkbox2}
                     data-test="@wipe/wipe-button"
                 >

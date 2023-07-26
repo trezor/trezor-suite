@@ -4,9 +4,9 @@ import styled from 'styled-components';
 import { TorStatus } from 'src/types/suite';
 
 import { Translation } from 'src/components/suite';
-import { useActions, useSelector } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectTorState } from 'src/reducers/suite/suiteReducer';
-import * as suiteActions from 'src/actions/suite/suiteActions';
+import { toggleTor, updateTorStatus } from 'src/actions/suite/suiteActions';
 
 import { Button, ModalProps } from '@trezor/components';
 import { TorProgressBar } from './TorProgressBar';
@@ -28,10 +28,7 @@ export const TorLoader = ({ callback, ModalWrapper }: TorLoadingScreenProps) => 
     const [isDisabling, setIsDisabling] = useState<boolean>(false);
     const { torBootstrap, isTorError } = useSelector(selectTorState);
 
-    const { toggleTor, updateTorStatus } = useActions({
-        toggleTor: suiteActions.toggleTor,
-        updateTorStatus: suiteActions.updateTorStatus,
-    });
+    const dispatch = useDispatch();
 
     useEffect(() => {
         // When Tor is disabling there might still be some bootstrap event coming but
@@ -46,20 +43,20 @@ export const TorLoader = ({ callback, ModalWrapper }: TorLoadingScreenProps) => 
         if (torBootstrap && torBootstrap.current) {
             setProgress(torBootstrap.current);
             if (torBootstrap.current === torBootstrap.total) {
-                updateTorStatus(TorStatus.Enabled);
+                dispatch(updateTorStatus(TorStatus.Enabled));
                 callback(true);
             }
         }
-    }, [progress, torBootstrap, callback, updateTorStatus, isDisabling]);
+    }, [dispatch, progress, torBootstrap, callback, isDisabling]);
 
     const tryAgain = async () => {
         setProgress(0);
-        updateTorStatus(TorStatus.Enabling);
+        dispatch(updateTorStatus(TorStatus.Enabling));
 
         try {
-            await toggleTor(true);
+            await dispatch(toggleTor(true));
         } catch {
-            updateTorStatus(TorStatus.Error);
+            dispatch(updateTorStatus(TorStatus.Error));
         }
     };
 
@@ -67,7 +64,7 @@ export const TorLoader = ({ callback, ModalWrapper }: TorLoadingScreenProps) => 
         setIsDisabling(true);
         let fakeProgress = 0;
         // We do not wait until toggleTor is done since we want to display fake progress.
-        toggleTor(false);
+        dispatch(toggleTor(false));
 
         // This is a total fake progress, otherwise it would be too fast for user.
         await new Promise(resolve => {

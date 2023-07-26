@@ -8,10 +8,10 @@ import { AssetGrid, AssetGridSkeleton } from './components/AssetGrid';
 import { Account, Network } from 'src/types/wallet';
 import { variables, Icon, Button, colors, LoadingContent } from '@trezor/components';
 import { Card, Translation } from 'src/components/suite';
-import { useDiscovery, useActions, useSelector } from 'src/hooks/suite';
+import { useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
 import { useAccounts } from 'src/hooks/wallet';
-import * as suiteActions from 'src/actions/suite/suiteActions';
-import * as routerActions from 'src/actions/suite/routerActions';
+import { setFlag } from 'src/actions/suite/suiteActions';
+import { goto } from 'src/actions/suite/routerActions';
 import { AnimatePresence } from 'framer-motion';
 
 const StyledCard = styled(Card)`
@@ -22,7 +22,7 @@ const StyledCard = styled(Card)`
 const InfoMessage = styled.div`
     padding: 16px 25px;
     display: flex;
-    color: ${props => props.theme.TYPE_RED};
+    color: ${({ theme }) => theme.TYPE_RED};
     font-size: ${variables.FONT_SIZE.TINY};
     font-weight: ${variables.FONT_WEIGHT.REGULAR};
 `;
@@ -35,12 +35,12 @@ const ActionsWrapper = styled.div`
 const Header = styled.div`
     display: flex;
     font-size: ${variables.FONT_SIZE.SMALL};
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     font-weight: 500;
     line-height: 1.57;
     align-items: center;
     padding: 12px 0px;
-    border-bottom: 1px solid ${props => props.theme.STROKE_GREY};
+    border-bottom: 1px solid ${({ theme }) => theme.STROKE_GREY};
 
     &:first-child {
         padding-left: 18px;
@@ -82,10 +82,7 @@ const AssetsCard = () => {
     const { discovery, getDiscoveryStatus, isDiscoveryRunning } = useDiscovery();
     const { accounts } = useAccounts(discovery);
     const { dashboardAssetsGridMode } = useSelector(s => s.suite.flags);
-    const { goto, setFlag } = useActions({
-        goto: routerActions.goto,
-        setFlag: suiteActions.setFlag,
-    });
+    const dispatch = useDispatch();
 
     const assets: { [key: string]: Account[] } = {};
     accounts.forEach(a => {
@@ -118,6 +115,10 @@ const AssetsCard = () => {
     const discoveryInProgress = discoveryStatus && discoveryStatus.status === 'loading';
     const isError = discoveryStatus && discoveryStatus.status === 'exception' && !networks.length;
 
+    const goToCoinsSettings = () => dispatch(goto('settings-coins'));
+    const setTable = () => dispatch(setFlag('dashboardAssetsGridMode', false));
+    const setGrid = () => dispatch(setFlag('dashboardAssetsGridMode', true));
+
     return (
         <Section
             heading={
@@ -129,7 +130,7 @@ const AssetsCard = () => {
                     <StyledAddAccountButton
                         variant="tertiary"
                         icon="PLUS"
-                        onClick={() => goto('settings-coins')}
+                        onClick={goToCoinsSettings}
                     >
                         <Translation id="TR_ENABLE_MORE_COINS" />
                     </StyledAddAccountButton>
@@ -140,13 +141,13 @@ const AssetsCard = () => {
                     <Icon
                         icon="TABLE"
                         data-test="@dashboard/assets/table-icon"
-                        onClick={() => setFlag('dashboardAssetsGridMode', false)}
+                        onClick={setTable}
                         color={!dashboardAssetsGridMode ? colors.BG_GREEN : colors.TYPE_LIGHT_GREY}
                     />
                     <Icon
                         icon="GRID"
                         data-test="@dashboard/assets/grid-icon"
-                        onClick={() => setFlag('dashboardAssetsGridMode', true)}
+                        onClick={setGrid}
                         color={dashboardAssetsGridMode ? colors.BG_GREEN : colors.TYPE_LIGHT_GREY}
                     />
                 </ActionsWrapper>

@@ -4,12 +4,13 @@ import TrezorConnect, { TokenInfo } from '@trezor/connect';
 import { analytics, EventType } from '@trezor/suite-analytics';
 
 import { Input, Button, Tooltip } from '@trezor/components';
-import * as tokenActions from 'src/actions/wallet/tokenActions';
+import { addToken } from 'src/actions/wallet/tokenActions';
 import { Modal } from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
-import { useActions, useSelector, useTranslation } from 'src/hooks/suite';
+import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
 import { isAddressValid } from '@suite-common/wallet-utils';
 import { Account } from 'src/types/wallet';
+import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 
 const Wrapper = styled.div`
     display: flex;
@@ -25,13 +26,10 @@ export const AddToken = ({ onCancel }: AddTokenProps) => {
     const [contractAddress, setContractAddress] = useState<string>('');
     const [tokenInfo, setTokenInfo] = useState<TokenInfo[] | undefined>(undefined);
     const [isFetching, setIsFetching] = useState(false);
-    const { translationString } = useTranslation();
     const [error, setError] = useState<string | null>(null);
-    const { addToken } = useActions({
-        addToken: tokenActions.addToken,
-    });
-    const selectedAccount = useSelector(state => state.wallet.selectedAccount);
-    const { account } = selectedAccount;
+    const account = useSelector(selectSelectedAccount);
+    const dispatch = useDispatch();
+    const { translationString } = useTranslation();
 
     const loadTokenInfo = useCallback(
         async (acc: Account, contractAddress: string) => {
@@ -95,11 +93,25 @@ export const AddToken = ({ onCancel }: AddTokenProps) => {
         setTokenInfo(undefined);
         setContractAddress(addr);
     };
-
     const getInputState = () => {
         if (error) return 'error';
         if (contractAddress && !isFetching) return 'success';
         return undefined;
+    };
+    const handleAddTokenButtonClick = () => {
+        if (tokenInfo) {
+            dispatch(addToken(account, tokenInfo));
+            onCancel();
+
+            analytics.report({
+                type: EventType.AddToken,
+                payload: {
+                    networkSymbol: account.symbol,
+                    addedNth: account.tokens ? account.tokens.length + 1 : 0,
+                    token: tokenInfo[0]?.symbol?.toLowerCase() || '',
+                },
+            });
+        }
     };
 
     return (
@@ -109,21 +121,7 @@ export const AddToken = ({ onCancel }: AddTokenProps) => {
             heading={<Translation id="TR_ADD_TOKEN_TITLE" />}
             bottomBar={
                 <Button
-                    onClick={() => {
-                        if (tokenInfo) {
-                            addToken(account, tokenInfo);
-                            onCancel();
-
-                            analytics.report({
-                                type: EventType.AddToken,
-                                payload: {
-                                    networkSymbol: account.symbol,
-                                    addedNth: account.tokens ? account.tokens.length + 1 : 0,
-                                    token: tokenInfo[0]?.symbol?.toLowerCase() || '',
-                                },
-                            });
-                        }
-                    }}
+                    onClick={handleAddTokenButtonClick}
                     isDisabled={!tokenInfo || !!error}
                     isLoading={isFetching}
                 >

@@ -6,8 +6,8 @@ import { analytics, EventType } from '@trezor/suite-analytics';
 import { Button, Icon, variables, Input, Dropdown, DropdownRef, Tooltip } from '@trezor/components';
 import { Translation, HomescreenGallery } from 'src/components/suite';
 import { DeviceAnimation, OnboardingStepBox } from 'src/components/onboarding';
-import { useActions, useDevice, useOnboarding, useSelector } from 'src/hooks/suite';
-import * as deviceSettingsActions from 'src/actions/settings/deviceSettingsActions';
+import { useDevice, useDispatch, useOnboarding, useSelector } from 'src/hooks/suite';
+import { applySettings } from 'src/actions/settings/deviceSettingsActions';
 import { DEFAULT_LABEL, MAX_LABEL_LENGTH } from 'src/constants/suite/device';
 import { isHomescreenSupportedOnDevice } from 'src/utils/suite/homescreen';
 import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
@@ -84,7 +84,7 @@ const SetupActions = styled.div`
     display: flex;
     margin-bottom: 32px;
     padding-bottom: 32px;
-    border-bottom: 1px solid ${props => props.theme.STROKE_GREY};
+    border-bottom: 1px solid ${({ theme }) => theme.STROKE_GREY};
     width: fit-content;
     gap: 16px;
 `;
@@ -134,26 +134,24 @@ export const FinalStep = () => {
     const { goToSuite } = useOnboarding();
 
     const dropdownRef = useRef<DropdownRef>();
-    const { applySettings } = useActions({
-        applySettings: deviceSettingsActions.applySettings,
-    });
 
     const { isLocked, device } = useDevice();
     const isDeviceLocked = isLocked();
-    const { modal, onboardingAnalytics } = useSelector(state => ({
-        modal: state.modal,
-        onboardingAnalytics: state.onboarding.onboardingAnalytics,
-    }));
-    const deviceModelInternal = device?.features?.internal_model;
+
+    const modalContext = useSelector(state => state.modal.context);
+    const onboardingAnalytics = useSelector(state => state.onboarding.onboardingAnalytics);
     const isActionAbortable = useSelector(selectIsActionAbortable);
+    const dispatch = useDispatch();
+
+    const deviceModelInternal = device?.features?.internal_model;
 
     const [state, setState] = useState<'rename' | 'homescreen' | null>(null);
     const [label, setLabel] = useState('');
 
-    const isWaitingForConfirm = modal.context === '@modal/context-device';
+    const isWaitingForConfirm = modalContext === '@modal/context-device';
 
     const onRename = async () => {
-        await applySettings({ label });
+        await dispatch(applySettings({ label }));
         setState(null);
     };
 

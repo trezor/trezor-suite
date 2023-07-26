@@ -3,8 +3,8 @@ import { FieldPath, UseFormReturn } from 'react-hook-form';
 
 import { FeeLevel } from '@trezor/connect';
 import { useAsyncDebounce } from '@trezor/react-utils';
-import { useActions, useTranslation } from 'src/hooks/suite';
-import * as sendFormActions from 'src/actions/wallet/sendFormActions';
+import { useDispatch, useTranslation } from 'src/hooks/suite';
+import { composeTransaction, signTransaction } from 'src/actions/wallet/sendFormActions';
 import { findComposeErrors } from '@suite-common/wallet-utils';
 import {
     FormState,
@@ -44,12 +44,10 @@ export const useCompose = <TFieldValues extends FormState>({
     const [composeField, setComposeField] = useState<string | undefined>(undefined);
     const { translationString } = useTranslation();
 
+    const dispatch = useDispatch();
+
     // actions
     const debounce = useAsyncDebounce();
-    const { composeAction, signAction } = useActions({
-        composeAction: sendFormActions.composeTransaction,
-        signAction: sendFormActions.signTransaction,
-    });
 
     // Type assertion allowing to make the hook reusable, see https://stackoverflow.com/a/73624072
     // This allows the hook to set values and errors for fields shared among multiple forms without passing them as arguments.
@@ -62,7 +60,7 @@ export const useCompose = <TFieldValues extends FormState>({
         const composeInner = async () => {
             if (Object.keys(errors).length > 0) return;
             const values = getValues();
-            const result = await composeAction(values, state);
+            const result = await dispatch(composeTransaction(values, state));
             return result;
         };
 
@@ -79,7 +77,7 @@ export const useCompose = <TFieldValues extends FormState>({
             setComposedLevels(result);
         }
         setLoading(false);
-    }, [composeAction, debounce, getValues, errors, state]);
+    }, [debounce, dispatch, getValues, errors, state]);
 
     // update composeRequestID
     const composeRequest = useCallback(
@@ -217,7 +215,7 @@ export const useCompose = <TFieldValues extends FormState>({
     }, [composedLevels, switchToNearestFee]);
 
     // called from the UI, triggers signing process
-    const signTransaction = async () => {
+    const sign = async () => {
         const values = getValues();
         const composedTx = composedLevels
             ? composedLevels[values.selectedFee || 'normal']
@@ -225,7 +223,7 @@ export const useCompose = <TFieldValues extends FormState>({
         if (composedTx && composedTx.type === 'final') {
             // sign workflow in Actions:
             // signTransaction > sign[COIN]Transaction > requestPushTransaction (modal with promise decision)
-            const result = await signAction(values, composedTx);
+            const result = await dispatch(signTransaction(values, composedTx));
             return result?.success;
         }
     };
@@ -235,6 +233,6 @@ export const useCompose = <TFieldValues extends FormState>({
         composeRequest,
         composedLevels,
         onFeeLevelChange,
-        signTransaction,
+        signTransaction: sign,
     };
 };

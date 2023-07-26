@@ -2,7 +2,7 @@ import { createContext, useContext, useCallback, useState, useEffect } from 'rea
 import { useForm, useWatch } from 'react-hook-form';
 import type { ExchangeTradeQuoteRequest } from 'invity-api';
 import { isChanged } from 'src/utils/suite/comparisonUtils';
-import { useActions, useSelector, useTranslation } from 'src/hooks/suite';
+import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
 import invityAPI from 'src/services/suite/invityAPI';
 import {
     amountToSatoshi,
@@ -11,8 +11,15 @@ import {
     fromFiatCurrency,
     getFeeLevels,
 } from '@suite-common/wallet-utils';
-import * as coinmarketExchangeActions from 'src/actions/wallet/coinmarketExchangeActions';
-import * as coinmarketCommonActions from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
+import {
+    clearQuotes,
+    saveQuoteRequest,
+    saveQuotes,
+} from 'src/actions/wallet/coinmarketExchangeActions';
+import {
+    loadInvityData,
+    saveComposedTransactionInfo,
+} from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
 import {
     ExchangeFormState,
     ExchangeFormContextValues,
@@ -63,52 +70,26 @@ const useExchangeState = (
 export const useCoinmarketExchangeForm = ({
     selectedAccount,
 }: UseCoinmarketExchangeFormProps): ExchangeFormContextValues => {
-    const {
-        saveQuoteRequest,
-        saveQuotes,
-        clearQuotes,
-        saveTrade,
-        saveComposedTransactionInfo,
-        loadInvityData,
-    } = useActions({
-        saveQuoteRequest: coinmarketExchangeActions.saveQuoteRequest,
-        saveQuotes: coinmarketExchangeActions.saveQuotes,
-        clearQuotes: coinmarketExchangeActions.clearQuotes,
-        saveTrade: coinmarketExchangeActions.saveTrade,
-        saveComposedTransactionInfo: coinmarketCommonActions.saveComposedTransactionInfo,
-        loadInvityData: coinmarketCommonActions.loadInvityData,
-    });
-
-    useEffect(() => {
-        loadInvityData();
-    }, [loadInvityData]);
-
     const [state, setState] = useState<ReturnType<typeof useExchangeState>>(undefined);
 
-    const {
-        accounts,
-        exchangeInfo,
-        quotesRequest,
-        exchangeCoinInfo,
-        fiat,
-        device,
-        localCurrency,
-        fees,
-    } = useSelector(state => ({
-        accounts: state.wallet.accounts,
-        exchangeInfo: state.wallet.coinmarket.exchange.exchangeInfo,
-        quotesRequest: state.wallet.coinmarket.exchange.quotesRequest,
-        exchangeCoinInfo: state.wallet.coinmarket.exchange.exchangeCoinInfo,
-        fiat: state.wallet.fiat,
-        device: state.suite.device,
-        localCurrency: state.wallet.settings.localCurrency,
-        fees: state.wallet.fees,
-    }));
+    const accounts = useSelector(state => state.wallet.accounts);
+    const { exchangeInfo, quotesRequest, exchangeCoinInfo } = useSelector(
+        state => state.wallet.coinmarket.exchange,
+    );
+    const fiat = useSelector(state => state.wallet.fiat);
+    const device = useSelector(state => state.suite.device);
+    const localCurrency = useSelector(state => state.wallet.settings.localCurrency);
+    const fees = useSelector(state => state.wallet.fees);
+    const dispatch = useDispatch();
 
     const { account, network } = selectedAccount;
     const { navigateToExchangeOffers } = useCoinmarketNavigation(account);
     const { symbol, networkType } = account;
     const { shouldSendInSats } = useBitcoinAmountUnit(symbol);
+
+    useEffect(() => {
+        dispatch(loadInvityData());
+    }, [dispatch]);
 
     const coinFees = fees[symbol];
     const levels = getFeeLevels(networkType, coinFees);
@@ -286,14 +267,14 @@ export const useCoinmarketExchangeForm = ({
                 updateFiatValue(composed.max);
                 clearErrors(CRYPTO_INPUT);
             }
-            saveComposedTransactionInfo({ selectedFee: selectedFeeLevel, composed });
+            dispatch(saveComposedTransactionInfo({ selectedFee: selectedFeeLevel, composed }));
             setValue('estimatedFeeLimit', composed.estimatedFeeLimit);
         }
     }, [
         clearErrors,
         composedLevels,
+        dispatch,
         getValues,
-        saveComposedTransactionInfo,
         setError,
         setValue,
         updateFiatValue,
@@ -331,7 +312,7 @@ export const useCoinmarketExchangeForm = ({
                 sendStringAmount,
                 dex: 'enable',
             };
-            saveQuoteRequest(request);
+            dispatch(saveQuoteRequest(request));
             const allQuotes = await invityAPI.getExchangeQuotes(request);
             if (Array.isArray(allQuotes)) {
                 const limits = getAmountLimits(allQuotes);
@@ -342,11 +323,11 @@ export const useCoinmarketExchangeForm = ({
                         allQuotes,
                         exchangeInfo,
                     );
-                    saveQuotes(fixedQuotes, floatQuotes, dexQuotes);
+                    dispatch(saveQuotes(fixedQuotes, floatQuotes, dexQuotes));
                     navigateToExchangeOffers();
                 }
             } else {
-                clearQuotes();
+                dispatch(clearQuotes());
                 navigateToExchangeOffers();
             }
         }
@@ -366,15 +347,12 @@ export const useCoinmarketExchangeForm = ({
         register,
         exchangeInfo,
         changeFeeLevel,
-        saveQuoteRequest,
-        saveQuotes,
         quotesRequest,
         composedLevels,
         defaultCurrency,
         exchangeCoinInfo,
         updateFiatCurrency,
         updateSendCryptoValue,
-        saveTrade,
         feeInfo,
         composeRequest,
         fiatRates,

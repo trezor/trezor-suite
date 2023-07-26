@@ -2,10 +2,11 @@ import React from 'react';
 import { WalletParams } from 'src/types/wallet';
 import { AppNavigation, AppNavigationItem } from 'src/components/suite/AppNavigation';
 import { Translation } from 'src/components/suite/Translation';
-import { useActions, useSelector } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { getNetwork, hasNetworkFeatures } from '@suite-common/wallet-utils';
-import * as routerActions from 'src/actions/suite/routerActions';
-import * as modalActions from 'src/actions/suite/modalActions';
+import { goto } from 'src/actions/suite/routerActions';
+import { openModal } from 'src/actions/suite/modalActions';
+import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 
 interface AccountNavigationProps {
     filterPosition?: 'primary' | 'secondary';
@@ -20,14 +21,10 @@ export const AccountNavigation = ({
     primaryContent,
     inView,
 }: AccountNavigationProps) => {
-    const { goto, openModal } = useActions({
-        goto: routerActions.goto,
-        openModal: modalActions.openModal,
-    });
-
-    const selectedAccount = useSelector(state => state.wallet.selectedAccount);
-    const { account } = selectedAccount;
+    const account = useSelector(selectSelectedAccount);
     const routerParams = useSelector(state => state.router.params) as WalletParams;
+    const dispatch = useDispatch();
+
     const network = getNetwork(routerParams?.symbol || '');
     const networkType = account?.networkType || network?.networkType || '';
     const accountType = account?.accountType || routerParams?.accountType || '';
@@ -36,7 +33,7 @@ export const AccountNavigation = ({
         {
             id: 'wallet-index',
             callback: () => {
-                goto('wallet-index', { preserveParams: true });
+                dispatch(goto('wallet-index', { preserveParams: true }));
             },
             title: <Translation id="TR_NAV_TRANSACTIONS" />,
             position: 'primary',
@@ -45,7 +42,7 @@ export const AccountNavigation = ({
         {
             id: 'wallet-details',
             callback: () => {
-                goto('wallet-details', { preserveParams: true });
+                dispatch(goto('wallet-details', { preserveParams: true }));
             },
             title: <Translation id="TR_NAV_DETAILS" />,
             position: 'primary',
@@ -54,7 +51,7 @@ export const AccountNavigation = ({
         {
             id: 'wallet-tokens',
             callback: () => {
-                goto('wallet-tokens', { preserveParams: true });
+                dispatch(goto('wallet-tokens', { preserveParams: true }));
             },
             title: <Translation id="TR_NAV_TOKENS" />,
             position: 'primary',
@@ -63,7 +60,7 @@ export const AccountNavigation = ({
         {
             id: 'wallet-staking',
             callback: () => {
-                goto('wallet-staking', { preserveParams: true });
+                dispatch(goto('wallet-staking', { preserveParams: true }));
             },
             title: <Translation id="TR_NAV_STAKING" />,
             position: 'primary',
@@ -72,7 +69,7 @@ export const AccountNavigation = ({
         {
             id: 'wallet-send',
             callback: () => {
-                goto('wallet-send', { preserveParams: true });
+                dispatch(goto('wallet-send', { preserveParams: true }));
             },
             title: <Translation id="TR_NAV_SEND" />,
             position: 'secondary',
@@ -81,7 +78,7 @@ export const AccountNavigation = ({
         {
             id: 'wallet-receive',
             callback: () => {
-                goto('wallet-receive', { preserveParams: true });
+                dispatch(goto('wallet-receive', { preserveParams: true }));
             },
             title: <Translation id="TR_NAV_RECEIVE" />,
             position: 'secondary',
@@ -90,7 +87,7 @@ export const AccountNavigation = ({
         {
             id: 'wallet-coinmarket-buy',
             callback: () => {
-                goto('wallet-coinmarket-buy', { preserveParams: true });
+                dispatch(goto('wallet-coinmarket-buy', { preserveParams: true }));
             },
             title: <Translation id="TR_NAV_TRADE" />,
             position: 'secondary',
@@ -99,7 +96,7 @@ export const AccountNavigation = ({
         {
             id: 'wallet-add-token',
             callback: () => {
-                openModal({ type: 'add-token' });
+                dispatch(openModal({ type: 'add-token' }));
             },
             title: <Translation id="TR_TOKENS_ADD" />,
             position: 'secondary',
@@ -109,7 +106,7 @@ export const AccountNavigation = ({
         {
             id: 'wallet-sign-verify',
             callback: () => {
-                goto('wallet-sign-verify', { preserveParams: true });
+                dispatch(goto('wallet-sign-verify', { preserveParams: true }));
             },
             title: <Translation id="TR_NAV_SIGN_AND_VERIFY" />,
             icon: 'SIGNATURE',

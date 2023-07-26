@@ -2,14 +2,9 @@ import React from 'react';
 import styled from 'styled-components';
 import { variables, Button } from '@trezor/components';
 import { copyToClipboard } from '@trezor/dom-utils';
-import { useActions } from 'src/hooks/suite';
+import { useDispatch } from 'src/hooks/suite';
 import { Translation } from 'src/components/suite';
 import { notificationsActions } from '@suite-common/toast-notifications';
-
-interface Props {
-    transactionId: string;
-    className?: string;
-}
 
 const Wrapper = styled.div`
     display: flex;
@@ -18,7 +13,7 @@ const Wrapper = styled.div`
     align-items: center;
     justify-content: space-between;
     font-size: ${variables.FONT_SIZE.TINY};
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
@@ -42,12 +37,17 @@ const Value = styled.div`
     text-overflow: ellipsis;
 `;
 
-const TransactionId = ({ transactionId, className }: Props) => {
-    const { addNotification } = useActions({ addNotification: notificationsActions.addToast });
+interface TransactionIdProps {
+    transactionId: string;
+    className?: string;
+}
+
+const TransactionId = ({ transactionId, className }: TransactionIdProps) => {
+    const dispatch = useDispatch();
     const copy = () => {
         const result = copyToClipboard(transactionId);
         if (typeof result !== 'string') {
-            addNotification({ type: 'copy-to-clipboard' });
+            dispatch(notificationsActions.addToast({ type: 'copy-to-clipboard' }));
         }
     };
 
@@ -60,7 +60,7 @@ const TransactionId = ({ transactionId, className }: Props) => {
                 <Value>{transactionId}</Value>
             </Left>
             <Right>
-                <Button variant="tertiary" onClick={() => copy()}>
+                <Button variant="tertiary" onClick={copy}>
                     <Translation id="TR_COPY_TO_CLIPBOARD_TX_ID" />
                 </Button>
             </Right>

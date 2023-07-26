@@ -9,8 +9,8 @@ import {
     SectionItem,
     TextColumn,
 } from 'src/components/suite/Settings';
-import { useDevice, useActions } from 'src/hooks/suite';
-import * as deviceSettingsActions from 'src/actions/settings/deviceSettingsActions';
+import { useDevice, useDispatch } from 'src/hooks/suite';
+import { applySettings } from 'src/actions/settings/deviceSettingsActions';
 import { MAX_LABEL_LENGTH } from 'src/constants/suite/device';
 import { useAnchor } from 'src/hooks/suite/useAnchor';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
@@ -20,13 +20,18 @@ interface DeviceLabelProps {
 }
 
 export const DeviceLabel = ({ isDeviceLocked }: DeviceLabelProps) => {
+    const [label, setLabel] = useState('');
+    const dispatch = useDispatch();
     const { device } = useDevice();
-    const { applySettings } = useActions({
-        applySettings: deviceSettingsActions.applySettings,
-    });
     const { anchorRef, shouldHighlight } = useAnchor(SettingsAnchor.DeviceLabel);
 
-    const [label, setLabel] = useState('');
+    const handleButtonClick = () => {
+        dispatch(applySettings({ label }));
+        analytics.report({
+            type: EventType.SettingsDeviceChangeLabel,
+        });
+    };
+
     useEffect(() => {
         if (device) {
             setLabel(device.label);
@@ -61,12 +66,7 @@ export const DeviceLabel = ({ isDeviceLocked }: DeviceLabelProps) => {
                     isDisabled={isDeviceLocked}
                 />
                 <ActionButton
-                    onClick={() => {
-                        applySettings({ label });
-                        analytics.report({
-                            type: EventType.SettingsDeviceChangeLabel,
-                        });
-                    }}
+                    onClick={handleButtonClick}
                     isDisabled={
                         isDeviceLocked || label.length > MAX_LABEL_LENGTH || label === device?.label
                     }

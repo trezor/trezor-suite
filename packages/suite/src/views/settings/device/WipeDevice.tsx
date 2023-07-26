@@ -2,8 +2,8 @@ import React from 'react';
 
 import { Translation } from 'src/components/suite';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from 'src/components/suite/Settings';
-import { useActions } from 'src/hooks/suite';
-import * as modalActions from 'src/actions/suite/modalActions';
+import { useDispatch } from 'src/hooks/suite';
+import { openModal } from 'src/actions/suite/modalActions';
 import { useAnchor } from 'src/hooks/suite/useAnchor';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 
@@ -12,10 +12,11 @@ interface WipeDeviceProps {
 }
 
 export const WipeDevice = ({ isDeviceLocked }: WipeDeviceProps) => {
-    const { openModal } = useActions({
-        openModal: modalActions.openModal,
-    });
+    const dispatch = useDispatch();
+
     const { anchorRef, shouldHighlight } = useAnchor(SettingsAnchor.WipeDevice);
+
+    const handleClick = () => dispatch(openModal({ type: 'wipe-device' }));
 
     return (
         <SectionItem
@@ -29,11 +30,7 @@ export const WipeDevice = ({ isDeviceLocked }: WipeDeviceProps) => {
             />
             <ActionColumn>
                 <ActionButton
-                    onClick={() =>
-                        openModal({
-                            type: 'wipe-device',
-                        })
-                    }
+                    onClick={handleClick}
                     variant="danger"
                     isDisabled={isDeviceLocked}
                     data-test="@settings/device/open-wipe-modal-button"

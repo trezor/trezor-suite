@@ -1,12 +1,20 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import invityAPI from 'src/services/suite/invityAPI';
-import { useActions, useSelector } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useTimer } from '@trezor/react-utils';
 import type { BankAccount, SellFiatTrade } from 'invity-api';
 import { processQuotes, createQuoteLink } from 'src/utils/wallet/coinmarket/sellUtils';
-import * as coinmarketCommonActions from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
-import * as coinmarketSellActions from 'src/actions/wallet/coinmarketSellActions';
-import * as routerActions from 'src/actions/suite/routerActions';
+import {
+    loadInvityData,
+    submitRequestForm,
+} from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
+import {
+    openCoinmarketSellConfirmModal,
+    saveTrade,
+    saveTransactionId,
+    setIsFromRedirect,
+} from 'src/actions/wallet/coinmarketSellActions';
+import { goto } from 'src/actions/suite/routerActions';
 import { UseOffersProps, ContextValues, SellStep } from 'src/types/wallet/coinmarketSellOffers';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { useCoinmarketRecomposeAndSign } from './useCoinmarketRecomposeAndSign ';
@@ -27,49 +35,17 @@ export const useOffers = ({ selectedAccount }: UseOffersProps) => {
 
     const [sellStep, setSellStep] = useState<SellStep>('BANK_ACCOUNT');
     const { navigateToSellForm } = useCoinmarketNavigation(account);
-    const {
-        saveTrade,
-        setIsFromRedirect,
-        openCoinmarketSellConfirmModal,
-        addNotification,
-        saveTransactionId,
-        submitRequestForm,
-        goto,
-        loadInvityData,
-    } = useActions({
-        saveTrade: coinmarketSellActions.saveTrade,
-        setIsFromRedirect: coinmarketSellActions.setIsFromRedirect,
-        openCoinmarketSellConfirmModal: coinmarketSellActions.openCoinmarketSellConfirmModal,
-        addNotification: notificationsActions.addToast,
-        saveTransactionId: coinmarketSellActions.saveTransactionId,
-        submitRequestForm: coinmarketCommonActions.submitRequestForm,
-        goto: routerActions.goto,
-        loadInvityData: coinmarketCommonActions.loadInvityData,
-    });
+    const invityServerEnvironment = useSelector(
+        state => state.suite.settings.debug.invityServerEnvironment,
+    );
+    const { alternativeQuotes, isFromRedirect, quotes, quotesRequest, sellInfo, transactionId } =
+        useSelector(state => state.wallet.coinmarket.sell);
+    const device = useSelector(state => state.suite.device);
+    const trades = useSelector(state => state.wallet.coinmarket.trades);
+    const dispatch = useDispatch();
 
-    loadInvityData();
+    dispatch(loadInvityData());
 
-    const {
-        invityServerEnvironment,
-        isFromRedirect,
-        sellInfo,
-        device,
-        quotes,
-        alternativeQuotes,
-        quotesRequest,
-        savedTransactionId,
-        trades,
-    } = useSelector(state => ({
-        invityServerEnvironment: state.suite.settings.debug.invityServerEnvironment,
-        isFromRedirect: state.wallet.coinmarket.sell.isFromRedirect,
-        sellInfo: state.wallet.coinmarket.sell.sellInfo,
-        device: state.suite.device,
-        quotes: state.wallet.coinmarket.sell.quotes,
-        alternativeQuotes: state.wallet.coinmarket.sell.alternativeQuotes,
-        quotesRequest: state.wallet.coinmarket.sell.quotesRequest,
-        savedTransactionId: state.wallet.coinmarket.sell.transactionId,
-        trades: state.wallet.coinmarket.trades,
-    }));
     const [innerQuotes, setInnerQuotes] = useState<SellFiatTrade[] | undefined>(quotes);
     const [innerAlternativeQuotes, setInnerAlternativeQuotes] = useState<
         SellFiatTrade[] | undefined
@@ -103,7 +79,7 @@ export const useOffers = ({ selectedAccount }: UseOffersProps) => {
     }, [account.descriptor, quotesRequest, selectedQuote, timer]);
 
     const trade = trades.find(
-        trade => trade.tradeType === 'sell' && trade.key === savedTransactionId,
+        trade => trade.tradeType === 'sell' && trade.key === transactionId,
     ) as TradeSell;
 
     useEffect(() => {
@@ -113,14 +89,14 @@ export const useOffers = ({ selectedAccount }: UseOffersProps) => {
         }
 
         if (isFromRedirect) {
-            if (savedTransactionId && trade) {
+            if (transactionId && trade) {
                 setSelectedQuote(trade.data);
                 setSellStep('SEND_TRANSACTION');
             } else {
                 getQuotes();
             }
 
-            setIsFromRedirect(false);
+            dispatch(setIsFromRedirect(false));
         }
         if (!timer.isLoading && !timer.isStopped) {
             if (timer.resetCount >= 40) {
@@ -132,12 +108,12 @@ export const useOffers = ({ selectedAccount }: UseOffersProps) => {
             }
         }
     }, [
+        dispatch,
         quotesRequest,
         isFromRedirect,
         timer,
         navigateToSellForm,
-        savedTransactionId,
-        setIsFromRedirect,
+        transactionId,
         getQuotes,
         trades,
         trade,
@@ -167,10 +143,12 @@ export const useOffers = ({ selectedAccount }: UseOffersProps) => {
         if (response) {
             if (response.trade.error && response.trade.status !== 'LOGIN_REQUEST') {
                 console.log(`[doSellTrade] ${response.trade.error}`);
-                addNotification({
-                    type: 'error',
-                    error: response.trade.error,
-                });
+                dispatch(
+                    notificationsActions.addToast({
+                        type: 'error',
+                        error: response.trade.error,
+                    }),
+                );
                 return undefined;
             }
             if (
@@ -179,22 +157,24 @@ export const useOffers = ({ selectedAccount }: UseOffersProps) => {
                 (response.trade.status === 'SUBMITTED' && provider.flow === 'PAYMENT_GATE')
             ) {
                 if (provider.flow === 'PAYMENT_GATE') {
-                    await saveTrade(response.trade, account, new Date().toISOString());
-                    await saveTransactionId(response.trade.orderId);
+                    await dispatch(saveTrade(response.trade, account, new Date().toISOString()));
+                    await dispatch(saveTransactionId(response.trade.orderId));
                     setSelectedQuote(response.trade);
                     setSellStep('SEND_TRANSACTION');
                 }
-                submitRequestForm(response.tradeForm?.form);
+                dispatch(submitRequestForm(response.tradeForm?.form));
                 return undefined;
             }
             return response.trade;
         }
         const errorMessage = 'No response from the server';
         console.log(`[doSellTrade] ${errorMessage}`);
-        addNotification({
-            type: 'error',
-            error: errorMessage,
-        });
+        dispatch(
+            notificationsActions.addToast({
+                type: 'error',
+                error: errorMessage,
+            }),
+        );
     };
 
     const needToRegisterOrVerifyBankAccount = (quote: SellFiatTrade) => {
@@ -218,9 +198,8 @@ export const useOffers = ({ selectedAccount }: UseOffersProps) => {
                 : null;
 
         if (quotesRequest) {
-            const result = await openCoinmarketSellConfirmModal(
-                provider?.companyName,
-                quote.cryptoCurrency,
+            const result = await dispatch(
+                openCoinmarketSellConfirmModal(provider?.companyName, quote.cryptoCurrency),
             );
             if (result) {
                 // empty quoteId means the partner requests login first, requestTrade to get login screen
@@ -280,33 +259,41 @@ export const useOffers = ({ selectedAccount }: UseOffersProps) => {
                 };
                 const response = await invityAPI.doSellConfirm(quote);
                 if (!response) {
-                    addNotification({
-                        type: 'error',
-                        error: 'No response from the server',
-                    });
+                    dispatch(
+                        notificationsActions.addToast({
+                            type: 'error',
+                            error: 'No response from the server',
+                        }),
+                    );
                 } else if (response.error || !response.status || !response.orderId) {
-                    addNotification({
-                        type: 'error',
-                        error: response.error || 'Invalid response from the server',
-                    });
+                    dispatch(
+                        notificationsActions.addToast({
+                            type: 'error',
+                            error: response.error || 'Invalid response from the server',
+                        }),
+                    );
                 }
 
-                await saveTrade(response, account, new Date().toISOString());
-                await saveTransactionId(selectedQuote.orderId);
+                await dispatch(saveTrade(response, account, new Date().toISOString()));
+                await dispatch(saveTransactionId(selectedQuote.orderId));
 
-                goto('wallet-coinmarket-sell-detail', {
-                    params: {
-                        symbol: account.symbol,
-                        accountIndex: account.index,
-                        accountType: account.accountType,
-                    },
-                });
+                dispatch(
+                    goto('wallet-coinmarket-sell-detail', {
+                        params: {
+                            symbol: account.symbol,
+                            accountIndex: account.index,
+                            accountType: account.accountType,
+                        },
+                    }),
+                );
             }
         } else {
-            addNotification({
-                type: 'error',
-                error: 'Cannot send transaction, missing data',
-            });
+            dispatch(
+                notificationsActions.addToast({
+                    type: 'error',
+                    error: 'Cannot send transaction, missing data',
+                }),
+            );
         }
     };
 
@@ -316,7 +303,6 @@ export const useOffers = ({ selectedAccount }: UseOffersProps) => {
         selectedQuote,
         trade,
         device,
-        saveTrade,
         confirmTrade,
         addBankAccount,
         quotesRequest,

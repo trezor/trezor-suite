@@ -4,10 +4,10 @@ import { analytics, EventType } from '@trezor/suite-analytics';
 
 import { variables, H2, Button, Card, Image } from '@trezor/components';
 import { Translation } from 'src/components/suite';
-import { useActions, useSelector } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { Account } from 'src/types/wallet';
-import * as suiteActions from 'src/actions/suite/suiteActions';
-import * as routerActions from 'src/actions/suite/routerActions';
+import { setFlag } from 'src/actions/suite/suiteActions';
+import { goto } from 'src/actions/suite/routerActions';
 import { TaprootBanner } from './TaprootBanner';
 import { getBip43Type } from '@suite-common/wallet-utils';
 
@@ -70,17 +70,13 @@ interface AccountEmptyProps {
 
 export const AccountEmpty = ({ account }: AccountEmptyProps) => {
     const { taprootBannerClosed } = useSelector(state => state.suite.flags);
-
-    const { goto, setFlag } = useActions({
-        goto: routerActions.goto,
-        setFlag: suiteActions.setFlag,
-    });
+    const dispatch = useDispatch();
 
     const bip43 = getBip43Type(account.path);
     const networkSymbol = account.symbol.toUpperCase();
 
     const handleNavigateToReceivePage = () => {
-        goto('wallet-receive', { preserveParams: true });
+        dispatch(goto('wallet-receive', { preserveParams: true }));
         analytics.report({
             type: EventType.AccountsEmptyAccountReceive,
             payload: {
@@ -88,9 +84,8 @@ export const AccountEmpty = ({ account }: AccountEmptyProps) => {
             },
         });
     };
-
     const handleNavigateToBuyPage = () => {
-        goto('wallet-coinmarket-buy', { preserveParams: true });
+        dispatch(goto('wallet-coinmarket-buy', { preserveParams: true }));
 
         analytics.report({
             type: EventType.AccountsEmptyAccountBuy,
@@ -99,12 +94,11 @@ export const AccountEmpty = ({ account }: AccountEmptyProps) => {
             },
         });
     };
+    const closeBanner = () => dispatch(setFlag('taprootBannerClosed', true));
 
     return (
         <Wrapper>
-            {bip43 === 'bip86' && !taprootBannerClosed && (
-                <TaprootBanner onClose={() => setFlag('taprootBannerClosed', true)} />
-            )}
+            {bip43 === 'bip86' && !taprootBannerClosed && <TaprootBanner onClose={closeBanner} />}
 
             <StyledCard>
                 <StyledImage image="CLOUDY" />

@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react';
 import styled, { css } from 'styled-components';
 import { Input, Icon, useTheme, Tooltip, KEYBOARD_CODE } from '@trezor/components';
-import { useActions } from 'src/hooks/suite';
+import { useDispatch } from 'src/hooks/suite';
 import { SETTINGS } from 'src/config/suite';
 import { useTranslation } from 'src/hooks/suite/useTranslation';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -17,8 +17,8 @@ const Wrapper = styled.div<{ expanded: boolean }>`
     overflow: hidden;
     cursor: pointer;
 
-    ${props =>
-        props.expanded &&
+    ${({ expanded }) =>
+        expanded &&
         css`
             width: 210px;
             cursor: auto;
@@ -27,8 +27,8 @@ const Wrapper = styled.div<{ expanded: boolean }>`
 
 const StyledInput = styled(Input)<{ expanded: boolean }>`
     border: none;
-    ${props =>
-        !props.expanded &&
+    ${({ expanded }) =>
+        !expanded &&
         css`
             cursor: pointer;
             padding: 0 16px;
@@ -47,11 +47,8 @@ export const SearchAction = ({ account, search, setSearch, setSelectedPage }: Se
     const inputRef = useRef<HTMLInputElement | null>(null);
     const [expanded, setExpanded] = useState(false);
     const [hasFetchedAll, setHasFetchedAll] = useState(false);
+    const dispatch = useDispatch();
     const { translationString } = useTranslation();
-    const { addToast, fetchTransactions } = useActions({
-        addToast: notificationsActions.addToast,
-        fetchTransactions: fetchTransactionsThunk,
-    });
 
     const onFocus = useCallback(() => {
         setExpanded(true);
@@ -86,30 +83,26 @@ export const SearchAction = ({ account, search, setSearch, setSelectedPage }: Se
                 setHasFetchedAll(true);
 
                 try {
-                    await fetchTransactions({
-                        accountKey: account.key,
-                        page: 2,
-                        perPage: SETTINGS.TXS_PER_PAGE,
-                        noLoading: true,
-                        recursive: true,
-                    });
+                    await dispatch(
+                        fetchTransactionsThunk({
+                            accountKey: account.key,
+                            page: 2,
+                            perPage: SETTINGS.TXS_PER_PAGE,
+                            noLoading: true,
+                            recursive: true,
+                        }),
+                    );
                 } catch (err) {
-                    addToast({
-                        type: 'error',
-                        error: translationString('TR_SEARCH_FAIL'),
-                    });
+                    dispatch(
+                        notificationsActions.addToast({
+                            type: 'error',
+                            error: translationString('TR_SEARCH_FAIL'),
+                        }),
+                    );
                 }
             }
         },
-        [
-            account,
-            addToast,
-            fetchTransactions,
-            hasFetchedAll,
-            setSearch,
-            setSelectedPage,
-            translationString,
-        ],
+        [account, dispatch, hasFetchedAll, setSearch, setSelectedPage, translationString],
     );
 
     const onSearchKeys = useCallback(

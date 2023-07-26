@@ -1,8 +1,7 @@
 import React from 'react';
 
 import { WalletLayout, WalletLayoutHeader } from 'src/components/wallet';
-import { useDevice, useSelector, useActions } from 'src/hooks/suite';
-import * as receiveActions from 'src/actions/wallet/receiveActions';
+import { useDevice, useSelector } from 'src/hooks/suite';
 
 import { selectPendingAccountAddresses } from '@suite-common/wallet-core';
 import { selectDevice } from 'src/reducers/suite/suiteReducer';
@@ -18,10 +17,6 @@ const Receive = () => {
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
     const receive = useSelector(state => state.wallet.receive);
     const device = useSelector(selectDevice);
-
-    const { showAddress } = useActions({
-        showAddress: receiveActions.showAddress,
-    });
 
     const { account } = selectedAccount;
 
@@ -49,7 +44,6 @@ const Receive = () => {
             <FreshAddress
                 account={account}
                 addresses={receive}
-                showAddress={showAddress}
                 disabled={disabled}
                 locked={isDeviceLocked}
                 pendingAddresses={pendingAddresses}
@@ -58,7 +52,6 @@ const Receive = () => {
             <UsedAddresses
                 account={account}
                 addresses={receive}
-                showAddress={showAddress}
                 locked={isDeviceLocked}
                 pendingAddresses={pendingAddresses}
             />

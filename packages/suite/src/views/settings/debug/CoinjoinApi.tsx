@@ -4,8 +4,8 @@ import styled from 'styled-components';
 import { Switch, Button, Link } from '@trezor/components';
 import { COINJOIN_NETWORKS } from 'src/services/coinjoin';
 import { ActionColumn, ActionSelect, SectionItem, TextColumn } from 'src/components/suite/Settings';
-import * as coinjoinClientActions from 'src/actions/wallet/coinjoinClientActions';
-import { useSelector, useActions } from 'src/hooks/suite';
+import { setDebugSettings } from 'src/actions/wallet/coinjoinClientActions';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { CoinjoinServerEnvironment, CoinjoinClientInstance } from 'src/types/wallet/coinjoin';
 import { NetworkSymbol, networks } from '@suite-common/wallet-config';
 import { reloadApp } from 'src/utils/suite/reload';
@@ -87,27 +87,24 @@ const CoordinatorServer = ({
 };
 
 export const CoinjoinApi = () => {
-    const { setDebugSettings } = useActions({
-        setDebugSettings: coinjoinClientActions.setDebugSettings,
-    });
     const debug = useSelector(state => state.wallet.coinjoin.debug);
     const clients = useSelector(state => state.wallet.coinjoin.clients);
+    const dispatch = useDispatch();
 
     const handleServerChange: CoordinatorServerProps['onChange'] = (network, value) => {
-        setDebugSettings({
-            coinjoinServerEnvironment: {
-                [network]: value,
-            },
-        });
+        dispatch(
+            setDebugSettings({
+                coinjoinServerEnvironment: {
+                    [network]: value,
+                },
+            }),
+        );
         // reload the Suite to reinitialize everything, with a slight delay to let the browser save the settings
         reloadApp(100);
     };
 
-    const handleTorChange = () => {
-        setDebugSettings({
-            coinjoinAllowNoTor: !debug?.coinjoinAllowNoTor,
-        });
-    };
+    const handleTorChange = () =>
+        dispatch(setDebugSettings({ coinjoinAllowNoTor: !debug?.coinjoinAllowNoTor }));
 
     return (
         <>

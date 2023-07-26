@@ -11,7 +11,7 @@ import {
     TROUBLESHOOTING_TIP_USB,
     TROUBLESHOOTING_TIP_DIFFERENT_COMPUTER,
 } from 'src/components/suite/TroubleshootingTips/tips';
-import { useActions } from 'src/hooks/suite';
+import { useDispatch } from 'src/hooks/suite';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import type { TrezorDevice } from 'src/types/suite';
 
@@ -39,9 +39,7 @@ const UdevWeb = () => (
 const UdevDesktop = () => {
     const [response, setResponse] = useState(-1);
 
-    const { addToast } = useActions({
-        addToast: notificationsActions.addToast,
-    });
+    const dispatch = useDispatch();
 
     const handleCtaClick = async (event: React.MouseEvent) => {
         event.preventDefault();
@@ -52,10 +50,12 @@ const UdevDesktop = () => {
         if (resp?.success) {
             setResponse(1);
         } else {
-            addToast({
-                type: 'error',
-                error: resp?.error || 'desktopApi not available',
-            });
+            dispatch(
+                notificationsActions.addToast({
+                    type: 'error',
+                    error: resp?.error || 'desktopApi not available',
+                }),
+            );
 
             setResponse(0);
         }

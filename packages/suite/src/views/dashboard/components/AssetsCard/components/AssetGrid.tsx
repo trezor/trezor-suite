@@ -12,8 +12,8 @@ import {
 } from 'src/components/suite';
 import { CoinBalance, CoinmarketBuyButton } from 'src/components/wallet';
 import { isTestnet } from '@suite-common/wallet-utils';
-import * as routerActions from 'src/actions/suite/routerActions';
-import { useActions, useAccountSearch, useLoadingSkeleton } from 'src/hooks/suite';
+import { goto } from 'src/actions/suite/routerActions';
+import { useAccountSearch, useDispatch, useLoadingSkeleton } from 'src/hooks/suite';
 
 const Col = styled.div`
     display: flex;
@@ -95,28 +95,29 @@ interface AssetGridProps {
 
 export const AssetGrid = React.memo(({ network, failed, cryptoValue }: AssetGridProps) => {
     const { symbol, name } = network;
+    const dispatch = useDispatch();
     const theme = useTheme();
     const { setCoinFilter, setSearchString } = useAccountSearch();
 
-    const { goto } = useActions({ goto: routerActions.goto });
+    const handleLogoClick = () => {
+        dispatch(
+            goto('wallet-index', {
+                params: {
+                    symbol,
+                    accountIndex: 0,
+                    accountType: 'normal',
+                },
+            }),
+        );
+        // activate coin filter and reset account search string
+        setCoinFilter(symbol);
+        setSearchString(undefined);
+    };
 
     return (
         <CoinGridWrapper>
             <UpperRowWrapper>
-                <CoinNameWrapper
-                    onClick={() => {
-                        goto('wallet-index', {
-                            params: {
-                                symbol,
-                                accountIndex: 0,
-                                accountType: 'normal',
-                            },
-                        });
-                        // activate coin filter and reset account search string
-                        setCoinFilter(symbol);
-                        setSearchString(undefined);
-                    }}
-                >
+                <CoinNameWrapper onClick={handleLogoClick}>
                     <LogoWrapper>
                         <CoinLogo symbol={symbol} size={24} />
                     </LogoWrapper>

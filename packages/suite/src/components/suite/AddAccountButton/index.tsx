@@ -2,8 +2,8 @@ import React from 'react';
 
 import { Translation } from 'src/components/suite';
 import { TrezorDevice } from 'src/types/suite';
-import { useActions, useDiscovery } from 'src/hooks/suite';
-import * as modalActions from 'src/actions/suite/modalActions';
+import { useDiscovery, useDispatch } from 'src/hooks/suite';
+import { openModal } from 'src/actions/suite/modalActions';
 
 import { Button, Tooltip, ButtonProps, useTheme } from '@trezor/components';
 import { DiscoveryStatus } from '@suite-common/wallet-constants';
@@ -28,9 +28,8 @@ const getExplanationMessage = (device: TrezorDevice | undefined, discoveryIsRunn
 const AddAccountButton = ({ device, isDisabled, noButtonLabel, closeMenu, ...rest }: Props) => {
     const theme = useTheme();
     const { discovery } = useDiscovery();
-    const { openModal } = useActions({
-        openModal: modalActions.openModal,
-    });
+    const dispatch = useDispatch();
+
     const discoveryIsRunning = discovery ? discovery.status <= DiscoveryStatus.STOPPING : false;
 
     // TODO: add more cases when adding account is not possible
@@ -48,10 +47,12 @@ const AddAccountButton = ({ device, isDisabled, noButtonLabel, closeMenu, ...res
             onClick={
                 device
                     ? () => {
-                          openModal({
-                              type: 'add-account',
-                              device,
-                          });
+                          dispatch(
+                              openModal({
+                                  type: 'add-account',
+                                  device,
+                              }),
+                          );
                           if (closeMenu) closeMenu();
                       }
                     : undefined

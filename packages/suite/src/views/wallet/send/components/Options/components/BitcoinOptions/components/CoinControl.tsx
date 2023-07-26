@@ -5,7 +5,7 @@ import { fetchTransactionsThunk } from '@suite-common/wallet-core';
 import { amountToSatoshi, formatNetworkAmount } from '@suite-common/wallet-utils';
 import { FormattedCryptoAmount, Translation } from 'src/components/suite';
 import { SETTINGS } from 'src/config/suite';
-import { useActions, useSelector } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { Pagination } from 'src/components/wallet';
 import { useTheme, Checkbox, Icon, Switch, variables } from '@trezor/components';
 import { UtxoSelectionList } from 'src/components/wallet/CoinControl/UtxoSelectionList';
@@ -65,10 +65,7 @@ export const CoinControl = ({ close }: CoinControlProps) => {
     const [currentPage, setSelectedPage] = useState(1);
 
     const targetAnonymity = useSelector(selectCurrentTargetAnonymity);
-
-    const { fetchTransactions } = useActions({
-        fetchTransactions: fetchTransactionsThunk,
-    });
+    const dispatch = useDispatch();
 
     const {
         account,
@@ -150,17 +147,19 @@ export const CoinControl = ({ close }: CoinControlProps) => {
 
     // fetch all transactions so that we can show a transaction timestamp for each UTXO
     useEffect(() => {
-        const promise = fetchTransactions({
-            accountKey: account.key,
-            page: 2,
-            perPage: SETTINGS.TXS_PER_PAGE,
-            noLoading: true,
-            recursive: true,
-        });
+        const promise = dispatch(
+            fetchTransactionsThunk({
+                accountKey: account.key,
+                page: 2,
+                perPage: SETTINGS.TXS_PER_PAGE,
+                noLoading: true,
+                recursive: true,
+            }),
+        );
         return () => {
             promise.abort();
         };
-    }, [account, fetchTransactions]);
+    }, [account, dispatch]);
 
     const missingToInputValues = {
         amount: <FormattedCryptoAmount value={formattedMissing} symbol={account.symbol} />,
