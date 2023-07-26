@@ -1,5 +1,7 @@
 // firmware should be always set. This tests actually tests the fact that
 
+import { DeviceModelInternal } from '../../src/types';
+
 const emulatorStartOpts = process.env.emulatorStartOpts || global.emulatorStartOpts;
 // @ts-expect-error (here might be bug)
 const firmware = emulatorStartOpts.version;
@@ -209,6 +211,7 @@ export default {
                 needs_backup: expect.any(Boolean),
                 // flags: null, // flags may be changed by applyFlags test
                 model: '1',
+                internal_model: DeviceModelInternal.T1B1,
                 fw_major: null,
                 fw_minor: null,
                 fw_patch: null,

@@ -7,9 +7,8 @@ import {
 import { Translation } from 'src/components/suite';
 import * as onboardingActions from 'src/actions/onboarding/onboardingActions';
 import * as recoveryActions from 'src/actions/recovery/recoveryActions';
-import { useActions, useSelector } from 'src/hooks/suite';
-import { DeviceModel } from '@trezor/device-utils';
-import { useDeviceModel } from 'src/hooks/suite/useDeviceModel';
+import { useActions, useDevice, useSelector } from 'src/hooks/suite';
+import { DeviceModelInternal } from '@trezor/connect';
 
 const RecoveryStepBox = (props: OnboardingStepBoxProps) => {
     const { goToPreviousStep, setStatus } = useActions({
@@ -19,9 +18,11 @@ const RecoveryStepBox = (props: OnboardingStepBoxProps) => {
 
     const recovery = useSelector(state => state.recovery);
 
-    const deviceModel = useDeviceModel();
+    const { device } = useDevice();
 
-    if (!deviceModel) {
+    const deviceModelInternal = device?.features?.internal_model;
+
+    if (!deviceModelInternal) {
         return null;
     }
 
@@ -30,7 +31,11 @@ const RecoveryStepBox = (props: OnboardingStepBoxProps) => {
             return setStatus('initial');
         }
         // allow to change recovery settings for T1 in case of error
-        if (recovery.status === 'finished' && recovery.error && deviceModel === DeviceModel.T1) {
+        if (
+            recovery.status === 'finished' &&
+            recovery.error &&
+            deviceModelInternal === DeviceModelInternal.T1B1
+        ) {
             return setStatus('initial');
         }
         return goToPreviousStep();

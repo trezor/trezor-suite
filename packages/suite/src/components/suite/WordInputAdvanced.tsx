@@ -3,9 +3,8 @@ import styled from 'styled-components';
 import { HELP_CENTER_ADVANCED_RECOVERY_URL } from '@trezor/urls';
 import { Button, ButtonPin, KEYBOARD_CODE } from '@trezor/components';
 import { Translation, TrezorLink, DeviceMatrixExplanation } from 'src/components/suite';
-import { DeviceModel } from '@trezor/device-utils';
 import { createTimeoutPromise } from '@trezor/utils';
-import TrezorConnect, { UI } from '@trezor/connect';
+import TrezorConnect, { DeviceModelInternal, UI } from '@trezor/connect';
 
 const Wrapper = styled.div`
     display: flex;
@@ -109,7 +108,7 @@ export const WordInputAdvanced = ({ count }: WordInputAdvancedProps) => {
                     {
                         key: '1',
                         title: <Translation id="TR_RECOVERY_MATRIX_DISPLAYED_ON_TREZOR" />,
-                        deviceModel: DeviceModel.T1,
+                        deviceModelInternal: DeviceModelInternal.T1B1,
                     },
                     {
                         key: '2',

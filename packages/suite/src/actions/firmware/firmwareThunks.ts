@@ -1,14 +1,9 @@
-import {
-    DeviceModel,
-    getBootloaderVersion,
-    getDeviceModel,
-    getFirmwareVersion,
-} from '@trezor/device-utils';
+import { getBootloaderVersion, getFirmwareVersion } from '@trezor/device-utils';
 import { Await } from '@trezor/type-utils';
 import { isDesktop } from '@trezor/env-utils';
 import { resolveStaticPath } from '@suite-common/suite-utils';
 import { analytics, EventType } from '@trezor/suite-analytics';
-import TrezorConnect from '@trezor/connect';
+import TrezorConnect, { DeviceModelInternal } from '@trezor/connect';
 
 import {
     selectIntermediaryInstalled,
@@ -53,7 +48,7 @@ const firmwareInstallThunk =
 
         dispatch(firmwareActions.setStatus('started'));
 
-        const deviceModel = getDeviceModel(device);
+        const deviceModelInternal = device.features.internal_model;
 
         const fromFwVersion =
             prevDevice && prevDevice.features && prevDevice.firmware !== 'none'
@@ -165,7 +160,8 @@ const firmwareInstallThunk =
         // ask user to wait until device reboots
         dispatch(
             firmwareActions.setStatus(
-                deviceModel === DeviceModel.T1 && device.features.minor_version < 10
+                deviceModelInternal === DeviceModelInternal.T1B1 &&
+                    device.features.minor_version < 10
                     ? 'unplug'
                     : 'wait-for-reboot',
             ),
