@@ -7,7 +7,6 @@ export { useGraph } from './useGraph';
 export { useAccountSearch } from './useAccountSearch';
 export { useFirmware } from './useFirmware';
 export { useSelector } from './useSelector';
-export { useDeviceModel } from './useDeviceModel';
 export { useLoadingSkeleton } from './useLoadingSkeleton';
 export { useTranslation } from './useTranslation';
 export { useOnboarding } from './useOnboarding';

@@ -1,5 +1,4 @@
 import * as utils from 'src/utils/suite/device';
-import { getDeviceModel } from '@trezor/device-utils';
 import { AcquiredDevice } from 'src/types/suite';
 import fixtures from '../__fixtures__/device';
 
@@ -34,16 +33,6 @@ describe('isSelectedInstance', () => {
     fixtures.isSelectedInstance.forEach(f => {
         it(f.description, () => {
             const instance = utils.isSelectedInstance(f.selected, f.device);
-            expect(instance).toEqual(f.result);
-        });
-    });
-});
-
-// getDeviceModel is not part of suite package. However, tests are dependant on definitions from suite package.
-describe('getDeviceModel', () => {
-    fixtures.getDeviceModel.forEach(f => {
-        it(f.description, () => {
-            const instance = getDeviceModel(f.device);
             expect(instance).toEqual(f.result);
         });
     });
