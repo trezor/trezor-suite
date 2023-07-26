@@ -80,10 +80,12 @@ export const useUtxoSelection = ({
         [spendableUtxos, lowAnonymityUtxos, dustUtxos].find(utxoCategory => utxoCategory.length) ||
         [];
 
-    // are all UTXOs in the top category selected?
-    const allUtxosSelected = !!topCategory?.every((utxo: AccountUtxo) =>
-        selectedUtxos.some(selected => isSameUtxo(selected, utxo)),
-    );
+    // is there at least one UTXO and are all UTXOs in the top category selected?
+    const allUtxosSelected =
+        !!topCategory.length &&
+        !!topCategory?.every((utxo: AccountUtxo) =>
+            selectedUtxos.some(selected => isSameUtxo(selected, utxo)),
+        );
 
     // transaction composed for the fee level chosen by the user
     const composedLevel = composedLevels?.[selectedFee || 'normal'];
