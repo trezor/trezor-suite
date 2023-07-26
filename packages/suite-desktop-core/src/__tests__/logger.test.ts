@@ -4,12 +4,13 @@ import path from 'path';
 
 import { Logger, Options } from '../libs/logger';
 
-const testOptions: Options = {
+const testOptions = {
     colors: false,
-    logFormat: '%lvl(%top): %msg',
+    logFormat: '%lvl(%top): %rep%msg',
     outputFile: 'test-log.txt',
     outputPath: __dirname,
-};
+    dedupeTimeout: 0,
+} as Options;
 const output = path.join(testOptions.outputPath ?? '', testOptions.outputFile ?? '');
 
 describe('logger', () => {
@@ -90,5 +91,30 @@ describe('logger', () => {
 
         const logFile = fs.readFileSync(output, { encoding: 'utf8' });
         expect(logFile).toBe('ERROR(test): A\nWARN(test): B\nINFO(test): C\nDEBUG(test): D\n');
+    });
+    it('Deduplication', async () => {
+        const logger = new Logger('debug', {
+            ...testOptions,
+            dedupeTimeout: 1,
+        });
+
+        logger.warn('test', 'A');
+        logger.info('test', 'A');
+        logger.info('test', 'A');
+        logger.warn('test', 'A');
+        logger.warn('test', 'A');
+        logger.warn('test2', 'A');
+        logger.warn('test2', 'B');
+
+        await new Promise(res => setTimeout(res, 10));
+
+        expect(console.log).toHaveBeenCalledTimes(5);
+        expect(spy.mock.calls).toEqual([
+            ['WARN(test): A'],
+            ['INFO(test): (2x) A'],
+            ['WARN(test): (2x) A'],
+            ['WARN(test2): A'],
+            ['WARN(test2): B'],
+        ]);
     });
 });
