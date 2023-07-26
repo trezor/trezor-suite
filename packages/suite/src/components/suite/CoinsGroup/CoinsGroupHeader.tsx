@@ -44,7 +44,11 @@ interface Props {
     toggleSettingsMode?: () => void;
 }
 
-const CoinsGroupHeader = ({ isAtLeastOneActive, settingsMode, toggleSettingsMode }: Props) => (
+export const CoinsGroupHeader = ({
+    isAtLeastOneActive,
+    settingsMode,
+    toggleSettingsMode,
+}: Props) => (
     <Wrapper>
         {settingsMode && <Translation id="TR_SELECT_COIN_FOR_SETTINGS" />}
         <SettingsWrapper onClick={toggleSettingsMode} disabled={!isAtLeastOneActive}>
@@ -52,5 +56,3 @@ const CoinsGroupHeader = ({ isAtLeastOneActive, settingsMode, toggleSettingsMode
         </SettingsWrapper>
     </Wrapper>
 );
-
-export default CoinsGroupHeader;

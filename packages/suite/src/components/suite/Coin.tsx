@@ -163,7 +163,7 @@ interface CoinProps {
     onSettings?: () => void;
 }
 
-const Coin = ({
+export const Coin = ({
     symbol,
     name,
     label,
@@ -218,5 +218,3 @@ const Coin = ({
         </CoinWrapper>
     );
 };
-
-export default Coin;

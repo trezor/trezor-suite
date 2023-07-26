@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useActions } from 'src/hooks/suite';
 import { openModal as openModalAction } from 'src/actions/suite/modalActions';
-import CoinsGroupHeader from './CoinsGroupHeader';
-import CoinsList from './CoinsList';
+import { CoinsGroupHeader } from './CoinsGroupHeader';
+import { CoinsList } from './CoinsList';
 import type { Network } from 'src/types/wallet';
 
 const CoinsGroupWrapper = styled.div`
@@ -17,7 +17,12 @@ interface CoinsGroupProps {
     onToggle: (symbol: Network['symbol'], toggled: boolean) => void;
 }
 
-const CoinsGroup = ({ onToggle, networks, selectedNetworks, className }: CoinsGroupProps) => {
+export const CoinsGroup = ({
+    onToggle,
+    networks,
+    selectedNetworks,
+    className,
+}: CoinsGroupProps) => {
     const { openModal } = useActions({
         openModal: openModalAction,
     });
@@ -52,5 +57,3 @@ const CoinsGroup = ({ onToggle, networks, selectedNetworks, className }: CoinsGr
         </CoinsGroupWrapper>
     );
 };
-
-export default CoinsGroup;

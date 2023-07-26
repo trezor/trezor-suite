@@ -27,7 +27,7 @@ interface CoinsListProps {
     onToggle: (symbol: Network['symbol'], toggled: boolean) => void;
 }
 
-const CoinsList = ({
+export const CoinsList = ({
     networks,
     selectedNetworks,
     settingsMode = false,
@@ -117,5 +117,3 @@ const CoinsList = ({
         </Wrapper>
     );
 };
-
-export default CoinsList;
