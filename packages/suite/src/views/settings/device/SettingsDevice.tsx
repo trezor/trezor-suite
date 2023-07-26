@@ -1,13 +1,13 @@
 import React from 'react';
 
-import type { TransportInfo } from '@trezor/connect';
+import { DeviceModelInternal, type TransportInfo } from '@trezor/connect';
 
 import { SettingsLayout } from 'src/components/settings';
 import { Translation } from 'src/components/suite';
 import { SettingsSection, DeviceBanner } from 'src/components/suite/Settings';
 import { isDeviceRemembered } from 'src/utils/suite/device';
 import { useDevice, useSelector } from 'src/hooks/suite';
-import { DeviceModel, getDeviceModel, pickByDeviceModel } from '@trezor/device-utils';
+import { pickByDeviceModel } from '@trezor/device-utils';
 
 import { BackupRecoverySeed } from './BackupRecoverySeed';
 import { BackupFailed } from './BackupFailed';
@@ -47,7 +47,7 @@ export const SettingsDevice = () => {
     const isDeviceLocked = isLocked();
     const bootloaderMode = device?.mode === 'bootloader';
     const deviceRemembered = isDeviceRemembered(device) && !device?.connected;
-    const deviceModel = getDeviceModel(device);
+    const deviceModelInternal = device?.features?.internal_model;
 
     if (deviceSettingsUnavailable(device, transport)) {
         return (
@@ -85,10 +85,10 @@ export const SettingsDevice = () => {
                     title={<Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_BOOTLOADER" />}
                     description={
                         <Translation
-                            id={pickByDeviceModel(deviceModel, {
+                            id={pickByDeviceModel(deviceModelInternal, {
                                 default:
                                     'TR_SETTINGS_DEVICE_BANNER_DESCRIPTION_BOOTLOADER_NO_BUTTONS',
-                                [DeviceModel.TT]:
+                                [DeviceModelInternal.T2T1]:
                                     'TR_SETTINGS_DEVICE_BANNER_DESCRIPTION_BOOTLOADER_NO_TOUCH',
                             })}
                         />
@@ -135,7 +135,7 @@ export const SettingsDevice = () => {
                     <SettingsSection title={<Translation id="TR_PERSONALIZATION" />} icon="PALETTE">
                         <DeviceLabel isDeviceLocked={isDeviceLocked} />
                         <Homescreen isDeviceLocked={isDeviceLocked} />
-                        {deviceModel === DeviceModel.TT && (
+                        {deviceModelInternal === DeviceModelInternal.T2T1 && (
                             <DisplayRotation isDeviceLocked={isDeviceLocked} />
                         )}
                         {pinProtection && <AutoLock isDeviceLocked={isDeviceLocked} />}
