@@ -18,7 +18,7 @@ import { getDerivationType, isTrezorConnectBackendType } from '@suite-common/wal
 import { DiscoveryItem } from '@suite-common/wallet-types';
 import { accountsActions } from '@suite-common/wallet-core';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { getDeviceModel, getFirmwareVersion } from '@trezor/device-utils';
+import { getFirmwareVersion } from '@trezor/device-utils';
 import TrezorConnect, { BundleProgress, AccountInfo, UI } from '@trezor/connect';
 import { versionUtils } from '@trezor/utils';
 import { DiscoveryStatus } from '@suite-common/wallet-constants';
@@ -149,13 +149,13 @@ const handleProgress =
 const filterUnavailableNetworks = (enabledNetworks: Account['symbol'][], device?: TrezorDevice) =>
     NETWORKS.filter(n => {
         const firmwareVersion = getFirmwareVersion(device);
-        const deviceModel = getDeviceModel(device);
+        const internalModel = device?.features?.internal_model;
 
         const isSupportedInSuite =
             !n.support || // support is not defined => is supported
-            !deviceModel || // typescript. device undefined. => supported
-            (n.support[deviceModel] && // support is defined for current device
-                versionUtils.isNewerOrEqual(firmwareVersion, n.support[deviceModel])); // device version is newer or equal to support field in networks => supported
+            !internalModel || // typescript. device undefined. => supported
+            (n.support[internalModel] && // support is defined for current device
+                versionUtils.isNewerOrEqual(firmwareVersion, n.support[internalModel])); // device version is newer or equal to support field in networks => supported
 
         return (
             isTrezorConnectBackendType(n.backendType) && // exclude accounts with unsupported backend type

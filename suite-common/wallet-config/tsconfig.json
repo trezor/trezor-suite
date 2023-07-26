@@ -3,7 +3,7 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         { "path": "../intl-types" },
-        { "path": "../../packages/device-utils" },
+        { "path": "../../packages/connect" },
         { "path": "../../packages/type-utils" }
     ]
 }

@@ -1,6 +1,6 @@
+import { DeviceModelInternal } from '@trezor/connect';
 import type { ExtendedMessageDescriptor } from '@suite-common/intl-types';
 import type { Keys, Without } from '@trezor/type-utils';
-import { DeviceModel } from '@trezor/device-utils';
 
 export const networks = {
     btc: {
@@ -356,7 +356,7 @@ export const networks = {
             token: 'https://explorer.blockfrost.dev/token/',
         },
         support: {
-            [DeviceModel.TT]: '2.4.3',
+            [DeviceModelInternal.T2T1]: '2.4.3',
         },
         customBackends: ['blockfrost'],
         accountTypes: {
@@ -385,7 +385,7 @@ export const networks = {
             token: 'https://testnet-explorer.blockfrost.dev/token/',
         },
         support: {
-            [DeviceModel.TT]: '2.4.3',
+            [DeviceModelInternal.T2T1]: '2.4.3',
         },
         customBackends: ['blockfrost'],
         accountTypes: {
@@ -429,7 +429,7 @@ export type Network = Without<NetworkValue, 'accountTypes'> & {
     label?: ExtendedMessageDescriptor['id'];
     tooltip?: ExtendedMessageDescriptor['id'];
     support?: {
-        [key in DeviceModel]: string;
+        [key in DeviceModelInternal]: string;
     };
 };
 
