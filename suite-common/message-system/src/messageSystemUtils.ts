@@ -25,7 +25,6 @@ import type { Network } from '@suite-common/wallet-config';
 import type { TransportInfo } from '@trezor/connect';
 import {
     getBootloaderVersion,
-    getDeviceModel,
     getFirmwareRevision,
     getFirmwareVersion,
 } from '@trezor/device-utils';
@@ -169,7 +168,7 @@ export const validateDeviceCompatibility = (
     const deviceBootloaderVersion = getBootloaderVersion(device);
     const deviceFwRevision = getFirmwareRevision(device);
     const deviceFwVariant = device.firmwareType === 'bitcoin-only' ? 'bitcoin-only' : 'regular';
-    const deviceModel = getDeviceModel(device).toLowerCase();
+    const deviceInternalModel = device.features.internal_model.toLowerCase();
     const deviceVendor = device.features.vendor.toLowerCase();
 
     return deviceConditions.some(deviceCondition => {
@@ -183,7 +182,7 @@ export const validateDeviceCompatibility = (
         } = deviceCondition;
 
         return (
-            modelCondition.toLowerCase() === deviceModel &&
+            modelCondition.toLowerCase() === deviceInternalModel &&
             (vendorCondition.toLowerCase() === deviceVendor || vendorCondition === '*') &&
             (variantCondition.toLowerCase() === deviceFwVariant || variantCondition === '*') &&
             (firmwareRevisionCondition.toLowerCase() === deviceFwRevision.toLowerCase() ||
