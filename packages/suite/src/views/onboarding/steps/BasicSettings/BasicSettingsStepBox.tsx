@@ -36,7 +36,6 @@ export const BasicSettingsStepBox = (props: OnboardingStepBoxProps) => {
                 networks={testnets}
                 onToggle={setEnabled}
                 selectedNetworks={enabledNetworks}
-                testnet
             />
         </OnboardingStepBox>
     );

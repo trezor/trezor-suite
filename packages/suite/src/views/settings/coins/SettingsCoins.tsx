@@ -78,7 +78,6 @@ export const SettingsCoins = () => {
                         networks={testnets}
                         onToggle={setEnabled}
                         selectedNetworks={enabledNetworks}
-                        testnet
                     />
                 </SectionItem>
             </SettingsSection>
