@@ -134,10 +134,18 @@ export class CoinjoinPrison extends TypedEmitter<CoinjoinPrisonEvents> {
     }
 
     // called on each status change before rounds are processed
-    release() {
+    release(rounds: string[]) {
         const now = Date.now();
         const prevLen = this.inmates.length;
-        this.inmates = this.inmates.filter(inmate => inmate.sentenceEnd > now);
+
+        this.inmates = this.inmates.filter(inmate => {
+            if (inmate.sentenceEnd !== Infinity && inmate.roundId) {
+                // release inmates assigned to Round which is no longer present in Status
+                // regardless of their sentenceEnd
+                if (!rounds.includes(inmate.roundId)) return false;
+            }
+            return inmate.sentenceEnd > now;
+        });
 
         if (prevLen !== this.inmates.length) {
             this.dispatchChange();

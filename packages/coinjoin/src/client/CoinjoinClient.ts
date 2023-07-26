@@ -177,7 +177,7 @@ export class CoinjoinClient extends TypedEmitter<CoinjoinClientEvents> {
         rounds,
     }: Pick<CoinjoinStatusEvent, 'changed' | 'rounds'>) {
         // try to release inputs from prison
-        this.prison.release();
+        this.prison.release(rounds.map(r => r.id));
 
         // find all CoinjoinRounds changed by Status
         const roundsToProcess = await Promise.all(
