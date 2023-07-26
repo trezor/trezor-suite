@@ -11,7 +11,7 @@
     },
     "dependencies": {
         "@suite-common/intl-types": "workspace:*",
-        "@trezor/device-utils": "workspace:*",
+        "@trezor/connect": "workspace:*",
         "@trezor/type-utils": "workspace:*"
     },
     "devDependencies": {
