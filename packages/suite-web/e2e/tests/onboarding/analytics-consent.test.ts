@@ -1,8 +1,6 @@
 // @group:onboarding
 // @retry=2
 
-import { DeviceModel } from '@trezor/device-utils';
-
 const navigateToSettingsAndBack = () => {
     cy.getTestElement('@analytics/consent');
     cy.getTestElement('@suite/menu/settings').click();
@@ -24,7 +22,7 @@ const acceptAnalyticsConsentOnInitializedDevice = () => {
 describe('Onboarding - analytics consent', () => {
     const startEmuOpts = {
         url: 'https://gitlab.com/satoshilabs/trezor/trezor-firmware/-/jobs/3104755066/artifacts/raw/core/build/unix/trezor-emu-core',
-        model: DeviceModel.T2B1,
+        model: 'R', // TODO: T2B1 DeviceModelInternal
         wipe: true,
     };
 
