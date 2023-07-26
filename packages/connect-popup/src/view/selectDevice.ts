@@ -9,7 +9,6 @@ import TrezorConnect, {
 } from '@trezor/connect';
 import { SUITE_BRIDGE_URL, SUITE_UDEV_URL, TREZOR_SUPPORT_URL } from '@trezor/urls';
 import { container, getState, showView, postMessage } from './common';
-import { getDeviceModel } from '@trezor/device-utils';
 
 const initWebUsbButton = (webusb: boolean, showLoader: boolean) => {
     if (!webusb) return;
@@ -99,9 +98,10 @@ export const selectDevice = (payload: UiRequestSelectDevice['payload']) => {
         const deviceIcon = document.createElement('span');
         deviceIcon.className = 'trezor_icon';
 
-        const deviceModel = getDeviceModel(device);
-        if (deviceModel) {
-            deviceIcon.classList.add(`trezor_icon_t${deviceModel.toLowerCase()}`);
+        const { features } = device;
+
+        if (features) {
+            deviceIcon.classList.add(`trezor_icon_${features.internal_model.toLowerCase()}`);
         } else {
             deviceIcon.classList.add('trezor_icon_unknown');
         }
