@@ -13,6 +13,7 @@ import { preparePersistReducer } from '@suite-native/storage';
 import { prepareAnalyticsReducer } from '@suite-common/analytics';
 import { prepareMessageSystemReducer } from '@suite-common/message-system';
 import { notificationsReducer } from '@suite-common/toast-notifications';
+import { graphReducer, graphPersistWhitelist } from '@suite-native/graph';
 
 import { extraDependencies } from './extraDependencies';
 import { appReducer } from './appSlice';
@@ -53,11 +54,19 @@ export const prepareRootReducers = async () => {
         version: 1,
     });
 
+    const graphPersistedReducer = await preparePersistReducer({
+        reducer: graphReducer,
+        persistedKeys: graphPersistWhitelist,
+        key: 'graph',
+        version: 1,
+    });
+
     return combineReducers({
         app: appReducer,
         analytics: analyticsPersistedReducer,
         appSettings: appSettingsPersistedReducer,
         wallet: walletPersistedReducer,
+        graph: graphPersistedReducer,
         devices: devicesReducer,
         logs: logsSlice.reducer,
         notifications: notificationsReducer,

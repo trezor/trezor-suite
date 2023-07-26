@@ -14,7 +14,7 @@ import {
 
 export const PortfolioGraph = () => {
     const fiatCurrency = useSelector(selectFiatCurrency);
-    const { graphPoints, error, isLoading, refetch, setHoursToHistory, hoursToHistory } =
+    const { graphPoints, error, isLoading, refetch, onSelectTimeFrame, timeframe } =
         useGraphForAllAccounts({
             fiatCurrency: fiatCurrency.label,
         });
@@ -45,7 +45,7 @@ export const PortfolioGraph = () => {
                 onTryAgain={refetch}
                 error={error}
             />
-            <TimeSwitch selectedTimeFrame={hoursToHistory} onSelectTimeFrame={setHoursToHistory} />
+            <TimeSwitch selectedTimeFrame={timeframe} onSelectTimeFrame={onSelectTimeFrame} />
         </>
     );
 };
