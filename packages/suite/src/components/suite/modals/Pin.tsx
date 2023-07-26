@@ -41,13 +41,13 @@ export const Pin = ({ device, ...rest }: PinProps) => {
 
     return (
         <StyledModal
-            heading={
+            heading={<Translation id="TR_ENTER_PIN" />}
+            description={
                 <Translation
-                    id="TR_ENTER_PIN_ON_DEVICE_LABEL"
-                    values={{ deviceLabel: device.label }}
+                    id="TR_THE_PIN_LAYOUT_IS_DISPLAYED"
+                    values={{ deviceLabel: device.label, b: text => <b>{text}</b> }}
                 />
             }
-            description={<Translation id="TR_THE_PIN_LAYOUT_IS_DISPLAYED" />}
             onCancel={onCancel}
             isCancelable
             data-test="@modal/pin"
