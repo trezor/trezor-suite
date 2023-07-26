@@ -2,23 +2,21 @@ import React from 'react';
 
 import { Translation } from 'src/components/suite';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from 'src/components/suite/Settings';
-import { useActions, useDevice } from 'src/hooks/suite';
-import * as routerActions from 'src/actions/suite/routerActions';
+import { useDevice, useDispatch } from 'src/hooks/suite';
+import { goto } from 'src/actions/suite/routerActions';
 import { useAnchor } from 'src/hooks/suite/useAnchor';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { getFirmwareDowngradeUrl } from 'src/utils/suite/device';
 
 export const CustomFirmware = () => {
-    const { goto } = useActions({
-        goto: routerActions.goto,
-    });
+    const dispatch = useDispatch();
     const { anchorRef, shouldHighlight } = useAnchor(SettingsAnchor.CustomFirmware);
     const { device, isLocked } = useDevice();
 
     const isDeviceLocked = isLocked();
     const firmwareDowngradeUrl = getFirmwareDowngradeUrl(device);
 
-    const openModal = () => goto('firmware-custom', { params: { cancelable: true } });
+    const openModal = () => dispatch(goto('firmware-custom', { params: { cancelable: true } }));
 
     return (
         <SectionItem

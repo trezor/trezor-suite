@@ -1,11 +1,11 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 
 import { desktopApi } from '@trezor/suite-desktop-api';
 import { Translation } from 'src/components/suite';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from 'src/components/suite/Settings';
-import { useSelector, useActions } from 'src/hooks/suite';
-import * as desktopUpdateActions from 'src/actions/suite/desktopUpdateActions';
+import { useDispatch, useSelector } from 'src/hooks/suite';
+import { openEarlyAccessSetup } from 'src/actions/suite/desktopUpdateActions';
 import { useAnchor } from 'src/hooks/suite/useAnchor';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 
@@ -17,18 +17,14 @@ const Version = styled.div`
 `;
 
 export const EarlyAccess = () => {
+    const desktopUpdate = useSelector(state => state.desktopUpdate);
+    const dispatch = useDispatch();
     const { anchorRef, shouldHighlight } = useAnchor(SettingsAnchor.EarlyAccess);
 
-    const desktopUpdate = useSelector(state => state.desktopUpdate);
-
-    const { openEarlyAccessSetup } = useActions({
-        openEarlyAccessSetup: desktopUpdateActions.openEarlyAccessSetup,
-    });
-
-    const setupEarlyAccess = useCallback(() => {
-        openEarlyAccessSetup(desktopUpdate.allowPrerelease);
+    const setupEarlyAccess = () => {
+        dispatch(openEarlyAccessSetup(desktopUpdate.allowPrerelease));
         desktopApi.cancelUpdate(); // stop downloading the update if it is in progress to prevent confusing state switching
-    }, [openEarlyAccessSetup, desktopUpdate.allowPrerelease]);
+    };
 
     return (
         <SectionItem

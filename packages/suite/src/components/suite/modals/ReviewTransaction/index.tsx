@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { ConfirmOnDevice, variables } from '@trezor/components';
 import { Translation, Modal } from 'src/components/suite';
-import { useActions, useSelector } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { UserContextPayload } from 'src/actions/suite/modalActions';
-import * as sendFormActions from 'src/actions/wallet/sendFormActions';
+import { cancelSignTx } from 'src/actions/wallet/sendFormActions';
 import OutputList from './components/OutputList';
 import Summary from './components/Summary';
 import { isCardanoTx } from 'src/utils/wallet/cardanoUtils';
@@ -36,10 +36,7 @@ export const ReviewTransaction = ({ decision }: ReviewTransactionProps) => {
     const fees = useSelector(state => state.wallet.fees);
     const device = useSelector(selectDevice);
     const isActionAbortable = useSelector(selectIsActionAbortable);
-
-    const { cancelSignTx } = useActions({
-        cancelSignTx: sendFormActions.cancelSignTx,
-    });
+    const dispatch = useDispatch();
 
     const [detailsOpen, setDetailsOpen] = useState(false);
 
@@ -103,7 +100,7 @@ export const ReviewTransaction = ({ decision }: ReviewTransactionProps) => {
     const onCancel =
         isActionAbortable || signedTx
             ? () => {
-                  cancelSignTx();
+                  dispatch(cancelSignTx());
                   decision?.resolve(false);
               }
             : undefined;

@@ -1,9 +1,10 @@
 import React, { useMemo } from 'react';
-import { useSelector } from 'react-redux';
 
 import styled from 'styled-components';
 import { Translation, QuestionTooltip, ReadMoreLink } from 'src/components/suite';
 import { AppState } from 'src/types/suite';
+import { showAddress } from 'src/actions/wallet/receiveActions';
+import { useDispatch, useSelector } from 'src/hooks/suite/';
 
 import { Button, Card, variables, H2, Tooltip } from '@trezor/components';
 import { getFirstFreshAddress } from '@suite-common/wallet-utils';
@@ -48,12 +49,12 @@ const FreshAddressWrapper = styled.div`
 `;
 
 const StyledFreshAddress = styled(H2)`
-    color: ${props => props.theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
     font-weight: ${variables.FONT_WEIGHT.REGULAR};
 `;
 const AddressLabel = styled.span`
     font-weight: 600;
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     font-size: ${variables.FONT_SIZE.TINY};
     letter-spacing: 0.2px;
     text-transform: uppercase;
@@ -69,7 +70,7 @@ const Overlay = styled.div`
     background-image: linear-gradient(
         to right,
         rgba(0, 0, 0, 0) 0%,
-        ${props => props.theme.BG_WHITE} 220px
+        ${({ theme }) => theme.BG_WHITE} 220px
     );
 `;
 
@@ -114,7 +115,6 @@ const TooltipLabel = ({
 interface FreshAddressProps {
     account: AppState['wallet']['selectedAccount']['account'];
     addresses: AppState['wallet']['receive'];
-    showAddress: (path: string, address: string) => void;
     disabled: boolean;
     locked: boolean;
     pendingAddresses: string[];
@@ -123,7 +123,6 @@ interface FreshAddressProps {
 export const FreshAddress = ({
     account,
     addresses,
-    showAddress,
     disabled,
     pendingAddresses,
     locked,
@@ -131,6 +130,7 @@ export const FreshAddress = ({
     const isAccountUtxoBased = useSelector((state: AccountsRootState) =>
         selectIsAccountUtxoBased(state, account?.key ?? ''),
     );
+    const dispatch = useDispatch();
 
     const firstFreshAddress = useMemo(() => {
         if (account) {
@@ -148,6 +148,9 @@ export const FreshAddress = ({
         account.accountType === 'coinjoin' &&
         !account.addresses?.used.length &&
         firstFreshAddress.address !== account.addresses?.unused[0]?.address;
+
+    const handleAddressReveal = () =>
+        dispatch(showAddress(firstFreshAddress.path, firstFreshAddress.address));
 
     return (
         <StyledCard>
@@ -170,7 +173,7 @@ export const FreshAddress = ({
                 <StyledButton
                     data-test="@wallet/receive/reveal-address-button"
                     icon="TREZOR_LOGO"
-                    onClick={() => showAddress(firstFreshAddress.path, firstFreshAddress.address)}
+                    onClick={handleAddressReveal}
                     isDisabled={disabled || locked || coinjoinDisallowReveal}
                     isLoading={locked}
                 >

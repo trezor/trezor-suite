@@ -4,8 +4,8 @@ import styled from 'styled-components';
 import { variables, Icon, Button, useTheme, motionEasing } from '@trezor/components';
 import { DeviceAnimation } from 'src/components/onboarding';
 import { Translation } from 'src/components/suite';
-import { useDevice, useActions } from 'src/hooks/suite';
-import * as routerActions from 'src/actions/suite/routerActions';
+import { useDevice, useDispatch } from 'src/hooks/suite';
+import { goto } from 'src/actions/suite/routerActions';
 import type { PrerequisiteType } from 'src/types/suite';
 import { motion } from 'framer-motion';
 
@@ -85,12 +85,12 @@ export const ConnectDevicePrompt = ({
     showWarning,
     allowSwitchDevice,
 }: ConnectDevicePromptProps) => {
-    const { goto } = useActions({
-        goto: routerActions.goto,
-    });
-
+    const dispatch = useDispatch();
     const theme = useTheme();
     const { device } = useDevice();
+
+    const handleSwitchDeviceClick = () =>
+        dispatch(goto('suite-switch-device', { params: { cancelable: true } }));
 
     return (
         <Wrapper
@@ -121,12 +121,7 @@ export const ConnectDevicePrompt = ({
                 <Translation id={getMessageId({ connected, showWarning, prerequisite })} />
 
                 {allowSwitchDevice && (
-                    <Button
-                        variant="tertiary"
-                        onClick={() =>
-                            goto('suite-switch-device', { params: { cancelable: true } })
-                        }
-                    >
+                    <Button variant="tertiary" onClick={handleSwitchDeviceClick}>
                         <Translation id="TR_SWITCH_DEVICE" />
                     </Button>
                 )}

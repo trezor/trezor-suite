@@ -187,7 +187,6 @@ export const useOffers = ({ selectedAccount }: UseOffersProps) => {
         verifyAddress,
         device,
         providersInfo,
-        saveTrade,
         quotesRequest,
         addressVerified,
         quotes: innerQuotes,

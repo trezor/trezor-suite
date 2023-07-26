@@ -1,13 +1,13 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import styled, { css } from 'styled-components';
 
 import { variables, Image, Icon } from '@trezor/components';
 import { SHAKE } from 'src/support/suite/styles/animations';
 import { WalletLabeling } from 'src/components/suite';
 import { TrezorDevice } from 'src/types/suite';
-import * as routerActions from 'src/actions/suite/routerActions';
-import { useSelector, useActions } from 'src/hooks/suite';
-import * as suiteActions from 'src/actions/suite/suiteActions';
+import { goto } from 'src/actions/suite/routerActions';
+import { useDispatch, useSelector } from 'src/hooks/suite';
+import { acquireDevice } from 'src/actions/suite/suiteActions';
 import * as deviceUtils from 'src/utils/suite/device';
 import { DeviceStatus } from './DeviceStatus';
 import { transparentize } from 'polished';
@@ -106,15 +106,9 @@ const needsRefresh = (device?: TrezorDevice) => {
 };
 
 export const DeviceSelector = () => {
-    const { selectedDevice, deviceCount } = useSelector(state => ({
-        selectedDevice: state.suite.device,
-        deviceCount: state.devices.length,
-    }));
-
-    const { goto, acquireDevice } = useActions({
-        goto: routerActions.goto,
-        acquireDevice: suiteActions.acquireDevice,
-    });
+    const selectedDevice = useSelector(state => state.suite.device);
+    const deviceCount = useSelector(state => state.devices.length);
+    const dispatch = useDispatch();
 
     const [localCount, setLocalCount] = useState<number | null>(null);
     const [isAnimationTriggered, setIsAnimationTriggered] = useState(false);
@@ -164,22 +158,24 @@ export const DeviceSelector = () => {
         }, 2000);
     }, [connectState]);
 
-    const handleRefreshClick = useCallback(() => {
+    const handleSwitchDeviceClick = () =>
+        dispatch(
+            goto('suite-switch-device', {
+                params: {
+                    cancelable: true,
+                },
+            }),
+        );
+    const handleRefreshClick = () => {
         if (deviceNeedsRefresh) {
-            acquireDevice(selectedDevice);
+            dispatch(acquireDevice(selectedDevice));
         }
-    }, [deviceNeedsRefresh, selectedDevice, acquireDevice]);
+    };
 
     return (
         <Wrapper
             data-test="@menu/switch-device"
-            onClick={() =>
-                goto('suite-switch-device', {
-                    params: {
-                        cancelable: true,
-                    },
-                })
-            }
+            onClick={handleSwitchDeviceClick}
             isAnimationTriggered={isAnimationTriggered}
         >
             {selectedDevice && selectedDeviceModelInternal && (

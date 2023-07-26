@@ -1,30 +1,26 @@
 import { createContext, useCallback, useContext, useEffect, useState } from 'react';
 import { ContextValues, P2pStep, UseOffersProps } from 'src/types/wallet/coinmarketP2pOffers';
-import { useActions, useSelector } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useTimer } from '@trezor/react-utils';
 import { InvityAPIReloadQuotesAfterSeconds } from 'src/constants/wallet/coinmarket/metadata';
-import * as coinmarketP2pActions from 'src/actions/wallet/coinmarketP2pActions';
+import { openCoinmarketP2pConfirmModal } from 'src/actions/wallet/coinmarketP2pActions';
 import invityAPI from 'src/services/suite/invityAPI';
 import { P2pQuote } from 'invity-api';
 import { useCoinmarketNavigation } from 'src/hooks/wallet/useCoinmarketNavigation';
-import * as coinmarketCommonActions from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
+import { submitRequestForm } from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
 
 export const useOffers = ({ selectedAccount }: UseOffersProps): ContextValues => {
     const timer = useTimer();
 
+    const device = useSelector(state => state.suite.device);
+    const providers = useSelector(state => state.wallet.coinmarket.p2p.p2pInfo?.providers);
+    const quotesRequest = useSelector(state => state.wallet.coinmarket.p2p.quotesRequest);
+    const quotes = useSelector(state => state.wallet.coinmarket.p2p.quotes);
+    const dispatch = useDispatch();
+
     const { account } = selectedAccount;
     const [selectedQuote, setSelectedQuote] = useState<P2pQuote>();
     const { navigateToP2pForm } = useCoinmarketNavigation(account);
-    const { openCoinmarketP2pConfirmModal, submitRequestForm } = useActions({
-        openCoinmarketP2pConfirmModal: coinmarketP2pActions.openCoinmarketP2pConfirmModal,
-        submitRequestForm: coinmarketCommonActions.submitRequestForm,
-    });
-    const { device, providers, quotesRequest, quotes } = useSelector(state => ({
-        device: state.suite.device,
-        providers: state.wallet.coinmarket.p2p.p2pInfo?.providers,
-        quotesRequest: state.wallet.coinmarket.p2p.quotesRequest,
-        quotes: state.wallet.coinmarket.p2p.quotes,
-    }));
     const [innerQuotes, setInnerQuotes] = useState(quotes);
     const [callInProgress, setCallInProgress] = useState(false);
     const [providerVisited, setProviderVisited] = useState(false);
@@ -64,7 +60,7 @@ export const useOffers = ({ selectedAccount }: UseOffersProps): ContextValues =>
 
     const selectQuote = async (quote: P2pQuote) => {
         const provider = providers ? providers[quote.provider] : null;
-        if (await openCoinmarketP2pConfirmModal(provider?.companyName, quote.assetCode)) {
+        if (await dispatch(openCoinmarketP2pConfirmModal(provider?.companyName, quote.assetCode))) {
             setSelectedQuote(quote);
             timer.stop();
         }
@@ -85,7 +81,7 @@ export const useOffers = ({ selectedAccount }: UseOffersProps): ContextValues =>
         setCallInProgress(false);
 
         if (response && response.tradeForm) {
-            submitRequestForm(response.tradeForm.form);
+            dispatch(submitRequestForm(response.tradeForm.form));
             setProviderVisited(true);
         }
     };

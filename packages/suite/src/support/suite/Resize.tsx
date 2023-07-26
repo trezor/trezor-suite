@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import useDebounce from 'react-use/lib/useDebounce';
-import { useActions } from 'src/hooks/suite/useActions';
+import { useDispatch } from 'src/hooks/suite';
 import { updateWindowSize } from 'src/actions/suite/resizeActions';
 
 /**
@@ -10,10 +10,12 @@ import { updateWindowSize } from 'src/actions/suite/resizeActions';
  */
 
 const Resize = () => {
-    const actions = useActions({ updateWindowSize });
     // useDebounce is triggered on every change of size value
     const [size, setSize] = useState({ width: 0, height: 0 });
-    useDebounce(() => actions.updateWindowSize(size.width, size.height), 300, [size]);
+
+    const dispatch = useDispatch();
+
+    useDebounce(() => dispatch(updateWindowSize(size.width, size.height)), 300, [size]);
 
     useEffect(() => {
         const handleResize = () => {
@@ -26,7 +28,7 @@ const Resize = () => {
         return () => {
             window.removeEventListener('resize', handleResize);
         };
-    }, [actions]);
+    }, []);
 
     return null;
 };

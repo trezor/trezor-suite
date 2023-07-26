@@ -11,8 +11,8 @@ import {
 import { useFormatters } from '@suite-common/formatters';
 import { variables, CollapsibleBox } from '@trezor/components';
 
-import { useActions } from 'src/hooks/suite/useActions';
-import * as modalActions from 'src/actions/suite/modalActions';
+import { useDispatch } from 'src/hooks/suite';
+import { openModal } from 'src/actions/suite/modalActions';
 import { WalletAccountTransaction } from 'src/types/wallet/index';
 import { HiddenPlaceholder, Translation } from 'src/components/suite';
 import { TransactionTimestamp } from 'src/components/wallet/TransactionTimestamp';
@@ -50,19 +50,20 @@ const RoundRow = styled.div`
 `;
 
 const Round = ({ transaction }: { transaction: WalletAccountTransaction }) => {
-    const { openModal } = useActions({ openModal: modalActions.openModal });
+    const dispatch = useDispatch();
 
     const transactionAmount = new BigNumber(transaction.amount);
 
+    const openTransactionDetail = () =>
+        dispatch(
+            openModal({
+                type: 'transaction-detail',
+                tx: transaction,
+            }),
+        );
+
     return (
-        <RoundRow
-            onClick={() =>
-                openModal({
-                    type: 'transaction-detail',
-                    tx: transaction,
-                })
-            }
-        >
+        <RoundRow onClick={openTransactionDetail}>
             <TransactionTypeIcon type="joint" isPending={false} size={20} />
             <TransactionTimestamp transaction={transaction} />
             <BaseTargetLayout
@@ -95,7 +96,7 @@ const Round = ({ transaction }: { transaction: WalletAccountTransaction }) => {
 };
 
 const StyledCollapsibleBox = styled(CollapsibleBox)<{ isPending: boolean }>`
-    background-color: ${props => props.theme.BG_WHITE};
+    background-color: ${({ theme }) => theme.BG_WHITE};
     box-shadow: none;
     border-radius: 12px;
     margin-bottom: 0;

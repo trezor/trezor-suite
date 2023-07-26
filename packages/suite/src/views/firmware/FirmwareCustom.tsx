@@ -1,12 +1,12 @@
 import React, { useState, useMemo, useCallback } from 'react';
 import styled from 'styled-components';
 import { ConfirmOnDevice } from '@trezor/components';
-import { useActions, useDevice, useFirmware } from 'src/hooks/suite';
+import { useDevice, useDispatch, useFirmware } from 'src/hooks/suite';
 import { Translation, Modal } from 'src/components/suite';
 import { DeviceAcquire } from 'src/views/suite/device-acquire';
 import { DeviceUnknown } from 'src/views/suite/device-unknown';
 import { DeviceUnreadable } from 'src/views/suite/device-unreadable';
-import * as routerActions from 'src/actions/suite/routerActions';
+import { closeModalApp } from 'src/actions/suite/routerActions';
 import type { TrezorDevice } from 'src/types/suite';
 import { ConnectDevicePromptManager, OnboardingStepBox } from 'src/components/onboarding';
 import { useCachedDevice } from 'src/hooks/firmware/useCachedDevice';
@@ -17,7 +17,7 @@ import {
     ReconnectDevicePrompt,
     SelectCustomFirmware,
 } from 'src/components/firmware';
-import * as suiteActions from 'src/actions/suite/suiteActions';
+import { acquireDevice } from 'src/actions/suite/suiteActions';
 
 const StyledModal = styled(Modal)<{ isNarrow: boolean }>`
     width: ${({ isNarrow }) => (isNarrow ? '450px' : '620px')};
@@ -33,10 +33,8 @@ const ModalContent = styled.div<{ isNarrow: boolean }>`
 
 export const FirmwareCustom = () => {
     const [firmwareBinary, setFirmwareBinary] = useState<ArrayBuffer>();
-    const { closeModalApp, acquireDevice } = useActions({
-        closeModalApp: routerActions.closeModalApp,
-        acquireDevice: suiteActions.acquireDevice,
-    });
+
+    const dispatch = useDispatch();
 
     const { setStatus, firmwareCustom, resetReducer, status, error } = useFirmware();
     const { device: liveDevice } = useDevice();
@@ -68,11 +66,11 @@ export const FirmwareCustom = () => {
 
     const onClose = useCallback(() => {
         if (liveDevice?.status !== 'available') {
-            acquireDevice(liveDevice);
+            dispatch(acquireDevice(liveDevice));
         }
-        closeModalApp();
+        dispatch(closeModalApp());
         resetReducer();
-    }, [liveDevice, acquireDevice, closeModalApp, resetReducer]);
+    }, [dispatch, liveDevice, resetReducer]);
 
     const shouldDisplayConnectPrompt = (device?: TrezorDevice) =>
         !device?.connected || !device?.features;

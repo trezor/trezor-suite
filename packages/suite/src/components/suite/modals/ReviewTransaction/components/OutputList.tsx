@@ -6,7 +6,7 @@ import { Button, variables } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { copyToClipboard, download } from '@trezor/dom-utils';
-import { useActions } from 'src/hooks/suite';
+import { useDispatch } from 'src/hooks/suite';
 import { TransactionDetails } from './TransactionDetails';
 import Output, { OutputProps } from './Output';
 import type { Account } from 'src/types/wallet';
@@ -48,7 +48,7 @@ const RightTopInner = styled.div`
 const RightBottom = styled.div`
     margin-left: 30px;
     padding: 20px 0 0 0;
-    border-top: 1px solid ${props => props.theme.STROKE_GREY};
+    border-top: 1px solid ${({ theme }) => theme.STROKE_GREY};
     display: flex;
 
     ${variables.SCREEN_QUERY.MOBILE} {
@@ -94,6 +94,8 @@ const OutputList = ({
     buttonRequestsCount,
     isRbfAction,
 }: OutputListProps) => {
+    const dispatch = useDispatch();
+
     const { symbol } = account;
     const { options, selectedFee, isCoinControlEnabled, hasCoinControlBeenOpened } =
         precomposedForm;
@@ -121,6 +123,30 @@ const OutputList = ({
                 hasCoinControlBeenOpened,
             },
         });
+    const handleSend = () => {
+        if (decision) {
+            decision.resolve(true);
+
+            reportTransactionCreatedEvent(isRbfAction ? 'replaced' : 'sent');
+        }
+    };
+    const handleCopy = () => {
+        const result = copyToClipboard(signedTx!.tx);
+        if (typeof result !== 'string') {
+            dispatch(
+                notificationsActions.addToast({
+                    type: 'copy-to-clipboard',
+                }),
+            );
+        }
+
+        reportTransactionCreatedEvent('copied');
+    };
+    const handleDownload = () => {
+        download(signedTx!.tx, 'signed-transaction.txt');
+
+        reportTransactionCreatedEvent('downloaded');
+    };
 
     const totalRef = useRef<HTMLDivElement>(null);
 
@@ -131,10 +157,6 @@ const OutputList = ({
             totalRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
     }, [buttonRequestsCount, outputs.length]);
-
-    const { addNotification } = useActions({
-        addNotification: notificationsActions.addToast,
-    });
 
     return (
         <Content>
@@ -177,15 +199,7 @@ const OutputList = ({
                         <StyledButton
                             data-test="@modal/send"
                             isDisabled={!signedTx}
-                            onClick={() => {
-                                if (decision) {
-                                    decision.resolve(true);
-
-                                    reportTransactionCreatedEvent(
-                                        isRbfAction ? 'replaced' : 'sent',
-                                    );
-                                }
-                            }}
+                            onClick={handleSend}
                         >
                             <Translation id={isRbfAction ? 'TR_REPLACE_TX' : 'SEND_TRANSACTION'} />
                         </StyledButton>
@@ -193,14 +207,7 @@ const OutputList = ({
                         <>
                             <StyledButton
                                 isDisabled={!signedTx}
-                                onClick={() => {
-                                    const result = copyToClipboard(signedTx!.tx);
-                                    if (typeof result !== 'string') {
-                                        addNotification({ type: 'copy-to-clipboard' });
-                                    }
-
-                                    reportTransactionCreatedEvent('copied');
-                                }}
+                                onClick={handleCopy}
                                 data-test="@send/copy-raw-transaction"
                             >
                                 <Translation id="COPY_TRANSACTION_TO_CLIPBOARD" />
@@ -208,11 +215,7 @@ const OutputList = ({
                             <StyledButton
                                 variant="secondary"
                                 isDisabled={!signedTx}
-                                onClick={() => {
-                                    download(signedTx!.tx, 'signed-transaction.txt');
-
-                                    reportTransactionCreatedEvent('downloaded');
-                                }}
+                                onClick={handleDownload}
                             >
                                 <Translation id="DOWNLOAD_TRANSACTION" />
                             </StyledButton>

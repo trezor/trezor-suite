@@ -1,11 +1,11 @@
-import * as routerActions from 'src/actions/suite/routerActions';
 import React from 'react';
 import styled from 'styled-components';
 import { Button, variables, Link, Image } from '@trezor/components';
 import { CoinmarketTransactionId } from 'src/components/wallet';
-import { useActions } from 'src/hooks/suite/useActions';
+import { useDispatch } from 'src/hooks/suite';
 import { Account } from 'src/types/wallet';
 import { Translation } from 'src/components/suite/Translation';
+import { goto } from 'src/actions/suite/routerActions';
 
 const Wrapper = styled.div`
     display: flex;
@@ -24,7 +24,7 @@ const Description = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     margin: 17px 0 10px 0;
     max-width: 310px;
@@ -36,16 +36,26 @@ const StyledLink = styled(Link)`
     margin-bottom: 30px;
 `;
 
-interface Props {
+interface PaymentFailedProps {
     transactionId?: string;
     supportUrl?: string;
     account: Account;
 }
 
-const PaymentFailed = ({ transactionId, supportUrl, account }: Props) => {
-    const { goto } = useActions({
-        goto: routerActions.goto,
-    });
+const PaymentFailed = ({ transactionId, supportUrl, account }: PaymentFailedProps) => {
+    const dispatch = useDispatch();
+
+    const goToExchange = () =>
+        dispatch(
+            goto('wallet-coinmarket-exchange', {
+                params: {
+                    symbol: account.symbol,
+                    accountIndex: account.index,
+                    accountType: account.accountType,
+                },
+            }),
+        );
+
     return (
         <Wrapper>
             <Image image="UNI_ERROR" />
@@ -63,17 +73,7 @@ const PaymentFailed = ({ transactionId, supportUrl, account }: Props) => {
                     </Button>
                 </StyledLink>
             )}
-            <Button
-                onClick={() =>
-                    goto('wallet-coinmarket-exchange', {
-                        params: {
-                            symbol: account.symbol,
-                            accountIndex: account.index,
-                            accountType: account.accountType,
-                        },
-                    })
-                }
-            >
+            <Button onClick={goToExchange}>
                 <Translation id="TR_EXCHANGE_DETAIL_ERROR_BUTTON" />
             </Button>
         </Wrapper>

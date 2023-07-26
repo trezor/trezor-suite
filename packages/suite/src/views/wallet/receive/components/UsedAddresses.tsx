@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
+
 import { AccountAddress } from '@trezor/connect';
 import { variables, Button } from '@trezor/components';
 import { Card, Translation, MetadataLabeling, FormattedCryptoAmount } from 'src/components/suite';
@@ -7,6 +8,8 @@ import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { Network } from 'src/types/wallet';
 import { AppState } from 'src/types/suite';
 import { MetadataAddPayload } from 'src/types/suite/metadata';
+import { showAddress } from 'src/actions/wallet/receiveActions';
+import { useDispatch } from 'src/hooks/suite/';
 
 const StyledCard = styled(Card)`
     flex-direction: column;
@@ -174,7 +177,6 @@ const Item = ({ addr, symbol, onClick, metadataPayload, index }: ItemProps) => {
 interface UsedAddressesProps {
     account: AppState['wallet']['selectedAccount']['account'];
     addresses: AppState['wallet']['receive'];
-    showAddress: (path: string, address: string) => void;
     locked: boolean;
     pendingAddresses: string[];
 }
@@ -183,10 +185,10 @@ export const UsedAddresses = ({
     account,
     addresses,
     pendingAddresses,
-    showAddress,
     locked,
 }: UsedAddressesProps) => {
     const [limit, setLimit] = useState(DEFAULT_LIMIT);
+    const dispatch = useDispatch();
 
     if (!account) {
         return null;
@@ -244,7 +246,9 @@ export const UsedAddresses = ({
                             defaultValue: addr.address,
                             value: addressLabels[addr.address],
                         }}
-                        onClick={() => (!locked ? showAddress(addr.path, addr.address) : undefined)}
+                        onClick={() =>
+                            !locked ? dispatch(showAddress(addr.path, addr.address)) : undefined
+                        }
                     />
                 ))}
             </GridTable>

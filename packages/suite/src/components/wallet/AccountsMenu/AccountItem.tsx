@@ -1,13 +1,13 @@
-import React, { forwardRef, useCallback, useMemo } from 'react';
+import React, { forwardRef } from 'react';
 import { CoinLogo, variables } from '@trezor/components';
 import styled from 'styled-components';
 import { isTestnet } from '@suite-common/wallet-utils';
 import { AccountLabel, FiatValue } from 'src/components/suite';
 import { Stack, SkeletonRectangle } from 'src/components/suite/Skeleton';
-import { useActions, useLoadingSkeleton } from 'src/hooks/suite';
+import { useDispatch, useLoadingSkeleton } from 'src/hooks/suite';
 import { CoinBalance } from 'src/components/wallet';
 import { Account } from 'src/types/wallet';
-import * as routerActions from 'src/actions/suite/routerActions';
+import { goto } from 'src/actions/suite/routerActions';
 import { TokensCount } from './TokensCount';
 
 const activeClassName = 'selected';
@@ -35,10 +35,10 @@ const Wrapper = styled.div.attrs((props: WrapperProps) => ({
     &:hover,
     &.${activeClassName} {
         border-radius: 4px;
-        background: ${props => props.theme.BG_GREY_ALT};
+        background: ${({ theme }) => theme.BG_GREY_ALT};
         position: inherit;
-        top: ${props =>
-            props.type !== 'normal'
+        top: ${({ type }) =>
+            type !== 'normal'
                 ? '50px'
                 : '0px'}; /* when scrolling keep some space above to fit account group (50px is the height of acc group container)  */
         bottom: 0px;
@@ -74,7 +74,7 @@ const AccountName = styled.div`
     white-space: nowrap;
     font-size: ${variables.FONT_SIZE.NORMAL};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-    color: ${props => props.theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
     line-height: 1.5;
     font-variant-numeric: tabular-nums;
 `;
@@ -82,14 +82,14 @@ const AccountName = styled.div`
 const Balance = styled.div`
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     line-height: 1.57;
 `;
 
 const FiatValueWrapper = styled.div`
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     line-height: 1.57;
 `;
 
@@ -109,32 +109,28 @@ interface AccountItemProps {
 // Using `React.forwardRef` to be able to pass `ref` (item) TO parent (Menu/index)
 export const AccountItem = forwardRef(
     ({ account, selected, closeMenu }: AccountItemProps, ref: React.Ref<HTMLDivElement>) => {
-        const { goto } = useActions({
-            goto: routerActions.goto,
-        });
+        const dispatch = useDispatch();
 
         const { shouldAnimate } = useLoadingSkeleton();
 
         const { accountType, formattedBalance, index, metadata, networkType, symbol, tokens } =
             account;
 
-        const accountRouteParams = useMemo(
-            () => ({
-                symbol,
-                accountIndex: index,
-                accountType,
-            }),
-            [symbol, index, accountType],
-        );
+        const accountRouteParams = {
+            symbol,
+            accountIndex: index,
+            accountType,
+        };
 
-        const handleClickOnTokens = useCallback<React.MouseEventHandler<HTMLButtonElement>>(
-            event => {
-                event.stopPropagation();
-                closeMenu();
-                goto('wallet-tokens', { params: accountRouteParams });
-            },
-            [accountRouteParams, closeMenu, goto],
-        );
+        const handleClickOnTokens: React.MouseEventHandler = event => {
+            event.stopPropagation();
+            closeMenu();
+            dispatch(goto('wallet-tokens', { params: accountRouteParams }));
+        };
+        const handleHeaderClick = () => {
+            closeMenu();
+            dispatch(goto('wallet-index', { params: accountRouteParams }));
+        };
 
         // Tokens tab is available for ethereum and cardano accounts only, not yet implemented for XRP
         const isTokensCountShown =
@@ -147,13 +143,7 @@ export const AccountItem = forwardRef(
 
         return (
             <Wrapper selected={selected} type={accountType} ref={ref}>
-                <AccountHeader
-                    onClick={() => {
-                        closeMenu();
-                        goto('wallet-index', { params: accountRouteParams });
-                    }}
-                    data-test={dataTestKey}
-                >
+                <AccountHeader onClick={handleHeaderClick} data-test={dataTestKey}>
                     <Left>
                         <CoinLogo size={16} symbol={symbol} />
                     </Left>

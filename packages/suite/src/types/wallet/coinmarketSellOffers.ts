@@ -2,7 +2,7 @@ import type { AppState } from 'src/types/suite';
 import type { Account } from 'src/types/wallet';
 import type { BankAccount, SellFiatTrade } from 'invity-api';
 import type { Timer } from '@trezor/react-utils';
-import type { CoinmarketSellAction, SellInfo } from 'src/actions/wallet/coinmarketSellActions';
+import type { SellInfo } from 'src/actions/wallet/coinmarketSellActions';
 import type { WithSelectedAccountLoadedProps } from 'src/components/wallet';
 import { TradeSell } from './coinmarketCommonTypes';
 
@@ -24,7 +24,6 @@ export type ContextValues = {
     sellStep: SellStep;
     setSellStep: (step: SellStep) => void;
     selectQuote: (quote: SellFiatTrade) => void;
-    saveTrade: (sellTrade: SellFiatTrade, account: Account, date: string) => CoinmarketSellAction;
     addBankAccount: () => void;
     confirmTrade: (bankAccount: BankAccount) => void;
     sendTransaction: () => void;

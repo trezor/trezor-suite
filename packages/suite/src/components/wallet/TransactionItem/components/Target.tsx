@@ -11,8 +11,8 @@ import {
     isNftTokenTransfer,
 } from '@suite-common/wallet-utils';
 import { WalletAccountTransaction } from 'src/types/wallet';
-import { notificationsActions } from '@suite-common/toast-notifications';
-import { useActions } from 'src/hooks/suite';
+import { notificationsActions, ToastPayload } from '@suite-common/toast-notifications';
+import { useDispatch } from 'src/hooks/suite';
 import { TokenTransferAddressLabel } from './TokenTransferAddressLabel';
 import { TargetAddressLabel } from './TargetAddressLabel';
 import { BaseTargetLayout } from './BaseTargetLayout';
@@ -122,10 +122,31 @@ export const Target = ({
     isActionDisabled,
     ...baseLayoutProps
 }: TargetProps) => {
+    const dispatch = useDispatch();
+
     const targetAmount = getTargetAmount(target, transaction);
     const operation = getTxOperation(transaction.type);
-    const { addNotification } = useActions({ addNotification: notificationsActions.addToast });
     const targetMetadata = accountMetadata?.outputLabels?.[transaction.txid]?.[target.n];
+
+    const copyAddress = () => {
+        let payload: ToastPayload = { type: 'copy-to-clipboard' };
+        if (!target?.addresses) {
+            // probably should not happen?
+            payload = {
+                type: 'error',
+                error: 'There is nothing to copy',
+            };
+        } else {
+            const result = copyToClipboard(target.addresses.join());
+            if (typeof result === 'string') {
+                payload = {
+                    type: 'error',
+                    error: result,
+                };
+            }
+        }
+        dispatch(notificationsActions.addToast(payload));
+    };
 
     return (
         <BaseTargetLayout
@@ -142,22 +163,7 @@ export const Target = ({
                     }
                     dropdownOptions={[
                         {
-                            callback: () => {
-                                if (!target?.addresses) {
-                                    // probably should not happen?
-                                    addNotification({
-                                        type: 'error',
-                                        error: 'There is nothing to copy',
-                                    });
-                                    return;
-                                }
-                                const result = copyToClipboard(target.addresses.join());
-                                if (typeof result === 'string') {
-                                    addNotification({ type: 'error', error: result });
-                                    return;
-                                }
-                                addNotification({ type: 'copy-to-clipboard' });
-                            },
+                            callback: copyAddress,
                             label: <Translation id="TR_ADDRESS_MODAL_CLIPBOARD" />,
                             key: 'copy-address',
                         },

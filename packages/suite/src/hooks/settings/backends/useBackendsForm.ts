@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { analytics, EventType } from '@trezor/suite-analytics';
 
-import { useActions, useSelector, useTranslation } from 'src/hooks/suite';
+import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
 import { isUrl } from '@trezor/utils';
 import { isOnionUrl } from 'src/utils/suite/tor';
 import { blockchainActions } from '@suite-common/wallet-core';
@@ -97,11 +97,9 @@ const getStoredState = (
 
 export const useBackendsForm = (coin: Network['symbol']) => {
     const backends = useSelector(state => state.wallet.blockchain[coin].backends);
+    const dispatch = useDispatch();
     const initial = getStoredState(coin, backends.selected, backends.urls);
     const [currentValues, setCurrentValues] = useState(initial);
-    const actions = useActions({
-        setBackend: blockchainActions.setBackend,
-    });
 
     const changeType = (type: BackendOption) => {
         setCurrentValues(getStoredState(coin, type, backends.urls));
@@ -136,7 +134,7 @@ export const useBackendsForm = (coin: Network['symbol']) => {
     const save = () => {
         const { type } = currentValues;
         const urls = type === 'default' ? [] : getUrls();
-        actions.setBackend({ coin, type, urls });
+        dispatch(blockchainActions.setBackend({ coin, type, urls }));
         const totalOnion = urls.filter(isOnionUrl).length;
 
         analytics.report({

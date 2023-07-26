@@ -1,6 +1,6 @@
 import React from 'react';
-import * as discoveryActions from 'src/actions/wallet/discoveryActions';
-import { useDevice, useActions } from 'src/hooks/suite';
+import { restart } from 'src/actions/wallet/discoveryActions';
+import { useDevice, useDispatch } from 'src/hooks/suite';
 import { Translation } from 'src/components/suite';
 import { AccountExceptionLayout } from 'src/components/wallet';
 
@@ -11,10 +11,10 @@ import { AccountExceptionLayout } from 'src/components/wallet';
  * - Other @trezor/connect runtime error
  */
 const AccountNotLoaded = () => {
+    const dispatch = useDispatch();
     const { isLocked } = useDevice();
-    const { restart } = useActions({
-        restart: discoveryActions.restart,
-    });
+
+    const handleClick = () => dispatch(restart());
 
     return (
         <AccountExceptionLayout
@@ -26,7 +26,7 @@ const AccountNotLoaded = () => {
                     key: '1',
                     icon: 'REFRESH',
                     isLoading: isLocked(),
-                    onClick: restart,
+                    onClick: handleClick,
                     children: <Translation id="TR_RETRY" />,
                 },
             ]}

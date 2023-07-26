@@ -1,21 +1,21 @@
 import React from 'react';
 import { NotificationCard, Translation } from 'src/components/suite';
-import * as suiteActions from 'src/actions/suite/suiteActions';
-import { useDevice, useActions } from 'src/hooks/suite';
+import { authConfirm } from 'src/actions/suite/suiteActions';
+import { useDevice, useDispatch } from 'src/hooks/suite';
 
 const AuthConfirmFailed = () => {
+    const dispatch = useDispatch();
     const { device, isLocked } = useDevice();
-    const { authConfirm } = useActions({
-        authConfirm: suiteActions.authConfirm,
-    });
 
     if (!device?.connected || !device.authConfirm) return null;
+
+    const handleClick = () => dispatch(authConfirm());
 
     return (
         <NotificationCard
             variant="warning"
             button={{
-                onClick: authConfirm,
+                onClick: handleClick,
                 isLoading: isLocked(),
                 icon: 'REFRESH',
                 'data-test': '@passphrase-mismatch/retry-button',

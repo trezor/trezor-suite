@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { NotificationCard, Translation } from 'src/components/suite';
-import { useSelector, useActions } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { reconnectBlockchainThunk } from '@suite-common/wallet-core';
 import { isTrezorConnectBackendType } from '@suite-common/wallet-utils';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
@@ -15,9 +15,7 @@ const DisconnectedNotification = ({
     const [progress, setProgress] = useState(false);
     const [time, setTime] = useState<number>();
 
-    const { reconnect } = useActions({
-        reconnect: reconnectBlockchainThunk,
-    });
+    const dispatch = useDispatch();
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -31,7 +29,7 @@ const DisconnectedNotification = ({
 
     const click = async () => {
         setProgress(true);
-        const r: any = await reconnect(symbol);
+        const r: any = await dispatch(reconnectBlockchainThunk(symbol));
         if (!r.success) {
             setProgress(false);
         }

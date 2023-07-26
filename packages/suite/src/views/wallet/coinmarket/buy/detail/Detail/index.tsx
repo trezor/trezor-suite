@@ -3,8 +3,8 @@ import styled from 'styled-components';
 import { Card, variables } from '@trezor/components';
 import { CoinmarketBuyOfferInfo, CoinmarketBuyTopPanel } from 'src/components/wallet';
 import { useCoinmarketBuyDetailContext } from 'src/hooks/wallet/useCoinmarketBuyDetail';
-import * as routerActions from 'src/actions/suite/routerActions';
-import { useActions, useLayout } from 'src/hooks/suite';
+import { goto } from 'src/actions/suite/routerActions';
+import { useDispatch, useLayout } from 'src/hooks/suite';
 
 import PaymentFailed from '../components/PaymentFailed';
 import PaymentProcessing from '../components/PaymentProcessing';
@@ -29,18 +29,20 @@ const CoinmarketDetail = () => {
     useLayout('Trezor Suite | Trade', CoinmarketBuyTopPanel);
 
     const { account, trade, buyInfo } = useCoinmarketBuyDetailContext();
-    const { goto } = useActions({ goto: routerActions.goto });
+    const dispatch = useDispatch();
 
     // if trade not found, it is because user refreshed the page and stored transactionId got removed
     // go to the default coinmarket page, the trade is shown there in the previous trades
     if (!trade) {
-        goto('wallet-coinmarket-buy', {
-            params: {
-                symbol: account.symbol,
-                accountIndex: account.index,
-                accountType: account.accountType,
-            },
-        });
+        dispatch(
+            goto('wallet-coinmarket-buy', {
+                params: {
+                    symbol: account.symbol,
+                    accountIndex: account.index,
+                    accountType: account.accountType,
+                },
+            }),
+        );
         return null;
     }
 

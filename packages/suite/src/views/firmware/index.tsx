@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import * as routerActions from 'src/actions/suite/routerActions';
+import { closeModalApp } from 'src/actions/suite/routerActions';
 import { TrezorDevice } from 'src/types/suite';
 import {
     CheckSeedStep,
@@ -13,9 +13,9 @@ import { DeviceUnknown } from 'src/views/suite/device-unknown';
 import { DeviceUnreadable } from 'src/views/suite/device-unreadable';
 import { Translation, Modal } from 'src/components/suite';
 import { OnboardingStepBox } from 'src/components/onboarding';
-import { useActions, useFirmware, useSelector } from 'src/hooks/suite';
+import { useDispatch, useFirmware, useSelector } from 'src/hooks/suite';
 import { ConfirmOnDevice, variables } from '@trezor/components';
-import * as suiteActions from 'src/actions/suite/suiteActions';
+import { acquireDevice } from 'src/actions/suite/suiteActions';
 
 const Wrapper = styled.div<{ isWithTopPadding: boolean }>`
     display: flex;
@@ -44,17 +44,15 @@ export const Firmware = ({ shouldSwitchFirmwareType }: FirmwareProps) => {
     const { resetReducer, status, setStatus, error, firmwareUpdate, firmwareHashInvalid } =
         useFirmware();
     const device = useSelector(state => state.suite.device);
-    const { closeModalApp, acquireDevice } = useActions({
-        closeModalApp: routerActions.closeModalApp,
-        acquireDevice: suiteActions.acquireDevice,
-    });
+    const dispatch = useDispatch();
+
     const deviceModelInternal = device?.features?.internal_model;
 
     const onClose = () => {
         if (device?.status !== 'available') {
-            acquireDevice(device);
+            dispatch(acquireDevice(device));
         }
-        closeModalApp();
+        dispatch(closeModalApp());
         resetReducer();
     };
 

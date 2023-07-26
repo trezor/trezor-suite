@@ -3,10 +3,10 @@ import { analytics, EventType } from '@trezor/suite-analytics';
 
 import { Translation } from 'src/components/suite';
 import { isTranslationMode, getOsLocale } from 'src/utils/suite/l10n';
-import { useActions, useSelector, useTranslation } from 'src/hooks/suite';
+import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
 import LANGUAGES, { Locale, LocaleInfo } from 'src/config/suite/languages';
-import * as suiteActions from 'src/actions/suite/suiteActions';
-import * as languageActions from 'src/actions/settings/languageActions';
+import { setAutodetect } from 'src/actions/suite/suiteActions';
+import { setLanguage } from 'src/actions/settings/languageActions';
 import { ActionColumn, ActionSelect, SectionItem, TextColumn } from 'src/components/suite/Settings';
 import { useAnchor } from 'src/hooks/suite/useAnchor';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
@@ -44,14 +44,9 @@ const useLanguageOptions = () => {
 };
 
 export const Language = () => {
-    const { language, autodetectLanguage } = useSelector(state => ({
-        language: state.suite.settings.language,
-        autodetectLanguage: state.suite.settings.autodetect.language,
-    }));
-    const { setLanguage, setAutodetect } = useActions({
-        setLanguage: languageActions.setLanguage,
-        setAutodetect: suiteActions.setAutodetect,
-    });
+    const language = useSelector(state => state.suite.settings.language);
+    const autodetectLanguage = useSelector(state => state.suite.settings.autodetect.language);
+    const dispatch = useDispatch();
     const { anchorRef, shouldHighlight } = useAnchor(SettingsAnchor.Language);
 
     const { options, systemOption } = useLanguageOptions();
@@ -76,10 +71,10 @@ export const Language = () => {
             },
         });
         if ((value === 'system') !== autodetectLanguage) {
-            setAutodetect({ language: !autodetectLanguage });
+            dispatch(setAutodetect({ language: !autodetectLanguage }));
         }
         if (value !== 'system') {
-            setLanguage(value);
+            dispatch(setLanguage(value));
         }
     };
 

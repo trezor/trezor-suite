@@ -2,10 +2,10 @@ import React, { useMemo } from 'react';
 
 import styled from 'styled-components';
 import { variables } from '@trezor/components';
-import * as routerActions from 'src/actions/suite/routerActions';
+import { goto } from 'src/actions/suite/routerActions';
 import { messageSystemActions } from '@suite-common/message-system';
 import { Message } from '@suite-common/suite-types';
-import { useActions, useSelector } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { getTorUrlIfAvailable } from 'src/utils/suite/tor';
 import { Banner } from './Banner';
 
@@ -16,23 +16,17 @@ const BannerOnTop = styled(Banner)`
     z-index: ${variables.Z_INDEX.GUIDE};
 `;
 
-type Props = {
+type MessageSystemBannerProps = {
     message: Message;
 };
 
-const MessageSystemBanner = ({ message }: Props) => {
+const MessageSystemBanner = ({ message }: MessageSystemBannerProps) => {
     const { cta, variant, id, content, dismissible } = message;
 
     const { isTorEnabled } = useSelector(selectTorState);
-    const { language, torOnionLinks } = useSelector(state => ({
-        language: state.suite.settings.language,
-        torOnionLinks: state.suite.settings.torOnionLinks,
-    }));
-
-    const { goto, dismissNotification } = useActions({
-        goto: routerActions.goto,
-        dismissNotification: messageSystemActions.dismissMessage,
-    });
+    const language = useSelector(state => state.suite.settings.language);
+    const torOnionLinks = useSelector(state => state.suite.settings.torOnionLinks);
+    const dispatch = useDispatch();
 
     const actionConfig = useMemo(() => {
         if (!cta) return undefined;
@@ -42,7 +36,7 @@ const MessageSystemBanner = ({ message }: Props) => {
         let onClick: () => Window | Promise<void> | null;
         if (action === 'internal-link') {
             // @ts-expect-error: impossible to add all href options to the message system config json schema
-            onClick = () => goto(link, { anchor, preserveParams: true });
+            onClick = () => dispatch(goto(link, { anchor, preserveParams: true }));
         } else if (action === 'external-link') {
             onClick = () =>
                 window.open(
@@ -56,16 +50,17 @@ const MessageSystemBanner = ({ message }: Props) => {
             onClick: onClick!,
             'data-test': `@message-system/${id}/cta`,
         };
-    }, [id, cta, goto, language, isTorEnabled, torOnionLinks]);
+    }, [id, cta, dispatch, language, isTorEnabled, torOnionLinks]);
 
     const dismissalConfig = useMemo(() => {
         if (!dismissible) return undefined;
 
         return {
-            onClick: () => dismissNotification({ id, category: 'banner' }),
+            onClick: () =>
+                dispatch(messageSystemActions.dismissMessage({ id, category: 'banner' })),
             'data-test': `@message-system/${id}/dismiss`,
         };
-    }, [id, dismissible, dismissNotification]);
+    }, [id, dismissible, dispatch]);
 
     return (
         <BannerOnTop

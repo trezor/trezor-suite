@@ -1,11 +1,19 @@
 import { createContext, useContext, useCallback, useState, useEffect, useRef } from 'react';
 import { useForm, useFieldArray } from 'react-hook-form';
-import { useActions, useSelector } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useDidUpdate } from '@trezor/react-utils';
-import * as sendFormActions from 'src/actions/wallet/sendFormActions';
-import * as walletSettingsActions from 'src/actions/settings/walletSettingsActions';
-import * as routerActions from 'src/actions/suite/routerActions';
-import * as protocolActions from 'src/actions/suite/protocolActions';
+import {
+    getDraft,
+    removeDraft,
+    saveDraft,
+    signTransaction,
+} from 'src/actions/wallet/sendFormActions';
+import {
+    getLastUsedFeeLevel,
+    setLastUsedFeeLevel,
+} from 'src/actions/settings/walletSettingsActions';
+import { goto } from 'src/actions/suite/routerActions';
+import { fillSendForm } from 'src/actions/suite/protocolActions';
 import { AppState } from 'src/types/suite';
 import { FormState, SendContextValues, UseSendFormState } from '@suite-common/wallet-types';
 import {
@@ -80,25 +88,8 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
     const [state, setState] = useState<UseSendFormState>(getStateFromProps(props));
     // private variables, used inside sendForm hook
     const draft = useRef<FormState | undefined>(undefined);
-    const {
-        getDraft,
-        saveDraft,
-        removeDraft,
-        getLastUsedFeeLevel,
-        setLastUsedFeeLevel,
-        signTransaction,
-        goto,
-        fillSendForm,
-    } = useActions({
-        getDraft: sendFormActions.getDraft,
-        saveDraft: sendFormActions.saveDraft,
-        removeDraft: sendFormActions.removeDraft,
-        getLastUsedFeeLevel: walletSettingsActions.getLastUsedFeeLevel,
-        setLastUsedFeeLevel: walletSettingsActions.setLastUsedFeeLevel,
-        signTransaction: sendFormActions.signTransaction,
-        goto: routerActions.goto,
-        fillSendForm: protocolActions.fillSendForm,
-    });
+
+    const dispatch = useDispatch();
 
     const { localCurrencyOption } = state;
 
@@ -121,7 +112,7 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
         (loadedState?: Partial<FormState>) => {
             const feeEnhancement: Partial<FormState> = {};
             if (!loadedState || !loadedState.selectedFee) {
-                const lastUsedFee = getLastUsedFeeLevel();
+                const lastUsedFee = dispatch(getLastUsedFeeLevel());
                 if (lastUsedFee) {
                     feeEnhancement.selectedFee = lastUsedFee.label;
                     if (lastUsedFee.label === 'custom') {
@@ -136,7 +127,7 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
                 ...feeEnhancement,
             };
         },
-        [getLastUsedFeeLevel, localCurrencyOption, state.network],
+        [dispatch, localCurrencyOption, state.network],
     );
 
     // update custom values
@@ -215,10 +206,10 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
 
     const resetContext = useCallback(() => {
         setComposedLevels(undefined);
-        removeDraft(); // reset draft
-        setLastUsedFeeLevel(); // reset last known FeeLevel
+        dispatch(removeDraft()); // reset draft
+        dispatch(setLastUsedFeeLevel()); // reset last known FeeLevel
         setState(getStateFromProps(props)); // resetting state will trigger "loadDraft" useEffect block, which will reset FormState to default
-    }, [props, removeDraft, setLastUsedFeeLevel, setComposedLevels]);
+    }, [dispatch, props, setComposedLevels]);
 
     // declare useSendFormImport, sub-hook of useSendForm
     const { importTransaction } = useSendFormImport({
@@ -252,14 +243,14 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
             // sign workflow in Actions:
             // signTransaction > sign[COIN]Transaction > requestPushTransaction (modal with promise decision)
             setLoading(true);
-            const result = await signTransaction(values, composedTx);
+            const result = await dispatch(signTransaction(values, composedTx));
             setLoading(false);
             if (result?.success) {
                 resetContext();
-                goto('wallet-index', { preserveParams: true });
+                dispatch(goto('wallet-index', { preserveParams: true }));
             }
         }
-    }, [getValues, composedLevels, signTransaction, resetContext, goto]);
+    }, [getValues, composedLevels, dispatch, resetContext]);
 
     // reset on account change
     useEffect(() => {
@@ -268,9 +259,7 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
         }
     }, [props, resetContext, state.account]);
 
-    const { protocol } = useSelector(state => ({
-        protocol: state.protocol,
-    }));
+    const protocol = useSelector(state => state.protocol);
 
     // fill form using data from URI protocol handler e.g. 'bitcoin:address?amount=0.01'
     useEffect(() => {
@@ -296,14 +285,14 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
                     shouldValidate: true,
                 });
             }
-            fillSendForm(false);
+            dispatch(fillSendForm(false));
             composeRequest();
         }
     }, [
+        dispatch,
         setValue,
         props.selectedAccount.network,
         protocol,
-        fillSendForm,
         sendFormUtils,
         composeRequest,
         shouldSendInSats,
@@ -312,7 +301,7 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
 
     // load draft from reducer
     useEffect(() => {
-        const storedState = getDraft();
+        const storedState = dispatch(getDraft());
         const values = getLoadedValues(storedState);
         // keepDefaultValues will set `isDirty` flag to true
         reset(values, { keepDefaultValues: !!storedState });
@@ -320,7 +309,7 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
         if (storedState) {
             draft.current = storedState;
         }
-    }, [getDraft, getLoadedValues, reset]);
+    }, [dispatch, getLoadedValues, reset]);
 
     // register custom form fields (without HTMLElement)
     useEffect(() => {
@@ -339,10 +328,10 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
     useEffect(() => {
         if (!draftSaveRequest) return;
         if (Object.keys(formState.errors).length === 0) {
-            saveDraft(getValues());
+            dispatch(saveDraft(getValues()));
         }
         setDraftSaveRequest(false);
-    }, [draftSaveRequest, setDraftSaveRequest, saveDraft, getValues, formState.errors]);
+    }, [dispatch, draftSaveRequest, setDraftSaveRequest, getValues, formState.errors]);
 
     useDidUpdate(() => {
         const { outputs } = getValues();

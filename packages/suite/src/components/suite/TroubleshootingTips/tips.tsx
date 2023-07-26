@@ -2,26 +2,22 @@ import React from 'react';
 import TrezorLink from 'src/components/suite/TrezorLink';
 import { Translation } from 'src/components/suite/Translation';
 import { isWeb, isLinux, isAndroid } from '@trezor/env-utils';
-import { useActions } from 'src/hooks/suite';
-import * as routerActions from 'src/actions/suite/routerActions';
+import { useDispatch } from 'src/hooks/suite';
+import { goto } from 'src/actions/suite/routerActions';
 
 // TODO: move it to separated components?
 
 const UdevDescription = () => {
-    const { goto } = useActions({
-        goto: routerActions.goto,
-    });
+    const dispatch = useDispatch();
+
+    const handleClick = () => dispatch(goto('suite-udev'));
 
     return (
         <Translation
             id="TR_TROUBLESHOOTING_TIP_UDEV_INSTALL_DESCRIPTION"
             values={{
                 a: chunks => (
-                    <TrezorLink
-                        variant="underline"
-                        onClick={() => goto('suite-udev')}
-                        data-test="@goto/udev"
-                    >
+                    <TrezorLink variant="underline" onClick={handleClick} data-test="@goto/udev">
                         {chunks}
                     </TrezorLink>
                 ),
@@ -44,16 +40,16 @@ const BridgeStatus = () => (
 );
 
 const BridgeInstall = () => {
-    const { goto } = useActions({
-        goto: routerActions.goto,
-    });
+    const dispatch = useDispatch();
+
+    const handleClick = () => dispatch(goto('suite-bridge'));
 
     return (
         <Translation
             id="TR_TROUBLESHOOTING_TIP_BRIDGE_INSTALL_DESCRIPTION"
             values={{
                 a: chunks => (
-                    <TrezorLink variant="underline" onClick={() => goto('suite-bridge')}>
+                    <TrezorLink variant="underline" onClick={handleClick}>
                         {chunks}
                     </TrezorLink>
                 ),
@@ -63,16 +59,16 @@ const BridgeInstall = () => {
 };
 
 const BridgeUse = () => {
-    const { goto } = useActions({
-        goto: routerActions.goto,
-    });
+    const dispatch = useDispatch();
+
+    const handleClick = () => dispatch(goto('suite-bridge'));
 
     return (
         <Translation
             id="TR_TROUBLESHOOTING_TIP_BRIDGE_USE_DESCRIPTION"
             values={{
                 a: chunks => (
-                    <TrezorLink variant="underline" onClick={() => goto('suite-bridge')}>
+                    <TrezorLink variant="underline" onClick={handleClick}>
                         {chunks}
                     </TrezorLink>
                 ),

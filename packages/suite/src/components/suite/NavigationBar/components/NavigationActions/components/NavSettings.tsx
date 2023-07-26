@@ -3,8 +3,8 @@ import styled from 'styled-components';
 
 import { Translation } from 'src/components/suite';
 import { ActionItem } from './ActionItem';
-import { useActions } from 'src/hooks/suite';
-import * as routerActions from 'src/actions/suite/routerActions';
+import { useDispatch } from 'src/hooks/suite';
+import { goto } from 'src/actions/suite/routerActions';
 
 const Wrapper = styled.div`
     margin-left: 8px;
@@ -16,9 +16,9 @@ interface NavSettingsProps {
 }
 
 export const NavSettings = ({ isActive }: NavSettingsProps) => {
-    const { goto } = useActions({
-        goto: routerActions.goto,
-    });
+    const dispatch = useDispatch();
+
+    const handleClick = () => dispatch(goto('settings-index'));
 
     return (
         <Wrapper>
@@ -27,9 +27,7 @@ export const NavSettings = ({ isActive }: NavSettingsProps) => {
                 label={<Translation id="TR_SETTINGS" />}
                 icon="SETTINGS"
                 isActive={isActive}
-                onClick={() => {
-                    goto('settings-index');
-                }}
+                onClick={handleClick}
             />
         </Wrapper>
     );

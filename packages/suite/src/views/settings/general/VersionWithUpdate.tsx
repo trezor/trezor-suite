@@ -1,12 +1,12 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
-import * as desktopUpdateActions from 'src/actions/suite/desktopUpdateActions';
+import { installUpdate, setUpdateWindow } from 'src/actions/suite/desktopUpdateActions';
 import { VersionWithGithubTooltip } from 'src/components/suite/VersionWithGithubTooltip';
 import { Translation } from 'src/components/suite';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from 'src/components/suite/Settings';
-import { useSelector, useActions } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { UpdateState } from 'src/reducers/suite/desktopUpdateReducer';
 import { isDevEnv } from '@suite-common/suite-utils';
 import { useAnchor } from 'src/hooks/suite/useAnchor';
@@ -32,16 +32,13 @@ const Version = styled.div`
 `;
 
 export const VersionWithUpdate = () => {
-    const { setUpdateWindow, installUpdate } = useActions({
-        setUpdateWindow: desktopUpdateActions.setUpdateWindow,
-        installUpdate: desktopUpdateActions.installUpdate,
-    });
+    const desktopUpdate = useSelector(state => state.desktopUpdate);
+    const dispatch = useDispatch();
     const { anchorRef, shouldHighlight } = useAnchor(SettingsAnchor.VersionWithUpdate);
 
-    const desktopUpdate = useSelector(state => state.desktopUpdate);
-
-    const checkForUpdates = useCallback(() => desktopApi.checkForUpdates(true), []);
-    const maximizeUpdater = useCallback(() => setUpdateWindow('maximized'), [setUpdateWindow]);
+    const checkForUpdates = () => desktopApi.checkForUpdates(true);
+    const maximizeUpdater = () => dispatch(setUpdateWindow('maximized'));
+    const install = () => dispatch(installUpdate());
 
     return (
         <SectionItem
@@ -114,7 +111,7 @@ export const VersionWithUpdate = () => {
                         </ActionButton>
                     )}
                     {desktopUpdate.state === UpdateState.Ready && (
-                        <ActionButton onClick={() => installUpdate()} variant="secondary">
+                        <ActionButton onClick={install} variant="secondary">
                             <Translation id="SETTINGS_UPDATE_READY" />
                         </ActionButton>
                     )}

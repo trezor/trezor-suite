@@ -2,8 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 import { variables, Switch } from '@trezor/components';
 import { Translation } from 'src/components/suite';
-import { useActions } from 'src/hooks/suite';
-import { toggleTor as toggleTorAction } from 'src/actions/suite/suiteActions';
+import { useDispatch } from 'src/hooks/suite';
+import { toggleTor } from 'src/actions/suite/suiteActions';
 import { getIsTorEnabled, getIsTorLoading } from 'src/utils/suite/tor';
 import { TorStatus } from 'src/types/suite';
 
@@ -33,12 +33,13 @@ interface TorSectionProps {
 }
 
 export const TorSection = ({ torStatus }: TorSectionProps) => {
-    const { toggleTor } = useActions({
-        toggleTor: toggleTorAction,
-    });
+    const dispatch = useDispatch();
 
     const isTorEnabled = getIsTorEnabled(torStatus);
     const isTorLoading = getIsTorLoading(torStatus);
+    const isChecked = isTorEnabled || torStatus === TorStatus.Enabling;
+
+    const handleChange = () => dispatch(toggleTor(!isTorEnabled));
 
     return (
         <TorWrapper>
@@ -48,11 +49,9 @@ export const TorSection = ({ torStatus }: TorSectionProps) => {
             <SwitchWrapper>
                 <Switch
                     dataTest="@onboarding/tor-switch"
-                    isChecked={isTorEnabled || torStatus === TorStatus.Enabling}
+                    isChecked={isChecked}
                     isDisabled={isTorLoading}
-                    onChange={() => {
-                        toggleTor(!isTorEnabled);
-                    }}
+                    onChange={handleChange}
                 />
             </SwitchWrapper>
         </TorWrapper>

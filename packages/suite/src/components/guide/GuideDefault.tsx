@@ -4,13 +4,13 @@ import styled from 'styled-components';
 import { analytics, EventType } from '@trezor/suite-analytics';
 
 import { Translation } from 'src/components/suite';
-import * as guideActions from 'src/actions/suite/guideActions';
-import { useActions, useSelector } from 'src/hooks/suite';
+import { setView } from 'src/actions/suite/guideActions';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { Icon, variables, useTheme } from '@trezor/components';
 import { Header, Content, ViewWrapper, GuideCategories, GuideSearch } from 'src/components/guide';
 
 const FeedbackLinkWrapper = styled.div`
-    border-top: 1px solid ${props => props.theme.STROKE_GREY};
+    border-top: 1px solid ${({ theme }) => theme.STROKE_GREY};
     padding: 11px 14px;
 `;
 
@@ -21,19 +21,19 @@ const FeedbackButton = styled.button`
     border: 0;
     border-radius: 4px;
     cursor: pointer;
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     text-align: left;
     padding: 11px;
     background: none;
-    transition: ${props =>
-        `background ${props.theme.HOVER_TRANSITION_TIME} ${props.theme.HOVER_TRANSITION_EFFECT}`};
+    transition: ${({ theme }) =>
+        `background ${theme.HOVER_TRANSITION_TIME} ${theme.HOVER_TRANSITION_EFFECT}`};
     /* speficy position and z-index so that GuideButton does not interfere */
     position: relative;
     z-index: ${variables.Z_INDEX.GUIDE};
 
     :hover,
     :focus {
-        background: ${props => darken(props.theme.HOVER_DARKEN_FILTER, props.theme.BG_WHITE)};
+        background: ${({ theme }) => darken(theme.HOVER_DARKEN_FILTER, theme.BG_WHITE)};
     }
 
     :last-child {
@@ -56,16 +56,11 @@ const FeedbackButtonRightIcon = styled(Icon)`
 export const GuideDefault = () => {
     const theme = useTheme();
     const [searchActive, setSearchActive] = useState(false);
-
-    const { setView } = useActions({
-        setView: guideActions.setView,
-    });
-    const { indexNode } = useSelector(state => ({
-        indexNode: state.guide.indexNode,
-    }));
+    const indexNode = useSelector(state => state.guide.indexNode);
+    const dispatch = useDispatch();
 
     const handleFeedbackButtonClick = () => {
-        setView('SUPPORT_FEEDBACK_SELECTION');
+        dispatch(setView('SUPPORT_FEEDBACK_SELECTION'));
         analytics.report({
             type: EventType.GuideFeedbackNavigation,
             payload: { type: 'overview' },

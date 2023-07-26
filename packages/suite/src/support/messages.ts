@@ -1850,10 +1850,6 @@ export default defineMessages({
         defaultMessage: 'Go to payment gateway',
         id: 'TR_BUY_DETAIL_SUBMITTED_GATE',
     },
-    TR_BUY_DETAIL_SUBMITTED_CANCEL: {
-        defaultMessage: 'Cancel transaction',
-        id: 'TR_BUY_DETAIL_SUBMITTED_CANCEL',
-    },
     TR_BUY_DETAIL_WAITING_FOR_USER_TITLE: {
         defaultMessage: 'Complete your transaction',
         id: 'TR_BUY_DETAIL_WAITING_FOR_USER_TITLE',

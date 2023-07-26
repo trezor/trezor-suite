@@ -2,8 +2,8 @@ import React, { useMemo } from 'react';
 
 import { Checkbox } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
-import { useSelector, useActions } from 'src/hooks/suite';
-import * as suiteActions from 'src/actions/suite/suiteActions';
+import { useDispatch, useSelector } from 'src/hooks/suite';
+import { setDebugMode } from 'src/actions/suite/suiteActions';
 import { DebugModeOptions } from 'src/reducers/suite/suiteReducer';
 import { ArrayElement } from '@trezor/type-utils';
 
@@ -17,10 +17,9 @@ type TransportMenuItem = {
 };
 
 export const Transport = () => {
-    const { debug, transport } = useSelector(state => ({
-        debug: state.suite.settings.debug,
-        transport: state.suite.transport,
-    }));
+    const debug = useSelector(state => state.suite.settings.debug);
+    const transport = useSelector(state => state.suite.transport);
+    const dispatch = useDispatch();
 
     // fallback [] to avoid need of migration.
     const debugTransports = useMemo(() => debug.transports || [], [debug.transports]);
@@ -39,10 +38,6 @@ export const Transport = () => {
             name: t,
         }));
     }, [transport]);
-
-    const { setDebugMode } = useActions({
-        setDebugMode: suiteActions.setDebugMode,
-    });
 
     return (
         <>
@@ -67,9 +62,7 @@ export const Transport = () => {
                                     ? debugTransports.filter(t => t !== transport.name)
                                     : [...debugTransports, transport.name];
 
-                                setDebugMode({
-                                    transports: nextTransports,
-                                });
+                                dispatch(setDebugMode({ transports: nextTransports }));
                             }}
                         />
                     </ActionColumn>

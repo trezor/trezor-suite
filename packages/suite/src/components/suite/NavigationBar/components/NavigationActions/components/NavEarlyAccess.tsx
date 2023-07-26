@@ -3,8 +3,8 @@ import styled from 'styled-components';
 
 import { Translation } from 'src/components/suite';
 import { ActionItem } from './ActionItem';
-import { useActions } from 'src/hooks/suite';
-import * as routerActions from 'src/actions/suite/routerActions';
+import { useDispatch } from 'src/hooks/suite';
+import { goto } from 'src/actions/suite/routerActions';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 
 const Wrapper = styled.div`
@@ -18,16 +18,17 @@ interface NavEarlyAccessProps {
 }
 
 export const NavEarlyAccess = (props: NavEarlyAccessProps) => {
-    const { goto } = useActions({
-        goto: routerActions.goto,
-    });
+    const dispatch = useDispatch();
+
+    const handleClick = () =>
+        dispatch(goto('settings-index', { anchor: SettingsAnchor.EarlyAccess }));
 
     return (
         <Wrapper {...props}>
             <ActionItem
                 label={<Translation id="TR_EARLY_ACCESS_MENU" />}
                 icon="EXPERIMENTAL"
-                onClick={() => goto('settings-index', { anchor: SettingsAnchor.EarlyAccess })}
+                onClick={handleClick}
             />
         </Wrapper>
     );

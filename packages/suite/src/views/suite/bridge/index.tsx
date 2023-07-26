@@ -3,9 +3,9 @@ import styled from 'styled-components';
 import { DATA_URL, HELP_CENTER_TOR_URL, GITHUB_BRIDGE_CHANGELOG_URL } from '@trezor/urls';
 import { Translation, TrezorLink, Modal, Metadata } from 'src/components/suite';
 import { Button, P, Link, Select, Image, useTheme, variables, Loader } from '@trezor/components';
-import * as routerActions from 'src/actions/suite/routerActions';
+import { goto } from 'src/actions/suite/routerActions';
 import { isDesktop, isWeb } from '@trezor/env-utils';
-import { useSelector, useActions } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectTorState } from 'src/reducers/suite/suiteReducer';
 import { DeviceModelInternal } from '@trezor/connect';
 
@@ -66,7 +66,7 @@ const LoaderWrapper = styled.div`
 `;
 
 const Version = styled.div<{ show: boolean }>`
-    visibility: ${props => (props.show ? 'visible' : 'hidden')};
+    visibility: ${({ show }) => (show ? 'visible' : 'hidden')};
     margin-top: 10px;
     font-size: ${variables.FONT_SIZE.SMALL};
 `;
@@ -86,7 +86,7 @@ const StyledImage = styled(Image)`
 const Col = styled.div<{ justify?: string }>`
     display: flex;
     flex: 1;
-    justify-content: ${props => props.justify};
+    justify-content: ${({ justify }) => justify};
 `;
 
 interface Installer {
@@ -97,14 +97,11 @@ interface Installer {
 }
 
 export const InstallBridge = () => {
+    const [selectedTarget, setSelectedTarget] = useState<Installer | null>(null);
     const { isTorEnabled } = useSelector(selectTorState);
     const transport = useSelector(state => state.suite.transport);
-    const [selectedTarget, setSelectedTarget] = useState<Installer | null>(null);
-
+    const dispatch = useDispatch();
     const theme = useTheme();
-    const actions = useActions({
-        goto: routerActions.goto,
-    });
 
     const installers: Installer[] =
         transport && transport.bridge
@@ -128,6 +125,8 @@ export const InstallBridge = () => {
     const target = selectedTarget || data.target;
     const isLoading = !transport;
     const transportAvailable = transport && transport.type;
+
+    const goToWallet = () => dispatch(goto('wallet-index'));
 
     return (
         <Modal
@@ -194,7 +193,7 @@ export const InstallBridge = () => {
                             icon="ARROW_LEFT"
                             variant="tertiary"
                             color={theme.TYPE_LIGHT_GREY}
-                            onClick={() => actions.goto('wallet-index')}
+                            onClick={goToWallet}
                             data-test="@bridge/goto/wallet-index"
                         >
                             <Translation id="TR_TAKE_ME_BACK_TO_WALLET" />
@@ -205,12 +204,7 @@ export const InstallBridge = () => {
                     <>
                         <Col justify="center">
                             <Link variant="nostyle" href={GITHUB_BRIDGE_CHANGELOG_URL}>
-                                <Button
-                                    icon="LOG"
-                                    color={theme.TYPE_LIGHT_GREY}
-                                    variant="tertiary"
-                                    onClick={() => {}}
-                                >
+                                <Button icon="LOG" color={theme.TYPE_LIGHT_GREY} variant="tertiary">
                                     <Translation id="TR_CHANGELOG" />
                                 </Button>
                             </Link>
@@ -222,7 +216,6 @@ export const InstallBridge = () => {
                                         color={theme.TYPE_LIGHT_GREY}
                                         icon="SIGNATURE"
                                         variant="tertiary"
-                                        onClick={() => {}}
                                     >
                                         <Translation id="TR_CHECK_PGP_SIGNATURE" />
                                     </Button>

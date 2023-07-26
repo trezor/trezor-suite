@@ -1,13 +1,13 @@
 import React, { memo, useState, useEffect, useCallback } from 'react';
-
-import { TransactionsGraph, Translation, HiddenPlaceholder } from 'src/components/suite';
 import { getUnixTime } from 'date-fns';
 import styled from 'styled-components';
+
 import { CARD_PADDING_SIZE } from 'src/constants/suite/layout';
 import GraphWorker from 'src/support/workers/graph';
-import * as graphActions from 'src/actions/wallet/graphActions';
-import { useActions, useSelector } from 'src/hooks/suite';
+import { getGraphDataForInterval, updateGraphData } from 'src/actions/wallet/graphActions';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { Account } from 'src/types/wallet';
+import { TransactionsGraph, Translation, HiddenPlaceholder } from 'src/components/suite';
 
 import { variables, Button } from '@trezor/components';
 import { calcTicks, calcTicksFromData } from '@suite-common/suite-utils';
@@ -34,7 +34,7 @@ const ErrorMessage = styled.div`
     padding: 20px;
     align-items: center;
     justify-content: center;
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     font-size: ${variables.FONT_SIZE.SMALL};
     text-align: center;
 `;
@@ -45,30 +45,22 @@ interface DashboardGraphProps {
 
 // DashboardGraph.whyDidYouRender = true;
 export const DashboardGraph = memo(({ accounts }: DashboardGraphProps) => {
-    const { updateGraphData, getGraphDataForInterval } = useActions({
-        updateGraphData: graphActions.updateGraphData,
-        getGraphDataForInterval: graphActions.getGraphDataForInterval,
-    });
-    const { graph, selectedDevice, localCurrency } = useSelector(state => ({
-        graph: state.wallet.graph,
-        selectedDevice: state.suite.device,
-        localCurrency: state.wallet.settings.localCurrency,
-    }));
-
-    const { selectedRange } = graph;
+    const { error, isLoading, selectedRange } = useSelector(state => state.wallet.graph);
+    const selectedDevice = useSelector(state => state.suite.device);
+    const localCurrency = useSelector(state => state.wallet.settings.localCurrency);
+    const dispatch = useDispatch();
 
     const [data, setData] = useState<AggregatedDashboardHistory[]>([]);
     const [isProcessing, setIsProcessing] = useState(false);
     const [xTicks, setXticks] = useState<number[]>([]);
 
     const selectedDeviceState = selectedDevice?.state;
-    const { isLoading } = graph;
-    const failedAccounts = graph.error?.filter(a => a.deviceState === selectedDeviceState);
+    const failedAccounts = error?.filter(a => a.deviceState === selectedDeviceState);
     const allFailed = failedAccounts && failedAccounts.length === accounts.length;
 
     const onRefresh = useCallback(() => {
-        updateGraphData(accounts);
-    }, [updateGraphData, accounts]);
+        dispatch(updateGraphData(accounts));
+    }, [accounts, dispatch]);
 
     const receivedValueFn = useCallback(
         (sourceData: AggregatedDashboardHistory) => sourceData.receivedFiat[localCurrency],
@@ -97,7 +89,7 @@ export const DashboardGraph = memo(({ accounts }: DashboardGraphProps) => {
         if (!isLoading) {
             const worker = new GraphWorker();
             setIsProcessing(true);
-            const rawData = getGraphDataForInterval({ deviceState: selectedDeviceState });
+            const rawData = dispatch(getGraphDataForInterval({ deviceState: selectedDeviceState }));
 
             worker.postMessage({
                 history: rawData,
@@ -125,7 +117,7 @@ export const DashboardGraph = memo(({ accounts }: DashboardGraphProps) => {
                 worker.terminate();
             };
         }
-    }, [isLoading, getGraphDataForInterval, selectedDeviceState, selectedRange]);
+    }, [dispatch, isLoading, selectedDeviceState, selectedRange]);
 
     return (
         <Wrapper data-test="@dashboard/graph">

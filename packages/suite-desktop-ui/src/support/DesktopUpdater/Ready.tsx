@@ -1,16 +1,16 @@
 import React from 'react';
-
 import styled from 'styled-components';
+
 import { Translation, Modal } from 'src/components/suite';
-import { useActions } from 'src/hooks/suite';
-import * as desktopUpdateActions from 'src/actions/suite/desktopUpdateActions';
+import { useDispatch } from 'src/hooks/suite';
+import { installUpdate } from 'src/actions/suite/desktopUpdateActions';
 
 import { Button, H2, variables } from '@trezor/components';
 
 const Description = styled.span`
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
 `;
 
 const StyledModal = styled(Modal)`
@@ -27,12 +27,11 @@ interface ReadyProps {
 }
 
 export const Ready = ({ hideWindow, isCancelable }: ReadyProps) => {
-    const { installUpdate } = useActions({
-        installUpdate: desktopUpdateActions.installUpdate,
-    });
+    const dispatch = useDispatch();
 
+    const install = () => dispatch(installUpdate());
     const installOnQuit = () => {
-        installUpdate(true);
+        install();
         hideWindow();
     };
 
@@ -46,7 +45,7 @@ export const Ready = ({ hideWindow, isCancelable }: ReadyProps) => {
                     <Button onClick={installOnQuit} variant="secondary">
                         <Translation id="TR_UPDATE_MODAL_UPDATE_ON_QUIT" />
                     </Button>
-                    <Button onClick={() => installUpdate()} variant="primary">
+                    <Button onClick={install} variant="primary">
                         <Translation id="TR_UPDATE_MODAL_INSTALL_AND_RESTART" />
                     </Button>
                 </>

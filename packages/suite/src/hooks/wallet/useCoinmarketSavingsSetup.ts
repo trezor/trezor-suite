@@ -7,12 +7,18 @@ import type {
 import { useForm, useWatch } from 'react-hook-form';
 import { InitSavingsTradeRequest } from 'invity-api';
 import invityAPI, { SavingsTradeKYCFinalStatuses } from 'src/services/suite/invityAPI';
-import { useActions, useSelector } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import type { CountryOption } from 'src/types/wallet/coinmarketCommonTypes';
 import { CustomPaymentAmountKey } from 'src/constants/wallet/coinmarket/savings';
-import * as coinmarketSavingsActions from 'src/actions/wallet/coinmarketSavingsActions';
-import * as coinmarketCommonActions from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
-import * as pollingActions from 'src/actions/wallet/pollingActions';
+import {
+    openCoinmarketSavingsConfirmModal,
+    setSelectedProvider,
+} from 'src/actions/wallet/coinmarketSavingsActions';
+import {
+    loadInvityData,
+    submitRequestForm,
+} from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
+import { isPolling } from 'src/actions/wallet/pollingActions';
 import { useCoinmarketNavigation } from 'src/hooks/wallet/useCoinmarketNavigation';
 import regional from 'src/constants/wallet/coinmarket/regional';
 import {
@@ -27,45 +33,29 @@ export const useSavingsSetup = ({
     selectedAccount,
 }: UseSavingsSetupProps): SavingsSetupContextValues => {
     const { account } = selectedAccount;
-    const {
-        fiat,
-        selectedProvider,
-        providers,
-        supportedCountries,
-        userCountry,
-        savingsTrade,
-        isSavingsTradeLoading,
-        formDrafts,
-    } = useSelector(state => ({
-        fiat: state.wallet.fiat,
-        selectedProvider: state.wallet.coinmarket.savings.selectedProvider,
-        supportedCountries: state.wallet.coinmarket.savings.savingsInfo?.supportedCountries,
-        providers: state.wallet.coinmarket.savings.savingsInfo?.savingsList?.providers,
-        userCountry: state.wallet.coinmarket.savings.savingsInfo?.country?.toUpperCase(),
-        savingsTrade: state.wallet.coinmarket.savings.savingsTrade,
-        isSavingsTradeLoading: state.wallet.coinmarket.savings.isSavingsTradeLoading,
-        formDrafts: state.wallet.formDrafts,
-    }));
+    const fiat = useSelector(state => state.wallet.fiat);
+    const selectedProvider = useSelector(state => state.wallet.coinmarket.savings.selectedProvider);
+    const supportedCountries = useSelector(
+        state => state.wallet.coinmarket.savings.savingsInfo?.supportedCountries,
+    );
+    const providers = useSelector(
+        state => state.wallet.coinmarket.savings.savingsInfo?.savingsList?.providers,
+    );
+    const userCountry = useSelector(state =>
+        state.wallet.coinmarket.savings.savingsInfo?.country?.toUpperCase(),
+    );
+    const savingsTrade = useSelector(state => state.wallet.coinmarket.savings.savingsTrade);
+    const isSavingsTradeLoading = useSelector(
+        state => state.wallet.coinmarket.savings.isSavingsTradeLoading,
+    );
+    const formDrafts = useSelector(state => state.wallet.formDrafts);
+    const dispatch = useDispatch();
 
     const noProviders = !providers || providers.length === 0;
 
-    const {
-        submitRequestForm,
-        setSelectedProvider,
-        loadInvityData,
-        openCoinmarketSavingsConfirmModal,
-        isPolling,
-    } = useActions({
-        submitRequestForm: coinmarketCommonActions.submitRequestForm,
-        loadInvityData: coinmarketCommonActions.loadInvityData,
-        setSelectedProvider: coinmarketSavingsActions.setSelectedProvider,
-        openCoinmarketSavingsConfirmModal:
-            coinmarketSavingsActions.openCoinmarketSavingsConfirmModal,
-        isPolling: pollingActions.isPolling,
-    });
     const pollingKey = `coinmarket-savings-trade/${account.descriptor}` as const;
     const isSavingsTradeLoadingEffective =
-        (!providers || isSavingsTradeLoading) && !isPolling(pollingKey);
+        (!providers || isSavingsTradeLoading) && !dispatch(isPolling(pollingKey));
     const {
         navigateToSavingsSetupContinue,
         navigateToSavingsOverview,
@@ -74,8 +64,8 @@ export const useSavingsSetup = ({
     } = useCoinmarketNavigation(account);
 
     useEffect(() => {
-        loadInvityData();
-    }, [loadInvityData]);
+        dispatch(loadInvityData());
+    }, [dispatch]);
 
     useEffect(() => {
         if (!isSavingsTradeLoadingEffective && savingsTrade) {
@@ -149,7 +139,7 @@ export const useSavingsSetup = ({
                 provider &&
                 (!fiatAmount || !paymentFrequency || provider.name !== selectedProvider?.name)
             ) {
-                setSelectedProvider(provider);
+                dispatch(setSelectedProvider(provider));
                 if (!fiatAmount || !provider.setupPaymentAmounts.includes(fiatAmount)) {
                     setValue('fiatAmount', provider.defaultPaymentAmount.toString());
                 }
@@ -163,12 +153,12 @@ export const useSavingsSetup = ({
         }
     }, [
         countryEffective,
+        dispatch,
         fiatAmount,
         paymentFrequency,
         providers,
         savingsTrade,
         selectedProvider,
-        setSelectedProvider,
         setValue,
     ]);
 
@@ -177,12 +167,12 @@ export const useSavingsSetup = ({
     useEffect(() => {
         const requestForm = getDraft(account.descriptor) as Parameters<typeof submitRequestForm>[0];
         if (isDesktop() && requestForm && isSubmitted) {
-            submitRequestForm(requestForm);
+            dispatch(submitRequestForm(requestForm));
             navigateToSavingsSetupWaiting();
         }
     }, [
         account.descriptor,
-        submitRequestForm,
+        dispatch,
         navigateToSavingsSetupWaiting,
         formDrafts,
         getDraft,
@@ -201,7 +191,9 @@ export const useSavingsSetup = ({
         async (formValues: SavingsSetupFormState) => {
             const { customFiatAmount, fiatAmount, paymentFrequency, country } = formValues;
             if (selectedProvider && country) {
-                if (await openCoinmarketSavingsConfirmModal(selectedProvider.companyName)) {
+                if (
+                    await dispatch(openCoinmarketSavingsConfirmModal(selectedProvider.companyName))
+                ) {
                     const savingsParameters: InitSavingsTradeRequest = {
                         amount: customFiatAmount || fiatAmount,
                         exchange: selectedProvider.name,
@@ -219,7 +211,7 @@ export const useSavingsSetup = ({
                         // closed Invity web page before the savings flow was finished.
                         saveDraft(account.descriptor, formResponse.form);
                         if (!isDesktop()) {
-                            submitRequestForm(formResponse?.form);
+                            dispatch(submitRequestForm(formResponse?.form));
                         }
                     }
                 } else {
@@ -227,15 +219,7 @@ export const useSavingsSetup = ({
                 }
             }
         },
-        [
-            account.descriptor,
-            account.symbol,
-            openCoinmarketSavingsConfirmModal,
-            removeDraft,
-            saveDraft,
-            selectedProvider,
-            submitRequestForm,
-        ],
+        [account.descriptor, account.symbol, dispatch, removeDraft, saveDraft, selectedProvider],
     );
 
     const canConfirmSetup =

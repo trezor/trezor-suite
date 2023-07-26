@@ -1,16 +1,15 @@
 import React, { useState } from 'react';
 import { createTimeoutPromise } from '@trezor/utils';
 import { Translation } from 'src/components/suite';
-import { useSelector, useActions, useDispatch } from 'src/hooks/suite';
+import { useSelector, useDispatch } from 'src/hooks/suite';
 import { createCoinjoinAccount } from 'src/actions/wallet/coinjoinAccountActions';
-import * as suiteActions from 'src/actions/suite/suiteActions';
-import * as modalActions from 'src/actions/suite/modalActions';
+import { toggleTor } from 'src/actions/suite/suiteActions';
+import { openDeferredModal, openModal } from 'src/actions/suite/modalActions';
 import { Account, Network, NetworkSymbol } from 'src/types/wallet';
 import { UnavailableCapabilities } from '@trezor/connect';
 import { AddButton } from './AddButton';
 import { isDesktop } from '@trezor/env-utils';
 import { isDevEnv } from '@suite-common/suite-utils';
-import { Dispatch } from 'src/types/suite';
 import { RequestEnableTorResponse } from 'src/components/suite/modals/RequestEnableTor';
 import { selectTorState } from 'src/reducers/suite/suiteReducer';
 
@@ -45,22 +44,12 @@ interface AddCoinjoinAccountProps {
     network: Network;
 }
 
-const requestEnableTorAction = () => (dispatch: Dispatch) =>
-    dispatch(modalActions.openDeferredModal({ type: 'request-enable-tor' }));
-
 export const AddCoinjoinAccountButton = ({ network }: AddCoinjoinAccountProps) => {
     const [isLoading, setIsLoading] = useState(false);
 
     const { isTorEnabled } = useSelector(selectTorState);
     const device = useSelector(state => state.suite.device);
     const accounts = useSelector(state => state.wallet.accounts);
-
-    const action = useActions({
-        createCoinjoinAccount,
-        requestEnableTorAction,
-        toggleTor: suiteActions.toggleTor,
-    });
-
     const dispatch = useDispatch();
 
     if (!device) {
@@ -82,7 +71,7 @@ export const AddCoinjoinAccountButton = ({ network }: AddCoinjoinAccountProps) =
 
     const onCreateCoinjoinAccountClick = async () => {
         const createAccount = async () => {
-            await action.createCoinjoinAccount(network);
+            await dispatch(createCoinjoinAccount(network));
             setIsLoading(false);
         };
 
@@ -90,11 +79,13 @@ export const AddCoinjoinAccountButton = ({ network }: AddCoinjoinAccountProps) =
         // Checking if Tor is enable and if not open modal to force the user to enable it to use coinjoin.
         // Tor only works in desktop so checking we are running desktop.
         if (!isTorEnabled && isDesktop()) {
-            const continueWithTor = await action.requestEnableTorAction();
+            const continueWithTor = await dispatch(
+                openDeferredModal({ type: 'request-enable-tor' }),
+            );
             if (continueWithTor === RequestEnableTorResponse.Back) {
                 // Going back to the previous screen.
                 dispatch(
-                    modalActions.openModal({
+                    openModal({
                         type: 'add-account',
                         device,
                     }),
@@ -108,10 +99,8 @@ export const AddCoinjoinAccountButton = ({ network }: AddCoinjoinAccountProps) =
             }
 
             // Triggering Tor process and displaying Tor loading to give user feedback of Tor progress.
-            action.toggleTor(true);
-            const isTorLoaded = await dispatch(
-                modalActions.openDeferredModal({ type: 'tor-loading' }),
-            );
+            dispatch(toggleTor(true));
+            const isTorLoaded = await dispatch(openDeferredModal({ type: 'tor-loading' }));
             // When Tor was not loaded it means there was an error or user canceled it, stop the coinjoin account activation.
             if (!isTorLoaded) return;
         }

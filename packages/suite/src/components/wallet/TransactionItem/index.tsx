@@ -5,8 +5,8 @@ import { AnimatePresence } from 'framer-motion';
 import { variables, Button, Card } from '@trezor/components';
 import { getIsZeroValuePhishing } from '@suite-common/suite-utils';
 import { Translation } from 'src/components/suite';
-import { useActions } from 'src/hooks/suite';
-import * as modalActions from 'src/actions/suite/modalActions';
+import { useDispatch } from 'src/hooks/suite';
+import { openModal } from 'src/actions/suite/modalActions';
 import { formatNetworkAmount, isTestnet, isTxFeePaid } from '@suite-common/wallet-utils';
 import { AccountMetadata } from 'src/types/suite/metadata';
 import { Network, WalletAccountTransaction } from 'src/types/wallet';
@@ -42,10 +42,10 @@ const Wrapper = styled(Card)<{
         padding: 0px 16px;
     }
 
-    ${props =>
-        props.isPending &&
+    ${({ isPending }) =>
+        isPending &&
         css`
-            border-left: 8px solid ${props => props.theme.TYPE_ORANGE};
+            border-left: 8px solid ${({ theme }) => theme.TYPE_ORANGE};
             padding-left: 16px;
 
             @media (max-width: ${variables.SCREEN_SIZE.SM}) {
@@ -99,8 +99,16 @@ const TransactionItem = React.memo(
         className,
         index,
     }: TransactionItemProps) => {
-        const { type, targets, tokens, internalTransfers } = transaction;
         const [limit, setLimit] = useState(0);
+        const [txItemIsHovered, setTxItemIsHovered] = useState(false);
+        const [nestedItemIsHovered, setNestedItemIsHovered] = useState(false);
+
+        const dispatch = useDispatch();
+        const { anchorRef, shouldHighlight } = useAnchor(
+            `${AccountTransactionBaseAnchor}/${transaction.txid}`,
+        );
+
+        const { type, targets, tokens, internalTransfers } = transaction;
         const isUnknown = type === 'unknown';
         const useFiatValues = !isTestnet(transaction.symbol);
         const useSingleRowLayout =
@@ -115,13 +123,6 @@ const TransactionItem = React.memo(
 
         const fee = formatNetworkAmount(transaction.fee, transaction.symbol);
         const showFeeRow = isTxFeePaid(transaction);
-
-        const [txItemIsHovered, setTxItemIsHovered] = useState(false);
-        const [nestedItemIsHovered, setNestedItemIsHovered] = useState(false);
-
-        const { anchorRef, shouldHighlight } = useAnchor(
-            `${AccountTransactionBaseAnchor}/${transaction.txid}`,
-        );
 
         // join together regular targets, internal and token transfers
         const allOutputs: (
@@ -138,16 +139,15 @@ const TransactionItem = React.memo(
         const isExpandable = allOutputs.length - DEFAULT_LIMIT > 0;
         const toExpand = allOutputs.length - DEFAULT_LIMIT - limit;
 
-        const { openModal } = useActions({
-            openModal: modalActions.openModal,
-        });
         const openTxDetailsModal = (rbfForm?: boolean) => {
             if (isActionDisabled) return; // open explorer
-            openModal({
-                type: 'transaction-detail',
-                tx: transaction,
-                rbfForm,
-            });
+            dispatch(
+                openModal({
+                    type: 'transaction-detail',
+                    tx: transaction,
+                    rbfForm,
+                }),
+            );
         };
 
         const isZeroValuePhishing = getIsZeroValuePhishing(transaction);

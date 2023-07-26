@@ -4,13 +4,12 @@ import { SuiteLayout } from 'src/components/suite';
 import InitialLoading from './components/InitialLoading';
 import DatabaseUpgradeModal from './components/DatabaseUpgradeModal';
 import PrerequisiteScreen from './components/PrerequisiteScreen';
-import { useDiscovery, useSelector, useActions } from 'src/hooks/suite';
+import { useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
 import { Onboarding } from 'src/views/onboarding';
 import { getPrerequisites } from 'src/utils/suite/prerequisites';
 import { ErrorPage } from 'src/views/suite/ErrorPage';
 import { useGuideKeyboard } from 'src/hooks/guide';
 import { init } from 'src/actions/suite/initAction';
-
 import type { AppState } from 'src/types/suite';
 
 const getFullscreenApp = (route: AppState['router']['route']) => {
@@ -29,21 +28,16 @@ interface PreloaderProps {
 // Preloader is a top level wrapper used in _app.tsx.
 // Decides which content should be displayed basing on route and prerequisites.
 const Preloader = ({ children }: PreloaderProps) => {
-    const { initSuite } = useActions({
-        initSuite: init,
-    });
-
-    const { lifecycle, router, transport } = useSelector(state => ({
-        lifecycle: state.suite.lifecycle,
-        transport: state.suite.transport,
-        router: state.router,
-    }));
+    const lifecycle = useSelector(state => state.suite.lifecycle);
+    const transport = useSelector(state => state.suite.transport);
+    const router = useSelector(state => state.router);
+    const dispatch = useDispatch();
 
     const { device } = useDiscovery();
 
     useEffect(() => {
-        initSuite();
-    }, [initSuite]);
+        dispatch(init());
+    }, [dispatch]);
 
     // Register keyboard handlers for opening/closing Guide using keyboard
     useGuideKeyboard();

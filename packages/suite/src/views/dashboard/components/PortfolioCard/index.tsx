@@ -3,11 +3,11 @@ import styled from 'styled-components';
 import { Dropdown } from '@trezor/components';
 import { Card, QuestionTooltip, Translation } from 'src/components/suite';
 import { Section } from 'src/components/dashboard';
-import { useDiscovery, useSelector, useActions } from 'src/hooks/suite';
+import { useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
 import { useFastAccounts, useFiatValue } from 'src/hooks/wallet';
 import { SkeletonTransactionsGraph } from 'src/components/suite/TransactionsGraph';
-import * as routerActions from 'src/actions/suite/routerActions';
-import * as suiteActions from 'src/actions/suite/suiteActions';
+import { goto } from 'src/actions/suite/routerActions';
+import { setFlag } from 'src/actions/suite/suiteActions';
 import * as accountUtils from '@suite-common/wallet-utils';
 
 import { Header } from './components/Header';
@@ -44,10 +44,7 @@ const PortfolioCard = React.memo(() => {
     const { discovery, getDiscoveryStatus, isDiscoveryRunning } = useDiscovery();
     const accounts = useFastAccounts();
     const { dashboardGraphHidden } = useSelector(s => s.suite.flags);
-    const { setFlag, goto } = useActions({
-        setFlag: suiteActions.setFlag,
-        goto: routerActions.goto,
-    });
+    const dispatch = useDispatch();
 
     const isDeviceEmpty = useMemo(() => accounts.every(a => a.empty), [accounts]);
     const portfolioValue = accountUtils
@@ -88,6 +85,9 @@ const PortfolioCard = React.memo(() => {
         showGraphControls &&
         !!accounts.find(a => a.networkType === 'ethereum' || a.networkType === 'ripple');
 
+    const goToReceive = () => dispatch(goto('wallet-receive'));
+    const goToBuy = () => dispatch(goto('wallet-coinmarket-buy'));
+
     return (
         <Section
             heading={
@@ -120,7 +120,12 @@ const PortfolioCard = React.memo(() => {
                                             <Translation id="TR_HIDE_GRAPH" />
                                         ),
                                         callback: () => {
-                                            setFlag('dashboardGraphHidden', !dashboardGraphHidden);
+                                            dispatch(
+                                                setFlag(
+                                                    'dashboardGraphHidden',
+                                                    !dashboardGraphHidden,
+                                                ),
+                                            );
                                             return true;
                                         },
                                     },
@@ -141,8 +146,8 @@ const PortfolioCard = React.memo(() => {
                     isWalletLoading={isWalletLoading}
                     isWalletError={isWalletError}
                     isDiscoveryRunning={isDiscoveryRunning}
-                    receiveClickHandler={() => goto('wallet-receive')}
-                    buyClickHandler={() => goto('wallet-coinmarket-buy')}
+                    receiveClickHandler={goToReceive}
+                    buyClickHandler={goToBuy}
                 />
 
                 {body && <Body>{body}</Body>}

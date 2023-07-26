@@ -2,8 +2,8 @@ import type { AppState } from 'src/types/suite';
 import type { FormState as ReactHookFormState, UseFormReturn } from 'react-hook-form';
 import type { Account, Network, CoinFiatRates } from 'src/types/wallet';
 import type { FeeLevel } from '@trezor/connect';
-import type { SellFiatTrade, SellFiatTradeQuoteRequest, ExchangeCoinInfo } from 'invity-api';
-import type { CoinmarketSellAction, SellInfo } from 'src/actions/wallet/coinmarketSellActions';
+import type { ExchangeCoinInfo } from 'invity-api';
+import type { SellInfo } from 'src/actions/wallet/coinmarketSellActions';
 import type {
     FeeInfo,
     FormState,
@@ -44,12 +44,6 @@ export type SellFormContextValues = UseFormReturn<SellFormState> & {
     exchangeCoinInfo?: ExchangeCoinInfo[];
     localCurrencyOption: { label: string; value: string };
     composeRequest: SendContextValues<SellFormState>['composeTransaction'];
-    saveQuoteRequest: (request: SellFiatTradeQuoteRequest) => CoinmarketSellAction;
-    saveQuotes: (
-        fixedQuotes: SellFiatTrade[],
-        floatQuotes: SellFiatTrade[],
-    ) => CoinmarketSellAction;
-    saveTrade: (sellTrade: SellFiatTrade, account: Account, date: string) => CoinmarketSellAction;
     amountLimits?: AmountLimits;
     composedLevels?: PrecomposedLevels | PrecomposedLevelsCardano;
     fiatRates?: CoinFiatRates;

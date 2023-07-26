@@ -2,27 +2,23 @@ import React from 'react';
 import { Button } from '@trezor/components';
 
 import { Translation, TroubleshootingTips } from 'src/components/suite';
-import { useDevice, useActions } from 'src/hooks/suite';
-import * as suiteActions from 'src/actions/suite/suiteActions';
+import { useDevice, useDispatch } from 'src/hooks/suite';
+import { acquireDevice } from 'src/actions/suite/suiteActions';
 import { isDesktop } from '@trezor/env-utils';
 
 export const DeviceAcquire = () => {
     const { isLocked } = useDevice();
-    const { acquireDevice } = useActions({
-        acquireDevice: suiteActions.acquireDevice,
-    });
+    const dispatch = useDispatch();
 
     const isDeviceLocked = isLocked();
 
+    const handleClick: React.MouseEventHandler = e => {
+        e.stopPropagation();
+        dispatch(acquireDevice());
+    };
+
     const ctaButton = (
-        <Button
-            data-test="@device-acquire"
-            isLoading={isDeviceLocked}
-            onClick={e => {
-                e.stopPropagation();
-                acquireDevice();
-            }}
-        >
+        <Button data-test="@device-acquire" isLoading={isDeviceLocked} onClick={handleClick}>
             <Translation id="TR_ACQUIRE_DEVICE" />
         </Button>
     );

@@ -1,17 +1,17 @@
 import React from 'react';
 
-import * as modalActions from 'src/actions/suite/modalActions';
-import { useActions } from 'src/hooks/suite';
+import { openModal } from 'src/actions/suite/modalActions';
+import { useDispatch } from 'src/hooks/suite';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from 'src/components/suite/Settings';
 import { Translation } from 'src/components/suite';
 import { useAnchor } from 'src/hooks/suite/useAnchor';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 
 export const ShowApplicationLog = () => {
-    const { openModal } = useActions({
-        openModal: modalActions.openModal,
-    });
+    const dispatch = useDispatch();
     const { anchorRef, shouldHighlight } = useAnchor(SettingsAnchor.ShowLog);
+
+    const handleClick = () => dispatch(openModal({ type: 'application-log' }));
 
     return (
         <SectionItem
@@ -25,7 +25,7 @@ export const ShowApplicationLog = () => {
             />
             <ActionColumn>
                 <ActionButton
-                    onClick={() => openModal({ type: 'application-log' })}
+                    onClick={handleClick}
                     variant="secondary"
                     data-test="@settings/show-log-button"
                 >

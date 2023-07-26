@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Button, H3, P, CoinLogo, variables } from '@trezor/components';
 import { Modal, Translation } from 'src/components/suite';
-import { useActions } from 'src/hooks/suite';
+import { useDispatch } from 'src/hooks/suite';
 import { isOnionUrl } from 'src/utils/suite/tor';
 import { useCustomBackends } from 'src/hooks/settings/backends';
 import { getTitleForNetwork } from '@suite-common/wallet-utils';
@@ -17,7 +17,7 @@ const BackendRowWrapper = styled.div`
     align-items: center;
     padding: 12px 0;
     & + & {
-        border-top: 1px solid ${props => props.theme.STROKE_GREY};
+        border-top: 1px solid ${({ theme }) => theme.STROKE_GREY};
     }
 `;
 
@@ -38,7 +38,7 @@ const CoinTitle = styled.span`
 const CoinUrls = styled.span`
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     font-size: ${variables.FONT_SIZE.SMALL};
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     white-space: nowrap;
     overflow: hidden;
     width: 100%;
@@ -46,15 +46,13 @@ const CoinUrls = styled.span`
     text-align: start;
 `;
 
-const BackendRow = ({
-    coin,
-    urls,
-    onSettings,
-}: {
+interface BackendRowProps {
     coin: Network['symbol'];
     urls: string[];
     onSettings: () => void;
-}) => (
+}
+
+const BackendRow = ({ coin, urls, onSettings }: BackendRowProps) => (
     <BackendRowWrapper>
         <CoinLogo symbol={coin} />
         <CoinDescription>
@@ -84,19 +82,19 @@ type DisableTorProps = Omit<Extract<UserContextPayload, { type: 'disable-tor' }>
 };
 
 export const DisableTor = ({ onCancel, decision }: DisableTorProps) => {
-    const actions = useActions({
-        setBackend: blockchainActions.setBackend,
-    });
+    const dispatch = useDispatch();
     const [coin, setCoin] = React.useState<Network['symbol']>();
     const onionBackends = useCustomBackends().filter(({ urls }) => urls.every(isOnionUrl));
 
     const onDisableTor = () => {
         onionBackends.forEach(({ coin, type, urls }) =>
-            actions.setBackend({
-                coin,
-                type,
-                urls: urls.filter(url => !isOnionUrl(url)),
-            }),
+            dispatch(
+                blockchainActions.setBackend({
+                    coin,
+                    type,
+                    urls: urls.filter(url => !isOnionUrl(url)),
+                }),
+            ),
         );
         decision.resolve(true);
         onCancel();

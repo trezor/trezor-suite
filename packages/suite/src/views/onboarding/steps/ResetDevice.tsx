@@ -9,20 +9,20 @@ import {
     OnboardingStepBox,
 } from 'src/components/onboarding';
 import { Translation } from 'src/components/suite';
-import { useActions, useSelector, useOnboarding } from 'src/hooks/suite';
-import * as deviceSettingsActions from 'src/actions/settings/deviceSettingsActions';
+import { useDispatch, useSelector, useOnboarding } from 'src/hooks/suite';
+import { resetDevice } from 'src/actions/settings/deviceSettingsActions';
 import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
 
 export const ResetDeviceStep = () => {
     const [submitted, setSubmitted] = useState(false);
-    const { resetDevice } = useActions({
-        resetDevice: deviceSettingsActions.resetDevice,
-    });
+
     const { goToPreviousStep, goToNextStep, updateAnalytics } = useOnboarding();
 
     const device = useSelector(state => state.suite.device);
-    const deviceModelInternal = device?.features?.internal_model;
     const isActionAbortable = useSelector(selectIsActionAbortable);
+    const dispatch = useDispatch();
+
+    const deviceModelInternal = device?.features?.internal_model;
 
     // this step expects device
     if (!device || !device.features) {
@@ -38,7 +38,7 @@ export const ResetDeviceStep = () => {
     const onResetDevice = async (params?: { backup_type?: 0 | 1 | undefined }) => {
         setSubmitted(false);
 
-        const result = await resetDevice(params);
+        const result = await dispatch(resetDevice(params));
 
         setSubmitted(true);
 

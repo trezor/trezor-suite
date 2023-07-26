@@ -3,9 +3,9 @@ import styled from 'styled-components';
 
 import { variables } from '@trezor/components';
 import { Header, Content, ViewWrapper, GuideNode, GuideCategories } from 'src/components/guide';
-import { useActions, useSelector } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { Translation } from 'src/components/suite';
-import * as guideActions from 'src/actions/suite/guideActions';
+import { setView } from 'src/actions/suite/guideActions';
 import { getNodeTitle } from 'src/utils/suite/guide';
 
 const Section = styled.div`
@@ -19,7 +19,7 @@ const Section = styled.div`
 const SectionHeading = styled.h3`
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     padding: 8px 0 18px 0;
 `;
 
@@ -30,13 +30,9 @@ const Nodes = styled.div`
 `;
 
 export const GuideCategory = () => {
-    const { currentNode, language } = useSelector(state => ({
-        currentNode: state.guide.currentNode,
-        language: state.suite.settings.language,
-    }));
-    const { setView } = useActions({
-        setView: guideActions.setView,
-    });
+    const currentNode = useSelector(state => state.guide.currentNode);
+    const language = useSelector(state => state.suite.settings.language);
+    const dispatch = useDispatch();
 
     if (!currentNode || currentNode.type === 'page') {
         return null;
@@ -50,9 +46,11 @@ export const GuideCategory = () => {
     const pages = currentNode.children.filter(child => child.type === 'page');
     const subcategories = currentNode.children.filter(child => child.type === 'category');
 
+    const goBack = () => dispatch(setView('GUIDE_DEFAULT'));
+
     return (
         <ViewWrapper>
-            <Header back={() => setView('GUIDE_DEFAULT')} label={title} />
+            <Header back={goBack} label={title} />
             <Content>
                 {pages.length ? (
                     <Section>

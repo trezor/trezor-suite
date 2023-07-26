@@ -1,14 +1,15 @@
 import React from 'react';
-import * as suiteActions from 'src/actions/suite/suiteActions';
-import { useDevice, useActions } from 'src/hooks/suite';
+import { authorizeDevice } from 'src/actions/suite/suiteActions';
+import { useDevice, useDispatch } from 'src/hooks/suite';
 import { Translation } from 'src/components/suite';
 import { AccountExceptionLayout } from 'src/components/wallet';
 
 const AuthFailed = () => {
+    const dispatch = useDispatch();
     const { isLocked } = useDevice();
-    const { authDevice } = useActions({
-        authDevice: suiteActions.authorizeDevice,
-    });
+
+    const handleClick = () => dispatch(authorizeDevice());
+
     return (
         <AccountExceptionLayout
             title={<Translation id="TR_ACCOUNT_EXCEPTION_AUTH_ERROR" />}
@@ -19,7 +20,7 @@ const AuthFailed = () => {
                     key: '1',
                     icon: 'REFRESH',
                     isLoading: isLocked(),
-                    onClick: authDevice,
+                    onClick: handleClick,
                     children: <Translation id="TR_RETRY" />,
                 },
             ]}

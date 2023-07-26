@@ -6,8 +6,8 @@ import { findRouteByName } from 'src/utils/suite/router';
 import { variables, HoverAnimation } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 import { MAIN_MENU_ITEMS } from 'src/constants/suite/menu';
-import { useActions, useSelector, useAccountSearch } from 'src/hooks/suite';
-import * as routerActions from 'src/actions/suite/routerActions';
+import { useAccountSearch, useSelector, useDispatch } from 'src/hooks/suite';
+import { goto } from 'src/actions/suite/routerActions';
 
 interface ComponentProps {
     isActive: boolean;
@@ -54,7 +54,7 @@ const MobileMenuItem = styled.div<ComponentProps>`
     cursor: ${({ isDisabled, isActive }) => (!isDisabled && !isActive ? 'pointer' : 'default')};
 
     & + & {
-        border-top: 1px solid ${props => props.theme.STROKE_GREY};
+        border-top: 1px solid ${({ theme }) => theme.STROKE_GREY};
     }
 `;
 
@@ -63,7 +63,7 @@ const ItemTitleWrapper = styled.span`
 `;
 
 const ItemTitle = styled.span<ComponentProps>`
-    color: ${props => transparentize(0.3, props.theme.TYPE_DARK_GREY)};
+    color: ${({ theme }) => transparentize(0.3, theme.TYPE_DARK_GREY)};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     font-size: ${variables.FONT_SIZE.NORMAL};
     line-height: 24px;
@@ -88,8 +88,8 @@ const NewBadge = styled.span`
         top: -14px;
         right: -30px;
         padding: 3px 3px 2px 3px;
-        background: ${props => props.theme.BG_LIGHT_GREEN};
-        color: ${props => props.theme.TYPE_GREEN};
+        background: ${({ theme }) => theme.BG_LIGHT_GREEN};
+        color: ${({ theme }) => theme.TYPE_GREEN};
         letter-spacing: 0.2px;
         text-transform: UPPERCASE;
         font-size: 12px;
@@ -108,9 +108,7 @@ interface MainNavigationProps {
 
 export const MainNavigation = ({ isMobileLayout, closeMainNavigation }: MainNavigationProps) => {
     const activeApp = useSelector(state => state.router.app);
-    const { goto } = useActions({
-        goto: routerActions.goto,
-    });
+    const dispatch = useDispatch();
 
     const { setCoinFilter, setSearchString } = useAccountSearch();
 
@@ -133,7 +131,7 @@ export const MainNavigation = ({ isMobileLayout, closeMainNavigation }: MainNavi
                                         setCoinFilter(undefined);
                                         setSearchString(undefined);
                                     }
-                                    goto(route);
+                                    dispatch(goto(route));
                                     closeMainNavigation?.();
                                 }
                             }}

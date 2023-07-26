@@ -1,11 +1,11 @@
 import React, { useMemo } from 'react';
 import styled from 'styled-components';
 
-import * as walletSettingsActions from 'src/actions/settings/walletSettingsActions';
-import * as routerActions from 'src/actions/suite/routerActions';
+import { setDiscreetMode } from 'src/actions/settings/walletSettingsActions';
+import { goto } from 'src/actions/suite/routerActions';
 import { Translation } from 'src/components/suite';
 import { findRouteByName } from 'src/utils/suite/router';
-import { useActions, useSelector } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useCustomBackends } from 'src/hooks/settings/backends';
 import { ActionItem } from './components/ActionItem';
 import { isDesktop } from '@trezor/env-utils';
@@ -39,7 +39,7 @@ const MobileWrapper = styled.div`
 `;
 
 const Separator = styled.div`
-    border: 1px solid ${props => props.theme.STROKE_GREY};
+    border: 1px solid ${({ theme }) => theme.STROKE_GREY};
     height: 38px;
     width: 0;
     margin: 0 10px;
@@ -66,27 +66,19 @@ export const NavigationActions = ({
     isMobileLayout,
 }: NavigationActionsProps) => {
     const { isTorEnabled, isTorLoading } = useSelector(selectTorState);
-    const { activeApp, notifications, discreetMode, allowPrerelease, enabledNetworks } =
-        useSelector(state => ({
-            activeApp: state.router.app,
-            notifications: state.notifications,
-            discreetMode: state.wallet.settings.discreetMode,
-            theme: state.suite.settings.theme,
-            allowPrerelease: state.desktopUpdate.allowPrerelease,
-            enabledNetworks: state.wallet.settings.enabledNetworks,
-        }));
-
-    const { goto, setDiscreetMode } = useActions({
-        goto: routerActions.goto,
-        setDiscreetMode: walletSettingsActions.setDiscreetMode,
-    });
+    const activeApp = useSelector(state => state.router.app);
+    const notifications = useSelector(state => state.notifications);
+    const discreetMode = useSelector(state => state.wallet.settings.discreetMode);
+    const allowPrerelease = useSelector(state => state.desktopUpdate.allowPrerelease);
+    const enabledNetworks = useSelector(state => state.wallet.settings.enabledNetworks);
+    const dispatch = useDispatch();
 
     const { openGuide } = useGuide();
 
     const WrapperComponent = isMobileLayout ? MobileWrapper : Wrapper;
 
     const action = (...gotoArgs: Parameters<typeof goto>) => {
-        goto(...gotoArgs);
+        dispatch(goto(...gotoArgs));
         if (closeMainNavigation) closeMainNavigation();
     };
 
@@ -94,7 +86,7 @@ export const NavigationActions = ({
         closeMainNavigation?.();
         openGuide();
     };
-
+    const toggleDiscreetMode = () => dispatch(setDiscreetMode(!discreetMode));
     const getIfRouteIsActive = (route: Route['name']) => {
         const routeObj = findRouteByName(route);
         return routeObj ? routeObj.app === activeApp : false;
@@ -109,7 +101,7 @@ export const NavigationActions = ({
     return (
         <WrapperComponent>
             <ActionItem
-                onClick={() => setDiscreetMode(!discreetMode)}
+                onClick={toggleDiscreetMode}
                 isActive={discreetMode}
                 label={<Translation id="TR_DISCREET" />}
                 icon={discreetMode ? 'HIDE' : 'SHOW'}

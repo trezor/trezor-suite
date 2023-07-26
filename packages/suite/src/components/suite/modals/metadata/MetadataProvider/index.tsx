@@ -3,8 +3,8 @@ import styled from 'styled-components';
 import { P, Button, variables } from '@trezor/components';
 
 import { Translation, Modal } from 'src/components/suite';
-import { useActions } from 'src/hooks/suite';
-import * as metadataActions from 'src/actions/suite/metadataActions';
+import { useDispatch } from 'src/hooks/suite';
+import { connectProvider } from 'src/actions/suite/metadataActions';
 import type { Deferred } from '@trezor/utils';
 import { MetadataProviderType } from 'src/types/suite/metadata';
 import { isFeatureFlagEnabled } from '@suite-common/suite-utils';
@@ -14,7 +14,7 @@ const { FONT_SIZE, FONT_WEIGHT, SCREEN_SIZE } = variables;
 const Error = styled.div`
     margin-top: 8px;
     font-size: ${FONT_SIZE.TINY};
-    color: ${props => props.theme.TYPE_RED};
+    color: ${({ theme }) => theme.TYPE_RED};
 `;
 
 // todo: can't use button from @trezor/components directly, probably inconsistent design again
@@ -23,7 +23,7 @@ const StyledButton = styled(Button)`
     padding: 10px;
     margin: 0 16px;
     font-size: ${FONT_SIZE.NORMAL};
-    background-color: ${props => props.theme.BG_GREY};
+    background-color: ${({ theme }) => theme.BG_GREY};
     font-weight: ${FONT_WEIGHT.DEMI_BOLD};
     height: 42px;
 
@@ -34,7 +34,7 @@ const StyledButton = styled(Button)`
 
 // todo: typography shall be unified and these ad hoc styles removed..
 const StyledP = styled(P)`
-    color: ${props => props.theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
     margin-bottom: 25px;
     font-size: ${FONT_SIZE.SMALL};
     font-weight: ${FONT_WEIGHT.REGULAR};
@@ -53,7 +53,8 @@ export const MetadataProvider = ({ onCancel, decision }: MetadataProviderProps) 
     const [isLoading, setIsLoading] = useState('');
     // error from authorization popup
     const [error, setError] = useState('');
-    const { connectProvider } = useActions({ connectProvider: metadataActions.connectProvider });
+
+    const dispatch = useDispatch();
 
     const onModalCancel = () => {
         decision.resolve(false);
@@ -62,7 +63,7 @@ export const MetadataProvider = ({ onCancel, decision }: MetadataProviderProps) 
 
     const connect = async (type: MetadataProviderType) => {
         setIsLoading(type);
-        const result = await connectProvider(type);
+        const result = await dispatch(connectProvider(type));
         // window close indicates user action, user knows what happened, no need to show an error message
         if (result === 'window closed') {
             setIsLoading('');

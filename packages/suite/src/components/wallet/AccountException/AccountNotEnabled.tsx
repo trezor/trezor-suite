@@ -1,11 +1,11 @@
 import React from 'react';
-import * as walletSettingsActions from 'src/actions/settings/walletSettingsActions';
-import { useDevice, useActions } from 'src/hooks/suite';
+import { changeCoinVisibility } from 'src/actions/settings/walletSettingsActions';
+import { useDevice, useDispatch } from 'src/hooks/suite';
 import { Network } from 'src/types/wallet';
 import { Translation } from 'src/components/suite';
 import { AccountExceptionLayout } from 'src/components/wallet';
 
-interface Props {
+interface AccountNotEnabledProps {
     network: Network;
 }
 
@@ -13,12 +13,11 @@ interface Props {
  * Handler for invalid router params, coin is not enabled in settings
  * see: @wallet-actions/selectedAccountActions
  */
-const AccountNotEnabled = (props: Props) => {
-    const { network } = props;
+const AccountNotEnabled = ({ network }: AccountNotEnabledProps) => {
+    const dispatch = useDispatch();
     const { isLocked } = useDevice();
-    const { changeCoinVisibility } = useActions({
-        changeCoinVisibility: walletSettingsActions.changeCoinVisibility,
-    });
+
+    const handleClick = () => dispatch(changeCoinVisibility(network.symbol, true));
 
     return (
         <AccountExceptionLayout
@@ -34,7 +33,7 @@ const AccountNotEnabled = (props: Props) => {
                     icon: 'PLUS',
                     key: '1',
                     isLoading: isLocked(),
-                    onClick: () => changeCoinVisibility(network.symbol, true),
+                    onClick: handleClick,
                     children: (
                         <Translation
                             id="TR_ENABLE_NETWORK_BUTTON"

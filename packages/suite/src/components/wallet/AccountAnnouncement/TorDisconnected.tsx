@@ -1,7 +1,7 @@
 import React from 'react';
 import { NotificationCard, Translation } from 'src/components/suite';
-import { useActions, useSelector } from 'src/hooks/suite';
-import * as suiteActions from 'src/actions/suite/suiteActions';
+import { useDispatch, useSelector } from 'src/hooks/suite';
+import { toggleTor } from 'src/actions/suite/suiteActions';
 import { selectTorState } from 'src/reducers/suite/suiteReducer';
 import { selectIsCoinjoinBlockedByTor } from 'src/reducers/wallet/coinjoinReducer';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
@@ -10,17 +10,17 @@ export const TorDisconnected = () => {
     const account = useSelector(selectSelectedAccount);
     const { isTorLoading } = useSelector(selectTorState);
     const isCoinjoinBlockedByTor = useSelector(selectIsCoinjoinBlockedByTor);
-    const { toggleTor } = useActions({
-        toggleTor: suiteActions.toggleTor,
-    });
+    const dispatch = useDispatch();
 
     if (account?.accountType !== 'coinjoin' || !isCoinjoinBlockedByTor) return null;
+
+    const handleButtonClick = () => dispatch(toggleTor(true));
 
     return (
         <NotificationCard
             variant="warning"
             button={{
-                onClick: () => toggleTor(true),
+                onClick: handleButtonClick,
                 isLoading: isTorLoading,
                 children: isTorLoading ? (
                     <Translation id="TR_ENABLING_TOR" />

@@ -7,28 +7,35 @@ import {
     OnboardingStepBox,
     SkipStepConfirmation,
 } from 'src/components/onboarding';
-import * as deviceSettingsActions from 'src/actions/settings/deviceSettingsActions';
-import { useActions, useSelector, useOnboarding } from 'src/hooks/suite';
+import { changePin } from 'src/actions/settings/deviceSettingsActions';
+import { useDispatch, useSelector, useOnboarding } from 'src/hooks/suite';
 import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
 
 const SetPinStep = () => {
     const [showSkipConfirmation, setShowSkipConfirmation] = useState(false);
-    const device = useSelector(state => state.suite.device);
-    const modal = useSelector(state => state.modal);
     const [status, setStatus] = useState<'initial' | 'enter-pin' | 'repeat-pin' | 'success'>(
         'initial',
     );
-    const { goToNextStep, showPinMatrix, updateAnalytics } = useOnboarding();
-    const deviceModelInternal = device?.features?.internal_model;
+    const device = useSelector(state => state.suite.device);
+    const modal = useSelector(state => state.modal);
     const isActionAbortable = useSelector(selectIsActionAbortable);
+    const dispatch = useDispatch();
 
-    const { changePin } = useActions({
-        changePin: deviceSettingsActions.changePin,
-    });
+    const { goToNextStep, showPinMatrix, updateAnalytics } = useOnboarding();
+
+    const deviceModelInternal = device?.features?.internal_model;
 
     const onTryAgain = () => {
         setStatus('initial');
-        changePin({});
+        dispatch(changePin({}));
+    };
+    const setPin = () => {
+        dispatch(changePin());
+        updateAnalytics({ pin: 'create' });
+    };
+    const skipPin = () => {
+        setShowSkipConfirmation(true);
+        updateAnalytics({ pin: 'skip' });
     };
 
     useEffect(() => {
@@ -129,10 +136,7 @@ const SetPinStep = () => {
                     !showConfirmationPrompt ? (
                         <OnboardingButtonCta
                             data-test="@onboarding/set-pin-button"
-                            onClick={() => {
-                                changePin();
-                                updateAnalytics({ pin: 'create' });
-                            }}
+                            onClick={setPin}
                         >
                             <Translation id="TR_SET_PIN" />
                         </OnboardingButtonCta>
@@ -142,13 +146,7 @@ const SetPinStep = () => {
                     // show skip button only if we are not done yet with setting up the pin (state is other than success state)
                     // and if confirmation prompt is not active (I guess there is no point showing back btn which can't be clicked because it is under the modal)
                     !showConfirmationPrompt ? (
-                        <OnboardingButtonSkip
-                            data-test="@onboarding/skip-button"
-                            onClick={() => {
-                                setShowSkipConfirmation(true);
-                                updateAnalytics({ pin: 'skip' });
-                            }}
-                        >
+                        <OnboardingButtonSkip data-test="@onboarding/skip-button" onClick={skipPin}>
                             <Translation id="TR_SKIP" />
                         </OnboardingButtonSkip>
                     ) : undefined

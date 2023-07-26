@@ -6,8 +6,8 @@ import { analytics, EventType } from '@trezor/suite-analytics';
 import { resolveStaticPath, isDevEnv } from '@suite-common/suite-utils';
 
 import { Translation } from 'src/components/suite';
-import * as guideActions from 'src/actions/suite/guideActions';
-import { useActions, useSelector } from 'src/hooks/suite';
+import { setView } from 'src/actions/suite/guideActions';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { Icon, Link, variables } from '@trezor/components';
 import { ViewWrapper, Header, Content } from 'src/components/guide';
 import { isDesktop } from '@trezor/env-utils';
@@ -23,7 +23,7 @@ const Section = styled.div`
 const SectionHeader = styled.h3`
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     padding: 0 0 18px 0;
 `;
 
@@ -36,14 +36,14 @@ const SectionButton = styled.button<{ hasBackground?: boolean }>`
     display: flex;
     align-items: center;
     padding: 13px;
-    background: ${props => (props.hasBackground ? props.theme.BG_GREY_ALT : 'none')};
-    border: 2px solid ${props => props.theme.BG_GREY_ALT};
+    background: ${({ hasBackground, theme }) => (hasBackground ? theme.BG_GREY_ALT : 'none')};
+    border: 2px solid ${({ theme }) => theme.BG_GREY_ALT};
 
-    transition: ${props =>
-        `background ${props.theme.HOVER_TRANSITION_TIME} ${props.theme.HOVER_TRANSITION_EFFECT}`};
+    transition: ${({ theme }) =>
+        `background ${theme.HOVER_TRANSITION_TIME} ${theme.HOVER_TRANSITION_EFFECT}`};
 
     &:hover {
-        background: ${props => darken(props.theme.HOVER_DARKEN_FILTER, props.theme.BG_GREY_ALT)};
+        background: ${({ theme }) => darken(theme.HOVER_DARKEN_FILTER, theme.BG_GREY_ALT)};
     }
 `;
 
@@ -55,7 +55,7 @@ const Details = styled.div`
     padding: 10px 0 0 0;
     font-size: 10px;
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     display: flex;
     justify-content: space-around;
 `;
@@ -83,7 +83,7 @@ const Label = styled.div`
 const LabelHeadline = styled.strong`
     font-size: ${variables.FONT_SIZE.NORMAL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${props => props.theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -96,17 +96,13 @@ const LabelHeadline = styled.strong`
 const LabelSubheadline = styled.div`
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
 `;
 
 export const SupportFeedbackSelection = () => {
-    const { setView } = useActions({
-        setView: guideActions.setView,
-    });
-    const { desktopUpdate, device } = useSelector(state => ({
-        desktopUpdate: state.desktopUpdate,
-        device: state.suite.device,
-    }));
+    const desktopUpdate = useSelector(state => state.desktopUpdate);
+    const device = useSelector(state => state.suite.device);
+    const dispatch = useDispatch();
 
     const appUpToDate =
         isDesktop() &&
@@ -119,10 +115,26 @@ export const SupportFeedbackSelection = () => {
         <Translation id="TR_DEVICE_NOT_CONNECTED" />
     );
 
+    const goBack = () => dispatch(setView('GUIDE_DEFAULT'));
+    const handleBugButtonClick = () => {
+        dispatch(setView('FEEDBACK_BUG'));
+        analytics.report({
+            type: EventType.GuideFeedbackNavigation,
+            payload: { type: 'bug' },
+        });
+    };
+    const handleFeedbackButtonClick = () => {
+        dispatch(setView('FEEDBACK_SUGGESTION'));
+        analytics.report({
+            type: EventType.GuideFeedbackNavigation,
+            payload: { type: 'suggestion' },
+        });
+    };
+
     return (
         <ViewWrapper>
             <Header
-                back={() => setView('GUIDE_DEFAULT')}
+                back={goBack}
                 label={<Translation id="TR_GUIDE_VIEW_HEADLINES_SUPPORT_FEEDBACK_SELECTION" />}
             />
             <Content>
@@ -131,13 +143,7 @@ export const SupportFeedbackSelection = () => {
                         <Translation id="TR_GUIDE_VIEW_HEADLINE_HELP_US_IMPROVE" />
                     </SectionHeader>
                     <SectionButton
-                        onClick={() => {
-                            setView('FEEDBACK_BUG');
-                            analytics.report({
-                                type: EventType.GuideFeedbackNavigation,
-                                payload: { type: 'bug' },
-                            });
-                        }}
+                        onClick={handleBugButtonClick}
                         hasBackground
                         data-test="@guide/feedback/bug"
                     >
@@ -157,13 +163,7 @@ export const SupportFeedbackSelection = () => {
                         </Label>
                     </SectionButton>
                     <SectionButton
-                        onClick={() => {
-                            setView('FEEDBACK_SUGGESTION');
-                            analytics.report({
-                                type: EventType.GuideFeedbackNavigation,
-                                payload: { type: 'suggestion' },
-                            });
-                        }}
+                        onClick={handleFeedbackButtonClick}
                         hasBackground
                         data-test="@guide/feedback/suggestion"
                     >

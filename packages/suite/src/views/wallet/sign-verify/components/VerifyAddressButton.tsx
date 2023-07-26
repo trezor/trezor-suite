@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Icon, variables } from '@trezor/components';
-import { showAddress as showAddressAction } from 'src/actions/wallet/signVerifyActions';
-import { useActions } from 'src/hooks/suite';
+import { showAddress } from 'src/actions/wallet/signVerifyActions';
+import { useDispatch } from 'src/hooks/suite';
 import { Translation } from 'src/components/suite';
 
 const RevealText = styled.div`
@@ -44,14 +44,11 @@ interface VerifyAddressButtonProps {
 }
 
 export const VerifyAddressButton = ({ item: { label, value } }: VerifyAddressButtonProps) => {
-    const { showAddress } = useActions({
-        showAddress: showAddressAction,
-    });
+    const dispatch = useDispatch();
 
     const reveal = (e: React.MouseEvent<HTMLElement>) => {
         e.stopPropagation();
-
-        showAddress(label, value);
+        dispatch(showAddress(label, value));
     };
 
     return (
