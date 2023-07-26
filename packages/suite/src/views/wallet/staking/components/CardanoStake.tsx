@@ -18,9 +18,9 @@ import {
     StyledH1,
     StyledCard,
 } from './CardanoPrimitives';
-import { DeviceModel } from '@trezor/device-utils';
-import { useDeviceModel } from 'src/hooks/suite/useDeviceModel';
 import { DeviceButton } from 'src/components/suite';
+import { DeviceModelInternal } from '@trezor/connect';
+import { useDevice } from 'src/hooks/suite';
 
 interface CardanoStakeProps {
     account: Account;
@@ -38,7 +38,10 @@ export const CardanoStake = ({ account }: CardanoStakeProps) => {
         deviceAvailable,
         pendingStakeTx,
     } = useCardanoStaking();
-    const deviceModel = useDeviceModel() as DeviceModel.TT | DeviceModel.T2B1; // only T and T2B1 have Capability_Cardano
+    const { device } = useDevice();
+    const deviceModelInternal = device?.features?.internal_model as
+        | DeviceModelInternal.T2T1
+        | DeviceModelInternal.T2B1; // only TT and T2B1 have Capability_Cardano
 
     useEffect(() => {
         calculateFeeAndDeposit('delegate');
@@ -132,7 +135,7 @@ export const CardanoStake = ({ account }: CardanoStakeProps) => {
                     isDisabled={isStakingDisabled}
                     isLoading={loading}
                     onClick={delegate}
-                    deviceModel={deviceModel}
+                    deviceModelInternal={deviceModelInternal}
                     tooltipContent={
                         !reasonMessageId ||
                         (deviceAvailable.status && delegatingAvailable.status) ? undefined : (

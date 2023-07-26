@@ -9,7 +9,6 @@ import { DeviceAnimation, OnboardingStepBox } from 'src/components/onboarding';
 import { useActions, useDevice, useOnboarding, useSelector } from 'src/hooks/suite';
 import * as deviceSettingsActions from 'src/actions/settings/deviceSettingsActions';
 import { DEFAULT_LABEL, MAX_LABEL_LENGTH } from 'src/constants/suite/device';
-import { getDeviceModel } from '@trezor/device-utils';
 import { isHomescreenSupportedOnDevice } from 'src/utils/suite/homescreen';
 import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
 
@@ -145,7 +144,7 @@ export const FinalStep = () => {
         modal: state.modal,
         onboardingAnalytics: state.onboarding.onboardingAnalytics,
     }));
-    const deviceModel = getDeviceModel(device);
+    const deviceModelInternal = device?.features?.internal_model;
     const isActionAbortable = useSelector(selectIsActionAbortable);
 
     const [state, setState] = useState<'rename' | 'homescreen' | null>(null);
@@ -167,7 +166,7 @@ export const FinalStep = () => {
     return (
         <OnboardingStepBox
             data-test="@onboarding/final"
-            deviceModel={isWaitingForConfirm ? deviceModel : undefined}
+            deviceModelInternal={isWaitingForConfirm ? deviceModelInternal : undefined}
             isActionAbortable={isActionAbortable}
         >
             <Wrapper ref={wrapperRef} shouldWrap={width < 650}>
@@ -265,7 +264,7 @@ export const FinalStep = () => {
                             const payload = {
                                 ...onboardingAnalytics,
                                 duration: Date.now() - onboardingAnalytics.startTime!,
-                                device: getDeviceModel(device),
+                                device: device.features.internal_model,
                             };
                             delete payload.startTime;
 

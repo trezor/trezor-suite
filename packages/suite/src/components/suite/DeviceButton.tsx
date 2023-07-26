@@ -1,13 +1,13 @@
 import React from 'react';
 
 import { Button, Tooltip } from '@trezor/components';
-import { DeviceModel } from '@trezor/device-utils';
+import { DeviceModelInternal } from '@trezor/connect';
 
 interface DeviceButtonProps {
     isDisabled?: boolean;
     isLoading?: boolean;
     onClick: () => void;
-    deviceModel: Exclude<DeviceModel, DeviceModel.UNKNOWN>;
+    deviceModelInternal: DeviceModelInternal;
     tooltipContent?: React.ReactNode;
     children: React.ReactNode;
 }
@@ -16,7 +16,7 @@ export const DeviceButton = ({
     isDisabled,
     isLoading,
     onClick,
-    deviceModel,
+    deviceModelInternal,
     tooltipContent,
     children,
 }: DeviceButtonProps) => (
@@ -25,7 +25,7 @@ export const DeviceButton = ({
             isDisabled={isDisabled}
             isLoading={isLoading}
             onClick={onClick}
-            icon={`TREZOR_T${deviceModel}`}
+            icon={`TREZOR_${deviceModelInternal}`}
         >
             {children}
         </Button>

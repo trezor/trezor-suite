@@ -14,11 +14,11 @@ import { Translation } from '..';
 import { ModalEnvironment } from './ModalEnvironment';
 import { useModalTarget } from 'src/support/suite/ModalContext';
 import { Modal } from '.';
-import { useDeviceModel } from 'src/hooks/suite/useDeviceModel';
 import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { useIntl } from 'react-intl';
 import messages from 'src/support/messages';
+import { useDevice } from 'src/hooks/suite';
 
 const StyledTrezorModal = styled(TrezorModal)`
     ${Modal.Header} {
@@ -140,7 +140,7 @@ const DevicePromptModalRenderer = ({
     onAbort,
     ...rest
 }: DevicePromptModalProps) => {
-    const deviceModel = useDeviceModel();
+    const { device } = useDevice();
     const modalTarget = useModalTarget();
 
     // duplicated because headerComponents should receive undefined if isAbortable === false
@@ -154,6 +154,8 @@ const DevicePromptModalRenderer = ({
 
     if (!modalTarget) return null;
 
+    const deviceModelInternal = device?.features?.internal_model;
+
     const modalComponent = (
         <ModalEnvironment>
             <StyledTrezorModal
@@ -161,7 +163,7 @@ const DevicePromptModalRenderer = ({
                     isPillShown && (
                         <ConfirmOnDevice
                             title={pillTitle || <Translation id="TR_CONFIRM_ON_TREZOR" />}
-                            deviceModel={deviceModel}
+                            deviceModelInternal={deviceModelInternal}
                             isConfirmed={isConfirmed}
                         />
                     )

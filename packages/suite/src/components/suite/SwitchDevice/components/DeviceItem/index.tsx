@@ -16,7 +16,6 @@ import DeviceHeaderButton from './components/DeviceHeaderButton';
 
 import type { TrezorDevice, AcquiredDevice, ForegroundAppProps } from 'src/types/suite';
 import type { getBackgroundRoute } from 'src/utils/suite/router';
-import { getDeviceModel } from '@trezor/device-utils';
 
 const DeviceWrapper = styled.div`
     display: flex;
@@ -141,7 +140,7 @@ const DeviceItem = ({ device, instances, onCancel, backgroundRoute }: Props) => 
     const [animateArrow, setAnimateArrow] = useState(false);
 
     const deviceStatus = deviceUtils.getStatus(device);
-    const deviceModel = getDeviceModel(device);
+    const deviceModelInternal = device.features?.internal_model;
 
     const needsAttention = deviceUtils.deviceNeedsAttention(deviceStatus);
     const isUnknown = device.type !== 'acquired';
@@ -201,9 +200,9 @@ const DeviceItem = ({ device, instances, onCancel, backgroundRoute }: Props) => 
         <DeviceWrapper>
             <Device>
                 <DeviceHeader>
-                    {deviceModel && (
+                    {deviceModelInternal && (
                         <DeviceImageWrapper>
-                            <StyledImage alt="Trezor" image={`TREZOR_T${deviceModel}`} />
+                            <StyledImage alt="Trezor" image={`TREZOR_${deviceModelInternal}`} />
                         </DeviceImageWrapper>
                     )}
                     <Col grow={1}>

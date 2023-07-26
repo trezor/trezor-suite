@@ -1,20 +1,19 @@
 import React from 'react';
 import { TrezorDevice } from 'src/types/suite';
 import { Image, ImageProps } from '@trezor/components';
-import { getDeviceModel } from '@trezor/device-utils';
 
 interface DeviceConfirmImageProps extends Omit<ImageProps, 'image'> {
     device: TrezorDevice;
 }
 
 export const DeviceConfirmImage = ({ device, ...rest }: DeviceConfirmImageProps) => {
-    const deviceModel = getDeviceModel(device);
+    const deviceModelInternal = device.features?.internal_model;
 
-    if (!deviceModel) {
+    if (!deviceModelInternal) {
         return null;
     }
 
-    const imgName = `DEVICE_CONFIRM_TREZOR_T${deviceModel}` as const;
+    const imgName = `DEVICE_CONFIRM_TREZOR_${deviceModelInternal}` as const;
 
     return <Image {...rest} image={imgName} />;
 };

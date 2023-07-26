@@ -8,7 +8,6 @@ import { OnboardingStepBox } from 'src/components/onboarding';
 import steps from 'src/config/onboarding/steps';
 
 import IsSameDevice from './components/IsSameDevice';
-import { getDeviceModel } from '@trezor/device-utils';
 
 const Wrapper = styled.div`
     display: flex;
@@ -29,7 +28,7 @@ const UnexpectedState = ({ children, prerequisite, prerequisitesGuidePadded }: P
     const { device } = useSelector(s => s.suite);
     const { prevDevice, activeStepId, showPinMatrix } = useOnboarding();
     const activeStep = steps.find(s => s.id === activeStepId);
-    const deviceModel = getDeviceModel(device);
+    const deviceModelInternal = device?.features?.internal_model;
 
     const isNotSameDevice = useMemo(() => {
         const prevDeviceId = prevDevice?.id;
@@ -82,7 +81,7 @@ const UnexpectedState = ({ children, prerequisite, prerequisitesGuidePadded }: P
         return (
             <OnboardingStepBox
                 heading={<Translation id="TR_ENTER_PIN" />}
-                deviceModel={deviceModel}
+                deviceModelInternal={deviceModelInternal}
                 isActionAbortable={false}
             >
                 {pinComponent}

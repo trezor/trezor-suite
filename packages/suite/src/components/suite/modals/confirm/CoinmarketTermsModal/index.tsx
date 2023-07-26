@@ -3,7 +3,7 @@ import React from 'react';
 import { Modal, Translation } from 'src/components/suite';
 import styled from 'styled-components';
 import type { Deferred } from '@trezor/utils';
-import { DeviceModel } from '@trezor/device-utils';
+import { DeviceModelInternal } from '@trezor/connect';
 
 const ContentWrapper = styled.div`
     text-align: left;
@@ -110,7 +110,7 @@ export const CoinmarketTermsModal = ({
             }
         >
             <Flex>
-                <SecurityStyledIcon size={24} icon={`TREZOR_T${DeviceModel.TT}`} />
+                <SecurityStyledIcon size={24} icon={`TREZOR_${DeviceModelInternal.T2T1}`} />
 
                 <ContentWrapper>
                     <TermsHeader>

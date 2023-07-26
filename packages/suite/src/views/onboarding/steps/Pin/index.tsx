@@ -9,7 +9,6 @@ import {
 } from 'src/components/onboarding';
 import * as deviceSettingsActions from 'src/actions/settings/deviceSettingsActions';
 import { useActions, useSelector, useOnboarding } from 'src/hooks/suite';
-import { getDeviceModel } from '@trezor/device-utils';
 import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
 
 const SetPinStep = () => {
@@ -20,7 +19,7 @@ const SetPinStep = () => {
         'initial',
     );
     const { goToNextStep, showPinMatrix, updateAnalytics } = useOnboarding();
-    const deviceModel = getDeviceModel(device);
+    const deviceModelInternal = device?.features?.internal_model;
     const isActionAbortable = useSelector(selectIsActionAbortable);
 
     const { changePin } = useActions({
@@ -154,7 +153,7 @@ const SetPinStep = () => {
                         </OnboardingButtonSkip>
                     ) : undefined
                 }
-                deviceModel={showConfirmationPrompt ? deviceModel : undefined}
+                deviceModelInternal={showConfirmationPrompt ? deviceModelInternal : undefined}
                 isActionAbortable={status === 'initial' ? isActionAbortable : true}
             >
                 {/* // device requested showing a pin matrix, show the matrix also on "repeat-pin" status until we get fail or success response from the device */}

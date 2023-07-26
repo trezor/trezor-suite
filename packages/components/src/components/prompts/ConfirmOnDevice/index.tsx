@@ -2,8 +2,8 @@ import React from 'react';
 import styled, { css } from 'styled-components';
 import { Image } from '../../Image/Image';
 import { variables, animations } from '../../../config';
-import { type DeviceModel } from '@trezor/device-utils';
 import { Icon } from '../../Icon';
+import { DeviceModelInternal } from '@trezor/connect';
 
 enum AnimationDirection {
     Up,
@@ -130,7 +130,7 @@ const isStepActive = (index: number, activeStep?: number) => {
 export interface ConfirmOnDeviceProps {
     title: React.ReactNode;
     successText?: React.ReactNode;
-    deviceModel: DeviceModel;
+    deviceModelInternal?: DeviceModelInternal;
     steps?: number;
     activeStep?: number;
     isConfirmed?: boolean;
@@ -142,7 +142,7 @@ export const ConfirmOnDevice = ({
     steps,
     activeStep,
     onCancel,
-    deviceModel,
+    deviceModelInternal,
     successText,
     isConfirmed,
 }: ConfirmOnDeviceProps) => {
@@ -154,7 +154,9 @@ export const ConfirmOnDevice = ({
             data-test="@prompts/confirm-on-device"
         >
             <Left>
-                {deviceModel && <StyledImage alt="Trezor" image={`TREZOR_T${deviceModel}`} />}
+                {deviceModelInternal && (
+                    <StyledImage alt="Trezor" image={`TREZOR_${deviceModelInternal}`} />
+                )}
             </Left>
 
             <Middle>

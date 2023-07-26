@@ -7820,7 +7820,6 @@ __metadata:
     "@storybook/react": ^6.5.16
     "@tippyjs/react": ^4.2.6
     "@trezor/connect": "workspace:*"
-    "@trezor/device-utils": "workspace:*"
     "@trezor/dom-utils": "workspace:*"
     "@trezor/env-utils": "workspace:*"
     "@trezor/react-utils": "workspace:*"

@@ -8,9 +8,9 @@ import * as sendFormActions from 'src/actions/wallet/sendFormActions';
 import OutputList from './components/OutputList';
 import Summary from './components/Summary';
 import { isCardanoTx } from 'src/utils/wallet/cardanoUtils';
-import { DeviceModel, getDeviceModel } from '@trezor/device-utils';
 import { selectDevice, selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
 import { constructOutputs } from './constructOutputs';
+import { DeviceModelInternal } from '@trezor/connect';
 
 const StyledModal = styled(Modal)`
     ${Modal.Body} {
@@ -43,7 +43,7 @@ export const ReviewTransaction = ({ decision }: ReviewTransactionProps) => {
 
     const [detailsOpen, setDetailsOpen] = useState(false);
 
-    const deviceModel = getDeviceModel(device);
+    const deviceModelInternal = device?.features?.internal_model;
 
     const { precomposedTx, precomposedForm, signedTx } = send;
 
@@ -81,7 +81,7 @@ export const ReviewTransaction = ({ decision }: ReviewTransactionProps) => {
     // remove 1 additional element to keep it consistent with TT where this step is swipeable with one button request
     if (
         typeof decreaseOutputId === 'number' &&
-        deviceModel === DeviceModel.T1 &&
+        deviceModelInternal === DeviceModelInternal.T1B1 &&
         buttonRequests.filter(r => r.code === 'ButtonRequest_ConfirmOutput').length > 1
     ) {
         buttonRequests.splice(-1, 1);
@@ -115,7 +115,7 @@ export const ReviewTransaction = ({ decision }: ReviewTransactionProps) => {
                     title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
                     steps={outputs.length + 1}
                     activeStep={signedTx ? outputs.length + 2 : buttonRequestsCount}
-                    deviceModel={deviceModel}
+                    deviceModelInternal={deviceModelInternal}
                     successText={<Translation id="TR_CONFIRMED_TX" />}
                     onCancel={onCancel}
                 />

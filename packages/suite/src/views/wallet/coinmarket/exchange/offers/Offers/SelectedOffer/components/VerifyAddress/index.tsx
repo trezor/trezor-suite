@@ -9,7 +9,6 @@ import { isHexValid, isInteger } from '@suite-common/wallet-utils';
 import { AddressOptions } from 'src/views/wallet/coinmarket/common/AddressOptions';
 import { useAccountAddressDictionary } from 'src/hooks/wallet/useAccounts';
 import { ReceiveOptions, AccountSelectOption } from './ReceiveOptions';
-import { getDeviceModel } from '@trezor/device-utils';
 import { useTranslation } from 'src/hooks/suite/useTranslation';
 
 const Wrapper = styled.div`
@@ -116,7 +115,7 @@ const VerifyAddressComponent = () => {
 
     const { translationString } = useTranslation();
 
-    const deviceModel = getDeviceModel(device);
+    const deviceModelInternal = device?.features?.internal_model;
     const addressDictionary = useAccountAddressDictionary(selectedAccountOption?.account);
     const { address, extraField } = watch();
     const accountAddress = address && addressDictionary[address];
@@ -220,9 +219,9 @@ const VerifyAddressComponent = () => {
                         />
                     )}
 
-                    {addressVerified && addressVerified === address && deviceModel && (
+                    {addressVerified && addressVerified === address && deviceModelInternal && (
                         <Confirmed>
-                            <StyledImage alt="Trezor" image={`TREZOR_T${deviceModel}`} />
+                            <StyledImage alt="Trezor" image={`TREZOR_${deviceModelInternal}`} />
                             <Translation id="TR_EXCHANGE_CONFIRMED_ON_TREZOR" />
                         </Confirmed>
                     )}

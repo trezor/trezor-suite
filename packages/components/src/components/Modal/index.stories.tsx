@@ -3,7 +3,7 @@ import styled, { ThemeProvider } from 'styled-components';
 import { storiesOf } from '@storybook/react';
 import { ConfirmOnDevice, Modal, Backdrop, Button, THEME } from '../../index';
 import { text, boolean, number, select } from '@storybook/addon-knobs';
-import { DeviceModel } from '@trezor/device-utils';
+import { DeviceModelInternal } from '@trezor/connect';
 
 const StyledButton = styled(Button)<{ flex: boolean }>`
     ${({ flex }) => flex && 'flex: 1;'}
@@ -93,7 +93,7 @@ storiesOf('Modals', module)
                                 <ConfirmOnDevice
                                     successText="confirmed"
                                     title="Confirm on trezor"
-                                    deviceModel={DeviceModel.TT}
+                                    deviceModelInternal={DeviceModelInternal.T2T1}
                                     steps={3}
                                     activeStep={2}
                                 />
