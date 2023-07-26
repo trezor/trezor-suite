@@ -1,8 +1,9 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { OnboardingStepBox, OnboardingStepBoxProps } from 'src/components/onboarding';
-import { CoinsGroup } from 'src/components/suite';
+import { CoinsGroup, Translation } from 'src/components/suite';
 import { useEnabledNetworks } from 'src/hooks/settings/useEnabledNetworks';
+import { CollapsibleBox } from '@trezor/components';
 
 const Separator = styled.hr`
     height: 1px;
@@ -10,6 +11,14 @@ const Separator = styled.hr`
     background: none;
     border: 0;
     border-top: 1px solid ${props => props.theme.STROKE_GREY};
+    margin-bottom: 30px;
+`;
+
+const StyledCollapsibleBox = styled(CollapsibleBox)`
+    background: none;
+    box-shadow: none;
+    margin-top: 12px;
+    width: 100%;
 `;
 
 const StyledCoinsGroup = styled(CoinsGroup)`
@@ -27,16 +36,22 @@ export const BasicSettingsStepBox = (props: OnboardingStepBoxProps) => {
     return (
         <OnboardingStepBox image="COINS" {...props}>
             <Separator />
-            <StyledCoinsGroup
+            <CoinsGroup
                 networks={mainnets}
                 onToggle={setEnabled}
                 selectedNetworks={enabledNetworks}
             />
-            <StyledCoinsGroup
-                networks={testnets}
-                onToggle={setEnabled}
-                selectedNetworks={enabledNetworks}
-            />
+            <StyledCollapsibleBox
+                noContentPadding
+                heading={<Translation id="TR_TESTNET_COINS" />}
+                variant="large"
+            >
+                <StyledCoinsGroup
+                    networks={testnets}
+                    onToggle={setEnabled}
+                    selectedNetworks={enabledNetworks}
+                />
+            </StyledCollapsibleBox>
         </OnboardingStepBox>
     );
 };
