@@ -8,7 +8,6 @@ import { Tooltip, variables } from '@trezor/components';
 import { useDevice, useActions } from 'src/hooks/suite';
 import * as modalActions from 'src/actions/suite/modalActions';
 import * as deviceSettingsActions from 'src/actions/settings/deviceSettingsActions';
-import { DeviceModel, getDeviceModel } from '@trezor/device-utils';
 import {
     deviceModelInformation,
     imagePathToHex,
@@ -21,6 +20,7 @@ import {
 import { useAnchor } from 'src/hooks/suite/useAnchor';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { analytics, EventType } from '@trezor/suite-analytics';
+import { DeviceModelInternal } from '@trezor/connect';
 
 const StyledActionButton = styled(ActionButton)`
     &:not(:first-of-type) {
@@ -78,7 +78,7 @@ export const Homescreen = ({ isDeviceLocked }: HomescreenProps) => {
         return null;
     }
 
-    const deviceModel = getDeviceModel(device);
+    const deviceModelInternal = device.features.internal_model;
 
     const resetUpload = () => {
         setCustomHomescreen('');
@@ -91,7 +91,7 @@ export const Homescreen = ({ isDeviceLocked }: HomescreenProps) => {
         if (!files || !files.length) return;
         const file = files[0];
 
-        const validationResult = await validateImage(file, deviceModel);
+        const validationResult = await validateImage(file, deviceModelInternal);
         setValidationError(validationResult);
 
         const dataUrl = await fileToDataUrl(file);
@@ -101,7 +101,7 @@ export const Homescreen = ({ isDeviceLocked }: HomescreenProps) => {
     };
 
     const onChangeHomescreen = async () => {
-        const hex = await imagePathToHex(customHomescreen, deviceModel);
+        const hex = await imagePathToHex(customHomescreen, deviceModelInternal);
 
         await applySettings({
             homescreen: hex,
@@ -118,7 +118,9 @@ export const Homescreen = ({ isDeviceLocked }: HomescreenProps) => {
                 ref={anchorRef}
                 shouldHighlight={shouldHighlight}
             >
-                {[DeviceModel.T1, DeviceModel.T2B1].includes(deviceModel) && (
+                {[DeviceModelInternal.T1B1, DeviceModelInternal.T2B1].includes(
+                    deviceModelInternal,
+                ) && (
                     <TextColumn
                         title={<Translation id="TR_DEVICE_SETTINGS_HOMESCREEN_TITLE" />}
                         description={
@@ -129,7 +131,7 @@ export const Homescreen = ({ isDeviceLocked }: HomescreenProps) => {
                     />
                 )}
 
-                {DeviceModel.TT === deviceModel && (
+                {DeviceModelInternal.T2T1 === deviceModelInternal && (
                     <TextColumn
                         title={<Translation id="TR_DEVICE_SETTINGS_HOMESCREEN_TITLE" />}
                         description={
@@ -141,7 +143,7 @@ export const Homescreen = ({ isDeviceLocked }: HomescreenProps) => {
                     <HiddenInput
                         ref={fileInputElement}
                         type="file"
-                        accept={deviceModelInformation[deviceModel].supports
+                        accept={deviceModelInformation[deviceModelInternal].supports
                             .map(format => `image/${format}`)
                             .join(', ')}
                         onChange={e => onUploadHomescreen(e.target.files)}
@@ -220,8 +222,8 @@ export const Homescreen = ({ isDeviceLocked }: HomescreenProps) => {
                                 <Translation
                                     id={validationError}
                                     values={{
-                                        width: deviceModelInformation[deviceModel].width,
-                                        height: deviceModelInformation[deviceModel].height,
+                                        width: deviceModelInformation[deviceModelInternal].width,
+                                        height: deviceModelInformation[deviceModelInternal].height,
                                     }}
                                 />
                             </ValidationMessage>
@@ -234,7 +236,7 @@ export const Homescreen = ({ isDeviceLocked }: HomescreenProps) => {
                     ].includes(validationError) && (
                         <Col>
                             <img
-                                width={`${deviceModelInformation[deviceModel].width}px`}
+                                width={`${deviceModelInformation[deviceModelInternal].width}px`}
                                 alt="Custom homescreen"
                                 id="custom-image"
                                 src={customHomescreen}

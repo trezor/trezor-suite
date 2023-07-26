@@ -1,12 +1,11 @@
 /* eslint-disable no-bitwise */
 import { TrezorDevice } from 'src/types/suite/index';
-import { DeviceModel, getDeviceModel } from '@trezor/device-utils';
+import { DeviceModelInternal } from '@trezor/connect';
 
 export const deviceModelInformation = {
-    [DeviceModel.T1]: { width: 128, height: 64, supports: ['png', 'jpeg'] },
-    [DeviceModel.TT]: { width: 240, height: 240, supports: ['jpeg'] },
-    [DeviceModel.T2B1]: { width: 128, height: 64, supports: ['png', 'jpeg'] },
-    [DeviceModel.UNKNOWN]: { width: 0, height: 0, supports: [] as string[] },
+    [DeviceModelInternal.T1B1]: { width: 128, height: 64, supports: ['png', 'jpeg'] },
+    [DeviceModelInternal.T2T1]: { width: 240, height: 240, supports: ['jpeg'] },
+    [DeviceModelInternal.T2B1]: { width: 128, height: 64, supports: ['png', 'jpeg'] },
 };
 
 export const enum ImageValidationError {
@@ -48,8 +47,8 @@ export const dataUrlToImage = (dataUrl: string): Promise<HTMLImageElement> =>
         image.src = dataUrl;
     });
 
-const imageToCanvas = (image: HTMLImageElement, deviceModel: DeviceModel) => {
-    const { width, height } = deviceModelInformation[deviceModel];
+const imageToCanvas = (image: HTMLImageElement, deviceModelInternal: DeviceModelInternal) => {
+    const { width, height } = deviceModelInformation[deviceModelInternal];
 
     const canvas = document.createElement('canvas');
     canvas.height = height;
@@ -66,8 +65,8 @@ const imageToCanvas = (image: HTMLImageElement, deviceModel: DeviceModel) => {
     return { canvas, ctx };
 };
 
-const toig = (imageData: ImageData, deviceModel: DeviceModel) => {
-    const { width, height } = deviceModelInformation[deviceModel];
+const toig = (imageData: ImageData, deviceModelInternal: DeviceModelInternal) => {
+    const { width, height } = deviceModelInformation[deviceModelInternal];
 
     const homescreen = range(height)
         .map(j =>
@@ -92,36 +91,45 @@ const toig = (imageData: ImageData, deviceModel: DeviceModel) => {
     return hex;
 };
 
-export const imageToImageData = (image: HTMLImageElement, deviceModel: DeviceModel) => {
-    const { width, height } = deviceModelInformation[deviceModel];
+export const imageToImageData = (
+    image: HTMLImageElement,
+    deviceModelInternal: DeviceModelInternal,
+) => {
+    const { width, height } = deviceModelInformation[deviceModelInternal];
 
-    const { ctx } = imageToCanvas(image, deviceModel);
+    const { ctx } = imageToCanvas(image, deviceModelInternal);
 
     // no quality param as it resize image
     return ctx.getImageData(0, 0, width, height);
 };
 
-export const isValidImageFormat = (dataUrl: string, deviceModel: DeviceModel) => {
-    const supportedFormats = deviceModelInformation[deviceModel].supports.join('|');
+export const isValidImageFormat = (dataUrl: string, deviceModelInternal: DeviceModelInternal) => {
+    const supportedFormats = deviceModelInformation[deviceModelInternal].supports.join('|');
     const supportedDataUrlRE = new RegExp(`data:image/(${supportedFormats})`);
 
     return !!dataUrl && supportedDataUrlRE.test(dataUrl);
 };
 
-export const isValidImageWidth = (image: HTMLImageElement, deviceModel: DeviceModel) => {
-    const { width } = deviceModelInformation[deviceModel];
+export const isValidImageWidth = (
+    image: HTMLImageElement,
+    deviceModelInternal: DeviceModelInternal,
+) => {
+    const { width } = deviceModelInformation[deviceModelInternal];
 
     return image.width === width;
 };
 
-export const isValidImageHeight = (image: HTMLImageElement, deviceModel: DeviceModel) => {
-    const { height } = deviceModelInformation[deviceModel];
+export const isValidImageHeight = (
+    image: HTMLImageElement,
+    deviceModelInternal: DeviceModelInternal,
+) => {
+    const { height } = deviceModelInformation[deviceModelInternal];
 
     return image.height === height;
 };
 
-export const isProgressiveJPG = (buffer: ArrayBuffer, deviceModel: DeviceModel) => {
-    if (deviceModel !== DeviceModel.TT) {
+export const isProgressiveJPG = (buffer: ArrayBuffer, deviceModelInternal: DeviceModelInternal) => {
+    if (deviceModelInternal !== DeviceModelInternal.T2T1) {
         return false;
     }
 
@@ -136,18 +144,21 @@ export const isProgressiveJPG = (buffer: ArrayBuffer, deviceModel: DeviceModel) 
     return false;
 };
 
-export const isValidImageSize = (file: File, deviceModel: DeviceModel) => {
-    if (deviceModel !== DeviceModel.TT) {
+export const isValidImageSize = (file: File, deviceModelInternal: DeviceModelInternal) => {
+    if (deviceModelInternal !== DeviceModelInternal.T2T1) {
         return true;
     }
 
     return file.size <= 16384;
 };
 
-export const validateImageColors = (origImage: HTMLImageElement, deviceModel: DeviceModel) => {
-    const imageData = imageToImageData(origImage, deviceModel);
+export const validateImageColors = (
+    origImage: HTMLImageElement,
+    deviceModelInternal: DeviceModelInternal,
+) => {
+    const imageData = imageToImageData(origImage, deviceModelInternal);
 
-    if ([DeviceModel.T1, DeviceModel.T2B1].includes(deviceModel)) {
+    if ([DeviceModelInternal.T1B1, DeviceModelInternal.T2B1].includes(deviceModelInternal)) {
         try {
             range(imageData.height).forEach((j: number) => {
                 range(imageData.width).forEach(i => {
@@ -173,39 +184,45 @@ export const validateImageColors = (origImage: HTMLImageElement, deviceModel: De
     }
 };
 
-export const validateImage = async (file: File, deviceModel: DeviceModel) => {
+export const validateImage = async (file: File, deviceModelInternal: DeviceModelInternal) => {
     const dataUrl = await fileToDataUrl(file);
     const arrayBuffer = await fileToArrayBuffer(file);
     const image = await dataUrlToImage(dataUrl);
 
-    if (!isValidImageFormat(dataUrl, deviceModel)) {
-        const { supports } = deviceModelInformation[deviceModel];
+    if (!isValidImageFormat(dataUrl, deviceModelInternal)) {
+        const { supports } = deviceModelInformation[deviceModelInternal];
 
         if (supports.includes('png') && supports.includes('jpeg')) {
             return ImageValidationError.InvalidFormatOnlyPngJpg;
         }
         return ImageValidationError.InvalidFormatOnlyJpg;
     }
-    if (!isValidImageWidth(image, deviceModel) || !isValidImageHeight(image, deviceModel)) {
+    if (
+        !isValidImageWidth(image, deviceModelInternal) ||
+        !isValidImageHeight(image, deviceModelInternal)
+    ) {
         return ImageValidationError.InvalidDimensions;
     }
-    if (isProgressiveJPG(arrayBuffer, deviceModel)) {
+    if (isProgressiveJPG(arrayBuffer, deviceModelInternal)) {
         return ImageValidationError.ProgressiveJpgFormat;
     }
-    if (!isValidImageSize(file, deviceModel)) {
+    if (!isValidImageSize(file, deviceModelInternal)) {
         return ImageValidationError.InvalidSize;
     }
 
-    const imageColorsError = validateImageColors(image, deviceModel);
+    const imageColorsError = validateImageColors(image, deviceModelInternal);
 
     return imageColorsError || undefined;
 };
 
-export const imagePathToHex = async (imagePath: string, deviceModel: DeviceModel) => {
+export const imagePathToHex = async (
+    imagePath: string,
+    deviceModelInternal: DeviceModelInternal,
+) => {
     const response = await fetch(imagePath);
 
     // image can be loaded to device without modifications -> it is in original quality
-    if (deviceModel === DeviceModel.TT) {
+    if (deviceModelInternal === DeviceModelInternal.T2T1) {
         const arrayBuffer = await response.arrayBuffer();
 
         return Buffer.from(arrayBuffer).toString('hex');
@@ -219,17 +236,17 @@ export const imagePathToHex = async (imagePath: string, deviceModel: DeviceModel
 
     const element = await dataUrlToImage(URL.createObjectURL(blob));
 
-    const { canvas, ctx } = imageToCanvas(element, deviceModel);
+    const { canvas, ctx } = imageToCanvas(element, deviceModelInternal);
     const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
 
-    return toig(imageData, deviceModel);
+    return toig(imageData, deviceModelInternal);
 };
 
 export const isHomescreenSupportedOnDevice = (device: TrezorDevice) => {
-    const deviceModel = getDeviceModel(device);
+    const deviceModelInternal = device.features?.internal_model;
 
     return (
-        deviceModel !== DeviceModel.TT ||
-        (deviceModel === DeviceModel.TT && device.features?.homescreen_format)
+        deviceModelInternal !== DeviceModelInternal.T2T1 ||
+        (deviceModelInternal === DeviceModelInternal.T2T1 && device.features?.homescreen_format)
     );
 };

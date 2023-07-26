@@ -8,8 +8,8 @@ import {
     isValidImageSize,
     isValidImageWidth,
 } from 'src/utils/suite/homescreen';
-import { DeviceModel } from '@trezor/device-utils';
 import * as fixtures from '../__fixtures__/homescreen';
+import { DeviceModelInternal } from '@trezor/connect';
 
 describe('homescreen', () => {
     describe('fileToDataUrl', () => {
@@ -79,7 +79,7 @@ describe('homescreen', () => {
     describe('isValidImageFormat', () => {
         fixtures.isValidImageFormat.forEach(fixture => {
             it(fixture.description, () => {
-                const result = isValidImageFormat(fixture.dataUrl, fixture.deviceModel);
+                const result = isValidImageFormat(fixture.dataUrl, fixture.deviceModelInternal);
                 expect(result).toBe(fixture.result);
             });
         });
@@ -90,7 +90,7 @@ describe('homescreen', () => {
             it(fixture.description, () => {
                 const image = new Image();
                 image.width = fixture.width;
-                const result = isValidImageWidth(image, fixture.deviceModel);
+                const result = isValidImageWidth(image, fixture.deviceModelInternal);
                 expect(result).toBe(fixture.result);
             });
         });
@@ -101,7 +101,7 @@ describe('homescreen', () => {
             it(fixture.description, () => {
                 const image = new Image();
                 image.height = fixture.height;
-                const result = isValidImageHeight(image, fixture.deviceModel);
+                const result = isValidImageHeight(image, fixture.deviceModelInternal);
                 expect(result).toBe(fixture.result);
             });
         });
@@ -110,7 +110,7 @@ describe('homescreen', () => {
     describe('isProgressiveJPG', () => {
         fixtures.isProgressiveJPG.forEach(fixture => {
             it(fixture.description, () => {
-                const result = isProgressiveJPG(fixture.buffer, fixture.deviceModel);
+                const result = isProgressiveJPG(fixture.buffer, fixture.deviceModelInternal);
                 expect(result).toBe(fixture.result);
             });
         });
@@ -119,8 +119,8 @@ describe('homescreen', () => {
     describe('isValidImageSize', () => {
         it('should return true for non-TT device models', () => {
             const file = new File([], 'test.png', { type: 'image/png', lastModified: 0 });
-            expect(isValidImageSize(file, DeviceModel.T2B1)).toBe(true);
-            expect(isValidImageSize(file, DeviceModel.T1)).toBe(true);
+            expect(isValidImageSize(file, DeviceModelInternal.T2B1)).toBe(true);
+            expect(isValidImageSize(file, DeviceModelInternal.T1B1)).toBe(true);
         });
 
         it('should return true for TT device models when file size is less than or equal to 16384 bytes', () => {
@@ -130,7 +130,7 @@ describe('homescreen', () => {
             });
             Object.defineProperty(file, 'size', { value: 16384, configurable: true });
 
-            expect(isValidImageSize(file, DeviceModel.TT)).toBe(true);
+            expect(isValidImageSize(file, DeviceModelInternal.T2T1)).toBe(true);
         });
 
         it('should return false for TT device models when file size is greater than 16384 bytes', () => {
@@ -140,7 +140,7 @@ describe('homescreen', () => {
             });
             Object.defineProperty(file, 'size', { value: 16385, configurable: true });
 
-            expect(isValidImageSize(file, DeviceModel.TT)).toBe(false);
+            expect(isValidImageSize(file, DeviceModelInternal.T2T1)).toBe(false);
         });
     });
 });

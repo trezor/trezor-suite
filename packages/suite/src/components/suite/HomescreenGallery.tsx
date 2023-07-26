@@ -7,7 +7,7 @@ import { homescreensBW64x128, homescreensColor240x240 } from 'src/constants/suit
 import * as deviceSettingsActions from 'src/actions/settings/deviceSettingsActions';
 import { imagePathToHex } from 'src/utils/suite/homescreen';
 import { useActions, useDevice } from 'src/hooks/suite';
-import { DeviceModel, getDeviceModel } from '@trezor/device-utils';
+import { DeviceModelInternal } from '@trezor/connect';
 
 type AnyImageName = (typeof homescreensBW64x128)[number] | (typeof homescreensColor240x240)[number];
 
@@ -46,14 +46,14 @@ type HomescreenGalleryProps = {
 export const HomescreenGallery = ({ onConfirm }: HomescreenGalleryProps) => {
     const { device, isLocked } = useDevice();
     const { applySettings } = useActions({ applySettings: deviceSettingsActions.applySettings });
-    const deviceModel = getDeviceModel(device);
+    const deviceModelInternal = device?.features?.internal_model;
 
-    if (!deviceModel) return null;
+    if (!deviceModelInternal) return null;
 
     const setHomescreen = async (imagePath: string, image: AnyImageName) => {
         if (isLocked()) return;
 
-        const hex = await imagePathToHex(imagePath, deviceModel);
+        const hex = await imagePathToHex(imagePath, deviceModelInternal);
 
         applySettings({ homescreen: hex });
 
@@ -71,7 +71,7 @@ export const HomescreenGallery = ({ onConfirm }: HomescreenGalleryProps) => {
 
     return (
         <Wrapper>
-            {[DeviceModel.T1, DeviceModel.T2B1].includes(deviceModel) && (
+            {[DeviceModelInternal.T1B1, DeviceModelInternal.T2B1].includes(deviceModelInternal) && (
                 <BackgroundGalleryWrapper64x128>
                     {homescreensBW64x128.map(image => (
                         <BackgroundImageBW64x128
@@ -86,7 +86,7 @@ export const HomescreenGallery = ({ onConfirm }: HomescreenGalleryProps) => {
                     ))}
                 </BackgroundGalleryWrapper64x128>
             )}
-            {deviceModel === DeviceModel.TT && (
+            {deviceModelInternal === DeviceModelInternal.T2T1 && (
                 <BackgroundGalleryWrapper240x240>
                     {homescreensColor240x240.map(image => (
                         <BackgroundImageColor240x240
