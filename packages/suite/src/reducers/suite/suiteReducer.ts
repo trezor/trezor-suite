@@ -8,7 +8,6 @@ import { getStatus } from 'src/utils/suite/device';
 import { getIsTorEnabled, getIsTorLoading } from 'src/utils/suite/tor';
 import { discoveryActions } from 'src/actions/wallet/discoveryActions';
 
-import { getDeviceModel } from '@trezor/device-utils';
 import type { InvityServerEnvironment } from '@suite-common/invity';
 import { getNumberFromPixelString, versionUtils } from '@trezor/utils';
 import { isWeb, getWindowWidth } from '@trezor/env-utils';
@@ -278,11 +277,6 @@ export const selectDeviceState = (state: SuiteRootState) => {
 export const selectDebug = (state: SuiteRootState) => state.suite.settings.debug;
 
 export const selectDevice = (state: SuiteRootState) => state.suite.device;
-
-export const selectDeviceModel = (state: SuiteRootState, overrideDevice?: TrezorDevice) => {
-    const device = selectDevice(state);
-    return getDeviceModel(overrideDevice || device);
-};
 
 export const selectLanguage = (state: SuiteRootState) => state.suite.settings.language;
 

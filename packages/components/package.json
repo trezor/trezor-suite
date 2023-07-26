@@ -18,7 +18,7 @@
     },
     "dependencies": {
         "@tippyjs/react": "^4.2.6",
-        "@trezor/device-utils": "workspace:*",
+        "@trezor/connect": "workspace:*",
         "@trezor/dom-utils": "workspace:*",
         "@trezor/env-utils": "workspace:*",
         "@trezor/react-utils": "workspace:*",

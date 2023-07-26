@@ -17,7 +17,6 @@ import * as onboardingActions from 'src/actions/onboarding/onboardingActions';
 import * as backupActions from 'src/actions/backup/backupActions';
 import * as routerActions from 'src/actions/suite/routerActions';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
-import { useDeviceModel } from 'src/hooks/suite/useDeviceModel';
 import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
 
 const StyledImage = styled(Image)`
@@ -32,14 +31,15 @@ export const BackupStep = () => {
         goto: routerActions.goto,
         updateAnalytics: onboardingActions.updateAnalytics,
     });
-    const { backup, locks } = useSelector(state => ({
+    const { backup, locks, device } = useSelector(state => ({
         backup: state.backup,
         locks: state.suite.locks,
+        device: state.suite.device,
     }));
-    const deviceModel = useDeviceModel();
+    const deviceModelInternal = device?.features?.internal_model;
     const isActionAbortable = useSelector(selectIsActionAbortable);
 
-    if (!deviceModel) {
+    if (!deviceModelInternal) {
         return null;
     }
 
@@ -89,7 +89,7 @@ export const BackupStep = () => {
                     image="BACKUP"
                     heading={<Translation id="TR_CREATE_BACKUP" />}
                     description={<Translation id="TR_BACKUP_SUBHEADING_1" />}
-                    deviceModel={deviceModel}
+                    deviceModelInternal={deviceModelInternal}
                     isActionAbortable={isActionAbortable}
                 />
             )}

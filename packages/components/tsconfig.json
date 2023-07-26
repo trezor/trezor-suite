@@ -10,7 +10,7 @@
     },
     "include": ["."],
     "references": [
-        { "path": "../device-utils" },
+        { "path": "../connect" },
         { "path": "../dom-utils" },
         { "path": "../env-utils" },
         { "path": "../react-utils" },

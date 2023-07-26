@@ -1,7 +1,6 @@
 import React from 'react';
 import { Icon, useTheme } from '@trezor/components';
 import { TrezorDevice } from 'src/types/suite';
-import { getDeviceModel } from '@trezor/device-utils';
 
 interface DeviceIconProps {
     device: TrezorDevice;
@@ -20,15 +19,15 @@ const DeviceIcon = ({
     ...rest
 }: DeviceIconProps) => {
     const theme = useTheme();
-    const deviceModel = getDeviceModel(device);
+    const deviceModelInternal = device.features?.internal_model;
 
-    if (!deviceModel) {
+    if (!deviceModelInternal) {
         return null;
     }
 
     return (
         <Icon
-            icon={`TREZOR_T${deviceModel}`}
+            icon={`TREZOR_${deviceModelInternal}`}
             hoverColor={hoverColor}
             onClick={onClick}
             color={color ?? theme.TYPE_LIGHT_GREY}

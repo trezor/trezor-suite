@@ -11,7 +11,6 @@ import {
 import { Translation } from 'src/components/suite';
 import { useActions, useSelector, useOnboarding } from 'src/hooks/suite';
 import * as deviceSettingsActions from 'src/actions/settings/deviceSettingsActions';
-import { getDeviceModel } from '@trezor/device-utils';
 import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
 
 export const ResetDeviceStep = () => {
@@ -22,7 +21,7 @@ export const ResetDeviceStep = () => {
     const { goToPreviousStep, goToNextStep, updateAnalytics } = useOnboarding();
 
     const device = useSelector(state => state.suite.device);
-    const deviceModel = getDeviceModel(device);
+    const deviceModelInternal = device?.features?.internal_model;
     const isActionAbortable = useSelector(selectIsActionAbortable);
 
     // this step expects device
@@ -72,7 +71,7 @@ export const ResetDeviceStep = () => {
             image="KEY"
             heading={<Translation id="TR_ONBOARDING_GENERATE_SEED" />}
             description={<Translation id="TR_ONBOARDING_GENERATE_SEED_DESCRIPTION" />}
-            deviceModel={isWaitingForConfirmation ? deviceModel : undefined}
+            deviceModelInternal={isWaitingForConfirmation ? deviceModelInternal : undefined}
             isActionAbortable={isActionAbortable}
             outerActions={
                 !isWaitingForConfirmation ? (

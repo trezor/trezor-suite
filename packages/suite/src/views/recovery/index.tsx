@@ -10,8 +10,8 @@ import type { ForegroundAppProps } from 'src/types/suite';
 import type { WordCount } from 'src/types/recovery';
 import { InstructionStep } from 'src/components/suite/InstructionStep';
 import { getCheckBackupUrl } from 'src/utils/suite/device';
-import { DeviceModel, getDeviceModel, pickByDeviceModel } from '@trezor/device-utils';
-import TrezorConnect from '@trezor/connect';
+import { pickByDeviceModel } from '@trezor/device-utils';
+import TrezorConnect, { DeviceModelInternal } from '@trezor/connect';
 import { useIntl } from 'react-intl';
 import messages from 'src/support/messages';
 
@@ -84,10 +84,10 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
         actions.checkSeed();
     };
 
-    const deviceModel = getDeviceModel(device);
+    const deviceModelInternal = device?.features?.internal_model;
     const learnMoreUrl = getCheckBackupUrl(device);
     const statesInProgressBar =
-        deviceModel === DeviceModel.T1
+        deviceModelInternal === DeviceModelInternal.T1B1
             ? [
                   'initial',
                   'select-word-count',
@@ -98,7 +98,7 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
               ]
             : ['initial', 'in-progress', 'finished'];
 
-    if (!device || !device.features || !deviceModel) {
+    if (!device || !device.features || !deviceModelInternal) {
         return (
             <Modal
                 heading={<Translation id="TR_RECONNECT_HEADER" />}
@@ -116,7 +116,7 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
             {recovery.status === 'initial' && (
                 <StyledButton
                     onClick={() =>
-                        deviceModel === DeviceModel.T1
+                        deviceModelInternal === DeviceModelInternal.T1B1
                             ? actions.setStatus('select-word-count')
                             : actions.checkSeed()
                     }
@@ -151,7 +151,7 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
                                 number="1"
                                 title={
                                     <Translation
-                                        id={`TR_CHECK_RECOVERY_SEED_DESC_T${deviceModel}`}
+                                        id={`TR_CHECK_RECOVERY_SEED_DESC_${deviceModelInternal}`}
                                     />
                                 }
                             >
@@ -169,11 +169,12 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
                                 title={<Translation id="TR_ENTER_ALL_WORDS_IN_CORRECT" />}
                             >
                                 <Translation
-                                    id={pickByDeviceModel(deviceModel, {
+                                    id={pickByDeviceModel(deviceModelInternal, {
                                         default: 'TR_SEED_WORDS_ENTER_BUTTONS',
-                                        [DeviceModel.T1]: 'TR_SEED_WORDS_ENTER_COMPUTER',
-                                        [DeviceModel.TT]: 'TR_SEED_WORDS_ENTER_TOUCHSCREEN',
-                                        [DeviceModel.T2B1]: 'TR_SEED_WORDS_ENTER_BUTTONS',
+                                        [DeviceModelInternal.T1B1]: 'TR_SEED_WORDS_ENTER_COMPUTER',
+                                        [DeviceModelInternal.T2T1]:
+                                            'TR_SEED_WORDS_ENTER_TOUCHSCREEN',
+                                        [DeviceModelInternal.T2B1]: 'TR_SEED_WORDS_ENTER_BUTTONS',
                                     })}
                                 />
                             </InstructionStep>

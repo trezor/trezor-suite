@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Image, Icon, IconProps, variables } from '@trezor/components';
 import { useGuide } from 'src/hooks/guide';
-import { DeviceModel } from '@trezor/device-utils';
+import { DeviceModelInternal } from '@trezor/connect';
 
 const Wrapper = styled.div<{ isGuideOpen?: boolean }>`
     display: flex;
@@ -54,13 +54,13 @@ interface CommonItemProps {
 }
 
 interface DeviceImageItem extends CommonItemProps {
-    deviceModel: DeviceModel;
+    deviceModelInternal: DeviceModelInternal;
     icon?: never;
     iconColor?: never;
 }
 
 interface IconItem extends CommonItemProps {
-    deviceModel?: DeviceModel;
+    deviceModelInternal?: DeviceModelInternal;
     icon: IconProps['icon'];
     iconColor?: IconProps['color'];
     iconSize?: IconProps['size'];
@@ -87,8 +87,11 @@ const DeviceMatrixExplanation = ({ items }: DeviceMatrixExplanationProps) => {
                                 size={item.iconSize ?? 26}
                             />
                         ) : (
-                            item.deviceModel && (
-                                <StyledImage alt="Trezor" image={`TREZOR_T${item.deviceModel}`} />
+                            item.deviceModelInternal && (
+                                <StyledImage
+                                    alt="Trezor"
+                                    image={`TREZOR_${item.deviceModelInternal}`}
+                                />
                             )
                         )}
                     </ItemIconWrapper>

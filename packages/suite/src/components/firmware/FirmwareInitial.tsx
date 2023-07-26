@@ -12,7 +12,7 @@ import { useDevice, useFirmware, useOnboarding, useSelector } from 'src/hooks/su
 import { ReconnectDevicePrompt, InstallButton, FirmwareOffer } from 'src/components/firmware';
 import { FirmwareType, TrezorDevice } from 'src/types/suite';
 import { getFwUpdateVersion } from 'src/utils/suite/device';
-import { getFirmwareVersion, getDeviceModel } from '@trezor/device-utils';
+import { getFirmwareVersion } from '@trezor/device-utils';
 
 const Description = styled.div`
     align-items: center;
@@ -109,7 +109,7 @@ export const FirmwareInitial = ({
 
     // User is following instructions for disconnecting/reconnecting a device in bootloader mode; We'll use cached version of the device
     const device = status === 'waiting-for-bootloader' ? cachedDevice : liveDevice;
-    const deviceModel = getDeviceModel(device);
+    const deviceModelInternal = device?.features?.internal_model;
 
     let content;
 
@@ -294,7 +294,9 @@ export const FirmwareInitial = ({
                     innerActions={content.innerActions}
                     outerActions={content.outerActions}
                     disableConfirmWrapper={!!standaloneFwUpdate}
-                    deviceModel={status === 'waiting-for-confirmation' ? deviceModel : undefined}
+                    deviceModelInternal={
+                        status === 'waiting-for-confirmation' ? deviceModelInternal : undefined
+                    }
                     isActionAbortable={false}
                     nested={!!standaloneFwUpdate}
                 >

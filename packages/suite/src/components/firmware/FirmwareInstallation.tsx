@@ -6,9 +6,9 @@ import { useDevice, useFirmware } from 'src/hooks/suite';
 import { FirmwareOffer, ProgressBar, ReconnectDevicePrompt } from 'src/components/firmware';
 import { OnboardingStepBox } from 'src/components/onboarding';
 import { TrezorDevice } from 'src/types/suite';
-import { DeviceModel, getDeviceModel } from '@trezor/device-utils';
 import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
 import { useSelector } from 'src/hooks/suite/useSelector';
+import { DeviceModelInternal } from '@trezor/connect';
 
 interface FirmwareInstallationProps {
     cachedDevice?: TrezorDevice;
@@ -31,8 +31,8 @@ export const FirmwareInstallation = ({
     const { device } = useDevice();
     const { status, installingProgress, resetReducer, isWebUSB, subsequentInstalling } =
         useFirmware();
-    const deviceModel = getDeviceModel(device);
-    const cachedDeviceModel = getDeviceModel(cachedDevice);
+    const deviceModelInternal = device?.features?.internal_model;
+    const cachedDeviceModelInternal = cachedDevice?.features?.internal_model;
     const isActionAbortable = useSelector(selectIsActionAbortable);
 
     const statusIntlId = getTextForStatus(status);
@@ -49,10 +49,10 @@ export const FirmwareInstallation = ({
     const getFakeProgressDuration = () => {
         if (cachedDevice?.firmware === 'none') {
             // device without fw starts installation without a confirmation and we need to fake progress bar for both devices (UI.FIRMWARE_PROGRESS is sent too late)
-            return cachedDeviceModel === DeviceModel.T1 ? 25 : 40; // T1 seems a bit faster
+            return cachedDeviceModelInternal === DeviceModelInternal.T1B1 ? 25 : 40; // T1 seems a bit faster
         }
         // Updating from older fw, device asks for confirmation, but sends first info about installation progress somewhat to late
-        return cachedDeviceModel === DeviceModel.T1 ? 25 : undefined; // 25s for T1, no fake progress for updating from older fw on other devices
+        return cachedDeviceModelInternal === DeviceModelInternal.T1B1 ? 25 : undefined; // 25s for T1, no fake progress for updating from older fw on other devices
     };
 
     const InnerActionComponent = useMemo(() => {
@@ -99,7 +99,9 @@ export const FirmwareInstallation = ({
                         <Translation id="TR_INSTALL_FIRMWARE" />
                     )
                 }
-                deviceModel={status === 'waiting-for-confirmation' ? deviceModel : undefined}
+                deviceModelInternal={
+                    status === 'waiting-for-confirmation' ? deviceModelInternal : undefined
+                }
                 isActionAbortable={isActionAbortable}
                 innerActions={InnerActionComponent}
                 nested={!!standaloneFwUpdate}

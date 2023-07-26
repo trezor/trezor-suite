@@ -18,9 +18,9 @@ import {
     StyledCard,
 } from './CardanoPrimitives';
 import { HiddenPlaceholder } from 'src/components/suite/HiddenPlaceholder';
-import { DeviceModel } from '@trezor/device-utils';
-import { useDeviceModel } from 'src/hooks/suite/useDeviceModel';
 import { DeviceButton } from 'src/components/suite';
+import { DeviceModelInternal } from '@trezor/connect';
+import { useDevice } from 'src/hooks/suite';
 
 interface CardanoRewardsProps {
     account: Account;
@@ -37,7 +37,10 @@ export const CardanoRewards = ({ account }: CardanoRewardsProps) => {
         deviceAvailable,
         pendingStakeTx,
     } = useCardanoStaking();
-    const deviceModel = useDeviceModel() as DeviceModel.TT | DeviceModel.T2B1; // only T and T2B1 have Capability_Cardano
+    const { device } = useDevice();
+    const deviceModelInternal = device?.features?.internal_model as
+        | DeviceModelInternal.T2T1
+        | DeviceModelInternal.T2B1; // only TT and T2B1 have Capability_Cardano
 
     useEffect(() => {
         calculateFeeAndDeposit('withdrawal');
@@ -98,7 +101,7 @@ export const CardanoRewards = ({ account }: CardanoRewardsProps) => {
                 <DeviceButton
                     isLoading={loading}
                     isDisabled={isRewardsWithdrawDisabled}
-                    deviceModel={deviceModel}
+                    deviceModelInternal={deviceModelInternal}
                     onClick={withdraw}
                     tooltipContent={
                         !reasonMessageId ||

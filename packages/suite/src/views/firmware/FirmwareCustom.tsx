@@ -18,7 +18,6 @@ import {
     SelectCustomFirmware,
 } from 'src/components/firmware';
 import * as suiteActions from 'src/actions/suite/suiteActions';
-import { getDeviceModel } from '@trezor/device-utils';
 
 const StyledModal = styled(Modal)<{ isNarrow: boolean }>`
     width: ${({ isNarrow }) => (isNarrow ? '450px' : '620px')};
@@ -42,7 +41,7 @@ export const FirmwareCustom = () => {
     const { setStatus, firmwareCustom, resetReducer, status, error } = useFirmware();
     const { device: liveDevice } = useDevice();
     const cachedDevice = useCachedDevice(liveDevice);
-    const liveDeviceModel = getDeviceModel(liveDevice);
+    const liveDeviceModelInternal = liveDevice?.features?.internal_model;
 
     const onFirmwareSelected = useCallback(
         (fw: ArrayBuffer) => {
@@ -177,7 +176,7 @@ export const FirmwareCustom = () => {
                 status === 'waiting-for-confirmation' && (
                     <ConfirmOnDevice
                         title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
-                        deviceModel={liveDeviceModel}
+                        deviceModelInternal={liveDeviceModelInternal}
                     />
                 )
             }
