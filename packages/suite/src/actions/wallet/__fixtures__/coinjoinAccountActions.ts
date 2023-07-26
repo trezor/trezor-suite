@@ -253,7 +253,6 @@ export const restoreCoinjoinAccounts = [
         },
         result: {
             actions: [
-                COINJOIN.SESSION_PAUSE, // pause account-A session
                 COINJOIN.CLIENT_ENABLE,
                 COINJOIN.CLIENT_ENABLE_FAILED,
                 notificationsActions.addToast.type, // failed account 1 + 2 client init
