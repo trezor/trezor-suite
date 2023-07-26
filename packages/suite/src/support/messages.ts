@@ -2480,12 +2480,8 @@ export default defineMessages({
     },
     TR_ENTER_PIN: {
         defaultMessage: 'Enter PIN',
-        description: 'Button. Submit PIN',
+        description: 'Text for Header and Button when submitting PIN',
         id: 'TR_ENTER_PIN',
-    },
-    TR_ENTER_PIN_ON_DEVICE_LABEL: {
-        defaultMessage: 'Enter PIN',
-        id: 'TR_ENTER_PIN_ON_DEVICE_LABEL',
     },
     TR_ENTER_SEED_WORDS_INSTRUCTION: {
         defaultMessage:
