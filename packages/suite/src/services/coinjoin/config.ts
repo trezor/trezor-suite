@@ -22,11 +22,11 @@ export const COINJOIN_NETWORKS: PartialRecord<NetworkSymbol, ServerEnvironment> 
             coordinatorUrl: 'https://wasabiwallet.io/wabisabi/',
             wabisabiBackendUrl: 'https://wasabiwallet.io/',
             blockbookUrls: [
-                'https://btc1.trezor.io',
-                'https://btc2.trezor.io',
-                'https://btc3.trezor.io',
-                'https://btc4.trezor.io',
-                'https://btc5.trezor.io',
+                'http://btc1.trezoriovpjcahpzkrewelclulmszwbqpzmzgub37gbcjlvluxtruqad.onion',
+                'http://btc2.trezoriovpjcahpzkrewelclulmszwbqpzmzgub37gbcjlvluxtruqad.onion',
+                'http://btc3.trezoriovpjcahpzkrewelclulmszwbqpzmzgub37gbcjlvluxtruqad.onion',
+                'http://btc4.trezoriovpjcahpzkrewelclulmszwbqpzmzgub37gbcjlvluxtruqad.onion',
+                'http://btc5.trezoriovpjcahpzkrewelclulmszwbqpzmzgub37gbcjlvluxtruqad.onion',
             ],
             /* 28.02.2023 */
             baseBlockHeight: 778666,
@@ -53,7 +53,10 @@ export const COINJOIN_NETWORKS: PartialRecord<NetworkSymbol, ServerEnvironment> 
             coordinatorUrl: 'https://wasabiwallet.co/wabisabi/',
             // backend settings
             wabisabiBackendUrl: 'https://wasabiwallet.co/',
-            blockbookUrls: ['https://tbtc1.trezor.io', 'https://tbtc2.trezor.io'],
+            blockbookUrls: [
+                'http://tbtc1.trezoriovpjcahpzkrewelclulmszwbqpzmzgub37gbcjlvluxtruqad.onion',
+                'http://tbtc2.trezoriovpjcahpzkrewelclulmszwbqpzmzgub37gbcjlvluxtruqad.onion',
+            ],
             /* */
             /* onion addresses *
             coordinatorUrl:
@@ -96,7 +99,10 @@ export const COINJOIN_NETWORKS: PartialRecord<NetworkSymbol, ServerEnvironment> 
             coordinatorUrl: 'https://dev-coinjoin-testnet.trezor.io/wabisabi/',
             // backend settings
             wabisabiBackendUrl: 'https://dev-coinjoin-testnet.trezor.io/',
-            blockbookUrls: ['https://tbtc1.trezor.io', 'https://tbtc2.trezor.io'],
+            blockbookUrls: [
+                'http://tbtc1.trezoriovpjcahpzkrewelclulmszwbqpzmzgub37gbcjlvluxtruqad.onion',
+                'http://tbtc2.trezoriovpjcahpzkrewelclulmszwbqpzmzgub37gbcjlvluxtruqad.onion',
+            ],
             baseBlockHeight: 2349000,
             baseBlockHash: '0000000000000014af3e6e1a3f0a24be7bc65998b9bc01e4a05b134a89d304bf',
             filtersBatchSize: 5000,
