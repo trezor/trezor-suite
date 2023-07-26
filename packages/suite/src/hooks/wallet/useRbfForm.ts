@@ -38,24 +38,24 @@ const getEthereumFeeInfo = (info: FeeInfo, gasPrice: string) => {
         fromWei(info.levels[0].feePerUnit, 'gwei'),
     ).integerValue(BigNumber.ROUND_FLOOR);
 
-    const getMinFee = () => {
+    const getFee = () => {
         if (minFeeFromNetwork.lte(current)) {
             return current.plus(1);
         }
         return minFeeFromNetwork;
     };
 
-    const minFee = getMinFee();
+    const fee = getFee();
 
     // increase FeeLevel only if it's lower than predefined
     const levels = getFeeLevels('ethereum', info).map(l => ({
         ...l,
-        feePerUnit: minFee.toString(),
+        feePerUnit: fee.toString(),
     }));
     return {
         ...info,
         levels,
-        minFee: minFee.toNumber(), // increase required minFee rate
+        minFee: current.plus(1).toNumber(), // increase required minFee rate
     };
 };
 
