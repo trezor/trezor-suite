@@ -4222,17 +4222,6 @@ export default defineMessages({
         id: 'TR_SELECT_COIN_FOR_SETTINGS',
         defaultMessage: 'Select active coin to change settings',
     },
-    FW_CAPABILITY_NO_CAPABILITY: {
-        id: 'FW_CAPABILITY_NO_CAPABILITY',
-        defaultMessage: 'Not supported',
-        description: 'Firmware with missing capability (eg: LTC on Bitcoin-only FW, XRP on T1...)',
-    },
-    FW_CAPABILITY_NO_SUPPORT: {
-        id: 'FW_CAPABILITY_NO_SUPPORT',
-        defaultMessage: 'Not supported on {deviceDisplayName}',
-        description:
-            'Similar to missing capability but tested on different level (coin info is missing in trezor-connect). {deviceDisplayName} can be e.g. Trezor Model One, so make the translation accordingly',
-    },
     FW_CAPABILITY_UPDATE_REQUIRED: {
         id: 'FW_CAPABILITY_UPDATE_REQUIRED',
         defaultMessage: 'Update required',

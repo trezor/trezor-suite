@@ -137,10 +137,6 @@ export const getFwUpdateVersion = (device: AcquiredDevice) =>
 
 export const getCoinUnavailabilityMessage = (reason: UnavailableCapability) => {
     switch (reason) {
-        case 'no-capability':
-            return 'FW_CAPABILITY_NO_CAPABILITY';
-        case 'no-support':
-            return 'FW_CAPABILITY_NO_SUPPORT';
         case 'update-required':
             return 'FW_CAPABILITY_UPDATE_REQUIRED';
         case 'trezor-connect-outdated':
