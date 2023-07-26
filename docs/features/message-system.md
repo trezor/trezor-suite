@@ -167,7 +167,8 @@ Structure of config, types and optionality of specific keys can be found in the 
                     // Empty device array is targeting users without a connected device.
                     "devices": [
                         {
-                            // Possible values: "1" or "T"
+                            // Possible values: "1" +  "T1B1", "T" + "T2T1", "T2B1"
+                            // in case of targeting "T1B1" or "T2T1", for backwards compatibility use old (1, T) and new naming (T1B1, T2T1 together in a new object
                             "model": "1",
                             /*
                             Beware

@@ -1,4 +1,4 @@
-import { DeviceModel } from '@trezor/device-utils';
+import { DeviceModelInternal } from '@trezor/connect';
 import { testMocks } from '@suite-common/test-utils';
 
 const { getDeviceFeatures } = testMocks;
@@ -576,7 +576,7 @@ export const validateDeviceCompatibility = [
         description: 'validateDeviceCompatibility case 1',
         deviceConditions: [
             {
-                model: DeviceModel.TT,
+                model: DeviceModelInternal.T2T1,
                 firmware: '2.1.3',
                 bootloader: '*',
                 firmwareRevision: '*',
@@ -588,7 +588,7 @@ export const validateDeviceCompatibility = [
             features: {
                 ...getDeviceFeatures({
                     vendor: 'trezor.io',
-                    model: DeviceModel.TT,
+                    internal_model: DeviceModelInternal.T2T1,
                     major_version: 2,
                     minor_version: 1,
                     patch_version: 3,
@@ -603,7 +603,7 @@ export const validateDeviceCompatibility = [
         description: 'validateDeviceCompatibility case 2',
         deviceConditions: [
             {
-                model: DeviceModel.T1,
+                model: DeviceModelInternal.T1B1,
                 firmware: ['1', '2'],
                 bootloader: '*',
                 firmwareRevision: '*',
@@ -611,7 +611,7 @@ export const validateDeviceCompatibility = [
                 vendor: 'trezor.io',
             },
             {
-                model: DeviceModel.TT,
+                model: DeviceModelInternal.T2T1,
                 firmware: ['3.0'],
                 bootloader: '*',
                 firmwareRevision: '*',
@@ -623,7 +623,7 @@ export const validateDeviceCompatibility = [
             features: {
                 ...getDeviceFeatures({
                     vendor: 'trezor.io',
-                    model: DeviceModel.T1,
+                    internal_model: DeviceModelInternal.T1B1,
                     major_version: 1,
                     minor_version: 2,
                     patch_version: 8,
@@ -638,7 +638,7 @@ export const validateDeviceCompatibility = [
         description: 'validateDeviceCompatibility case 3',
         deviceConditions: [
             {
-                model: DeviceModel.TT,
+                model: DeviceModelInternal.T2T1,
                 firmware: '1',
                 bootloader: '*',
                 firmwareRevision: '*',
@@ -650,7 +650,7 @@ export const validateDeviceCompatibility = [
             features: {
                 ...getDeviceFeatures({
                     vendor: 'ledger',
-                    model: DeviceModel.TT,
+                    internal_model: DeviceModelInternal.T2T1,
                     major_version: 1,
                     minor_version: 0,
                     patch_version: 2,
@@ -665,7 +665,7 @@ export const validateDeviceCompatibility = [
         description: 'validateDeviceCompatibility case 4',
         deviceConditions: [
             {
-                model: DeviceModel.TT,
+                model: DeviceModelInternal.T2T1,
                 firmware: '1',
                 bootloader: '*',
                 firmwareRevision: '*',
@@ -677,7 +677,7 @@ export const validateDeviceCompatibility = [
             features: {
                 ...getDeviceFeatures({
                     vendor: 'trezor.io',
-                    model: DeviceModel.T1,
+                    internal_model: DeviceModelInternal.T1B1,
                     major_version: 1,
                     minor_version: 0,
                     patch_version: 2,
@@ -692,7 +692,7 @@ export const validateDeviceCompatibility = [
         description: 'validateDeviceCompatibility case 5',
         deviceConditions: [
             {
-                model: DeviceModel.TT,
+                model: DeviceModelInternal.T2T1,
                 firmware: '2',
                 bootloader: '*',
                 firmwareRevision: '*',
@@ -704,7 +704,7 @@ export const validateDeviceCompatibility = [
             features: {
                 ...getDeviceFeatures({
                     vendor: 'trezor.io',
-                    model: DeviceModel.T1,
+                    internal_model: DeviceModelInternal.T1B1,
                     major_version: 1,
                     minor_version: 0,
                     patch_version: 2,
@@ -722,7 +722,7 @@ export const validateDeviceCompatibility = [
             features: {
                 ...getDeviceFeatures({
                     vendor: 'trezor.io',
-                    model: DeviceModel.T1,
+                    internal_model: DeviceModelInternal.T1B1,
                     major_version: 1,
                     minor_version: 0,
                     patch_version: 2,
@@ -736,7 +736,7 @@ export const validateDeviceCompatibility = [
         description: 'validateDeviceCompatibility case 7',
         deviceConditions: [
             {
-                model: DeviceModel.TT,
+                model: DeviceModelInternal.T2T1,
                 firmware: '2',
                 bootloader: '*',
                 firmwareRevision: '*',
@@ -757,7 +757,7 @@ export const validateDeviceCompatibility = [
         description: 'validateDeviceCompatibility case 9',
         deviceConditions: [
             {
-                model: DeviceModel.T1,
+                model: DeviceModelInternal.T1B1,
                 firmware: '1',
                 bootloader: '*',
                 firmwareRevision: '*',
@@ -769,7 +769,7 @@ export const validateDeviceCompatibility = [
             features: {
                 ...getDeviceFeatures({
                     vendor: 'trezor.io',
-                    model: DeviceModel.T1,
+                    internal_model: DeviceModelInternal.T1B1,
                     major_version: 1,
                     minor_version: 0,
                     patch_version: 2,
@@ -784,7 +784,7 @@ export const validateDeviceCompatibility = [
         description: 'validateDeviceCompatibility case 10',
         deviceConditions: [
             {
-                model: DeviceModel.T1,
+                model: DeviceModelInternal.T1B1,
                 firmware: '1',
                 bootloader: '*',
                 firmwareRevision: '*',
@@ -796,7 +796,7 @@ export const validateDeviceCompatibility = [
             features: {
                 ...getDeviceFeatures({
                     vendor: 'trezor.io',
-                    model: DeviceModel.T1,
+                    internal_model: DeviceModelInternal.T1B1,
                     major_version: 1,
                     minor_version: 0,
                     patch_version: 2,
@@ -811,7 +811,7 @@ export const validateDeviceCompatibility = [
         description: 'validateDeviceCompatibility case 11',
         deviceConditions: [
             {
-                model: DeviceModel.T1,
+                model: DeviceModelInternal.T1B1,
                 firmware: '1',
                 bootloader: '*',
                 firmwareRevision: '*',
@@ -823,7 +823,7 @@ export const validateDeviceCompatibility = [
             features: {
                 ...getDeviceFeatures({
                     vendor: 'trezor.io',
-                    model: DeviceModel.T1,
+                    internal_model: DeviceModelInternal.T1B1,
                     major_version: 1,
                     minor_version: 0,
                     patch_version: 2,
@@ -838,7 +838,7 @@ export const validateDeviceCompatibility = [
         description: 'validateDeviceCompatibility case 12',
         deviceConditions: [
             {
-                model: DeviceModel.T1,
+                model: DeviceModelInternal.T1B1,
                 firmware: '1',
                 bootloader: '*',
                 firmwareRevision: '*',
@@ -850,7 +850,7 @@ export const validateDeviceCompatibility = [
             features: {
                 ...getDeviceFeatures({
                     vendor: 'trevor.io',
-                    model: DeviceModel.T1,
+                    internal_model: DeviceModelInternal.T1B1,
                     major_version: 1,
                     minor_version: 0,
                     patch_version: 2,
@@ -865,7 +865,7 @@ export const validateDeviceCompatibility = [
         description: 'validateDeviceCompatibility case 13',
         deviceConditions: [
             {
-                model: DeviceModel.T1,
+                model: DeviceModelInternal.T1B1,
                 firmware: '1',
                 bootloader: '*',
                 firmwareRevision: '*',
@@ -877,7 +877,7 @@ export const validateDeviceCompatibility = [
             features: {
                 ...getDeviceFeatures({
                     vendor: 'trevor.io',
-                    model: DeviceModel.T1,
+                    internal_model: DeviceModelInternal.T1B1,
                     major_version: 1,
                     minor_version: 0,
                     patch_version: 2,
@@ -892,7 +892,7 @@ export const validateDeviceCompatibility = [
         description: 'validateDeviceCompatibility case 14',
         deviceConditions: [
             {
-                model: DeviceModel.T1,
+                model: DeviceModelInternal.T1B1,
                 firmware: '1',
                 bootloader: '*',
                 firmwareRevision: '*',
@@ -904,7 +904,7 @@ export const validateDeviceCompatibility = [
             features: {
                 ...getDeviceFeatures({
                     vendor: 'trevor.io',
-                    model: DeviceModel.T1,
+                    internal_model: DeviceModelInternal.T1B1,
                     major_version: 1,
                     minor_version: 0,
                     patch_version: 2,
@@ -919,7 +919,7 @@ export const validateDeviceCompatibility = [
         description: 'validateDeviceCompatibility case 15',
         deviceConditions: [
             {
-                model: DeviceModel.T1,
+                model: DeviceModelInternal.T1B1,
                 firmware: '1',
                 bootloader: '*',
                 firmwareRevision: 'fa8eha',
@@ -931,7 +931,7 @@ export const validateDeviceCompatibility = [
             features: {
                 ...getDeviceFeatures({
                     vendor: 'trevor.io',
-                    model: DeviceModel.T1,
+                    internal_model: DeviceModelInternal.T1B1,
                     major_version: 1,
                     minor_version: 0,
                     patch_version: 2,
@@ -946,7 +946,7 @@ export const validateDeviceCompatibility = [
         description: 'validateDeviceCompatibility case 16',
         deviceConditions: [
             {
-                model: DeviceModel.T1,
+                model: DeviceModelInternal.T1B1,
                 firmware: '1',
                 bootloader: '*',
                 firmwareRevision: 'abcdef',
@@ -958,7 +958,7 @@ export const validateDeviceCompatibility = [
             features: {
                 ...getDeviceFeatures({
                     vendor: 'trevor.io',
-                    model: DeviceModel.T1,
+                    internal_model: DeviceModelInternal.T1B1,
                     major_version: 1,
                     minor_version: 0,
                     patch_version: 2,
@@ -973,7 +973,7 @@ export const validateDeviceCompatibility = [
         description: 'validateDeviceCompatibility case 17',
         deviceConditions: [
             {
-                model: DeviceModel.TT,
+                model: DeviceModelInternal.T2T1,
                 firmware: '*',
                 bootloader: '2.0.4',
                 firmwareRevision: '*',
@@ -985,7 +985,7 @@ export const validateDeviceCompatibility = [
             features: {
                 ...getDeviceFeatures({
                     vendor: 'trezor.io',
-                    model: DeviceModel.TT,
+                    internal_model: DeviceModelInternal.T2T1,
                     major_version: 2,
                     minor_version: 0,
                     patch_version: 4,
@@ -1000,7 +1000,7 @@ export const validateDeviceCompatibility = [
         description: 'validateDeviceCompatibility case 18',
         deviceConditions: [
             {
-                model: DeviceModel.TT,
+                model: DeviceModelInternal.T2T1,
                 firmware: '*',
                 bootloader: '2.0.4',
                 firmwareRevision: '*',
@@ -1012,7 +1012,7 @@ export const validateDeviceCompatibility = [
             features: {
                 ...getDeviceFeatures({
                     vendor: '*',
-                    model: DeviceModel.TT,
+                    internal_model: DeviceModelInternal.T2T1,
                     major_version: 2,
                     minor_version: 0,
                     patch_version: 3,
@@ -1027,7 +1027,7 @@ export const validateDeviceCompatibility = [
         description: 'validateDeviceCompatibility case 19',
         deviceConditions: [
             {
-                model: DeviceModel.TT,
+                model: DeviceModelInternal.T2T1,
                 firmware: '*',
                 bootloader: '2.0.4',
                 firmwareRevision: '*',
@@ -1039,7 +1039,7 @@ export const validateDeviceCompatibility = [
             features: {
                 ...getDeviceFeatures({
                     vendor: '*',
-                    model: DeviceModel.TT,
+                    internal_model: DeviceModelInternal.T2T1,
                     major_version: 2,
                     minor_version: 0,
                     patch_version: 4,
@@ -1054,7 +1054,7 @@ export const validateDeviceCompatibility = [
         description: 'validateDeviceCompatibility case 20',
         deviceConditions: [
             {
-                model: DeviceModel.TT,
+                model: DeviceModelInternal.T2T1,
                 firmware: '*',
                 bootloader: '2.0.4',
                 firmwareRevision: 'fa8e42',
@@ -1066,7 +1066,7 @@ export const validateDeviceCompatibility = [
             features: {
                 ...getDeviceFeatures({
                     vendor: '*',
-                    model: DeviceModel.TT,
+                    internal_model: DeviceModelInternal.T2T1,
                     major_version: 2,
                     minor_version: 0,
                     patch_version: 4,
@@ -1082,7 +1082,7 @@ export const validateDeviceCompatibility = [
         description: 'validateDeviceCompatibility case 21',
         deviceConditions: [
             {
-                model: DeviceModel.TT,
+                model: DeviceModelInternal.T2T1,
                 firmware: '2.4.5',
                 bootloader: '2.0.4',
                 firmwareRevision: '*',
@@ -1094,7 +1094,7 @@ export const validateDeviceCompatibility = [
             features: {
                 ...getDeviceFeatures({
                     vendor: '*',
-                    model: DeviceModel.TT,
+                    internal_model: DeviceModelInternal.T2T1,
                     major_version: 2,
                     minor_version: 0,
                     patch_version: 4,
@@ -1112,7 +1112,7 @@ export const validateDeviceCompatibility = [
         description: 'validateDeviceCompatibility case 22',
         deviceConditions: [
             {
-                model: DeviceModel.TT,
+                model: DeviceModelInternal.T2T1,
                 firmware: '2.4.5',
                 bootloader: '2.0.4',
                 firmwareRevision: '*',
@@ -1124,7 +1124,7 @@ export const validateDeviceCompatibility = [
             features: {
                 ...getDeviceFeatures({
                     vendor: '*',
-                    model: DeviceModel.TT,
+                    internal_model: DeviceModelInternal.T2T1,
                     major_version: 2,
                     minor_version: 0,
                     patch_version: 4,
@@ -1142,7 +1142,7 @@ export const validateDeviceCompatibility = [
         description: 'validateDeviceCompatibility case 23',
         deviceConditions: [
             {
-                model: DeviceModel.TT,
+                model: DeviceModelInternal.T2T1,
                 firmware: '2.4.5',
                 bootloader: '2.0.3',
                 firmwareRevision: '*',
@@ -1154,7 +1154,7 @@ export const validateDeviceCompatibility = [
             features: {
                 ...getDeviceFeatures({
                     vendor: '*',
-                    model: DeviceModel.TT,
+                    internal_model: DeviceModelInternal.T2T1,
                     major_version: 2,
                     minor_version: 0,
                     patch_version: 4,
@@ -1172,7 +1172,7 @@ export const validateDeviceCompatibility = [
         description: 'validateDeviceCompatibility case 24',
         deviceConditions: [
             {
-                model: DeviceModel.T2B1,
+                model: DeviceModelInternal.T2B1,
                 firmware: '2.6.0',
                 bootloader: '2.1.5',
                 firmwareRevision: '*',
@@ -1184,7 +1184,7 @@ export const validateDeviceCompatibility = [
             features: {
                 ...getDeviceFeatures({
                     vendor: 'trezor.io',
-                    model: DeviceModel.T2B1,
+                    internal_model: DeviceModelInternal.T2B1,
                     major_version: 2,
                     minor_version: 1,
                     patch_version: 5,
@@ -1202,7 +1202,7 @@ export const validateDeviceCompatibility = [
         description: 'validateDeviceCompatibility case 25',
         deviceConditions: [
             {
-                model: DeviceModel.T2B1,
+                model: DeviceModelInternal.T2B1,
                 firmware: '2',
                 bootloader: '*',
                 firmwareRevision: '123456',
@@ -1214,7 +1214,7 @@ export const validateDeviceCompatibility = [
             features: {
                 ...getDeviceFeatures({
                     vendor: 'trezor.io',
-                    model: DeviceModel.T2B1,
+                    internal_model: DeviceModelInternal.T2B1,
                     major_version: 2,
                     minor_version: 6,
                     patch_version: 0,
@@ -1224,6 +1224,95 @@ export const validateDeviceCompatibility = [
             firmwareType: 'regular',
         },
         result: true,
+    },
+    {
+        description: 'validateDeviceCompatibility case 26',
+        deviceConditions: [
+            {
+                model: 'T',
+                firmware: '2',
+                bootloader: '*',
+                firmwareRevision: '123456',
+                variant: '*',
+                vendor: 'trezor.io',
+            },
+            {
+                model: DeviceModelInternal.T2T1,
+                firmware: '2',
+                bootloader: '*',
+                firmwareRevision: '123456',
+                variant: '*',
+                vendor: 'trezor.io',
+            },
+        ],
+        device: {
+            features: {
+                ...getDeviceFeatures({
+                    vendor: 'trezor.io',
+                    internal_model: DeviceModelInternal.T2T1,
+                    major_version: 2,
+                    minor_version: 6,
+                    patch_version: 0,
+                    revision: '123456',
+                }),
+            },
+            firmwareType: 'regular',
+        },
+        result: true,
+    },
+    {
+        description: 'validateDeviceCompatibility case 27',
+        deviceConditions: [
+            {
+                model: '1',
+                firmware: '1',
+                bootloader: '*',
+                firmwareRevision: '123456',
+                variant: '*',
+                vendor: 'trezor.io',
+            },
+        ],
+        device: {
+            features: {
+                ...getDeviceFeatures({
+                    vendor: 'trezor.io',
+                    internal_model: DeviceModelInternal.T1B1,
+                    major_version: 1,
+                    minor_version: 10,
+                    patch_version: 0,
+                    revision: '123456',
+                }),
+            },
+            firmwareType: 'regular',
+        },
+        result: false,
+    },
+    {
+        description: 'validateDeviceCompatibility case 26',
+        deviceConditions: [
+            {
+                model: DeviceModelInternal.T1B1,
+                firmware: '1',
+                bootloader: '*',
+                firmwareRevision: '123456',
+                variant: '*',
+                vendor: 'trezor.io',
+            },
+        ],
+        device: {
+            features: {
+                ...getDeviceFeatures({
+                    vendor: 'trezor.io',
+                    model: '1',
+                    major_version: 1,
+                    minor_version: 10,
+                    patch_version: 0,
+                    revision: '123456',
+                }),
+            },
+            firmwareType: 'regular',
+        },
+        result: false,
     },
 ];
 
@@ -1558,7 +1647,7 @@ export const getValidMessages = [
                 {
                     devices: [
                         {
-                            model: DeviceModel.T1,
+                            model: DeviceModelInternal.T1B1,
                             firmware: '1.0.2',
                             firmwareRevision: '*',
                             bootloader: '*',
@@ -1566,7 +1655,7 @@ export const getValidMessages = [
                             vendor: 'trezor.io',
                         },
                         {
-                            model: DeviceModel.TT,
+                            model: DeviceModelInternal.T2T1,
                             firmware: '2.1.1',
                             firmwareRevision: '*',
                             bootloader: '*',
@@ -1596,7 +1685,7 @@ export const getValidMessages = [
                 {
                     devices: [
                         {
-                            model: DeviceModel.TT,
+                            model: DeviceModelInternal.T2T1,
                             firmware: '2.2.1',
                             firmwareRevision: '*',
                             bootloader: '*',
@@ -1626,7 +1715,7 @@ export const getValidMessages = [
                 {
                     devices: [
                         {
-                            model: DeviceModel.TT,
+                            model: DeviceModelInternal.T2T1,
                             firmware: '2.1.1',
                             firmwareRevision: '*',
                             bootloader: '*',
@@ -1660,7 +1749,7 @@ export const getValidMessages = [
                 {
                     devices: [
                         {
-                            model: DeviceModel.TT,
+                            model: DeviceModelInternal.T2T1,
                             firmware: '2.1.1',
                             firmwareRevision: '*',
                             bootloader: '*',
@@ -1710,7 +1799,7 @@ export const getValidMessages = [
                 {
                     devices: [
                         {
-                            model: DeviceModel.TT,
+                            model: DeviceModelInternal.T2T1,
                             firmware: '*',
                             firmwareRevision: 'fae8ac',
                             bootloader: '2.0.4',
@@ -1728,7 +1817,7 @@ export const getValidMessages = [
                     capabilities: ['Capability_Bitcoin'],
                     revision: 'fae8ac',
                     bootloader_mode: true,
-                    model: DeviceModel.TT,
+                    internal_model: DeviceModelInternal.T2T1,
                     major_version: 2,
                     minor_version: 0,
                     patch_version: 4,
