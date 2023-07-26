@@ -12,8 +12,11 @@ import { useAnchor } from 'src/hooks/suite/useAnchor';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { getPlatformLanguages } from '@trezor/env-utils';
 
-const onlyComplete = (locale: [string, LocaleInfo]): locale is [Locale, LocaleInfo] =>
-    !!locale[1].complete;
+const officialLanguage = (locale: [string, LocaleInfo]): locale is [Locale, LocaleInfo] =>
+    !!locale[1].complete && !!locale[1].official;
+
+const communityLanguage = (locale: [string, LocaleInfo]): locale is [Locale, LocaleInfo] =>
+    !!locale[1].complete && !locale[1].official;
 
 const useLanguageOptions = () => {
     const { translationString } = useTranslation();
@@ -31,9 +34,14 @@ const useLanguageOptions = () => {
             },
             {
                 options: Object.entries(LANGUAGES)
-                    .filter(onlyComplete)
-                    .map(([value, { name }]) => ({ value, label: name })),
+                    .filter(officialLanguage)
+                    .map(([value, { name }]) => ({ value, label: `${name} (${translationString('TR_LANGUAGE_OFFICIAL')})` }))
             },
+            {
+                options: Object.entries(LANGUAGES)
+                .filter(communityLanguage)
+                .map(([value, { name }]) => ({ value, label: `${name} (${translationString('TR_LANGUAGE_COMMUNITY')})` })),
+            }
         ],
         [systemOption],
     );

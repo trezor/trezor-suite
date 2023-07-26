@@ -2703,6 +2703,16 @@ export default defineMessages({
         defaultMessage: 'Language',
         id: 'TR_LANGUAGE',
     },
+    TR_LANGUAGE_COMMUNITY: {
+        id: 'TR_LANGUAGE_COMMUNITY',
+        defaultMessage: 'Community translation',
+        description: 'The translation is maintained by the community',
+    },
+    TR_LANGUAGE_OFFICIAL: {
+        id: 'TR_LANGUAGE_OFFICIAL',
+        defaultMessage: 'Official language',
+        description: 'Officially supported language',
+    },
     TR_LEARN: {
         defaultMessage: 'Learn',
         description: 'Link to Suite Guide.',
