@@ -13,7 +13,7 @@ import { getSuiteReadyPayload } from 'src/utils/suite/analytics';
 import { addSentryBreadcrumb, setSentryContext, setSentryTag } from 'src/utils/suite/sentry';
 import { AppState, Action, Dispatch } from 'src/types/suite';
 
-import { getBootloaderVersion, getDeviceModel, getFirmwareVersion } from '@trezor/device-utils';
+import { getBootloaderVersion, getFirmwareVersion } from '@trezor/device-utils';
 import { DEVICE, TRANSPORT } from '@trezor/connect';
 import { accountsActions, blockchainActions } from '@suite-common/wallet-core';
 import { analyticsActions } from '@suite-common/analytics';
@@ -89,7 +89,7 @@ const sentryMiddleware =
                     firmware: getFirmwareVersion(action.payload),
                     isBitcoinOnly: action.payload.firmwareType === 'bitcoin-only',
                     bootloader: getBootloaderVersion(action.payload),
-                    model: getDeviceModel(state.suite.device),
+                    model: state.suite.device?.features?.internal_model,
                 });
                 break;
             }

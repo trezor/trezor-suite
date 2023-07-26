@@ -1,4 +1,4 @@
-import { getDeviceModel, getFirmwareType, getFirmwareVersion } from '@trezor/device-utils';
+import { getFirmwareType, getFirmwareVersion } from '@trezor/device-utils';
 
 import {
     getCommitHash,
@@ -21,9 +21,9 @@ const getDeviceInfo = (device?: TrezorDevice) => {
     if (!device?.features) {
         return '';
     }
-    return `model ${getDeviceModel(device)} ${getFirmwareVersion(device)} ${getFirmwareType(
+    return `Trezor ${device.features.internal_model} ${getFirmwareVersion(
         device,
-    )} (revision ${device.features.revision})`;
+    )} ${getFirmwareType(device)} (revision ${device.features.revision})`;
 };
 
 const getSuiteInfo = () =>
