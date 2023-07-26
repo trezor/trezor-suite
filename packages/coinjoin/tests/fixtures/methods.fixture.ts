@@ -41,6 +41,7 @@ export const BLOCKS = [
                         addresses: ['mkUzYq8aQ4xzgPoCw8QVsRzkn1dceiPzmi'],
                         isAddress: true,
                         value: '1578625117',
+                        txid: 'foo',
                     },
                 ],
                 vout: [
@@ -125,6 +126,7 @@ export const BLOCKS = [
                         ],
                         isAddress: true,
                         value: '1000000000',
+                        txid: 'bar',
                     },
                 ],
                 vout: [
@@ -257,6 +259,7 @@ export const BLOCKS = [
                         ],
                         isAddress: true,
                         value: '999999311',
+                        txid: 'baz',
                     },
                 ],
                 vout: [

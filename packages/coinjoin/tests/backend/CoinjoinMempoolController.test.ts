@@ -79,4 +79,22 @@ describe('CoinjoinMempoolController', () => {
         await mempool.init();
         expect(mempool.getTransactions()).toEqual([TXS[1], TXS[3], TXS[4]]);
     });
+
+    it('Replace-by-fee', async () => {
+        const outpointCollision = { txid: 'foo', vout: 3 };
+        const a1 = TXS[1];
+        a1.vin[0] = { ...a1.vin[0], ...outpointCollision };
+        const b = TXS[2];
+        const a2 = TXS[4];
+        a2.vin[1] = { ...a2.vin[1], ...outpointCollision };
+
+        client.setMempoolTxs([a1]);
+        await mempool.start();
+        await mempool.init();
+        expect(mempool.getTransactions()).toEqual([a1]);
+        client.fireTx(b);
+        expect(mempool.getTransactions()).toEqual([a1, b]);
+        client.fireTx(a2);
+        expect(mempool.getTransactions()).toEqual([b, a2]);
+    });
 });
