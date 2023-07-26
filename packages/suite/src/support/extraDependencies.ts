@@ -55,8 +55,9 @@ export const extraDependencies: ExtraDependencies = {
         selectLocalCurrency: (state: AppState) => state.wallet.settings.localCurrency,
         selectIsPendingTransportEvent,
         selectDebugSettings: (state: AppState) => state.suite.settings.debug,
-        selectMetadata: (state: AppState) => state.metadata,
+        selectRouterApp: (state: AppState) => state.router.app,
         selectDevice: (state: AppState) => state.suite.device,
+        selectMetadata: (state: AppState) => state.metadata,
         selectDiscoveryForDevice: (state: DiscoveryRootState & { suite: SuiteState }) =>
             selectDiscoveryByDeviceState(state, state.suite.device?.state),
     },

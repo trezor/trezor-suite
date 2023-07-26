@@ -1,6 +1,7 @@
 import { ActionCreatorWithoutPayload, ActionCreatorWithPayload, AnyAction } from '@reduxjs/toolkit';
 
 export * from './device';
+export * from './firmware';
 export * from './guide';
 export * from './sign';
 export * from './github';

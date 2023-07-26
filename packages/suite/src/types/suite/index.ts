@@ -1,5 +1,13 @@
 import type { ThunkDispatch, ThunkAction as TAction } from 'redux-thunk';
 import type { Store as ReduxStore } from 'redux';
+
+import { analyticsActions } from '@suite-common/analytics';
+import type { ObjectValues } from '@trezor/type-utils';
+import type { UiEvent, DeviceEvent, TransportEvent, BlockchainEvent } from '@trezor/connect';
+import { transactionsActions } from '@suite-common/wallet-core';
+import { notificationsActions } from '@suite-common/toast-notifications';
+import { messageSystemActions } from '@suite-common/message-system';
+
 import type { RouterAction } from 'src/actions/suite/routerActions';
 import type { AppState } from 'src/reducers/store';
 import type { StorageAction } from 'src/actions/suite/storageActions';
@@ -18,13 +26,6 @@ import type { SUITE } from 'src/actions/suite/constants';
 import type { GuideAction } from 'src/actions/suite/guideActions';
 import type { Route } from 'src/constants/suite/routes';
 import { firmwareActions } from 'src/actions/firmware/firmwareActions';
-
-import { analyticsActions } from '@suite-common/analytics';
-import type { ObjectValues } from '@trezor/type-utils';
-import type { UiEvent, DeviceEvent, TransportEvent, BlockchainEvent } from '@trezor/connect';
-import { transactionsActions } from '@suite-common/wallet-core';
-import { notificationsActions } from '@suite-common/toast-notifications';
-import { messageSystemActions } from '@suite-common/message-system';
 import { discoveryActions } from 'src/actions/wallet/discoveryActions';
 
 // reexport
@@ -114,9 +115,4 @@ export interface TorBootstrap {
     current: number;
     total: number;
     isSlow?: boolean;
-}
-
-export enum FirmwareType {
-    BitcoinOnly = 'Bitcoin-only',
-    Universal = 'Universal',
 }

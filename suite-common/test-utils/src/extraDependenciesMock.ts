@@ -72,6 +72,7 @@ export const extraDependenciesMock: ExtraDependencies = {
             showDebugMenu: false,
             transports: [],
         }),
+        selectRouterApp: mockSelector('selectRouterApp', 'unknown'),
         selectMetadata: mockSelector('selectMetadata', {}),
         selectDevice: mockSelector('selectDevice', {
             ...testMocks.getSuiteDevice(),

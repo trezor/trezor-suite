@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { valid, satisfies } from 'semver';
+
 import { getFirmwareVersion } from '@trezor/device-utils';
+
 import type { TrezorDevice } from 'src/types/suite';
 import { useDispatch } from 'src/hooks/suite';
 import { rebootToBootloader } from 'src/actions/firmware/firmwareActions';
@@ -51,7 +53,7 @@ export const useRebootRequest = (
             // else do nothing and wait for manual disconnection
             if (method === 'automatic') {
                 setPhase('wait-for-confirm');
-                dispatch(rebootToBootloader()).then(res => {
+                dispatch(rebootToBootloader()).unwrap().then(res => {
                     if (!res?.success) {
                         // If automatic reboot wasn't successful, fallback to 'manual' and return to 'initial'
                         setMethod('manual');
