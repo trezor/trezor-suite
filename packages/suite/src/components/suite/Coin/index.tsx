@@ -75,7 +75,6 @@ export const CoinWrapper = styled.button<{
     border: 1.5px solid ${props => props.theme.STROKE_GREY};
     background: ${props => props.theme.BG_WHITE};
     border-radius: 9999px;
-    margin: 0 13px 18px 0;
     height: 47px;
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     color: ${props => props.theme.TYPE_DARK_GREY};

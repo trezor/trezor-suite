@@ -16,6 +16,7 @@ const Wrapper = styled.div`
     width: 100%;
     display: flex;
     flex-flow: wrap;
+    gap: 16px 12px;
 `;
 
 interface CoinsListProps {
