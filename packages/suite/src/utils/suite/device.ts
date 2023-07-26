@@ -1,6 +1,10 @@
-import { Device, UnavailableCapability, FirmwareRelease } from '@trezor/connect';
+import {
+    Device,
+    UnavailableCapability,
+    FirmwareRelease,
+    DeviceModelInternal,
+} from '@trezor/connect';
 import { TrezorDevice, AcquiredDevice } from 'src/types/suite';
-import { DeviceModel, getDeviceModel } from '@trezor/device-utils';
 import * as URLS from '@trezor/urls';
 
 /**
@@ -229,41 +233,41 @@ export const getSelectedDevice = (
 };
 
 export const getChangelogUrl = (device: TrezorDevice, revision?: string | null) => {
-    const deviceModel = getDeviceModel(device);
+    const deviceModelInternal = device.features?.internal_model;
     const commit = revision || 'master';
-    const folder = deviceModel === DeviceModel.T1 ? 'legacy/firmware' : 'core';
+    const folder = deviceModelInternal === DeviceModelInternal.T1B1 ? 'legacy/firmware' : 'core';
 
     return `https://github.com/trezor/trezor-firmware/blob/${commit}/${folder}/CHANGELOG.md`;
 };
 
 export const getCheckBackupUrl = (device?: TrezorDevice) => {
-    const deviceModel = getDeviceModel(device);
+    const deviceModelInternal = device?.features?.internal_model;
 
-    if (!deviceModel) {
+    if (!deviceModelInternal) {
         return '';
     }
 
-    return URLS[`HELP_CENTER_DRY_RUN_T${deviceModel}_URL`];
+    return URLS[`HELP_CENTER_DRY_RUN_${deviceModelInternal}_URL`];
 };
 
 export const getPackagingUrl = (device?: TrezorDevice) => {
-    const deviceModel = getDeviceModel(device);
+    const deviceModelInternal = device?.features?.internal_model;
 
-    if (!deviceModel) {
+    if (!deviceModelInternal) {
         return '';
     }
 
-    return URLS[`HELP_CENTER_PACKAGING_T${deviceModel}_URL`];
+    return URLS[`HELP_CENTER_PACKAGING_${deviceModelInternal}_URL`];
 };
 
 export const getFirmwareDowngradeUrl = (device?: TrezorDevice) => {
-    const deviceModel = getDeviceModel(device);
+    const deviceModelInternal = device?.features?.internal_model;
 
-    if (!deviceModel) {
+    if (!deviceModelInternal) {
         return '';
     }
 
-    return URLS[`HELP_CENTER_FW_DOWNGRADE_T${deviceModel}_URL`];
+    return URLS[`HELP_CENTER_FW_DOWNGRADE_${deviceModelInternal}_URL`];
 };
 
 /**
