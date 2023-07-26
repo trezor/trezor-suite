@@ -16,7 +16,7 @@ export default class RebootToBootloader extends AbstractMethod<'rebootToBootload
         this.useDeviceState = false;
         this.firmwareRange = getFirmwareRange(this.name, null, {
             1: { min: '1.10.0', max: '0' },
-            2: { min: '0', max: '0' },
+            2: { min: '2.6.0', max: '0' },
         });
     }
 

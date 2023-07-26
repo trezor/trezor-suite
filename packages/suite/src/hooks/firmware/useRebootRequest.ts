@@ -20,14 +20,14 @@ export const useRebootRequest = (
     const [phase, setPhase] = useState<RebootPhase>('initial');
 
     // Default reboot method is 'manual'. If the device is connected when
-    // the hook is first called and it is T1 with sufficient fw version,
+    // the hook is first called and fw version is sufficient,
     // then the 'automatic' method is enabled.
     const [method, setMethod] = useState<RebootMethod>(() => {
         if (!device?.connected || !device?.features) return 'manual';
         const deviceFwVersion = getFirmwareVersion(device);
         return requestedMode === 'bootloader' &&
             valid(deviceFwVersion) &&
-            satisfies(deviceFwVersion, '>=1.10.0 <2.0.0')
+            satisfies(deviceFwVersion, '>=1.10.0 <2.0.0 || >=2.6.0')
             ? 'automatic'
             : 'manual';
     });
