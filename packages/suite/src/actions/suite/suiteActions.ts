@@ -1,17 +1,10 @@
-import TrezorConnect, { Device, DEVICE } from '@trezor/connect';
-import { analytics, EventType } from '@trezor/suite-analytics';
-import { desktopApi, HandshakeElectron } from '@trezor/suite-desktop-api';
 import { TorStatus } from 'src/types/suite';
-
 import * as comparisonUtils from 'src/utils/suite/comparisonUtils';
 import * as deviceUtils from 'src/utils/suite/device';
 import { isOnionUrl } from 'src/utils/suite/tor';
-import { getCustomBackends } from '@suite-common/wallet-utils';
 import { sortByTimestamp } from 'src/utils/suite/device';
-import { notificationsActions } from '@suite-common/toast-notifications';
 import * as modalActions from 'src/actions/suite/modalActions';
 import * as firmwareActions from 'src/actions/firmware/firmwareActions';
-import { SUITE, METADATA } from './constants';
 import type { Locale } from 'src/config/suite/languages';
 import type {
     Action,
@@ -29,6 +22,14 @@ import {
 } from 'src/reducers/suite/suiteReducer';
 import type { TranslationKey } from 'src/components/suite/Translation/components/BaseTranslation';
 import { createAction } from '@reduxjs/toolkit';
+
+import { notificationsActions } from '@suite-common/toast-notifications';
+import { getCustomBackends } from '@suite-common/wallet-utils';
+import { desktopApi, HandshakeElectron } from '@trezor/suite-desktop-api';
+import { analytics, EventType } from '@trezor/suite-analytics';
+import TrezorConnect, { Device, DEVICE } from '@trezor/connect';
+
+import { SUITE, METADATA } from './constants';
 
 export type SuiteAction =
     | { type: typeof SUITE.INIT }
@@ -77,8 +78,10 @@ export type SuiteAction =
     | { type: typeof SUITE.APP_CHANGED; payload: AppState['router']['app'] }
     | {
           type: typeof SUITE.ADD_BUTTON_REQUEST;
-          device: TrezorDevice | undefined;
-          payload?: ButtonRequest;
+          payload: {
+              device: TrezorDevice | undefined;
+              buttonRequest?: ButtonRequest;
+          };
       }
     | {
           type: typeof SUITE.SET_THEME;
@@ -95,16 +98,21 @@ export const desktopHandshake = (payload: HandshakeElectron): SuiteAction => ({
     payload,
 });
 
-export const removeButtonRequests = (device: TrezorDevice | undefined) => ({
-    type: SUITE.ADD_BUTTON_REQUEST,
-    device,
-});
+export const removeButtonRequests = createAction(
+    SUITE.ADD_BUTTON_REQUEST,
+    ({ device }: { device: TrezorDevice | null }) => ({
+        payload: {
+            device,
+        },
+    }),
+);
 
-export const addButtonRequest = (device: TrezorDevice | undefined, payload: ButtonRequest) => ({
-    type: SUITE.ADD_BUTTON_REQUEST,
-    device,
-    payload,
-});
+export const addButtonRequest = createAction(
+    SUITE.ADD_BUTTON_REQUEST,
+    (payload: { device: TrezorDevice | undefined; buttonRequest: ButtonRequest }) => ({
+        payload,
+    }),
+);
 
 export const setTheme = (
     variant: AppState['suite']['settings']['theme']['variant'],

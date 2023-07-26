@@ -1,11 +1,16 @@
-import * as firmwareActions from 'src/actions/firmware/firmwareActions';
+import { useDispatch } from 'react-redux';
+
+import { checkFirmwareAuthenticity, firmwareActions } from 'src/actions/firmware/firmwareActions';
+import { firmwareCustom, firmwareUpdate } from 'src/actions/firmware/firmwareThunks';
 import { useActions, useSelector } from 'src/hooks/suite';
 import { isWebUsb } from 'src/utils/suite/transport';
 import { MODAL } from 'src/actions/suite/constants';
+import { FirmwareStatus, selectFirmware } from 'src/reducers/firmware/firmwareReducer';
 
 export const useFirmware = () => {
-    const { firmware, transport, modal } = useSelector(state => ({
-        firmware: state.firmware,
+    const dispatch = useDispatch();
+    const firmware = useSelector(selectFirmware);
+    const { transport, modal } = useSelector(state => ({
         modal: state.modal,
         transport: state.suite.transport,
     }));
@@ -15,17 +20,18 @@ export const useFirmware = () => {
         modal.windowType === 'ButtonRequest_FirmwareCheck';
 
     const actions = useActions({
-        toggleHasSeed: firmwareActions.toggleHasSeed,
-        setStatus: firmwareActions.setStatus,
-        firmwareUpdate: firmwareActions.firmwareUpdate,
-        firmwareCustom: firmwareActions.firmwareCustom,
-        resetReducer: firmwareActions.resetReducer,
-        checkFirmwareAuthenticity: firmwareActions.checkFirmwareAuthenticity,
+        firmwareUpdate,
+        firmwareCustom,
+        checkFirmwareAuthenticity,
     });
 
     return {
         ...firmware,
         ...actions,
+        toggleHasSeed: () => dispatch(firmwareActions.toggleHasSeed()),
+        setStatus: (status: FirmwareStatus | 'error') =>
+            dispatch(firmwareActions.setStatus(status)),
+        resetReducer: () => dispatch(firmwareActions.resetReducer()),
         isWebUSB: isWebUsb(transport),
         showFingerprintCheck,
     };

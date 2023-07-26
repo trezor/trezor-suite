@@ -13,7 +13,7 @@ import suiteReducers from 'src/reducers/suite';
 import walletReducers from 'src/reducers/wallet';
 import onboardingReducers from 'src/reducers/onboarding';
 import recoveryReducers from 'src/reducers/recovery';
-import firmwareReducers from 'src/reducers/firmware';
+import { prepareFirmwareReducer } from 'src/reducers/firmware';
 import backupReducers from 'src/reducers/backup';
 
 // toastMiddleware can be used only in suite-desktop and suite-web
@@ -26,12 +26,14 @@ import { addLog } from '@suite-common/logger';
 import { desktopReducer } from './desktop';
 import { extraDependencies } from '../support/extraDependencies';
 
+const firmwareReducer = prepareFirmwareReducer(extraDependencies);
+
 const rootReducer = combineReducers({
     ...suiteReducers,
     onboarding: onboardingReducers,
     wallet: walletReducers,
     recovery: recoveryReducers,
-    firmware: firmwareReducers,
+    firmware: firmwareReducer,
     backup: backupReducers,
     desktop: desktopReducer,
 });

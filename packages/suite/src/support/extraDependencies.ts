@@ -5,11 +5,12 @@ import * as cardanoStakingActions from 'src/actions/wallet/cardanoStakingActions
 import * as walletSettingsActions from 'src/actions/settings/walletSettingsActions';
 import { selectIsPendingTransportEvent } from 'src/reducers/suite/deviceReducer';
 import { fixLoadedCoinjoinAccount } from 'src/utils/wallet/coinjoinUtils';
-import { NetworkSymbol } from 'src/types/wallet';
 
 import { resolveStaticPath } from '@suite-common/suite-utils';
 import { getAccountKey } from '@suite-common/wallet-utils';
-import type { BlockchainState, FiatRatesState, TransactionsState } from '@suite-common/wallet-core';
+import type { FiatRatesState } from '@suite-common/wallet-core';
+import { TransactionsState, BlockchainState } from '@suite-common/wallet-core';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 import { ExtraDependencies } from '@suite-common/redux-utils';
 
 import * as suiteActions from '../actions/suite/suiteActions';
@@ -82,6 +83,11 @@ export const extraDependencies: ExtraDependencies = {
             ),
         storageLoadFiatRates: (state: FiatRatesState, { payload }: StorageLoadAction) => {
             state.coins = payload.fiatRates;
+        },
+        storageLoadFirmware: (state, { payload }: StorageLoadAction) => {
+            if (payload.firmware?.firmwareHashInvalid) {
+                state.firmwareHashInvalid = payload.firmware.firmwareHashInvalid;
+            }
         },
         storageLoadDiscovery: (_, { payload }: StorageLoadAction) => payload.discovery,
     },

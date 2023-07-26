@@ -6,7 +6,6 @@ import { GRAPH, SEND, COINMARKET_COMMON, FORM_DRAFT } from 'src/actions/wallet/c
 import * as COINJOIN from 'src/actions/wallet/constants/coinjoinConstants';
 import * as storageActions from 'src/actions/suite/storageActions';
 import { SUITE, METADATA, STORAGE } from 'src/actions/suite/constants';
-import { FIRMWARE } from 'src/actions/firmware/constants';
 import { selectDiscoveryByDeviceState } from 'src/reducers/wallet/discoveryReducer';
 import * as metadataActions from 'src/actions/suite/metadataActions';
 import { isDeviceRemembered } from 'src/utils/suite/device';
@@ -15,6 +14,7 @@ import type { AppState, Action as SuiteAction, Dispatch } from 'src/types/suite'
 import type { WalletAction } from 'src/types/wallet';
 import { isAnyOf } from '@reduxjs/toolkit';
 import { discoveryActions } from 'src/actions/wallet/discoveryActions';
+import { firmwareActions } from 'src/actions/firmware/firmwareActions';
 
 import { messageSystemActions } from '@suite-common/message-system';
 import {
@@ -233,7 +233,7 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 case FORM_DRAFT.REMOVE_DRAFT:
                     storageActions.removeFormDraft(action.key);
                     break;
-                case FIRMWARE.SET_HASH_INVALID:
+                case firmwareActions.setHashInvalid.type:
                     api.dispatch(storageActions.saveFirmware());
                     break;
 

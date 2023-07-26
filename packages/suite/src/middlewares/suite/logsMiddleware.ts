@@ -11,12 +11,12 @@ import {
 import { WALLET_SETTINGS } from 'src/actions/settings/constants';
 import * as walletSettingsActions from 'src/actions/settings/walletSettingsActions';
 import { redactTransactionIdFromAnchor } from 'src/utils/suite/analytics';
+import { discoveryActions } from 'src/actions/wallet/discoveryActions';
 
 import { addLog } from '@suite-common/logger';
 import { TRANSPORT, DEVICE } from '@trezor/connect';
 import { redactUserPathFromString } from '@trezor/utils';
 import { analyticsActions } from '@suite-common/analytics';
-import { discoveryActions } from 'src/actions/wallet/discoveryActions';
 
 const log =
     (api: MiddlewareAPI<Dispatch, AppState>) =>
@@ -143,12 +143,12 @@ const log =
                 );
                 break;
             case SUITE.ADD_BUTTON_REQUEST:
-                if (action.payload) {
+                if (action.payload.buttonRequest) {
                     api.dispatch(
                         addLog({
                             type: action.type,
                             payload: {
-                                code: action.payload.code,
+                                code: action.payload.buttonRequest.code,
                             },
                         }),
                     );

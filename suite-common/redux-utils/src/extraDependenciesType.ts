@@ -69,6 +69,7 @@ export type ExtraDependencies = {
         storageLoadAccounts: StorageLoadReducer;
         storageLoadTransactions: StorageLoadTransactionsReducer;
         storageLoadFiatRates: StorageLoadReducer;
+        storageLoadFirmware: StorageLoadReducer;
         storageLoadDiscovery: StorageLoadReducer;
     };
     utils: {

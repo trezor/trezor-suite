@@ -1,21 +1,24 @@
 import { SUITE } from 'src/actions/suite/constants';
-import { FIRMWARE } from 'src/actions/firmware/constants';
-import * as firmwareActions from 'src/actions/firmware/firmwareActions';
+import { firmwareActions, validateFirmwareHash } from 'src/actions/firmware/firmwareActions';
+import { firmwareUpdate } from 'src/actions/firmware/firmwareThunks';
 import type { MiddlewareAPI } from 'redux';
 import type { AppState, Action, Dispatch } from 'src/types/suite';
 
-const firmware =
+import { selectFirmware } from '../../reducers/firmware/firmwareReducer';
+
+const firmwareMiddleware =
     (api: MiddlewareAPI<Dispatch, AppState>) =>
     (next: Dispatch) =>
     (action: Action): Action => {
-        const { firmware, router } = api.getState();
+        const firmware = selectFirmware(api.getState());
+        const { router } = api.getState();
         const { prevDevice } = firmware;
         // pass action
         next(action);
 
         const { status, intermediaryInstalled } = api.getState().firmware;
         switch (action.type) {
-            case FIRMWARE.SET_UPDATE_STATUS: {
+            case firmwareActions.setStatus.type: {
                 const { device } = api.getState().suite;
 
                 // device should always be connected here - button setting waiting-for-bootloader should be disabled when
@@ -60,7 +63,7 @@ const firmware =
                     console.warn(
                         'Device with intermediary firmware detected. Installing the latest update.',
                     );
-                    api.dispatch(firmwareActions.firmwareUpdate(firmware.targetType));
+                    api.dispatch(firmwareUpdate(firmware.targetType));
                     break;
                 }
 
@@ -75,7 +78,7 @@ const firmware =
                     // device id is not set in onboarding fresh device (no firmware installed, no device id, is in bootloader mode)
                     (!prevDevice?.id || prevDevice.id === action.payload.id)
                 ) {
-                    api.dispatch(firmwareActions.validateFirmwareHash(action.payload));
+                    api.dispatch(validateFirmwareHash(action.payload));
                 }
                 break;
             case SUITE.APP_CHANGED:
@@ -90,4 +93,4 @@ const firmware =
 
         return action;
     };
-export default firmware;
+export default firmwareMiddleware;

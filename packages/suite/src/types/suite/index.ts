@@ -11,13 +11,13 @@ import type { ProtocolAction } from 'src/actions/suite/protocolActions';
 import type { DesktopUpdateAction } from 'src/actions/suite/desktopUpdateActions';
 import type { OnboardingAction } from 'src/actions/onboarding/onboardingActions';
 import type { WalletSettingsAction } from 'src/actions/settings/walletSettingsActions';
-import type { FirmwareAction } from 'src/actions/firmware/firmwareActions';
 import type { WalletAction } from 'src/types/wallet';
 import type { BackupAction } from 'src/actions/backup/backupActions';
 import type { RecoveryAction } from 'src/actions/recovery/recoveryActions';
 import type { SUITE } from 'src/actions/suite/constants';
 import type { GuideAction } from 'src/actions/suite/guideActions';
 import type { Route } from 'src/constants/suite/routes';
+import { firmwareActions } from 'src/actions/firmware/firmwareActions';
 
 import { analyticsActions } from '@suite-common/analytics';
 import type { ObjectValues } from '@trezor/type-utils';
@@ -54,6 +54,7 @@ export type MessageSystemAction = ReturnType<
     (typeof messageSystemActions)[keyof typeof messageSystemActions]
 >;
 type AnalyticsAction = ReturnType<(typeof analyticsActions)[keyof typeof analyticsActions]>;
+type FirmwareAction = ReturnType<(typeof firmwareActions)[keyof typeof firmwareActions]>;
 
 type DiscoveryAction = ReturnType<(typeof discoveryActions)[keyof typeof discoveryActions]>;
 
