@@ -899,16 +899,9 @@ export const restoreCoinjoinAccounts = () => (dispatch: Dispatch, getState: GetS
 
     // find all networks to restore
     const coinjoinNetworks = coinjoin.accounts.reduce<NetworkSymbol[]>((res, account) => {
-        // currently it is not possible to full restore session while using passphrase.
-        // related to @trezor/connect and inner-outer state
-        if (account.session && !account.session.paused) {
-            dispatch(coinjoinClientActions.pauseCoinjoinSession(account.key));
-        }
-
         if (!res.includes(account.symbol)) {
             return res.concat(account.symbol);
         }
-
         return res;
     }, []);
 
