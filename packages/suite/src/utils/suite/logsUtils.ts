@@ -23,7 +23,6 @@ import { getCustomBackends } from '@suite-common/wallet-utils';
 import {
     getBootloaderHash,
     getBootloaderVersion,
-    getDeviceModel,
     getFirmwareRevision,
     getFirmwareType,
     getFirmwareVersion,
@@ -215,7 +214,7 @@ export const getApplicationInfo = (state: AppState, hideSensitiveInfo: boolean) 
             mode: device.mode,
             connected: device.connected,
             passphraseProtection: device.features?.passphrase_protection,
-            model: getDeviceModel(device),
+            model: device.features?.internal_model,
             firmware: device.features ? getFirmwareVersion(device) : '',
             firmwareRevision: device.features ? getFirmwareRevision(device) : '',
             firmwareType: device.features ? getFirmwareType(device) : '',

@@ -66,7 +66,7 @@ describe('Analytics Events', () => {
             expect(deviceConnectEvent.isBitcoinOnly).to.equal('false');
             expect(deviceConnectEvent.totalDevices).to.equal('1');
             expect(deviceConnectEvent.language).to.equal('en-US');
-            expect(deviceConnectEvent.model).to.equal('T');
+            expect(deviceConnectEvent.model).to.equal('T2T1');
         });
 
         // transport-type

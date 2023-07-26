@@ -11,7 +11,6 @@ import { TRANSPORT, DEVICE } from '@trezor/connect';
 import {
     getBootloaderHash,
     getBootloaderVersion,
-    getDeviceModel,
     getFirmwareRevision,
     getFirmwareVersion,
     isDeviceInBootloaderMode,
@@ -85,7 +84,7 @@ const analyticsMiddleware =
                             isBitcoinOnly: action.payload.firmwareType === 'bitcoin-only',
                             totalDevices: getPhysicalDeviceCount(state.devices),
                             language: features.language,
-                            model: getDeviceModel(action.payload),
+                            model: features.internal_model,
                         },
                     });
                 } else {
