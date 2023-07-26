@@ -1,16 +1,17 @@
-import { Dispatch, GetState, AcquiredDevice, FirmwareType } from 'src/types/suite';
 import { createAction } from '@reduxjs/toolkit';
+
+import TrezorConnect, { Device, Unsuccessful } from '@trezor/connect';
+import { analytics, EventType } from '@trezor/suite-analytics';
+import { notificationsActions } from '@suite-common/toast-notifications';
+import { createThunk } from '@suite-common/redux-utils';
+import { FirmwareType, AcquiredDevice } from '@suite-common/suite-types';
+
 import {
     FirmwareStatus,
     selectFirmwareChallenge,
     selectFirmwareHash,
     selectIsCustomFirmware,
 } from 'src/reducers/firmware/firmwareReducer';
-import { selectDevice } from 'src/reducers/suite/suiteReducer';
-
-import TrezorConnect, { Device, Unsuccessful } from '@trezor/connect';
-import { analytics, EventType } from '@trezor/suite-analytics';
-import { notificationsActions } from '@suite-common/toast-notifications';
 
 const MODULE_PREFIX = '@firmware';
 
@@ -63,38 +64,48 @@ const toggleUseDevkit = createAction(`${MODULE_PREFIX}/toggle-use-devkit`, (payl
     payload,
 }));
 
-const handleFwHashError = (dispatch: Dispatch, getFirmwareHashResponse: Unsuccessful) => {
-    dispatch({
-        type: setError.type,
-        payload: `${getFirmwareHashResponse.payload.error}. Unable to validate firmware hash. If you want to check authenticity of newly installed firmware please proceed to device settings and reinstall firmware.`,
-    });
-    analytics.report({
-        type: EventType.FirmwareValidateHashError,
-        payload: {
-            error: getFirmwareHashResponse.payload.error,
-        },
-    });
-};
+const handleFwHashError = createThunk(
+    `${MODULE_PREFIX}/handleFwHashError`,
+    (getFirmwareHashResponse: Unsuccessful, { dispatch }) => {
+        dispatch({
+            type: setError.type,
+            payload: `${getFirmwareHashResponse.payload.error}. Unable to validate firmware hash. If you want to check authenticity of newly installed firmware please proceed to device settings and reinstall firmware.`,
+        });
+        analytics.report({
+            type: EventType.FirmwareValidateHashError,
+            payload: {
+                error: getFirmwareHashResponse.payload.error,
+            },
+        });
+    },
+);
 
-const handleFwHashMismatch = (dispatch: Dispatch, device: Device) => {
-    dispatch({
-        type: setHashInvalid.type,
-        // device.id should always be present here (device is initialized and in normal mode) during successful TrezorConnect.getFirmwareHash call
-        payload: device.id!,
-    });
-    dispatch({ type: setError.type, payload: 'Invalid hash' });
-    analytics.report({
-        type: EventType.FirmwareValidateHashMismatch,
-    });
-};
+const handleFwHashMismatch = createThunk(
+    `${MODULE_PREFIX}/handleFwHashMismatch`,
+    (device: Device, { dispatch }) => {
+        dispatch({
+            type: setHashInvalid.type,
+            // device.id should always be present here (device is initialized and in normal mode) during successful TrezorConnect.getFirmwareHash call
+            payload: device.id!,
+        });
+        dispatch({ type: setError.type, payload: 'Invalid hash' });
+        analytics.report({
+            type: EventType.FirmwareValidateHashMismatch,
+        });
+    },
+);
 
 /**
  * After installing a new firmware validate its hash (already saved into application state) with the result of
  * TrezorConnect.getFirmwareHash call
  */
-export const validateFirmwareHash =
-    (device: Device) => async (dispatch: Dispatch, getState: GetState) => {
-        const { app: prevApp } = getState().router;
+export const validateFirmwareHash = createThunk(
+    `${MODULE_PREFIX}/validateFirmwareHash`,
+    async (device: Device, { dispatch, getState, extra }) => {
+        const {
+            selectors: { selectRouterApp },
+        } = extra;
+        const prevApp = selectRouterApp(getState());
         const firmwareChallenge = selectFirmwareChallenge(getState());
         const firmwareHash = selectFirmwareHash(getState());
         const isCustom = selectIsCustomFirmware(getState());
@@ -132,17 +143,17 @@ export const validateFirmwareHash =
                         'Unexpected message', // TT
                     ].includes(fwHash.payload.error)
                 ) {
-                    handleFwHashMismatch(dispatch, device);
+                    handleFwHashMismatch(device);
                 } else {
                     // TrezorConnect error. Only 'softly' inform user that we were not able to
                     // validate firmware hash
-                    handleFwHashError(dispatch, fwHash);
+                    handleFwHashError(fwHash);
                 }
                 return;
             }
 
             if (fwHash.payload.hash !== firmwareHash) {
-                handleFwHashMismatch(dispatch, device);
+                handleFwHashMismatch(device);
                 return;
             }
         }
@@ -160,58 +171,73 @@ export const validateFirmwareHash =
         } else if (['outdated', 'required'].includes(device.firmware!)) {
             dispatch(setStatus('partially-done'));
         }
-    };
+    },
+);
 
-export const checkFirmwareAuthenticity = () => async (dispatch: Dispatch, getState: GetState) => {
-    const device = selectDevice(getState());
-    if (!device) {
-        throw new Error('device is not connected');
-    }
-    const result = await TrezorConnect.checkFirmwareAuthenticity({
-        device: {
-            path: device.path,
-        },
-    });
-    if (result.success) {
-        if (result.payload.valid) {
-            dispatch(
-                notificationsActions.addToast({ type: 'firmware-check-authenticity-success' }),
-            );
+export const checkFirmwareAuthenticity = createThunk(
+    `${MODULE_PREFIX}/checkFirmwareAuthenticity`,
+    async (_, { dispatch, getState, extra }) => {
+        const {
+            selectors: { selectDevice },
+        } = extra;
+        const device = selectDevice(getState());
+        if (!device) {
+            throw new Error('device is not connected');
+        }
+        const result = await TrezorConnect.checkFirmwareAuthenticity({
+            device: {
+                path: device.path,
+            },
+        });
+        if (result.success) {
+            if (result.payload.valid) {
+                dispatch(
+                    notificationsActions.addToast({ type: 'firmware-check-authenticity-success' }),
+                );
+            } else {
+                dispatch(
+                    notificationsActions.addToast({
+                        type: 'error',
+                        error: 'Firmware is not authentic!!!',
+                    }),
+                );
+            }
         } else {
             dispatch(
                 notificationsActions.addToast({
                     type: 'error',
-                    error: 'Firmware is not authentic!!!',
+                    error: `Unable to validate firmware: ${result.payload.error}`,
                 }),
             );
         }
-    } else {
-        dispatch(
-            notificationsActions.addToast({
-                type: 'error',
-                error: `Unable to validate firmware: ${result.payload.error}`,
-            }),
-        );
-    }
-};
+    },
+);
 
-export const rebootToBootloader = () => async (dispatch: Dispatch, getState: GetState) => {
-    const device = selectDevice(getState());
+export const rebootToBootloader = createThunk(
+    `${MODULE_PREFIX}/rebootToBootloader`,
+    async (_, { dispatch, getState, extra }) => {
+        const {
+            selectors: { selectDevice },
+        } = extra;
+        const device = selectDevice(getState());
 
-    if (!device) return;
+        if (!device) return;
 
-    const response = await TrezorConnect.rebootToBootloader({
-        device: {
-            path: device.path,
-        },
-    });
+        const response = await TrezorConnect.rebootToBootloader({
+            device: {
+                path: device.path,
+            },
+        });
 
-    if (!response.success) {
-        dispatch(notificationsActions.addToast({ type: 'error', error: response.payload.error }));
-    }
+        if (!response.success) {
+            dispatch(
+                notificationsActions.addToast({ type: 'error', error: response.payload.error }),
+            );
+        }
 
-    return response;
-};
+        return response;
+    },
+);
 
 export const firmwareActions = {
     setStatus,

@@ -1,7 +1,6 @@
 import { RouterAppWithParams, SettingsBackRoute } from 'src/constants/suite/routes';
 import { ROUTER } from 'src/actions/suite/constants';
 import { Action } from 'src/types/suite';
-
 import type { AnchorType } from 'src/constants/suite/anchors';
 
 export type RouterState = {
@@ -53,4 +52,5 @@ export const selectRouterParams = (state: RouterRootState) => state.router.param
 
 export const selectRouteName = (state: RouterRootState) => state.router.route?.name;
 
+export const selectRouterApp = (state: RouterRootState) => state.router.app;
 export default routerReducer;

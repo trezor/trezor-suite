@@ -34,6 +34,8 @@ export type ExtraDependencies = {
         // todo: we do not want to, so far, transfer coinjoin to @suite-common
         // but this is exactly what I need to get DebugModeOptions type instead of any
         selectDebugSettings: SuiteCompatibleSelector<any>;
+        selectRouterApp: SuiteCompatibleSelector<string>;
+        selectDevice: SuiteCompatibleSelector<TrezorDevice | undefined>;
     };
     // You should only use ActionCreatorWithPayload from redux-toolkit!
     // That means you will need to convert actual action creators in packages/suite to use createAction from redux-toolkit,

@@ -70,6 +70,8 @@ export const extraDependenciesMock: ExtraDependencies = {
             showDebugMenu: false,
             transports: [],
         }),
+        selectRouterApp: mockSelector('selectRouterApp', 'unknown'),
+        selectDevice: mockSelector('selectDevice', undefined),
     },
     actions: {
         setAccountAddMetadata: mockAction('setAccountAddMetadata'),
