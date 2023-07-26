@@ -4108,20 +4108,20 @@ export default defineMessages({
         id: 'TR_ADVANCED_RECOVERY_NOT_SURE',
         defaultMessage: 'Not sure how the advanced method works?',
     },
-    TR_CHECK_RECOVERY_SEED_DESC_T1: {
-        id: 'TR_CHECK_RECOVERY_SEED_DESC_T1',
+    TR_CHECK_RECOVERY_SEED_DESC_T1B1: {
+        id: 'TR_CHECK_RECOVERY_SEED_DESC_T1B1',
         defaultMessage:
             'Enter the words from your recovery seed here in the order displayed on your device. You may be asked to type some words that are not part of your recovery seed as an additional security measure.',
         dynamic: true,
     },
-    TR_CHECK_RECOVERY_SEED_DESC_TT: {
-        id: 'TR_CHECK_RECOVERY_SEED_DESC_TT',
+    TR_CHECK_RECOVERY_SEED_DESC_T2T1: {
+        id: 'TR_CHECK_RECOVERY_SEED_DESC_T2T1',
         defaultMessage:
             'Your recovery seed (wallet backup) is entered using the Trezor Model T touchscreen. This avoids exposing any of your sensitive information to a potentially insecure computer or web browser.',
         dynamic: true,
     },
-    TR_CHECK_RECOVERY_SEED_DESC_TR: {
-        id: 'TR_CHECK_RECOVERY_SEED_DESC_TR',
+    TR_CHECK_RECOVERY_SEED_DESC_T2B1: {
+        id: 'TR_CHECK_RECOVERY_SEED_DESC_T2B1',
         defaultMessage:
             'Your recovery seed (wallet backup) is entered using the Trezor Model R buttons. This avoids exposing any of your sensitive information to a potentially insecure computer or web browser.',
         dynamic: true,

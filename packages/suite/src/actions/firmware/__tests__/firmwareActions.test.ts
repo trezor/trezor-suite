@@ -8,9 +8,9 @@ import { TrezorDevice } from 'src/types/suite';
 import { extraDependencies } from 'src/support/extraDependencies';
 
 import { ArrayElement } from '@trezor/type-utils';
-import { DeviceModel } from '@trezor/device-utils';
 
 import { actions, reducerActions } from '../__fixtures__/firmwareActions';
+import { DeviceModelInternal } from '@trezor/connect';
 
 const firmwareReducer = prepareFirmwareReducer(extraDependencies);
 
@@ -37,7 +37,7 @@ jest.mock('@trezor/connect', () => {
         return Promise.resolve(fixture.mocks.connect);
     };
 
-    const { PROTO } = jest.requireActual('@trezor/connect');
+    const { PROTO, DeviceModelInternal } = jest.requireActual('@trezor/connect');
 
     return {
         __esModule: true, // this property makes it work
@@ -59,6 +59,7 @@ jest.mock('@trezor/connect', () => {
             fixture = f;
         },
         PROTO,
+        DeviceModelInternal,
     };
 });
 
@@ -75,7 +76,7 @@ export const getInitialState = (override?: InitialState): any => {
                 type: 'acquired',
                 features: {
                     major_version: 2,
-                    model: DeviceModel.TT,
+                    internal_model: DeviceModelInternal.T2T1,
                 },
             },
             locks: [],

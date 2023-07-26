@@ -3,8 +3,7 @@ import { firmwareActions } from 'src/actions/firmware/firmwareActions';
 import { firmwareUpdate } from 'src/actions/firmware/firmwareThunks';
 import { FirmwareType } from 'src/types/suite';
 
-import { UI } from '@trezor/connect';
-import { DeviceModel } from '@trezor/device-utils';
+import { UI, DeviceModelInternal } from '@trezor/connect';
 
 const { getSuiteDevice, getDeviceFeatures, getFirmwareRelease } = global.JestMocks;
 
@@ -16,7 +15,7 @@ const bootloaderDeviceNeedsIntermediary = {
             connected: true,
             firmwareRelease: { ...getFirmwareRelease(), intermediaryVersion: 1 },
         },
-        { major_version: 1, model: DeviceModel.T1 },
+        { major_version: 1, internal_model: DeviceModelInternal.T1B1 },
     ),
 };
 const firmwareUpdateResponsePayload = {
@@ -115,14 +114,20 @@ export const actions = [
                 device: getSuiteDevice({
                     connected: true,
                     mode: 'bootloader',
-                    features: getDeviceFeatures({ major_version: 1, model: DeviceModel.T1 }),
+                    features: getDeviceFeatures({
+                        major_version: 1,
+                        internal_model: DeviceModelInternal.T1B1,
+                    }),
                 }),
             },
             devices: [
                 getSuiteDevice({
                     connected: true,
                     mode: 'bootloader',
-                    features: getDeviceFeatures({ major_version: 1, model: DeviceModel.T1 }),
+                    features: getDeviceFeatures({
+                        major_version: 1,
+                        internal_model: DeviceModelInternal.T1B1,
+                    }),
                 }),
             ],
         },
@@ -149,14 +154,20 @@ export const actions = [
                 device: getSuiteDevice({
                     connected: true,
                     mode: 'bootloader',
-                    features: getDeviceFeatures({ major_version: 1, model: DeviceModel.T1 }),
+                    features: getDeviceFeatures({
+                        major_version: 1,
+                        internal_model: DeviceModelInternal.T1B1,
+                    }),
                 }),
             },
             devices: [
                 getSuiteDevice({
                     connected: true,
                     mode: 'bootloader',
-                    features: getDeviceFeatures({ major_version: 1, model: DeviceModel.T1 }),
+                    features: getDeviceFeatures({
+                        major_version: 1,
+                        internal_model: DeviceModelInternal.T1B1,
+                    }),
                 }),
             ],
         },

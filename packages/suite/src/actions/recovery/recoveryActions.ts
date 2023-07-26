@@ -1,4 +1,4 @@
-import TrezorConnect, { UI, RecoveryDevice } from '@trezor/connect';
+import TrezorConnect, { UI, RecoveryDevice, DeviceModelInternal } from '@trezor/connect';
 import { analytics, EventType } from '@trezor/suite-analytics';
 
 import { RECOVERY } from 'src/actions/recovery/constants';
@@ -8,7 +8,6 @@ import { Dispatch, GetState } from 'src/types/suite';
 import { WordCount } from 'src/types/recovery';
 import { DEFAULT_PASSPHRASE_PROTECTION } from 'src/constants/suite/device';
 import { SUITE } from 'src/actions/suite/constants';
-import { DeviceModel, getDeviceModel } from '@trezor/device-utils';
 
 export type SeedInputStatus =
     | 'initial'
@@ -56,12 +55,12 @@ const submit = (word: string) => () => {
 const checkSeed = () => async (dispatch: Dispatch, getState: GetState) => {
     const { advancedRecovery, wordsCount } = getState().recovery;
     const { device } = getState().suite;
-    const deviceModel = getDeviceModel(device);
 
-    if (!device || !device.features) return;
+    if (!device?.features) return;
+
     dispatch(setError(''));
 
-    if (deviceModel === DeviceModel.T1) {
+    if (device.features.internal_model === DeviceModelInternal.T1B1) {
         dispatch(setStatus('waiting-for-confirmation'));
     } else {
         dispatch(setStatus('in-progress'));
@@ -99,9 +98,7 @@ const recoverDevice = () => async (dispatch: Dispatch, getState: GetState) => {
     }
     dispatch(setError(''));
 
-    const deviceModel = getDeviceModel(device);
-
-    if (deviceModel === DeviceModel.T1) {
+    if (device.features.internal_model === DeviceModelInternal.T1B1) {
         dispatch(setStatus('waiting-for-confirmation'));
     } else {
         dispatch(setStatus('in-progress'));

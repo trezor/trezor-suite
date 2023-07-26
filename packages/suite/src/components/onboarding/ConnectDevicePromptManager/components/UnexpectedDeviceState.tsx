@@ -4,17 +4,18 @@ import {
     TROUBLESHOOTING_TIP_BRIDGE_STATUS,
     TROUBLESHOOTING_TIP_BRIDGE_INSTALL,
 } from 'src/components/suite/TroubleshootingTips/tips';
-import { DeviceModel, pickByDeviceModel } from '@trezor/device-utils';
+import { pickByDeviceModel } from '@trezor/device-utils';
+import { DeviceModelInternal } from '@trezor/connect';
 
 // todo: remove in favour of suite-components
 interface UnexpectedDeviceStateProps {
     deviceStatus: any;
-    deviceModel?: DeviceModel;
+    deviceModelInternal?: DeviceModelInternal;
 }
 
 export const UnexpectedDeviceState = ({
     deviceStatus,
-    deviceModel,
+    deviceModelInternal,
 }: UnexpectedDeviceStateProps) => (
     <>
         {deviceStatus === 'unreadable' && (
@@ -42,9 +43,10 @@ export const UnexpectedDeviceState = ({
                         heading: <Translation id="TR_RECONNECT_IN_NORMAL" />,
                         description: (
                             <Translation
-                                id={pickByDeviceModel(deviceModel, {
+                                id={pickByDeviceModel(deviceModelInternal, {
                                     default: 'FIRMWARE_CONNECT_IN_NORMAL_MODEL_NO_BUTTON',
-                                    [DeviceModel.TT]: 'FIRMWARE_CONNECT_IN_NORMAL_MODEL_NO_TOUCH',
+                                    [DeviceModelInternal.T2T1]:
+                                        'FIRMWARE_CONNECT_IN_NORMAL_MODEL_NO_TOUCH',
                                 })}
                             />
                         ),

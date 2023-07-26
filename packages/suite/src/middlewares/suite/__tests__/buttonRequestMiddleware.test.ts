@@ -18,7 +18,7 @@ const { getSuiteDevice } = global.JestMocks;
 jest.mock('@trezor/connect', () => {
     const callbacks: { [key: string]: (e: string) => any } = {};
 
-    const { PROTO } = jest.requireActual('@trezor/connect');
+    const { PROTO, DeviceModelInternal } = jest.requireActual('@trezor/connect');
 
     return {
         __esModule: true, // this property makes it work
@@ -48,6 +48,7 @@ jest.mock('@trezor/connect', () => {
             });
         },
         PROTO,
+        DeviceModelInternal,
     };
 });
 
@@ -78,6 +79,7 @@ const initStore = (state: State) => {
 describe('buttonRequest middleware', () => {
     it('see what happens on pin change call', async () => {
         require('@trezor/connect');
+
         const store = initStore(getInitialState());
         await store.dispatch(connectInitThunk());
         const call = store.dispatch(deviceSettingsActions.changePin({ remove: false }));

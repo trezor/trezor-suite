@@ -9,7 +9,6 @@ import * as routerActions from 'src/actions/suite/routerActions';
 import { Dispatch, GetState } from 'src/types/suite';
 import * as DEVICE from 'src/constants/suite/device';
 import { SUITE } from 'src/actions/suite/constants';
-import { getDeviceModel } from '@trezor/device-utils';
 
 export const applySettings =
     (params: Parameters<typeof TrezorConnect.applySettings>[0]) =>
@@ -115,12 +114,11 @@ export const resetDevice =
     (params: Parameters<typeof TrezorConnect.resetDevice>[0] = {}) =>
     async (dispatch: Dispatch, getState: GetState) => {
         const { device } = getState().suite;
-        const deviceModel = getDeviceModel(device);
 
-        if (!device || !deviceModel) return;
+        if (!device || !device.features) return;
 
         const defaults = {
-            strength: DEVICE.DEFAULT_STRENGTH[deviceModel],
+            strength: DEVICE.DEFAULT_STRENGTH[device.features.internal_model],
             label: DEVICE.DEFAULT_LABEL,
             skip_backup: DEVICE.DEFAULT_SKIP_BACKUP,
             passphrase_protection: DEVICE.DEFAULT_PASSPHRASE_PROTECTION,

@@ -5,7 +5,8 @@ import { Button } from '@trezor/components';
 import { useActions } from 'src/hooks/suite';
 import * as routerActions from 'src/actions/suite/routerActions';
 import { TrezorDevice } from 'src/types/suite';
-import { DeviceModel, getDeviceModel, pickByDeviceModel } from '@trezor/device-utils';
+import { pickByDeviceModel } from '@trezor/device-utils';
+import { DeviceModelInternal } from '@trezor/connect';
 
 const WhiteSpace = styled.div`
     min-width: 60px;
@@ -20,7 +21,7 @@ export const DeviceBootloader = ({ device }: DeviceBootloaderProps) => {
     const { goto } = useActions({
         goto: routerActions.goto,
     });
-    const deviceModel = getDeviceModel(device);
+    const deviceModelInternal = device?.features?.internal_model;
 
     const tips = [
         {
@@ -28,9 +29,9 @@ export const DeviceBootloader = ({ device }: DeviceBootloaderProps) => {
             heading: <Translation id="TR_DEVICE_CONNECTED_BOOTLOADER_RECONNECT" />,
             description: (
                 <Translation
-                    id={pickByDeviceModel(deviceModel, {
+                    id={pickByDeviceModel(deviceModelInternal, {
                         default: 'TR_DEVICE_CONNECTED_BOOTLOADER_RECONNECT_IN_NORMAL_NO_BUTTON',
-                        [DeviceModel.TT]:
+                        [DeviceModelInternal.T2T1]:
                             'TR_DEVICE_CONNECTED_BOOTLOADER_RECONNECT_IN_NORMAL_NO_TOUCH',
                     })}
                 />

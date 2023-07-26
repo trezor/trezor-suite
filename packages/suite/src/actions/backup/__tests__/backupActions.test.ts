@@ -8,8 +8,7 @@ import { SUITE } from 'src/actions/suite/constants';
 import { BACKUP } from 'src/actions/backup/constants';
 import * as backupActions from 'src/actions/backup/backupActions';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { CommonParams } from '@trezor/connect';
-import { DeviceModel } from '@trezor/device-utils';
+import { CommonParams, DeviceModelInternal } from '@trezor/connect';
 
 jest.mock('@trezor/connect', () => {
     let fixture: any;
@@ -17,7 +16,7 @@ jest.mock('@trezor/connect', () => {
     const backupDevice = () => fixture;
     const callbacks: { [key: string]: () => any } = {};
 
-    const { PROTO } = jest.requireActual('@trezor/connect');
+    const { PROTO, DeviceModelInternal } = jest.requireActual('@trezor/connect');
 
     return {
         __esModule: true, // this property makes it work
@@ -37,6 +36,7 @@ jest.mock('@trezor/connect', () => {
             fixture = f;
         },
         PROTO,
+        DeviceModelInternal,
     };
 });
 
@@ -48,7 +48,7 @@ export const getInitialState = (override: any) => {
                 type: 'acquired',
                 features: {
                     major_version: 2,
-                    model: DeviceModel.TT,
+                    internal_model: DeviceModelInternal.T2T1,
                 },
             },
             locks: [3],
