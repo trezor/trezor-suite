@@ -16,17 +16,29 @@ const isLogLevel = (level: string): level is LogLevel =>
     !!level && logLevels.includes(level as LogLevel);
 
 export type Options = {
-    colors?: boolean; // Console output has colors
-    writeToConsole?: boolean; // Output is displayed in the console
-    writeToDisk?: boolean; // Output is written to a file
-    outputFile?: string; // file name for the output
-    outputPath?: string; // path for the output
-    logFormat?: string; // Output format of the log
+    colors: boolean; // Console output has colors
+    writeToConsole: boolean; // Output is displayed in the console
+    writeToDisk: boolean; // Output is written to a file
+    outputFile: string; // file name for the output
+    outputPath: string; // path for the output
+    logFormat: string; // Output format of the log
+    dedupeTimeout: number; // After how many ms are the same messages deduplicated
 };
 
 const logLevelSwitchValue = app?.commandLine.getSwitchValue('log-level');
 const logLevelByEnv = isDevEnv ? 'debug' : 'error';
 const logLevelDefault = isLogLevel(logLevelSwitchValue) ? logLevelSwitchValue : logLevelByEnv;
+
+type LogMessage = {
+    date: Date;
+    level: LogLevel;
+    topic: string;
+    text: string;
+};
+
+type RepeatedLogMessage = LogMessage & {
+    repetition?: number;
+};
 
 export class Logger implements ILogger {
     static instance: Logger;
@@ -35,7 +47,7 @@ export class Logger implements ILogger {
     private options: Options;
     private logLevel = 0;
 
-    constructor(level?: LogLevel, options?: Options) {
+    constructor(level?: LogLevel, options?: Partial<Options>) {
         const logLevel = level || logLevelDefault;
 
         this.logLevel = logLevels.indexOf(logLevel);
@@ -50,7 +62,8 @@ export class Logger implements ILogger {
             outputPath:
                 app?.commandLine.getSwitchValue('log-path') ||
                 (userDataDir ? `${userDataDir}/logs` : process.cwd()),
-            logFormat: '%dt - %lvl(%top): %msg',
+            logFormat: '%dt - %lvl(%top): %rep%msg',
+            dedupeTimeout: 500,
         };
 
         this.options = {
@@ -112,20 +125,54 @@ export class Logger implements ILogger {
             return;
         }
 
+        const date = new Date();
         const messages: string[] = typeof message === 'string' ? [message] : message;
-        messages.forEach(m =>
-            this.write(
-                level,
-                this.format(logFormat, {
-                    lvl: level.toUpperCase(),
-                    top: topic,
-                    msg: m,
-                }),
-            ),
-        );
+        messages.forEach(text => this.handleMessage({ level, topic, text, date }));
     }
 
-    private async write(level: LogLevel, message: string) {
+    private dedupeMessage?: RepeatedLogMessage;
+    private dedupeTimeout?: ReturnType<typeof setTimeout>;
+
+    private handleMessage(message: LogMessage) {
+        if (!this.options.dedupeTimeout) {
+            return this.write(message);
+        }
+
+        if (this.dedupeMessage) {
+            if (
+                this.dedupeMessage.level === message.level &&
+                this.dedupeMessage.topic === message.topic &&
+                this.dedupeMessage.text === message.text
+            ) {
+                this.dedupeMessage = {
+                    ...message,
+                    repetition: (this.dedupeMessage.repetition ?? 1) + 1,
+                };
+            } else {
+                this.write(this.dedupeMessage);
+                this.dedupeMessage = message;
+            }
+        } else {
+            this.dedupeMessage = message;
+        }
+
+        clearTimeout(this.dedupeTimeout);
+        this.dedupeTimeout = setTimeout(() => {
+            if (this.dedupeMessage) {
+                this.write(this.dedupeMessage);
+                this.dedupeMessage = undefined;
+            }
+        }, this.options.dedupeTimeout);
+    }
+
+    private async write({ date, level, topic, text, repetition }: RepeatedLogMessage) {
+        const message = this.format(this.options.logFormat, date, {
+            lvl: level.toUpperCase(),
+            top: topic,
+            msg: text,
+            rep: (repetition ?? 0) > 1 ? `(${repetition}x) ` : '',
+        });
+
         if (this.options.writeToConsole) {
             console.log(this.options.colors ? this.color(level, message) : message);
         }
@@ -136,19 +183,22 @@ export class Logger implements ILogger {
         }
     }
 
-    private format(format: string, strings: { [key: string]: string } = {}) {
-        let message = format;
+    private format(
+        format: string,
+        date: Date = new Date(),
+        strings: { [key: string]: string } = {},
+    ) {
+        const params = {
+            dt: date.toISOString(),
+            ts: (+date).toString(),
+            tt: date.toISOString().split('.')[0].replace(/:/g, '-'),
+            ...strings,
+        };
 
-        Object.keys(strings).forEach(k => {
-            message = message.replace(`%${k}`, strings[k]);
-        });
-
-        message = message
-            .replace('%dt', new Date().toISOString())
-            .replace('%ts', (+new Date()).toString())
-            .replace('%tt', new Date().toISOString().split('.')[0].replace(/:/g, '-'));
-
-        return message;
+        return Object.entries(params).reduce(
+            (message, [key, val]) => message.replace(`%${key}`, val),
+            format,
+        );
     }
 
     private color(level: LogLevel, message: string) {
@@ -167,6 +217,11 @@ export class Logger implements ILogger {
     }
 
     public async exit() {
+        if (this.dedupeMessage) {
+            this.write(this.dedupeMessage);
+            this.dedupeMessage = undefined;
+        }
+
         const stream = await this.stream;
         if (stream !== undefined) {
             stream.end();
