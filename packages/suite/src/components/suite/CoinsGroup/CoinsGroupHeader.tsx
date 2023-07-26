@@ -5,22 +5,22 @@ import { variables, Icon } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 
 const Wrapper = styled.div`
-    margin-bottom: 27px;
     align-self: flex-start;
     font-size: ${variables.FONT_SIZE.NORMAL};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     display: flex;
     justify-content: space-between;
     align-items: center;
-`;
+    margin-bottom: 16px;
 
-const CoinsCount = styled.div`
-    text-transform: lowercase;
+    @media (hover: hover) {
+        display: none;
+    }
 `;
 
 const SettingsWrapper = styled.div<{ disabled: boolean }>`
     border-radius: 100%;
-    margin: -10px;
+    margin: -10px -10px -10px auto;
     padding: 10px;
     transition: 0.3s ease;
     cursor: pointer;
@@ -36,31 +36,18 @@ const SettingsWrapper = styled.div<{ disabled: boolean }>`
                 props.theme.HOVER_PRIMER_COLOR,
             )};
     }
-    @media (hover: hover) {
-        display: none;
-    }
 `;
 
 interface Props {
-    active: number;
-    total: number;
-    label: React.ReactNode;
+    isAtLeastOneActive: boolean;
     settingsMode: boolean;
     toggleSettingsMode?: () => void;
 }
 
-const CoinsGroupHeader = ({ active, total, label, settingsMode, toggleSettingsMode }: Props) => (
+const CoinsGroupHeader = ({ isAtLeastOneActive, settingsMode, toggleSettingsMode }: Props) => (
     <Wrapper>
-        {settingsMode ? (
-            <Translation id="TR_SELECT_COIN_FOR_SETTINGS" />
-        ) : (
-            <CoinsCount>
-                {total} {label}
-                {' • '}
-                {active} <Translation id="TR_ACTIVE" />
-            </CoinsCount>
-        )}
-        <SettingsWrapper onClick={toggleSettingsMode} disabled={!active}>
+        {settingsMode && <Translation id="TR_SELECT_COIN_FOR_SETTINGS" />}
+        <SettingsWrapper onClick={toggleSettingsMode} disabled={!isAtLeastOneActive}>
             <Icon icon={settingsMode ? 'CROSS' : 'SETTINGS'} />
         </SettingsWrapper>
     </Wrapper>
