@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { variables, Image } from '@trezor/components';
 import { Modal, Translation } from 'src/components/suite';
-import { useSelector, useDeviceModel } from 'src/hooks/suite';
+import { useSelector, useDevice } from 'src/hooks/suite';
 import { selectCoinjoinAccountByKey } from 'src/reducers/wallet/coinjoinReducer';
 import { PhaseProgress } from './PhaseProgress';
 import { ROUND_PHASE_MESSAGES } from 'src/constants/suite/coinjoin';
@@ -51,7 +51,7 @@ interface CriticalCoinjoinPhaseProps {
 }
 
 export const CriticalCoinjoinPhase = ({ relatedAccountKey }: CriticalCoinjoinPhaseProps) => {
-    const deviceModel = useDeviceModel();
+    const { device } = useDevice();
     const relatedCoinjoinAccount = useSelector(state =>
         selectCoinjoinAccountByKey(state, relatedAccountKey),
     );
@@ -59,6 +59,7 @@ export const CriticalCoinjoinPhase = ({ relatedAccountKey }: CriticalCoinjoinPha
     const session = relatedCoinjoinAccount?.session;
     const roundPhase = session?.roundPhase;
     const sessionPhase = useCoinjoinSessionPhase(relatedAccountKey);
+    const deviceModelInternal = device?.features?.internal_model;
 
     if (!roundPhase || !sessionPhase) {
         return null;
@@ -67,7 +68,9 @@ export const CriticalCoinjoinPhase = ({ relatedAccountKey }: CriticalCoinjoinPha
     return (
         <StyledModal>
             <Content>
-                {deviceModel && <Image image={`DONT_DISCONNECT_TREZOR_T${deviceModel}`} />}
+                {deviceModelInternal && (
+                    <Image image={`DONT_DISCONNECT_TREZOR_${deviceModelInternal}`} />
+                )}
 
                 <TextContainer>
                     <CoinjoinText>
