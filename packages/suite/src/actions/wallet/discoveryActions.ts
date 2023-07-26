@@ -390,7 +390,7 @@ export const start =
         }
 
         const { deviceState, authConfirm } = discovery;
-        const metadataEnabled = metadata.enabled && device.metadata.status === 'disabled';
+        const shouldInitMetadata = metadata.enabled;
 
         // start process
         if (
@@ -399,7 +399,7 @@ export const start =
         ) {
             // metadata are enabled in settings but metadata master key does not exist for this device
             // try to generate device metadata master key if passphrase is not used
-            if (!authConfirm && metadataEnabled) {
+            if (!authConfirm && shouldInitMetadata) {
                 await dispatch(metadataActions.init());
             }
 
@@ -481,7 +481,7 @@ export const start =
         const onBundleProgress = (event: ProgressEvent) => {
             const { progress } = event;
             // pass more parameters to handler
-            dispatch(handleProgress(event, deviceState, bundle[progress], metadataEnabled));
+            dispatch(handleProgress(event, deviceState, bundle[progress], shouldInitMetadata));
         };
 
         TrezorConnect.on<AccountInfo | null>(UI.BUNDLE_PROGRESS, onBundleProgress);
@@ -505,7 +505,7 @@ export const start =
             // try generate metadata keys before next bundle request
             // otherwise metadata request will be processed in `metadataMiddleware` after auth confirmation
             if (
-                metadataEnabled &&
+                shouldInitMetadata &&
                 authConfirm &&
                 currentDiscovery.authConfirm &&
                 result.payload.find(a => a && !a.empty)
