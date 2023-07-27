@@ -65,7 +65,6 @@ const getStateFromProps = (props: UseSendFormProps) => {
         feeOutdated: false,
         fiatRates,
         localCurrencyOption,
-        isLoading: false,
         isDirty: false,
         online: props.online,
         metadataEnabled: props.metadataEnabled,
@@ -79,6 +78,7 @@ const getStateFromProps = (props: UseSendFormProps) => {
 
 export const useSendForm = (props: UseSendFormProps): SendContextValues => {
     // public variables, exported to SendFormContext
+    const [isLoading, setLoading] = useState(false);
     const [state, setState] = useState<UseSendFormState>(getStateFromProps(props));
     // private variables, used inside sendForm hook
     const draft = useRef<FormState | undefined>(undefined);
@@ -181,6 +181,7 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
         prison: props.prison,
         excludedUtxos,
         updateContext,
+        setLoading,
         setAmount: sendFormUtils.setAmount,
     });
 
@@ -235,7 +236,8 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
         setComposedLevels(undefined);
         const values = getLoadedValues({ outputs });
         reset(values);
-        updateContext({ isLoading: false, isDirty: true });
+        updateContext({ isDirty: true });
+        setLoading(false);
         const valid = await trigger();
         if (valid) {
             composeRequest();
@@ -251,15 +253,15 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
         if (composedTx && composedTx.type === 'final') {
             // sign workflow in Actions:
             // signTransaction > sign[COIN]Transaction > requestPushTransaction (modal with promise decision)
-            updateContext({ isLoading: true });
+            setLoading(true);
             const result = await signTransaction(values, composedTx);
-            updateContext({ isLoading: false });
+            setLoading(false);
             if (result?.success) {
                 resetContext();
                 goto('wallet-index', { preserveParams: true });
             }
         }
-    }, [getValues, composedLevels, signTransaction, resetContext, updateContext, goto]);
+    }, [getValues, composedLevels, signTransaction, resetContext, goto]);
 
     // reset on account change
     useEffect(() => {
@@ -304,7 +306,6 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
         props.selectedAccount.network,
         protocol,
         fillSendForm,
-        updateContext,
         sendFormUtils,
         composeRequest,
         shouldSendInSats,
@@ -363,6 +364,7 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
     return {
         ...state,
         ...useFormMethods,
+        isLoading,
         register,
         outputs: outputsFieldArray.fields,
         composedLevels,
