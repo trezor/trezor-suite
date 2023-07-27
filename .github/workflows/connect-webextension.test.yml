@@ -1,16 +1,18 @@
-name: "@trezor/connect-webextension"
+name:
+  "@trezor/connect-webextension"
 
+  # TODO: for now we disable this test.
 on:
-  pull_request:
-    paths:
-      - "packages/connect/**"
-      - "packages/connect-iframe/**"
-      - "packages/connect-web/**"
-      - "packages/connect-examples/**"
-      - "packages/connect-webextension/**"
-  push:
-    branches:
-      - develop
+  # pull_request:
+  # paths:
+  # - "packages/connect/**"
+  # - "packages/connect-iframe/**"
+  # - "packages/connect-web/**"
+  # - "packages/connect-examples/**"
+  # - "packages/connect-webextension/**"
+  # push:
+  #   branches:
+  # - develop
 
 jobs:
   connect-webextension-test:
@@ -25,6 +27,5 @@ jobs:
         # this does not make much sense, in fact, we are testing what is already in production and we cant change that
         # unless we have build and deploys in github
         run: node ./packages/connect-examples/update-webextensions.js --npm-src "https://connect.trezor.io/9/trezor-connect.js"
-        # TODO: for now we disable this test.
-      # - name: Run connect web extension test
-      #   run: "./docker/docker-connect-webextension-ci.sh"
+      - name: Run connect web extension test
+        run: "./docker/docker-connect-webextension-ci.sh"
