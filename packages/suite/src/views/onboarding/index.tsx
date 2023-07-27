@@ -12,7 +12,7 @@ import SecurityStep from 'src/views/onboarding/steps/Security';
 import SetPinStep from 'src/views/onboarding/steps/Pin';
 import BasicSettingsStep from 'src/views/onboarding/steps/BasicSettings';
 import { FinalStep } from 'src/views/onboarding/steps/Final';
-import UnexpectedState from 'src/views/onboarding/unexpected-states';
+import UnexpectedState from 'src/views/onboarding/UnexpectedState';
 import { useOnboarding, useFilteredModal } from 'src/hooks/suite';
 import { MODAL } from 'src/actions/suite/constants';
 import * as STEP from 'src/constants/onboarding/steps';
