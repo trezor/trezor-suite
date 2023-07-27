@@ -126,6 +126,9 @@ export const prepareTransactionsReducer = createReducerWithExtraDeps(
                                 (transaction.blockHeight ?? 0) > 0) ||
                             (transaction.blockTime &&
                                 (existingTx.blockTime ?? 0) < transaction.blockTime) ||
+                            ((existingTx.blockHeight ?? 0) <= 0 &&
+                                !existingTx.rbfParams &&
+                                transaction.rbfParams) ||
                             (existingTx.deadline && !transaction.deadline)
                         ) {
                             // pending tx got confirmed (blockHeight changed from undefined/0 to a number > 0)
