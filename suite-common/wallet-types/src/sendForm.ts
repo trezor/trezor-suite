@@ -56,7 +56,6 @@ export type UseSendFormState = {
     feeOutdated: boolean;
     fiatRates: CoinFiatRates | undefined;
     localCurrencyOption: CurrencyOption;
-    isDirty: boolean;
     composedLevels?: PrecomposedLevels | PrecomposedLevelsCardano;
     online: boolean;
     metadataEnabled: boolean;

@@ -19,7 +19,10 @@ const In = styled.div`
 `;
 
 export const Clear = () => {
-    const { resetContext, isDirty } = useSendFormContext();
+    const {
+        resetContext,
+        formState: { isDirty },
+    } = useSendFormContext();
 
     if (!isDirty) return null;
     return (

@@ -35,7 +35,7 @@ export const useSendFormCompose = ({
     getValues,
     setValue,
     setError,
-    formState: { errors },
+    formState: { errors, isDirty },
     clearErrors,
     state,
     account,
@@ -64,7 +64,6 @@ export const useSendFormCompose = ({
         async (values: FormState) => {
             // start composing without debounce
             setLoading(true);
-            updateContext({ isDirty: true });
             setComposedLevels(undefined);
 
             const result = await composeTransaction(values, {
@@ -77,7 +76,6 @@ export const useSendFormCompose = ({
 
             setComposedLevels(result);
             setLoading(false);
-            updateContext({ isDirty: true }); // isDirty needs to be set again, "state" is cached in updateContext callback
         },
         [
             account,
@@ -86,7 +84,6 @@ export const useSendFormCompose = ({
             state.network,
             state.feeInfo,
             composeTransaction,
-            updateContext,
             setLoading,
         ],
     );
@@ -161,7 +158,6 @@ export const useSendFormCompose = ({
         setComposeField(field);
         // start composing
         setLoading(true);
-        updateContext({ isDirty: true });
     };
 
     // Handle composeRequest
@@ -299,10 +295,9 @@ export const useSendFormCompose = ({
                 const currentLevel = composedLevels[current || 'normal'];
                 updateComposedValues(currentLevel);
             }
-            updateContext({ isDirty: true });
             setDraftSaveRequest(true);
         },
-        [composedLevels, updateComposedValues, updateContext],
+        [composedLevels, updateComposedValues],
     );
 
     // handle props.account change:
@@ -318,7 +313,7 @@ export const useSendFormCompose = ({
         ) {
             return; // account didn't change
         }
-        if (!state.isDirty) {
+        if (!isDirty) {
             // there was no interaction with the form, just update state.account
             updateContext({ account });
             return;
@@ -341,7 +336,7 @@ export const useSendFormCompose = ({
     }, [
         state.account,
         state.feeInfo.dustLimit,
-        state.isDirty,
+        isDirty,
         account,
         clearErrors,
         errors,
