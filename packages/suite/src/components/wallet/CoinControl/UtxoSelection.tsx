@@ -1,5 +1,4 @@
 import React from 'react';
-import BigNumber from 'bignumber.js';
 import styled, { css } from 'styled-components';
 import { darken } from 'polished';
 
@@ -17,6 +16,7 @@ import type { AccountUtxo } from '@trezor/connect';
 import { TransactionTimestamp, UtxoAnonymity } from 'src/components/wallet';
 import { UtxoTag } from 'src/components/wallet/CoinControl/UtxoTag';
 import { useSendFormContext } from 'src/hooks/wallet';
+import { useCoinjoinUnavailableUtxos } from 'src/hooks/wallet/form/useCoinjoinUnavailableUtxos';
 import { WalletAccountTransaction } from 'src/types/wallet';
 
 const VisibleOnHover = styled.div<{ alwaysVisible?: boolean }>`
@@ -135,7 +135,6 @@ export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
         utxoSelection: { selectedUtxos, composedInputs, toggleUtxoSelection, isCoinControlEnabled },
     } = useSendFormContext();
 
-    const coordinatorData = useSelector(state => state.wallet.coinjoin.clients[account.symbol]);
     const device = useSelector(state => state.suite.device);
     // selecting metadata from store rather than send form context which does not update on metadata change
     const outputLabels = useSelector(
@@ -147,16 +146,7 @@ export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
 
     const theme = useTheme();
 
-    const amountTooSmallForCoinjoin =
-        coordinatorData && new BigNumber(utxo.amount).lt(coordinatorData.allowedInputAmounts.min);
-    const amountTooBigForCoinjoin =
-        coordinatorData && new BigNumber(utxo.amount).gt(coordinatorData.allowedInputAmounts.max);
-    const isUnavailableForCoinjoin =
-        account.accountType === 'coinjoin' &&
-        (amountTooSmallForCoinjoin || amountTooBigForCoinjoin);
-    const unavailableMessage = amountTooSmallForCoinjoin
-        ? 'TR_AMOUNT_TOO_SMALL_FOR_COINJOIN'
-        : 'TR_AMOUNT_TOO_BIG_FOR_COINJOIN';
+    const coinjoinUnavailableMessage = useCoinjoinUnavailableUtxos({ account, utxo });
     const isPendingTransaction = utxo.confirmations === 0;
     const isChangeAddress = utxo.path.split('/').at(-2) === '1'; // change address always has a 1 on the penultimate level of the derivation path
     const outputLabel = outputLabels?.[utxo.txid]?.[utxo.vout];
@@ -185,13 +175,19 @@ export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
             <Body>
                 <Row>
                     {isPendingTransaction && (
-                        <UtxoTag tooltipMessage="TR_IN_PENDING_TRANSACTION" icon="CLOCK" />
+                        <UtxoTag
+                            tooltipMessage={<Translation id="TR_IN_PENDING_TRANSACTION" />}
+                            icon="CLOCK"
+                        />
                     )}
-                    {isUnavailableForCoinjoin && (
-                        <UtxoTag tooltipMessage={unavailableMessage} icon="BLOCKED" />
+                    {coinjoinUnavailableMessage && (
+                        <UtxoTag tooltipMessage={coinjoinUnavailableMessage} icon="BLOCKED" />
                     )}
                     {isChangeAddress && (
-                        <UtxoTag tooltipMessage="TR_CHANGE_ADDRESS_TOOLTIP" icon="CHANGE_ADDRESS" />
+                        <UtxoTag
+                            tooltipMessage={<Translation id="TR_CHANGE_ADDRESS_TOOLTIP" />}
+                            icon="CHANGE_ADDRESS"
+                        />
                     )}
                     <Address>{utxo.address}</Address>
                     <StyledCryptoAmount
