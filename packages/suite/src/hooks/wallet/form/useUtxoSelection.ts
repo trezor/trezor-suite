@@ -10,6 +10,7 @@ import {
 } from '@suite-common/wallet-types';
 import type { AccountUtxo, PROTO } from '@trezor/connect';
 import { getUtxoOutpoint, isSameUtxo } from '@suite-common/wallet-utils';
+import { useCoinjoinRegisteredUtxos } from './useCoinjoinRegisteredUtxos';
 
 interface UtxoSelectionContextProps
     extends UseFormReturn<FormState>,
@@ -34,6 +35,8 @@ export const useUtxoSelection = ({
         register('anonymityWarningChecked');
     }, [register]);
 
+    const coinjoinRegisteredUtxos = useCoinjoinRegisteredUtxos({ account });
+
     // has coin control been enabled manually?
     const isCoinControlEnabled = watch('isCoinControlEnabled');
     // fee level
@@ -43,21 +46,35 @@ export const useUtxoSelection = ({
     // manually selected UTXOs
     const selectedUtxos = watch('selectedUtxos', []);
 
-    // watch changes of account utxos, exclude spent utxos from the subset of selectedUtxos
+    // watch changes of account utxos AND utxos registered in coinjoin Round,
+    // exclude spent/registered utxos from the subset of selectedUtxos
     useEffect(() => {
         if (isCoinControlEnabled && selectedUtxos.length > 0) {
             const spentUtxos = selectedUtxos.filter(
                 selected => !account.utxo?.some(utxo => isSameUtxo(selected, utxo)),
             );
-            if (spentUtxos.length > 0) {
+            const registeredUtxos = selectedUtxos.filter(selected =>
+                coinjoinRegisteredUtxos.some(utxo => isSameUtxo(selected, utxo)),
+            );
+
+            if (spentUtxos.length > 0 || registeredUtxos.length > 0) {
                 setValue(
                     'selectedUtxos',
-                    selectedUtxos.filter(u => !spentUtxos.includes(u)),
+                    selectedUtxos.filter(
+                        u => !spentUtxos.includes(u) && !registeredUtxos.includes(u),
+                    ),
                 );
                 composeRequest();
             }
         }
-    }, [isCoinControlEnabled, selectedUtxos, account.utxo, setValue, composeRequest]);
+    }, [
+        isCoinControlEnabled,
+        selectedUtxos,
+        account.utxo,
+        coinjoinRegisteredUtxos,
+        setValue,
+        composeRequest,
+    ]);
 
     const spendableUtxos: AccountUtxo[] = [];
     const lowAnonymityUtxos: AccountUtxo[] = [];
@@ -133,7 +150,12 @@ export const useUtxoSelection = ({
             const selectedUtxosFromLowerCategories = selectedUtxos.filter(
                 selected => !topCategory?.find(utxo => isSameUtxo(selected, utxo)),
             );
-            setValue('selectedUtxos', topCategory.concat(selectedUtxosFromLowerCategories));
+            setValue(
+                'selectedUtxos',
+                topCategory
+                    .concat(selectedUtxosFromLowerCategories)
+                    .filter(utxo => !coinjoinRegisteredUtxos.includes(utxo)),
+            );
             setValue('isCoinControlEnabled', true);
         }
         composeRequest();
@@ -180,6 +202,7 @@ export const useUtxoSelection = ({
         lowAnonymityUtxos,
         selectedUtxos,
         spendableUtxos,
+        coinjoinRegisteredUtxos,
         toggleAnonymityWarning,
         toggleCheckAllUtxos,
         toggleCoinControl,

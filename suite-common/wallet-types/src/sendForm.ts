@@ -77,6 +77,7 @@ export interface UtxoSelectionContext {
     lowAnonymityUtxos: AccountUtxo[];
     selectedUtxos: AccountUtxo[];
     spendableUtxos: AccountUtxo[];
+    coinjoinRegisteredUtxos: AccountUtxo[];
     isLowAnonymityUtxoSelected: boolean;
     anonymityWarningChecked: boolean;
     toggleAnonymityWarning: () => void;

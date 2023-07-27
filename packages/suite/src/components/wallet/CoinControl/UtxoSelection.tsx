@@ -39,7 +39,7 @@ const StyledCheckbox = styled(Checkbox)<{ isChecked: boolean; $isGrey: boolean }
         `};
 `;
 
-const Wrapper = styled.div`
+const Wrapper = styled.div<{ isDisabled: boolean }>`
     align-items: flex-start;
     border-radius: 8px;
     display: flex;
@@ -47,12 +47,23 @@ const Wrapper = styled.div`
     padding: 12px 12px 8px;
     transition: background 0.25s ease-out;
     cursor: pointer;
+    ${({ isDisabled }) =>
+        isDisabled &&
+        css`
+            color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+            cursor: default;
+        `};
 
     &:hover {
-        background: ${({ theme }) => theme.BG_GREY};
-        ${StyledCheckbox} > :first-child {
-            border-color: ${({ theme }) => darken(theme.HOVER_DARKEN_FILTER, theme.STROKE_GREY)};
-        }
+        ${({ isDisabled }) =>
+            !isDisabled &&
+            css`
+                background: ${({ theme }) => theme.BG_GREY};
+                ${StyledCheckbox} > :first-child {
+                    border-color: ${({ theme }) =>
+                        darken(theme.HOVER_DARKEN_FILTER, theme.STROKE_GREY)};
+                }
+            `};
         ${VisibleOnHover} {
             display: contents;
         }
@@ -132,7 +143,13 @@ export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
     const {
         account,
         network,
-        utxoSelection: { selectedUtxos, composedInputs, toggleUtxoSelection, isCoinControlEnabled },
+        utxoSelection: {
+            selectedUtxos,
+            coinjoinRegisteredUtxos,
+            composedInputs,
+            toggleUtxoSelection,
+            isCoinControlEnabled,
+        },
     } = useSendFormContext();
 
     const device = useSelector(state => state.suite.device);
@@ -156,6 +173,8 @@ export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
     const isChecked = isCoinControlEnabled
         ? selectedUtxos.some(selected => isSameUtxo(selected, utxo))
         : composedInputs.some(u => u.prev_hash === utxo.txid && u.prev_index === utxo.vout);
+    const isDisabled = coinjoinRegisteredUtxos.includes(utxo);
+    const utxoTagIconColor = isDisabled ? theme.TYPE_LIGHT_GREY : theme.TYPE_DARK_GREY;
 
     const handleCheckbox = () => toggleUtxoSelection(utxo);
     const showTransactionDetail: React.MouseEventHandler = e => {
@@ -166,27 +185,36 @@ export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
     };
 
     return (
-        <Wrapper onClick={handleCheckbox}>
-            <StyledCheckbox
-                $isGrey={!selectedUtxos.length}
-                isChecked={isChecked}
-                onClick={handleCheckbox}
-            />
+        <Wrapper isDisabled={isDisabled} onClick={isDisabled ? undefined : handleCheckbox}>
+            <Tooltip content={isDisabled && <Translation id="TR_UTXO_REGISTERED_IN_COINJOIN" />}>
+                <StyledCheckbox
+                    $isGrey={!selectedUtxos.length}
+                    isChecked={isChecked}
+                    isDisabled={isDisabled}
+                    onClick={handleCheckbox}
+                />
+            </Tooltip>
             <Body>
                 <Row>
                     {isPendingTransaction && (
                         <UtxoTag
                             tooltipMessage={<Translation id="TR_IN_PENDING_TRANSACTION" />}
                             icon="CLOCK"
+                            iconColor={utxoTagIconColor}
                         />
                     )}
                     {coinjoinUnavailableMessage && (
-                        <UtxoTag tooltipMessage={coinjoinUnavailableMessage} icon="BLOCKED" />
+                        <UtxoTag
+                            tooltipMessage={coinjoinUnavailableMessage}
+                            icon="BLOCKED"
+                            iconColor={utxoTagIconColor}
+                        />
                     )}
                     {isChangeAddress && (
                         <UtxoTag
                             tooltipMessage={<Translation id="TR_CHANGE_ADDRESS_TOOLTIP" />}
                             icon="CHANGE_ADDRESS"
+                            iconColor={utxoTagIconColor}
                         />
                     )}
                     <Address>{utxo.address}</Address>
