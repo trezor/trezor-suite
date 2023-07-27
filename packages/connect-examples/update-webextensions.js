@@ -17,16 +17,19 @@ let trezorConnectSrc = DEFAULT_SRC;
 
 if (trezorConnectSrcIndex > -1) {
     trezorConnectSrc = process.argv[trezorConnectSrcIndex + 1];
+    console.log('trezorConnectSrc: ', trezorConnectSrc);
 }
 
 let buildFolder = 'build';
 if (buildFolderIndex > -1) {
     buildFolder = process.argv[buildFolderIndex + 1];
+    console.log('buildFolder: ', buildFolder);
 }
 
 let npmSrc = '';
 if (npmSrcIndex > -1) {
     npmSrc = process.argv[npmSrcIndex + 1];
+    console.log('npmSrc: ', npmSrc);
 }
 
 rootPaths.forEach(dir => {
