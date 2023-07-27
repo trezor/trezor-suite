@@ -62,7 +62,6 @@ const getStateFromProps = (props: UseSendFormProps) => {
         network,
         coinFees,
         feeInfo,
-        feeOutdated: false,
         fiatRates,
         localCurrencyOption,
         online: props.online,
