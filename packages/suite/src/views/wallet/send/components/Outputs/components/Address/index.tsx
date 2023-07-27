@@ -67,6 +67,10 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
 
     const { descriptor, networkType, symbol } = account;
     const inputName = `outputs.${outputId}.address` as const;
+    // NOTE: compose errors are always associated with the amount.
+    // if address is not valid then compose process will never be triggered,
+    // however if address is changed compose process may return `AMOUNT_IS_NOT_ENOUGH` which should appear under the amount filed
+    const amountInputName = `outputs.${outputId}.amount` as const;
     const outputError = errors.outputs ? errors.outputs[outputId] : undefined;
     const addressError = outputError ? outputError.address : undefined;
     const addressValue = getDefaultValue(inputName, output.address || '');
@@ -101,13 +105,12 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
             setValue(inputName, protocol.address, { shouldValidate: true });
 
             if (protocol.amount) {
-                setValue(`outputs.${outputId}.amount`, String(protocol.amount), {
+                setValue(amountInputName, String(protocol.amount), {
                     shouldValidate: true,
                 });
             }
 
-            // if amount is set compose by amount otherwise compose by address
-            composeTransaction(protocol.amount ? `outputs.${outputId}.amount` : inputName);
+            composeTransaction(amountInputName);
 
             return;
         }
@@ -121,7 +124,8 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                 type: 'qr-incorrect-address',
             });
         }
-    }, [composeTransaction, inputName, openQrModal, outputId, setValue, symbol, addToast]);
+    }, [composeTransaction, inputName, amountInputName, openQrModal, setValue, symbol, addToast]);
+
     const getValidationButtonProps = () => {
         switch (addressError?.type) {
             case 'deprecated':
@@ -154,7 +158,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
     };
 
     const { ref: inputRef, ...inputField } = register(inputName, {
-        onChange: () => composeTransaction(`outputs.${outputId}.amount`),
+        onChange: () => composeTransaction(amountInputName),
         required: translationString('RECIPIENT_IS_NOT_SET'),
         validate: {
             deprecated: (value: string) => {
