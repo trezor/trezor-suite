@@ -33,7 +33,7 @@ const axisLabelStyle = prepareNativeStyle<AxisLabelStyleProps>((_, { x, isOverfl
 }));
 
 export const AxisLabel = ({ x, value }: AxisLabelProps) => {
-    const { applyStyle } = useNativeStyles();
+    const { applyStyle, utils } = useNativeStyles();
     const { isDiscreetMode } = useDiscreetMode();
     const viewRef = useRef<View>(null);
     const [isOverflowing, setIsOverflowing] = useState(false);
@@ -41,13 +41,14 @@ export const AxisLabel = ({ x, value }: AxisLabelProps) => {
     const handleLayoutOverflow = useCallback(() => {
         if (viewRef.current) {
             viewRef.current.measureInWindow((viewX, _, viewWidth) => {
-                // The right most pixel of the axis label is overflowing the screen width.
-                if (viewX + viewWidth > SCREEN_WIDTH) {
+                const graphHorizontalPadding = utils.spacings.small;
+                // The right most pixel of the axis label is overflowing the graph width.
+                if (viewX + viewWidth + graphHorizontalPadding > SCREEN_WIDTH) {
                     setIsOverflowing(true);
                 }
             });
         }
-    }, []);
+    }, [utils]);
 
     if (isDiscreetMode) return null;
 
