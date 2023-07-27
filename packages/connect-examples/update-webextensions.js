@@ -89,6 +89,12 @@ rootPaths.forEach(dir => {
     }
 
     fs.readdirSync(path.join(rootPath, 'src')).forEach(p => {
+        // Some files like binary `.png` we just want to copy.
+        const isJustCopied = ['.png'].some(ext => p.endsWith(ext));
+        if (isJustCopied) {
+            fs.copyFileSync(path.join(rootPath, 'src', p), path.join(rootPath, buildFolder, p));
+            return;
+        }
         fs.readFile(path.join(rootPath, 'src', p), 'utf-8', (err, contents) => {
             if (err) {
                 console.log(err);
@@ -97,7 +103,7 @@ rootPaths.forEach(dir => {
 
             const replaced = contents.replace(DEFAULT_SRC, trezorConnectSrc);
 
-            fs.writeFile(path.join(rootPath, buildFolder, p), replaced, 'utf-8', function (err) {
+            fs.writeFile(path.join(rootPath, buildFolder, p), replaced, 'utf-8', err => {
                 if (err) {
                     console.log(err);
                     return;
