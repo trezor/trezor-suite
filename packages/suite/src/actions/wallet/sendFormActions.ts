@@ -170,6 +170,7 @@ export const composeTransaction =
         if (account.networkType === 'cardano') {
             return dispatch(sendFormCardanoActions.composeTransaction(formValues, formState));
         }
+        return Promise.resolve(undefined);
     };
 
 // this is only a wrapper for `openDeferredModal` since it doesn't work with `bindActionCreators`
