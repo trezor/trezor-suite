@@ -53,7 +53,6 @@ export type UseSendFormState = {
     network: Network;
     coinFees: FeeInfo;
     feeInfo: FeeInfo;
-    feeOutdated: boolean;
     fiatRates: CoinFiatRates | undefined;
     localCurrencyOption: CurrencyOption;
     composedLevels?: PrecomposedLevels | PrecomposedLevelsCardano;
