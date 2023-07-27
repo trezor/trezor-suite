@@ -19,7 +19,7 @@ export const ActionColumn = styled.div`
 
 const InputWrapper = styled.div`
     margin: 4px 0 4px 4px;
-    width: 170px;
+    width: 210px;
 
     &:not(:first-child) {
         margin-left: 8px;
