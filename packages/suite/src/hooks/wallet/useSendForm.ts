@@ -65,7 +65,6 @@ const getStateFromProps = (props: UseSendFormProps) => {
         feeOutdated: false,
         fiatRates,
         localCurrencyOption,
-        isDirty: false,
         online: props.online,
         metadataEnabled: props.metadataEnabled,
     };
@@ -235,8 +234,8 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
         if (!outputs) return; // ignore empty result (cancelled or error)
         setComposedLevels(undefined);
         const values = getLoadedValues({ outputs });
-        reset(values);
-        updateContext({ isDirty: true });
+        // keepDefaultValues will set `isDirty` flag to true
+        reset(values, { keepDefaultValues: true });
         setLoading(false);
         const valid = await trigger();
         if (valid) {
@@ -316,7 +315,8 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
     useEffect(() => {
         const storedState = getDraft();
         const values = getLoadedValues(storedState);
-        reset(values);
+        // keepDefaultValues will set `isDirty` flag to true
+        reset(values, { keepDefaultValues: !!storedState });
 
         if (storedState) {
             draft.current = storedState;

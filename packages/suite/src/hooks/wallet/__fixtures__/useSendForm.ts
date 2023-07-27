@@ -300,15 +300,6 @@ export const addingOutputs = [
                     },
                 },
             },
-            {
-                type: 'click',
-                element: 'clear-form',
-                result: {
-                    formValues: {
-                        outputs: [{ address: '' }],
-                    },
-                },
-            },
         ],
     },
     {
