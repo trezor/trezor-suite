@@ -72,8 +72,12 @@ export const useSendFormCompose = ({
                 prison,
             });
 
-            setComposedLevels(result);
-            setLoading(false);
+            if (result) {
+                setComposedLevels(result);
+            } else {
+                // undefined result will not be processed by useEffect below, reset loader
+                setLoading(false);
+            }
         },
         [
             account,
@@ -163,6 +167,7 @@ export const useSendFormCompose = ({
                     // composed tx doesn't have an errorMessage (Translation props)
                     // this error is unexpected and should be handled in sendFormActions
                     console.warn('Compose unexpected error', error);
+                    setLoading(false);
                     return;
                 }
 
@@ -189,6 +194,7 @@ export const useSendFormCompose = ({
                     // setError to the all `Amount` fields, composeField not specified (load draft case)
                     values.outputs.forEach((_, i) => setError(`outputs.${i}.amount`, formError));
                 }
+                setLoading(false);
                 return;
             }
 
@@ -206,6 +212,7 @@ export const useSendFormCompose = ({
                 setAmount(setMaxOutputId, composed.max);
                 setDraftSaveRequest(true);
             }
+            setLoading(false);
         },
         [
             composeField,
@@ -215,6 +222,7 @@ export const useSendFormCompose = ({
             setError,
             clearErrors,
             setValue,
+            setLoading,
             translationString,
         ],
     );
