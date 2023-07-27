@@ -1,9 +1,12 @@
+const DEFAULT_SRC = 'https://connect.trezor.io/9/';
+
 window.TrezorConnect.init({
     lazyLoad: true,
     manifest: {
         email: 'developer@xyz.com',
         appUrl: 'http://your.application.com',
     },
+    connectSrc: DEFAULT_SRC,
 });
 
 const getAddressButton = document.getElementById('get-address');

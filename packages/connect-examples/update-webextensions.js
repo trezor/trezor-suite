@@ -8,15 +8,42 @@ const fetch = require('node-fetch');
 
 const rootPaths = ['webextension-mv2', 'webextension-mv3'];
 
+const trezorConnectSrcIndex = process.argv.indexOf('--trezor-connect-src');
+const buildFolderIndex = process.argv.indexOf('--build-folder');
+const npmSrcIndex = process.argv.indexOf('--npm-src');
+
+const DEFAULT_SRC = 'https://connect.trezor.io/9/';
+let trezorConnectSrc = DEFAULT_SRC;
+
+if (trezorConnectSrcIndex > -1) {
+    trezorConnectSrc = process.argv[trezorConnectSrcIndex + 1];
+}
+
+let buildFolder = 'build';
+if (buildFolderIndex > -1) {
+    buildFolder = process.argv[buildFolderIndex + 1];
+}
+
+let npmSrc = '';
+if (npmSrcIndex > -1) {
+    npmSrc = process.argv[npmSrcIndex + 1];
+}
+
 rootPaths.forEach(dir => {
     const rootPath = path.join(__dirname, dir);
-    const vendorPath = path.join(rootPath, 'vendor');
+    const buildPath = path.join(rootPath, buildFolder);
+    const vendorPath = path.join(buildPath, 'vendor');
 
     const inlineScriptPath = path.join(vendorPath, 'trezor-connect.js');
     const usbPermissionsScriptPath = path.join(vendorPath, 'trezor-usb-permissions.js');
     const usbPermissionsHtmlPath = path.join(rootPath, 'trezor-usb-permissions.html');
     const contentScriptPath = path.join(vendorPath, 'trezor-content-script.js');
+    const backgroundScriptPath = path.join(rootPath, 'background.js');
 
+    fs.rmSync(buildPath, { recursive: true, force: true });
+    if (!fs.existsSync(buildPath)) {
+        fs.mkdirSync(buildPath);
+    }
     if (!fs.existsSync(vendorPath)) {
         fs.mkdirSync(vendorPath);
     }
@@ -29,13 +56,53 @@ rootPaths.forEach(dir => {
         },
     );
 
-    fetch('https://connect.trezor.io/9/trezor-connect.js')
-        .then(response => response.text())
-        .then(text => fs.writeFileSync(inlineScriptPath, text));
+    const srcPath = path.join(__dirname, '../connect-web');
 
-    const srcPath = path.join(__dirname, '../connect-web/src/webextension');
+    ['trezor-content-script.js', 'trezor-usb-permissions.js'].forEach(p => {
+        fs.copyFileSync(
+            path.join(srcPath, 'src', 'webextension', p),
+            path.join(rootPath, buildFolder, 'vendor', p),
+        );
+    });
 
-    fs.copyFileSync(path.join(srcPath, 'trezor-content-script.js'), contentScriptPath);
-    fs.copyFileSync(path.join(srcPath, 'trezor-usb-permissions.js'), usbPermissionsScriptPath);
-    fs.copyFileSync(path.join(srcPath, 'trezor-usb-permissions.html'), usbPermissionsHtmlPath);
+    ['trezor-usb-permissions.html'].forEach(p => {
+        fs.copyFileSync(
+            path.join(srcPath, 'src', 'webextension', p),
+            path.join(rootPath, buildFolder, p),
+        );
+    });
+
+    if (npmSrc) {
+        fetch(npmSrc).then(res => {
+            const dest = fs.createWriteStream(
+                path.join(rootPath, buildFolder, 'vendor', 'trezor-connect.js'),
+            );
+            res.body.pipe(dest);
+        });
+    } else {
+        ['trezor-connect.js'].forEach(p => {
+            fs.copyFileSync(
+                path.join(srcPath, 'build', p),
+                path.join(rootPath, buildFolder, 'vendor', p),
+            );
+        });
+    }
+
+    fs.readdirSync(path.join(rootPath, 'src')).forEach(p => {
+        fs.readFile(path.join(rootPath, 'src', p), 'utf-8', (err, contents) => {
+            if (err) {
+                console.log(err);
+                return;
+            }
+
+            const replaced = contents.replace(DEFAULT_SRC, trezorConnectSrc);
+
+            fs.writeFile(path.join(rootPath, buildFolder, p), replaced, 'utf-8', function (err) {
+                if (err) {
+                    console.log(err);
+                    return;
+                }
+            });
+        });
+    });
 });

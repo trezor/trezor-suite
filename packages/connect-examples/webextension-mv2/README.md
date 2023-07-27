@@ -101,7 +101,7 @@ Basic implementation is the same for both Google Chrome & Firefox. However, few 
                     : `Error: ${response.payload.error}`;
                 chrome.notifications.create(new Date().getTime().toString(), {
                     type: 'basic',
-                    iconUrl: 'icons/48.png',
+                    iconUrl: 'icon48.png',
                     title: 'TrezorConnect',
                     message,
                 });
@@ -128,7 +128,7 @@ Basic implementation is the same for both Google Chrome & Firefox. However, few 
                     : `Error: ${response.payload.error}`;
                 chrome.notifications.create(new Date().getTime().toString(), {
                     type: 'basic',
-                    iconUrl: 'icons/48.png',
+                    iconUrl: 'icon48.png',
                     title: 'TrezorConnect',
                     message,
                 });
