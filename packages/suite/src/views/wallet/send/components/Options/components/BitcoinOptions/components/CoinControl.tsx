@@ -75,6 +75,7 @@ export const CoinControl = ({ close }: CoinControlProps) => {
         getDefaultValue,
         network,
         outputs,
+        isLoading,
         utxoSelection: {
             allUtxosSelected,
             composedInputs,
@@ -115,6 +116,7 @@ export const CoinControl = ({ close }: CoinControlProps) => {
     );
     const isMissingVisible =
         isCoinControlEnabled &&
+        !isLoading &&
         !missingAmountTooBig &&
         !(amountHasError && !notEnoughFundsSelectedError) &&
         (isMissingToAmount || notEnoughFundsSelectedError);
