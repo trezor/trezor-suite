@@ -40,6 +40,7 @@ test('Basic web extension MV2', async () => {
         '..',
         'connect-examples',
         'webextension-mv2',
+        'build',
     );
 
     const userDataDir = '/tmp/test-user-data-dir';
@@ -133,6 +134,7 @@ test('Basic web extension MV3', async () => {
         '..',
         'connect-examples',
         'webextension-mv3',
+        'build',
     );
 
     const userDataDir = '/tmp/test-user-data-dir';

@@ -3,22 +3,27 @@
     "version": "1.0.0",
     "manifest_version": 2,
     "icons": {
-        "48": "icons/48.png"
+        "48": "icon48.png"
     },
     "browser_action": {
         "browser_style": true,
-        "default_icon": "icons/48.png",
+        "default_icon": "icon48.png",
         "default_title": "Get address"
     },
-    "permissions": ["tabs", "notifications", "*://connect.trezor.io/9/*"],
+    "permissions": [
+        "tabs",
+        "notifications",
+        "*://connect.trezor.io/9/*",
+        "*://suite.corp.sldev.cz/*"
+    ],
     "background": {
         "scripts": ["./vendor/trezor-connect.js", "background.js"]
     },
     "content_scripts": [
         {
-            "matches": ["*://connect.trezor.io/9/popup.html"],
+            "matches": ["*://connect.trezor.io/9/popup.html", "*://suite.corp.sldev.cz/*"],
             "js": ["./vendor/trezor-content-script.js"]
         }
     ],
-    "web_accessible_resources": ["icons/48.png"]
+    "web_accessible_resources": ["icon48.png"]
 }
