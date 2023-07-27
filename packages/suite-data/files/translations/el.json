@@ -1,7 +1,6 @@
 {
   "AMOUNT": "Ποσό",
   "AMOUNT_IS_NOT_ENOUGH": "Δεν υπάρχουν αρκετά κεφάλαια",
-  "AMOUNT_IS_NOT_NUMBER": "Εισάγετε έναν αριθμό (π.χ. 1.5)",
   "AMOUNT_IS_NOT_SET": "Το ποσό δεν έχει οριστεί",
   "AMOUNT_IS_TOO_LOW": "Το ποσό είναι πολύ χαμηλό",
   "DOWNLOAD_TRANSACTION": "Λήψη ως .txt",
