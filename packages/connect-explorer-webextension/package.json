@@ -1,0 +1,25 @@
+{
+    "name": "@trezor/connect-explorer-webextension",
+    "version": "1.0.0",
+    "private": true,
+    "scripts": {
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "build": "rimraf build && TS_NODE_PROJECT=\"tsconfig.json\" yarn webpack --config ./webpack/prod.webpack.config.ts"
+    },
+    "devDependencies": {
+        "@types/react": "18.0.32",
+        "copy-webpack-plugin": "^11.0.0",
+        "html-webpack-plugin": "^5.5.3",
+        "rimraf": "^5.0.1",
+        "typescript": "4.9.5",
+        "webpack": "^5.88.2",
+        "webpack-cli": "^5.1.4",
+        "xvfb-maybe": "^0.2.1"
+    },
+    "dependencies": {
+        "@trezor/connect-explorer": "workspace:^",
+        "@trezor/connect-web": "workspace:^",
+        "react": "^18.2.0",
+        "react-dom": "^18.2.0"
+    }
+}

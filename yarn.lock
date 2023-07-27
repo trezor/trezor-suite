@@ -8960,7 +8960,26 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/connect-explorer@workspace:packages/connect-explorer":
+"@trezor/connect-explorer-webextension@workspace:packages/connect-explorer-webextension":
+  version: 0.0.0-use.local
+  resolution: "@trezor/connect-explorer-webextension@workspace:packages/connect-explorer-webextension"
+  dependencies:
+    "@trezor/connect-explorer": "workspace:^"
+    "@trezor/connect-web": "workspace:^"
+    "@types/react": 18.0.32
+    copy-webpack-plugin: ^11.0.0
+    html-webpack-plugin: ^5.5.3
+    react: ^18.2.0
+    react-dom: ^18.2.0
+    rimraf: ^5.0.1
+    typescript: 4.9.5
+    webpack: ^5.88.2
+    webpack-cli: ^5.1.4
+    xvfb-maybe: ^0.2.1
+  languageName: unknown
+  linkType: soft
+
+"@trezor/connect-explorer@workspace:^, @trezor/connect-explorer@workspace:packages/connect-explorer":
   version: 0.0.0-use.local
   resolution: "@trezor/connect-explorer@workspace:packages/connect-explorer"
   dependencies:
@@ -9105,7 +9124,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/connect-web@workspace:*, @trezor/connect-web@workspace:packages/connect-web":
+"@trezor/connect-web@workspace:*, @trezor/connect-web@workspace:^, @trezor/connect-web@workspace:packages/connect-web":
   version: 0.0.0-use.local
   resolution: "@trezor/connect-web@workspace:packages/connect-web"
   dependencies:
@@ -30149,7 +30168,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-dom@npm:18.2.0":
+"react-dom@npm:18.2.0, react-dom@npm:^18.2.0":
   version: 18.2.0
   resolution: "react-dom@npm:18.2.0"
   dependencies:
