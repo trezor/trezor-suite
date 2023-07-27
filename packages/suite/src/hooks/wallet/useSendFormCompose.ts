@@ -23,6 +23,7 @@ type Props = UseFormReturn<FormState> & {
     excludedUtxos: ExcludedUtxos;
     account: UseSendFormState['account']; // account from the component props !== state.account
     updateContext: SendContextValues['updateContext'];
+    setLoading: React.Dispatch<React.SetStateAction<boolean>>;
     setAmount: (index: number, amount: string) => void;
     targetAnonymity?: number;
     prison?: Record<string, unknown>;
@@ -39,6 +40,7 @@ export const useSendFormCompose = ({
     account,
     excludedUtxos,
     updateContext,
+    setLoading,
     setAmount,
     prison,
 }: Props) => {
@@ -60,7 +62,8 @@ export const useSendFormCompose = ({
     const composeDraft = useCallback(
         async (values: FormState) => {
             // start composing without debounce
-            updateContext({ isLoading: true, isDirty: true });
+            setLoading(true);
+            updateContext({ isDirty: true });
             setComposedLevels(undefined);
 
             const result = await composeTransaction(values, {
@@ -72,7 +75,8 @@ export const useSendFormCompose = ({
             });
 
             setComposedLevels(result);
-            updateContext({ isLoading: false, isDirty: true }); // isDirty needs to be set again, "state" is cached in updateContext callback
+            setLoading(false);
+            updateContext({ isDirty: true }); // isDirty needs to be set again, "state" is cached in updateContext callback
         },
         [
             account,
@@ -82,6 +86,7 @@ export const useSendFormCompose = ({
             state.feeInfo,
             composeTransaction,
             updateContext,
+            setLoading,
         ],
     );
 
@@ -119,7 +124,7 @@ export const useSendFormCompose = ({
                 setComposedLevels(result);
             }
             // result undefined: (FormState got errors or sendFormActions got errors)
-            updateContext({ isLoading: false });
+            setLoading(false);
         }
     }, [
         account,
@@ -127,7 +132,7 @@ export const useSendFormCompose = ({
         prison,
         state.network,
         state.feeInfo,
-        updateContext,
+        setLoading,
         debounce,
         errors,
         getValues,
@@ -154,7 +159,8 @@ export const useSendFormCompose = ({
         // set state value for later use in updateComposedValues function
         setComposeField(field);
         // start composing
-        updateContext({ isLoading: true, isDirty: true });
+        setLoading(true);
+        updateContext({ isDirty: true });
     };
 
     // Handle composeRequest
@@ -329,7 +335,8 @@ export const useSendFormCompose = ({
             clearErrors(composeErrors);
         }
         // start composing
-        updateContext({ account, isLoading: true });
+        setLoading(true);
+        updateContext({ account });
     }, [
         state.account,
         state.feeInfo.dustLimit,
@@ -338,6 +345,7 @@ export const useSendFormCompose = ({
         clearErrors,
         errors,
         updateContext,
+        setLoading,
     ]);
 
     return {
