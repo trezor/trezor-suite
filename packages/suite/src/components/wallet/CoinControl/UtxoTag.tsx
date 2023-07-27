@@ -1,17 +1,14 @@
 import React from 'react';
-import { useTheme, Icon, Tooltip, IconType } from '@trezor/components';
+import { Icon, Tooltip, IconType } from '@trezor/components';
 
 interface UtxoTagProps {
     icon: IconType;
+    iconColor: string;
     tooltipMessage: React.ReactNode;
 }
 
-export const UtxoTag = ({ icon, tooltipMessage }: UtxoTagProps) => {
-    const theme = useTheme();
-
-    return (
-        <Tooltip interactive={false} content={tooltipMessage}>
-            <Icon icon={icon} color={theme.TYPE_DARK_GREY} size={16} />
-        </Tooltip>
-    );
-};
+export const UtxoTag = ({ icon, iconColor, tooltipMessage }: UtxoTagProps) => (
+    <Tooltip interactive={false} content={tooltipMessage}>
+        <Icon icon={icon} color={iconColor} size={16} />
+    </Tooltip>
+);

@@ -5735,6 +5735,11 @@ export default defineMessages({
         defaultMessage: 'Not suitable for coinjoin - amount too high',
         description: 'Tooltip over an icon in Coin control section',
     },
+    TR_UTXO_REGISTERED_IN_COINJOIN: {
+        id: 'TR_UTXO_REGISTERED_IN_COINJOIN',
+        defaultMessage: 'Registered in coinjoin',
+        description: 'Tooltip over an icon in Coin control section',
+    },
     TR_UTXO_SHORT_BANNED_IN_COINJOIN: {
         id: 'TR_UTXO_SHORT_BANNED_IN_COINJOIN',
         defaultMessage: 'Temporarily banned from coinjoin',
