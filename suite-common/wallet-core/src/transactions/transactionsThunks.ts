@@ -14,6 +14,9 @@ import {
     isTrezorConnectBackendType,
     getPendingAccount,
     findAccountsByAddress,
+    enhanceTransaction,
+    getRbfParams,
+    replaceEthereumSpecific,
 } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
 import { blockbookUtils } from '@trezor/blockchain-link-utils';
@@ -27,66 +30,73 @@ import { selectAccountByKey, selectAccounts } from '../accounts/accountsReducer'
 import { selectBlockchainHeightBySymbol } from '../blockchain/blockchainReducer';
 
 /**
- * Replace existing transaction in the reducer.
+ * Replace existing transaction in the reducer (RBF)
  * There might be multiple occurrences of the same transaction assigned to multiple accounts in the storage:
  * sender account and receiver account(s)
  */
-export const replaceTransactionThunk = createThunk(
+interface ReplaceTransactionThunkParams {
+    precomposedTx: PrecomposedTransactionFinal; // tx params signed by @trezor/connect
+    newTxid: string; // new txid
+    signedTransaction?: Transaction; // tx returned from @trezor/connect (only in bitcoin-like)
+}
+
+export const replaceTransactionThunk = createThunk<ReplaceTransactionThunkParams>(
     `${modulePrefix}/replaceTransactionThunk`,
-    (
-        {
-            tx,
-            newTxid,
-        }: {
-            tx: PrecomposedTransactionFinal;
-            newTxid: string;
-        },
-        { getState, dispatch },
-    ) => {
-        if (!tx.prevTxid) return; // ignore if it's not replacement tx
+    ({ precomposedTx, newTxid, signedTransaction }, { getState, dispatch }) => {
+        if (!precomposedTx.prevTxid) return; // ignore if it's not a replacement tx
 
         const walletTransactions = selectTransactions(getState());
 
         // find all transactions to replace, they may be related to another account
-        const transactions = findTransactions(tx.prevTxid, walletTransactions);
-        const newBaseFee = parseInt(tx.fee, 10);
+        const origTransactions = findTransactions(precomposedTx.prevTxid, walletTransactions);
 
         // prepare replace actions for txs
-        const actions = transactions.map(t => {
-            // type: transactionsActions.replaceTransaction.type,
-            const payload: { key: string; txid: string; tx: WalletAccountTransaction } = {
-                key: t.key,
-                txid: tx.prevTxid,
-                tx: {
-                    ...t.tx,
+        const actions = origTransactions.flatMap(origTx => {
+            let newTx: WalletAccountTransaction;
+            const affectedAccount = selectAccountByKey(getState(), origTx.key);
+            if (!affectedAccount) return []; // skip, highly unlikely
+
+            if (signedTransaction) {
+                // bitcoin-like: profile transaction for affected account
+                newTx = enhanceTransaction(
+                    blockbookUtils.transformTransaction(
+                        affectedAccount.descriptor,
+                        affectedAccount.addresses,
+                        signedTransaction,
+                    ),
+                    affectedAccount,
+                );
+            } else {
+                // ethereum-like: update transaction manually
+                newTx = {
+                    ...origTx.tx,
                     txid: newTxid,
-                    fee: tx.fee,
-                    rbf: !!tx.rbf,
+                    fee: precomposedTx.fee,
+                    rbf: !!precomposedTx.rbf,
                     blockTime: Math.round(new Date().getTime() / 1000),
                     // TODO: details: {}, is it worth it?
-                },
-            };
-            // finalized and recv tx shouldn't have rbfParams
-            if (!tx.rbf || t.tx.type === 'recv') {
-                delete payload.tx.rbfParams;
-                return transactionsActions.replaceTransaction(payload);
+                };
+
+                // update ethereumSpecific values
+                newTx.ethereumSpecific = replaceEthereumSpecific(newTx, precomposedTx);
+
+                // finalized and recv tx shouldn't have rbfParams
+                if (!precomposedTx.rbf || origTx.tx.type === 'recv') {
+                    delete newTx.rbfParams;
+                } else {
+                    // update tx rbfParams
+                    newTx.rbfParams = getRbfParams(newTx, affectedAccount);
+                }
             }
 
-            if (payload.tx.type === 'self') {
-                payload.tx.amount = tx.fee;
-            }
-            // update tx rbfParams
-            if (payload.tx.rbfParams) {
-                payload.tx.rbfParams = {
-                    ...payload.tx.rbfParams,
-                    txid: newTxid,
-                    baseFee: newBaseFee,
-                    feeRate: tx.feePerByte,
-                };
-            }
-            return transactionsActions.replaceTransaction(payload);
+            return transactionsActions.replaceTransaction({
+                key: origTx.key,
+                txid: precomposedTx.prevTxid,
+                tx: newTx,
+            });
         });
-        // dispatch replace actions
+
+        // dispatch all replace actions
         actions.forEach(a => dispatch(a));
     },
 );

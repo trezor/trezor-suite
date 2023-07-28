@@ -1,11 +1,12 @@
 import BigNumber from 'bignumber.js';
-import { fromWei } from 'web3-utils';
+import { fromWei, toWei } from 'web3-utils';
 import { addDays, startOfMonth } from 'date-fns';
 
 import {
     Account,
     RbfTransactionParams,
     WalletAccountTransaction,
+    PrecomposedTransactionFinal,
 } from '@suite-common/wallet-types';
 import { AccountMetadata } from '@suite-common/metadata-types';
 import {
@@ -468,6 +469,19 @@ export const getTargetAmount = (
 export const getFeeRate = (tx: AccountTransaction) =>
     // calculate fee rate, TODO: add this to blockchain-link tx details
     new BigNumber(tx.fee).div(tx.details.size).integerValue(BigNumber.ROUND_CEIL).toString();
+
+// used by replaceTransactionThunk
+export const replaceEthereumSpecific = (
+    tx: AccountTransaction,
+    precomposedTx: PrecomposedTransactionFinal,
+) => {
+    if (!tx.ethereumSpecific) return;
+    return {
+        ...tx.ethereumSpecific,
+        gasLimit: Number(precomposedTx.feeLimit),
+        gasPrice: toWei(precomposedTx.feePerByte, 'gwei'),
+    };
+};
 
 const getEthereumRbfParams = (
     tx: AccountTransaction,
