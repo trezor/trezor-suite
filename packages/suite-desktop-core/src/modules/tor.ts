@@ -55,6 +55,7 @@ const load = async ({ mainWindow, store, mainThreadEmitter }: Dependencies) => {
         } else {
             type = TorStatus.Disabled;
         }
+        mainThreadEmitter.emit('module/tor-status-update', type);
         mainWindow.webContents.send('tor/status', {
             type,
         });

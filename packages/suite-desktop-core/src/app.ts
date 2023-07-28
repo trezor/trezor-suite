@@ -1,8 +1,6 @@
 import path from 'path';
-import { app, BrowserWindow, session } from 'electron';
-import { init as initSentry, ElectronOptions, IPCMode } from '@sentry/electron';
+import { app, BrowserWindow } from 'electron';
 
-import { SENTRY_CONFIG } from '@suite-common/sentry';
 import { isDevEnv } from '@suite-common/suite-utils';
 import type { HandshakeClient } from '@trezor/suite-desktop-api';
 
@@ -13,6 +11,7 @@ import { MIN_HEIGHT, MIN_WIDTH } from './libs/screen';
 import { getBuildInfo, getComputerInfo } from './libs/info';
 import { restartApp } from './libs/app-utils';
 import { clearAppCache, initUserData } from './libs/user-data';
+import { initSentry } from './libs/sentry';
 import { initModules, mainThreadEmitter } from './modules';
 import { init as initTorModule } from './modules/tor';
 import { createInterceptor } from './libs/request-interceptor';
@@ -86,15 +85,10 @@ const init = async () => {
 
     const store = Store.getStore();
 
-    const sentryConfig: ElectronOptions = {
-        ...SENTRY_CONFIG,
-        ipcMode: IPCMode.Classic,
-        getSessions: () => [session.defaultSession],
-    };
-
-    // Sentry still ignore userPath change so in local build it uses @trezor/suite-desktop/sentry folder.
-    // I believe it is not a problem.
-    initSentry(sentryConfig);
+    initSentry({
+        store,
+        mainThreadEmitter,
+    });
 
     app.name = APP_NAME; // overrides @trezor/suite-desktop app name in menu
 

@@ -4,7 +4,7 @@ import { isNotUndefined } from '@trezor/utils';
 import { TypedEmitter } from '@trezor/utils/lib/typedEventEmitter';
 import { InterceptedEvent } from '@trezor/request-manager';
 import { isDevEnv } from '@suite-common/suite-utils';
-import type { HandshakeClient } from '@trezor/suite-desktop-api';
+import type { HandshakeClient, TorStatus } from '@trezor/suite-desktop-api';
 
 import { StrictBrowserWindow } from '../typed-electron';
 import type { Store } from '../libs/store';
@@ -69,14 +69,16 @@ const MODULES = [
 interface MainThreadMessages {
     'module/request-interceptor': InterceptedEvent;
     'module/reset-tor-circuits': Extract<InterceptedEvent, { type: 'CIRCUIT_MISBEHAVING' }>;
+    'module/tor-status-update': TorStatus;
 }
 export const mainThreadEmitter = new TypedEmitter<MainThreadMessages>();
+export type MainThreadEmitter = typeof mainThreadEmitter;
 
 export type Dependencies = {
     mainWindow: StrictBrowserWindow;
     store: Store;
     interceptor: RequestInterceptor;
-    mainThreadEmitter: typeof mainThreadEmitter;
+    mainThreadEmitter: MainThreadEmitter;
 };
 
 type ModuleLoad = (payload: HandshakeClient) => any | Promise<any>;
