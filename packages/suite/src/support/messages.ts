@@ -483,11 +483,11 @@ export default defineMessages({
         id: 'TR_EXCHANGE_DETAIL_CONVERTING_SUPPORT',
     },
     TR_EXCHANGE_RECEIVING_ACCOUNT: {
-        defaultMessage: 'Receiving account',
+        defaultMessage: 'Receive account',
         id: 'TR_EXCHANGE_RECEIVING_ACCOUNT',
     },
     TR_EXCHANGE_VERIFY_ADDRESS_STEP: {
-        defaultMessage: 'Receiving address',
+        defaultMessage: 'Receive address',
         id: 'TR_EXCHANGE_VERIFY_ADDRESS_STEP',
     },
     TR_EXCHANGE_CONFIRM_SEND_STEP: {
@@ -641,7 +641,7 @@ export default defineMessages({
     },
     TR_EXCHANGE_RECEIVE_NON_SUITE_ACCOUNT_QUESTION_TOOLTIP: {
         id: 'TR_EXCHANGE_RECEIVE_NON_SUITE_ACCOUNT_QUESTION_TOOLTIP',
-        defaultMessage: 'Receiving account is outside of Suite.',
+        defaultMessage: 'Receive account is outside of Suite.',
     },
     TR_EXCHANGE_RECEIVE_NON_SUITE_ADDRESS_QUESTION_TOOLTIP: {
         id: 'TR_EXCHANGE_RECEIVE_NON_SUITE_ADDRESS_QUESTION_TOOLTIP',
@@ -649,22 +649,22 @@ export default defineMessages({
     },
     TR_EXCHANGE_SELECT_RECEIVE_ACCOUNT: {
         id: 'TR_EXCHANGE_SELECT_RECEIVE_ACCOUNT',
-        defaultMessage: 'Select {symbol} receiving account',
+        defaultMessage: 'Select {symbol} receive account',
     },
     TR_EXCHANGE_RECEIVING_ADDRESS_INFO: {
-        defaultMessage: "Your address is where you'll receive your {symbol}.",
+        defaultMessage: "Your receive address is where you'll receive your {symbol}.",
         id: 'TR_EXCHANGE_RECEIVING_ADDRESS_INFO',
     },
     TR_EXCHANGE_RECEIVING_ADDRESS: {
-        defaultMessage: 'Receiving address',
+        defaultMessage: 'Receive address',
         id: 'TR_EXCHANGE_RECEIVING_ADDRESS',
     },
     TR_EXCHANGE_RECEIVING_ADDRESS_REQUIRED: {
-        defaultMessage: 'Receiving address is required',
+        defaultMessage: 'Receive address is required',
         id: 'TR_EXCHANGE_RECEIVING_ADDRESS_REQUIRED',
     },
     TR_EXCHANGE_RECEIVING_ADDRESS_INVALID: {
-        defaultMessage: 'Receiving address is invalid',
+        defaultMessage: 'Receive address is invalid',
         id: 'TR_EXCHANGE_RECEIVING_ADDRESS_INVALID',
     },
     TR_EXCHANGE_RECEIVE_ADDRESS_QUESTION_TOOLTIP: {
@@ -1187,7 +1187,7 @@ export default defineMessages({
         id: 'TR_P2P_GET_STARTED_STEP',
     },
     TR_P2P_RECEIVING_ADDRESS_STEP: {
-        defaultMessage: 'Receiving address',
+        defaultMessage: 'Receive address',
         id: 'TR_P2P_RECEIVING_ADDRESS_STEP',
     },
     TR_P2P_GET_STARTED_INTRO: {
@@ -1218,11 +1218,11 @@ export default defineMessages({
         id: 'TR_P2P_GO_TO_PROVIDER',
     },
     TR_P2P_GO_TO_RECEIVING_ADDRESS: {
-        defaultMessage: 'Go to receiving address',
+        defaultMessage: 'Go to receive address',
         id: 'TR_P2P_GO_TO_RECEIVING_ADDRESS',
     },
     TR_P2P_RECEIVING_ADDRESS: {
-        defaultMessage: 'Receiving address',
+        defaultMessage: 'Receive address',
         id: 'TR_P2P_RECEIVING_ADDRESS',
     },
     TR_P2P_RECEIVING_ADDRESS_ALMOST_THERE: {
@@ -1317,12 +1317,12 @@ export default defineMessages({
         id: 'TR_SAVINGS_SETUP_FIAT_AMOUNT_CUSTOM',
     },
     TR_SAVINGS_SETUP_RECEIVING_ADDRESS: {
-        defaultMessage: 'Receiving address',
+        defaultMessage: 'Receive address',
         id: 'TR_SAVINGS_SETUP_RECEIVING_ADDRESS',
     },
     TR_SAVINGS_SETUP_RECEIVING_ADDRESS_CHANGES_PAYMENT_INFO: {
         defaultMessage:
-            'Changing the receiving address changes payment information. Please review the information on the next page carefully.',
+            'Changing the receive address changes the payment information. Please review the information on the next page carefully.',
         id: 'TR_SAVINGS_SETUP_RECEIVING_ADDRESS_CHANGES_PAYMENT_INFO',
     },
     TR_SAVINGS_SETUP_SUMMARY_LABEL: {
@@ -1354,7 +1354,7 @@ export default defineMessages({
         id: 'TR_SAVINGS_SETUP_KYC_ERROR_HEADER',
     },
     TR_SAVINGS_SETUP_KYC_ERROR_DESCRIPTION: {
-        defaultMessage: 'Something went wrong during the KYC check. Please contact Trezor support.',
+        defaultMessage: 'Something went wrong during the KYC check. Please contact Trezor Support.',
         id: 'TR_SAVINGS_SETUP_KYC_ERROR_DESCRIPTION',
     },
     TR_SAVINGS_PAYMENT_INFO_HEADER: {
@@ -1769,7 +1769,7 @@ export default defineMessages({
         id: 'TR_BUY_TRANS_ID',
     },
     TR_BUY_RECEIVING_ADDRESS: {
-        defaultMessage: 'Receiving address',
+        defaultMessage: 'Receive address',
         id: 'TR_BUY_RECEIVING_ADDRESS',
     },
     TR_BUY_CONFIRMED_ON_TREZOR: {
@@ -1797,7 +1797,7 @@ export default defineMessages({
         id: 'TR_BUY_GO_TO_PAYMENT',
     },
     TR_BUY_RECEIVING_ACCOUNT: {
-        defaultMessage: 'Receiving account',
+        defaultMessage: 'Receive account',
         id: 'TR_BUY_RECEIVING_ACCOUNT',
     },
     TR_BUY_DETAIL_SUCCESS_TITLE: {
@@ -1902,7 +1902,7 @@ export default defineMessages({
         id: 'TR_COPY_TO_CLIPBOARD_TX_ID',
     },
     TR_ADDRESS_MODAL_TITLE: {
-        defaultMessage: '{networkName} receiving address',
+        defaultMessage: '{networkName} receive address',
         id: 'TR_ADDRESS_MODAL_TITLE',
     },
     TR_XPUB_MODAL_CLIPBOARD: {
@@ -2138,7 +2138,7 @@ export default defineMessages({
         id: 'TR_CONFIRM_PASSPHRASE',
     },
     TR_CONFIRM_PASSPHRASE_SOURCE: {
-        defaultMessage: 'Confirm empty Hidden wallet passphrase source on "{deviceLabel}" device.',
+        defaultMessage: 'Confirm empty hidden wallet passphrase source on "{deviceLabel}" device.',
         id: 'TR_CONFIRM_PASSPHRASE_SOURCE',
     },
     TR_CONFIRMED_TX: {
@@ -2660,7 +2660,7 @@ export default defineMessages({
         id: 'TR_HOW_PIN_WORKS',
     },
     TR_I_UNDERSTAND_PASSPHRASE: {
-        defaultMessage: 'I understand passphrases cannot be retrieved unlike everyday passwords',
+        defaultMessage: 'I understand passphrases cannot be retrieved.',
         id: 'TR_I_UNDERSTAND_PASSPHRASE',
     },
     TR_IF_YOUR_DEVICE_IS_EVER_LOST: {
@@ -3352,7 +3352,7 @@ export default defineMessages({
         id: 'TR_TESTNET_COINS_LABEL',
     },
     TR_THE_PIN_LAYOUT_IS_DISPLAYED: {
-        defaultMessage: 'Check your <b>{deviceLabel}</b> screen for the keypad layout.',
+        defaultMessage: 'Check <b>{deviceLabel}</b> screen for the keypad layout.',
         id: 'TR_THE_PIN_LAYOUT_IS_DISPLAYED',
     },
     TR_THIS_HIDDEN_WALLET_IS_EMPTY: {
@@ -3520,7 +3520,7 @@ export default defineMessages({
         id: 'TR_WALLET_DUPLICATE_TITLE',
     },
     TR_WELCOME_TO_TREZOR_TEXT_WALLET_CREATION: {
-        defaultMessage: 'Create a new wallet or restore one from a backup',
+        defaultMessage: 'Create a new wallet or recover one from a backup',
         id: 'TR_WELCOME_TO_TREZOR_TEXT_WALLET_CREATION',
     },
     TR_WEST: {
@@ -4045,7 +4045,7 @@ export default defineMessages({
     TR_OUTDATED_BRIDGE_DESKTOP: {
         id: 'TR_OUTDATED_BRIDGE_DESKTOP',
         defaultMessage:
-            'Trezor Suite is bundled with Trezor Bridge. If you only use the Trezor Suite application, we recommend you to uninstall Trezor Bridge in order to use the bundled one. If you are using Trezor in your browser as well, updating Trezor Bridge is recommended.',
+            'Trezor Suite is bundled with Trezor Bridge. If you only use the Trezor Suite application, we recommend uninstalling Trezor Bridge in order to use the bundled one. If you are also using Trezor in your browser, updating Trezor Bridge is recommended.',
     },
     EVENT_DEVICE_CONNECT: {
         id: 'EVENT_DEVICE_CONNECT',
@@ -4128,7 +4128,7 @@ export default defineMessages({
     },
     TR_SELECT_NUMBER_OF_WORDS: {
         id: 'TR_SELECT_NUMBER_OF_WORDS',
-        defaultMessage: 'Select number of words in your recovery seed',
+        defaultMessage: 'Select the number of words in your recovery seed',
     },
     TR_SEED_BACKUP_LENGTH: {
         id: 'TR_SEED_BACKUP_LENGTH',
@@ -4137,7 +4137,7 @@ export default defineMessages({
     },
     TR_SEED_BACKUP_LENGTH_INCLUDING_SHAMIR: {
         id: 'TR_SEED_BACKUP_LENGTH_INCLUDING_SHAMIR',
-        defaultMessage: 'Your seed may contain 12, 18, 20, 24, or 33 words.',
+        defaultMessage: 'Your recovery seed may contain 12, 18, 20, 24, or 33 words.',
         dynamic: true,
     },
     TR_ENTER_ALL_WORDS_IN_CORRECT: {
@@ -4167,7 +4167,7 @@ export default defineMessages({
     TR_ENTER_SEED_WORDS_ON_DEVICE: {
         id: 'TR_ENTER_SEED_WORDS_ON_DEVICE',
         defaultMessage:
-            'The words are entered on the device for security reasons. Please enter all the words in the correct order.',
+            'The words are entered on the device for security reasons. Please enter the words in the correct order.',
     },
     TR_SEED_CHECK_SUCCESS_TITLE: {
         id: 'TR_SEED_CHECK_SUCCESS_TITLE',
@@ -4269,7 +4269,7 @@ export default defineMessages({
     },
     MODAL_ADD_ACCOUNT_COINJOIN_NO_SUPPORT: {
         id: 'MODAL_ADD_ACCOUNT_COINJOIN_NO_SUPPORT',
-        defaultMessage: 'Coinjoin is supported only on Trezor Model T',
+        defaultMessage: 'Please update your firmware to use coinjoin',
     },
     MODAL_ADD_ACCOUNT_COINJOIN_UPDATE_REQUIRED: {
         id: 'MODAL_ADD_ACCOUNT_COINJOIN_UPDATE_REQUIRED',
@@ -4757,12 +4757,12 @@ export default defineMessages({
     },
     TR_SECURITY_CHECKPOINT_GOT_SEED: {
         id: 'TR_SECURITY_CHECKPOINT_GOT_SEED',
-        defaultMessage: 'Security checkpoint: Do you have your recovery seed?',
+        defaultMessage: 'Do you have your recovery seed?',
     },
     TR_BEFORE_ANY_FURTHER_ACTIONS: {
         id: 'TR_BEFORE_ANY_FURTHER_ACTIONS',
         defaultMessage:
-            'Before you perform the update, please make sure you have your recovery seed.',
+            'Although unlikely, there might be a situation where you have to access your recovery seed in case of a firmware update issue.',
     },
     TR_FIRMWARE_PARTIALLY_UPDATED: {
         id: 'TR_FIRMWARE_PARTIALLY_UPDATED',
@@ -4896,7 +4896,7 @@ export default defineMessages({
     TR_BACKUP_SEED_IS_ULTIMATE: {
         id: 'TR_BACKUP_SEED_IS_ULTIMATE',
         defaultMessage:
-            "Your recovery seed is the key to your wallet and funds. If you lose it, it's gone forever: there is no other way to restore access to a wallet.",
+            "Your recovery seed is necessary to restore access to your wallet and funds. If you lose your recovery seed, it's gone forever: there is no other way to restore access to a wallet.",
     },
     TR_FIRMWARE_IS_POTENTIALLY_RISKY: {
         id: 'TR_FIRMWARE_IS_POTENTIALLY_RISKY',
@@ -4982,7 +4982,7 @@ export default defineMessages({
     TR_SWITCH_FIRMWARE_TYPE_DESCRIPTION: {
         id: 'TR_SWITCH_FIRMWARE_TYPE_DESCRIPTION',
         defaultMessage:
-            'Bitcoin-only firmware is a lightweight option for users only interested in Bitcoin. Universal firmware enables all supported coins and features. Do you wish to switch firmware type?',
+            'Bitcoin-only firmware is a lightweight option for users only interested in Bitcoin. Universal firmware enables all supported coins and features. Do you want to switch firmware type?',
     },
     TR_BITCOIN_ONLY_UNAVAILABLE: {
         id: 'TR_BITCOIN_ONLY_UNAVAILABLE',
@@ -5052,7 +5052,7 @@ export default defineMessages({
     },
     TR_EARLY_ACCESS_JOINED_TITLE: {
         id: 'TR_EARLY_ACCESS_JOINED_TITLE',
-        defaultMessage: 'Early Access Program enabled!',
+        defaultMessage: 'Early Access Program enabled',
     },
     TR_EARLY_ACCESS_JOINED_DESCRIPTION: {
         id: 'TR_EARLY_ACCESS_JOINED_DESCRIPTION',
@@ -5647,7 +5647,8 @@ export default defineMessages({
         id: 'FEE_LEVEL_LOW',
     },
     CUSTOM_FEE_IS_NOT_SET: {
-        defaultMessage: 'How much do you want to spend on fee to make this transaction go through.',
+        defaultMessage:
+            'How much do you want to spend on fees to make this transaction go through.',
         id: 'CUSTOM_FEE_IS_NOT_SET',
     },
     CUSTOM_FEE_IS_NOT_INTEGER: {
@@ -5659,7 +5660,7 @@ export default defineMessages({
         id: 'CUSTOM_FEE_NOT_IN_RANGE',
     },
     CUSTOM_FEE_LIMIT_BELOW_RECOMMENDED: {
-        defaultMessage: 'Gas limit too low',
+        defaultMessage: 'Gas limit too low {button}',
         id: 'CUSTOM_FEE_LIMIT_BELOW_RECOMMENDED',
     },
     CUSTOM_FEE_LIMIT_USE_RECOMMENDED: {
@@ -5836,7 +5837,7 @@ export default defineMessages({
     SETTINGS_ADV_COIN_BLOCKBOOK_DESCRIPTION: {
         id: 'SETTINGS_ADV_COIN_BLOCKBOOK_DESCRIPTION',
         defaultMessage:
-            'Trezor Suite uses Blockbook for the wallet backend. You can also use your own custom blockbook.',
+            'Trezor Suite uses Trezor Blockbook for the wallet backend. You can also use your own custom blockbook.',
     },
     SETTINGS_ADV_COIN_BLOCKFROST_DESCRIPTION: {
         id: 'SETTINGS_ADV_COIN_BLOCKFROST_DESCRIPTION',
@@ -6225,7 +6226,7 @@ export default defineMessages({
     TR_BACKUP_CHECKBOX_1_TITLE: {
         id: 'TR_BACKUP_CHECKBOX_1_TITLE',
         defaultMessage:
-            'Your seed backup lets you recover your funds in case of Trezor loss or damage.',
+            'Your recovery seed backup lets you recover your funds in case of Trezor loss or damage.',
     },
     TR_BACKUP_CHECKBOX_1_DESCRIPTION: {
         id: 'TR_BACKUP_CHECKBOX_1_DESCRIPTION',
@@ -6239,11 +6240,11 @@ export default defineMessages({
     TR_BACKUP_CHECKBOX_2_DESCRIPTION: {
         id: 'TR_BACKUP_CHECKBOX_2_DESCRIPTION',
         defaultMessage:
-            "Don't save your recovery seed in your phone or on any device that could be hacked, including a cloud service.",
+            "Don't save your recovery seed on your phone or on any device that could be hacked, including a cloud service.",
     },
     TR_BACKUP_CHECKBOX_3_TITLE: {
         id: 'TR_BACKUP_CHECKBOX_3_TITLE',
-        defaultMessage: 'Store your seed backup securely and never share it with anyone.',
+        defaultMessage: 'Store your recovery seed backup securely and never share it with anyone.',
     },
     TR_BACKUP_CHECKBOX_3_DESCRIPTION: {
         id: 'TR_BACKUP_CHECKBOX_3_DESCRIPTION',
@@ -6444,12 +6445,12 @@ export default defineMessages({
     },
     TR_ANALYZE_IN_BLOCKBOOK: {
         id: 'TR_ANALYZE_IN_BLOCKBOOK',
-        defaultMessage: 'Analyze in Blockbook',
+        defaultMessage: 'Analyze in Trezor Blockbook',
     },
     TR_ANALYZE_IN_BLOCKBOOK_DESC: {
         id: 'TR_ANALYZE_IN_BLOCKBOOK_DESC',
         defaultMessage:
-            'See inputs and outputs in Blockbook as it might be easier to analyze there.',
+            'See inputs and outputs in Trezor Blockbook as it might be easier to analyze there.',
     },
     TR_ANALYZE_IN_BLOCKBOOK_OPEN: {
         id: 'TR_ANALYZE_IN_BLOCKBOOK_OPEN',
@@ -6866,7 +6867,7 @@ export default defineMessages({
     TR_TROUBLESHOOTING_TIP_CABLE_DESCRIPTION: {
         id: 'TR_TROUBLESHOOTING_TIP_CABLE_DESCRIPTION',
         defaultMessage:
-            'The cable must be fully inserted. If you have a Model T, the cable should "click" into place.',
+            'The cable must be fully inserted. In case of USB-C device, the cable should click into place.',
     },
     TR_TROUBLESHOOTING_TIP_USB_PORT_TITLE: {
         id: 'TR_TROUBLESHOOTING_TIP_USB_PORT_TITLE',
@@ -7047,12 +7048,12 @@ export default defineMessages({
     },
     TR_STAKING_ON_3RD_PARTY_TITLE: {
         id: 'TR_STAKING_ON_3RD_PARTY_TITLE',
-        defaultMessage: 'You are delegating on a 3rd party stake pool',
+        defaultMessage: 'You are delegating on a third-party stake pool',
     },
     TR_STAKING_ON_3RD_PARTY_DESCRIPTION: {
         id: 'TR_STAKING_ON_3RD_PARTY_DESCRIPTION',
         defaultMessage:
-            'By staking on Trezor stake pool you are directly supporting Trezor and the Cardano ecosystem within Trezor Suite.',
+            'By staking on a Trezor stake pool you are directly supporting Trezor and the Cardano ecosystem within Trezor Suite.',
     },
     TR_STAKING_POOL_OVERSATURATED_TITLE: {
         id: 'TR_STAKING_POOL_OVERSATURATED_TITLE',
@@ -7682,7 +7683,7 @@ export default defineMessages({
         id: 'TR_LOADING_FACT_22',
         description: '140 symbols max',
         defaultMessage:
-            "'Bitcoin halving' is the mechanism by which the reward for mining BTC is cut in half every four years. In the beginning, mining one block would earn you 50 BTC, whereas in 2022 it earns you 6.25 BTC",
+            'Halving is the mechanism by which the reward for mining BTC is cut in half every four years. In the beginning, mining one block would earn you 50 BTC, whereas in 2020 it earned you 6.25 BTC',
     },
     TR_LOADING_FACT_23: {
         id: 'TR_LOADING_FACT_23',
@@ -7757,7 +7758,7 @@ export default defineMessages({
     },
     TR_SESSION_PHASE_ROUND_PAIRING: {
         id: 'TR_SESSION_PHASE_ROUND_PAIRING',
-        defaultMessage: 'Pairing coins with the round',
+        defaultMessage: 'Selecting coins for the next round',
         description: '29 symbols max',
     },
     TR_SESSION_PHASE_COIN_REGISTRATION: {
@@ -7792,7 +7793,7 @@ export default defineMessages({
     },
     TR_SESSION_ERROR_PHASE_BLOCKED_UTXOS: {
         id: 'TR_SESSION_ERROR_PHASE_BLOCKED_UTXOS',
-        defaultMessage: 'Coinjoin temporarily unavailable',
+        defaultMessage: 'Coins not ready. Wait to try again.',
         description: 'Some of utxos are temporary banned, disable session for a while',
     },
     TR_SESSION_PHASE_AWAITING_CONFIRMATION: {
