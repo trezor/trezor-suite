@@ -101,20 +101,15 @@ export const replaceTransactionThunk = createThunk<ReplaceTransactionThunkParams
     },
 );
 
-export const addFakePendingTxThunk = createThunk(
+interface AddFakePendingTransactionParams {
+    transaction: Transaction;
+    precomposedTx: PrecomposedTransactionFinal;
+    account: Account;
+}
+
+export const addFakePendingTxThunk = createThunk<AddFakePendingTransactionParams>(
     `${modulePrefix}/addFakePendingTransaction`,
-    (
-        {
-            transaction,
-            precomposedTx,
-            account,
-        }: {
-            transaction: Transaction;
-            precomposedTx: PrecomposedTransactionFinal;
-            account: Account;
-        },
-        { dispatch, getState },
-    ) => {
+    ({ transaction, precomposedTx, account }, { dispatch, getState }) => {
         const blockHeight = selectBlockchainHeightBySymbol(getState(), account.symbol);
         const accounts = selectAccounts(getState());
 
@@ -143,29 +138,34 @@ export const addFakePendingTxThunk = createThunk(
 
         Object.keys(affectedAccounts).forEach(key => {
             const affectedAccount = affectedAccounts[key];
-            // profile pending transaction for this affected account
-            const affectedAccountTransaction = blockbookUtils.transformTransaction(
-                affectedAccount.descriptor,
-                affectedAccount.addresses,
-                transaction,
-            );
-            const prependingTx = { ...affectedAccountTransaction, deadline: blockHeight + 2 };
-            dispatch(
-                transactionsActions.addTransaction({
-                    transactions: [prependingTx],
-                    account: affectedAccount,
-                }),
-            );
+            if (!precomposedTx.prevTxid) {
+                // create and profile pending transaction for affected account if it's not a replacement tx
+                const affectedAccountTransaction = blockbookUtils.transformTransaction(
+                    affectedAccount.descriptor,
+                    affectedAccount.addresses,
+                    transaction,
+                );
+                const prependingTx = { ...affectedAccountTransaction, deadline: blockHeight + 2 };
+                dispatch(
+                    transactionsActions.addTransaction({
+                        transactions: [prependingTx],
+                        account: affectedAccount,
+                    }),
+                );
+            }
+
             if (affectedAccount.backendType === 'coinjoin') {
-                // updating of coinjoin accounts is solved in coinjoinAccoundActions and coinjoinMiddleware
+                // updating of coinjoin accounts is solved in coinjoinAccountActions and coinjoinMiddleware
                 return;
             }
+
             const pendingAccount = getPendingAccount({
                 account: affectedAccount,
                 tx: precomposedTx,
                 txid: transaction.txid,
                 receivingAccount: account.key !== affectedAccount.key,
             });
+
             if (pendingAccount) {
                 dispatch(accountsActions.updateAccount(pendingAccount));
             }
