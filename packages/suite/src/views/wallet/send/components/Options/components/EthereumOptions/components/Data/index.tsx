@@ -7,6 +7,10 @@ import { getInputState, isHexValid } from '@suite-common/wallet-utils';
 import { MAX_LENGTH } from 'src/constants/suite/inputs';
 import { useTranslation } from 'src/hooks/suite';
 
+const inputAsciiName = 'ethereumDataAscii';
+const inputHexName = 'ethereumDataHex';
+const inputAmountName = 'outputs.0.amount';
+
 const Wrapper = styled.div`
     display: flex;
     width: 100%;
@@ -24,25 +28,18 @@ interface Props {
     close: () => void;
 }
 
-const Data = ({ close }: Props) => {
+export const Data = ({ close }: Props) => {
     const {
         register,
-        outputs,
         formState: { errors },
-        getDefaultValue,
         setValue,
         setAmount,
         composeTransaction,
+        watch,
     } = useSendFormContext();
-
     const { translationString } = useTranslation();
 
-    const inputAsciiName = 'ethereumDataAscii';
-    const inputHexName = 'ethereumDataHex';
-
-    const asciiValue = getDefaultValue(inputAsciiName);
-    const hexValue = getDefaultValue(inputHexName);
-    const amount = getDefaultValue('outputs.0.amount', '');
+    const [asciiValue, hexValue, amount] = watch([inputAsciiName, inputHexName, inputAmountName]);
 
     const asciiError = errors.ethereumDataAscii;
     const hexError = errors.ethereumDataHex;
@@ -69,10 +66,10 @@ const Data = ({ close }: Props) => {
                 !hexError ? Buffer.from(event.target.value, 'hex').toString('ascii') : '',
             );
             if (!amount) {
-                setValue('outputs.0.amount', '0');
+                setValue(inputAmountName, '0');
             }
             if ((event.target.value === '' || hexError) && amount === '0') {
-                setValue('outputs.0.amount', '');
+                setValue(inputAmountName, '');
             }
             composeTransaction(inputHexName);
         },
