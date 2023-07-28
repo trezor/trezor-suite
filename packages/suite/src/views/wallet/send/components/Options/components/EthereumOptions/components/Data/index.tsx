@@ -42,7 +42,7 @@ const Data = ({ close }: Props) => {
 
     const asciiValue = getDefaultValue(inputAsciiName);
     const hexValue = getDefaultValue(inputHexName);
-    const amount = getDefaultValue('outputs.0.amount', outputs[0].amount);
+    const amount = getDefaultValue('outputs.0.amount', '');
 
     const asciiError = errors.ethereumDataAscii;
     const hexError = errors.ethereumDataHex;
