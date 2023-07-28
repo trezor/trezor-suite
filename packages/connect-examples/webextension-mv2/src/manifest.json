@@ -6,9 +6,7 @@
         "48": "icon48.png"
     },
     "browser_action": {
-        "browser_style": true,
-        "default_icon": "icon48.png",
-        "default_title": "Get address"
+        "default_popup": "popup.html"
     },
     "permissions": [
         "tabs",
