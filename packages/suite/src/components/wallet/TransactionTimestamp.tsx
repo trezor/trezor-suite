@@ -22,13 +22,11 @@ export const TransactionTimestamp = ({
     showDate = false,
     transaction,
 }: TransactionTimestampProps) => {
-    const { blockTime, blockHeight } = transaction;
+    const { blockTime } = transaction;
 
     return (
         <TimestampLink>
-            {blockHeight !== 0 && blockTime && blockTime > 0 && (
-                <FormattedDate value={new Date(blockTime * 1000)} time date={showDate} />
-            )}
+            {blockTime && <FormattedDate value={new Date(blockTime * 1000)} time date={showDate} />}
         </TimestampLink>
     );
 };
