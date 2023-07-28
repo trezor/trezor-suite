@@ -51,6 +51,7 @@ export const createPendingTransaction = (
             isAddress: true,
             addresses: findAddress(ins),
             value: ins.amount.toString(),
+            sequence: ins.sequence,
         })),
         vout: outputs.map((out, n) => {
             let transformedAddresses: string[] = [];
