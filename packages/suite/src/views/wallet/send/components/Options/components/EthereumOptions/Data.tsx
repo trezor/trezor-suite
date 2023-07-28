@@ -24,11 +24,11 @@ const Space = styled.div`
     min-width: 65px;
 `;
 
-interface Props {
+interface DataProps {
     close: () => void;
 }
 
-export const Data = ({ close }: Props) => {
+export const Data = ({ close }: DataProps) => {
     const {
         register,
         formState: { errors },
@@ -120,5 +120,3 @@ export const Data = ({ close }: Props) => {
         </Wrapper>
     );
 };
-
-export default Data;
