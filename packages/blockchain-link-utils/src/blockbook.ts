@@ -226,9 +226,10 @@ export const transformTransaction = (
 
     type = isTxFailed(tx) ? 'failed' : type;
 
-    const rbf = inputs.find(i => typeof i.sequence === 'number' && i.sequence < 0xffffffff - 1)
-        ? true
-        : undefined;
+    const rbf =
+        tx.rbf || inputs.find(i => typeof i.sequence === 'number' && i.sequence < 0xffffffff - 1)
+            ? true
+            : undefined;
 
     const fee =
         tx.ethereumSpecific && !tx.ethereumSpecific.gasUsed
