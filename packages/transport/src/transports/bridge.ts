@@ -1,10 +1,10 @@
-import { versionUtils, createTimeoutPromise, createDeferred, Deferred } from '@trezor/utils';
+import { versionUtils, createDeferred, Deferred, createTimeoutPromise } from '@trezor/utils';
 
 import { bridgeApiCall } from '../utils/bridgeApiCall';
 import * as bridgeApiResult from '../utils/bridgeApiResult';
 import { buildOne } from '../lowlevel/send';
 import { receiveOne } from '../lowlevel/receive';
-import { AbstractTransport, AcquireInput } from './abstract';
+import { AbstractTransport, AcquireInput, ReleaseInput } from './abstract';
 
 import * as ERRORS from '../errors';
 import { AnyError, AsyncResultWithTypedError, Descriptor } from '../types';
@@ -126,9 +126,10 @@ export class BridgeTransport extends AbstractTransport {
             return;
         }
 
-        if (this.acquirePromise?.promise) {
+        if (this.acquirePromise) {
             await this.acquirePromise.promise;
         }
+
         this.handleDescriptorsChange(response.payload);
         return this._listen();
     }
@@ -149,15 +150,18 @@ export class BridgeTransport extends AbstractTransport {
                     this.listenPromise[input.path] = createDeferred();
                 }
 
+                // it is not quaranteed that /listen response will arrive after /acquire response (although in majority of cases it does)
+                // so, in order to be able to keep the logic "acquire -> wait for listen response -> return from acquire" we need to wait
+                // for /acquire response before resolving listenPromise
+                this.acquirePromise = createDeferred();
+
                 const response = await this._post('/acquire', {
                     params: `${input.path}/${previous}`,
                     timeout: true,
                     signal,
                 });
 
-                if (this.acquirePromise) {
-                    this.acquirePromise.resolve(undefined);
-                }
+                this.acquirePromise.resolve(undefined);
 
                 if (!response.success) {
                     return response;
@@ -179,31 +183,31 @@ export class BridgeTransport extends AbstractTransport {
     }
 
     // https://github.dev/trezor/trezord-go/blob/f559ee5079679aeb5f897c65318d3310f78223ca/core/core.go#L354
-    public release(session: string, onclose?: boolean) {
-        return this.scheduleAction(async signal => {
-            if (this.listening) {
+    public release({ path, session, onClose }: ReleaseInput) {
+        return this.scheduleAction(signal => {
+            if (this.listening && !onClose) {
                 this.releasingSession = session;
-                this.releasePromise = createDeferred();
+                this.listenPromise[path] = createDeferred();
             }
 
-            this._post('/release', {
+            const releasePromise = this._post('/release', {
                 params: session,
                 signal,
             });
 
-            if (onclose || !this.listening) {
-                // we need release request to reach bridge so that bridge state can update
-                // otherwise we would risk 'unacquired device' after reloading application
-                await createTimeoutPromise(1);
-                return this.success(undefined);
+            if (onClose) {
+                return Promise.resolve(this.success(undefined));
             }
 
-            if (this.releasePromise?.promise) {
-                await this.releasePromise.promise;
-                delete this.releasePromise;
+            if (!this.listenPromise[path]) {
+                return releasePromise;
             }
 
-            return this.success(undefined);
+            return this.listenPromise[path].promise
+                .then(() => this.success(undefined))
+                .finally(() => {
+                    delete this.listenPromise[path];
+                });
         });
     }
 

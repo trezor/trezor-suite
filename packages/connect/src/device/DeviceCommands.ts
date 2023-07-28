@@ -429,6 +429,9 @@ export class DeviceCommands {
 
     async _commonCall(type: MessageKey, msg?: DefaultMessageResponse['message']) {
         const resp = await this.call(type, msg);
+        if (this.disposed) {
+            throw ERRORS.TypedError('Runtime', 'typedCall: DeviceCommands already disposed');
+        }
         return this._filterCommonTypes(resp);
     }
 

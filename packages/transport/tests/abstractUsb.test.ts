@@ -347,7 +347,11 @@ describe('Usb', () => {
             expect(acquireRes.payload).toEqual('1');
 
             // doesn't really matter what what message we send
-            const res = await transport.release(acquireRes.payload, false).promise;
+            const res = await transport.release({
+                session: acquireRes.payload,
+                path: '123',
+                onClose: false,
+            }).promise;
             expect(res).toEqual({
                 success: true,
                 payload: undefined,

@@ -23,6 +23,12 @@ export type AcquireInput = {
     previous?: Session;
 };
 
+export type ReleaseInput = {
+    path: string;
+    session: string;
+    onClose?: boolean;
+};
+
 type DeviceDescriptorDiff = {
     didUpdate: boolean;
     descriptors: Descriptor[];
@@ -204,16 +210,17 @@ export abstract class AbstractTransport extends TypedEmitter<{
     /**
      * Release session
      */
-    abstract release(
-        session: string,
-        onclose: boolean,
-    ): AbortableCall<
+    abstract release({ path, session, onClose }: ReleaseInput): AbortableCall<
         void,
         | typeof ERRORS.SESSION_NOT_FOUND
         // bridge
         | typeof ERRORS.HTTP_ERROR
         | typeof ERRORS.WRONG_RESULT_TYPE
         // webusb + bridge
+        | typeof ERRORS.DEVICE_DISCONNECTED_DURING_ACTION
+        | typeof ERRORS.SESSION_WRONG_PREVIOUS
+        | typeof ERRORS.DEVICE_NOT_FOUND
+        | typeof ERRORS.INTERFACE_UNABLE_TO_OPEN_DEVICE
         | typeof ERRORS.UNEXPECTED_ERROR
         | typeof ERRORS.ABORTED_BY_TIMEOUT
         | typeof ERRORS.ABORTED_BY_SIGNAL
@@ -380,39 +387,45 @@ export abstract class AbstractTransport extends TypedEmitter<{
         const diff = this._getDiff(nextDescriptors);
         this.logger.debug('nextDescriptors', nextDescriptors, 'diff', diff);
 
+        if (!diff.didUpdate) {
+            return;
+        }
+
         this.descriptors = nextDescriptors;
 
-        if (diff.didUpdate) {
-            Object.keys(this.listenPromise).forEach(path => {
-                const descriptor = nextDescriptors.find(device => device.path === path);
+        Object.keys(this.listenPromise).forEach(path => {
+            const descriptor = nextDescriptors.find(device => device.path === path);
 
-                if (!descriptor) {
-                    return this.listenPromise[path].resolve(
-                        this.error({ error: ERRORS.DEVICE_DISCONNECTED_DURING_ACTION }),
+            if (!descriptor) {
+                return this.listenPromise[path].resolve(
+                    this.error({ error: ERRORS.DEVICE_DISCONNECTED_DURING_ACTION }),
+                );
+            }
+
+            if (this.acquiredUnconfirmed[path]) {
+                const reportedNextSession = descriptor.session;
+                if (reportedNextSession === this.acquiredUnconfirmed[path]) {
+                    this.listenPromise[path].resolve(this.success(this.acquiredUnconfirmed[path]));
+                } else {
+                    // another app took over
+                    this.listenPromise[path].resolve(
+                        this.error({ error: ERRORS.SESSION_WRONG_PREVIOUS }),
                     );
                 }
-
-                if (this.acquiredUnconfirmed[descriptor.path]) {
-                    const reportedNextSession = descriptor.session;
-                    if (reportedNextSession === this.acquiredUnconfirmed[descriptor.path]) {
-                        this.listenPromise[descriptor.path].resolve(
-                            this.success(this.acquiredUnconfirmed[descriptor.path]!),
-                        );
-                    } else {
-                        this.listenPromise[descriptor.path].resolve(
-                            this.error({ error: ERRORS.SESSION_WRONG_PREVIOUS }),
-                        );
-                    }
-                    delete this.acquiredUnconfirmed[descriptor.path];
-                }
-            });
-
-            if (this.releasePromise) {
-                this.releasePromise.resolve(undefined);
+                delete this.acquiredUnconfirmed[path];
+            } else if (this.releasingSession) {
+                this.listenPromise[path].resolve(this.success('null'));
+            } else {
+                // listen reported changes but we were not expecting any (no acquire or release in progress)
+                // this means that another application acquired session
+                this.listenPromise[path].resolve(
+                    this.error({ error: ERRORS.SESSION_WRONG_PREVIOUS }),
+                );
             }
-            this.emit(TRANSPORT.UPDATE, diff);
-            this.releasingSession = undefined;
-        }
+        });
+
+        this.emit(TRANSPORT.UPDATE, diff);
+        this.releasingSession = undefined;
     }
 
     protected success<T>(payload: T): Success<T> {

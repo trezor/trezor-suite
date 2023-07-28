@@ -1,6 +1,6 @@
 import { createDeferred, Deferred } from '@trezor/utils';
 
-import { AbstractTransport, AcquireInput } from './abstract';
+import { AbstractTransport, AcquireInput, ReleaseInput } from './abstract';
 import { buildAndSend } from '../lowlevel/send';
 import { receiveAndParse } from '../lowlevel/receive';
 import { SessionsClient } from '../sessions/client';
@@ -93,12 +93,15 @@ export abstract class AbstractUsbTransport extends AbstractTransport {
                     this.listenPromise[path] = createDeferred();
                 }
 
+                this.acquirePromise = createDeferred();
+
                 const acquireIntentResponse = await this.sessionsClient.acquireIntent(input);
 
+                if (this.acquirePromise) {
+                    this.acquirePromise.resolve(undefined);
+                }
+
                 if (!acquireIntentResponse.success) {
-                    if (this.acquirePromise) {
-                        this.acquirePromise.resolve(undefined);
-                    }
                     return this.error({ error: acquireIntentResponse.error });
                 }
 
@@ -116,10 +119,6 @@ export abstract class AbstractUsbTransport extends AbstractTransport {
 
                 this.sessionsClient.acquireDone({ path });
 
-                if (this.acquirePromise) {
-                    this.acquirePromise.resolve(undefined);
-                }
-
                 if (!this.listenPromise[path]) {
                     return this.success(acquireIntentResponse.payload.session);
                 }
@@ -133,11 +132,11 @@ export abstract class AbstractUsbTransport extends AbstractTransport {
         );
     }
 
-    public release(session: string) {
+    public release({ path, session, onClose }: ReleaseInput) {
         return this.scheduleAction(async () => {
             if (this.listening) {
                 this.releasingSession = session;
-                this.releasePromise = createDeferred();
+                this.listenPromise[path] = createDeferred();
             }
 
             const releaseIntentResponse = await this.sessionsClient.releaseIntent({
@@ -148,16 +147,24 @@ export abstract class AbstractUsbTransport extends AbstractTransport {
                 return this.error({ error: releaseIntentResponse.error });
             }
 
-            await this.releaseDevice(releaseIntentResponse.payload.path);
+            const releasePromise = this.releaseDevice(releaseIntentResponse.payload.path);
+            if (onClose) return this.success(undefined);
+
+            await releasePromise;
+
             await this.sessionsClient.releaseDone({
                 path: releaseIntentResponse.payload.path,
             });
 
-            if (this.releasePromise?.promise) {
-                await this.releasePromise.promise;
-                delete this.releasePromise;
+            if (!this.listenPromise[path]) {
+                return this.success(undefined);
             }
-            return this.success(undefined);
+
+            return this.listenPromise[path].promise
+                .then(() => this.success(undefined))
+                .finally(() => {
+                    delete this.listenPromise[path];
+                });
         });
     }
 
