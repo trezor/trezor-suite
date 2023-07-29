@@ -23,6 +23,7 @@ import {
     ReleaseInfo,
     UnavailableCapabilities,
     FirmwareType,
+    VersionArray,
 } from '../types';
 import { models } from '../data/models';
 
@@ -508,21 +509,6 @@ export class Device extends TypedEmitter<DeviceEvents> {
     _updateFeatures(feat: Features) {
         const capabilities = parseCapabilities(feat);
         feat.capabilities = capabilities;
-        const version = [feat.major_version, feat.minor_version, feat.patch_version];
-        // capabilities could change in case where features was fetched with older version of messages.json which doesn't know this field
-        const capabilitiesDidChange =
-            this.features &&
-            this.features.capabilities &&
-            this.features.capabilities.join('') !== capabilities.join('');
-        // check if FW version or capabilities did change
-        if (
-            !versionUtils.isEqual(version.join('.'), this.getVersion().join('.')) ||
-            capabilitiesDidChange
-        ) {
-            this.unavailableCapabilities = getUnavailableCapabilities(feat, getAllNetworks());
-            this.firmwareStatus = getFirmwareStatus(feat);
-            this.firmwareRelease = getRelease(feat);
-        }
         // GetFeatures doesn't return 'session_id'
         if (this.features && this.features.session_id && !feat.session_id) {
             feat.session_id = this.features.session_id;
@@ -540,6 +526,19 @@ export class Device extends TypedEmitter<DeviceEvents> {
         // 2. - old fw does not include internal_model. T1B1 does not report it yet, T2T1 starts in 2.6.0, T2B1 reports it from beginning
         if (!feat.internal_model) {
             feat.internal_model = ensureInternalModelFeature(feat.model);
+        }
+
+        const version = [
+            feat.major_version,
+            feat.minor_version,
+            feat.patch_version,
+        ] satisfies VersionArray;
+
+        // check if FW version or capabilities did change
+        if (!versionUtils.isEqual(version, this.getVersion() as VersionArray)) {
+            this.unavailableCapabilities = getUnavailableCapabilities(feat, getAllNetworks());
+            this.firmwareStatus = getFirmwareStatus(feat);
+            this.firmwareRelease = getRelease(feat);
         }
 
         this.features = feat;
@@ -603,7 +602,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
             this.features.major_version,
             this.features.minor_version,
             this.features.patch_version,
-        ];
+        ] satisfies [number, number, number];
     }
 
     atLeast(versions: string[] | string) {
