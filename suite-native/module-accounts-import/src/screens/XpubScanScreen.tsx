@@ -73,19 +73,22 @@ export const XpubScanScreen = ({
             networkType !== 'ethereum' &&
             isAddressValid(xpubAddress, networkSymbol)
         ) {
-            showAlert({
-                title: 'This is your receive address',
-                description: 'To check the balance of your coin, scan your public key (XPUB).',
-                icon: 'warningCircle',
-                pictogramVariant: 'red',
-                primaryButtonTitle: 'Got it',
-                onPressPrimaryButton: () => null,
-                secondaryButtonTitle: 'Where to find it?',
-                onPressSecondaryButton: () => {
-                    hideAlert();
-                    setIsHintSheetVisible(true);
-                },
-            });
+            // we need to set timeout to avoid showing alert during screen transition, otherwise it will freeze the app
+            setTimeout(() => {
+                showAlert({
+                    title: 'This is your receive address',
+                    description: 'To check the balance of your coin, scan your public key (XPUB).',
+                    icon: 'warningCircle',
+                    pictogramVariant: 'red',
+                    primaryButtonTitle: 'Got it',
+                    onPressPrimaryButton: () => null,
+                    secondaryButtonTitle: 'Where to find it?',
+                    onPressSecondaryButton: () => {
+                        hideAlert();
+                        setIsHintSheetVisible(true);
+                    },
+                });
+            }, 1000);
             return;
         }
 
