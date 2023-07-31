@@ -106,10 +106,6 @@ export const getEthereumEstimateFeeParams = (
     token?: TokenInfo,
     data?: string,
 ) => {
-    if (new BigNumber(amount).lte(0)) {
-        throw new Error('Amount has to be greater than 0');
-    }
-
     if (token) {
         return {
             to: token.contract,
