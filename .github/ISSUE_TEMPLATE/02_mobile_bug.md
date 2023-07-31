@@ -11,8 +11,7 @@ A clear and concise description of what the bug is.
 
 **Info:**
 
--   Mobile Suite Version: app/web, commit
--   Browser: name, version
+-   Mobile Suite Version: version/commit
 -   OS: name, version
 
 **How to reproduce**
