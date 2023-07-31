@@ -1,11 +1,30 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import styled, { css } from 'styled-components';
-import { motion, Variants } from 'framer-motion';
-import useMeasure from 'react-use/lib/useMeasure';
+import { motion } from 'framer-motion';
 import { H1 } from './typography/Heading';
 import { variables, motion as motionConfig } from '../config';
 import { Image, ImageType } from './Image/Image';
 import { Icon } from './Icon';
+
+const headerVariants = {
+    closed: {
+        opacity: 1,
+    },
+    expanded: {
+        opacity: 0,
+    },
+};
+
+const animationVariants = {
+    closed: {
+        opacity: 0,
+        height: 0,
+    },
+    expanded: {
+        opacity: 1,
+        height: 'auto',
+    },
+};
 
 const CardWrapper = styled(
     ({ variant, withImage, disablePadding, expanded, expandable, nested, ...rest }) => (
@@ -182,92 +201,58 @@ export const CollapsibleCard = ({
     onCanPlayThroughCapture,
     onToggle = () => undefined,
     ...rest
-}: CollapsibleCardProps) => {
-    const [heightRef, { height }] = useMeasure<HTMLDivElement>();
+}: CollapsibleCardProps) => (
+    <CardWrapper
+        expanded={expanded}
+        expandable={expandable}
+        variant={variant}
+        withImage={!!image}
+        nested={nested}
+        animate={expanded ? 'expanded' : 'closed'}
+        transition={{ duration: 0.4, ease: motionConfig.motionEasing.transition }}
+        onClick={expandable && !expanded ? onToggle : undefined}
+        data-test="@components/collapsible-box"
+        {...rest}
+    >
+        <CardWrapperInner expandable={expandable}>
+            {expandable && (
+                <CollapsibleCardInner
+                    variants={headerVariants}
+                    animate={expanded ? 'expanded' : 'closed'}
+                    transition={{ duration: 0.2, ease: 'linear' }}
+                >
+                    {expandableIcon}
 
-    const headerVariants = useMemo<Variants>(
-        () => ({
-            closed: {
-                opacity: 1,
-            },
-            expanded: {
-                opacity: 0,
-            },
-        }),
-        [],
-    );
+                    <HeadingExpandable>{heading}</HeadingExpandable>
 
-    const animationVariants = useMemo<Variants>(
-        () => ({
-            closed: {
-                opacity: 0,
-                height: 0,
-            },
-            expanded: {
-                opacity: 1,
-                height,
-            },
-        }),
-        [height],
-    );
+                    {tag && <Tag>{tag}</Tag>}
+                </CollapsibleCardInner>
+            )}
 
-    return (
-        <CardWrapper
-            expanded={expanded}
-            expandable={expandable}
-            variant={variant}
-            withImage={!!image}
-            nested={nested}
-            animate={expanded ? 'expanded' : 'closed'}
-            transition={{ duration: 0.4, ease: motionConfig.motionEasing.transition }}
-            onClick={expandable && !expanded ? onToggle : undefined}
-            data-test="@components/collapsible-box"
-            {...rest}
-        >
-            <CardWrapperInner expandable={expandable}>
-                {expandable && (
-                    <CollapsibleCardInner
-                        variants={headerVariants}
-                        animate={expanded ? 'expanded' : 'closed'}
-                        transition={{ duration: 0.2, ease: 'linear' }}
-                    >
-                        {expandableIcon}
+            <motion.div
+                initial={false} // Prevents animation on mount when expanded === false
+                variants={expandable ? animationVariants : undefined}
+                animate={expanded ? 'expanded' : 'closed'}
+                transition={{ duration: 0.4, ease: motionConfig.motionEasing.transition }}
+            >
+                {expandable && expanded && <CloseIcon icon="CROSS" size={22} onClick={onToggle} />}
 
-                        <HeadingExpandable>{heading}</HeadingExpandable>
+                {heading && <Heading withDescription={!!description}>{heading}</Heading>}
 
-                        {tag && <Tag>{tag}</Tag>}
-                    </CollapsibleCardInner>
+                {description && (
+                    <Description hasChildren={!!children}>
+                        <Text>{description}</Text>
+                    </Description>
                 )}
 
-                <motion.div
-                    initial={false}
-                    variants={expandable ? animationVariants : undefined}
-                    animate={expanded ? 'expanded' : 'closed'}
-                    transition={{ duration: 0.4, ease: motionConfig.motionEasing.transition }}
-                >
-                    <div ref={heightRef}>
-                        {expandable && expanded && (
-                            <CloseIcon icon="CROSS" size={22} onClick={() => onToggle()} />
-                        )}
+                {image && (
+                    <CardImageWrapper>
+                        <Image width={100} height={100} image={image} />
+                    </CardImageWrapper>
+                )}
 
-                        {heading && <Heading withDescription={!!description}>{heading}</Heading>}
-
-                        {description && (
-                            <Description hasChildren={!!children}>
-                                <Text>{description}</Text>
-                            </Description>
-                        )}
-
-                        {image && (
-                            <CardImageWrapper>
-                                <Image width={100} height={100} image={image} />
-                            </CardImageWrapper>
-                        )}
-
-                        <ChildrenWrapper>{children}</ChildrenWrapper>
-                    </div>
-                </motion.div>
-            </CardWrapperInner>
-        </CardWrapper>
-    );
-};
+                <ChildrenWrapper>{children}</ChildrenWrapper>
+            </motion.div>
+        </CardWrapperInner>
+    </CardWrapper>
+);
