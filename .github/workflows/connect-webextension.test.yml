@@ -1,18 +1,8 @@
-name:
-  "@trezor/connect-webextension"
+name: "@trezor/connect-webextension"
 
-  # TODO: for now we disable this test.
+# TODO: until we are able to build and deploy webextension from github, this workflow can not be used
 on:
-  # pull_request:
-  # paths:
-  # - "packages/connect/**"
-  # - "packages/connect-iframe/**"
-  # - "packages/connect-web/**"
-  # - "packages/connect-examples/**"
-  # - "packages/connect-webextension/**"
-  # push:
-  #   branches:
-  # - develop
+  workflow_dispatch:
 
 jobs:
   connect-webextension-test:
