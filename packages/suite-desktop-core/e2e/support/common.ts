@@ -10,7 +10,7 @@ const chmod = promisify(fs.chmod);
 
 export const launchSuite = async () => {
     const electronApp = await electron.launch({
-        cwd: path.join(__dirname, '../..'),
+        cwd: path.join(__dirname, '../../../suite-desktop'),
         args: ['./dist/app.js', '--log-level=debug', '--bridge-test'],
         // when testing electron, video needs to be setup like this. it works locally but not in docker
         // recordVideo: { dir: 'test-results' },
