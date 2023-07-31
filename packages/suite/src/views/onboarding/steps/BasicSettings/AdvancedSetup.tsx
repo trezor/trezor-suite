@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Translation } from 'src/components/suite';
 import { Icon, useTheme, CollapsibleCard } from '@trezor/components';
@@ -44,9 +44,7 @@ export const AdvancedSetup = ({ children }: AdvancedSetupProps) => {
 
     const theme = useTheme();
 
-    const toggleTor = useCallback(() => {
-        setTorOpen(!torOpen);
-    }, [torOpen]);
+    const toggleTor = () => setTorOpen(!torOpen);
 
     const isTorEnabled = getIsTorEnabled(torStatus);
 
