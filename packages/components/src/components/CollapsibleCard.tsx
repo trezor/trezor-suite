@@ -240,6 +240,7 @@ export const CollapsibleCard = ({
                 )}
 
                 <motion.div
+                    initial={false}
                     variants={expandable ? animationVariants : undefined}
                     animate={expanded ? 'expanded' : 'closed'}
                     transition={{ duration: 0.4, ease: motionConfig.motionEasing.transition }}
