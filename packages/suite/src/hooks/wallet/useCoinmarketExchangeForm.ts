@@ -33,6 +33,7 @@ import type { AppState } from 'src/types/suite';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { useDidUpdate } from '@trezor/react-utils';
 import { CryptoAmountLimits } from 'src/types/wallet/coinmarketCommonTypes';
+import { COMPOSE_ERROR_TYPES } from '@suite-common/wallet-constants';
 
 export const ExchangeFormContext = createContext<ExchangeFormContextValues | null>(null);
 ExchangeFormContext.displayName = 'CoinmarketExchangeContext';
@@ -274,7 +275,7 @@ export const useCoinmarketExchangeForm = ({
 
         if (composed.type === 'error' && composed.errorMessage) {
             setError(CRYPTO_INPUT, {
-                type: 'compose',
+                type: COMPOSE_ERROR_TYPES.COMPOSE,
                 message: translationString(composed.errorMessage.id, composed.errorMessage.values),
             });
         }
