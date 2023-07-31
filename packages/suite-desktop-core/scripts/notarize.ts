@@ -21,6 +21,7 @@ exports.default = context => {
     console.log(`notarizing ${appPath} ...`);
 
     return notarize({
+        tool: 'notarytool',
         appBundleId: 'io.trezor.TrezorSuite',
         appPath,
         appleId: process.env.APPLEID,
