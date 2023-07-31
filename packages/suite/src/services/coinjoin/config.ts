@@ -34,7 +34,7 @@ export const COINJOIN_NETWORKS: PartialRecord<NetworkSymbol, ServerEnvironment> 
             // TODO post MVP: unify filters batch size with wabisabi or implement filters on blockbooks
             // https://github.com/trezor/trezor-suite/issues/7182#issuecomment-1438182493
             filtersBatchSize: 500,
-            middlewareUrl: 'http://localhost:8081/',
+            middlewareUrl: 'http://127.0.0.1:8081/',
         },
     },
     /*
@@ -88,7 +88,7 @@ export const COINJOIN_NETWORKS: PartialRecord<NetworkSymbol, ServerEnvironment> 
             /* */
             filtersBatchSize: 5000,
             // client settings
-            middlewareUrl: 'http://localhost:8081/',
+            middlewareUrl: 'http://127.0.0.1:8081/',
         },
         staging: {
             network: 'test',
@@ -101,7 +101,7 @@ export const COINJOIN_NETWORKS: PartialRecord<NetworkSymbol, ServerEnvironment> 
             baseBlockHash: '0000000000000014af3e6e1a3f0a24be7bc65998b9bc01e4a05b134a89d304bf',
             filtersBatchSize: 5000,
             // client settings
-            middlewareUrl: 'http://localhost:8081/',
+            middlewareUrl: 'http://127.0.0.1:8081/',
         },
     },
     regtest: {
@@ -109,15 +109,15 @@ export const COINJOIN_NETWORKS: PartialRecord<NetworkSymbol, ServerEnvironment> 
         localhost: {
             network: 'regtest',
             coordinatorName: 'CoinJoinCoordinatorIdentifier',
-            coordinatorUrl: 'http://localhost:8081/backend/wabisabi/',
+            coordinatorUrl: 'http://127.0.0.1:8081/backend/wabisabi/',
             // backend settings
-            wabisabiBackendUrl: 'http://localhost:8081/backend/',
-            blockbookUrls: ['http://localhost:19121'],
+            wabisabiBackendUrl: 'http://127.0.0.1:8081/backend/',
+            blockbookUrls: ['http://127.0.0.1:19121'],
             baseBlockHeight: 0,
             baseBlockHash: '0f9188f13cb7b2c71f2a335e3a4fc328bf5beb436012afca590b1a11466e2206',
             filtersBatchSize: 5000,
             // client settings
-            middlewareUrl: 'http://localhost:8081/client/',
+            middlewareUrl: 'http://127.0.0.1:8081/client/',
         },
     },
 };
