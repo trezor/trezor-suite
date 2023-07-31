@@ -16,7 +16,12 @@ import { fiatCurrencies } from '@suite-common/suite-config';
 import { isFeatureFlagEnabled } from '@suite-common/suite-utils';
 import { Network, NetworkType } from '@suite-common/wallet-config';
 import { EthereumTransaction, TokenInfo, ComposeOutput, PROTO } from '@trezor/connect';
-import { DEFAULT_PAYMENT, DEFAULT_VALUES, ERC20_TRANSFER } from '@suite-common/wallet-constants';
+import {
+    COMPOSE_ERROR_TYPES,
+    DEFAULT_PAYMENT,
+    DEFAULT_VALUES,
+    ERC20_TRANSFER,
+} from '@suite-common/wallet-constants';
 import type {
     FormState,
     FeeInfo,
@@ -212,7 +217,7 @@ export const getInputState = (
 };
 
 export const isLowAnonymityWarning = (error?: Merge<FieldError, FieldErrorsImpl<Output>>) =>
-    error?.amount?.type === 'anonymity';
+    error?.amount?.type === COMPOSE_ERROR_TYPES.ANONYMITY;
 
 export const getFiatRate = (fiatRates: CoinFiatRates | undefined, currency: string) => {
     if (!fiatRates || !fiatRates.current || !fiatRates.current.rates) return;
@@ -226,7 +231,7 @@ export const getFeeUnits = (networkType: NetworkType) => {
     return 'sat/B';
 };
 
-// Find all errors with type='compose' in FormState errors
+// Find all validation errors set while composing a transaction
 export const findComposeErrors = <T extends FieldValues>(
     errors: FieldErrors<T>,
     prefix?: string,
@@ -246,7 +251,7 @@ export const findComposeErrors = <T extends FieldValues>(
             } else if (
                 typeof val === 'object' &&
                 Object.prototype.hasOwnProperty.call(val, 'type') &&
-                val.type === 'compose'
+                Object.values(COMPOSE_ERROR_TYPES).includes(val.type as string)
             ) {
                 // regular top level field
                 composeErrors.push((prefix ? `${prefix}.${key}` : key) as FieldPath<T>);

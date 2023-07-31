@@ -52,3 +52,9 @@ export const DEFAULT_VALUES = {
 // By setting offset to 7200s transaction sent from Suite will be valid for 2h.
 // If it is not included in a block until then it will be rejected by the network.
 export const CARDANO_DEFAULT_TTL_OFFSET = 7200;
+
+export const COMPOSE_ERROR_TYPES = {
+    COMPOSE: 'compose',
+    COIN_CONTROL: 'coinControl',
+    ANONYMITY: 'anonymity',
+};
