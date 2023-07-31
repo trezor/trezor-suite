@@ -17,6 +17,7 @@ import * as sendFormActions from 'src/actions/wallet/sendFormActions';
 import { findComposeErrors } from '@suite-common/wallet-utils';
 import { FeeLevel } from '@trezor/connect';
 import { TranslationKey } from 'src/components/suite/Translation';
+import { COMPOSE_ERROR_TYPES } from '@suite-common/wallet-constants';
 
 type Props = UseFormReturn<FormState> & {
     state: UseSendFormState;
@@ -182,11 +183,11 @@ export const useSendFormCompose = ({
                 const getErrorType = (translationKey: TranslationKey) => {
                     switch (translationKey) {
                         case 'TR_NOT_ENOUGH_ANONYMIZED_FUNDS_WARNING':
-                            return 'anonymity';
+                            return COMPOSE_ERROR_TYPES.ANONYMITY;
                         case 'TR_NOT_ENOUGH_SELECTED':
-                            return 'coinControl';
+                            return COMPOSE_ERROR_TYPES.COIN_CONTROL;
                         default:
-                            return 'compose';
+                            return COMPOSE_ERROR_TYPES.COMPOSE;
                     }
                 };
 

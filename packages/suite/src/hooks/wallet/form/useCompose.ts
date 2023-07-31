@@ -16,6 +16,7 @@ import {
     PrecomposedLevels,
     PrecomposedLevelsCardano,
 } from '@suite-common/wallet-types';
+import { COMPOSE_ERROR_TYPES } from '@suite-common/wallet-constants';
 
 const DEFAULT_FIELD = 'outputs.0.amount';
 
@@ -113,7 +114,7 @@ export const useCompose = <TFieldValues extends FormState>({
                 }
 
                 const formError = {
-                    type: 'compose',
+                    type: COMPOSE_ERROR_TYPES.COMPOSE,
                     message: translationString(errorMessage.id, errorMessage.values),
                 };
 
