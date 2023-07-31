@@ -1,7 +1,7 @@
 {
     "version": 1,
-    "timestamp": "2023-06-05T00:00:00+00:00",
-    "sequence": 38,
+    "timestamp": "2023-07-31T00:00:00+00:00",
+    "sequence": 39,
     "actions": [
         {
             "conditions": [
@@ -9,6 +9,14 @@
                     "devices": [
                         {
                             "model": "1",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "T1B1",
                             "firmware": "*",
                             "bootloader": "*",
                             "variant": "*",
@@ -55,6 +63,14 @@
                     "devices": [
                         {
                             "model": "T",
+                            "firmware": "<2.6.0",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "T2T1",
                             "firmware": "<2.6.0",
                             "bootloader": "*",
                             "variant": "*",
@@ -277,7 +293,23 @@
                             "vendor": "*"
                         },
                         {
+                            "model": "T2T1",
+                            "firmware": "*",
+                            "bootloader": "2.0.4",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        },
+                        {
                             "model": "T",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "5bc3e353e0b9fe977013005001f6e34e03ec6f08",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "T2T1",
                             "firmware": "*",
                             "bootloader": "*",
                             "variant": "*",
@@ -293,6 +325,14 @@
                             "vendor": "*"
                         },
                         {
+                            "model": "T2T1",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "b0a7e13c884b2fb4f06a45ba474dbb6f94da3357",
+                            "vendor": "*"
+                        },
+                        {
                             "model": "T",
                             "firmware": "*",
                             "bootloader": "*",
@@ -301,7 +341,23 @@
                             "vendor": "*"
                         },
                         {
+                            "model": "T2T1",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "e1c605ca90c6107befe11692b4675b7537f3a658",
+                            "vendor": "*"
+                        },
+                        {
                             "model": "1",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "e1c605ca90c6107befe11692b4675b7537f3a658",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "T1B1",
                             "firmware": "*",
                             "bootloader": "*",
                             "variant": "*",
@@ -317,7 +373,23 @@
                             "vendor": "*"
                         },
                         {
+                            "model": "T2T1",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "1e62209d024b7e84a7368be8175735372b8080c9",
+                            "vendor": "*"
+                        },
+                        {
                             "model": "1",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "1e62209d024b7e84a7368be8175735372b8080c9",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "T1B1",
                             "firmware": "*",
                             "bootloader": "*",
                             "variant": "*",
@@ -333,6 +405,14 @@
                             "vendor": "*"
                         },
                         {
+                            "model": "T2T1",
+                            "firmware": "2.4.4",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        },
+                        {
                             "model": "1",
                             "firmware": "*",
                             "bootloader": "*",
@@ -341,7 +421,23 @@
                             "vendor": "*"
                         },
                         {
+                            "model": "T1B1",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "661ae37506f6e6ef94067d4b6de26c80bfb4c4b5",
+                            "vendor": "*"
+                        },
+                        {
                             "model": "T",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "661ae37506f6e6ef94067d4b6de26c80bfb4c4b5",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "T2T1",
                             "firmware": "*",
                             "bootloader": "*",
                             "variant": "*",
@@ -357,7 +453,23 @@
                             "vendor": "*"
                         },
                         {
+                            "model": "T2T1",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "307865613335663436663566356364373962353461373039643438623533343132363534356533646230",
+                            "vendor": "*"
+                        },
+                        {
                             "model": "T",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "ea35f46f5f5cd79b54a709d48b534126545e3db0",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "T2T1",
                             "firmware": "*",
                             "bootloader": "*",
                             "variant": "*",
@@ -450,7 +562,23 @@
                             "vendor": "*"
                         },
                         {
+                            "model": "T1B1",
+                            "firmware": "<1.11.1",
+                            "bootloader": "*",
+                            "variant": "regular",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        },
+                        {
                             "model": "T",
+                            "firmware": "<2.5.1",
+                            "bootloader": "*",
+                            "variant": "regular",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "T2T1",
                             "firmware": "<2.5.1",
                             "bootloader": "*",
                             "variant": "regular",
