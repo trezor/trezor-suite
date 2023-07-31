@@ -16,15 +16,11 @@ const Wrapper = styled.div`
     justify-content: center;
 `;
 
-const BackgroundGalleryWrapper64x128 = styled.div`
+const BackgroundGalleryWrapper = styled.div`
     display: flex;
     gap: 10px;
     justify-content: center;
     flex-wrap: wrap;
-`;
-
-const BackgroundGalleryWrapper240x240 = styled(BackgroundGalleryWrapper64x128)`
-    width: 400px;
 `;
 
 const BackgroundImageBW64x128 = styled.img`
@@ -72,7 +68,7 @@ export const HomescreenGallery = ({ onConfirm }: HomescreenGalleryProps) => {
     return (
         <Wrapper>
             {[DeviceModelInternal.T1B1, DeviceModelInternal.T2B1].includes(deviceModelInternal) && (
-                <BackgroundGalleryWrapper64x128>
+                <BackgroundGalleryWrapper>
                     {homescreensBW64x128.map(image => (
                         <BackgroundImageBW64x128
                             data-test={`@modal/gallery/bw_64x128/${image}`}
@@ -84,10 +80,10 @@ export const HomescreenGallery = ({ onConfirm }: HomescreenGalleryProps) => {
                             src={resolveStaticPath(`images/homescreens/BW_64x128/${image}.png`)}
                         />
                     ))}
-                </BackgroundGalleryWrapper64x128>
+                </BackgroundGalleryWrapper>
             )}
             {deviceModelInternal === DeviceModelInternal.T2T1 && (
-                <BackgroundGalleryWrapper240x240>
+                <BackgroundGalleryWrapper>
                     {homescreensColor240x240.map(image => (
                         <BackgroundImageColor240x240
                             data-test={`@modal/gallery/color_240x240/${image}`}
@@ -99,7 +95,7 @@ export const HomescreenGallery = ({ onConfirm }: HomescreenGalleryProps) => {
                             src={resolveStaticPath(`images/homescreens/COLOR_240x240/${image}.jpg`)}
                         />
                     ))}
-                </BackgroundGalleryWrapper240x240>
+                </BackgroundGalleryWrapper>
             )}
         </Wrapper>
     );

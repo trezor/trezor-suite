@@ -61,4 +61,6 @@ export const homescreensColor240x240 = [
     'trezor-3d',
     'trezor',
     'pigeon',
+    'smile-1',
+    'smile-2',
 ] as const;
