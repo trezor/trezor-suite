@@ -4,16 +4,14 @@ import { useActions, useSelector } from '../hooks';
 import * as trezorConnectActions from '../actions/trezorConnectActions';
 
 const Nav = styled.nav`
-    position: fixed;
-    top: 50px;
     width: 100%;
-    z-index: 100;
 `;
 
 const LayoutWrapper = styled.div`
     color: #fff;
     background: #2c2c2c;
     padding: 0;
+    padding: 4px 0 8px 20px;
 `;
 
 const DeviceList = styled.ul`
