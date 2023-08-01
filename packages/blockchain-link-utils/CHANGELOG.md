@@ -1,3 +1,7 @@
+# 1.0.5
+
+-   fix(blockchain-link): use tx `rbf` flag from backend (c5f7a5033)
+
 # 1.0.4
 
 -   chore(blockchain-link): add addrTxCount (2d6e12535)
