@@ -1,6 +1,6 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
-import { FluidSpinner, Icon, useTheme, variables } from '@trezor/components';
+import { FluidSpinner, Icon, Tooltip, useTheme, variables } from '@trezor/components';
 import { Translation } from 'src/components/suite/Translation';
 import { CountdownTimer } from 'src/components/suite/CountdownTimer';
 import { useSelector } from 'src/hooks/suite/useSelector';
@@ -46,6 +46,12 @@ const StyledLoader = styled(FluidSpinner)`
     opacity: 0.4;
 `;
 
+const TooltipChildren = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+`;
+
 const TimeLeft = styled.p`
     max-width: 80%;
     color: ${({ theme }) => theme.TYPE_DARK_GREY};
@@ -72,9 +78,15 @@ interface ProgressContentProps {
 }
 
 export const ProgressContent = ({ accountKey, isWheelHovered }: ProgressContentProps) => {
-    const { isSessionActive, isLoading, isPaused, isAllPrivate, isAccountEmpty } = useSelector(
-        selectCurrentCoinjoinWheelStates,
-    );
+    const {
+        isSessionActive,
+        isLoading,
+        isPaused,
+        isAutoStopEnabled,
+        isCriticalPhase,
+        isAllPrivate,
+        isAccountEmpty,
+    } = useSelector(selectCurrentCoinjoinWheelStates);
     const { sessionDeadline } = useSelector(selectCurrentSessionDeadlineInfo);
     const roundsDurationInHours = useSelector(selectRoundsDurationInHours);
 
@@ -122,7 +134,40 @@ export const ProgressContent = ({ accountKey, isWheelHovered }: ProgressContentP
             );
         }
 
+        if (isAutoStopEnabled) {
+            if (isWheelHovered) {
+                return (
+                    <>
+                        <StyledIcon icon="PLAY" {...iconConfig} />
+                        <Translation id="TR_RESUME" />
+                    </>
+                );
+            }
+            return (
+                <>
+                    <StyledIcon icon="STOP" {...iconConfig} />
+                    <Translation id="TR_STOPPING" />
+                </>
+            );
+        }
+
         if (isRunningAndHovered) {
+            if (isCriticalPhase) {
+                return (
+                    <Tooltip
+                        interactive={false}
+                        maxWidth={160}
+                        offset={40}
+                        cursor="pointer"
+                        content={<Translation id="TR_AUTO_STOP_TOOLTIP" />}
+                    >
+                        <TooltipChildren>
+                            <StyledIcon icon="STOP" {...iconConfig} />
+                            <Translation id="TR_STOP" />
+                        </TooltipChildren>
+                    </Tooltip>
+                );
+            }
             return (
                 <>
                     <StyledIcon icon="STOP" {...iconConfig} />

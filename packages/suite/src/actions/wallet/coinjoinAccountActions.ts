@@ -166,7 +166,7 @@ const coinjoinSessionStarting = (accountKey: string, isStarting: boolean) =>
         },
     } as const);
 
-const coinjoinSessionAutostop = (accountKey: string, isAutostopped: boolean) =>
+export const coinjoinSessionAutostop = (accountKey: string, isAutostopped: boolean) =>
     ({
         type: COINJOIN.SESSION_AUTOSTOP,
         payload: {
