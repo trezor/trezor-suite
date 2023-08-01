@@ -7524,6 +7524,17 @@ export default defineMessages({
         defaultMessage:
             'Not enough private funds. You can either make more coins private, manually select UTXOs in Coin Control, or lower the privacy level.',
     },
+    TR_NOT_ENOUGH_ANONYMIZED_FUNDS_RBF_WARNING: {
+        id: 'TR_NOT_ENOUGH_ANONYMIZED_FUNDS_RBF_WARNING',
+        description: 'Warning in coinjoin rbf form',
+        defaultMessage:
+            'Not enough private funds. You can either make more coins private or lower the privacy level.',
+    },
+    TR_UTXO_REGISTERED_IN_COINJOIN_RBF_WARNING: {
+        id: 'TR_UTXO_REGISTERED_IN_COINJOIN_RBF_WARNING',
+        description: 'Warning in coinjoin rbf form',
+        defaultMessage: 'Your coins are in use. Please turn off the coinjoin first.',
+    },
     TR_BREAKING_ANONYMITY_CHECKBOX: {
         id: 'TR_BREAKING_ANONYMITY_CHECKBOX',
         description: 'Checkbox in coinjoin send form',

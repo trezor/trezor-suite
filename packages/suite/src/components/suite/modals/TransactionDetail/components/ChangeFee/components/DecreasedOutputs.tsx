@@ -2,7 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Icon, variables, RadioButton, motionAnimation } from '@trezor/components';
-import { Translation, FormattedCryptoAmount, HiddenPlaceholder } from 'src/components/suite';
+import { FormattedCryptoAmount, HiddenPlaceholder } from 'src/components/suite';
+import { Translation, TranslationKey } from 'src/components/suite/Translation';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { useRbfContext } from 'src/hooks/wallet/useRbfForm';
 import { GreyCard } from './GreyCard';
@@ -66,6 +67,7 @@ export const DecreasedOutputs = () => {
         showDecreasedOutputs,
         formValues,
         account,
+        coinjoinRegisteredUtxos,
         getValues,
         setValue,
         composedLevels,
@@ -100,12 +102,21 @@ export const DecreasedOutputs = () => {
     const useRadioButtons =
         formValues.outputs.filter(o => typeof o.address === 'string').length > 1;
 
+    let decreaseWarning: TranslationKey = 'TR_DECREASE_TX';
+    if (account.accountType === 'coinjoin') {
+        if (coinjoinRegisteredUtxos.length > 0) {
+            decreaseWarning = 'TR_UTXO_REGISTERED_IN_COINJOIN_RBF_WARNING';
+        } else {
+            decreaseWarning = 'TR_NOT_ENOUGH_ANONYMIZED_FUNDS_RBF_WARNING';
+        }
+    }
+
     return (
         <AnimatePresence initial>
             <motion.div {...motionAnimation.expand}>
                 <GreyCard>
                     <WarnHeader data-test="@send/decreased-outputs">
-                        <Translation id="TR_DECREASE_TX" />
+                        <Translation id={decreaseWarning} />
                     </WarnHeader>
                     <OutputsWrapper>
                         {formValues.outputs.flatMap((o, i) => {
