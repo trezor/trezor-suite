@@ -29,6 +29,7 @@ export * from './scheduleAction';
 export * from './throwError';
 export * from './truncateMiddle';
 export * from './topologicalSort';
+export * from './urlToOnion';
 export * as versionUtils from './versionUtils';
 export * as xssFilters from './xssFilters';
 export * from './getLocaleSeparators';
