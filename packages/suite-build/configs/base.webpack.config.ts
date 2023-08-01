@@ -172,6 +172,8 @@ const config: webpack.Configuration = {
             'process.env.JWS_PUBLIC_KEY': JSON.stringify(jwsPublicKey),
             'process.env.CODESIGN_BUILD': isCodesignBuild,
             'process.env.SENTRY_RELEASE': JSON.stringify(sentryRelease),
+            __SENTRY_DEBUG__: isDev,
+            __SENTRY_TRACING__: false, // needs to be removed when we introduce performance monitoring in trezor-suite
         }),
         new webpack.ProvidePlugin({
             Buffer: ['buffer', 'Buffer'],
