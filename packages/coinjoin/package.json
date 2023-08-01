@@ -14,19 +14,13 @@
     },
     "license": "See LICENSE.md in repo root",
     "sideEffects": false,
-    "main": "lib/index.js",
-    "files": [
-        "lib/",
-        "!**/*.map"
-    ],
-    "types": "lib/index.d.ts",
+    "main": "src/index.ts",
     "scripts": {
         "lint": "eslint '**/*.{ts,js}'",
         "test:unit": "jest --version && jest",
         "test:discovery": "tsx ./tests/tools/discovery-test.ts",
         "test:anonymity": "tsx ./tests/tools/anonymity-test.ts",
-        "type-check": "tsc --build",
-        "build:lib": "rimraf lib && tsc --build ./tsconfig.lib.json"
+        "type-check": "tsc --build"
     },
     "dependencies": {
         "@trezor/blockchain-link": "workspace:*",

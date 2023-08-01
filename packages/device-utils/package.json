@@ -4,12 +4,11 @@
     "private": true,
     "license": "See LICENSE.md in repo root",
     "sideEffects": false,
-    "main": "lib/index",
+    "main": "src/index",
     "scripts": {
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "test:unit": "jest -c ../../jest.config.base.js --passWithNoTests",
-        "type-check": "tsc --build",
-        "build:lib": "rimraf lib && yarn tsc --build ./tsconfig.lib.json"
+        "type-check": "tsc --build"
     },
     "dependencies": {
         "@trezor/connect": "workspace:*"
