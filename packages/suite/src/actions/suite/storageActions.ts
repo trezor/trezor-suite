@@ -18,8 +18,8 @@ import type { PreloadStoreAction } from 'src/support/suite/preloadStore';
 import { getFormDraftKey } from '@suite-common/wallet-utils';
 import { FormDraftPrefixKeyValues } from '@suite-common/wallet-constants';
 import { STORAGE } from './constants';
-import { GraphData } from '../../types/wallet/graph';
-import { deviceGraphDataFilterFn } from '../../utils/wallet/graphUtils';
+import { GraphData } from 'src/types/wallet/graph';
+import { deviceGraphDataFilterFn } from 'src/utils/wallet/graph';
 import { selectCoinjoinAccountByKey } from 'src/reducers/wallet/coinjoinReducer';
 
 export type StorageAction = NonNullable<PreloadStoreAction>;

@@ -10,7 +10,7 @@ import { variables } from '@trezor/components';
 
 import { InfoCard } from './InfoCard';
 import { AggregatedAccountHistory, GraphRange } from 'src/types/wallet/graph';
-import { sumFiatValueMap } from 'src/utils/wallet/graphUtils';
+import { sumFiatValueMap } from 'src/utils/wallet/graph';
 
 const InfoCardsWrapper = styled.div`
     display: grid;

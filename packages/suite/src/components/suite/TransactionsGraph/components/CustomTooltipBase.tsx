@@ -7,7 +7,7 @@ import { TooltipProps } from 'recharts';
 import { variables } from '@trezor/components';
 
 import { Props as GraphProps } from '../definitions';
-import { CommonAggregatedHistory } from '../../../../types/wallet/graph';
+import { CommonAggregatedHistory } from 'src/types/wallet/graph';
 
 // Used for triggering custom Tooltip alignment
 const OFFSET_LIMIT_HORIZONTAL = 125;

@@ -10,9 +10,9 @@ import {
     selectPrevDevice,
     selectTargetRelease,
     selectUseDevkit,
-} from '../../reducers/firmware/firmwareReducer';
-import { selectDevice } from '../../reducers/suite/suiteReducer';
-import { Dispatch, FirmwareType, GetState } from '../../types/suite';
+} from 'src/reducers/firmware/firmwareReducer';
+import { selectDevice } from 'src/reducers/suite/suiteReducer';
+import { Dispatch, FirmwareType, GetState } from 'src/types/suite';
 import { firmwareActions } from './firmwareActions';
 
 /**

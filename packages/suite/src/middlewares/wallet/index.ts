@@ -7,7 +7,7 @@ import coinmarketMiddleware from './coinmarketMiddleware';
 import coinmarketSavingsMiddleware from './coinmarketSavingsMiddleware';
 import pollingMiddleware from './pollingMiddleware';
 import { coinjoinMiddleware } from './coinjoinMiddleware';
-import { extraDependencies } from '../../support/extraDependencies';
+import { extraDependencies } from 'src/support/extraDependencies';
 
 export default [
     prepareBlockchainMiddleware(extraDependencies),
