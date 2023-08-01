@@ -8,7 +8,7 @@ import * as messageSystemUtils from '@suite-common/message-system/src/messageSys
 import { extraDependencies } from 'src/support/extraDependencies';
 import WalletReducers from 'src/reducers/wallet';
 import messageSystemMiddleware from '../messageSystemMiddleware';
-import { AppState } from '../../../reducers/store';
+import { AppState } from 'src/reducers/store';
 
 // Type annotation as workaround for typecheck error "The inferred type of 'default' cannot be named..."
 const messageSystemReducer: Reducer = prepareMessageSystemReducer(extraDependencies);

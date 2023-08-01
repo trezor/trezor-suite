@@ -5,7 +5,7 @@ import BigNumber from 'bignumber.js';
 import { Input, InputProps } from '@trezor/components';
 import { localizeNumber } from '@suite-common/wallet-utils';
 import { Locale } from 'src/config/suite/languages';
-import { useSelector } from '../../hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { getLocaleSeparators } from '@trezor/utils';
 
 const isValidDecimalString = (value: string) => /^([^.]*)\.[^.]+$/.test(value);

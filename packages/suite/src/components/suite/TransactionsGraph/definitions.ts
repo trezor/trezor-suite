@@ -3,7 +3,7 @@ import {
     GraphRange,
     AggregatedAccountHistory,
     AggregatedDashboardHistory,
-} from '../../../types/wallet/graph';
+} from 'src/types/wallet/graph';
 
 interface CommonProps {
     isLoading?: boolean;

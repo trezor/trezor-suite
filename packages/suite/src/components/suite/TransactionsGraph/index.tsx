@@ -15,11 +15,7 @@ import { CustomBar } from './components/CustomBar';
 import { CustomTooltipDashboard } from './components/CustomTooltipDashboard';
 import { CustomTooltipAccount } from './components/CustomTooltipAccount';
 import { SkeletonTransactionsGraph } from './components/SkeletonTransactionsGraph';
-import {
-    calcYDomain,
-    calcFakeGraphDataForTimestamps,
-    calcXDomain,
-} from '../../../utils/wallet/graphUtils';
+import { calcYDomain, calcFakeGraphDataForTimestamps, calcXDomain } from 'src/utils/wallet/graph';
 
 const Wrapper = styled.div`
     display: flex;

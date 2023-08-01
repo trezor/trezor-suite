@@ -7,7 +7,7 @@ import suiteReducer from 'src/reducers/suite/suiteReducer';
 import firmwareMiddleware from 'src/middlewares/firmware/firmwareMiddleware';
 import { firmwareActions } from 'src/actions/firmware/firmwareActions';
 
-import { extraDependencies } from '../../../support/extraDependencies';
+import { extraDependencies } from 'src/support/extraDependencies';
 
 const { getSuiteDevice } = global.JestMocks;
 

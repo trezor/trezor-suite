@@ -15,14 +15,14 @@ import {
     SET_SELECTED_RANGE,
     SET_SELECTED_VIEW,
 } from './constants/graphConstants';
-import { GraphData, GraphRange, GraphScale } from '../../types/wallet/graph';
+import { GraphData, GraphRange, GraphScale } from 'src/types/wallet/graph';
 import {
     ensureHistoryRates,
     enhanceBlockchainAccountHistory,
     accountGraphDataFilterFn,
     deviceGraphDataFilterFn,
-} from '../../utils/wallet/graphUtils';
-import { selectLocalCurrency } from '../../reducers/wallet/settingsReducer';
+} from 'src/utils/wallet/graph';
+import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 
 export type GraphAction =
     | {

@@ -14,7 +14,7 @@ import {
 } from 'date-fns';
 
 import { colors, variables, Dropdown, DropdownRef, Timerange } from '@trezor/components';
-import { GraphRange } from '../../../../types/wallet/graph';
+import { GraphRange } from 'src/types/wallet/graph';
 
 const Wrapper = styled.div`
     display: flex;

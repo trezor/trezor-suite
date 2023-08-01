@@ -6,7 +6,7 @@ import { useFormatters } from '@suite-common/formatters';
 
 import { Props as GraphProps, FiatGraphProps } from '../definitions';
 import { CustomTooltipBase } from './CustomTooltipBase';
-import { CommonAggregatedHistory } from '../../../../types/wallet/graph';
+import { CommonAggregatedHistory } from 'src/types/wallet/graph';
 
 interface CustomTooltipDashboardProps extends TooltipProps<number, any> {
     selectedRange: GraphProps['selectedRange'];

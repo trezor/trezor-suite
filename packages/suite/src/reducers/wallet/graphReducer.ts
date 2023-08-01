@@ -6,7 +6,7 @@ import { Action as SuiteAction } from 'src/types/suite';
 import { SETTINGS } from 'src/config/suite';
 
 import { accountsActions } from '@suite-common/wallet-core';
-import { GraphData, AccountIdentifier, GraphRange, GraphScale } from '../../types/wallet/graph';
+import { GraphData, AccountIdentifier, GraphRange, GraphScale } from 'src/types/wallet/graph';
 
 export interface State {
     data: GraphData[];

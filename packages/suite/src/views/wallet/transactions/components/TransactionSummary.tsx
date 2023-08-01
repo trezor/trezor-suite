@@ -13,10 +13,7 @@ import { variables, Button, Card } from '@trezor/components';
 
 import { TransactionSummaryDropdown } from './TransactionSummaryDropdown';
 import { SummaryCards } from './SummaryCards';
-import {
-    aggregateBalanceHistory,
-    getMinMaxValueFromData,
-} from '../../../../utils/wallet/graphUtils';
+import { aggregateBalanceHistory, getMinMaxValueFromData } from 'src/utils/wallet/graph';
 
 const Wrapper = styled.div`
     display: flex;

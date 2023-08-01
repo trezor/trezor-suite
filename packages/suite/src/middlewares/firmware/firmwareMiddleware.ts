@@ -4,7 +4,7 @@ import { firmwareUpdate } from 'src/actions/firmware/firmwareThunks';
 import type { MiddlewareAPI } from 'redux';
 import type { AppState, Action, Dispatch } from 'src/types/suite';
 
-import { selectFirmware } from '../../reducers/firmware/firmwareReducer';
+import { selectFirmware } from 'src/reducers/firmware/firmwareReducer';
 
 const firmwareMiddleware =
     (api: MiddlewareAPI<Dispatch, AppState>) =>

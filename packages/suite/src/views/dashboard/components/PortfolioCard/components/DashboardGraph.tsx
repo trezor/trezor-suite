@@ -11,8 +11,8 @@ import { TransactionsGraph, Translation, HiddenPlaceholder } from 'src/component
 
 import { variables, Button } from '@trezor/components';
 import { calcTicks, calcTicksFromData } from '@suite-common/suite-utils';
-import { AggregatedDashboardHistory } from '../../../../../types/wallet/graph';
-import { getMinMaxValueFromData } from '../../../../../utils/wallet/graphUtils';
+import { AggregatedDashboardHistory } from 'src/types/wallet/graph';
+import { getMinMaxValueFromData } from 'src/utils/wallet/graph';
 
 const Wrapper = styled.div`
     display: flex;

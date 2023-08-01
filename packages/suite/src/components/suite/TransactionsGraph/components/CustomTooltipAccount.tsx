@@ -9,7 +9,7 @@ import { Formatters, useFormatters } from '@suite-common/formatters';
 
 import { Props as GraphProps, CryptoGraphProps } from '../definitions';
 import { CustomTooltipBase } from './CustomTooltipBase';
-import { CommonAggregatedHistory } from '../../../../types/wallet/graph';
+import { CommonAggregatedHistory } from 'src/types/wallet/graph';
 import { SignOperator } from '@suite-common/suite-types';
 
 const StyledCryptoAmount = styled(FormattedCryptoAmount)`
