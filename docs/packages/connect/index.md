@@ -1,5 +1,59 @@
 # Trezor Connect
 
+## Installation
+
+### Node.js
+
+Install library as npm module:
+
+```javascript
+npm install @trezor/connect
+```
+
+or
+
+```javascript
+yarn add @trezor/connect
+```
+
+ES6
+
+```javascript
+import TrezorConnect from '@trezor/connect';
+```
+
+### Web based environments
+
+Install library as npm module:
+
+```javascript
+npm install @trezor/connect-web
+```
+
+or
+
+```javascript
+yarn add @trezor/connect-web
+```
+
+Or include library as inline script:
+
+```javascript
+<script src="https://connect.trezor.io/9/trezor-connect.js"></script>
+```
+
+ES6
+
+```javascript
+import TrezorConnect from '@trezor/connect-web';
+```
+
+Inline
+
+```javascript
+var TrezorConnect = window.TrezorConnect;
+```
+
 ## How to use
 
 Initialize in project
@@ -35,7 +89,7 @@ If you need more customization, refer to [init method documentation](./methods/i
 
 -   [Events](events.md)
 
-## How @trezor/connect-web works
+## How it works in browser based environments
 
 After implementing Trezor Connect, a small file containing a declaration
 of methods is downloaded. Once the Trezor Connect [method](methods.md) is used,
