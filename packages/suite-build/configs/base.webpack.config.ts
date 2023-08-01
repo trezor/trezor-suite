@@ -163,31 +163,18 @@ const config: webpack.Configuration = {
     },
     plugins: [
         new webpack.ProgressPlugin(),
-        new webpack.DefinePlugin(
-            isDev
-                ? {
-                      'process.browser': true,
-                      'process.env.SUITE_TYPE': JSON.stringify(project),
-                      'process.env.VERSION': JSON.stringify(suiteVersion),
-                      'process.env.COMMITHASH': JSON.stringify(gitRevision),
-                      'process.env.ASSET_PREFIX': JSON.stringify(assetPrefix),
-                      'process.env.JWS_PUBLIC_KEY': JSON.stringify(jwsPublicKey),
-                      'process.env.CODESIGN_BUILD': isCodesignBuild,
-                      'process.env.SENTRY_RELEASE': JSON.stringify(sentryRelease),
-                  }
-                : {
-                      'process.browser': true,
-                      'process.env.SUITE_TYPE': JSON.stringify(project),
-                      'process.env.VERSION': JSON.stringify(suiteVersion),
-                      'process.env.COMMITHASH': JSON.stringify(gitRevision),
-                      'process.env.ASSET_PREFIX': JSON.stringify(assetPrefix),
-                      'process.env.JWS_PUBLIC_KEY': JSON.stringify(jwsPublicKey),
-                      'process.env.CODESIGN_BUILD': isCodesignBuild,
-                      'process.env.SENTRY_RELEASE': JSON.stringify(sentryRelease),
-                      __SENTRY_DEBUG__: false,
-                      __SENTRY_TRACING__: false, // needs to be removed when we introduce performance monitoring in trezor-suite
-                  },
-        ),
+        new webpack.DefinePlugin({
+            'process.browser': true,
+            'process.env.SUITE_TYPE': JSON.stringify(project),
+            'process.env.VERSION': JSON.stringify(suiteVersion),
+            'process.env.COMMITHASH': JSON.stringify(gitRevision),
+            'process.env.ASSET_PREFIX': JSON.stringify(assetPrefix),
+            'process.env.JWS_PUBLIC_KEY': JSON.stringify(jwsPublicKey),
+            'process.env.CODESIGN_BUILD': isCodesignBuild,
+            'process.env.SENTRY_RELEASE': JSON.stringify(sentryRelease),
+            __SENTRY_DEBUG__: isDev,
+            __SENTRY_TRACING__: false, // needs to be removed when we introduce performance monitoring in trezor-suite
+        }),
         new webpack.ProvidePlugin({
             Buffer: ['buffer', 'Buffer'],
             process: 'process',
