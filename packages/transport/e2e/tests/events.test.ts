@@ -65,9 +65,6 @@ describe('bridge', () => {
         await bridge1.init().promise;
         await bridge2.init().promise;
 
-        bridge1.listen();
-        bridge2.listen();
-
         const result = await bridge1.enumerate().promise;
         expect(result.success).toBe(true);
 
@@ -86,6 +83,12 @@ describe('bridge', () => {
                 debugSession: null,
             },
         ]);
+
+        bridge1.handleDescriptorsChange(descriptors);
+        bridge2.handleDescriptorsChange(descriptors);
+
+        bridge1.listen();
+        bridge2.listen();
     });
 
     test('2 clients. one acquires and releases, the other one is watching', async () => {
@@ -138,7 +141,7 @@ describe('bridge', () => {
             return;
         }
 
-        await bridge1.release(session1.payload).promise;
+        await bridge1.release({ path: '1', session: session1.payload }).promise;
 
         await wait();
 
@@ -190,7 +193,7 @@ describe('bridge', () => {
             return;
         }
 
-        await wait(); // fait for event to be propagated
+        await wait(); // wait for event to be propagated
 
         // bridge 2 steals session
         const session2 = await bridge2.acquire({
@@ -204,7 +207,7 @@ describe('bridge', () => {
             session: '2',
         });
 
-        await wait(); // fait for event to be propagated
+        await wait(); // wait for event to be propagated
 
         expect(bride1spy).toHaveBeenLastCalledWith('transport-update', {
             acquired: [expectedDescriptor],

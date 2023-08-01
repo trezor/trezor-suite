@@ -156,7 +156,7 @@ describe('bridge', () => {
             });
 
             test(`call(Backup) - send(Cancel) - receive`, async () => {
-                // initiate change pin procedure on device
+                // initiate backup procedure on device
                 const callResponse = await bridge.call({ session, name: 'BackupDevice', data: {} })
                     .promise;
                 expect(callResponse).toMatchObject({
@@ -166,7 +166,7 @@ describe('bridge', () => {
                     },
                 });
 
-                // cancel change pin procedure
+                // cancel backup procedure
                 const sendResponse = await bridge.send({ session, name: 'Cancel', data: {} })
                     .promise;
                 expect(sendResponse).toEqual({ success: true });
