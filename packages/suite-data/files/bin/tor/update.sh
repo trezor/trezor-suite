@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -e
 
-CRX_VER=1_0_30
-CRX_LINUX_ARM_VER=1_0_0
+CRX_VER=1_0_32
+CRX_LINUX_ARM_VER=1_0_1
 
 # check whether we have all required commands
 for cmd in 7z curl lipo shasum ; do
