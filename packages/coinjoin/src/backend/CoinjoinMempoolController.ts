@@ -14,7 +14,7 @@ type MempoolStatus = 'stopped' | 'running';
 
 export type MempoolController = Pick<
     CoinjoinMempoolController,
-    'status' | 'start' | 'stop' | 'init' | 'update' | 'getTransactions'
+    'status' | 'start' | 'stop' | 'init' | 'update' | 'getTransactions' | 'removeTransactions'
 >;
 
 type CoinjoinMempoolControllerSettings = {
@@ -200,5 +200,9 @@ export class CoinjoinMempoolController {
         );
 
         return Array.from(set, txid => this.mempool.get(txid)!);
+    }
+
+    removeTransactions(txids: string[]) {
+        txids.forEach(this.onTxRemove);
     }
 }

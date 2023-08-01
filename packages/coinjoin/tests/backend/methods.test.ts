@@ -9,7 +9,11 @@ import { CoinjoinMempoolController } from '../../src/backend/CoinjoinMempoolCont
 import * as FIXTURES from '../fixtures/methods.fixture';
 import { COINJOIN_BACKEND_SETTINGS } from '../fixtures/config.fixture';
 import { MockBackendClient } from '../mocks/MockBackendClient';
-import type { BlockFilterResponse, Transaction } from '../../src/types/backend';
+import type {
+    BlockFilterResponse,
+    ScanAccountProgress,
+    Transaction,
+} from '../../src/types/backend';
 
 const EMPTY_CHECKPOINT = {
     blockHash: FIXTURES.BASE_HASH,
@@ -40,7 +44,7 @@ describe(`CoinjoinBackend methods`, () => {
             .filter(arrayDistinct)
             .sort();
 
-    const getContext = <T>(onProgress: (t: T) => void) => ({
+    const getContext = (onProgress: (t: ScanAccountProgress) => void) => ({
         client,
         filters: new CoinjoinFilterController(client, {
             ...COINJOIN_BACKEND_SETTINGS,
@@ -95,14 +99,16 @@ describe(`CoinjoinBackend methods`, () => {
         // tx 44444444444444444444444444444444 is in mempool
         client.setFixture(FIXTURES.BLOCKS.slice(0, 4), [FIXTURES.TX_4_PENDING]);
 
+        const context = getContext(progress => {
+            txs = txs.concat(progress.transactions);
+        });
+
         const half = await scanAccount(
             {
                 descriptor: FIXTURES.SEGWIT_XPUB,
                 checkpoints: [EMPTY_CHECKPOINT],
             },
-            getContext(progress => {
-                txs = txs.concat(progress.transactions);
-            }),
+            context,
         );
 
         const halfInfo = getAccountInfo({
@@ -132,9 +138,7 @@ describe(`CoinjoinBackend methods`, () => {
                 descriptor: FIXTURES.SEGWIT_XPUB,
                 checkpoints: [half.checkpoint],
             },
-            getContext(progress => {
-                txs = txs.concat(progress.transactions);
-            }),
+            context,
         );
 
         const fullInfo = getAccountInfo({
