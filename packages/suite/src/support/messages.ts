@@ -7374,6 +7374,23 @@ export default defineMessages({
         id: 'TR_STOP',
         defaultMessage: 'Stop',
     },
+    TR_AUTO_STOP_TOOLTIP: {
+        id: 'TR_AUTO_STOP_TOOLTIP',
+        defaultMessage: 'Coinjoin is in signing phase. Click to stop it after this round.',
+        description: 'Tooltip for TR_AUTO_STOP button',
+    },
+    TR_STOPPING: {
+        id: 'TR_STOPPING',
+        defaultMessage: 'Stopping',
+        description:
+            'Button in coinjoin summary. Session is not in critical phase and auto stop is enabled',
+    },
+    TR_RESUME: {
+        id: 'TR_RESUME',
+        defaultMessage: 'Resume',
+        description:
+            'Button hover in coinjoin summary. Session is not in critical phase and auto stop is enabled',
+    },
     TR_CANCEL_COINJOIN: {
         id: 'TR_CANCEL_COINJOIN',
         defaultMessage: 'Cancel coinjoin',
