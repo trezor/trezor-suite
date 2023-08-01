@@ -1,3 +1,9 @@
+# 1.1.14
+
+-   chore(deps): bump protobufjs from 6.11.3 to 7.2.4 (d0cb6caae)
+-   fix(transport): fix occasional race condition (fb8062e18)
+-   feat(transport): internal_model enum (26c17386a)
+
 # 1.1.13
 
 -   test(transport): extend unit tests (99e12c7be)
