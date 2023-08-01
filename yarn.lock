@@ -4761,6 +4761,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@react-navigation/core@npm:^6.4.9":
+  version: 6.4.9
+  resolution: "@react-navigation/core@npm:6.4.9"
+  dependencies:
+    "@react-navigation/routers": ^6.1.9
+    escape-string-regexp: ^4.0.0
+    nanoid: ^3.1.23
+    query-string: ^7.1.3
+    react-is: ^16.13.0
+    use-latest-callback: ^0.1.5
+  peerDependencies:
+    react: "*"
+  checksum: 5479a49f2bf64dd8da149e268bd926804a466a923baf1b7149707e5db9fc78bcfd131e6d225832cb8f826cef6fc8afb91e10802dd5d0f9086aac61cabcc973ac
+  languageName: node
+  linkType: hard
+
 "@react-navigation/elements@npm:^1.3.14, @react-navigation/elements@npm:^1.3.16":
   version: 1.3.16
   resolution: "@react-navigation/elements@npm:1.3.16"
@@ -4789,18 +4805,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@react-navigation/native@npm:^6.1.3":
-  version: 6.1.3
-  resolution: "@react-navigation/native@npm:6.1.3"
+"@react-navigation/native@npm:^6.1.7":
+  version: 6.1.7
+  resolution: "@react-navigation/native@npm:6.1.7"
   dependencies:
-    "@react-navigation/core": ^6.4.6
+    "@react-navigation/core": ^6.4.9
     escape-string-regexp: ^4.0.0
     fast-deep-equal: ^3.1.3
     nanoid: ^3.1.23
   peerDependencies:
     react: "*"
     react-native: "*"
-  checksum: 8aa9d60d0c135381691363ec438db90d2584cb48fb99dbf6707a61b81bce709e5407cde3c1d93c4966245069bc5149d8925a4ef512906619cfac057cacdc43d9
+  checksum: 917be90290b2de6aa6d32f0798369757d5577814fa1cf3b6b7fb62efdc6341f0db2c85a1826f1f83ccd563ffd7c2ce3c98ff7560e80f868641a66f162650a992
   languageName: node
   linkType: hard
 
@@ -4810,6 +4826,15 @@ __metadata:
   dependencies:
     nanoid: ^3.1.23
   checksum: 3e765b66cf3e94b9194cfffe8ba6fa51e6652e8f9d8fed713ac76f6ad9e2bd5af5590d83e546efb71455bd6bf2ab1faefcf7f1b0c24b15324c4fe1b8246f8dab
+  languageName: node
+  linkType: hard
+
+"@react-navigation/routers@npm:^6.1.9":
+  version: 6.1.9
+  resolution: "@react-navigation/routers@npm:6.1.9"
+  dependencies:
+    nanoid: ^3.1.23
+  checksum: 3a3392ce095d6a2bd2aad69856f513b35774f943a3dc73d8ffb75127de6773203e3264188d87058bdea4c0c9a7d43ed28d0cbf3a1f1cdc086df3ee255d8e1e27
   languageName: node
   linkType: hard
 
@@ -6869,7 +6894,7 @@ __metadata:
   resolution: "@suite-native/accounts@workspace:suite-native/accounts"
   dependencies:
     "@mobily/ts-belt": ^3.13.1
-    "@react-navigation/native": ^6.1.3
+    "@react-navigation/native": ^6.1.7
     "@suite-common/formatters": "workspace:*"
     "@suite-common/icons": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
@@ -6929,7 +6954,7 @@ __metadata:
   resolution: "@suite-native/assets@workspace:suite-native/assets"
   dependencies:
     "@mobily/ts-belt": ^3.13.1
-    "@react-navigation/native": ^6.1.3
+    "@react-navigation/native": ^6.1.7
     "@suite-common/icons": "workspace:*"
     "@suite-common/suite-config": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
@@ -7171,7 +7196,7 @@ __metadata:
   dependencies:
     "@mobily/ts-belt": ^3.13.1
     "@react-navigation/core": ^6.4.6
-    "@react-navigation/native": ^6.1.3
+    "@react-navigation/native": ^6.1.7
     "@react-navigation/native-stack": ^6.9.11
     "@reduxjs/toolkit": 1.9.5
     "@shopify/react-native-skia": 0.1.188
@@ -7217,7 +7242,7 @@ __metadata:
   resolution: "@suite-native/module-accounts@workspace:suite-native/module-accounts"
   dependencies:
     "@mobily/ts-belt": ^3.13.1
-    "@react-navigation/native": ^6.1.3
+    "@react-navigation/native": ^6.1.7
     "@react-navigation/native-stack": ^6.9.11
     "@reduxjs/toolkit": 1.9.5
     "@suite-common/fiat-services": "workspace:*"
@@ -7298,7 +7323,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/module-home@workspace:suite-native/module-home"
   dependencies:
-    "@react-navigation/native": ^6.1.3
+    "@react-navigation/native": ^6.1.7
     "@react-navigation/native-stack": ^6.9.11
     "@suite-common/formatters": "workspace:*"
     "@suite-common/graph": "workspace:*"
@@ -7324,7 +7349,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/module-onboarding@workspace:suite-native/module-onboarding"
   dependencies:
-    "@react-navigation/native": ^6.1.3
+    "@react-navigation/native": ^6.1.7
     "@react-navigation/native-stack": ^6.9.11
     "@reduxjs/toolkit": 1.9.5
     "@suite-common/analytics": "workspace:*"
@@ -7348,7 +7373,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/module-receive@workspace:suite-native/module-receive"
   dependencies:
-    "@react-navigation/native": ^6.1.3
+    "@react-navigation/native": ^6.1.7
     "@react-navigation/native-stack": ^6.9.11
     "@suite-common/icons": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
@@ -7378,7 +7403,7 @@ __metadata:
   dependencies:
     "@mobily/ts-belt": ^3.13.1
     "@react-navigation/core": ^6.4.6
-    "@react-navigation/native": ^6.1.3
+    "@react-navigation/native": ^6.1.7
     "@react-navigation/native-stack": ^6.9.11
     "@reduxjs/toolkit": 1.9.5
     "@suite-common/analytics": "workspace:*"
@@ -7411,7 +7436,7 @@ __metadata:
   resolution: "@suite-native/navigation@workspace:suite-native/navigation"
   dependencies:
     "@react-navigation/bottom-tabs": ^6.5.4
-    "@react-navigation/native": ^6.1.3
+    "@react-navigation/native": ^6.1.7
     "@react-navigation/native-stack": ^6.9.11
     "@suite-common/icons": "workspace:*"
     "@suite-common/suite-constants": "workspace:*"
@@ -7436,7 +7461,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/notifications@workspace:suite-native/notifications"
   dependencies:
-    "@react-navigation/native": ^6.1.3
+    "@react-navigation/native": ^6.1.7
     "@suite-common/icons": "workspace:*"
     "@suite-common/toast-notifications": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
@@ -7496,7 +7521,7 @@ __metadata:
   resolution: "@suite-native/receive@workspace:suite-native/receive"
   dependencies:
     "@mobily/ts-belt": ^3.13.1
-    "@react-navigation/native": ^6.1.3
+    "@react-navigation/native": ^6.1.7
     "@react-navigation/native-stack": ^6.9.11
     "@suite-common/icons": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
@@ -7621,7 +7646,7 @@ __metadata:
   resolution: "@suite-native/transactions@workspace:suite-native/transactions"
   dependencies:
     "@mobily/ts-belt": ^3.13.1
-    "@react-navigation/native": ^6.1.3
+    "@react-navigation/native": ^6.1.7
     "@shopify/flash-list": ^1.4.3
     "@shopify/react-native-skia": 0.1.188
     "@suite-common/formatters": "workspace:*"
@@ -8524,7 +8549,7 @@ __metadata:
     "@formatjs/intl-pluralrules": ^5.1.3
     "@formatjs/intl-relativetimeformat": ^11.1.3
     "@react-navigation/bottom-tabs": ^6.5.4
-    "@react-navigation/native": ^6.1.3
+    "@react-navigation/native": ^6.1.7
     "@react-navigation/native-stack": ^6.9.11
     "@reduxjs/toolkit": 1.9.5
     "@rnx-kit/metro-config": ^1.3.6
