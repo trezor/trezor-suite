@@ -120,15 +120,18 @@ export const prepareTransactionsReducer = createReducerWithExtraDeps(
                         const existingTxIndex = accountTxs.findIndex(
                             t => t && t.txid === existingTx.txid,
                         );
+                        const existingBlockHeight = existingTx.blockHeight ?? 0;
+                        const incomingBlockHeight = transaction.blockHeight ?? 0;
+                        const existingIsPending = existingBlockHeight <= 0;
+                        const incomingIsPending = incomingBlockHeight <= 0;
 
                         if (
-                            ((existingTx.blockHeight ?? 0) <= 0 &&
-                                (transaction.blockHeight ?? 0) > 0) ||
-                            (transaction.blockTime &&
-                                (existingTx.blockTime ?? 0) < transaction.blockTime) ||
-                            ((existingTx.blockHeight ?? 0) <= 0 &&
-                                !existingTx.rbfParams &&
-                                transaction.rbfParams) ||
+                            (existingIsPending && !incomingIsPending) ||
+                            (existingIsPending === incomingIsPending &&
+                                existingBlockHeight < incomingBlockHeight) ||
+                            (existingIsPending === incomingIsPending &&
+                                (existingTx.blockTime ?? 0) < (transaction.blockTime ?? 0)) ||
+                            (existingIsPending && !existingTx.rbfParams && transaction.rbfParams) ||
                             (existingTx.deadline && !transaction.deadline)
                         ) {
                             // pending tx got confirmed (blockHeight changed from undefined/0 to a number > 0)
