@@ -35,7 +35,7 @@ import {
     transactionsActions,
 } from '@suite-common/wallet-core';
 import { addToast } from '@suite-common/toast-notifications';
-import { SessionPhase } from '@trezor/coinjoin/lib/enums';
+import { SessionPhase } from '@trezor/coinjoin';
 import { UI, DEVICE } from '@trezor/connect';
 import { arrayDistinct } from '@trezor/utils';
 
