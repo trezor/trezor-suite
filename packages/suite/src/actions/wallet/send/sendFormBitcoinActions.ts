@@ -208,11 +208,12 @@ export const composeTransaction =
 export const signTransaction =
     (formValues: FormState, transactionInfo: PrecomposedTransactionFinal) =>
     async (dispatch: Dispatch, getState: GetState) => {
+        const state = getState();
         const {
             selectedAccount,
             settings: { bitcoinAmountUnit },
-        } = getState().wallet;
-        const { device } = getState().suite;
+        } = state.wallet;
+        const { device } = state.suite;
 
         if (
             selectedAccount.status !== 'loaded' ||
@@ -233,8 +234,21 @@ export const signTransaction =
             signEnhancement.locktime = new BigNumber(formValues.bitcoinLockTime).toNumber();
         }
 
+        let refTxs;
+
         if (formValues.rbfParams && transactionInfo.useNativeRbf) {
             const { txid, utxo, outputs } = formValues.rbfParams;
+
+            // normally taproot/coinjoin account doesn't require referenced transactions while signing
+            // but in RBF case they are needed to obtain data of original transaction
+            // passing them directly from tx history will prevent downloading them from the backend (in @trezor/connect)
+            // this is essential step for coinjoin account to avoid leaking txid
+            if (['coinjoin', 'taproot'].includes(account.accountType)) {
+                refTxs = (state.wallet.transactions.transactions[account.key] || []).filter(
+                    tx => tx.txid === txid,
+                );
+            }
+
             // override inputs and outputs of precomposed transaction
             // NOTE: RBF inputs/outputs required are to be in the same exact order as in original tx (covered by TrezorConnect.composeTransaction.skipPermutation param)
             // possible variations:
@@ -276,6 +290,7 @@ export const signTransaction =
             outputs: transaction.outputs,
             account: {
                 addresses: account.addresses!,
+                transactions: refTxs,
             },
             coin: account.symbol,
             ...signEnhancement,
