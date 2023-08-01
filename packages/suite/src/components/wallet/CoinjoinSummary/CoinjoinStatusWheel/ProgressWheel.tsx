@@ -15,7 +15,10 @@ import { goto } from 'src/actions/suite/routerActions';
 import { Translation } from 'src/components/suite/Translation';
 import { openModal } from 'src/actions/suite/modalActions';
 import { stopCoinjoinSession } from 'src/actions/wallet/coinjoinClientActions';
-import { startCoinjoinSession } from 'src/actions/wallet/coinjoinAccountActions';
+import {
+    startCoinjoinSession,
+    coinjoinSessionAutostop,
+} from 'src/actions/wallet/coinjoinAccountActions';
 
 const getOutlineSvg = (theme: DefaultTheme) =>
     `url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='100' ry='100' stroke='${theme.TYPE_LIGHT_GREY.replace(
@@ -146,6 +149,8 @@ export const ProgressWheel = ({ accountKey }: ProgressWheelProps) => {
         isSessionActive,
         isPaused,
         isLoading,
+        isAutoStopEnabled,
+        isCriticalPhase,
         isAllPrivate,
         isAccountEmpty,
         isResumeBlockedByLastingIssue,
@@ -172,7 +177,11 @@ export const ProgressWheel = ({ accountKey }: ProgressWheelProps) => {
         }
 
         if (isSessionActive) {
-            dispatch(stopCoinjoinSession(accountKey));
+            if (isCriticalPhase) {
+                dispatch(coinjoinSessionAutostop(accountKey, !isAutoStopEnabled));
+            } else if (!isAutoStopEnabled) {
+                dispatch(stopCoinjoinSession(accountKey));
+            }
 
             return;
         }
@@ -195,6 +204,8 @@ export const ProgressWheel = ({ accountKey }: ProgressWheelProps) => {
         isAllPrivate,
         isAccountEmpty,
         isSessionActive,
+        isCriticalPhase,
+        isAutoStopEnabled,
         dispatch,
         accountKey,
         isCoinjoinUneco,

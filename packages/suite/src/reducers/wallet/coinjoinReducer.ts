@@ -730,10 +730,12 @@ export const selectIsCoinjoinBlockedByTor = (state: CoinjoinRootState) => {
     return !isTorEnabled;
 };
 
+const isRoundPhaseCritical = (roundPhase?: number) => (roundPhase ?? 0) > 0;
+
 export const selectIsAnySessionInCriticalPhase = (state: CoinjoinRootState) => {
     const coinjoinAccounts = selectCoinjoinAccounts(state);
 
-    return coinjoinAccounts.some(acc => (acc.session?.roundPhase ?? 0) > 0);
+    return coinjoinAccounts.some(acc => isRoundPhaseCritical(acc.session?.roundPhase));
 };
 
 export const selectIsAccountWithSessionInCriticalPhaseByAccountKey = (
@@ -741,7 +743,7 @@ export const selectIsAccountWithSessionInCriticalPhaseByAccountKey = (
     accountKey: AccountKey,
 ) => {
     const coinjoinAccount = selectCoinjoinAccountByKey(state, accountKey);
-    return (coinjoinAccount?.session?.roundPhase ?? 0) > 0;
+    return isRoundPhaseCritical(coinjoinAccount?.session?.roundPhase);
 };
 
 export const selectIsAccountWithSessionByAccountKey = (
@@ -946,6 +948,8 @@ export const selectCurrentCoinjoinWheelStates = (state: CoinjoinRootState) => {
     const isSessionActive = !!coinjoinAccount?.session;
     const isPaused = !!paused;
     const isLoading = coinjoinSessionBlocker === 'SESSION_STARTING';
+    const isAutoStopEnabled = coinjoinAccount?.session?.isAutoStopEnabled;
+    const isCriticalPhase = isRoundPhaseCritical(coinjoinAccount?.session?.roundPhase);
 
     // account states
     const isAccountEmpty = !balance || balance === '0';
@@ -972,6 +976,8 @@ export const selectCurrentCoinjoinWheelStates = (state: CoinjoinRootState) => {
         isSessionActive,
         isPaused,
         isLoading,
+        isAutoStopEnabled,
+        isCriticalPhase,
         isAccountEmpty,
         isNonePrivate,
         isAllPrivate,
