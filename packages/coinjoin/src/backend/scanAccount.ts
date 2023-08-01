@@ -50,6 +50,9 @@ export const scanAccount = async (
 
         if (isMatch(scripts)) {
             const block = await client.fetchBlock(blockHeight, { signal: abortSignal });
+            if (mempool?.status === 'running') {
+                mempool.removeTransactions(block.txs.map(({ txid }) => txid));
+            }
             addresses.analyze(
                 ({ address }) => block.txs.filter(doesTxContainAddress(address)),
                 transactions => transactions.forEach(txs.add, txs),
