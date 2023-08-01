@@ -11,7 +11,7 @@ exports.default = context => {
         return;
     }
 
-    if (!process.env.APPLEID || !process.env.APPLEIDPASS) {
+    if (!process.env.APPLEID || !process.env.APPLEIDPASS || !process.env.APPLETEAMID) {
         return;
     }
 
@@ -26,5 +26,6 @@ exports.default = context => {
         appPath,
         appleId: process.env.APPLEID,
         appleIdPassword: process.env.APPLEIDPASS,
+        teamId: process.env.APPLETEAMID,
     });
 };
