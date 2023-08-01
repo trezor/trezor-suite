@@ -76,7 +76,7 @@
     },
     "resolutions": {
         "typescript": "4.9.5",
-        "react-native": "0.71.8",
+        "react-native": "0.72.3",
         "prettier": "2.8.8",
         "type-fest": "2.12.2",
         "bcrypto": "5.4.0",
@@ -122,7 +122,7 @@
         "jest": "^26.6.3",
         "jest-environment-jsdom": "^26.6.2",
         "jest-environment-node": "^26.6.2",
-        "metro-react-native-babel-preset": "0.76.4",
+        "metro-react-native-babel-preset": "0.76.7",
         "npm-run-all": "^4.1.5",
         "nx": "^16.3.2",
         "nx-cloud": "16.0.5",

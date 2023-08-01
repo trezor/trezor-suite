@@ -24,7 +24,7 @@
         "@trezor/styles": "workspace:*",
         "@trezor/theme": "workspace:*",
         "react": "18.2.0",
-        "react-native": "0.71.4",
+        "react-native": "0.72.3",
         "react-native-svg": "^13.8.0",
         "react-redux": "8.0.7"
     }
