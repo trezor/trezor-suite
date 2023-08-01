@@ -247,7 +247,7 @@ describe('account utils', () => {
         expect(getNetworkFeatures(btcAcc)).toEqual(['rbf', 'sign-verify', 'amount-unit']);
         expect(getNetworkFeatures(btcTaprootAcc)).toEqual(['rbf', 'amount-unit']);
         expect(getNetworkFeatures(ethAcc)).toEqual(['rbf', 'sign-verify', 'tokens']);
-        expect(getNetworkFeatures(coinjoinAcc)).toEqual(['amount-unit']);
+        expect(getNetworkFeatures(coinjoinAcc)).toEqual(['rbf', 'amount-unit']);
     });
 
     it('hasNetworkFeatures', () => {
