@@ -1,5 +1,5 @@
 import { combineReducers, createReducer } from '@reduxjs/toolkit';
-import { configureMockStore, testMocks } from '@suite-common/test-utils';
+import { configureMockStore, initPreloadedState, testMocks } from '@suite-common/test-utils';
 
 import { accountsReducer } from 'src/reducers/wallet';
 import { coinjoinReducer } from 'src/reducers/wallet/coinjoinReducer';
@@ -45,25 +45,15 @@ const rootReducer = combineReducers({
 type State = ReturnType<typeof rootReducer>;
 type Wallet = Partial<State['wallet']> & { devices?: State['devices'] };
 
-const initStore = ({ accounts, coinjoin, devices }: Wallet = {}) => {
-    const preloadedState: State = JSON.parse(
-        JSON.stringify(rootReducer(undefined, { type: 'init' })),
-    );
-    if (devices) {
-        preloadedState.devices = devices;
-    }
-    if (accounts) {
-        preloadedState.wallet.accounts = accounts;
-    }
-    if (coinjoin) {
-        preloadedState.wallet.coinjoin = {
-            ...preloadedState.wallet.coinjoin,
-            ...coinjoin,
-        };
-    }
+const initStore = ({ accounts, coinjoin, devices }: Wallet = {}) =>
     // State != suite AppState, therefore <any>
-    return configureMockStore<any>({ reducer: rootReducer, preloadedState });
-};
+    configureMockStore<any>({
+        reducer: rootReducer,
+        preloadedState: initPreloadedState({
+            rootReducer,
+            partialState: { devices, wallet: { accounts, coinjoin } },
+        }),
+    });
 
 describe('coinjoinAccountActions', () => {
     beforeEach(() => {
