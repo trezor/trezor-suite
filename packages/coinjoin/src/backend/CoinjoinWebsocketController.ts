@@ -48,6 +48,7 @@ export class CoinjoinWebsocketController {
                 timeout,
                 url,
                 headers: { 'Proxy-Authorization': `Basic ${identity}` },
+                onSending: this.logMessages(socketId),
             });
             this.sockets[socketId] = socket;
         }
@@ -70,7 +71,14 @@ export class CoinjoinWebsocketController {
         return socket;
     }
 
-    getSocketId(url: string, identity = this.defaultIdentity): SocketId {
+    private logMessages(
+        socketId: string,
+    ): ConstructorParameters<typeof BlockbookAPI>[0]['onSending'] {
+        return ({ method, params }) =>
+            this.logger?.debug(`WS ${method} ${JSON.stringify(params)} ${socketId}`);
+    }
+
+    private getSocketId(url: string, identity = this.defaultIdentity): SocketId {
         return `${identity}@${url}`;
     }
 }
