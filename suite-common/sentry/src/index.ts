@@ -64,9 +64,9 @@ const beforeBreadcrumb: Options['beforeBreadcrumb'] = breadcrumb => {
     // filter out analytics requests and image fetches
     const isAnalytics =
         breadcrumb.category === 'fetch' &&
-        breadcrumb.data?.url?.contains('data.trezor.io/suite/log');
+        breadcrumb.data?.url?.contains?.('data.trezor.io/suite/log');
     const isImageFetch =
-        breadcrumb.category === 'xhr' && breadcrumb.data?.url?.contains('/assets/');
+        breadcrumb.category === 'xhr' && breadcrumb.data?.url?.contains?.('/assets/');
     const isConsole = breadcrumb.category === 'console';
 
     if (isAnalytics || isImageFetch || isConsole) {
@@ -98,6 +98,7 @@ export const SENTRY_CONFIG: Options = {
     ],
     beforeSend,
     enabled: !isDevEnv,
+    maxValueLength: 500, // default 250 is not enough for some errors
     release: process.env.SENTRY_RELEASE,
     environment: process.env.SUITE_TYPE,
     normalizeDepth: 4,
