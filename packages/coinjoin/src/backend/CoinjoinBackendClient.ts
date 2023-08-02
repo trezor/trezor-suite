@@ -1,5 +1,6 @@
 import { scheduleAction, arrayShuffle } from '@trezor/utils';
 import { TypedEmitter } from '@trezor/utils/lib/typedEventEmitter';
+import type { BlockbookAPI } from '@trezor/blockchain-link/lib/workers/blockbook/websocket';
 
 import { httpGet, RequestOptions } from '../utils/http';
 import type {
@@ -10,7 +11,7 @@ import type {
 } from '../types/backend';
 import type { CoinjoinBackendSettings, Logger } from '../types';
 import { FILTERS_REQUEST_TIMEOUT, HTTP_REQUEST_GAP, HTTP_REQUEST_TIMEOUT } from '../constants';
-import { CoinjoinWebsocketController, BlockbookWS } from './CoinjoinWebsocketController';
+import { CoinjoinWebsocketController } from './CoinjoinWebsocketController';
 import { isWsError403, resetIdentityCircuit } from './backendUtils';
 
 type CoinjoinBackendClientSettings = CoinjoinBackendSettings & {
@@ -51,11 +52,11 @@ export class CoinjoinBackendClient {
 
     fetchBlock(height: number, options?: RequestOptions): Promise<BlockbookBlock> {
         const identity = this.identitiesBlockbook[height & 0x3]; // Works only when identities.length === 4
-        return this.fetchFromBlockbook({ identity, ...options }, 'getBlock', height);
+        return this.getBlockbookApi(api => api.getBlock(height), { identity, ...options });
     }
 
     fetchBlockHash(height: number, options?: RequestOptions): Promise<string> {
-        return this.fetchFromBlockbook({ ...options }, 'getBlockHash', height).then(
+        return this.getBlockbookApi(api => api.getBlockHash(height), { ...options }).then(
             ({ hash }) => hash,
         );
     }
@@ -63,28 +64,25 @@ export class CoinjoinBackendClient {
     fetchTransaction(txid: string, options?: RequestOptions): Promise<BlockbookTransaction> {
         const lastCharCode = txid.charCodeAt(txid.length - 1);
         const identity = this.identitiesBlockbook[lastCharCode & 0x3]; // Works only when identities.length === 4
-        return this.fetchFromBlockbook({ identity, ...options }, 'getTransaction', txid);
+        return this.getBlockbookApi(api => api.getTransaction(txid), { identity, ...options });
     }
 
     fetchNetworkInfo(options?: RequestOptions) {
-        return this.fetchFromBlockbook(options, 'getServerInfo');
+        return this.getBlockbookApi(api => api.getServerInfo(), options);
     }
 
     fetchAddress(address: string, page?: number, pageSize = 10, options?: RequestOptions) {
-        return this.fetchFromBlockbook(options, 'getAccountInfo', {
-            descriptor: address,
-            details: 'txs',
-            pageSize,
-            page,
-        });
+        return this.getBlockbookApi(
+            api => api.getAccountInfo({ descriptor: address, details: 'txs', pageSize, page }),
+            options,
+        );
     }
 
     fetchMempoolFilters(timestamp?: number, options?: RequestOptions) {
-        return this.fetchFromBlockbook(
-            { ...options, timeout: FILTERS_REQUEST_TIMEOUT },
-            'getMempoolFilters',
-            timestamp,
-        ).then(({ entries }) => entries ?? {});
+        return this.getBlockbookApi(api => api.getMempoolFilters(timestamp), {
+            ...options,
+            timeout: FILTERS_REQUEST_TIMEOUT,
+        }).then(({ entries }) => entries ?? {});
     }
 
     private reconnect = async () => {
@@ -130,39 +128,27 @@ export class CoinjoinBackendClient {
         }
     }
 
-    private fetchFromBlockbook<T extends keyof BlockbookWS>(
-        options: RequestOptions | undefined,
-        method: T,
-        ...params: Parameters<BlockbookWS[T]>
-    ) {
+    private getBlockbookApi<T>(
+        callbackFn: (api: BlockbookAPI) => T | Promise<T>,
+        { identity, ...options }: RequestOptions = {},
+    ): Promise<T> {
         return scheduleAction(
-            signal =>
-                this.blockbookWS({ ...options, signal }, method, ...params).catch(
-                    this.onBlockbookWSError(options),
-                ),
+            async () => {
+                const urlIndex = this.blockbookRequestId++ % this.blockbookUrls.length;
+                const url = this.blockbookUrls[urlIndex];
+                const api = await this.websockets
+                    .getOrCreate({ identity, ...options, url })
+                    .catch(error => {
+                        // switch identity in case of 403 (possibly blocked by Cloudflare)
+                        if (isWsError403(error) && identity) {
+                            identity = resetIdentityCircuit(identity);
+                        }
+                        throw error;
+                    });
+                return callbackFn(api);
+            },
             { attempts: 3, timeout: HTTP_REQUEST_TIMEOUT, gap: HTTP_REQUEST_GAP, ...options },
         );
-    }
-
-    private onBlockbookWSError(options?: RequestOptions) {
-        return (error: Error) => {
-            // switch identity in case of 403 (possibly blocked by Cloudflare)
-            if (isWsError403(error) && options?.identity) {
-                options.identity = resetIdentityCircuit(options.identity);
-            }
-            throw error;
-        };
-    }
-
-    protected async blockbookWS<T extends keyof BlockbookWS>(
-        { identity, timeout }: RequestOptions = {},
-        method: T,
-        ...params: Parameters<BlockbookWS[T]>
-    ): Promise<Awaited<ReturnType<BlockbookWS[T]>>> {
-        const url = this.blockbookUrls[this.blockbookRequestId++ % this.blockbookUrls.length];
-        const api = await this.websockets.getOrCreate({ url, timeout, identity });
-        this.logger?.debug(`WS ${method} ${params} ${this.websockets.getSocketId(url, identity)}`);
-        return (api[method] as any).apply(api, params);
     }
 
     // Wabisabi methods
