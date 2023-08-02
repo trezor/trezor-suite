@@ -14,6 +14,7 @@ import {
     amountToSatoshi,
 } from '@suite-common/wallet-utils';
 import { updateAll } from './utils';
+import { DeviceModelInternal } from '@trezor/connect';
 
 type WalletWithBackends = {
     backends?: Partial<{
@@ -572,6 +573,26 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
             delete account.previousSessions;
 
             return account;
+        });
+    }
+
+    if (oldVersion < 38) {
+        await updateAll(transaction, 'devices', device => {
+            const { features } = device;
+            if (!features.internal_model) {
+                let deviceInternalModel;
+                switch (features.model.toUpperCase()) {
+                    case 'T':
+                        deviceInternalModel = DeviceModelInternal.T2T1;
+                        break;
+                    case '1':
+                    default:
+                        deviceInternalModel = DeviceModelInternal.T1B1;
+                        break;
+                }
+                device.features.internal_model = deviceInternalModel;
+            }
+            return device;
         });
     }
 };
