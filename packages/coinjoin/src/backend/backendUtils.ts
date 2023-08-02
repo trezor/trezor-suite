@@ -51,8 +51,18 @@ export const deriveAddresses = (
     return prederived.slice(fromPrederived, fromPrederived + countPrederived).concat(derived);
 };
 
-// https://github.com/websockets/ws/blob/0b235e0f9b650b1bdcbdb974cbeaaaa6a0797855/lib/websocket.js#L891
-export const isWsError403 = (error: Error) => error?.message === 'Unexpected server response: 403';
+export const identifyWsError = (error: Error) => {
+    switch (error?.message) {
+        // https://github.com/websockets/ws/blob/0b235e0f9b650b1bdcbdb974cbeaaaa6a0797855/lib/websocket.js#L891
+        case 'Unexpected server response: 403':
+            return 'ERROR_FORBIDDEN';
+        // file://./../../../blockchain-link-types/src/constants/errors.ts
+        case 'Websocket timeout':
+            return 'ERROR_TIMEOUT';
+        default:
+            return 'ERROR_OTHER';
+    }
+};
 
 // Randomize identity password to reset TOR circuit for this identity
 export const resetIdentityCircuit = (identity: string) => {

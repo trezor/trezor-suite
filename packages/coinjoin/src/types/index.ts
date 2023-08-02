@@ -3,6 +3,7 @@ import { CoinjoinPrisonInmate } from './client';
 interface BaseSettings {
     network: 'btc' | 'test' | 'regtest';
     wabisabiBackendUrl: string;
+    onionDomains?: { [clearnet: string]: string };
 }
 
 export interface CoinjoinBackendSettings extends BaseSettings {
