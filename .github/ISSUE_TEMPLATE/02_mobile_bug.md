@@ -1,8 +1,8 @@
 ---
-name: Trezor Suite or Connect bug report
+name: Mobile bug report
 about: Something does not work as expected.
 title: ''
-labels: bug
+labels: bug, mobile-app
 assignees: ''
 ---
 
@@ -11,12 +11,8 @@ A clear and concise description of what the bug is.
 
 **Info:**
 
--   Remembered Wallet: yes/no
--   Suite Version: app/web, commit
--   Browser: name, version
+-   Mobile Suite Version: version/commit
 -   OS: name, version
--   Bridge: version
--   Firmware Version: model, version/commit
 
 **How to reproduce**
 Steps to reproduce the behavior:
