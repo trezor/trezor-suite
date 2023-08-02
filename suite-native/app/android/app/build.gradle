@@ -13,6 +13,11 @@ apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.grad
 
 if (getGradle().getStartParameter().getTaskRequests().toString().contains("firebaseDevelop")){
     apply plugin: 'com.google.gms.google-services'
+    //
+    // Added by install-expo-modules
+    entryFile = file(["node", "-e", "require('expo/scripts/resolveAppEntry')", rootDir.getAbsoluteFile().getParentFile().getAbsolutePath(), "android", "absolute"].execute(null, rootDir).text.trim())
+    cliFile = new File(["node", "--print", "require.resolve('@expo/cli')"].execute(null, rootDir).text.trim())
+    bundleCommand = "export:embed"
 }
 
 import com.android.build.OutputFile

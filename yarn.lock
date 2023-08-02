@@ -5362,9 +5362,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@shopify/flash-list@npm:^1.4.3":
-  version: 1.4.3
-  resolution: "@shopify/flash-list@npm:1.4.3"
+"@shopify/flash-list@npm:^1.5.0":
+  version: 1.5.0
+  resolution: "@shopify/flash-list@npm:1.5.0"
   dependencies:
     recyclerlistview: 4.2.0
     tslib: 2.4.0
@@ -5372,7 +5372,7 @@ __metadata:
     "@babel/runtime": "*"
     react: "*"
     react-native: "*"
-  checksum: a74010c70d6692b2140540c89ab094e7879066885bf4350f0216605ddbff332304516b20a0cc0f2b3628e14844607a03fd37ef33e4a2fae958e5fb1a85e4bed1
+  checksum: 0abe0651e4cd8c22784b57137b25791f5991374d324afffd7aef3d87bea2de603dddfcd340f1533ebeb1473e5f51b7b854fe0a60cccfdbd1fb9f89b59b50d9ec
   languageName: node
   linkType: hard
 
@@ -7647,7 +7647,7 @@ __metadata:
   dependencies:
     "@mobily/ts-belt": ^3.13.1
     "@react-navigation/native": ^6.1.7
-    "@shopify/flash-list": ^1.4.3
+    "@shopify/flash-list": ^1.5.0
     "@shopify/react-native-skia": 0.1.188
     "@suite-common/formatters": "workspace:*"
     "@suite-common/icons": "workspace:*"
@@ -8554,7 +8554,7 @@ __metadata:
     "@reduxjs/toolkit": 1.9.5
     "@rnx-kit/metro-config": ^1.3.6
     "@sentry/react-native": 5.5.0
-    "@shopify/flash-list": ^1.4.3
+    "@shopify/flash-list": ^1.5.0
     "@shopify/react-native-skia": 0.1.188
     "@suite-common/analytics": "workspace:*"
     "@suite-common/connect-init": "workspace:*"
@@ -8592,7 +8592,7 @@ __metadata:
     babel-jest: ^26.6.3
     babel-plugin-transform-remove-console: ^6.9.4
     basil-ws-flipper: ^0.2.8
-    expo: 49.0.6
+    expo: ^49.0.6
     expo-barcode-scanner: ^12.5.3
     expo-brightness: ^11.4.0
     expo-clipboard: ^4.3.0
@@ -17953,7 +17953,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expo@npm:49.0.6":
+"expo@npm:^49.0.6":
   version: 49.0.6
   resolution: "expo@npm:49.0.6"
   dependencies:
