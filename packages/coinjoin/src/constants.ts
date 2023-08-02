@@ -31,6 +31,9 @@ export const ROUND_SELECTION_REGISTRATION_OFFSET = 30000;
 // max output count
 export const ROUND_SELECTION_MAX_OUTPUTS = 20;
 
+// custom timeout for websocket opening
+export const WS_CONNECT_TIMEOUT = 15000;
+
 // custom timeout for http requests (default is 50000 ms)
 export const HTTP_REQUEST_TIMEOUT = 35000;
 
