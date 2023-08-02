@@ -28,6 +28,10 @@ export const COINJOIN_NETWORKS: PartialRecord<NetworkSymbol, ServerEnvironment> 
                 'https://btc4.trezor.io',
                 'https://btc5.trezor.io',
             ],
+            onionDomains: {
+                'trezor.io': 'trezoriovpjcahpzkrewelclulmszwbqpzmzgub37gbcjlvluxtruqad.onion',
+                'wasabiwallet.io': 'wasabiukrxmkdgve5kynjztuovbg43uxcbcxn6y2okcrsg7gb6jdmbad.onion',
+            },
             /* 28.02.2023 */
             baseBlockHeight: 778666,
             baseBlockHash: '000000000000000000054d1ca4a160dd37541d776ccc34af955dbfcd3b2405f6',
@@ -54,6 +58,10 @@ export const COINJOIN_NETWORKS: PartialRecord<NetworkSymbol, ServerEnvironment> 
             // backend settings
             wabisabiBackendUrl: 'https://wasabiwallet.co/',
             blockbookUrls: ['https://tbtc1.trezor.io', 'https://tbtc2.trezor.io'],
+            onionDomains: {
+                'trezor.io': 'trezoriovpjcahpzkrewelclulmszwbqpzmzgub37gbcjlvluxtruqad.onion',
+                'wasabiwallet.co': 'testwnp3fugjln6vh5vpj7mvq3lkqqwjj3c2aafyu7laxz42kgwh2rad.onion',
+            },
             /* */
             /* onion addresses *
             coordinatorUrl:

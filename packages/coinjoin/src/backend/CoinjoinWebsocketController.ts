@@ -1,8 +1,8 @@
 import { BlockbookAPI } from '@trezor/blockchain-link/lib/workers/blockbook/websocket';
 
-import { HTTP_REQUEST_TIMEOUT } from '../constants';
+import { HTTP_REQUEST_TIMEOUT, WS_CONNECT_TIMEOUT } from '../constants';
 import type { Logger } from '../types';
-import { isWsError403, resetIdentityCircuit } from './backendUtils';
+import { identifyWsError, resetIdentityCircuit } from './backendUtils';
 
 export type BlockbookWS = Pick<
     BlockbookAPI,
@@ -46,6 +46,7 @@ export class CoinjoinWebsocketController {
         if (!socket) {
             socket = new BlockbookAPI({
                 timeout,
+                connectionTimeout: WS_CONNECT_TIMEOUT,
                 url,
                 headers: { 'Proxy-Authorization': `Basic ${identity}` },
                 onSending: this.logMessages(socketId),
@@ -58,7 +59,10 @@ export class CoinjoinWebsocketController {
             } catch (err) {
                 delete this.sockets[socketId];
                 socket.dispose();
-                if (isWsError403(err) && identity === this.defaultIdentity) {
+                if (
+                    identifyWsError(err) === 'ERROR_FORBIDDEN' &&
+                    identity === this.defaultIdentity
+                ) {
                     this.defaultIdentity = resetIdentityCircuit(this.defaultIdentity);
                 }
                 throw err;

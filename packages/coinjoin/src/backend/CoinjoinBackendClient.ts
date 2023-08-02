@@ -1,4 +1,4 @@
-import { scheduleAction, arrayShuffle } from '@trezor/utils';
+import { scheduleAction, arrayShuffle, urlToOnion } from '@trezor/utils';
 import { TypedEmitter } from '@trezor/utils/lib/typedEventEmitter';
 import type { BlockbookAPI } from '@trezor/blockchain-link/lib/workers/blockbook/websocket';
 
@@ -12,7 +12,7 @@ import type {
 import type { CoinjoinBackendSettings, Logger } from '../types';
 import { FILTERS_REQUEST_TIMEOUT, HTTP_REQUEST_GAP, HTTP_REQUEST_TIMEOUT } from '../constants';
 import { CoinjoinWebsocketController } from './CoinjoinWebsocketController';
-import { isWsError403, resetIdentityCircuit } from './backendUtils';
+import { identifyWsError, resetIdentityCircuit } from './backendUtils';
 
 type CoinjoinBackendClientSettings = CoinjoinBackendSettings & {
     timeout?: number;
@@ -23,6 +23,7 @@ export class CoinjoinBackendClient {
     protected readonly logger;
     protected readonly wabisabiUrl;
     protected readonly blockbookUrls;
+    protected readonly onionDomains;
     protected readonly websockets;
     protected readonly emitter;
 
@@ -41,6 +42,7 @@ export class CoinjoinBackendClient {
         this.logger = settings.logger;
         this.wabisabiUrl = `${settings.wabisabiBackendUrl}api/v4/btc`;
         this.blockbookUrls = arrayShuffle(settings.blockbookUrls);
+        this.onionDomains = settings.onionDomains ?? {};
         this.blockbookRequestId = Math.floor(Math.random() * settings.blockbookUrls.length);
         this.websockets = new CoinjoinWebsocketController(settings);
 
@@ -144,16 +146,22 @@ export class CoinjoinBackendClient {
         callbackFn: (api: BlockbookAPI) => T | Promise<T>,
         { identity, ...options }: RequestOptions = {},
     ): Promise<T> {
+        let preferOnion = true;
         return scheduleAction(
             async () => {
                 const urlIndex = this.blockbookRequestId++ % this.blockbookUrls.length;
-                const url = this.blockbookUrls[urlIndex];
+                const clearnet = this.blockbookUrls[urlIndex];
+                const url = (preferOnion && urlToOnion(clearnet, this.onionDomains)) || clearnet;
                 const api = await this.websockets
                     .getOrCreate({ identity, ...options, url })
                     .catch(error => {
-                        // switch identity in case of 403 (possibly blocked by Cloudflare)
-                        if (isWsError403(error) && identity) {
+                        const errorType = identifyWsError(error);
+                        if (errorType === 'ERROR_FORBIDDEN' && identity) {
+                            // switch identity in case of 403 (possibly blocked by Cloudflare)
                             identity = resetIdentityCircuit(identity);
+                        } else if (errorType === 'ERROR_TIMEOUT') {
+                            // try clearnet url in case of timeout
+                            preferOnion = false;
                         }
                         throw error;
                     });
