@@ -670,7 +670,7 @@ export const addDeviceMetadata =
             data: nextMetadata,
         });
 
-        dispatch(
+        const isSaveSuccessful = dispatch(
             encryptAndSaveMetadata({
                 data: { walletLabel },
                 aesKey,
@@ -678,6 +678,8 @@ export const addDeviceMetadata =
                 provider,
             }),
         );
+
+        return isSaveSuccessful;
     };
 
 /**
