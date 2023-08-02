@@ -4,6 +4,7 @@ import { COINJOIN_BACKEND_SETTINGS } from '../fixtures/config.fixture';
 
 const BLOCKBOOKS = ['bb_A', 'bb_B', 'bb_C', 'bb_D', 'bb_E', 'bb_F', 'bb_G'];
 const WS_ERROR_403 = 'Unexpected server response: 403';
+const WS_ERROR_TIMEOUT = 'Websocket timeout';
 
 describe('CoinjoinBackendClient', () => {
     let client: CoinjoinBackendClient;
@@ -96,5 +97,41 @@ describe('CoinjoinBackendClient', () => {
         });
 
         identities.slice(4, 7).forEach(id => expect(id).toBe('bar'));
+    });
+
+    it('Blockbook onion with fallback', async () => {
+        client = new CoinjoinBackendClient({
+            ...COINJOIN_BACKEND_SETTINGS,
+            blockbookUrls: ['http://bb.x'],
+            onionDomains: { 'bb.x': 'bb.onion' },
+        });
+
+        const urls: string[] = [];
+        const identities: string[] = [];
+        jest.spyOn((client as any).websockets, 'getOrCreate').mockImplementation(args => {
+            const { url, identity } = args as any;
+            urls.push(url);
+            identities.push(identity);
+            return Promise.reject(
+                new Error(url.includes('.onion') ? WS_ERROR_TIMEOUT : WS_ERROR_403),
+            );
+        });
+
+        await expect(() =>
+            client.fetchNetworkInfo({ identity: 'id', attempts: 4, gap: 0 }),
+        ).rejects.toThrow(WS_ERROR_403);
+
+        expect(urls).toStrictEqual([
+            'http://bb.onion',
+            'http://bb.x',
+            'http://bb.x',
+            'http://bb.x',
+        ]);
+
+        const [idA, idB, idC, idD] = identities;
+        expect([idA, idB]).toStrictEqual(['id', 'id']);
+        expect(idC).toMatch(/id:[a-z0-9]+/);
+        expect(idD).toMatch(/id:[a-z0-9]+/);
+        expect(idC).not.toBe(idD);
     });
 });
