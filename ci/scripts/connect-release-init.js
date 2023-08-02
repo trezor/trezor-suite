@@ -108,10 +108,15 @@ const initConnectRelease = () => {
         });
     }
 
-    exec('yarn', ['workspace', '@trezor/connect', `version:${semver}`]);
-
     const PACKAGE_PATH = path.join(ROOT, 'packages', 'connect');
     const PACKAGE_JSON_PATH = path.join(PACKAGE_PATH, 'package.json');
+
+    const preBumpRawPackageJSON = fs.readFileSync(PACKAGE_JSON_PATH);
+    const preBumpPackageJSON = JSON.parse(preBumpRawPackageJSON);
+    const { version: preBumpVersion } = preBumpPackageJSON;
+
+    exec('yarn', ['workspace', '@trezor/connect', `version:${semver}`]);
+
     const rawPackageJSON = fs.readFileSync(PACKAGE_JSON_PATH);
     const packageJSON = JSON.parse(rawPackageJSON);
     const { version } = packageJSON;
@@ -171,8 +176,11 @@ const initConnectRelease = () => {
 
     // Adding list of commits form the connect* packages to help creating and checking connect CHANGELOG.
     const connectGitLog = getGitCommitByPackageName('connect*', 1000);
-    const connectGitLogArr = splitByNewlines(connectGitLog.stdout);
-    const connectGitLogIndex = findIndexByCommit(connectGitLogArr, 'npm-release: @trezor/connect');
+    const [npmReleaseConnect, ...connectGitLogArr] = splitByNewlines(connectGitLog.stdout);
+    const connectGitLogIndex = findIndexByCommit(
+        connectGitLogArr,
+        `npm-release: @trezor/connect ${preBumpVersion}`,
+    );
 
     // Creating a comment only if there are commits to add since last connect release.
     if (connectGitLogIndex !== -1) {
@@ -183,6 +191,11 @@ const initConnectRelease = () => {
             (acc, line) => `${acc}\n${line}`,
             '',
         );
+
+        if (!connectGitLogText) {
+            console.log('no changelog for @trezor/connect');
+            return;
+        }
 
         comment({
             prNumber,
