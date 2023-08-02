@@ -14,9 +14,11 @@ interface Options {
     url: string;
     timeout?: number;
     pingTimeout?: number;
+    connectionTimeout?: number;
     keepAlive?: boolean;
     agent?: WebSocket.ClientOptions['agent'];
     headers?: WebSocket.ClientOptions['headers'];
+    onSending?: (message: Record<string, any>) => void;
 }
 
 const DEFAULT_TIMEOUT = 20 * 1000;
@@ -50,11 +52,11 @@ export abstract class BaseWebsocket<T extends EventMap> extends TypedEmitter<T &
         this.options = options;
     }
 
-    private setConnectionTimeout() {
+    private setConnectionTimeout(timeout?: number) {
         this.clearConnectionTimeout();
         this.connectionTimeout = setTimeout(
             this.onTimeout.bind(this),
-            this.options.timeout || DEFAULT_TIMEOUT,
+            timeout || this.options.timeout || DEFAULT_TIMEOUT,
         );
     }
 
@@ -129,6 +131,8 @@ export abstract class BaseWebsocket<T extends EventMap> extends TypedEmitter<T &
         this.setConnectionTimeout();
         this.setPingTimeout();
 
+        this.options.onSending?.(message);
+
         ws.send(JSON.stringify(req));
         return dfd.promise as Promise<any>;
     }
@@ -187,7 +191,7 @@ export abstract class BaseWebsocket<T extends EventMap> extends TypedEmitter<T &
 
         // set connection timeout before WebSocket initialization
         // it will be be cancelled by this.init or this.dispose after the error
-        this.setConnectionTimeout();
+        this.setConnectionTimeout(this.options.connectionTimeout);
 
         // create deferred promise
         const dfd = createDeferred<void>(-1);
