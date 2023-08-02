@@ -390,7 +390,7 @@ export const start =
         }
 
         const { deviceState, authConfirm } = discovery;
-        const shouldInitMetadata = metadata.enabled;
+        const shouldInitMetadata = metadata.enabled && device.metadata.status === 'disabled';
 
         // start process
         if (

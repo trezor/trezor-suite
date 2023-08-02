@@ -17,6 +17,7 @@ export const serializeDiscovery = (discovery: Discovery) => ({ ...discovery, run
 export const serializeDevice = (device: AcquiredDevice, forceRemember?: true) => {
     const sd = {
         ...device,
+        metadata: { status: 'disabled' as const },
         path: '',
         remember: true,
         connected: false,
