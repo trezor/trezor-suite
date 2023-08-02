@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import { useNavigation } from '@react-navigation/native';
 
@@ -17,6 +17,8 @@ export const AccountsScreen = () => {
     const navigation =
         useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes.AccountDetail>>();
 
+    const [accountsFilterValue, setAccountsFilterValue] = useState<string>('');
+
     const handleSelectAccount = (accountKey: AccountKey, tokenContract?: TokenAddress) => {
         navigation.navigate(RootStackRoutes.AccountDetail, {
             accountKey,
@@ -24,9 +26,13 @@ export const AccountsScreen = () => {
         });
     };
 
+    const handleFilterChange = (value: string) => {
+        setAccountsFilterValue(value);
+    };
+
     return (
-        <Screen header={<AccountsScreenHeader />}>
-            <AccountsList onSelectAccount={handleSelectAccount} />
+        <Screen header={<AccountsScreenHeader onSearchInputChange={handleFilterChange} />}>
+            <AccountsList onSelectAccount={handleSelectAccount} filterValue={accountsFilterValue} />
         </Screen>
     );
 };

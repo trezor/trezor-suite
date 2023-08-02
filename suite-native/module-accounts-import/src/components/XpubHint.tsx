@@ -31,7 +31,8 @@ export const XpubHint = ({ networkType, handleOpen }: XpubScanHintSheet) => {
 
     return (
         <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-            {/*  TODO : Replace with a TextButton atom component when ready. */}
+            {/*  TODO : Replace with a TextButton atom component when ready.
+                 issue: https://github.com/trezor/trezor-suite/issues/9084 */}
             <TouchableOpacity onPress={handleOpen} style={applyStyle(sheetTriggerStyle)}>
                 <Box marginRight="small">
                     <Icon name="question" size="medium" color="iconPrimaryDefault" />
