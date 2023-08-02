@@ -1,5 +1,9 @@
 # Storage changelog
 
+## 38
+
+-   add internal model to saved devices
+
 ## 37
 
 -   remove persisted coinjoin sessions
