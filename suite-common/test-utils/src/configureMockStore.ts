@@ -16,6 +16,14 @@ import { mergeDeepObject } from '@trezor/utils';
 
 import { extraDependenciesMock } from './extraDependenciesMock';
 
+export const initPreloadedState = ({
+    rootReducer,
+    partialState,
+}: {
+    rootReducer: Reducer<any, any>;
+    partialState: PreloadedState<CombinedState<any>>;
+}) => mergeDeepObject(partialState, rootReducer(undefined, { type: 'test-init' }));
+
 /**
  * A mock store for testing Redux async action creators and middleware.
  */
