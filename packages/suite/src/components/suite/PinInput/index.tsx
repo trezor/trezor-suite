@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import styled, { css } from 'styled-components';
-import { Button, ButtonPin, KEYBOARD_CODE } from '@trezor/components';
+import { Button, PinButton, KEYBOARD_CODE } from '@trezor/components';
 import InputPin from './components/InputPin';
 import { Translation } from 'src/components/suite';
 import { MAX_LENGTH } from 'src/constants/suite/inputs';
@@ -34,7 +34,7 @@ const PinFooter = styled.div`
     flex-direction: column;
 `;
 
-const StyledButtonPin = styled(ButtonPin)<{ blur?: boolean }>`
+const StyledPinButton = styled(PinButton)<{ blur?: boolean }>`
     ${props =>
         props.blur &&
         css`
@@ -135,65 +135,24 @@ const PinInput = ({ isSubmitting, onPinSubmit }: PinInputProps) => {
                 <InputPin value={pin} onDeleteClick={() => onPinBackspace()} />
             </InputWrapper>
             <PinRow>
-                <StyledButtonPin
-                    blur={isSubmitting}
-                    type="button"
-                    data-value="7"
-                    onClick={() => onPinAdd('7')}
-                />
-                <StyledButtonPin
-                    blur={isSubmitting}
-                    type="button"
-                    data-value="8"
-                    onClick={() => onPinAdd('8')}
-                />
-                <StyledButtonPin
-                    blur={isSubmitting}
-                    type="button"
-                    data-value="9"
-                    onClick={() => onPinAdd('9')}
-                />
+                <StyledPinButton blur={isSubmitting} data-value="7" onClick={() => onPinAdd('7')} />
+                <StyledPinButton blur={isSubmitting} data-value="8" onClick={() => onPinAdd('8')} />
+                <StyledPinButton blur={isSubmitting} data-value="9" onClick={() => onPinAdd('9')} />
             </PinRow>
             <PinRow>
-                <StyledButtonPin
-                    blur={isSubmitting}
-                    type="button"
-                    data-value="4"
-                    onClick={() => onPinAdd('4')}
-                />
-                <StyledButtonPin
-                    blur={isSubmitting}
-                    type="button"
-                    data-value="5"
-                    onClick={() => onPinAdd('5')}
-                />
-                <StyledButtonPin
-                    blur={isSubmitting}
-                    type="button"
-                    data-value="6"
-                    onClick={() => onPinAdd('6')}
-                />
+                <StyledPinButton blur={isSubmitting} data-value="4" onClick={() => onPinAdd('4')} />
+                <StyledPinButton blur={isSubmitting} data-value="5" onClick={() => onPinAdd('5')} />
+                <StyledPinButton blur={isSubmitting} data-value="6" onClick={() => onPinAdd('6')} />
             </PinRow>
             <PinRow>
-                <StyledButtonPin
-                    type="button"
+                <StyledPinButton
                     blur={isSubmitting}
                     data-value="1"
                     onClick={() => onPinAdd('1')}
                     data-test="@pin/input/1"
                 />
-                <StyledButtonPin
-                    blur={isSubmitting}
-                    type="button"
-                    data-value="2"
-                    onClick={() => onPinAdd('2')}
-                />
-                <StyledButtonPin
-                    blur={isSubmitting}
-                    type="button"
-                    data-value="3"
-                    onClick={() => onPinAdd('3')}
-                />
+                <StyledPinButton blur={isSubmitting} data-value="2" onClick={() => onPinAdd('2')} />
+                <StyledPinButton blur={isSubmitting} data-value="3" onClick={() => onPinAdd('3')} />
             </PinRow>
 
             <Expander />
