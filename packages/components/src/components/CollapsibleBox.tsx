@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import styled, { css } from 'styled-components';
 import useMeasure from 'react-use/lib/useMeasure';
-import { Icon } from './Icon';
+import { Icon } from './Icon/Icon';
 import * as variables from '../config/variables';
 
 const Wrapper = styled.div<Pick<CollapsibleBoxProps, 'variant'>>`

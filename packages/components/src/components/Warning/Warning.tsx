@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { transparentize } from 'polished';
 
-import { Icon } from '../Icon';
+import { Icon } from '../Icon/Icon';
 import { useTheme } from '../../utils';
 import { variables } from '../../config';
 

@@ -4,7 +4,7 @@ import styled, { css } from 'styled-components';
 
 import { useKeyPress } from '@trezor/react-utils';
 import { useTheme } from '../../utils/hooks';
-import { Icon } from '../Icon';
+import { Icon } from '../Icon/Icon';
 import { H1 } from '../typography/Heading';
 import { variables } from '../../config';
 import { IconType } from '../../support/types';

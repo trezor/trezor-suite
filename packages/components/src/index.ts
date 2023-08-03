@@ -22,7 +22,7 @@ export * from './components/form/RadioButton';
 export * from './components/form/Range/Range';
 export * from './components/form/Switch';
 export * from './components/form/InputStyles';
-export * from './components/Icon';
+export * from './components/Icon/Icon';
 export * from './components/typography/Heading';
 export * from './components/typography/Paragraph';
 export * from './components/typography/Link';

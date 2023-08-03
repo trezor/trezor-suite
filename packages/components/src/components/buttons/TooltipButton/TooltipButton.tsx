@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Icon } from '../../Icon';
+import { Icon } from '../../Icon/Icon';
 import { Tooltip } from '../../Tooltip';
 import { Button, ButtonProps } from '../Button/Button';
 import { useTheme } from '../../../utils';
