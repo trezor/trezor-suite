@@ -37,9 +37,6 @@ __pycache__/
 .stylelintcache
 *.tsbuildinfo
 
-# T1 emulation file
-docker/trezor-user-env/controller/emulator.img
-
 # Vagrant
 .vagrant
 
