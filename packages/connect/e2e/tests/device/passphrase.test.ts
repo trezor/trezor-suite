@@ -13,7 +13,7 @@ const passphraseHandler = (value: string) => () => {
         payload: {
             passphraseOnDevice: false,
             value,
-            save: true, // NOTE: this field is used only in legacy test of T1 firmware
+            save: true, // NOTE: this field is used only in legacy test of T1B1 firmware
         },
     });
     TrezorConnect.removeAllListeners('ui-request_passphrase');
@@ -153,7 +153,7 @@ describe('TrezorConnect passphrase', () => {
         },
     );
 
-    // passphrase on device is possible only on TT
+    // passphrase on device not available on T1B1
     conditionalTest(['1', '<2.3.0'], 'Input passphrase on device', async () => {
         TrezorConnect.on('ui-request_passphrase', () => {
             TrezorConnect.uiResponse({

@@ -137,7 +137,7 @@ export default {
             },
         },
         {
-            skip: ['1'], // disable this for T1. Failure_DataError: messages.c:224:missing required field
+            skip: ['1'], // disable this for T1B1. Failure_DataError: messages.c:224:missing required field
             description: 'Testnet (RBF): Meld transactions',
             params: {
                 coin: 'Testnet',

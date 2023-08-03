@@ -10,7 +10,7 @@ export default {
     tests: [
         {
             description: 'Testnet (P2PKH): presigned',
-            // todo: T1 error, tested with 1.10.6:
+            // todo: T1B1 error, tested with 1.10.6:
             // "code": "Failure_DataError",
             // "error": "signing.c:1021:Unsupported script type.",
             skip: ['1', '<2.3.2'],
@@ -74,7 +74,7 @@ export default {
         },
         {
             description: 'Testnet (P2SH): presigned',
-            // todo: T1 error, tested with 1.10.6:
+            // todo: T1B1 error, tested with 1.10.6:
             // "code": "Failure_DataError",
             // "error": "signing.c:1021:Unsupported script type.",
             skip: ['1', '<2.3.2'],
@@ -131,7 +131,7 @@ export default {
         },
         {
             description: 'Testnet (P2WPKH): presigned',
-            // todo: T1 error, tested with 1.10.6:
+            // todo: T1B1 error, tested with 1.10.6:
             // "code": "Failure_DataError",
             // "error": "signing.c:1021:Unsupported script type.",
             skip: ['1', '<2.3.2'],
@@ -183,7 +183,7 @@ export default {
         },
         {
             description: 'Testnet (P2WSH): presigned',
-            // todo: T1 error, tested with 1.10.6:
+            // todo: T1B1 error, tested with 1.10.6:
             // "code": "Failure_DataError",
             // "error": "messages.c:231:bytes overflow",
             skip: ['1', '<2.3.2'],
@@ -230,7 +230,7 @@ export default {
         },
         {
             description: 'Testnet (P2TR): external presigned',
-            // todo: T1 error, tested with 1.10.6:
+            // todo: T1B1 error, tested with 1.10.6:
             // "code": "Failure_DataError",
             // "error": "signing.c:1021:Unsupported script type.",
             skip: ['1', '<2.4.3'],
@@ -294,7 +294,7 @@ export default {
         },
         {
             description: 'Testnet (P2WPKH): with proof',
-            // todo: T1 error, tested with 1.10.6:
+            // todo: T1B1 error, tested with 1.10.6:
             // "code": "Failure_DataError",
             // "error": "signing.c:1021:Unsupported script type.",
             skip: ['1', '<2.4.4'], // bug in prev implementation https://github.com/trezor/trezor-firmware/pull/2034
@@ -344,7 +344,7 @@ export default {
             },
         },
         {
-            // todo: T1 error, tested with 1.10.6:
+            // todo: T1B1 error, tested with 1.10.6:
             // "code": "Failure_DataError",
             // "error": "signing.c:1021:Unsupported script type.",
             description: 'Testnet (P2TR): with proof',

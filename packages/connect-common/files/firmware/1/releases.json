@@ -109,7 +109,7 @@
         "fingerprint": "36400becf1cdddec22b8150d56ff59eef76d37fef60dc465a6f82b4858903886",
         "fingerprint_bitcoinonly": "74227362016a8763c4d5f5b06eeb7eabe5fbd7ed05798b586cc7f4bfef50d7fe",
         "notes": "https://blog.trezor.io/trezor-suite-and-firmware-updates-june-2021-c70aba9f0e3f",
-        "changelog": "* Safety checks setting in T1."
+        "changelog": "* Safety checks setting in T1B1."
     },
     {
         "required": false,

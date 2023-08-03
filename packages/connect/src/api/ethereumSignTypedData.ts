@@ -36,10 +36,10 @@ export default class EthereumSignTypedData extends AbstractMethod<'ethereumSignT
         // validate incoming parameters
         validateParams(payload, [
             { name: 'path', required: true },
-            // TT
+            // T2T1
             { name: 'metamask_v4_compat', type: 'boolean', required: true },
             { name: 'data', type: 'object', required: true },
-            // T1 (optional params)
+            // T1B1 (optional params)
             { name: 'domain_separator_hash', type: 'string' },
             { name: 'message_hash', type: 'string' },
         ]);
@@ -123,7 +123,7 @@ export default class EthereumSignTypedData extends AbstractMethod<'ethereumSignT
 
             const { domain_separator_hash, message_hash } = this.params;
 
-            // For T1 we use EthereumSignTypedHash
+            // For T1B1 we use EthereumSignTypedHash
             const response = await cmd.typedCall(
                 'EthereumSignTypedHash',
                 'EthereumTypedDataSignature',
@@ -145,7 +145,7 @@ export default class EthereumSignTypedData extends AbstractMethod<'ethereumSignT
         const { data, metamask_v4_compat } = this.params;
         const { types, primaryType, domain, message } = data;
 
-        // For TT we use EthereumSignTypedData
+        // For T2T1 we use EthereumSignTypedData
         let response = await cmd.typedCall(
             'EthereumSignTypedData',
             [

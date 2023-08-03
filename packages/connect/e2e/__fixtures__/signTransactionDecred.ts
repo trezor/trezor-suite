@@ -96,7 +96,7 @@ export default {
         },
         {
             description: 'Decred Testnet: purchase ticket',
-            // todo: T1 error, tested with 1.10.6:
+            // todo: T1B1 error, tested with 1.10.6:
             // "error": "signing.c:1689:Not enough funds",
             skip: ['1'],
             params: {
@@ -139,7 +139,7 @@ export default {
         },
         {
             description: 'Decred Testnet: spend from stake generation and revocation',
-            // todo: T1 error, tested with 1.10.6:
+            // todo: T1B1 error, tested with 1.10.6:
             // "error": "signing.c:1689:Not enough funds",
             skip: ['1'],
             params: {

@@ -115,8 +115,8 @@ export const getUnavailableCapabilities = (features: Features, coins: CoinInfo[]
 
 /**
  * Fixes an inconsistency in representation of device feature revision attribute (git commit of specific release).
- * - T1 uses standard hexadecimal notation. (df0963ec48f01f3d07ffca556e21ff0070cab099)
- * - TT old fw <2.2.4 uses hexadecimal raw bytes notation. (6466303936336563)
+ * - T1B1 uses standard hexadecimal notation. (df0963ec48f01f3d07ffca556e21ff0070cab099)
+ * - T2T1 old fw <2.2.4 uses hexadecimal raw bytes notation. (6466303936336563)
  * To avoid being model specific, in case the inconsistency is fixed, it is required to reliably detect what encoding is used.
  * @param {Features} features
  * @returns revision - standard hexadecimal notation or null
