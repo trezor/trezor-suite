@@ -1,7 +1,7 @@
 // @group:onboarding
 // @retry=2
 
-describe('Onboarding - recover wallet TT', () => {
+describe('Onboarding - recover wallet T2T1', () => {
     beforeEach(() => {
         cy.task('startBridge');
         cy.viewport(1080, 1440).resetDb();

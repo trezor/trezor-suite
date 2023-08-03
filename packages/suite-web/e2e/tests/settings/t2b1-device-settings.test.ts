@@ -3,7 +3,7 @@
 
 // this test is only a proof of concept of how to run T2B1 tests in suite and also how to run tests using url in general.
 // TODOS:
-// - focus this test on testing what is different from TT: (background image, display rotation)
+// - focus this test on testing what is different from T2T1: (background image, display rotation)
 // - implement these differences in suite in the first place. both suite and T2B1 will happily accept
 //   request to change display rotation but it has no effect. It should be at least hidden on client.
 // https://github.com/trezor/trezor-suite/issues/6567
@@ -86,7 +86,7 @@ describe('T2B1 - Device settings', () => {
             .click()
             .getTestElement(`@modal/gallery/bw_64x128/invader`);
 
-        /* TODO It wants TT images not T1 images in this version
+        /* TODO It wants T2T1 images not T1B1 images in this version
         .click()
             .getConfirmActionOnDeviceModal();
         cy.task('pressYes');

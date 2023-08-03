@@ -1,7 +1,7 @@
 // @group:bounty
 // @retry=2
 
-describe('Onboarding - recover wallet T1', () => {
+describe('Onboarding - recover wallet T1B1', () => {
     beforeEach(() => {
         cy.task('startEmu', { version: '1-latest', wipe: true });
         cy.task('startBridge');

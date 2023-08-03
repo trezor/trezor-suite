@@ -1,7 +1,7 @@
 // @group:settings
 // @retry=2
 
-describe('TT - Device settings', () => {
+describe('T2T1 - Device settings', () => {
     beforeEach(() => {
         cy.viewport(1080, 1440).resetDb();
         cy.task('startBridge');
