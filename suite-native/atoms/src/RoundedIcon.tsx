@@ -11,18 +11,19 @@ import { Box } from './Box';
 type RoundedIconProps = {
     name: IconName | CoinSymbol;
     color?: Color;
-    size?: IconSize;
+    iconSize?: IconSize;
+    containerSize?: number;
     backgroundColor?: Color;
 };
 
-const CONTAINER_SIZE = 48;
+const DEFAULT_CONTAINER_SIZE = 48;
 
-const iconContainerStyle = prepareNativeStyle<{ backgroundColor?: Color }>(
-    (utils, { backgroundColor }) => ({
+const iconContainerStyle = prepareNativeStyle<{ backgroundColor?: Color; containerSize?: number }>(
+    (utils, { backgroundColor, containerSize }) => ({
         justifyContent: 'center',
         alignItems: 'center',
-        width: CONTAINER_SIZE,
-        height: CONTAINER_SIZE,
+        width: containerSize ?? DEFAULT_CONTAINER_SIZE,
+        height: containerSize ?? DEFAULT_CONTAINER_SIZE,
         backgroundColor: utils.colors.backgroundSurfaceElevation2,
         borderRadius: utils.borders.radii.round,
 
@@ -35,13 +36,19 @@ const iconContainerStyle = prepareNativeStyle<{ backgroundColor?: Color }>(
     }),
 );
 
-export const RoundedIcon = ({ name, color, size, backgroundColor }: RoundedIconProps) => {
+export const RoundedIcon = ({
+    name,
+    color,
+    iconSize,
+    backgroundColor,
+    containerSize,
+}: RoundedIconProps) => {
     const { applyStyle } = useNativeStyles();
 
     return (
-        <Box style={applyStyle(iconContainerStyle, { backgroundColor })}>
+        <Box style={applyStyle(iconContainerStyle, { backgroundColor, containerSize })}>
             {name in icons ? (
-                <Icon name={name as IconName} color={color} size={size} />
+                <Icon name={name as IconName} color={color} size={iconSize} />
             ) : (
                 <CryptoIcon symbol={name as CoinSymbol} />
             )}

@@ -16,6 +16,7 @@ import { FormatterProvider } from '@suite-common/formatters';
 import { AlertRenderer } from '@suite-native/alerts';
 import { NavigationContainerWithAnalytics } from '@suite-native/navigation';
 import { AuthenticatorProvider } from '@suite-native/biometrics';
+import { MessageSystemRenderer } from '@suite-native/message-system';
 
 import { RootStackNavigator } from './navigation/RootStackNavigator';
 import { StylesProvider } from './StylesProvider';
@@ -58,6 +59,7 @@ const AppComponent = () => {
         <FormatterProvider config={formattersConfig}>
             <AuthenticatorProvider>
                 <AlertRenderer>
+                    <MessageSystemRenderer />
                     <NotificationRenderer>
                         <ToastRenderer>
                             <RootStackNavigator />
