@@ -8,5 +8,6 @@ At any time, information stored here might be restructured or moved to a differe
 location, so as to ensure that the documentation is well structured overall.
 
 -   [build](./build.md)
+-   [device naming](./device-naming.md)
 -   [review](./review.md)
 -   [videos](./videos.md)
