@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 import type { Locale } from 'date-fns';
 
-import { Button } from '../buttons/Button';
+import { Button } from '../buttons/Button/Button';
 import { style as datepickerStyle } from './index.style';
 import { variables } from '../../config';
 

@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 import { FormattedMessage } from 'react-intl';
 import { variables } from '../config';
-import { Button } from './buttons/Button';
+import { Button } from './buttons/Button/Button';
 import { CollapsibleBox } from './CollapsibleBox';
 import { CollapsibleCard } from './CollapsibleCard';
 import { Switch } from './form/Switch';

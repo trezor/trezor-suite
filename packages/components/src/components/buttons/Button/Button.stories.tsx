@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button } from './index';
+import { Button } from './Button';
 import { variables } from '../../../config';
 import { storiesOf } from '@storybook/react';
 import { boolean, select, text } from '@storybook/addon-knobs';

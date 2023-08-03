@@ -12,7 +12,7 @@ import { isAndroid } from '@trezor/env-utils';
 
 import PasswordStrengthIndicator from './PasswordStrengthIndicator';
 import { variables, motion as motionConfig } from '../../config';
-import { Button } from '../buttons/Button';
+import { Button } from '../buttons/Button/Button';
 import { Checkbox } from '../form/Checkbox';
 import { Input } from '../form/Input';
 import { Icon } from '../Icon';

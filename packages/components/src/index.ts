@@ -9,10 +9,10 @@ export * from './support/types';
 
 export * from './utils/hooks';
 
-export * from './components/buttons/Button';
-export * from './components/Flag';
+export * from './components/buttons/Button/Button';
 export * from './components/buttons/PinButton/PinButton';
-export * from './components/buttons/TooltipButton.tsx';
+export * from './components/buttons/TooltipButton/TooltipButton';
+export * from './components/Flag';
 export * from './components/Dropdown';
 export * from './components/form/Input';
 export * from './components/form/Textarea';
