@@ -42,9 +42,9 @@ const Button = styled.button`
     }
 `;
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface ButtonPinProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {}
+export interface PinButtonProps
+    extends Pick<React.ButtonHTMLAttributes<HTMLButtonElement>, 'onClick'> {
+    'data-value': string;
+}
 
-const ButtonPin = ({ onClick, ...rest }: ButtonPinProps) => <Button onClick={onClick} {...rest} />;
-
-export { ButtonPin };
+export const PinButton = (props: PinButtonProps) => <Button type="button" {...props} />;
