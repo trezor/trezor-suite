@@ -3,30 +3,14 @@ import styled, { css } from 'styled-components';
 import useMeasure from 'react-use/lib/useMeasure';
 import { analytics, EventType } from '@trezor/suite-analytics';
 
-import {
-    Button,
-    Icon,
-    variables,
-    Input,
-    Dropdown,
-    DropdownRef,
-    Tooltip,
-    INPUT_HEIGHTS,
-} from '@trezor/components';
+import { Button, Icon, variables, Dropdown, DropdownRef, Tooltip } from '@trezor/components';
 import { Translation, HomescreenGallery } from 'src/components/suite';
 import { DeviceAnimation, OnboardingStepBox } from 'src/components/onboarding';
-import { applySettings } from 'src/actions/settings/deviceSettingsActions';
-import {
-    useDevice,
-    useDispatch,
-    useOnboarding,
-    useSelector,
-    useTranslation,
-} from 'src/hooks/suite';
-import { DEFAULT_LABEL, MAX_LABEL_LENGTH } from 'src/constants/suite/device';
+import { useDevice, useOnboarding, useSelector } from 'src/hooks/suite';
+import { DEFAULT_LABEL } from 'src/constants/suite/device';
 import { isHomescreenSupportedOnDevice } from 'src/utils/suite/homescreen';
 import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
-import { isAscii } from '@trezor/utils';
+import { ChangeDeviceLabel } from 'src/components/suite/ChangeDeviceLabel';
 
 const StyledButton = styled(Button)`
     display: flex;
@@ -48,10 +32,6 @@ const StyledButton = styled(Button)`
         background-color: transparent;
         color: initial;
     }
-`;
-
-const RenameButton = styled(Button)`
-    height: ${INPUT_HEIGHTS.large}px;
 `;
 
 const StyledIcon = styled(Icon)`
@@ -162,36 +142,15 @@ export const FinalStep = () => {
     const modalContext = useSelector(state => state.modal.context);
     const onboardingAnalytics = useSelector(state => state.onboarding.onboardingAnalytics);
     const isActionAbortable = useSelector(selectIsActionAbortable);
-    const dispatch = useDispatch();
 
     const deviceModelInternal = device?.features?.internal_model;
-    const { translationString } = useTranslation();
 
     const [state, setState] = useState<'rename' | 'homescreen' | null>(null);
-    const [label, setLabel] = useState<string>('');
-    const [error, setError] = useState<string | null>(null);
 
     const isWaitingForConfirm = modalContext === '@modal/context-device';
 
-    const onRename = async () => {
-        await dispatch(applySettings({ label }));
+    const onClick = () => {
         setState(null);
-    };
-
-    const handleChange: React.ChangeEventHandler<HTMLInputElement> = ({ target: { value } }) => {
-        setLabel(value);
-
-        if (value.length > MAX_LABEL_LENGTH) {
-            setError(
-                translationString('TR_LABEL_ERROR_LENGTH', {
-                    length: 16,
-                }),
-            );
-        } else if (!isAscii(value)) {
-            setError(translationString('TR_LABEL_ERROR_CHARACTERS'));
-        } else {
-            setError(null);
-        }
     };
 
     const [wrapperRef, { width }] = useMeasure<HTMLDivElement>();
@@ -216,7 +175,10 @@ export const FinalStep = () => {
                     </Heading>
                     {!state && (
                         <SetupActions>
-                            <StyledButton onClick={() => setState('rename')}>
+                            <StyledButton
+                                onClick={() => setState('rename')}
+                                isDisabled={isWaitingForConfirm}
+                            >
                                 <StyledIcon size={16} icon="PENCIL" />
                                 <Translation id="TR_DEVICE_SETTINGS_DEVICE_EDIT_LABEL" />
                             </StyledButton>
@@ -233,7 +195,7 @@ export const FinalStep = () => {
                                     ref={dropdownRef}
                                     alignMenu="right"
                                     offset={16}
-                                    isDisabled={!shouldOfferChangeHomescreen}
+                                    isDisabled={!shouldOfferChangeHomescreen || isWaitingForConfirm}
                                     items={[
                                         {
                                             key: 'dropdown',
@@ -267,25 +229,11 @@ export const FinalStep = () => {
                     )}
                     {state === 'rename' && (
                         <SetupActions>
-                            <Input
-                                width={250}
-                                noTopLabel
-                                value={label}
-                                bottomText={error}
+                            <ChangeDeviceLabel
                                 placeholder={DEFAULT_LABEL}
-                                inputState={error ? 'error' : undefined}
-                                onChange={handleChange}
-                                data-test="@settings/device/label-input"
+                                onClick={onClick}
+                                isDeviceLocked={isDeviceLocked}
                             />
-                            <RenameButton
-                                onClick={async () => {
-                                    await onRename();
-                                }}
-                                isDisabled={isDeviceLocked || !label || !!error}
-                                data-test="@settings/device/label-submit"
-                            >
-                                <Translation id="TR_DEVICE_SETTINGS_DEVICE_EDIT_LABEL" />
-                            </RenameButton>
                         </SetupActions>
                     )}
 
