@@ -55,7 +55,7 @@ const Wrapper = styled.div<{ variant: Variant; withIcon?: boolean }>`
     }
 `;
 
-interface WarningProps {
+export interface WarningProps {
     children: React.ReactNode;
     className?: string;
     variant?: Variant;

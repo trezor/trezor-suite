@@ -38,23 +38,26 @@ export default {
     },
 };
 
-export const Basic = ({ ...args }) => {
-    const [{ value }, updateArgs] = useArgs();
-    const handleValue = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-        updateArgs({ value: e.target.value });
-    };
+export const Basic = {
+    render: ({ ...args }) => {
+        // eslint-disable-next-line
+        const [{ value }, updateArgs] = useArgs();
+        const handleValue = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+            updateArgs({ value: e.target.value });
+        };
 
-    return (
-        <Textarea
-            disabled={args.disabled}
-            inputState={args.state}
-            label={args.label}
-            bottomText={args.bottomText}
-            placeholder={args.placeholder}
-            isMonospace={args.isMonospace}
-            rows={args.rows}
-            value={value}
-            onChange={handleValue}
-        />
-    );
+        return (
+            <Textarea
+                disabled={args.disabled}
+                inputState={args.state}
+                label={args.label}
+                bottomText={args.bottomText}
+                placeholder={args.placeholder}
+                isMonospace={args.isMonospace}
+                rows={args.rows}
+                value={value}
+                onChange={handleValue}
+            />
+        );
+    },
 };

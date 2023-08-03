@@ -1,5 +1,5 @@
 import React from 'react';
-import { ComponentStory } from '@storybook/react';
+import { StoryObj } from '@storybook/react';
 
 import { Note } from './Note';
 
@@ -18,6 +18,6 @@ export default {
     },
 };
 
-export const Basic: ComponentStory<typeof Note> = args => (
-    <Note color={args.color}>{args.children}</Note>
-);
+export const Basic: StoryObj<typeof Note> = {
+    render: args => <Note color={args.color}>{args.children}</Note>,
+};

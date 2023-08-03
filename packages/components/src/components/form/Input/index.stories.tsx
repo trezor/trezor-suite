@@ -36,23 +36,26 @@ export default {
     },
 };
 
-export const Basic = ({ ...args }) => {
-    const [{ value }, updateArgs] = useArgs();
-    const handleValue = (e: React.ChangeEvent<HTMLInputElement>) => {
-        updateArgs({ value: e.target.value });
-    };
+export const Basic = {
+    render: ({ ...args }) => {
+        // eslint-disable-next-line
+        const [{ value }, updateArgs] = useArgs();
+        const handleValue = (e: React.ChangeEvent<HTMLInputElement>) => {
+            updateArgs({ value: e.target.value });
+        };
 
-    return (
-        <Input
-            isDisabled={args.isDisabled}
-            inputState={args.state}
-            variant={args.variant}
-            label={args.label}
-            bottomText={args.bottomText}
-            placeholder={args.placeholder}
-            isMonospace={args.isMonospace}
-            value={value}
-            onChange={handleValue}
-        />
-    );
+        return (
+            <Input
+                isDisabled={args.isDisabled}
+                inputState={args.state}
+                variant={args.variant}
+                label={args.label}
+                bottomText={args.bottomText}
+                placeholder={args.placeholder}
+                isMonospace={args.isMonospace}
+                value={value}
+                onChange={handleValue}
+            />
+        );
+    },
 };

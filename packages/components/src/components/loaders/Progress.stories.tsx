@@ -1,16 +1,13 @@
-import React from 'react';
-import { ComponentStory } from '@storybook/react';
-
-import { Progress } from './Progress';
+import { Progress as ProgressComponent } from './Progress';
 
 export default {
     title: 'Loaders/Progress',
-    component: Progress,
+    component: ProgressComponent,
 };
 
-export const Basic: ComponentStory<typeof Progress> = args => <Progress {...args} />;
-
-Basic.args = {
-    max: 100,
-    value: 21,
+export const Progress = {
+    args: {
+        max: 100,
+        value: 21,
+    },
 };

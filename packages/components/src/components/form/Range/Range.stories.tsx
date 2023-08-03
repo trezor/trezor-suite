@@ -1,6 +1,6 @@
 import React from 'react';
 import { useArgs } from '@storybook/client-api';
-import { ComponentStory } from '@storybook/react';
+import { StoryObj } from '@storybook/react';
 
 import { Range } from './Range';
 
@@ -17,14 +17,17 @@ export default {
     },
 };
 
-export const Basic: ComponentStory<typeof Range> = args => {
-    const [, updateArgs] = useArgs();
+export const Basic: StoryObj<typeof Range> = {
+    render: args => {
+        // eslint-disable-next-line
+        const [, updateArgs] = useArgs();
 
-    return <Range {...args} onChange={e => updateArgs({ value: e.target.value })} />;
-};
+        return <Range {...args} onChange={e => updateArgs({ value: e.target.value })} />;
+    },
 
-Basic.args = {
-    max: 100,
-    min: 0,
-    value: 21,
+    args: {
+        max: 100,
+        min: 0,
+        value: 21,
+    },
 };

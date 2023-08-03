@@ -8,16 +8,19 @@ export default {
     args: { isSmall: false, isDisabled: false, isChecked: false },
 };
 
-export const Basic = ({ ...args }) => {
-    const [{ isChecked }, updateArgs] = useArgs();
-    const handleIsChecked = () => updateArgs({ isChecked: !isChecked });
+export const Basic = {
+    render: ({ ...args }) => {
+        // eslint-disable-next-line
+        const [{ isChecked }, updateArgs] = useArgs();
+        const handleIsChecked = () => updateArgs({ isChecked: !isChecked });
 
-    return (
-        <Switch
-            onChange={handleIsChecked}
-            isChecked={isChecked}
-            isSmall={args.isSmall}
-            isDisabled={args.isDisabled}
-        />
-    );
+        return (
+            <Switch
+                onChange={handleIsChecked}
+                isChecked={isChecked}
+                isSmall={args.isSmall}
+                isDisabled={args.isDisabled}
+            />
+        );
+    },
 };
