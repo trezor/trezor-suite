@@ -12,7 +12,7 @@ import { useOnClickOutside } from '@trezor/react-utils';
 import { FONT_WEIGHT, Z_INDEX, FONT_SIZE } from '../../config/variables';
 import { animations } from '../../config';
 import { useTheme } from '../../utils/hooks';
-import { Icon, IconProps } from '../Icon';
+import { Icon, IconProps } from '../Icon/Icon';
 
 const Wrapper = styled.div<{ absolutePosition: boolean }>`
     position: ${props => (props.absolutePosition ? 'static' : 'relative')};
