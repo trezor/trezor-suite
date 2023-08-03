@@ -1,6 +1,6 @@
 import React from 'react';
-import styled from 'styled-components';
-import { Dropdown } from './index';
+
+import { Dropdown } from './Dropdown';
 import { storiesOf } from '@storybook/react';
 import { select, number, boolean } from '@storybook/addon-knobs';
 
