@@ -33,7 +33,7 @@ export const ResetDeviceStep = () => {
     const isWaitingForConfirmation =
         device.buttonRequests.some(
             r => r.code === 'ButtonRequest_ResetDevice' || r.code === 'ButtonRequest_ProtectCall',
-        ) && !submitted; // ButtonRequest_ResetDevice is for TT, ButtonRequest_ProtectCall for T1
+        ) && !submitted; // ButtonRequest_ResetDevice is for T2T1, ButtonRequest_ProtectCall for T1B1
 
     const onResetDevice = async (params?: { backup_type?: 0 | 1 | undefined }) => {
         setSubmitted(false);

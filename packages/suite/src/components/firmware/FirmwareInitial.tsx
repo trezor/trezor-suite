@@ -124,7 +124,7 @@ export const FirmwareInitial = ({
         return <StyledConnectDevicePrompt device={device} />;
     }
 
-    // Bitcoin-only firmware is only available on TT from v2.0.8 - older devices must first upgrade to 2.1.1 which does not have a Bitcoin-only variant
+    // Bitcoin-only firmware is only available on T2T1 from v2.0.8 - older devices must first upgrade to 2.1.1 which does not have a Bitcoin-only variant
     const isBitcoinOnlyAvailable = !!device.firmwareRelease?.release.url_bitcoinonly;
     const currentFwVersion = getFirmwareVersion(device);
     const availableFwVersion = getFwUpdateVersion(device);

@@ -40,10 +40,10 @@ export const RecoveryStep = () => {
     const deviceModelInternal = device.features.internal_model;
 
     if (status === 'initial') {
-        // 1. step where users chooses number of words in case of T1
-        // In case of TT and T2B1 show CTA button to start the process
+        // 1. step where users chooses number of words in case of T1B1
+        // In case of T2T1 and T2B1 show CTA button to start the process
         if (deviceModelInternal === DeviceModelInternal.T1B1) {
-            // T1
+            // T1B1
             return (
                 <RecoveryStepBox
                     key={status} // to properly rerender in translation mode
@@ -60,7 +60,7 @@ export const RecoveryStep = () => {
             );
         }
 
-        // TT and T2B1
+        // T2T1 and T2B1
         return (
             <RecoveryStepBox
                 key={status} // to properly rerender in translation mode
@@ -106,7 +106,7 @@ export const RecoveryStep = () => {
     }
 
     if (status === 'waiting-for-confirmation') {
-        // On T1 we show confirm bubble only while we wait for confirmation that users wants to start the process
+        // On T1B1 we show confirm bubble only while we wait for confirmation that users wants to start the process
         return (
             <RecoveryStepBox
                 key={status} // to properly rerender in translation mode

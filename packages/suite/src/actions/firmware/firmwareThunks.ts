@@ -154,9 +154,9 @@ const firmwareInstallThunk =
         }
         dispatch({ type: firmwareActions.setHash.type, payload: updateResponse.payload });
 
-        // T1
-        // ask user to unplug device if BL < 1.10.0 (see firmwareMiddleware), BL starting with 1.10.0 will automatically restart itself just like on TT
-        // TT without pin
+        // T1B1
+        // ask user to unplug device if BL < 1.10.0 (see firmwareMiddleware), BL starting with 1.10.0 will automatically restart itself just like on T2T1
+        // T2T1 without pin
         // ask user to wait until device reboots
         dispatch(
             firmwareActions.setStatus(

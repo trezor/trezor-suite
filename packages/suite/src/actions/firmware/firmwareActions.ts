@@ -128,8 +128,8 @@ export const validateFirmwareHash =
                 // todo: add a more generic way how to handle all device errors
                 if (
                     [
-                        'Unknown message', // T1
-                        'Unexpected message', // TT
+                        'Unknown message', // T1B1
+                        'Unexpected message', // T2T1
                     ].includes(fwHash.payload.error)
                 ) {
                     handleFwHashMismatch(dispatch, device);

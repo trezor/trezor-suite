@@ -21,7 +21,7 @@ export const CardanoRedelegate = () => {
     const { device } = useDevice();
     const deviceModelInternal = device?.features?.internal_model as
         | DeviceModelInternal.T2T1
-        | DeviceModelInternal.T2B1; // only TT and T2B1 have Capability_Cardano
+        | DeviceModelInternal.T2B1; // only T2T1 and T2B1 have Capability_Cardano
 
     useEffect(() => {
         calculateFeeAndDeposit('delegate');
