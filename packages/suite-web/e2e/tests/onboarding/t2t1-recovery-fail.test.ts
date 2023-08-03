@@ -1,7 +1,7 @@
 // @group:onboarding
 // @retry=2
 
-describe('Onboarding - recover wallet TT', () => {
+describe('Onboarding - recover wallet T2T1', () => {
     beforeEach(() => {
         cy.task('startBridge');
         cy.viewport(1080, 1440).resetDb();
@@ -24,7 +24,7 @@ describe('Onboarding - recover wallet TT', () => {
         cy.getTestElement('@connect-device-prompt', { timeout: 20000 });
         cy.task('startEmu', { wipe: false });
         cy.log(
-            'If device disconnected during call, error page with retry button should appear. Also note, that unlike with T1, retry button initiates recoveryDevice call immediately',
+            'If device disconnected during call, error page with retry button should appear. Also note, that unlike with T1B1, retry button initiates recoveryDevice call immediately',
         );
         cy.getTestElement('@onboarding/recovery/start-button', { timeout: 10000 }).click();
     });

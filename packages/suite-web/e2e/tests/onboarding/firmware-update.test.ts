@@ -13,8 +13,8 @@ let firmwareHash = '';
 
 // Tests to be written:
 // - [x] fw update from empty device bootloader 2.0.3 to firmware 2.5.1
-// - [] fw update T1 with intermediary
-// - [] fw update TT incremental update over 2.0.5
+// - [] fw update T1B1 with intermediary
+// - [] fw update T2T1 incremental update over 2.0.5
 // - [] fw update with fingerprint
 // - [] fw update failures, various cases
 // - [] fw update with evil device (getFirmwareHash)

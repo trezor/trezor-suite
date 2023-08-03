@@ -11,7 +11,7 @@ describe.skip('Recovery - dry run', () => {
         cy.passThroughInitialRun();
     });
 
-    it('Dry run with T1', () => {
+    it('Dry run with T1B1', () => {
         cy.getTestElement('@settings/device/check-seed-button').click();
         cy.getTestElement('@recovery/user-understands-checkbox').click();
         cy.getTestElement('@recovery/start-button').click();
@@ -21,7 +21,7 @@ describe.skip('Recovery - dry run', () => {
         cy.task('pressYes');
         cy.getTestElement('@recovery/word-input-advanced/1');
 
-        // todo: elaborate more, seems like finally T1 tests are stable so it would make finally sense to finish this
+        // todo: elaborate more, seems like finally T1B1 tests are stable so it would make finally sense to finish this
     });
 });
 

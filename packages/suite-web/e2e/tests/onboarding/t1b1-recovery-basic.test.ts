@@ -2,7 +2,7 @@
 // @retry=2
 
 // todo: this started to fail mysteriously after merging new base image. Skipping it for now and will investigate.
-describe.skip('Onboarding - recover wallet T1', () => {
+describe.skip('Onboarding - recover wallet T1B1', () => {
     before(() => {
         cy.task('startEmu', { version: '1-latest', wipe: true });
         cy.task('startBridge');

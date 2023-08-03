@@ -46,7 +46,7 @@ const shareTwoOfThree = [
     'disease',
 ];
 
-describe('Onboarding - TT in recovery mode', () => {
+describe('Onboarding - T2T1 in recovery mode', () => {
     beforeEach(() => {
         cy.task('startBridge');
         cy.task('startEmu', { wipe: true, version: '2.4.3' });

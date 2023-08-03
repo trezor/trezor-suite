@@ -31,7 +31,7 @@ describe('Onboarding - analytics consent', () => {
         cy.viewport(1080, 1440).resetDb();
     });
 
-    it('shows analytics consent when going to settings and back on non-initialized T1 device', () => {
+    it('shows analytics consent when going to settings and back on non-initialized T1B1 device', () => {
         cy.task('startEmu', { version: '1-latest', wipe: true });
         cy.prefixedVisit('/');
 
@@ -41,7 +41,7 @@ describe('Onboarding - analytics consent', () => {
         cy.getTestElement('@onboarding-layout/body').should('be.visible');
     });
 
-    it('shows analytics consent when going to settings and back on non-initialized TT device', () => {
+    it('shows analytics consent when going to settings and back on non-initialized T2T1 device', () => {
         cy.task('startEmu', { wipe: true });
         cy.prefixedVisit('/');
 
@@ -61,7 +61,7 @@ describe('Onboarding - analytics consent', () => {
         cy.getTestElement('@onboarding-layout/body').should('be.visible');
     });
 
-    it('shows analytics consent when going to settings and back on initialized T1 device', () => {
+    it('shows analytics consent when going to settings and back on initialized T1B1 device', () => {
         cy.task('startEmu', { version: '1-latest', wipe: true });
         cy.task('setupEmu', {
             needs_backup: false,
@@ -75,7 +75,7 @@ describe('Onboarding - analytics consent', () => {
         cy.getTestElement('@settings/menu/close').should('be.visible');
     });
 
-    it('shows analytics consent when going to settings and back on initialized TT device', () => {
+    it('shows analytics consent when going to settings and back on initialized T2T1 device', () => {
         cy.task('startEmu', { wipe: true });
         cy.task('setupEmu', {
             needs_backup: false,
@@ -103,7 +103,7 @@ describe('Onboarding - analytics consent', () => {
         cy.getTestElement('@settings/menu/close').should('be.visible');
     });
 
-    it('shows analytics consent and then goes to /accounts on initialized T1 device', () => {
+    it('shows analytics consent and then goes to /accounts on initialized T1B1 device', () => {
         cy.task('startEmu', { version: '1-latest', wipe: true });
         cy.task('setupEmu', {
             needs_backup: false,
@@ -116,7 +116,7 @@ describe('Onboarding - analytics consent', () => {
         cy.getTestElement('@wallet/menu/wallet-send');
     });
 
-    it('shows analytics consent and then goes to /accounts on initialized TT device', () => {
+    it('shows analytics consent and then goes to /accounts on initialized T2T1 device', () => {
         cy.task('startEmu', { wipe: true });
         cy.task('setupEmu', {
             needs_backup: false,
