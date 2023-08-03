@@ -25,7 +25,7 @@ const firmwareUpdateResponsePayload = {
 
 export const actions = [
     {
-        description: 'Success TT',
+        description: 'Success T2T1',
         action: () => firmwareUpdate(),
         mocks: {
             connect: {
@@ -50,7 +50,7 @@ export const actions = [
         },
     },
     {
-        description: 'Success TT - install Bitcoin-only firmware',
+        description: 'Success T2T1 - install Bitcoin-only firmware',
         action: () => firmwareUpdate(FirmwareType.BitcoinOnly),
         mocks: {
             connect: {
@@ -76,7 +76,7 @@ export const actions = [
         },
     },
     {
-        description: 'Success T1 (with intermediary)',
+        description: 'Success T1B1 (with intermediary)',
         action: () => firmwareUpdate(),
         mocks: {
             connect: {
@@ -101,7 +101,7 @@ export const actions = [
         },
     },
     {
-        description: 'Success T1 (without intermediary)',
+        description: 'Success T1B1 (without intermediary)',
         action: () => firmwareUpdate(),
         mocks: {
             connect: {
@@ -141,7 +141,7 @@ export const actions = [
         },
     },
     {
-        description: 'Success T1 (without intermediary) - install Universal firmware',
+        description: 'Success T1B1 (without intermediary) - install Universal firmware',
         action: () => firmwareUpdate(FirmwareType.Universal),
         mocks: {
             connect: {

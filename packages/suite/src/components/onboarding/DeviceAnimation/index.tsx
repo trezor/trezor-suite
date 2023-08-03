@@ -85,7 +85,7 @@ export const DeviceAnimation = ({
         device?.features?.internal_model || DeviceModelInternal.T2T1
     ).toLowerCase();
 
-    // T1 bootloader before firmware version 1.8.0 can only be invoked by holding both buttons
+    // T1B1 bootloader before firmware version 1.8.0 can only be invoked by holding both buttons
     const deviceFwVersion = device?.features ? getFirmwareVersion(device) : '';
     let animationType = type;
     if (

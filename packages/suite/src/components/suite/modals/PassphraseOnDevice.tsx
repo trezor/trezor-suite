@@ -34,7 +34,7 @@ interface PassphraseOnDeviceProps {
 }
 
 /**
- * Modal used with TT with legacy firmware as result of 'ButtonRequest_PassphraseType' where passphrase source is requested on device
+ * Modal used with T2T1 with legacy firmware as result of 'ButtonRequest_PassphraseType' where passphrase source is requested on device
  * @param {PassphraseOnDeviceProps}
  */
 export const PassphraseOnDevice = ({ device }: PassphraseOnDeviceProps) => {

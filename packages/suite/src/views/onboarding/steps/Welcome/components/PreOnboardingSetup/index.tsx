@@ -25,7 +25,7 @@ const PreOnboardingSetup = () => {
             analytics.disable();
         }
         if (recovery.status === 'in-progress') {
-            // TT remember the recovery state and should continue with recovery
+            // T2T1 remember the recovery state and should continue with recovery
             rerun();
         } else {
             goToSubStep('security-check');

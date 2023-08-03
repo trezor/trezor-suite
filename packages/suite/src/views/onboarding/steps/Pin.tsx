@@ -42,9 +42,9 @@ const SetPinStep = () => {
         // This is where we detect requests from a device, figure out whether the PIN functionality got enabled,
         // and set a status of the setup process accordingly
         if (device?.features) {
-            // enter-pin and repeat-pin" states are set only while working with T1 (TT sends different request ButtonRequest_PinEntry and everything is done in touchscreen).
+            // enter-pin and repeat-pin" states are set only while working with T1B1 (T2T1 sends different request ButtonRequest_PinEntry and everything is done in touchscreen).
             // They are used to show better context-aware UI/texts (Right now it only changes a header from "Set a new PIN" to "Confirm PIN").
-            // As the whole process on TT is done via touchscreen we don't really need to track anything besides 'initial' and 'success' states.
+            // As the whole process on T2T1 is done via touchscreen we don't really need to track anything besides 'initial' and 'success' states.
             const buttonRequests = device.buttonRequests.map(r => r.code);
             if (buttonRequests.includes('PinMatrixRequestType_NewFirst')) {
                 if (buttonRequests.includes('PinMatrixRequestType_NewSecond')) {
@@ -65,9 +65,9 @@ const SetPinStep = () => {
     }
 
     const showPinMismatch =
-        modal.context === '@modal/context-user' && modal.payload.type === 'pin-mismatch'; // Set to true by T1 when user fails to enter same pin, not used at all with TT
+        modal.context === '@modal/context-user' && modal.payload.type === 'pin-mismatch'; // Set to true by T1B1 when user fails to enter same pin, not used at all with T2T1
 
-    // First button request that will pop out of the device is "ButtonRequest_ProtectCall" (T1) or "ButtonRequest_Other" (TT/T2B1), requesting us to confirm enabling PIN
+    // First button request that will pop out of the device is "ButtonRequest_ProtectCall" (T1B1) or "ButtonRequest_Other" (T2T1/T2B1), requesting us to confirm enabling PIN
     // buttonRequests will be cleared on cancelling the confirmation prompt on the device, turning this condition to false.
     const showConfirmationPrompt = device.buttonRequests.find(
         b => b.code === 'ButtonRequest_Other' || b.code === 'ButtonRequest_ProtectCall',
@@ -75,7 +75,7 @@ const SetPinStep = () => {
 
     if (showPinMismatch) {
         // User entered 2 different PINs, show error and offer to try again
-        // Used only on T1, TT shows pins mismatch error on its display
+        // Used only on T1B1, T2T1 shows pins mismatch error on its display
         return (
             <OnboardingStepBox
                 image="PIN"
@@ -132,7 +132,7 @@ const SetPinStep = () => {
                 }
                 description={<Translation id="TR_PIN_SUBHEADING" />}
                 innerActions={
-                    // "Create a pin" button to start the process, continue button after the pin is set (as outerAction), no primary CTA during the setup procedure on TT
+                    // "Create a pin" button to start the process, continue button after the pin is set (as outerAction), no primary CTA during the setup procedure on T2T1
                     !showConfirmationPrompt ? (
                         <OnboardingButtonCta
                             data-test="@onboarding/set-pin-button"

@@ -40,10 +40,10 @@ export const DeviceContextModal = ({
     const abort = () => TrezorConnect.cancel(intl.formatMessage(messages.TR_CANCELLED));
 
     switch (windowType) {
-        // T1 firmware
+        // T1B1 firmware
         case UI.REQUEST_PIN:
             return <Pin device={device} renderer={renderer} />;
-        // T1 firmware
+        // T1B1 firmware
         case UI.INVALID_PIN:
             return <PinInvalid device={device} renderer={renderer} />;
 
@@ -59,7 +59,7 @@ export const DeviceContextModal = ({
             return <WordAdvanced count={9} renderer={renderer} />;
         case 'ButtonRequest_PassphraseType':
             return <PassphraseSource device={device} />;
-        // TT firmware
+        // T2T1 firmware
         case UI.REQUEST_PASSPHRASE_ON_DEVICE:
         case 'ButtonRequest_PassphraseEntry':
             return <PassphraseOnDevice device={device} />;
@@ -81,8 +81,8 @@ export const DeviceContextModal = ({
         case 'ButtonRequest_MnemonicWordCount':
         case 'ButtonRequest_MnemonicInput':
         case 'ButtonRequest_ProtectCall':
-        case 'ButtonRequest_ResetDevice': // dispatched on BackupDevice call for TT, weird but true
-        case 'ButtonRequest_ConfirmWord': // dispatched on BackupDevice call for T1
+        case 'ButtonRequest_ResetDevice': // dispatched on BackupDevice call for T2T1, weird but true
+        case 'ButtonRequest_ConfirmWord': // dispatched on BackupDevice call for T1B1
         case 'ButtonRequest_WipeDevice':
         case 'ButtonRequest_UnknownDerivationPath':
         case 'ButtonRequest_FirmwareUpdate':

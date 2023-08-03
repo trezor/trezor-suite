@@ -37,7 +37,7 @@ export const Onboarding = ({ prerequisite }: OnboardingProps) => {
                 // Selection between a new seed or seed recovery
                 return [CreateOrRecover, OnboardingLayout];
             case STEP.ID_RESET_DEVICE_STEP:
-                // a) Generating a new seed, selection between single seed or shamir seed (only TT supported)
+                // a) Generating a new seed, selection between single seed or shamir seed (only T2T1 supported)
                 return [ResetDeviceStep, OnboardingLayout];
             case STEP.ID_RECOVERY_STEP:
                 // b) Seed recovery

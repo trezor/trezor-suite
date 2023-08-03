@@ -22,7 +22,7 @@ const handleDeviceRedirect = (dispatch: Dispatch, state: AppState, device?: Trez
     if (device.mode === 'initialize') {
         dispatch(routerActions.goto('onboarding-index'));
     }
-    // firmware none (TT) or unknown (T1) indicates freshly unpacked device
+    // firmware none (T2T1) or unknown (T1B1) indicates freshly unpacked device
     if (
         device.mode === 'bootloader' &&
         device.features &&

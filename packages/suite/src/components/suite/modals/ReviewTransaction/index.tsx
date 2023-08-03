@@ -73,9 +73,9 @@ export const ReviewTransaction = ({ decision }: ReviewTransactionProps) => {
             (code === 'ButtonRequest_Other' && (isCardano || isEthereum)), // Cardano and Ethereum are using ButtonRequest_Other
     );
 
-    // NOTE: T1 edge-case
+    // NOTE: T1B1 edge-case
     // while confirming decrease amount 'ButtonRequest_ConfirmOutput' is called twice (confirm decrease address, confirm decrease amount)
-    // remove 1 additional element to keep it consistent with TT where this step is swipeable with one button request
+    // remove 1 additional element to keep it consistent with T2T1 where this step is swipeable with one button request
     if (
         typeof decreaseOutputId === 'number' &&
         deviceModelInternal === DeviceModelInternal.T1B1 &&

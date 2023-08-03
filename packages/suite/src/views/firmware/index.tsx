@@ -121,9 +121,9 @@ export const Firmware = ({ shouldSwitchFirmwareType }: FirmwareProps) => {
             case 'started': // called from firmwareUpdate()
             case 'installing':
             case 'wait-for-reboot':
-            case 'unplug': // only relevant for T1, TT auto restarts itself
-            case 'reconnect-in-normal': // only relevant for T1, TT auto restarts itself
-            case 'partially-done': // only relevant for T1, updating from very old fw is done in 2 fw updates, partially-done means first update was installed
+            case 'unplug': // only relevant for T1B1, T2T1 auto restarts itself
+            case 'reconnect-in-normal': // only relevant for T1B1, T2T1 auto restarts itself
+            case 'partially-done': // only relevant for T1B1, updating from very old fw is done in 2 fw updates, partially-done means first update was installed
             case 'validation':
             case 'done':
                 return (

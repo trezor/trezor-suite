@@ -49,10 +49,10 @@ export const FirmwareInstallation = ({
     const getFakeProgressDuration = () => {
         if (cachedDevice?.firmware === 'none') {
             // device without fw starts installation without a confirmation and we need to fake progress bar for both devices (UI.FIRMWARE_PROGRESS is sent too late)
-            return cachedDeviceModelInternal === DeviceModelInternal.T1B1 ? 25 : 40; // T1 seems a bit faster
+            return cachedDeviceModelInternal === DeviceModelInternal.T1B1 ? 25 : 40; // T1B1 seems a bit faster
         }
         // Updating from older fw, device asks for confirmation, but sends first info about installation progress somewhat to late
-        return cachedDeviceModelInternal === DeviceModelInternal.T1B1 ? 25 : undefined; // 25s for T1, no fake progress for updating from older fw on other devices
+        return cachedDeviceModelInternal === DeviceModelInternal.T1B1 ? 25 : undefined; // 25s for T1B1, no fake progress for updating from older fw on other devices
     };
 
     const InnerActionComponent = useMemo(() => {
@@ -125,7 +125,7 @@ export const FirmwareInstallation = ({
                             label={statusText}
                             total={100}
                             current={installingProgress || 0}
-                            fakeProgressDuration={getFakeProgressDuration()} // fake progress bar for T1 and devices without fw that will animate progress bar for up to xy seconds of installation
+                            fakeProgressDuration={getFakeProgressDuration()} // fake progress bar for T1B1 and devices without fw that will animate progress bar for up to xy seconds of installation
                         />
                     )}
             </OnboardingStepBox>

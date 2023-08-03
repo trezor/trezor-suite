@@ -39,7 +39,7 @@ const recovery =
                 }),
             );
             if (!analytics.confirmed) {
-                // If you connect TT in recovery mode to fresh Suite, you should see analytics optout option first.
+                // If you connect T2T1 in recovery mode to fresh Suite, you should see analytics optout option first.
                 api.dispatch(recoveryActions.setStatus('in-progress'));
             } else {
                 api.dispatch(recoveryActions.rerun());

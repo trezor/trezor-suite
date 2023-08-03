@@ -21,7 +21,7 @@ type FirmwareUpdateCommon = {
     targetType?: FirmwareType;
     // cached device for the purpose of fw update
     prevDevice?: Device;
-    // Fresh unpacked T1 comes with 1.4.0 bootloader and will install intermediary fw, after the installation is complete it is set to true
+    // Fresh unpacked T1B1 comes with 1.4.0 bootloader and will install intermediary fw, after the installation is complete it is set to true
     intermediaryInstalled: boolean;
     // Used to reset state of progress bar when installing subsequent update right after an intermediary one
     subsequentInstalling: boolean;
@@ -42,9 +42,9 @@ export type FirmwareStatus =
     | 'started' // progress - firmware update has started, waiting for events from trezor-connect
     | 'waiting-for-confirmation' // progress - device waits for confirmation prior starting to update
     | 'installing' // progress - firmware is being installed
-    | 'partially-done' // progress - some old T1 firmwares can't update to the latest version. This should be handled by intermediary fw now and it shouldn't even be triggered in real world, but just to be safe let's keep it.
-    | 'wait-for-reboot' // progress - models TT and T2B1 are restarting after firmware update
-    | 'unplug' // progress - user is asked to reconnect device (T1)
+    | 'partially-done' // progress - some old T1B1 firmwares can't update to the latest version. This should be handled by intermediary fw now and it shouldn't even be triggered in real world, but just to be safe let's keep it.
+    | 'wait-for-reboot' // progress - models T2T1 and T2B1 are restarting after firmware update
+    | 'unplug' // progress - user is asked to reconnect device (T1B1)
     | 'reconnect-in-normal' // progress - after unplugging device from previous step, user is asked to connect it again
     | 'validation' // firmware validation in progress
     | 'done'; // firmware successfully installed
