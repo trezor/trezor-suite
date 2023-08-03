@@ -52,6 +52,7 @@ export default {
                 needs_backup: expect.any(Boolean),
                 // flags: expect.any(Number), // flags may be changed by applyFlags test
                 model: expect.any(String), // "T" | "R"
+                internal_model: expect.any(String),
                 fw_major: null,
                 fw_minor: null,
                 fw_patch: null,

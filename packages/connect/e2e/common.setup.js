@@ -86,12 +86,13 @@ const initTrezorConnect = async (TrezorUserEnvLink, options) => {
     TrezorConnect.removeAllListeners();
 
     TrezorConnect.on('device-connect', device => {
-        const { major_version, minor_version, patch_version, model, revision } = device.features;
+        const { major_version, minor_version, patch_version, internal_model, revision } =
+            device.features;
         console.log('Device connected: ', {
             major_version,
             minor_version,
             patch_version,
-            model,
+            internal_model,
             revision,
         });
     });
