@@ -41,21 +41,24 @@ export default {
     },
 };
 
-export const Basic = ({ ...args }) => {
-    const [{ option }, updateArgs] = useArgs();
-    const setOption = (option: { label: string; value: 'string' }) => updateArgs({ option });
+export const Basic = {
+    render: ({ ...args }) => {
+        // eslint-disable-next-line
+        const [{ option }, updateArgs] = useArgs();
+        const setOption = (option: { label: string; value: 'string' }) => updateArgs({ option });
 
-    return (
-        <Select
-            isSearchable={args.isSearchable}
-            isClearable={args.isClearable}
-            isClean={args.isClean}
-            isDisabled={args.isDisabled}
-            withDropdownIndicator={args.withDropdownIndicator}
-            variant={args.variant}
-            value={option}
-            onChange={setOption}
-            options={options}
-        />
-    );
+        return (
+            <Select
+                isSearchable={args.isSearchable}
+                isClearable={args.isClearable}
+                isClean={args.isClean}
+                isDisabled={args.isDisabled}
+                withDropdownIndicator={args.withDropdownIndicator}
+                variant={args.variant}
+                value={option}
+                onChange={setOption}
+                options={options}
+            />
+        );
+    },
 };

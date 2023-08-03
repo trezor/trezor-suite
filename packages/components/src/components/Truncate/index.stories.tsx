@@ -20,13 +20,15 @@ export default {
     },
 };
 
-export const Basic = ({ ...args }) => (
-    <>
-        <Holder>
-            <Truncate lines={args.numberOfLines}>{args.shortText}</Truncate>
-        </Holder>
-        <Holder>
-            <Truncate lines={args.numberOfLines}>{args.longText}</Truncate>
-        </Holder>
-    </>
-);
+export const Basic = {
+    render: ({ ...args }) => (
+        <>
+            <Holder>
+                <Truncate lines={args.numberOfLines}>{args.shortText}</Truncate>
+            </Holder>
+            <Holder>
+                <Truncate lines={args.numberOfLines}>{args.longText}</Truncate>
+            </Holder>
+        </>
+    ),
+};

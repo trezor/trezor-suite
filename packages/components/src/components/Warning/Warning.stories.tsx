@@ -1,34 +1,41 @@
 import React from 'react';
-import { ComponentStory } from '@storybook/react';
+import { StoryObj } from '@storybook/react';
 
 import { Warning } from '../../index';
 
 export default {
     title: 'Misc/Warning',
+    component: Warning,
 };
 
-export const Basic: ComponentStory<typeof Warning> = args => <Warning {...args} />;
-export const Critical: ComponentStory<typeof Warning> = args => <Warning {...args} />;
-export const Info: ComponentStory<typeof Warning> = args => <Warning {...args} />;
-export const Learn: ComponentStory<typeof Warning> = args => <Warning {...args} />;
+export const Basic: StoryObj<typeof Warning> = {
+    args: {
+        children: 'Warning! Here dragons abound. 🐲',
+        variant: 'warning',
+        withIcon: true,
+    },
+};
 
-Basic.args = {
-    children: 'Warning! Here dragons abound. 🐲',
-    variant: 'warning',
-    withIcon: true,
+export const Critical: StoryObj<typeof Warning> = {
+    args: {
+        children: 'Critical! Dragons! Run!',
+        variant: 'critical',
+        withIcon: true,
+    },
 };
-Critical.args = {
-    children: 'Critical! Dragons! Run!',
-    variant: 'critical',
-    withIcon: true,
+
+export const Info: StoryObj<typeof Warning> = {
+    args: {
+        children: 'Info: Dragons have been spotted in this area.',
+        variant: 'info',
+        withIcon: true,
+    },
 };
-Info.args = {
-    children: 'Info: Dragons have been spotted in this area.',
-    variant: 'info',
-    withIcon: true,
-};
-Learn.args = {
-    children: 'Learn: This variant is used in Guide.',
-    variant: 'learn',
-    withIcon: true,
+
+export const Learn: StoryObj<typeof Warning> = {
+    args: {
+        children: 'Learn: This variant is used in Guide.',
+        variant: 'learn',
+        withIcon: true,
+    },
 };

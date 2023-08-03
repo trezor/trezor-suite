@@ -1,5 +1,5 @@
 import React from 'react';
-import { ComponentStory } from '@storybook/react';
+import { StoryObj } from '@storybook/react';
 import { TooltipButton } from '.';
 
 export default {
@@ -7,11 +7,11 @@ export default {
     component: TooltipButton,
 };
 
-export const Basic: ComponentStory<typeof TooltipButton> = args => (
-    <TooltipButton {...args}>Button</TooltipButton>
-);
+export const Basic: StoryObj<typeof TooltipButton> = {
+    render: args => <TooltipButton {...args}>Button</TooltipButton>,
 
-Basic.args = {
-    tooltipContent: 'Example tooltip',
-    isDisabled: true,
+    args: {
+        tooltipContent: 'Example tooltip',
+        isDisabled: true,
+    },
 };
