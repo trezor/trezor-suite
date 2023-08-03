@@ -172,7 +172,7 @@ Structure of config, types and optionality of specific keys can be found in the 
                             "model": "1",
                             /*
                             Beware
-                            - firmware version in bootloader mode is unavailable on T1
+                            - firmware version in bootloader mode is unavailable on T1B1
                             - bootloader version is available only in bootloader mode
                             */
                             "firmware": "2.4.1",
