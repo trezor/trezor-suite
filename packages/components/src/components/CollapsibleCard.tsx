@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { H1 } from './typography/Heading';
 import { variables, motion as motionConfig } from '../config';
 import { Image, ImageType } from './Image/Image';
-import { Icon } from './Icon';
+import { Icon } from './Icon/Icon';
 
 const headerVariants = {
     closed: {

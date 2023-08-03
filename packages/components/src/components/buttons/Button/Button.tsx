@@ -1,6 +1,6 @@
 import * as React from 'react';
 import styled, { css } from 'styled-components';
-import { Icon } from '../../Icon';
+import { Icon } from '../../Icon/Icon';
 import { IconType, ButtonVariant, SuiteThemeColors } from '../../../support/types';
 import { variables } from '../../../config';
 import { useTheme } from '../../../utils';

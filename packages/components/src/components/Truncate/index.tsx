@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled, { useTheme } from 'styled-components';
 import ReactTruncate from 'react-truncate';
-import { Icon } from '../Icon';
+import { Icon } from '../Icon/Icon';
 
 const TruncateWrapper = styled.div`
     width: 100%;

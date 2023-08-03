@@ -4,7 +4,7 @@ import styled, { css } from 'styled-components';
 import { FONT_SIZE, Z_INDEX } from '../../../config/variables';
 import { InputState, InputVariant } from '../../../support/types';
 import { useTheme } from '../../../utils';
-import { Icon } from '../../Icon';
+import { Icon } from '../../Icon/Icon';
 import {
     Label,
     LabelLeft,

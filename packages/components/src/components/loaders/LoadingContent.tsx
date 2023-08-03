@@ -1,7 +1,7 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 import { useTheme } from '../../utils';
-import { Icon } from '../Icon';
+import { Icon } from '../Icon/Icon';
 import { Loader } from './Loader';
 
 const LoadingWrapper = styled.div`

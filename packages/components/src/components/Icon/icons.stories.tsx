@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Icon, variables, colors, types } from '../../index';
+import { Icon, variables, types } from '../../index';
 import { storiesOf } from '@storybook/react';
 
 const Wrapper = styled.div`

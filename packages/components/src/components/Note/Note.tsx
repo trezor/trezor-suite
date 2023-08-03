@@ -1,7 +1,7 @@
 import React from 'react';
 import styled, { useTheme } from 'styled-components';
 
-import { Icon } from '../Icon';
+import { Icon } from '../Icon/Icon';
 import { FONT_SIZE, FONT_WEIGHT } from '../../config/variables';
 
 const Row = styled.div`
