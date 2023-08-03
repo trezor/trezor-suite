@@ -1,11 +1,11 @@
 import { isAnyOf } from '@reduxjs/toolkit';
-import { A, pipe } from '@mobily/ts-belt';
+import { A, G, pipe } from '@mobily/ts-belt';
 import { memoize, memoizeWithArgs } from 'proxy-memoize';
 
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 import { enhanceHistory, isTestnet, isUtxoBased } from '@suite-common/wallet-utils';
 import { Account, AccountKey } from '@suite-common/wallet-types';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { networks, NetworkSymbol } from '@suite-common/wallet-config';
 
 import { selectCoins, FiatRatesRootState } from '../fiat-rates/fiatRatesReducer';
 import { accountsActions } from './accountsActions';
@@ -141,14 +141,16 @@ export const selectHasAccountTransactions = (state: AccountsRootState, accountKe
     return !!account?.history.total;
 };
 
-export const selectAccountsByNetworkSymbols = memoizeWithArgs(
-    (state: AccountsRootState, networkSymbols: NetworkSymbol[]) => {
+export const selectAccountsByNetworkSymbol = memoizeWithArgs(
+    (state: AccountsRootState, networkSymbol: NetworkSymbol | null) => {
+        if (G.isNull(networkSymbol)) return [];
+
         const accounts = selectAccounts(state);
 
-        return accounts.filter(account => networkSymbols.includes(account.symbol));
+        return A.filter(accounts, account => account.symbol === networkSymbol);
     },
     {
-        size: 40,
+        size: Object.keys(networks).length,
     },
 );
 

@@ -27,7 +27,7 @@ const screenHeaderStyle = prepareNativeStyle(utils => ({
     alignItems: 'center',
     justifyContent: 'space-between',
     height: ICON_SIZE,
-    marginHorizontal: utils.spacings.small,
+    marginHorizontal: utils.spacings.medium,
 }));
 
 const iconWrapperStyle = prepareNativeStyle(() => ({

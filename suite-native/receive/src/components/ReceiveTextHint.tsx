@@ -41,6 +41,8 @@ export const ReceiveTextHint = ({ onShowAddress }: ReceiveTextHintProps) => {
                 </Box>
             </Card>
 
+            {/*  TODO : Replace with a TextButton atom component when ready.
+                 issue: https://github.com/trezor/trezor-suite/issues/9084 */}
             <TouchableOpacity
                 onPress={() =>
                     openLink('https://trezor.io/learn/a/verifying-trezor-suite-lite-addresses')
