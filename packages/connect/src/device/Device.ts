@@ -307,7 +307,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
                     );
                 } else {
                     // do not initialize while firstRunPromise otherwise `features.session_id` could be affected
-                    // Corner-case: T1 + bootloader < 1.4.0 doesn't know the "GetFeatures" message yet and it will send no response to it
+                    // Edge-case: T1B1 + bootloader < 1.4.0 doesn't know the "GetFeatures" message yet and it will send no response to it
                     // transport response is pending endlessly, calling any other message will end up with "device call in progress"
                     // set the timeout for this call so whenever it happens "unacquired device" will be created instead
                     // next time device should be called together with "Initialize" (calling "acquireDevice" from the UI)
@@ -319,10 +319,10 @@ export class Device extends TypedEmitter<DeviceEvents> {
                     ]);
                 }
             } catch (error) {
-                // note: this happens on t1 with webusb if there was "select wallet dialog" and user reloads page.
+                // note: this happens on T1B1 with webusb if there was "select wallet dialog" and user reloads page.
                 // note this happens even before transport-refactor-2 branch
                 if (!this.inconsistent && error.message === 'GetFeatures timeout') {
-                    // handling corner-case T1 + bootloader < 1.4.0 (above)
+                    // handling corner-case T1B1 + bootloader < 1.4.0 (above)
                     // if GetFeatures fails try again
                     // this time add empty "fn" param to force Initialize message
                     this.inconsistent = true;
@@ -400,7 +400,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
                 this.keepSession = false;
             }
 
-            // T1: forget passphrase cached in internal state
+            // T1B1: forget passphrase cached in internal state
             if (this.isT1() && this.useLegacyPassphrase()) {
                 this.setInternalState(undefined);
             }
@@ -518,16 +518,16 @@ export class Device extends TypedEmitter<DeviceEvents> {
             feat.session_id = this.features.session_id;
         }
         feat.unlocked = feat.unlocked ?? true;
-        // fix inconsistency of revision attribute between T1 and old TT fw
+        // fix inconsistency of revision attribute between T1B1 and old T2T1 fw
         const revision = parseRevision(feat);
         feat.revision = revision;
 
         // Fix missing model and internal_model in older fw, model has to be fixed first
-        // 1. - old T1 is missing features.model
+        // 1. - old T1B1 is missing features.model
         if (!feat.model && feat.major_version === 1) {
             feat.model = '1';
         }
-        // 2. - old fw does not include internal_model. T1 does not report it yet, TT starts in 2.6.0, T2B1 reports it from beginning
+        // 2. - old fw does not include internal_model. T1B1 does not report it yet, T2T1 starts in 2.6.0, T2B1 reports it from beginning
         if (!feat.internal_model) {
             feat.internal_model = ensureInternalModelFeature(feat.model);
         }

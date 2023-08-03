@@ -13,7 +13,7 @@ export default {
     tests: [
         {
             description: 'Testnet (Bech32/P2WPKH): Payment request success',
-            skip: ['1', '<2.4.4'], // payment requests are not implemented in T1 and < 2.4.4
+            skip: ['1', '<2.4.4'], // payment requests are not implemented in T1B1 and < 2.4.4
             params: {
                 coin: 'Testnet',
                 inputs: [

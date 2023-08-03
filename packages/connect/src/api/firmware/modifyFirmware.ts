@@ -7,13 +7,13 @@ import type { Features } from '../../types';
  */
 export const shouldStripFwHeaders = (features: Features) => {
     // ---------------------
-    // TT modifications
+    // T2T1 modifications
     // ---------------------
     // there are currently none.
     if (features.major_version === 2) return false;
 
     // -----------------------
-    // T1 modifications
+    // T1B1 modifications
     // -----------------------
 
     // any version installed on bootloader 1.8.0 must be sliced of the first 256 bytes (containing old firmware header)

@@ -21,15 +21,15 @@ describe('utils/deviceFeaturesUtils', () => {
     });
 
     it('parseCapabilities', () => {
-        const feat1 = {
+        const featT1B1 = {
             major_version: 1,
         };
-        const feat2 = {
+        const featT2T1 = {
             major_version: 2,
         };
-        // default T1
+        // default T1B1
         // @ts-expect-error - incomplete features
-        expect(parseCapabilities(feat1)).toEqual([
+        expect(parseCapabilities(featT1B1)).toEqual([
             'Capability_Bitcoin',
             'Capability_Bitcoin_like',
             'Capability_Crypto',
@@ -41,7 +41,7 @@ describe('utils/deviceFeaturesUtils', () => {
 
         // default T2
         // @ts-expect-error - incomplete features
-        expect(parseCapabilities(feat2)).toEqual([
+        expect(parseCapabilities(featT2T1)).toEqual([
             'Capability_Bitcoin',
             'Capability_Bitcoin_like',
             'Capability_Binance',
@@ -96,32 +96,32 @@ describe('utils/deviceFeaturesUtils', () => {
     describe('getUnavailableCapabilities', () => {
         const coins = getAllNetworks();
 
-        const feat2 = {
+        const featT2T1 = {
             major_version: 2,
             minor_version: 3,
             patch_version: 3,
             capabilities: undefined,
         };
         // @ts-expect-error incomplete features
-        feat2.capabilities = parseCapabilities(feat2);
+        featT2T1.capabilities = parseCapabilities(featT2T1);
 
-        const feat1 = {
+        const featT1B1 = {
             major_version: 1,
             minor_version: 8,
             patch_version: 3,
             capabilities: undefined,
         };
         // @ts-expect-error incomplete features
-        feat1.capabilities = parseCapabilities(feat1);
+        featT1B1.capabilities = parseCapabilities(featT1B1);
 
         it('getUnavailableCapabilities capabilities 3', () => {
             jest.resetModules();
             const coins = getAllNetworks();
 
-            // default Capabilities T1
+            // default Capabilities T1B1
             // @ts-expect-error incomplete features
 
-            expect(getUnavailableCapabilities(feat1, coins)).toEqual({
+            expect(getUnavailableCapabilities(featT1B1, coins)).toEqual({
                 ada: 'no-support',
                 tada: 'no-support',
                 bnb: 'no-support',
@@ -147,9 +147,9 @@ describe('utils/deviceFeaturesUtils', () => {
                 signMessageNoScriptType: 'update-required',
             });
 
-            // default Capabilities T2
+            // default Capabilities T2T1
             // @ts-expect-error incomplete features
-            expect(getUnavailableCapabilities(feat2, coins)).toEqual({
+            expect(getUnavailableCapabilities(featT2T1, coins)).toEqual({
                 replaceTransaction: 'update-required',
                 amountUnit: 'update-required',
                 decreaseOutput: 'update-required',
@@ -180,7 +180,7 @@ describe('utils/deviceFeaturesUtils', () => {
             import('../deviceFeaturesUtils').then(({ getUnavailableCapabilities }) => {
                 // added new capability
                 // @ts-expect-error incomplete features
-                expect(getUnavailableCapabilities(feat2, coins)).toEqual({
+                expect(getUnavailableCapabilities(featT2T1, coins)).toEqual({
                     newCapabilityOrFeature: 'update-required',
                 });
                 done();
@@ -204,7 +204,7 @@ describe('utils/deviceFeaturesUtils', () => {
             import('../deviceFeaturesUtils').then(({ getUnavailableCapabilities }) => {
                 // added new capability
                 // @ts-expect-error incomplete features
-                expect(getUnavailableCapabilities(feat2, coins)).toEqual({
+                expect(getUnavailableCapabilities(featT2T1, coins)).toEqual({
                     newCapabilityOrFeature: 'no-support',
                 });
                 done();

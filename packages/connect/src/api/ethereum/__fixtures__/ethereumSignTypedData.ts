@@ -323,9 +323,9 @@ export const encodeData = [
         description: 'should encode string as utf-8',
         input: {
             typeName: 'string',
-            data: 'TT is an amazing piece of hardware. 😋😋',
+            data: 'T2T1 is an amazing piece of hardware. 😋😋',
         },
-        output: '545420697320616e20616d617a696e67207069656365206f662068617264776172652e20f09f988bf09f988b',
+        output: '5432543120697320616e20616d617a696e67207069656365206f662068617264776172652e20f09f988bf09f988b',
     },
     {
         description: 'should encode bool as a single byte',

@@ -29,7 +29,7 @@ export default {
     },
     tests: [
         {
-            description: 'TT/T2B1 features',
+            description: 'T2T1/T2B1 features',
             skip: ['1'],
             params: {},
             result: {
@@ -78,7 +78,7 @@ export default {
                     'Capability_PassphraseEntry',
                 ],
                 backup_type: 'Bip39',
-                sd_card_present: expect.any(Boolean), // TT true, T2B1 false
+                sd_card_present: expect.any(Boolean), // T2T1 true, T2B1 false
                 sd_protection: false,
                 wipe_code_protection: false,
                 session_id: expect.any(String),
@@ -188,7 +188,7 @@ export default {
             ],
         },
         {
-            description: 'T1 features',
+            description: 'T1B1 features',
             skip: ['2'],
             params: {},
             result: {
@@ -204,8 +204,8 @@ export default {
                 label: expect.any(String),
                 initialized: true,
                 revision: expect.any(String),
-                bootloader_hash: expect.any(String), // difference between TT
-                imported: true, // difference between TT
+                bootloader_hash: expect.any(String), // difference between T2T1
+                imported: true, // difference between T2T1
                 unlocked: expect.any(Boolean),
                 firmware_present: null,
                 needs_backup: expect.any(Boolean),
@@ -218,7 +218,7 @@ export default {
                 // fw_vendor: null, // "EMULATOR" since 1.11.1
                 unfinished_backup: expect.any(Boolean),
                 no_backup: expect.any(Boolean),
-                recovery_mode: null, // difference between TT
+                recovery_mode: null, // difference between T2T1
                 capabilities: [
                     'Capability_Bitcoin',
                     'Capability_Bitcoin_like',
@@ -228,12 +228,12 @@ export default {
                     'Capability_Stellar',
                     'Capability_U2F',
                 ],
-                backup_type: undefined, // difference between TT
-                sd_card_present: null, // no sdcard in T1
-                sd_protection: null, // no sdcard in T1
+                backup_type: undefined, // difference between T2T1
+                sd_card_present: null, // no sdcard in T1B1
+                sd_protection: null, // no sdcard in T1B1
                 wipe_code_protection: false,
                 session_id: expect.any(String),
-                passphrase_always_on_device: null, // no passphrase input on T1 device
+                passphrase_always_on_device: null, // no passphrase input on T1B1 device
             },
             legacyResults: [
                 {

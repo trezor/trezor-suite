@@ -24,12 +24,12 @@
 
 # 9.0.8
 
--   feat: support multiple intermediary FWs for T1 and devkit binaries
+-   feat: support multiple intermediary FWs for T1B1 and devkit binaries
     -   `FirmwareUpdate` now accepts `intermediaryVersion` param instead of `intermediary`
-    -   `getInfo` returns `intermediaryVersion` needed for T1 and removed `latest` param. 'release' always return latest version for T1 so it means abandoning the concept of incremental updates for T1.
+    -   `getInfo` returns `intermediaryVersion` needed for T1B1 and removed `latest` param. 'release' always return latest version for T1B1 so it means abandoning the concept of incremental updates for T1B1.
 -   feat: signTransaction now returns `signedTransaction` which can be used for visualization purposes before notification about pending transaction from blockchain is received.
 -   feat(blockchain): `blockchainGetCurrentFiatRates` and `blockchainGetFiatRatesForTimestamps` now accept additional `token` parameter
--   feat: support coinjoin for T1
+-   feat: support coinjoin for T1B1
 -   feat(transport): eth definitions
 -   feat(webextension): Ignore port events if it is not port created by current popup
 -   feat(cardano): allow external reward addresses in governance registrations
