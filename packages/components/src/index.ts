@@ -12,7 +12,7 @@ export * from './utils/hooks';
 export * from './components/buttons/Button/Button';
 export * from './components/buttons/PinButton/PinButton';
 export * from './components/buttons/TooltipButton/TooltipButton';
-export * from './components/Flag';
+export * from './components/Flag/Flag';
 export * from './components/Dropdown';
 export * from './components/form/Input';
 export * from './components/form/Textarea';

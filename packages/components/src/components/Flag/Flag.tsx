@@ -13,7 +13,7 @@ export interface FlagProps {
     size?: number;
 }
 
-const Flag = ({ size = 24, country, className }: FlagProps) => (
+export const Flag = ({ size = 24, country, className }: FlagProps) => (
     <Wrapper>
         <img
             // eslint-disable-next-line global-require, import/no-dynamic-require
@@ -24,5 +24,3 @@ const Flag = ({ size = 24, country, className }: FlagProps) => (
         />
     </Wrapper>
 );
-
-export { Flag };

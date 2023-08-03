@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { Flag } from '../../index';
+import { Flag } from './Flag';
 import { FLAGS } from './flags';
 import { FlagType } from '../../support/types';
 
@@ -37,7 +37,7 @@ export default {
     },
 };
 
-export const Basic = () => {
+export const All = () => {
     const flags = Object.keys(FLAGS) as FlagType[];
     return (
         <Wrapper>
