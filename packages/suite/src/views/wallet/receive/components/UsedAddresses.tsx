@@ -10,6 +10,8 @@ import { AppState } from 'src/types/suite';
 import { MetadataAddPayload } from 'src/types/suite/metadata';
 import { showAddress } from 'src/actions/wallet/receiveActions';
 import { useDispatch } from 'src/hooks/suite/';
+import { useSelector } from 'src/hooks/suite/useSelector';
+import { selectLabelingDataForSelectedAccount } from 'src/reducers/suite/metadataReducer';
 
 const StyledCard = styled(Card)`
     flex-direction: column;
@@ -189,6 +191,7 @@ export const UsedAddresses = ({
 }: UsedAddressesProps) => {
     const [limit, setLimit] = useState(DEFAULT_LIMIT);
     const dispatch = useDispatch();
+    const { addressLabels } = useSelector(selectLabelingDataForSelectedAccount);
 
     if (!account) {
         return null;
@@ -202,7 +205,6 @@ export const UsedAddresses = ({
     }
 
     const { used, unused } = account.addresses;
-    const { addressLabels } = account.metadata;
     // find revealed addresses in `unused` list
     const revealed = unused.reduce((result, addr) => {
         const r = addresses.find(u => u.path === addr.path);

@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { WalletAccountTransaction } from 'src/types/wallet';
 import { ArrayElement } from '@trezor/type-utils';
 import { Translation, AddressLabeling } from 'src/components/suite';
-import { AccountMetadata } from 'src/types/suite/metadata';
+import { AccountLabels } from 'src/types/suite/metadata';
 
 const TruncatedSpan = styled.span<{ isBlurred?: boolean }>`
     overflow: hidden;
@@ -13,7 +13,7 @@ const TruncatedSpan = styled.span<{ isBlurred?: boolean }>`
 interface TargetAddressLabelProps {
     target: ArrayElement<WalletAccountTransaction['targets']>;
     type: WalletAccountTransaction['type'];
-    accountMetadata?: AccountMetadata;
+    accountMetadata?: AccountLabels;
 }
 
 export const TargetAddressLabel = ({ target, type, accountMetadata }: TargetAddressLabelProps) => {

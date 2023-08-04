@@ -5,12 +5,14 @@ import { Translation } from 'src/components/suite';
 import { useDispatch } from 'src/hooks/suite';
 import { SETTINGS } from 'src/config/suite';
 import { useTranslation } from 'src/hooks/suite/useTranslation';
+import { useSelector } from 'src/hooks/suite/useSelector';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { exportTransactionsThunk, fetchTransactionsThunk } from '@suite-common/wallet-core';
 import { ExportFileType } from '@suite-common/wallet-types';
 import { Account } from 'src/types/wallet';
 import { isFeatureFlagEnabled } from '@suite-common/suite-utils';
 import { getTitleForNetwork, getTitleForCoinjoinAccount } from '@suite-common/wallet-utils';
+import { selectLabelingDataForSelectedAccount } from 'src/reducers/suite/metadataReducer';
 
 export interface ExportActionProps {
     account: Account;
@@ -30,6 +32,8 @@ export const ExportAction = ({ account }: ExportActionProps) => {
             index: account.index + 1,
         });
     }, [account, translationString]);
+
+    const { accountLabel } = useSelector(selectLabelingDataForSelectedAccount);
 
     const runExport = useCallback(
         async (type: ExportFileType) => {
@@ -56,7 +60,7 @@ export const ExportAction = ({ account }: ExportActionProps) => {
                         recursive: true,
                     }),
                 );
-                const accountName = account.metadata.accountLabel || getAccountTitle();
+                const accountName = accountLabel || getAccountTitle();
                 await dispatch(exportTransactionsThunk({ account, accountName, type }));
             } catch (error) {
                 console.error('Export transaction failed: ', error);
@@ -70,7 +74,7 @@ export const ExportAction = ({ account }: ExportActionProps) => {
                 setIsExportRunning(false);
             }
         },
-        [isExportRunning, account, dispatch, translationString, getAccountTitle],
+        [isExportRunning, account, dispatch, translationString, getAccountTitle, accountLabel],
     );
 
     if (!isFeatureFlagEnabled('EXPORT_TRANSACTIONS')) {

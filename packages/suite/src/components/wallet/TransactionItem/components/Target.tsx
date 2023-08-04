@@ -17,7 +17,7 @@ import { TokenTransferAddressLabel } from './TokenTransferAddressLabel';
 import { TargetAddressLabel } from './TargetAddressLabel';
 import { BaseTargetLayout } from './BaseTargetLayout';
 import { copyToClipboard } from '@trezor/dom-utils';
-import { AccountMetadata } from 'src/types/suite/metadata';
+import { AccountLabels } from 'src/types/suite/metadata';
 import { StyledFormattedCryptoAmount, StyledFormattedNftAmount } from './CommonComponents';
 
 interface BaseTransfer {
@@ -110,7 +110,7 @@ interface TargetProps extends BaseTransfer {
     target: ArrayElement<WalletAccountTransaction['targets']>;
     transaction: WalletAccountTransaction;
     accountKey: string;
-    accountMetadata?: AccountMetadata;
+    accountMetadata?: AccountLabels;
     isActionDisabled?: boolean;
 }
 

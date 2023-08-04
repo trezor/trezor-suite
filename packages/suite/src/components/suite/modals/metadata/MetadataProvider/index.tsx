@@ -63,7 +63,7 @@ export const MetadataProvider = ({ onCancel, decision }: MetadataProviderProps) 
 
     const connect = async (type: MetadataProviderType) => {
         setIsLoading(type);
-        const result = await dispatch(connectProvider(type));
+        const result = await dispatch(connectProvider({ type }));
         // window close indicates user action, user knows what happened, no need to show an error message
         if (result === 'window closed') {
             setIsLoading('');

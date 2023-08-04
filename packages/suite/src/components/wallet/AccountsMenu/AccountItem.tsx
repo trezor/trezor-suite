@@ -4,11 +4,12 @@ import styled from 'styled-components';
 import { isTestnet } from '@suite-common/wallet-utils';
 import { AccountLabel, FiatValue } from 'src/components/suite';
 import { Stack, SkeletonRectangle } from 'src/components/suite/Skeleton';
-import { useDispatch, useLoadingSkeleton } from 'src/hooks/suite';
+import { useDispatch, useLoadingSkeleton, useSelector } from 'src/hooks/suite';
 import { CoinBalance } from 'src/components/wallet';
 import { Account } from 'src/types/wallet';
 import { goto } from 'src/actions/suite/routerActions';
 import { TokensCount } from './TokensCount';
+import { selectLabelingDataForAccount } from 'src/reducers/suite/metadataReducer';
 
 const activeClassName = 'selected';
 interface WrapperProps {
@@ -113,8 +114,7 @@ export const AccountItem = forwardRef(
 
         const { shouldAnimate } = useLoadingSkeleton();
 
-        const { accountType, formattedBalance, index, metadata, networkType, symbol, tokens } =
-            account;
+        const { accountType, formattedBalance, index, networkType, symbol, tokens } = account;
 
         const accountRouteParams = {
             symbol,
@@ -140,6 +140,9 @@ export const AccountItem = forwardRef(
         const isBalanceShown = account.backendType !== 'coinjoin' || account.status !== 'initial';
 
         const dataTestKey = `@account-menu/${symbol}/${accountType}/${index}`;
+        const { accountLabel } = useSelector(state =>
+            selectLabelingDataForAccount(state, account.key),
+        );
 
         return (
             <Wrapper selected={selected} type={accountType} ref={ref}>
@@ -151,7 +154,7 @@ export const AccountItem = forwardRef(
                         <Row>
                             <AccountName data-test={`${dataTestKey}/label`}>
                                 <AccountLabel
-                                    accountLabel={metadata.accountLabel}
+                                    accountLabel={accountLabel}
                                     accountType={accountType}
                                     symbol={symbol}
                                     index={index}
