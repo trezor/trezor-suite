@@ -11,6 +11,7 @@ export function composeTx({
     outputs,
     height,
     feeRate,
+    longTermFeeRate,
     basePath,
     network,
     changeId,
@@ -34,6 +35,14 @@ export function composeTx({
         return { type: 'error', error: 'INCORRECT-FEE-RATE' };
     }
 
+    let longTermFeeRateNumber;
+    if (longTermFeeRate) {
+        longTermFeeRateNumber = convertFeeRate(longTermFeeRate);
+        if (!longTermFeeRateNumber) {
+            return { type: 'error', error: 'INCORRECT-FEE-RATE' };
+        }
+    }
+
     let countMax = { exists: false, id: 0 };
     try {
         countMax = request.getMax(outputs);
@@ -55,6 +64,7 @@ export function composeTx({
             outputs,
             height,
             feeRateNumber,
+            longTermFeeRateNumber,
             countMax.exists,
             countMax.id,
             dustThreshold,

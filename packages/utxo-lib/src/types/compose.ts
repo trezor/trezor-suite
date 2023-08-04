@@ -55,12 +55,13 @@ export interface ComposeRequest {
     outputs: ComposeOutput[]; // all output "requests"
     height: number;
     feeRate: string | number; // in sat/byte, virtual size
+    longTermFeeRate?: string | number; // dust output feeRate multiplier in sat/byte, virtual size
     basePath: number[]; // for trezor inputs
     network: Network;
     changeId: number;
     changeAddress: string;
     dustThreshold: number; // explicit dust threshold, in satoshi
-    baseFee?: number; // DOGE base fee
+    baseFee?: number; // DOGE or RBF base fee
     floorBaseFee?: boolean; // DOGE floor base fee to the nearest integer
     dustOutputFee?: number; // DOGE fee for every output below dust limit
     skipUtxoSelection?: boolean; // use custom utxo selection, without algorithm

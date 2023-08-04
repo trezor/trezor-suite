@@ -4,7 +4,7 @@ import {
     sumOrNaN,
     transactionBytes,
     filterCoinbase,
-    dustThreshold,
+    getDustAmount,
     getFee,
     finalize,
     ZERO,
@@ -44,10 +44,10 @@ export function split(
     }
 
     const splitValue = remaining.div(new BN(unspecified));
-    const dustAmount = dustThreshold(feeRate, options);
+    const dustAmount = getDustAmount(feeRate, options);
 
     // ensure every output is either user defined, or over the threshold
-    if (unspecified && splitValue.lte(new BN(dustAmount))) return { fee };
+    if (unspecified && splitValue.lt(new BN(dustAmount))) return { fee };
 
     // assign splitValue to outputs not user defined
     const outputsSplit = outputs.map(x => {
