@@ -80,6 +80,11 @@ export type Account = {
     utxo: AccountInfo['utxo'];
     history: AccountInfo['history'];
     metadata: AccountEntityKeys;
+    /**
+     * accountLabel was introduced by mobile app. In early stage of developement, it was not possible to connect device and work with
+     * metadata/labeling feature which requires device for encryption. local accountLabel field was introduced.
+     */
+    accountLabel?: string;
 } & AccountBackendSpecific &
     AccountNetworkSpecific;
 

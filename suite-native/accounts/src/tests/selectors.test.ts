@@ -4,7 +4,7 @@ import { isFilterValueMatchingAccount } from '../selectors';
 
 describe('isFilterValueMatchingAccountLabelOrNetworkName', () => {
     const account = {
-        metadata: { accountLabel: 'Original account name' },
+        accountLabel: 'Original account name',
         symbol: 'eth',
         tokens: [{ name: 'Tether USD' }],
     } as Account;
