@@ -80,6 +80,8 @@ release commit messages:
     refs:
       - /^release\//
       - codesign
+  variables:
+    GIT_DEPTH: 300
   script:
     - ci/scripts/check_release_commit_messages.sh
 
