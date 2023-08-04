@@ -335,7 +335,6 @@
   "TR_CHECK_PGP_SIGNATURE": "Vérifier la signature PGP",
   "TR_CHECK_RECOVERY_SEED": "Vérifier la graine de récupération",
   "TR_CHECK_RECOVERY_SEED_DESCRIPTION": "La graine de récupération est une liste de mots dans un ordre spécifique qui stocke toutes les informations nécessaires.",
-  "TR_CHECK_RECOVERY_SEED_DESC_T1": "Entrez les mots de votre graine ici dans l'ordre affiché sur votre appareil. Vous pouvez être invité à saisir des mots qui ne font pas partie de votre graine de récupération comme mesure de sécurité supplémentaire.",
   "TR_CHECK_SEED": "Vérifier la graine de récuperation",
   "TR_CHECK_SEED_IN_SETTINGS": "Vérifier la graine de récuperation dans les paramètres",
   "TR_CHECK_YOUR_DEVICE": "Vérifiez votre appareil",

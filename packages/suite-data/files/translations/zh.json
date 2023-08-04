@@ -391,8 +391,6 @@
   "TR_CHECK_PGP_SIGNATURE": "检查 PGP 签名",
   "TR_CHECK_RECOVERY_SEED": "检查备份",
   "TR_CHECK_RECOVERY_SEED_DESCRIPTION": "执行模拟恢复以检查您的备份。",
-  "TR_CHECK_RECOVERY_SEED_DESC_T1": "按照设备上显示的顺序，在这里输入您的种子中的单词。作为一项额外的安全措施，您可能会被要求输入一些不属于您的恢复种子的词语。",
-  "TR_CHECK_RECOVERY_SEED_DESC_TT": "你的钱包备份，即恢复种子，完全通过设备屏幕输入到 Trezor Model T 上。 我们避免将您的任何敏感信息传递给可能不安全的计算机或网络浏览器。",
   "TR_CHECK_SEED": "检查备份",
   "TR_CHECK_SEED_IN_SETTINGS": "在设置中检查种子",
   "TR_CHECK_YOUR_DEVICE": "检查您的 Trezor 屏幕",

@@ -359,7 +359,6 @@
   "TR_CHECK_PGP_SIGNATURE": "Controleer PGP-handtekening",
   "TR_CHECK_RECOVERY_SEED": "Controleer herstelreeks",
   "TR_CHECK_RECOVERY_SEED_DESCRIPTION": "Herstelreeks is een lijst met woorden in een specifieke volgorde waarin alle benodigde informatie opgeslagen wordt.",
-  "TR_CHECK_RECOVERY_SEED_DESC_T1": "Voer de woorden van uw seed hier in de volgorde weergegeven op uw apparaat. U kan worden gevraagd om enkele woorden in te voeren die geen deel uitmaken van uw herstelzaad als een aanvullende beveiligingsmaatregel.",
   "TR_CHECK_SEED": "Seed controleren",
   "TR_CHECK_SEED_IN_SETTINGS": "Controleer seed in Instellingen",
   "TR_CHECK_YOUR_DEVICE": "Controleer uw apparaat",

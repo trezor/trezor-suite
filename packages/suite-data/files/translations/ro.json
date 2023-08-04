@@ -384,7 +384,6 @@
   "TR_CHECK_PGP_SIGNATURE": "Verificați semnătura PGP",
   "TR_CHECK_RECOVERY_SEED": "Verificați seed-ul de rezervă",
   "TR_CHECK_RECOVERY_SEED_DESCRIPTION": "Efectuați o recuperare simulată pentru a verifica copia de rezervă.",
-  "TR_CHECK_RECOVERY_SEED_DESC_T1": "Introduceți aici cuvintele din seed-ul dvs. în ordinea afișată pe dispozitivul dvs. Este posibil să vi se ceară să introduceți câteva cuvinte care nu fac parte din seed-ul de recuperare, ca măsură de securitate suplimentară.",
   "TR_CHECK_SEED": "Verificați seed-ul",
   "TR_CHECK_SEED_IN_SETTINGS": "Verificați seed-ul în setări",
   "TR_CHECK_YOUR_DEVICE": "Verificați dispozitivul dvs.",

@@ -3516,7 +3516,8 @@ export default defineMessages({
         id: 'TR_WALLET_DUPLICATE_TITLE',
     },
     TR_WELCOME_TO_TREZOR_TEXT_WALLET_CREATION: {
-        defaultMessage: 'Create a new wallet or recover one from a backup',
+        defaultMessage:
+            'Create a new wallet or recover one from a backup using your recovery seed (wallet backup)',
         id: 'TR_WELCOME_TO_TREZOR_TEXT_WALLET_CREATION',
     },
     TR_WEST: {
@@ -4081,7 +4082,7 @@ export default defineMessages({
     TR_WIPE_DEVICE_CHECKBOX_2_DESCRIPTION: {
         id: 'TR_WIPE_DEVICE_CHECKBOX_2_DESCRIPTION',
         defaultMessage:
-            'Your assets are safe and accessible only if you have created a recovery seed and keep a private copy on a recovery seed card. Please make sure you have your recovery seed handy or know where you keep it.',
+            'Your assets are safe and accessible only if you have created a recovery seed (wallet backup) and keep a private copy on a recovery seed card. Please make sure you have your recovery seed handy or know where you keep it.',
     },
     TR_CANCEL: {
         id: 'TR_CANCEL',
@@ -4119,7 +4120,7 @@ export default defineMessages({
     TR_CHECK_RECOVERY_SEED_DESC_T2B1: {
         id: 'TR_CHECK_RECOVERY_SEED_DESC_T2B1',
         defaultMessage:
-            'Your recovery seed (wallet backup) is entered using the Trezor Model R buttons. This avoids exposing any of your sensitive information to a potentially insecure computer or web browser.',
+            'Your recovery seed (wallet backup) is entered using the Trezor Safe 3 buttons. This avoids exposing any of your sensitive information to a potentially insecure computer or web browser.',
         dynamic: true,
     },
     TR_SELECT_NUMBER_OF_WORDS: {
@@ -4387,7 +4388,7 @@ export default defineMessages({
     },
     TR_RECOVERY_SEED_IS_OFFLINE: {
         id: 'TR_RECOVERY_SEED_IS_OFFLINE',
-        defaultMessage: 'Recovery seed is an offline backup of your wallet',
+        defaultMessage: 'Recovery seed (wallet backup) is an offline backup of your wallet',
     },
     TR_BACKUP_NOW: {
         id: 'TR_BACKUP_NOW',
@@ -4742,7 +4743,7 @@ export default defineMessages({
     },
     TR_SECURITY_CHECKPOINT_GOT_SEED: {
         id: 'TR_SECURITY_CHECKPOINT_GOT_SEED',
-        defaultMessage: 'Do you have your recovery seed?',
+        defaultMessage: 'Do you have your recovery seed (wallet backup)?',
     },
     TR_BEFORE_ANY_FURTHER_ACTIONS: {
         id: 'TR_BEFORE_ANY_FURTHER_ACTIONS',
@@ -4881,7 +4882,7 @@ export default defineMessages({
     TR_BACKUP_SEED_IS_ULTIMATE: {
         id: 'TR_BACKUP_SEED_IS_ULTIMATE',
         defaultMessage:
-            "Your recovery seed is necessary to restore access to your wallet and funds. If you lose your recovery seed, it's gone forever: there is no other way to restore access to a wallet.",
+            "Your recovery seed (wallet backup) is necessary to restore access to your wallet and funds. If you lose your recovery seed, it's gone forever: there is no other way to restore access to a wallet.",
     },
     TR_FIRMWARE_IS_POTENTIALLY_RISKY: {
         id: 'TR_FIRMWARE_IS_POTENTIALLY_RISKY',
@@ -5576,7 +5577,7 @@ export default defineMessages({
     SEND_RAW: {
         id: 'SEND_RAW',
         description: 'item in dropdown menu',
-        defaultMessage: 'Send RAW',
+        defaultMessage: 'Send raw',
     },
     SEND_RAW_TRANSACTION: {
         id: 'SEND_RAW_TRANSACTION',
@@ -6226,7 +6227,7 @@ export default defineMessages({
     TR_BACKUP_CHECKBOX_1_TITLE: {
         id: 'TR_BACKUP_CHECKBOX_1_TITLE',
         defaultMessage:
-            'Your recovery seed backup lets you recover your funds in case of Trezor loss or damage.',
+            'Your recovery seed (wallet backup) lets you recover your funds in case of Trezor loss or damage.',
     },
     TR_BACKUP_CHECKBOX_1_DESCRIPTION: {
         id: 'TR_BACKUP_CHECKBOX_1_DESCRIPTION',
@@ -6244,7 +6245,8 @@ export default defineMessages({
     },
     TR_BACKUP_CHECKBOX_3_TITLE: {
         id: 'TR_BACKUP_CHECKBOX_3_TITLE',
-        defaultMessage: 'Store your recovery seed backup securely and never share it with anyone.',
+        defaultMessage:
+            'Store your recovery seed (wallet backup) securely and never share it with anyone.',
     },
     TR_BACKUP_CHECKBOX_3_DESCRIPTION: {
         id: 'TR_BACKUP_CHECKBOX_3_DESCRIPTION',
@@ -6423,7 +6425,7 @@ export default defineMessages({
     TR_TRANSACTIONS_SEARCH_TIP_8: {
         id: 'TR_TRANSACTIONS_SEARCH_TIP_8',
         defaultMessage:
-            'Tip: You can display results matching at least one of multiple searches by grouping them with the OR operator (|). For example <strong>2020-12-31 | 2021-01-01</strong> will show all transactions that have happened on the 31st of December 2020 or the 1st of January 2021.',
+            'Tip: You can display results matching at least one of multiple searches by grouping them with the OR operator (|). For example <strong>2022-12-31 | 2023-01-01</strong> will show all transactions that have happened on the 31st of December 20202 or the 1st of January 2023.',
     },
     TR_TRANSACTIONS_SEARCH_TIP_9: {
         id: 'TR_TRANSACTIONS_SEARCH_TIP_9',
@@ -6433,7 +6435,7 @@ export default defineMessages({
     TR_TRANSACTIONS_SEARCH_TIP_10: {
         id: 'TR_TRANSACTIONS_SEARCH_TIP_10',
         defaultMessage:
-            'Tip: You can combine AND (&) and OR (|) operators for more complex searches. For example <strong>> 2020-01-01 & < 2020-01-31 | > 2020-12-01 & < 2020-12-31</strong> will show all all transactions in January 2020 or December 2020.',
+            'Tip: You can combine AND (&) and OR (|) operators for more complex searches. For example <strong>> 2022-01-01 & < 2022-01-31 | > 2022-12-01 & < 2022-12-31</strong> will show all transactions in January 2022 or December 2022.',
     },
     TR_INTERNAL_TRANSACTIONS: {
         id: 'TR_INTERNAL_TRANSACTIONS',
@@ -6867,7 +6869,7 @@ export default defineMessages({
     TR_TROUBLESHOOTING_TIP_CABLE_DESCRIPTION: {
         id: 'TR_TROUBLESHOOTING_TIP_CABLE_DESCRIPTION',
         defaultMessage:
-            'The cable must be fully inserted. In case of USB-C device, the cable should click into place.',
+            'The cable must be fully inserted. In case of a USB-C connected device, the cable should click into place.',
     },
     TR_TROUBLESHOOTING_TIP_USB_PORT_TITLE: {
         id: 'TR_TROUBLESHOOTING_TIP_USB_PORT_TITLE',
@@ -7795,7 +7797,7 @@ export default defineMessages({
     },
     TR_SESSION_ERROR_PHASE_RETRYING_PAIRING: {
         id: 'TR_SESSION_ERROR_PHASE_RETRYING_PAIRING',
-        defaultMessage: 'Pairing retrying',
+        defaultMessage: 'Retrying pairing',
         description: '29 symbols max',
     },
     TR_SESSION_ERROR_PHASE_AFFILIATE_SERVERS_OFFLINE: {

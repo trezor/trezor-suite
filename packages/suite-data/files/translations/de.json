@@ -394,7 +394,6 @@
   "TR_CHECK_PGP_SIGNATURE": "PGP-Signatur überprüfen",
   "TR_CHECK_RECOVERY_SEED": "Recovery Seed überprüfen",
   "TR_CHECK_RECOVERY_SEED_DESCRIPTION": "Führen Sie eine simulierte Wiederherstellung durch, um Ihr Backup zu überprüfen.",
-  "TR_CHECK_RECOVERY_SEED_DESC_T1": "Geben Sie hier die Wörter aus Ihrem Seed in der Reihenfolge ein, die auf Ihrem Gerät angezeigt wird. Möglicherweise werden Sie als zusätzliche Sicherheitsmaßnahme aufgefordert, einige Wörter einzugeben, die nicht Teil Ihres Wiederherstellungs-Seeds sind.",
   "TR_CHECK_SEED": "Seed überprüfen",
   "TR_CHECK_SEED_IN_SETTINGS": "Seed in den Einstellungen überprüfen",
   "TR_CHECK_YOUR_DEVICE": "Überprüfen Sie Ihren Trezor Bildschirm",
