@@ -11,9 +11,7 @@ import { getNetwork } from '@suite-common/wallet-utils';
 export const isFilterValueMatchingAccount = (account: Account, filterValue: string) => {
     const lowerCaseFilterValue = filterValue?.trim().toLowerCase();
 
-    const isMatchingLabel = account.metadata.accountLabel
-        ?.toLowerCase()
-        .includes(lowerCaseFilterValue);
+    const isMatchingLabel = account.accountLabel?.toLowerCase().includes(lowerCaseFilterValue);
 
     if (isMatchingLabel) return true;
 
