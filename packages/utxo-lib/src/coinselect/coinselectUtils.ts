@@ -35,6 +35,8 @@ const TX_BASE = 32; // 4 * (4 + 4)
 // transaction input size (without script): 32 prevhash, 4 idx, 4 sequence
 const INPUT_SIZE = 160; // 4 * (32 + 4 + 4)
 
+const DUST_RELAY_FEE_RATE = 3; // 3000 sat/kB https://github.com/bitcoin/bitcoin/blob/be443328037162f265cc85d05b1a7665b5f104d2/src/policy/policy.h#L55
+
 type Vin = { type: CoinSelectInput['type']; script: { length: number }; weight?: number };
 type VinVout = { script: { length: number }; weight?: number };
 
@@ -96,26 +98,28 @@ export function transactionBytes(inputs: Vin[], outputs: VinVout[]) {
     return Math.ceil(transactionWeight(inputs, outputs) / 4);
 }
 
-export function dustThreshold(feeRate: number, options: CoinSelectOptions) {
-    const size = transactionBytes(
-        [
-            {
-                type: options.txType,
-                script: {
-                    length: INPUT_SCRIPT_LENGTH[options.txType],
-                },
-            },
-        ],
-        [
-            {
-                script: {
-                    length: OUTPUT_SCRIPT_LENGTH[options.txType],
-                },
-            },
-        ],
-    );
-    const price = getFeeForBytes(feeRate, size);
-    return Math.max(options.dustThreshold, price);
+// https://github.com/bitcoin/bitcoin/blob/be443328037162f265cc85d05b1a7665b5f104d2/src/policy/policy.cpp#L28-L41
+// Absolute minimum accepted dustRelayFeeRate is set to 3 sat/byte (3000 sat/kB) in bitcoin-core.
+// To make potential output spendable in the near future it could be slightly higher basing on longTermFeeRate (if provided)
+// Minimum dust amount is the greater value from:
+// - provided constant `dustThreshold` (typically 546 sat. with few exceptions like DOGE)
+// - calculated from inputSize multiplied by dustRelayFeeRate
+export function getDustAmount(
+    feeRate: number,
+    { txType, longTermFeeRate, dustThreshold }: CoinSelectOptions,
+) {
+    const inputSize = inputBytes({
+        type: txType,
+        script: {
+            length: INPUT_SCRIPT_LENGTH[txType],
+        },
+    });
+    // use current feeRate if it is lower than longTermFeeRate
+    const longTermFee = longTermFeeRate ? Math.min(feeRate, longTermFeeRate) : 0;
+    // use default dust relay fee if it is lower than long term fee
+    const dustRelayFeeRate = Math.max(longTermFee, DUST_RELAY_FEE_RATE);
+    // use explicit dustThreshold if it is higher than calculated from script type
+    return Math.max(dustThreshold || 0, getFeeForBytes(dustRelayFeeRate, inputSize));
 }
 
 export function bignumberOrNaN(v?: BN | string): BN | undefined;
@@ -203,7 +207,7 @@ export function finalize(
     }
 
     const remainderAfterExtraOutput = sumInputs.sub(sumOutputs.add(new BN(feeAfterExtraOutput)));
-    const dust = dustThreshold(feeRate, options);
+    const dustAmount = getDustAmount(feeRate, options);
 
     const finalOutputs: CoinSelectOutputFinal[] = outputs.map(o =>
         Object.assign({}, o, {
@@ -212,7 +216,7 @@ export function finalize(
     );
 
     // is it worth a change output?
-    if (remainderAfterExtraOutput.gt(new BN(dust))) {
+    if (remainderAfterExtraOutput.gte(new BN(dustAmount))) {
         finalOutputs.push({
             value: remainderAfterExtraOutput.toString(),
             script: {

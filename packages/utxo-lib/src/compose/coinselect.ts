@@ -19,6 +19,7 @@ export function coinselect(
     rOutputs: ComposeOutput[],
     height: number,
     feeRate: number,
+    longTermFeeRate: number | undefined,
     countMax: boolean,
     countMaxId: number,
     dustThreshold: number,
@@ -33,6 +34,7 @@ export function coinselect(
     const options: CoinSelectOptions = {
         txType,
         dustThreshold,
+        longTermFeeRate,
         baseFee,
         floorBaseFee,
         dustOutputFee,
