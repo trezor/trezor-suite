@@ -5,7 +5,6 @@ import {
     extractCredentialsFromAuthorizationFlow,
     getOauthReceiverUrl,
 } from 'src/utils/suite/oauth';
-import { METADATA } from 'src/actions/suite/constants';
 
 import { getWeakRandomId } from '@trezor/utils';
 
@@ -16,13 +15,16 @@ class DropboxProvider extends AbstractMetadataProvider {
     auth: DropboxAuth;
     user?: users.FullAccount;
     isCloud = true;
+    clientId: string;
 
-    constructor(token?: string) {
+    constructor({ token, clientId }: { token?: string; clientId: string }) {
         super('dropbox');
 
         const fetch = window.fetch.bind(window);
 
-        const dbxAuth = new DropboxAuth({ clientId: METADATA.DROPBOX_CLIENT_ID, fetch });
+        const dbxAuth = new DropboxAuth({ clientId, fetch });
+
+        this.clientId = clientId;
 
         this.auth = dbxAuth;
 
@@ -106,7 +108,7 @@ class DropboxProvider extends AbstractMetadataProvider {
     async getFileContent(file: string) {
         try {
             const { result } = await this.client.filesSearchV2({
-                query: `${file}.mtdt`,
+                query: file,
             });
 
             // this is basically impossible to happen (maybe QA team might get there) after few years of testing
@@ -116,9 +118,7 @@ class DropboxProvider extends AbstractMetadataProvider {
             if (result?.matches?.length > 0) {
                 // check whether the file is in the regular folder ...
                 let match = result.matches.find(
-                    m =>
-                        'metadata' in m.metadata &&
-                        m.metadata.metadata.path_lower === `/${file}.mtdt`,
+                    m => 'metadata' in m.metadata && m.metadata.metadata.path_lower === `/${file}`,
                 );
 
                 // ... or in the legacy folder
@@ -127,7 +127,7 @@ class DropboxProvider extends AbstractMetadataProvider {
                 const matchLegacy = result.matches.find(
                     m =>
                         'metadata' in m.metadata &&
-                        m.metadata.metadata.path_lower === `/apps/trezor/${file}.mtdt`,
+                        m.metadata.metadata.path_lower === `/apps/trezor/${file}`,
                 );
 
                 // fail if it is in neither
@@ -160,7 +160,7 @@ class DropboxProvider extends AbstractMetadataProvider {
         try {
             const blob = new Blob([content], { type: 'text/plain;charset=UTF-8' });
             await this.client.filesUpload({
-                path: `/${file}.mtdt`,
+                path: `/${file}`,
                 contents: blob,
                 // @ts-expect-error
                 mode: 'overwrite',
@@ -205,6 +205,7 @@ class DropboxProvider extends AbstractMetadataProvider {
                     refreshToken: token,
                 },
                 user: result.name.given_name,
+                clientId: this.clientId,
             } as const;
 
             return this.ok(account);
