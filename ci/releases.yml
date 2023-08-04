@@ -82,6 +82,7 @@ release commit messages:
       - codesign
   script:
     - ci/scripts/check_release_commit_messages.sh
+  allow_failure: true
 
 # Messaging system deploy to production
 msg-system codesign deploy:

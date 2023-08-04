@@ -14,17 +14,22 @@ do
     # 1. "cherry picked from ([some commit in develop])"
     # shellcheck disable=SC2076
     if [[ $message =~ "(cherry picked from commit" ]]; then
+      echo "$commit contains cherry pick message"
+
       # remove last ")" and extract commit hash
       develop_commit=$(echo "$message" | tr ' ' '\n' | tail -1 | sed 's/)$//')
       # check if develop really contains this commit hash
       if [[ $(git branch -a --contains "$develop_commit" | grep --only-matching "remotes/origin/develop") == "remotes/origin/develop" ]]; then
+        echo "$commit reference $develop_commit commit from develop"
         continue
       fi
+      echo "$develop_commit not found in develop"
     fi
 
     # 2. [RELEASE ONLY] substring
     # shellcheck disable=SC2076
     if [[ $message =~ "[RELEASE ONLY]" ]]; then
+      echo "$commit contains RELEASE ONLY message"
       continue
     fi
 
