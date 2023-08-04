@@ -24,6 +24,7 @@ import { findAnchorTransactionPage } from 'src/utils/suite/anchor';
 import { fetchTransactionsThunk } from '@suite-common/wallet-core';
 import { CoinjoinBatchItem } from 'src/components/wallet/TransactionItem/components/CoinjoinBatchItem';
 import { TransactionCandidates } from './TransactionCandidates';
+import { selectLabelingDataForAccount } from 'src/reducers/suite/metadataReducer';
 
 const StyledSection = styled(Section)`
     margin-bottom: 20px;
@@ -49,7 +50,7 @@ export const TransactionList = ({
     const localCurrency = useSelector(state => state.wallet.settings.localCurrency);
     const anchor = useSelector(state => state.router.anchor);
     const dispatch = useDispatch();
-
+    const accountMetadata = useSelector(state => selectLabelingDataForAccount(state, account.key));
     const network = getAccountNetwork(account);
 
     // Search
@@ -61,11 +62,11 @@ export const TransactionList = ({
 
     useDebounce(
         () => {
-            const results = advancedSearchTransactions(transactions, account.metadata, search);
+            const results = advancedSearchTransactions(transactions, accountMetadata, search);
             setSearchedTransactions(results);
         },
         200,
-        [transactions, account.metadata, search],
+        [transactions, account.metadata, search, accountMetadata],
     );
 
     useEffect(() => {
@@ -148,7 +149,7 @@ export const TransactionList = ({
                                     key={item.tx.txid}
                                     transaction={item.tx}
                                     isPending={isPending}
-                                    accountMetadata={account.metadata}
+                                    accountMetadata={accountMetadata}
                                     accountKey={account.key}
                                     network={network!}
                                     index={index}
@@ -158,7 +159,7 @@ export const TransactionList = ({
                     </TransactionsGroup>
                 );
             }),
-        [transactionsByDate, account.key, account.metadata, localCurrency, symbol, network],
+        [transactionsByDate, account.key, localCurrency, symbol, network, accountMetadata],
     );
 
     // if total pages cannot be determined check current page and number of txs (XRP)

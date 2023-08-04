@@ -16,6 +16,7 @@ import { Stack, SkeletonCircle, SkeletonRectangle } from 'src/components/suite/S
 import { useSelector } from 'src/hooks/suite';
 import { isTestnet } from '@suite-common/wallet-utils';
 import { AccountNavigation } from './AccountNavigation';
+import { selectLabelingDataForSelectedAccount } from 'src/reducers/suite/metadataReducer';
 
 const Balance = styled(H1)`
     height: 32px;
@@ -59,7 +60,7 @@ const AccountTopPanelSkeleton = ({ animate, account, symbol }: AccountTopPanelSk
 
 export const AccountTopPanel = () => {
     const { account, loader, status } = useSelector(state => state.wallet.selectedAccount);
-
+    const selectedAccountLabels = useSelector(selectLabelingDataForSelectedAccount);
     if (status !== 'loaded' || !account) {
         return (
             <AccountTopPanelSkeleton
@@ -82,7 +83,7 @@ export const AccountTopPanel = () => {
                         type: 'accountLabel',
                         accountKey: account.key,
                         defaultValue: account.path,
-                        value: account?.metadata.accountLabel,
+                        value: selectedAccountLabels.accountLabel,
                     }}
                 />
             }

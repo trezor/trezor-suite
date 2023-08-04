@@ -42,7 +42,7 @@ export const SettingsGeneral = () => {
 
     const isMetadataEnabled = metadata.enabled && !metadata.initiating;
     const isProviderConnected =
-        metadata.enabled && device?.metadata.status === 'enabled' && !!metadata.provider;
+        metadata.enabled && device?.metadata.status === 'enabled' && !!metadata.providers.length;
 
     return (
         <SettingsLayout data-test="@settings/index">

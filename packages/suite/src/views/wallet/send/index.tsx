@@ -42,7 +42,7 @@ const SendLoaded = ({ children, selectedAccount }: SendLoadedProps) => {
         fees: state.wallet.fees,
         online: state.suite.online,
         sendRaw: state.wallet.send.sendRaw,
-        metadataEnabled: state.metadata.enabled && !!state.metadata.provider,
+        metadataEnabled: state.metadata.enabled && !!state.metadata.providers[0],
         targetAnonymity: selectTargetAnonymityByAccountKey(state, selectedAccount.account.key),
         prison: selectRegisteredUtxosByAccountKey(state, selectedAccount.account.key),
     }));

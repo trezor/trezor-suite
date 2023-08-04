@@ -71,7 +71,7 @@ export const getInitialState = ({
     devices: [],
     resize: resizeReducer(undefined, { type: 'foo' } as any),
     guide: {},
-    metadata: { enabled: false },
+    metadata: { enabled: false, providers: [], selectedProvider: {} },
     router: {},
     modal: {},
 });
