@@ -14,7 +14,7 @@ const Wrapper = styled.div`
 `;
 
 export const ErrorPage = () => {
-    const assetPrefix = process.env.ASSET_PREFIX || '';
+    const link = process.env.ASSET_PREFIX || '/';
 
     return (
         <Wrapper>
@@ -25,7 +25,7 @@ export const ErrorPage = () => {
                 <Translation id="TR_404_DESCRIPTION" />
             </P>
             <Image image="ERROR_404" />
-            <Link variant="nostyle" target="_self" href={`/${assetPrefix}`}>
+            <Link variant="nostyle" target="_self" href={link}>
                 <Button>
                     <Translation id="TR_404_GO_TO_DASHBOARD" />
                 </Button>
