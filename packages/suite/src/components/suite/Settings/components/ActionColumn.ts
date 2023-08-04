@@ -1,6 +1,5 @@
-import React from 'react';
 import styled, { css } from 'styled-components';
-import { Input, InputProps, Select, variables, Button } from '@trezor/components';
+import { Select, variables, Button } from '@trezor/components';
 
 const { SCREEN_SIZE } = variables;
 
@@ -16,26 +15,6 @@ export const ActionColumn = styled.div`
         margin-top: 10px;
     }
 `;
-
-const InputWrapper = styled.div`
-    margin: 4px 0 4px 4px;
-    width: 170px;
-
-    &:not(:first-child) {
-        margin-left: 8px;
-    }
-
-    @media (max-width: ${SCREEN_SIZE.SM}) {
-        margin: 0px 0 10px;
-        width: 100%;
-    }
-`;
-
-export const ActionInput = (props: InputProps) => (
-    <InputWrapper>
-        <Input {...props} />
-    </InputWrapper>
-);
 
 export const ActionSelect = styled(Select)`
     width: 170px;

@@ -3,14 +3,14 @@ import styled, { css } from 'styled-components';
 import useMeasure from 'react-use/lib/useMeasure';
 import { analytics, EventType } from '@trezor/suite-analytics';
 
-import { Button, Icon, variables, Input, Dropdown, DropdownRef, Tooltip } from '@trezor/components';
+import { Button, Icon, variables, Dropdown, DropdownRef, Tooltip } from '@trezor/components';
 import { Translation, HomescreenGallery } from 'src/components/suite';
 import { DeviceAnimation, OnboardingStepBox } from 'src/components/onboarding';
-import { useDevice, useDispatch, useOnboarding, useSelector } from 'src/hooks/suite';
-import { applySettings } from 'src/actions/settings/deviceSettingsActions';
-import { DEFAULT_LABEL, MAX_LABEL_LENGTH } from 'src/constants/suite/device';
+import { useDevice, useOnboarding, useSelector } from 'src/hooks/suite';
+import { DEFAULT_LABEL } from 'src/constants/suite/device';
 import { isHomescreenSupportedOnDevice } from 'src/utils/suite/homescreen';
 import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
+import { ChangeDeviceLabel } from 'src/components/suite/ChangeDeviceLabel';
 
 const StyledButton = styled(Button)`
     display: flex;
@@ -82,6 +82,7 @@ const Heading = styled.div`
 
 const SetupActions = styled.div`
     display: flex;
+    align-items: flex-start;
     margin-bottom: 32px;
     padding-bottom: 32px;
     border-bottom: 1px solid ${({ theme }) => theme.STROKE_GREY};
@@ -141,17 +142,14 @@ export const FinalStep = () => {
     const modalContext = useSelector(state => state.modal.context);
     const onboardingAnalytics = useSelector(state => state.onboarding.onboardingAnalytics);
     const isActionAbortable = useSelector(selectIsActionAbortable);
-    const dispatch = useDispatch();
 
     const deviceModelInternal = device?.features?.internal_model;
 
     const [state, setState] = useState<'rename' | 'homescreen' | null>(null);
-    const [label, setLabel] = useState('');
 
     const isWaitingForConfirm = modalContext === '@modal/context-device';
 
-    const onRename = async () => {
-        await dispatch(applySettings({ label }));
+    const onClick = () => {
         setState(null);
     };
 
@@ -177,7 +175,10 @@ export const FinalStep = () => {
                     </Heading>
                     {!state && (
                         <SetupActions>
-                            <StyledButton onClick={() => setState('rename')}>
+                            <StyledButton
+                                onClick={() => setState('rename')}
+                                isDisabled={isWaitingForConfirm}
+                            >
                                 <StyledIcon size={16} icon="PENCIL" />
                                 <Translation id="TR_DEVICE_SETTINGS_DEVICE_EDIT_LABEL" />
                             </StyledButton>
@@ -194,7 +195,7 @@ export const FinalStep = () => {
                                     ref={dropdownRef}
                                     alignMenu="right"
                                     offset={16}
-                                    isDisabled={!shouldOfferChangeHomescreen}
+                                    isDisabled={!shouldOfferChangeHomescreen || isWaitingForConfirm}
                                     items={[
                                         {
                                             key: 'dropdown',
@@ -228,28 +229,11 @@ export const FinalStep = () => {
                     )}
                     {state === 'rename' && (
                         <SetupActions>
-                            <Input
-                                noTopLabel
-                                noError
-                                value={label}
+                            <ChangeDeviceLabel
                                 placeholder={DEFAULT_LABEL}
-                                inputState={label.length > MAX_LABEL_LENGTH ? 'error' : undefined}
-                                onChange={(event: React.FormEvent<HTMLInputElement>) =>
-                                    setLabel(event.currentTarget.value)
-                                }
-                                data-test="@settings/device/label-input"
+                                onClick={onClick}
+                                isDeviceLocked={isDeviceLocked}
                             />
-                            <Button
-                                onClick={async () => {
-                                    await onRename();
-                                }}
-                                isDisabled={
-                                    isDeviceLocked || !label || label.length > MAX_LABEL_LENGTH
-                                }
-                                data-test="@settings/device/label-submit"
-                            >
-                                <Translation id="TR_DEVICE_SETTINGS_DEVICE_EDIT_LABEL" />
-                            </Button>
                         </SetupActions>
                     )}
 
