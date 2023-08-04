@@ -39,7 +39,6 @@ export type ExtraDependencies = {
     // That means you will need to convert actual action creators in packages/suite to use createAction from redux-toolkit,
     // but that shouldn't be problem.
     actions: {
-        setAccountLoadedMetadata: ActionCreatorWithPreparedPayload<[payload: Account], Account>;
         setAccountAddMetadata: ActionCreatorWithPreparedPayload<[payload: Account], Account>;
         setWalletSettingsLocalCurrency:
             | ActionCreatorWithPreparedPayload<

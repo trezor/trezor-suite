@@ -1,6 +1,7 @@
 import * as suiteActions from 'src/actions/suite/suiteActions';
 import * as routerActions from 'src/actions/suite/routerActions';
 import * as analyticsActions from 'src/actions/suite/analyticsActions';
+import * as metadataActions from 'src/actions/suite/metadataActions';
 import { initMessageSystemThunk } from '@suite-common/message-system';
 import * as languageActions from 'src/actions/settings/languageActions';
 import type { Dispatch, GetState } from 'src/types/suite';
@@ -57,6 +58,11 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
     // 7. dispatch initial location change
     dispatch(routerActions.init());
 
-    // 8. backend connected, suite is ready to use
+    // 8. fetch metadata. metadata is not saved together with other data in storage.
+    // historically it was saved in indexedDB together with devices and accounts and we did not need to load them
+    // immediately after suite start.
+    dispatch(metadataActions.fetchMetadata());
+
+    // 9. backend connected, suite is ready to use
     dispatch({ type: SUITE.READY });
 };

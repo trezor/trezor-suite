@@ -186,12 +186,12 @@ describe('account utils', () => {
             accountType: 'legacy',
             metadata: {
                 key: 'xpub-foo-bar',
-                fileName: '123',
-                aesKey: 'foo',
-                accountLabel: 'meow',
-                outputLabels: {},
-                addressLabels: {},
+                1: {
+                    fileName: '123',
+                    aesKey: 'foo',
+                },
             },
+            accountLabel: 'meow',
         });
 
         expect(accountSearchFn(btcAcc, 'btc')).toBe(true);
@@ -210,6 +210,7 @@ describe('account utils', () => {
         expect(accountSearchFn(btcAcc, 'ltc')).toBe(false);
         expect(accountSearchFn(btcAcc, 'litecoin')).toBe(false);
         expect(accountSearchFn(btcAcc, 'meow')).toBe(true);
+        expect(accountSearchFn(btcAcc, 'wuff', undefined, 'wuff')).toBe(true);
         expect(accountSearchFn(btcAcc, 'meo')).toBe(true);
         expect(accountSearchFn(btcAcc, 'eow')).toBe(true);
         expect(accountSearchFn(btcAcc, 'MEOW')).toBe(true);

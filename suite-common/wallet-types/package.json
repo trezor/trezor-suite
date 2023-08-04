@@ -11,6 +11,7 @@
     },
     "dependencies": {
         "@suite-common/intl-types": "workspace:*",
+        "@suite-common/metadata-types": "workspace:*",
         "@suite-common/suite-config": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",
         "@suite-common/wallet-constants": "workspace:*",

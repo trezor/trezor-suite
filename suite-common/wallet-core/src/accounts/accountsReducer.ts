@@ -83,7 +83,7 @@ export const prepareAccountsReducer = createReducerWithExtraDeps(
             .addCase(accountsActions.renameAccount, (state, action) => {
                 const { accountKey, accountLabel } = action.payload;
                 const accountByAccountKey = state.find(account => account.key === accountKey);
-                if (accountByAccountKey) accountByAccountKey.metadata.accountLabel = accountLabel;
+                if (accountByAccountKey) accountByAccountKey.accountLabel = accountLabel;
             })
             .addCase(accountsActions.changeAccountVisibility, (state, action) => {
                 update(state, action.payload);
@@ -102,16 +102,10 @@ export const prepareAccountsReducer = createReducerWithExtraDeps(
                 }
             })
             .addCase(extra.actionTypes.storageLoad, extra.reducers.storageLoadAccounts)
-            .addMatcher(
-                isAnyOf(
-                    extra.actions.setAccountLoadedMetadata,
-                    extra.actions.setAccountAddMetadata,
-                ),
-                (state, action) => {
-                    const { payload } = action;
-                    setMetadata(state, payload);
-                },
-            );
+            .addMatcher(isAnyOf(extra.actions.setAccountAddMetadata), (state, action) => {
+                const { payload } = action;
+                setMetadata(state, payload);
+            });
     },
 );
 
@@ -175,7 +169,7 @@ export const selectAccountLabel = (
 
     if (!account) return null;
 
-    return account.metadata.accountLabel ?? null;
+    return account.accountLabel ?? null;
 };
 
 export const selectAccountNetworkSymbol = (

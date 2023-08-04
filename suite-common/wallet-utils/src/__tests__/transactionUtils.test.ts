@@ -1,5 +1,4 @@
 import { WalletAccountTransaction } from '@suite-common/wallet-types';
-import { AccountMetadata } from '@suite-common/metadata-types';
 import { testMocks } from '@suite-common/test-utils';
 
 import * as fixtures from '../__fixtures__/transactionUtils';
@@ -165,7 +164,7 @@ describe('transaction utils', () => {
     });
 
     const transactions = stMock.transactions as WalletAccountTransaction[];
-    const metadata = stMock.metadata as AccountMetadata;
+    const metadata = stMock.labels;
     fixtures.searchTransactions.forEach(f => {
         it(`searchTransactions - ${f.description}`, () => {
             const search = advancedSearchTransactions(transactions, metadata, f.search);

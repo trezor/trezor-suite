@@ -158,7 +158,6 @@ const actions = [
     ROUTER.LOCATION_CHANGE,
     SUITE.SELECT_DEVICE,
     SUITE.UPDATE_SELECTED_DEVICE,
-    metadataActions.setAccountLoaded.type,
     metadataActions.setAccountAdd.type,
     accountsActions.createAccount.type,
     accountsActions.removeAccount.type,
