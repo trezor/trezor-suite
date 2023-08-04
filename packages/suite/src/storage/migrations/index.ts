@@ -89,6 +89,7 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
         await updateAll(transaction, 'accounts', account => {
             account.metadata = {
                 key: '',
+                // @ts-expect-error
                 fileName: '',
                 aesKey: '',
                 outputLabels: {},
@@ -375,6 +376,7 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
             // @ts-expect-error (token property removed)
             if (state.provider?.token) {
                 if (isDesktop()) {
+                    // @ts-expect-error (provider removed in later version)
                     state.provider.tokens = {
                         accessToken: '',
                         // @ts-expect-error
@@ -593,6 +595,88 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
                 device.features.internal_model = deviceInternalModel;
             }
             return device;
+        });
+    }
+    if (oldVersion < 39) {
+        await updateAll(transaction, 'accounts', account => {
+            // @ts-expect-error
+            if (!account.metadata?.fileName || !account.metadata?.aesKey) {
+                return;
+            }
+            account.metadata = {
+                key: account.metadata.key,
+                1: {
+                    // @ts-expect-error
+                    fileName: `${account.metadata.fileName}.mtdt`,
+                    // @ts-expect-error
+                    aesKey: account.metadata.aesKey,
+                },
+            };
+
+            return account;
+        });
+
+        await updateAll(transaction, 'devices', device => {
+            if (
+                device.metadata.status === 'enabled' &&
+                // @ts-expect-error
+                device.metadata.fileName &&
+                // @ts-expect-error
+                device.metadata.aesKey
+            ) {
+                device.metadata = {
+                    status: device.metadata.status,
+                    1: {
+                        // @ts-expect-error
+                        key: device.metadata.key,
+                        // @ts-expect-error
+                        fileName: `${device.metadata.fileName}.mtdt`,
+                        // @ts-expect-error
+                        aesKey: device.metadata.aesKey,
+                    },
+                };
+            }
+
+            return device;
+        });
+
+        await updateAll(transaction, 'metadata', metadata => {
+            const updatedMetadata = {
+                selectedProvider: { labels: '' },
+                providers: [],
+                enabled: metadata.enabled,
+            };
+            // @ts-expect-error
+            if (metadata.provider) {
+                let clientId: string;
+
+                // @ts-expect-error
+                switch (metadata.provider.type) {
+                    case 'dropbox':
+                        clientId = 'wg0yz2pbgjyhoda';
+                        break;
+                    case 'google':
+                        // select clientId supporting refresh tokens if refresh token was avaialble
+                        clientId =
+                            // @ts-expect-error
+                            metadata.provider.tokens?.refreshToken
+                                ? '705190185912-m4mrh55knjbg6gqhi72fr906a6n0b0u1.apps.googleusercontent.com'
+                                : '705190185912-nejegm4dbdecdaiumncbaa4ulrfnpk82.apps.googleusercontent.com';
+                        break;
+                    case 'fileSystem':
+                        clientId = 'fileSystem';
+                        break;
+                    default:
+                }
+                // @ts-expect-error
+                updatedMetadata.providers[0] = { ...metadata.provider, clientId, data: {} };
+                updatedMetadata.selectedProvider = {
+                    // @ts-expect-error
+                    labels: clientId,
+                };
+            }
+
+            return updatedMetadata;
         });
     }
 };
