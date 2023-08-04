@@ -380,18 +380,9 @@ const addButtonRequest = (
 
 const setMetadata = (draft: State, state: string, metadata: TrezorDevice['metadata']) => {
     const index = draft.findIndex(d => d.state === state);
-    if (!draft[index]) return;
-    // update state
-    draft[index].metadata = metadata;
-};
-
-const updateMetadata = (draft: State, state: string, walletLabel?: string) => {
-    const index = draft.findIndex(d => d.state === state);
-    if (!draft[index]) return;
-    const { metadata } = draft[index];
-    if (metadata.status !== 'enabled') return;
-    // update state
-    metadata.walletLabel = walletLabel;
+    const device = draft[index];
+    if (!device) return;
+    device.metadata = metadata;
 };
 
 const deviceReducer = (state: State = initialState, action: Action): State =>
@@ -438,10 +429,6 @@ const deviceReducer = (state: State = initialState, action: Action): State =>
                 break;
             case METADATA.SET_DEVICE_METADATA:
                 setMetadata(draft, action.payload.deviceState, action.payload.metadata);
-                break;
-            case METADATA.WALLET_LOADED:
-            case METADATA.WALLET_ADD:
-                updateMetadata(draft, action.payload.deviceState, action.payload.walletLabel);
                 break;
             // no default
         }

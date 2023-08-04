@@ -101,7 +101,7 @@ const initStore = (state: State) => {
             // automatically resolve modal decision
             switch (action.payload.type) {
                 case 'metadata-provider':
-                    await store.dispatch(metadataActions.connectProvider('dropbox'));
+                    await store.dispatch(metadataActions.connectProvider({ type: 'dropbox' }));
                     action.payload.decision.resolve(true);
                     break;
                 default:
@@ -163,8 +163,12 @@ describe('Metadata Actions', () => {
             const store = initStore(getInitialState(f.initialState));
             // @ts-expect-error, params
             await store.dispatch(metadataActions.addAccountMetadata(f.params));
+
+            const result = store.getActions();
             if (!f.result) {
-                expect(store.getActions().length).toEqual(0);
+                expect(result.length).toEqual(0);
+            } else {
+                expect(result).toEqual(f.result);
             }
         });
     });
@@ -203,6 +207,7 @@ describe('Metadata Actions', () => {
                             refreshToken: 'token',
                         },
                         user: 'power-user',
+                        clientId: 'meow',
                     },
                 });
 

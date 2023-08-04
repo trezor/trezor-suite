@@ -1,8 +1,5 @@
 {
-    "metadata": {
-        "key": "tpubDCZB6sR48s4T5Cr8qHUYSZEFCQMMHRg8AoVKVmvcAP5bRw7ArDKeoNwKAJujV3xCPkBvXH5ejSgbgyN6kREmF7sMd41NdbuHa8n1DZNxSMg",
-        "fileName": "7061500d8482d422b07cbd59784db51ae60f72a5c25f47d3d344888585e0c37d",
-        "aesKey": "16994717c3c3a64fefd0725e4e4599826ea82bdc1b56c3cf664541c83ccef7d4",
+    "labels": {
         "outputLabels": {
             "62431e78bb13a4fdd9c87517db1ea70b4cb5763227327da35748c96497c6ea9a": { "0": "Potato" },
             "f5cea29dec1d4e8b83a81b61627caf36adc33085284bde2969ae5beb75bd413c": { "1": "Onions" },

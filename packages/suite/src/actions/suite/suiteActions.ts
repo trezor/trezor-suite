@@ -522,8 +522,6 @@ const actions = [
     SUITE.REMEMBER_DEVICE,
     SUITE.FORGET_DEVICE,
     METADATA.SET_DEVICE_METADATA,
-    METADATA.WALLET_LOADED,
-    METADATA.WALLET_ADD,
     ...Object.values(DEVICE).filter(v => typeof v === 'string'),
 ];
 

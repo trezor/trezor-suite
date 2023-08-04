@@ -90,7 +90,7 @@ const log =
                     }),
                 );
                 break;
-            case METADATA.SET_PROVIDER:
+            case METADATA.ADD_PROVIDER:
                 api.dispatch(
                     addLog({
                         type: action.type,

@@ -5,6 +5,7 @@ import suiteReducer from 'src/reducers/suite/suiteReducer';
 import modalReducer from 'src/reducers/suite/modalReducer';
 import routerReducer from 'src/reducers/suite/routerReducer';
 import deviceReducer from 'src/reducers/suite/deviceReducer';
+import metadataReducer from 'src/reducers/suite/metadataReducer';
 import {
     prepareMessageSystemReducer,
     messageSystemActions,
@@ -56,6 +57,7 @@ const getInitialState = (initialRun?: boolean) => ({
     wallet: walletReducers(undefined, EMPTY_ACTION),
     messageSystem: messageSystemReducer(undefined, EMPTY_ACTION),
     devices: deviceReducer(undefined, EMPTY_ACTION),
+    metadata: metadataReducer(undefined, EMPTY_ACTION),
 });
 
 type Fixture = {
