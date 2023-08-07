@@ -214,7 +214,7 @@ const BottomText = styled.div<Pick<SelectProps, 'inputState'>>`
     display: flex;
     font-size: ${FONT_SIZE.TINY};
     color: ${({ inputState, theme }) => getInputStateTextColor(inputState, theme)};
-    padding: 10px 10px 0 10px;
+    padding: 6px 10px 0 10px;
     min-height: 27px;
 `;
 
