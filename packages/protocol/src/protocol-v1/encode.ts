@@ -1,26 +1,25 @@
 import ByteBuffer from 'bytebuffer';
 
-import { HEADER_SIZE, MESSAGE_HEADER_BYTE, BUFFER_SIZE } from './constants';
+import {
+    HEADER_SIZE,
+    MESSAGE_HEADER_BYTE,
+    BUFFER_SIZE,
+    MESSAGE_MAGIC_HEADER_BYTE,
+} from './constants';
 
-type Options<Chunked> = {
-    chunked: Chunked;
-    addTrezorHeaders: boolean;
+type Options = {
     messageType: number;
 };
 
-function encode(data: ByteBuffer, options: Options<true>): Buffer[];
-function encode(data: ByteBuffer, options: Options<false>): Buffer;
-function encode(data: any, options: any): any {
-    const { addTrezorHeaders, chunked, messageType } = options;
-    const fullSize = (addTrezorHeaders ? HEADER_SIZE : HEADER_SIZE - 2) + data.limit;
+export const encode = (data: ByteBuffer, options: Options): Buffer[] => {
+    const { messageType } = options;
+    const fullSize = HEADER_SIZE + data.limit;
 
     const encodedByteBuffer = new ByteBuffer(fullSize);
 
-    if (addTrezorHeaders) {
-        // 2*1 byte
-        encodedByteBuffer.writeByte(MESSAGE_HEADER_BYTE);
-        encodedByteBuffer.writeByte(MESSAGE_HEADER_BYTE);
-    }
+    // 2*1 byte
+    encodedByteBuffer.writeByte(MESSAGE_HEADER_BYTE);
+    encodedByteBuffer.writeByte(MESSAGE_HEADER_BYTE);
 
     // 2 bytes
     encodedByteBuffer.writeUint16(messageType);
@@ -33,26 +32,29 @@ function encode(data: any, options: any): any {
 
     encodedByteBuffer.reset();
 
-    if (chunked === false) {
-        return encodedByteBuffer;
-    }
+    const size = BUFFER_SIZE - 1;
 
-    const result: Buffer[] = [];
-    const size = BUFFER_SIZE;
+    const chunkCount = Math.ceil(encodedByteBuffer.limit / size) || 1;
 
+    // size with one reserved byte for header
+
+    const result = [];
     // How many pieces will there actually be
-    const count = Math.floor((encodedByteBuffer.limit - 1) / size) + 1 || 1;
-
     // slice and dice
-    for (let i = 0; i < count; i++) {
+    for (let i = 0; i < chunkCount; i++) {
         const start = i * size;
         const end = Math.min((i + 1) * size, encodedByteBuffer.limit);
+
+        const buffer = new ByteBuffer(BUFFER_SIZE);
+
+        buffer.writeByte(MESSAGE_MAGIC_HEADER_BYTE);
+
         const slice = encodedByteBuffer.slice(start, end);
         slice.compact();
-        result.push(slice.buffer);
+
+        buffer.append(slice);
+        result.push(buffer.buffer);
     }
 
     return result;
-}
-
-export { encode };
+};
