@@ -37,7 +37,7 @@ export const scanAccount = async (
 
     const addresses = new CoinjoinAddressController(xpub, network, checkpoints[0], params.cache);
 
-    let checkpoint = checkpoints[0];
+    let [checkpoint] = checkpoints;
     const checkpointCooldown = createCooldown(CHECKPOINT_COOLDOWN);
 
     const txs = new Set<BlockbookTransaction>();
@@ -90,8 +90,11 @@ export const scanAccount = async (
             pending = mempool.getTransactions(addresses).map(transformTx(xpub, addresses));
         }
 
-        checkpoint.receiveCount = addresses.receive.length;
-        checkpoint.changeCount = addresses.change.length;
+        checkpoint = {
+            ...checkpoint,
+            receiveCount: addresses.receive.length,
+            changeCount: addresses.change.length,
+        };
     }
 
     const cache = {
