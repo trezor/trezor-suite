@@ -269,6 +269,9 @@ export class PopupManager extends EventEmitter {
             }
             // popup is successfully loaded
             this.iframeHandshake.promise.then(payload => {
+                // send ConnectSettings to popup
+                // note this settings and iframe.ConnectSettings could be different (especially: origin, popup, webusb, debug)
+                // now popup is able to load assets
                 this.popupWindow.postMessage(
                     {
                         type: POPUP.INIT,
@@ -280,15 +283,12 @@ export class PopupManager extends EventEmitter {
                     this.origin,
                 );
             });
-            // send ConnectSettings to popup
-            // note this settings and iframe.ConnectSettings could be different (especially: origin, popup, webusb, debug)
-            // now popup is able to load assets
         } else if (data.type === POPUP.CANCEL_POPUP_REQUEST || data.type === UI.CLOSE_UI_WINDOW) {
-            this.clear();
+            this.clear(false);
         }
     }
 
-    clear() {
+    clear(focus = true) {
         this.locked = false;
         this.popupPromise = undefined;
 
@@ -312,7 +312,8 @@ export class PopupManager extends EventEmitter {
         }
 
         // switch to previously focused tab
-        if (this.extensionTabId) {
+
+        if (focus && this.extensionTabId) {
             chrome.tabs.update(this.extensionTabId, { active: true });
             this.extensionTabId = 0;
         }
