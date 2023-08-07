@@ -12,7 +12,7 @@ import { PanGestureHandler, PanGestureHandlerGestureEvent } from 'react-native-g
 import { TouchableWithoutFeedback } from 'react-native';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Box, Text } from '@suite-native/atoms';
+import { Box, HStack, Text } from '@suite-native/atoms';
 import { InvertedThemeProvider } from '@suite-native/theme';
 
 type NotificationProps = {
@@ -29,7 +29,7 @@ const DISMISS_THRESHOLD = -25;
 const HIDDEN_OFFSET = -200;
 
 const ENTER_ANIMATION_DURATION = 1000;
-const EXIT_ANIMATION_DURATION = 1000;
+const EXIT_ANIMATION_DURATION = 500;
 const NOTIFICATION_VISIBLE_DURATION = 5000 + ENTER_ANIMATION_DURATION + EXIT_ANIMATION_DURATION;
 
 const notificationContainerStyle = prepareNativeStyle(utils => ({
@@ -41,6 +41,14 @@ const notificationContainerStyle = prepareNativeStyle(utils => ({
     backgroundColor: utils.colors.backgroundNeutralBold,
     paddingHorizontal: utils.spacings.small / 2,
     ...utils.boxShadows.small,
+}));
+
+const notificationContentStyle = prepareNativeStyle(_ => ({
+    flexShrink: 1,
+}));
+
+const notificationTextsStyle = prepareNativeStyle(_ => ({
+    flexShrink: 1,
 }));
 
 export const Notification = ({
@@ -105,27 +113,36 @@ export const Notification = ({
     };
 
     return (
-        <InvertedThemeProvider>
-            <PanGestureHandler onGestureEvent={onSwipeGesture}>
-                <Animated.View
-                    style={swipeGestureStyle}
-                    entering={runEnteringAnimation}
-                    exiting={SlideOutUp.duration(EXIT_ANIMATION_DURATION)}
-                >
-                    <TouchableWithoutFeedback onPress={onPress}>
-                        <Box style={applyStyle(notificationContainerStyle)}>
-                            <Box flexDirection="row">
-                                {iconLeft}
-                                <Box marginLeft="medium">
-                                    <Text>{title}</Text>
-                                    {description}
-                                </Box>
-                            </Box>
-                            <Box marginRight="small">{iconRight}</Box>
-                        </Box>
-                    </TouchableWithoutFeedback>
-                </Animated.View>
-            </PanGestureHandler>
-        </InvertedThemeProvider>
+        <Box>
+            <InvertedThemeProvider>
+                <PanGestureHandler onGestureEvent={onSwipeGesture}>
+                    <Animated.View
+                        style={swipeGestureStyle}
+                        entering={runEnteringAnimation}
+                        exiting={SlideOutUp.duration(EXIT_ANIMATION_DURATION)}
+                    >
+                        <TouchableWithoutFeedback onPress={onPress}>
+                            <HStack
+                                spacing="extraLarge"
+                                style={applyStyle(notificationContainerStyle)}
+                            >
+                                <HStack
+                                    spacing={12}
+                                    flexDirection="row"
+                                    style={applyStyle(notificationContentStyle)}
+                                >
+                                    {iconLeft}
+                                    <Box style={applyStyle(notificationTextsStyle)}>
+                                        <Text>{title}</Text>
+                                        {description}
+                                    </Box>
+                                </HStack>
+                                <Box marginHorizontal="small">{iconRight}</Box>
+                            </HStack>
+                        </TouchableWithoutFeedback>
+                    </Animated.View>
+                </PanGestureHandler>
+            </InvertedThemeProvider>
+        </Box>
     );
 };
