@@ -36,7 +36,8 @@ grep -hv -e '^import ' -e '^syntax' -e '^package' -e 'option java_' "$SRC"/messa
 | grep -v '    reserved '>> "$DIST"/messages.proto
 
 # BUILD messages.json from message.proto
-npx pbjs -t json -p "$DIST" -o "$DIST"/messages.json --keep-case messages.proto
+# pbjs command is added by protobufjs-cli package
+yarn pbjs -t json -p "$DIST" -o "$DIST"/messages.json --keep-case messages.proto
 rm "$DIST"/messages.proto
 
 cd "$PARENT_PATH"
