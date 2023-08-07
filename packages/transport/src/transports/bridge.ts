@@ -2,8 +2,8 @@ import { versionUtils, createDeferred, Deferred, createTimeoutPromise } from '@t
 import { PROTOCOL_MALFORMED } from '@trezor/protocol';
 import { bridgeApiCall } from '../utils/bridgeApiCall';
 import * as bridgeApiResult from '../utils/bridgeApiResult';
-import { buildOne } from '../lowlevel/send';
-import { receiveOne } from '../lowlevel/receive';
+import { buildOne } from '../utils/send';
+import { receiveOne } from '../utils/receive';
 import { AbstractTransport, AcquireInput, ReleaseInput } from './abstract';
 
 import * as ERRORS from '../errors';

@@ -1,8 +1,8 @@
 import { createDeferred, Deferred } from '@trezor/utils';
 
 import { AbstractTransport, AcquireInput, ReleaseInput } from './abstract';
-import { buildAndSend } from '../lowlevel/send';
-import { receiveAndParse } from '../lowlevel/receive';
+import { buildAndSend } from '../utils/send';
+import { receiveAndParse } from '../utils/receive';
 import { SessionsClient } from '../sessions/client';
 import * as ERRORS from '../errors';
 import type { UsbInterface } from '../interfaces/usb';

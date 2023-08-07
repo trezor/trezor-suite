@@ -1,7 +1,7 @@
 import * as protobuf from 'protobufjs/light';
 
-import { buildOne, buildBuffers } from '../src/lowlevel/send';
-import { receiveOne, receiveAndParse } from '../src/lowlevel/receive';
+import { buildOne, buildBuffers } from '../src/utils/send';
+import { receiveOne, receiveAndParse } from '../src/utils/receive';
 
 const messages = {
     StellarPaymentOp: {
