@@ -113,11 +113,7 @@ export class UsbInterface extends AbstractInterface {
                 return this.error({ error: ERRORS.INTERFACE_DATA_TRANSFER });
             }
 
-            if (res.data.byteLength === 0) {
-                return this.read(path);
-            }
-
-            return this.success(res.data.buffer.slice(1));
+            return this.success(res.data.buffer);
         } catch (err) {
             if (err.message === INTERFACE_DEVICE_DISCONNECTED) {
                 return this.error({ error: ERRORS.DEVICE_DISCONNECTED_DURING_ACTION });
@@ -133,8 +129,7 @@ export class UsbInterface extends AbstractInterface {
         }
 
         const newArray = new Uint8Array(64);
-        newArray[0] = 63;
-        newArray.set(new Uint8Array(buffer), 1);
+        newArray.set(new Uint8Array(buffer));
 
         try {
             // https://wicg.github.io/webusb/#ref-for-dom-usbdevice-transferout
