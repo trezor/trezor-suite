@@ -1,5 +1,6 @@
 interface AccountMetadata {
     accountLabel?: string;
+    [key: string]: any;
 }
 
 type OldAccount = {
