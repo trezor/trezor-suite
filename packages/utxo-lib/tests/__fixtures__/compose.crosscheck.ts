@@ -14,7 +14,7 @@ export default [
                 {
                     address: 'replace-me',
                     amount: '100000',
-                    type: 'complete',
+                    type: 'payment',
                 },
             ],
         },
@@ -54,7 +54,7 @@ export default [
                 {
                     address: 'replace-me',
                     amount: '100000',
-                    type: 'complete',
+                    type: 'payment',
                 },
             ],
         },
@@ -106,7 +106,7 @@ export default [
                 {
                     address: 'replace-me',
                     amount: '100000',
-                    type: 'complete',
+                    type: 'payment',
                 },
             ],
         },
@@ -189,27 +189,27 @@ export default [
                 {
                     address: 'p2pkh',
                     amount: '50000',
-                    type: 'complete',
+                    type: 'payment',
                 },
                 {
                     address: 'p2sh',
                     amount: '50000',
-                    type: 'complete',
+                    type: 'payment',
                 },
                 {
                     address: 'p2tr',
                     amount: '25000',
-                    type: 'complete',
+                    type: 'payment',
                 },
                 {
                     address: 'p2wpkh',
                     amount: '20000',
-                    type: 'complete',
+                    type: 'payment',
                 },
                 {
                     address: 'p2wsh',
                     amount: '20000',
-                    type: 'complete',
+                    type: 'payment',
                 },
                 {
                     type: 'opreturn',

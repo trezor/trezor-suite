@@ -77,7 +77,7 @@ describe('composeTx addresses cross-check', () => {
                             amount: utxo.amount === 'replace-me' ? amounts[txType] : utxo.amount,
                         })),
                         outputs: f.request.outputs.map(o => {
-                            if (o.type === 'complete') {
+                            if (o.type === 'payment') {
                                 return {
                                     ...o,
                                     address:

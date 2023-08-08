@@ -5,11 +5,7 @@ export function splitByCompleteness(outputs: ComposeOutput[]) {
     const incomplete: ComposeNotFinalOutput[] = [];
 
     outputs.forEach(output => {
-        if (
-            output.type === 'complete' ||
-            output.type === 'send-max' ||
-            output.type === 'opreturn'
-        ) {
+        if (output.type === 'payment' || output.type === 'send-max' || output.type === 'opreturn') {
             complete.push(output);
         } else {
             incomplete.push(output);

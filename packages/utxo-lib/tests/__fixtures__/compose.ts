@@ -21,7 +21,7 @@ export default [
                 {
                     address: '1BitcoinEaterAddressDontSendf59kuE',
                     amount: '100000',
-                    type: 'complete',
+                    type: 'payment',
                 },
             ],
             utxos: [UTXO],
@@ -59,7 +59,7 @@ export default [
                 {
                     address: '1BitcoinEaterAddressDontSendf59kuE',
                     amount: '100000',
-                    type: 'complete',
+                    type: 'payment',
                 },
             ],
             utxos: [UTXO],
@@ -86,7 +86,7 @@ export default [
         },
     },
     {
-        description: 'builds an incomplete tx without change',
+        description: 'builds an inpayment tx without change',
         request: {
             basePath: [44, 1],
             changeAddress: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT',
@@ -96,7 +96,7 @@ export default [
             outputs: [
                 {
                     amount: '100000',
-                    type: 'noaddress',
+                    type: 'payment-noaddress',
                 },
             ],
             utxos: [UTXO],
@@ -121,7 +121,7 @@ export default [
             outputs: [
                 {
                     amount: '100000',
-                    type: 'noaddress',
+                    type: 'payment-noaddress',
                 },
             ],
             utxos: [
@@ -305,7 +305,7 @@ export default [
                 {
                     address: '1BitcoinEaterAddressDontSendf59kuE',
                     amount: '100000',
-                    type: 'complete',
+                    type: 'payment',
                 },
             ],
             utxos: [UTXO],
@@ -327,7 +327,7 @@ export default [
                 {
                     address: '1BitcoinEaterAddressDontSendf59kuE',
                     amount: '100000',
-                    type: 'complete',
+                    type: 'payment',
                 },
             ],
             utxos: [UTXO],
@@ -349,12 +349,12 @@ export default [
                 {
                     address: '1BitcoinEaterAddressDontSendf59kuE',
                     amount: '30000',
-                    type: 'complete',
+                    type: 'payment',
                 },
                 {
                     address: '1LetUsDestroyBitcoinTogether398Nrg',
                     amount: '20000',
-                    type: 'complete',
+                    type: 'payment',
                 },
             ],
             utxos: [UTXO],
@@ -400,12 +400,12 @@ export default [
                 {
                     address: '1BitcoinEaterAddressDontSendf59kuE',
                     amount: '30000',
-                    type: 'complete',
+                    type: 'payment',
                 },
                 {
                     address: '1LetUsDestroyBitcoinTogether398Nrg',
                     amount: '20000',
-                    type: 'complete',
+                    type: 'payment',
                 },
             ],
             utxos: [UTXO],
@@ -452,12 +452,12 @@ export default [
                 {
                     address: '3LRW7jeCvQCRdPF8S3yUCfRAx4eqXFmdcr',
                     amount: '30000',
-                    type: 'complete',
+                    type: 'payment',
                 },
                 {
                     address: '3FyVFsEyyBPzHjD3qUEgX7Jsn4tcHNZFkn',
                     amount: '20000',
-                    type: 'complete',
+                    type: 'payment',
                 },
             ],
             utxos: [UTXO],
@@ -503,7 +503,7 @@ export default [
                 {
                     address: '1BitcoinEaterAddressDontSendf59kuE',
                     amount: '100000',
-                    type: 'complete',
+                    type: 'payment',
                 },
             ],
             utxos: [
@@ -583,7 +583,7 @@ export default [
                 {
                     address: '1BitcoinEaterAddressDontSendf59kuE',
                     amount: '200000',
-                    type: 'complete',
+                    type: 'payment',
                 },
             ],
             utxos: [
@@ -640,12 +640,12 @@ export default [
                 {
                     address: '3LRW7jeCvQCRdPF8S3yUCfRAx4eqXFmdcr',
                     amount: '30000',
-                    type: 'complete',
+                    type: 'payment',
                 },
                 {
                     address: '1LetUsDestroyBitcoinTogether398Nrg',
                     amount: '30000',
-                    type: 'complete',
+                    type: 'payment',
                 },
             ],
             utxos: [UTXO],
@@ -692,7 +692,7 @@ export default [
                 {
                     address: '3LRW7jeCvQCRdPF8S3yUCfRAx4eqXFmdcr',
                     amount: '928960',
-                    type: 'complete',
+                    type: 'payment',
                 },
             ],
             utxos: [
@@ -837,7 +837,7 @@ export default [
                 {
                     address: 'bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq',
                     amount: '100000',
-                    type: 'complete',
+                    type: 'payment',
                 },
             ],
             utxos: [
@@ -887,7 +887,7 @@ export default [
                 {
                     address: 'bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq',
                     amount: '100000',
-                    type: 'complete',
+                    type: 'payment',
                 },
             ],
             utxos: [
@@ -940,7 +940,7 @@ export default [
                 {
                     address: '3NukJ6fYZJ5Kk8bPjycAnruZkE5Q7UW7i8',
                     amount: '100000',
-                    type: 'complete',
+                    type: 'payment',
                 },
             ],
             utxos: [{ ...UTXO, amount: '101500' }],
@@ -980,7 +980,7 @@ export default [
                 {
                     address: '3NukJ6fYZJ5Kk8bPjycAnruZkE5Q7UW7i8',
                     amount: '100000',
-                    type: 'complete',
+                    type: 'payment',
                 },
             ],
             utxos: [
@@ -1033,7 +1033,7 @@ export default [
                 {
                     address: 'bc1ptxs597p3fnpd8gwut5p467ulsydae3rp9z75hd99w8k3ljr9g9rqx6ynaw',
                     amount: '100000',
-                    type: 'complete',
+                    type: 'payment',
                 },
             ],
             utxos: [
@@ -1084,7 +1084,7 @@ export default [
                 {
                     address: 'bc1ptxs597p3fnpd8gwut5p467ulsydae3rp9z75hd99w8k3ljr9g9rqx6ynaw',
                     amount: '100000',
-                    type: 'complete',
+                    type: 'payment',
                 },
             ],
             utxos: [
@@ -1162,7 +1162,7 @@ export default [
                 {
                     address: 'bitcoincash:qp6e6enhpy0fwwu7nkvlr8rgl06ru0c9lywalz8st5',
                     amount: '100000',
-                    type: 'complete',
+                    type: 'payment',
                 },
             ],
             utxos: [UTXO],
@@ -1200,7 +1200,7 @@ export default [
                 {
                     address: '1BitcoinEaterAddressDontSendf59kuE',
                     amount: '100000',
-                    type: 'complete',
+                    type: 'payment',
                 },
             ],
             utxos: [
@@ -1297,7 +1297,7 @@ export default [
                 {
                     address: '1BitcoinEaterAddressDontSendf59kuE',
                     amount: '70000',
-                    type: 'complete',
+                    type: 'payment',
                 },
             ],
             utxos: [
@@ -1375,7 +1375,7 @@ export default [
                 {
                     address: 'DDn7UV1CrqVefzwrHyw7H2zEZZKqfzR2ZD',
                     amount: '11556856849999734000',
-                    type: 'complete',
+                    type: 'payment',
                 },
             ],
             utxos: [
