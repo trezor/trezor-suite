@@ -21,12 +21,6 @@ describe('composeTx', () => {
             if (result.transaction) {
                 const o = result.transaction.PERM_outputs;
                 const sorted = JSON.parse(JSON.stringify(o.sorted));
-                sorted.forEach((ss: any) => {
-                    const s = ss;
-                    if (s.opReturnData != null) {
-                        s.opReturnData = Buffer.from(s.opReturnData);
-                    }
-                });
                 result.transaction.outputs = new Permutation(sorted, o.permutation);
                 delete result.transaction.PERM_outputs;
             }

@@ -194,8 +194,8 @@ export function verifyTxBytes(
     });
 
     tx.transaction.outputs.sorted.forEach(out => {
-        if (out.opReturnData) {
-            calc.addOutput({ length: 2 + out.opReturnData.length });
+        if (out.dataHex) {
+            calc.addOutput({ length: 2 + out.dataHex.length / 2 });
         }
         if (out.address) {
             calc.addOutput({ length: baddress.toOutputScript(out.address, network).length });
