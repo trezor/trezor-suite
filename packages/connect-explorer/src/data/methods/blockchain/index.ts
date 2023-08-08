@@ -16,6 +16,7 @@ const select = [
     { value: 'vtc', label: 'Vertcoin' },
     { value: 'eth', label: 'Ethereum' },
     { value: 'etc', label: 'Ethereum Classic' },
+    { value: 'tsep', label: 'Sepolia' },
     { value: 'tgor', label: 'Goerli' },
 ];
 

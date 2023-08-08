@@ -20,6 +20,25 @@
     {
         "blockchain_link": {
             "type": "blockbook",
+            "url": ["https://sepolia1.trezor.io"]
+        },
+        "chain": "sep",
+        "chain_id": 11155111,
+        "name": "Sepolia",
+        "rskip60": false,
+        "shortcut": "tSEP",
+        "slip44": 1,
+        "support": {
+            "connect": true,
+            "suite": false,
+            "trezor1": "1.11.2",
+            "trezor2": "2.5.2"
+        },
+        "url": "https://sepolia.otterscan.io"
+    },
+    {
+        "blockchain_link": {
+            "type": "blockbook",
             "url": ["https://goerli1.trezor.io", "https://goerli2.trezor.io"]
         },
         "chain": "gor",
