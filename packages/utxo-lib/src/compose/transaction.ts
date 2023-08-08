@@ -5,22 +5,12 @@ import { Permutation } from './permutation';
 import {
     ComposeInput,
     ComposeFinalOutput,
-    ComposedTxInput,
     ComposedTxOutput,
     ComposedTransaction,
     CoinSelectInput,
     CoinSelectOutputFinal,
 } from '../types';
 import type { Network } from '../networks';
-
-function convertInput(utxo: ComposeInput, basePath: number[]): ComposedTxInput {
-    return {
-        txid: utxo.txid,
-        vout: utxo.vout,
-        path: basePath.concat([...utxo.addressPath]),
-        amount: utxo.amount,
-    };
-}
 
 function convertOpReturnOutput(opReturnData: string) {
     const opReturnDataBuffer = Buffer.from(opReturnData, 'hex');
@@ -59,7 +49,7 @@ function convertOutput(
     };
 }
 
-function inputComparator(a: ComposedTxInput, b: ComposedTxInput) {
+function inputComparator(a: ComposeInput, b: ComposeInput) {
     return Buffer.from(a.txid, 'hex').compare(Buffer.from(b.txid, 'hex')) || a.vout - b.vout;
 }
 
@@ -67,8 +57,8 @@ function outputComparator(aScript: Buffer, aValue: string, bScript: Buffer, bVal
     return new BN(aValue).cmp(new BN(bValue)) || aScript.compare(bScript);
 }
 
-export function createTransaction(
-    allInputs: ComposeInput[],
+export function createTransaction<Input extends ComposeInput>(
+    allInputs: Input[],
     selectedInputs: CoinSelectInput[],
     allOutputs: ComposeFinalOutput[],
     selectedOutputs: CoinSelectOutputFinal[],
@@ -77,8 +67,8 @@ export function createTransaction(
     changeAddress: string,
     network: Network,
     skipPermutation?: boolean,
-): ComposedTransaction {
-    const convertedInputs = selectedInputs.map(input => convertInput(allInputs[input.i], basePath));
+): ComposedTransaction<Input> {
+    const convertedInputs = selectedInputs.map(input => allInputs[input.i]);
     const convertedOutputs = selectedOutputs.map((output, i) => {
         // change is always last
         const isChange = i === allOutputs.length;
