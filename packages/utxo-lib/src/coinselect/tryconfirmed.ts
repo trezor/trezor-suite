@@ -1,4 +1,4 @@
-import { filterCoinbase } from './utils';
+import { filterCoinbase } from './coinselectUtils';
 import { CoinSelectAlgorithm, CoinSelectOptions, CoinSelectInput } from '../types';
 
 function filterUtxos(utxos: CoinSelectInput[], minConfOwn: number, minConfOther: number) {

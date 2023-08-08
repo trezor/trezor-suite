@@ -1,6 +1,6 @@
 import { accumulative } from './inputs/accumulative';
 import { bnb } from './inputs/bnb';
-import { sortByScore, anyOf } from './utils';
+import { sortByScore, anyOf } from './coinselectUtils';
 import { tryConfirmed } from './tryconfirmed';
 import { CoinSelectInput, CoinSelectOutput, CoinSelectOptions } from '../types';
 

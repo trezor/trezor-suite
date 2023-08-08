@@ -1,6 +1,6 @@
-import { bignumberOrNaN, getFee } from '../../src/coinselect/utils';
+import { bignumberOrNaN, getFee } from '../../src/coinselect/coinselectUtils';
 
-describe('coinselect utils', () => {
+describe('coinselectUtils', () => {
     it('bignumberOrNaN', () => {
         expect(bignumberOrNaN('1')).not.toBeUndefined();
         expect(bignumberOrNaN('1.1')).toBeUndefined();

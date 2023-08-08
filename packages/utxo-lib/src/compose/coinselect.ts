@@ -1,8 +1,8 @@
 import * as BN from 'bn.js';
 import { split as bitcoinJsSplit } from '../coinselect/outputs/split';
 import { coinselect as bitcoinJsCoinselect } from '../coinselect';
-import { transactionBytes } from '../coinselect/utils';
-import * as utils from './utils';
+import { transactionBytes } from '../coinselect/coinselectUtils';
+import { convertInputs, convertOutputs } from './composeUtils';
 import {
     ComposeInput,
     ComposeOutput,
@@ -28,8 +28,8 @@ export function coinselect(
     dustOutputFee?: number,
     skipPermutation?: boolean,
 ): CoinSelectSuccess | CoinSelectFailure {
-    const inputs0 = utils.convertInputs(utxos, height, txType);
-    const outputs0 = utils.convertOutputs(rOutputs, network, txType);
+    const inputs0 = convertInputs(utxos, height, txType);
+    const outputs0 = convertOutputs(rOutputs, network, txType);
     const options: CoinSelectOptions = {
         txType,
         dustThreshold,
