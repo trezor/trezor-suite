@@ -19,7 +19,6 @@ import {
     selectDiscovery,
     selectDiscoveryByDeviceState,
 } from 'src/reducers/wallet/discoveryReducer';
-import { selectDevices } from 'src/reducers/suite/deviceReducer';
 
 const MODULE_PREFIX = '@common/wallet-core/discovery';
 
@@ -85,7 +84,7 @@ const calculateProgress =
         };
     };
 
-const handleProgress = createThunk(
+const handleProgressThunk = createThunk(
     `${MODULE_PREFIX}/handleProgress`,
     (
         {
@@ -171,7 +170,7 @@ const filterUnavailableNetworks = (enabledNetworks: Account['symbol'][], device?
         );
     });
 
-const getBundle = createThunk(
+const getBundleThunk = createThunk(
     `${MODULE_PREFIX}/getBundle`,
     ({ discovery, device }: { discovery: Discovery; device: TrezorDevice }, { getState }) => {
         const bundle: DiscoveryItem[] = [];
@@ -235,11 +234,11 @@ const getBundle = createThunk(
     },
 );
 
-export const updateNetworkSettings = createThunk(
+export const updateNetworkSettingsThunk = createThunk(
     `${MODULE_PREFIX}/updateNetworkSettings`,
     (_, { dispatch, getState, extra }) => {
         const {
-            selectors: { selectEnabledNetworks },
+            selectors: { selectEnabledNetworks, selectDevices },
         } = extra;
         const enabledNetworks = selectEnabledNetworks(getState());
         const discovery = selectDiscovery(getState());
@@ -267,7 +266,7 @@ export const updateNetworkSettings = createThunk(
     },
 );
 
-const getAvailableCardanoDerivations = createThunk(
+const getAvailableCardanoDerivationsThunk = createThunk(
     `${MODULE_PREFIX}/getAvailableCardanoDerivations`,
     async (
         { deviceState, device }: { deviceState: string; device: TrezorDevice },
@@ -345,7 +344,7 @@ const getAvailableCardanoDerivations = createThunk(
     },
 );
 
-export const create = createThunk(
+export const createDiscoveryThunk = createThunk(
     `${MODULE_PREFIX}/create`,
     (
         { deviceState, device }: { deviceState: string; device: TrezorDevice },
@@ -374,7 +373,7 @@ export const create = createThunk(
     },
 );
 
-export const start = createThunk(
+export const startDiscoveryThunk = createThunk(
     `${MODULE_PREFIX}/start`,
     async (_, { dispatch, getState, extra }): Promise<void> => {
         const {
@@ -449,7 +448,7 @@ export const start = createThunk(
         ) {
             // check if discovery of legacy (icarus-trezor) or ledger accounts is needed and update discovery accordingly
             availableCardanoDerivations = await dispatch(
-                getAvailableCardanoDerivations({ deviceState, device }),
+                getAvailableCardanoDerivationsThunk({ deviceState, device }),
             ).unwrap();
             if (!availableCardanoDerivations) {
                 // Edge case where getAvailableCardanoDerivations dispatches error, stops discovery and returns undefined.
@@ -466,7 +465,7 @@ export const start = createThunk(
 
         // prepare bundle of accounts to discover, exclude unsupported account types
         const bundle = await dispatch(
-            getBundle({
+            getBundleThunk({
                 discovery: { ...discovery, availableCardanoDerivations },
                 device,
             }),
@@ -514,7 +513,12 @@ export const start = createThunk(
             const { progress } = event;
             // pass more parameters to handler
             dispatch(
-                handleProgress({ event, deviceState, item: bundle[progress], metadataEnabled }),
+                handleProgressThunk({
+                    event,
+                    deviceState,
+                    item: bundle[progress],
+                    metadataEnabled,
+                }),
             );
         };
 
@@ -554,7 +558,7 @@ export const start = createThunk(
                 await dispatch(initMetadata(false));
             }
             if (currentDiscovery.status === DiscoveryStatus.RUNNING) {
-                await dispatch(start()); // try next index
+                await dispatch(startDiscoveryThunk()); // try next index
             } else if (currentDiscovery.status === DiscoveryStatus.STOPPING) {
                 dispatch(stopDiscovery({ deviceState, status: DiscoveryStatus.STOPPED }));
             } else {
@@ -606,7 +610,7 @@ export const start = createThunk(
                         }),
                     );
 
-                    await dispatch(start()); // restart process, exclude failed coins
+                    await dispatch(startDiscoveryThunk()); // restart process, exclude failed coins
                     return;
                 } catch (error) {
                     // do nothing. error will be handled in lower block
@@ -640,25 +644,28 @@ export const start = createThunk(
     },
 );
 
-export const stop = createThunk(`${MODULE_PREFIX}/stop`, (_, { dispatch, getState, extra }) => {
-    const {
-        selectors: { selectDiscoveryForDevice },
-    } = extra;
-    const discovery = selectDiscoveryForDevice(getState());
-    if (discovery && discovery.running) {
-        dispatch(
-            interruptDiscovery({
-                deviceState: discovery.deviceState,
-                status: DiscoveryStatus.STOPPING,
-            }),
-        );
-        TrezorConnect.cancel('discovery_interrupted');
+export const stopDiscoveryThunk = createThunk(
+    `${MODULE_PREFIX}/stop`,
+    (_, { dispatch, getState, extra }) => {
+        const {
+            selectors: { selectDiscoveryForDevice },
+        } = extra;
+        const discovery = selectDiscoveryForDevice(getState());
+        if (discovery && discovery.running) {
+            dispatch(
+                interruptDiscovery({
+                    deviceState: discovery.deviceState,
+                    status: DiscoveryStatus.STOPPING,
+                }),
+            );
+            TrezorConnect.cancel('discovery_interrupted');
 
-        return discovery.running.promise;
-    }
-});
+            return discovery.running.promise;
+        }
+    },
+);
 
-export const restart = createThunk(
+export const restartDiscoveryThunk = createThunk(
     `${MODULE_PREFIX}/restart`,
     async (_, { dispatch, getState, extra }) => {
         const {
@@ -678,7 +685,7 @@ export const restart = createThunk(
                 failed: [],
             }),
         );
-        await dispatch(start());
+        await dispatch(startDiscoveryThunk());
     },
 );
 

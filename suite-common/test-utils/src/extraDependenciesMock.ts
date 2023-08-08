@@ -73,8 +73,10 @@ export const extraDependenciesMock: ExtraDependencies = {
             transports: [],
         }),
         selectMetadata: mockSelector('selectMetadata', {}),
-        selectDevice: mockSelector('selectDevice', {} as any),
-        selectDiscoveryForDevice: mockSelector('selectDiscoveryForDevice', {} as any),
+        selectDevice: mockSelector('selectDevice', {
+            ...testMocks.getSuiteDevice(),
+        }),
+        selectDiscoveryForDevice: mockSelector('selectDiscoveryForDevice', undefined),
     },
     actions: {
         setAccountAddMetadata: mockAction('setAccountAddMetadata'),

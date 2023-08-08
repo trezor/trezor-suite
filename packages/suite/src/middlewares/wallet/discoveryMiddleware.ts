@@ -58,7 +58,7 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
         // discovery interruption ends after DISCOVERY.STOP action
         // action which triggers this interruption will be propagated AFTER stop
         if (interruptionIntent && discoveryIsRunning) {
-            await dispatch(discoveryActions.stop());
+            await dispatch(discoveryActions.stopDiscoveryThunk());
         }
 
         // pass action
@@ -66,7 +66,7 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
 
         if (walletSettingsActions.changeNetworks.match(action)) {
             // update Discovery fields
-            dispatch(discoveryActions.updateNetworkSettings());
+            dispatch(discoveryActions.updateNetworkSettingsThunk());
             // remove accounts which are no longer part of Discovery
             dispatch(disableAccountsThunk());
         }
@@ -119,7 +119,7 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
             // `device` is always present here
             // to avoid typescript conditioning use device from action as a fallback (never used)
             dispatch(
-                discoveryActions.create({
+                discoveryActions.createDiscoveryThunk({
                     deviceState: action.state,
                     device: device || action.payload,
                 }),
@@ -157,7 +157,7 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
                 (discovery.status === DiscoveryStatus.IDLE ||
                     discovery.status >= DiscoveryStatus.STOPPED)
             ) {
-                dispatch(discoveryActions.start());
+                dispatch(discoveryActions.startDiscoveryThunk());
             }
         }
 

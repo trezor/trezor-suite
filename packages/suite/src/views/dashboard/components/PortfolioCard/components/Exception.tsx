@@ -1,4 +1,5 @@
 import React from 'react';
+
 import styled from 'styled-components';
 
 import * as accountUtils from '@suite-common/wallet-utils';
@@ -6,7 +7,7 @@ import { variables, Button, IconProps, H3, Image } from '@trezor/components';
 
 import { Translation } from 'src/components/suite';
 import { useDevice, useDispatch } from 'src/hooks/suite';
-import { restart as restartDiscovery } from 'src/actions/wallet/discoveryActions';
+import { restartDiscoveryThunk as restartDiscovery } from 'src/actions/wallet/discoveryActions';
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';
 import { authConfirm, authorizeDevice } from 'src/actions/suite/suiteActions';
 import { openModal } from 'src/actions/suite/modalActions';

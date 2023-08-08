@@ -245,10 +245,17 @@ describe('Storage actions', () => {
         updateStore(store);
 
         // create discovery objects
-        store.dispatch(discoveryActions.create({ deviceState: dev1.state!, device: dev1 }));
-        store.dispatch(discoveryActions.create({ deviceState: dev2.state!, device: dev2 }));
         store.dispatch(
-            discoveryActions.create({ deviceState: dev2Instance1.state!, device: dev2Instance1 }),
+            discoveryActions.createDiscoveryThunk({ deviceState: dev1.state!, device: dev1 }),
+        );
+        store.dispatch(
+            discoveryActions.createDiscoveryThunk({ deviceState: dev2.state!, device: dev2 }),
+        );
+        store.dispatch(
+            discoveryActions.createDiscoveryThunk({
+                deviceState: dev2Instance1.state!,
+                device: dev2Instance1,
+            }),
         );
 
         // add txs

@@ -1,5 +1,6 @@
 import React from 'react';
-import { restart } from 'src/actions/wallet/discoveryActions';
+
+import { restartDiscoveryThunk } from 'src/actions/wallet/discoveryActions';
 import { useDevice, useDispatch } from 'src/hooks/suite';
 import { Translation } from 'src/components/suite';
 import { AccountExceptionLayout } from 'src/components/wallet';
@@ -14,7 +15,7 @@ const AccountNotLoaded = () => {
     const dispatch = useDispatch();
     const { isLocked } = useDevice();
 
-    const handleClick = () => dispatch(restart());
+    const handleClick = () => dispatch(restartDiscoveryThunk());
 
     return (
         <AccountExceptionLayout
