@@ -3,6 +3,7 @@ import * as result from './result';
 import * as transaction from './transaction';
 import { convertFeeRate } from './utils';
 import { coinselect } from './coinselect';
+import { ComposeRequest, ComposeResult } from '../types';
 
 export function composeTx({
     txType,
@@ -19,7 +20,7 @@ export function composeTx({
     floorBaseFee,
     dustOutputFee,
     skipPermutation,
-}: request.ComposeRequest): result.ComposeResult {
+}: ComposeRequest): ComposeResult {
     if (outputs.length === 0) {
         return result.empty;
     }

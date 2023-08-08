@@ -1,11 +1,11 @@
 import * as BN from 'bn.js';
 import * as utils from '../utils';
-import type {
+import {
     CoinSelectOptions,
     CoinSelectInput,
     CoinSelectOutput,
     CoinSelectResult,
-} from '../index';
+} from '../../types';
 
 // add inputs until we reach or surpass the target value (or deplete)
 // worst-case: O(n)
