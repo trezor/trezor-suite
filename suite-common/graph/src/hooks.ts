@@ -36,6 +36,33 @@ type CommonUseGraphReturnType = {
 // if start date is null we are fetching all data till first account movement
 type StartOfTimeFrameDate = Date | null;
 
+/** The value is equal to 2% of the graph time length (x-axis). It is a minimal offset from the edge of the graph,
+ * to make the whole event visible even on very small devices such as iPhone SE 1st gen. */
+const EVENT_MINIMAL_PROPORTIONAL_EDGE_OFFSET = 0.02;
+
+/** Ensures that the edge events are not too close to the interval extremes so they would not be fully visible. */
+const normalizeExtremeGraphEvents = (
+    events: GroupedBalanceMovementEvent[],
+    startOfTimeFrameDate: Date,
+    endOfTimeFrameDate: Date,
+) => {
+    const timeframeUnixLength = endOfTimeFrameDate.getTime() - startOfTimeFrameDate.getTime();
+    const minimalEdgeOffset = timeframeUnixLength * EVENT_MINIMAL_PROPORTIONAL_EDGE_OFFSET;
+
+    const firstEvent = events[0];
+    const lastEvent = events[events.length - 1];
+    const minimalEventDate = startOfTimeFrameDate.getTime() + minimalEdgeOffset;
+    const maximalEventDate = endOfTimeFrameDate.getTime() - minimalEdgeOffset;
+
+    if (firstEvent.date.getTime() < minimalEventDate) {
+        firstEvent.date = new Date(minimalEventDate);
+    }
+
+    if (lastEvent.date.getTime() > maximalEventDate) {
+        lastEvent.date = new Date(maximalEventDate);
+    }
+};
+
 export function useGraphForAccounts(params: useGraphForAccountsParams<false>): {
     graphPoints: FiatGraphPointWithCryptoBalance[];
 } & CommonUseGraphReturnType;
@@ -91,6 +118,12 @@ export function useGraphForAccounts(params: useGraphForAccountsParams): {
                         startOfTimeFrameDate,
                         endOfTimeFrameDate,
                     });
+
+                    normalizeExtremeGraphEvents(
+                        events,
+                        startOfTimeFrameDate ?? points[0].date,
+                        endOfTimeFrameDate,
+                    );
                 }
 
                 if (shouldSetValues) {
