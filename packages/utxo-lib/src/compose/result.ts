@@ -1,11 +1,18 @@
-import { CoinSelectSuccess, ComposedTransaction, ComposeResult } from '../types';
+import {
+    CoinSelectSuccess,
+    ComposedTransaction,
+    ComposeInput,
+    ComposeResultError,
+    ComposeResultNonFinal,
+    ComposeResultFinal,
+} from '../types';
 
-export const empty: ComposeResult = {
+export const empty: ComposeResultError = {
     type: 'error',
     error: 'EMPTY',
 };
 
-export function getNonfinalResult(result: CoinSelectSuccess): ComposeResult {
+export function getNonfinalResult(result: CoinSelectSuccess): ComposeResultNonFinal {
     const { max, fee, feePerByte, bytes, totalSpent } = result.payload;
 
     return {
@@ -18,10 +25,10 @@ export function getNonfinalResult(result: CoinSelectSuccess): ComposeResult {
     };
 }
 
-export function getFinalResult(
+export function getFinalResult<Input extends ComposeInput>(
     result: CoinSelectSuccess,
-    transaction: ComposedTransaction,
-): ComposeResult {
+    transaction: ComposedTransaction<Input>,
+): ComposeResultFinal<Input> {
     const { max, fee, feePerByte, bytes, totalSpent } = result.payload;
 
     return {
