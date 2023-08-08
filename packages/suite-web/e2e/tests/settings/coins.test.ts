@@ -35,6 +35,7 @@ describe('Coin Settings', () => {
             'zec',
             'ada',
             'test',
+            'tsep',
             'tgor',
             'txrp',
             'tada',
