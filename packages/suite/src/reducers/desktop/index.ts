@@ -1,6 +1,7 @@
+import type { HandshakeElectron } from '@trezor/suite-desktop-api';
+
 import { SUITE } from 'src/actions/suite/constants';
 import { Action } from 'src/types/suite';
-import type { HandshakeElectron } from '@trezor/suite-desktop-api';
 
 export type DesktopState = null | Pick<HandshakeElectron, 'paths' | 'urls'>;
 
@@ -17,3 +18,5 @@ export const desktopReducer = (
             return state;
     }
 };
+
+export const selectBinDir = (state: DesktopState) => state?.paths?.binDir;

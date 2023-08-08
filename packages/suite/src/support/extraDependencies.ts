@@ -50,6 +50,7 @@ export const extraDependencies: ExtraDependencies = {
         selectDebugSettings: (state: AppState) => state.suite.settings.debug,
         selectRouterApp: (state: AppState) => state.router.app,
         selectDevice: (state: AppState) => state.suite.device,
+        selectBinDir: (state: AppState) => state.desktop?.paths?.binDir,
     },
     actions: {
         setAccountAddMetadata: metadataActions.setAccountAdd,

@@ -4,6 +4,8 @@ import { isDesktop } from '@trezor/env-utils';
 import { resolveStaticPath } from '@suite-common/suite-utils';
 import { analytics, EventType } from '@trezor/suite-analytics';
 import TrezorConnect, { DeviceModelInternal } from '@trezor/connect';
+import { FirmwareType } from '@suite-common/suite-types';
+import { createThunk } from '@suite-common/redux-utils';
 
 import {
     selectIntermediaryInstalled,
@@ -11,23 +13,29 @@ import {
     selectTargetRelease,
     selectUseDevkit,
 } from 'src/reducers/firmware/firmwareReducer';
-import { selectDevice } from 'src/reducers/suite/suiteReducer';
-import { Dispatch, FirmwareType, GetState } from 'src/types/suite';
-import { firmwareActions } from './firmwareActions';
+
+import { firmwareActions, MODULE_PREFIX } from './firmwareActions';
 
 /**
  * This action will install firmware from the given binary, or the latest
  * possible firmware if the given binary is undefined. The function is not
  * directly exported due to type safety.
  */
-const firmwareInstallThunk =
-    (fwBinary?: ArrayBuffer, firmwareType?: FirmwareType) =>
-    async (dispatch: Dispatch, getState: GetState) => {
+const firmwareInstallThunk = createThunk(
+    `${MODULE_PREFIX}/installFirmware`,
+    async (
+        { fwBinary, firmwareType }: { fwBinary?: ArrayBuffer; firmwareType?: FirmwareType },
+        { dispatch, getState, extra },
+    ) => {
+        const {
+            selectors: { selectBinDir, selectDevice },
+        } = extra;
         const device = selectDevice(getState());
         const targetRelease = selectTargetRelease(getState());
         const prevDevice = selectPrevDevice(getState());
         const useDevkit = selectUseDevkit(getState());
         const intermediaryInstalled = selectIntermediaryInstalled(getState());
+        const binDir = selectBinDir(getState());
 
         if (fwBinary) {
             dispatch(firmwareActions.setIsCustomFirmware(true));
@@ -111,9 +119,9 @@ const firmwareInstallThunk =
             }
 
             // FW binaries are stored in "*/static/connect/data/firmware/*/*.bin". see "connect-common" package
-            const baseUrl = `${
-                isDesktop() ? getState().desktop?.paths.binDir : resolveStaticPath('connect/data')
-            }${useDevkit ? '/devkit' : ''}`;
+            const baseUrl = `${isDesktop() ? binDir : resolveStaticPath('connect/data')}${
+                useDevkit ? '/devkit' : ''
+            }`;
 
             updateResponse = await TrezorConnect.firmwareUpdate({
                 keepSession: false,
@@ -166,9 +174,10 @@ const firmwareInstallThunk =
                     : 'wait-for-reboot',
             ),
         );
-    };
+    },
+);
 
 export const firmwareUpdate = (firmwareType?: FirmwareType) =>
-    firmwareInstallThunk(undefined, firmwareType);
+    firmwareInstallThunk({ fwBinary: undefined, firmwareType });
 
-export const firmwareCustom = (fwBinary: ArrayBuffer) => firmwareInstallThunk(fwBinary);
+export const firmwareCustom = (fwBinary: ArrayBuffer) => firmwareInstallThunk({ fwBinary });
