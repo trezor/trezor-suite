@@ -54,6 +54,8 @@ export const extraDependenciesMock: ExtraDependencies = {
     thunks: {
         cardanoValidatePendingTxOnBlock: mockThunk('validatePendingTxOnBlock'),
         cardanoFetchTrezorPools: mockThunk('fetchTrezorPools'),
+        fetchMetadata: mockThunk('fetchMetadata'),
+        initMetadata: mockThunk('initMetadata'),
     },
     selectors: {
         selectFeeInfo: (networkSymbol: any) =>
@@ -70,12 +72,16 @@ export const extraDependenciesMock: ExtraDependencies = {
             showDebugMenu: false,
             transports: [],
         }),
+        selectMetadata: mockSelector('selectMetadata', {}),
+        selectDevice: mockSelector('selectDevice', {} as any),
+        selectDiscoveryForDevice: mockSelector('selectDiscoveryForDevice', {} as any),
     },
     actions: {
         setAccountAddMetadata: mockAction('setAccountAddMetadata'),
         setWalletSettingsLocalCurrency: mockAction('setWalletSettingsLocalCurrency'),
         changeWalletSettingsNetworks: mockAction('changeWalletSettingsNetworks'),
         lockDevice: mockAction('lockDevice'),
+        requestAuthConfirm: mockAction('requestAuthConfirm'),
     },
     actionTypes: {
         storageLoad: mockActionType('storageLoad'),

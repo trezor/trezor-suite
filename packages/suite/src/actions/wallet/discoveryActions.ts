@@ -1,37 +1,27 @@
-import {
-    Discovery,
-    PartialDiscovery,
-    selectDiscovery,
-    selectDiscoveryByDeviceState,
-} from 'src/reducers/wallet/discoveryReducer';
-import { SUITE } from 'src/actions/suite/constants';
-import * as metadataActions from 'src/actions/suite/metadataActions';
-import { NETWORKS } from 'src/config/wallet';
-import { Dispatch, GetState, TrezorDevice } from 'src/types/suite';
-import { Account } from 'src/types/wallet';
 import { createAction } from '@reduxjs/toolkit';
-import { selectEnabledNetworks } from 'src/reducers/wallet/settingsReducer';
-import { selectDevice, selectDiscoveryForDevice } from 'src/reducers/suite/suiteReducer';
-import { selectMetadata } from 'src/reducers/suite/metadataReducer';
 
 import { getDerivationType, isTrezorConnectBackendType } from '@suite-common/wallet-utils';
-import { DiscoveryItem } from '@suite-common/wallet-types';
-import { accountsActions } from '@suite-common/wallet-core';
+import { DiscoveryItem, Account } from '@suite-common/wallet-types';
+import { accountsActions, selectAccounts } from '@suite-common/wallet-core';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import TrezorConnect, { BundleProgress, AccountInfo, UI } from '@trezor/connect';
 import { versionUtils } from '@trezor/utils';
 import { DiscoveryStatus } from '@suite-common/wallet-constants';
 import { settingsCommonConfig } from '@suite-common/suite-config';
+import { TrezorDevice } from '@suite-common/suite-types';
+import { networksCompatibility } from '@suite-common/wallet-config';
+import { createThunk } from '@suite-common/redux-utils';
+
+import {
+    Discovery,
+    PartialDiscovery,
+    selectDiscovery,
+    selectDiscoveryByDeviceState,
+} from 'src/reducers/wallet/discoveryReducer';
+import { selectDevices } from 'src/reducers/suite/deviceReducer';
 
 const MODULE_PREFIX = '@common/wallet-core/discovery';
-
-export type DiscoveryAction =
-    | { type: typeof createDiscovery.type; payload: Discovery }
-    | { type: typeof startDiscovery.type; payload: Discovery }
-    | { type: typeof updateDiscovery.type; payload: PartialDiscovery }
-    | { type: typeof completeDiscovery.type; payload: PartialDiscovery }
-    | { type: typeof removeDiscovery.type; payload: PartialDiscovery };
 
 type ProgressEvent = BundleProgress<AccountInfo | null>['payload'];
 
@@ -67,13 +57,13 @@ export const updateDiscovery = createAction(
 
 const calculateProgress =
     (discovery: Discovery) =>
-    (_dispatch: Dispatch, getState: GetState): PartialDiscovery => {
+    (_dispatch: any, getState: any): PartialDiscovery => {
         let total = LIMIT * discovery.networks.length;
         let loaded = 0;
-        const accounts = getState().wallet.accounts.filter(
-            a => a.deviceState === discovery.deviceState,
-        );
-        accounts.forEach(a => {
+        const accounts = selectAccounts(getState());
+        const accountsByDeviceState = accounts.filter(a => a.deviceState === discovery.deviceState);
+
+        accountsByDeviceState.forEach(a => {
             if (discovery.networks.includes(a.symbol)) {
                 loaded++;
                 const indexBeyondLimit = a.index + 1 >= LIMIT;
@@ -95,9 +85,22 @@ const calculateProgress =
         };
     };
 
-const handleProgress =
-    (event: ProgressEvent, deviceState: string, item: DiscoveryItem, metadataEnabled: boolean) =>
-    (dispatch: Dispatch, getState: GetState) => {
+const handleProgress = createThunk(
+    `${MODULE_PREFIX}/handleProgress`,
+    (
+        {
+            event,
+            deviceState,
+            item,
+            metadataEnabled,
+        }: {
+            event: ProgressEvent;
+            deviceState: string;
+            item: DiscoveryItem;
+            metadataEnabled: boolean;
+        },
+        { dispatch, getState },
+    ) => {
         // get fresh discovery data
         const discovery = selectDiscoveryByDeviceState(getState(), deviceState);
         // ignore progress event when:
@@ -144,10 +147,11 @@ const handleProgress =
                 failed,
             }),
         );
-    };
+    },
+);
 
 const filterUnavailableNetworks = (enabledNetworks: Account['symbol'][], device?: TrezorDevice) =>
-    NETWORKS.filter(n => {
+    networksCompatibility.filter(n => {
         const firmwareVersion = getFirmwareVersion(device);
         const internalModel = device?.features?.internal_model;
 
@@ -167,21 +171,20 @@ const filterUnavailableNetworks = (enabledNetworks: Account['symbol'][], device?
         );
     });
 
-const getBundle =
-    (discovery: Discovery, device: TrezorDevice) =>
-    (_d: Dispatch, getState: GetState): DiscoveryItem[] => {
+const getBundle = createThunk(
+    `${MODULE_PREFIX}/getBundle`,
+    ({ discovery, device }: { discovery: Discovery; device: TrezorDevice }, { getState }) => {
         const bundle: DiscoveryItem[] = [];
+        const accounts = selectAccounts(getState());
         // find all accounts
-        const accounts = getState().wallet.accounts.filter(
-            a => a.deviceState === discovery.deviceState,
-        );
+        const accountsByDeviceState = accounts.filter(a => a.deviceState === discovery.deviceState);
 
         // corner-case: discovery is running so it's at least second iteration
         // progress event wasn't emitted from '@trezor/connect' so there are no accounts, neither loaded or failed
         // return empty bundle to complete discovery
         if (
             discovery.status === DiscoveryStatus.RUNNING &&
-            !accounts.length &&
+            !accountsByDeviceState.length &&
             !discovery.failed.length
         ) {
             return bundle;
@@ -191,7 +194,7 @@ const getBundle =
         networks.forEach(configNetwork => {
             // find all existed accounts
             const accountType = configNetwork.accountType || 'normal';
-            const prevAccounts = accounts
+            const prevAccounts = accountsByDeviceState
                 .filter(
                     account =>
                         account.accountType === accountType &&
@@ -229,36 +232,47 @@ const getBundle =
             }
         });
         return bundle;
-    };
+    },
+);
 
-export const updateNetworkSettings = () => (dispatch: Dispatch, getState: GetState) => {
-    const enabledNetworks = selectEnabledNetworks(getState());
-    const discovery = selectDiscovery(getState());
+export const updateNetworkSettings = createThunk(
+    `${MODULE_PREFIX}/updateNetworkSettings`,
+    (_, { dispatch, getState, extra }) => {
+        const {
+            selectors: { selectEnabledNetworks },
+        } = extra;
+        const enabledNetworks = selectEnabledNetworks(getState());
+        const discovery = selectDiscovery(getState());
 
-    discovery.forEach(d => {
-        const device = getState().devices.find(dev => dev.state === d.deviceState);
-        const networks = filterUnavailableNetworks(enabledNetworks, device).map(n => n.symbol);
+        discovery.forEach(d => {
+            const devices = selectDevices(getState());
+            const device = devices.find(dev => dev.state === d.deviceState);
+            const networks = filterUnavailableNetworks(enabledNetworks, device).map(n => n.symbol);
 
-        const progress = dispatch(
-            calculateProgress({
-                ...d,
-                networks,
-                failed: [],
-            }),
-        );
-        dispatch(
-            updateDiscovery({
-                ...progress,
-                networks,
-                failed: [],
-            }),
-        );
-    });
-};
+            const progress = dispatch(
+                calculateProgress({
+                    ...d,
+                    networks,
+                    failed: [],
+                }),
+            );
+            dispatch(
+                updateDiscovery({
+                    ...progress,
+                    networks,
+                    failed: [],
+                }),
+            );
+        });
+    },
+);
 
-const getAvailableCardanoDerivations =
-    (deviceState: string, device: TrezorDevice) =>
-    async (dispatch: Dispatch): Promise<('normal' | 'legacy' | 'ledger')[] | undefined> => {
+const getAvailableCardanoDerivations = createThunk(
+    `${MODULE_PREFIX}/getAvailableCardanoDerivations`,
+    async (
+        { deviceState, device }: { deviceState: string; device: TrezorDevice },
+        { dispatch },
+    ): Promise<('normal' | 'legacy' | 'ledger')[] | undefined> => {
         // If icarus and icarus-trezor derivations return same pub key
         // we can skip derivation of the latter as it would discover same accounts.
         // Ledger derivation will always result in different pub key except in shamir where all derivations are the same
@@ -328,10 +342,18 @@ const getAvailableCardanoDerivations =
 
         // each pub key is different
         return ['normal', 'legacy', 'ledger'];
-    };
+    },
+);
 
-export const create =
-    (deviceState: string, device: TrezorDevice) => (dispatch: Dispatch, getState: GetState) => {
+export const create = createThunk(
+    `${MODULE_PREFIX}/create`,
+    (
+        { deviceState, device }: { deviceState: string; device: TrezorDevice },
+        { dispatch, getState, extra },
+    ) => {
+        const {
+            selectors: { selectEnabledNetworks },
+        } = extra;
         const enabledNetworks = selectEnabledNetworks(getState());
         const networks = filterUnavailableNetworks(enabledNetworks, device).map(n => n.symbol);
 
@@ -349,11 +371,17 @@ export const create =
                 networks,
             },
         });
-    };
+    },
+);
 
-export const start =
-    () =>
-    async (dispatch: Dispatch, getState: GetState): Promise<void> => {
+export const start = createThunk(
+    `${MODULE_PREFIX}/start`,
+    async (_, { dispatch, getState, extra }): Promise<void> => {
+        const {
+            selectors: { selectMetadata, selectDevice, selectDiscoveryForDevice },
+            thunks: { initMetadata, fetchMetadata },
+            actions: { requestAuthConfirm },
+        } = extra;
         const device = selectDevice(getState());
         const metadata = selectMetadata(getState());
         const discovery = selectDiscoveryForDevice(getState());
@@ -399,7 +427,7 @@ export const start =
             // metadata are enabled in settings but metadata master key does not exist for this device
             // try to generate device metadata master key if passphrase is not used
             if (!authConfirm && metadataEnabled) {
-                await dispatch(metadataActions.init());
+                await dispatch(initMetadata(false));
             }
 
             dispatch({
@@ -421,8 +449,8 @@ export const start =
         ) {
             // check if discovery of legacy (icarus-trezor) or ledger accounts is needed and update discovery accordingly
             availableCardanoDerivations = await dispatch(
-                getAvailableCardanoDerivations(deviceState, device),
-            );
+                getAvailableCardanoDerivations({ deviceState, device }),
+            ).unwrap();
             if (!availableCardanoDerivations) {
                 // Edge case where getAvailableCardanoDerivations dispatches error, stops discovery and returns undefined.
                 return;
@@ -437,7 +465,12 @@ export const start =
         }
 
         // prepare bundle of accounts to discover, exclude unsupported account types
-        const bundle = dispatch(getBundle({ ...discovery, availableCardanoDerivations }, device));
+        const bundle = await dispatch(
+            getBundle({
+                discovery: { ...discovery, availableCardanoDerivations },
+                device,
+            }),
+        ).unwrap();
 
         // discovery process complete
         if (bundle.length === 0) {
@@ -449,14 +482,14 @@ export const start =
                     useEmptyPassphrase: device.useEmptyPassphrase,
                 });
                 if (authConfirm) {
-                    dispatch({ type: SUITE.REQUEST_AUTH_CONFIRM });
+                    dispatch(requestAuthConfirm());
                 }
             }
 
             // if previous discovery status was running (typically after application start or when user added a new account)
             // trigger fetch metadata; necessary to load account labels
             if (discovery.status === DiscoveryStatus.RUNNING) {
-                dispatch(metadataActions.fetchMetadata(deviceState));
+                dispatch(fetchMetadata(deviceState));
             }
 
             dispatch(
@@ -480,7 +513,9 @@ export const start =
         const onBundleProgress = (event: ProgressEvent) => {
             const { progress } = event;
             // pass more parameters to handler
-            dispatch(handleProgress(event, deviceState, bundle[progress], metadataEnabled));
+            dispatch(
+                handleProgress({ event, deviceState, item: bundle[progress], metadataEnabled }),
+            );
         };
 
         TrezorConnect.on<AccountInfo | null>(UI.BUNDLE_PROGRESS, onBundleProgress);
@@ -516,7 +551,7 @@ export const start =
                     }),
                 );
                 // try to generate device metadata master key
-                await dispatch(metadataActions.init());
+                await dispatch(initMetadata(false));
             }
             if (currentDiscovery.status === DiscoveryStatus.RUNNING) {
                 await dispatch(start()); // try next index
@@ -602,9 +637,13 @@ export const start =
                 dispatch(notificationsActions.addToast({ type: 'discovery-error', error }));
             }
         }
-    };
+    },
+);
 
-export const stop = () => (dispatch: Dispatch, getState: GetState) => {
+export const stop = createThunk(`${MODULE_PREFIX}/stop`, (_, { dispatch, getState, extra }) => {
+    const {
+        selectors: { selectDiscoveryForDevice },
+    } = extra;
     const discovery = selectDiscoveryForDevice(getState());
     if (discovery && discovery.running) {
         dispatch(
@@ -617,25 +656,31 @@ export const stop = () => (dispatch: Dispatch, getState: GetState) => {
 
         return discovery.running.promise;
     }
-};
+});
 
-export const restart = () => async (dispatch: Dispatch, getState: GetState) => {
-    const discovery = selectDiscoveryForDevice(getState());
-    if (!discovery) return;
-    const progress = dispatch(
-        calculateProgress({
-            ...discovery,
-            failed: [],
-        }),
-    );
-    dispatch(
-        updateDiscovery({
-            ...progress,
-            failed: [],
-        }),
-    );
-    await dispatch(start());
-};
+export const restart = createThunk(
+    `${MODULE_PREFIX}/restart`,
+    async (_, { dispatch, getState, extra }) => {
+        const {
+            selectors: { selectDiscoveryForDevice },
+        } = extra;
+        const discovery = selectDiscoveryForDevice(getState());
+        if (!discovery) return;
+        const progress = dispatch(
+            calculateProgress({
+                ...discovery,
+                failed: [],
+            }),
+        );
+        dispatch(
+            updateDiscovery({
+                ...progress,
+                failed: [],
+            }),
+        );
+        await dispatch(start());
+    },
+);
 
 export const discoveryActions = {
     createDiscovery,

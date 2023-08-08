@@ -1,3 +1,6 @@
+import { ArrayElement } from '@trezor/type-utils';
+import { accountsActions, fiatRatesActions, blockchainActions } from '@suite-common/wallet-core';
+
 import { ReceiveAction } from 'src/actions/wallet/receiveActions';
 import { SignVerifyAction } from 'src/actions/wallet/signVerifyActions';
 import { CoinmarketBuyAction } from 'src/actions/wallet/coinmarketBuyActions';
@@ -7,7 +10,7 @@ import { CoinMarketSpendAction } from 'src/actions/wallet/coinmarketSpendActions
 import { CoinmarketP2pAction } from 'src/actions/wallet/coinmarketP2pActions';
 import { CoinmarketSavingsAction } from 'src/actions/wallet/coinmarketSavingsActions';
 import { CoinmarketCommonAction } from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
-import { DiscoveryAction } from 'src/actions/wallet/discoveryActions';
+import { discoveryActions } from 'src/actions/wallet/discoveryActions';
 import { GraphAction } from 'src/actions/wallet/graphActions';
 import { SendFormAction } from 'src/actions/wallet/sendFormActions';
 import { AccountSearchAction } from 'src/actions/wallet/accountSearchActions';
@@ -17,9 +20,6 @@ import { PollingAction } from 'src/actions/wallet/pollingActions';
 import { CoinjoinAccountAction } from 'src/actions/wallet/coinjoinAccountActions';
 import { CoinjoinClientAction } from 'src/actions/wallet/coinjoinClientActions';
 import { NETWORKS } from 'src/config/wallet';
-
-import { ArrayElement } from '@trezor/type-utils';
-import { accountsActions, fiatRatesActions, blockchainActions } from '@suite-common/wallet-core';
 
 export type Network = ArrayElement<typeof NETWORKS>;
 export type NetworkSymbol = Network['symbol'];
@@ -57,6 +57,7 @@ this action union types are bad, we need it only for legacy reason.
 type AccountsAction = ReturnType<(typeof accountsActions)[keyof typeof accountsActions]>;
 type FiatRatesAction = ReturnType<(typeof fiatRatesActions)[keyof typeof fiatRatesActions]>;
 type BlockchainAction = ReturnType<(typeof blockchainActions)[keyof typeof blockchainActions]>;
+type DiscoveryAction = ReturnType<(typeof discoveryActions)[keyof typeof discoveryActions]>;
 
 export type WalletAction =
     | BlockchainAction
