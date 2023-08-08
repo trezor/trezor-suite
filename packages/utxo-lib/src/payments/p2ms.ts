@@ -5,7 +5,7 @@ import * as typef from 'typeforce';
 import { bitcoin as BITCOIN_NETWORK } from '../networks';
 import * as bscript from '../script';
 import * as lazy from './lazy';
-import type { Payment, PaymentOpts, Stack } from './index';
+import { Payment, PaymentOpts, Stack } from '../types';
 
 const { OPS } = bscript;
 
@@ -46,7 +46,7 @@ export function p2ms(a: Payment, opts?: PaymentOpts): Payment {
     );
 
     const network = a.network || BITCOIN_NETWORK;
-    const o: Payment = { network };
+    const o: Payment = { name: 'p2ms', network };
 
     let chunks: Stack = [];
     let decoded = false;

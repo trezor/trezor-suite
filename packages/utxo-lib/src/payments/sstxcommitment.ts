@@ -4,7 +4,7 @@ import * as bs58check from '../bs58check';
 import { decred as DECRED_NETWORK } from '../networks';
 import * as bscript from '../script';
 import * as lazy from './lazy';
-import type { Payment, PaymentOpts, Stack } from './index';
+import { Payment, PaymentOpts, Stack } from '../types';
 
 const { OPS } = bscript;
 
@@ -30,7 +30,7 @@ export function sstxcommitment(a: Payment, opts?: PaymentOpts): Payment {
     const _address = lazy.value(() => bs58check.decodeAddress(a.address!, a.network));
 
     const network = a.network || DECRED_NETWORK;
-    const o = { name: 'sstxcommitment', network } as Payment;
+    const o: Payment = { name: 'sstxcommitment', network };
 
     lazy.prop(o, 'address', () => {
         if (!o.hash) return;
@@ -56,7 +56,7 @@ export function sstxcommitment(a: Payment, opts?: PaymentOpts): Payment {
 
     // extended validation
     if (opts.validate) {
-        let hash: Buffer = Buffer.from([]);
+        let hash = Buffer.from([]);
         if (a.address) {
             const { version, hash: aHash } = _address();
             if (version !== network.pubKeyHash)
