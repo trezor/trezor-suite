@@ -1,7 +1,6 @@
 import * as BN from 'bn.js';
 import * as BitcoinJsAddress from '../address';
 import { p2data } from '../payments/embed';
-import { Permutation } from './permutation';
 import {
     ComposeInput,
     ComposeFinalOutput,
@@ -82,27 +81,33 @@ export function createTransaction<Input extends ComposeInput>(
         const amount = output.value;
         return convertOutput(address, amount, network, basePath, changeId, isChange);
     });
+    const defaultPermutation = convertedOutputs.map((_, index) => index);
 
     if (skipPermutation) {
         return {
             inputs: convertedInputs,
-            outputs: new Permutation(
-                convertedOutputs.map(o => o.output),
-                convertedOutputs.map((_o, i) => i),
-            ),
+            outputs: {
+                sorted: convertedOutputs.map(({ output }) => output),
+                permutation: defaultPermutation,
+            },
         };
     }
 
-    convertedInputs.sort(inputComparator);
-
-    const permutedOutputs = Permutation.fromFunction(convertedOutputs, (a, b) => {
-        const aValue = typeof a.output.amount === 'string' ? a.output.amount : '0';
-        const bValue = typeof b.output.amount === 'string' ? b.output.amount : '0';
-        return outputComparator(a.script, aValue, b.script, bValue);
-    }).map(o => o.output);
+    const permutation = defaultPermutation.sort((a, b) =>
+        outputComparator(
+            convertedOutputs[a].script,
+            convertedOutputs[a].output.amount || '0',
+            convertedOutputs[b].script,
+            convertedOutputs[b].output.amount || '0',
+        ),
+    );
+    const sortedOutputs = permutation.map(index => convertedOutputs[index].output);
 
     return {
-        inputs: convertedInputs,
-        outputs: permutedOutputs,
+        inputs: convertedInputs.sort(inputComparator),
+        outputs: {
+            sorted: sortedOutputs,
+            permutation,
+        },
     };
 }

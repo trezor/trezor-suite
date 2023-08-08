@@ -1,6 +1,5 @@
 import { composeTx } from '../src';
 import { convertFeeRate } from '../src/compose/composeUtils';
-import { Permutation } from '../src/compose/permutation';
 import * as NETWORKS from '../src/networks';
 
 import { verifyTxBytes } from './compose.utils';
@@ -18,13 +17,6 @@ describe('composeTx', () => {
         const request = { ...f.request, network };
         const result: any = { ...f.result };
         it(f.description, () => {
-            if (result.transaction) {
-                const o = result.transaction.PERM_outputs;
-                const sorted = JSON.parse(JSON.stringify(o.sorted));
-                result.transaction.outputs = new Permutation(sorted, o.permutation);
-                delete result.transaction.PERM_outputs;
-            }
-
             const tx = composeTx(request as any);
             expect(tx).toEqual(result);
 
