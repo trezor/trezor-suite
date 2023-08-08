@@ -7,12 +7,11 @@ export default [
             changeId: 0,
             dustThreshold: 546,
             feeRate: '10',
-            height: 100,
             utxos: [
                 {
                     addressPath: [3, 4],
                     coinbase: false,
-                    height: 100,
+                    confirmations: 100,
                     index: 0,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
@@ -58,12 +57,11 @@ export default [
             changeId: 0,
             dustThreshold: 546,
             feeRate: '10',
-            height: 100,
             utxos: [
                 {
                     addressPath: [3, 4],
                     coinbase: false,
-                    height: 100,
+                    confirmations: 100,
                     index: 0,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
@@ -109,12 +107,11 @@ export default [
             changeId: 0,
             dustThreshold: 546,
             feeRate: '10',
-            height: 100,
             utxos: [
                 {
                     addressPath: [3, 4],
                     coinbase: false,
-                    height: 100,
+                    confirmations: 100,
                     index: 0,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
@@ -123,7 +120,7 @@ export default [
                 {
                     addressPath: [4, 5],
                     coinbase: false,
-                    height: 100,
+                    confirmations: 100,
                     index: 1,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
@@ -169,12 +166,11 @@ export default [
             changeId: 0,
             dustThreshold: 546,
             feeRate: '10',
-            height: 100,
             utxos: [
                 {
                     addressPath: [3, 4],
                     coinbase: false,
-                    height: 100,
+                    confirmations: 100,
                     index: 0,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
@@ -183,7 +179,7 @@ export default [
                 {
                     addressPath: [4, 5],
                     coinbase: false,
-                    height: 100,
+                    confirmations: 100,
                     index: 1,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
@@ -192,7 +188,7 @@ export default [
                 {
                     addressPath: [4, 5],
                     coinbase: false,
-                    height: 100,
+                    confirmations: 100,
                     index: 2,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
@@ -201,7 +197,7 @@ export default [
                 {
                     addressPath: [4, 5],
                     coinbase: false,
-                    height: 100,
+                    confirmations: 100,
                     index: 3,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
@@ -210,7 +206,7 @@ export default [
                 {
                     addressPath: [4, 5],
                     coinbase: false,
-                    height: 100,
+                    confirmations: 100,
                     index: 4,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
@@ -219,7 +215,7 @@ export default [
                 {
                     addressPath: [4, 5],
                     coinbase: false,
-                    height: 100,
+                    confirmations: 100,
                     index: 5,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
@@ -228,7 +224,7 @@ export default [
                 {
                     addressPath: [4, 5],
                     coinbase: false,
-                    height: 100,
+                    confirmations: 100,
                     index: 6,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
