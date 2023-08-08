@@ -640,6 +640,16 @@ export const getAccountSpecific = (
         };
     }
 
+    if (networkType === 'solana') {
+        // TODO(vl): account specific solana
+        return {
+            networkType,
+            misc: undefined,
+            marker: undefined,
+            page: accountInfo.page,
+        };
+    }
+
     return {
         networkType,
         misc: undefined,

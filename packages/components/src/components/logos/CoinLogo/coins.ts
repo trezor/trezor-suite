@@ -19,4 +19,5 @@ export const COINS = {
     vtc: require('../../../images/coins/vtc.svg'),
     xrp: require('../../../images/coins/xrp.svg'),
     zec: require('../../../images/coins/zec.svg'),
+    sol: require('../../../images/coins/ada.svg'), // TODO(vl): add icons
 };
