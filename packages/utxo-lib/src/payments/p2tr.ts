@@ -8,7 +8,7 @@ import { bitcoin as BITCOIN_NETWORK } from '../networks';
 import * as bcrypto from '../crypto';
 import * as bscript from '../script';
 import * as lazy from './lazy';
-import type { Payment, PaymentOpts } from './index';
+import { Payment, PaymentOpts } from '../types';
 
 const { OPS } = bscript;
 
@@ -107,7 +107,7 @@ export function p2tr(a: Payment, opts?: PaymentOpts): Payment {
 
     // extended validation
     if (opts.validate) {
-        let hash: Buffer = Buffer.from([]);
+        let hash = Buffer.from([]);
         if (a.address) {
             const { prefix, version, data } = _address();
             if (prefix !== network.bech32)

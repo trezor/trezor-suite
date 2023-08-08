@@ -10,7 +10,7 @@ import * as bcrypto from '../crypto';
 import { bitcoin as BITCOIN_NETWORK } from '../networks';
 import * as bscript from '../script';
 import * as lazy from './lazy';
-import type { Payment, PaymentOpts, StackFunction } from './index';
+import { Payment, PaymentOpts, StackFunction } from '../types';
 
 const { OPS } = bscript;
 
@@ -82,7 +82,7 @@ export function p2pkh(a: Payment, opts?: PaymentOpts): Payment {
 
     // extended validation
     if (opts.validate) {
-        let hash: Buffer = Buffer.from([]);
+        let hash = Buffer.from([]);
         if (a.address) {
             const { version, hash: aHash } = _address();
             if (version !== network.pubKeyHash)
