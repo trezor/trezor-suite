@@ -79,16 +79,16 @@ export type ComposedTxOutput =
           path: number[];
           amount: string;
           address?: typeof undefined;
-          opReturnData?: typeof undefined;
+          dataHex?: typeof undefined;
       }
     | {
           address: string;
           amount: string;
           path?: typeof undefined;
-          opReturnData?: typeof undefined;
+          dataHex?: typeof undefined;
       }
     | {
-          opReturnData: Buffer;
+          dataHex: string;
           path?: typeof undefined;
           address?: typeof undefined;
           amount?: typeof undefined;
