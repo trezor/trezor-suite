@@ -9,8 +9,6 @@ export interface ComposeInput {
     addressPath: [number, number]; // path
     height?: number; // null == unconfirmed
     coinbase: boolean; // coinbase transaction = utxo from mining, cannot be spend before 100 blocks
-    tsize: number; // total size - in case of segwit, total, with segwit data
-    vsize: number; // virtual size - segwit concept - same as size in non-segwit
     own: boolean; // is the ORIGIN me (the same account)
     required?: boolean; // must be included into transaction
     confirmations?: number; // TODO

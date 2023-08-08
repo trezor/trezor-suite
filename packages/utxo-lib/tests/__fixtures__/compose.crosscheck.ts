@@ -16,9 +16,7 @@ export default [
                     index: 0,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
-                    tsize: 0,
                     value: 'replace-me',
-                    vsize: 0,
                 },
             ],
             outputs: [
@@ -69,9 +67,7 @@ export default [
                     index: 0,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
-                    tsize: 0,
                     value: '202300',
-                    vsize: 0,
                 },
             ],
             outputs: [
@@ -122,9 +118,7 @@ export default [
                     index: 0,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
-                    tsize: 0,
                     value: '100000',
-                    vsize: 0,
                 },
                 {
                     addressPath: [4, 5],
@@ -133,9 +127,7 @@ export default [
                     index: 1,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
-                    tsize: 0,
                     value: '50000',
-                    vsize: 0,
                 },
             ],
             outputs: [
@@ -186,9 +178,7 @@ export default [
                     index: 0,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
-                    tsize: 0,
                     value: '120000',
-                    vsize: 0,
                 },
                 {
                     addressPath: [4, 5],
@@ -197,9 +187,7 @@ export default [
                     index: 1,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
-                    tsize: 0,
                     value: '10000',
-                    vsize: 0,
                 },
                 {
                     addressPath: [4, 5],
@@ -208,9 +196,7 @@ export default [
                     index: 2,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
-                    tsize: 0,
                     value: '10000',
-                    vsize: 0,
                 },
                 {
                     addressPath: [4, 5],
@@ -219,9 +205,7 @@ export default [
                     index: 3,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
-                    tsize: 0,
                     value: '10000',
-                    vsize: 0,
                 },
                 {
                     addressPath: [4, 5],
@@ -230,9 +214,7 @@ export default [
                     index: 4,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
-                    tsize: 0,
                     value: '10000',
-                    vsize: 0,
                 },
                 {
                     addressPath: [4, 5],
@@ -241,9 +223,7 @@ export default [
                     index: 5,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
-                    tsize: 0,
                     value: '10000',
-                    vsize: 0,
                 },
                 {
                     addressPath: [4, 5],
@@ -252,9 +232,7 @@ export default [
                     index: 6,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
-                    tsize: 0,
                     value: '10000',
-                    vsize: 0,
                 },
             ],
             outputs: [
