@@ -15,7 +15,7 @@ import type { Network } from '../networks';
 function convertOpReturnOutput(opReturnData: string) {
     const opReturnDataBuffer = Buffer.from(opReturnData, 'hex');
     const output = {
-        opReturnData: opReturnDataBuffer,
+        dataHex: opReturnData,
         amount: undefined,
     };
     const script = p2data({ data: [opReturnDataBuffer] }).output as Buffer;

@@ -755,10 +755,7 @@ export default [
                     permutation: [0, 1],
                     sorted: [
                         {
-                            opReturnData: {
-                                type: 'Buffer',
-                                data: [222, 173, 190, 239],
-                            },
+                            dataHex: 'deadbeef',
                         },
                         {
                             path: [44, 1, 1, 0],
@@ -802,16 +799,10 @@ export default [
                     permutation: [1, 0, 2],
                     sorted: [
                         {
-                            opReturnData: {
-                                type: 'Buffer',
-                                data: [192, 255, 238],
-                            },
+                            dataHex: 'c0ffee',
                         },
                         {
-                            opReturnData: {
-                                type: 'Buffer',
-                                data: [222, 173, 190, 239],
-                            },
+                            dataHex: 'deadbeef',
                         },
                         {
                             path: [44, 1, 1, 0],
