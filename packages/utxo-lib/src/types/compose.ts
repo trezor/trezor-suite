@@ -12,36 +12,47 @@ export interface ComposeInput {
     required?: boolean; // must be included into transaction
 }
 
-// Input to coinselect algorithm.
-// array of Request, which is either
-//    - 'complete' - address + amount
+// Output parameter of coinselect algorithm which is either:
+//    - 'payment' - address and amount
+//    - 'payment-noaddress' - just amount
 //    - 'send-max' - address
-//    - 'noaddress' - just amount
 //    - 'send-max-noaddress' - no other info
-export type ComposeFinalOutput =
-    | {
-          // TODO rename
-          type: 'complete';
-          address: string;
-          amount: string; // in satoshi
-      }
-    | {
-          type: 'send-max'; // only one in TX request
-          address: string;
-      }
-    | {
-          type: 'opreturn'; // it doesn't need to have address
-          dataHex: string;
-      };
+//    - 'opreturn' - dataHex
+export interface ComposeOutputPayment {
+    type: 'payment';
+    address: string;
+    amount: string;
+}
 
-export type ComposeNotFinalOutput =
-    | {
-          type: 'send-max-noaddress'; // only one in TX request
-      }
-    | {
-          type: 'noaddress';
-          amount: string;
-      };
+export interface ComposeOutputPaymentNoAddress {
+    type: 'payment-noaddress';
+    amount: string;
+}
+
+export interface ComposeOutputSendMax {
+    type: 'send-max'; // only one in TX request
+    address: string;
+    amount?: typeof undefined;
+}
+
+export interface ComposeOutputSendMaxNoAddress {
+    type: 'send-max-noaddress';
+    amount?: typeof undefined;
+}
+
+export interface ComposeOutputOpreturn {
+    type: 'opreturn'; // it doesn't need to have address
+    dataHex: string;
+    amount?: typeof undefined;
+    address?: typeof undefined;
+}
+
+export type ComposeFinalOutput =
+    | ComposeOutputPayment
+    | ComposeOutputSendMax
+    | ComposeOutputOpreturn;
+
+export type ComposeNotFinalOutput = ComposeOutputPaymentNoAddress | ComposeOutputSendMaxNoAddress;
 
 export type ComposeOutput = ComposeFinalOutput | ComposeNotFinalOutput;
 
