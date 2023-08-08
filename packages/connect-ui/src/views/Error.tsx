@@ -22,7 +22,7 @@ export interface ErrorViewProps {
     message?: string;
 }
 
-const StepsOrderedList = styled.ol`
+const StepsList = styled.ul`
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     font-size: ${variables.FONT_SIZE.SMALL};
     line-height: 24px;
@@ -140,7 +140,7 @@ const getTroubleshootingTips = (props: ErrorViewProps) => {
     if (props.detail === 'response-event-error') {
         tips.push({
             icon: 'QUESTION',
-            title: 'There was an error',
+            title: 'Action not completed',
             detail: {
                 steps: [<Step>{props.message}</Step>],
             },
@@ -213,43 +213,53 @@ const HeadingH1 = styled.div`
     margin-bottom: 4px;
 `;
 
-export const ErrorView = (props: ErrorViewProps) => (
-    <View data-test="@connect-ui/error">
-        <InnerWrapper>
-            <H>Error</H>
-            <Text>You can try the following steps to solve the problem</Text>
-            <TipsContainer>
-                {getTroubleshootingTips(props).map(tip => (
-                    <WhiteCollapsibleBox
-                        key={tip.title}
-                        heading={
-                            <Heading>
-                                <StyledIcon icon={tip.icon} color="#000" />
-                                <HeadingText>
-                                    <HeadingH1>{tip.title}</HeadingH1>
-                                </HeadingText>
-                            </Heading>
-                        }
-                        variant="large"
-                        noContentPadding
-                    >
-                        <StepsOrderedList>
-                            {tip.detail.steps.map((step, index) => (
-                                // eslint-disable-next-line react/no-array-index-key
-                                <li key={index}>{step}</li>
-                            ))}
-                        </StepsOrderedList>
-                    </WhiteCollapsibleBox>
-                ))}
-            </TipsContainer>
+export const ErrorView = (props: ErrorViewProps) => {
+    const tips = getTroubleshootingTips(props);
 
-            <Button
-                data-test="@connect-ui/error-close-button"
-                variant="primary"
-                onClick={() => window.close()}
-            >
-                Close
-            </Button>
-        </InnerWrapper>
-    </View>
-);
+    return (
+        <View data-test="@connect-ui/error">
+            <InnerWrapper>
+                <H>Error</H>
+
+                {/* response error event is just something that went wrong. we don't show any steps here. we only abuse steps UI but there is nothing to follow */}
+                {props.detail !== 'response-event-error' && (
+                    <Text>You can try the following steps to solve the problem</Text>
+                )}
+
+                <TipsContainer>
+                    {tips.map(tip => (
+                        <WhiteCollapsibleBox
+                            opened={tips.length === 1}
+                            key={tip.title}
+                            heading={
+                                <Heading>
+                                    <StyledIcon icon={tip.icon} color="#000" />
+                                    <HeadingText>
+                                        <HeadingH1>{tip.title}</HeadingH1>
+                                    </HeadingText>
+                                </Heading>
+                            }
+                            variant="large"
+                            noContentPadding
+                        >
+                            <StepsList>
+                                {tip.detail.steps.map((step, index) => (
+                                    // eslint-disable-next-line react/no-array-index-key
+                                    <li key={index}>{step}</li>
+                                ))}
+                            </StepsList>
+                        </WhiteCollapsibleBox>
+                    ))}
+                </TipsContainer>
+
+                <Button
+                    data-test="@connect-ui/error-close-button"
+                    variant="primary"
+                    onClick={() => window.close()}
+                >
+                    Close
+                </Button>
+            </InnerWrapper>
+        </View>
+    );
+};
