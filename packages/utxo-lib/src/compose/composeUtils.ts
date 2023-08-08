@@ -33,10 +33,6 @@ export function convertInputs(
         .map(input => Object.assign(input, { weight: inputWeight(input) }));
 }
 
-export function getScriptFromAddress(address: string, network: Network) {
-    return BitcoinJsAddress.toOutputScript(address, network);
-}
-
 export function convertOutputs(
     outputs: ComposeOutput[],
     network: Network,
@@ -48,7 +44,7 @@ export function convertOutputs(
             if (output.type === 'payment') {
                 return {
                     value: output.amount,
-                    script: getScriptFromAddress(output.address, network),
+                    script: BitcoinJsAddress.toOutputScript(output.address, network),
                 };
             }
             if (output.type === 'payment-noaddress') {
@@ -65,7 +61,7 @@ export function convertOutputs(
             }
             if (output.type === 'send-max') {
                 return {
-                    script: getScriptFromAddress(output.address, network),
+                    script: BitcoinJsAddress.toOutputScript(output.address, network),
                 };
             }
             if (output.type === 'send-max-noaddress') {
