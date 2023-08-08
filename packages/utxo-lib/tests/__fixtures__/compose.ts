@@ -33,7 +33,7 @@ export default [
             max: undefined,
             totalSpent: '102001',
             transaction: {
-                PERM_outputs: {
+                outputs: {
                     permutation: [0],
                     sorted: [
                         {
@@ -71,7 +71,7 @@ export default [
             max: undefined,
             totalSpent: '102001',
             transaction: {
-                PERM_outputs: {
+                outputs: {
                     permutation: [0],
                     sorted: [
                         {
@@ -164,7 +164,7 @@ export default [
             max: '49999998080',
             totalSpent: '50000000000',
             transaction: {
-                PERM_outputs: {
+                outputs: {
                     permutation: [0],
                     sorted: [
                         {
@@ -206,7 +206,7 @@ export default [
             max: '100081',
             totalSpent: '102001',
             transaction: {
-                PERM_outputs: {
+                outputs: {
                     permutation: [0],
                     sorted: [
                         {
@@ -366,7 +366,7 @@ export default [
             max: undefined,
             totalSpent: '52600',
             transaction: {
-                PERM_outputs: {
+                outputs: {
                     permutation: [1, 0, 2],
                     sorted: [
                         {
@@ -417,7 +417,7 @@ export default [
             max: undefined,
             totalSpent: '52785',
             transaction: {
-                PERM_outputs: {
+                outputs: {
                     permutation: [1, 0, 2],
                     sorted: [
                         {
@@ -469,7 +469,7 @@ export default [
             max: undefined,
             totalSpent: '51980',
             transaction: {
-                PERM_outputs: {
+                outputs: {
                     permutation: [1, 0, 2],
                     sorted: [
                         {
@@ -526,7 +526,7 @@ export default [
             max: undefined,
             totalSpent: '102001',
             transaction: {
-                PERM_outputs: {
+                outputs: {
                     permutation: [0],
                     sorted: [
                         {
@@ -604,7 +604,7 @@ export default [
             max: undefined,
             totalSpent: '204002',
             transaction: {
-                PERM_outputs: {
+                outputs: {
                     permutation: [0],
                     sorted: [
                         {
@@ -657,7 +657,7 @@ export default [
             max: undefined,
             totalSpent: '62000',
             transaction: {
-                PERM_outputs: {
+                outputs: {
                     permutation: [1, 0, 2],
                     sorted: [
                         {
@@ -709,7 +709,7 @@ export default [
             max: undefined,
             totalSpent: '972463',
             transaction: {
-                PERM_outputs: {
+                outputs: {
                     permutation: [0],
                     sorted: [
                         {
@@ -751,7 +751,7 @@ export default [
             max: undefined,
             totalSpent: '2070',
             transaction: {
-                PERM_outputs: {
+                outputs: {
                     permutation: [0, 1],
                     sorted: [
                         {
@@ -795,7 +795,7 @@ export default [
             max: undefined,
             totalSpent: '2210',
             transaction: {
-                PERM_outputs: {
+                outputs: {
                     permutation: [1, 0, 2],
                     sorted: [
                         {
@@ -845,7 +845,7 @@ export default [
             max: undefined,
             totalSpent: '101500',
             transaction: {
-                PERM_outputs: {
+                outputs: {
                     permutation: [0],
                     sorted: [
                         {
@@ -895,7 +895,7 @@ export default [
             max: undefined,
             totalSpent: '101410',
             transaction: {
-                PERM_outputs: {
+                outputs: {
                     permutation: [1, 0],
                     sorted: [
                         {
@@ -943,7 +943,7 @@ export default [
             max: undefined,
             totalSpent: '101500',
             transaction: {
-                PERM_outputs: {
+                outputs: {
                     permutation: [0],
                     sorted: [
                         {
@@ -988,7 +988,7 @@ export default [
             max: undefined,
             totalSpent: '101660',
             transaction: {
-                PERM_outputs: {
+                outputs: {
                     permutation: [1, 0],
                     sorted: [
                         {
@@ -1041,7 +1041,7 @@ export default [
             max: undefined,
             totalSpent: '101500',
             transaction: {
-                PERM_outputs: {
+                outputs: {
                     permutation: [0],
                     sorted: [
                         {
@@ -1092,7 +1092,7 @@ export default [
             max: undefined,
             totalSpent: '101540',
             transaction: {
-                PERM_outputs: {
+                outputs: {
                     permutation: [1, 0],
                     sorted: [
                         {
@@ -1165,7 +1165,7 @@ export default [
             max: undefined,
             totalSpent: '102001',
             transaction: {
-                PERM_outputs: {
+                outputs: {
                     permutation: [0],
                     sorted: [
                         {
@@ -1238,7 +1238,7 @@ export default [
             max: undefined,
             totalSpent: '103740',
             transaction: {
-                PERM_outputs: {
+                outputs: {
                     permutation: [1, 0],
                     sorted: [
                         {
@@ -1317,7 +1317,7 @@ export default [
             max: undefined,
             totalSpent: '73740',
             transaction: {
-                PERM_outputs: {
+                outputs: {
                     permutation: [0, 1],
                     sorted: [
                         {
@@ -1387,7 +1387,7 @@ export default [
             max: undefined,
             totalSpent: '11556856849999960000',
             transaction: {
-                PERM_outputs: {
+                outputs: {
                     permutation: [1, 0],
                     sorted: [
                         { path: [2147483692, 2147483651, 2147483648, 1, 0], amount: '6800040000' },
