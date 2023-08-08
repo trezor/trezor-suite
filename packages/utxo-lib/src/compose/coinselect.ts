@@ -17,7 +17,6 @@ export function coinselect(
     txType: CoinSelectPaymentType,
     utxos: ComposeInput[],
     rOutputs: ComposeOutput[],
-    height: number,
     feeRate: number,
     longTermFeeRate: number | undefined,
     countMax: boolean,
@@ -29,7 +28,7 @@ export function coinselect(
     dustOutputFee?: number,
     skipPermutation?: boolean,
 ): CoinSelectSuccess | CoinSelectFailure {
-    const inputs0 = convertInputs(utxos, height, txType);
+    const inputs0 = convertInputs(utxos, txType);
     const outputs0 = convertOutputs(rOutputs, network, txType);
     const options: CoinSelectOptions = {
         txType,

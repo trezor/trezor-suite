@@ -16,7 +16,6 @@ import type { Network } from '../networks';
 
 export function convertInputs(
     inputs: ComposeInput[],
-    height = 0,
     txType: CoinSelectPaymentType,
 ): CoinSelectInput[] {
     return inputs
@@ -27,7 +26,7 @@ export function convertInputs(
             value: input.value,
             own: input.own,
             coinbase: input.coinbase,
-            confirmations: input.height == null ? 0 : 1 + height - input.height,
+            confirmations: input.confirmations,
             required: input.required,
         }))
         .map(input => Object.assign(input, { weight: inputWeight(input) }));
