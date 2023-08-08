@@ -1,11 +1,11 @@
 import * as BN from 'bn.js';
 import * as utils from '../utils';
-import type {
+import {
     CoinSelectInput,
     CoinSelectOutput,
     CoinSelectOptions,
     CoinSelectResult,
-} from '../index';
+} from '../../types';
 
 // split utxos between each output, ignores outputs with .value defined
 export function split(

@@ -5,15 +5,19 @@ import {
     inputWeight,
     outputWeight,
 } from '../coinselect/utils';
-import type { CoinSelectInput, CoinSelectOutput } from '../coinselect';
-import type { TxType } from '../coinselect/utils';
-import type { ComposeInput, ComposeOutput } from './request';
+import {
+    CoinSelectPaymentType,
+    CoinSelectInput,
+    CoinSelectOutput,
+    ComposeInput,
+    ComposeOutput,
+} from '../types';
 import type { Network } from '../networks';
 
 export function convertInputs(
     inputs: ComposeInput[],
     height = 0,
-    txType: TxType,
+    txType: CoinSelectPaymentType,
 ): CoinSelectInput[] {
     return inputs
         .map((input, i) => ({
@@ -38,7 +42,7 @@ export function getScriptFromAddress(address: string, network: Network) {
 export function convertOutputs(
     outputs: ComposeOutput[],
     network: Network,
-    txType: TxType,
+    txType: CoinSelectPaymentType,
 ): CoinSelectOutput[] {
     const script = { length: OUTPUT_SCRIPT_LENGTH[txType] };
     return outputs

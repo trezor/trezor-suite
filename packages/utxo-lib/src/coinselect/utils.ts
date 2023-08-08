@@ -1,16 +1,17 @@
 import * as BN from 'bn.js';
-import type {
+import {
+    CoinSelectPaymentType,
     CoinSelectAlgorithm,
     CoinSelectOptions,
     CoinSelectInput,
     CoinSelectOutput,
     CoinSelectOutputFinal,
-} from './index';
+} from '../types';
 
 export const ZERO = new BN(0);
 
 // TODO: p2ms, external, p2wsh. currently not used in suite/connect.
-export const INPUT_SCRIPT_LENGTH = {
+export const INPUT_SCRIPT_LENGTH: Record<CoinSelectPaymentType, number> = {
     p2pkh: 108, //  1 + 72 (DER signature) + 1 + 33 (PUBKEY) + 1 script varInt size
     p2sh: 107, //   1 + 72 (DER signature) + 1 + 33 (PUBKEY)
     p2tr: 65, //    1 + 64 (SCHNORR signature)
@@ -18,7 +19,7 @@ export const INPUT_SCRIPT_LENGTH = {
     p2wsh: 107, // TODO usually 1 + 72 + 1 + 72 + 1 + 70
 } as const;
 
-export const OUTPUT_SCRIPT_LENGTH = {
+export const OUTPUT_SCRIPT_LENGTH: Record<CoinSelectPaymentType, number> = {
     p2pkh: 25,
     p2sh: 23,
     p2tr: 34,
@@ -26,9 +27,7 @@ export const OUTPUT_SCRIPT_LENGTH = {
     p2wsh: 34,
 } as const;
 
-export type TxType = keyof typeof INPUT_SCRIPT_LENGTH;
-
-const SEGWIT_INPUT_SCRIPT_TYPES: TxType[] = ['p2sh', 'p2tr', 'p2wpkh', 'p2wsh'];
+const SEGWIT_INPUT_SCRIPT_TYPES: CoinSelectPaymentType[] = ['p2sh', 'p2tr', 'p2wpkh', 'p2wsh'];
 
 // transaction header + footer: 4 byte version, 4 byte lock time
 const TX_BASE = 32; // 4 * (4 + 4)
