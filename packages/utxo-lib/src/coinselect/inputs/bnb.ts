@@ -1,19 +1,30 @@
 import * as BN from 'bn.js';
-import * as utils from '../utils';
+import {
+    bignumberOrNaN,
+    sumOrNaN,
+    inputBytes,
+    outputBytes,
+    transactionBytes,
+    getFeeForBytes,
+    finalize,
+    ZERO,
+    INPUT_SCRIPT_LENGTH,
+    OUTPUT_SCRIPT_LENGTH,
+} from '../coinselectUtils';
 import { CoinSelectAlgorithm, CoinSelectInput } from '../../types';
 
 const MAX_TRIES = 1000000;
 
 function calculateEffectiveValues(utxos: CoinSelectInput[], feeRate: number) {
     return utxos.map(utxo => {
-        const value = utils.bignumberOrNaN(utxo.value);
+        const value = bignumberOrNaN(utxo.value);
         if (!value) {
             return {
                 utxo,
                 effectiveValue: new BN(0),
             };
         }
-        const effectiveFee = utils.getFeeForBytes(feeRate, utils.inputBytes(utxo));
+        const effectiveFee = getFeeForBytes(feeRate, inputBytes(utxo));
         const effectiveValue = value.sub(new BN(effectiveFee));
         return {
             utxo,
@@ -113,36 +124,36 @@ export function bnb(factor: number): CoinSelectAlgorithm {
         if (options.baseFee) return { fee: 0 }; // TEMP: disable bnb algorithm for DOGE
         if (utxos.find(u => u.required)) return { fee: 0 }; // TODO: enable bnb algorithm if required utxos are defined
 
-        const costPerChangeOutput = utils.getFeeForBytes(
+        const costPerChangeOutput = getFeeForBytes(
             feeRate,
-            utils.outputBytes({
+            outputBytes({
                 script: {
-                    length: utils.OUTPUT_SCRIPT_LENGTH[options.txType],
+                    length: OUTPUT_SCRIPT_LENGTH[options.txType],
                 },
             }),
         );
 
-        const costPerInput = utils.getFeeForBytes(
+        const costPerInput = getFeeForBytes(
             feeRate,
-            utils.inputBytes({
+            inputBytes({
                 type: options.txType,
                 script: {
-                    length: utils.INPUT_SCRIPT_LENGTH[options.txType],
+                    length: INPUT_SCRIPT_LENGTH[options.txType],
                 },
             }),
         );
 
         const costOfChange = Math.floor((costPerInput + costPerChangeOutput) * factor);
-        const txBytes = utils.transactionBytes([], outputs);
-        const bytesAndFee = utils.getFeeForBytes(feeRate, txBytes);
+        const txBytes = transactionBytes([], outputs);
+        const bytesAndFee = getFeeForBytes(feeRate, txBytes);
 
-        const outSum = utils.sumOrNaN(outputs);
+        const outSum = sumOrNaN(outputs);
         if (!outSum) return { fee: 0 };
 
         const outAccum = outSum.add(new BN(bytesAndFee));
 
         const effectiveUtxos = calculateEffectiveValues(utxos, feeRate)
-            .filter(x => x.effectiveValue.gt(utils.ZERO))
+            .filter(x => x.effectiveValue.gt(ZERO))
             .sort((a, b) => {
                 const subtract = b.effectiveValue.sub(a.effectiveValue).toNumber();
                 if (subtract !== 0) {
@@ -161,7 +172,7 @@ export function bnb(factor: number): CoinSelectAlgorithm {
                 }
             }
 
-            return utils.finalize(inputs, outputs, feeRate, options);
+            return finalize(inputs, outputs, feeRate, options);
         }
 
         return { fee: 0 };

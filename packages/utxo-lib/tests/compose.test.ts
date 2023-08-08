@@ -1,5 +1,5 @@
 import { composeTx } from '../src';
-import * as utils from '../src/compose/utils';
+import { convertFeeRate } from '../src/compose/composeUtils';
 import { Permutation } from '../src/compose/permutation';
 import { reverseBuffer } from '../src/bufferutils';
 import * as NETWORKS from '../src/networks';
@@ -100,29 +100,29 @@ describe('composeTx addresses cross-check', () => {
     });
 });
 
-describe('compose/utils', () => {
+describe('composeUtils', () => {
     it('convertFeeRate', () => {
         // valid
-        expect(utils.convertFeeRate('1')).toEqual(1);
-        expect(utils.convertFeeRate('1.1')).toEqual(1.1);
-        expect(utils.convertFeeRate(1)).toEqual(1);
-        expect(utils.convertFeeRate(1.1)).toEqual(1.1);
+        expect(convertFeeRate('1')).toEqual(1);
+        expect(convertFeeRate('1.1')).toEqual(1.1);
+        expect(convertFeeRate(1)).toEqual(1);
+        expect(convertFeeRate(1.1)).toEqual(1.1);
 
         // invalid
-        expect(utils.convertFeeRate(Number.MAX_SAFE_INTEGER + 1)).toBeUndefined();
-        expect(utils.convertFeeRate('9007199254740992')).toBeUndefined(); // Number.MAX_SAFE_INTEGER + 1 as string
-        expect(utils.convertFeeRate('-1')).toBeUndefined();
-        expect(utils.convertFeeRate('-1')).toBeUndefined();
-        expect(utils.convertFeeRate('aaa')).toBeUndefined();
-        expect(utils.convertFeeRate('')).toBeUndefined();
-        expect(utils.convertFeeRate(-1)).toBeUndefined();
-        expect(utils.convertFeeRate(0)).toBeUndefined();
-        expect(utils.convertFeeRate('0')).toBeUndefined();
-        expect(utils.convertFeeRate(NaN)).toBeUndefined();
-        expect(utils.convertFeeRate(Infinity)).toBeUndefined();
+        expect(convertFeeRate(Number.MAX_SAFE_INTEGER + 1)).toBeUndefined();
+        expect(convertFeeRate('9007199254740992')).toBeUndefined(); // Number.MAX_SAFE_INTEGER + 1 as string
+        expect(convertFeeRate('-1')).toBeUndefined();
+        expect(convertFeeRate('-1')).toBeUndefined();
+        expect(convertFeeRate('aaa')).toBeUndefined();
+        expect(convertFeeRate('')).toBeUndefined();
+        expect(convertFeeRate(-1)).toBeUndefined();
+        expect(convertFeeRate(0)).toBeUndefined();
+        expect(convertFeeRate('0')).toBeUndefined();
+        expect(convertFeeRate(NaN)).toBeUndefined();
+        expect(convertFeeRate(Infinity)).toBeUndefined();
         // @ts-expect-error invalid arg
-        expect(utils.convertFeeRate()).toBeUndefined();
+        expect(convertFeeRate()).toBeUndefined();
         // @ts-expect-error invalid arg
-        expect(utils.convertFeeRate(null)).toBeUndefined();
+        expect(convertFeeRate(null)).toBeUndefined();
     });
 });

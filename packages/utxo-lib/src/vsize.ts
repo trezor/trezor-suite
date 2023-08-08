@@ -1,5 +1,5 @@
-import { transactionBytes, INPUT_SCRIPT_LENGTH } from './coinselect/utils';
-import { getScriptFromAddress } from './compose/utils';
+import { transactionBytes, INPUT_SCRIPT_LENGTH } from './coinselect/coinselectUtils';
+import { getScriptFromAddress } from './compose/composeUtils';
 import { getAddressType } from './address';
 import type { Network } from './networks';
 

@@ -4,7 +4,7 @@ import {
     OUTPUT_SCRIPT_LENGTH,
     inputWeight,
     outputWeight,
-} from '../coinselect/utils';
+} from '../coinselect/coinselectUtils';
 import {
     CoinSelectPaymentType,
     CoinSelectInput,

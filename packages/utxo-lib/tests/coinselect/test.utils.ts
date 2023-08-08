@@ -1,4 +1,4 @@
-import { INPUT_SCRIPT_LENGTH, OUTPUT_SCRIPT_LENGTH } from '../../src/coinselect/utils';
+import { INPUT_SCRIPT_LENGTH, OUTPUT_SCRIPT_LENGTH } from '../../src/coinselect/coinselectUtils';
 
 function addScriptLength(values: any[], scriptLength: number) {
     return values.map(xx => {

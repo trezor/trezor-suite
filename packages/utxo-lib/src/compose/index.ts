@@ -1,7 +1,7 @@
 import * as request from './request';
 import * as result from './result';
 import * as transaction from './transaction';
-import { convertFeeRate } from './utils';
+import { convertFeeRate } from './composeUtils';
 import { coinselect } from './coinselect';
 import { ComposeRequest, ComposeResult } from '../types';
 
