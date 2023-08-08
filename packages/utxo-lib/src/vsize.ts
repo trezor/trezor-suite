@@ -1,5 +1,5 @@
+import * as BitcoinJsAddress from './address';
 import { transactionBytes, INPUT_SCRIPT_LENGTH } from './coinselect/coinselectUtils';
-import { getScriptFromAddress } from './compose/composeUtils';
 import { getAddressType } from './address';
 import type { Network } from './networks';
 
@@ -20,7 +20,7 @@ const toVin = (network: Network) => (address: string) => {
 const toVout = (network: Network) => (address: string) => {
     let length;
     try {
-        length = getScriptFromAddress(address, network).length;
+        length = BitcoinJsAddress.toOutputScript(address, network).length;
     } catch {
         const msg = address.match(/^OP_RETURN (.*)$/)?.pop();
         if (msg) {
