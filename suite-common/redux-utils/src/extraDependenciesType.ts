@@ -43,6 +43,7 @@ export type ExtraDependencies = {
         selectRouterApp: SuiteCompatibleSelector<string>;
         selectMetadata: SuiteCompatibleSelector<any>;
         selectDevice: SuiteCompatibleSelector<TrezorDevice | undefined>;
+        selectBinDir: SuiteCompatibleSelector<string | undefined>;
         selectDiscoveryForDevice: SuiteCompatibleSelector<Discovery | undefined>;
     };
     // You should only use ActionCreatorWithPayload from redux-toolkit!

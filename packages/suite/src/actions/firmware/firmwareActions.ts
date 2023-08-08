@@ -13,7 +13,7 @@ import {
     selectIsCustomFirmware,
 } from 'src/reducers/firmware/firmwareReducer';
 
-const MODULE_PREFIX = '@firmware';
+export const MODULE_PREFIX = '@firmware';
 
 const setStatus = createAction(
     `${MODULE_PREFIX}/set-update-status`,

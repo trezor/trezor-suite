@@ -57,6 +57,7 @@ export const extraDependencies: ExtraDependencies = {
         selectDebugSettings: (state: AppState) => state.suite.settings.debug,
         selectRouterApp: (state: AppState) => state.router.app,
         selectDevice: (state: AppState) => state.suite.device,
+        selectBinDir: (state: AppState) => state.desktop?.paths?.binDir,
         selectMetadata: (state: AppState) => state.metadata,
         selectDiscoveryForDevice: (state: DiscoveryRootState & { suite: SuiteState }) =>
             selectDiscoveryByDeviceState(state, state.suite.device?.state),
