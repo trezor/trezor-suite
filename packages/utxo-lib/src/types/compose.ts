@@ -7,11 +7,10 @@ export interface ComposeInput {
     transactionHash: string; // hash of the transaction
     value: string; // how much money sent
     addressPath: [number, number]; // path
-    height?: number; // null == unconfirmed
     coinbase: boolean; // coinbase transaction = utxo from mining, cannot be spend before 100 blocks
     own: boolean; // is the ORIGIN me (the same account)
+    confirmations: number; // might be spent immediately (own) or after 6 conf (not own) see ./coinselect/tryConfirmed
     required?: boolean; // must be included into transaction
-    confirmations?: number; // TODO
 }
 
 // Input to coinselect algorithm.
@@ -51,7 +50,6 @@ export interface ComposeRequest {
     txType?: CoinSelectPaymentType;
     utxos: ComposeInput[]; // all inputs
     outputs: ComposeOutput[]; // all output "requests"
-    height: number;
     feeRate: string | number; // in sat/byte, virtual size
     longTermFeeRate?: string | number; // dust output feeRate multiplier in sat/byte, virtual size
     basePath: number[]; // for trezor inputs

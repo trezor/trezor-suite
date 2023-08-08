@@ -7,7 +7,6 @@ export default [
             changeId: 0,
             dustThreshold: 546,
             feeRate: '10',
-            height: 100,
             outputs: [
                 {
                     address: '1BitcoinEaterAddressDontSendf59kuE',
@@ -19,7 +18,7 @@ export default [
                 {
                     addressPath: [3, 4],
                     coinbase: false,
-                    height: 100,
+                    confirmations: 100,
                     index: 0,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
@@ -63,7 +62,6 @@ export default [
             changeId: 0,
             dustThreshold: 546,
             feeRate: '10.33',
-            height: 100,
             outputs: [
                 {
                     address: '1BitcoinEaterAddressDontSendf59kuE',
@@ -75,7 +73,7 @@ export default [
                 {
                     addressPath: [3, 4],
                     coinbase: false,
-                    height: 100,
+                    confirmations: 100,
                     index: 0,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
@@ -119,7 +117,6 @@ export default [
             changeId: 0,
             dustThreshold: 546,
             feeRate: '10',
-            height: 100,
             outputs: [
                 {
                     amount: '100000',
@@ -130,7 +127,7 @@ export default [
                 {
                     addressPath: [3, 4],
                     coinbase: false,
-                    height: 100,
+                    confirmations: 100,
                     index: 0,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
@@ -155,7 +152,6 @@ export default [
             changeId: 0,
             dustThreshold: 546,
             feeRate: '10',
-            height: 100,
             outputs: [
                 {
                     amount: '100000',
@@ -166,7 +162,7 @@ export default [
                 {
                     addressPath: [3, 4],
                     coinbase: false,
-                    height: 100,
+                    confirmations: 100,
                     index: 0,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
@@ -187,7 +183,6 @@ export default [
             changeId: 0,
             dustThreshold: 546,
             feeRate: '10',
-            height: 100,
             outputs: [
                 {
                     address: '1BitcoinEaterAddressDontSendf59kuE',
@@ -198,7 +193,7 @@ export default [
                 {
                     addressPath: [3, 4],
                     coinbase: false,
-                    height: 100,
+                    confirmations: 100,
                     index: 0,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
@@ -242,7 +237,6 @@ export default [
             changeId: 0,
             dustThreshold: 546,
             feeRate: '10',
-            height: 100,
             outputs: [
                 {
                     address: '1BitcoinEaterAddressDontSendf59kuE',
@@ -253,7 +247,7 @@ export default [
                 {
                     addressPath: [3, 4],
                     coinbase: false,
-                    height: 100,
+                    confirmations: 100,
                     index: 0,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
@@ -297,7 +291,6 @@ export default [
             changeId: 0,
             dustThreshold: 546,
             feeRate: '10',
-            height: 100,
             outputs: [
                 {
                     type: 'weird-output-type',
@@ -307,7 +300,7 @@ export default [
                 {
                     addressPath: [3, 4],
                     coinbase: false,
-                    height: 100,
+                    confirmations: 100,
                     index: 0,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
@@ -328,7 +321,6 @@ export default [
             changeId: 0,
             dustThreshold: 546,
             feeRate: '10',
-            height: 100,
             outputs: [],
             utxos: [],
         },
@@ -345,13 +337,12 @@ export default [
             changeId: 0,
             dustThreshold: 546,
             feeRate: '10',
-            height: 100,
             outputs: [],
             utxos: [
                 {
                     addressPath: [3, 4],
                     coinbase: false,
-                    height: 100,
+                    confirmations: 100,
                     index: 0,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
@@ -372,7 +363,6 @@ export default [
             changeId: 0,
             dustThreshold: 546,
             feeRate: '10',
-            height: 100,
             outputs: [
                 {
                     address: '1BitcoinEaterAddressDontSendf59kuE',
@@ -394,7 +384,6 @@ export default [
             changeId: 0,
             dustThreshold: 546,
             feeRate: 0,
-            height: 100,
             outputs: [
                 {
                     address: '1BitcoinEaterAddressDontSendf59kuE',
@@ -406,7 +395,7 @@ export default [
                 {
                     addressPath: [3, 4],
                     coinbase: false,
-                    height: 100,
+                    confirmations: 100,
                     index: 0,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
@@ -427,7 +416,6 @@ export default [
             changeId: 0,
             dustThreshold: 546,
             feeRate: NaN,
-            height: 100,
             outputs: [
                 {
                     address: '1BitcoinEaterAddressDontSendf59kuE',
@@ -439,7 +427,7 @@ export default [
                 {
                     addressPath: [3, 4],
                     coinbase: false,
-                    height: 100,
+                    confirmations: 100,
                     index: 0,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
@@ -460,7 +448,6 @@ export default [
             changeId: 0,
             dustThreshold: 546,
             feeRate: '10',
-            height: 100,
             outputs: [
                 {
                     address: '1BitcoinEaterAddressDontSendf59kuE',
@@ -477,7 +464,7 @@ export default [
                 {
                     addressPath: [3, 4],
                     coinbase: false,
-                    height: 100,
+                    confirmations: 100,
                     index: 0,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
@@ -529,7 +516,6 @@ export default [
             changeId: 0,
             dustThreshold: 546,
             feeRate: '10.71',
-            height: 100,
             outputs: [
                 {
                     address: '1BitcoinEaterAddressDontSendf59kuE',
@@ -546,7 +532,7 @@ export default [
                 {
                     addressPath: [3, 4],
                     coinbase: false,
-                    height: 100,
+                    confirmations: 100,
                     index: 0,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
@@ -599,7 +585,6 @@ export default [
             changeId: 0,
             dustThreshold: 546,
             feeRate: '10',
-            height: 100,
             outputs: [
                 {
                     address: '3LRW7jeCvQCRdPF8S3yUCfRAx4eqXFmdcr',
@@ -616,7 +601,7 @@ export default [
                 {
                     addressPath: [3, 4],
                     coinbase: false,
-                    height: 100,
+                    confirmations: 100,
                     index: 0,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
@@ -668,7 +653,6 @@ export default [
             changeId: 0,
             dustThreshold: 546,
             feeRate: '10',
-            height: 100,
             outputs: [
                 {
                     address: '1BitcoinEaterAddressDontSendf59kuE',
@@ -680,7 +664,7 @@ export default [
                 {
                     addressPath: [3, 4],
                     coinbase: false,
-                    height: 100,
+                    confirmations: 100,
                     index: 1,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
@@ -689,7 +673,7 @@ export default [
                 {
                     addressPath: [3, 4],
                     coinbase: false,
-                    height: null,
+                    confirmations: 5,
                     index: 2,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
@@ -733,7 +717,6 @@ export default [
             changeId: 0,
             dustThreshold: 546,
             feeRate: '10',
-            height: 100,
             outputs: [
                 {
                     address: '1BitcoinEaterAddressDontSendf59kuE',
@@ -748,7 +731,7 @@ export default [
                 {
                     addressPath: [3, 4],
                     coinbase: false,
-                    height: 100,
+                    confirmations: 100,
                     index: 0,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
@@ -769,7 +752,6 @@ export default [
             changeId: 0,
             dustThreshold: 546,
             feeRate: '10',
-            height: 100,
             outputs: [
                 {
                     address: '1BitcoinEaterAddressDontSendf59kuE',
@@ -781,7 +763,7 @@ export default [
                 {
                     addressPath: [3, 4],
                     coinbase: false,
-                    height: 100,
+                    confirmations: 100,
                     index: 1,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
@@ -790,7 +772,7 @@ export default [
                 {
                     addressPath: [3, 4],
                     coinbase: false,
-                    height: 100,
+                    confirmations: 100,
                     index: 2,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
@@ -841,7 +823,6 @@ export default [
             changeId: 0,
             dustThreshold: 546,
             feeRate: '10',
-            height: 100,
             outputs: [
                 {
                     address: '3LRW7jeCvQCRdPF8S3yUCfRAx4eqXFmdcr',
@@ -858,7 +839,7 @@ export default [
                 {
                     addressPath: [3, 4],
                     coinbase: false,
-                    height: 100,
+                    confirmations: 100,
                     index: 0,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
@@ -911,7 +892,6 @@ export default [
             changeId: 0,
             dustThreshold: 54600,
             feeRate: '10',
-            height: 100,
             outputs: [
                 {
                     address: '3LRW7jeCvQCRdPF8S3yUCfRAx4eqXFmdcr',
@@ -923,7 +903,7 @@ export default [
                 {
                     addressPath: [3, 4],
                     coinbase: false,
-                    height: 100,
+                    confirmations: 100,
                     index: 0,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
@@ -967,7 +947,6 @@ export default [
             changeId: 0,
             dustThreshold: 546,
             feeRate: '10',
-            height: 100,
             outputs: [
                 {
                     dataHex: 'deadbeef',
@@ -978,7 +957,7 @@ export default [
                 {
                     addressPath: [3, 4],
                     coinbase: false,
-                    height: 100,
+                    confirmations: 100,
                     index: 0,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
@@ -1028,7 +1007,6 @@ export default [
             changeId: 0,
             dustThreshold: 546,
             feeRate: '10',
-            height: 100,
             outputs: [
                 {
                     dataHex: 'deadbeef',
@@ -1043,7 +1021,7 @@ export default [
                 {
                     addressPath: [3, 4],
                     coinbase: false,
-                    height: 100,
+                    confirmations: 100,
                     index: 0,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
@@ -1100,7 +1078,6 @@ export default [
             changeId: 0,
             dustThreshold: 546,
             feeRate: '10',
-            height: 100,
             outputs: [
                 {
                     address: 'bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq',
@@ -1112,7 +1089,7 @@ export default [
                 {
                     addressPath: [3, 4],
                     coinbase: false,
-                    height: 100,
+                    confirmations: 100,
                     index: 0,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
@@ -1158,7 +1135,6 @@ export default [
             changeId: 0,
             dustThreshold: 0,
             feeRate: '10',
-            height: 100,
             outputs: [
                 {
                     address: 'bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq',
@@ -1170,7 +1146,7 @@ export default [
                 {
                     addressPath: [3, 4],
                     coinbase: false,
-                    height: 100,
+                    confirmations: 100,
                     index: 0,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
@@ -1219,7 +1195,6 @@ export default [
             changeId: 0,
             dustThreshold: 546,
             feeRate: '10',
-            height: 100,
             outputs: [
                 {
                     address: '3NukJ6fYZJ5Kk8bPjycAnruZkE5Q7UW7i8',
@@ -1231,7 +1206,7 @@ export default [
                 {
                     addressPath: [1, 4],
                     coinbase: false,
-                    height: 100,
+                    confirmations: 100,
                     index: 0,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
@@ -1277,7 +1252,6 @@ export default [
             changeId: 0,
             dustThreshold: 0,
             feeRate: '10',
-            height: 100,
             outputs: [
                 {
                     address: '3NukJ6fYZJ5Kk8bPjycAnruZkE5Q7UW7i8',
@@ -1289,7 +1263,7 @@ export default [
                 {
                     addressPath: [1, 4],
                     coinbase: false,
-                    height: 100,
+                    confirmations: 100,
                     index: 0,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
@@ -1338,7 +1312,6 @@ export default [
             changeId: 0,
             dustThreshold: 546,
             feeRate: '10',
-            height: 100,
             outputs: [
                 {
                     address: 'bc1ptxs597p3fnpd8gwut5p467ulsydae3rp9z75hd99w8k3ljr9g9rqx6ynaw',
@@ -1397,7 +1370,6 @@ export default [
             changeId: 0,
             dustThreshold: 0,
             feeRate: '10',
-            height: 100,
             outputs: [
                 {
                     address: 'bc1ptxs597p3fnpd8gwut5p467ulsydae3rp9z75hd99w8k3ljr9g9rqx6ynaw',
@@ -1458,7 +1430,6 @@ export default [
             changeId: 0,
             dustThreshold: 546,
             feeRate: '10',
-            height: 100,
             outputs: [
                 {
                     type: 'send-max-noaddress',
@@ -1468,7 +1439,7 @@ export default [
                 {
                     addressPath: [3, 4],
                     coinbase: false,
-                    height: 100,
+                    confirmations: 100,
                     index: 0,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
@@ -1494,7 +1465,6 @@ export default [
             changeId: 0,
             dustThreshold: 546,
             feeRate: '10',
-            height: 100,
             outputs: [
                 {
                     address: 'bitcoincash:qp6e6enhpy0fwwu7nkvlr8rgl06ru0c9lywalz8st5',
@@ -1506,7 +1476,7 @@ export default [
                 {
                     addressPath: [3, 4],
                     coinbase: false,
-                    height: 100,
+                    confirmations: 100,
                     index: 0,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
@@ -1550,7 +1520,6 @@ export default [
             changeId: 1,
             dustThreshold: 546,
             feeRate: '10',
-            height: 200,
             outputs: [
                 {
                     address: '1BitcoinEaterAddressDontSendf59kuE',
@@ -1561,21 +1530,21 @@ export default [
             utxos: [
                 {
                     addressPath: [1, 0],
-                    height: 200,
                     index: 0,
                     transactionHash: 'a4dc0ffeee',
                     value: '65291',
                     coinbase: true,
+                    confirmations: 200,
                     own: false,
                     required: true,
                 },
                 {
                     addressPath: [0, 1],
-                    height: 150,
                     index: 0,
                     transactionHash: 'c4dc0ffeee',
                     value: '202001',
                     coinbase: false,
+                    confirmations: 150,
                     own: true,
                 },
                 {
@@ -1584,16 +1553,17 @@ export default [
                     transactionHash: 'b4dc0ffeee',
                     value: '55291',
                     coinbase: false,
+                    confirmations: 0,
                     own: false,
                     required: true,
                 },
                 {
                     addressPath: [0, 2],
-                    height: 100,
                     index: 0,
                     transactionHash: 'd4dc0ffeee',
                     value: '200000',
                     coinbase: false,
+                    confirmations: 1000,
                     own: true,
                 },
             ],
@@ -1644,7 +1614,6 @@ export default [
             changeId: 1,
             dustThreshold: 546,
             feeRate: '10',
-            height: 100,
             skipPermutation: true,
             outputs: [
                 {
@@ -1657,21 +1626,21 @@ export default [
                 {
                     addressPath: [1, 0],
                     fee: '0',
-                    height: 60,
                     index: 0,
                     transactionHash: 'a4dc0ffeee',
                     value: '65291',
                     coinbase: false,
+                    confirmations: 60,
                     own: false,
                 },
                 {
                     addressPath: [1, 1],
                     fee: '0',
-                    height: 50,
                     index: 1,
                     transactionHash: 'b4dc0ffeee',
                     value: '55291',
                     coinbase: false,
+                    confirmations: 50,
                     own: false,
                 },
             ],
@@ -1723,7 +1692,6 @@ export default [
             changeId: 0,
             dustThreshold: 999999,
             feeRate: '1000',
-            height: 7000000,
             network: 'doge',
             outputs: [
                 {
@@ -1736,7 +1704,7 @@ export default [
                 {
                     addressPath: [0, 0],
                     coinbase: false,
-                    height: 2272181,
+                    confirmations: 2272181,
                     index: 1,
                     own: false,
                     transactionHash:
