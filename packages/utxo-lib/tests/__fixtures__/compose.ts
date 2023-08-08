@@ -1,3 +1,13 @@
+export const UTXO = {
+    path: [44, 1, 0, 0, 0], // NOTE: this field is not required by the ComposeInput interface, yet it is accepted in and received out
+    coinbase: false,
+    own: true,
+    confirmations: 100,
+    vout: 0,
+    txid: 'b4dc0ffeee',
+    amount: '102001',
+};
+
 export default [
     {
         description: 'builds a simple tx without change',
@@ -14,17 +24,7 @@ export default [
                     type: 'complete',
                 },
             ],
-            utxos: [
-                {
-                    addressPath: [3, 4],
-                    coinbase: false,
-                    confirmations: 100,
-                    vout: 0,
-                    own: true,
-                    txid: 'b4dc0ffeee',
-                    amount: '102001',
-                },
-            ],
+            utxos: [UTXO],
         },
         result: {
             bytes: 192,
@@ -42,14 +42,7 @@ export default [
                         },
                     ],
                 },
-                inputs: [
-                    {
-                        txid: 'b4dc0ffeee',
-                        vout: 0,
-                        path: [44, 1, 3, 4],
-                        amount: '102001',
-                    },
-                ],
+                inputs: [UTXO],
             },
             type: 'final',
         },
@@ -69,17 +62,7 @@ export default [
                     type: 'complete',
                 },
             ],
-            utxos: [
-                {
-                    addressPath: [3, 4],
-                    coinbase: false,
-                    confirmations: 100,
-                    vout: 0,
-                    own: true,
-                    txid: 'b4dc0ffeee',
-                    amount: '102001',
-                },
-            ],
+            utxos: [UTXO],
         },
         result: {
             bytes: 192,
@@ -97,14 +80,7 @@ export default [
                         },
                     ],
                 },
-                inputs: [
-                    {
-                        txid: 'b4dc0ffeee',
-                        vout: 0,
-                        path: [44, 1, 3, 4],
-                        amount: '102001',
-                    },
-                ],
+                inputs: [UTXO],
             },
             type: 'final',
         },
@@ -123,17 +99,7 @@ export default [
                     type: 'noaddress',
                 },
             ],
-            utxos: [
-                {
-                    addressPath: [3, 4],
-                    coinbase: false,
-                    confirmations: 100,
-                    vout: 0,
-                    own: true,
-                    txid: 'b4dc0ffeee',
-                    amount: '102001',
-                },
-            ],
+            utxos: [UTXO],
         },
         result: {
             bytes: 192,
@@ -160,12 +126,7 @@ export default [
             ],
             utxos: [
                 {
-                    addressPath: [3, 4],
-                    coinbase: false,
-                    confirmations: 100,
-                    vout: 0,
-                    own: true,
-                    txid: 'b4dc0ffeee',
+                    ...UTXO,
                     amount: '10',
                 },
             ],
@@ -191,12 +152,7 @@ export default [
             ],
             utxos: [
                 {
-                    addressPath: [3, 4],
-                    coinbase: false,
-                    confirmations: 100,
-                    vout: 0,
-                    own: true,
-                    txid: 'b4dc0ffeee',
+                    ...UTXO,
                     amount: '50000000000',
                 },
             ],
@@ -219,9 +175,7 @@ export default [
                 },
                 inputs: [
                     {
-                        txid: 'b4dc0ffeee',
-                        vout: 0,
-                        path: [44, 1, 3, 4],
+                        ...UTXO,
                         amount: '50000000000',
                     },
                 ],
@@ -243,17 +197,7 @@ export default [
                     type: 'send-max',
                 },
             ],
-            utxos: [
-                {
-                    addressPath: [3, 4],
-                    coinbase: false,
-                    confirmations: 100,
-                    vout: 0,
-                    own: true,
-                    txid: 'b4dc0ffeee',
-                    amount: '102001',
-                },
-            ],
+            utxos: [UTXO],
         },
         result: {
             bytes: 192,
@@ -271,14 +215,7 @@ export default [
                         },
                     ],
                 },
-                inputs: [
-                    {
-                        txid: 'b4dc0ffeee',
-                        vout: 0,
-                        path: [44, 1, 3, 4],
-                        amount: '102001',
-                    },
-                ],
+                inputs: [UTXO],
             },
             type: 'final',
         },
@@ -296,17 +233,7 @@ export default [
                     type: 'weird-output-type',
                 },
             ],
-            utxos: [
-                {
-                    addressPath: [3, 4],
-                    coinbase: false,
-                    confirmations: 100,
-                    vout: 0,
-                    own: true,
-                    txid: 'b4dc0ffeee',
-                    amount: '10',
-                },
-            ],
+            utxos: [UTXO],
         },
         result: {
             error: 'WRONG-OUTPUT-TYPE',
@@ -338,17 +265,7 @@ export default [
             dustThreshold: 546,
             feeRate: '10',
             outputs: [],
-            utxos: [
-                {
-                    addressPath: [3, 4],
-                    coinbase: false,
-                    confirmations: 100,
-                    vout: 0,
-                    own: true,
-                    txid: 'b4dc0ffeee',
-                    amount: '102001',
-                },
-            ],
+            utxos: [UTXO],
         },
         result: {
             error: 'EMPTY',
@@ -391,17 +308,7 @@ export default [
                     type: 'complete',
                 },
             ],
-            utxos: [
-                {
-                    addressPath: [3, 4],
-                    coinbase: false,
-                    confirmations: 100,
-                    vout: 0,
-                    own: true,
-                    txid: 'b4dc0ffeee',
-                    amount: '102001',
-                },
-            ],
+            utxos: [UTXO],
         },
         result: {
             error: 'INCORRECT-FEE-RATE',
@@ -423,17 +330,7 @@ export default [
                     type: 'complete',
                 },
             ],
-            utxos: [
-                {
-                    addressPath: [3, 4],
-                    coinbase: false,
-                    confirmations: 100,
-                    vout: 0,
-                    own: true,
-                    txid: 'b4dc0ffeee',
-                    amount: '102001',
-                },
-            ],
+            utxos: [UTXO],
         },
         result: {
             error: 'INCORRECT-FEE-RATE',
@@ -460,17 +357,7 @@ export default [
                     type: 'complete',
                 },
             ],
-            utxos: [
-                {
-                    addressPath: [3, 4],
-                    coinbase: false,
-                    confirmations: 100,
-                    vout: 0,
-                    own: true,
-                    txid: 'b4dc0ffeee',
-                    amount: '102001',
-                },
-            ],
+            utxos: [UTXO],
         },
         result: {
             bytes: 260,
@@ -496,14 +383,7 @@ export default [
                         },
                     ],
                 },
-                inputs: [
-                    {
-                        txid: 'b4dc0ffeee',
-                        vout: 0,
-                        path: [44, 1, 3, 4],
-                        amount: '102001',
-                    },
-                ],
+                inputs: [UTXO],
             },
             type: 'final',
         },
@@ -528,17 +408,7 @@ export default [
                     type: 'complete',
                 },
             ],
-            utxos: [
-                {
-                    addressPath: [3, 4],
-                    coinbase: false,
-                    confirmations: 100,
-                    vout: 0,
-                    own: true,
-                    txid: 'b4dc0ffeee',
-                    amount: '102001',
-                },
-            ],
+            utxos: [UTXO],
         },
         result: {
             bytes: 260,
@@ -564,14 +434,7 @@ export default [
                         },
                     ],
                 },
-                inputs: [
-                    {
-                        txid: 'b4dc0ffeee',
-                        vout: 0,
-                        path: [44, 1, 3, 4],
-                        amount: '102001',
-                    },
-                ],
+                inputs: [UTXO],
             },
             type: 'final',
         },
@@ -597,17 +460,7 @@ export default [
                     type: 'complete',
                 },
             ],
-            utxos: [
-                {
-                    addressPath: [3, 4],
-                    coinbase: false,
-                    confirmations: 100,
-                    vout: 0,
-                    own: true,
-                    txid: 'b4dc0ffeee',
-                    amount: '102001',
-                },
-            ],
+            utxos: [UTXO],
         },
         result: {
             bytes: 198,
@@ -633,14 +486,7 @@ export default [
                         },
                     ],
                 },
-                inputs: [
-                    {
-                        txid: 'b4dc0ffeee',
-                        amount: '102001',
-                        vout: 0,
-                        path: [49, 0, 0, 3, 4],
-                    },
-                ],
+                inputs: [UTXO],
             },
             type: 'final',
         },
@@ -662,22 +508,14 @@ export default [
             ],
             utxos: [
                 {
-                    addressPath: [3, 4],
-                    coinbase: false,
+                    ...UTXO,
                     confirmations: 100,
                     vout: 1,
-                    own: true,
-                    txid: 'b4dc0ffeee',
-                    amount: '102001',
                 },
                 {
-                    addressPath: [3, 4],
-                    coinbase: false,
+                    ...UTXO,
                     confirmations: 5,
                     vout: 2,
-                    own: true,
-                    txid: 'b4dc0ffeee',
-                    amount: '102001',
                 },
             ],
         },
@@ -699,10 +537,9 @@ export default [
                 },
                 inputs: [
                     {
-                        txid: 'b4dc0ffeee',
+                        ...UTXO,
+                        confirmations: 100,
                         vout: 1,
-                        path: [44, 1, 3, 4],
-                        amount: '102001',
                     },
                 ],
             },
@@ -727,17 +564,7 @@ export default [
                     type: 'send-max',
                 },
             ],
-            utxos: [
-                {
-                    addressPath: [3, 4],
-                    coinbase: false,
-                    confirmations: 100,
-                    vout: 0,
-                    own: true,
-                    txid: 'b4dc0ffeee',
-                    amount: '102001',
-                },
-            ],
+            utxos: [UTXO],
         },
         result: {
             error: 'TWO-SEND-MAX',
@@ -761,22 +588,12 @@ export default [
             ],
             utxos: [
                 {
-                    addressPath: [3, 4],
-                    coinbase: false,
-                    confirmations: 100,
+                    ...UTXO,
                     vout: 1,
-                    own: true,
-                    txid: 'b4dc0ffeee',
-                    amount: '102001',
                 },
                 {
-                    addressPath: [3, 4],
-                    coinbase: false,
-                    confirmations: 100,
+                    ...UTXO,
                     vout: 2,
-                    own: true,
-                    txid: 'b4dc0ffeee',
-                    amount: '102001',
                 },
             ],
         },
@@ -798,16 +615,12 @@ export default [
                 },
                 inputs: [
                     {
-                        txid: 'b4dc0ffeee',
+                        ...UTXO,
                         vout: 1,
-                        path: [44, 1, 3, 4],
-                        amount: '102001',
                     },
                     {
-                        txid: 'b4dc0ffeee',
+                        ...UTXO,
                         vout: 2,
-                        path: [44, 1, 3, 4],
-                        amount: '102001',
                     },
                 ],
             },
@@ -835,17 +648,7 @@ export default [
                     type: 'complete',
                 },
             ],
-            utxos: [
-                {
-                    addressPath: [3, 4],
-                    coinbase: false,
-                    confirmations: 100,
-                    vout: 0,
-                    own: true,
-                    txid: 'b4dc0ffeee',
-                    amount: '102001',
-                },
-            ],
+            utxos: [UTXO],
         },
         result: {
             bytes: 200,
@@ -871,14 +674,7 @@ export default [
                         },
                     ],
                 },
-                inputs: [
-                    {
-                        txid: 'b4dc0ffeee',
-                        amount: '102001',
-                        vout: 0,
-                        path: [44, 0, 1, 3, 4],
-                    },
-                ],
+                inputs: [UTXO],
             },
             type: 'final',
         },
@@ -901,12 +697,7 @@ export default [
             ],
             utxos: [
                 {
-                    addressPath: [3, 4],
-                    coinbase: false,
-                    confirmations: 100,
-                    vout: 0,
-                    own: true,
-                    txid: 'b4dc0ffeee',
+                    ...UTXO,
                     amount: '972463',
                 },
             ],
@@ -929,9 +720,7 @@ export default [
                 },
                 inputs: [
                     {
-                        txid: 'b4dc0ffeee',
-                        vout: 0,
-                        path: [49, 0, 1, 3, 4],
+                        ...UTXO,
                         amount: '972463',
                     },
                 ],
@@ -953,17 +742,7 @@ export default [
                     type: 'opreturn',
                 },
             ],
-            utxos: [
-                {
-                    addressPath: [3, 4],
-                    coinbase: false,
-                    confirmations: 100,
-                    vout: 0,
-                    own: true,
-                    txid: 'b4dc0ffeee',
-                    amount: '102001',
-                },
-            ],
+            utxos: [UTXO],
         },
         result: {
             bytes: 207,
@@ -987,14 +766,7 @@ export default [
                         },
                     ],
                 },
-                inputs: [
-                    {
-                        txid: 'b4dc0ffeee',
-                        vout: 0,
-                        path: [44, 1, 3, 4],
-                        amount: '102001',
-                    },
-                ],
+                inputs: [UTXO],
             },
             type: 'final',
         },
@@ -1017,17 +789,7 @@ export default [
                     type: 'opreturn',
                 },
             ],
-            utxos: [
-                {
-                    addressPath: [3, 4],
-                    coinbase: false,
-                    confirmations: 100,
-                    vout: 0,
-                    own: true,
-                    txid: 'b4dc0ffeee',
-                    amount: '102001',
-                },
-            ],
+            utxos: [UTXO],
         },
         result: {
             bytes: 221,
@@ -1057,14 +819,7 @@ export default [
                         },
                     ],
                 },
-                inputs: [
-                    {
-                        txid: 'b4dc0ffeee',
-                        vout: 0,
-                        path: [44, 1, 3, 4],
-                        amount: '102001',
-                    },
-                ],
+                inputs: [UTXO],
             },
             type: 'final',
         },
@@ -1087,12 +842,7 @@ export default [
             ],
             utxos: [
                 {
-                    addressPath: [3, 4],
-                    coinbase: false,
-                    confirmations: 100,
-                    vout: 0,
-                    own: true,
-                    txid: 'b4dc0ffeee',
+                    ...UTXO,
                     amount: '101500',
                 },
             ],
@@ -1115,9 +865,7 @@ export default [
                 },
                 inputs: [
                     {
-                        txid: 'b4dc0ffeee',
-                        vout: 0,
-                        path: [84, 0, 1, 3, 4],
+                        ...UTXO,
                         amount: '101500',
                     },
                 ],
@@ -1144,12 +892,7 @@ export default [
             ],
             utxos: [
                 {
-                    addressPath: [3, 4],
-                    coinbase: false,
-                    confirmations: 100,
-                    vout: 0,
-                    own: true,
-                    txid: 'b4dc0ffeee',
+                    ...UTXO,
                     amount: '101900',
                 },
             ],
@@ -1176,9 +919,7 @@ export default [
                 },
                 inputs: [
                     {
-                        txid: 'b4dc0ffeee',
-                        vout: 0,
-                        path: [84, 0, 1, 3, 4],
+                        ...UTXO,
                         amount: '101900',
                     },
                 ],
@@ -1202,17 +943,7 @@ export default [
                     type: 'complete',
                 },
             ],
-            utxos: [
-                {
-                    addressPath: [1, 4],
-                    coinbase: false,
-                    confirmations: 100,
-                    vout: 0,
-                    own: true,
-                    txid: 'b4dc0ffeee',
-                    amount: '101500',
-                },
-            ],
+            utxos: [{ ...UTXO, amount: '101500' }],
         },
         result: {
             bytes: 134,
@@ -1230,14 +961,7 @@ export default [
                         },
                     ],
                 },
-                inputs: [
-                    {
-                        txid: 'b4dc0ffeee',
-                        vout: 0,
-                        path: [49, 0, 0, 1, 4],
-                        amount: '101500',
-                    },
-                ],
+                inputs: [{ ...UTXO, amount: '101500' }],
             },
             type: 'final',
         },
@@ -1261,12 +985,7 @@ export default [
             ],
             utxos: [
                 {
-                    addressPath: [1, 4],
-                    coinbase: false,
-                    confirmations: 100,
-                    vout: 0,
-                    own: true,
-                    txid: 'b4dc0ffeee',
+                    ...UTXO,
                     amount: '102000',
                 },
             ],
@@ -1293,9 +1012,7 @@ export default [
                 },
                 inputs: [
                     {
-                        txid: 'b4dc0ffeee',
-                        vout: 0,
-                        path: [49, 0, 0, 1, 4],
+                        ...UTXO,
                         amount: '102000',
                     },
                 ],
@@ -1321,12 +1038,7 @@ export default [
             ],
             utxos: [
                 {
-                    addressPath: [0, 1],
-                    coinbase: false,
-                    height: 100,
-                    vout: 0,
-                    own: true,
-                    txid: 'b4dc0ffeee',
+                    ...UTXO,
                     amount: '101500',
                 },
             ],
@@ -1350,9 +1062,7 @@ export default [
                 },
                 inputs: [
                     {
-                        REV_hash: 'b4dc0ffeee',
-                        vout: 0,
-                        path: [86, 0, 0, 0, 1],
+                        ...UTXO,
                         amount: '101500',
                     },
                 ],
@@ -1379,12 +1089,7 @@ export default [
             ],
             utxos: [
                 {
-                    addressPath: [0, 1],
-                    coinbase: false,
-                    height: 100,
-                    vout: 0,
-                    own: true,
-                    txid: 'b4dc0ffeee',
+                    ...UTXO,
                     amount: '102000',
                 },
             ],
@@ -1412,9 +1117,7 @@ export default [
                 },
                 inputs: [
                     {
-                        REV_hash: 'b4dc0ffeee',
-                        vout: 0,
-                        path: [86, 0, 0, 0, 1],
+                        ...UTXO,
                         amount: '102000',
                     },
                 ],
@@ -1435,17 +1138,7 @@ export default [
                     type: 'send-max-noaddress',
                 },
             ],
-            utxos: [
-                {
-                    addressPath: [3, 4],
-                    coinbase: false,
-                    confirmations: 100,
-                    vout: 0,
-                    own: true,
-                    txid: 'b4dc0ffeee',
-                    amount: '102001',
-                },
-            ],
+            utxos: [UTXO],
         },
         result: {
             bytes: 192,
@@ -1472,17 +1165,7 @@ export default [
                     type: 'complete',
                 },
             ],
-            utxos: [
-                {
-                    addressPath: [3, 4],
-                    coinbase: false,
-                    confirmations: 100,
-                    vout: 0,
-                    own: true,
-                    txid: 'b4dc0ffeee',
-                    amount: '102001',
-                },
-            ],
+            utxos: [UTXO],
         },
         result: {
             bytes: 192,
@@ -1500,14 +1183,7 @@ export default [
                         },
                     ],
                 },
-                inputs: [
-                    {
-                        txid: 'b4dc0ffeee',
-                        vout: 0,
-                        path: [44, 1, 3, 4],
-                        amount: '102001',
-                    },
-                ],
+                inputs: [UTXO],
             },
             type: 'final',
         },
@@ -1529,7 +1205,6 @@ export default [
             ],
             utxos: [
                 {
-                    addressPath: [1, 0],
                     vout: 0,
                     txid: 'a4dc0ffeee',
                     amount: '65291',
@@ -1539,7 +1214,6 @@ export default [
                     required: true,
                 },
                 {
-                    addressPath: [0, 1],
                     vout: 0,
                     txid: 'c4dc0ffeee',
                     amount: '202001',
@@ -1548,7 +1222,6 @@ export default [
                     own: true,
                 },
                 {
-                    addressPath: [1, 1],
                     vout: 0,
                     txid: 'b4dc0ffeee',
                     amount: '55291',
@@ -1558,7 +1231,6 @@ export default [
                     required: true,
                 },
                 {
-                    addressPath: [0, 2],
                     vout: 0,
                     txid: 'd4dc0ffeee',
                     amount: '200000',
@@ -1593,13 +1265,19 @@ export default [
                         txid: 'a4dc0ffeee',
                         vout: 0,
                         amount: '65291',
-                        path: [44, 1, 0, 1, 0],
+                        coinbase: true,
+                        confirmations: 200,
+                        own: false,
+                        required: true,
                     },
                     {
                         txid: 'b4dc0ffeee',
                         vout: 0,
                         amount: '55291',
-                        path: [44, 1, 0, 1, 1],
+                        coinbase: false,
+                        confirmations: 0,
+                        own: false,
+                        required: true,
                     },
                 ],
             },
@@ -1624,20 +1302,16 @@ export default [
             ],
             utxos: [
                 {
-                    addressPath: [1, 0],
-                    fee: '0',
-                    vout: 0,
                     txid: 'a4dc0ffeee',
+                    vout: 0,
                     amount: '65291',
                     coinbase: false,
                     confirmations: 60,
                     own: false,
                 },
                 {
-                    addressPath: [1, 1],
-                    fee: '0',
-                    vout: 1,
                     txid: 'b4dc0ffeee',
+                    vout: 1,
                     amount: '55291',
                     coinbase: false,
                     confirmations: 50,
@@ -1670,13 +1344,17 @@ export default [
                         txid: 'a4dc0ffeee',
                         vout: 0,
                         amount: '65291',
-                        path: [44, 1, 0, 1, 0],
+                        coinbase: false,
+                        confirmations: 60,
+                        own: false,
                     },
                     {
                         txid: 'b4dc0ffeee',
                         vout: 1,
                         amount: '55291',
-                        path: [44, 1, 0, 1, 1],
+                        coinbase: false,
+                        confirmations: 50,
+                        own: false,
                     },
                 ],
             },
@@ -1702,7 +1380,6 @@ export default [
             ],
             utxos: [
                 {
-                    addressPath: [0, 0],
                     coinbase: false,
                     confirmations: 2272181,
                     vout: 1,
@@ -1731,9 +1408,11 @@ export default [
                 },
                 inputs: [
                     {
-                        txid: '78c3ee88226c7f63060fbf27ab0450961c09241bfd56a12ce164881791c7c6e5',
+                        coinbase: false,
+                        confirmations: 2272181,
                         vout: 1,
-                        path: [2147483692, 2147483651, 2147483648, 0, 0],
+                        own: false,
+                        txid: '78c3ee88226c7f63060fbf27ab0450961c09241bfd56a12ce164881791c7c6e5',
                         amount: '11556856856800000000',
                     },
                 ],

@@ -8,7 +8,7 @@
 
 import * as baddress from '../src/address';
 import { OUTPUT_SCRIPT_LENGTH } from '../src/coinselect/coinselectUtils';
-import { Network, ComposeResult, CoinSelectPaymentType } from '../src';
+import { Network, ComposeInput, ComposeResultFinal, CoinSelectPaymentType } from '../src';
 
 // transaction header size: 4 byte version
 const _TXSIZE_HEADER = 4;
@@ -183,10 +183,8 @@ export class TxWeightCalculator {
     }
 }
 
-type FinalResult = Exclude<ComposeResult, { type: 'nonfinal' } | { type: 'error' }>;
-
 export function verifyTxBytes(
-    tx: FinalResult,
+    tx: ComposeResultFinal<ComposeInput>,
     txType: Exclude<CoinSelectPaymentType, 'p2wsh'> = 'p2pkh',
     network?: Network,
 ) {

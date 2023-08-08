@@ -6,7 +6,6 @@ export interface ComposeInput {
     vout: number; // index of output IN THE TRANSACTION
     txid: string; // hash of the transaction
     amount: string; // how much money sent
-    addressPath: [number, number]; // path
     coinbase: boolean; // coinbase transaction = utxo from mining, cannot be spend before 100 blocks
     own: boolean; // is the ORIGIN me (the same account)
     confirmations: number; // might be spent immediately (own) or after 6 conf (not own) see ./coinselect/tryConfirmed
@@ -46,9 +45,9 @@ export type ComposeNotFinalOutput =
 
 export type ComposeOutput = ComposeFinalOutput | ComposeNotFinalOutput;
 
-export interface ComposeRequest {
+export interface ComposeRequest<Input extends ComposeInput> {
     txType?: CoinSelectPaymentType;
-    utxos: ComposeInput[]; // all inputs
+    utxos: Input[]; // all inputs
     outputs: ComposeOutput[]; // all output "requests"
     feeRate: string | number; // in sat/byte, virtual size
     longTermFeeRate?: string | number; // dust output feeRate multiplier in sat/byte, virtual size
@@ -84,15 +83,8 @@ export type ComposedTxOutput =
           amount?: typeof undefined;
       };
 
-export interface ComposedTxInput {
-    txid: string;
-    vout: number;
-    path: number[];
-    amount: string;
-}
-
-export interface ComposedTransaction {
-    inputs: ComposedTxInput[];
+export interface ComposedTransaction<Input extends ComposeInput> {
+    inputs: Input[];
     outputs: { sorted: ComposedTxOutput[]; permutation: number[] }; // compose/Permutation<X>
 }
 
@@ -115,14 +107,17 @@ export interface ComposeResultNonFinal {
     bytes: number;
 }
 
-export interface ComposeResultFinal {
+export interface ComposeResultFinal<Input extends ComposeInput> {
     type: 'final';
     max?: string;
     totalSpent: string; // all the outputs, no fee, no change
     fee: string;
     feePerByte: string;
     bytes: number;
-    transaction: ComposedTransaction;
+    transaction: ComposedTransaction<Input>;
 }
 
-export type ComposeResult = ComposeResultError | ComposeResultNonFinal | ComposeResultFinal;
+export type ComposeResult<Input extends ComposeInput> =
+    | ComposeResultError
+    | ComposeResultNonFinal
+    | ComposeResultFinal<Input>;

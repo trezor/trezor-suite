@@ -3,9 +3,9 @@ import * as result from './result';
 import * as transaction from './transaction';
 import { convertFeeRate } from './composeUtils';
 import { coinselect } from './coinselect';
-import { ComposeRequest, ComposeResult } from '../types';
+import { ComposeRequest, ComposeInput, ComposeResult } from '../types';
 
-export function composeTx({
+export function composeTx<Input extends ComposeInput>({
     txType,
     utxos,
     outputs,
@@ -19,7 +19,7 @@ export function composeTx({
     baseFee,
     floorBaseFee,
     skipPermutation,
-}: ComposeRequest): ComposeResult {
+}: ComposeRequest<Input>): ComposeResult<Input> {
     if (outputs.length === 0) {
         return result.empty;
     }
