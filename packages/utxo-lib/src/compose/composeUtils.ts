@@ -46,13 +46,13 @@ export function convertOutputs(
     const script = { length: OUTPUT_SCRIPT_LENGTH[txType] };
     return outputs
         .map(output => {
-            if (output.type === 'complete') {
+            if (output.type === 'payment') {
                 return {
                     value: output.amount,
                     script: getScriptFromAddress(output.address, network),
                 };
             }
-            if (output.type === 'noaddress') {
+            if (output.type === 'payment-noaddress') {
                 return {
                     value: output.amount,
                     script,
