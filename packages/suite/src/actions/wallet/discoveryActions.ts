@@ -437,7 +437,42 @@ export const start =
         }
 
         // prepare bundle of accounts to discover, exclude unsupported account types
-        const bundle = dispatch(getBundle({ ...discovery, availableCardanoDerivations }, device));
+        const bundleWithSol = dispatch(
+            getBundle({ ...discovery, availableCardanoDerivations }, device),
+        );
+
+        // TODO(vl): remove mock
+        // SOLANA MOCK START
+        const solanaDiscoveryItem = bundleWithSol.find(
+            ({ networkType }) => networkType === 'solana',
+        );
+
+        const solanaAccountInfo: AccountInfo = {
+            descriptor:
+                'zpub6qy39U3XHtW4hyk3JXs5UjThu1JAuJjAStCm8nPr9Bb13yX8nJNfX8hiQr56NC4CGnHfvzkiaaFZ7NRsoaUqYZRhkeCyjJM2qRz7ibDiRGh',
+            balance: '0',
+            availableBalance: '0',
+            empty: false,
+            history: {
+                total: 0, // total transactions (unknown in ripple)
+                tokens: 0, // tokens transactions
+                unconfirmed: 0, // unconfirmed transactions
+                transactions: [], // list of transactions
+                txids: [], // not implemented
+            },
+        };
+
+        if (
+            solanaDiscoveryItem &&
+            !getState().wallet.accounts.some(a => a.networkType === 'solana')
+        ) {
+            dispatch(
+                accountsActions.createAccount(deviceState, solanaDiscoveryItem, solanaAccountInfo),
+            );
+        }
+
+        const bundle = bundleWithSol.filter(({ networkType }) => networkType !== 'solana');
+        // SOLANA MOCK END
 
         // discovery process complete
         if (bundle.length === 0) {
