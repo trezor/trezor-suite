@@ -21,11 +21,11 @@ export function composeTx<Input extends ComposeInput>({
     skipPermutation,
 }: ComposeRequest<Input>): ComposeResult<Input> {
     if (outputs.length === 0) {
-        return result.empty;
+        return { type: 'error', error: 'MISSING-OUTPUTS' };
     }
 
     if (utxos.length === 0) {
-        return { type: 'error', error: 'NOT-ENOUGH-FUNDS' };
+        return { type: 'error', error: 'MISSING-UTXOS' };
     }
 
     const feeRateNumber = convertFeeRate(feeRate);
@@ -44,12 +44,8 @@ export function composeTx<Input extends ComposeInput>({
     let countMax = { exists: false, id: 0 };
     try {
         countMax = request.getMax(outputs);
-    } catch (e) {
-        if (e instanceof Error) {
-            return { type: 'error', error: e.message };
-        }
-
-        return { type: 'error', error: `${e}` };
+    } catch (error) {
+        return result.getErrorResult(error);
     }
 
     const splitOutputs = request.splitByCompleteness(outputs);
@@ -71,12 +67,8 @@ export function composeTx<Input extends ComposeInput>({
             floorBaseFee,
             skipPermutation,
         );
-    } catch (e) {
-        if (e instanceof Error) {
-            return { type: 'error', error: e.message };
-        }
-
-        return { type: 'error', error: `${e}` };
+    } catch (error) {
+        return result.getErrorResult(error);
     }
 
     if (!csResult.success) {

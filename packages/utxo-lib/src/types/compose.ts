@@ -99,15 +99,30 @@ export interface ComposedTransaction<Input extends ComposeInput> {
     outputs: { sorted: ComposedTxOutput[]; permutation: number[] }; // compose/Permutation<X>
 }
 
-// Output from coinselect algorithm
-// 'nonfinal' - contains info about the outputs, but not Trezor tx
-// 'final' - contains info about outputs + Trezor tx
-// 'error' - some error, so far only NOT-ENOUGH-FUNDS and EMPTY strings
+// Result from `composeTx` module
+// 'nonfinal' - contains partial info about the inputs/outputs but not the transaction data
+// 'final' - contains all info about the inputs/outputs and transaction data
+// 'error' - validation or runtime error. expected error types are listed below
 
-export interface ComposeResultError {
-    type: 'error';
-    error: string;
-}
+export const COMPOSE_ERROR_TYPES = [
+    'MISSING-UTXOS',
+    'MISSING-OUTPUTS',
+    'INCORRECT-OUTPUT-TYPE',
+    'INCORRECT-FEE-RATE',
+    'TWO-SEND-MAX',
+    'NOT-ENOUGH-FUNDS',
+] as const;
+
+export type ComposeResultError =
+    | {
+          type: 'error';
+          error: (typeof COMPOSE_ERROR_TYPES)[number];
+      }
+    | {
+          type: 'error';
+          error: 'COINSELECT';
+          message: string;
+      };
 
 export interface ComposeResultNonFinal {
     type: 'nonfinal';
