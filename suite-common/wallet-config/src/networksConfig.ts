@@ -472,3 +472,8 @@ export const getTestnets = (debug = false) =>
     networksCompatibility.filter(
         n => !n.accountType && n.testnet === true && (n.symbol !== 'regtest' || debug),
     );
+
+export const getEthereumTypeNetworkSymbols = () =>
+    networksCompatibility.filter(n => n.networkType === 'ethereum').map(n => n.symbol);
+
+export const getTestnetSymbols = () => getTestnets().map(n => n.symbol);

@@ -2,6 +2,7 @@ import { Select, CoinLogo } from '@trezor/components';
 import React from 'react';
 import { Controller } from 'react-hook-form';
 import styled from 'styled-components';
+import { getEthereumTypeNetworkSymbols } from '@suite-common/wallet-config';
 import invityAPI from 'src/services/suite/invityAPI';
 import { useCoinmarketExchangeFormContext } from 'src/hooks/wallet/useCoinmarketExchangeForm';
 import { CRYPTO_INPUT, FIAT_INPUT, CRYPTO_TOKEN } from 'src/types/wallet/coinmarketExchangeForm';
@@ -34,6 +35,8 @@ const SendCryptoSelect = () => {
     const { tokens } = account;
     const sendCryptoOptions = getSendCryptoOptions(account, exchangeInfo?.sellSymbols || new Set());
 
+    const ethereumTypeNetworkSymbols = getEthereumTypeNetworkSymbols();
+
     return (
         <Controller
             control={control}
@@ -48,12 +51,7 @@ const SendCryptoSelect = () => {
                         setValue(CRYPTO_INPUT, '');
                         setValue(FIAT_INPUT, '');
                         const token = selected.value;
-                        if (
-                            token === 'ETH' ||
-                            token === 'TSEP' ||
-                            token === 'TGOR' ||
-                            token === 'ETC'
-                        ) {
+                        if (ethereumTypeNetworkSymbols.includes(token)) {
                             setValue(CRYPTO_TOKEN, null);
                             // set own account for non ERC20 transaction
                             setValue('outputs.0.address', account.descriptor);

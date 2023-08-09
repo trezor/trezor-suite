@@ -599,7 +599,6 @@ export const start =
             );
 
             if (error) {
-                console.error('Discovery error', result);
                 dispatch(notificationsActions.addToast({ type: 'discovery-error', error }));
             }
         }
