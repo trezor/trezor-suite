@@ -6,6 +6,7 @@ import { convertInputs, convertOutputs } from './composeUtils';
 import {
     ComposeInput,
     ComposeOutput,
+    ComposeChangeAddress,
     CoinSelectPaymentType,
     CoinSelectOptions,
     CoinSelectSuccess,
@@ -17,7 +18,7 @@ export function coinselect(
     txType: CoinSelectPaymentType,
     utxos: ComposeInput[],
     rOutputs: ComposeOutput[],
-    changeAddress: string,
+    changeAddress: ComposeChangeAddress,
     feeRate: number,
     longTermFeeRate: number | undefined,
     countMax: boolean,
@@ -33,7 +34,7 @@ export function coinselect(
     const feePolicy = getFeePolicy(network);
     // NOTE: use "send-max" to create CoinSelectOutput since we don't know the final amount yet
     const [changeOutput] = convertOutputs(
-        [{ type: 'send-max', address: changeAddress }],
+        [{ type: 'send-max', ...changeAddress }],
         network,
         txType,
     );

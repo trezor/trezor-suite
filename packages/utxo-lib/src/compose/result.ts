@@ -5,6 +5,7 @@ import {
     ComposeRequest,
     ComposeInput,
     ComposeOutput,
+    ComposeChangeAddress,
     ComposeFinalOutput,
     ComposeNotFinalOutput,
     ComposeResultError,
@@ -35,10 +36,14 @@ function getNonfinalResult(result: CoinSelectSuccess): ComposeResultNonFinal {
     };
 }
 
-function getFinalResult<Input extends ComposeInput, Output extends ComposeOutput>(
+function getFinalResult<
+    Input extends ComposeInput,
+    Output extends ComposeOutput,
+    Change extends ComposeChangeAddress,
+>(
     result: CoinSelectSuccess,
-    transaction: ComposedTransaction<Input, Output>,
-): ComposeResultFinal<Input, Output> {
+    transaction: ComposedTransaction<Input, Output, Change>,
+): ComposeResultFinal<Input, Output, Change> {
     const { max, fee, feePerByte, bytes, totalSpent } = result.payload;
 
     return {
@@ -70,10 +75,11 @@ function splitByCompleteness(outputs: ComposeOutput[]) {
     };
 }
 
-export function getResult<Input extends ComposeInput, Output extends ComposeOutput>(
-    request: ComposeRequest<Input, Output>,
-    result: CoinSelectSuccess,
-) {
+export function getResult<
+    Input extends ComposeInput,
+    Output extends ComposeOutput,
+    Change extends ComposeChangeAddress,
+>(request: ComposeRequest<Input, Output, Change>, result: CoinSelectSuccess) {
     const splitOutputs = splitByCompleteness(request.outputs);
 
     if (splitOutputs.incomplete.length > 0) {
@@ -85,10 +91,9 @@ export function getResult<Input extends ComposeInput, Output extends ComposeOutp
         result.payload.inputs,
         splitOutputs.complete,
         result.payload.outputs,
-        request.basePath,
-        request.changeId,
+        request.changeAddress,
         request.skipPermutation,
     );
 
-    return getFinalResult(result, transaction) as ComposeResultFinal<Input, Output>;
+    return getFinalResult(result, transaction) as ComposeResultFinal<Input, Output, Change>;
 }

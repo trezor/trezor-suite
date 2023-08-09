@@ -29,6 +29,7 @@ export type { PaymentType } from './derivation';
 export type {
     ComposeInput,
     ComposeOutput,
+    ComposeChangeAddress,
     ComposeRequest,
     ComposeResult,
     ComposeResultFinal,

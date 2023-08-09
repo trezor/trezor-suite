@@ -2,11 +2,19 @@ import { getMax } from './request';
 import { getResult, getErrorResult } from './result';
 import { convertFeeRate } from './composeUtils';
 import { coinselect } from './coinselect';
-import { ComposeRequest, ComposeInput, ComposeOutput, ComposeResult } from '../types';
+import {
+    ComposeRequest,
+    ComposeInput,
+    ComposeOutput,
+    ComposeChangeAddress,
+    ComposeResult,
+} from '../types';
 
-export function composeTx<Input extends ComposeInput, Output extends ComposeOutput>(
-    request: ComposeRequest<Input, Output>,
-): ComposeResult<Input, Output> {
+export function composeTx<
+    Input extends ComposeInput,
+    Output extends ComposeOutput,
+    Change extends ComposeChangeAddress,
+>(request: ComposeRequest<Input, Output, Change>): ComposeResult<Input, Output, Change> {
     const { utxos, outputs, feeRate, longTermFeeRate } = request;
 
     if (outputs.length === 0) {

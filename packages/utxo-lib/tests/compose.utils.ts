@@ -12,6 +12,7 @@ import {
     Network,
     ComposeInput,
     ComposeOutput,
+    ComposeChangeAddress,
     ComposeResultFinal,
     CoinSelectPaymentType,
 } from '../src';
@@ -190,7 +191,7 @@ export class TxWeightCalculator {
 }
 
 export function verifyTxBytes(
-    tx: ComposeResultFinal<ComposeInput, ComposeOutput>,
+    tx: ComposeResultFinal<ComposeInput, ComposeOutput, ComposeChangeAddress>,
     txType: Exclude<CoinSelectPaymentType, 'p2wsh'> = 'p2pkh',
     network?: Network,
 ) {
