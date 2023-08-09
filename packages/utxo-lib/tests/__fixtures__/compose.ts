@@ -12,9 +12,7 @@ export default [
     {
         description: 'builds a simple tx without change',
         request: {
-            basePath: [44, 1],
             changeAddress: { address: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT' },
-            changeId: 0,
             dustThreshold: 546,
             feeRate: '10',
             outputs: [
@@ -53,9 +51,7 @@ export default [
     {
         description: 'builds a simple tx without change and decimal fee',
         request: {
-            basePath: [44, 1],
             changeAddress: { address: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT' },
-            changeId: 0,
             dustThreshold: 546,
             feeRate: '10.33',
             outputs: [
@@ -92,9 +88,7 @@ export default [
     {
         description: 'builds an payment tx without change',
         request: {
-            basePath: [44, 1],
             changeAddress: { address: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT' },
-            changeId: 0,
             dustThreshold: 546,
             feeRate: '10',
             outputs: [
@@ -117,9 +111,7 @@ export default [
     {
         description: 'fails on little funds',
         request: {
-            basePath: [44, 1],
             changeAddress: { address: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT' },
-            changeId: 0,
             dustThreshold: 546,
             feeRate: '10',
             outputs: [
@@ -143,9 +135,7 @@ export default [
     {
         description: 'builds a send-max with large input',
         request: {
-            basePath: [44, 1],
             changeAddress: { address: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT' },
-            changeId: 0,
             dustThreshold: 546,
             feeRate: '10',
             outputs: [
@@ -191,9 +181,7 @@ export default [
     {
         description: 'builds a send-max',
         request: {
-            basePath: [44, 1],
             changeAddress: { address: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT' },
-            changeId: 0,
             dustThreshold: 546,
             feeRate: '10',
             outputs: [
@@ -231,9 +219,7 @@ export default [
     {
         description: 'fails on weird output type',
         request: {
-            basePath: [44, 1],
             changeAddress: { address: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT' },
-            changeId: 0,
             dustThreshold: 546,
             feeRate: '10',
             outputs: [
@@ -251,9 +237,7 @@ export default [
     {
         description: 'fails on runtime error from coinselect module',
         request: {
-            basePath: [44, 1],
             changeAddress: { address: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT' },
-            changeId: 0,
             dustThreshold: 546,
             feeRate: '10',
             outputs: [
@@ -274,9 +258,7 @@ export default [
     {
         description: 'fails on empty outputs',
         request: {
-            basePath: [44, 1],
             changeAddress: { address: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT' },
-            changeId: 0,
             dustThreshold: 546,
             feeRate: '10',
             outputs: [],
@@ -290,9 +272,7 @@ export default [
     {
         description: 'fails on empty utxos',
         request: {
-            basePath: [44, 1],
             changeAddress: { address: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT' },
-            changeId: 0,
             dustThreshold: 546,
             feeRate: '10',
             outputs: [
@@ -311,9 +291,7 @@ export default [
     {
         description: 'fails on bad feeRate - zero',
         request: {
-            basePath: [44, 1],
             changeAddress: { address: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT' },
-            changeId: 0,
             dustThreshold: 546,
             feeRate: 0,
             outputs: [
@@ -333,9 +311,7 @@ export default [
     {
         description: 'fails on bad feeRate - NaN',
         request: {
-            basePath: [44, 1],
             changeAddress: { address: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT' },
-            changeId: 0,
             dustThreshold: 546,
             feeRate: NaN,
             outputs: [
@@ -355,12 +331,10 @@ export default [
     {
         description: 'builds a simple tx with two outputs and change',
         request: {
-            basePath: [44, 1],
             changeAddress: {
                 address: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT',
                 path: [44, 1, 1, 0],
             },
-            changeId: 0,
             dustThreshold: 546,
             feeRate: '10',
             outputs: [
@@ -413,12 +387,10 @@ export default [
     {
         description: 'builds a simple tx with two outputs and change (decimal feeRate)',
         request: {
-            basePath: [44, 1],
             changeAddress: {
                 address: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT',
                 path: "m/44'/0'/0'/1/0",
             },
-            changeId: 0,
             dustThreshold: 546,
             feeRate: '10.71',
             outputs: [
@@ -472,9 +444,7 @@ export default [
         description: 'builds a simple tx with two outputs and change (p2sh/segwit)',
         request: {
             txType: 'p2sh',
-            basePath: [49, 0, 0],
             changeAddress: { address: '3LRW7jeCvQCRdPF8S3yUCfRAx4eqXFmdcr' },
-            changeId: 0,
             dustThreshold: 546,
             feeRate: '10',
             outputs: [
@@ -526,9 +496,7 @@ export default [
     {
         description: 'prefers a more confirmed input',
         request: {
-            basePath: [44, 1],
             changeAddress: { address: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT' },
-            changeId: 0,
             dustThreshold: 546,
             feeRate: '10',
             outputs: [
@@ -582,9 +550,7 @@ export default [
     {
         description: 'fails on two send maxes',
         request: {
-            basePath: [44, 1],
             changeAddress: { address: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT' },
-            changeId: 0,
             dustThreshold: 546,
             feeRate: '10',
             outputs: [
@@ -607,9 +573,7 @@ export default [
     {
         description: 'two inputs',
         request: {
-            basePath: [44, 1],
             changeAddress: { address: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT' },
-            changeId: 0,
             dustThreshold: 546,
             feeRate: '10',
             outputs: [
@@ -665,9 +629,7 @@ export default [
         description: 'builds a p2sh tx with two same value outputs (mixed p2sh + p2pkh) and change',
         request: {
             txType: 'p2sh',
-            basePath: [44, 0, 1],
             changeAddress: { address: '3LRW7jeCvQCRdPF8S3yUCfRAx4eqXFmdcr' },
-            changeId: 0,
             dustThreshold: 546,
             feeRate: '10',
             outputs: [
@@ -720,9 +682,7 @@ export default [
         description: 'explicit dust threshold stops change (ps2h/segwit)',
         request: {
             txType: 'p2sh',
-            basePath: [49, 0, 1],
             changeAddress: { address: '3LRW7jeCvQCRdPF8S3yUCfRAx4eqXFmdcr' },
-            changeId: 0,
             dustThreshold: 54600,
             feeRate: '10',
             outputs: [
@@ -769,9 +729,7 @@ export default [
     {
         description: 'builds a tx with 1 op-return and change',
         request: {
-            basePath: [44, 1],
             changeAddress: { address: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT' },
-            changeId: 0,
             dustThreshold: 546,
             feeRate: '10',
             outputs: [
@@ -813,9 +771,7 @@ export default [
     {
         description: 'builds a tx with 2 op-returns and change',
         request: {
-            basePath: [44, 1],
             changeAddress: { address: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT' },
-            changeId: 0,
             dustThreshold: 546,
             feeRate: '10',
             outputs: [
@@ -864,9 +820,7 @@ export default [
         description: 'builds bech32/p2wpkh tx without change (drop dust)',
         request: {
             txType: 'p2wpkh',
-            basePath: [84, 0, 1],
             changeAddress: { address: 'bc1qafk4yhqvj4wep57m62dgrmutldusqde8adh20d' },
-            changeId: 0,
             dustThreshold: 546,
             feeRate: '10',
             outputs: [
@@ -915,9 +869,7 @@ export default [
             'builds bech32/p2wpkh tx, no explicit dustThreshold (change above calculated dust)',
         request: {
             txType: 'p2wpkh',
-            basePath: [84, 0, 1],
             changeAddress: { address: 'bc1qafk4yhqvj4wep57m62dgrmutldusqde8adh20d' },
-            changeId: 0,
             dustThreshold: 0,
             feeRate: '10',
             outputs: [
@@ -970,9 +922,7 @@ export default [
         description: 'builds Legacy Segwit/p2sh tx without change (drop dust)',
         request: {
             txType: 'p2sh',
-            basePath: [49, 0, 0],
             changeAddress: { address: '3LRW7jeCvQCRdPF8S3yUCfRAx4eqXFmdcr' },
-            changeId: 0,
             dustThreshold: 546,
             feeRate: '10',
             outputs: [
@@ -1011,9 +961,7 @@ export default [
             'builds Legacy Segwit/p2sh tx, no explicit dustThreshold (change above calculated dust)',
         request: {
             txType: 'p2sh',
-            basePath: [49, 0, 0],
             changeAddress: { address: '3LRW7jeCvQCRdPF8S3yUCfRAx4eqXFmdcr' },
-            changeId: 0,
             dustThreshold: 0,
             feeRate: '10',
             outputs: [
@@ -1066,11 +1014,9 @@ export default [
         description: 'builds taproot/p2tr tx without change (drop dust)',
         request: {
             txType: 'p2tr',
-            basePath: [86, 0, 0],
             changeAddress: {
                 address: 'bc1pgypgja2hmcx2l6s2ssq75k6ev68ved6nujcspt47dgvkp8euc70s6uegk6',
             },
-            changeId: 0,
             dustThreshold: 546,
             feeRate: '10',
             outputs: [
@@ -1120,11 +1066,9 @@ export default [
             'builds taproot/p2tr tx, no explicit dustThreshold (change above calculated dust)',
         request: {
             txType: 'p2tr',
-            basePath: [86, 0, 0],
             changeAddress: {
                 address: 'bc1pgypgja2hmcx2l6s2ssq75k6ev68ved6nujcspt47dgvkp8euc70s6uegk6',
             },
-            changeId: 0,
             dustThreshold: 0,
             feeRate: '10',
             outputs: [
@@ -1178,9 +1122,7 @@ export default [
     {
         description: 'builds a send-max-noaddress',
         request: {
-            basePath: [44, 1],
             changeAddress: { address: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT' },
-            changeId: 0,
             dustThreshold: 546,
             feeRate: '10',
             outputs: [
@@ -1202,10 +1144,8 @@ export default [
     {
         description: 'builds a simple tx without change (cashaddr)',
         request: {
-            basePath: [44, 1],
             changeAddress: { address: 'bitcoincash:qzppkat2v7xu9fr3yeuqdnggjqqltrs7pcg8swvhl0' },
             network: 'bitcoincash',
-            changeId: 0,
             dustThreshold: 546,
             feeRate: '10',
             outputs: [
@@ -1242,9 +1182,7 @@ export default [
     {
         description: 'use required (coinbase + unconfirmed) instead of more suitable utxo',
         request: {
-            basePath: [44, 1, 0],
             changeAddress: { address: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT' },
-            changeId: 1,
             dustThreshold: 546,
             feeRate: '10',
             outputs: [
@@ -1340,9 +1278,7 @@ export default [
     {
         description: 'skip inputs/outputs permutation',
         request: {
-            basePath: [44, 1, 0],
             changeAddress: { address: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT' },
-            changeId: 1,
             dustThreshold: 546,
             feeRate: '10',
             skipPermutation: true,
@@ -1420,9 +1356,7 @@ export default [
         description:
             'builds a Dogecoin tx with change and both input and one of the outputs above MAX_SAFE_INTEGER',
         request: {
-            basePath: [2147483692, 2147483651, 2147483648],
             changeAddress: { address: 'DKu2a8Wo6zC2dmBBYXwUG3fxWDHbKnNiPj' },
-            changeId: 0,
             dustThreshold: 999999,
             feeRate: '1000',
             network: 'doge',

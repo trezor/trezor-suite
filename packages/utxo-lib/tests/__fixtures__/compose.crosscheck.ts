@@ -4,9 +4,7 @@ export default [
     {
         description: '1 input, 1 output, no change',
         request: {
-            basePath: [44, 0, 5],
             changeAddress: { address: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT' },
-            changeId: 0,
             dustThreshold: 546,
             feeRate: '10',
             utxos: [{ ...UTXO, amount: 'replace-me' }],
@@ -44,9 +42,7 @@ export default [
     {
         description: '1 input, 1 output, 1 change',
         request: {
-            basePath: [44, 0, 5],
             changeAddress: { address: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT' },
-            changeId: 0,
             dustThreshold: 546,
             feeRate: '10',
             utxos: [{ ...UTXO, amount: '202300' }],
@@ -84,9 +80,7 @@ export default [
     {
         description: '2 inputs, 1 output, 1 change',
         request: {
-            basePath: [44, 0, 5],
             changeAddress: { address: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT' },
-            changeId: 0,
             dustThreshold: 546,
             feeRate: '10',
             utxos: [
@@ -136,9 +130,7 @@ export default [
     {
         description: '7 inputs, all-types of outputs, 1 op_return, 1 change',
         request: {
-            basePath: [44, 0, 5],
             changeAddress: { address: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT' },
-            changeId: 0,
             dustThreshold: 546,
             feeRate: '10',
             utxos: [
