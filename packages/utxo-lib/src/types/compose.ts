@@ -48,11 +48,10 @@ export interface ComposeOutputOpreturn {
 }
 
 // NOTE: this interface **is not** accepted by ComposeRequest['utxos']
-// it's optionally created by the process from parameters (basePath + changeId + changeAddress)
+// it's optionally created by the process from ComposeChangeAddress data
 // but it's returned in ComposedTransaction['outputs']
 export interface ComposeOutputChange {
     type: 'change';
-    path: number[];
     amount: string;
 }
 
@@ -65,7 +64,15 @@ export type ComposeNotFinalOutput = ComposeOutputPaymentNoAddress | ComposeOutpu
 
 export type ComposeOutput = ComposeFinalOutput | ComposeNotFinalOutput;
 
-export interface ComposeRequest<Input extends ComposeInput, Output extends ComposeOutput> {
+export interface ComposeChangeAddress {
+    address: string;
+}
+
+export interface ComposeRequest<
+    Input extends ComposeInput,
+    Output extends ComposeOutput,
+    Change extends ComposeChangeAddress,
+> {
     txType?: CoinSelectPaymentType;
     utxos: Input[]; // all inputs
     outputs: Output[]; // all outputs
@@ -74,7 +81,7 @@ export interface ComposeRequest<Input extends ComposeInput, Output extends Compo
     basePath: number[]; // for trezor inputs
     network: Network;
     changeId: number;
-    changeAddress: string;
+    changeAddress: Change;
     dustThreshold: number; // explicit dust threshold, in satoshi
     baseFee?: number; // DOGE or RBF base fee
     floorBaseFee?: boolean; // DOGE floor base fee to the nearest integer
@@ -88,10 +95,14 @@ type ComposedTransactionOutputs<T> = T extends ComposeOutputSendMax
     ? T
     : never;
 
-export interface ComposedTransaction<Input extends ComposeInput, Output extends ComposeOutput> {
+export interface ComposedTransaction<
+    Input extends ComposeInput,
+    Output extends ComposeOutput,
+    Change extends ComposeChangeAddress,
+> {
     inputs: Input[];
     outputs: {
-        sorted: (ComposedTransactionOutputs<Output> | ComposeOutputChange)[];
+        sorted: (ComposedTransactionOutputs<Output> | (Change & ComposeOutputChange))[];
         permutation: number[];
     };
 }
@@ -130,17 +141,22 @@ export interface ComposeResultNonFinal {
     bytes: number;
 }
 
-export interface ComposeResultFinal<Input extends ComposeInput, Output extends ComposeOutput> {
+export interface ComposeResultFinal<
+    Input extends ComposeInput,
+    Output extends ComposeOutput,
+    Change extends ComposeChangeAddress,
+> {
     type: 'final';
     max?: string;
     totalSpent: string; // all the outputs, no fee, no change
     fee: string;
     feePerByte: string;
     bytes: number;
-    transaction: ComposedTransaction<Input, Output>;
+    transaction: ComposedTransaction<Input, Output, Change>;
 }
 
-export type ComposeResult<Input extends ComposeInput, Output extends ComposeOutput> =
-    | ComposeResultError
-    | ComposeResultNonFinal
-    | ComposeResultFinal<Input, Output>;
+export type ComposeResult<
+    Input extends ComposeInput,
+    Output extends ComposeOutput,
+    Change extends ComposeChangeAddress,
+> = ComposeResultError | ComposeResultNonFinal | ComposeResultFinal<Input, Output, Change>;

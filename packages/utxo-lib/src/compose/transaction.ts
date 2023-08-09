@@ -1,6 +1,7 @@
 import * as BN from 'bn.js';
 import {
     ComposeInput,
+    ComposeChangeAddress,
     ComposeFinalOutput,
     ComposedTransaction,
     CoinSelectInput,
@@ -9,12 +10,11 @@ import {
 
 function convertOutput(
     selectedOutput: CoinSelectOutputFinal,
-    composeOutput: ComposeFinalOutput | { path: number[] },
+    composeOutput: ComposeFinalOutput | ({ type: 'change' } & ComposeChangeAddress),
 ) {
-    if ('path' in composeOutput) {
+    if (composeOutput.type === 'change') {
         return {
-            type: 'change' as const,
-            path: composeOutput.path,
+            ...composeOutput,
             amount: selectedOutput.value,
         };
     }
@@ -43,18 +43,17 @@ function outputComparator(a: CoinSelectOutputFinal, b: CoinSelectOutputFinal) {
     );
 }
 
-export function createTransaction<Input extends ComposeInput>(
+export function createTransaction<Input extends ComposeInput, Change extends ComposeChangeAddress>(
     allInputs: Input[],
     selectedInputs: CoinSelectInput[],
     allOutputs: ComposeFinalOutput[],
     selectedOutputs: CoinSelectOutputFinal[],
-    basePath: number[],
-    changeId: number,
+    changeAddress: Change,
     skipPermutation?: boolean,
-): ComposedTransaction<Input, ComposeFinalOutput> {
+): ComposedTransaction<Input, ComposeFinalOutput, Change> {
     const convertedInputs = selectedInputs.map(input => allInputs[input.i]);
     const convertedOutputs = selectedOutputs.map((output, index) =>
-        convertOutput(output, allOutputs[index] || { path: [...basePath, 1, changeId] }),
+        convertOutput(output, allOutputs[index] || { type: 'change', ...changeAddress }),
     );
     const defaultPermutation = convertedOutputs.map((_, index) => index);
 
