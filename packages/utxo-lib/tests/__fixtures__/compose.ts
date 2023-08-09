@@ -22,6 +22,7 @@ export default [
                     address: '1BitcoinEaterAddressDontSendf59kuE',
                     amount: '100000',
                     type: 'payment',
+                    customField: 'prove that payment output is generic',
                 },
             ],
             utxos: [UTXO],
@@ -39,6 +40,8 @@ export default [
                         {
                             address: '1BitcoinEaterAddressDontSendf59kuE',
                             amount: '100000',
+                            type: 'payment',
+                            customField: 'prove that payment output is generic',
                         },
                     ],
                 },
@@ -77,6 +80,7 @@ export default [
                         {
                             address: '1BitcoinEaterAddressDontSendf59kuE',
                             amount: '100000',
+                            type: 'payment',
                         },
                     ],
                 },
@@ -86,7 +90,7 @@ export default [
         },
     },
     {
-        description: 'builds an inpayment tx without change',
+        description: 'builds an payment tx without change',
         request: {
             basePath: [44, 1],
             changeAddress: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT',
@@ -170,6 +174,7 @@ export default [
                         {
                             address: '1BitcoinEaterAddressDontSendf59kuE',
                             amount: '49999998080',
+                            type: 'payment',
                         },
                     ],
                 },
@@ -195,6 +200,7 @@ export default [
                 {
                     address: '1BitcoinEaterAddressDontSendf59kuE',
                     type: 'send-max',
+                    customField: 'prove that send-max output is generic',
                 },
             ],
             utxos: [UTXO],
@@ -212,6 +218,8 @@ export default [
                         {
                             address: '1BitcoinEaterAddressDontSendf59kuE',
                             amount: '100081',
+                            type: 'payment',
+                            customField: 'prove that send-max output is generic',
                         },
                     ],
                 },
@@ -379,14 +387,17 @@ export default [
                         {
                             address: '1LetUsDestroyBitcoinTogether398Nrg',
                             amount: '20000',
+                            type: 'payment',
                         },
                         {
                             address: '1BitcoinEaterAddressDontSendf59kuE',
                             amount: '30000',
+                            type: 'payment',
                         },
                         {
                             path: [44, 1, 1, 0],
                             amount: '49401',
+                            type: 'change',
                         },
                     ],
                 },
@@ -430,14 +441,17 @@ export default [
                         {
                             address: '1LetUsDestroyBitcoinTogether398Nrg',
                             amount: '20000',
+                            type: 'payment',
                         },
                         {
                             address: '1BitcoinEaterAddressDontSendf59kuE',
                             amount: '30000',
+                            type: 'payment',
                         },
                         {
                             path: [44, 1, 1, 0],
                             amount: '49216',
+                            type: 'change',
                         },
                     ],
                 },
@@ -482,14 +496,17 @@ export default [
                         {
                             address: '3FyVFsEyyBPzHjD3qUEgX7Jsn4tcHNZFkn',
                             amount: '20000',
+                            type: 'payment',
                         },
                         {
                             address: '3LRW7jeCvQCRdPF8S3yUCfRAx4eqXFmdcr',
                             amount: '30000',
+                            type: 'payment',
                         },
                         {
                             path: [49, 0, 0, 1, 0],
                             amount: '50021',
+                            type: 'change',
                         },
                     ],
                 },
@@ -539,6 +556,7 @@ export default [
                         {
                             address: '1BitcoinEaterAddressDontSendf59kuE',
                             amount: '100000',
+                            type: 'payment',
                         },
                     ],
                 },
@@ -617,6 +635,7 @@ export default [
                         {
                             address: '1BitcoinEaterAddressDontSendf59kuE',
                             amount: '200000',
+                            type: 'payment',
                         },
                     ],
                 },
@@ -670,14 +689,17 @@ export default [
                         {
                             address: '1LetUsDestroyBitcoinTogether398Nrg',
                             amount: '30000',
+                            type: 'payment',
                         },
                         {
                             address: '3LRW7jeCvQCRdPF8S3yUCfRAx4eqXFmdcr',
                             amount: '30000',
+                            type: 'payment',
                         },
                         {
                             path: [44, 0, 1, 1, 0],
                             amount: '40001',
+                            type: 'change',
                         },
                     ],
                 },
@@ -722,6 +744,7 @@ export default [
                         {
                             address: '3LRW7jeCvQCRdPF8S3yUCfRAx4eqXFmdcr',
                             amount: '928960',
+                            type: 'payment',
                         },
                     ],
                 },
@@ -747,6 +770,7 @@ export default [
                 {
                     dataHex: 'deadbeef',
                     type: 'opreturn',
+                    customField: 'prove that opreturn output is generic',
                 },
             ],
             utxos: [UTXO],
@@ -763,10 +787,13 @@ export default [
                     sorted: [
                         {
                             dataHex: 'deadbeef',
+                            type: 'opreturn',
+                            customField: 'prove that opreturn output is generic',
                         },
                         {
                             path: [44, 1, 1, 0],
                             amount: '99931',
+                            type: 'change',
                         },
                     ],
                 },
@@ -807,13 +834,16 @@ export default [
                     sorted: [
                         {
                             dataHex: 'c0ffee',
+                            type: 'opreturn',
                         },
                         {
                             dataHex: 'deadbeef',
+                            type: 'opreturn',
                         },
                         {
                             path: [44, 1, 1, 0],
                             amount: '99791',
+                            type: 'change',
                         },
                     ],
                 },
@@ -858,6 +888,7 @@ export default [
                         {
                             address: 'bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq',
                             amount: '100000',
+                            type: 'payment',
                         },
                     ],
                 },
@@ -908,10 +939,12 @@ export default [
                         {
                             path: [84, 0, 1, 1, 0],
                             amount: '490',
+                            type: 'change',
                         },
                         {
                             address: 'bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq',
                             amount: '100000',
+                            type: 'payment',
                         },
                     ],
                 },
@@ -956,6 +989,7 @@ export default [
                         {
                             address: '3NukJ6fYZJ5Kk8bPjycAnruZkE5Q7UW7i8',
                             amount: '100000',
+                            type: 'payment',
                         },
                     ],
                 },
@@ -1001,10 +1035,12 @@ export default [
                         {
                             path: [49, 0, 0, 1, 0],
                             amount: '340',
+                            type: 'change',
                         },
                         {
                             address: '3NukJ6fYZJ5Kk8bPjycAnruZkE5Q7UW7i8',
                             amount: '100000',
+                            type: 'payment',
                         },
                     ],
                 },
@@ -1055,6 +1091,7 @@ export default [
                             address:
                                 'bc1ptxs597p3fnpd8gwut5p467ulsydae3rp9z75hd99w8k3ljr9g9rqx6ynaw',
                             amount: '100000',
+                            type: 'payment',
                         },
                     ],
                 },
@@ -1105,11 +1142,13 @@ export default [
                         {
                             path: [86, 0, 0, 1, 0],
                             amount: '460',
+                            type: 'change',
                         },
                         {
                             address:
                                 'bc1ptxs597p3fnpd8gwut5p467ulsydae3rp9z75hd99w8k3ljr9g9rqx6ynaw',
                             amount: '100000',
+                            type: 'payment',
                         },
                     ],
                 },
@@ -1178,6 +1217,7 @@ export default [
                         {
                             address: 'bitcoincash:qp6e6enhpy0fwwu7nkvlr8rgl06ru0c9lywalz8st5',
                             amount: '100000',
+                            type: 'payment',
                         },
                     ],
                 },
@@ -1251,10 +1291,12 @@ export default [
                         {
                             amount: '16842',
                             path: [44, 1, 0, 1, 1],
+                            type: 'change',
                         },
                         {
                             address: '1BitcoinEaterAddressDontSendf59kuE',
                             amount: '100000',
+                            type: 'payment',
                         },
                     ],
                 },
@@ -1330,10 +1372,12 @@ export default [
                         {
                             address: '1BitcoinEaterAddressDontSendf59kuE',
                             amount: '70000',
+                            type: 'payment',
                         },
                         {
                             amount: '46842',
                             path: [44, 1, 0, 1, 1],
+                            type: 'change',
                         },
                     ],
                 },
@@ -1397,10 +1441,15 @@ export default [
                 outputs: {
                     permutation: [1, 0],
                     sorted: [
-                        { path: [2147483692, 2147483651, 2147483648, 1, 0], amount: '6800040000' },
+                        {
+                            path: [2147483692, 2147483651, 2147483648, 1, 0],
+                            amount: '6800040000',
+                            type: 'change',
+                        },
                         {
                             address: 'DDn7UV1CrqVefzwrHyw7H2zEZZKqfzR2ZD',
                             amount: '11556856849999734000',
+                            type: 'payment',
                         },
                     ],
                 },
