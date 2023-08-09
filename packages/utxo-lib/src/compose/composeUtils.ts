@@ -1,4 +1,5 @@
 import * as BitcoinJsAddress from '../address';
+import { p2data } from '../payments/embed';
 import {
     INPUT_SCRIPT_LENGTH,
     OUTPUT_SCRIPT_LENGTH,
@@ -33,9 +34,7 @@ export function convertInputs(
 }
 
 export function getScriptFromAddress(address: string, network: Network) {
-    return {
-        length: BitcoinJsAddress.toOutputScript(address, network).length,
-    };
+    return BitcoinJsAddress.toOutputScript(address, network);
 }
 
 export function convertOutputs(
@@ -61,7 +60,7 @@ export function convertOutputs(
             if (output.type === 'opreturn') {
                 return {
                     value: '0',
-                    script: { length: 2 + output.dataHex.length / 2 },
+                    script: p2data({ data: [Buffer.from(output.dataHex, 'hex')] }).output as Buffer,
                 };
             }
             if (output.type === 'send-max') {
