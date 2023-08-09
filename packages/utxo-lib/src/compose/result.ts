@@ -35,10 +35,10 @@ function getNonfinalResult(result: CoinSelectSuccess): ComposeResultNonFinal {
     };
 }
 
-function getFinalResult<Input extends ComposeInput>(
+function getFinalResult<Input extends ComposeInput, Output extends ComposeOutput>(
     result: CoinSelectSuccess,
-    transaction: ComposedTransaction<Input>,
-): ComposeResultFinal<Input> {
+    transaction: ComposedTransaction<Input, Output>,
+): ComposeResultFinal<Input, Output> {
     const { max, fee, feePerByte, bytes, totalSpent } = result.payload;
 
     return {
@@ -70,8 +70,8 @@ function splitByCompleteness(outputs: ComposeOutput[]) {
     };
 }
 
-export function getResult<Input extends ComposeInput>(
-    request: ComposeRequest<Input>,
+export function getResult<Input extends ComposeInput, Output extends ComposeOutput>(
+    request: ComposeRequest<Input, Output>,
     result: CoinSelectSuccess,
 ) {
     const splitOutputs = splitByCompleteness(request.outputs);
@@ -90,5 +90,5 @@ export function getResult<Input extends ComposeInput>(
         request.skipPermutation,
     );
 
-    return getFinalResult(result, transaction);
+    return getFinalResult(result, transaction) as ComposeResultFinal<Input, Output>;
 }

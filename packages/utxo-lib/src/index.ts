@@ -32,7 +32,6 @@ export type {
     ComposeRequest,
     ComposeResult,
     ComposeResultFinal,
-    ComposedTxOutput,
     ComposedTransaction,
     CoinSelectPaymentType,
 } from './types';

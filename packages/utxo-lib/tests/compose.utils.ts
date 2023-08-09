@@ -8,7 +8,13 @@
 
 import * as baddress from '../src/address';
 import { OUTPUT_SCRIPT_LENGTH } from '../src/coinselect/coinselectUtils';
-import { Network, ComposeInput, ComposeResultFinal, CoinSelectPaymentType } from '../src';
+import {
+    Network,
+    ComposeInput,
+    ComposeOutput,
+    ComposeResultFinal,
+    CoinSelectPaymentType,
+} from '../src';
 
 // transaction header size: 4 byte version
 const _TXSIZE_HEADER = 4;
@@ -184,7 +190,7 @@ export class TxWeightCalculator {
 }
 
 export function verifyTxBytes(
-    tx: ComposeResultFinal<ComposeInput>,
+    tx: ComposeResultFinal<ComposeInput, ComposeOutput>,
     txType: Exclude<CoinSelectPaymentType, 'p2wsh'> = 'p2pkh',
     network?: Network,
 ) {
@@ -194,13 +200,13 @@ export function verifyTxBytes(
     });
 
     tx.transaction.outputs.sorted.forEach(out => {
-        if (out.dataHex) {
+        if (out.type === 'opreturn') {
             calc.addOutput({ length: 2 + out.dataHex.length / 2 });
         }
-        if (out.address) {
+        if (out.type === 'payment') {
             calc.addOutput({ length: baddress.toOutputScript(out.address, network).length });
         }
-        if (out.path) {
+        if (out.type === 'change') {
             calc.addOutputByKey(txType); // change output
         }
     });
