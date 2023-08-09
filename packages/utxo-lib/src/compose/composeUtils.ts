@@ -69,7 +69,7 @@ export function convertOutputs(
                     script,
                 };
             }
-            throw new Error('WRONG-OUTPUT-TYPE');
+            throw new Error('INCORRECT-OUTPUT-TYPE');
         })
         .map(output => Object.assign(output, { weight: outputWeight(output) }));
 }

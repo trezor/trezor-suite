@@ -236,28 +236,35 @@ export default [
             utxos: [UTXO],
         },
         result: {
-            error: 'WRONG-OUTPUT-TYPE',
+            error: 'INCORRECT-OUTPUT-TYPE',
             type: 'error',
         },
     },
     {
-        description: 'fails on empty outputs + utxos input',
+        description: 'fails on runtime error from coinselect module',
         request: {
             basePath: [44, 1],
             changeAddress: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT',
             changeId: 0,
             dustThreshold: 546,
             feeRate: '10',
-            outputs: [],
-            utxos: [],
+            outputs: [
+                {
+                    address: '1BitcoinEaterAddressDontSendf59kuE',
+                    amount: '100000',
+                    type: 'payment',
+                },
+            ],
+            utxos: [{ ...UTXO, confirmations: null }],
         },
         result: {
-            error: 'EMPTY',
             type: 'error',
+            error: 'COINSELECT',
+            message: 'Missing information.',
         },
     },
     {
-        description: 'fails on empty outputs input',
+        description: 'fails on empty outputs',
         request: {
             basePath: [44, 1],
             changeAddress: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT',
@@ -268,12 +275,12 @@ export default [
             utxos: [UTXO],
         },
         result: {
-            error: 'EMPTY',
+            error: 'MISSING-OUTPUTS',
             type: 'error',
         },
     },
     {
-        description: 'fails on empty utxos input',
+        description: 'fails on empty utxos',
         request: {
             basePath: [44, 1],
             changeAddress: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT',
@@ -289,7 +296,7 @@ export default [
             utxos: [],
         },
         result: {
-            error: 'NOT-ENOUGH-FUNDS',
+            error: 'MISSING-UTXOS',
             type: 'error',
         },
     },

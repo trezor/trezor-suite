@@ -5,12 +5,17 @@ import {
     ComposeResultError,
     ComposeResultNonFinal,
     ComposeResultFinal,
+    COMPOSE_ERROR_TYPES,
 } from '../types';
 
-export const empty: ComposeResultError = {
-    type: 'error',
-    error: 'EMPTY',
-};
+export function getErrorResult(error: unknown): ComposeResultError {
+    const message = error instanceof Error ? error.message : `${error}`;
+    const known = COMPOSE_ERROR_TYPES.find(e => e === message);
+    if (known) {
+        return { type: 'error', error: known };
+    }
+    return { type: 'error', error: 'COINSELECT', message };
+}
 
 export function getNonfinalResult(result: CoinSelectSuccess): ComposeResultNonFinal {
     const { max, fee, feePerByte, bytes, totalSpent } = result.payload;
