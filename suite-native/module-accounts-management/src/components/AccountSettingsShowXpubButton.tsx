@@ -11,6 +11,7 @@ const networkTypeToButtonTitleMap: Record<NetworkType, string> = {
     cardano: 'Show public key (XPUB)',
     ethereum: 'Show receive address',
     ripple: 'Show receive address',
+    solana: 'Show receive address',
 };
 
 export const AccountSettingsShowXpubButton = ({ accountKey }: { accountKey: string }) => {
