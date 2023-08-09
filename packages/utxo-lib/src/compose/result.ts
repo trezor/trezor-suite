@@ -1,7 +1,12 @@
+import { createTransaction } from './transaction';
 import {
     CoinSelectSuccess,
     ComposedTransaction,
+    ComposeRequest,
     ComposeInput,
+    ComposeOutput,
+    ComposeFinalOutput,
+    ComposeNotFinalOutput,
     ComposeResultError,
     ComposeResultNonFinal,
     ComposeResultFinal,
@@ -17,7 +22,7 @@ export function getErrorResult(error: unknown): ComposeResultError {
     return { type: 'error', error: 'COINSELECT', message };
 }
 
-export function getNonfinalResult(result: CoinSelectSuccess): ComposeResultNonFinal {
+function getNonfinalResult(result: CoinSelectSuccess): ComposeResultNonFinal {
     const { max, fee, feePerByte, bytes, totalSpent } = result.payload;
 
     return {
@@ -30,7 +35,7 @@ export function getNonfinalResult(result: CoinSelectSuccess): ComposeResultNonFi
     };
 }
 
-export function getFinalResult<Input extends ComposeInput>(
+function getFinalResult<Input extends ComposeInput>(
     result: CoinSelectSuccess,
     transaction: ComposedTransaction<Input>,
 ): ComposeResultFinal<Input> {
@@ -45,4 +50,45 @@ export function getFinalResult<Input extends ComposeInput>(
         max,
         totalSpent,
     };
+}
+
+function splitByCompleteness(outputs: ComposeOutput[]) {
+    const complete: ComposeFinalOutput[] = [];
+    const incomplete: ComposeNotFinalOutput[] = [];
+
+    outputs.forEach(output => {
+        if (output.type === 'payment' || output.type === 'send-max' || output.type === 'opreturn') {
+            complete.push(output);
+        } else {
+            incomplete.push(output);
+        }
+    });
+
+    return {
+        complete,
+        incomplete,
+    };
+}
+
+export function getResult<Input extends ComposeInput>(
+    request: ComposeRequest<Input>,
+    result: CoinSelectSuccess,
+) {
+    const splitOutputs = splitByCompleteness(request.outputs);
+
+    if (splitOutputs.incomplete.length > 0) {
+        return getNonfinalResult(result);
+    }
+
+    const transaction = createTransaction(
+        request.utxos,
+        result.payload.inputs,
+        splitOutputs.complete,
+        result.payload.outputs,
+        request.basePath,
+        request.changeId,
+        request.skipPermutation,
+    );
+
+    return getFinalResult(result, transaction);
 }
