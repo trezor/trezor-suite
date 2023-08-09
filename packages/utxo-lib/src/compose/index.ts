@@ -94,8 +94,6 @@ export function composeTx<Input extends ComposeInput>({
         csResult.payload.outputs,
         basePath,
         changeId,
-        changeAddress,
-        network,
         skipPermutation,
     );
 
