@@ -1,3 +1,37 @@
+# 2.0.0 (not released)
+
+BREAKING CHANGES in `composeTx` module.
+
+renamed `composeTx` request parameters and response.
+
+-   request `utxo.tsize` is removed
+-   request `utxo.vsize` is removed
+-   request `utxo.addressPath` is removed
+-   request `utxo.height` > `utxo.confirmations`
+-   request `utxo.value` > `utxo.amount`
+-   request `utxo.index` > `utxo.vout`
+-   request `utxo.transactionHash` > `utxo.txid`
+-   request `output.type = 'complete'` > `output.type = 'payment'`
+-   request `output.type = 'noaddress'` > `output.type = 'payment-noaddress'`
+-   request `changeAddress: string` > `changeAddress: { address: string }`
+-   request `height` is removed
+-   request `basePath` is removed (not used)
+-   request `changeId` is removed (not used)
+
+-   response nested `transaction` object is removed. Final result contains fields `inputs`, `outputs` and `outputsPermutation`
+-   response `nonfinal` result contains `inputs`
+-   response `transaction.input.index` > `input.vout`
+-   response `transaction.input.hash` > `input.txid`
+-   response `transaction.output.value` > `output.amount`
+-   response `transaction.output.opReturnData: Buffer` > `output.dataHex: string`
+-   response `transaction.output.type` added (only for final output types: `payment`, `opreturn` and `send-max` which becomes `payment` after amount calculation)
+-   response `transaction.output.type` added (only for final output types: `payment`, `opreturn` and `send-max` which becomes `payment` after amount calculation)
+-   response `type = 'error'` is strongly typed
+
+-   request `utxo` is generic and should be equal to `response.input` (ComposeInput)
+-   request `output` is generic and should be equal to `response.output` (ComposeOutput + ComposeChangeAddress)
+-   request `changeAddress` is generic and should be equal to `response.output.type = 'change'`
+
 # 1.0.11
 
 -   test(utxo-lib): zip-317 (140018dde)
