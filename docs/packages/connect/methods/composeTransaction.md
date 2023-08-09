@@ -60,8 +60,8 @@ _Device and backend connection is not required for this case since all data are 
 -   `opreturn` - [read more](https://trezor.io/learn/a/use-op_return-in-trezor-suite-app)
     -   `type` - _required_ with `opreturn` value
     -   `dataHex` - _required_ `hexadecimal string` with arbitrary data
--   `noaddress` - incomplete output, target address is not known yet. used only in precompose
-    -   `type` - _required_ with `noaddress` value
+-   `payment-noaddress` - incomplete output, target address is not known yet. used only in precompose
+    -   `type` - _required_ with `payment-noaddress` value
     -   `amount` - _required_ `string` value to send in satoshi
 -   `send-max-noaddress` - incomplete output, target address is not known yet. used only in precompose
     -   `type` - _required_ with `send-max-noaddress` value
@@ -169,30 +169,28 @@ TrezorConnect.composeTransaction({
             fee: '167',
             feePerByte: '1',
             bytes: 167,
-            transaction: {
-                inputs: [
-                    {
-                        address_n: [84 | 0x80000000, 1 | 0x80000000, 0 | 0x80000000, 0, 0],
-                        amount: "300000",
-                        prev_hash: "86a6e02943dcd057cfbe349f2c2274478a3a1be908eb788606a6950e727a0d36",
-                        prev_index: 0,
-                        script_type: "SPENDWITNESS",
-                    }
-                ],
-                outputs: [
-                    {
-                        address_n: [84 | 0x80000000, 1 | 0x80000000, 0 | 0x80000000, 1, 0],
-                        amount: "99833",
-                        script_type: "PAYTOWITNESS",
-                    },
-                    {
-                        address: 'tb1q9l0rk0gkgn73d0gc57qn3t3cwvucaj3h8wtrlu',
-                        amount: '200000',
-                        script_type: 'PAYTOADDRESS',
-                    }
-                ],
-                outputsPermutation: [1, 0],
-            }
+            inputs: [
+                {
+                    address_n: [84 | 0x80000000, 1 | 0x80000000, 0 | 0x80000000, 0, 0],
+                    amount: "300000",
+                    prev_hash: "86a6e02943dcd057cfbe349f2c2274478a3a1be908eb788606a6950e727a0d36",
+                    prev_index: 0,
+                    script_type: "SPENDWITNESS",
+                }
+            ],
+            outputs: [
+                {
+                    address_n: [84 | 0x80000000, 1 | 0x80000000, 0 | 0x80000000, 1, 0],
+                    amount: "99833",
+                    script_type: "PAYTOWITNESS",
+                },
+                {
+                    address: 'tb1q9l0rk0gkgn73d0gc57qn3t3cwvucaj3h8wtrlu',
+                    amount: '200000',
+                    script_type: 'PAYTOADDRESS',
+                }
+            ],
+            outputsPermutation: [1, 0],
         },
         {
             type: 'final',
@@ -200,11 +198,9 @@ TrezorConnect.composeTransaction({
             fee: '835',
             feePerByte: '5',
             bytes: 167,
-            transaction: {
-                inputs: [{ ... }],
-                outputs: [{ ... }],
-                outputsPermutation: [],
-            }
+            inputs: [{ ... }],
+            outputs: [{ ... }],
+            outputsPermutation: [],
         },
         {
             type: 'error',

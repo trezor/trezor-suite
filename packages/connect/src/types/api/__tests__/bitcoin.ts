@@ -509,10 +509,11 @@ export const composeTransaction = async (api: TrezorConnect) => {
         if (tx.type === 'nonfinal') {
             tx.bytes.toFixed();
             tx.feePerByte.toLowerCase();
+            tx.inputs.map(a => a);
         }
         if (tx.type === 'final') {
-            tx.transaction.inputs.map(a => a);
-            tx.transaction.outputs.map(a => a);
+            tx.inputs.map(a => a);
+            tx.outputs.map(a => a);
         }
     } else {
         precompose.payload.error.toLowerCase();

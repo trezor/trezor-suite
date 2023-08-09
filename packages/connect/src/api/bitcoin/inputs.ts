@@ -1,12 +1,17 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/tx/inputs.js
 
-import type { ComposedTxInput } from '@trezor/utxo-lib';
 import type { TypedRawTransaction } from '@trezor/blockchain-link';
-import { bufferUtils } from '@trezor/utils';
-import { validatePath, isSegwitPath, getScriptType, fixPath } from '../../utils/pathUtils';
+import {
+    validatePath,
+    isSegwitPath,
+    getScriptType,
+    fixPath,
+    getHDPath,
+} from '../../utils/pathUtils';
 import { convertMultisigPubKey } from '../../utils/hdnodeUtils';
 import { validateParams } from '../common/paramsValidator';
 import type { BitcoinNetworkInfo, ProtoWithDerivationPath } from '../../types';
+import type { ComposeUtxo } from '../../types/api/composeTransaction';
 import type { PROTO } from '../../constants';
 
 /** *****
@@ -65,12 +70,12 @@ export const enhanceTrezorInputs = (inputs: PROTO.TxInputType[], rawTxs: TypedRa
 /** *****
  * Transform from @trezor/utxo-lib/compose format to Trezor
  ****** */
-export const inputToTrezor = (input: ComposedTxInput, sequence: number): PROTO.TxInputType => {
-    const address_n = input.path;
+export const inputToTrezor = (input: ComposeUtxo, sequence = 0xffffffff): PROTO.TxInputType => {
+    const address_n = getHDPath(input.path);
     return {
         address_n,
-        prev_index: input.index,
-        prev_hash: bufferUtils.reverseBuffer(input.hash).toString('hex'),
+        prev_index: input.vout,
+        prev_hash: input.txid, // NOTE: protobuf name is confusing. prev_hash is in fact txid (reversed tx hash)
         script_type: getScriptType(address_n),
         amount: input.amount,
         sequence,

@@ -1,24 +1,13 @@
+import { Network } from '@trezor/utxo-lib';
 import { FeeLevel } from './fees';
+
+export type { Network } from '@trezor/utxo-lib';
 
 export interface CoinSupport {
     connect: boolean;
     T1B1: string;
     T2T1: string;
     T2B1: string;
-}
-
-// copy-paste from '@trezor/utxo-lib' module
-export interface Network {
-    messagePrefix: string;
-    bech32: string;
-    bip32: {
-        public: number;
-        private: number;
-    };
-    pubKeyHash: number;
-    scriptHash: number;
-    wif: number;
-    forkId?: number;
 }
 
 export interface BlockchainLink {
