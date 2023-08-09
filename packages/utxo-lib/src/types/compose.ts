@@ -78,9 +78,7 @@ export interface ComposeRequest<
     outputs: Output[]; // all outputs
     feeRate: string | number; // in sat/byte, virtual size
     longTermFeeRate?: string | number; // dust output feeRate multiplier in sat/byte, virtual size
-    basePath: number[]; // for trezor inputs
     network: Network;
-    changeId: number;
     changeAddress: Change;
     dustThreshold: number; // explicit dust threshold, in satoshi
     baseFee?: number; // DOGE or RBF base fee
