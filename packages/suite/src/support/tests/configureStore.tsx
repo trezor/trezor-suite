@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/ban-types */
-import { AnyAction, Middleware } from '@reduxjs/toolkit';
+import { AnyAction, isFulfilled, isPending, Middleware } from '@reduxjs/toolkit';
 import reduxMockStore, { MockStoreCreator } from 'redux-mock-store';
 import thunk from 'redux-thunk';
+
 import { extraDependencies } from '../extraDependencies';
 
 /**
@@ -18,6 +19,4 @@ export const configureStore = <S, DispatchExts = {}>(
  * It should be used only in /packages/suite everything migrated to suite-common/ should be adjusted to work with new thunk API!!!
  */
 export const filterThunkActionTypes = (actions: AnyAction[]) =>
-    actions.filter(
-        action => !action.type.endsWith('pending') && !action.type.endsWith('fulfilled'),
-    );
+    actions.filter(action => !isPending(action) && !isFulfilled(action));
