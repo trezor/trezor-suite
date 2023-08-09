@@ -77,6 +77,7 @@ export default {
                     'Capability_Shamir',
                     'Capability_ShamirGroups',
                     'Capability_PassphraseEntry',
+                    'Capability_Solana',
                 ],
                 backup_type: 'Bip39',
                 sd_card_present: expect.any(Boolean), // T2T1 true, T2B1 false

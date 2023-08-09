@@ -201,5 +201,11 @@ export const config = {
             min: ['0', '2.6.1'],
             comment: ['Only on T2B1'],
         },
+        {
+            methods: ['solanaGetPublicKey', 'solanaGetAddress', 'solanaSignTransaction'],
+            // TODO (vl/connect): increase version
+            min: ['0', '2.6.1.'],
+            comment: ['Only on T2B1'],
+        },
     ],
 };
