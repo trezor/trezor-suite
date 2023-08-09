@@ -1516,6 +1516,7 @@ export enum Enum_Capability {
     Capability_Shamir = 15,
     Capability_ShamirGroups = 16,
     Capability_PassphraseEntry = 17,
+    Capability_Solana = 18,
 }
 
 export type Capability = keyof typeof Enum_Capability;
@@ -1940,6 +1941,39 @@ export type RippleSignTx = {
 export type RippleSignedTx = {
     signature: string;
     serialized_tx: string;
+};
+
+// SolanaGetPublicKey
+export type SolanaGetPublicKey = {
+    address_n: number[];
+    show_display?: boolean;
+};
+
+// SolanaPublicKey
+export type SolanaPublicKey = {
+    public_key: string;
+};
+
+// SolanaGetAddress
+export type SolanaGetAddress = {
+    address_n: number[];
+    show_display?: boolean;
+};
+
+// SolanaAddress
+export type SolanaAddress = {
+    address: string;
+};
+
+// SolanaSignTx
+export type SolanaSignTx = {
+    address_n: number[];
+    serialized_tx: string;
+};
+
+// SolanaTxSignature
+export type SolanaTxSignature = {
+    signature: string;
 };
 
 export enum StellarAssetType {
@@ -2481,6 +2515,12 @@ export type MessageType = {
     RipplePayment: RipplePayment;
     RippleSignTx: RippleSignTx;
     RippleSignedTx: RippleSignedTx;
+    SolanaGetPublicKey: SolanaGetPublicKey;
+    SolanaPublicKey: SolanaPublicKey;
+    SolanaGetAddress: SolanaGetAddress;
+    SolanaAddress: SolanaAddress;
+    SolanaSignTx: SolanaSignTx;
+    SolanaTxSignature: SolanaTxSignature;
     StellarAsset: StellarAsset;
     StellarGetAddress: StellarGetAddress;
     StellarAddress: StellarAddress;
