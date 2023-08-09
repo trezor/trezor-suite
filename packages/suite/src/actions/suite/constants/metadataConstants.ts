@@ -13,8 +13,7 @@ export const SET_INITIATING = '@metadata/set-initiating';
 export const SET_DATA = '@metadata/set-data';
 export const SET_SELECTED_PROVIDER = '@metadata/set-selected-provider';
 
-// todo: use in metadataActions, currently migration is not implemented yet
-export const METADATA_VERSION = '2.0.0';
+export const FORMAT_VERSION = '1.0.0';
 
 // @trezor/connect params
 export const ENABLE_LABELING_PATH = "m/10015'/0'";

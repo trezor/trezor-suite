@@ -617,7 +617,7 @@ export const addDeviceMetadata =
         try {
             const encrypted = await metadataUtils.encrypt(
                 {
-                    version: '1.0.0',
+                    version:  METADATA.FORMAT_VERSION,
                     walletLabel,
                 },
                 aesKey,
@@ -738,7 +738,7 @@ export const addAccountMetadata =
         // todo: can't this throw? heh?
         const encrypted = await metadataUtils.encrypt(
             {
-                version: '1.0.0',
+                version:  METADATA.FORMAT_VERSION,
                 accountLabel: nextMetadata.accountLabel,
                 outputLabels: nextMetadata.outputLabels,
                 addressLabels: nextMetadata.addressLabels,
