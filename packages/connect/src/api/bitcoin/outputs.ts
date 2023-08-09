@@ -1,13 +1,13 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/tx/outputs.js
 
-import type { ComposeOutput as UtxoLibOutput, ComposedTxOutput } from '@trezor/utxo-lib';
-import { getOutputScriptType, fixPath } from '../../utils/pathUtils';
+import { ComposeOutput as ComposeOutputBase } from '@trezor/utxo-lib';
+import { getOutputScriptType, fixPath, getHDPath } from '../../utils/pathUtils';
 import { isValidAddress } from '../../utils/addressUtils';
 import { convertMultisigPubKey } from '../../utils/hdnodeUtils';
 import { validateParams } from '../common/paramsValidator';
 import { PROTO, ERRORS } from '../../constants';
 import type { BitcoinNetworkInfo, ProtoWithDerivationPath } from '../../types';
-import type { ComposeOutput } from '../../types/api/composeTransaction';
+import type { ComposeOutput, ComposeResultFinal } from '../../types/api/composeTransaction';
 
 /** *****
  * SignTransaction: validation
@@ -64,7 +64,7 @@ export const validateTrezorOutputs = (
 export const validateHDOutput = (
     output: ComposeOutput,
     coinInfo: BitcoinNetworkInfo,
-): UtxoLibOutput => {
+): ComposeOutputBase => {
     const validateAddress = (address?: string) => {
         if (!address || !isValidAddress(address, coinInfo)) {
             throw ERRORS.TypedError(
@@ -79,7 +79,7 @@ export const validateHDOutput = (
             validateParams(output, [{ name: 'dataHex', type: 'string' }]);
             return {
                 type: 'opreturn',
-                dataHex: output.dataHex || '',
+                dataHex: output.dataHex,
             };
 
         case 'send-max':
@@ -90,10 +90,10 @@ export const validateHDOutput = (
                 address: output.address,
             };
 
-        case 'noaddress':
+        case 'payment-noaddress':
             validateParams(output, [{ name: 'amount', type: 'uint', required: true }]);
             return {
-                type: 'noaddress',
+                type: 'payment-noaddress',
                 amount: output.amount,
             };
 
@@ -107,11 +107,9 @@ export const validateHDOutput = (
                 { name: 'amount', type: 'uint', required: true },
                 { name: 'address', type: 'string', required: true },
             ]);
-            // @ts-expect-error TODO: https://github.com/trezor/trezor-suite/issues/5297
             validateAddress(output.address);
             return {
-                type: 'complete',
-                // @ts-expect-error TODO: https://github.com/trezor/trezor-suite/issues/5297
+                type: 'payment',
                 address: output.address,
                 amount: output.amount,
             };
@@ -119,50 +117,31 @@ export const validateHDOutput = (
 };
 
 /** *****
- * Transform from @trezor/utxo-lib format to Trezor
+ * Transform the result of @trezor/utxo-lib `composeTx` to Trezor protobuf
  ****** */
 export const outputToTrezor = (
-    output: ComposedTxOutput,
-    _coinInfo: BitcoinNetworkInfo,
+    output: ComposeResultFinal['outputs'][number],
 ): PROTO.TxOutputType => {
-    if (output.opReturnData) {
-        if (output.value) {
-            throw ERRORS.TypedError(
-                'Method_InvalidParameter',
-                'opReturn output should not contains value',
-            );
-        }
+    if (output.type === 'opreturn') {
         return {
             amount: '0',
-            op_return_data: output.opReturnData.toString('hex'),
+            op_return_data: output.dataHex,
             script_type: 'PAYTOOPRETURN',
         };
     }
-    if (!output.address && !output.path) {
-        throw ERRORS.TypedError(
-            'Method_InvalidParameter',
-            'Both address and path of an output cannot be null.',
-        );
-    }
-    if (output.path) {
+
+    if (output.type === 'change') {
+        const address_n = getHDPath(output.path);
         return {
-            address_n: output.path,
-            amount: output.value,
-            script_type: getOutputScriptType(output.path),
+            address_n,
+            amount: output.amount,
+            script_type: getOutputScriptType(address_n),
         };
     }
 
-    const { address, value } = output;
-    if (typeof address !== 'string') {
-        throw ERRORS.TypedError(
-            'Method_InvalidParameter',
-            'Wrong output address type, should be string',
-        );
-    }
-
     return {
-        address,
-        amount: value,
+        address: output.address,
+        amount: output.amount,
         script_type: 'PAYTOADDRESS',
     };
 };

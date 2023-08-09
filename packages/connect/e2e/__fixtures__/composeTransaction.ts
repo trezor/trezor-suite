@@ -91,14 +91,12 @@ export default {
                     feePerByte: '1',
                     max: undefined,
                     totalSpent: '6639',
-                    transaction: {
-                        inputs: [{ script_type: 'SPENDWITNESS', sequence: 0xffffffff }],
-                        outputs: [
-                            { amount: '2787', script_type: 'PAYTOWITNESS' },
-                            { amount: '6497', script_type: 'PAYTOADDRESS' },
-                        ],
-                        outputsPermutation: [1, 0], // default permutation from @trezor/utxo-lib/compose
-                    },
+                    inputs: [{ script_type: 'SPENDWITNESS', sequence: 0xffffffff }],
+                    outputs: [
+                        { amount: '2787', script_type: 'PAYTOWITNESS' },
+                        { amount: '6497', script_type: 'PAYTOADDRESS' },
+                    ],
+                    outputsPermutation: [1, 0], // default permutation from @trezor/utxo-lib/compose
                 },
             ],
         },
@@ -127,14 +125,12 @@ export default {
                     feePerByte: '2.176056338028169',
                     max: undefined,
                     totalSpent: '6806',
-                    transaction: {
-                        inputs: [{ script_type: 'SPENDWITNESS', sequence: 1 }],
-                        outputs: [
-                            { amount: '6497', script_type: 'PAYTOADDRESS' },
-                            { amount: '2620', script_type: 'PAYTOWITNESS' }, // skipped permutation
-                        ],
-                        outputsPermutation: [0, 1],
-                    },
+                    inputs: [{ script_type: 'SPENDWITNESS', sequence: 1 }],
+                    outputs: [
+                        { amount: '6497', script_type: 'PAYTOADDRESS' },
+                        { amount: '2620', script_type: 'PAYTOWITNESS' }, // skipped permutation
+                    ],
+                    outputsPermutation: [0, 1],
                 },
             ],
         },
@@ -180,13 +176,11 @@ export default {
                     bytes: 142,
                     fee: '142',
                     totalSpent: '1142',
-                    transaction: {
-                        inputs: [{ amount: '9426', script_type: 'SPENDWITNESS' }],
-                        outputs: [
-                            { amount: '1000', script_type: 'PAYTOADDRESS' },
-                            { amount: '8284', script_type: 'PAYTOWITNESS' },
-                        ],
-                    },
+                    inputs: [{ amount: '9426', script_type: 'SPENDWITNESS' }],
+                    outputs: [
+                        { amount: '1000', script_type: 'PAYTOADDRESS' },
+                        { amount: '8284', script_type: 'PAYTOWITNESS' },
+                    ],
                 },
             ],
         },
@@ -242,17 +236,15 @@ export default {
                     bytes: 278,
                     fee: '278',
                     totalSpent: '16678',
-                    transaction: {
-                        inputs: [
-                            { amount: '7086' },
-                            { amount: '9426' },
-                            { amount: '309896' }, // NOTE: this utxo is used because required utxo is not enough to cover fee
-                        ],
-                        outputs: [
-                            { amount: '16400', script_type: 'PAYTOADDRESS' },
-                            { amount: '309730', script_type: 'PAYTOWITNESS' },
-                        ],
-                    },
+                    inputs: [
+                        { amount: '7086' },
+                        { amount: '9426' },
+                        { amount: '309896' }, // NOTE: this utxo is used because required utxo is not enough to cover fee
+                    ],
+                    outputs: [
+                        { amount: '16400', script_type: 'PAYTOADDRESS' },
+                        { amount: '309730', script_type: 'PAYTOWITNESS' },
+                    ],
                 },
             ],
         },
@@ -277,10 +269,8 @@ export default {
                     feePerByte: '1',
                     max: '9315',
                     totalSpent: '9426',
-                    transaction: {
-                        inputs: [{ script_type: 'SPENDWITNESS' }],
-                        outputs: [{ amount: '9315', script_type: 'PAYTOADDRESS' }],
-                    },
+                    inputs: [{ script_type: 'SPENDWITNESS' }],
+                    outputs: [{ amount: '9315', script_type: 'PAYTOADDRESS' }],
                 },
             ],
         },
@@ -305,10 +295,8 @@ export default {
                     feePerByte: '1',
                     max: '9315',
                     totalSpent: '9426',
-                    transaction: {
-                        inputs: [{ script_type: 'SPENDWITNESS' }],
-                        outputs: [{ amount: '9315', script_type: 'PAYTOADDRESS' }],
-                    },
+                    inputs: [{ script_type: 'SPENDWITNESS' }],
+                    outputs: [{ amount: '9315', script_type: 'PAYTOADDRESS' }],
                 },
             ],
         },
@@ -332,17 +320,15 @@ export default {
                     fee: '226000',
                     max: undefined,
                     totalSpent: '100226000',
-                    transaction: {
-                        inputs: [{ script_type: 'SPENDADDRESS' }],
-                        outputs: [
-                            {
-                                address: 'DDn7UV1CrqVefzwrHyw7H2zEZZKqfzR2ZD',
-                                amount: '100000000',
-                                script_type: 'PAYTOADDRESS',
-                            },
-                            { amount: '399774000', script_type: 'PAYTOADDRESS' },
-                        ],
-                    },
+                    inputs: [{ script_type: 'SPENDADDRESS' }],
+                    outputs: [
+                        {
+                            address: 'DDn7UV1CrqVefzwrHyw7H2zEZZKqfzR2ZD',
+                            amount: '100000000',
+                            script_type: 'PAYTOADDRESS',
+                        },
+                        { amount: '399774000', script_type: 'PAYTOADDRESS' },
+                    ],
                 },
             ],
         },
@@ -366,17 +352,15 @@ export default {
                     fee: '1226000', // NOTE: +0.01 DOGE per dust limit output
                     max: undefined,
                     totalSpent: '1326000',
-                    transaction: {
-                        inputs: [{ script_type: 'SPENDADDRESS' }],
-                        outputs: [
-                            {
-                                address: 'DDn7UV1CrqVefzwrHyw7H2zEZZKqfzR2ZD',
-                                amount: '100000',
-                                script_type: 'PAYTOADDRESS',
-                            },
-                            { amount: '498674000', script_type: 'PAYTOADDRESS' },
-                        ],
-                    },
+                    inputs: [{ script_type: 'SPENDADDRESS' }],
+                    outputs: [
+                        {
+                            address: 'DDn7UV1CrqVefzwrHyw7H2zEZZKqfzR2ZD',
+                            amount: '100000',
+                            script_type: 'PAYTOADDRESS',
+                        },
+                        { amount: '498674000', script_type: 'PAYTOADDRESS' },
+                    ],
                 },
             ],
         },
@@ -405,21 +389,19 @@ export default {
                     fee: '1000000', // NOTE: +0.01 DOGE per dust limit output + ~0.08 DOGE dust limit change
                     max: undefined,
                     totalSpent: '500000000',
-                    transaction: {
-                        inputs: [{ script_type: 'SPENDADDRESS' }],
-                        outputs: [
-                            {
-                                address: 'DDn7UV1CrqVefzwrHyw7H2zEZZKqfzR2ZD',
-                                amount: '200000000',
-                                script_type: 'PAYTOADDRESS',
-                            },
-                            {
-                                address: 'DDn7UV1CrqVefzwrHyw7H2zEZZKqfzR2ZD',
-                                amount: '299000000',
-                                script_type: 'PAYTOADDRESS',
-                            },
-                        ],
-                    },
+                    inputs: [{ script_type: 'SPENDADDRESS' }],
+                    outputs: [
+                        {
+                            address: 'DDn7UV1CrqVefzwrHyw7H2zEZZKqfzR2ZD',
+                            amount: '200000000',
+                            script_type: 'PAYTOADDRESS',
+                        },
+                        {
+                            address: 'DDn7UV1CrqVefzwrHyw7H2zEZZKqfzR2ZD',
+                            amount: '299000000',
+                            script_type: 'PAYTOADDRESS',
+                        },
+                    ],
                 },
             ],
         },
@@ -443,10 +425,8 @@ export default {
                     fee: '192000',
                     max: '499808000',
                     totalSpent: '500000000',
-                    transaction: {
-                        inputs: [{ script_type: 'SPENDADDRESS' }],
-                        outputs: [{ amount: '499808000', script_type: 'PAYTOADDRESS' }],
-                    },
+                    inputs: [{ script_type: 'SPENDADDRESS' }],
+                    outputs: [{ amount: '499808000', script_type: 'PAYTOADDRESS' }],
                 },
             ],
         },

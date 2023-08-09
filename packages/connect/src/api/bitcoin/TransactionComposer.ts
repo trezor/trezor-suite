@@ -1,16 +1,19 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/tx/TransactionComposer.js
 
 import BigNumber from 'bignumber.js';
-import { composeTx, ComposeInput, ComposeOutput, ComposeResult } from '@trezor/utxo-lib';
+import { composeTx, ComposeOutput } from '@trezor/utxo-lib';
 import { FeeLevels } from './Fees';
 import { Blockchain } from '../../backend/BlockchainLink';
-import { getHDPath } from '../../utils/pathUtils';
 import type { BitcoinNetworkInfo, DiscoveryAccount, SelectFeeLevel } from '../../types';
-import type { PrecomposeParams } from '../../types/api/composeTransaction';
+import type {
+    ComposeUtxo,
+    ComposedInputs,
+    ComposeResult,
+} from '../../types/api/composeTransaction';
 
 type Options = {
     account: DiscoveryAccount;
-    utxo: PrecomposeParams['account']['utxo'];
+    utxos: ComposeUtxo[];
     outputs: ComposeOutput[];
     coinInfo: BitcoinNetworkInfo;
     baseFee?: number;
@@ -20,7 +23,7 @@ type Options = {
 export class TransactionComposer {
     account: DiscoveryAccount;
 
-    utxos: ComposeInput[];
+    utxos: ComposedInputs[];
 
     outputs: ComposeOutput[];
 
@@ -53,23 +56,14 @@ export class TransactionComposer {
                   .concat(addresses.unused)
                   .concat(addresses.change)
                   .map(a => a.address);
-        this.utxos = options.utxo.flatMap(u => {
+        this.utxos = options.utxos.flatMap(u => {
             // exclude amounts lower than dust limit if they are NOT required
-            if (!u.required && new BigNumber(u.amount).lt(this.coinInfo.dustLimit)) return [];
-            const addressPath = getHDPath(u.path);
-            const [chain, index] = addressPath.slice(addressPath.length - 2);
+            if (!u.required && new BigNumber(u.amount).lte(this.coinInfo.dustLimit)) return [];
 
             return {
-                index: u.vout,
-                transactionHash: u.txid,
-                value: u.amount,
-                addressPath: [chain, index],
-                height: u.blockHeight,
-                tsize: 0, // doesn't matter
-                vsize: 0, // doesn't matter
+                ...u,
                 coinbase: typeof u.coinbase === 'boolean' ? u.coinbase : false, // decide it it can be spent immediately (false) or after 100 conf (true)
                 own: allAddresses.indexOf(u.address) >= 0, // decide if it can be spent immediately (own) or after 6 conf (not own)
-                required: u.required,
             };
         });
     }
@@ -160,21 +154,17 @@ export class TransactionComposer {
         const changeAddress =
             addresses.change.find(a => !a.transfers) ||
             addresses.change[addresses.change.length - 1];
-        const changeId = getHDPath(changeAddress.path).slice(-1)[0]; // get address id from the path
         // const inputAmounts = coinInfo.segwit || coinInfo.forkid !== null || coinInfo.network.consensusBranchId !== null;
 
         return composeTx({
             txType: account.type,
             utxos: this.utxos,
             outputs: this.outputs,
-            height: this.blockHeight,
             feeRate,
             longTermFeeRate: this.feeLevels.longTermFeeRate,
             skipPermutation: this.skipPermutation,
-            basePath: account.address_n,
             network: coinInfo.network,
-            changeId,
-            changeAddress: changeAddress.address,
+            changeAddress,
             dustThreshold: coinInfo.dustLimit,
             baseFee,
         });
