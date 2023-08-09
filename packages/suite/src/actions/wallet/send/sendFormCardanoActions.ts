@@ -82,17 +82,15 @@ export const composeTransaction =
                                   account,
                               ), // convert from lovelace units to ADA
                               ttl: txPlan.ttl,
-                              transaction: {
-                                  inputs: trezorUtils.transformToTrezorInputs(
-                                      txPlan.inputs,
-                                      account.utxo!, // for some reason TS still considers 'undefined' as possible value
-                                  ),
-                                  outputs: trezorUtils.transformToTrezorOutputs(
-                                      txPlan.outputs,
-                                      changeAddress.addressParameters,
-                                  ),
-                                  unsignedTx: txPlan.tx,
-                              },
+                              inputs: trezorUtils.transformToTrezorInputs(
+                                  txPlan.inputs,
+                                  account.utxo!, // for some reason TS still considers 'undefined' as possible value
+                              ),
+                              outputs: trezorUtils.transformToTrezorOutputs(
+                                  txPlan.outputs,
+                                  changeAddress.addressParameters,
+                              ),
+                              unsignedTx: txPlan.tx,
                           }
                         : {
                               type: txPlan.type,
@@ -165,8 +163,6 @@ export const signTransaction =
 
         if (account.networkType !== 'cardano') return;
 
-        const { transaction } = transactionInfo;
-
         const res = await TrezorConnect.cardanoSignTransaction({
             signingMode: PROTO.CardanoTxSigningMode.ORDINARY_TRANSACTION,
             device: {
@@ -175,8 +171,8 @@ export const signTransaction =
                 state: device.state,
             },
             useEmptyPassphrase: device.useEmptyPassphrase,
-            inputs: transaction.inputs,
-            outputs: transaction.outputs,
+            inputs: transactionInfo.inputs,
+            outputs: transactionInfo.outputs,
             protocolMagic: getProtocolMagic(account.symbol),
             networkId: getNetworkId(account.symbol),
             fee: transactionInfo.fee,
@@ -196,7 +192,7 @@ export const signTransaction =
             return;
         }
 
-        if (res.payload.hash !== transactionInfo.transaction.unsignedTx.hash) {
+        if (res.payload.hash !== transactionInfo.unsignedTx.hash) {
             console.error("Constructed transaction doesn't match the hash returned by the device.");
             dispatch(
                 notificationsActions.addToast({
@@ -208,7 +204,7 @@ export const signTransaction =
         }
 
         const signedTx = trezorUtils.signTransaction(
-            transactionInfo.transaction.unsignedTx.body,
+            transactionInfo.unsignedTx.body,
             res.payload.witnesses,
             {
                 testnet: isTestnet(account.symbol),

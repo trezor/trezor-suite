@@ -73,7 +73,7 @@ const calculate = (
     }
 
     const payloadData = {
-        type: 'nonfinal',
+        type: 'nonfinal' as const,
         totalSpent: token ? amount : totalSpent.toString(),
         max,
         fee: feeInSatoshi,
@@ -81,24 +81,23 @@ const calculate = (
         feeLimit: feeLevel.feeLimit,
         token,
         bytes: 0, // TODO: calculate
-    } as const;
+        inputs: [],
+    };
 
-    if (output.type === 'send-max' || output.type === 'external') {
+    if (output.type === 'send-max' || output.type === 'payment') {
         return {
             ...payloadData,
             type: 'final',
             // compatibility with BTC PrecomposedTransaction from @trezor/connect
-            transaction: {
-                inputs: [],
-                outputsPermutation: [0],
-                outputs: [
-                    {
-                        address: output.address,
-                        amount,
-                        script_type: 'PAYTOADDRESS',
-                    },
-                ],
-            },
+            inputs: [],
+            outputsPermutation: [0],
+            outputs: [
+                {
+                    address: output.address,
+                    amount,
+                    script_type: 'PAYTOADDRESS',
+                },
+            ],
         };
     }
     return payloadData;

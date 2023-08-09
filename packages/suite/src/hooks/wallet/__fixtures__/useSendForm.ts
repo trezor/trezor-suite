@@ -929,10 +929,10 @@ export const setMax = [
                     },
                     composeTransactionParams: {
                         outputs: [
-                            // corner-case: external was changed to noaddress
+                            // corner-case: payment was changed to payment-noaddress
                             // see sendFormUtils.getBitcoinComposeOutputs
                             {
-                                type: 'noaddress',
+                                type: 'payment-noaddress',
                                 address: '3AnYTd2FGxJLNKL1AzxfW3FJMntp9D2KKX',
                                 amount: '100000000',
                             },
@@ -963,12 +963,12 @@ export const setMax = [
                     composeTransactionParams: {
                         outputs: [
                             {
-                                type: 'external',
+                                type: 'payment',
                                 address: '3AnYTd2FGxJLNKL1AzxfW3FJMntp9D2KKX',
                                 amount: '100000000',
                             },
                             {
-                                type: 'external',
+                                type: 'payment',
                                 address: '3AnYTd2FGxJLNKL1AzxfW3FJMntp9D2KKX',
                                 amount: '20000000',
                             },
@@ -983,7 +983,7 @@ export const setMax = [
             //     result: {
             //         composeTransactionParams: {
             //             outputs: [
-            //                 { type: 'external', address: '3AnYTd2FGxJLNKL1AzxfW3FJMntp9D2KKX', amount: '100000000' }
+            //                 { type: 'payment', address: '3AnYTd2FGxJLNKL1AzxfW3FJMntp9D2KKX', amount: '100000000' }
             //             ]
             //         },
             //     },
@@ -1161,13 +1161,11 @@ const getComposeResponse = (resp?: any) => ({
             type: 'final',
             totalSpent: '2500000000',
             fee: '100',
-            transaction: {
-                inputs: [{ amount: '12500000000', prev_hash: UTXO.CC.txid, prev_index: 0 }],
-                outputs: [
-                    { address_n: [44, 0, 0, 1, 1], amount: '10000000000' },
-                    { address: 'A-external', amount: '2499999900' },
-                ],
-            },
+            inputs: [{ amount: '12500000000', prev_hash: UTXO.CC.txid, prev_index: 0 }],
+            outputs: [
+                { address_n: [44, 0, 0, 1, 1], amount: '10000000000' },
+                { address: 'A-external', amount: '2499999900' },
+            ],
         },
     ],
     ...resp,
@@ -1331,30 +1329,26 @@ export const signAndPush = [
                         type: 'final',
                         totalSpent: '2500000000',
                         fee: '200',
-                        transaction: {
-                            inputs: [],
-                            outputs: [],
-                        },
+                        inputs: [],
+                        outputs: [],
                     },
                     {
                         // custom fee level, used
                         type: 'final',
                         totalSpent: '2500000000', // 2200000000 are externals + fee
                         fee: '100',
-                        transaction: {
-                            inputs: [
-                                { amount: '0', prev_hash: 'should not be used', prev_index: 0 },
-                                { amount: '12500000000', prev_hash: UTXO.CC.txid, prev_index: 0 },
-                            ],
-                            outputs: [
-                                { address_n: [44, 0, 0, 1, 1], amount: '10000000000' },
-                                { address: 'A-external', amount: '2100000000' },
-                                { address: '1-unused', amount: '100000000' },
-                                { address: '2-used', amount: '100000000' },
-                                { address: '1-change', amount: '100000000' },
-                                { address: 'B-external', amount: '99999900' },
-                            ],
-                        },
+                        inputs: [
+                            { amount: '0', prev_hash: 'should not be used', prev_index: 0 },
+                            { amount: '12500000000', prev_hash: UTXO.CC.txid, prev_index: 0 },
+                        ],
+                        outputs: [
+                            { address_n: [44, 0, 0, 1, 1], amount: '10000000000' },
+                            { address: 'A-external', amount: '2100000000' },
+                            { address: '1-unused', amount: '100000000' },
+                            { address: '2-used', amount: '100000000' },
+                            { address: '1-change', amount: '100000000' },
+                            { address: 'B-external', amount: '99999900' },
+                        ],
                     },
                 ],
             }),
