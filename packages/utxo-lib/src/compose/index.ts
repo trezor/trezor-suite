@@ -1,25 +1,14 @@
-import * as request from './request';
-import * as result from './result';
-import * as transaction from './transaction';
+import { getMax } from './request';
+import { getResult, getErrorResult } from './result';
 import { convertFeeRate } from './composeUtils';
 import { coinselect } from './coinselect';
 import { ComposeRequest, ComposeInput, ComposeResult } from '../types';
 
-export function composeTx<Input extends ComposeInput>({
-    txType,
-    utxos,
-    outputs,
-    feeRate,
-    longTermFeeRate,
-    basePath,
-    network,
-    changeId,
-    changeAddress,
-    dustThreshold,
-    baseFee,
-    floorBaseFee,
-    skipPermutation,
-}: ComposeRequest<Input>): ComposeResult<Input> {
+export function composeTx<Input extends ComposeInput>(
+    request: ComposeRequest<Input>,
+): ComposeResult<Input> {
+    const { utxos, outputs, feeRate, longTermFeeRate } = request;
+
     if (outputs.length === 0) {
         return { type: 'error', error: 'MISSING-OUTPUTS' };
     }
@@ -43,51 +32,35 @@ export function composeTx<Input extends ComposeInput>({
 
     let countMax = { exists: false, id: 0 };
     try {
-        countMax = request.getMax(outputs);
+        countMax = getMax(outputs);
     } catch (error) {
-        return result.getErrorResult(error);
+        return getErrorResult(error);
     }
 
-    const splitOutputs = request.splitByCompleteness(outputs);
-
-    let csResult: ReturnType<typeof coinselect> = { success: false };
+    let result: ReturnType<typeof coinselect> = { success: false };
     try {
-        csResult = coinselect(
-            txType || 'p2pkh',
+        result = coinselect(
+            request.txType || 'p2pkh',
             utxos,
             outputs,
-            changeAddress,
+            request.changeAddress,
             feeRateNumber,
             longTermFeeRateNumber,
             countMax.exists,
             countMax.id,
-            dustThreshold,
-            network,
-            baseFee,
-            floorBaseFee,
-            skipPermutation,
+            request.dustThreshold,
+            request.network,
+            request.baseFee,
+            request.floorBaseFee,
+            request.skipPermutation,
         );
     } catch (error) {
-        return result.getErrorResult(error);
+        return getErrorResult(error);
     }
 
-    if (!csResult.success) {
+    if (!result.success) {
         return { type: 'error', error: 'NOT-ENOUGH-FUNDS' };
     }
 
-    if (splitOutputs.incomplete.length > 0) {
-        return result.getNonfinalResult(csResult);
-    }
-
-    const resTransaction = transaction.createTransaction(
-        utxos,
-        csResult.payload.inputs,
-        splitOutputs.complete,
-        csResult.payload.outputs,
-        basePath,
-        changeId,
-        skipPermutation,
-    );
-
-    return result.getFinalResult(csResult, resTransaction);
+    return getResult(request, result);
 }
