@@ -17,6 +17,7 @@ export function coinselect(
     txType: CoinSelectPaymentType,
     utxos: ComposeInput[],
     rOutputs: ComposeOutput[],
+    changeAddress: string,
     feeRate: number,
     longTermFeeRate: number | undefined,
     countMax: boolean,
@@ -30,8 +31,15 @@ export function coinselect(
     const inputs0 = convertInputs(utxos, txType);
     const outputs0 = convertOutputs(rOutputs, network, txType);
     const feePolicy = getFeePolicy(network);
+    // NOTE: use "send-max" to create CoinSelectOutput since we don't know the final amount yet
+    const [changeOutput] = convertOutputs(
+        [{ type: 'send-max', address: changeAddress }],
+        network,
+        txType,
+    );
     const options: CoinSelectOptions = {
         txType,
+        changeOutput,
         dustThreshold,
         longTermFeeRate,
         baseFee,

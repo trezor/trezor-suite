@@ -60,6 +60,7 @@ export function composeTx<Input extends ComposeInput>({
             txType || 'p2pkh',
             utxos,
             outputs,
+            changeAddress,
             feeRateNumber,
             longTermFeeRateNumber,
             countMax.exists,
