@@ -32,6 +32,8 @@ export type {
     ComposeChangeAddress,
     ComposeRequest,
     ComposeResult,
+    ComposeResultNonFinal,
+    ComposeResultError,
     ComposeResultFinal,
     ComposedTransaction,
     CoinSelectPaymentType,
