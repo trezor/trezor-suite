@@ -13,19 +13,19 @@ function convertOutput(
 ) {
     if ('path' in composeOutput) {
         return {
+            type: 'change' as const,
             path: composeOutput.path,
             amount: selectedOutput.value,
         };
     }
 
     if (composeOutput.type === 'opreturn') {
-        return {
-            dataHex: composeOutput.dataHex,
-        };
+        return composeOutput;
     }
 
     return {
-        address: composeOutput.address,
+        ...composeOutput,
+        type: 'payment' as const,
         amount: selectedOutput.value,
     };
 }
@@ -51,7 +51,7 @@ export function createTransaction<Input extends ComposeInput>(
     basePath: number[],
     changeId: number,
     skipPermutation?: boolean,
-): ComposedTransaction<Input> {
+): ComposedTransaction<Input, ComposeFinalOutput> {
     const convertedInputs = selectedInputs.map(input => allInputs[input.i]);
     const convertedOutputs = selectedOutputs.map((output, index) =>
         convertOutput(output, allOutputs[index] || { path: [...basePath, 1, changeId] }),

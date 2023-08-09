@@ -47,6 +47,15 @@ export interface ComposeOutputOpreturn {
     address?: typeof undefined;
 }
 
+// NOTE: this interface **is not** accepted by ComposeRequest['utxos']
+// it's optionally created by the process from parameters (basePath + changeId + changeAddress)
+// but it's returned in ComposedTransaction['outputs']
+export interface ComposeOutputChange {
+    type: 'change';
+    path: number[];
+    amount: string;
+}
+
 export type ComposeFinalOutput =
     | ComposeOutputPayment
     | ComposeOutputSendMax
@@ -56,10 +65,10 @@ export type ComposeNotFinalOutput = ComposeOutputPaymentNoAddress | ComposeOutpu
 
 export type ComposeOutput = ComposeFinalOutput | ComposeNotFinalOutput;
 
-export interface ComposeRequest<Input extends ComposeInput> {
+export interface ComposeRequest<Input extends ComposeInput, Output extends ComposeOutput> {
     txType?: CoinSelectPaymentType;
     utxos: Input[]; // all inputs
-    outputs: ComposeOutput[]; // all output "requests"
+    outputs: Output[]; // all outputs
     feeRate: string | number; // in sat/byte, virtual size
     longTermFeeRate?: string | number; // dust output feeRate multiplier in sat/byte, virtual size
     basePath: number[]; // for trezor inputs
@@ -73,30 +82,18 @@ export interface ComposeRequest<Input extends ComposeInput> {
     skipPermutation?: boolean; // Do not sort inputs/outputs and preserve the given order. Handy for RBF.
 }
 
-// types for building the transaction in trezor.js
-export type ComposedTxOutput =
-    | {
-          path: number[];
-          amount: string;
-          address?: typeof undefined;
-          dataHex?: typeof undefined;
-      }
-    | {
-          address: string;
-          amount: string;
-          path?: typeof undefined;
-          dataHex?: typeof undefined;
-      }
-    | {
-          dataHex: string;
-          path?: typeof undefined;
-          address?: typeof undefined;
-          amount?: typeof undefined;
-      };
+type ComposedTransactionOutputs<T> = T extends ComposeOutputSendMax
+    ? Omit<T, 'type'> & ComposeOutputPayment // NOTE: replace ComposeOutputSendMax (no amount) with ComposeOutputPayment (with amount)
+    : T extends ComposeFinalOutput
+    ? T
+    : never;
 
-export interface ComposedTransaction<Input extends ComposeInput> {
+export interface ComposedTransaction<Input extends ComposeInput, Output extends ComposeOutput> {
     inputs: Input[];
-    outputs: { sorted: ComposedTxOutput[]; permutation: number[] }; // compose/Permutation<X>
+    outputs: {
+        sorted: (ComposedTransactionOutputs<Output> | ComposeOutputChange)[];
+        permutation: number[];
+    };
 }
 
 // Result from `composeTx` module
@@ -133,17 +130,17 @@ export interface ComposeResultNonFinal {
     bytes: number;
 }
 
-export interface ComposeResultFinal<Input extends ComposeInput> {
+export interface ComposeResultFinal<Input extends ComposeInput, Output extends ComposeOutput> {
     type: 'final';
     max?: string;
     totalSpent: string; // all the outputs, no fee, no change
     fee: string;
     feePerByte: string;
     bytes: number;
-    transaction: ComposedTransaction<Input>;
+    transaction: ComposedTransaction<Input, Output>;
 }
 
-export type ComposeResult<Input extends ComposeInput> =
+export type ComposeResult<Input extends ComposeInput, Output extends ComposeOutput> =
     | ComposeResultError
     | ComposeResultNonFinal
-    | ComposeResultFinal<Input>;
+    | ComposeResultFinal<Input, Output>;
