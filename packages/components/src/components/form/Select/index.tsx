@@ -94,6 +94,7 @@ const selectStyle = (
                     : theme.TYPE_LIGHT_GREY,
                 [`.${reactSelectClassNamePrefix}__dropdown-indicator`]: {
                     color: theme.TYPE_LIGHT_GREY,
+                    transform: menuIsOpen ? 'rotate(180deg)' : 'none',
                 },
             },
         };
@@ -111,7 +112,7 @@ const selectStyle = (
     indicatorSeparator: () => ({
         display: 'none',
     }),
-    dropdownIndicator: (base, { isDisabled, isFocused }) => ({
+    dropdownIndicator: (base, { isDisabled }) => ({
         ...base,
         display: !withDropdownIndicator || isDisabled ? 'none' : 'flex',
         alignItems: 'center',
@@ -119,7 +120,6 @@ const selectStyle = (
         cursor: 'pointer',
         path: '',
         padding: isClean ? 0 : '10px 16px',
-        transform: isFocused ? 'rotate(180deg)' : 'none',
         transition: `transform 0.2s cubic-bezier(0.68, -0.02, 0.21, 1.1)`,
     }),
     menu: base => ({
