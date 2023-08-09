@@ -5,6 +5,7 @@ import { NumberInput } from 'src/components/suite';
 import { Select, CoinLogo } from '@trezor/components';
 import { Controller } from 'react-hook-form';
 import { useCoinmarketSellFormContext } from 'src/hooks/wallet/useCoinmarketSellForm';
+import { getEthereumTypeNetworkSymbols } from '@suite-common/wallet-config';
 import { getInputState } from '@suite-common/wallet-utils';
 import { MAX_LENGTH } from 'src/constants/suite/inputs';
 import {
@@ -84,6 +85,8 @@ const CryptoInput = () => {
         },
     };
 
+    const ethereumTypeNetworkSymbols = getEthereumTypeNetworkSymbols();
+
     return (
         <NumberInput
             control={control}
@@ -109,12 +112,7 @@ const CryptoInput = () => {
                                 setValue(CRYPTO_INPUT, '');
                                 setValue(FIAT_INPUT, '');
                                 const token = selected.value;
-                                if (
-                                    token === 'ETH' ||
-                                    token === 'TSEP' ||
-                                    token === 'TGOR' ||
-                                    token === 'ETC'
-                                ) {
+                                if (ethereumTypeNetworkSymbols.includes(token)) {
                                     setValue(CRYPTO_TOKEN, null);
                                     // set own account for non ERC20 transaction
                                     setValue('outputs.0.address', account.descriptor);
