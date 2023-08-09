@@ -192,11 +192,12 @@ export function finalize(
     options: CoinSelectOptions,
 ) {
     const bytesAccum = transactionBytes(inputs, outputs);
-    const blankOutputBytes = outputBytes({
+    const changeOutput = options.changeOutput || {
         script: { length: OUTPUT_SCRIPT_LENGTH[options.txType] },
-    });
+    };
+    const changeOutputBytes = outputBytes(changeOutput);
     const fee = getFee(feeRate, bytesAccum, options, outputs);
-    const feeAfterExtraOutput = getFee(feeRate, bytesAccum + blankOutputBytes, options, outputs);
+    const feeAfterExtraOutput = getFee(feeRate, bytesAccum + changeOutputBytes, options, outputs);
     const sumInputs = sumOrNaN(inputs);
     const sumOutputs = sumOrNaN(outputs);
     // if sum inputs/outputs is NaN
@@ -218,10 +219,8 @@ export function finalize(
     // is it worth a change output?
     if (remainderAfterExtraOutput.gte(new BN(dustAmount))) {
         finalOutputs.push({
+            ...changeOutput,
             value: remainderAfterExtraOutput.toString(),
-            script: {
-                length: OUTPUT_SCRIPT_LENGTH[options.txType],
-            },
         });
     }
 
