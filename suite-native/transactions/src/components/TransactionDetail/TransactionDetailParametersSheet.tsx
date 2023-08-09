@@ -32,6 +32,7 @@ const networkTypeToDisplayedParametersMap: Record<NetworkType, TransactionParame
     ethereum: ['ethereumSpecific', 'broadcast'],
     ripple: ['broadcast'],
     cardano: [],
+    solana: [], // TODO(vl): solana transactions
 };
 
 const getEnabledTitle = (enabled: boolean) => (enabled ? 'Enabled' : 'Disabled');
