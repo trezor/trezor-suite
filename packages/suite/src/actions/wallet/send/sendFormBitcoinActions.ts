@@ -177,7 +177,7 @@ export const composeTransaction =
                 if (typeof tx.max === 'string') {
                     tx.max = isSatoshis ? tx.max : formatNetworkAmount(tx.max, account.symbol);
                 }
-            } else if (tx.error === 'NOT-ENOUGH-FUNDS') {
+            } else if (['MISSING-UTXOS', 'NOT-ENOUGH-FUNDS'].includes(tx.error)) {
                 const getErrorMessage = () => {
                     const isLowAnonymity =
                         account.accountType === 'coinjoin' &&
@@ -199,7 +199,7 @@ export const composeTransaction =
                 dispatch(
                     notificationsActions.addToast({
                         type: 'sign-tx-error',
-                        error: tx.error,
+                        error: 'message' in tx ? tx.message : tx.error, // tx.error = 'COINSELECT' contains additional message
                     }),
                 );
             }
@@ -229,7 +229,6 @@ export const signTransaction =
 
         // transactionInfo needs some additional changes:
         const { account } = selectedAccount;
-        const { transaction } = transactionInfo;
 
         const signEnhancement: Partial<SignTransaction> = {};
 
@@ -259,7 +258,7 @@ export const signTransaction =
             // it's possible to add change-output if it not exists in original tx AND new utxo was added/used
             // it's possible to remove original change-output completely (give up all as a fee)
             // it's possible to decrease external output in favour of fee
-            signEnhancement.inputs = transaction.inputs.map((input, i) => {
+            signEnhancement.inputs = transactionInfo.inputs.map((input, i) => {
                 if (utxo[i]) {
                     return { ...input, orig_index: i, orig_hash: txid };
                 }
@@ -268,7 +267,11 @@ export const signTransaction =
             // NOTE: Rearranging of original outputs is not supported by the FW. Restoring original order.
             // edge-case: original tx have change-output on index 0 while new tx doesn't have change-output at all
             // or it's moved to the last position by @trezor/connect composeTransaction process.
-            signEnhancement.outputs = restoreOrigOutputsOrder(transaction.outputs, outputs, txid);
+            signEnhancement.outputs = restoreOrigOutputsOrder(
+                transactionInfo.outputs,
+                outputs,
+                txid,
+            );
         }
 
         if (
@@ -289,8 +292,8 @@ export const signTransaction =
                 state: device.state,
             },
             useEmptyPassphrase: device.useEmptyPassphrase,
-            inputs: transaction.inputs,
-            outputs: transaction.outputs,
+            inputs: transactionInfo.inputs,
+            outputs: transactionInfo.outputs,
             account: {
                 addresses: account.addresses!,
                 transactions: refTxs,

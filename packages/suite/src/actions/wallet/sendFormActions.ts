@@ -308,9 +308,9 @@ const pushTransaction =
                 let outputsPermutation: number[];
                 if (isCardanoTx(account, precomposedTx)) {
                     // cardano preserves order of outputs
-                    outputsPermutation = precomposedTx?.transaction.outputs.map((_o, i) => i);
+                    outputsPermutation = precomposedTx?.outputs.map((_o, i) => i);
                 } else {
-                    outputsPermutation = precomposedTx?.transaction.outputsPermutation;
+                    outputsPermutation = precomposedTx?.outputsPermutation;
                 }
 
                 precomposedForm?.outputs

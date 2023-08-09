@@ -88,7 +88,7 @@ export const DecreasedOutputs = () => {
                     <ArrowIcon icon="ARROW_RIGHT_LONG" />
                     <FormattedCryptoAmount
                         value={formatNetworkAmount(
-                            precomposedTx.transaction.outputs[setMaxOutputId].amount.toString(),
+                            precomposedTx.outputs[setMaxOutputId].amount.toString(),
                             account.symbol,
                         )}
                         symbol={account.symbol}

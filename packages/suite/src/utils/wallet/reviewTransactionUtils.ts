@@ -96,13 +96,13 @@ const constructOldFlow = ({
         if (typeof decreaseOutputId === 'number') {
             outputs.splice(1, 0, {
                 type: 'reduce-output',
-                label: precomposedTx.transaction.outputs[decreaseOutputId].address!,
+                label: precomposedTx.outputs[decreaseOutputId].address!,
                 value: precomposedTx.feeDifference,
-                value2: precomposedTx.transaction.outputs[decreaseOutputId].amount.toString(),
+                value2: precomposedTx.outputs[decreaseOutputId].amount.toString(),
             });
         }
     } else if (isCardano) {
-        precomposedTx.transaction.outputs.forEach(o => {
+        precomposedTx.outputs.forEach(o => {
             // iterate only through "external" outputs (change output has addressParameters field instead of address)
             if ('address' in o) {
                 const tokenBundle = getCardanoTokenBundle(account, o)?.[0]; // send form supports one token per output
@@ -126,7 +126,7 @@ const constructOldFlow = ({
             }
         });
     } else {
-        precomposedTx.transaction.outputs.forEach(o => {
+        precomposedTx.outputs.forEach(o => {
             if (typeof o.address === 'string') {
                 outputs.push({
                     type: 'regular_legacy',
@@ -199,13 +199,13 @@ const constructNewFlow = ({
         if (typeof decreaseOutputId === 'number') {
             outputs.splice(1, 0, {
                 type: 'reduce-output',
-                label: precomposedTx.transaction.outputs[decreaseOutputId].address!,
+                label: precomposedTx.outputs[decreaseOutputId].address!,
                 value: precomposedTx.feeDifference,
-                value2: precomposedTx.transaction.outputs[decreaseOutputId].amount.toString(),
+                value2: precomposedTx.outputs[decreaseOutputId].amount.toString(),
             });
         }
     } else if (isCardano) {
-        precomposedTx.transaction.outputs.forEach(o => {
+        precomposedTx.outputs.forEach(o => {
             // iterate only through "external" outputs (change output has addressParameters field instead of address)
             if ('address' in o) {
                 const tokenBundle = getCardanoTokenBundle(account, o)?.[0]; // send form supports one token per output
@@ -229,7 +229,7 @@ const constructNewFlow = ({
             }
         });
     } else {
-        precomposedTx.transaction.outputs.forEach(o => {
+        precomposedTx.outputs.forEach(o => {
             if (typeof o.address === 'string') {
                 if (precomposedTx.token) {
                     outputs.push({ type: 'contract', value: precomposedTx.token.contract });

@@ -114,7 +114,7 @@ const prettify = (json: Record<any, any>) => JSON.stringify(json, null, 2);
 
 export const TransactionReviewDetails = ({ tx, txHash }: TransactionReviewDetailsProps) => {
     const theme = useTheme();
-    if (tx.transaction.inputs.length === 0) return null; // BTC-only, TODO: eth/ripple
+    if (tx.inputs.length === 0) return null; // BTC-only, TODO: eth/ripple
 
     return (
         <TransactionDetailsWrapper>
@@ -138,7 +138,7 @@ export const TransactionReviewDetails = ({ tx, txHash }: TransactionReviewDetail
                             <Translation id="TR_INPUTS" />
                         </SectionName>
                         <StyledBox>
-                            <Pre>{prettify(tx.transaction.inputs)}</Pre>
+                            <Pre>{prettify(tx.inputs)}</Pre>
                         </StyledBox>
                     </Section>
                     <SectionDivider>
@@ -149,7 +149,7 @@ export const TransactionReviewDetails = ({ tx, txHash }: TransactionReviewDetail
                             <Translation id="TR_OUTPUTS" />
                         </SectionName>
                         <StyledBox>
-                            <Pre>{prettify(tx.transaction.outputs)}</Pre>
+                            <Pre>{prettify(tx.outputs)}</Pre>
                         </StyledBox>
                     </Section>
                     {txHash && (
