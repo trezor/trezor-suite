@@ -126,16 +126,14 @@ export const composeAndSign = [
         composedLevels: {
             normal: {
                 type: 'final',
-                transaction: {
-                    outputs: [
-                        {
-                            address: '1MCgrVZjXRJJJhi2Z6SR11GpRjCyvNjscY',
-                        },
-                        {
-                            address_n: [2147483692, 2147483648, 2147483648, 1, 0],
-                        },
-                    ],
-                },
+                outputs: [
+                    {
+                        address: '1MCgrVZjXRJJJhi2Z6SR11GpRjCyvNjscY',
+                    },
+                    {
+                        address_n: [2147483692, 2147483648, 2147483648, 1, 0],
+                    },
+                ],
             },
         },
         composeTransactionCalls: 1,
@@ -168,17 +166,15 @@ export const composeAndSign = [
         composedLevels: {
             normal: {
                 type: 'final',
-                transaction: {
-                    outputs: [
-                        {
-                            address: '1MCgrVZjXRJJJhi2Z6SR11GpRjCyvNjscY',
-                        },
-                        {
-                            // change-output is placed at the end
-                            address_n: [2147483692, 2147483648, 2147483648, 1, 0],
-                        },
-                    ],
-                },
+                outputs: [
+                    {
+                        address: '1MCgrVZjXRJJJhi2Z6SR11GpRjCyvNjscY',
+                    },
+                    {
+                        // change-output is placed at the end
+                        address_n: [2147483692, 2147483648, 2147483648, 1, 0],
+                    },
+                ],
             },
         },
         composeTransactionCalls: 1,
@@ -226,14 +222,12 @@ export const composeAndSign = [
         composedLevels: {
             normal: {
                 fee: '1000',
-                transaction: {
-                    outputs: [
-                        // change-output is gone
-                        {
-                            address: '1MCgrVZjXRJJJhi2Z6SR11GpRjCyvNjscY',
-                        },
-                    ],
-                },
+                outputs: [
+                    // change-output is gone
+                    {
+                        address: '1MCgrVZjXRJJJhi2Z6SR11GpRjCyvNjscY',
+                    },
+                ],
             },
         },
         composeTransactionCalls: 1,
@@ -280,15 +274,13 @@ export const composeAndSign = [
                 type: 'final',
                 fee: '600',
                 feePerByte: '3.13',
-                transaction: {
-                    outputs: [
-                        // change-output is gone
-                        {
-                            address: '1MCgrVZjXRJJJhi2Z6SR11GpRjCyvNjscY',
-                            amount: '30400',
-                        },
-                    ],
-                },
+                outputs: [
+                    // change-output is gone
+                    {
+                        address: '1MCgrVZjXRJJJhi2Z6SR11GpRjCyvNjscY',
+                        amount: '30400',
+                    },
+                ],
             },
         },
         composeTransactionCalls: 2, // 1. normal fee, 2. custom fee
@@ -349,20 +341,18 @@ export const composeAndSign = [
             normal: {
                 type: 'final',
                 fee: '3741',
-                transaction: {
-                    inputs: [{ prev_hash: DCBA }, { prev_hash: ABCD }],
-                    outputs: [
-                        {
-                            address: '1MCgrVZjXRJJJhi2Z6SR11GpRjCyvNjscY',
-                            amount: '31000',
-                        },
-                        // change-output is added, note that this is first unused address (not first on the list)
-                        {
-                            address_n: [2147483692, 2147483648, 2147483648, 1, 1],
-                            amount: '6259',
-                        },
-                    ],
-                },
+                inputs: [{ prev_hash: DCBA }, { prev_hash: ABCD }],
+                outputs: [
+                    {
+                        address: '1MCgrVZjXRJJJhi2Z6SR11GpRjCyvNjscY',
+                        amount: '31000',
+                    },
+                    // change-output is added, note that this is first unused address (not first on the list)
+                    {
+                        address_n: [2147483692, 2147483648, 2147483648, 1, 1],
+                        amount: '6259',
+                    },
+                ],
             },
         },
         composeTransactionCalls: 1,
@@ -426,15 +416,13 @@ export const composeAndSign = [
                 type: 'final',
                 fee: '1000',
                 feePerByte: '2.94',
-                transaction: {
-                    inputs: [{ prev_hash: DCBA }, { prev_hash: ABCD }],
-                    outputs: [
-                        {
-                            address: '1MCgrVZjXRJJJhi2Z6SR11GpRjCyvNjscY',
-                            amount: '31000',
-                        },
-                    ],
-                },
+                inputs: [{ prev_hash: DCBA }, { prev_hash: ABCD }],
+                outputs: [
+                    {
+                        address: '1MCgrVZjXRJJJhi2Z6SR11GpRjCyvNjscY',
+                        amount: '31000',
+                    },
+                ],
             },
         },
         composeTransactionCalls: 2, // 1. normal fee, 2. custom fee
@@ -501,16 +489,14 @@ export const composeAndSign = [
                 type: 'final',
                 fee: '1800', // new utxo + old change-output + old fee (100)
                 feePerByte: '5.29',
-                transaction: {
-                    inputs: [{ prev_hash: DCBA }, { prev_hash: ABCD }], // new utxo added
-                    outputs: [
-                        // change output was removed
-                        {
-                            address: '1MCgrVZjXRJJJhi2Z6SR11GpRjCyvNjscY',
-                            amount: '30200',
-                        },
-                    ],
-                },
+                inputs: [{ prev_hash: DCBA }, { prev_hash: ABCD }], // new utxo added
+                outputs: [
+                    // change output was removed
+                    {
+                        address: '1MCgrVZjXRJJJhi2Z6SR11GpRjCyvNjscY',
+                        amount: '30200',
+                    },
+                ],
             },
         },
         composeTransactionCalls: 2, // 1. normal fee, 2. custom fee
@@ -573,15 +559,13 @@ export const composeAndSign = [
             normal: {
                 type: 'final',
                 fee: '1921',
-                transaction: {
-                    inputs: [{ prev_hash: DCBA }],
-                    outputs: [
-                        {
-                            address: '1MCgrVZjXRJJJhi2Z6SR11GpRjCyvNjscY',
-                            amount: '29079',
-                        },
-                    ],
-                },
+                inputs: [{ prev_hash: DCBA }],
+                outputs: [
+                    {
+                        address: '1MCgrVZjXRJJJhi2Z6SR11GpRjCyvNjscY',
+                        amount: '29079',
+                    },
+                ],
             },
         },
         composeTransactionCalls: 3, // 1. normal fee, 2. custom fee, 3. send-max
@@ -637,15 +621,13 @@ export const composeAndSign = [
             normal: {
                 type: 'final',
                 fee: '769',
-                transaction: {
-                    inputs: [{ prev_hash: DCBA }],
-                    outputs: [
-                        {
-                            address: '1MCgrVZjXRJJJhi2Z6SR11GpRjCyvNjscY',
-                            amount: '30231',
-                        },
-                    ],
-                },
+                inputs: [{ prev_hash: DCBA }],
+                outputs: [
+                    {
+                        address: '1MCgrVZjXRJJJhi2Z6SR11GpRjCyvNjscY',
+                        amount: '30231',
+                    },
+                ],
             },
         },
         signedTx: {
@@ -683,14 +665,12 @@ export const composeAndSign = [
             normal: {
                 type: 'final',
                 fee: '769',
-                transaction: {
-                    outputs: [
-                        {
-                            address: '1MCgrVZjXRJJJhi2Z6SR11GpRjCyvNjscY',
-                            amount: '30231',
-                        },
-                    ],
-                },
+                outputs: [
+                    {
+                        address: '1MCgrVZjXRJJJhi2Z6SR11GpRjCyvNjscY',
+                        amount: '30231',
+                    },
+                ],
             },
         },
         composeTransactionCalls: 3, // 1. normal fee, 2. custom fee, 3 send-max
@@ -739,20 +719,18 @@ export const composeAndSign = [
             normal: {
                 type: 'final',
                 fee: '957',
-                transaction: {
-                    // outputs indexes are totally mixed up
-                    outputs: [
-                        {
-                            script_type: 'PAYTOOPRETURN',
-                        },
-                        {
-                            amount: '1000', // external
-                        },
-                        {
-                            amount: '29043', // change
-                        },
-                    ],
-                },
+                // outputs indexes are totally mixed up
+                outputs: [
+                    {
+                        script_type: 'PAYTOOPRETURN',
+                    },
+                    {
+                        amount: '1000', // external
+                    },
+                    {
+                        amount: '29043', // change
+                    },
+                ],
             },
         },
         composeTransactionCalls: 1,

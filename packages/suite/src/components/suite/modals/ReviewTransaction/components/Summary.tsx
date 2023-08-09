@@ -329,7 +329,7 @@ const Summary = ({
                         </ReviewRbfLeftDetailsLineRight>
                     </LeftDetailsRow>
                 )}
-                {tx.transaction.inputs.length !== 0 && (
+                {tx.inputs.length !== 0 && (
                     <LeftDetailsBottom>
                         <Separator />
                         <LeftDetailsRow>

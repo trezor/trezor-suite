@@ -109,8 +109,7 @@ export const useUtxoSelection = ({
 
     // inputs to be used in the transactions
     const composedInputs = useMemo(
-        () =>
-            composedLevel && 'transaction' in composedLevel ? composedLevel.transaction.inputs : [],
+        () => (composedLevel && 'inputs' in composedLevel ? composedLevel.inputs : []),
         [composedLevel],
     ) as PROTO.TxInputType[];
 

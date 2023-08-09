@@ -142,10 +142,10 @@ describe('sendForm utils', () => {
             { type: 'payment', amount: '1' },
         ];
         expect(getBitcoinComposeOutputs({ outputs }, 'btc')).toEqual([
-            { type: 'noaddress', amount: '100000000' },
+            { type: 'payment-noaddress', amount: '100000000' },
         ]);
         expect(getBitcoinComposeOutputs({ outputs }, 'btc', true)).toEqual([
-            { type: 'noaddress', amount: '1' },
+            { type: 'payment-noaddress', amount: '1' },
         ]);
 
         outputs = [
@@ -167,9 +167,9 @@ describe('sendForm utils', () => {
                 'btc',
             ),
         ).toEqual([
-            { type: 'external', amount: '100000000', address: 'A' },
+            { type: 'payment', amount: '100000000', address: 'A' },
             { type: 'send-max-noaddress' },
-            { type: 'noaddress', amount: '200000000' },
+            { type: 'payment-noaddress', amount: '200000000' },
             { type: 'opreturn', dataHex: 'deadbeef' },
         ]);
 
@@ -201,7 +201,7 @@ describe('sendForm utils', () => {
             { type: 'payment', amount: '1', address: 'B' },
         ];
         expect(getBitcoinComposeOutputs({ outputs }, 'btc')).toEqual([
-            { type: 'noaddress', amount: '100000000', address: 'B' },
+            { type: 'payment-noaddress', amount: '100000000', address: 'B' },
         ]);
 
         // edge case, final Output are changed to not-final
@@ -224,7 +224,7 @@ describe('sendForm utils', () => {
             { type: 'payment', amount: '1' },
         ];
         expect(getBitcoinComposeOutputs({ outputs }, 'btc')).toEqual([
-            { type: 'noaddress', amount: '100000000' },
+            { type: 'payment-noaddress', amount: '100000000' },
         ]);
     });
 
@@ -287,7 +287,7 @@ describe('sendForm utils', () => {
             ),
         ).toEqual({
             decimals: 18,
-            output: { type: 'noaddress', amount: '1000000000000000000' },
+            output: { type: 'payment-noaddress', amount: '1000000000000000000' },
             tokenInfo: undefined,
         });
 
@@ -299,7 +299,7 @@ describe('sendForm utils', () => {
             ),
         ).toEqual({
             decimals: 18,
-            output: { type: 'external', address: 'A', amount: '1000000000000000000' },
+            output: { type: 'payment', address: 'A', amount: '1000000000000000000' },
             tokenInfo: undefined,
         });
 
@@ -335,7 +335,7 @@ describe('sendForm utils', () => {
             ),
         ).toEqual({
             decimals: 2,
-            output: { type: 'external', address: 'A', amount: '100' },
+            output: { type: 'payment', address: 'A', amount: '100' },
             tokenInfo: EthAccount.tokens![0],
         });
 
@@ -347,7 +347,7 @@ describe('sendForm utils', () => {
             ),
         ).toEqual({
             decimals: 6,
-            output: { type: 'noaddress', amount: '1000000' },
+            output: { type: 'payment-noaddress', amount: '1000000' },
             tokenInfo: undefined,
         });
     });

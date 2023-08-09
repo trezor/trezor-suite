@@ -302,13 +302,13 @@ export const getBitcoinComposeOutputs = (
 
             if (address) {
                 result.push({
-                    type: 'external',
+                    type: 'payment',
                     address,
                     amount,
                 });
             } else {
                 result.push({
-                    type: 'noaddress',
+                    type: 'payment-noaddress',
                     amount,
                 });
             }
@@ -322,10 +322,11 @@ export const getBitcoinComposeOutputs = (
         (o, i) => setMaxOutputId !== i && o && o.address && !o.amount,
     );
     if (hasIncompleteOutput) {
-        const finalOutput = result.find(o => o.type === 'send-max' || o.type === 'external');
+        const finalOutput = result.find(o => o.type === 'send-max' || o.type === 'payment');
         if (finalOutput) {
-            // replace to noaddress
-            finalOutput.type = finalOutput.type === 'external' ? 'noaddress' : 'send-max-noaddress';
+            // replace to *-noaddress
+            finalOutput.type =
+                finalOutput.type === 'payment' ? 'payment-noaddress' : 'send-max-noaddress';
         }
     }
 
@@ -365,13 +366,13 @@ export const getExternalComposeOutput = (
         }
     } else if (address) {
         output = {
-            type: 'external',
+            type: 'payment',
             address,
             amount: amountInSatoshi,
         };
     } else {
         output = {
-            type: 'noaddress',
+            type: 'payment-noaddress',
             amount: amountInSatoshi,
         };
     }

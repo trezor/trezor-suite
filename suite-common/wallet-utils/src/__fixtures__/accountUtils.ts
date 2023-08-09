@@ -247,13 +247,11 @@ export const getUtxoFromSignedTransaction = [
             },
             tx: {
                 type: 'final',
-                transaction: {
-                    inputs: [{ prev_hash: '0000', prev_index: 1 }],
-                    outputs: [
-                        { address: 'external', amount: '2' },
-                        { address_n: [0, 0, 0, 1, 1], amount: '1' },
-                    ],
-                },
+                inputs: [{ prev_hash: '0000', prev_index: 1 }],
+                outputs: [
+                    { address: 'external', amount: '2' },
+                    { address_n: [0, 0, 0, 1, 1], amount: '1' },
+                ],
             },
             txid: 'ABCD',
         },
@@ -287,19 +285,17 @@ export const getUtxoFromSignedTransaction = [
             },
             tx: {
                 type: 'final',
-                transaction: {
-                    inputs: [{ prev_hash: '0000', prev_index: 1 }],
-                    outputs: [
-                        { address: 'external', amount: '0.1' },
-                        { address: 'B', amount: '2' },
-                        { address: 'external', amount: '0.1' },
-                        { address: 'D', amount: '3' },
-                        { address: 'external', amount: '0.1' },
-                        { address: 'A-change', amount: '4' },
-                        { address: 'external', amount: '0.1' },
-                        { address_n: [0, 0, 0, 1, 1], amount: '5' },
-                    ],
-                },
+                inputs: [{ prev_hash: '0000', prev_index: 1 }],
+                outputs: [
+                    { address: 'external', amount: '0.1' },
+                    { address: 'B', amount: '2' },
+                    { address: 'external', amount: '0.1' },
+                    { address: 'D', amount: '3' },
+                    { address: 'external', amount: '0.1' },
+                    { address: 'A-change', amount: '4' },
+                    { address: 'external', amount: '0.1' },
+                    { address_n: [0, 0, 0, 1, 1], amount: '5' },
+                ],
             },
             txid: 'ABCD',
         },
@@ -330,13 +326,11 @@ export const getUtxoFromSignedTransaction = [
             },
             tx: {
                 type: 'final',
-                transaction: {
-                    inputs: [{ prev_hash: '9876', prev_index: 2 }],
-                    outputs: [
-                        { address: 'external', amount: '2' },
-                        { address_n: [0, 0, 0, 1, 1], amount: '4' },
-                    ],
-                },
+                inputs: [{ prev_hash: '9876', prev_index: 2 }],
+                outputs: [
+                    { address: 'external', amount: '2' },
+                    { address_n: [0, 0, 0, 1, 1], amount: '4' },
+                ],
             },
             txid: 'DBCA',
             prevTxid: 'ABCD',
@@ -369,15 +363,13 @@ export const getUtxoFromSignedTransaction = [
             },
             tx: {
                 type: 'final',
-                transaction: {
-                    inputs: [{ prev_hash: '9876', prev_index: 2 }],
-                    outputs: [
-                        { address: 'external', amount: '2' },
-                        { address: 'B', amount: '5' },
-                        { address: 'A', amount: '5' },
-                        { address_n: [0, 0, 0, 1, 1], amount: '4' },
-                    ],
-                },
+                inputs: [{ prev_hash: '9876', prev_index: 2 }],
+                outputs: [
+                    { address: 'external', amount: '2' },
+                    { address: 'B', amount: '5' },
+                    { address: 'A', amount: '5' },
+                    { address_n: [0, 0, 0, 1, 1], amount: '4' },
+                ],
             },
             txid: 'DBCA',
             prevTxid: 'ABCD',
@@ -408,15 +400,13 @@ export const getUtxoFromSignedTransaction = [
             },
             tx: {
                 type: 'final',
-                transaction: {
-                    inputs: [{ prev_hash: '9876', prev_index: 2 }],
-                    outputs: [
-                        { address: 'external', amount: '2' },
-                        { address: 'B', amount: '5' },
-                        { address: 'A', amount: '5' },
-                        { address_n: [0, 0, 0, 1, 1], amount: '4' },
-                    ],
-                },
+                inputs: [{ prev_hash: '9876', prev_index: 2 }],
+                outputs: [
+                    { address: 'external', amount: '2' },
+                    { address: 'B', amount: '5' },
+                    { address: 'A', amount: '5' },
+                    { address_n: [0, 0, 0, 1, 1], amount: '4' },
+                ],
             },
             txid: 'DBCA',
             prevTxid: 'ABCD',
@@ -429,13 +419,11 @@ export const getUtxoFromSignedTransaction = [
             account: {},
             tx: {
                 type: 'final',
-                transaction: {
-                    inputs: [{ prev_hash: '0000', prev_index: 1 }],
-                    outputs: [
-                        { address: 'external', amount: '2' },
-                        { address_n: [0, 0, 0, 1, 1], amount: '1' },
-                    ],
-                },
+                inputs: [{ prev_hash: '0000', prev_index: 1 }],
+                outputs: [
+                    { address: 'external', amount: '2' },
+                    { address_n: [0, 0, 0, 1, 1], amount: '1' },
+                ],
             },
             txid: 'ABCD',
         },

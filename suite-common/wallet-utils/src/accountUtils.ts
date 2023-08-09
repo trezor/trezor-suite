@@ -760,8 +760,8 @@ export const getUtxoFromSignedTransaction = ({
         // not sure how to do this in more elegant way
         inputs:
             | (
-                  | PrecomposedTransactionFinalCardano['transaction']['inputs'][number]
-                  | PrecomposedTransactionFinal['transaction']['inputs'][number]
+                  | PrecomposedTransactionFinalCardano['inputs'][number]
+                  | PrecomposedTransactionFinal['inputs'][number]
               )[],
     ) =>
         account.utxo?.filter(
@@ -770,7 +770,7 @@ export const getUtxoFromSignedTransaction = ({
                 u.txid !== prevTxid,
         ) || [];
 
-    const utxo = findUtxo(tx.transaction.inputs);
+    const utxo = findUtxo(tx.inputs);
 
     // join all account addresses
     const addresses = account.addresses
@@ -778,7 +778,7 @@ export const getUtxoFromSignedTransaction = ({
         : [];
 
     // append utxo created by this transaction
-    tx.transaction.outputs.forEach((output, vout) => {
+    tx.outputs.forEach((output, vout) => {
         let addr: AccountAddress | undefined;
         if (!receivingAccount && 'address_n' in output && output.address_n) {
             // find change address
@@ -851,7 +851,7 @@ export const getPendingAccount = ({
 
         const addresses = getAccountAddresses(account);
 
-        tx.transaction.outputs.forEach(output => {
+        tx.outputs.forEach(output => {
             if ('address' in output) {
                 // find self address
                 if (addresses.find(a => a.address === output.address)) {
