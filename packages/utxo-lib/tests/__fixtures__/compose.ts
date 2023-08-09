@@ -444,7 +444,7 @@ export default [
         request: {
             txType: 'p2sh',
             basePath: [49, 0, 0],
-            changeAddress: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT',
+            changeAddress: '3LRW7jeCvQCRdPF8S3yUCfRAx4eqXFmdcr',
             changeId: 0,
             dustThreshold: 546,
             feeRate: '10',
@@ -632,7 +632,7 @@ export default [
         request: {
             txType: 'p2sh',
             basePath: [44, 0, 1],
-            changeAddress: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT',
+            changeAddress: '3LRW7jeCvQCRdPF8S3yUCfRAx4eqXFmdcr',
             changeId: 0,
             dustThreshold: 546,
             feeRate: '10',
@@ -684,7 +684,7 @@ export default [
         request: {
             txType: 'p2sh',
             basePath: [49, 0, 1],
-            changeAddress: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT',
+            changeAddress: '3LRW7jeCvQCRdPF8S3yUCfRAx4eqXFmdcr',
             changeId: 0,
             dustThreshold: 54600,
             feeRate: '10',

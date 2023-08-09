@@ -2,6 +2,7 @@ export type CoinSelectPaymentType = 'p2pkh' | 'p2sh' | 'p2tr' | 'p2wpkh' | 'p2ws
 
 export interface CoinSelectOptions {
     txType: CoinSelectPaymentType;
+    changeOutput?: CoinSelectOutput;
     dustThreshold?: number;
     longTermFeeRate?: number;
     own?: number;
