@@ -1,47 +1,24 @@
+import type {
+    AccountAddresses,
+    Utxo as AccountUtxo,
+    Address as AccountAddress,
+} from '@trezor/blockchain-link';
+import type {
+    ComposeInput as ComposeInputBase,
+    ComposeOutput as ComposeOutputBase,
+    ComposeResultError as ComposeResultErrorBase,
+    ComposeResultFinal as ComposeResultFinalBase,
+    ComposeResultNonFinal as ComposeResultNonFinalBase,
+} from '@trezor/utxo-lib';
 import type { PROTO } from '../../constants';
-import type { AccountAddresses, Utxo as AccountUtxo } from '@trezor/blockchain-link';
 import type { Params, Response } from '../params';
 
-// TODO: get types from @trezor/utxo-lib
-export interface RegularOutput {
-    type?: 'external';
-    address: string;
-    amount: string;
-    script_type?: 'PAYTOADDRESS';
-}
+// for convenience ComposeOutput `type: "payment"` field is not required by @trezor/connect api
+export type ComposeOutputPayment = Omit<Extract<ComposeOutputBase, { type: 'payment' }>, 'type'> & {
+    type?: 'payment';
+};
 
-export interface InternalOutput {
-    type?: 'internal';
-    address_n: number[];
-    amount: string;
-    script_type?: string;
-}
-
-export interface SendMaxOutput {
-    type: 'send-max';
-    address: string;
-}
-
-export interface OpReturnOutput {
-    type: 'opreturn';
-    dataHex: string;
-}
-export interface NoAddressOutput {
-    type: 'noaddress';
-    amount: string;
-}
-
-export interface NoAddressSendMaxOutput {
-    type: 'send-max-noaddress';
-}
-
-export type ComposeOutput =
-    | RegularOutput
-    | InternalOutput
-    | SendMaxOutput
-    | OpReturnOutput
-    | NoAddressOutput
-    | NoAddressSendMaxOutput;
+export type ComposeOutput = Exclude<ComposeOutputBase, { type: 'payment' }> | ComposeOutputPayment;
 
 export interface ComposeParams {
     outputs: ComposeOutput[];
@@ -61,13 +38,16 @@ export type SignedTransaction = {
     txid?: string;
 };
 
+// @trezor/utxo-lib `composeTx` ComposeInput required fields intersects AccountUtxo
+export type ComposeUtxo = AccountUtxo & Partial<ComposeInputBase>;
+
 export interface PrecomposeParams {
     outputs: ComposeOutput[];
     coin: string;
     account: {
         path: string;
         addresses: AccountAddresses;
-        utxo: (AccountUtxo & { required?: boolean })[];
+        utxo: ComposeUtxo[];
     };
     feeLevels: { feePerUnit: string }[];
     push?: undefined;
@@ -77,32 +57,42 @@ export interface PrecomposeParams {
     skipPermutation?: boolean;
 }
 
-export type PrecomposedTransaction =
+// @trezor/utxo-lib `composeTx` transaction.input (ComposeInput) response intersects AccountUtxo
+export type ComposedInputs = AccountUtxo & ComposeInputBase;
+
+// @trezor/connect api returns additional errors
+export type ComposeResultError =
+    | ComposeResultErrorBase
     | {
           type: 'error';
-          error: string;
-      }
-    | {
-          type: 'nonfinal';
-          max?: string;
-          totalSpent: string; // all the outputs, no fee, no change
-          fee: string;
-          feePerByte: string;
-          bytes: number;
-      }
-    | {
-          type: 'final';
-          max?: string;
-          totalSpent: string; // all the outputs, no fee, no change
-          fee: string;
-          feePerByte: string;
-          bytes: number;
-          transaction: {
-              inputs: PROTO.TxInputType[];
-              outputs: PROTO.TxOutputType[];
-              outputsPermutation: number[];
-          };
+          error: 'ADDRESSES-NOT-SET';
       };
+
+export type ComposeResultFinal = ComposeResultFinalBase<
+    ComposedInputs,
+    ComposeOutputBase,
+    AccountAddress
+>;
+
+export type ComposeResultNonFinal = ComposeResultNonFinalBase<ComposedInputs>;
+
+export type ComposeResult = ComposeResultError | ComposeResultNonFinal | ComposeResultFinal;
+
+export type PrecomposeResultError = ComposeResultError;
+
+export type PrecomposeResultNonFinal = Omit<ComposeResultNonFinal, 'inputs'> & {
+    inputs: PROTO.TxInputType[];
+};
+
+export type PrecomposeResultFinal = Omit<ComposeResultFinal, 'inputs' | 'outputs'> & {
+    inputs: PROTO.TxInputType[];
+    outputs: PROTO.TxOutputType[];
+};
+
+export type PrecomposedResult =
+    | PrecomposeResultError
+    | PrecomposeResultNonFinal
+    | PrecomposeResultFinal;
 
 export declare function composeTransaction(
     params: Params<ComposeParams>,
@@ -110,4 +100,4 @@ export declare function composeTransaction(
 
 export declare function composeTransaction(
     params: Params<PrecomposeParams>,
-): Response<PrecomposedTransaction[]>;
+): Response<PrecomposedResult[]>;
