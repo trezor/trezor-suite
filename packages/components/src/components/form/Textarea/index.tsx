@@ -1,4 +1,4 @@
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import React, { useState } from 'react';
 
 import { FONT_SIZE } from '../../../config/variables';
@@ -12,7 +12,6 @@ import {
     getInputStateTextColor,
     LabelAddon,
 } from '../InputStyles';
-import { darken } from 'polished';
 
 const Wrapper = styled.div`
     width: 100%;
@@ -32,7 +31,7 @@ const StyledTextarea = styled.textarea<Pick<TextareaProps, 'inputState' | 'width
 `;
 
 const BottomText = styled.span<Pick<TextareaProps, 'inputState'>>`
-    padding: 10px 10px 0 10px;
+    padding: 6px 10px 0 10px;
     min-height: 27px;
     font-size: ${FONT_SIZE.TINY};
     color: ${({ inputState, theme }) => getInputStateTextColor(inputState, theme)};
