@@ -386,17 +386,17 @@ describe('sendForm utils', () => {
         });
         const lowAnonymityDustUtxo = getUtxo({
             address: 'one',
-            amount: '1',
+            amount: '100',
             vout: 2,
         });
         const lowAnonymityUtxo = getUtxo({
             address: 'one',
-            amount: '2',
+            amount: '1000',
             vout: 3,
         });
         const spendableUtxo = getUtxo({
             address: 'two',
-            amount: '2',
+            amount: '546',
             vout: 4,
         });
 
@@ -404,7 +404,7 @@ describe('sendForm utils', () => {
             utxos: [dustUtxo, lowAnonymityDustUtxo, lowAnonymityUtxo, spendableUtxo],
             anonymitySet: { one: 1, two: 2 },
             targetAnonymity: 2,
-            dustLimit: 1,
+            dustLimit: 546,
         });
 
         expect(excludedUtxos[getUtxoOutpoint(dustUtxo)]).toBe('dust');

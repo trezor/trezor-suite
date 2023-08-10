@@ -464,7 +464,7 @@ export const getExcludedUtxos = ({
     utxos?.forEach(utxo => {
         const outpoint = getUtxoOutpoint(utxo);
         const anonymity = (anonymitySet && anonymitySet[utxo.address]) || 1;
-        if (new BigNumber(utxo.amount).lte(Number(dustLimit))) {
+        if (new BigNumber(utxo.amount).lt(Number(dustLimit))) {
             // is lower than dust limit
             excludedUtxos[outpoint] = 'dust';
         } else if (anonymity < (targetAnonymity || 1)) {

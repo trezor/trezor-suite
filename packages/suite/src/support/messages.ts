@@ -5443,7 +5443,7 @@ export default defineMessages({
         id: 'AMOUNT_IS_TOO_LOW',
     },
     AMOUNT_IS_BELOW_DUST: {
-        defaultMessage: 'Amount must be greater than the dust limit ({dust})',
+        defaultMessage: 'Amount must be greater than or equal the dust limit ({dust})',
         id: 'AMOUNT_IS_BELOW_DUST',
     },
     AMOUNT_IS_MORE_THAN_RESERVE: {
