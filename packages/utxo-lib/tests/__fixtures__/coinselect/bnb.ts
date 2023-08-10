@@ -19,7 +19,6 @@ export default [
             fee: 2001,
         },
         dustThreshold: 546,
-        factor: 0.5,
     },
     {
         description: '1 output, no change, value > 2^32',
@@ -41,7 +40,6 @@ export default [
             fee: 2001,
         },
         dustThreshold: 546,
-        factor: 0.5,
     },
     {
         description: '1 output, no change, value > Number.MAX_SAFE_INTEGER (DOGE)',
@@ -63,7 +61,81 @@ export default [
             fee: 2000,
         },
         dustThreshold: 546,
-        factor: 0.5,
+    },
+    {
+        description: '3 inputs, sub-optimal solution with higher fee',
+        feeRate: 3,
+        inputs: ['100000', '1200', '1000'], // it would be better to pick "1000" (less fee)
+        outputs: ['99980'],
+        expected: {
+            inputs: [
+                {
+                    i: 0,
+                    value: '100000',
+                },
+                {
+                    i: 1,
+                    value: '1200',
+                },
+            ],
+            outputs: [
+                {
+                    value: '99980',
+                },
+            ],
+            fee: 1220,
+        },
+        dustThreshold: 546,
+    },
+    {
+        description: '3 inputs, optimal solution',
+        feeRate: 3,
+        inputs: ['100000', '1000', '13000'],
+        outputs: ['99980'],
+        expected: {
+            inputs: [
+                {
+                    i: 0,
+                    value: '100000',
+                },
+                {
+                    i: 1,
+                    value: '1000',
+                },
+            ],
+            outputs: [
+                {
+                    value: '99980',
+                },
+            ],
+            fee: 1020,
+        },
+        dustThreshold: 546,
+    },
+    {
+        description: '3 inputs, high feeRate, optimal solution',
+        feeRate: 100,
+        inputs: ['100000', '50000', '45000'],
+        outputs: ['110000'],
+        expected: {
+            inputs: [
+                {
+                    i: 0,
+                    value: '100000',
+                },
+                {
+                    i: 2,
+                    value: '45000',
+                },
+            ],
+            outputs: [
+                {
+                    value: '110000',
+                },
+            ],
+            fee: 35000,
+        },
+        dustThreshold: 546,
     },
     {
         description: '1 output, change rejected, value > 2^32',
@@ -72,7 +144,6 @@ export default [
         outputs: ['1'],
         expected: { fee: 0 },
         dustThreshold: 546,
-        factor: 0.5,
     },
     {
         description: '1 output, only possibility with change, rejects',
@@ -81,7 +152,6 @@ export default [
         outputs: ['100000'],
         expected: { fee: 0 },
         dustThreshold: 546,
-        factor: 0.5,
     },
     {
         description: '1 output, sub-optimal inputs (if re-ordered), direct possible',
@@ -103,7 +173,6 @@ export default [
             fee: 2300,
         },
         dustThreshold: 546,
-        factor: 0.5,
     },
     {
         description:
@@ -113,7 +182,6 @@ export default [
         outputs: ['6800'],
         expected: { fee: 0 },
         dustThreshold: 546,
-        factor: 0.5,
     },
     {
         description: '1 output, passes, skipped detrimental input',
@@ -152,7 +220,6 @@ export default [
             ],
         },
         dustThreshold: 546,
-        factor: 0.5,
     },
     {
         description: '1 output, fails, skips (and finishes on) detrimental input',
@@ -168,7 +235,6 @@ export default [
         outputs: ['38000'],
         expected: { fee: 0 },
         dustThreshold: 546,
-        factor: 0.5,
     },
     {
         description: '1 output, passes, good match despite bad ordering',
@@ -207,7 +273,6 @@ export default [
             fee: 2000,
         },
         dustThreshold: 546,
-        factor: 0.5,
     },
     {
         description: '1 output, optimal inputs, no change',
@@ -229,7 +294,6 @@ export default [
             fee: 2300,
         },
         dustThreshold: 546,
-        factor: 0.5,
     },
     {
         description: '1 output, no fee, no match',
@@ -238,7 +302,6 @@ export default [
         outputs: ['28000'],
         expected: { fee: 0 },
         dustThreshold: 546,
-        factor: 0.5,
     },
     {
         description: '1 output, 2 inputs (related), no change',
@@ -270,7 +333,6 @@ export default [
             fee: 2000,
         },
         dustThreshold: 546,
-        factor: 0.5,
     },
     {
         description: 'many outputs, no change',
@@ -309,7 +371,6 @@ export default [
             fee: 6221,
         },
         dustThreshold: 546,
-        factor: 0.5,
     },
     {
         description: 'many outputs, no match',
@@ -318,7 +379,6 @@ export default [
         outputs: ['35000', '5000', '5000', '1000'],
         expected: { fee: 0 },
         dustThreshold: 546,
-        factor: 0.5,
     },
     {
         description: 'many outputs, no match',
@@ -327,7 +387,6 @@ export default [
         outputs: ['28000', '1000'],
         expected: { fee: 0 },
         dustThreshold: 546,
-        factor: 0.5,
     },
     {
         description: 'no outputs, no change',
@@ -345,7 +404,6 @@ export default [
             fee: 1900,
         },
         dustThreshold: 546,
-        factor: 0.5,
     },
     {
         description: 'no outputs, no match',
@@ -354,7 +412,6 @@ export default [
         outputs: [],
         expected: { fee: 0 },
         dustThreshold: 546,
-        factor: 0.5,
     },
     {
         description: 'not enough funds, empty result',
@@ -363,7 +420,6 @@ export default [
         outputs: ['40000'],
         expected: { fee: 0 },
         dustThreshold: 546,
-        factor: 0.5,
     },
     {
         description: 'not enough funds (w/ fee), empty result',
@@ -372,7 +428,6 @@ export default [
         outputs: ['40000'],
         expected: { fee: 0 },
         dustThreshold: 546,
-        factor: 0.5,
     },
     {
         description: 'not enough funds (no inputs), empty result',
@@ -381,7 +436,6 @@ export default [
         outputs: [],
         expected: { fee: 0 },
         dustThreshold: 546,
-        factor: 0.5,
     },
     {
         description: 'not enough funds (no inputs), empty result (>1KiB)',
@@ -420,7 +474,6 @@ export default [
         ],
         expected: { fee: 0 },
         dustThreshold: 546,
-        factor: 0.5,
     },
     {
         description: '2 outputs, some with missing value (NaN)',
@@ -429,7 +482,6 @@ export default [
         outputs: ['1000', {}],
         expected: { fee: 0 },
         dustThreshold: 546,
-        factor: 0.5,
     },
     {
         description: 'input with float values (NaN)',
@@ -438,7 +490,6 @@ export default [
         outputs: ['10000', '1200'],
         expected: { fee: 0 },
         dustThreshold: 546,
-        factor: 0.5,
     },
     {
         description: '2 outputs, with float values (NaN)',
@@ -447,7 +498,6 @@ export default [
         outputs: ['10000.25', '1200.5'],
         expected: { fee: 0 },
         dustThreshold: 546,
-        factor: 0.5,
     },
     {
         description: '2 outputs, string values (NaN)',
@@ -463,7 +513,6 @@ export default [
         ],
         expected: { fee: 0 },
         dustThreshold: 546,
-        factor: 0.5,
     },
     {
         description: 'exhausting BnB',
@@ -683,6 +732,5 @@ export default [
         outputs: ['1000000'],
         expected: { fee: 0 },
         dustThreshold: 546,
-        factor: 0.5,
     },
 ];
