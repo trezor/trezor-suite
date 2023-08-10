@@ -197,7 +197,7 @@ export const Amount = ({ output, outputId }: AmountProps) => {
                 let dust =
                     rawDust && (shouldSendInSats ? rawDust : formatNetworkAmount(rawDust, symbol));
 
-                if (dust && amountBig.lte(dust)) {
+                if (dust && amountBig.lt(dust)) {
                     if (shouldSendInSats) {
                         dust = amountToSatoshi(dust, decimals);
                     }
