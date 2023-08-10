@@ -180,6 +180,7 @@ export class TransactionComposer {
             outputs: this.outputs,
             height: this.blockHeight,
             feeRate,
+            longTermFeeRate: this.feeLevels.longTermFeeRate,
             skipPermutation: this.skipPermutation,
             basePath: account.address_n,
             network: coinInfo.network,
