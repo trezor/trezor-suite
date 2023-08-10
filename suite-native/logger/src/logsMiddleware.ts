@@ -49,11 +49,11 @@ export const logsMiddleware = createMiddleware((action, { next, dispatch }) => {
     }
 
     if (isAnyOfAccountsActions(action)) {
-        dispatch(addLog({ type: action.type }));
+        dispatch(addLog({ type: action.type, payload: action.payload }));
     }
 
     if (isAnyOfBlockchainActions(action)) {
-        dispatch(addLog({ type: action.type }));
+        dispatch(addLog({ type: action.type, payload: action.payload }));
     }
 
     return next(action);

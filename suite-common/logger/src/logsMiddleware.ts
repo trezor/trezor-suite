@@ -11,7 +11,7 @@ export const logsMiddleware = createMiddleware((action, { next, dispatch }) => {
         dispatch(addLog({ type: action.type, payload: { ...action.payload } }));
     }
 
-    if (accountsActions.updateSelectedAccount.match(action)) {
+    if (isAnyOf(accountsActions.updateSelectedAccount)(action)) {
         if (action.payload.account) {
             dispatch(
                 addLog({
