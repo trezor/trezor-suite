@@ -17,7 +17,7 @@ export default [
                     own: true,
                     transactionHash: 'b4dc0ffeee',
                     tsize: 0,
-                    value: '102300',
+                    value: 'replace-me',
                     vsize: 0,
                 },
             ],

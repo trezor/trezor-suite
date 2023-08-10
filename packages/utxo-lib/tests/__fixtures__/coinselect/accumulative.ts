@@ -187,7 +187,7 @@ export default [
     {
         description:
             '1 output, sub-optimal inputs (if re-ordered), direct possible, but slightly higher fee',
-        feeRate: 10,
+        feeRate: 12,
         inputs: ['10000', '40000', '40000'],
         outputs: ['6800'],
         expected: {
@@ -436,7 +436,7 @@ export default [
     },
     {
         description: '1 output, script provided, no change',
-        feeRate: 10,
+        feeRate: 12,
         inputs: ['100000'],
         outputs: [
             {
@@ -866,7 +866,7 @@ export default [
         expected: {
             fee: 100000000,
         },
-        dustThreshold: 99999999,
+        dustThreshold: 100000000,
     },
     {
         description: 'DOGE: 2 inputs, not enough to cover fee (tx size)',
@@ -887,7 +887,7 @@ export default [
         expected: {
             fee: 200000000,
         },
-        dustThreshold: 99999999,
+        dustThreshold: 100000000,
     },
     {
         description: 'DOGE: 1 input, not enough to cover fee (output-dust)',
@@ -900,7 +900,7 @@ export default [
         expected: {
             fee: 200000000,
         },
-        dustThreshold: 99999999,
+        dustThreshold: 100000000,
     },
     {
         description: 'DOGE: 1 input, 1 output, expect change',
@@ -927,7 +927,7 @@ export default [
             ],
             fee: 100000000,
         },
-        dustThreshold: 99999999,
+        dustThreshold: 100000000,
     },
     {
         description: 'DOGE: 2 outputs, no change (spend dust)',
@@ -954,7 +954,7 @@ export default [
             ],
             fee: 299999995,
         },
-        dustThreshold: 99999999,
+        dustThreshold: 100000000,
     },
     {
         description: 'DOGE: 1 output, no change (tx size)',
@@ -988,7 +988,7 @@ export default [
             ],
             fee: 200000000,
         },
-        dustThreshold: 99999999,
+        dustThreshold: 100000000,
     },
     {
         description: 'DOGE: 1 outputs, no change (increased fee rate)',
@@ -1023,6 +1023,379 @@ export default [
             ],
             fee: 200000000,
         },
-        dustThreshold: 99999999,
+        dustThreshold: 100000000,
+    },
+    {
+        description:
+            'p2pkh with high feeRate and explicit longTermFeeRate (change > dustThreshold 546)',
+        txType: 'p2pkh',
+        feeRate: 40,
+        longTermFeeRate: 4,
+        dustThreshold: 546,
+        inputs: ['100000'],
+        outputs: [{ value: '90000' }],
+        expected: {
+            inputs: [
+                {
+                    i: 0,
+                    value: '100000',
+                    script: { length: 108 },
+                },
+            ],
+            outputs: [
+                {
+                    script: { length: 25 },
+                    value: '90000',
+                },
+                {
+                    script: { length: 25 },
+                    value: '960',
+                },
+            ],
+            fee: 9040,
+        },
+    },
+    {
+        description:
+            'p2pkh with high feeRate, no explicit dustThreshold, dust amount calculated from inputSize (change > 148 * 3)',
+        txType: 'p2pkh',
+        feeRate: 42,
+        inputs: ['100000'],
+        outputs: [{ value: '90000' }],
+        expected: {
+            inputs: [
+                {
+                    i: 0,
+                    value: '100000',
+                    script: { length: 108 },
+                },
+            ],
+            outputs: [
+                {
+                    script: { length: 25 },
+                    value: '90000',
+                },
+                {
+                    script: { length: 25 },
+                    value: '508',
+                },
+            ],
+            fee: 9492,
+        },
+    },
+    {
+        description:
+            'p2pkh with high feeRate, no explicit dustThreshold, dust dropped (change < 148 * 3)',
+        txType: 'p2pkh',
+        feeRate: 43,
+        inputs: ['100000'],
+        outputs: [{ value: '90000' }],
+        expected: {
+            inputs: [
+                {
+                    i: 0,
+                    value: '100000',
+                    script: { length: 108 },
+                },
+            ],
+            outputs: [
+                {
+                    script: { length: 25 },
+                    value: '90000',
+                },
+            ],
+            fee: 10000,
+        },
+    },
+    {
+        description:
+            'p2sh with high feeRate and explicit longTermFeeRate (change > dustThreshold 546)',
+        txType: 'p2sh',
+        feeRate: 42,
+        longTermFeeRate: 4,
+        dustThreshold: 546,
+        inputs: [
+            {
+                script: { length: 107 }, // INPUT_SCRIPT_LENGTH.p2sh
+                value: '100000',
+            },
+        ],
+        outputs: [{ value: '90000' }],
+        expected: {
+            inputs: [
+                {
+                    i: 0,
+                    value: '100000',
+                    script: { length: 107 },
+                },
+            ],
+            outputs: [
+                {
+                    script: { length: 25 },
+                    value: '90000',
+                },
+                {
+                    script: { length: 23 },
+                    value: '634',
+                },
+            ],
+            fee: 9366,
+        },
+    },
+    {
+        description:
+            'p2sh with high feeRate, no explicit dustThreshold, dust amount calculated from inputSize (change > 91 * 3)',
+        txType: 'p2sh',
+        feeRate: 43,
+        inputs: [
+            {
+                script: { length: 107 }, // INPUT_SCRIPT_LENGTH.p2sh
+                value: '100000',
+            },
+        ],
+        outputs: [{ value: '90000' }],
+        expected: {
+            inputs: [
+                {
+                    i: 0,
+                    value: '100000',
+                    script: { length: 107 },
+                },
+            ],
+            outputs: [
+                {
+                    script: { length: 25 },
+                    value: '90000',
+                },
+                {
+                    script: { length: 23 },
+                    value: '411',
+                },
+            ],
+            fee: 9589,
+        },
+    },
+    {
+        description:
+            'p2sh with high feeRate, no explicit dustThreshold, dust dropped (change < 91 * 3)',
+        txType: 'p2sh',
+        feeRate: 44,
+        inputs: [
+            {
+                script: { length: 107 }, // INPUT_SCRIPT_LENGTH.p2sh
+                value: '100000',
+            },
+        ],
+        outputs: [{ value: '90000' }],
+        expected: {
+            inputs: [
+                {
+                    i: 0,
+                    value: '100000',
+                    script: { length: 107 },
+                },
+            ],
+            outputs: [
+                {
+                    script: { length: 25 },
+                    value: '90000',
+                },
+            ],
+            fee: 10000,
+        },
+    },
+    {
+        description:
+            'p2wpkh with high feeRate and explicit longTermFeeRate (change > dustThreshold 546)',
+        txType: 'p2wpkh',
+        feeRate: 42,
+        longTermFeeRate: 4,
+        dustThreshold: 546,
+        inputs: [
+            {
+                script: { length: 107 }, // INPUT_SCRIPT_LENGTH.p2wpkh
+                value: '100000',
+            },
+        ],
+        outputs: [{ value: '90000' }],
+        expected: {
+            inputs: [
+                {
+                    i: 0,
+                    value: '100000',
+                    script: { length: 107 },
+                },
+            ],
+            outputs: [
+                {
+                    script: { length: 25 },
+                    value: '90000',
+                },
+                {
+                    script: { length: 22 },
+                    value: '676',
+                },
+            ],
+            fee: 9324,
+        },
+    },
+    {
+        description:
+            'p2wpkh with high feeRate, no explicit dustThreshold, dust amount calculated from inputSize (change > 58 * 3)',
+        txType: 'p2wpkh',
+        feeRate: 43,
+        inputs: [
+            {
+                script: { length: 107 }, // INPUT_SCRIPT_LENGTH.p2wpkh
+                value: '100000',
+            },
+        ],
+        outputs: [{ value: '90000' }],
+        expected: {
+            inputs: [
+                {
+                    i: 0,
+                    value: '100000',
+                    script: { length: 107 },
+                },
+            ],
+            outputs: [
+                {
+                    script: { length: 25 },
+                    value: '90000',
+                },
+                {
+                    script: { length: 22 },
+                    value: '454',
+                },
+            ],
+            fee: 9546,
+        },
+    },
+    {
+        description:
+            'p2wpkh with high feeRate, no explicit dustThreshold, dust dropped (change < 58 * 3)',
+        txType: 'p2wpkh',
+        feeRate: 45,
+        inputs: [
+            {
+                script: { length: 107 }, // INPUT_SCRIPT_LENGTH.p2wpkh
+                value: '100000',
+            },
+        ],
+        outputs: [{ value: '90000' }],
+        expected: {
+            inputs: [
+                {
+                    i: 0,
+                    value: '100000',
+                    script: { length: 107 },
+                },
+            ],
+            outputs: [
+                {
+                    script: { length: 25 },
+                    value: '90000',
+                },
+            ],
+            fee: 10000,
+        },
+    },
+    {
+        description:
+            'p2tr with high feeRate and explicit longTermFeeRate (change > dustThreshold 546)',
+        txType: 'p2tr',
+        feeRate: 49,
+        longTermFeeRate: 4,
+        dustThreshold: 546,
+        inputs: [
+            {
+                script: { length: 65 }, // INPUT_SCRIPT_LENGTH.p2tr
+                value: '100000',
+            },
+        ],
+        outputs: [{ value: '90000' }],
+        expected: {
+            inputs: [
+                {
+                    i: 0,
+                    value: '100000',
+                    script: { length: 65 },
+                },
+            ],
+            outputs: [
+                {
+                    script: { length: 25 },
+                    value: '90000',
+                },
+                {
+                    script: { length: 34 },
+                    value: '592',
+                },
+            ],
+            fee: 9408,
+        },
+    },
+    {
+        description:
+            'p2tr with high feeRate, no explicit dustThreshold, dust amount calculated from inputSize (> 68 * 3)',
+        txType: 'p2tr',
+        feeRate: 50,
+        inputs: [
+            {
+                script: { length: 65 }, // INPUT_SCRIPT_LENGTH.p2tr
+                value: '100000',
+            },
+        ],
+        outputs: [{ value: '90000' }],
+        expected: {
+            inputs: [
+                {
+                    i: 0,
+                    value: '100000',
+                    script: { length: 65 },
+                },
+            ],
+            outputs: [
+                {
+                    script: { length: 25 },
+                    value: '90000',
+                },
+                {
+                    script: { length: 34 },
+                    value: '400',
+                },
+            ],
+            fee: 9600,
+        },
+    },
+    {
+        description:
+            'p2tr with high feeRate, no explicit dustThreshold, dust dropped (change < 68 * 3)',
+        txType: 'p2tr',
+        feeRate: 53,
+        inputs: [
+            {
+                script: { length: 65 }, // INPUT_SCRIPT_LENGTH.p2tr
+                value: '100000',
+            },
+        ],
+        outputs: [{ value: '90000' }],
+        expected: {
+            inputs: [
+                {
+                    i: 0,
+                    value: '100000',
+                    script: { length: 65 },
+                },
+            ],
+            outputs: [
+                {
+                    script: { length: 25 },
+                    value: '90000',
+                },
+            ],
+            fee: 10000,
+        },
     },
 ];
