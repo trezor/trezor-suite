@@ -2,8 +2,11 @@ import { A, pipe } from '@mobily/ts-belt';
 import { memoizeWithArgs } from 'proxy-memoize';
 
 import { AccountsRootState, selectAccounts } from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
+import { Account, TokenInfoBranded } from '@suite-common/wallet-types';
 import { getNetwork } from '@suite-common/wallet-utils';
+import { selectEthereumAccountsTokensWithFiatRates } from '@suite-native/ethereum-tokens';
+import { FiatRatesRootState } from '@suite-native/fiat-rates';
+import { SettingsSliceRootState } from '@suite-native/module-settings';
 
 /**
  * Returns true if account label, network name or account included token contains filter value as a substring.
@@ -32,18 +35,34 @@ export const isFilterValueMatchingAccount = (account: Account, filterValue: stri
 /**
  * Filter accounts by labels, network names and included token names.
  */
-const filterAccountsByLabelAndNetworkNames = (accounts: Account[], filterValue?: string | null) => {
+const filterAccountsByLabelAndNetworkNames = (
+    accounts: readonly Account[],
+    filterValue: string,
+) => {
     if (!filterValue) return accounts;
 
     return A.filter(accounts, account => isFilterValueMatchingAccount(account, filterValue));
 };
 
 export const selectFilteredAccountsGroupedByNetwork = memoizeWithArgs(
-    (state: AccountsRootState, filterValue?: string | null) => {
+    (
+        state: AccountsRootState & FiatRatesRootState & SettingsSliceRootState,
+        filterValue: string,
+    ) => {
         const accounts = selectAccounts(state);
 
         return pipe(
-            filterAccountsByLabelAndNetworkNames(accounts, filterValue),
+            accounts,
+            A.map(account => ({
+                ...account,
+                // Select only tokens with fiat rates To apply filter only one those tokens later.
+                tokens: selectEthereumAccountsTokensWithFiatRates(
+                    state,
+                    account.key,
+                ) as TokenInfoBranded[],
+            })),
+            accountsWithFiatRatedTokens =>
+                filterAccountsByLabelAndNetworkNames(accountsWithFiatRatedTokens, filterValue),
             A.groupBy(account => account.symbol),
         );
     },
