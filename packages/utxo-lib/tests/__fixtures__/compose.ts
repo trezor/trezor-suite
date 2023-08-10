@@ -1136,11 +1136,11 @@ export default [
         },
     },
     {
-        description: 'builds a simple tx without change (recv bech32/p2wpkh)',
+        description: 'builds bech32/p2wpkh tx without change (drop dust)',
         request: {
             txType: 'p2wpkh',
             basePath: [84, 0, 1],
-            changeAddress: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT',
+            changeAddress: 'bc1qafk4yhqvj4wep57m62dgrmutldusqde8adh20d',
             changeId: 0,
             dustThreshold: 546,
             feeRate: '10',
@@ -1161,17 +1161,17 @@ export default [
                     own: true,
                     transactionHash: 'b4dc0ffeee',
                     tsize: 0,
-                    value: '102001',
+                    value: '101500',
                     vsize: 0,
                 },
             ],
         },
         result: {
             bytes: 110,
-            fee: '2001',
-            feePerByte: '18.19090909090909',
+            fee: '1500',
+            feePerByte: '13.636363636363637',
             max: undefined,
-            totalSpent: '102001',
+            totalSpent: '101500',
             transaction: {
                 PERM_outputs: {
                     permutation: [0],
@@ -1187,7 +1187,7 @@ export default [
                         REV_hash: 'b4dc0ffeee',
                         index: 0,
                         path: [84, 0, 1, 3, 4],
-                        amount: '102001',
+                        amount: '101500',
                     },
                 ],
             },
@@ -1195,17 +1195,19 @@ export default [
         },
     },
     {
-        description: 'builds a simple tx without change (recv p2sh)',
+        description:
+            'builds bech32/p2wpkh tx, no explicit dustThreshold (change above calculated dust)',
         request: {
-            basePath: [44, 1],
-            changeAddress: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT',
+            txType: 'p2wpkh',
+            basePath: [84, 0, 1],
+            changeAddress: 'bc1qafk4yhqvj4wep57m62dgrmutldusqde8adh20d',
             changeId: 0,
-            dustThreshold: 546,
+            dustThreshold: 0,
             feeRate: '10',
             height: 100,
             outputs: [
                 {
-                    address: '3NukJ6fYZJ5Kk8bPjycAnruZkE5Q7UW7i8',
+                    address: 'bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq',
                     amount: '100000',
                     type: 'complete',
                 },
@@ -1219,17 +1221,80 @@ export default [
                     own: true,
                     transactionHash: 'b4dc0ffeee',
                     tsize: 0,
-                    value: '102001',
+                    value: '101900',
                     vsize: 0,
                 },
             ],
         },
         result: {
-            bytes: 190,
-            fee: '2001',
-            feePerByte: '10.531578947368422',
+            bytes: 141,
+            fee: '1410',
+            feePerByte: '10',
             max: undefined,
-            totalSpent: '102001',
+            totalSpent: '101410',
+            transaction: {
+                PERM_outputs: {
+                    permutation: [1, 0],
+                    sorted: [
+                        {
+                            path: [84, 0, 1, 1, 0],
+                            value: '490',
+                        },
+                        {
+                            address: 'bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq',
+                            value: '100000',
+                        },
+                    ],
+                },
+                inputs: [
+                    {
+                        REV_hash: 'b4dc0ffeee',
+                        index: 0,
+                        path: [84, 0, 1, 3, 4],
+                        amount: '101900',
+                    },
+                ],
+            },
+            type: 'final',
+        },
+    },
+    {
+        description: 'builds Legacy Segwit/p2sh tx without change (drop dust)',
+        request: {
+            txType: 'p2sh',
+            basePath: [49, 0, 0],
+            changeAddress: '3LRW7jeCvQCRdPF8S3yUCfRAx4eqXFmdcr',
+            changeId: 0,
+            dustThreshold: 546,
+            feeRate: '10',
+            height: 100,
+            outputs: [
+                {
+                    address: '3NukJ6fYZJ5Kk8bPjycAnruZkE5Q7UW7i8',
+                    amount: '100000',
+                    type: 'complete',
+                },
+            ],
+            utxos: [
+                {
+                    addressPath: [1, 4],
+                    coinbase: false,
+                    height: 100,
+                    index: 0,
+                    own: true,
+                    transactionHash: 'b4dc0ffeee',
+                    tsize: 0,
+                    value: '101500',
+                    vsize: 0,
+                },
+            ],
+        },
+        result: {
+            bytes: 134,
+            fee: '1500',
+            feePerByte: '11.194029850746269',
+            max: undefined,
+            totalSpent: '101500',
             transaction: {
                 PERM_outputs: {
                     permutation: [0],
@@ -1244,8 +1309,8 @@ export default [
                     {
                         REV_hash: 'b4dc0ffeee',
                         index: 0,
-                        path: [44, 1, 3, 4],
-                        amount: '102001',
+                        path: [49, 0, 0, 1, 4],
+                        amount: '101500',
                     },
                 ],
             },
@@ -1253,48 +1318,53 @@ export default [
         },
     },
     {
-        description: 'builds a simple tx without change (recv bech32/p2tr)',
+        description:
+            'builds Legacy Segwit/p2sh tx, no explicit dustThreshold (change above calculated dust)',
         request: {
-            basePath: [44, 1],
-            changeAddress: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT',
+            txType: 'p2sh',
+            basePath: [49, 0, 0],
+            changeAddress: '3LRW7jeCvQCRdPF8S3yUCfRAx4eqXFmdcr',
             changeId: 0,
-            dustThreshold: 546,
+            dustThreshold: 0,
             feeRate: '10',
             height: 100,
             outputs: [
                 {
-                    address: 'bc1qc7slrfxkknqcq2jevvvkdgvrt8080852dfjewde450xdlk4ugp7szw5tk9',
+                    address: '3NukJ6fYZJ5Kk8bPjycAnruZkE5Q7UW7i8',
                     amount: '100000',
                     type: 'complete',
                 },
             ],
             utxos: [
                 {
-                    addressPath: [3, 4],
+                    addressPath: [1, 4],
                     coinbase: false,
                     height: 100,
                     index: 0,
                     own: true,
                     transactionHash: 'b4dc0ffeee',
                     tsize: 0,
-                    value: '103001',
+                    value: '102000',
                     vsize: 0,
                 },
             ],
         },
         result: {
-            bytes: 201,
-            fee: '3001',
-            feePerByte: '14.930348258706468',
+            bytes: 166,
+            fee: '1660',
+            feePerByte: '10',
             max: undefined,
-            totalSpent: '103001',
+            totalSpent: '101660',
             transaction: {
                 PERM_outputs: {
-                    permutation: [0],
+                    permutation: [1, 0],
                     sorted: [
                         {
-                            address:
-                                'bc1qc7slrfxkknqcq2jevvvkdgvrt8080852dfjewde450xdlk4ugp7szw5tk9',
+                            path: [49, 0, 0, 1, 0],
+                            value: '340',
+                        },
+                        {
+                            address: '3NukJ6fYZJ5Kk8bPjycAnruZkE5Q7UW7i8',
                             value: '100000',
                         },
                     ],
@@ -1303,8 +1373,133 @@ export default [
                     {
                         REV_hash: 'b4dc0ffeee',
                         index: 0,
-                        path: [44, 1, 3, 4],
-                        amount: '103001',
+                        path: [49, 0, 0, 1, 4],
+                        amount: '102000',
+                    },
+                ],
+            },
+            type: 'final',
+        },
+    },
+    {
+        description: 'builds taproot/p2tr tx without change (drop dust)',
+        request: {
+            txType: 'p2tr',
+            basePath: [86, 0, 0],
+            changeAddress: 'bc1pgypgja2hmcx2l6s2ssq75k6ev68ved6nujcspt47dgvkp8euc70s6uegk6',
+            changeId: 0,
+            dustThreshold: 546,
+            feeRate: '10',
+            height: 100,
+            outputs: [
+                {
+                    address: 'bc1ptxs597p3fnpd8gwut5p467ulsydae3rp9z75hd99w8k3ljr9g9rqx6ynaw',
+                    amount: '100000',
+                    type: 'complete',
+                },
+            ],
+            utxos: [
+                {
+                    addressPath: [0, 1],
+                    coinbase: false,
+                    height: 100,
+                    index: 0,
+                    own: true,
+                    transactionHash: 'b4dc0ffeee',
+                    tsize: 0,
+                    value: '101500',
+                    vsize: 0,
+                },
+            ],
+        },
+        result: {
+            bytes: 111,
+            fee: '1500',
+            feePerByte: '13.513513513513514',
+            max: undefined,
+            totalSpent: '101500',
+            transaction: {
+                PERM_outputs: {
+                    permutation: [0],
+                    sorted: [
+                        {
+                            address:
+                                'bc1ptxs597p3fnpd8gwut5p467ulsydae3rp9z75hd99w8k3ljr9g9rqx6ynaw',
+                            value: '100000',
+                        },
+                    ],
+                },
+                inputs: [
+                    {
+                        REV_hash: 'b4dc0ffeee',
+                        index: 0,
+                        path: [86, 0, 0, 0, 1],
+                        amount: '101500',
+                    },
+                ],
+            },
+            type: 'final',
+        },
+    },
+    {
+        description:
+            'builds taproot/p2tr tx, no explicit dustThreshold (change above calculated dust)',
+        request: {
+            txType: 'p2tr',
+            basePath: [86, 0, 0],
+            changeAddress: 'bc1pgypgja2hmcx2l6s2ssq75k6ev68ved6nujcspt47dgvkp8euc70s6uegk6',
+            changeId: 0,
+            dustThreshold: 0,
+            feeRate: '10',
+            height: 100,
+            outputs: [
+                {
+                    address: 'bc1ptxs597p3fnpd8gwut5p467ulsydae3rp9z75hd99w8k3ljr9g9rqx6ynaw',
+                    amount: '100000',
+                    type: 'complete',
+                },
+            ],
+            utxos: [
+                {
+                    addressPath: [0, 1],
+                    coinbase: false,
+                    height: 100,
+                    index: 0,
+                    own: true,
+                    transactionHash: 'b4dc0ffeee',
+                    tsize: 0,
+                    value: '102000',
+                    vsize: 0,
+                },
+            ],
+        },
+        result: {
+            bytes: 154,
+            fee: '1540',
+            feePerByte: '10',
+            max: undefined,
+            totalSpent: '101540',
+            transaction: {
+                PERM_outputs: {
+                    permutation: [1, 0],
+                    sorted: [
+                        {
+                            path: [86, 0, 0, 1, 0],
+                            value: '460',
+                        },
+                        {
+                            address:
+                                'bc1ptxs597p3fnpd8gwut5p467ulsydae3rp9z75hd99w8k3ljr9g9rqx6ynaw',
+                            value: '100000',
+                        },
+                    ],
+                },
+                inputs: [
+                    {
+                        REV_hash: 'b4dc0ffeee',
+                        index: 0,
+                        path: [86, 0, 0, 0, 1],
+                        amount: '102000',
                     },
                 ],
             },

@@ -56,6 +56,13 @@ describe('composeTx addresses cross-check', () => {
         p2wpkh: 'bc1qafk4yhqvj4wep57m62dgrmutldusqde8adh20d',
         p2wsh: 'bc1q6rgl33d3s9dugudw7n68yrryajkr3ha9q8q24j20zs62se4q9tsqdy0t2q',
     };
+    const amounts = {
+        p2pkh: '102300',
+        p2sh: '101500',
+        p2tr: '101500',
+        p2wpkh: '101500',
+        p2wsh: '101500',
+    };
     const addrKeys = Object.keys(addrTypes) as Array<keyof typeof addrTypes>;
     fixturesCrossCheck.forEach(f => {
         txTypes.forEach(txType => {
@@ -71,7 +78,10 @@ describe('composeTx addresses cross-check', () => {
                         ...f.request,
                         network: NETWORKS.bitcoin,
                         txType,
-                        changeType: 'PAYTOADDRESS',
+                        utxos: f.request.utxos.map(utxo => ({
+                            ...utxo,
+                            value: utxo.value === 'replace-me' ? amounts[txType] : utxo.value,
+                        })),
                         outputs: f.request.outputs.map(o => {
                             if (o.type === 'complete') {
                                 return {
