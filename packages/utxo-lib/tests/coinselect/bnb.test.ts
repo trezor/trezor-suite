@@ -1,6 +1,7 @@
 import { bnb } from '../../src/coinselect/inputs/bnb';
 import fixtures from '../__fixtures__/coinselect/bnb';
 import * as utils from './test.utils';
+import { CoinSelectOptions } from '../../src/types';
 
 describe('coinselect: branchAndBound (bnb)', () => {
     fixtures.forEach(f => {
@@ -11,12 +12,13 @@ describe('coinselect: branchAndBound (bnb)', () => {
             const options = {
                 txType: 'p2pkh',
                 dustThreshold: f.dustThreshold,
-            } as const;
+            } as CoinSelectOptions;
 
-            const actual = bnb(f.factor)(inputs, outputs, f.feeRate, options);
+            const actual = bnb(inputs, outputs, f.feeRate, options);
             expect(actual).toEqual(expected);
+
             if (actual.inputs) {
-                const feedback = bnb(f.factor)(actual.inputs, actual.outputs, f.feeRate, options);
+                const feedback = bnb(actual.inputs, actual.outputs, f.feeRate, options);
                 expect(feedback).toEqual(expected);
             }
         });

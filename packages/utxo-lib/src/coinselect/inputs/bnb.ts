@@ -6,12 +6,17 @@ import {
     outputBytes,
     transactionBytes,
     getFeeForBytes,
+    getDustAmount,
     finalize,
     ZERO,
-    INPUT_SCRIPT_LENGTH,
     OUTPUT_SCRIPT_LENGTH,
 } from '../coinselectUtils';
-import { CoinSelectAlgorithm, CoinSelectInput } from '../../types';
+import {
+    CoinSelectInput,
+    CoinSelectOutput,
+    CoinSelectOptions,
+    CoinSelectResult,
+} from '../../types';
 
 const MAX_TRIES = 1000000;
 
@@ -21,7 +26,7 @@ function calculateEffectiveValues(utxos: CoinSelectInput[], feeRate: number) {
         if (!value) {
             return {
                 utxo,
-                effectiveValue: new BN(0),
+                effectiveValue: ZERO,
             };
         }
         const effectiveFee = getFeeForBytes(feeRate, inputBytes(utxo));
@@ -38,7 +43,7 @@ function calculateEffectiveValues(utxos: CoinSelectInput[], feeRate: number) {
 function search(
     effectiveUtxos: ReturnType<typeof calculateEffectiveValues>,
     target: BN,
-    costOfChange: number,
+    costRange: BN,
 ) {
     if (effectiveUtxos.length === 0) {
         return null;
@@ -47,13 +52,12 @@ function search(
     let tries = MAX_TRIES;
 
     const selected: boolean[] = []; // true -> select the utxo at this index
-    let selectedAccum = new BN(0); // sum of effective values
+    let selectedAccum = ZERO; // sum of effective values
 
     let done = false;
     let backtrack = false;
 
-    let remaining = effectiveUtxos.reduce((a, x) => x.effectiveValue.add(a), new BN(0));
-    const costRange = target.add(new BN(costOfChange));
+    let remaining = effectiveUtxos.reduce((a, x) => x.effectiveValue.add(a), ZERO);
 
     let depth = 0;
     while (!done) {
@@ -118,63 +122,80 @@ function search(
     return selected;
 }
 
-// branchAndBound
-export function bnb(factor: number): CoinSelectAlgorithm {
-    return (utxos, outputs, feeRate, options) => {
-        if (options.baseFee) return { fee: 0 }; // TEMP: disable bnb algorithm for DOGE
-        if (utxos.find(u => u.required)) return { fee: 0 }; // TODO: enable bnb algorithm if required utxos are defined
+/*
+ * Algorithm inspired by `Branch and Bound` implemented by bitcoin-core.
+ * Ported from `scala` to `javascript` by @karelbilek
+ * https://github.com/bitcoinjs/coinselect/issues/10#issuecomment-312392203
+ *
+ * Since this was done at the early stage of implementation it's not exactly 1:1 with bitcoin-core (written in c++)
+ * https://github.com/bitcoin/bitcoin/blob/b2ec0326fd76e64a6d0d7e4745506b29f60d0be5/src/wallet/coinselection.cpp
+ */
 
-        const costPerChangeOutput = getFeeForBytes(
-            feeRate,
-            outputBytes({
-                script: {
-                    length: OUTPUT_SCRIPT_LENGTH[options.txType],
-                },
-            }),
-        );
+export function bnb(
+    utxos: CoinSelectInput[],
+    outputs: CoinSelectOutput[],
+    feeRate: number,
+    options: CoinSelectOptions,
+): CoinSelectResult {
+    if (options.baseFee) return { fee: 0 }; // TEMP: disable bnb algorithm for DOGE
+    if (utxos.find(u => u.required)) return { fee: 0 }; // TODO: enable bnb algorithm if required utxos are defined
 
-        const costPerInput = getFeeForBytes(
-            feeRate,
-            inputBytes({
-                type: options.txType,
-                script: {
-                    length: INPUT_SCRIPT_LENGTH[options.txType],
-                },
-            }),
-        );
+    // cost of change: cost of additional output in current tx (fee) + minimum possible value of that output (dust)
+    const changeOutputFee = getFeeForBytes(
+        feeRate,
+        outputBytes({
+            script: {
+                length: OUTPUT_SCRIPT_LENGTH[options.txType],
+            },
+        }),
+    );
+    const costOfChange = changeOutputFee + getDustAmount(feeRate, options);
 
-        const costOfChange = Math.floor((costPerInput + costPerChangeOutput) * factor);
-        const txBytes = transactionBytes([], outputs);
-        const bytesAndFee = getFeeForBytes(feeRate, txBytes);
+    // calculate transaction size and fee without inputs
+    const outputsBytes = transactionBytes([], outputs);
+    const outputsFee = getFeeForBytes(feeRate, outputsBytes);
+    const outputsTotalValue = sumOrNaN(outputs);
+    if (!outputsTotalValue) return { fee: 0 };
 
-        const outSum = sumOrNaN(outputs);
-        if (!outSum) return { fee: 0 };
+    // target = total amount that needs to be covered (all outputs + fee)
+    const target = outputsTotalValue.add(new BN(outputsFee));
+    const targetRange = target.add(new BN(costOfChange));
 
-        const outAccum = outSum.add(new BN(bytesAndFee));
-
-        const effectiveUtxos = calculateEffectiveValues(utxos, feeRate)
-            .filter(x => x.effectiveValue.gt(ZERO))
-            .sort((a, b) => {
-                const subtract = b.effectiveValue.sub(a.effectiveValue).toNumber();
-                if (subtract !== 0) {
-                    return subtract;
-                }
-                return a.utxo.i - b.utxo.i;
-            });
-
-        const selected = search(effectiveUtxos, outAccum, costOfChange);
-        if (selected !== null) {
-            const inputs: CoinSelectInput[] = [];
-
-            for (let i = 0; i < effectiveUtxos.length; i++) {
-                if (selected[i]) {
-                    inputs.push(effectiveUtxos[i].utxo);
-                }
+    // use only effective utxos which:
+    // - value is greater than its cost (effectiveValue > 0)
+    // - value is lower or equal than target range (will not produce change output)
+    const effectiveUtxos = calculateEffectiveValues(utxos, feeRate)
+        .filter(({ effectiveValue }) => effectiveValue.gt(ZERO) && effectiveValue.lte(targetRange))
+        .sort((a, b) => {
+            const subtract = b.effectiveValue.sub(a.effectiveValue).toNumber();
+            if (subtract !== 0) {
+                return subtract;
             }
+            return a.utxo.i - b.utxo.i;
+        });
 
-            return finalize(inputs, outputs, feeRate, options);
+    // check if sum of all effective utxos is greater than target (if transaction is even possible with remaining subset)
+    const utxosTotalEffectiveValue = effectiveUtxos.reduce(
+        (total, { effectiveValue }) => total.add(effectiveValue),
+        ZERO,
+    );
+    if (utxosTotalEffectiveValue.lt(target)) {
+        return { fee: 0 };
+    }
+
+    // start searching
+    const selected = search(effectiveUtxos, target, targetRange);
+    if (selected !== null) {
+        const inputs: CoinSelectInput[] = [];
+
+        for (let i = 0; i < effectiveUtxos.length; i++) {
+            if (selected[i]) {
+                inputs.push(effectiveUtxos[i].utxo);
+            }
         }
 
-        return { fee: 0 };
-    };
+        return finalize(inputs, outputs, feeRate, options);
+    }
+
+    return { fee: 0 };
 }
