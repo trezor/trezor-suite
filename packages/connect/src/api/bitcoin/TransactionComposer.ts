@@ -55,7 +55,7 @@ export class TransactionComposer {
                   .map(a => a.address);
         this.utxos = options.utxo.flatMap(u => {
             // exclude amounts lower than dust limit if they are NOT required
-            if (!u.required && new BigNumber(u.amount).lte(this.coinInfo.dustLimit)) return [];
+            if (!u.required && new BigNumber(u.amount).lt(this.coinInfo.dustLimit)) return [];
             const addressPath = getHDPath(u.path);
             const [chain, index] = addressPath.slice(addressPath.length - 2);
 

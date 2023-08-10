@@ -112,7 +112,7 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
                 (bn, output) => bn.plus(typeof output.amount === 'string' ? output.amount : '0'),
                 new BigNumber(0),
             );
-            if (total.lte(coinInfo.dustLimit)) {
+            if (total.lt(coinInfo.dustLimit)) {
                 throw ERRORS.TypedError(
                     'Method_InvalidParameter',
                     'Total amount is below dust limit.',

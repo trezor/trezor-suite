@@ -94,7 +94,7 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
 
         // if outputs contains regular items
         // check if total amount is not lower than dust limit
-        // if (outputs.find(o => o.type === 'complete') !== undefined && total.lte(coinInfo.dustLimit)) {
+        // if (outputs.find(o => o.type === 'complete') !== undefined && total.lt(coinInfo.dustLimit)) {
         //     throw error 'Total amount is too low';
         // }
 
