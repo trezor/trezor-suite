@@ -77,7 +77,7 @@ export const ScreenHeader = ({
                         <StepsProgressBar numberOfSteps={numberOfSteps} activeStep={activeStep} />
                     )}
                     {typeof content === 'string' ? (
-                        <Text variant={titleVariant} numberOfLines={1} ellipsizeMode="tail">
+                        <Text variant={titleVariant} adjustsFontSizeToFit numberOfLines={1}>
                             {content}
                         </Text>
                     ) : (
