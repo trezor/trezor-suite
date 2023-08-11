@@ -154,11 +154,16 @@ export class Status extends TypedEmitter<StatusEvents> {
         this.log('debug', `Next status fetch in ${timeout}ms`);
 
         this.statusTimeout = setTimeout(() => {
-            this.getStatus().then(() => {
-                // single status request might fail (no scheduled attempts are set)
-                // continue lifecycle regardless of the result until this.enabled
-                this.setStatusTimeout();
-            });
+            this.getStatus()
+                .catch(error => {
+                    // silent error. do not interrupt the lifecycle
+                    this.log('warn', `Status: ${error.message}`);
+                })
+                .finally(() => {
+                    // single status request might fail (no scheduled attempts are set)
+                    // continue lifecycle regardless of the result until this.enabled
+                    this.setStatusTimeout();
+                });
         }, timeout);
     }
 
@@ -194,64 +199,64 @@ export class Status extends TypedEmitter<StatusEvents> {
         return this.runningAffiliateServer;
     }
 
-    getStatus() {
+    async getStatus() {
         if (!this.enabled) return Promise.resolve();
 
         const identity = this.identities[Math.floor(Math.random() * this.identities.length)];
-        return coordinator
-            .getStatus({
-                baseUrl: this.settings.coordinatorUrl,
-                signal: this.abortController.signal,
-                identity,
-            })
-            .then(status => {
-                // explicitly catch processStatus errors
-                try {
-                    return this.processStatus(status);
-                } catch (error) {
-                    this.log('error', `Status: ${error.message}`);
-                }
-            })
-            .catch(error => {
-                this.log('warn', `Status: ${error.message}`);
-            });
-    }
-
-    private getVersion() {
-        return coordinatorRequest<coordinator.SoftwareVersion>('api/Software/versions', undefined, {
-            method: 'GET',
-            baseUrl: this.settings.wabisabiBackendUrl,
+        const status = await coordinator.getStatus({
+            baseUrl: this.settings.coordinatorUrl,
             signal: this.abortController.signal,
-            identity: this.identities[0],
-            attempts: 3, // schedule 3 attempts on start
-        })
-            .then(version =>
-                version
-                    ? ({
-                          majorVersion: version.BackenMajordVersion,
-                          commitHash: version.commitHash,
-                          legalDocumentsVersion: version.ww2LegalDocumentsVersion,
-                      } as CoinjoinClientVersion)
-                    : undefined,
-            )
-            .catch(error => {
-                this.log('warn', `getVersion: ${error.message}`);
-            });
+            identity,
+        });
+
+        // for easier debugging explicitly catch and log processStatus errors
+        try {
+            return this.processStatus(status);
+        } catch (error) {
+            this.log('error', `Status processing ${error.message}`);
+            throw new Error(`Status processing ${error.message}`);
+        }
     }
 
-    start() {
+    private async getVersion() {
+        const version = await coordinatorRequest<coordinator.SoftwareVersion>(
+            'api/Software/versions',
+            undefined,
+            {
+                method: 'GET',
+                baseUrl: this.settings.wabisabiBackendUrl,
+                signal: this.abortController.signal,
+                identity: this.identities[0],
+                attempts: 3, // schedule 3 attempts on start
+            },
+        );
+
+        return version
+            ? ({
+                  majorVersion: version.BackenMajordVersion,
+                  commitHash: version.commitHash,
+                  legalDocumentsVersion: version.ww2LegalDocumentsVersion,
+              } as CoinjoinClientVersion)
+            : undefined;
+    }
+
+    async start() {
         this.abortController = new AbortController();
         this.enabled = true;
 
-        return this.getVersion().then(version =>
-            this.getStatus().then(status => {
-                if (version && status) {
-                    // start lifecycle only if status is present
-                    this.setStatusTimeout();
-                    return { ...status, version };
-                }
-            }),
-        );
+        try {
+            const version = await this.getVersion();
+            if (!version) throw new Error('Coordinator api version is missing on start');
+
+            const status = await this.getStatus();
+            if (!status) throw new Error('Status not processed on start');
+
+            // start lifecycle only if status is present
+            this.setStatusTimeout();
+            return { success: true as const, ...status, version };
+        } catch (error) {
+            return { success: false as const, error: error.message };
+        }
     }
 
     stop() {

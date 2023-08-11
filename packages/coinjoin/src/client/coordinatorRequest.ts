@@ -48,6 +48,7 @@ export const coordinatorRequest = async <R = void>(
     options: RequestOptions = {},
 ): Promise<R> => {
     const baseUrl = options.baseUrl || '';
+    const requestUrl = `${baseUrl}${url}`;
 
     const switchIdentity = () => {
         if (options.identity) {
@@ -61,7 +62,7 @@ export const coordinatorRequest = async <R = void>(
         let response;
         try {
             const method = options.method === 'GET' ? httpGet : httpPost;
-            response = await method(`${baseUrl}${url}`, body, { ...options, signal });
+            response = await method(requestUrl, body, { ...options, signal });
         } catch (e) {
             // NOTE: this code probably belongs to @trezor/request-manager package since errors are tightly related to TOR
             // catch errors from:
@@ -91,9 +92,8 @@ export const coordinatorRequest = async <R = void>(
                 // NOTE: possibly blocked by cloudflare
                 switchIdentity();
             }
-            // log to app console and sentry if possible
-            console.error(`Unexpected error ${response.status} request to ${url}`);
-            throw new Error(`${response.status}: ${response.statusText}`);
+
+            throw new Error(`${response.statusText} (${response.status})`);
         }
 
         const text = await response.text();
@@ -106,7 +106,7 @@ export const coordinatorRequest = async <R = void>(
     });
 
     if (error) {
-        throw error;
+        throw new Error(`${requestUrl} ${error.message}`);
     }
 
     const result = parseResult(response.headers, text);
@@ -120,6 +120,7 @@ export const coordinatorRequest = async <R = void>(
     }
 
     // fallback error
-    const message = text ? `${response.statusText}: ${text}` : response.statusText;
-    throw new Error(`${baseUrl}${url} ${message}`);
+    const fallbackError = `${requestUrl} ${response.statusText} (${response.status})`;
+    const message = text ? `${fallbackError} ${text}` : fallbackError;
+    throw new Error(message);
 };
