@@ -4,7 +4,7 @@ import { motion, Variants } from 'framer-motion';
 import Tippy, { TippyProps } from '@tippyjs/react/headless';
 import { Instance } from 'tippy.js';
 import { transparentize } from 'polished';
-import { Link } from '../typography/Link';
+import { Link } from '../typography/Link/Link';
 
 import * as variables from '../../config/variables';
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 import { motion } from 'framer-motion';
-import { H1 } from './typography/Heading';
+import { H1 } from './typography/Heading/Heading';
 import { variables, motion as motionConfig } from '../config';
 import { Image, ImageType } from './Image/Image';
 import { Icon } from './Icon/Icon';

@@ -7,7 +7,7 @@ import { Button } from './buttons/Button/Button';
 import { CollapsibleBox } from './CollapsibleBox';
 import { CollapsibleCard } from './CollapsibleCard';
 import { Switch } from './form/Switch';
-import { H1 } from './typography/Heading';
+import { H1 } from './typography/Heading/Heading';
 
 const Wrapper = styled.div`
     display: flex;
