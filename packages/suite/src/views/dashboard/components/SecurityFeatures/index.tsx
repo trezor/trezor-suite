@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { Button, SecurityCard, SecurityCardProps, variables } from '@trezor/components';
+import { Button, variables } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 import { Section } from 'src/components/dashboard';
 import { AcquiredDevice } from 'src/types/suite';
@@ -11,6 +11,7 @@ import { createDeviceInstance, setFlag } from 'src/actions/suite/suiteActions';
 import { applySettings, changePin } from 'src/actions/settings/deviceSettingsActions';
 import { goto } from 'src/actions/suite/routerActions';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
+import { SecurityCard, SecurityCardProps } from '../SecurityCard';
 
 const Content = styled.div`
     display: grid;

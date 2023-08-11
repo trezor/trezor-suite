@@ -1,10 +1,6 @@
+import { Button, Card, CardProps, Icon, IconProps, useTheme, variables } from '@trezor/components';
 import React from 'react';
 import styled from 'styled-components';
-import { CardProps, Card } from '../Card';
-import { IconProps, Icon } from '../../Icon/Icon';
-import { Button } from '../../buttons/Button/Button';
-import { useTheme } from '../../../utils/hooks';
-import * as variables from '../../../config/variables';
 
 const Wrapper = styled.div`
     display: flex;
@@ -99,7 +95,7 @@ const Line = styled.div`
     /* border-top: 1px solid ${({ theme }) => theme.STROKE_GREY}; */
 `;
 
-interface SecurityCardProps extends CardProps {
+export interface SecurityCardProps extends CardProps {
     variant: 'primary' | 'secondary';
     icon: IconProps['icon'];
     heading: React.ReactNode;
@@ -112,7 +108,14 @@ interface SecurityCardProps extends CardProps {
     };
 }
 
-const SecurityCard = ({ variant, icon, heading, description, cta, ...rest }: SecurityCardProps) => {
+export const SecurityCard = ({
+    variant,
+    icon,
+    heading,
+    description,
+    cta,
+    ...rest
+}: SecurityCardProps) => {
     const theme = useTheme();
     return (
         <Wrapper {...rest}>
@@ -173,6 +176,3 @@ const SecurityCard = ({ variant, icon, heading, description, cta, ...rest }: Sec
         </Wrapper>
     );
 };
-
-export type { SecurityCardProps };
-export { SecurityCard };
