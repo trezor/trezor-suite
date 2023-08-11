@@ -752,8 +752,8 @@ export const initCoinjoinService =
             });
             const { client } = service;
             const status = await client.enable();
-            if (!status) {
-                throw new Error('status is missing');
+            if (!status.success) {
+                throw new Error(status.error);
             }
             // handle status change
             client.on('status', status => dispatch(clientOnStatusEvent(symbol, status)));
@@ -776,7 +776,7 @@ export const initCoinjoinService =
             dispatch(
                 notificationsActions.addToast({
                     type: 'error',
-                    error: `Coinjoin client not enabled: ${error.message}`,
+                    error: `CoinjoinClient ${error.message}`,
                 }),
             );
         }
