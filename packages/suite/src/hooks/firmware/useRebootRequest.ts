@@ -22,6 +22,7 @@ export const useRebootRequest = (
     // Default reboot method is 'manual'. If the device is connected when
     // the hook is first called and fw version is sufficient,
     // then the 'automatic' method is enabled.
+    // T2B1 was born with >=2.6.0 so it uses only 'automatic'.
     const [method, setMethod] = useState<RebootMethod>(() => {
         if (!device?.connected || !device?.features) return 'manual';
         const deviceFwVersion = getFirmwareVersion(device);

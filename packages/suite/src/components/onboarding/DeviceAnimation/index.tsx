@@ -127,6 +127,7 @@ export const DeviceAnimation = ({
                 {connectAnimationData && animationType === 'CONNECT' && (
                     <StyledLottie animationData={connectAnimationData} loop={loop} />
                 )}
+                {/* See useRebootRequest hook to check which devices apply to this */}
                 {animationType === 'BOOTLOADER' && (
                     <StyledVideo loop={loop} autoPlay muted width={size} height={size}>
                         <source
