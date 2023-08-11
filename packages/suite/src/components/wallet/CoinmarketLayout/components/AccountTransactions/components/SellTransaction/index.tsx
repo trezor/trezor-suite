@@ -138,6 +138,7 @@ const SellTransaction = ({ trade, providers, account }: SellTransactionProps) =>
         cryptoStringAmount,
         exchange,
         paymentMethod,
+        paymentMethodName,
         cryptoCurrency,
     } = data;
 
@@ -213,7 +214,7 @@ const SellTransaction = ({ trade, providers, account }: SellTransactionProps) =>
                     <CoinmarketProviderInfo exchange={exchange} providers={providers} />
                 </Row>
                 <RowSecond>
-                    <CoinmarketPaymentType method={paymentMethod} />
+                    <CoinmarketPaymentType method={paymentMethod} methodName={paymentMethodName} />
                 </RowSecond>
             </ProviderColumn>
             <SellColumn>

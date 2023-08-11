@@ -143,6 +143,7 @@ const BuyTransaction = ({ trade, providers, account }: BuyTransactionProps) => {
         receiveStringAmount,
         exchange,
         paymentMethod,
+        paymentMethodName,
         receiveCurrency,
     } = data;
 
@@ -204,7 +205,7 @@ const BuyTransaction = ({ trade, providers, account }: BuyTransactionProps) => {
                     <CoinmarketProviderInfo exchange={exchange} providers={providers} />
                 </Row>
                 <RowSecond>
-                    <CoinmarketPaymentType method={paymentMethod} />
+                    <CoinmarketPaymentType method={paymentMethod} methodName={paymentMethodName} />
                 </RowSecond>
             </ProviderColumn>
             <BuyColumn>

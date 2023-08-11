@@ -112,6 +112,7 @@ const CoinmarketBuyOfferInfo = ({
         receiveCurrency,
         exchange,
         paymentMethod,
+        paymentMethodName,
         fiatCurrency,
         fiatStringAmount,
     } = selectedQuote;
@@ -164,7 +165,10 @@ const CoinmarketBuyOfferInfo = ({
                         <Translation id="TR_BUY_PAID_BY" />
                     </LeftColumn>
                     <RightColumn>
-                        <CoinmarketPaymentType method={paymentMethod} />
+                        <CoinmarketPaymentType
+                            method={paymentMethod}
+                            methodName={paymentMethodName}
+                        />
                     </RightColumn>
                 </Row>
             </Info>

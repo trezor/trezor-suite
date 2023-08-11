@@ -112,6 +112,7 @@ const CoinmarketSellOfferInfo = ({
         cryptoCurrency,
         exchange,
         paymentMethod,
+        paymentMethodName,
         fiatCurrency,
         fiatStringAmount,
     } = selectedQuote;
@@ -164,7 +165,10 @@ const CoinmarketSellOfferInfo = ({
                         <Translation id="TR_SELL_PAID_BY" />
                     </LeftColumn>
                     <RightColumn>
-                        <CoinmarketPaymentType method={paymentMethod} />
+                        <CoinmarketPaymentType
+                            method={paymentMethod}
+                            methodName={paymentMethodName}
+                        />
                     </RightColumn>
                 </Row>
             </Info>

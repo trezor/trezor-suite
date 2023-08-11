@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { variables } from '@trezor/components';
 import invityApi from 'src/services/suite/invityAPI';
-import { BuyCryptoPaymentMethod, SavingsPaymentMethod } from 'invity-api';
+import { BuyCryptoPaymentMethod, SavingsPaymentMethod, SellCryptoPaymentMethod } from 'invity-api';
 import { Translation } from 'src/components/suite';
 
 const Wrapper = styled.div`
@@ -35,34 +35,49 @@ const Text = styled.div`
 
 interface CoinmarketPaymentTypeProps {
     children?: React.ReactNode;
-    method?: BuyCryptoPaymentMethod | SavingsPaymentMethod;
+    method?: BuyCryptoPaymentMethod | SellCryptoPaymentMethod | SavingsPaymentMethod;
+    methodName?: string;
 }
+type TranslatedPaymentMethod = 'bankTransfer' | 'creditCard';
 
-export const CoinmarketPaymentType = ({ children, method }: CoinmarketPaymentTypeProps) => (
+type PaymentMethodId = `TR_PAYMENT_METHOD_${Uppercase<TranslatedPaymentMethod>}`;
+
+const getPaymentMethod = (method: TranslatedPaymentMethod): PaymentMethodId =>
+    `TR_PAYMENT_METHOD_${method.toUpperCase() as Uppercase<TranslatedPaymentMethod>}`;
+
+export const CoinmarketPaymentType = ({
+    children,
+    method,
+    methodName,
+}: CoinmarketPaymentTypeProps) => (
     <Wrapper>
-        {!method && (
-            <Text>
-                <Translation id="TR_PAYMENT_METHOD_UNKNOWN" />
-            </Text>
-        )}
-        {method && (
-            <>
-                <IconWrapper>
-                    <Bg>
-                        <Icon
-                            width="24px"
-                            src={`${invityApi.getApiServerUrl()}/images/paymentMethods/suite/${method}.svg`}
-                        />
-                    </Bg>
-                </IconWrapper>
-                <div>
-                    {/* temporary solution - payment method name will be returned by API server to be independent on translations */}
-                    <Text>
-                        <Translation id={`TR_PAYMENT_METHOD_${method.toUpperCase()}` as any} />
-                    </Text>
-                    {children}
-                </div>
-            </>
-        )}
+        <>
+            <IconWrapper>
+                <Bg>
+                    <Icon
+                        width="24px"
+                        src={`${invityApi.getApiServerUrl()}/images/paymentMethods/suite/${method}.svg`}
+                    />
+                </Bg>
+            </IconWrapper>
+            <div>
+                <Text>
+                    {method ? (
+                        <>
+                            {method === 'bankTransfer' || method === 'creditCard' ? (
+                                <Translation id={getPaymentMethod(method)} />
+                            ) : (
+                                <Text>{methodName || method}</Text>
+                            )}
+                        </>
+                    ) : (
+                        <Text>
+                            <Translation id="TR_PAYMENT_METHOD_UNKNOWN" />
+                        </Text>
+                    )}
+                </Text>
+                {children}
+            </div>
+        </>
     </Wrapper>
 );
