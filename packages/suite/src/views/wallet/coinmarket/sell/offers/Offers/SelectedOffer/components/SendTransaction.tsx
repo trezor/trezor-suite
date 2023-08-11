@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Translation, AccountLabeling } from 'src/components/suite';
-import { Button, variables, Loader } from '@trezor/components';
+import { Button, variables, Spinner } from '@trezor/components';
 import { useCoinmarketSellOffersContext } from 'src/hooks/wallet/useCoinmarketSellOffers';
 import { useWatchSellTrade } from 'src/hooks/wallet/useCoinmarket';
 
@@ -94,7 +94,7 @@ export const SendTransaction = () => {
                 </>
             ) : (
                 <WaitingWrapper>
-                    <Loader />
+                    <Spinner />
                     <Title>
                         <Translation
                             id="TR_SELL_DETAIL_WAITING_FOR_SEND_CRYPTO"

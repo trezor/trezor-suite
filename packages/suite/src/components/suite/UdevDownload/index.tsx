@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { DATA_URL, HELP_CENTER_UDEV_URL } from '@trezor/urls';
 import { Translation, TrezorLink } from 'src/components/suite';
-import { variables, Button, Select, Link, Loader } from '@trezor/components';
+import { variables, Button, Select, Link, Spinner } from '@trezor/components';
 import { useSelector } from 'src/hooks/suite';
 
 const Wrapper = styled.div`
@@ -84,7 +84,7 @@ const UdevDownload = () => {
                     </>
                 ) : (
                     <LoaderWrapper>
-                        <Loader size={24} />
+                        <Spinner size={24} />
                         <Translation id="TR_GATHERING_INFO" />
                     </LoaderWrapper>
                 )}

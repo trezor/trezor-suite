@@ -11,7 +11,7 @@ import {
 } from 'src/components/suite';
 import { formatNetworkAmount, isSameUtxo } from '@suite-common/wallet-utils';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { useTheme, Checkbox, FluidSpinner, Tooltip, variables } from '@trezor/components';
+import { useTheme, Checkbox, Spinner, Tooltip, variables } from '@trezor/components';
 import type { AccountUtxo } from '@trezor/connect';
 import { TransactionTimestamp, UtxoAnonymity } from 'src/components/wallet';
 import { UtxoTag } from 'src/components/wallet/CoinControl/UtxoTag';
@@ -123,7 +123,7 @@ const TransactionDetail = styled.button`
     }
 `;
 
-const StyledFluidSpinner = styled(FluidSpinner)`
+const StyledFluidSpinner = styled(Spinner)`
     margin-right: 8px;
 `;
 

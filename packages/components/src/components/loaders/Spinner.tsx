@@ -2,8 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 import { animations } from '../../config';
 
-interface FluidSpinnerProps {
-    size: number;
+export interface FluidSpinnerProps {
+    size?: number;
     strokeWidth?: number;
     color?: string;
     className?: string;
@@ -20,7 +20,7 @@ const Wrapper = styled.div<FluidSpinnerProps>`
         box-sizing: border-box;
         width: ${({ size }) => `${size}px`}; /* change to 1em to scale based on used font-size */
         height: ${({ size }) => `${size}px`}; /* change to 1em to scale based on used font-size */
-        border: ${({ strokeWidth }) => (strokeWidth ? `${strokeWidth}px` : '1px')} solid transparent; /* change to 0.1em to scale based on used font-size */
+        border: ${({ strokeWidth }) => `${strokeWidth}px`} solid transparent; /* change to 0.1em to scale based on used font-size */
         border-radius: 50%;
         animation: ${animations.SPIN} 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
         border-color: #fff transparent transparent transparent;
@@ -41,7 +41,7 @@ const Wrapper = styled.div<FluidSpinnerProps>`
     }
 `;
 
-export const FluidSpinner = ({ size, strokeWidth, color, className }: FluidSpinnerProps) => (
+export const Spinner = ({ size = 100, strokeWidth = 2, color, className }: FluidSpinnerProps) => (
     <Wrapper size={size} strokeWidth={strokeWidth} color={color} className={className}>
         <div />
         <div />

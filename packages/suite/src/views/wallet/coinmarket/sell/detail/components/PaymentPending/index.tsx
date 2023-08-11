@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { variables, Loader, Button, Link } from '@trezor/components';
+import { variables, Spinner, Button, Link } from '@trezor/components';
 import { Translation } from 'src/components/suite/Translation';
 
 const Wrapper = styled.div`
@@ -26,7 +26,7 @@ interface PaymentConvertingProps {
 
 const PaymentConverting = ({ supportUrl }: PaymentConvertingProps) => (
     <Wrapper>
-        <Loader />
+        <Spinner />
         <Title>
             <Translation id="TR_SELL_DETAIL_PENDING_TITLE" />
         </Title>

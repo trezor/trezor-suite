@@ -4,7 +4,7 @@ import { Icon } from '../../Icon/Icon';
 import { IconType, ButtonVariant, SuiteThemeColors } from '../../../support/types';
 import { variables } from '../../../config';
 import { useTheme } from '../../../utils';
-import { FluidSpinner } from '../../loaders/FluidSpinner';
+import { Spinner } from '../../loaders/Spinner';
 import { darken } from 'polished';
 
 const getPadding = (variant: ButtonVariant, hasLabel: boolean) => {
@@ -226,11 +226,7 @@ export const Button = React.forwardRef(
         ) : null;
         const Loader = (
             <IconWrapper alignIcon={alignIcon} variant={variant} hasLabel={hasLabel}>
-                <FluidSpinner
-                    size={getIconSize(variant, hasLabel) - 1}
-                    color={color}
-                    strokeWidth={2}
-                />
+                <Spinner size={getIconSize(variant, hasLabel) - 1} color={color} strokeWidth={2} />
             </IconWrapper>
         );
         return (
