@@ -48,7 +48,7 @@ describe('http', () => {
         });
 
         await expect(coordinatorRequest('status', {}, { baseUrl })).rejects.toThrow(
-            'Internal Server Error: InternalErrorCodeExample',
+            'Internal Server Error (500) InternalErrorCodeExample',
         );
     });
 
@@ -62,7 +62,7 @@ describe('http', () => {
         });
 
         await expect(coordinatorRequest('status', {}, { baseUrl })).rejects.toThrow(
-            'Internal Server Error: InternalErrorCodeExample',
+            'Internal Server Error (500) InternalErrorCodeExample',
         );
     });
 

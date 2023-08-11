@@ -33,8 +33,9 @@ describe(`CoinjoinClient`, () => {
         const cli = new CoinjoinClient(server?.requestOptions);
 
         const status = await cli.enable();
-        expect(status?.rounds.length).toBeGreaterThan(0);
-        expect(status?.coordinationFeeRate.rate).toBeGreaterThan(0);
+        if (!status.success) throw new Error(`Client not enabled ${status.error}`);
+        expect(status.rounds.length).toBeGreaterThan(0);
+        expect(status.coordinationFeeRate.rate).toBeGreaterThan(0);
 
         cli.disable();
     });
