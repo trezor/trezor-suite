@@ -1,5 +1,5 @@
 import React from 'react';
-import { ConfirmOnDevice } from './index';
+import { ConfirmOnDevice } from './ConfirmOnDevice';
 import { StoryColumn } from '../../../support/Story';
 import { DeviceModelInternal } from '@trezor/connect';
 

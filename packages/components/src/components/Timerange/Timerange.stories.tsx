@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Timerange } from './index';
+import { Timerange } from './Timerange';
 import { storiesOf } from '@storybook/react';
 import { date, text } from '@storybook/addon-knobs';
 
