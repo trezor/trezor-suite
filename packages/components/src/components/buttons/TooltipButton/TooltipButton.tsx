@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Icon } from '../../Icon/Icon';
-import { Tooltip } from '../../Tooltip';
+import { Tooltip } from '../../Tooltip/Tooltip';
 import { Button, ButtonProps } from '../Button/Button';
 import { useTheme } from '../../../utils';
 

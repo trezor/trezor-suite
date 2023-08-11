@@ -16,7 +16,7 @@ import { Button } from '../buttons/Button/Button';
 import { Checkbox } from '../form/Checkbox';
 import { Input } from '../form/Input';
 import { Icon } from '../Icon/Icon';
-import { TooltipProps, Tooltip } from '../Tooltip';
+import { TooltipProps, Tooltip } from '../Tooltip/Tooltip';
 
 const MAX_LENGTH = 50;
 
