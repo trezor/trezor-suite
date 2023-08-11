@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react';
 import styled, { css } from 'styled-components';
-import { getInputStateTextColor } from '../../form/InputStyles';
+import { getInputStateTextColor } from '../form/InputStyles';
 
 export interface BoxProps extends React.HTMLAttributes<HTMLDivElement> {
     state?: 'success' | 'error' | 'warning';
