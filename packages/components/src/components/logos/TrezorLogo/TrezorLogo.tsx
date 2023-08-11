@@ -2,7 +2,7 @@ import React from 'react';
 import { ReactSVG } from 'react-svg';
 import styled from 'styled-components';
 import { LOGOS } from './logos';
-import { TrezorLogoType, TrezorLogoVariant } from '../../../support/types';
+import { TrezorLogoType } from '../../../support/types';
 
 const SvgWrapper = styled.div<Omit<TrezorLogoProps, 'type'>>`
     display: inline-block;

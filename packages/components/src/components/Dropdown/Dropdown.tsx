@@ -337,7 +337,7 @@ const Dropdown = forwardRef(
             setCoords([x, y]);
         };
 
-        useOnClickOutside([menuRef, toggleRef], event => {
+        useOnClickOutside([menuRef, toggleRef], () => {
             if (toggled) {
                 setToggled(false);
             }
@@ -437,7 +437,7 @@ const Dropdown = forwardRef(
                         />
                     </MasterLinkComponent>
                 )}
-                {visibleItems.map((group, i) => (
+                {visibleItems.map(group => (
                     <React.Fragment key={group.key}>
                         {group.label && <Group>{group.label}</Group>}
                         {group.options.map(item => (

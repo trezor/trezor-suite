@@ -2,7 +2,6 @@ import React from 'react';
 import styled from 'styled-components';
 import { storiesOf } from '@storybook/react';
 import { SecurityCard } from './index';
-import { variables, colors } from '../../../index';
 
 const Wrapper = styled.div`
     width: 100%;
