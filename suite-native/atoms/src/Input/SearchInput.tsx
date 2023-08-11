@@ -11,6 +11,7 @@ type InputProps = {
     onChange: (value: string) => void;
     placeholder: string;
     isDisabled?: boolean;
+    maxLength?: number;
 };
 
 const inputStyle = prepareNativeStyle(utils => ({
@@ -19,15 +20,6 @@ const inputStyle = prepareNativeStyle(utils => ({
     color: utils.colors.textOnTertiary,
     marginLeft: utils.spacings.medium,
     lineHeight: 0,
-}));
-
-const clearIconStyle = prepareNativeStyle(utils => ({
-    backgroundColor: utils.colors.backgroundNeutralSubdued,
-    height: 20,
-    width: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: utils.borders.radii.round,
 }));
 
 type InputStyleProps = {
@@ -39,8 +31,8 @@ const inputWrapperStyle = prepareNativeStyle<InputStyleProps>((utils, { isFocuse
     alignItems: 'center',
     height: 48,
     borderWidth: utils.borders.widths.small,
-    borderColor: utils.colors.backgroundNeutralSubtleOnElevation0,
-    backgroundColor: utils.colors.borderOnElevation0,
+    borderColor: utils.colors.borderOnElevation0,
+    backgroundColor: utils.colors.backgroundNeutralSubtleOnElevation0,
     borderRadius: utils.borders.radii.small,
     paddingLeft: 14,
     paddingRight: 14.25,
@@ -54,7 +46,13 @@ const inputWrapperStyle = prepareNativeStyle<InputStyleProps>((utils, { isFocuse
     ],
 }));
 
-export const SearchInput = ({ value, onChange, placeholder, isDisabled = false }: InputProps) => {
+export const SearchInput = ({
+    value,
+    onChange,
+    placeholder,
+    maxLength,
+    isDisabled = false,
+}: InputProps) => {
     const { applyStyle, utils } = useNativeStyles();
     const [isFocused, setIsFocused] = useState<boolean>(false);
     const searchInputRef = useRef<TextInput | null>(null);
@@ -70,9 +68,7 @@ export const SearchInput = ({ value, onChange, placeholder, isDisabled = false }
     return (
         <Pressable onPress={handleInputFocus}>
             <Box style={applyStyle(inputWrapperStyle, { isFocused })}>
-                <Box>
-                    <Icon name="search" color="iconSubdued" />
-                </Box>
+                <Icon name="search" color="iconSubdued" size="large" />
                 <TextInput
                     ref={searchInputRef}
                     value={value}
@@ -83,10 +79,11 @@ export const SearchInput = ({ value, onChange, placeholder, isDisabled = false }
                     onFocus={() => setIsFocused(true)}
                     onBlur={() => setIsFocused(false)}
                     style={applyStyle(inputStyle)}
+                    maxLength={maxLength}
                 />
                 {isClearButtonVisible && (
-                    <TouchableOpacity onPress={handleClear} style={applyStyle(clearIconStyle)}>
-                        <Icon name="close" size="small" color="iconOnPrimary" />
+                    <TouchableOpacity onPress={handleClear}>
+                        <Icon name="closeCircle" size="large" color="iconSubdued" />
                     </TouchableOpacity>
                 )}
             </Box>

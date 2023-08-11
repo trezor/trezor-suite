@@ -164,7 +164,7 @@ export const selectEthereumAccountsTokensWithFiatRates = memoizeWithArgs(
     (
         state: FiatRatesRootState & SettingsSliceRootState,
         ethereumAccountKey: string,
-    ): readonly TokenInfoBranded[] => {
+    ): TokenInfoBranded[] => {
         const account = selectAccountByKey(state, ethereumAccountKey);
         if (!account || !isEthereumAccountSymbol(account.symbol)) return [];
         return A.filter(account.tokens ?? [], token =>

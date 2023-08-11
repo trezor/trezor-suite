@@ -44,9 +44,10 @@ const screenContainerStyle = prepareNativeStyle<{
 const screenHeaderStyle = prepareNativeStyle<{
     insets: EdgeInsets;
     customHorizontalPadding: number;
-}>((_, { insets, customHorizontalPadding }) => ({
+}>((utils, { insets, customHorizontalPadding }) => ({
     paddingLeft: Math.max(insets.left, customHorizontalPadding),
     paddingRight: Math.max(insets.right, customHorizontalPadding),
+    paddingVertical: utils.spacings.small,
 }));
 
 export const Screen = ({
@@ -96,7 +97,7 @@ export const Screen = ({
                 backgroundColor={backgroundCSSColor}
             />
             {header && (
-                <View>
+                <>
                     <View
                         style={[
                             applyStyle(screenHeaderStyle, {
@@ -112,7 +113,7 @@ export const Screen = ({
                             <Divider />
                         </Box>
                     )}
-                </View>
+                </>
             )}
             <ScreenContent
                 footer={footer}
