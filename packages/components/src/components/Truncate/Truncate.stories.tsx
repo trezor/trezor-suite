@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { Truncate } from './index';
+import { Truncate } from './Truncate';
 
 const Holder = styled.div`
     display: flex;
