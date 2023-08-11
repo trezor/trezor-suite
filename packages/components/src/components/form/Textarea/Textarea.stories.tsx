@@ -1,7 +1,7 @@
 import React from 'react';
 import { useArgs } from '@storybook/client-api';
 
-import { Textarea } from '.';
+import { Textarea } from './Textarea';
 
 export default {
     title: 'Form/Textarea',

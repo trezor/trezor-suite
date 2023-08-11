@@ -2,7 +2,7 @@ import React from 'react';
 import { useArgs } from '@storybook/client-api';
 import styled from 'styled-components';
 
-import { RadioButton } from '.';
+import { RadioButton } from './RadioButton';
 import { H2 } from '../../typography/Heading/Heading';
 
 const Wrapper = styled.div`

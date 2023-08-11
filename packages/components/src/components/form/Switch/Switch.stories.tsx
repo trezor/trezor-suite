@@ -1,11 +1,11 @@
 import React from 'react';
 import { useArgs } from '@storybook/client-api';
 
-import { Checkbox } from '.';
+import { Switch } from './Switch';
 
 export default {
-    title: 'Form/Checkbox',
-    args: { label: 'Checkbox', isChecked: false, isDisabled: false },
+    title: 'Form/Switch',
+    args: { isSmall: false, isDisabled: false, isChecked: false },
 };
 
 export const Basic = {
@@ -15,9 +15,12 @@ export const Basic = {
         const handleIsChecked = () => updateArgs({ isChecked: !isChecked });
 
         return (
-            <Checkbox isChecked={isChecked} isDisabled={args.isDisabled} onClick={handleIsChecked}>
-                {args.label}
-            </Checkbox>
+            <Switch
+                onChange={handleIsChecked}
+                isChecked={isChecked}
+                isSmall={args.isSmall}
+                isDisabled={args.isDisabled}
+            />
         );
     },
 };

@@ -13,8 +13,8 @@ import { isAndroid } from '@trezor/env-utils';
 import PasswordStrengthIndicator from './PasswordStrengthIndicator';
 import { variables, motion as motionConfig } from '../../config';
 import { Button } from '../buttons/Button/Button';
-import { Checkbox } from '../form/Checkbox';
-import { Input } from '../form/Input';
+import { Checkbox } from '../form/Checkbox/Checkbox';
+import { Input } from '../form/Input/Input';
 import { Icon } from '../Icon/Icon';
 import { TooltipProps, Tooltip } from '../Tooltip/Tooltip';
 
