@@ -37,14 +37,14 @@ const registerOutput = async (
         [], // NOTE: sending empty amountToRequest **will not** create credentialToRequest object which **should not** be sent to coordinator in output-registration request
         amountCredentials,
         round.amountCredentialIssuerParameters,
-        roundParameters.maxAmountCredentialValue,
+        roundParameters.MaxAmountCredentialValue,
         { signal, baseUrl: middlewareUrl },
     );
     const outputVsizeCredentials = await middleware.getRealCredentials(
         [],
         vsizeCredentials,
         round.vsizeCredentialIssuerParameters,
-        roundParameters.maxVsizeCredentialValue,
+        roundParameters.MaxVsizeCredentialValue,
         { signal, baseUrl: middlewareUrl },
     );
 
@@ -95,7 +95,7 @@ const registerOutput = async (
                     }
                     if (error.errorCode === WabiSabiProtocolErrorCode.NotEnoughFunds) {
                         logger.error(
-                            `NotEnoughFunds. Amount: ${amountCredentials[0].value} Delta: ${outputAmountCredentials.credentialsRequest.Delta} FeeRate: ${roundParameters.miningFeeRate}`,
+                            `NotEnoughFunds. Amount: ${amountCredentials[0].Value} Delta: ${outputAmountCredentials.CredentialsRequest.Delta} FeeRate: ${roundParameters.MiningFeeRate}`,
                         );
                     }
                 }
@@ -121,7 +121,7 @@ const readyToSign = (
     input: Alice,
     { signal, coordinatorUrl }: CoinjoinRoundOptions,
 ) =>
-    coordinator.readyToSign(id, input.registrationData!.aliceId, !!input.affiliationFlag, {
+    coordinator.readyToSign(id, input.registrationData!.AliceId, !!input.affiliationFlag, {
         signal,
         baseUrl: coordinatorUrl,
         identity: input.outpoint, // NOTE: recycle input identity

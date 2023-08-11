@@ -192,8 +192,8 @@ export class CoinjoinBackendClient {
             case 204:
                 return { status: 'up-to-date' };
             case 200: {
-                const result: { bestHeight: number; filters: string[] } = await response.json();
-                const filters = result.filters.map<BlockFilter>(data => {
+                const result: { BestHeight: number; Filters: string[] } = await response.json();
+                const filters = result.Filters.map<BlockFilter>(data => {
                     const [blockHeight, blockHash, filter, prevHash, blockTime] = data.split(':');
                     return {
                         blockHeight: Number(blockHeight),
@@ -205,7 +205,7 @@ export class CoinjoinBackendClient {
                 });
                 return {
                     status: 'ok',
-                    bestHeight: result.bestHeight,
+                    bestHeight: result.BestHeight,
                     filters,
                 };
             }

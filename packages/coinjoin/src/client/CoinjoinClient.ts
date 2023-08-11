@@ -149,7 +149,7 @@ export class CoinjoinClient extends TypedEmitter<CoinjoinClientEvents> {
             const currentRound = this.rounds.find(r => r.id === event.roundId);
             if (currentRound) {
                 currentRound.resolveRequest(event);
-                const statusRound = this.status.rounds.find(r => r.id === event.roundId);
+                const statusRound = this.status.rounds.find(r => r.Id === event.roundId);
                 if (statusRound) {
                     changed.push(statusRound);
                 }
@@ -177,12 +177,12 @@ export class CoinjoinClient extends TypedEmitter<CoinjoinClientEvents> {
         rounds,
     }: Pick<CoinjoinStatusEvent, 'changed' | 'rounds'>) {
         // try to release inputs from prison
-        this.prison.release(rounds.map(r => r.id));
+        this.prison.release(rounds.map(r => r.Id));
 
         // find all CoinjoinRounds changed by Status
         const roundsToProcess = await Promise.all(
             changed.flatMap(round => {
-                const currentRound = this.rounds.find(r => r.id === round.id);
+                const currentRound = this.rounds.find(r => r.id === round.Id);
                 if (currentRound) {
                     // try to finish/interrupt current running process on changed round (if any)
                     // and update fresh data from Status

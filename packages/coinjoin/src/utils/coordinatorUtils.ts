@@ -117,29 +117,29 @@ const compareByteArray = (left: Buffer, right: Buffer) => {
 // merge outputs with the same scriptPubKey's
 export const mergePubkeys = (outputs: CoinjoinOutputAddedEvent[]) =>
     outputs.reduce((a, item) => {
-        const duplicates = outputs.filter(o => o.output.scriptPubKey === item.output.scriptPubKey);
+        const duplicates = outputs.filter(o => o.Output.ScriptPubKey === item.Output.ScriptPubKey);
         if (duplicates.length > 1) {
-            if (a.find(o => o.output.scriptPubKey === item.output.scriptPubKey)) return a;
-            const value = duplicates.reduce((v, b) => v + b.output.value, 0);
-            return a.concat({ ...item, output: { ...item.output, value } });
+            if (a.find(o => o.Output.ScriptPubKey === item.Output.ScriptPubKey)) return a;
+            const Value = duplicates.reduce((v, b) => v + b.Output.Value, 0);
+            return a.concat({ ...item, Output: { ...item.Output, Value } });
         }
         return a.concat(item);
     }, [] as CoinjoinOutputAddedEvent[]);
 
 // WalletWasabi/WalletWasabi/WabiSabi/Models/MultipartyTransaction/SigningState.cs
 export const sortInputs = (a: CoinjoinInput, b: CoinjoinInput) => {
-    if (a.txOut.value === b.txOut.value) {
-        return compareByteArray(Buffer.from(a.outpoint), Buffer.from(b.outpoint));
+    if (a.TxOut.Value === b.TxOut.Value) {
+        return compareByteArray(Buffer.from(a.Outpoint), Buffer.from(b.Outpoint));
     }
 
-    return b.txOut.value - a.txOut.value;
+    return b.TxOut.Value - a.TxOut.Value;
 };
 
 // WalletWasabi/WalletWasabi/WabiSabi/Models/MultipartyTransaction/SigningState.cs
 export const sortOutputs = (a: CoinjoinOutput, b: CoinjoinOutput) => {
-    if (a.value === b.value)
-        return compareByteArray(Buffer.from(a.scriptPubKey), Buffer.from(b.scriptPubKey));
-    return b.value - a.value;
+    if (a.Value === b.Value)
+        return compareByteArray(Buffer.from(a.ScriptPubKey), Buffer.from(b.ScriptPubKey));
+    return b.Value - a.Value;
 };
 
 // Transform transaction signature to witness, based on @trezor/utxo-lib/Transaction.getWitness

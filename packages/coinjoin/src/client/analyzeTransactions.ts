@@ -21,21 +21,21 @@ export interface AnalyzeTransactionsResult {
 const transformVinVout = (vinvout: EnhancedVinVout, network: Network) => {
     if (!vinvout.isAddress || !vinvout.addresses || vinvout.addresses.length > 1) return [];
 
-    const address = vinvout.addresses[0];
-    const value = Number(vinvout.value);
+    const Address = vinvout.addresses[0];
+    const Value = Number(vinvout.value);
 
-    if (vinvout.isAccountOwned) return { address, value } as AnalyzeInternalVinVout;
+    if (vinvout.isAccountOwned) return { Address, Value } as AnalyzeInternalVinVout;
 
-    const scriptPubKey = addressBjs.toOutputScript(address, network).toString('hex');
+    const ScriptPubKey = addressBjs.toOutputScript(Address, network).toString('hex');
     return {
-        scriptPubKey,
-        value,
+        ScriptPubKey,
+        Value,
     } as AnalyzeExternalVinVout;
 };
 
 const isInternal = (
     vinvout: AnalyzeInternalVinVout | AnalyzeExternalVinVout,
-): vinvout is AnalyzeInternalVinVout => 'address' in vinvout;
+): vinvout is AnalyzeInternalVinVout => 'Address' in vinvout;
 
 export const getRawLiquidityClue = (
     transactions: Transaction[],
@@ -47,7 +47,7 @@ export const getRawLiquidityClue = (
     const externalAmounts = cjTx.details.vout
         .flatMap(vout => transformVinVout(vout, options.network))
         .filter(vout => !('address' in vout))
-        .map(o => Number(o.value));
+        .map(o => Number(o.Value));
     return middleware.initLiquidityClue(externalAmounts, {
         baseUrl: options.middlewareUrl,
         signal: options.signal,
@@ -63,21 +63,21 @@ export const getAnonymityScores = async (
     options: AnalyzeTransactionsOptions,
 ) => {
     const formattedTransactions = transactions.map(tx => {
-        const [internalInputs, externalInputs] = arrayPartition(
+        const [InternalInputs, ExternalInputs] = arrayPartition(
             tx.details.vin.flatMap(vin => transformVinVout(vin, options.network)),
             isInternal,
         );
 
-        const [internalOutputs, externalOutputs] = arrayPartition(
+        const [InternalOutputs, ExternalOutputs] = arrayPartition(
             tx.details.vout.flatMap(vout => transformVinVout(vout, options.network)),
             isInternal,
         );
 
         return {
-            internalInputs,
-            externalInputs,
-            internalOutputs,
-            externalOutputs,
+            InternalInputs,
+            ExternalInputs,
+            InternalOutputs,
+            ExternalOutputs,
         };
     });
 
@@ -87,8 +87,8 @@ export const getAnonymityScores = async (
             signal: options.signal,
         });
 
-        return scores.reduce((dict, { address, anonymitySet }) => {
-            dict[address] = anonymitySet;
+        return scores.reduce((dict, { Address, AnonymitySet }) => {
+            dict[Address] = AnonymitySet;
             return dict;
         }, {} as Record<string, number>);
     } catch (error) {

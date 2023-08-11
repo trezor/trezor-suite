@@ -88,8 +88,8 @@ const registerInput = async (
                 }
                 if (error.errorCode === WabiSabiProtocolErrorCode.InputBanned) {
                     const sentenceEnd =
-                        'bannedUntil' in error.exceptionData
-                            ? new Date(error.exceptionData.bannedUntil).getTime() - Date.now()
+                        'BannedUntil' in error.exceptionData
+                            ? new Date(error.exceptionData.BannedUntil).getTime() - Date.now()
                             : 60 * 60 * 1000; // try again in 1 hour
                     round.prison.detain(input, {
                         errorCode: WabiSabiProtocolErrorCode.InputBanned,
@@ -100,8 +100,8 @@ const registerInput = async (
                     // track blacklist ban if it happens
                     logger.error(error.message);
                     const sentenceEnd =
-                        'bannedUntil' in error.exceptionData
-                            ? new Date(error.exceptionData.bannedUntil).getTime() - Date.now()
+                        'BannedUntil' in error.exceptionData
+                            ? new Date(error.exceptionData.BannedUntil).getTime() - Date.now()
                             : 10 * 24 * 60 * 60 * 1000; // try again in 10 days
                     round.prison.detain(input, {
                         errorCode: WabiSabiProtocolErrorCode.InputLongBanned,
@@ -117,13 +117,13 @@ const registerInput = async (
     // coordinator fee is 0 if input is remixed or amount is lower than or equal to plebsDontPayThreshold value
     const { roundParameters } = round;
     const coordinatorFee =
-        input.amount > roundParameters.coordinationFeeRate.plebsDontPayThreshold &&
-        !registrationData.isPayingZeroCoordinationFee
-            ? Math.floor(roundParameters.coordinationFeeRate.rate * input.amount)
+        input.amount > roundParameters.CoordinationFeeRate.PlebsDontPayThreshold &&
+        !registrationData.IsPayingZeroCoordinationFee
+            ? Math.floor(roundParameters.CoordinationFeeRate.Rate * input.amount)
             : 0;
-    const miningFee = Math.floor((input.inputSize * roundParameters.miningFeeRate) / 1000);
+    const miningFee = Math.floor((input.inputSize * roundParameters.MiningFeeRate) / 1000);
     const amount = input.amount - coordinatorFee - miningFee;
-    const vsize = roundParameters.maxVsizeAllocationPerAlice - input.inputSize;
+    const vsize = roundParameters.MaxVsizeAllocationPerAlice - input.inputSize;
 
     // store RegistrationData and affiliateFlag
     input.setRegistrationData(registrationData, coordinatorFee > 0);
@@ -140,14 +140,14 @@ const registerInput = async (
         // get Credentials and use them in middleware.getRealCredentials
         const amountCredentials = await middleware.getCredentials(
             round.amountCredentialIssuerParameters,
-            registrationData.amountCredentials,
-            zeroAmountCredentials.credentialsResponseValidation,
+            registrationData.AmountCredentials,
+            zeroAmountCredentials.CredentialsResponseValidation,
             { baseUrl: middlewareUrl }, // NOTE: without abort signal (should not be aborted)
         );
         const vsizeCredentials = await middleware.getCredentials(
             round.vsizeCredentialIssuerParameters,
-            registrationData.vsizeCredentials,
-            zeroVsizeCredentials.credentialsResponseValidation,
+            registrationData.VsizeCredentials,
+            zeroVsizeCredentials.CredentialsResponseValidation,
             { baseUrl: middlewareUrl }, // NOTE: without abort signal (should not be aborted)
         );
 
@@ -156,19 +156,19 @@ const registerInput = async (
             [amount, 0],
             amountCredentials,
             round.amountCredentialIssuerParameters,
-            roundParameters.maxAmountCredentialValue,
+            roundParameters.MaxAmountCredentialValue,
             { baseUrl: middlewareUrl },
         );
         const realVsizeCredentials = await middleware.getRealCredentials(
             [vsize, 0],
             vsizeCredentials,
             round.vsizeCredentialIssuerParameters,
-            roundParameters.maxVsizeCredentialValue,
+            roundParameters.MaxVsizeCredentialValue,
             { baseUrl: middlewareUrl },
         );
 
         logger.info(
-            `Registration ~~${input.outpoint}~~ to ~~${round.id}~~ successful. aliceId: ${registrationData.aliceId}`,
+            `Registration ~~${input.outpoint}~~ to ~~${round.id}~~ successful. aliceId: ${registrationData.AliceId}`,
         );
         logger.info(
             `~~${input.outpoint}~~ will pay ${coordinatorFee} coordinator fee and ${miningFee} mining fee`,

@@ -40,12 +40,12 @@ export const getRoundCandidates = ({
     return statusRounds
         .filter(
             round =>
-                round.phase === RoundPhase.InputRegistration &&
-                new Date(round.inputRegistrationEnd).getTime() - now >
+                round.Phase === RoundPhase.InputRegistration &&
+                new Date(round.InputRegistrationEnd).getTime() - now >
                     ROUND_SELECTION_REGISTRATION_OFFSET,
         )
         .flatMap(round => {
-            const current = coinjoinRounds.find(r => r.id === round.id);
+            const current = coinjoinRounds.find(r => r.id === round.Id);
             if (current) return current;
             // try to create new CoinjoinRound
             try {
@@ -314,30 +314,30 @@ export const selectInputsForRound = async ({
             // ...create set of parameters
             const { roundParameters } = round;
             const roundConstants = {
-                miningFeeRate: roundParameters.miningFeeRate,
-                coordinationFeeRate: roundParameters.coordinationFeeRate,
-                allowedInputAmounts: roundParameters.allowedInputAmounts,
-                allowedOutputAmounts: roundParameters.allowedOutputAmounts,
-                allowedInputTypes: roundParameters.allowedInputTypes,
+                MiningFeeRate: roundParameters.MiningFeeRate,
+                CoordinationFeeRate: roundParameters.CoordinationFeeRate,
+                AllowedInputAmounts: roundParameters.AllowedInputAmounts,
+                AllowedOutputAmounts: roundParameters.AllowedOutputAmounts,
+                AllowedInputTypes: roundParameters.AllowedInputTypes,
             };
             return Promise.all(
                 // ...and for each Account
                 normalAccounts.map(account => {
                     // ...also create set of parameters (utxos)
-                    const utxos = account.utxos.map(utxo => ({
-                        outpoint: utxo.outpoint,
-                        amount: utxo.amount,
-                        scriptPubKey: utxo.scriptPubKey,
-                        anonymitySet: utxo.anonymityLevel as number,
+                    const Utxos = account.utxos.map(utxo => ({
+                        Outpoint: utxo.outpoint,
+                        Amount: utxo.amount,
+                        ScriptPubKey: utxo.scriptPubKey,
+                        AnonymitySet: utxo.anonymityLevel as number,
                     }));
 
                     // skip Round candidate if fees are greater than allowed by account
                     if (
-                        roundParameters.miningFeeRate > account.maxFeePerKvbyte ||
-                        roundParameters.coordinationFeeRate.rate > account.maxCoordinatorFeeRate
+                        roundParameters.MiningFeeRate > account.maxFeePerKvbyte ||
+                        roundParameters.CoordinationFeeRate.Rate > account.maxCoordinatorFeeRate
                     ) {
                         logger.info(
-                            `Skipping round ~~${round.id}~~ for ~~${account.accountKey}~~. Fees to high ${roundParameters.miningFeeRate} ${roundParameters.coordinationFeeRate.rate}`,
+                            `Skipping round ~~${round.id}~~ for ~~${account.accountKey}~~. Fees to high ${roundParameters.MiningFeeRate} ${roundParameters.CoordinationFeeRate.Rate}`,
                         );
                         return [];
                     }
@@ -347,18 +347,18 @@ export const selectInputsForRound = async ({
                     return middleware
                         .getLiquidityClue(
                             account.rawLiquidityClue,
-                            roundParameters.maxSuggestedAmount,
+                            roundParameters.MaxSuggestedAmount,
                             { baseUrl: options.middlewareUrl },
                         )
-                        .then(liquidityClue =>
+                        .then(LiquidityClue =>
                             middleware.selectInputsForRound(
                                 {
                                     ...roundConstants,
-                                    utxos,
-                                    anonScoreTarget: account.targetAnonymity,
-                                    liquidityClue,
-                                    semiPrivateThreshold: 2,
-                                    consolidationMode: false,
+                                    Utxos,
+                                    AnonScoreTarget: account.targetAnonymity,
+                                    LiquidityClue,
+                                    SemiPrivateThreshold: 2,
+                                    ConsolidationMode: false,
                                 },
                                 {
                                     signal: options.signal,
@@ -366,7 +366,7 @@ export const selectInputsForRound = async ({
                                 },
                             ),
                         )
-                        .then(indices => indices.filter(i => utxos[i])) // filter valid existing indices
+                        .then(indices => indices.filter(i => Utxos[i])) // filter valid existing indices
                         .catch(error => {
                             logger.error(`selectInputsForRound failed ${error.message}`);
                             return [] as number[];
@@ -395,12 +395,12 @@ export const selectInputsForRound = async ({
         const selectedUtxos = utxoIndexes.map(utxoIndex => account.utxos[utxoIndex]);
 
         // Temporary workaround for middleware issue: https://github.com/zkSNACKs/WalletWasabi/issues/10759
-        const feeRate = selectedRound.roundParameters.miningFeeRate;
+        const feeRate = selectedRound.roundParameters.MiningFeeRate;
         const inputFee = Math.floor((getInputSize(account.scriptType) * feeRate) / 1000);
         const outputFee = Math.floor((getOutputSize(account.scriptType) * feeRate) / 1000);
         const totalValue = selectedUtxos.reduce((a, b) => a + b.amount, 0);
         const effectiveValue = totalValue - outputFee - selectedUtxos.length * inputFee;
-        if (effectiveValue < selectedRound.roundParameters.allowedOutputAmounts.min) {
+        if (effectiveValue < selectedRound.roundParameters.AllowedOutputAmounts.Min) {
             // skip round if effective value is too low
             // https://github.com/zkSNACKs/WalletWasabi/issues/10759
             logger.error(`Skipping the round. Utxo effective value ${effectiveValue} is too low`);
@@ -408,7 +408,7 @@ export const selectInputsForRound = async ({
             // skip round if selected utxo value is greater than maxSuggestedAmount
             // https://github.com/zkSNACKs/WalletWasabi/blob/23e4ec0971303b4502372332ecaffe4ff5d08917/WalletWasabi/WabiSabi/Client/CoinJoinClient.cs#L156
             selectedUtxos.some(
-                utxo => utxo.amount > selectedRound.roundParameters.maxSuggestedAmount,
+                utxo => utxo.amount > selectedRound.roundParameters.MaxSuggestedAmount,
             )
         ) {
             logger.info('Skipping the round for more optimal mixing.');

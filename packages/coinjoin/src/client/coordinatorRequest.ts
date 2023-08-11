@@ -9,7 +9,7 @@ export type { RequestOptions } from '../utils/http';
 export type ExceptionData =
     | {
           Type: 'InputBannedExceptionData';
-          bannedUntil: string;
+          BannedUntil: string;
       }
     | { Type: string };
 
@@ -20,13 +20,13 @@ export class WabiSabiProtocolException extends Error {
     exceptionData: ExceptionData;
 
     // NOTE: coordinator/middleware error shape
-    // {type: string, errorCode: string, description: string, exceptionData: { Type: string } }
+    // {Type: string, ErrorCode: string, Description: string, ExceptionData: { Type: string } }
     constructor(error: Record<string, any>) {
-        super(`${error.errorCode} ${error.description}`);
-        this.type = error.type;
-        this.errorCode = enumUtils.getValueByKey(WabiSabiProtocolErrorCode, error.errorCode);
-        this.description = error.description;
-        this.exceptionData = error.exceptionData;
+        super(`${error.ErrorCode} ${error.Description}`);
+        this.type = error.Type;
+        this.errorCode = enumUtils.getValueByKey(WabiSabiProtocolErrorCode, error.ErrorCode);
+        this.description = error.Description;
+        this.exceptionData = error.ExceptionData;
     }
 }
 
@@ -115,7 +115,7 @@ export const coordinatorRequest = async <R = void>(
     }
 
     // catch WabiSabiProtocolException
-    if (typeof result === 'object' && 'errorCode' in result) {
+    if (typeof result === 'object' && 'ErrorCode' in result) {
         throw new WabiSabiProtocolException(result);
     }
 
