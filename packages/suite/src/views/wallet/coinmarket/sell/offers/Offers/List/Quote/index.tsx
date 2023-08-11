@@ -237,7 +237,7 @@ const Quote = ({ className, quote, amountInCrypto }: QuoteProps) => {
     const { selectQuote, sellInfo, needToRegisterOrVerifyBankAccount } =
         useCoinmarketSellOffersContext();
     const { tag, infoNote } = getTagAndInfoNote(quote);
-    const { paymentMethod, exchange, error, bankAccounts } = quote;
+    const { paymentMethod, paymentMethodName, exchange, error, bankAccounts } = quote;
     if (!exchange || !sellInfo) return null;
 
     // show bank account verification info if no verified account and no error and BANK_ACCOUNT flow
@@ -301,7 +301,10 @@ const Quote = ({ className, quote, amountInCrypto }: QuoteProps) => {
                         <Translation id="TR_SELL_PAID_BY" />
                     </Heading>
                     <Value>
-                        <CoinmarketPaymentType method={paymentMethod}>
+                        <CoinmarketPaymentType
+                            method={paymentMethod}
+                            methodName={paymentMethodName}
+                        >
                             {verificationInfo && (
                                 <VerificationInfo>
                                     <Translation id="TR_SELL_BANK_ACCOUNT_VERIFICATION_INFO" />

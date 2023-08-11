@@ -115,6 +115,7 @@ const SavingsTransaction = ({ trade, providers, account }: SavingsTransactionPro
         receiveCurrency,
         exchange,
         paymentMethod,
+        paymentMethodName,
     } = data;
 
     return (
@@ -145,7 +146,7 @@ const SavingsTransaction = ({ trade, providers, account }: SavingsTransactionPro
                     <CoinmarketProviderInfo exchange={exchange} providers={providers} />
                 </Row>
                 <RowSecond>
-                    <CoinmarketPaymentType method={paymentMethod} />
+                    <CoinmarketPaymentType method={paymentMethod} methodName={paymentMethodName} />
                 </RowSecond>
             </ProviderColumn>
         </Wrapper>

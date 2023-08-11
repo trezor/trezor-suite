@@ -232,7 +232,7 @@ const Quote = ({ className, quote, wantCrypto }: QuoteProps) => {
     const theme = useTheme();
     const { selectQuote, providersInfo } = useCoinmarketBuyOffersContext();
     const { tag, infoNote } = getTagAndInfoNote(quote);
-    const { paymentMethod, exchange, error } = quote;
+    const { paymentMethod, paymentMethodName, exchange, error } = quote;
 
     return (
         <Wrapper className={className}>
@@ -284,7 +284,10 @@ const Quote = ({ className, quote, wantCrypto }: QuoteProps) => {
                         <Translation id="TR_BUY_PAID_BY" />
                     </Heading>
                     <Value>
-                        <CoinmarketPaymentType method={paymentMethod} />
+                        <CoinmarketPaymentType
+                            method={paymentMethod}
+                            methodName={paymentMethodName}
+                        />
                     </Value>
                 </Column>
                 <Column>
