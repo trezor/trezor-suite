@@ -2695,6 +2695,23 @@ export default defineMessages({
         defaultMessage: 'Language',
         id: 'TR_LANGUAGE',
     },
+    TR_LANGUAGE_DESCRIPTION: {
+        defaultMessage:
+            'The Trezor community translated Czech, and we are thankful for their contributions. Ensure language consistency by referring to our official languages for verification.',
+        id: 'TR_LANGUAGE_DESCRIPTION',
+    },
+    TR_LANGUAGE_CREDITS: {
+        defaultMessage: 'See credits',
+        id: 'TR_LANGUAGE_CREDITS',
+    },
+    TR_OFFICIAL_LANGUAGES: {
+        defaultMessage: 'Official',
+        id: 'TR_OFFICIAL_LANGUAGES',
+    },
+    TR_COMMUNITY_LANGUAGES: {
+        defaultMessage: 'Community',
+        id: 'TR_COMMUNITY_LANGUAGES',
+    },
     TR_LEARN: {
         defaultMessage: 'Learn',
         description: 'Link to Suite Guide.',

@@ -11,9 +11,13 @@ import { ActionColumn, ActionSelect, SectionItem, TextColumn } from 'src/compone
 import { useAnchor } from 'src/hooks/suite/useAnchor';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { getPlatformLanguages } from '@trezor/env-utils';
+import { CROWDIN_URL } from '@trezor/urls';
 
-const onlyComplete = (locale: [string, LocaleInfo]): locale is [Locale, LocaleInfo] =>
-    !!locale[1].complete;
+const onlyOfficial = (locale: [string, LocaleInfo]): locale is [Locale, LocaleInfo] =>
+    locale[1].type === 'official';
+
+const onlyCommunity = (locale: [string, LocaleInfo]): locale is [Locale, LocaleInfo] =>
+    locale[1].type === 'community';
 
 const useLanguageOptions = () => {
     const { translationString } = useTranslation();
@@ -30,12 +34,19 @@ const useLanguageOptions = () => {
                 options: [systemOption],
             },
             {
+                label: translationString('TR_OFFICIAL_LANGUAGES'),
                 options: Object.entries(LANGUAGES)
-                    .filter(onlyComplete)
+                    .filter(onlyOfficial)
+                    .map(([value, { name }]) => ({ value, label: name })),
+            },
+            {
+                label: translationString('TR_COMMUNITY_LANGUAGES'),
+                options: Object.entries(LANGUAGES)
+                    .filter(onlyCommunity)
                     .map(([value, { name }]) => ({ value, label: name })),
             },
         ],
-        [systemOption],
+        [systemOption, translationString],
     );
     return {
         options,
@@ -84,7 +95,12 @@ export const Language = () => {
             ref={anchorRef}
             shouldHighlight={shouldHighlight}
         >
-            <TextColumn title={<Translation id="TR_LANGUAGE" />} />
+            <TextColumn
+                title={<Translation id="TR_LANGUAGE" />}
+                description={<Translation id="TR_LANGUAGE_DESCRIPTION" />}
+                buttonTitle={<Translation id="TR_LANGUAGE_CREDITS" />}
+                buttonLink={CROWDIN_URL}
+            />
             <ActionColumn>
                 <ActionSelect
                     hideTextCursor
