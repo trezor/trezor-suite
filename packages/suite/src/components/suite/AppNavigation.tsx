@@ -1,19 +1,12 @@
 import React, { useRef, useLayoutEffect, useState } from 'react';
 import styled, { css } from 'styled-components';
-import {
-    variables,
-    IconProps,
-    useTheme,
-    Button,
-    Icon,
-    Dropdown,
-    HoverAnimation,
-} from '@trezor/components';
+import { variables, IconProps, useTheme, Button, Icon, Dropdown } from '@trezor/components';
 import { AccountFormCloseButton, AppNavigationTooltip } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
 import { Route } from 'src/types/suite';
 import { AccountStickyContent } from './AccountStickyContent';
 import { MAX_WIDTH, MAX_WIDTH_WALLET_CONTENT } from 'src/constants/suite/layout';
+import { HoverAnimation } from './NavigationBar/components/HoverAnimation';
 
 const { FONT_WEIGHT, FONT_SIZE } = variables;
 
