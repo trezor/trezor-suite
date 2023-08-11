@@ -3,7 +3,7 @@ import { useArgs } from '@storybook/client-api';
 import styled from 'styled-components';
 
 import { RadioButton } from '.';
-import { H2 } from '../../typography/Heading';
+import { H2 } from '../../typography/Heading/Heading';
 
 const Wrapper = styled.div`
     display: flex;
