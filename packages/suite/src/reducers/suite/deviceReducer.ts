@@ -1,16 +1,11 @@
-import { AnyAction } from '@reduxjs/toolkit';
+import { PayloadAction, AnyAction } from '@reduxjs/toolkit';
 
-import { Device, DEVICE, Features } from '@trezor/connect';
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
+import { Device, DEVICE, Features } from '@trezor/connect';
 
 import { SUITE, METADATA } from 'src/actions/suite/constants';
 import * as deviceUtils from 'src/utils/suite/device';
 import type { TrezorDevice, AcquiredDevice, ButtonRequest } from 'src/types/suite';
-import { AnyAction, PayloadAction } from '@reduxjs/toolkit';
-
-import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
-
-import { Device, DEVICE, Features } from '@trezor/connect';
 
 type State = TrezorDevice[];
 const initialState: State = [];
