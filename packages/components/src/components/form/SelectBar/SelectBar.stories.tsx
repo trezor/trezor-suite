@@ -1,7 +1,7 @@
 import React from 'react';
 import { useArgs } from '@storybook/client-api';
 
-import { SelectBar } from '.';
+import { SelectBar } from './SelectBar';
 
 const options = [
     { label: 'low', value: 'low' },

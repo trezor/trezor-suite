@@ -1,7 +1,7 @@
 import React from 'react';
 import { useArgs } from '@storybook/client-api';
 
-import { Input } from '.';
+import { Input } from './Input';
 
 export default {
     title: 'Form/Input',

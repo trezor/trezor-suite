@@ -1,7 +1,7 @@
 import React from 'react';
 import { useArgs } from '@storybook/client-api';
 
-import { Select } from '.';
+import { Select } from './Select';
 
 const values: any = {
     'None (default)': null,
