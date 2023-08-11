@@ -17,119 +17,119 @@ import {
 } from '../types/middleware';
 
 export const getRealCredentials = async (
-    amountsToRequest: number[],
-    credentialsToPresent: Credentials[],
-    credentialIssuerParameters: IssuerParameter,
-    maxCredentialValue: number,
+    AmountsToRequest: number[],
+    CredentialsToPresent: Credentials[],
+    CredentialIssuerParameters: IssuerParameter,
+    MaxCredentialValue: number,
     options: RequestOptions,
 ) => {
-    const data = await request<{ realCredentialRequests: RealCredentials }>(
+    const data = await request<{ RealCredentialRequests: RealCredentials }>(
         'get-real-credential-requests',
         {
-            amountsToRequest,
-            credentialIssuerParameters,
-            maxCredentialValue,
-            credentialsToPresent,
+            AmountsToRequest,
+            CredentialIssuerParameters,
+            MaxCredentialValue,
+            CredentialsToPresent,
         },
         options,
     );
-    return data.realCredentialRequests;
+    return data.RealCredentialRequests;
 };
 
 export const getZeroCredentials = async (issuer: IssuerParameter, options: RequestOptions) => {
-    const data = await request<{ zeroCredentialRequests: ZeroCredentials }>(
+    const data = await request<{ ZeroCredentialRequests: ZeroCredentials }>(
         'get-zero-credential-requests',
         {
-            credentialIssuerParameters: issuer,
+            CredentialIssuerParameters: issuer,
         },
         options,
     );
-    return data.zeroCredentialRequests;
+    return data.ZeroCredentialRequests;
 };
 
 export const getCredentials = async (
-    credentialIssuerParameters: IssuerParameter,
-    credentialsResponse: RealCredentials,
-    credentialsValidationData: CredentialsResponseValidation,
+    CredentialIssuerParameters: IssuerParameter,
+    CredentialsResponse: RealCredentials,
+    CredentialsValidationData: CredentialsResponseValidation,
     options: RequestOptions,
 ) => {
-    const data = await request<{ credentials: Credentials[] }>(
+    const data = await request<{ Credentials: Credentials[] }>(
         'get-credentials',
         {
-            credentialIssuerParameters,
-            credentialsResponse,
-            credentialsValidationData,
+            CredentialIssuerParameters,
+            CredentialsResponse,
+            CredentialsValidationData,
         },
         options,
     );
-    return data.credentials;
+    return data.Credentials;
 };
 
 export const getOutputsAmounts = async (
     body: {
-        inputSize: number;
-        outputSize: number;
-        availableVsize: number;
-        miningFeeRate: number;
-        allowedOutputAmounts: AllowedRange;
-        internalAmounts: number[];
-        externalAmounts: number[];
+        InputSize: number;
+        OutputSize: number;
+        AvailableVsize: number;
+        MiningFeeRate: number;
+        AllowedOutputAmounts: AllowedRange;
+        InternalAmounts: number[];
+        ExternalAmounts: number[];
     },
     options: RequestOptions,
 ) => {
-    const data = await request<{ outputAmounts: number[] }>('get-outputs-amounts', body, options);
-    return data.outputAmounts;
+    const data = await request<{ OutputAmounts: number[] }>('get-outputs-amounts', body, options);
+    return data.OutputAmounts;
 };
 
 export const selectInputsForRound = async (
     body: {
-        allowedInputTypes: AllowedScriptTypes[];
-        coordinationFeeRate: CoordinationFeeRate;
-        miningFeeRate: number;
-        allowedInputAmounts: AllowedRange;
-        allowedOutputAmounts: AllowedRange;
-        utxos: UtxoForRound[];
-        anonScoreTarget: number;
-        liquidityClue: number;
-        semiPrivateThreshold: number;
-        consolidationMode: boolean;
+        AllowedInputTypes: AllowedScriptTypes[];
+        CoordinationFeeRate: CoordinationFeeRate;
+        MiningFeeRate: number;
+        AllowedInputAmounts: AllowedRange;
+        AllowedOutputAmounts: AllowedRange;
+        Utxos: UtxoForRound[];
+        AnonScoreTarget: number;
+        LiquidityClue: number;
+        SemiPrivateThreshold: number;
+        ConsolidationMode: boolean;
     },
     options: RequestOptions,
 ) => {
-    const data = await request<{ indices: number[] }>('select-inputs-for-round', body, options);
-    return data.indices;
+    const data = await request<{ Indices: number[] }>('select-inputs-for-round', body, options);
+    return data.Indices;
 };
 
 export const getAnonymityScores = async (
-    transactions: AnalyzeTransactionDetails[],
+    Transactions: AnalyzeTransactionDetails[],
     options: RequestOptions,
 ) => {
-    const data = await request<AnalyzeResult>('get-anonymity-scores', { transactions }, options);
+    const data = await request<AnalyzeResult>('get-anonymity-scores', { Transactions }, options);
 
-    return data.results;
+    return data.Results;
 };
 
-export const initLiquidityClue = async (externalAmounts: number[], options: RequestOptions) => {
-    const data = await request<{ rawLiquidityClue: RawLiquidityClue }>(
+export const initLiquidityClue = async (ExternalAmounts: number[], options: RequestOptions) => {
+    const data = await request<{ RawLiquidityClue: RawLiquidityClue }>(
         'init-liquidity-clue',
-        { externalAmounts },
+        { ExternalAmounts },
         options,
     );
-    return data.rawLiquidityClue;
+    return data.RawLiquidityClue;
 };
 
 export const updateLiquidityClue = async (
     rawLiquidityClue: RawLiquidityClue,
-    maxSuggestedAmount: number,
-    externalAmounts: number[],
+    MaxSuggestedAmount: number,
+    ExternalAmounts: number[],
     options: RequestOptions,
 ) => {
-    const data = await request<{ rawLiquidityClue: RawLiquidityClue }>(
+    const data = await request<{ RawLiquidityClue: RawLiquidityClue }>(
         'update-liquidity-clue',
-        { rawLiquidityClue, maxSuggestedAmount, externalAmounts },
+        { RawLiquidityClue: rawLiquidityClue, MaxSuggestedAmount, ExternalAmounts },
         options,
     );
-    return data.rawLiquidityClue;
+    return data.RawLiquidityClue;
 };
 
 export const getLiquidityClue = async (
@@ -137,12 +137,12 @@ export const getLiquidityClue = async (
     maxSuggestedAmount: number,
     options: RequestOptions,
 ) => {
-    const data = await request<{ liquidityClue: number }>(
+    const data = await request<{ LiquidityClue: number }>(
         'get-liquidity-clue',
         { rawLiquidityClue, maxSuggestedAmount },
         options,
     );
-    return data.liquidityClue;
+    return data.LiquidityClue;
 };
 
 // reexport all middleware types

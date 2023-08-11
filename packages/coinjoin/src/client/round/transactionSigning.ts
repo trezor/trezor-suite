@@ -26,9 +26,9 @@ const getTransactionData = (
     round: CoinjoinRound,
     options: CoinjoinRoundOptions,
 ): CoinjoinTransactionData => {
-    const registeredInputs = getRoundEvents('InputAdded', round.coinjoinState.events);
+    const registeredInputs = getRoundEvents('InputAdded', round.coinjoinState.Events);
     const registeredOutputs = mergePubkeys(
-        getRoundEvents('OutputAdded', round.coinjoinState.events),
+        getRoundEvents('OutputAdded', round.coinjoinState.Events),
     );
     const myInputsInRound = round.inputs;
     const myOutputsInRound = round.addresses;
@@ -46,36 +46,36 @@ const getTransactionData = (
     }
 
     const inputs = registeredInputs
-        .sort((a, b) => sortInputs(a.coin, b.coin))
-        .map(({ coin, ownershipProof }) => {
-            const { index, hash } = readOutpoint(coin.outpoint);
-            const internal = myInputsInRound.find(a => compareOutpoint(a.outpoint, coin.outpoint));
-            const address = getAddressFromScriptPubKey(coin.txOut.scriptPubKey, options.network);
+        .sort((a, b) => sortInputs(a.Coin, b.Coin))
+        .map(({ Coin, OwnershipProof }) => {
+            const { index, hash } = readOutpoint(Coin.Outpoint);
+            const internal = myInputsInRound.find(a => compareOutpoint(a.outpoint, Coin.Outpoint));
+            const address = getAddressFromScriptPubKey(Coin.TxOut.ScriptPubKey, options.network);
             return {
                 path: internal?.path,
-                outpoint: internal?.outpoint || coin.outpoint, // NOTE: internal outpoints are in lowercase, coordinators in uppercase
+                outpoint: internal?.outpoint || Coin.Outpoint, // NOTE: internal outpoints are in lowercase, coordinators in uppercase
                 hash,
                 index,
-                amount: coin.txOut.value,
+                amount: Coin.TxOut.Value,
                 address,
-                scriptPubKey: prefixScriptPubKey(coin.txOut.scriptPubKey),
-                ownershipProof,
+                scriptPubKey: prefixScriptPubKey(Coin.TxOut.ScriptPubKey),
+                ownershipProof: OwnershipProof,
                 commitmentData: round.commitmentData,
             };
         });
 
     const outputs = registeredOutputs
-        .sort((a, b) => sortOutputs(a.output, b.output))
-        .map(({ output }) => {
+        .sort((a, b) => sortOutputs(a.Output, b.Output))
+        .map(({ Output }) => {
             const internalOutput = myOutputsInRound.find(
-                o => output.scriptPubKey === o.scriptPubKey,
+                o => Output.ScriptPubKey === o.scriptPubKey,
             );
-            const address = getAddressFromScriptPubKey(output.scriptPubKey, options.network);
+            const address = getAddressFromScriptPubKey(Output.ScriptPubKey, options.network);
             return {
                 path: internalOutput?.path,
                 address,
-                amount: output.value,
-                scriptPubKey: prefixScriptPubKey(output.scriptPubKey),
+                amount: Output.Value,
+                scriptPubKey: prefixScriptPubKey(Output.ScriptPubKey),
             };
         });
 
@@ -99,7 +99,7 @@ const updateRawLiquidityClue = async (
                 .map(o => o.amount);
             return middleware.updateLiquidityClue(
                 account.rawLiquidityClue,
-                round.roundParameters.maxSuggestedAmount,
+                round.roundParameters.MaxSuggestedAmount,
                 externalAmounts,
                 { baseUrl: options.middlewareUrl },
             );

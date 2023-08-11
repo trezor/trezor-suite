@@ -1,5 +1,5 @@
 import { SessionPhase, WabiSabiProtocolErrorCode } from '../enums';
-import { AllowedRange, CoordinationFeeRate, Round } from './coordinator';
+import { Round } from './coordinator';
 import { CoinjoinRequestEvent, CoinjoinRoundEvent } from './round';
 import { LogEvent } from './logger';
 
@@ -7,8 +7,14 @@ export interface CoinjoinStatusEvent {
     rounds: Round[];
     changed: Round[];
     feeRateMedian: number;
-    coordinationFeeRate: CoordinationFeeRate;
-    allowedInputAmounts: AllowedRange;
+    coordinationFeeRate: {
+        rate: number;
+        plebsDontPayThreshold: number;
+    };
+    allowedInputAmounts: {
+        min: number;
+        max: number;
+    };
 }
 
 export interface CoinjoinClientVersion {

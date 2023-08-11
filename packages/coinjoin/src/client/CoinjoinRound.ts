@@ -97,11 +97,11 @@ export class CoinjoinRound extends TypedEmitter<Events> {
     blameOf: string;
     phase: RoundPhase;
     endRoundState: EndRoundState;
-    coinjoinState: Round['coinjoinState'];
+    coinjoinState: Round['CoinjoinState'];
     inputRegistrationEnd: string;
-    amountCredentialIssuerParameters: Round['amountCredentialIssuerParameters'];
-    vsizeCredentialIssuerParameters: Round['vsizeCredentialIssuerParameters'];
-    affiliateRequest: Round['affiliateRequest'];
+    amountCredentialIssuerParameters: Round['AmountCredentialIssuerParameters'];
+    vsizeCredentialIssuerParameters: Round['VsizeCredentialIssuerParameters'];
+    affiliateRequest: Round['AffiliateRequest'];
     //
     roundParameters: CoinjoinRoundParameters;
     inputs: Alice[] = []; // list of registered inputs
@@ -117,21 +117,25 @@ export class CoinjoinRound extends TypedEmitter<Events> {
 
     constructor(round: Round, prison: CoinjoinPrison, options: CoinjoinRoundOptions) {
         super();
-        this.id = round.id;
-        this.blameOf = round.blameOf;
+        this.id = round.Id;
+        this.blameOf = round.BlameOf;
         this.phase = 0;
-        this.endRoundState = round.endRoundState;
-        this.coinjoinState = round.coinjoinState;
-        this.inputRegistrationEnd = round.inputRegistrationEnd;
-        this.amountCredentialIssuerParameters = round.amountCredentialIssuerParameters;
-        this.vsizeCredentialIssuerParameters = round.vsizeCredentialIssuerParameters;
+        this.endRoundState = round.EndRoundState;
+        this.coinjoinState = round.CoinjoinState;
+        this.inputRegistrationEnd = round.InputRegistrationEnd;
+        this.amountCredentialIssuerParameters = round.AmountCredentialIssuerParameters;
+        this.vsizeCredentialIssuerParameters = round.VsizeCredentialIssuerParameters;
         const roundParameters = getRoundParameters(round);
         if (!roundParameters) {
             throw new Error('Missing CoinjoinRound roundParameters');
         }
         this.roundParameters = roundParameters;
-        this.commitmentData = getCommitmentData(options.coordinatorName, round.id);
-        const { phaseDeadline, roundDeadline } = getCoinjoinRoundDeadlines(this as any);
+        this.commitmentData = getCommitmentData(options.coordinatorName, round.Id);
+        const { phaseDeadline, roundDeadline } = getCoinjoinRoundDeadlines({
+            Phase: this.phase,
+            InputRegistrationEnd: this.inputRegistrationEnd,
+            RoundParameters: roundParameters,
+        });
         this.phaseDeadline = phaseDeadline;
         this.roundDeadline = roundDeadline;
         this.options = options;
@@ -177,7 +181,7 @@ export class CoinjoinRound extends TypedEmitter<Events> {
             // try to interrupt running process and start processing new phase
             // but give current process some time to cool off
             // example: http request is sent but response was not received yet and aborted
-            const shouldCoolOff = changed.phase === this.phase + 1;
+            const shouldCoolOff = changed.Phase === this.phase + 1;
             const { promise, abort } = this.lock;
             const unlock = () => {
                 this.logger.warn(`Aborting round ${this.id}`);
@@ -201,23 +205,27 @@ export class CoinjoinRound extends TypedEmitter<Events> {
         if (this.phase === RoundPhase.Ended) return this;
 
         // update data from status
-        if (this.phase !== changed.phase) {
-            this.phase = changed.phase;
-            this.endRoundState = changed.endRoundState;
-            this.coinjoinState = changed.coinjoinState;
-            const { phaseDeadline, roundDeadline } = getCoinjoinRoundDeadlines(this);
+        if (this.phase !== changed.Phase) {
+            this.phase = changed.Phase;
+            this.endRoundState = changed.EndRoundState;
+            this.coinjoinState = changed.CoinjoinState;
+            const { phaseDeadline, roundDeadline } = getCoinjoinRoundDeadlines({
+                Phase: this.phase,
+                InputRegistrationEnd: this.inputRegistrationEnd,
+                RoundParameters: this.roundParameters,
+            });
             this.phaseDeadline = phaseDeadline;
             this.roundDeadline = roundDeadline;
         }
 
         // update affiliateRequest once and keep the value
         // affiliateData are removed from the status once phase is changed to Ended
-        if (!this.affiliateRequest && changed.affiliateRequest) {
-            this.affiliateRequest = changed.affiliateRequest;
+        if (!this.affiliateRequest && changed.AffiliateRequest) {
+            this.affiliateRequest = changed.AffiliateRequest;
         }
 
         // NOTE: emit changed event before each async phase
-        if (changed.phase !== RoundPhase.Ended) {
+        if (changed.Phase !== RoundPhase.Ended) {
             this.emit('changed', { round: this.toSerialized() });
         }
 

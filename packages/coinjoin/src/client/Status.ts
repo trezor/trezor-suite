@@ -55,24 +55,24 @@ export class Status extends TypedEmitter<StatusEvents> {
     private compareStatus(next: Round[]) {
         return next
             .filter(nextRound => {
-                const known = this.rounds.find(prevRound => prevRound.id === nextRound.id);
+                const known = this.rounds.find(prevRound => prevRound.Id === nextRound.Id);
                 if (!known) return true; // new phase
-                if (nextRound.phase === known.phase + 1) return true; // expected update
-                if (nextRound.phase === RoundPhase.TransactionSigning && !known.affiliateRequest) {
+                if (nextRound.Phase === known.Phase + 1) return true; // expected update
+                if (nextRound.Phase === RoundPhase.TransactionSigning && !known.AffiliateRequest) {
                     return true; // affiliateRequest is propagated asynchronously, might be added after phase change
                 }
 
                 if (
-                    known.phase === RoundPhase.Ended &&
-                    known.endRoundState !== nextRound.endRoundState
+                    known.Phase === RoundPhase.Ended &&
+                    known.EndRoundState !== nextRound.EndRoundState
                 )
                     return true;
-                if (nextRound.phase === RoundPhase.Ended && known.phase !== RoundPhase.Ended)
+                if (nextRound.Phase === RoundPhase.Ended && known.Phase !== RoundPhase.Ended)
                     return true; // round ended
-                if (nextRound.phase !== known.phase) {
+                if (nextRound.Phase !== known.Phase) {
                     this.log(
                         'warn',
-                        `Unexpected phase change: ${nextRound.id} ${known.phase} => ${nextRound.phase}`,
+                        `Unexpected phase change: ${nextRound.Id} ${known.Phase} => ${nextRound.Phase}`,
                     );
                     // possible corner-case:
                     // - suite fetch the /status, next fetch will be in ~20 sec. + potential network delay
@@ -88,8 +88,8 @@ export class Status extends TypedEmitter<StatusEvents> {
                 this.rounds
                     .filter(
                         prevRound =>
-                            prevRound.phase < RoundPhase.Ended &&
-                            !next.find(nextRound => prevRound.id === nextRound.id),
+                            prevRound.Phase < RoundPhase.Ended &&
+                            !next.find(nextRound => prevRound.Id === nextRound.Id),
                     )
                     .map(r => ({ ...r, phase: RoundPhase.Ended })),
             );
@@ -169,20 +169,20 @@ export class Status extends TypedEmitter<StatusEvents> {
 
     private processStatus(status: coordinator.CoinjoinStatus) {
         // add matching coinjoinRequest to rounds
-        status.roundStates.forEach(round => {
-            const roundRequest = status.affiliateInformation?.affiliateData[round.id];
-            round.affiliateRequest = roundRequest?.trezor;
+        status.RoundStates.forEach(round => {
+            const roundRequest = status.AffiliateInformation?.AffiliateData[round.Id];
+            round.AffiliateRequest = roundRequest?.trezor;
         });
 
         // report affiliate server status
         const runningAffiliateServer =
-            !!status.affiliateInformation?.runningAffiliateServers.includes('trezor');
+            !!status.AffiliateInformation?.RunningAffiliateServers.includes('trezor');
         if (this.runningAffiliateServer !== runningAffiliateServer) {
             this.emit('affiliate-server', runningAffiliateServer);
         }
         this.runningAffiliateServer = runningAffiliateServer;
 
-        const changed = this.compareStatus(status.roundStates);
+        const changed = this.compareStatus(status.RoundStates);
         if (changed.length > 0) {
             const statusEvent = {
                 changed,
@@ -190,7 +190,7 @@ export class Status extends TypedEmitter<StatusEvents> {
             };
 
             this.emit('update', statusEvent);
-            this.rounds = status.roundStates;
+            this.rounds = status.RoundStates;
             return statusEvent;
         }
     }
@@ -234,8 +234,8 @@ export class Status extends TypedEmitter<StatusEvents> {
         return version
             ? ({
                   majorVersion: version.BackenMajordVersion,
-                  commitHash: version.commitHash,
-                  legalDocumentsVersion: version.ww2LegalDocumentsVersion,
+                  commitHash: version.CommitHash,
+                  legalDocumentsVersion: version.Ww2LegalDocumentsVersion,
               } as CoinjoinClientVersion)
             : undefined;
     }

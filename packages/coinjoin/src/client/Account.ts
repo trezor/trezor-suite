@@ -72,21 +72,21 @@ export class Account {
     findDetainedElements(rounds: Round[]) {
         const { accountKey } = this;
         return rounds.flatMap(round => {
-            if (round.phase > 0) {
-                const registeredInputs = getRoundEvents('InputAdded', round.coinjoinState.events);
-                const registeredOutputs = getRoundEvents('OutputAdded', round.coinjoinState.events);
+            if (round.Phase > 0) {
+                const registeredInputs = getRoundEvents('InputAdded', round.CoinjoinState.Events);
+                const registeredOutputs = getRoundEvents('OutputAdded', round.CoinjoinState.Events);
                 const inputs = registeredInputs
                     .flatMap(
-                        ({ coin }) =>
-                            this.utxos.find(a => compareOutpoint(a.outpoint, coin.outpoint)) ?? [],
+                        ({ Coin }) =>
+                            this.utxos.find(a => compareOutpoint(a.outpoint, Coin.Outpoint)) ?? [],
                     )
                     .map(input => ({ accountKey, ...input }));
 
                 const outputs = registeredOutputs
                     .flatMap(
-                        ({ output }) =>
+                        ({ Output }) =>
                             this.changeAddresses.find(
-                                o => output.scriptPubKey === o.scriptPubKey,
+                                o => Output.ScriptPubKey === o.scriptPubKey,
                             ) ?? [],
                     )
                     .map(output => ({ accountKey, ...output }));
