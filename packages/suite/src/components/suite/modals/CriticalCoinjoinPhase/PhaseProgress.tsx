@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { CoinjoinSession, RoundPhase, SessionPhase } from 'src/types/wallet/coinjoin';
-import { FluidSpinner, Icon, useTheme, variables } from '@trezor/components';
+import { Spinner, Icon, useTheme, variables } from '@trezor/components';
 import { SESSION_PHASE_MESSAGES } from 'src/constants/suite/coinjoin';
 import { Translation } from 'src/components/suite/Translation';
 import { CountdownTimer } from 'src/components/suite/CountdownTimer';
@@ -70,9 +70,7 @@ const Step = ({ phase, currentPhase }: StepProps) => {
         <StepConiainer isCurrent={isCurrent} isComplete={isComplete}>
             {!isComplete && !isCurrent && <Dot>•</Dot>}
 
-            {isCurrent && (
-                <FluidSpinner size={16} strokeWidth={2} color={theme.TYPE_LIGHTER_GREY} />
-            )}
+            {isCurrent && <Spinner size={16} strokeWidth={2} color={theme.TYPE_LIGHTER_GREY} />}
 
             {isComplete && <Icon icon="CHECK" size={28} color={theme.TYPE_DARK_GREY} />}
         </StepConiainer>

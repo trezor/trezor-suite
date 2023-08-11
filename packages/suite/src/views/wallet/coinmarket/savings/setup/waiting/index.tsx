@@ -1,7 +1,7 @@
 import React from 'react';
 import { withCoinmarket, WithSelectedAccountLoadedProps } from 'src/components/wallet';
 import { useCoinmarketSavingsSetupWaiting } from 'src/hooks/wallet/useCoinmarketSavingsSetupWaiting';
-import { Button, Loader } from '@trezor/components';
+import { Button, Spinner } from '@trezor/components';
 import styled from 'styled-components';
 import { Translation } from 'src/components/suite';
 
@@ -18,7 +18,7 @@ const Message = styled.div`
     color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
 `;
 
-const StyledLoader = styled(Loader)`
+const StyledLoader = styled(Spinner)`
     margin: 32px 0;
 `;
 

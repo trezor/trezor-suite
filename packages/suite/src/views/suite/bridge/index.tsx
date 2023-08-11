@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { DATA_URL, HELP_CENTER_TOR_URL, GITHUB_BRIDGE_CHANGELOG_URL } from '@trezor/urls';
 import { Translation, TrezorLink, Modal, Metadata } from 'src/components/suite';
-import { Button, P, Link, Select, Image, useTheme, variables, Loader } from '@trezor/components';
+import { Button, P, Link, Select, Image, useTheme, variables, Spinner } from '@trezor/components';
 import { goto } from 'src/actions/suite/routerActions';
 import { isDesktop, isWeb } from '@trezor/env-utils';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -52,7 +52,7 @@ const DownloadBridgeButton = styled(Button)`
     min-width: 280px;
 `;
 
-const CenteredLoader = styled(Loader)`
+const CenteredLoader = styled(Spinner)`
     margin: 0 auto;
     margin-bottom: 10px;
 `;

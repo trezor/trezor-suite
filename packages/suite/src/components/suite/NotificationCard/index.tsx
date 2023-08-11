@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import {
     Icon,
     Button,
-    Loader,
+    Spinner,
     useTheme,
     SuiteThemeColors,
     variables,
@@ -51,7 +51,7 @@ const getHoverColor = (variant: NotificationCardProps['variant'], theme: SuiteTh
 const getIcon = (variant: NotificationCardProps['variant'], theme: SuiteThemeColors) => {
     switch (variant) {
         case 'loader':
-            return <Loader size={22} />;
+            return <Spinner size={22} />;
         default:
             return <Icon icon="WARNING" size={22} color={getMainColor(variant, theme)} />;
     }

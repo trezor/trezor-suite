@@ -2,7 +2,7 @@ import React from 'react';
 import styled, { css } from 'styled-components';
 import { useTheme } from '../../utils';
 import { Icon } from '../Icon/Icon';
-import { Loader } from './Loader';
+import { Spinner } from './Spinner';
 
 const LoadingWrapper = styled.div`
     display: flex;
@@ -42,7 +42,7 @@ export const LoadingContent = ({
         <LoadingWrapper>
             <LoaderCell isLoading={isLoading} size={size}>
                 {isLoading ? (
-                    <Loader size={size} data-test="@loading-content/loader" />
+                    <Spinner size={size} data-test="@loading-content/loader" />
                 ) : (
                     <Icon
                         icon={isSuccessful ? 'CHECK' : 'CROSS'}

@@ -1,6 +1,6 @@
 import React, { ReactElement } from 'react';
 import styled from 'styled-components';
-import { variables, Loader } from '@trezor/components';
+import { variables, Spinner } from '@trezor/components';
 
 const Wrapper = styled.div`
     display: flex;
@@ -42,7 +42,7 @@ const CoinmarketRefreshTime = ({
         {!isLoading && <RefreshLabel>{label}</RefreshLabel>}
         <RefreshTime>
             {isLoading ? (
-                <Loader size={15} />
+                <Spinner size={15} />
             ) : (
                 <span>
                     {`0:${refetchInterval - seconds < 10 ? '0' : ''}${refetchInterval - seconds}`}

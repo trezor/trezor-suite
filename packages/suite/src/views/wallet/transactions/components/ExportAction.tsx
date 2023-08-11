@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { Loader, Dropdown } from '@trezor/components';
+import { Spinner, Dropdown } from '@trezor/components';
 import { analytics, EventType } from '@trezor/suite-analytics';
 import { Translation } from 'src/components/suite';
 import { useDispatch } from 'src/hooks/suite';
@@ -84,7 +84,7 @@ export const ExportAction = ({ account }: ExportActionProps) => {
     const dataTest = '@wallet/accounts/export-transactions';
 
     if (isExportRunning) {
-        return <Loader size={18} />;
+        return <Spinner size={18} />;
     }
 
     return (

@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import styled from 'styled-components';
-import { useTheme, Icon, IconProps, variables, FluidSpinner, Tooltip } from '@trezor/components';
+import { useTheme, Icon, IconProps, variables, Spinner, Tooltip } from '@trezor/components';
 import { FADE_IN } from '@trezor/components/src/config/animations';
 import { HoverAnimation } from '../../HoverAnimation';
 
@@ -165,7 +165,7 @@ export const ActionItem = React.forwardRef(
                     )}
                     {indicator === 'loading' && (
                         <Indicator>
-                            <FluidSpinner size={6} />
+                            <Spinner size={6} />
                         </Indicator>
                     )}
                     {indicator === 'check' && (
