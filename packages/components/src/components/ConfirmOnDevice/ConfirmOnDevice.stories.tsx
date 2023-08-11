@@ -1,6 +1,6 @@
 import React from 'react';
 import { ConfirmOnDevice } from './ConfirmOnDevice';
-import { StoryColumn } from '../../../support/Story';
+import { StoryColumn } from '../../support/Story';
 import { DeviceModelInternal } from '@trezor/connect';
 
 export default {

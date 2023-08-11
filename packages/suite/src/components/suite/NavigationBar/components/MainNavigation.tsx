@@ -3,11 +3,12 @@ import { transparentize } from 'polished';
 import styled, { css } from 'styled-components';
 
 import { findRouteByName } from 'src/utils/suite/router';
-import { variables, HoverAnimation } from '@trezor/components';
+import { variables } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 import { MAIN_MENU_ITEMS } from 'src/constants/suite/menu';
 import { useAccountSearch, useSelector, useDispatch } from 'src/hooks/suite';
 import { goto } from 'src/actions/suite/routerActions';
+import { HoverAnimation } from './HoverAnimation';
 
 interface ComponentProps {
     isActive: boolean;
