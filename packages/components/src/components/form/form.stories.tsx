@@ -32,7 +32,7 @@ export default {
 };
 
 export const Basic = {
-    render: ({ ...args }) => (
+    render: () => (
         <>
             <StoryColumn minWidth={520}>
                 <Heading>Input</Heading>

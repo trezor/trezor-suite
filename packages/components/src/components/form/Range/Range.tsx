@@ -1,5 +1,5 @@
 import { variables } from '../../../config';
-import React, { useLayoutEffect, useMemo, useRef, useState } from 'react';
+import React, { useLayoutEffect, useRef, useState } from 'react';
 import styled, { css, CSSObject } from 'styled-components';
 import { useTheme } from '../../../utils';
 

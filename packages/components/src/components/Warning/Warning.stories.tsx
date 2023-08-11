@@ -1,4 +1,3 @@
-import React from 'react';
 import { StoryObj } from '@storybook/react';
 
 import { Warning } from '../../index';

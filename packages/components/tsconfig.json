@@ -5,8 +5,6 @@
             { "name": "typescript-styled-plugin" }
         ],
         "outDir": "./libDev",
-        "noUnusedLocals": false,
-        "noUnusedParameters": false
     },
     "include": ["."],
     "references": [
