@@ -9,6 +9,7 @@ export const mockCoinjoinService = () => {
             emit: jest.fn(),
             enable: jest.fn(() =>
                 Promise.resolve({
+                    success: true,
                     rounds: [{ id: '00', phase: 0 }],
                     feeRateMedian: 0,
                     coordinatorFeeRate: 0.003,
