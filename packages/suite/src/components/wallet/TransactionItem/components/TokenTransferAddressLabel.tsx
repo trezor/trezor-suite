@@ -26,5 +26,9 @@ export const TokenTransferAddressLabel = ({
         return <AddressLabeling address={transfer.to} />;
     }
 
-    return <BlurWrapper isBlurred={isZeroValuePhishing}>{transfer.to}</BlurWrapper>;
+    return (
+        <BlurWrapper isBlurred={isZeroValuePhishing}>
+            <AddressLabeling address={transfer.to} />
+        </BlurWrapper>
+    );
 };
