@@ -97,6 +97,11 @@ export const selectEthereumTokenHasFiatRates = (
     return !!rates?.rate;
 };
 
+export const selectAnyOfTokensHasFiatRates = (
+    state: FiatRatesRootState & SettingsSliceRootState,
+    tokens: TokenInfoBranded[],
+) => A.any(tokens, token => selectEthereumTokenHasFiatRates(state, token.contract, token.symbol));
+
 const isNotZeroAmountTranfer = (tokenTranfer: TokenTransfer) =>
     tokenTranfer.amount !== '' && tokenTranfer.amount !== '0';
 
@@ -178,8 +183,6 @@ export const selectEthereumAccountsTokensWithFiatRates = memoizeWithArgs(
     { size: 50 },
 );
 
-// If account item is ethereum which has tokens with fiat rates,
-// we want to adjust styling to display token items.
 export const selectIsEthereumAccountWithTokensWithFiatRates = (
     state: FiatRatesRootState & SettingsSliceRootState,
     ethereumAccountKey: AccountKey,
@@ -187,13 +190,15 @@ export const selectIsEthereumAccountWithTokensWithFiatRates = (
     const account = selectAccountByKey(state, ethereumAccountKey);
     if (!account || G.isNullable(account.tokens) || !isEthereumAccountSymbol(account.symbol))
         return false;
-    return A.isNotEmpty(
-        A.filterMap(account.tokens, token =>
+
+    return (
+        account.tokens,
+        A.any(account.tokens, token =>
             selectEthereumTokenHasFiatRates(
                 state,
                 token.contract as TokenAddress,
                 token.symbol as TokenSymbol,
             ),
-        ),
+        )
     );
 };

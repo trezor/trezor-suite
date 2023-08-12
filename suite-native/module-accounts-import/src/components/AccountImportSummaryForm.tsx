@@ -1,7 +1,6 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { A } from '@mobily/ts-belt';
 import { CommonActions, useNavigation } from '@react-navigation/core';
 
 import { networks, NetworkSymbol } from '@suite-common/wallet-config';
@@ -21,8 +20,10 @@ import {
 import { AccountInfo } from '@trezor/connect';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { analytics, EventType } from '@suite-native/analytics';
-import { TokenSymbol } from '@suite-common/wallet-types';
-import { isEthereumAccountSymbol } from '@suite-common/wallet-utils';
+import { TokenInfoBranded, TokenSymbol } from '@suite-common/wallet-types';
+import { selectAnyOfTokensHasFiatRates } from '@suite-native/ethereum-tokens';
+import { FiatRatesRootState } from '@suite-native/fiat-rates';
+import { SettingsSliceRootState } from '@suite-native/module-settings';
 
 import { importAccountThunk } from '../accountsImportThunks';
 import { AccountImportOverview } from './AccountImportOverview';
@@ -103,16 +104,16 @@ export const AccountImportSummaryForm = ({
         }
     });
 
-    const shouldDisplayEthereumAccountTokens =
-        isEthereumAccountSymbol(networkSymbol) && A.isNotEmpty(accountInfo.tokens ?? []);
-
+    const areTokensDisplayed = useSelector((state: SettingsSliceRootState & FiatRatesRootState) =>
+        selectAnyOfTokensHasFiatRates(state, (accountInfo?.tokens as TokenInfoBranded[]) ?? []),
+    );
     return (
         <Form form={form}>
             <AccountImportOverview
                 balance={accountInfo.availableBalance}
                 networkSymbol={networkSymbol}
             />
-            {shouldDisplayEthereumAccountTokens && (
+            {areTokensDisplayed && (
                 <AccountImportEthereumTokens tokens={accountInfo.tokens ?? []} />
             )}
             <Divider marginBottom="small" />
