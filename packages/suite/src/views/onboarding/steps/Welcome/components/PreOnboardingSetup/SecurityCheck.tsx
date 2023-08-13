@@ -1,11 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
 import { TREZOR_SUPPORT_URL } from '@trezor/urls';
-import { Icon, Tooltip, variables, useTheme, CollapsibleCard } from '@trezor/components';
+import { Icon, Tooltip, variables, useTheme } from '@trezor/components';
 import { useOnboarding, useSelector } from 'src/hooks/suite';
 import { Translation, TrezorLink } from 'src/components/suite';
 import { Hologram, OnboardingButtonCta, OnboardingButtonSkip } from 'src/components/onboarding';
 import { getConnectedDeviceStatus } from 'src/utils/suite/device';
+import { CollapsibleOnboardingCard } from 'src/components/onboarding/CollapsibleOnboardingCard';
 
 const Items = styled.div`
     display: flex;
@@ -133,7 +134,7 @@ const SecurityCheck = () => {
 
     return (
         <>
-            <CollapsibleCard
+            <CollapsibleOnboardingCard
                 variant="small"
                 image="PIN"
                 heading={<Translation id="TR_ONBOARDING_DEVICE_CHECK" />}
@@ -183,7 +184,7 @@ const SecurityCheck = () => {
                         </Items>
                     )}
                 </Buttons>
-            </CollapsibleCard>
+            </CollapsibleOnboardingCard>
             <OuterActions>
                 <TrezorLink variant="underline" href={TREZOR_SUPPORT_URL}>
                     <OnboardingButtonSkip>

@@ -4,10 +4,15 @@ import styled from 'styled-components';
 import { FormattedMessage } from 'react-intl';
 import { variables } from '../config';
 import { Button } from './buttons/Button/Button';
-import { CollapsibleBox } from './CollapsibleBox';
-import { CollapsibleCard } from './CollapsibleCard';
+import { CollapsibleBox } from './CollapsibleBox/CollapsibleBox';
+import { Card } from './Card/Card';
 import { Switch } from './form/Switch/Switch';
 import { H1 } from './typography/Heading/Heading';
+
+const StyledCard = styled(Card)`
+    max-width: 550px;
+    padding: 20px 30px;
+`;
 
 const Wrapper = styled.div`
     display: flex;
@@ -106,11 +111,13 @@ type DataAnalyticsProps = {
     tosLink?: (chunks: React.ReactNode[]) => JSX.Element;
 };
 
+// This component is used in connect-ui, therefore it's located in this library,
+// although in the future it should be moved elsewhere.
 export const DataAnalytics = ({ onConfirm, analyticsLink, tosLink }: DataAnalyticsProps) => {
     const [trackingEnabled, setTrackingEnabled] = useState<boolean>(true);
 
     return (
-        <CollapsibleCard variant="small" data-test="@analytics/consent">
+        <StyledCard data-test="@analytics/consent">
             <Wrapper>
                 <Heading>
                     <FormattedMessage
@@ -174,6 +181,6 @@ export const DataAnalytics = ({ onConfirm, analyticsLink, tosLink }: DataAnalyti
                     </StyledButton>
                 </ButtonWrapper>
             </Wrapper>
-        </CollapsibleCard>
+        </StyledCard>
     );
 };

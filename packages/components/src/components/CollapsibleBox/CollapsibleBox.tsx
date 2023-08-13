@@ -1,8 +1,20 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { motion } from 'framer-motion';
 import styled, { css } from 'styled-components';
-import useMeasure from 'react-use/lib/useMeasure';
-import { Icon } from './Icon/Icon';
-import * as variables from '../config/variables';
+import { Icon } from '../Icon/Icon';
+import * as variables from '../../config/variables';
+import * as motionConfig from '../../config/motion';
+
+const animationVariants = {
+    closed: {
+        opacity: 0,
+        height: 0,
+    },
+    expanded: {
+        opacity: 1,
+        height: 'auto',
+    },
+};
 
 const Wrapper = styled.div<Pick<CollapsibleBoxProps, 'variant'>>`
     display: flex;
@@ -119,15 +131,8 @@ const Content = styled.div<{
         `}
 `;
 
-type CollapserProps = { $maxHeight?: number };
-
-const Collapser = styled.div.attrs<CollapserProps>(({ $maxHeight }) => ({
-    style: {
-        maxHeight: $maxHeight ?? 'initial',
-    },
-}))<CollapserProps>`
+const Collapser = styled(motion.div)`
     overflow: hidden;
-    transition: max-height 0.35s ease-in-out;
 `;
 
 interface CollapsibleBoxProps extends React.HtmlHTMLAttributes<HTMLDivElement> {
@@ -170,8 +175,6 @@ const CollapsibleBox: React.FC<CollapsibleBoxProps> & CollapsibleBoxSubcomponent
     const [collapsed, setCollapsed] = useState(!opened);
     const [animatedIcon, setAnimatedIcon] = useState(false);
 
-    const [heightRef, { height }] = useMeasure<HTMLDivElement>();
-
     useEffect(() => {
         setCollapsed(!opened);
     }, [opened]);
@@ -207,15 +210,15 @@ const CollapsibleBox: React.FC<CollapsibleBoxProps> & CollapsibleBoxSubcomponent
             </Header>
 
             <Collapser
-                $maxHeight={collapsed ? 0 : height || undefined}
+                initial={false} // Prevents animation on mount when expanded === false
+                variants={animationVariants}
+                animate={!collapsed ? 'expanded' : 'closed'}
+                transition={{ duration: 0.4, ease: motionConfig.motionEasing.transition }}
                 data-test="@collapsible-box/body"
             >
-                {/* This div is here because of the ref, ref on styled-component (Content) will result with unnecessary re-render */}
-                <div ref={heightRef} style={{ overflow: 'hidden' }}>
-                    <Content variant={variant} $noContentPadding={noContentPadding}>
-                        {children}
-                    </Content>
-                </div>
+                <Content variant={variant} $noContentPadding={noContentPadding}>
+                    {children}
+                </Content>
             </Collapser>
         </Wrapper>
     );

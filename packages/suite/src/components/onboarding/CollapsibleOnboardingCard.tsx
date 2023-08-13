@@ -1,10 +1,7 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 import { motion } from 'framer-motion';
-import { H1 } from './typography/Heading/Heading';
-import { variables, motion as motionConfig } from '../config';
-import { Image, ImageType } from './Image/Image';
-import { Icon } from './Icon/Icon';
+import { H1, Icon, Image, ImageType, motionEasing, variables } from '@trezor/components';
 
 const headerVariants = {
     closed: {
@@ -31,10 +28,10 @@ const CardWrapper = styled(
         <motion.div {...rest} />
     ),
 )<{
-    variant?: CollapsibleCardProps['variant'];
+    variant?: CollapsibleOnboardingCardProps['variant'];
     withImage?: boolean;
-    expanded?: CollapsibleCardProps['expanded'];
-    expandable?: CollapsibleCardProps['expandable'];
+    expanded?: CollapsibleOnboardingCardProps['expanded'];
+    expandable?: CollapsibleOnboardingCardProps['expandable'];
 }>`
     position: relative;
     padding: ${({ variant }) => (variant === 'large' ? '40px 80px' : '20px 30px')};
@@ -173,7 +170,7 @@ const CloseIcon = styled(Icon)`
     background: transparent;
 `;
 
-export interface CollapsibleCardProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface CollapsibleOnboardingCardProps extends React.HTMLAttributes<HTMLDivElement> {
     image?: ImageType;
     variant?: 'small' | 'large';
     expandable?: boolean;
@@ -187,7 +184,7 @@ export interface CollapsibleCardProps extends React.HTMLAttributes<HTMLDivElemen
     tag?: React.ReactNode;
 }
 
-export const CollapsibleCard = ({
+export const CollapsibleOnboardingCard = ({
     heading,
     description,
     image,
@@ -201,7 +198,7 @@ export const CollapsibleCard = ({
     onCanPlayThroughCapture,
     onToggle = () => undefined,
     ...rest
-}: CollapsibleCardProps) => (
+}: CollapsibleOnboardingCardProps) => (
     <CardWrapper
         expanded={expanded}
         expandable={expandable}
@@ -209,7 +206,7 @@ export const CollapsibleCard = ({
         withImage={!!image}
         nested={nested}
         animate={expanded ? 'expanded' : 'closed'}
-        transition={{ duration: 0.4, ease: motionConfig.motionEasing.transition }}
+        transition={{ duration: 0.4, ease: motionEasing.transition }}
         onClick={expandable && !expanded ? onToggle : undefined}
         data-test="@components/collapsible-box"
         {...rest}
@@ -233,7 +230,7 @@ export const CollapsibleCard = ({
                 initial={false} // Prevents animation on mount when expanded === false
                 variants={expandable ? animationVariants : undefined}
                 animate={expanded ? 'expanded' : 'closed'}
-                transition={{ duration: 0.4, ease: motionConfig.motionEasing.transition }}
+                transition={{ duration: 0.4, ease: motionEasing.transition }}
             >
                 {expandable && expanded && <CloseIcon icon="CROSS" size={22} onClick={onToggle} />}
 

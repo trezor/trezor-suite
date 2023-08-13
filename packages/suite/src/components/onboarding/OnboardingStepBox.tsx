@@ -1,16 +1,14 @@
 import React from 'react';
 import styled from 'styled-components';
 import TrezorConnect, { DeviceModelInternal } from '@trezor/connect';
-import {
-    ConfirmOnDevice,
-    Backdrop,
-    CollapsibleCard,
-    CollapsibleCardProps,
-    variables,
-} from '@trezor/components';
+import { ConfirmOnDevice, Backdrop, variables } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 import { useIntl } from 'react-intl';
 import messages from 'src/support/messages';
+import {
+    CollapsibleOnboardingCard,
+    CollapsibleOnboardingCardProps,
+} from './CollapsibleOnboardingCard';
 
 const ConfirmWrapper = styled.div`
     margin-bottom: 20px;
@@ -40,11 +38,11 @@ export const StyledBackdrop = styled(Backdrop)<{ show: boolean }>`
     z-index: ${variables.Z_INDEX.BASE};
 `;
 
-const StyledCollapsibleCard = styled(CollapsibleCard)<{ $isBackDropVisible: boolean }>`
+const StyledCollapsibleCard = styled(CollapsibleOnboardingCard)<{ $isBackDropVisible: boolean }>`
     z-index: ${({ $isBackDropVisible }) => ($isBackDropVisible ? 3 : 0)};
 `;
 
-export interface OnboardingStepBoxProps extends CollapsibleCardProps {
+export interface OnboardingStepBoxProps extends CollapsibleOnboardingCardProps {
     innerActions?: React.ReactNode;
     outerActions?: React.ReactNode;
     deviceModelInternal?: DeviceModelInternal;
@@ -54,6 +52,7 @@ export interface OnboardingStepBoxProps extends CollapsibleCardProps {
     isActionAbortable?: boolean;
 }
 
+// Legacy duplicate of CollapsibleBox !! Should not be used elsewhere
 export const OnboardingStepBox = ({
     heading,
     description,
