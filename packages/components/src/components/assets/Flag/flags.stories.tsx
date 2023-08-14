@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 import { Flag } from './Flag';
 import { FLAGS } from './flags';
-import { FlagType } from '../../support/types';
+import { FlagType } from '../../../support/types';
 
 const Wrapper = styled.div`
     display: grid;
@@ -29,7 +29,7 @@ const Text = styled.div`
 `;
 
 export default {
-    title: 'Misc/Flags',
+    title: 'Assets/Flags',
     parameters: {
         options: {
             showPanel: false,

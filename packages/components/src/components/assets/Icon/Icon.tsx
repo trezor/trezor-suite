@@ -2,8 +2,8 @@ import styled, { keyframes, css } from 'styled-components';
 
 import React from 'react';
 import { ReactSVG } from 'react-svg';
-import { IconType } from '../../support/types';
-import { useTheme } from '../../utils';
+import { IconType } from '../../../support/types';
+import { useTheme } from '../../../utils';
 import { ICONS } from './icons';
 
 // TODO: make animation of icons better

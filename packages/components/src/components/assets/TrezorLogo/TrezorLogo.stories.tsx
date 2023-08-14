@@ -3,7 +3,7 @@ import { TrezorLogo } from '../../../index';
 import { storiesOf } from '@storybook/react';
 import { number, select } from '@storybook/addon-knobs';
 
-storiesOf('Logos', module).add('Trezor', () => {
+storiesOf('Assets/TrezorLogos', module).add('TrezorLogo', () => {
     type LogoType = 'horizontal' | 'vertical';
 
     const width = number('width', 100);

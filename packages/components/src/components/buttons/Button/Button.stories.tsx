@@ -4,7 +4,7 @@ import { variables } from '../../../config';
 import { storiesOf } from '@storybook/react';
 import { boolean, select, text } from '@storybook/addon-knobs';
 
-storiesOf('Buttons', module).add('Button', () => {
+storiesOf('Buttons/Button', module).add('Button', () => {
     const value = text('Value', 'Button');
     const variant: any = select(
         'Variant',

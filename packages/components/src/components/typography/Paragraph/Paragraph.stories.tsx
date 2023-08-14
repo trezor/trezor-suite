@@ -3,7 +3,7 @@ import { P } from '../../../index';
 import { storiesOf } from '@storybook/react';
 import { select, text } from '@storybook/addon-knobs';
 
-storiesOf('Typography', module).add('Paragraph', () => {
+storiesOf('Typography/Paragraph', module).add('Paragraph', () => {
     const value = text('Value', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.');
     const textAlign: any = select(
         'Align',

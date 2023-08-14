@@ -28,10 +28,10 @@ const SELECT_OPTIONS = [
 ];
 
 export default {
-    title: 'Form/Form Elements Summary',
+    title: 'Form/All',
 };
 
-export const Basic = {
+export const All = {
     render: () => (
         <>
             <StoryColumn minWidth={520}>

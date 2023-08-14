@@ -4,7 +4,7 @@ import { Dropdown } from './Dropdown';
 import { storiesOf } from '@storybook/react';
 import { select, number, boolean } from '@storybook/addon-knobs';
 
-storiesOf('Dropdown', module).add('Dropdown', () => {
+storiesOf('Misc/Dropdown', module).add('Dropdown', () => {
     const alignMenu: any = select(
         'alignMenu',
         {

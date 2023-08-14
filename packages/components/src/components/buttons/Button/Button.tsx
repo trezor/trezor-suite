@@ -1,10 +1,10 @@
 import * as React from 'react';
 import styled, { css } from 'styled-components';
-import { Icon } from '../../Icon/Icon';
+import { Icon } from '../../assets/Icon/Icon';
 import { IconType, ButtonVariant, SuiteThemeColors } from '../../../support/types';
 import { variables } from '../../../config';
 import { useTheme } from '../../../utils';
-import { Spinner } from '../../loaders/Spinner';
+import { Spinner } from '../../loaders/Spinner/Spinner';
 import { darken } from 'polished';
 
 const getPadding = (variant: ButtonVariant, hasLabel: boolean) => {

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import styled, { css } from 'styled-components';
-import { Icon } from '../Icon/Icon';
+import { Icon } from '../assets/Icon/Icon';
 import * as variables from '../../config/variables';
 import * as motionConfig from '../../config/motion';
 

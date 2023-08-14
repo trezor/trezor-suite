@@ -3,7 +3,7 @@ import { StoryColumn } from '../../support/Story';
 import { H1, H2, P, Link } from '../../index';
 import { storiesOf } from '@storybook/react';
 
-storiesOf('Typography', module).add(
+storiesOf('Typography/All', module).add(
     'All',
     () => (
         <>

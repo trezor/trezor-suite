@@ -6,7 +6,7 @@ import { select, text } from '@storybook/addon-knobs';
 H1.displayName = 'H1';
 H2.displayName = 'H2';
 
-storiesOf('Typography', module).add('Heading', () => {
+storiesOf('Typography/Heading', module).add('Heading', () => {
     const value = text('Value', 'Heading');
     const size: any = select(
         'Size',
