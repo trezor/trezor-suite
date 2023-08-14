@@ -1,5 +1,5 @@
 import type { BlockchainLinkParams, BlockchainLinkResponse } from '@trezor/blockchain-link';
-import type { FeeLevel } from '../account';
+import type { FeeLevel, FeeInfo } from '../fees';
 import type { CommonParamsWithCoin, Response } from '../params';
 
 export interface BlockchainEstimateFee {
@@ -14,12 +14,10 @@ export interface BlockchainEstimateFeeLevel {
     };
 }
 
-interface EstimatedFee {
-    blockTime: number;
-    minFee: number;
-    maxFee: number;
-    dustLimit?: number;
+interface EstimatedFee extends Omit<FeeInfo, 'dustLimit'> {
+    dustLimit?: number; // dustLimit is set only for bitcoin-like coins
 }
+
 export interface BlockchainEstimatedFee extends EstimatedFee {
     levels: BlockchainLinkResponse<'estimateFee'>;
 }

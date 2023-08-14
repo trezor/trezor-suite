@@ -2,6 +2,7 @@ export * from './api';
 export * from './account';
 export * from './coinInfo';
 export * from './device';
+export * from './fees';
 export * from './firmware';
 export * from './params';
 export * from './settings';

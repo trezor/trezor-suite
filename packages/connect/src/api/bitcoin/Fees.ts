@@ -2,47 +2,9 @@
 
 import BigNumber from 'bignumber.js';
 import { Blockchain } from '../../backend/BlockchainLink';
-import type { BitcoinDefaultFeesKeys, CoinInfo } from '../../types';
-import type { FeeLevel } from '../../types/account';
+import type { CoinInfo, FeeLevel } from '../../types';
 
 type Blocks = Array<string | undefined>;
-// this is workaround for the lack of information from 'trezor-common'
-// we need to declare what does "high/normal/low" mean in block time (eg: normal BTC = 6 blocks = ~1 hour)
-// coins other than BTC usually got 2 levels maximum (high/low) and we should consider to remove other levels from 'trezor-common'
-
-const BLOCKS: Record<string, Record<string, number>> = {
-    btc: {
-        // blocktime ~ 600sec.
-        high: 1,
-        normal: 6,
-        economy: 36,
-        low: 144,
-    },
-    bch: {
-        // blocktime ~ 600sec.
-        high: 1,
-        normal: 5,
-        economy: 10,
-        low: 10,
-    },
-    btg: {
-        // blocktime ~ 600sec.
-        high: 1,
-        normal: 5,
-        economy: 10,
-        low: 10,
-    },
-    dgb: {
-        // blocktime ~ 20sec.
-        high: 1,
-        normal: 15,
-        economy: 30,
-        low: 60,
-    },
-};
-
-const getDefaultBlocks = (shortcut: string, label: string) =>
-    BLOCKS[shortcut] && BLOCKS[shortcut][label] ? BLOCKS[shortcut][label] : -1; // -1 for unknown
 
 const feePerKB = (fee: string) => {
     const bn = new BigNumber(fee);
@@ -113,32 +75,7 @@ export class FeeLevels {
 
     constructor(coinInfo: CoinInfo) {
         this.coinInfo = coinInfo;
-        const shortcut = coinInfo.shortcut.toLowerCase();
-
-        if (coinInfo.type === 'ethereum') {
-            // TODO: https://github.com/trezor/trezor-suite/issues/5340
-            // unlike the others, ethereum got additional value "feeLimit" in coinInfo (Gas limit)
-            this.levels = coinInfo.defaultFees.map(level => ({
-                ...level,
-                blocks: -1, // blocks unknown
-            }));
-            return;
-        }
-
-        // sort fee levels from coinInfo
-        // and transform in to FeeLevel object
-        const keys = Object.keys(coinInfo.defaultFees) as BitcoinDefaultFeesKeys[];
-        this.levels = keys
-            .sort((levelA, levelB) => coinInfo.defaultFees[levelB] - coinInfo.defaultFees[levelA])
-            .map(level => {
-                const label: any = level.toLowerCase(); // string !== 'high' | 'normal'....
-                const blocks = getDefaultBlocks(shortcut, label); // TODO: get this value from trezor-common
-                return {
-                    label,
-                    feePerUnit: coinInfo.defaultFees[level].toString(),
-                    blocks,
-                };
-            });
+        this.levels = coinInfo.defaultFees;
     }
 
     async loadMisc(blockchain: Blockchain) {

@@ -1,5 +1,6 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/data/CoinInfo.js
 
+import { getBitcoinFeeLevels, getEthereumFeeLevels, getMiscFeeLevels } from './defaultFeeLevels';
 import { ERRORS } from '../constants';
 import { toHardened, fromHardened } from '../utils/pathUtils';
 import type {
@@ -189,7 +190,6 @@ const parseBitcoinNetworksJson = (json: any) => {
             // bitcore: not used,
             // blockbook: not used,
             blockchainLink: coin.blockchain_link,
-            blocktime: Math.max(1, Math.round(coin.blocktime_seconds / 60)),
             cashAddrPrefix: coin.cashaddr_prefix,
             label: coin.coin_label,
             name: coin.coin_name,
@@ -197,8 +197,6 @@ const parseBitcoinNetworksJson = (json: any) => {
             // cooldown not used
             curveName: coin.curve_name,
             // decred not used
-            defaultFees: coin.default_fee_b,
-            dustLimit: coin.dust_limit,
             forceBip143: coin.force_bip143,
             // forkid in Network
             // github not used
@@ -226,29 +224,17 @@ const parseBitcoinNetworksJson = (json: any) => {
             // custom
             network, // bitcoinjs network
             isBitcoin,
-            maxFee: Math.round(coin.maxfee_kb / 1000),
-            minFee: Math.round(coin.minfee_kb / 1000),
 
             decimals: coin.decimals,
+            ...getBitcoinFeeLevels(coin),
         });
     });
 };
 
 export const ethereumNetworkInfoBase = {
     type: 'ethereum' as const,
-    blocktime: -1, // unknown
-    // key not used
-    defaultFees: [
-        {
-            label: 'normal' as const,
-            feePerUnit: '5000000000',
-            feeLimit: '21000',
-        },
-    ],
-    minFee: 1,
-    maxFee: 10000,
-    network: undefined,
     decimals: 16,
+    ...getEthereumFeeLevels(),
 };
 
 const parseEthereumNetworksJson = (json: any) => {
@@ -271,38 +257,17 @@ const parseEthereumNetworksJson = (json: any) => {
 const parseMiscNetworksJSON = (json: any, type?: 'misc' | 'nem') => {
     Object.keys(json).forEach(key => {
         const network = json[key];
-        let minFee = -1; // unknown
-        let maxFee = -1; // unknown
-        let defaultFees = { Normal: -1 }; // unknown
-        const shortcut = network.shortcut.toLowerCase();
-        if (shortcut === 'xrp' || shortcut === 'txrp') {
-            minFee = 10;
-            maxFee = 10000;
-            defaultFees = { Normal: 12 };
-        }
-        if (shortcut === 'ada' || shortcut === 'tada') {
-            minFee = 44;
-            // max tx size * lovelace per byte + base fee
-            maxFee = 16384 * 44 + 155381;
-            defaultFees = { Normal: 44 };
-        }
         miscNetworks.push({
             type: type || 'misc',
             blockchainLink: network.blockchain_link,
-            blocktime: -1,
             curve: network.curve,
-            // TODO: https://github.com/trezor/trezor-suite/issues/5340
-            // @ts-expect-error
-            defaultFees,
-            minFee,
-            maxFee,
             label: network.name,
             name: network.name,
             shortcut: network.shortcut,
             slip44: network.slip44,
             support: network.support,
-            network: undefined,
             decimals: network.decimals,
+            ...getMiscFeeLevels(network),
         });
     });
 };
