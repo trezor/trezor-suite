@@ -229,8 +229,6 @@ const parseBitcoinNetworksJson = (json: any) => {
             maxFee: Math.round(coin.maxfee_kb / 1000),
             minFee: Math.round(coin.minfee_kb / 1000),
 
-            // used in backend ?
-            blocks: Math.round(coin.blocktime_seconds / 60),
             decimals: coin.decimals,
         });
     });

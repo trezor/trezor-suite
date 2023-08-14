@@ -61,8 +61,6 @@ export interface BitcoinNetworkInfo extends Common {
     // custom
     network: Network;
     isBitcoin: boolean;
-    // used in backend
-    blocks?: number;
 }
 
 export interface EthereumNetworkInfo extends Common {
