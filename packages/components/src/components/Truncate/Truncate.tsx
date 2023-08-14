@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled, { useTheme } from 'styled-components';
 import ReactTruncate from 'react-truncate';
-import { Icon } from '../Icon/Icon';
+import { Icon } from '../assets/Icon/Icon';
 
 const TruncateWrapper = styled.div`
     width: 100%;
@@ -26,7 +26,7 @@ type TruncateProps = {
     lines?: number;
 };
 
-const Truncate = ({ children, lines = 1 }: TruncateProps) => {
+export const Truncate = ({ children, lines = 1 }: TruncateProps) => {
     const theme = useTheme();
     const [expanded, setExpanded] = useState(false);
     const [truncated, setTruncated] = useState(false);
@@ -64,5 +64,3 @@ const Truncate = ({ children, lines = 1 }: TruncateProps) => {
         </TruncateWrapper>
     );
 };
-
-export { Truncate };

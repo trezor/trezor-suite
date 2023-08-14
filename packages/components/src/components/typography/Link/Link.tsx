@@ -1,6 +1,6 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
-import { Icon, IconProps } from '../../Icon/Icon';
+import { Icon, IconProps } from '../../assets/Icon/Icon';
 import { useTheme } from '../../../utils';
 import { FONT_SIZE } from '../../../config/variables';
 import { ParagraphSize } from '../../../support/types';

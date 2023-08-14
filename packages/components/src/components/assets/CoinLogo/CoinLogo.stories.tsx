@@ -3,7 +3,7 @@ import { CoinLogo, variables } from '../../../index';
 import { storiesOf } from '@storybook/react';
 import { number, select } from '@storybook/addon-knobs';
 
-storiesOf('Logos', module).add('Coin', () => {
+storiesOf('Assets/CoinLogos', module).add('CoinLogo', () => {
     const coinsObject: any = {};
     variables.COINS.forEach((coin: string) => {
         coinsObject[coin] = coin;

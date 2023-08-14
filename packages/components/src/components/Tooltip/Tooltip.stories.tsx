@@ -13,7 +13,7 @@ const Center = styled.div`
 
 Center.displayName = 'CenterWrapper';
 
-storiesOf('Tooltip', module).add('Tooltip', () => {
+storiesOf('Misc/Tooltip', module).add('Tooltip', () => {
     const placement: any = select(
         'Placement',
         {

@@ -30,7 +30,7 @@ const Buttons = ({
     </>
 );
 
-storiesOf('Modals', module)
+storiesOf('Misc/Modals', module)
     .add('Default', () => {
         const heading = text('Title', 'Ahoj kamaráde!', 'Header bar');
         const cancelable = boolean('cancelable', true, 'Header bar');

@@ -9,7 +9,7 @@ const Content = styled.div`
     width: 400px;
 `;
 
-storiesOf('CollapsibleBox', module).add('CollapsibleBox', () => {
+storiesOf('Misc/CollapsibleBox', module).add('CollapsibleBox', () => {
     const placement = select(
         'Variant',
         {

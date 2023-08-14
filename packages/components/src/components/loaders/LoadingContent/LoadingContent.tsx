@@ -1,8 +1,8 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
-import { useTheme } from '../../utils';
-import { Icon } from '../Icon/Icon';
-import { Spinner } from './Spinner';
+import { useTheme } from '../../../utils';
+import { Icon } from '../../assets/Icon/Icon';
+import { Spinner } from '../Spinner/Spinner';
 
 const LoadingWrapper = styled.div`
     display: flex;

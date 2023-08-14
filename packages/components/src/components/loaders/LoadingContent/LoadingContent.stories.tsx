@@ -1,5 +1,5 @@
 import React from 'react';
-import { H1, LoadingContent as LoadingContentComponent } from '../../index';
+import { H1, LoadingContent as LoadingContentComponent } from '../../../index';
 
 export default {
     title: 'Loaders/LoadingContent',

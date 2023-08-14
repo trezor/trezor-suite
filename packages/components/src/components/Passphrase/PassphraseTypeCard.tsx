@@ -15,7 +15,7 @@ import { variables, motion as motionConfig } from '../../config';
 import { Button } from '../buttons/Button/Button';
 import { Checkbox } from '../form/Checkbox/Checkbox';
 import { Input } from '../form/Input/Input';
-import { Icon } from '../Icon/Icon';
+import { Icon } from '../assets/Icon/Icon';
 import { TooltipProps, Tooltip } from '../Tooltip/Tooltip';
 
 const MAX_LENGTH = 50;

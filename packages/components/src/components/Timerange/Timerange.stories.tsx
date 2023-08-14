@@ -13,7 +13,7 @@ const Center = styled.div`
 
 Center.displayName = 'CenterWrapper';
 
-storiesOf('Timerange', module).add(
+storiesOf('Misc/Timerange', module).add(
     'Timerange',
     () => {
         const startDate = new Date(date('Start date', new Date('March 7 2021')));

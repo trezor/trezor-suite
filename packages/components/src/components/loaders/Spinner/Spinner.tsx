@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { animations } from '../../config';
+import { animations } from '../../../config';
 
 export interface FluidSpinnerProps {
     size?: number;

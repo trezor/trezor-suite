@@ -2,7 +2,7 @@ import { StoryObj } from '@storybook/react';
 import { Flag as FlagComponent } from './Flag';
 
 export default {
-    title: 'Misc/Flags/Flag',
+    title: 'Assets/Flags',
     component: FlagComponent,
 };
 

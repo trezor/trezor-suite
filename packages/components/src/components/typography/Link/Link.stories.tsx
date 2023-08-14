@@ -3,7 +3,7 @@ import { Link } from '../../../index';
 import { storiesOf } from '@storybook/react';
 import { select, text } from '@storybook/addon-knobs';
 
-storiesOf('Typography', module).add('Link', () => {
+storiesOf('Typography/Link', module).add('Link', () => {
     const target = select(
         'Target',
         {

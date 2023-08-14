@@ -4,7 +4,7 @@ import { darken } from 'polished';
 import { KEYBOARD_CODE } from '../../../constants/keyboardEvents';
 import { FONT_SIZE } from '../../../config/variables';
 import { useTheme } from '../../../utils';
-import { Icon } from '../../Icon/Icon';
+import { Icon } from '../../assets/Icon/Icon';
 
 const Wrapper = styled.div<Pick<CheckboxProps, 'isDisabled'>>`
     display: flex;

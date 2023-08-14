@@ -2,7 +2,7 @@ import React from 'react';
 import styled, { css } from 'styled-components';
 import { Image } from '../Image/Image';
 import { variables, animations } from '../../config';
-import { Icon } from '../Icon/Icon';
+import { Icon } from '../assets/Icon/Icon';
 import { DeviceModelInternal } from '@trezor/connect';
 
 enum AnimationDirection {

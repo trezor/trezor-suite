@@ -1,11 +1,11 @@
 import React from 'react';
-import { Button } from '../../index';
+import { Button } from '../../../index';
 import { storiesOf } from '@storybook/react';
-import { StoryColumn } from '../../support/Story';
+import { StoryColumn } from '../../../support/Story';
 
 const variants = ['primary', 'secondary', 'tertiary', 'danger'] as const;
 
-storiesOf('Buttons', module).add(
+storiesOf('Buttons/Button', module).add(
     'All',
     () => (
         <>

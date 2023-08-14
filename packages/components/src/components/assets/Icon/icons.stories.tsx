@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Icon, variables, types } from '../../index';
+import { Icon, variables, types } from '../../../index';
 import { storiesOf } from '@storybook/react';
 
 const Wrapper = styled.div`
@@ -27,7 +27,7 @@ const IconText = styled.div`
     color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
 `;
 
-storiesOf('Icons', module).add(
+storiesOf('Assets/Icons', module).add(
     'All',
     () => (
         <Wrapper>
