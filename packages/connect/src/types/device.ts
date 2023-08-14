@@ -13,7 +13,10 @@ export type UnavailableCapability =
     | 'update-required'
     | 'trezor-connect-outdated';
 
-export type FirmwareType = 'bitcoin-only' | 'regular';
+export enum FirmwareType {
+    BitcoinOnly = 'bitcoin-only',
+    Regular = 'regular',
+}
 
 // NOTE: unavailableCapabilities is an object with information what is NOT supported by this device.
 // in ideal/expected setup this object should be empty but given setup might have exceptions.
