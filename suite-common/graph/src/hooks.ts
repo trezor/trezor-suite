@@ -46,6 +46,8 @@ const normalizeExtremeGraphEvents = (
     startOfTimeFrameDate: Date,
     endOfTimeFrameDate: Date,
 ) => {
+    if (A.isEmpty(events)) return;
+
     const timeframeUnixLength = endOfTimeFrameDate.getTime() - startOfTimeFrameDate.getTime();
     const minimalEdgeOffset = timeframeUnixLength * EVENT_MINIMAL_PROPORTIONAL_EDGE_OFFSET;
 
