@@ -1,3 +1,5 @@
+import { FirmwareType } from '@trezor/connect';
+
 import { PartialDevice } from './types';
 import { isDeviceInBootloaderMode } from './modeUtils';
 

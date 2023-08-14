@@ -16,13 +16,14 @@ import { versionCompare } from '../utils/versionUtils';
 import { create as createDeferred, Deferred } from '../utils/deferred';
 import { initLog } from '../utils/debug';
 import type { Transport, Descriptor } from '@trezor/transport';
-import type {
+import {
     Device as DeviceTyped,
     DeviceFirmwareStatus,
     DeviceStatus,
     Features,
     ReleaseInfo,
     UnavailableCapabilities,
+    FirmwareType,
 } from '../types';
 
 // custom log
@@ -119,7 +120,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
     networkTypeState: NETWORK.NetworkType[] = [];
 
-    firmwareType: 'regular' | 'bitcoin-only' = 'regular';
+    firmwareType: FirmwareType = FirmwareType.Regular;
 
     constructor(transport: Transport, descriptor: Descriptor) {
         super();
@@ -539,8 +540,8 @@ export class Device extends TypedEmitter<DeviceEvents> {
             feat.capabilities &&
             feat.capabilities.length > 0 &&
             !feat.capabilities.includes('Capability_Bitcoin_like')
-                ? 'bitcoin-only'
-                : 'regular';
+                ? FirmwareType.BitcoinOnly
+                : FirmwareType.Regular;
     }
 
     isUnacquired() {

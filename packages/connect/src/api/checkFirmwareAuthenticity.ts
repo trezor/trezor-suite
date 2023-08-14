@@ -4,6 +4,7 @@ import { stripFwHeaders, calculateFirmwareHash } from './firmware';
 import { getReleases } from '../data/firmwareInfo';
 import { ERRORS } from '../constants';
 import { httpRequest } from '../utils/assets';
+import { FirmwareType } from '../types';
 
 export default class CheckFirmwareAuthenticity extends AbstractMethod<'checkFirmwareAuthenticity'> {
     init() {
@@ -31,7 +32,7 @@ export default class CheckFirmwareAuthenticity extends AbstractMethod<'checkFirm
 
         const baseUrl = `https://data.trezor.io/firmware/${device.features.major_version}`;
         const fwUrl = `${baseUrl}/trezor-${deviceVersion}${
-            device.firmwareType === 'bitcoin-only' ? '-bitcoinonly.bin' : '.bin'
+            device.firmwareType === FirmwareType.BitcoinOnly ? '-bitcoinonly.bin' : '.bin'
         }`;
 
         const fw = await httpRequest(fwUrl, 'binary');
