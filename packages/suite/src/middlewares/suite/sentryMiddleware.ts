@@ -1,7 +1,11 @@
 import { MiddlewareAPI } from 'redux';
 
 import { discoveryActions, accountsActions, blockchainActions } from '@suite-common/wallet-core';
-import { getBootloaderVersion, getFirmwareVersion } from '@trezor/device-utils';
+import {
+    getBootloaderVersion,
+    getFirmwareVersion,
+    hasBitcoinOnlyFirmware,
+} from '@trezor/device-utils';
 import { DEVICE, TRANSPORT } from '@trezor/connect';
 import { analyticsActions } from '@suite-common/analytics';
 
@@ -87,7 +91,7 @@ const sentryMiddleware =
                 setSentryContext(deviceContextName, {
                     mode,
                     firmware: getFirmwareVersion(action.payload),
-                    isBitcoinOnly: action.payload.firmwareType === 'bitcoin-only',
+                    isBitcoinOnly: hasBitcoinOnlyFirmware(action.payload),
                     bootloader: getBootloaderVersion(action.payload),
                     model: state.suite.device?.features?.internal_model,
                 });

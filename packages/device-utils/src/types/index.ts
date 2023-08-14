@@ -1,4 +1,8 @@
+// TODO: ⬇️ comment does not apply anymore
 // define required device attributes here to avoid dependencies
+
+import { FirmwareType } from '@trezor/connect';
+
 // can be replaced in the future when we create a device types package
 export type PartialDevice = Partial<{
     features: {
@@ -16,5 +20,5 @@ export type PartialDevice = Partial<{
         model: string | null;
         internal_model: string | null;
     };
-    firmwareType: string | null;
+    firmwareType?: FirmwareType;
 }>;

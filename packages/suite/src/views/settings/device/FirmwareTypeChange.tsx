@@ -8,7 +8,7 @@ import { goto } from 'src/actions/suite/routerActions';
 import { Button } from '@trezor/components';
 import { useAnchor } from 'src/hooks/suite/useAnchor';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
-import { getFirmwareType, getFirmwareVersion } from '@trezor/device-utils';
+import { getFirmwareVersion, hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 import { HELP_FIRMWARE_TYPE } from '@trezor/urls';
 
 const Version = styled.div`
@@ -36,9 +36,10 @@ export const FirmwareTypeChange = ({ isDeviceLocked }: FirmwareTypeProps) => {
     }
 
     const currentFwVersion = getFirmwareVersion(device);
-    const currentFwType = getFirmwareType(device);
-    const actionButtonId =
-        device.firmwareType === 'bitcoin-only' ? 'TR_SWITCH_TO_UNIVERSAL' : 'TR_SWITCH_TO_BITCOIN';
+    const currentFwType = getSuiteFwTypeFromDevice(device);
+    const actionButtonId = hasBitcoinOnlyFirmware(device)
+        ? 'TR_SWITCH_TO_UNIVERSAL'
+        : 'TR_SWITCH_TO_BITCOIN';
 
     const handleAction = () => dispatch(goto('firmware-type', { params: { cancelable: true } }));
 

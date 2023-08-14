@@ -20,7 +20,6 @@ import {
     getBootloaderHash,
     getBootloaderVersion,
     getFirmwareRevision,
-    getFirmwareType,
     getFirmwareVersion,
 } from '@trezor/device-utils';
 import { DeepPartial } from '@trezor/type-utils';
@@ -222,7 +221,7 @@ export const getApplicationInfo = (state: AppState, hideSensitiveInfo: boolean) 
             model: device.features?.internal_model,
             firmware: device.features ? getFirmwareVersion(device) : '',
             firmwareRevision: device.features ? getFirmwareRevision(device) : '',
-            firmwareType: device.features ? getFirmwareType(device) : '',
+            firmwareType: device.firmwareType || '',
             bootloader: device.features ? getBootloaderVersion(device) : '',
             bootloaderHash: device.features ? getBootloaderHash(device) : '',
             numberOfWallets:

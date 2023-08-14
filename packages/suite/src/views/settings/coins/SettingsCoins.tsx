@@ -9,6 +9,7 @@ import { useAnchor } from 'src/hooks/suite/useAnchor';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDevice, useSelector } from 'src/hooks/suite';
 import { FirmwareTypeSuggestion } from './FirmwareTypeSuggestion';
+import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 
 const StyledSettingsLayout = styled(SettingsLayout)`
     & > * + * {
@@ -29,7 +30,7 @@ export const SettingsCoins = () => {
 
     const { device } = useDevice();
 
-    const bitcoinOnlyFirmware = device?.firmwareType === 'bitcoin-only';
+    const bitcoinOnlyFirmware = hasBitcoinOnlyFirmware(device);
     const onlyBitcoinEnabled =
         !!enabledNetworks.length &&
         enabledNetworks.every(coin => ['btc', 'regtest', 'test'].includes(coin));
