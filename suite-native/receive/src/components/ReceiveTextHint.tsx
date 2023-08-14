@@ -18,22 +18,17 @@ export const ReceiveTextHint = ({ onShowAddress }: ReceiveTextHintProps) => {
                 <Box marginVertical="medium">
                     <Pictogram
                         variant="yellow"
-                        icon="warningCircleLight"
+                        icon="warningTriangleLight"
                         title={
-                            <Text variant="titleSmall" align="center">
-                                <Text
-                                    variant="titleSmall"
-                                    color="textSecondaryHighlight"
-                                    align="center"
-                                >
-                                    Trezor Suite
-                                </Text>{' '}
-                                <Text variant="titleSmall" color="textSubdued" align="center">
-                                    Lite
+                            <VStack alignItems="center">
+                                <Text variant="titleSmall" color="textSecondaryHighlight">
+                                    Trezor Suite{' '}
+                                    <Text variant="titleSmall" color="textSubdued">
+                                        Lite{' '}
+                                    </Text>
                                 </Text>
-                                {'\n'}
-                                receive address
-                            </Text>
+                                <Text variant="titleSmall">receive address</Text>
+                            </VStack>
                         }
                         subtitle="For an extra layer of security, use Trezor Suite with your Trezor hardware
                     wallet to verify the receive address."

@@ -20,6 +20,7 @@ type SelectableAssetListProps = {
 
 const listItemTitleStyle = prepareNativeStyle(utils => ({
     marginBottom: utils.spacings.medium,
+    marginLeft: utils.spacings.medium,
 }));
 
 const mapAndSortNetworkItems = (networkItems: Network[], networkOrder: NetworkSymbol[]) =>
