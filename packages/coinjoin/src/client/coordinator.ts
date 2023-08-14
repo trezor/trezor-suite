@@ -1,4 +1,5 @@
-import { coordinatorRequest as request, RequestOptions } from './coordinatorRequest';
+import { coordinatorRequest, RequestOptions } from './coordinatorRequest';
+import { patchResponse } from '../utils/http';
 import {
     CoinjoinStatus,
     ZeroCredentials,
@@ -8,6 +9,9 @@ import {
     RegistrationData,
 } from '../types/coordinator';
 import { AFFILIATION_ID } from '../constants';
+
+const request = <T>(...args: Parameters<typeof coordinatorRequest>) =>
+    coordinatorRequest<T>(...args).then(result => patchResponse(result));
 
 export const getStatus = async (options: RequestOptions) => {
     const data = await request<CoinjoinStatus>(

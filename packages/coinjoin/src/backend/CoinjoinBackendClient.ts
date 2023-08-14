@@ -2,7 +2,7 @@ import { scheduleAction, arrayShuffle, urlToOnion } from '@trezor/utils';
 import { TypedEmitter } from '@trezor/utils/lib/typedEventEmitter';
 import type { BlockbookAPI } from '@trezor/blockchain-link/lib/workers/blockbook/websocket';
 
-import { httpGet, RequestOptions } from '../utils/http';
+import { httpGet, patchResponse, RequestOptions } from '../utils/http';
 import type {
     BlockFilter,
     BlockbookBlock,
@@ -192,7 +192,10 @@ export class CoinjoinBackendClient {
             case 204:
                 return { status: 'up-to-date' };
             case 200: {
-                const result: { bestHeight: number; filters: string[] } = await response.json();
+                const result: { bestHeight: number; filters: string[] } = await response
+                    .json()
+                    .then(r => patchResponse(r));
+
                 const filters = result.filters.map<BlockFilter>(data => {
                     const [blockHeight, blockHash, filter, prevHash, blockTime] = data.split(':');
                     return {

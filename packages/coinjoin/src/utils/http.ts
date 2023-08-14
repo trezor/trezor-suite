@@ -10,6 +10,31 @@ export interface RequestOptions extends ScheduleActionParams {
     userAgent?: string;
 }
 
+const skipPascalCasePatch = ['Type', 'BackenMajordVersion', 'LegalDocumentsVersion'];
+const pascalCaseToCamelCase = (key: string) => {
+    if (skipPascalCasePatch.includes(key)) return key;
+    return key.charAt(0).toLowerCase() + key.slice(1);
+};
+
+export const patchResponse = (obj: any) => {
+    if (Array.isArray(obj)) {
+        for (let i = 0; i < obj.length; i++) {
+            patchResponse(obj[i]);
+        }
+    } else if (obj && typeof obj === 'object') {
+        Object.keys(obj).forEach(key => {
+            const newKey = pascalCaseToCamelCase(key);
+            obj[newKey] = obj[key];
+            if (key !== newKey) {
+                delete obj[key];
+            }
+            patchResponse(obj[newKey]);
+        });
+    }
+
+    return obj;
+};
+
 const createHeaders = (options: RequestOptions) => {
     const headers: HeadersInit = {
         'Content-Type': 'application/json; charset=utf-8',
