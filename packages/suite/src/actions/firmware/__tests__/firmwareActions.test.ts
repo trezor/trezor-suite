@@ -37,7 +37,7 @@ jest.mock('@trezor/connect', () => {
         return Promise.resolve(fixture.mocks.connect);
     };
 
-    const { PROTO, DeviceModelInternal } = jest.requireActual('@trezor/connect');
+    const { PROTO, DeviceModelInternal, FirmwareType } = jest.requireActual('@trezor/connect');
 
     return {
         __esModule: true, // this property makes it work
@@ -60,6 +60,7 @@ jest.mock('@trezor/connect', () => {
         },
         PROTO,
         DeviceModelInternal,
+        FirmwareType,
     };
 });
 

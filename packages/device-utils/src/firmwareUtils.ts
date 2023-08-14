@@ -20,13 +20,3 @@ export const getFirmwareVersion = (device?: PartialDevice) => {
 
 export const hasBitcoinOnlyFirmware = (device?: PartialDevice) =>
     device?.firmwareType === FirmwareType.BitcoinOnly;
-
-/**
- * @deprecated This method should not be part of device-utils
- */
-export const getFirmwareType = (device?: PartialDevice) => {
-    if (isDeviceInBootloaderMode(device)) {
-        return '';
-    }
-    return isBitcoinOnlyFirmware(device) ? 'Bitcoin-only' : 'Universal';
-};
