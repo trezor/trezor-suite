@@ -1,10 +1,10 @@
-import type { AcquiredDevice, FirmwareType, TrezorDevice } from 'src/types/suite';
+import type { AcquiredDevice, TrezorDevice } from 'src/types/suite';
 import { firmwareActions } from 'src/actions/firmware/firmwareActions';
 import { isAnyOf, PayloadAction } from '@reduxjs/toolkit';
 import { AppState, ButtonRequest } from 'src/types/suite';
 import { addButtonRequest } from 'src/actions/suite/suiteActions';
 
-import { Device, UI } from '@trezor/connect';
+import { Device, UI, FirmwareType } from '@trezor/connect';
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 
 type RootState = Pick<AppState, 'firmware'>;

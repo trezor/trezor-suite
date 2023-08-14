@@ -1,4 +1,4 @@
-import { Dispatch, GetState, AcquiredDevice, FirmwareType } from 'src/types/suite';
+import { Dispatch, GetState, AcquiredDevice } from 'src/types/suite';
 import { createAction } from '@reduxjs/toolkit';
 import {
     FirmwareStatus,
@@ -8,7 +8,7 @@ import {
 } from 'src/reducers/firmware/firmwareReducer';
 import { selectDevice } from 'src/reducers/suite/suiteReducer';
 
-import TrezorConnect, { Device, Unsuccessful } from '@trezor/connect';
+import TrezorConnect, { Device, Unsuccessful, FirmwareType } from '@trezor/connect';
 import { analytics, EventType } from '@trezor/suite-analytics';
 import { notificationsActions } from '@suite-common/toast-notifications';
 

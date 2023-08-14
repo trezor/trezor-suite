@@ -1,9 +1,8 @@
 import { SUITE } from 'src/actions/suite/constants';
 import { firmwareActions } from 'src/actions/firmware/firmwareActions';
 import { firmwareUpdate } from 'src/actions/firmware/firmwareThunks';
-import { FirmwareType } from 'src/types/suite';
 
-import { UI, DeviceModelInternal } from '@trezor/connect';
+import { UI, DeviceModelInternal, FirmwareType } from '@trezor/connect';
 
 const { getSuiteDevice, getDeviceFeatures, getFirmwareRelease } = global.JestMocks;
 
@@ -142,7 +141,7 @@ export const actions = [
     },
     {
         description: 'Success T1B1 (without intermediary) - install Universal firmware',
-        action: () => firmwareUpdate(FirmwareType.Universal),
+        action: () => firmwareUpdate(FirmwareType.Regular),
         mocks: {
             connect: {
                 success: true,
@@ -174,7 +173,7 @@ export const actions = [
         result: {
             actions: [
                 { type: firmwareActions.setStatus.type, payload: 'started' },
-                { type: firmwareActions.setTargetType.type, payload: FirmwareType.Universal },
+                { type: firmwareActions.setTargetType.type, payload: FirmwareType.Regular },
                 { type: firmwareActions.setHash.type, payload: firmwareUpdateResponsePayload },
                 { type: firmwareActions.setStatus.type, payload: 'unplug' },
             ],

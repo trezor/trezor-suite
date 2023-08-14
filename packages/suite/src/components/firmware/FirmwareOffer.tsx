@@ -7,8 +7,9 @@ import { Translation } from 'src/components/suite';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { getFwUpdateVersion, parseFirmwareChangelog } from 'src/utils/suite/device';
 import { useFirmware, useTranslation, useSelector } from 'src/hooks/suite';
-import { AcquiredDevice, FirmwareType } from 'src/types/suite';
-import { getFirmwareType } from 'src/utils/firmware';
+import { AcquiredDevice } from 'src/types/suite';
+import { getSuiteFwTypeFromDevice, getSuiteFwType } from 'src/utils/firmware';
+import { FirmwareType } from '@trezor/connect';
 
 const FwVersionWrapper = styled.div`
     display: flex;
@@ -62,8 +63,12 @@ export const FirmwareOffer = ({
         ? null
         : parseFirmwareChangelog(device.firmwareRelease?.release);
 
-    const currentTypeAndVersion = `${getFirmwareType(device)} ${currentVersion ?? ''}`.trim();
-    const nextTypeAndVersion = `${(targetFirmwareType || targetType) ?? ''} ${nextVersion ?? ''}${
+    const currentTypeAndVersion = `${getSuiteFwTypeFromDevice(device)} ${
+        currentVersion ?? ''
+    }`.trim();
+
+    const nextFirmwareType = getSuiteFwType(targetFirmwareType || targetType);
+    const nextTypeAndVersion = `${nextFirmwareType ?? ''} ${nextVersion ?? ''}${
         useDevkit ? ' DEVKIT' : ''
     }`.trim();
 

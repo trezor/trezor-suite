@@ -10,7 +10,7 @@ import { useAnchor } from 'src/hooks/suite/useAnchor';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { getFirmwareVersion, hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 import { HELP_FIRMWARE_TYPE } from '@trezor/urls';
-import { getFirmwareType } from 'src/utils/firmware';
+import { getSuiteFwTypeFromDevice } from 'src/utils/firmware';
 
 const Version = styled.div`
     span {
