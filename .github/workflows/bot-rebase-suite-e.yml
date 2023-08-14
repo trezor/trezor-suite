@@ -1,0 +1,44 @@
+name: "[Bot] rebase suite-e branch on develop"
+
+on:
+  schedule:
+    - cron: "0 0 * * *"
+
+jobs:
+  rebase:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          ref: "suite-e"
+      - name: Rebase the suite-e branch on develop
+        id: rebase
+        run: |
+          echo 'Rebasing suite-e to develop'
+          git rebase origin/develop
+          if git status --porcelain | grep -q "^UU"; then
+            echo "Rebase conflicts detected"
+            echo "::set-output name=status::conflicts"
+          elif [ $? -ne 0 ]; then
+            echo "unknown error during rebase"
+            echo "::set-output name=status::error"
+          else
+            echo 'Rebase successful'
+          fi
+      - name: Push the rebased suite-e branch
+        if: steps.rebase.outputs.status != 'conflicts' && steps.rebase.outputs.status != 'error'
+        run: |
+          echo 'Pushing suite-e branch'
+          git push origin suite-e
+      - name: Notify Slack
+        if: steps.rebase.outputs.status == 'conflicts'
+        uses: slackapi/slack-github-action@v1.24.0
+        with:
+          payload: |
+            {
+              status: ${{steps.rebase.outputs.status}},
+              run_url: 'https://github.com/trezor/trezor-suite/actions/runs/${{ github.run_id }}',
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_SUITE_E_WEBHOOK_URL }}
