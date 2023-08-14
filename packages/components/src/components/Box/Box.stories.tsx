@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Box } from './Box';
+import { Box as BoxComponent } from './Box';
 import { FONT_WEIGHT } from '../../config/variables';
 
 const Text = styled.div`
@@ -13,7 +13,7 @@ const Wrapper = styled.div`
     flex-direction: column;
 `;
 
-const StyledRow = styled(Box)`
+const StyledRow = styled(BoxComponent)`
     margin: 10px 0;
 `;
 
@@ -21,7 +21,7 @@ export default {
     title: 'Misc/Box',
 };
 
-export const Basic = {
+export const Box = {
     render: () => (
         <>
             <Wrapper>

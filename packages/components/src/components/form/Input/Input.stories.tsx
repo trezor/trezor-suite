@@ -1,7 +1,7 @@
 import React from 'react';
 import { useArgs } from '@storybook/client-api';
 
-import { Input } from './Input';
+import { Input as InputComponent } from './Input';
 
 export default {
     title: 'Form/Input',
@@ -36,7 +36,7 @@ export default {
     },
 };
 
-export const Basic = {
+export const Input = {
     render: ({ ...args }) => {
         // eslint-disable-next-line
         const [{ value }, updateArgs] = useArgs();
@@ -45,7 +45,7 @@ export const Basic = {
         };
 
         return (
-            <Input
+            <InputComponent
                 isDisabled={args.isDisabled}
                 inputState={args.state}
                 variant={args.variant}

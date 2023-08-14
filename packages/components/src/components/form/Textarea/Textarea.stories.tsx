@@ -1,7 +1,7 @@
 import React from 'react';
 import { useArgs } from '@storybook/client-api';
 
-import { Textarea } from './Textarea';
+import { Textarea as TextareaComponent } from './Textarea';
 
 export default {
     title: 'Form/Textarea',
@@ -38,7 +38,7 @@ export default {
     },
 };
 
-export const Basic = {
+export const Textarea = {
     render: ({ ...args }) => {
         // eslint-disable-next-line
         const [{ value }, updateArgs] = useArgs();
@@ -47,7 +47,7 @@ export const Basic = {
         };
 
         return (
-            <Textarea
+            <TextareaComponent
                 disabled={args.disabled}
                 inputState={args.state}
                 label={args.label}

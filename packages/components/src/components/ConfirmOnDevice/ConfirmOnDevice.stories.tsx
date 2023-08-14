@@ -1,10 +1,10 @@
 import React from 'react';
-import { ConfirmOnDevice } from './ConfirmOnDevice';
+import { ConfirmOnDevice as ConfirmOnDeviceComponent } from './ConfirmOnDevice';
 import { StoryColumn } from '../../support/Story';
 import { DeviceModelInternal } from '@trezor/connect';
 
 export default {
-    title: 'Misc/Prompts',
+    title: 'Misc/ConfirmOnDevice',
     parameters: {
         options: {
             showPanel: false,
@@ -12,17 +12,17 @@ export default {
     },
 };
 
-export const Basic = () => (
+export const ConfirmOnDevice = () => (
     <>
         <StoryColumn minWidth={300}>
-            <ConfirmOnDevice
+            <ConfirmOnDeviceComponent
                 successText="confirmed"
                 title="Confirm on T1B1"
                 deviceModelInternal={DeviceModelInternal.T1B1}
             />
         </StoryColumn>
         <StoryColumn minWidth={300}>
-            <ConfirmOnDevice
+            <ConfirmOnDeviceComponent
                 successText="confirmed"
                 title="Confirm with cancel"
                 onCancel={() => {}}
@@ -30,14 +30,14 @@ export const Basic = () => (
             />
         </StoryColumn>
         <StoryColumn minWidth={300}>
-            <ConfirmOnDevice
+            <ConfirmOnDeviceComponent
                 successText="confirmed"
                 title="Confirm on T2T1"
                 deviceModelInternal={DeviceModelInternal.T2T1}
             />
         </StoryColumn>
         <StoryColumn minWidth={300}>
-            <ConfirmOnDevice
+            <ConfirmOnDeviceComponent
                 successText="confirmed"
                 title="With 3 steps no active"
                 steps={3}
@@ -45,7 +45,7 @@ export const Basic = () => (
             />
         </StoryColumn>
         <StoryColumn minWidth={300}>
-            <ConfirmOnDevice
+            <ConfirmOnDeviceComponent
                 successText="confirmed"
                 title="With 2 steps no active"
                 steps={2}
@@ -53,7 +53,7 @@ export const Basic = () => (
             />
         </StoryColumn>
         <StoryColumn minWidth={300}>
-            <ConfirmOnDevice
+            <ConfirmOnDeviceComponent
                 successText="confirmed"
                 title="With 5 steps - active 4"
                 steps={5}
@@ -62,7 +62,7 @@ export const Basic = () => (
             />
         </StoryColumn>
         <StoryColumn minWidth={300}>
-            <ConfirmOnDevice
+            <ConfirmOnDeviceComponent
                 successText="confirmed"
                 title="With 3 steps - active 1"
                 steps={3}
@@ -71,7 +71,7 @@ export const Basic = () => (
             />
         </StoryColumn>
         <StoryColumn minWidth={300}>
-            <ConfirmOnDevice
+            <ConfirmOnDeviceComponent
                 successText="confirmed"
                 title="5 steps 3 active cancel"
                 steps={5}
@@ -81,7 +81,7 @@ export const Basic = () => (
             />
         </StoryColumn>
         <StoryColumn minWidth={300}>
-            <ConfirmOnDevice
+            <ConfirmOnDeviceComponent
                 successText="Confirmed"
                 title="Confirm on T2T1"
                 steps={5}

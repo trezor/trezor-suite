@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Card } from './Card';
+import { Card as CardComponent } from './Card';
 import { variables } from '../../index';
 
 const Wrapper = styled.div`
@@ -9,7 +9,7 @@ const Wrapper = styled.div`
     padding: 20px;
 `;
 
-const StyledCard = styled(Card)`
+const StyledCard = styled(CardComponent)`
     margin: 20px;
 `;
 
@@ -21,7 +21,7 @@ export default {
     title: 'Misc/Card',
 };
 
-export const Basic = {
+export const Card = {
     render: () => (
         <>
             <Wrapper>
