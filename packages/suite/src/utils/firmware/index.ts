@@ -9,9 +9,9 @@ import {
     type AppState,
     type TrezorDevice,
     type ExtendedMessageDescriptor,
-    FirmwareType,
+    SuiteFirmwareType,
 } from 'src/types/suite';
-import { DeviceModelInternal } from '@trezor/connect';
+import { DeviceModelInternal, FirmwareType } from '@trezor/connect';
 
 export const getFormattedFingerprint = (fingerprint: string) =>
     [

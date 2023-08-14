@@ -14,7 +14,7 @@ import {
     amountToSatoshi,
 } from '@suite-common/wallet-utils';
 import { updateAll } from './utils';
-import { DeviceModelInternal } from '@trezor/connect';
+import { DeviceModelInternal, FirmwareType } from '@trezor/connect';
 
 type WalletWithBackends = {
     backends?: Partial<{
@@ -462,8 +462,8 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
                 features &&
                 features.capabilities &&
                 !features.capabilities.includes('Capability_Bitcoin_like')
-                    ? 'bitcoin-only'
-                    : 'regular';
+                    ? FirmwareType.BitcoinOnly
+                    : FirmwareType.Regular;
 
             return device;
         });

@@ -10,7 +10,7 @@ import {
 import { Translation } from 'src/components/suite';
 import { useDevice, useFirmware, useOnboarding, useSelector } from 'src/hooks/suite';
 import { ReconnectDevicePrompt, InstallButton, FirmwareOffer } from 'src/components/firmware';
-import { FirmwareType, TrezorDevice } from 'src/types/suite';
+import { TrezorDevice } from 'src/types/suite';
 import { getFwUpdateVersion } from 'src/utils/suite/device';
 import { getFirmwareVersion, hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 import { FirmwareType } from '@trezor/connect';
@@ -142,7 +142,7 @@ export const FirmwareInitial = ({
         (!isCurrentlyBitcoinOnly && !shouldSwitchFirmwareType) ||
         // attempting to switch to Bitcoin-only from old firmware
         (!isCurrentlyBitcoinOnly && shouldSwitchFirmwareType && !isBitcoinOnlyAvailable)
-            ? FirmwareType.Universal
+            ? FirmwareType.Regular
             : FirmwareType.BitcoinOnly;
 
     const installFirmware = (type: FirmwareType) => {
@@ -169,7 +169,7 @@ export const FirmwareInitial = ({
                 <ButtonRow>
                     <InstallButton
                         variant="secondary"
-                        onClick={() => installFirmware(FirmwareType.Universal)}
+                        onClick={() => installFirmware(FirmwareType.Regular)}
                         multipleDevicesConnected={multipleDevicesConnected}
                     >
                         <Translation id="TR_INSTALL_UNIVERSAL" />
@@ -211,7 +211,7 @@ export const FirmwareInitial = ({
             ) : undefined,
             innerActions: (
                 <InstallButton
-                    onClick={() => installFirmware(FirmwareType.Universal)}
+                    onClick={() => installFirmware(FirmwareType.Regular)}
                     multipleDevicesConnected={multipleDevicesConnected}
                 />
             ),

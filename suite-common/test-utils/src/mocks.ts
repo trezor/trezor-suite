@@ -1,7 +1,7 @@
 /* WARNING! This file should be imported ONLY in tests! */
 /* eslint-disable require-await */
 
-import { AccountUtxo, Device, Features, DeviceModelInternal } from '@trezor/connect';
+import { AccountUtxo, Device, Features, DeviceModelInternal, FirmwareType } from '@trezor/connect';
 import {
     TrezorDevice,
     GuideNode,
@@ -162,8 +162,8 @@ const getConnectDevice = (dev?: Partial<Device>, feat?: Partial<Features>): Devi
         unavailableCapabilities: {},
         firmwareType:
             feat && feat.capabilities && !feat?.capabilities.includes('Capability_Bitcoin_like')
-                ? 'bitcoin-only'
-                : 'regular',
+                ? FirmwareType.BitcoinOnly
+                : FirmwareType.Regular,
         ...dev,
         type: 'acquired',
     } as Device;

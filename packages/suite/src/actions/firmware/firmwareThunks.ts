@@ -7,7 +7,7 @@ import { Await } from '@trezor/type-utils';
 import { isDesktop } from '@trezor/env-utils';
 import { resolveStaticPath } from '@suite-common/suite-utils';
 import { analytics, EventType } from '@trezor/suite-analytics';
-import TrezorConnect, { DeviceModelInternal } from '@trezor/connect';
+import TrezorConnect, { DeviceModelInternal, FirmwareType } from '@trezor/connect';
 
 import {
     selectIntermediaryInstalled,
@@ -16,7 +16,7 @@ import {
     selectUseDevkit,
 } from 'src/reducers/firmware/firmwareReducer';
 import { selectDevice } from 'src/reducers/suite/suiteReducer';
-import { Dispatch, FirmwareType, GetState } from 'src/types/suite';
+import { Dispatch, GetState } from 'src/types/suite';
 import { firmwareActions } from './firmwareActions';
 
 /**
@@ -97,7 +97,7 @@ const firmwareInstallThunk =
                 intermediaryVersion
                     ? `Cannot install latest firmware. Will install intermediary v${intermediaryVersion} instead.`
                     : `Installing ${
-                          toBitcoinOnlyFirmware ? FirmwareType.BitcoinOnly : FirmwareType.Universal
+                          toBitcoinOnlyFirmware ? FirmwareType.BitcoinOnly : FirmwareType.Regular
                       } firmware ${targetFirmwareVersion}.`,
             );
 
