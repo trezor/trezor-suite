@@ -1,7 +1,7 @@
 import React from 'react';
 import { useArgs } from '@storybook/client-api';
 
-import { SelectBar } from './SelectBar';
+import { SelectBar as SelectBarComponent } from './SelectBar';
 
 const options = [
     { label: 'low', value: 'low' },
@@ -23,14 +23,14 @@ export default {
     args: { option: 'low', label: 'fee' },
 };
 
-export const Basic = {
+export const SelectBar = {
     render: ({ ...args }) => {
         // eslint-disable-next-line
         const [{ option }, updateArgs] = useArgs();
         const setOption = (option: string) => updateArgs({ option });
 
         return (
-            <SelectBar
+            <SelectBarComponent
                 label={args.label}
                 selectedOption={option}
                 options={options}

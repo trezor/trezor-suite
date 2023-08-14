@@ -1,7 +1,7 @@
 import React from 'react';
 import styled, { useTheme } from 'styled-components';
 
-import { Icon } from '../Icon/Icon';
+import { Icon } from '../assets/Icon/Icon';
 import { FONT_SIZE, FONT_WEIGHT } from '../../config/variables';
 
 const Row = styled.div`
@@ -19,7 +19,7 @@ const Text = styled.div<{ $color?: string }>`
     font-weight: ${FONT_WEIGHT.MEDIUM};
 `;
 
-interface NoteProps {
+export interface NoteProps {
     children: React.ReactNode;
     className?: string;
     color?: string;

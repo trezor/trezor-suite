@@ -1,21 +1,20 @@
 import React from 'react';
 import { useArgs } from '@storybook/client-api';
 
-import { Switch } from './Switch';
+import { Switch as SwitchComponent } from './Switch';
 
 export default {
     title: 'Form/Switch',
-    args: { isSmall: false, isDisabled: false, isChecked: false },
 };
 
-export const Basic = {
+export const Switch = {
     render: ({ ...args }) => {
         // eslint-disable-next-line
         const [{ isChecked }, updateArgs] = useArgs();
         const handleIsChecked = () => updateArgs({ isChecked: !isChecked });
 
         return (
-            <Switch
+            <SwitchComponent
                 onChange={handleIsChecked}
                 isChecked={isChecked}
                 isSmall={args.isSmall}
@@ -23,4 +22,5 @@ export const Basic = {
             />
         );
     },
+    args: { isSmall: false, isDisabled: false, isChecked: false },
 };

@@ -1,7 +1,7 @@
 import React from 'react';
 import { useArgs } from '@storybook/client-api';
 
-import { Select } from './Select';
+import { Select as SelectComponent } from './Select';
 
 const values: any = {
     'None (default)': null,
@@ -41,14 +41,14 @@ export default {
     },
 };
 
-export const Basic = {
+export const Select = {
     render: ({ ...args }) => {
         // eslint-disable-next-line
         const [{ option }, updateArgs] = useArgs();
         const setOption = (option: { label: string; value: 'string' }) => updateArgs({ option });
 
         return (
-            <Select
+            <SelectComponent
                 isSearchable={args.isSearchable}
                 isClearable={args.isClearable}
                 isClean={args.isClean}

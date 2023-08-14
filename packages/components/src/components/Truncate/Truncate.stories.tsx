@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { Truncate } from './Truncate';
+import { Truncate as TruncateComponent } from './Truncate';
 
 const Holder = styled.div`
     display: flex;
@@ -20,14 +20,14 @@ export default {
     },
 };
 
-export const Basic = {
+export const Truncate = {
     render: ({ ...args }) => (
         <>
             <Holder>
-                <Truncate lines={args.numberOfLines}>{args.shortText}</Truncate>
+                <TruncateComponent lines={args.numberOfLines}>{args.shortText}</TruncateComponent>
             </Holder>
             <Holder>
-                <Truncate lines={args.numberOfLines}>{args.longText}</Truncate>
+                <TruncateComponent lines={args.numberOfLines}>{args.longText}</TruncateComponent>
             </Holder>
         </>
     ),
