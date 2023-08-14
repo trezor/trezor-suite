@@ -153,7 +153,6 @@ const selectStyle = (
         ...base,
         padding: 0,
         '& + &': {
-            borderTop: `1px solid ${theme.BG_WHITE_ALT_HOVER}`,
             paddingTop: 4,
             marginTop: 4,
         },

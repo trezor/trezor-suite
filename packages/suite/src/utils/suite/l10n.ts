@@ -17,7 +17,7 @@ export const setTranslationMode = (value: boolean) => {
 export const isLocale = (lang: string): lang is Locale => lang in LANGUAGES;
 
 export const isCompletedLocale = (lang: string): lang is Locale =>
-    isLocale(lang) && !!LANGUAGES[lang].complete;
+    isLocale(lang) && !!LANGUAGES[lang].type;
 
 /**
  * Finds and returns first of languages preferred by user's environment
