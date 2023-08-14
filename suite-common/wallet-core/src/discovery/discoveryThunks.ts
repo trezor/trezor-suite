@@ -5,7 +5,6 @@ import TrezorConnect, { AccountInfo, BundleProgress, UI } from '@trezor/connect'
 import { TrezorDevice } from '@suite-common/suite-types';
 import { getDerivationType, isTrezorConnectBackendType } from '@suite-common/wallet-utils';
 import { Account, Discovery, DiscoveryItem, PartialDiscovery } from '@suite-common/wallet-types';
-import { accountsActions, selectAccounts } from '@suite-common/wallet-core';
 import { settingsCommonConfig } from '@suite-common/suite-config';
 import { networksCompatibility } from '@suite-common/wallet-config';
 import { getFirmwareVersion } from '@trezor/device-utils';
@@ -20,10 +19,10 @@ import {
     stopDiscovery,
     updateDiscovery,
 } from './discoveryActions';
-import {
-    selectDiscoveryByDeviceState,
-    selectDiscovery,
-} from '../../reducers/wallet/discoveryReducer';
+
+import { selectDiscoveryByDeviceState, selectDiscovery } from './discoveryReducer';
+import { selectAccounts } from '../accounts/accountsReducer';
+import { accountsActions } from '../accounts/accountsActions';
 
 type ProgressEvent = BundleProgress<AccountInfo | null>['payload'];
 

@@ -1,8 +1,7 @@
 import { FieldValues } from 'react-hook-form';
 
+import { Discovery, FormDraftKeyPrefix } from '@suite-common/wallet-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { Discovery } from '@suite-common/wallet-types';
-import type { FormDraftKeyPrefix } from '@suite-common/wallet-types';
 import { getFormDraftKey } from '@suite-common/wallet-utils';
 import { FormDraftPrefixKeyValues } from '@suite-common/wallet-constants';
 

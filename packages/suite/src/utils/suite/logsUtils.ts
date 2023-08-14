@@ -1,6 +1,4 @@
-import { Account, Discovery } from 'src/types/wallet';
-import { SUITE } from 'src/actions/suite/constants';
-import { AppState, TrezorDevice } from 'src/types/suite';
+import { discoveryActions, accountsActions } from '@suite-common/wallet-core';
 import {
     getEnvironment,
     getBrowserName,
@@ -15,8 +13,6 @@ import {
     getWindowHeight,
     getWindowWidth,
 } from '@trezor/env-utils';
-import { getIsTorEnabled } from 'src/utils/suite/tor';
-
 import { LogEntry } from '@suite-common/logger';
 import { DEVICE } from '@trezor/connect';
 import { getCustomBackends } from '@suite-common/wallet-utils';
@@ -28,11 +24,15 @@ import {
     getFirmwareVersion,
 } from '@trezor/device-utils';
 import { DeepPartial } from '@trezor/type-utils';
-import { accountsActions } from '@suite-common/wallet-core';
+import { Discovery } from '@suite-common/wallet-types';
+
+import { getIsTorEnabled } from 'src/utils/suite/tor';
+import { AppState, TrezorDevice } from 'src/types/suite';
+import { SUITE } from 'src/actions/suite/constants';
+import { Account } from 'src/types/wallet';
+import { selectLabelingDataForWallet } from 'src/reducers/suite/metadataReducer';
 
 import { getPhysicalDeviceUniqueIds } from './device';
-import { discoveryActions } from 'src/actions/wallet/discoveryActions';
-import { selectLabelingDataForWallet } from 'src/reducers/suite/metadataReducer';
 
 export const REDACTED_REPLACEMENT = '[redacted]';
 

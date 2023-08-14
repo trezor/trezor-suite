@@ -1,13 +1,10 @@
 import produce from 'immer';
-import { Action, TrezorDevice, Lock, TorBootstrap, TorStatus } from 'src/types/suite';
-import { SUITE, STORAGE } from 'src/actions/suite/constants';
-import type { Locale } from 'src/config/suite/languages';
-import { ensureLocale } from 'src/utils/suite/l10n';
-import type { OAuthServerEnvironment } from 'src/types/suite/metadata';
-import { getStatus } from 'src/utils/suite/device';
-import { getIsTorEnabled, getIsTorLoading } from 'src/utils/suite/tor';
-import { discoveryActions } from 'src/actions/wallet/discoveryActions';
 
+import {
+    discoveryActions,
+    selectDiscoveryByDeviceState,
+    DiscoveryRootState,
+} from '@suite-common/wallet-core';
 import type { InvityServerEnvironment } from '@suite-common/invity';
 import { getNumberFromPixelString, versionUtils } from '@trezor/utils';
 import { isWeb, getWindowWidth } from '@trezor/env-utils';
@@ -16,7 +13,13 @@ import { SuiteThemeVariant } from '@trezor/suite-desktop-api';
 import { TRANSPORT, TransportInfo, ConnectSettings } from '@trezor/connect';
 import { DiscoveryStatus } from '@suite-common/wallet-constants';
 
-import { selectDiscoveryByDeviceState, DiscoveryRootState } from '../wallet/discoveryReducer';
+import { getIsTorEnabled, getIsTorLoading } from 'src/utils/suite/tor';
+import { getStatus } from 'src/utils/suite/device';
+import type { OAuthServerEnvironment } from 'src/types/suite/metadata';
+import { ensureLocale } from 'src/utils/suite/l10n';
+import type { Locale } from 'src/config/suite/languages';
+import { SUITE, STORAGE } from 'src/actions/suite/constants';
+import { Action, TrezorDevice, Lock, TorBootstrap, TorStatus } from 'src/types/suite';
 
 export interface SuiteRootState {
     suite: SuiteState;

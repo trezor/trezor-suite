@@ -1,5 +1,10 @@
+import {
+    discoveryActions,
+    accountsActions,
+    fiatRatesActions,
+    blockchainActions,
+} from '@suite-common/wallet-core';
 import { ArrayElement } from '@trezor/type-utils';
-import { accountsActions, fiatRatesActions, blockchainActions } from '@suite-common/wallet-core';
 
 import { ReceiveAction } from 'src/actions/wallet/receiveActions';
 import { SignVerifyAction } from 'src/actions/wallet/signVerifyActions';
@@ -10,7 +15,6 @@ import { CoinMarketSpendAction } from 'src/actions/wallet/coinmarketSpendActions
 import { CoinmarketP2pAction } from 'src/actions/wallet/coinmarketP2pActions';
 import { CoinmarketSavingsAction } from 'src/actions/wallet/coinmarketSavingsActions';
 import { CoinmarketCommonAction } from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
-import { discoveryActions } from 'src/actions/wallet/discoveryActions';
 import { GraphAction } from 'src/actions/wallet/graphActions';
 import { SendFormAction } from 'src/actions/wallet/sendFormActions';
 import { AccountSearchAction } from 'src/actions/wallet/accountSearchActions';

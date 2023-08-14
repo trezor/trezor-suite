@@ -1,5 +1,12 @@
 import React from 'react';
+
 import styled from 'styled-components';
+
+import { selectDiscoveryByDeviceState } from '@suite-common/wallet-core';
+import { useFormatters } from '@suite-common/formatters';
+import { Switch, Box, Icon, useTheme, variables } from '@trezor/components';
+import { getAllAccounts, getTotalFiatBalance } from '@suite-common/wallet-utils';
+import { analytics, EventType } from '@trezor/suite-analytics';
 
 import { forgetDevice, toggleRememberDevice } from 'src/actions/suite/suiteActions';
 import {
@@ -9,14 +16,8 @@ import {
     HiddenPlaceholder,
 } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectDiscoveryByDeviceState } from 'src/reducers/wallet/discoveryReducer';
 import { TrezorDevice, AcquiredDevice } from 'src/types/suite';
 import { selectLabelingDataForWallet } from 'src/reducers/suite/metadataReducer';
-
-import { useFormatters } from '@suite-common/formatters';
-import { Switch, Box, Icon, useTheme, variables } from '@trezor/components';
-import { getAllAccounts, getTotalFiatBalance } from '@suite-common/wallet-utils';
-import { analytics, EventType } from '@trezor/suite-analytics';
 
 const InstanceType = styled.div`
     display: flex;

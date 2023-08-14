@@ -3,7 +3,12 @@ import { saveAs } from 'file-saver';
 import { resolveStaticPath } from '@suite-common/suite-utils';
 import { getAccountKey } from '@suite-common/wallet-utils';
 import type { FiatRatesState } from '@suite-common/wallet-core';
-import { TransactionsState, BlockchainState } from '@suite-common/wallet-core';
+import {
+    TransactionsState,
+    BlockchainState,
+    DiscoveryRootState,
+    selectDiscoveryByDeviceState,
+} from '@suite-common/wallet-core';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { ExtraDependencies } from '@suite-common/redux-utils';
 
@@ -17,10 +22,6 @@ import { fixLoadedCoinjoinAccount } from 'src/utils/wallet/coinjoinUtils';
 import * as suiteActions from '../actions/suite/suiteActions';
 import { AppState } from '../types/suite';
 import { STORAGE } from '../actions/suite/constants';
-import {
-    DiscoveryRootState,
-    selectDiscoveryByDeviceState,
-} from '../reducers/wallet/discoveryReducer';
 import { SuiteState } from '../reducers/suite/suiteReducer';
 
 const connectSrc = resolveStaticPath('connect/');

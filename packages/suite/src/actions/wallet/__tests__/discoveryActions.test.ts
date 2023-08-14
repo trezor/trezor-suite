@@ -3,14 +3,22 @@
 // unit test for discovery actions
 // data provided by TrezorConnect are mocked
 
-import { accountsActions } from '@suite-common/wallet-core';
+import {
+    prepareDiscoveryReducer,
+    accountsActions,
+    createDiscoveryThunk,
+    restartDiscoveryThunk,
+    startDiscoveryThunk,
+    stopDiscoveryThunk,
+    updateNetworkSettingsThunk,
+} from '@suite-common/wallet-core';
 import { ArrayElement } from '@trezor/type-utils';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { DiscoveryStatus } from '@suite-common/wallet-constants';
+import * as discoveryActions from '@suite-common/wallet-core';
 
 import { configureStore, filterThunkActionTypes } from 'src/support/tests/configureStore';
-import { prepareDiscoveryReducer } from 'src/reducers/wallet/discoveryReducer';
 import { selectIsDiscoveryAuthConfirmationRequired } from 'src/reducers/suite/suiteReducer';
 import walletSettingsReducer from 'src/reducers/wallet/settingsReducer';
 import { accountsReducer } from 'src/reducers/wallet';
@@ -24,14 +32,6 @@ import {
     changeNetworksFixtures,
     unavailableCapabilities,
 } from '../__fixtures__/discoveryActions';
-import * as discoveryActions from '../discoveryActions';
-import {
-    createDiscoveryThunk,
-    restartDiscoveryThunk,
-    startDiscoveryThunk,
-    stopDiscoveryThunk,
-    updateNetworkSettingsThunk,
-} from '../discoveryThunks';
 
 const discoveryReducer = prepareDiscoveryReducer(extraDependencies);
 

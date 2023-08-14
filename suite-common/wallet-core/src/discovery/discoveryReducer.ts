@@ -4,7 +4,7 @@ import { createDeferred } from '@trezor/utils';
 import { Discovery, PartialDiscovery } from '@suite-common/wallet-types';
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 
-import { discoveryActions } from 'src/actions/wallet/discoveryActions';
+import { discoveryActions } from './discoveryActions';
 
 export type DiscoveryState = Discovery[];
 
