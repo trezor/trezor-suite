@@ -5,7 +5,12 @@ import {
     isDeviceInBootloaderMode,
 } from '@trezor/device-utils';
 
-import type { AppState, TrezorDevice, ExtendedMessageDescriptor } from 'src/types/suite';
+import {
+    type AppState,
+    type TrezorDevice,
+    type ExtendedMessageDescriptor,
+    FirmwareType,
+} from 'src/types/suite';
 import { DeviceModelInternal } from '@trezor/connect';
 
 export const getFormattedFingerprint = (fingerprint: string) =>
@@ -112,16 +117,6 @@ export const validateFirmware = (
     if (!isT1V2 && firmwareFormat === FirmwareFormat.T1_V2) {
         return 'TR_FIRMWARE_VALIDATION_T1_V2';
     }
-};
-
-export const getSuiteFwTypeFromDevice = (device?: TrezorDevice) => {
-    if (isDeviceInBootloaderMode(device)) {
-        return '';
-    }
-
-    return hasBitcoinOnlyFirmware(device)
-        ? SuiteFirmwareType.BitcoinOnly
-        : SuiteFirmwareType.Universal;
 };
 
 export const getSuiteFwType = (firmwareType?: FirmwareType) =>

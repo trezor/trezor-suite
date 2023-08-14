@@ -4,10 +4,11 @@ import styled from 'styled-components';
 import { FirmwareChangelog } from 'src/components/firmware';
 import { Icon, Tooltip, variables } from '@trezor/components';
 import { Translation } from 'src/components/suite';
-import { getFirmwareType, getFirmwareVersion } from '@trezor/device-utils';
+import { getFirmwareVersion } from '@trezor/device-utils';
 import { getFwUpdateVersion, parseFirmwareChangelog } from 'src/utils/suite/device';
 import { useFirmware, useTranslation, useSelector } from 'src/hooks/suite';
 import { AcquiredDevice, FirmwareType } from 'src/types/suite';
+import { getFirmwareType } from 'src/utils/firmware';
 
 const FwVersionWrapper = styled.div`
     display: flex;
