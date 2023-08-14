@@ -13,6 +13,8 @@ import { useAccounts } from 'src/hooks/wallet';
 import { setFlag } from 'src/actions/suite/suiteActions';
 import { goto } from 'src/actions/suite/routerActions';
 import { AnimatePresence } from 'framer-motion';
+import { useEnabledNetworks } from 'src/hooks/settings/useEnabledNetworks';
+import { selectSupportedNetworks } from 'src/reducers/suite/suiteReducer';
 
 const StyledCard = styled(Card)`
     flex-direction: column;
@@ -79,10 +81,21 @@ interface assetType {
 
 const AssetsCard = () => {
     const theme = useTheme();
+    const dispatch = useDispatch();
     const { discovery, getDiscoveryStatus, isDiscoveryRunning } = useDiscovery();
     const { accounts } = useAccounts(discovery);
     const { dashboardAssetsGridMode } = useSelector(s => s.suite.flags);
-    const dispatch = useDispatch();
+
+    const { mainnets, enabledNetworks } = useEnabledNetworks();
+    const supportedNetworks = useSelector(selectSupportedNetworks);
+
+    const mainnetSymbols = mainnets.map(mainnet => mainnet.symbol);
+    const supportedMainnetNetworks = supportedNetworks.filter(network =>
+        mainnetSymbols.includes(network),
+    );
+    const hasMainnetNetworksToEnable = supportedMainnetNetworks.some(
+        network => !enabledNetworks.includes(network),
+    );
 
     const assets: { [key: string]: Account[] } = {};
     accounts.forEach(a => {
@@ -126,14 +139,15 @@ const AssetsCard = () => {
                     <LoadingContent isLoading={isDiscoveryRunning}>
                         <Translation id="TR_MY_ASSETS" />
                     </LoadingContent>
-                    {/* This button is interim solution as described here https://github.com/trezor/trezor-suite/issues/2329 */}
-                    <StyledAddAccountButton
-                        variant="tertiary"
-                        icon="PLUS"
-                        onClick={goToCoinsSettings}
-                    >
-                        <Translation id="TR_ENABLE_MORE_COINS" />
-                    </StyledAddAccountButton>
+                    {hasMainnetNetworksToEnable && (
+                        <StyledAddAccountButton
+                            variant="tertiary"
+                            icon="PLUS"
+                            onClick={goToCoinsSettings}
+                        >
+                            <Translation id="TR_ENABLE_MORE_COINS" />
+                        </StyledAddAccountButton>
+                    )}
                 </>
             }
             actions={
