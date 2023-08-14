@@ -1,4 +1,4 @@
-import colors, { THEME } from './config/colors';
+import { colors, THEME } from './config/colors';
 
 export * as variables from './config/variables';
 export * as animations from './config/animations';

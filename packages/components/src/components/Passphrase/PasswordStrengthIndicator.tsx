@@ -58,7 +58,7 @@ interface PasswordStrengthIndicatorProps {
     password: string;
 }
 
-const PasswordStrengthIndicator = ({ password }: PasswordStrengthIndicatorProps) => {
+export const PasswordStrengthIndicator = ({ password }: PasswordStrengthIndicatorProps) => {
     const [score, setScore] = useState<OptionalZXCVBNScore>();
     useEffect(() => {
         const runScoring = async () => {
@@ -88,5 +88,3 @@ const PasswordStrengthIndicator = ({ password }: PasswordStrengthIndicatorProps)
         </Wrapper>
     );
 };
-
-export default PasswordStrengthIndicator;

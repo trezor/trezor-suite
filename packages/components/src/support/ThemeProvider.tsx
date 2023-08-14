@@ -17,4 +17,3 @@ const ThemeProvider = ({ children, theme }: ThemeProviderProps) => {
 };
 
 export { ThemeProvider, ThemeContext };
-export default ThemeProvider;

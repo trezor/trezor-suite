@@ -218,6 +218,4 @@ const oldColors = {
     RED: '#cd4949', // used by password strength indicator
 } as const;
 
-const colors = { ...oldColors, ...THEME.light } as const;
-
-export default colors;
+export const colors = { ...oldColors, ...THEME.light } as const;
