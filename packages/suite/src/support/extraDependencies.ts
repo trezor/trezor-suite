@@ -1,10 +1,4 @@
 import { saveAs } from 'file-saver';
-import { StorageLoadAction } from 'src/actions/suite/storageActions';
-import * as metadataActions from 'src/actions/suite/metadataActions';
-import * as cardanoStakingActions from 'src/actions/wallet/cardanoStakingActions';
-import * as walletSettingsActions from 'src/actions/settings/walletSettingsActions';
-import { selectIsPendingTransportEvent } from 'src/reducers/suite/deviceReducer';
-import { fixLoadedCoinjoinAccount } from 'src/utils/wallet/coinjoinUtils';
 
 import { resolveStaticPath } from '@suite-common/suite-utils';
 import { getAccountKey } from '@suite-common/wallet-utils';
@@ -13,9 +7,21 @@ import { TransactionsState, BlockchainState } from '@suite-common/wallet-core';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { ExtraDependencies } from '@suite-common/redux-utils';
 
+import { StorageLoadAction } from 'src/actions/suite/storageActions';
+import * as metadataActions from 'src/actions/suite/metadataActions';
+import * as cardanoStakingActions from 'src/actions/wallet/cardanoStakingActions';
+import * as walletSettingsActions from 'src/actions/settings/walletSettingsActions';
+import { selectIsPendingTransportEvent } from 'src/reducers/suite/deviceReducer';
+import { fixLoadedCoinjoinAccount } from 'src/utils/wallet/coinjoinUtils';
+
 import * as suiteActions from '../actions/suite/suiteActions';
 import { AppState } from '../types/suite';
 import { STORAGE } from '../actions/suite/constants';
+import {
+    DiscoveryRootState,
+    selectDiscoveryByDeviceState,
+} from '../reducers/wallet/discoveryReducer';
+import { SuiteState } from '../reducers/suite/suiteReducer';
 
 const connectSrc = resolveStaticPath('connect/');
 // 'https://localhost:8088/';
@@ -36,6 +42,8 @@ export const extraDependencies: ExtraDependencies = {
     thunks: {
         cardanoValidatePendingTxOnBlock: cardanoStakingActions.validatePendingTxOnBlock,
         cardanoFetchTrezorPools: cardanoStakingActions.fetchTrezorPools,
+        initMetadata: metadataActions.init,
+        fetchMetadata: metadataActions.fetchMetadata,
     },
     selectors: {
         selectFeeInfo: (networkSymbol: NetworkSymbol) => (state: AppState) =>
@@ -47,12 +55,17 @@ export const extraDependencies: ExtraDependencies = {
         selectLocalCurrency: (state: AppState) => state.wallet.settings.localCurrency,
         selectIsPendingTransportEvent,
         selectDebugSettings: (state: AppState) => state.suite.settings.debug,
+        selectMetadata: (state: AppState) => state.metadata,
+        selectDevice: (state: AppState) => state.suite.device,
+        selectDiscoveryForDevice: (state: DiscoveryRootState & { suite: SuiteState }) =>
+            selectDiscoveryByDeviceState(state, state.suite.device?.state),
     },
     actions: {
         setAccountAddMetadata: metadataActions.setAccountAdd,
         setWalletSettingsLocalCurrency: walletSettingsActions.setLocalCurrency,
         changeWalletSettingsNetworks: walletSettingsActions.changeNetworks,
         lockDevice: suiteActions.lockDevice,
+        requestAuthConfirm: suiteActions.requestAuthConfirm,
     },
     actionTypes: {
         storageLoad: STORAGE.LOAD,

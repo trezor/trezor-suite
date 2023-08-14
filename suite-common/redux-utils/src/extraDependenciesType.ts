@@ -1,6 +1,10 @@
-import { ActionCreatorWithPayload, ActionCreatorWithPreparedPayload } from '@reduxjs/toolkit';
+import {
+    ActionCreatorWithoutPayload,
+    ActionCreatorWithPayload,
+    ActionCreatorWithPreparedPayload,
+} from '@reduxjs/toolkit';
 
-import { Account, FeeInfo } from '@suite-common/wallet-types';
+import { Account, Discovery, FeeInfo } from '@suite-common/wallet-types';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { TrezorDevice } from '@suite-common/suite-types';
 import { BlockchainBlock, ConnectSettings, Manifest, PROTO } from '@trezor/connect';
@@ -22,6 +26,8 @@ export type ExtraDependencies = {
             timestamp: number;
         }>;
         cardanoFetchTrezorPools: SuiteCompatibleThunk<'tADA' | 'ADA'>;
+        initMetadata: SuiteCompatibleThunk<boolean>;
+        fetchMetadata: SuiteCompatibleThunk<string>;
     };
     selectors: {
         selectFeeInfo: (networkSymbol: NetworkSymbol) => SuiteCompatibleSelector<FeeInfo>;
@@ -34,6 +40,9 @@ export type ExtraDependencies = {
         // todo: we do not want to, so far, transfer coinjoin to @suite-common
         // but this is exactly what I need to get DebugModeOptions type instead of any
         selectDebugSettings: SuiteCompatibleSelector<any>;
+        selectMetadata: SuiteCompatibleSelector<any>;
+        selectDevice: SuiteCompatibleSelector<TrezorDevice | undefined>;
+        selectDiscoveryForDevice: SuiteCompatibleSelector<Discovery | undefined>;
     };
     // You should only use ActionCreatorWithPayload from redux-toolkit!
     // That means you will need to convert actual action creators in packages/suite to use createAction from redux-toolkit,
@@ -55,6 +64,7 @@ export type ExtraDependencies = {
             NetworkSymbol[]
         >;
         lockDevice: ActionCreatorWithPreparedPayload<[payload: boolean], boolean>;
+        requestAuthConfirm: ActionCreatorWithoutPayload;
     };
     // Use action types + reducers as last resort if you can't use actions creators. For example for storageLoad it is used because
     // it would be really hard to move all types to @suite-common that are needed to type payload. This comes at cost of

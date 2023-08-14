@@ -1,21 +1,18 @@
-import { MiddlewareAPI } from 'redux';
+import { accountsActions, disableAccountsThunk } from '@suite-common/wallet-core';
+import TrezorConnect, { UI } from '@trezor/connect';
+import { DiscoveryStatus } from '@suite-common/wallet-constants';
+import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
+
 import { SUITE, ROUTER, MODAL } from 'src/actions/suite/constants';
 import * as walletSettingsActions from 'src/actions/settings/walletSettingsActions';
 import * as suiteActions from 'src/actions/suite/suiteActions';
 import * as discoveryActions from 'src/actions/wallet/discoveryActions';
 import { selectDiscoveryForDevice } from 'src/reducers/suite/suiteReducer';
 import { getApp } from 'src/utils/suite/router';
-import { AppState, Action, Dispatch } from 'src/types/suite';
 
-import { accountsActions, disableAccountsThunk } from '@suite-common/wallet-core';
-import TrezorConnect, { UI } from '@trezor/connect';
-import { DiscoveryStatus } from '@suite-common/wallet-constants';
-
-const discoveryMiddleware =
-    (api: MiddlewareAPI<Dispatch, AppState>) =>
-    (next: Dispatch) =>
-    async (action: Action): Promise<Action> => {
-        const prevState = api.getState();
+export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
+    async (action, { dispatch, next, getState }) => {
+        const prevState = getState();
         const prevDiscovery = selectDiscoveryForDevice(prevState);
         const discoveryIsRunning =
             prevDiscovery &&
@@ -23,7 +20,7 @@ const discoveryMiddleware =
             prevDiscovery.status < DiscoveryStatus.STOPPING;
 
         if (action.type === SUITE.FORGET_DEVICE && action.payload.state) {
-            api.dispatch(discoveryActions.removeDiscovery(action.payload.state));
+            dispatch(discoveryActions.removeDiscovery(action.payload.state));
         }
 
         // temporary workaround, needs to be changed in @trezor/connect
@@ -61,7 +58,7 @@ const discoveryMiddleware =
         // discovery interruption ends after DISCOVERY.STOP action
         // action which triggers this interruption will be propagated AFTER stop
         if (interruptionIntent && discoveryIsRunning) {
-            await api.dispatch(discoveryActions.stop());
+            await dispatch(discoveryActions.stopDiscoveryThunk());
         }
 
         // pass action
@@ -69,13 +66,12 @@ const discoveryMiddleware =
 
         if (walletSettingsActions.changeNetworks.match(action)) {
             // update Discovery fields
-            api.dispatch(discoveryActions.updateNetworkSettings());
+            dispatch(discoveryActions.updateNetworkSettingsThunk());
             // remove accounts which are no longer part of Discovery
-            api.dispatch(disableAccountsThunk());
+            dispatch(disableAccountsThunk());
         }
 
-        const nextState = api.getState();
-        // code below runs only in wallet context
+        const nextState = getState();
         if (nextState.router.app !== 'wallet' && nextState.router.app !== 'dashboard')
             return action;
 
@@ -115,21 +111,26 @@ const discoveryMiddleware =
 
         // 3. begin auth process
         if (authorizationIntent) {
-            api.dispatch(suiteActions.authorizeDevice());
+            dispatch(suiteActions.authorizeDevice());
         }
 
         // 4. device state received
         if (action.type === SUITE.AUTH_DEVICE) {
             // `device` is always present here
             // to avoid typescript conditioning use device from action as a fallback (never used)
-            api.dispatch(discoveryActions.create(action.state, device || action.payload));
+            dispatch(
+                discoveryActions.createDiscoveryThunk({
+                    deviceState: action.state,
+                    device: device || action.payload,
+                }),
+            );
         }
 
         // 5. device state confirmation received
         if (action.type === SUITE.RECEIVE_AUTH_CONFIRM && action.payload.state) {
             // from discovery point of view it's irrelevant if authConfirm fails
             // it's a device matter now
-            api.dispatch(
+            dispatch(
                 discoveryActions.updateDiscovery({
                     deviceState: action.payload.state,
                     authConfirm: false,
@@ -146,7 +147,7 @@ const discoveryMiddleware =
             walletSettingsActions.changeNetworks.match(action) ||
             accountsActions.changeAccountVisibility.match(action)
         ) {
-            const discovery = selectDiscoveryForDevice(api.getState());
+            const discovery = selectDiscoveryForDevice(getState());
             if (
                 device &&
                 device.connected &&
@@ -156,11 +157,10 @@ const discoveryMiddleware =
                 (discovery.status === DiscoveryStatus.IDLE ||
                     discovery.status >= DiscoveryStatus.STOPPED)
             ) {
-                api.dispatch(discoveryActions.start());
+                dispatch(discoveryActions.startDiscoveryThunk());
             }
         }
 
         return action;
-    };
-
-export default discoveryMiddleware;
+    },
+);

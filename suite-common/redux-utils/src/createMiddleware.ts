@@ -9,7 +9,7 @@ interface SimpleMiddleware<TAction extends Action, TExtraMiddlewareAPI = {}> {
         action: TAction,
         api: MiddlewareAPI<ThunkDispatch<any, any, AnyAction>> &
             TExtraMiddlewareAPI & { next: Dispatch<AnyAction> },
-    ): AnyAction;
+    ): AnyAction | Promise<AnyAction>;
 }
 
 export const createMiddleware =

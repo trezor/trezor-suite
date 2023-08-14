@@ -1,13 +1,11 @@
-import { configureStore } from 'src/support/tests/configureStore';
-
 import { Middleware } from 'redux';
-import * as storageActions from '../storageActions';
-import * as suiteActions from '../suiteActions';
+
+import { disableAccountsThunk, transactionsActions } from '@suite-common/wallet-core';
+import { getAccountTransactions, getAccountIdentifier } from '@suite-common/wallet-utils';
+
 import * as walletSettingsActions from 'src/actions/settings/walletSettingsActions';
 import * as discoveryActions from 'src/actions/wallet/discoveryActions';
-import { disableAccountsThunk, transactionsActions } from '@suite-common/wallet-core';
 import * as SUITE from 'src/actions/suite/constants/suiteConstants';
-
 import { accountsReducer, fiatRatesReducer, transactionsReducer } from 'src/reducers/wallet';
 import walletSettingsReducer from 'src/reducers/wallet/settingsReducer';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
@@ -16,12 +14,15 @@ import sendFormReducer from 'src/reducers/wallet/sendFormReducer';
 import graphReducer from 'src/reducers/wallet/graphReducer';
 import storageMiddleware from 'src/middlewares/wallet/storageMiddleware';
 import { coinjoinReducer } from 'src/reducers/wallet/coinjoinReducer';
-import { getAccountTransactions, getAccountIdentifier } from '@suite-common/wallet-utils';
+import { configureStore } from 'src/support/tests/configureStore';
 import { AppState } from 'src/types/suite';
 import { SETTINGS } from 'src/config/suite';
 import { preloadStore } from 'src/support/suite/preloadStore';
 import { prepareDiscoveryReducer } from 'src/reducers/wallet/discoveryReducer';
 import { extraDependencies } from 'src/support/extraDependencies';
+
+import * as suiteActions from '../suiteActions';
+import * as storageActions from '../storageActions';
 
 const { getSuiteDevice, getWalletAccount, getWalletTransaction } = global.JestMocks;
 
@@ -244,9 +245,18 @@ describe('Storage actions', () => {
         updateStore(store);
 
         // create discovery objects
-        store.dispatch(discoveryActions.create(dev1.state!, dev1));
-        store.dispatch(discoveryActions.create(dev2.state!, dev2));
-        store.dispatch(discoveryActions.create(dev2Instance1.state!, dev2Instance1));
+        store.dispatch(
+            discoveryActions.createDiscoveryThunk({ deviceState: dev1.state!, device: dev1 }),
+        );
+        store.dispatch(
+            discoveryActions.createDiscoveryThunk({ deviceState: dev2.state!, device: dev2 }),
+        );
+        store.dispatch(
+            discoveryActions.createDiscoveryThunk({
+                deviceState: dev2Instance1.state!,
+                device: dev2Instance1,
+            }),
+        );
 
         // add txs
         store.dispatch(transactionsActions.addTransaction({ transactions: [tx1], account: acc1 }));

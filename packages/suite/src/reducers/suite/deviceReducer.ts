@@ -1,9 +1,10 @@
 import produce from 'immer';
+
+import { Device, DEVICE, Features } from '@trezor/connect';
+
 import { SUITE, STORAGE, METADATA } from 'src/actions/suite/constants';
 import * as deviceUtils from 'src/utils/suite/device';
 import type { TrezorDevice, AcquiredDevice, Action, ButtonRequest } from 'src/types/suite';
-
-import { Device, DEVICE, Features } from '@trezor/connect';
 
 type State = TrezorDevice[];
 const initialState: State = [];
@@ -434,6 +435,7 @@ const deviceReducer = (state: State = initialState, action: Action): State =>
         }
     });
 
+export const selectDevices = (state: DeviceRootState) => state.devices;
 export const selectIsPendingTransportEvent = (state: DeviceRootState) => state.devices.length < 1;
 
 export default deviceReducer;

@@ -1,3 +1,11 @@
+import { createAction } from '@reduxjs/toolkit';
+
+import { notificationsActions } from '@suite-common/toast-notifications';
+import { getCustomBackends } from '@suite-common/wallet-utils';
+import { desktopApi, HandshakeElectron } from '@trezor/suite-desktop-api';
+import { analytics, EventType } from '@trezor/suite-analytics';
+import TrezorConnect, { Device, DEVICE } from '@trezor/connect';
+
 import { TorStatus } from 'src/types/suite';
 import * as comparisonUtils from 'src/utils/suite/comparisonUtils';
 import * as deviceUtils from 'src/utils/suite/device';
@@ -21,13 +29,6 @@ import {
     selectTorState,
 } from 'src/reducers/suite/suiteReducer';
 import type { TranslationKey } from 'src/components/suite/Translation/components/BaseTranslation';
-import { createAction } from '@reduxjs/toolkit';
-
-import { notificationsActions } from '@suite-common/toast-notifications';
-import { getCustomBackends } from '@suite-common/wallet-utils';
-import { desktopApi, HandshakeElectron } from '@trezor/suite-desktop-api';
-import { analytics, EventType } from '@trezor/suite-analytics';
-import TrezorConnect, { Device, DEVICE } from '@trezor/connect';
 
 import { SUITE, METADATA } from './constants';
 
@@ -46,7 +47,7 @@ export type SuiteAction =
       }
     | { type: typeof SUITE.AUTH_DEVICE; payload: TrezorDevice; state: string }
     | { type: typeof SUITE.AUTH_FAILED; payload: TrezorDevice }
-    | { type: typeof SUITE.REQUEST_AUTH_CONFIRM }
+    | { type: typeof requestAuthConfirm.type }
     | { type: typeof SUITE.RECEIVE_AUTH_CONFIRM; payload: TrezorDevice; success: boolean }
     | { type: typeof SUITE.CREATE_DEVICE_INSTANCE; payload: TrezorDevice }
     | { type: typeof SUITE.FORGET_DEVICE; payload: TrezorDevice }
@@ -97,6 +98,8 @@ export const desktopHandshake = (payload: HandshakeElectron): SuiteAction => ({
     type: SUITE.DESKTOP_HANDSHAKE,
     payload,
 });
+
+export const requestAuthConfirm = createAction(SUITE.REQUEST_AUTH_CONFIRM);
 
 export const removeButtonRequests = createAction(
     SUITE.ADD_BUTTON_REQUEST,
