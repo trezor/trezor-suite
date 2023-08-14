@@ -167,7 +167,7 @@ export const validateDeviceCompatibility = (
     const deviceFwVersion = getFirmwareVersion(device);
     const deviceBootloaderVersion = getBootloaderVersion(device);
     const deviceFwRevision = getFirmwareRevision(device);
-    const deviceFwVariant = device.firmwareType === 'bitcoin-only' ? 'bitcoin-only' : 'regular';
+    const deviceFwType = device.firmwareType;
     const deviceInternalModel = device.features.internal_model.toLowerCase();
     const deviceVendor = device.features.vendor.toLowerCase();
 
@@ -184,7 +184,7 @@ export const validateDeviceCompatibility = (
         return (
             modelCondition.toLowerCase() === deviceInternalModel &&
             (vendorCondition.toLowerCase() === deviceVendor || vendorCondition === '*') &&
-            (variantCondition.toLowerCase() === deviceFwVariant || variantCondition === '*') &&
+            (variantCondition.toLowerCase() === deviceFwType || variantCondition === '*') &&
             (firmwareRevisionCondition.toLowerCase() === deviceFwRevision.toLowerCase() ||
                 firmwareRevisionCondition === '*') &&
             (semver.satisfies(deviceFwVersion, createVersionRange(firmwareCondition)!) ||

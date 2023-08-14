@@ -1,4 +1,8 @@
-import { getBootloaderVersion, getFirmwareVersion } from '@trezor/device-utils';
+import {
+    getBootloaderVersion,
+    getFirmwareVersion,
+    hasBitcoinOnlyFirmware,
+} from '@trezor/device-utils';
 import { Await } from '@trezor/type-utils';
 import { isDesktop } from '@trezor/env-utils';
 import { resolveStaticPath } from '@suite-common/suite-utils';
@@ -84,9 +88,7 @@ const firmwareInstallThunk =
             // unless the user wants to switch firmware type
             let toBitcoinOnlyFirmware = firmwareType === FirmwareType.BitcoinOnly;
             if (!firmwareType) {
-                toBitcoinOnlyFirmware = !prevDevice
-                    ? false
-                    : prevDevice.firmwareType === 'bitcoin-only';
+                toBitcoinOnlyFirmware = !prevDevice ? false : hasBitcoinOnlyFirmware(prevDevice);
             }
 
             const targetFirmwareVersion = release.version.join('.');

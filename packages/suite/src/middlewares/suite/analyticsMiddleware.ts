@@ -9,6 +9,7 @@ import {
     getBootloaderVersion,
     getFirmwareRevision,
     getFirmwareVersion,
+    hasBitcoinOnlyFirmware,
     isDeviceInBootloaderMode,
 } from '@trezor/device-utils';
 import { analyticsActions } from '@suite-common/analytics';
@@ -82,7 +83,7 @@ const analyticsMiddleware =
                             pin_protection: features.pin_protection,
                             passphrase_protection: features.passphrase_protection,
                             totalInstances: state.devices.length,
-                            isBitcoinOnly: action.payload.firmwareType === 'bitcoin-only',
+                            isBitcoinOnly: hasBitcoinOnlyFirmware(action.payload),
                             totalDevices: getPhysicalDeviceCount(state.devices),
                             language: features.language,
                             model: features.internal_model,

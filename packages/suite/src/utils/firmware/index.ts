@@ -1,5 +1,9 @@
 import { valid, satisfies } from 'semver';
-import { getFirmwareVersion } from '@trezor/device-utils';
+import {
+    getFirmwareVersion,
+    hasBitcoinOnlyFirmware,
+    isDeviceInBootloaderMode,
+} from '@trezor/device-utils';
 
 import type { AppState, TrezorDevice, ExtendedMessageDescriptor } from 'src/types/suite';
 import { DeviceModelInternal } from '@trezor/connect';
@@ -109,3 +113,18 @@ export const validateFirmware = (
         return 'TR_FIRMWARE_VALIDATION_T1_V2';
     }
 };
+
+export const getSuiteFwTypeFromDevice = (device?: TrezorDevice) => {
+    if (isDeviceInBootloaderMode(device)) {
+        return '';
+    }
+
+    return hasBitcoinOnlyFirmware(device)
+        ? SuiteFirmwareType.BitcoinOnly
+        : SuiteFirmwareType.Universal;
+};
+
+export const getSuiteFwType = (firmwareType?: FirmwareType) =>
+    firmwareType === FirmwareType.BitcoinOnly
+        ? SuiteFirmwareType.BitcoinOnly
+        : SuiteFirmwareType.Universal;

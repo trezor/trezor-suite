@@ -12,7 +12,8 @@ import { useDevice, useFirmware, useOnboarding, useSelector } from 'src/hooks/su
 import { ReconnectDevicePrompt, InstallButton, FirmwareOffer } from 'src/components/firmware';
 import { FirmwareType, TrezorDevice } from 'src/types/suite';
 import { getFwUpdateVersion } from 'src/utils/suite/device';
-import { getFirmwareVersion } from '@trezor/device-utils';
+import { getFirmwareVersion, hasBitcoinOnlyFirmware } from '@trezor/device-utils';
+import { FirmwareType } from '@trezor/connect';
 
 const Description = styled.div`
     align-items: center;
@@ -133,7 +134,7 @@ export const FirmwareInitial = ({
         currentFwVersion &&
         availableFwVersion === currentFwVersion
     );
-    const isCurrentlyBitcoinOnly = device.firmwareType === 'bitcoin-only';
+    const isCurrentlyBitcoinOnly = hasBitcoinOnlyFirmware(device);
     const targetFirmwareType =
         // switching to Universal
         (isCurrentlyBitcoinOnly && shouldSwitchFirmwareType) ||

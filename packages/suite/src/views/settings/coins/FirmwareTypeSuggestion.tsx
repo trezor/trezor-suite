@@ -8,6 +8,7 @@ import { TextColumn } from 'src/components/suite/Settings';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDevice, useDispatch } from 'src/hooks/suite';
 import { Button, Card } from '@trezor/components';
+import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 
 const StyledCard = styled(Card)`
     align-items: flex-start;
@@ -25,8 +26,7 @@ export const FirmwareTypeSuggestion = () => {
     const dispatch = useDispatch();
     const { device } = useDevice();
 
-    const bitcoinOnlyFirmware = device?.firmwareType === 'bitcoin-only';
-    const translationId = bitcoinOnlyFirmware
+    const translationId = hasBitcoinOnlyFirmware(device)
         ? 'TR_SETTINGS_COINS_UNIVERSAL_FIRMWARE_SUGGESTION'
         : 'TR_SETTINGS_COINS_BITCOIN_FIRMWARE_SUGGESTION';
 

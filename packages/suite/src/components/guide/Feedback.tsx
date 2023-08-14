@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect } from 'react';
 import styled, { css } from 'styled-components';
 import { analytics, EventType } from '@trezor/suite-analytics';
-import { getFirmwareType, getFirmwareVersion } from '@trezor/device-utils';
+import { getFirmwareVersion } from '@trezor/device-utils';
 
 import { CharacterCount, Translation } from 'src/components/suite';
 import { Textarea, Select, variables, Button, CollapsibleBox } from '@trezor/components';
@@ -174,11 +174,6 @@ export const Feedback = ({ type }: FeedbackProps) => {
         }
     }, [description]);
 
-    let firmwareType = '';
-    if (device?.features) {
-        firmwareType = getFirmwareType(device);
-    }
-
     const goBack = () => dispatch(setView('SUPPORT_FEEDBACK_SELECTION'));
     const onSubmit = useCallback(() => {
         const userData: UserData = {
@@ -191,7 +186,7 @@ export const Feedback = ({ type }: FeedbackProps) => {
             device_model: device?.features?.internal_model,
             firmware_version: device?.features ? getFirmwareVersion(device) : '',
             firmware_revision: device?.features?.revision || '',
-            firmware_type: firmwareType,
+            firmware_type: device?.firmwareType || '',
         };
         if (type === 'BUG') {
             dispatch(
@@ -223,7 +218,7 @@ export const Feedback = ({ type }: FeedbackProps) => {
             type: EventType.GuideFeedbackSubmit,
             payload: { type: type === 'BUG' ? 'bug' : 'suggestion' },
         });
-    }, [device, dispatch, firmwareType, type, description, category, rating?.id]);
+    }, [device, dispatch, type, description, category, rating?.id]);
 
     return (
         <ViewWrapper>
