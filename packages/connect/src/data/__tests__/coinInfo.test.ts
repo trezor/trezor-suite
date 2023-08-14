@@ -21,7 +21,7 @@ describe('data/coinInfo', () => {
     it('bitcoin network blocktime', () => {
         const bitcoinNetworks = getAllNetworks().filter(({ type }) => type === 'bitcoin');
         bitcoinNetworks.forEach(network => {
-            expect(network.blocktime).toBeGreaterThan(0);
+            expect(network.blockTime).toBeGreaterThan(0);
         });
     });
 });

@@ -27,25 +27,3 @@ export interface DiscoveryAccount {
     balance?: string;
     addresses?: AccountAddresses;
 }
-export interface FeeLevel {
-    label: 'high' | 'normal' | 'economy' | 'low' | 'custom';
-    feePerUnit: string;
-    blocks: number;
-    feeLimit?: string; // eth gas limit
-    feePerTx?: string; // fee for BlockchainEstimateFeeParams.request.specific
-}
-
-export type SelectFeeLevel =
-    | {
-          name: string;
-          fee: '0';
-          feePerByte?: undefined;
-          disabled: true;
-      }
-    | {
-          name: string;
-          fee: string;
-          feePerByte: string;
-          minutes: number;
-          total: string;
-      };

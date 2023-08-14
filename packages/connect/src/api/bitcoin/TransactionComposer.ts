@@ -5,8 +5,7 @@ import { composeTx, ComposeInput, ComposeOutput, ComposeResult } from '@trezor/u
 import { FeeLevels } from './Fees';
 import { Blockchain } from '../../backend/BlockchainLink';
 import { getHDPath } from '../../utils/pathUtils';
-import type { BitcoinNetworkInfo } from '../../types';
-import type { DiscoveryAccount, SelectFeeLevel } from '../../types/account';
+import type { BitcoinNetworkInfo, DiscoveryAccount, SelectFeeLevel } from '../../types';
 import type { PrecomposeParams } from '../../types/api/composeTransaction';
 
 type Options = {
@@ -139,7 +138,7 @@ export class TransactionComposer {
                     name: level.label,
                     fee: tx.fee,
                     feePerByte: level.feePerUnit,
-                    minutes: level.blocks * this.coinInfo.blocktime,
+                    minutes: level.blocks * this.coinInfo.blockTime,
                     total: tx.totalSpent,
                 });
             } else {

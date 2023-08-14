@@ -1,3 +1,5 @@
+import { FeeLevel } from './fees';
+
 export interface CoinSupport {
     connect: boolean;
     trezor1: string;
@@ -23,9 +25,6 @@ export interface BlockchainLink {
     url: string[];
 }
 
-export type BitcoinDefaultFeesKeys = 'High' | 'Normal' | 'Economy' | 'Low';
-export type BitcoinDefaultFees = { [key in BitcoinDefaultFeesKeys]: number };
-
 interface Common {
     label: string; // Human readable format, label != name
     name: string; // Trezor readable format
@@ -34,9 +33,10 @@ interface Common {
     support: CoinSupport;
     decimals: number;
     blockchainLink?: BlockchainLink;
-    blocktime: number;
+    blockTime: number;
     minFee: number;
     maxFee: number;
+    defaultFees: FeeLevel[];
 }
 
 export interface BitcoinNetworkInfo extends Common {
@@ -50,7 +50,6 @@ export interface BitcoinNetworkInfo extends Common {
     maxFeeSatoshiKb: number;
     minAddressLength: number;
     minFeeSatoshiKb: number;
-    defaultFees: BitcoinDefaultFees;
     segwit: boolean;
 
     xPubMagic: number;
@@ -66,19 +65,13 @@ export interface BitcoinNetworkInfo extends Common {
 export interface EthereumNetworkInfo extends Common {
     type: 'ethereum';
     chainId: number;
-    defaultFees: Array<{
-        label: 'high' | 'normal' | 'low';
-        feePerUnit: string;
-        feeLimit: string;
-    }>;
-    network: typeof undefined;
+    network?: typeof undefined;
 }
 
 export interface MiscNetworkInfo extends Common {
     type: 'misc' | 'nem';
     curve: string;
-    defaultFees: BitcoinDefaultFees;
-    network: typeof undefined; // compatibility
+    network?: typeof undefined; // compatibility
 }
 
 export type CoinInfo = BitcoinNetworkInfo | EthereumNetworkInfo | MiscNetworkInfo;
