@@ -6799,7 +6799,7 @@ export default defineMessages({
     },
     TR_ONBOARDING_COINS_STEP: {
         id: 'TR_ONBOARDING_COINS_STEP',
-        defaultMessage: 'Activate Coins',
+        defaultMessage: 'Activate coins',
     },
     TR_ONBOARDING_COINS_STEP_DESCRIPTION: {
         id: 'TR_ONBOARDING_COINS_STEP_DESCRIPTION',
