@@ -189,7 +189,7 @@ const parseBitcoinNetworksJson = (json: any) => {
             // bitcore: not used,
             // blockbook: not used,
             blockchainLink: coin.blockchain_link,
-            blocktime: Math.round(coin.blocktime_seconds / 60),
+            blocktime: Math.max(1, Math.round(coin.blocktime_seconds / 60)),
             cashAddrPrefix: coin.cashaddr_prefix,
             label: coin.coin_label,
             name: coin.coin_name,
