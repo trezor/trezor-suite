@@ -173,7 +173,13 @@ export const init: Module = ({ mainWindow, store, mainThreadEmitter }) => {
         },
     };
 
-    return () => {
+    // `registerProxies` here serves (and is returned) as a module's "load" stage, but it
+    // must be able to set the `unregisterProxies` fn in module's "init" stage closure, as
+    // it's called from `dispose`, which is subscribed to events also in "init" stage
+
+    let unregisterProxies = () => {};
+
+    const registerProxies = () => {
         const unregisterBackendProxy = createIpcProxyHandler(
             ipcMain,
             BACKEND_CHANNEL,
@@ -186,35 +192,37 @@ export const init: Module = ({ mainWindow, store, mainThreadEmitter }) => {
             clientProxyOptions,
         );
 
-        const dispose = () => {
-            backends.forEach(b => b.dispose());
-            backends.splice(0, backends.length);
-
-            clients.forEach(cli => {
-                // emit unexpected app close before disabling the client
-                if (cli.getRoundsInCriticalPhase().length > 0) {
-                    cli.emit('log', {
-                        level: 'error',
-                        payload: 'Suite closed in critical phase',
-                    });
-                }
-                cli.disable();
-            });
-            clients.splice(0, clients.length);
-
+        unregisterProxies = () => {
             unregisterBackendProxy();
             unregisterClientProxy();
-            logger.info(SERVICE_NAME, 'Stopping (app quit)');
-            synchronize(killCoinjoinProcess);
-            powerSaveBlocker.stopBlockingPowerSave();
         };
-
-        app.on('before-quit', dispose);
-        mainWindow.webContents.on('did-start-loading', () => {
-            dispose();
-        });
-        ipcMain.once('app/restart', () => {
-            dispose();
-        });
     };
+
+    const dispose = () => {
+        backends.forEach(b => b.dispose());
+        backends.splice(0, backends.length);
+
+        clients.forEach(cli => {
+            // emit unexpected app close before disabling the client
+            if (cli.getRoundsInCriticalPhase().length > 0) {
+                cli.emit('log', {
+                    level: 'error',
+                    payload: 'Suite closed in critical phase',
+                });
+            }
+            cli.disable();
+        });
+        clients.splice(0, clients.length);
+
+        unregisterProxies();
+        logger.info(SERVICE_NAME, 'Stopping (app quit)');
+        synchronize(killCoinjoinProcess);
+        powerSaveBlocker.stopBlockingPowerSave();
+    };
+
+    app.on('before-quit', dispose);
+    mainWindow.webContents.on('did-start-loading', dispose);
+    ipcMain.once('app/restart', dispose);
+
+    return registerProxies;
 };

@@ -135,7 +135,7 @@ const init = async () => {
 
     // init modules
     const interceptor = createInterceptor();
-    const loadModules = await initModules({
+    const loadModules = initModules({
         mainWindow,
         store,
         interceptor,
