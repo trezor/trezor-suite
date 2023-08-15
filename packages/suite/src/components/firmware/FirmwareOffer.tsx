@@ -8,7 +8,7 @@ import { getFirmwareVersion } from '@trezor/device-utils';
 import { getFwUpdateVersion, parseFirmwareChangelog } from 'src/utils/suite/device';
 import { useFirmware, useTranslation, useSelector } from 'src/hooks/suite';
 import { AcquiredDevice } from 'src/types/suite';
-import { getSuiteFwTypeFromDevice, getSuiteFwType } from 'src/utils/firmware';
+import { getSuiteFirmwareTypeString } from 'src/utils/firmware';
 import { FirmwareType } from '@trezor/connect';
 
 const FwVersionWrapper = styled.div`
@@ -63,18 +63,15 @@ export const FirmwareOffer = ({
         ? null
         : parseFirmwareChangelog(device.firmwareRelease?.release);
 
-    const currentTypeAndVersion = `${getSuiteFwTypeFromDevice(device)} ${
-        currentVersion ?? ''
-    }`.trim();
+    const currentFirmwareType = getSuiteFirmwareTypeString(device.firmwareType);
 
-    const nextFirmwareType = getSuiteFwType(targetFirmwareType || targetType);
-    const nextTypeAndVersion = `${nextFirmwareType ?? ''} ${nextVersion ?? ''}${
-        useDevkit ? ' DEVKIT' : ''
-    }`.trim();
+    const futureFirmwareType = getSuiteFirmwareTypeString(targetFirmwareType || targetType);
 
     const nextVersionElement = (
         <Version isNew data-test="@firmware/offer-version/new">
-            {nextTypeAndVersion}
+            {futureFirmwareType ? translationString(futureFirmwareType) : ''}
+            {nextVersion ? ` ${nextVersion}` : ''}
+            {useDevkit ? ' DEVKIT' : ''}
         </Version>
     );
 
@@ -86,7 +83,10 @@ export const FirmwareOffer = ({
                         <Label>
                             <Translation id="TR_ONBOARDING_CURRENT_VERSION" />
                         </Label>
-                        <Version>{currentTypeAndVersion}</Version>
+                        <Version>
+                            {currentFirmwareType ? translationString(currentFirmwareType) : ''}
+                            {currentVersion ? ` ${currentVersion}` : ''}
+                        </Version>
                     </FwVersion>
                     <Icon icon="ARROW_RIGHT_LONG" size={16} />
                 </>

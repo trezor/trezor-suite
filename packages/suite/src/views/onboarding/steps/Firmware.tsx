@@ -13,7 +13,7 @@ import { TrezorDevice } from 'src/types/suite';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { DeviceTutorial } from 'src/components/firmware/DeviceTutorial';
 import { selectOnboardingTutorialStatus } from 'src/reducers/onboarding/onboardingReducer';
-import { getSuiteFwTypeFromDevice } from 'src/utils/firmware';
+import { getSuiteFirmwareTypeString } from 'src/utils/firmware';
 
 const FirmwareStep = () => {
     const device = useSelector(state => state.suite.device);
@@ -75,6 +75,8 @@ const FirmwareStep = () => {
     // edge case 2 - user has reconnected device that is already up to date
     // include "validation" status to prevent displaying this during installation
     if (!['validation', 'done'].includes(status) && device?.firmware === 'valid') {
+        const firmwareType = getSuiteFirmwareTypeString(device.firmwareType);
+
         return (
             <OnboardingStepBox
                 image="FIRMWARE"
@@ -83,7 +85,14 @@ const FirmwareStep = () => {
                     <Translation
                         id="TR_FIRMWARE_INSTALLED_TEXT"
                         values={{
-                            type: getSuiteFwTypeFromDevice(device),
+                            type: firmwareType ? (
+                                <>
+                                    <Translation id={firmwareType} />
+                                    &nbsp;
+                                </>
+                            ) : (
+                                ''
+                            ),
                             version: getFirmwareVersion(device),
                         }}
                     />
