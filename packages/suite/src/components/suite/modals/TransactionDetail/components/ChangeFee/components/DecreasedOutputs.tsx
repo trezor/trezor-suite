@@ -57,6 +57,10 @@ const ArrowIcon = styled(Icon)`
     }
 `;
 
+const StyledRadioButton = styled(RadioButton)`
+    margin-right: 8px;
+`;
+
 export const DecreasedOutputs = () => {
     const {
         formValues,
@@ -108,7 +112,7 @@ export const DecreasedOutputs = () => {
                                 // it's safe to use array index as key since outputs do not change
                                 <Output key={i}>
                                     {useRadioButtons && (
-                                        <RadioButton
+                                        <StyledRadioButton
                                             onClick={() => {
                                                 setValue('setMaxOutputId', i);
                                                 composeRequest();
