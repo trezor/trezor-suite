@@ -1,15 +1,16 @@
-import { configureStore } from 'src/support/tests/configureStore';
+import { configureStore, filterThunkActionTypes } from 'src/support/tests/configureStore';
 import { SUITE } from 'src/actions/suite/constants';
 import { prepareFirmwareReducer } from 'src/reducers/firmware/firmwareReducer';
 import routerReducer from 'src/reducers/suite/routerReducer';
 import modalReducer from 'src/reducers/suite/modalReducer';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
-import firmwareMiddleware from 'src/middlewares/firmware/firmwareMiddleware';
+import { prepareFirmwareMiddleware } from 'src/middlewares/firmware/firmwareMiddleware';
 import { firmwareActions } from 'src/actions/firmware/firmwareActions';
-
 import { extraDependencies } from 'src/support/extraDependencies';
 
 const { getSuiteDevice } = global.JestMocks;
+
+const firmwareMiddleware = prepareFirmwareMiddleware(extraDependencies);
 
 const middlewares = [firmwareMiddleware];
 
@@ -77,7 +78,7 @@ describe('firmware middleware', () => {
         );
         await store.dispatch({ type: SUITE.UPDATE_SELECTED_DEVICE, payload: undefined });
 
-        const result = store.getActions();
+        const result = filterThunkActionTypes(store.getActions());
         expect(result).toEqual([
             { type: SUITE.UPDATE_SELECTED_DEVICE, payload: undefined },
             { type: firmwareActions.setStatus.type, payload: 'reconnect-in-normal' },
@@ -124,7 +125,7 @@ describe('firmware middleware', () => {
             }),
         });
 
-        const result = store.getActions();
+        const result = filterThunkActionTypes(store.getActions());
         expect(result).toEqual([
             {
                 type: SUITE.SELECT_DEVICE,
@@ -149,7 +150,7 @@ describe('firmware middleware', () => {
             payload: getSuiteDevice({ firmware: 'valid', connected: true }),
         });
 
-        const result = store.getActions();
+        const result = filterThunkActionTypes(store.getActions());
 
         expect(result).toEqual([
             {

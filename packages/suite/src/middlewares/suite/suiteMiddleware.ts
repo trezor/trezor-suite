@@ -1,10 +1,13 @@
 import { MiddlewareAPI } from 'redux';
+
 import { DEVICE } from '@trezor/connect';
+import { notificationsActions } from '@suite-common/toast-notifications';
+
 import { SUITE, ROUTER } from 'src/actions/suite/constants';
 import * as suiteActions from 'src/actions/suite/suiteActions';
 import { AppState, Action, Dispatch } from 'src/types/suite';
 import { handleProtocolRequest } from 'src/actions/suite/protocolActions';
-import { notificationsActions } from '@suite-common/toast-notifications';
+import { appChanged } from 'src/actions/suite/suiteActions';
 
 const suite =
     (api: MiddlewareAPI<Dispatch, AppState>) =>
@@ -12,7 +15,7 @@ const suite =
     (action: Action): Action => {
         const prevApp = api.getState().router.app;
         if (action.type === ROUTER.LOCATION_CHANGE && action.payload.app !== prevApp) {
-            api.dispatch({ type: SUITE.APP_CHANGED, payload: action.payload.app });
+            api.dispatch(appChanged(action.payload.app));
         }
 
         // this action needs to be processed before propagation to deviceReducer

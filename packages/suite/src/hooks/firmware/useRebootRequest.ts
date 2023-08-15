@@ -1,9 +1,12 @@
 import { useState, useEffect } from 'react';
+
 import { valid, satisfies } from 'semver';
+
 import { getFirmwareVersion } from '@trezor/device-utils';
+
 import type { TrezorDevice } from 'src/types/suite';
 import { useDispatch } from 'src/hooks/suite';
-import { rebootToBootloader } from 'src/actions/firmware/firmwareActions';
+import { rebootToBootloader } from 'src/actions/firmware/firmwareThunks';
 
 export type RebootRequestedMode = 'bootloader' | 'normal';
 export type RebootPhase = 'initial' | 'wait-for-confirm' | 'disconnected' | 'done';
@@ -51,13 +54,15 @@ export const useRebootRequest = (
             // else do nothing and wait for manual disconnection
             if (method === 'automatic') {
                 setPhase('wait-for-confirm');
-                dispatch(rebootToBootloader()).then(res => {
-                    if (!res?.success) {
-                        // If automatic reboot wasn't successful, fallback to 'manual' and return to 'initial'
-                        setMethod('manual');
-                        setPhase('initial');
-                    }
-                });
+                dispatch(rebootToBootloader())
+                    .unwrap()
+                    .then(res => {
+                        if (!res?.success) {
+                            // If automatic reboot wasn't successful, fallback to 'manual' and return to 'initial'
+                            setMethod('manual');
+                            setPhase('initial');
+                        }
+                    });
             }
         }
     }, [device, dispatch, phase, method, requestedMode]);

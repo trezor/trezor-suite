@@ -1,7 +1,12 @@
 import React, { useEffect, useState } from 'react';
+
 import styled from 'styled-components';
 
 import { Note } from '@trezor/components';
+import { TrezorDevice } from '@suite-common/suite-types';
+import { getFirmwareVersion, hasBitcoinOnlyFirmware } from '@trezor/device-utils';
+import { FirmwareType } from '@trezor/connect';
+
 import {
     ConnectDevicePromptManager,
     OnboardingStepBox,
@@ -10,10 +15,7 @@ import {
 import { Translation } from 'src/components/suite';
 import { useDevice, useFirmware, useOnboarding, useSelector } from 'src/hooks/suite';
 import { ReconnectDevicePrompt, InstallButton, FirmwareOffer } from 'src/components/firmware';
-import { TrezorDevice } from 'src/types/suite';
 import { getFwUpdateVersion } from 'src/utils/suite/device';
-import { getFirmwareVersion, hasBitcoinOnlyFirmware } from '@trezor/device-utils';
-import { FirmwareType } from '@trezor/connect';
 
 const Description = styled.div`
     align-items: center;

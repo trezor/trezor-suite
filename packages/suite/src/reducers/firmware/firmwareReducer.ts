@@ -1,13 +1,10 @@
-import type { AcquiredDevice, TrezorDevice } from 'src/types/suite';
-import { firmwareActions } from 'src/actions/firmware/firmwareActions';
-import { isAnyOf, PayloadAction } from '@reduxjs/toolkit';
-import { AppState, ButtonRequest } from 'src/types/suite';
-import { addButtonRequest } from 'src/actions/suite/suiteActions';
+import { PayloadAction } from '@reduxjs/toolkit';
 
-import { Device, UI, FirmwareType } from '@trezor/connect';
+import { AcquiredDevice, FirmwareStatus } from '@suite-common/suite-types';
+import { Device, FirmwareType, UI } from '@trezor/connect';
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 
-type RootState = Pick<AppState, 'firmware'>;
+import { firmwareActions } from 'src/actions/firmware/firmwareActions';
 
 type FirmwareUpdateCommon = {
     installingProgress?: number;
@@ -35,20 +32,6 @@ type FirmwareUpdateCommon = {
     useDevkit: boolean;
 };
 
-export type FirmwareStatus =
-    | 'initial' // initial state
-    | 'check-seed' // ask user, if has seed properly backed up
-    | 'waiting-for-bootloader' // navigate user into bootloader mode
-    | 'started' // progress - firmware update has started, waiting for events from trezor-connect
-    | 'waiting-for-confirmation' // progress - device waits for confirmation prior starting to update
-    | 'installing' // progress - firmware is being installed
-    | 'partially-done' // progress - some old T1B1 firmwares can't update to the latest version. This should be handled by intermediary fw now and it shouldn't even be triggered in real world, but just to be safe let's keep it.
-    | 'wait-for-reboot' // progress - models T2T1 and T2B1 are restarting after firmware update
-    | 'unplug' // progress - user is asked to reconnect device (T1B1)
-    | 'reconnect-in-normal' // progress - after unplugging device from previous step, user is asked to connect it again
-    | 'validation' // firmware validation in progress
-    | 'done'; // firmware successfully installed
-
 export type FirmwareUpdateState =
     | (FirmwareUpdateCommon & {
           error: string | undefined;
@@ -72,6 +55,10 @@ const initialState: FirmwareUpdateState = {
     firmwareHashInvalid: [],
     isCustom: false,
     useDevkit: false,
+};
+
+type RootState = {
+    firmware: typeof initialState;
 };
 
 export const prepareFirmwareReducer = createReducerWithExtraDeps(initialState, (builder, extra) => {
@@ -135,22 +122,7 @@ export const prepareFirmwareReducer = createReducerWithExtraDeps(initialState, (
         .addCase(firmwareActions.toggleUseDevkit, (state, { payload }) => {
             state.useDevkit = payload;
         })
-        .addMatcher(
-            isAnyOf(addButtonRequest),
-            (
-                state,
-                {
-                    payload,
-                }: PayloadAction<{
-                    device?: TrezorDevice;
-                    buttonRequest: ButtonRequest;
-                }>,
-            ) => {
-                if (payload.buttonRequest?.code === 'ButtonRequest_FirmwareUpdate') {
-                    state.status = 'waiting-for-confirmation';
-                }
-            },
-        )
+        .addCase(extra.actionTypes.addButtonRequest, extra.reducers.addButtonRequestFirmware)
         .addMatcher(
             action => action.type === UI.FIRMWARE_PROGRESS,
             (state, action) => {

@@ -1,13 +1,14 @@
+import { analyticsActions, prepareAnalyticsReducer } from '@suite-common/analytics';
+
 import { configureStore } from 'src/support/tests/configureStore';
-import { SUITE, ROUTER } from 'src/actions/suite/constants';
+import { ROUTER } from 'src/actions/suite/constants';
 import routerReducer from 'src/reducers/suite/routerReducer';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
 import modalReducer from 'src/reducers/suite/modalReducer';
 import suiteMiddleware from 'src/middlewares/suite/suiteMiddleware';
 import type { Action } from 'src/types/suite';
 import { extraDependencies } from 'src/support/extraDependencies';
-
-import { analyticsActions, prepareAnalyticsReducer } from '@suite-common/analytics';
+import { appChanged } from 'src/actions/suite/suiteActions';
 
 type SuiteState = ReturnType<typeof suiteReducer>;
 type RouterState = ReturnType<typeof routerReducer>;
@@ -88,7 +89,7 @@ describe('suite middleware', () => {
                 payload,
             });
             expect(store.getActions()).toEqual([
-                { type: SUITE.APP_CHANGED, payload: 'dashboard' },
+                { type: appChanged.type, payload: 'dashboard' },
                 {
                     type: ROUTER.LOCATION_CHANGE,
                     payload,
