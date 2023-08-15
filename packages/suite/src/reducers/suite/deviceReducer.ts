@@ -162,17 +162,19 @@ const changeDevice = (
     otherDevices.forEach(d => draft.push(d));
 
     if (affectedDevices.length > 0) {
+        const isDeviceUnlocked = isUnlocked(device.features);
         // merge incoming device with State
         const changedDevices = affectedDevices.map(d => {
             // change availability according to "passphrase_protection" field
-            if (
-                d.instance &&
-                isUnlocked(device.features) &&
-                !device.features.passphrase_protection
-            ) {
+            if (d.instance && isDeviceUnlocked && !device.features.passphrase_protection) {
                 return merge(d, { ...device, ...extended, available: !d.state });
             }
-            return merge(d, { ...device, ...extended, available: true });
+            // if device without instance becomes unlocked update useEmptyPassphrase field (hidden/standard wallet)
+            let { useEmptyPassphrase } = d;
+            if (!d.instance && !isUnlocked(d.features) && isDeviceUnlocked) {
+                useEmptyPassphrase = !device.features.passphrase_protection;
+            }
+            return merge(d, { ...device, ...extended, available: true, useEmptyPassphrase });
         });
         // fill draft with affectedDevices values
         changedDevices.forEach(d => draft.push(d));
