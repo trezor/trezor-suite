@@ -84,7 +84,13 @@ export const FirmwareTypeChange = ({ isDeviceLocked }: FirmwareTypeProps) => {
                     data-test="@settings/device/switch-fw-type-button"
                     isDisabled={isDeviceLocked}
                 >
-                    <Translation id={actionButtonId} />
+                    <Translation
+                        id={actionButtonId}
+                        values={{
+                            bitcoinOnly: <Translation id="TR_FIRMWARE_TYPE_BITCOIN_ONLY" />,
+                            regular: <Translation id="TR_FIRMWARE_TYPE_REGULAR" />,
+                        }}
+                    />
                 </ActionButton>
             </ActionColumn>
         </SectionItem>
