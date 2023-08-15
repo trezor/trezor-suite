@@ -27,7 +27,7 @@ export type NetworkSymbol = Network['symbol'];
 export type { Icon } from './iconTypes';
 export type { BackendType, CustomBackend } from './backend';
 export type { CoinFiatRates, TickerId } from 'src/types/wallet/fiatRates';
-export type { Discovery } from 'src/reducers/wallet/discoveryReducer';
+export type { Discovery } from '@suite-common/wallet-types';
 export type DiscoveryStatusType =
     | {
           status: 'loading';

@@ -20,6 +20,7 @@ import { SETTINGS } from 'src/config/suite';
 import { preloadStore } from 'src/support/suite/preloadStore';
 import { prepareDiscoveryReducer } from 'src/reducers/wallet/discoveryReducer';
 import { extraDependencies } from 'src/support/extraDependencies';
+import { createDiscoveryThunk } from 'src/actions/wallet/discoveryThunks';
 
 import * as suiteActions from '../suiteActions';
 import * as storageActions from '../storageActions';
@@ -245,14 +246,10 @@ describe('Storage actions', () => {
         updateStore(store);
 
         // create discovery objects
+        store.dispatch(createDiscoveryThunk({ deviceState: dev1.state!, device: dev1 }));
+        store.dispatch(createDiscoveryThunk({ deviceState: dev2.state!, device: dev2 }));
         store.dispatch(
-            discoveryActions.createDiscoveryThunk({ deviceState: dev1.state!, device: dev1 }),
-        );
-        store.dispatch(
-            discoveryActions.createDiscoveryThunk({ deviceState: dev2.state!, device: dev2 }),
-        );
-        store.dispatch(
-            discoveryActions.createDiscoveryThunk({
+            createDiscoveryThunk({
                 deviceState: dev2Instance1.state!,
                 device: dev2Instance1,
             }),

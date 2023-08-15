@@ -10,6 +10,13 @@ import * as discoveryActions from 'src/actions/wallet/discoveryActions';
 import { selectDiscoveryForDevice } from 'src/reducers/suite/suiteReducer';
 import { getApp } from 'src/utils/suite/router';
 
+import {
+    createDiscoveryThunk,
+    startDiscoveryThunk,
+    stopDiscoveryThunk,
+    updateNetworkSettingsThunk,
+} from '../../actions/wallet/discoveryThunks';
+
 export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
     async (action, { dispatch, next, getState }) => {
         const prevState = getState();
@@ -58,7 +65,7 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
         // discovery interruption ends after DISCOVERY.STOP action
         // action which triggers this interruption will be propagated AFTER stop
         if (interruptionIntent && discoveryIsRunning) {
-            await dispatch(discoveryActions.stopDiscoveryThunk());
+            await dispatch(stopDiscoveryThunk());
         }
 
         // pass action
@@ -66,7 +73,7 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
 
         if (walletSettingsActions.changeNetworks.match(action)) {
             // update Discovery fields
-            dispatch(discoveryActions.updateNetworkSettingsThunk());
+            dispatch(updateNetworkSettingsThunk());
             // remove accounts which are no longer part of Discovery
             dispatch(disableAccountsThunk());
         }
@@ -119,7 +126,7 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
             // `device` is always present here
             // to avoid typescript conditioning use device from action as a fallback (never used)
             dispatch(
-                discoveryActions.createDiscoveryThunk({
+                createDiscoveryThunk({
                     deviceState: action.state,
                     device: device || action.payload,
                 }),
@@ -157,7 +164,7 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
                 (discovery.status === DiscoveryStatus.IDLE ||
                     discovery.status >= DiscoveryStatus.STOPPED)
             ) {
-                dispatch(discoveryActions.startDiscoveryThunk());
+                dispatch(startDiscoveryThunk());
             }
         }
 

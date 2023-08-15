@@ -1,13 +1,10 @@
-import { discoveryActions } from 'src/actions/wallet/discoveryActions';
 import { PayloadAction } from '@reduxjs/toolkit';
 
 import { createDeferred } from '@trezor/utils';
-import type { Discovery as CommonDiscovery } from '@suite-common/wallet-types';
+import { Discovery, PartialDiscovery } from '@suite-common/wallet-types';
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 
-export type Discovery = CommonDiscovery;
-
-export type PartialDiscovery = { deviceState: string } & Partial<Discovery>;
+import { discoveryActions } from 'src/actions/wallet/discoveryActions';
 
 export type DiscoveryState = Discovery[];
 

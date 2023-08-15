@@ -7,7 +7,7 @@ import { variables, Button, IconProps, H3, Image } from '@trezor/components';
 
 import { Translation } from 'src/components/suite';
 import { useDevice, useDispatch } from 'src/hooks/suite';
-import { restartDiscoveryThunk as restartDiscovery } from 'src/actions/wallet/discoveryActions';
+import { restartDiscoveryThunk as restartDiscovery } from 'src/actions/wallet/discoveryThunks';
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';
 import { authConfirm, authorizeDevice } from 'src/actions/suite/suiteActions';
 import { openModal } from 'src/actions/suite/modalActions';

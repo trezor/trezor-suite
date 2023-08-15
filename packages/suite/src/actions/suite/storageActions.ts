@@ -1,7 +1,12 @@
-import { db } from 'src/storage';
 import { FieldValues } from 'react-hook-form';
 
 import { notificationsActions } from '@suite-common/toast-notifications';
+import { Discovery } from '@suite-common/wallet-types';
+import type { FormDraftKeyPrefix } from '@suite-common/wallet-types';
+import { getFormDraftKey } from '@suite-common/wallet-utils';
+import { FormDraftPrefixKeyValues } from '@suite-common/wallet-constants';
+
+import { db } from 'src/storage';
 import * as suiteActions from 'src/actions/suite/suiteActions';
 import {
     serializeDiscovery,
@@ -10,17 +15,14 @@ import {
 } from 'src/utils/suite/storage';
 import type { AppState, Dispatch, GetState, TrezorDevice } from 'src/types/suite';
 import type { Account, Network } from 'src/types/wallet';
-import type { Discovery } from 'src/reducers/wallet/discoveryReducer';
 import type { FormState } from 'src/types/wallet/sendForm';
 import type { Trade } from 'src/types/wallet/coinmarketCommonTypes';
-import type { FormDraftKeyPrefix } from '@suite-common/wallet-types';
 import type { PreloadStoreAction } from 'src/support/suite/preloadStore';
-import { getFormDraftKey } from '@suite-common/wallet-utils';
-import { FormDraftPrefixKeyValues } from '@suite-common/wallet-constants';
-import { STORAGE } from './constants';
 import { GraphData } from 'src/types/wallet/graph';
 import { deviceGraphDataFilterFn } from 'src/utils/wallet/graph';
 import { selectCoinjoinAccountByKey } from 'src/reducers/wallet/coinjoinReducer';
+
+import { STORAGE } from './constants';
 
 export type StorageAction = NonNullable<PreloadStoreAction>;
 export type StorageLoadAction = Extract<StorageAction, { type: typeof STORAGE.LOAD }>;
