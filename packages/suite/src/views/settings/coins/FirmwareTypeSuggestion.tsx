@@ -28,7 +28,7 @@ export const FirmwareTypeSuggestion = () => {
 
     const translationId = hasBitcoinOnlyFirmware(device)
         ? 'TR_SETTINGS_COINS_REGULAR_FIRMWARE_SUGGESTION'
-        : 'TR_SETTINGS_COINS_BITCOIN_FIRMWARE_SUGGESTION';
+        : 'TR_SETTINGS_COINS_BITCOIN_ONLY_FIRMWARE_SUGGESTION';
 
     const handleClose = () => dispatch(setFlag('firmwareTypeBannerClosed', true));
     const goToFirmwareType = () =>
@@ -46,6 +46,8 @@ export const FirmwareTypeSuggestion = () => {
                                     {chunks}
                                 </StyledButton>
                             ),
+                            bitcoinOnly: <Translation id="TR_FIRMWARE_TYPE_BITCOIN_ONLY" />,
+                            regular: <Translation id="TR_FIRMWARE_TYPE_REGULAR" />,
                         }}
                     />
                 }

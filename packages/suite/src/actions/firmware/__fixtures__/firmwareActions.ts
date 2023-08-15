@@ -140,7 +140,7 @@ export const actions = [
         },
     },
     {
-        description: 'Success T1B1 (without intermediary) - install Universal firmware',
+        description: 'Success T1B1 (without intermediary) - install Regular firmware',
         action: () => firmwareUpdate(FirmwareType.Regular),
         mocks: {
             connect: {

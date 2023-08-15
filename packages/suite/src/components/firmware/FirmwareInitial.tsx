@@ -51,19 +51,21 @@ interface FirmwareInitialProps {
     onClose?: () => void;
 }
 
+interface GetDescriptionProps {
+    required: boolean;
+    standaloneFwUpdate: boolean;
+    reinstall: boolean;
+    shouldSwitchFirmwareType?: boolean;
+    isBitcoinOnlyAvailable?: boolean;
+}
+
 const getDescription = ({
     required,
     standaloneFwUpdate,
     reinstall,
     shouldSwitchFirmwareType,
     isBitcoinOnlyAvailable,
-}: {
-    required: boolean;
-    standaloneFwUpdate: boolean;
-    reinstall: boolean;
-    shouldSwitchFirmwareType?: boolean;
-    isBitcoinOnlyAvailable?: boolean;
-}) => {
+}: GetDescriptionProps) => {
     if (shouldSwitchFirmwareType) {
         return isBitcoinOnlyAvailable
             ? 'TR_SWITCH_FIRMWARE_TYPE_DESCRIPTION'
@@ -136,9 +138,9 @@ export const FirmwareInitial = ({
     );
     const isCurrentlyBitcoinOnly = hasBitcoinOnlyFirmware(device);
     const targetFirmwareType =
-        // switching to Universal
+        // switching to Regular
         (isCurrentlyBitcoinOnly && shouldSwitchFirmwareType) ||
-        // updating Universal
+        // updating Regular
         (!isCurrentlyBitcoinOnly && !shouldSwitchFirmwareType) ||
         // attempting to switch to Bitcoin-only from old firmware
         (!isCurrentlyBitcoinOnly && shouldSwitchFirmwareType && !isBitcoinOnlyAvailable)
@@ -153,7 +155,14 @@ export const FirmwareInitial = ({
     if (bitcoinOnlyOffer) {
         // Installing Bitcoin-only firmware in onboarding
         content = {
-            heading: <Translation id="TR_INSTALL_BITCOIN_FW" />,
+            heading: (
+                <Translation
+                    id="TR_INSTALL_BITCOIN_ONLY_FW"
+                    values={{
+                        bitcoinOnly: <Translation id="TR_FIRMWARE_TYPE_BITCOIN_ONLY" />,
+                    }}
+                />
+            ),
             description: (
                 <Description>
                     <Translation id="TR_FIRMWARE_SUBHEADING_BITCOIN" />
@@ -172,14 +181,24 @@ export const FirmwareInitial = ({
                         onClick={() => installFirmware(FirmwareType.Regular)}
                         multipleDevicesConnected={multipleDevicesConnected}
                     >
-                        <Translation id="TR_INSTALL_REGULAR" />
+                        <Translation
+                            id="TR_INSTALL_REGULAR"
+                            values={{
+                                regular: <Translation id="TR_FIRMWARE_TYPE_REGULAR" />,
+                            }}
+                        />
                     </InstallButton>
 
                     <InstallButton
                         onClick={() => installFirmware(FirmwareType.BitcoinOnly)}
                         multipleDevicesConnected={multipleDevicesConnected}
                     >
-                        <Translation id="TR_INSTALL_BITCOIN_ONLY" />
+                        <Translation
+                            id="TR_INSTALL_BITCOIN_ONLY"
+                            values={{
+                                bitcoinOnly: <Translation id="TR_FIRMWARE_TYPE_BITCOIN_ONLY" />,
+                            }}
+                        />
                     </InstallButton>
                 </ButtonRow>
             ),
@@ -203,6 +222,7 @@ export const FirmwareInitial = ({
                                 {chunks}
                             </TextButton>
                         ),
+                        bitcoinOnly: <Translation id="TR_FIRMWARE_TYPE_BITCOIN_ONLY" />,
                     }}
                 />
             ),
@@ -249,6 +269,10 @@ export const FirmwareInitial = ({
                         shouldSwitchFirmwareType,
                         isBitcoinOnlyAvailable,
                     })}
+                    values={{
+                        bitcoinOnly: <Translation id="TR_FIRMWARE_TYPE_BITCOIN_ONLY" />,
+                        regular: <Translation id="TR_FIRMWARE_TYPE_REGULAR" />,
+                    }}
                 />
             ),
             body: <FirmwareOffer device={device} targetFirmwareType={targetFirmwareType} />,
