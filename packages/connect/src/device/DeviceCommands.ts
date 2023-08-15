@@ -491,7 +491,14 @@ export class DeviceCommands {
 
         if (res.type === 'PinMatrixRequest') {
             return this._promptPin(res.message.type).then(
-                pin => this._commonCall('PinMatrixAck', { pin }),
+                pin =>
+                    this._commonCall('PinMatrixAck', { pin }).then(response => {
+                        if (!this.device.features.unlocked) {
+                            // reload features to after successful PIN
+                            return this.device.getFeatures().then(() => response);
+                        }
+                        return response;
+                    }),
                 () => this._commonCall('Cancel', {}),
             );
         }

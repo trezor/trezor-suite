@@ -525,6 +525,7 @@ export const onCall = async (message: CoreMessage) => {
             }
 
             // Make sure that device will display pin/passphrase
+            const isDeviceUnlocked = device.features.unlocked;
             try {
                 const invalidDeviceState = method.useDeviceState
                     ? await device.validateState(method.network, method.preauthorized)
@@ -573,6 +574,12 @@ export const onCall = async (message: CoreMessage) => {
                 device.setInternalState(undefined);
                 // interrupt process and go to "final" block
                 return Promise.reject(error);
+            }
+
+            // emit additional CHANGE event if device becomes unlocked after authorization
+            // features were automatically updated after PinMatrixAck in DeviceCommands
+            if (!isDeviceUnlocked && device.features.unlocked) {
+                postMessage(createDeviceMessage(DEVICE.CHANGED, device.toMessageObject()));
             }
 
             if (method.useUi) {
