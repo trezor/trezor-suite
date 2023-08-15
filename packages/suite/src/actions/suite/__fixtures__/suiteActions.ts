@@ -1,9 +1,11 @@
+import { discoveryActions } from '@suite-common/wallet-core';
 import { DEVICE, TRANSPORT } from '@trezor/connect';
-import { SUITE, MODAL } from 'src/actions/suite/constants';
-import * as suiteActions from '../suiteActions';
 import { notificationsActions } from '@suite-common/toast-notifications';
+
+import { SUITE, MODAL } from 'src/actions/suite/constants';
 import { TorStatus } from 'src/types/suite';
-import { discoveryActions } from 'src/actions/wallet/discoveryActions';
+
+import * as suiteActions from '../suiteActions';
 
 const { getSuiteDevice, getConnectDevice } = global.JestMocks;
 

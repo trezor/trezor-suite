@@ -1,4 +1,19 @@
 import { MiddlewareAPI } from 'redux';
+import { isAnyOf } from '@reduxjs/toolkit';
+
+import {
+    discoveryActions,
+    selectDiscoveryByDeviceState,
+    accountsActions,
+    blockchainActions,
+    transactionsActions,
+    fiatRatesActions,
+    selectAccountByKey,
+} from '@suite-common/wallet-core';
+import { messageSystemActions } from '@suite-common/message-system';
+import { findAccountDevice } from '@suite-common/wallet-utils';
+import { analyticsActions } from '@suite-common/analytics';
+
 import { db } from 'src/storage';
 import { WALLET_SETTINGS } from 'src/actions/settings/constants';
 import * as walletSettingsActions from 'src/actions/settings/walletSettingsActions';
@@ -6,26 +21,12 @@ import { GRAPH, SEND, COINMARKET_COMMON, FORM_DRAFT } from 'src/actions/wallet/c
 import * as COINJOIN from 'src/actions/wallet/constants/coinjoinConstants';
 import * as storageActions from 'src/actions/suite/storageActions';
 import { SUITE, METADATA, STORAGE } from 'src/actions/suite/constants';
-import { selectDiscoveryByDeviceState } from 'src/reducers/wallet/discoveryReducer';
 import * as metadataActions from 'src/actions/suite/metadataActions';
 import { isDeviceRemembered } from 'src/utils/suite/device';
 import { serializeDiscovery } from 'src/utils/suite/storage';
 import type { AppState, Action as SuiteAction, Dispatch } from 'src/types/suite';
 import type { WalletAction } from 'src/types/wallet';
-import { isAnyOf } from '@reduxjs/toolkit';
-import { discoveryActions } from 'src/actions/wallet/discoveryActions';
 import { firmwareActions } from 'src/actions/firmware/firmwareActions';
-
-import { messageSystemActions } from '@suite-common/message-system';
-import {
-    accountsActions,
-    blockchainActions,
-    transactionsActions,
-    fiatRatesActions,
-    selectAccountByKey,
-} from '@suite-common/wallet-core';
-import { findAccountDevice } from '@suite-common/wallet-utils';
-import { analyticsActions } from '@suite-common/analytics';
 
 const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
     db.onBlocking = () => api.dispatch({ type: STORAGE.ERROR, payload: 'blocking' });

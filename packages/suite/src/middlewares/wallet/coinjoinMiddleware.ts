@@ -1,4 +1,24 @@
 import type { MiddlewareAPI } from 'redux';
+import { isAnyOf } from '@reduxjs/toolkit';
+
+import {
+    discoveryActions,
+    accountsActions,
+    blockchainActions,
+    selectAccountByKey,
+    transactionsActions,
+} from '@suite-common/wallet-core';
+import {
+    Feature,
+    selectFeatureConfig,
+    selectIsFeatureDisabled,
+    messageSystemActions,
+} from '@suite-common/message-system';
+import { addToast } from '@suite-common/toast-notifications';
+import { SessionPhase } from '@trezor/coinjoin';
+import { UI, DEVICE } from '@trezor/connect';
+import { arrayDistinct } from '@trezor/utils';
+
 import { SUITE, ROUTER } from 'src/actions/suite/constants';
 import {
     SESSION_ROUND_CHANGED,
@@ -19,25 +39,6 @@ import {
     selectIsCoinjoinBlockedByTor,
     selectCoinjoinSessionBlockerByAccountKey,
 } from 'src/reducers/wallet/coinjoinReducer';
-import { discoveryActions } from 'src/actions/wallet/discoveryActions';
-import { isAnyOf } from '@reduxjs/toolkit';
-
-import {
-    Feature,
-    selectFeatureConfig,
-    selectIsFeatureDisabled,
-    messageSystemActions,
-} from '@suite-common/message-system';
-import {
-    accountsActions,
-    blockchainActions,
-    selectAccountByKey,
-    transactionsActions,
-} from '@suite-common/wallet-core';
-import { addToast } from '@suite-common/toast-notifications';
-import { SessionPhase } from '@trezor/coinjoin';
-import { UI, DEVICE } from '@trezor/connect';
-import { arrayDistinct } from '@trezor/utils';
 
 export const coinjoinMiddleware =
     (api: MiddlewareAPI<Dispatch, AppState>) =>

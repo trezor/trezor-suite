@@ -1,4 +1,10 @@
 import { MiddlewareAPI } from 'redux';
+
+import { discoveryActions, accountsActions, blockchainActions } from '@suite-common/wallet-core';
+import { getBootloaderVersion, getFirmwareVersion } from '@trezor/device-utils';
+import { DEVICE, TRANSPORT } from '@trezor/connect';
+import { analyticsActions } from '@suite-common/analytics';
+
 import { WALLET_SETTINGS } from 'src/actions/settings/constants';
 import * as walletSettingsActions from 'src/actions/settings/walletSettingsActions';
 import {
@@ -12,12 +18,6 @@ import {
 import { getSuiteReadyPayload } from 'src/utils/suite/analytics';
 import { addSentryBreadcrumb, setSentryContext, setSentryTag } from 'src/utils/suite/sentry';
 import { AppState, Action, Dispatch } from 'src/types/suite';
-
-import { getBootloaderVersion, getFirmwareVersion } from '@trezor/device-utils';
-import { DEVICE, TRANSPORT } from '@trezor/connect';
-import { accountsActions, blockchainActions } from '@suite-common/wallet-core';
-import { analyticsActions } from '@suite-common/analytics';
-import { discoveryActions } from 'src/actions/wallet/discoveryActions';
 
 const deviceContextName = 'trezor-device';
 

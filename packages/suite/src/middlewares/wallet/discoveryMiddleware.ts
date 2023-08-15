@@ -1,4 +1,12 @@
-import { accountsActions, disableAccountsThunk } from '@suite-common/wallet-core';
+import * as discoveryActions from '@suite-common/wallet-core';
+import {
+    accountsActions,
+    disableAccountsThunk,
+    createDiscoveryThunk,
+    startDiscoveryThunk,
+    stopDiscoveryThunk,
+    updateNetworkSettingsThunk,
+} from '@suite-common/wallet-core';
 import TrezorConnect, { UI } from '@trezor/connect';
 import { DiscoveryStatus } from '@suite-common/wallet-constants';
 import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
@@ -6,16 +14,8 @@ import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 import { SUITE, ROUTER, MODAL } from 'src/actions/suite/constants';
 import * as walletSettingsActions from 'src/actions/settings/walletSettingsActions';
 import * as suiteActions from 'src/actions/suite/suiteActions';
-import * as discoveryActions from 'src/actions/wallet/discoveryActions';
 import { selectDiscoveryForDevice } from 'src/reducers/suite/suiteReducer';
 import { getApp } from 'src/utils/suite/router';
-
-import {
-    createDiscoveryThunk,
-    startDiscoveryThunk,
-    stopDiscoveryThunk,
-    updateNetworkSettingsThunk,
-} from '../../actions/wallet/discoveryThunks';
 
 export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
     async (action, { dispatch, next, getState }) => {

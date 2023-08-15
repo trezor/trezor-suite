@@ -1,16 +1,17 @@
 import { combineReducers } from 'redux';
-import { extraDependencies } from 'src/support/extraDependencies';
 
 import {
     prepareAccountsReducer,
     prepareFiatRatesReducer,
     prepareTransactionsReducer,
     prepareBlockchainReducer,
+    prepareDiscoveryReducer,
 } from '@suite-common/wallet-core';
+
+import { extraDependencies } from 'src/support/extraDependencies';
 
 import settingsReducer from './settingsReducer';
 import graphReducer from './graphReducer';
-import { prepareDiscoveryReducer } from './discoveryReducer';
 import selectedAccountReducer from './selectedAccountReducer';
 import receiveReducer from './receiveReducer';
 import feesReducer from './feesReducer';

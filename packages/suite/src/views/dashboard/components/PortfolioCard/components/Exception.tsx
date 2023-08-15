@@ -2,17 +2,18 @@ import React from 'react';
 
 import styled from 'styled-components';
 
+import { Discovery } from '@suite-common/wallet-types';
+import { restartDiscoveryThunk as restartDiscovery } from '@suite-common/wallet-core';
 import * as accountUtils from '@suite-common/wallet-utils';
 import { variables, Button, IconProps, H3, Image } from '@trezor/components';
 
 import { Translation } from 'src/components/suite';
 import { useDevice, useDispatch } from 'src/hooks/suite';
-import { restartDiscoveryThunk as restartDiscovery } from 'src/actions/wallet/discoveryThunks';
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';
 import { authConfirm, authorizeDevice } from 'src/actions/suite/suiteActions';
 import { openModal } from 'src/actions/suite/modalActions';
 import { goto } from 'src/actions/suite/routerActions';
-import type { Discovery, DiscoveryStatusType } from 'src/types/wallet';
+import type { DiscoveryStatusType } from 'src/types/wallet';
 
 const Wrapper = styled.div`
     display: flex;

@@ -1,3 +1,6 @@
+import { discoveryActions } from '@suite-common/wallet-core';
+import { DiscoveryStatus } from '@suite-common/wallet-constants';
+
 import {
     redactAccount,
     redactAction,
@@ -5,9 +8,6 @@ import {
     redactDiscovery,
     REDACTED_REPLACEMENT,
 } from 'src/utils/suite/logsUtils';
-import { discoveryActions } from 'src/actions/wallet/discoveryActions';
-
-import { DiscoveryStatus } from '@suite-common/wallet-constants';
 
 describe('logsUtils', () => {
     const account = global.JestMocks.getWalletAccount({
