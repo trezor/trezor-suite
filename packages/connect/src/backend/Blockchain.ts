@@ -165,22 +165,30 @@ export class Blockchain {
         return this.link.getAccountUtxo(descriptor);
     }
 
-    async estimateFee(request: { blocks?: number[] }) {
+    async estimateFee(request: Parameters<typeof this.link.estimateFee>[0]) {
         const { blocks } = request;
-        if (blocks) {
-            const now = Date.now();
-            const outdated = now - this.feeTimestamp > 20 * 60 * 1000;
-            const unknownBlocks = blocks.filter(() => typeof this.feeForBlock !== 'string');
-            if (!outdated && unknownBlocks.length < 1) {
-                // return cached
+        // cache should be used if there is no specific data (ethereum case) and requested blocks are already cached/downloaded
+        const useCache = !request.specific && Array.isArray(blocks) && blocks.length > 0;
+        if (useCache) {
+            // estimated fee levels cache is valid for 20 minutes
+            const outdated = Date.now() - this.feeTimestamp > 20 * 60 * 1000;
+            const unknownBlocks = outdated
+                ? blocks
+                : blocks.filter(block => !this.feeForBlock[block]);
+            if (unknownBlocks.length < 1) {
+                // all requested blocks are valid an known, return cached result
+                return blocks.map(block => this.feeForBlock[block]);
             }
+            // reset old values
+            this.feeForBlock = [];
             // get new values
             const fees = await this.link.estimateFee(request);
             // cache blocks for future use
             blocks.forEach((block, index) => {
                 this.feeForBlock[block] = fees[index];
             });
-            this.feeTimestamp = now;
+            this.feeTimestamp = Date.now();
+            // return requested fees
             return fees;
         }
         return this.link.estimateFee(request);
