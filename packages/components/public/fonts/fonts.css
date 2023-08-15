@@ -1,81 +1,16 @@
-/* @font-face {
-    font-family: 'TT Hoves';
-    src: url('./TTHoves/TTHoves-ExtraBold.woff2') format('woff2'),
-        url('./TTHoves/TTHoves-ExtraBold.woff') format('woff');
-    font-weight: 800;
-    font-style: normal;
-} */
-
-/* @font-face {
-    font-family: 'TT Hoves';
-    src: url('./TTHoves/TTHoves-Black.woff2') format('woff2'),
-        url('./TTHoves/TTHoves-Black.woff') format('woff');
-    font-weight: 900;
-    font-style: normal;
-} */
-
-/* @font-face {
-    font-family: 'TT Hoves';
-    src: url('./TTHoves/TTHoves-ExtraLight.woff2') format('woff2'),
-        url('./TTHoves/TTHoves-ExtraLight.woff') format('woff');
-    font-weight: 200;
-    font-style: normal;
-}
-
 @font-face {
-    font-family: 'TT Hoves';
-    src: url('./TTHoves/TTHoves-Thin.woff2') format('woff2'),
-        url('./TTHoves/TTHoves-Thin.woff') format('woff');
-    font-weight: 100;
-    font-style: normal;
-} */
-
-/* @font-face {
-    font-family: 'TT Hoves Hairline';
-    src: url('./TTHoves/TTHoves-Hairline.woff2') format('woff2'),
-        url('./TTHoves/TTHoves-Hairline.woff') format('woff');
-    font-weight: normal;
-    font-style: normal;
-} */
-
-
-
-@font-face {
-    font-family: 'TT Hoves';
-    src: url('./TTHoves/TTHoves-Light.woff2') format('woff2'),
-    url('./TTHoves/TTHoves-Light.woff') format('woff');
-    font-weight: 300;
-    font-style: normal;
-}
-
-@font-face {
-    font-family: 'TT Hoves';
-    src: url('./TTHoves/TTHoves-Regular.woff2') format('woff2'),
-        url('./TTHoves/TTHoves-Regular.woff') format('woff');
-    font-weight: normal;
-    font-style: normal;
-}
-
-@font-face {
-    font-family: 'TT Hoves';
-    src: url('./TTHoves/TTHoves-Medium.woff2') format('woff2'),
-        url('./TTHoves/TTHoves-Medium.woff') format('woff');
+    font-family: 'TT Satoshi';
+    src: url('./TTSatoshi/TTSatoshi-Medium.otf') format('opentype');
     font-weight: 500;
     font-style: normal;
 }
 
 @font-face {
-    font-family: 'TT Hoves';
-    src: url('./TTHoves/TTHoves-DemiBold.woff2') format('woff2'),
-        url('./TTHoves/TTHoves-DemiBold.woff') format('woff');
+    font-family: 'TT Satoshi';
+    src: url('./TTSatoshi/TTSatoshi-DemiBold.otf') format('opentype');
     font-weight: 600;
     font-style: normal;
 }
 
-@font-face {
-    font-family: 'TT Hoves';
-    src: url('./TTHoves/TTHoves-Bold.woff2') format('woff2'),
-        url('./TTHoves/TTHoves-Bold.woff') format('woff');
-    font-weight: bold;
-    font-style: normal;
-}
+
+
