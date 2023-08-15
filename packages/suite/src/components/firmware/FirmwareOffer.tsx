@@ -65,11 +65,14 @@ export const FirmwareOffer = ({
 
     const currentFirmwareType = getSuiteFirmwareTypeString(device.firmwareType);
 
-    const futureFirmwareType = getSuiteFirmwareTypeString(targetFirmwareType || targetType);
+    // firmware type is undefined in bootloader, regular type will be installed by default
+    const futureFirmwareType = getSuiteFirmwareTypeString(
+        targetFirmwareType || targetType || FirmwareType.Regular,
+    );
 
     const nextVersionElement = (
         <Version isNew data-test="@firmware/offer-version/new">
-            {futureFirmwareType ? translationString(futureFirmwareType) : ''}
+            <Translation id={futureFirmwareType!} />
             {nextVersion ? ` ${nextVersion}` : ''}
             {useDevkit ? ' DEVKIT' : ''}
         </Version>
