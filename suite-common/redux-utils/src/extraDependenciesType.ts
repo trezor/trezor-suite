@@ -13,6 +13,7 @@ import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { ActionType, SuiteCompatibleSelector, SuiteCompatibleThunk } from './types';
 
 type StorageLoadReducer = (state: any, action: { type: any; payload: any }) => void;
+type AddButtonRequestReducer = (state: any, action: { type: any; payload: any }) => void;
 type StorageLoadTransactionsReducer = (state: any, action: { type: any; payload: any }) => void;
 
 type ConnectInitSettings = {
@@ -40,8 +41,10 @@ export type ExtraDependencies = {
         // todo: we do not want to, so far, transfer coinjoin to @suite-common
         // but this is exactly what I need to get DebugModeOptions type instead of any
         selectDebugSettings: SuiteCompatibleSelector<any>;
-        selectMetadata: SuiteCompatibleSelector<any>;
+        selectDesktopBinDir: SuiteCompatibleSelector<string | undefined>;
         selectDevice: SuiteCompatibleSelector<TrezorDevice | undefined>;
+        selectRouterApp: SuiteCompatibleSelector<string>;
+        selectMetadata: SuiteCompatibleSelector<any>;
         selectDiscoveryForDevice: SuiteCompatibleSelector<Discovery | undefined>;
     };
     // You should only use ActionCreatorWithPayload from redux-toolkit!
@@ -64,6 +67,9 @@ export type ExtraDependencies = {
             NetworkSymbol[]
         >;
         lockDevice: ActionCreatorWithPreparedPayload<[payload: boolean], boolean>;
+        appChanged: ActionCreatorWithPayload<unknown>;
+        setSelectedDevice: ActionCreatorWithPayload<TrezorDevice | undefined>;
+        updateSelectedDevice: ActionCreatorWithPayload<TrezorDevice>;
         requestAuthConfirm: ActionCreatorWithoutPayload;
     };
     // Use action types + reducers as last resort if you can't use actions creators. For example for storageLoad it is used because
@@ -72,6 +78,7 @@ export type ExtraDependencies = {
     // in place where we have all types available to ensure type safety.
     actionTypes: {
         storageLoad: ActionType;
+        addButtonRequest: ActionType;
     };
     reducers: {
         storageLoadBlockchain: StorageLoadReducer;
@@ -80,6 +87,7 @@ export type ExtraDependencies = {
         storageLoadFiatRates: StorageLoadReducer;
         storageLoadFirmware: StorageLoadReducer;
         storageLoadDiscovery: StorageLoadReducer;
+        addButtonRequestFirmware: AddButtonRequestReducer;
     };
     utils: {
         saveAs: (data: Blob, fileName: string) => void;

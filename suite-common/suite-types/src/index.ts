@@ -2,6 +2,7 @@ import { ActionCreatorWithoutPayload, ActionCreatorWithPayload, AnyAction } from
 
 export * from './device';
 export * from './guide';
+export * from './firmware';
 export * from './sign';
 export * from './github';
 export * from './messageSystem';

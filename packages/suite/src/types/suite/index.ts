@@ -1,10 +1,10 @@
 import type { ThunkDispatch, ThunkAction as TAction } from 'redux-thunk';
 import type { Store as ReduxStore } from 'redux';
 
-import { discoveryActions, transactionsActions } from '@suite-common/wallet-core';
 import { analyticsActions } from '@suite-common/analytics';
 import type { ObjectValues } from '@trezor/type-utils';
 import type { UiEvent, DeviceEvent, TransportEvent, BlockchainEvent } from '@trezor/connect';
+import { discoveryActions, transactionsActions } from '@suite-common/wallet-core';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { messageSystemActions } from '@suite-common/message-system';
 

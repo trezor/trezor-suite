@@ -12,7 +12,6 @@ import * as deviceUtils from 'src/utils/suite/device';
 import { isOnionUrl } from 'src/utils/suite/tor';
 import { sortByTimestamp } from 'src/utils/suite/device';
 import * as modalActions from 'src/actions/suite/modalActions';
-import * as firmwareActions from 'src/actions/firmware/firmwareActions';
 import type { Locale } from 'src/config/suite/languages';
 import type {
     Action,
@@ -29,6 +28,7 @@ import {
     selectTorState,
 } from 'src/reducers/suite/suiteReducer';
 import type { TranslationKey } from 'src/components/suite/Translation/components/BaseTranslation';
+import { checkFirmwareAuthenticity } from 'src/actions/firmware/firmwareThunks';
 
 import { SUITE, METADATA } from './constants';
 
@@ -93,6 +93,22 @@ export type SuiteAction =
           payload: Partial<AutodetectSettings>;
       }
     | { type: typeof SUITE.REQUEST_DEVICE_RECONNECT };
+
+export const updateSelectedDevice = createAction(
+    SUITE.UPDATE_SELECTED_DEVICE,
+    (payload: TrezorDevice) => ({ payload }),
+);
+
+export const setSelectedDevice = createAction(SUITE.SELECT_DEVICE, (payload?: TrezorDevice) => ({
+    payload,
+}));
+
+export const appChanged = createAction(
+    SUITE.APP_CHANGED,
+    (payload: AppState['router']['app'] | unknown) => ({
+        payload,
+    }),
+);
 
 export const desktopHandshake = (payload: HandshakeElectron): SuiteAction => ({
     type: SUITE.DESKTOP_HANDSHAKE,
@@ -364,10 +380,7 @@ export const selectDevice =
         }
 
         // 3. select requested device
-        dispatch({
-            type: SUITE.SELECT_DEVICE,
-            payload,
-        });
+        dispatch(setSelectedDevice(payload));
     };
 
 /**
@@ -471,7 +484,7 @@ export const handleDeviceDisconnect =
          * This is not the case in firmware update and onboarding; In this case we simply wan't suite.device to be empty until user reconnects a device again
          */
         if (['onboarding', 'firmware', 'firmware-type'].includes(router.app)) {
-            dispatch({ type: SUITE.SELECT_DEVICE, payload: undefined });
+            dispatch(selectDevice(undefined));
             return;
         }
 
@@ -482,18 +495,13 @@ export const handleDeviceDisconnect =
         if (deviceInstances.length > 0) {
             // if selected device is gone from reducer, switch to first instance
             if (!devicePresent) {
-                dispatch({ type: SUITE.SELECT_DEVICE, payload: deviceInstances[0] });
+                dispatch(selectDevice(deviceInstances[0]));
             }
             return;
         }
-        // const routerLocked = getState().suite.locks.includes(SUITE.LOCK_TYPE.ROUTER);
-        // if (devices.length < 1 || routerLocked) {
-        //     dispatch({ type: SUITE.SELECT_DEVICE });
-        //     return;
-        // }
 
         const available = deviceUtils.getFirstDeviceInstance(devices);
-        dispatch({ type: SUITE.SELECT_DEVICE, payload: available[0] });
+        dispatch(selectDevice(available[0]));
     };
 
 /**
@@ -518,7 +526,7 @@ export const forgetDisconnectedDevices =
 const actions = [
     SUITE.AUTH_DEVICE,
     SUITE.AUTH_FAILED,
-    SUITE.SELECT_DEVICE,
+    setSelectedDevice.type,
     SUITE.RECEIVE_AUTH_CONFIRM,
     SUITE.UPDATE_PASSPHRASE_MODE,
     SUITE.ADD_BUTTON_REQUEST,
@@ -546,10 +554,7 @@ export const observeSelectedDevice =
 
         const changed = comparisonUtils.isChanged(selectedDevice, deviceFromReducer);
         if (changed) {
-            dispatch({
-                type: SUITE.UPDATE_SELECTED_DEVICE,
-                payload: deviceFromReducer,
-            });
+            dispatch(updateSelectedDevice(deviceFromReducer));
         }
 
         return changed;
@@ -609,7 +614,7 @@ export const authorizeDevice =
         if (!isDeviceReady) return false;
 
         if (settings.debug.checkFirmwareAuthenticity) {
-            await dispatch(firmwareActions.checkFirmwareAuthenticity());
+            await dispatch(checkFirmwareAuthenticity());
         }
 
         const response = await TrezorConnect.getDeviceState({

@@ -1,27 +1,14 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import { configureStore } from 'src/support/tests/configureStore';
-import { SUITE, ROUTER } from 'src/actions/suite/constants';
-import suiteReducer from 'src/reducers/suite/suiteReducer';
-import modalReducer from 'src/reducers/suite/modalReducer';
-import routerReducer from 'src/reducers/suite/routerReducer';
-import deviceReducer from 'src/reducers/suite/deviceReducer';
-import metadataReducer from 'src/reducers/suite/metadataReducer';
 import {
     prepareMessageSystemReducer,
     messageSystemActions,
     initMessageSystemThunk,
     fetchConfigThunk,
 } from '@suite-common/message-system';
-import walletReducers from 'src/reducers/wallet';
-import { init } from 'src/actions/suite/initAction';
-import suiteMiddleware from 'src/middlewares/suite/suiteMiddleware';
 import {
     validJws,
     DEV_JWS_PUBLIC_KEY,
 } from '@suite-common/message-system/src/__fixtures__/messageSystemActions';
-import type { AppState } from 'src/types/suite';
-import { extraDependencies } from 'src/support/extraDependencies';
-
 import { connectInitThunk } from '@suite-common/connect-init';
 import {
     blockchainActions,
@@ -29,6 +16,21 @@ import {
     preloadFeeInfoThunk,
 } from '@suite-common/wallet-core';
 import { analyticsActions, prepareAnalyticsReducer } from '@suite-common/analytics';
+
+import { configureStore } from 'src/support/tests/configureStore';
+import { SUITE, ROUTER } from 'src/actions/suite/constants';
+import suiteReducer from 'src/reducers/suite/suiteReducer';
+import modalReducer from 'src/reducers/suite/modalReducer';
+import routerReducer from 'src/reducers/suite/routerReducer';
+import deviceReducer from 'src/reducers/suite/deviceReducer';
+import metadataReducer from 'src/reducers/suite/metadataReducer';
+import walletReducers from 'src/reducers/wallet';
+import { init } from 'src/actions/suite/initAction';
+import suiteMiddleware from 'src/middlewares/suite/suiteMiddleware';
+import type { AppState } from 'src/types/suite';
+import { extraDependencies } from 'src/support/extraDependencies';
+
+import { appChanged } from '../suiteActions';
 
 const analyticsReducer = prepareAnalyticsReducer(extraDependencies);
 const messageSystemReducer = prepareMessageSystemReducer(extraDependencies);
@@ -84,7 +86,7 @@ const fixtures: Fixture[] = [
             SUITE.SET_LANGUAGE,
             initMessageSystemThunk.pending.type,
             fetchConfigThunk.pending.type,
-            SUITE.APP_CHANGED,
+            appChanged.type,
             ROUTER.LOCATION_CHANGE,
             SUITE.LOCK_ROUTER,
             connectInitThunk.pending.type,
@@ -122,7 +124,7 @@ const fixtures: Fixture[] = [
             messageSystemActions.fetchSuccessUpdate.type,
             fetchConfigThunk.fulfilled.type,
             initBlockchainThunk.fulfilled.type,
-            SUITE.APP_CHANGED,
+            appChanged.type,
             ROUTER.LOCATION_CHANGE,
             SUITE.READY,
             initMessageSystemThunk.fulfilled.type,
@@ -167,7 +169,7 @@ const fixtures: Fixture[] = [
             SUITE.SET_LANGUAGE,
             initMessageSystemThunk.pending.type,
             fetchConfigThunk.pending.type,
-            SUITE.APP_CHANGED,
+            appChanged.type,
             ROUTER.LOCATION_CHANGE,
             SUITE.LOCK_ROUTER,
             connectInitThunk.pending.type,

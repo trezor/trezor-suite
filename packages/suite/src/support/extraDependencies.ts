@@ -1,4 +1,5 @@
 import { saveAs } from 'file-saver';
+import { PayloadAction } from '@reduxjs/toolkit';
 
 import { resolveStaticPath } from '@suite-common/suite-utils';
 import { getAccountKey } from '@suite-common/wallet-utils';
@@ -20,8 +21,8 @@ import { selectIsPendingTransportEvent } from 'src/reducers/suite/deviceReducer'
 import { fixLoadedCoinjoinAccount } from 'src/utils/wallet/coinjoinUtils';
 
 import * as suiteActions from '../actions/suite/suiteActions';
-import { AppState } from '../types/suite';
-import { STORAGE } from '../actions/suite/constants';
+import { AppState, ButtonRequest, TrezorDevice } from '../types/suite';
+import { STORAGE, SUITE } from '../actions/suite/constants';
 import { SuiteState } from '../reducers/suite/suiteReducer';
 
 const connectSrc = resolveStaticPath('connect/');
@@ -56,20 +57,26 @@ export const extraDependencies: ExtraDependencies = {
         selectLocalCurrency: (state: AppState) => state.wallet.settings.localCurrency,
         selectIsPendingTransportEvent,
         selectDebugSettings: (state: AppState) => state.suite.settings.debug,
-        selectMetadata: (state: AppState) => state.metadata,
+        selectDesktopBinDir: (state: AppState) => state.desktop?.paths?.binDir,
         selectDevice: (state: AppState) => state.suite.device,
+        selectMetadata: (state: AppState) => state.metadata,
         selectDiscoveryForDevice: (state: DiscoveryRootState & { suite: SuiteState }) =>
             selectDiscoveryByDeviceState(state, state.suite.device?.state),
+        selectRouterApp: (state: AppState) => state.router.app,
     },
     actions: {
         setAccountAddMetadata: metadataActions.setAccountAdd,
         setWalletSettingsLocalCurrency: walletSettingsActions.setLocalCurrency,
         changeWalletSettingsNetworks: walletSettingsActions.changeNetworks,
         lockDevice: suiteActions.lockDevice,
+        appChanged: suiteActions.appChanged,
+        setSelectedDevice: suiteActions.setSelectedDevice,
+        updateSelectedDevice: suiteActions.updateSelectedDevice,
         requestAuthConfirm: suiteActions.requestAuthConfirm,
     },
     actionTypes: {
         storageLoad: STORAGE.LOAD,
+        addButtonRequest: SUITE.ADD_BUTTON_REQUEST,
     },
     reducers: {
         storageLoadBlockchain: (state: BlockchainState, { payload }: StorageLoadAction) => {
@@ -103,6 +110,19 @@ export const extraDependencies: ExtraDependencies = {
             }
         },
         storageLoadDiscovery: (_, { payload }: StorageLoadAction) => payload.discovery,
+        addButtonRequestFirmware: (
+            state,
+            {
+                payload,
+            }: PayloadAction<{
+                device?: TrezorDevice;
+                buttonRequest: ButtonRequest;
+            }>,
+        ) => {
+            if (payload.buttonRequest?.code === 'ButtonRequest_FirmwareUpdate') {
+                state.status = 'waiting-for-confirmation';
+            }
+        },
     },
     utils: {
         saveAs: (data, fileName) => saveAs(data, fileName),

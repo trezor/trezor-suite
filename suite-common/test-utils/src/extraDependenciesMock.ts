@@ -72,6 +72,8 @@ export const extraDependenciesMock: ExtraDependencies = {
             showDebugMenu: false,
             transports: [],
         }),
+        selectDesktopBinDir: mockSelector('selectDesktopBinDir', '/bin'),
+        selectRouterApp: mockSelector('selectRouterApp', ''),
         selectMetadata: mockSelector('selectMetadata', {}),
         selectDevice: mockSelector('selectDevice', {
             ...testMocks.getSuiteDevice(),
@@ -83,10 +85,14 @@ export const extraDependenciesMock: ExtraDependencies = {
         setWalletSettingsLocalCurrency: mockAction('setWalletSettingsLocalCurrency'),
         changeWalletSettingsNetworks: mockAction('changeWalletSettingsNetworks'),
         lockDevice: mockAction('lockDevice'),
+        appChanged: mockAction('appChanged'),
+        setSelectedDevice: mockAction('setSelectedDevice'),
+        updateSelectedDevice: mockAction('updateSelectedDevice'),
         requestAuthConfirm: mockAction('requestAuthConfirm'),
     },
     actionTypes: {
         storageLoad: mockActionType('storageLoad'),
+        addButtonRequest: mockActionType('addButtonRequest'),
     },
     reducers: {
         storageLoadBlockchain: mockReducer('storageLoadBlockchain'),
@@ -95,6 +101,7 @@ export const extraDependenciesMock: ExtraDependencies = {
         storageLoadFiatRates: mockReducer('storageLoadAccounts'),
         storageLoadFirmware: mockReducer('storageLoadFirmware'),
         storageLoadDiscovery: mockReducer('storageLoadDiscovery'),
+        addButtonRequestFirmware: mockReducer('addButtonRequestFirmware'),
     },
     utils: {
         saveAs: (data, fileName) =>
