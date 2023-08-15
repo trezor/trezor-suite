@@ -1,11 +1,11 @@
+import { prepareFirmwareReducer, firmwareActions } from '@suite-common/wallet-core/src';
+
 import { configureStore, filterThunkActionTypes } from 'src/support/tests/configureStore';
 import { SUITE } from 'src/actions/suite/constants';
-import { prepareFirmwareReducer } from 'src/reducers/firmware/firmwareReducer';
 import routerReducer from 'src/reducers/suite/routerReducer';
 import modalReducer from 'src/reducers/suite/modalReducer';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
 import { prepareFirmwareMiddleware } from 'src/middlewares/firmware/firmwareMiddleware';
-import { firmwareActions } from 'src/actions/firmware/firmwareActions';
 import { extraDependencies } from 'src/support/extraDependencies';
 
 const { getSuiteDevice } = global.JestMocks;

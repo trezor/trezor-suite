@@ -4,7 +4,7 @@ import { AcquiredDevice, FirmwareStatus } from '@suite-common/suite-types';
 import { Device, FirmwareType, UI } from '@trezor/connect';
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 
-import { firmwareActions } from 'src/actions/firmware/firmwareActions';
+import { firmwareActions } from './firmwareActions';
 
 type FirmwareUpdateCommon = {
     installingProgress?: number;

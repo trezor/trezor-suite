@@ -3,6 +3,10 @@
 import { configureStore, combineReducers } from '@reduxjs/toolkit';
 import thunkMiddleware from 'redux-thunk';
 import { createLogger } from 'redux-logger';
+
+import { prepareFirmwareReducer } from '@suite-common/wallet-core';
+import { addLog } from '@suite-common/logger';
+
 import suiteMiddlewares from 'src/middlewares/suite';
 import walletMiddlewares from 'src/middlewares/wallet';
 import onboardingMiddlewares from 'src/middlewares/onboarding';
@@ -13,15 +17,12 @@ import suiteReducers from 'src/reducers/suite';
 import walletReducers from 'src/reducers/wallet';
 import onboardingReducers from 'src/reducers/onboarding';
 import recoveryReducers from 'src/reducers/recovery';
-import { prepareFirmwareReducer } from 'src/reducers/firmware';
 import backupReducers from 'src/reducers/backup';
 
 // toastMiddleware can be used only in suite-desktop and suite-web
 // it's not included into `@suite-middlewares` index
 import toastMiddleware from 'src/middlewares/suite/toastMiddleware';
 import type { PreloadStoreAction } from 'src/support/suite/preloadStore';
-
-import { addLog } from '@suite-common/logger';
 
 import { desktopReducer } from './desktop';
 import { extraDependencies } from '../support/extraDependencies';

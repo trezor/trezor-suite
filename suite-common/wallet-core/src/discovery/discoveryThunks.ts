@@ -14,12 +14,11 @@ import {
     completeDiscovery,
     createDiscovery,
     interruptDiscovery,
-    MODULE_PREFIX,
+    DISCOVERY_MODULE_PREFIX,
     startDiscovery,
     stopDiscovery,
     updateDiscovery,
 } from './discoveryActions';
-
 import { selectDiscoveryByDeviceState, selectDiscovery } from './discoveryReducer';
 import { selectAccounts } from '../accounts/accountsReducer';
 import { accountsActions } from '../accounts/accountsActions';
@@ -80,7 +79,7 @@ const calculateProgress =
     };
 
 const handleProgressThunk = createThunk(
-    `${MODULE_PREFIX}/handleProgress`,
+    `${DISCOVERY_MODULE_PREFIX}/handleProgress`,
     (
         {
             event,
@@ -145,7 +144,7 @@ const handleProgressThunk = createThunk(
 );
 
 export const stopDiscoveryThunk = createThunk(
-    `${MODULE_PREFIX}/stop`,
+    `${DISCOVERY_MODULE_PREFIX}/stop`,
     (_, { dispatch, getState, extra }) => {
         const {
             selectors: { selectDiscoveryForDevice },
@@ -166,7 +165,7 @@ export const stopDiscoveryThunk = createThunk(
 );
 
 const getBundleThunk = createThunk(
-    `${MODULE_PREFIX}/getBundle`,
+    `${DISCOVERY_MODULE_PREFIX}/getBundle`,
     ({ discovery, device }: { discovery: Discovery; device: TrezorDevice }, { getState }) => {
         const bundle: DiscoveryItem[] = [];
         const accounts = selectAccounts(getState());
@@ -230,7 +229,7 @@ const getBundleThunk = createThunk(
 );
 
 const getAvailableCardanoDerivationsThunk = createThunk(
-    `${MODULE_PREFIX}/getAvailableCardanoDerivations`,
+    `${DISCOVERY_MODULE_PREFIX}/getAvailableCardanoDerivations`,
     async (
         { deviceState, device }: { deviceState: string; device: TrezorDevice },
         { dispatch },
@@ -308,7 +307,7 @@ const getAvailableCardanoDerivationsThunk = createThunk(
 );
 
 export const startDiscoveryThunk = createThunk(
-    `${MODULE_PREFIX}/start`,
+    `${DISCOVERY_MODULE_PREFIX}/start`,
     async (_, { dispatch, getState, extra }): Promise<void> => {
         const {
             selectors: { selectMetadata, selectDevice, selectDiscoveryForDevice },
@@ -579,7 +578,7 @@ export const startDiscoveryThunk = createThunk(
 );
 
 export const createDiscoveryThunk = createThunk(
-    `${MODULE_PREFIX}/create`,
+    `${DISCOVERY_MODULE_PREFIX}/create`,
     (
         { deviceState, device }: { deviceState: string; device: TrezorDevice },
         { dispatch, getState, extra },
@@ -608,7 +607,7 @@ export const createDiscoveryThunk = createThunk(
 );
 
 export const updateNetworkSettingsThunk = createThunk(
-    `${MODULE_PREFIX}/updateNetworkSettings`,
+    `${DISCOVERY_MODULE_PREFIX}/updateNetworkSettings`,
     (_, { dispatch, getState, extra }) => {
         const {
             selectors: { selectEnabledNetworks, selectDevices },
@@ -640,7 +639,7 @@ export const updateNetworkSettingsThunk = createThunk(
 );
 
 export const restartDiscoveryThunk = createThunk(
-    `${MODULE_PREFIX}/restart`,
+    `${DISCOVERY_MODULE_PREFIX}/restart`,
     async (_, { dispatch, getState, extra }) => {
         const {
             selectors: { selectDiscoveryForDevice },

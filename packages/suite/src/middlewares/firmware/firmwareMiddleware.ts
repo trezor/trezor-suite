@@ -1,10 +1,12 @@
 import { isAnyOf } from '@reduxjs/toolkit';
 
+import {
+    firmwareActions,
+    validateFirmwareHash,
+    firmwareUpdate,
+    selectFirmware,
+} from '@suite-common/wallet-core';
 import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
-
-import { firmwareActions } from 'src/actions/firmware/firmwareActions';
-import { validateFirmwareHash, firmwareUpdate } from 'src/actions/firmware/firmwareThunks';
-import { selectFirmware } from 'src/reducers/firmware/firmwareReducer';
 
 export const prepareFirmwareMiddleware = createMiddlewareWithExtraDeps(
     (action, { getState, dispatch, extra, next }) => {
