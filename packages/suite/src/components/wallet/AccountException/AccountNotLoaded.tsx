@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { restartDiscoveryThunk } from 'src/actions/wallet/discoveryActions';
+import { restartDiscoveryThunk } from 'src/actions/wallet/discoveryThunks';
 import { useDevice, useDispatch } from 'src/hooks/suite';
 import { Translation } from 'src/components/suite';
 import { AccountExceptionLayout } from 'src/components/wallet';

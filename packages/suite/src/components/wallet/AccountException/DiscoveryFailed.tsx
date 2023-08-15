@@ -3,7 +3,7 @@ import React from 'react';
 import { Translation } from 'src/components/suite';
 import { AccountExceptionLayout } from 'src/components/wallet';
 import { useDiscovery, useDispatch } from 'src/hooks/suite';
-import { restartDiscoveryThunk } from 'src/actions/wallet/discoveryActions';
+import { restartDiscoveryThunk } from 'src/actions/wallet/discoveryThunks';
 
 /**
  * Handler for discovery "hard" error (other than bundle-error)

@@ -1,6 +1,7 @@
-import { AcquiredDevice } from 'src/types/suite';
-import { Discovery } from 'src/reducers/wallet/discoveryReducer';
+import { Discovery } from '@suite-common/wallet-types';
 import { connectInitThunk } from '@suite-common/connect-init';
+
+import { AcquiredDevice } from 'src/types/suite';
 import { CoinjoinAccount } from 'src/types/wallet/coinjoin';
 
 /**

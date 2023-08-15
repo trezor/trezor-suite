@@ -4,7 +4,7 @@ import { notificationsActions } from '@suite-common/toast-notifications';
 import TrezorConnect, { AccountInfo, BundleProgress, UI } from '@trezor/connect';
 import { TrezorDevice } from '@suite-common/suite-types';
 import { getDerivationType, isTrezorConnectBackendType } from '@suite-common/wallet-utils';
-import { Account, DiscoveryItem, PartialDiscovery } from '@suite-common/wallet-types';
+import { Account, Discovery, DiscoveryItem, PartialDiscovery } from '@suite-common/wallet-types';
 import { accountsActions, selectAccounts } from '@suite-common/wallet-core';
 import { settingsCommonConfig } from '@suite-common/suite-config';
 import { networksCompatibility } from '@suite-common/wallet-config';
@@ -22,7 +22,6 @@ import {
 } from './discoveryActions';
 import {
     selectDiscoveryByDeviceState,
-    Discovery,
     selectDiscovery,
 } from '../../reducers/wallet/discoveryReducer';
 
