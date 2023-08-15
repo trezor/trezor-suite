@@ -86,9 +86,5 @@ export const FONT_WEIGHT = {
     BOLD: 700,
 } as const;
 
-export const FONT_FAMILY = {
-    TTHOVES: 'TT Hoves',
-} as const;
-
 export const COINS = Object.keys(CoinsObject).sort() as CoinType[];
 export const ICONS = Object.keys(IconsObject).sort() as IconType[];
