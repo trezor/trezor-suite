@@ -10,7 +10,7 @@ import { useAnchor } from 'src/hooks/suite/useAnchor';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { getFirmwareVersion, hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 import { HELP_FIRMWARE_TYPE } from '@trezor/urls';
-import { getSuiteFwTypeFromDevice } from 'src/utils/firmware';
+import { getSuiteFirmwareTypeString } from 'src/utils/firmware';
 
 const Version = styled.div`
     span {
@@ -37,10 +37,10 @@ export const FirmwareTypeChange = ({ isDeviceLocked }: FirmwareTypeProps) => {
     }
 
     const currentFwVersion = getFirmwareVersion(device);
-    const currentFwType = getSuiteFwTypeFromDevice(device);
+    const currentFwType = getSuiteFirmwareTypeString(device.firmwareType);
     const actionButtonId = hasBitcoinOnlyFirmware(device)
-        ? 'TR_SWITCH_TO_UNIVERSAL'
-        : 'TR_SWITCH_TO_BITCOIN';
+        ? 'TR_SWITCH_TO_REGULAR'
+        : 'TR_SWITCH_TO_BITCOIN_ONLY';
 
     const handleAction = () => dispatch(goto('firmware-type', { params: { cancelable: true } }));
 
@@ -53,7 +53,7 @@ export const FirmwareTypeChange = ({ isDeviceLocked }: FirmwareTypeProps) => {
             <TextColumn
                 title={<Translation id="TR_FIRMWARE_TYPE" />}
                 description={
-                    currentFwVersion ? (
+                    currentFwVersion && currentFwType ? (
                         <Version>
                             <Translation
                                 id="TR_YOUR_FIRMWARE_TYPE"
@@ -65,7 +65,7 @@ export const FirmwareTypeChange = ({ isDeviceLocked }: FirmwareTypeProps) => {
                                                 icon="EXTERNAL_LINK"
                                                 alignIcon="right"
                                             >
-                                                {currentFwType}
+                                                <Translation id={currentFwType} />
                                             </Button>
                                         </TrezorLink>
                                     ),

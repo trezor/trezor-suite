@@ -2523,8 +2523,9 @@ export default defineMessages({
         id: 'TR_FIRMWARE',
     },
     TR_FIRMWARE_INSTALLED_TEXT: {
-        defaultMessage: 'This device has firmware {version} ({type}) installed.',
-        description: 'Text to display in case device has firmware installed but it is outdated',
+        defaultMessage: 'This device has firmware {type}{version} installed.',
+        description:
+            'Text to display in case device has firmware installed but it is outdated. In case type is defined, space is added in code.',
         id: 'TR_FIRMWARE_INSTALLED_TEXT',
     },
     TR_INSTALL_FIRMWARE: {
@@ -2672,15 +2673,25 @@ export default defineMessages({
         description: 'Install button',
         id: 'TR_INSTALL',
     },
-    TR_INSTALL_UNIVERSAL: {
+    TR_INSTALL_REGULAR: {
         defaultMessage: 'Install Universal',
         description: 'Install button for Universal firmware',
-        id: 'TR_INSTALL_UNIVERSAL',
+        id: 'TR_INSTALL_REGULAR',
     },
     TR_INSTALL_BITCOIN_ONLY: {
         defaultMessage: 'Install Bitcoin-only',
         description: 'Install button for Bitcoin-only firmware',
         id: 'TR_INSTALL_BITCOIN_ONLY',
+    },
+    TR_FIRMWARE_TYPE_REGULAR: {
+        defaultMessage: 'Universal',
+        description: 'TODO',
+        id: 'TR_FIRMWARE_TYPE_REGULAR',
+    },
+    TR_FIRMWARE_TYPE_BITCOIN_ONLY: {
+        defaultMessage: 'Bitcoin-only',
+        description: 'TODO',
+        id: 'TR_FIRMWARE_TYPE_BITCOIN_ONLY',
     },
     TR_DO_NOT_DISCONNECT: {
         defaultMessage: 'Do not disconnect your Trezor.',
@@ -3249,9 +3260,9 @@ export default defineMessages({
             'Reconnect the device without touching the screen to access all other settings.',
         id: 'TR_SETTINGS_DEVICE_BANNER_DESCRIPTION_BOOTLOADER_NO_TOUCH',
     },
-    TR_SETTINGS_COINS_UNIVERSAL_FIRMWARE_SUGGESTION: {
+    TR_SETTINGS_COINS_REGULAR_FIRMWARE_SUGGESTION: {
         defaultMessage: 'For more coins, install <button>Universal</button> firmware.',
-        id: 'TR_SETTINGS_COINS_UNIVERSAL_FIRMWARE_SUGGESTION',
+        id: 'TR_SETTINGS_COINS_REGULAR_FIRMWARE_SUGGESTION',
     },
     TR_SETTINGS_COINS_BITCOIN_FIRMWARE_SUGGESTION: {
         defaultMessage:
@@ -3580,13 +3591,13 @@ export default defineMessages({
         defaultMessage: 'Your firmware type is {version}',
         id: 'TR_YOUR_FIRMWARE_TYPE',
     },
-    TR_SWITCH_TO_BITCOIN: {
+    TR_SWITCH_TO_BITCOIN_ONLY: {
         defaultMessage: 'Switch to Bitcoin',
-        id: 'TR_SWITCH_TO_BITCOIN',
+        id: 'TR_SWITCH_TO_BITCOIN_ONLY',
     },
-    TR_SWITCH_TO_UNIVERSAL: {
-        defaultMessage: 'Switch to Universal',
-        id: 'TR_SWITCH_TO_UNIVERSAL',
+    TR_SWITCH_TO_REGULAR: {
+        defaultMessage: 'Switch to Regular',
+        id: 'TR_SWITCH_TO_REGULAR',
     },
     TR_YOUR_CURRENT_FIRMWARE_UNKNOWN: {
         defaultMessage:

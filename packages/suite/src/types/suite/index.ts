@@ -115,8 +115,3 @@ export interface TorBootstrap {
     total: number;
     isSlow?: boolean;
 }
-
-export enum SuiteFirmwareType {
-    BitcoinOnly = 'Bitcoin-only',
-    Universal = 'Universal',
-}

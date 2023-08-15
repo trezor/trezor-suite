@@ -172,7 +172,7 @@ export const FirmwareInitial = ({
                         onClick={() => installFirmware(FirmwareType.Regular)}
                         multipleDevicesConnected={multipleDevicesConnected}
                     >
-                        <Translation id="TR_INSTALL_UNIVERSAL" />
+                        <Translation id="TR_INSTALL_REGULAR" />
                     </InstallButton>
 
                     <InstallButton
