@@ -130,4 +130,22 @@ describe('api/bitcoin/Fees', () => {
         backend.disconnect();
         spy.mockClear();
     });
+
+    // This block is useful to perform e2e test locally using listed networks with real backends (supported in suite)
+    // How to: comment out jest.mock on top of the file and uncomment test below
+
+    // const e2eNetworks = ['BTC', 'TEST', 'BCH', 'BTG', 'DASH', 'DGB', 'DOGE', 'LTC', 'NMC', 'VTC'];
+    // e2eNetworks.forEach(network => {
+    //     it.only(`${network} e2e smart FeeLevels`, async () => {
+    //         const coinInfo = getBitcoinNetwork(network)!;
+    //         if (!coinInfo) throw new Error('coinInfo is missing');
+
+    //         const backend = await initBlockchain(coinInfo, () => {});
+    //         const feeLevels = new FeeLevels(coinInfo);
+    //         const smartFeeLevels = await feeLevels.load(backend);
+    //         console.warn(`${network} FeeLevels`, smartFeeLevels);
+    //         console.warn(`${network} longTermFeeRate`, feeLevels.longTermFeeRate);
+    //         backend.disconnect();
+    //     });
+    // });
 });

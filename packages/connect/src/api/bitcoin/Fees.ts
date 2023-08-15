@@ -46,6 +46,12 @@ const findNearest = (requested: number, blocks: Blocks) => {
     return blocks[index];
 };
 
+const findLowest = (blocks: Blocks) =>
+    blocks
+        .slice(0)
+        .reverse()
+        .find(item => typeof item === 'string');
+
 const findBlocksForFee = (feePerUnit: string, blocks: Blocks) => {
     const bn = new BigNumber(feePerUnit);
     // find first occurrence of value lower or equal than requested
@@ -59,6 +65,7 @@ export class FeeLevels {
     coinInfo: CoinInfo;
 
     levels: FeeLevel[];
+    longTermFeeRate?: string; // long term fee rate is used by @trezor/utxo-lib composeTx module
 
     blocks: Blocks = [];
 
@@ -114,6 +121,9 @@ export class FeeLevels {
                     return result.concat(fill);
                 }, []);
         }
+        // add more blocks to the request to find `longTermFee`
+        const oneDayBlocks = 6 * 24; // maximum value accepted by backends is usually 1008 - 7 days (6 * 24 * 7)
+        blocks.push(...fillGap(oneDayBlocks, oneDayBlocks / 2, oneDayBlocks * 6));
 
         try {
             const response = await blockchain.estimateFee({ blocks });
@@ -128,6 +138,8 @@ export class FeeLevels {
                     level.feePerUnit = updatedValue;
                 }
             });
+
+            this.longTermFeeRate = findLowest(this.blocks);
         } catch (error) {
             // do not throw
         }
