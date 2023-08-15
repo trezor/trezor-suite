@@ -234,7 +234,9 @@ export const useCoinmarketSpend = ({
                         });
                         composeRequest();
                         setTrade(trade);
-                        desktopApi.appFocus();
+                        if (desktopApi.available) {
+                            desktopApi.appFocus();
+                        }
                     }
                 }
             };
