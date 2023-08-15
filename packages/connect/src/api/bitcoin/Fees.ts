@@ -6,11 +6,12 @@ import type { CoinInfo, FeeLevel } from '../../types';
 
 type Blocks = Array<string | undefined>;
 
-const feePerKB = (fee: string) => {
-    const bn = new BigNumber(fee);
-    if (bn.isNaN() || bn.lte('0')) return;
-    return bn.div(1000).integerValue(BigNumber.ROUND_HALF_CEIL).toString();
-    // return bn.toString();
+const convertFeeRate = (fee: string, minFee: number) => {
+    const feePerKB = new BigNumber(fee);
+    if (feePerKB.isNaN() || feePerKB.lte('0')) return;
+    const feePerB = feePerKB.div(1000);
+    if (feePerB.lt(minFee)) return minFee.toString();
+    return feePerB.isInteger() ? feePerB.toString() : feePerB.toFixed(2);
 };
 
 const fillGap = (from: number, step: number, size: number) => {
@@ -21,39 +22,27 @@ const fillGap = (from: number, step: number, size: number) => {
     return fill;
 };
 
-const findLowest = (blocks: Blocks) => {
-    const unique: string[] = [];
-    blocks.forEach(item => {
-        if (typeof item === 'string' && unique.indexOf(item) < 0) {
-            unique.push(item);
-        }
-    });
-    return unique[unique.length - 1];
-};
-
 const findNearest = (requested: number, blocks: Blocks) => {
-    const len = blocks.length;
-    const knownValue = blocks[requested];
-    // return first occurrence of requested block value
-    if (typeof knownValue === 'string') return knownValue;
-    const lastKnownValue = blocks
-        .slice()
-        .reverse()
-        .find(item => typeof item === 'string');
-    if (!lastKnownValue) return;
-    const lastKnownIndex = blocks.indexOf(lastKnownValue);
-    // there is no information for this block entry
-    if (requested >= lastKnownIndex) {
-        // requested block is greater than known range
-        // return first occurrence of the lowest known fee
-        return lastKnownValue;
-    }
+    // found exact requested value
+    if (typeof blocks[requested] === 'string') return blocks[requested];
 
-    // try to find nearest lower value
+    // exact value for requested block is unknown?
+    // walk forward through blocks and try to find first known value
+    const len = blocks.length;
     let index = requested;
     while (typeof blocks[index] !== 'string' && index < len) {
         index++;
     }
+    // found something useful
+    if (typeof blocks[index] === 'string') {
+        return blocks[index];
+    }
+    // didn't find anything while looking forward? then try to walk backward
+    index = requested;
+    while (typeof blocks[index] !== 'string' && index > 0) {
+        index--;
+    }
+    // return something or undefined
     return blocks[index];
 };
 
@@ -128,24 +117,17 @@ export class FeeLevels {
 
         try {
             const response = await blockchain.estimateFee({ blocks });
-            response.forEach((r, i) => {
-                this.blocks[blocks[i]] = feePerKB(r.feePerUnit);
+            response.forEach(({ feePerUnit }, index) => {
+                this.blocks[blocks[index]] = convertFeeRate(feePerUnit, this.coinInfo.minFee);
             });
-            if (this.levels.length === 1) {
-                const lowest = findLowest(this.blocks);
-                if (typeof lowest === 'string') {
-                    this.levels[0].blocks = this.blocks.indexOf(lowest);
-                    this.levels[0].feePerUnit = lowest;
+
+            this.levels.forEach(level => {
+                const updatedValue = findNearest(level.blocks, this.blocks);
+                if (typeof updatedValue === 'string') {
+                    level.blocks = this.blocks.indexOf(updatedValue);
+                    level.feePerUnit = updatedValue;
                 }
-            } else {
-                this.levels.forEach(l => {
-                    const updatedValue = findNearest(l.blocks, this.blocks);
-                    if (typeof updatedValue === 'string') {
-                        l.blocks = this.blocks.indexOf(updatedValue);
-                        l.feePerUnit = updatedValue;
-                    }
-                });
-            }
+            });
         } catch (error) {
             // do not throw
         }
