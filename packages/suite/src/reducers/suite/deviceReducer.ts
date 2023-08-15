@@ -110,15 +110,19 @@ const connectDevice = (draft: State, device: Device) => {
     if (affectedDevices.length > 0) {
         const changedDevices = affectedDevices.map(d => {
             // change availability according to "passphrase_protection" field
-            if (d.instance && isUnlocked(device.features) && !features.passphrase_protection) {
+            if (
+                !d.useEmptyPassphrase &&
+                isUnlocked(device.features) &&
+                !features.passphrase_protection
+            ) {
                 return merge(d, { ...device, connected: true, available: false });
             }
             return merge(d, { ...device, connected: true, available: true });
         });
 
         // affected device with current "passphrase_protection" does not exists
-        // basically it means that the "base" device without "instance" was forgotten (removed from reducer)
-        // automatically create new instance
+        // basically it means that the "standard" device without "useEmptyPassphrase" was forgotten or never created (removed from reducer)
+        // automatically create new "standard" instance
         if (!changedDevices.find(d => d.available)) {
             changedDevices.push(newDevice);
         }
@@ -165,12 +169,12 @@ const changeDevice = (
         const isDeviceUnlocked = isUnlocked(device.features);
         // merge incoming device with State
         const changedDevices = affectedDevices.map(d => {
+            let { useEmptyPassphrase } = d;
             // change availability according to "passphrase_protection" field
-            if (d.instance && isDeviceUnlocked && !device.features.passphrase_protection) {
+            if (!useEmptyPassphrase && isDeviceUnlocked && !device.features.passphrase_protection) {
                 return merge(d, { ...device, ...extended, available: !d.state });
             }
             // if device without instance becomes unlocked update useEmptyPassphrase field (hidden/standard wallet)
-            let { useEmptyPassphrase } = d;
             if (!d.instance && !isUnlocked(d.features) && isDeviceUnlocked) {
                 useEmptyPassphrase = !device.features.passphrase_protection;
             }

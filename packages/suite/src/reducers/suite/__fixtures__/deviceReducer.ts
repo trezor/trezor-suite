@@ -167,6 +167,7 @@ const connect = [
         initialState: [
             getSuiteDevice(
                 {
+                    useEmptyPassphrase: false,
                     instance: 1,
                 },
                 {
