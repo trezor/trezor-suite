@@ -1,6 +1,6 @@
 import { darken } from 'polished';
 import styled, { css } from 'styled-components';
-import { FONT_FAMILY, FONT_WEIGHT, NEUE_FONT_SIZE } from '../../config/variables';
+import { FONT_WEIGHT, NEUE_FONT_SIZE } from '../../config/variables';
 import { InputState, InputVariant, SuiteThemeColors } from '../../support/types';
 
 export const INPUT_HEIGHTS: Record<InputVariant, number> = {
@@ -61,7 +61,6 @@ export const baseInputStyle = css<BaseInputProps>`
     border: solid ${INPUT_BORDER_WIDTH}px;
     border-color: ${({ inputState, theme }) => getInputStateBorderColor(inputState, theme)};
     color: ${({ inputState, theme }) => getInputStateTextColor(inputState, theme)};
-    font-family: ${FONT_FAMILY.TTHOVES};
     font-size: ${NEUE_FONT_SIZE.SMALL};
     font-weight: ${FONT_WEIGHT.MEDIUM};
     transition: border-color 0.1s ease-in-out;
