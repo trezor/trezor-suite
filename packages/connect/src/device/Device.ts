@@ -120,7 +120,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
     networkTypeState: NETWORK.NetworkType[] = [];
 
-    firmwareType: FirmwareType = FirmwareType.Regular;
+    firmwareType?: FirmwareType;
 
     constructor(transport: Transport, descriptor: Descriptor) {
         super();
@@ -536,12 +536,15 @@ export class Device extends TypedEmitter<DeviceEvents> {
         this.features = feat;
         this.featuresNeedsReload = false;
 
-        this.firmwareType =
-            feat.capabilities &&
-            feat.capabilities.length > 0 &&
-            !feat.capabilities.includes('Capability_Bitcoin_like')
-                ? FirmwareType.BitcoinOnly
-                : FirmwareType.Regular;
+        // Firmware type is unknown in bootloader mode
+        if (this.getMode() !== 'bootloader') {
+            this.firmwareType =
+                feat.capabilities &&
+                feat.capabilities.length > 0 &&
+                !feat.capabilities.includes('Capability_Bitcoin_like')
+                    ? FirmwareType.BitcoinOnly
+                    : FirmwareType.Regular;
+        }
     }
 
     isUnacquired() {
