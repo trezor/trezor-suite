@@ -78,6 +78,7 @@ export const extraDependenciesMock: ExtraDependencies = {
             ...testMocks.getSuiteDevice(),
         }),
         selectDiscoveryForDevice: mockSelector('selectDiscoveryForDevice', undefined),
+        selectBinDir: mockSelector('selectBinDir', '/bin'),
     },
     actions: {
         setAccountAddMetadata: mockAction('setAccountAddMetadata'),
