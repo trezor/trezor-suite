@@ -176,7 +176,7 @@
             "conditions": [
                 {
                     "environment": {
-                        "desktop": "<23.3.2",
+                        "desktop": "<23.7.2",
                         "mobile": "!",
                         "web": "!"
                     }
