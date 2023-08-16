@@ -113,9 +113,9 @@
             "conditions": [
                 {
                     "environment": {
-                        "desktop": ">=23.5.1",
+                        "desktop": ">=23.8.1",
                         "mobile": "!",
-                        "web": ">=23.5.1"
+                        "web": ">=23.8.1"
                     }
                 }
             ],
@@ -148,9 +148,9 @@
             "conditions": [
                 {
                     "environment": {
-                        "desktop": "<23.5.2",
+                        "desktop": "<23.8.1",
                         "mobile": "!",
-                        "web": "<23.5.2"
+                        "web": "<23.8.1"
                     }
                 }
             ],
