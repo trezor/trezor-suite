@@ -22,6 +22,8 @@ import {
     Badge,
     BadgeVariant,
     HStack,
+    ButtonSize,
+    TextButton,
 } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Screen, ScreenHeader } from '@suite-native/navigation';
@@ -46,6 +48,8 @@ const textVariants: TypographyStyle[] = [
     'hint',
     'label',
 ];
+
+const buttonSizes = ['small', 'medium', 'large'] satisfies ButtonSize[];
 
 const flexWrapStyle = prepareNativeStyle(_ => ({
     flexWrap: 'wrap',
@@ -118,21 +122,16 @@ export const DemoScreen = () => {
                                 alignItems="center"
                                 style={applyStyle(flexWrapStyle)}
                             >
-                                <Button colorScheme={buttonScheme} size="large" iconLeft="calendar">
-                                    Large
-                                </Button>
-
-                                <Button
-                                    colorScheme={buttonScheme}
-                                    size="medium"
-                                    iconLeft="calendar"
-                                >
-                                    Medium
-                                </Button>
-
-                                <Button colorScheme={buttonScheme} size="small" iconLeft="calendar">
-                                    Small
-                                </Button>
+                                {buttonSizes.map(buttonSize => (
+                                    <Button
+                                        key={buttonSize}
+                                        colorScheme={buttonScheme}
+                                        iconLeft="calendar"
+                                        size={buttonSize}
+                                    >
+                                        {buttonSize}
+                                    </Button>
+                                ))}
                             </Box>
                         </VStack>
                     ))}
@@ -148,64 +147,43 @@ export const DemoScreen = () => {
                                 justifyContent="space-around"
                                 alignItems="center"
                             >
-                                <IconButton
-                                    colorScheme={buttonScheme}
-                                    size="large"
-                                    iconName="calendar"
-                                >
-                                    Large
-                                </IconButton>
-
-                                <IconButton
-                                    colorScheme={buttonScheme}
-                                    size="medium"
-                                    iconName="calendar"
-                                >
-                                    Medium
-                                </IconButton>
-
-                                <IconButton
-                                    colorScheme={buttonScheme}
-                                    size="small"
-                                    iconName="calendar"
-                                >
-                                    Small
-                                </IconButton>
+                                {buttonSizes.map(buttonSize => (
+                                    <IconButton
+                                        key={buttonSize}
+                                        colorScheme={buttonScheme}
+                                        iconName="calendar"
+                                        size={buttonSize}
+                                    />
+                                ))}
                             </Box>
                         </View>
                     ))}
                     <View>
                         <Text>with title</Text>
                         <Box flexDirection="row" justifyContent="space-around" alignItems="center">
-                            <IconButton
-                                colorScheme="primary"
-                                size="large"
-                                iconName="calendar"
-                                title="large"
-                            >
-                                Large
-                            </IconButton>
-
-                            <IconButton
-                                colorScheme="primary"
-                                size="medium"
-                                iconName="calendar"
-                                title="medium"
-                            >
-                                Medium
-                            </IconButton>
-
-                            <IconButton
-                                colorScheme="primary"
-                                size="small"
-                                iconName="calendar"
-                                title="small"
-                            >
-                                Small
-                            </IconButton>
+                            {buttonSizes.map(buttonSize => (
+                                <IconButton
+                                    key={buttonSize}
+                                    colorScheme="primary"
+                                    iconName="calendar"
+                                    size={buttonSize}
+                                    title={buttonSize}
+                                />
+                            ))}
                         </Box>
                     </View>
                 </VStack>
+                <VStack>
+                    <Text variant="titleSmall">TextButton:</Text>
+                    <HStack flexDirection="row" justifyContent="space-around" alignItems="center">
+                        {buttonSizes.map(buttonSize => (
+                            <TextButton key={buttonSize} iconLeft="trezorT" size={buttonSize}>
+                                {buttonSize}
+                            </TextButton>
+                        ))}
+                    </HStack>
+                </VStack>
+                <Divider />
                 <Divider />
                 <Box>
                     <SearchInput
@@ -384,7 +362,10 @@ export const DemoScreen = () => {
                             justifyContent="center"
                         >
                             {Object.keys(tokenIcons).map((iconContract: string) => (
-                                <CryptoIcon symbol={iconContract as TokenAddress} />
+                                <CryptoIcon
+                                    key={iconContract}
+                                    symbol={iconContract as TokenAddress}
+                                />
                             ))}
                         </HStack>
                     </Box>

@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import Animated, { FadeIn, FadeOut, SlideInLeft, SlideOutLeft } from 'react-native-reanimated';
-import { TouchableOpacity } from 'react-native';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { HStack, SearchInput, Text } from '@suite-native/atoms';
+import { Box, HStack, SearchInput, TextButton } from '@suite-native/atoms';
 
 type AccountsSearchFormProps = {
     onPressCancel: () => void;
@@ -24,7 +23,7 @@ const searchFormInputStyle = prepareNativeStyle(() => ({
     flex: 1,
 }));
 
-const cancelButtonStyle = prepareNativeStyle(() => ({
+const cancelButtonContainerStyle = prepareNativeStyle(() => ({
     justifyContent: 'center',
     alignItems: 'center',
 }));
@@ -69,11 +68,9 @@ export const AccountsSearchForm = ({ onPressCancel, onInputChange }: AccountsSea
                     />
                 </Animated.View>
 
-                {/*  TODO : Replace with a TextButton atom component when the design is ready.
-                            issue: https://github.com/trezor/trezor-suite/issues/9084 */}
-                <TouchableOpacity onPress={onPressCancel} style={applyStyle(cancelButtonStyle)}>
-                    <Text color="textPrimaryDefault">Cancel</Text>
-                </TouchableOpacity>
+                <Box style={applyStyle(cancelButtonContainerStyle)}>
+                    <TextButton onPress={onPressCancel}>Cancel</TextButton>
+                </Box>
             </HStack>
         </Animated.View>
     );
