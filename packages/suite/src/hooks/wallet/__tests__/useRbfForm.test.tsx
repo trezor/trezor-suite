@@ -132,6 +132,8 @@ describe('useRbfForm hook', () => {
                 </ChangeFee>,
             );
 
+            const composeTransactionSpy = jest.spyOn(TrezorConnect, 'composeTransaction');
+
             // mock responses from 'signTransaction'.
             // response doesn't matter. parameters are tested.
             const signTransactionMock = jest
@@ -159,6 +161,11 @@ describe('useRbfForm hook', () => {
 
             // check composeTransaction result
             expect(composedLevels).toMatchObject(f.composedLevels);
+
+            // validate number of calls to '@trezor/connect'
+            if (typeof f.composeTransactionCalls === 'number') {
+                expect(composeTransactionSpy).toBeCalledTimes(f.composeTransactionCalls);
+            }
 
             const sendAction = () =>
                 actionSequence([
