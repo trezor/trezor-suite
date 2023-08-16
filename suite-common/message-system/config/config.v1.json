@@ -1,7 +1,7 @@
 {
     "version": 1,
-    "timestamp": "2023-08-16T00:00:00+00:00",
-    "sequence": 40,
+    "timestamp": "2023-08-16T14:00:00+00:00",
+    "sequence": 41,
     "actions": [
         {
             "conditions": [
@@ -126,7 +126,7 @@
                 "variant": "info",
                 "category": ["feature"],
                 "content": {
-                    "en-GB": "Coinjoin is temporarily unavailable due to technical issues",
+                    "en-GB": "NOTE: This content is not visible until flag is set to false!",
                     "en": "Coinjoin is temporarily unavailable due to technical issues",
                     "es": "Coinjoin no está disponible temporalmente por problemas técnicos",
                     "cs": "Coinjoin je z technických důvodů dočasně nedostupný",
@@ -137,9 +137,9 @@
                     {
                         "domain": "coinjoin",
                         "flag": true,
-                        "averageAnonymityGainPerRound": 0.34,
+                        "averageAnonymityGainPerRound": 0.2,
                         "roundsFailRateBuffer": 10,
-                        "roundsDurationInHours": 1
+                        "roundsDurationInHours": 1.5
                     }
                 ]
             }
