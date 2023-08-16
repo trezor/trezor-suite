@@ -9257,6 +9257,7 @@ __metadata:
     "@trezor/dom-utils": "workspace:*"
     "@trezor/env-utils": "workspace:*"
     "@trezor/react-utils": "workspace:*"
+    "@trezor/theme": "workspace:*"
     "@trezor/utils": "workspace:*"
     "@types/react": 18.0.32
     "@types/react-date-range": ^1.4.4
@@ -10106,6 +10107,7 @@ __metadata:
     "@trezor/suite-data": "workspace:*"
     "@trezor/suite-desktop-api": "workspace:*"
     "@trezor/suite-storage": "workspace:*"
+    "@trezor/theme": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/urls": "workspace:*"
     "@trezor/utils": "workspace:*"
