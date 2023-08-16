@@ -585,6 +585,7 @@ export const composeAndSign = [
             },
         },
         composeTransactionCalls: 3, // 1. normal fee, 2. custom fee, 3. send-max
+        decreasedOutputs: true,
         signedTx: {
             inputs: [{ prev_hash: DCBA }],
             outputs: [
@@ -631,6 +632,7 @@ export const composeAndSign = [
             changeAddress: undefined,
         }),
         composeTransactionCalls: 1, // 1. immediate send-max
+        decreasedOutputs: true,
         composedLevels: {
             normal: {
                 type: 'final',
@@ -692,6 +694,7 @@ export const composeAndSign = [
             },
         },
         composeTransactionCalls: 3, // 1. normal fee, 2. custom fee, 3 send-max
+        decreasedOutputs: true,
         signedTx: {
             inputs: [{ prev_hash: DCBA }],
             outputs: [
