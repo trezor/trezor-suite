@@ -1,62 +1,8 @@
 {
     "version": 1,
-    "timestamp": "2023-07-31T00:00:00+00:00",
-    "sequence": 39,
+    "timestamp": "2023-08-16T00:00:00+00:00",
+    "sequence": 40,
     "actions": [
-        {
-            "conditions": [
-                {
-                    "devices": [
-                        {
-                            "model": "1",
-                            "firmware": "*",
-                            "bootloader": "*",
-                            "variant": "*",
-                            "firmwareRevision": "*",
-                            "vendor": "*"
-                        },
-                        {
-                            "model": "T1B1",
-                            "firmware": "*",
-                            "bootloader": "*",
-                            "variant": "*",
-                            "firmwareRevision": "*",
-                            "vendor": "*"
-                        }
-                    ],
-                    "environment": {
-                        "desktop": ">=23.1.0",
-                        "mobile": "!",
-                        "web": "!"
-                    }
-                }
-            ],
-            "message": {
-                "id": "6f793f82-5e13-492f-803c-2d5Fsdcc3cd1",
-                "priority": 93,
-                "dismissible": false,
-                "variant": "warning",
-                "category": ["feature"],
-                "content": {
-                    "en-GB": "Coinjoin not publicly available on T1",
-                    "en": "Coinjoin not publicly available on T1",
-                    "es": "Coinjoin not publicly available on T1",
-                    "cs": "Coinjoin not publicly available on T1",
-                    "ru": "Coinjoin not publicly available on T1",
-                    "ja": "Coinjoin not publicly available on T1。"
-                },
-                "feature": [
-                    {
-                        "flag": true,
-                        "domain": "coinjoin",
-                        "isPublic": false,
-                        "averageAnonymityGainPerRound": 0.34,
-                        "roundsFailRateBuffer": 10,
-                        "roundsDurationInHours": 3
-                    }
-                ]
-            }
-        },
         {
             "conditions": [
                 {
@@ -72,6 +18,22 @@
                         {
                             "model": "T2T1",
                             "firmware": "<2.6.0",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "1",
+                            "firmware": "<1.12.1",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "T1B1",
+                            "firmware": "<1.12.1",
                             "bootloader": "*",
                             "variant": "*",
                             "firmwareRevision": "*",
