@@ -10,6 +10,7 @@ import {
     waitForLoader,
     waitForRender,
     actionSequence,
+    findByTestId,
 } from 'src/support/tests/hooksHelper';
 import { ChangeFee } from 'src/components/suite/modals/TransactionDetail/components/ChangeFee';
 import { useRbfContext } from '../useRbfForm';
@@ -165,6 +166,14 @@ describe('useRbfForm hook', () => {
             // validate number of calls to '@trezor/connect'
             if (typeof f.composeTransactionCalls === 'number') {
                 expect(composeTransactionSpy).toBeCalledTimes(f.composeTransactionCalls);
+            }
+
+            if (f.decreasedOutputs) {
+                expect(() => findByTestId('@send/decreased-outputs')).not.toThrow();
+            } else {
+                expect(() => findByTestId('@send/decreased-outputs')).toThrow(
+                    'Unable to find an element',
+                );
             }
 
             const sendAction = () =>

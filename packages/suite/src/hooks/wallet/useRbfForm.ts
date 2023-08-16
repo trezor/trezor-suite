@@ -167,6 +167,8 @@ const useRbfState = ({ tx, finalize, chainedTxs }: UseRbfProps, currentState: bo
 export const useRbf = (props: UseRbfProps) => {
     // local state
     const [state, setState] = useState<ReturnType<typeof useRbfState>>(undefined);
+    const [isReduceChangePossible, setIsReduceChangePossible] = useState(false);
+    const [showDecreasedOutputs, setShowDecreasedOutputs] = useState(false);
 
     // throttle state calculation
     const initState = useRbfState(props, !!state);
@@ -230,9 +232,22 @@ export const useRbf = (props: UseRbfProps) => {
         const { selectedFee, setMaxOutputId, outputs } = getValues();
         const tx = composedLevels[selectedFee || 'normal'];
         // sometimes tx is undefined (e.g. when fee level is changed during the initial compose)
-        if (tx?.type === 'error' && tx.error === 'NOT-ENOUGH-FUNDS') {
+        if (!tx) return;
+
+        const isSetMaxUsed = typeof setMaxOutputId === 'number';
+        if (tx.type === 'final') {
+            if (!isSetMaxUsed) {
+                // reducing change is possible. do not use DecreasedOutputs ever in that case
+                setIsReduceChangePossible(true);
+            } else {
+                // show DecreasedOutputs view
+                setShowDecreasedOutputs(true);
+            }
+        }
+
+        if (!isReduceChangePossible && tx.type === 'error' && tx.error === 'NOT-ENOUGH-FUNDS') {
             // try again with decreased output (use set-max calculation on the first possible output)
-            if (typeof setMaxOutputId !== 'number') {
+            if (!isSetMaxUsed) {
                 setValue(
                     'setMaxOutputId',
                     outputs.findIndex(o => o.type === 'payment'),
@@ -242,11 +257,19 @@ export const useRbf = (props: UseRbfProps) => {
             // set-max was already used and still no effect?
             // do not try compose again and show error
         }
-    }, [ctxState.account, composedLevels, composeRequest, getValues, setValue]);
+    }, [
+        ctxState.account?.networkType,
+        composedLevels,
+        composeRequest,
+        getValues,
+        setValue,
+        isReduceChangePossible,
+    ]);
 
     return {
         ...ctxState,
         isLoading,
+        showDecreasedOutputs,
         register,
         control,
         formState,

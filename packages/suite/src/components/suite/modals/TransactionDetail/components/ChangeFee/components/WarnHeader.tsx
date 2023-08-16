@@ -20,21 +20,21 @@ const Body = styled.div`
     flex: 1;
 `;
 
-interface WarnHeaderProps {
+interface WarnHeaderProps extends React.HTMLAttributes<HTMLDivElement> {
     action?: React.ReactNode;
     children?: React.ReactNode;
 }
 
-export const WarnHeader = (props: WarnHeaderProps) => {
+export const WarnHeader = ({ action, children, ...rest }: WarnHeaderProps) => {
     const theme = useTheme();
 
     return (
-        <Header>
+        <Header {...rest}>
             <IconWrapper>
                 <Icon size={16} icon="WARNING" color={theme.TYPE_ORANGE} />
             </IconWrapper>
-            <Body>{props.children}</Body>
-            {props.action && props.action}
+            <Body>{children}</Body>
+            {action}
         </Header>
     );
 };

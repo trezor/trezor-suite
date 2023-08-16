@@ -63,6 +63,7 @@ const StyledRadioButton = styled(RadioButton)`
 
 export const DecreasedOutputs = () => {
     const {
+        showDecreasedOutputs,
         formValues,
         account,
         getValues,
@@ -72,7 +73,9 @@ export const DecreasedOutputs = () => {
         shouldSendInSats,
     } = useRbfContext();
     const { selectedFee, setMaxOutputId } = getValues();
-    if (typeof setMaxOutputId !== 'number') return null; // no set-max means that no output was decreased
+
+    // no set-max means that no output was decreased
+    if (!showDecreasedOutputs || typeof setMaxOutputId !== 'number') return null;
 
     let reducedAmount: React.ReactNode = null;
     if (composedLevels) {
@@ -101,7 +104,7 @@ export const DecreasedOutputs = () => {
         <AnimatePresence initial>
             <motion.div {...motionAnimation.expand}>
                 <GreyCard>
-                    <WarnHeader>
+                    <WarnHeader data-test="@send/decreased-outputs">
                         <Translation id="TR_DECREASE_TX" />
                     </WarnHeader>
                     <OutputsWrapper>
