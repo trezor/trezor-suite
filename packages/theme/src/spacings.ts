@@ -1,9 +1,26 @@
 export const spacings = {
-    small: '8px',
-    medium: '16px',
-    large: '24px',
-    extraLarge: '32px',
+    xxxs: 2,
+    xxs: 4,
+    xs: 8,
+    sm: 12,
+    md: 16,
+    lg: 20,
+    xl: 24,
+    xxl: 32,
+    xxxl: 40,
+    xxxxl: 48,
 } as const;
+
+type SpacingSize = keyof typeof spacings;
+
+export const spacingsPx = (Object.keys(spacings) as Array<SpacingSize>).reduce(
+    (result: Record<SpacingSize, string>, key) => {
+        result[key] = `${spacings[key]}px`;
+
+        return result;
+    },
+    {} as Record<SpacingSize, string>,
+);
 
 export type Spacings = typeof spacings;
 export type Spacing = keyof typeof spacings;
