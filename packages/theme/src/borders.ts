@@ -5,9 +5,11 @@ export const borders = {
         large: '2px',
     },
     radii: {
-        badge: '10px',
-        basic: '8px',
-        round: '50%',
+        xs: '4px',
+        sm: '12px',
+        md: '16px',
+        lg: '20px',
+        full: '100px',
     },
 } as const;
 
