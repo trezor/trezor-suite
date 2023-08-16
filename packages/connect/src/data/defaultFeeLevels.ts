@@ -11,27 +11,6 @@ const BLOCKS_FOR_FEE_LEVEL: Record<string, Record<string, number>> = {
         economy: 36,
         low: 144,
     },
-    bch: {
-        // blocktime ~ 600sec.
-        high: 1,
-        normal: 5,
-        economy: 10,
-        low: 10,
-    },
-    btg: {
-        // blocktime ~ 600sec.
-        high: 1,
-        normal: 5,
-        economy: 10,
-        low: 10,
-    },
-    dgb: {
-        // blocktime ~ 20sec.
-        high: 1,
-        normal: 15,
-        economy: 30,
-        low: 60,
-    },
 };
 
 const getDefaultBlocksForFeeLevel = (shortcut: string, label: string) =>
