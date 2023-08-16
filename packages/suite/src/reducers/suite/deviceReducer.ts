@@ -3,7 +3,7 @@ import { PayloadAction, AnyAction } from '@reduxjs/toolkit';
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 import { Device, DEVICE, Features } from '@trezor/connect';
 
-import { SUITE, METADATA } from 'src/actions/suite/constants';
+import { SUITE } from 'src/actions/suite/constants';
 import * as deviceUtils from 'src/utils/suite/device';
 import type { TrezorDevice, AcquiredDevice, ButtonRequest } from 'src/types/suite';
 
@@ -386,15 +386,9 @@ const addButtonRequest = (
     draft[index].buttonRequests.push(buttonRequest);
 };
 
-const setMetadata = (draft: State, state: string, metadata: TrezorDevice['metadata']) => {
-    const index = draft.findIndex(d => d.state === state);
-    const device = draft[index];
-    if (!device) return;
-    device.metadata = metadata;
-};
-
 export const prepareDeviceReducer = createReducerWithExtraDeps(initialState, (builder, extra) => {
     builder
+        .addCase(extra.actionTypes.setDeviceMetadata, extra.reducers.setDeviceMetadataReducer)
         .addMatcher(
             action => action.type === extra.actionTypes.storageLoad,
             (_, action: AnyAction) => action.payload.devices,
@@ -489,17 +483,6 @@ export const prepareDeviceReducer = createReducerWithExtraDeps(initialState, (bu
                 }: PayloadAction<TrezorDevice | undefined> & { buttonRequest?: ButtonRequest },
             ) => {
                 addButtonRequest(state, payload, buttonRequest);
-            },
-        )
-        .addMatcher(
-            action => action.type === METADATA.SET_DEVICE_METADATA,
-            (
-                state,
-                {
-                    payload,
-                }: PayloadAction<{ deviceState: string; metadata: TrezorDevice['metadata'] }>,
-            ) => {
-                setMetadata(state, payload.deviceState, payload.metadata);
             },
         );
 });

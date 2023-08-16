@@ -12,9 +12,7 @@ import { FiatCurrencyCode } from '@suite-common/suite-config';
 
 import { ActionType, SuiteCompatibleSelector, SuiteCompatibleThunk } from './types';
 
-type StorageLoadReducer = (state: any, action: { type: any; payload: any }) => void;
-type AddButtonRequestReducer = (state: any, action: { type: any; payload: any }) => void;
-type StorageLoadTransactionsReducer = (state: any, action: { type: any; payload: any }) => void;
+type ReducerType = (state: any, action: { type: any; payload: any }) => void;
 
 type ConnectInitSettings = {
     manifest: Manifest;
@@ -79,15 +77,17 @@ export type ExtraDependencies = {
     actionTypes: {
         storageLoad: ActionType;
         addButtonRequest: ActionType;
+        setDeviceMetadata: ActionType;
     };
     reducers: {
-        storageLoadBlockchain: StorageLoadReducer;
-        storageLoadAccounts: StorageLoadReducer;
-        storageLoadTransactions: StorageLoadTransactionsReducer;
-        storageLoadFiatRates: StorageLoadReducer;
-        storageLoadFirmware: StorageLoadReducer;
-        storageLoadDiscovery: StorageLoadReducer;
-        addButtonRequestFirmware: AddButtonRequestReducer;
+        storageLoadBlockchain: ReducerType;
+        storageLoadAccounts: ReducerType;
+        storageLoadTransactions: ReducerType;
+        storageLoadFiatRates: ReducerType;
+        storageLoadFirmware: ReducerType;
+        storageLoadDiscovery: ReducerType;
+        addButtonRequestFirmware: ReducerType;
+        setDeviceMetadataReducer: ReducerType;
     };
     utils: {
         saveAs: (data: Blob, fileName: string) => void;

@@ -22,7 +22,7 @@ import { fixLoadedCoinjoinAccount } from 'src/utils/wallet/coinjoinUtils';
 
 import * as suiteActions from '../actions/suite/suiteActions';
 import { AppState, ButtonRequest, TrezorDevice } from '../types/suite';
-import { STORAGE, SUITE } from '../actions/suite/constants';
+import { METADATA, STORAGE, SUITE } from '../actions/suite/constants';
 import { SuiteState } from '../reducers/suite/suiteReducer';
 
 const connectSrc = resolveStaticPath('connect/');
@@ -77,6 +77,7 @@ export const extraDependencies: ExtraDependencies = {
     actionTypes: {
         storageLoad: STORAGE.LOAD,
         addButtonRequest: SUITE.ADD_BUTTON_REQUEST,
+        setDeviceMetadata: METADATA.SET_DEVICE_METADATA,
     },
     reducers: {
         storageLoadBlockchain: (state: BlockchainState, { payload }: StorageLoadAction) => {
@@ -122,6 +123,15 @@ export const extraDependencies: ExtraDependencies = {
             if (payload.buttonRequest?.code === 'ButtonRequest_FirmwareUpdate') {
                 state.status = 'waiting-for-confirmation';
             }
+        },
+        setDeviceMetadataReducer: (
+            state,
+            { payload }: PayloadAction<{ deviceState: string; metadata: TrezorDevice['metadata'] }>,
+        ) => {
+            const index = state.findIndex(d => d.state === payload.deviceState);
+            const device = state[index];
+            if (!device) return;
+            device.metadata = payload.metadata;
         },
     },
     utils: {
