@@ -1,19 +1,19 @@
-import { getThemeColors } from 'src/utils/suite/theme';
-import { THEME } from '@trezor/components/src/config/colors';
+import { intermediaryTheme } from '@trezor/components';
+import { getThemeColors } from '../theme';
 
 describe('theme', () => {
     describe('getThemeColors', () => {
         it('should return light theme if theme variant does not exists', () => {
             // @ts-expect-error
-            expect(getThemeColors({ variant: 'purple' })).toBe(THEME.light);
+            expect(getThemeColors({ variant: 'purple' })).toBe(intermediaryTheme.light);
         });
 
         it('should return dark theme', () => {
-            expect(getThemeColors({ variant: 'dark' })).toBe(THEME.dark);
+            expect(getThemeColors({ variant: 'dark' })).toBe(intermediaryTheme.dark);
         });
 
         it('should return light theme', () => {
-            expect(getThemeColors({ variant: 'light' })).toBe(THEME.light);
+            expect(getThemeColors({ variant: 'light' })).toBe(intermediaryTheme.light);
         });
     });
 });
