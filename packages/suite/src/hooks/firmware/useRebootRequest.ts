@@ -2,11 +2,11 @@ import { useState, useEffect } from 'react';
 
 import { valid, satisfies } from 'semver';
 
+import { rebootToBootloader } from '@suite-common/wallet-core';
 import { getFirmwareVersion } from '@trezor/device-utils';
 
 import type { TrezorDevice } from 'src/types/suite';
 import { useDispatch } from 'src/hooks/suite';
-import { rebootToBootloader } from 'src/actions/firmware/firmwareThunks';
 
 export type RebootRequestedMode = 'bootloader' | 'normal';
 export type RebootPhase = 'initial' | 'wait-for-confirm' | 'disconnected' | 'done';

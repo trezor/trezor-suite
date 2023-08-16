@@ -1,11 +1,10 @@
 import React from 'react';
 
-import { ActionColumn, SectionItem, TextColumn } from 'src/components/suite/Settings';
-import { useSelector, useDispatch } from 'src/hooks/suite';
-import { firmwareActions } from 'src/actions/firmware/firmwareActions';
-import { selectUseDevkit } from 'src/reducers/firmware/firmwareReducer';
-
+import { firmwareActions, selectUseDevkit } from '@suite-common/wallet-core';
 import { Switch } from '@trezor/components';
+
+import { useSelector, useDispatch } from 'src/hooks/suite';
+import { ActionColumn, SectionItem, TextColumn } from 'src/components/suite/Settings';
 
 export const Devkit = () => {
     const dispatch = useDispatch();

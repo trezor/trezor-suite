@@ -1,5 +1,6 @@
 import { createAction } from '@reduxjs/toolkit';
 
+import { checkFirmwareAuthenticity } from '@suite-common/wallet-core';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { getCustomBackends } from '@suite-common/wallet-utils';
 import { desktopApi, HandshakeElectron } from '@trezor/suite-desktop-api';
@@ -28,7 +29,6 @@ import {
     selectTorState,
 } from 'src/reducers/suite/suiteReducer';
 import type { TranslationKey } from 'src/components/suite/Translation/components/BaseTranslation';
-import { checkFirmwareAuthenticity } from 'src/actions/firmware/firmwareThunks';
 
 import { SUITE, METADATA } from './constants';
 

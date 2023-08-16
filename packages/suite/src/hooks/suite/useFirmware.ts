@@ -1,17 +1,17 @@
 import { useDispatch } from 'react-redux';
 
-import { FirmwareStatus } from '@suite-common/suite-types';
-
-import { firmwareActions } from 'src/actions/firmware/firmwareActions';
 import {
     checkFirmwareAuthenticity,
     firmwareCustom,
     firmwareUpdate,
-} from 'src/actions/firmware/firmwareThunks';
+    selectFirmware,
+    firmwareActions,
+} from '@suite-common/wallet-core';
+import { FirmwareStatus } from '@suite-common/suite-types';
+
 import { useActions, useSelector } from 'src/hooks/suite';
 import { isWebUsb } from 'src/utils/suite/transport';
 import { MODAL } from 'src/actions/suite/constants';
-import { selectFirmware } from 'src/reducers/firmware/firmwareReducer';
 
 export const useFirmware = () => {
     const dispatch = useDispatch();

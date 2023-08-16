@@ -24,9 +24,8 @@ import {
     selectPrevDevice,
     selectTargetRelease,
     selectUseDevkit,
-} from 'src/reducers/firmware/firmwareReducer';
-
-import { firmwareActions, MODULE_PREFIX } from './firmwareActions';
+} from './firmwareReducer';
+import { firmwareActions, FIRMWARE_MODULE_PREFIX } from './firmwareActions';
 
 /**
  * This action will install firmware from the given binary, or the latest
@@ -34,7 +33,7 @@ import { firmwareActions, MODULE_PREFIX } from './firmwareActions';
  * directly exported due to type safety.
  */
 const firmwareInstallThunk = createThunk(
-    `${MODULE_PREFIX}/firmwareInstall`,
+    `${FIRMWARE_MODULE_PREFIX}/firmwareInstall`,
     async (
         { fwBinary, firmwareType }: { fwBinary?: ArrayBuffer; firmwareType?: FirmwareType },
         { dispatch, getState, extra },
@@ -193,7 +192,7 @@ export const firmwareUpdate = (firmwareType?: FirmwareType) =>
 export const firmwareCustom = (fwBinary: ArrayBuffer) => firmwareInstallThunk({ fwBinary });
 
 const handleFwHashError = createThunk(
-    `${MODULE_PREFIX}/handleFwHashError`,
+    `${FIRMWARE_MODULE_PREFIX}/handleFwHashError`,
     (getFirmwareHashResponse: Unsuccessful, { dispatch }) => {
         dispatch(
             firmwareActions.setError(
@@ -210,7 +209,7 @@ const handleFwHashError = createThunk(
 );
 
 const handleFwHashMismatch = createThunk(
-    `${MODULE_PREFIX}/handleFwHashMismatch`,
+    `${FIRMWARE_MODULE_PREFIX}/handleFwHashMismatch`,
     (device: Device, { dispatch }) => {
         // device.id should always be present here (device is initialized and in normal mode) during successful TrezorConnect.getFirmwareHash call
         dispatch(firmwareActions.setHashInvalid(device.id!));
@@ -226,7 +225,7 @@ const handleFwHashMismatch = createThunk(
  * TrezorConnect.getFirmwareHash call
  */
 export const validateFirmwareHash = createThunk(
-    `${MODULE_PREFIX}/validateFirmwareHash`,
+    `${FIRMWARE_MODULE_PREFIX}/validateFirmwareHash`,
     async (device: Device, { getState, dispatch, extra }) => {
         const {
             selectors: { selectRouterApp },
@@ -301,7 +300,7 @@ export const validateFirmwareHash = createThunk(
 );
 
 export const checkFirmwareAuthenticity = createThunk(
-    `${MODULE_PREFIX}/checkFirmwareAuthenticity`,
+    `${FIRMWARE_MODULE_PREFIX}/checkFirmwareAuthenticity`,
     async (_, { dispatch, getState, extra }) => {
         const {
             selectors: { selectDevice },
@@ -340,7 +339,7 @@ export const checkFirmwareAuthenticity = createThunk(
 );
 
 export const rebootToBootloader = createThunk(
-    `${MODULE_PREFIX}/rebootToBootloader`,
+    `${FIRMWARE_MODULE_PREFIX}/rebootToBootloader`,
     async (_, { dispatch, getState, extra }) => {
         const {
             selectors: { selectDevice },

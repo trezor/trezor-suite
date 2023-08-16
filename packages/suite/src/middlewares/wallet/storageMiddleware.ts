@@ -2,6 +2,7 @@ import { MiddlewareAPI } from 'redux';
 import { isAnyOf } from '@reduxjs/toolkit';
 
 import {
+    firmwareActions,
     discoveryActions,
     selectDiscoveryByDeviceState,
     accountsActions,
@@ -26,7 +27,6 @@ import { isDeviceRemembered } from 'src/utils/suite/device';
 import { serializeDiscovery } from 'src/utils/suite/storage';
 import type { AppState, Action as SuiteAction, Dispatch } from 'src/types/suite';
 import type { WalletAction } from 'src/types/wallet';
-import { firmwareActions } from 'src/actions/firmware/firmwareActions';
 
 const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
     db.onBlocking = () => api.dispatch({ type: STORAGE.ERROR, payload: 'blocking' });

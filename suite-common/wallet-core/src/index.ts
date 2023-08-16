@@ -15,3 +15,6 @@ export * from './fiat-rates/fiatRatesMiddleware';
 export * from './discovery/discoveryActions';
 export * from './discovery/discoveryReducer';
 export * from './discovery/discoveryThunks';
+export * from './firmware/firmwareActions';
+export * from './firmware/firmwareThunks';
+export * from './firmware/firmwareReducer';
