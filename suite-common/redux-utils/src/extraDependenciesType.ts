@@ -13,6 +13,18 @@ import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { ActionType, SuiteCompatibleSelector, SuiteCompatibleThunk } from './types';
 
 type ReducerType = (state: any, action: { type: any; payload: any }) => void;
+type UpdatePassphraseModeReducerType = (
+    state: any,
+    action: { type: any; payload: any; hidden: boolean; alwaysOnDevice: boolean },
+) => void;
+type AuthDeviceReducerType = (
+    state: any,
+    action: { type: any; payload: TrezorDevice; state: string },
+) => void;
+type SuiteAuthConfirmReducerType = (
+    state: any,
+    action: { type: any; payload: TrezorDevice; success: boolean },
+) => void;
 
 type ConnectInitSettings = {
     manifest: Manifest;
@@ -78,6 +90,11 @@ export type ExtraDependencies = {
         storageLoad: ActionType;
         addButtonRequest: ActionType;
         setDeviceMetadata: ActionType;
+        suiteSelectDevice: ActionType;
+        suiteUpdatePassphraseMode: ActionType;
+        suiteAuthFailed: ActionType;
+        suiteAuthDevice: ActionType;
+        suiteReceiveAuthConfirm: ActionType;
     };
     reducers: {
         storageLoadBlockchain: ReducerType;
@@ -88,6 +105,11 @@ export type ExtraDependencies = {
         storageLoadDiscovery: ReducerType;
         addButtonRequestFirmware: ReducerType;
         setDeviceMetadataReducer: ReducerType;
+        suiteSelectDeviceReducer: ReducerType;
+        updatePassphraseModeReducer: UpdatePassphraseModeReducerType;
+        suiteAuthFailedReducer: ReducerType;
+        suiteAuthDeviceReducer: AuthDeviceReducerType;
+        suiteReceiveAuthConfirmReducer: SuiteAuthConfirmReducerType;
     };
     utils: {
         saveAs: (data: Blob, fileName: string) => void;

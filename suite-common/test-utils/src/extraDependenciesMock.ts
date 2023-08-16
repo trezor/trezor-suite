@@ -93,6 +93,12 @@ export const extraDependenciesMock: ExtraDependencies = {
     actionTypes: {
         storageLoad: mockActionType('storageLoad'),
         addButtonRequest: mockActionType('addButtonRequest'),
+        setDeviceMetadata: mockActionType('setDeviceMetadata'),
+        suiteSelectDevice: mockActionType('suiteSelectDevice'),
+        suiteUpdatePassphraseMode: mockActionType('suiteUpdatePassphraseMode'),
+        suiteAuthFailed: mockActionType('suiteAuthFailed'),
+        suiteAuthDevice: mockActionType('suiteAuthDevice'),
+        suiteReceiveAuthConfirm: mockActionType('suiteReceiveAuthConfirm'),
     },
     reducers: {
         storageLoadBlockchain: mockReducer('storageLoadBlockchain'),
@@ -102,6 +108,12 @@ export const extraDependenciesMock: ExtraDependencies = {
         storageLoadFirmware: mockReducer('storageLoadFirmware'),
         storageLoadDiscovery: mockReducer('storageLoadDiscovery'),
         addButtonRequestFirmware: mockReducer('addButtonRequestFirmware'),
+        setDeviceMetadataReducer: mockReducer('setDeviceMetadataReducer'),
+        suiteSelectDeviceReducer: mockReducer('suiteSelectDeviceReducer'),
+        updatePassphraseModeReducer: mockReducer('updatePassphraseModeReducer'),
+        suiteAuthFailedReducer: mockReducer('suiteAuthFailedReducer'),
+        suiteAuthDeviceReducer: mockReducer('suiteAuthDeviceReducer'),
+        suiteReceiveAuthConfirmReducer: mockReducer('suiteReceiveAuthConfirmReducer'),
     },
     utils: {
         saveAs: (data, fileName) =>

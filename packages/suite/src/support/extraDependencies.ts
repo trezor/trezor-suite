@@ -24,6 +24,7 @@ import * as suiteActions from '../actions/suite/suiteActions';
 import { AppState, ButtonRequest, TrezorDevice } from '../types/suite';
 import { METADATA, STORAGE, SUITE } from '../actions/suite/constants';
 import { SuiteState } from '../reducers/suite/suiteReducer';
+import * as deviceUtils from '../utils/suite/device';
 
 const connectSrc = resolveStaticPath('connect/');
 // 'https://localhost:8088/';
@@ -78,6 +79,11 @@ export const extraDependencies: ExtraDependencies = {
         storageLoad: STORAGE.LOAD,
         addButtonRequest: SUITE.ADD_BUTTON_REQUEST,
         setDeviceMetadata: METADATA.SET_DEVICE_METADATA,
+        suiteSelectDevice: SUITE.SELECT_DEVICE,
+        suiteUpdatePassphraseMode: SUITE.UPDATE_PASSPHRASE_MODE,
+        suiteAuthFailed: SUITE.AUTH_FAILED,
+        suiteAuthDevice: SUITE.AUTH_DEVICE,
+        suiteReceiveAuthConfirm: SUITE.RECEIVE_AUTH_CONFIRM,
     },
     reducers: {
         storageLoadBlockchain: (state: BlockchainState, { payload }: StorageLoadAction) => {
@@ -128,10 +134,72 @@ export const extraDependencies: ExtraDependencies = {
             state,
             { payload }: PayloadAction<{ deviceState: string; metadata: TrezorDevice['metadata'] }>,
         ) => {
-            const index = state.findIndex(d => d.state === payload.deviceState);
+            const index = state.findIndex((d: TrezorDevice) => d.state === payload.deviceState);
             const device = state[index];
             if (!device) return;
             device.metadata = payload.metadata;
+        },
+        suiteSelectDeviceReducer: (state, { payload }: PayloadAction<TrezorDevice | undefined>) => {
+            // only acquired devices
+            if (!payload || !payload.features) return;
+            const index = deviceUtils.findInstanceIndex(state, payload);
+            if (!state[index]) return;
+            // update timestamp
+            state[index].ts = new Date().getTime();
+        },
+        updatePassphraseModeReducer: (
+            state,
+            {
+                payload,
+                hidden,
+                alwaysOnDevice,
+            }: PayloadAction<TrezorDevice> & { hidden: boolean; alwaysOnDevice: boolean },
+        ) => {
+            // only acquired devices
+            if (!payload || !payload.features) return;
+            const index = deviceUtils.findInstanceIndex(state, payload);
+            if (!state[index]) return;
+            // update fields
+            state[index].useEmptyPassphrase = !hidden;
+            state[index].passphraseOnDevice = alwaysOnDevice;
+            state[index].ts = new Date().getTime();
+            if (hidden && typeof state[index].walletNumber !== 'number') {
+                state[index].walletNumber = deviceUtils.getNewWalletNumber(state, state[index]);
+            }
+            if (!hidden && typeof state[index].walletNumber === 'number') {
+                delete state[index].walletNumber;
+            }
+        },
+        suiteAuthFailedReducer: (state, { payload }: PayloadAction<TrezorDevice>) => {
+            // only acquired devices
+            if (!payload || !payload.features) return;
+            const index = deviceUtils.findInstanceIndex(state, payload);
+            if (!state[index]) return;
+            state[index].authFailed = true;
+        },
+        suiteAuthDeviceReducer: (
+            state,
+            action: PayloadAction<TrezorDevice> & { state: string },
+        ) => {
+            // only acquired devices
+            if (!action.payload || !action.payload.features) return;
+            const index = deviceUtils.findInstanceIndex(state, action.payload);
+            if (!state[index]) return;
+            // update state
+            state[index].state = action.state;
+            delete state[index].authFailed;
+        },
+        suiteReceiveAuthConfirmReducer: (
+            state,
+            { payload, success }: PayloadAction<TrezorDevice> & { success: boolean },
+        ) => {
+            // only acquired devices
+            if (!payload || !payload.features) return;
+            const index = deviceUtils.findInstanceIndex(state, payload);
+            if (!state[index]) return;
+            // update state
+            state[index].authConfirm = !success;
+            state[index].available = success;
         },
     },
     utils: {

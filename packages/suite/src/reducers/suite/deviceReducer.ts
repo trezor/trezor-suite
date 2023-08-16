@@ -202,99 +202,6 @@ const disconnectDevice = (draft: State, device: Device) => {
 };
 
 /**
- * Action handler: SUITE.SELECT_DEVICE
- * @param {State} draft
- * @param {TrezorDevice} [device]
- * @returns
- */
-const updateTimestamp = (draft: State, device?: TrezorDevice) => {
-    // only acquired devices
-    if (!device || !device.features) return;
-    const index = deviceUtils.findInstanceIndex(draft, device);
-    if (!draft[index]) return;
-    // update timestamp
-    draft[index].ts = new Date().getTime();
-};
-
-/**
- * Action handler: SUITE.RECEIVE_PASSPHRASE_MODE + SUITE.UPDATE_PASSPHRASE_MODE
- * @param {State} draft
- * @param {TrezorDevice} device
- * @param {boolean} hidden
- * @param {boolean} [alwaysOnDevice=false]
- * @returns
- */
-const changePassphraseMode = (
-    draft: State,
-    device: TrezorDevice,
-    hidden: boolean,
-    alwaysOnDevice = false,
-) => {
-    // only acquired devices
-    if (!device || !device.features) return;
-    const index = deviceUtils.findInstanceIndex(draft, device);
-    if (!draft[index]) return;
-    // update fields
-    draft[index].useEmptyPassphrase = !hidden;
-    draft[index].passphraseOnDevice = alwaysOnDevice;
-    draft[index].ts = new Date().getTime();
-    if (hidden && typeof draft[index].walletNumber !== 'number') {
-        draft[index].walletNumber = deviceUtils.getNewWalletNumber(draft, draft[index]);
-    }
-    if (!hidden && typeof draft[index].walletNumber === 'number') {
-        delete draft[index].walletNumber;
-    }
-};
-
-/**
- * Action handler: SUITE.AUTH_DEVICE
- * @param {State} draft
- * @param {TrezorDevice} device
- * @param {string} state
- * @returns
- */
-const authDevice = (draft: State, device: TrezorDevice, state: string) => {
-    // only acquired devices
-    if (!device || !device.features) return;
-    const index = deviceUtils.findInstanceIndex(draft, device);
-    if (!draft[index]) return;
-    // update state
-    draft[index].state = state;
-    delete draft[index].authFailed;
-};
-
-/**
- * Action handler: SUITE.AUTH_FAILED
- * @param {State} draft
- * @param {TrezorDevice} device
- * @returns
- */
-const authFailed = (draft: State, device: TrezorDevice) => {
-    // only acquired devices
-    if (!device || !device.features) return;
-    const index = deviceUtils.findInstanceIndex(draft, device);
-    if (!draft[index]) return;
-    draft[index].authFailed = true;
-};
-
-/**
- * Action handler: SUITE.RECEIVE_AUTH_CONFIRM
- * @param {State} draft
- * @param {TrezorDevice} device
- * @param {boolean} success
- * @returns
- */
-const authConfirm = (draft: State, device: TrezorDevice, success: boolean) => {
-    // only acquired devices
-    if (!device || !device.features) return;
-    const index = deviceUtils.findInstanceIndex(draft, device);
-    if (!draft[index]) return;
-    // update state
-    draft[index].authConfirm = !success;
-    draft[index].available = success;
-};
-
-/**
  * Action handler: SUITE.CREATE_DEVICE_INSTANCE
  * @param {State} draft
  * @param {TrezorDevice} device
@@ -389,64 +296,17 @@ const addButtonRequest = (
 export const prepareDeviceReducer = createReducerWithExtraDeps(initialState, (builder, extra) => {
     builder
         .addCase(extra.actionTypes.setDeviceMetadata, extra.reducers.setDeviceMetadataReducer)
-        .addMatcher(
-            action => action.type === extra.actionTypes.storageLoad,
-            (_, action: AnyAction) => action.payload.devices,
+        .addCase(extra.actionTypes.storageLoad, (_, action: AnyAction) => action.payload.devices)
+        .addCase(extra.actionTypes.suiteSelectDevice, extra.reducers.suiteSelectDeviceReducer)
+        .addCase(
+            extra.actionTypes.suiteUpdatePassphraseMode,
+            extra.reducers.updatePassphraseModeReducer,
         )
-        .addMatcher(
-            action => action.type === DEVICE.CONNECT || action.type === DEVICE.CONNECT_UNACQUIRED,
-            (state, { payload }: PayloadAction<Device>) => {
-                connectDevice(state, payload);
-            },
-        )
-        .addMatcher(
-            action => action.type === DEVICE.CHANGED,
-            (state, { payload }: PayloadAction<Device | TrezorDevice>) => {
-                changeDevice(state, payload, { connected: true, available: true });
-            },
-        )
-        .addMatcher(
-            action => action.type === DEVICE.DISCONNECT,
-            (state, { payload }: PayloadAction<Device>) => {
-                disconnectDevice(state, payload);
-            },
-        )
-        .addMatcher(
-            action => action.type === SUITE.SELECT_DEVICE,
-            (state, { payload }: PayloadAction<TrezorDevice | undefined>) => {
-                updateTimestamp(state, payload);
-            },
-        )
-        .addMatcher(
-            action => action.type === SUITE.UPDATE_PASSPHRASE_MODE,
-            (
-                state,
-                {
-                    payload,
-                    hidden,
-                    alwaysOnDevice,
-                }: PayloadAction<TrezorDevice> & { hidden: boolean; alwaysOnDevice: boolean },
-            ) => {
-                changePassphraseMode(state, payload, hidden, alwaysOnDevice);
-            },
-        )
-        .addMatcher(
-            action => action.type === SUITE.AUTH_DEVICE,
-            (state, action: PayloadAction<TrezorDevice> & { state: string }) => {
-                authDevice(state, action.payload, action.state);
-            },
-        )
-        .addMatcher(
-            action => action.type === SUITE.AUTH_FAILED,
-            (state, { payload }: PayloadAction<TrezorDevice>) => {
-                authFailed(state, payload);
-            },
-        )
-        .addMatcher(
-            action => action.type === SUITE.RECEIVE_AUTH_CONFIRM,
-            (state, { payload, success }: PayloadAction<TrezorDevice> & { success: boolean }) => {
-                authConfirm(state, payload, success);
-            },
+        .addCase(extra.actionTypes.suiteAuthFailed, extra.reducers.suiteAuthFailedReducer)
+        .addCase(extra.actionTypes.suiteAuthDevice, extra.reducers.suiteAuthDeviceReducer)
+        .addCase(
+            extra.actionTypes.suiteReceiveAuthConfirm,
+            extra.reducers.suiteReceiveAuthConfirmReducer,
         )
         .addMatcher(
             action => action.type === SUITE.CREATE_DEVICE_INSTANCE,
@@ -483,6 +343,24 @@ export const prepareDeviceReducer = createReducerWithExtraDeps(initialState, (bu
                 }: PayloadAction<TrezorDevice | undefined> & { buttonRequest?: ButtonRequest },
             ) => {
                 addButtonRequest(state, payload, buttonRequest);
+            },
+        )
+        .addMatcher(
+            action => action.type === DEVICE.CONNECT || action.type === DEVICE.CONNECT_UNACQUIRED,
+            (state, { payload }: PayloadAction<Device>) => {
+                connectDevice(state, payload);
+            },
+        )
+        .addMatcher(
+            action => action.type === DEVICE.CHANGED,
+            (state, { payload }: PayloadAction<Device | TrezorDevice>) => {
+                changeDevice(state, payload, { connected: true, available: true });
+            },
+        )
+        .addMatcher(
+            action => action.type === DEVICE.DISCONNECT,
+            (state, { payload }: PayloadAction<Device>) => {
+                disconnectDevice(state, payload);
             },
         );
 });
