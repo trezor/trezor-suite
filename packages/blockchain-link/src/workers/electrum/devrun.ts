@@ -10,6 +10,7 @@ const TOR_ADDRESS = '127.0.0.1:9050';
 const LOCALHOST_CONFIG = 'localhost:50001:t';
 const TCP_CONFIG = 'electrum.corp.sldev.cz:50001:t';
 const TLS_CONFIG = 'bitcoin.aranguren.org:50002:s';
+const IPv6_CONFIG = '[2401:d002:3902:700:d72c:5e22:4e95:389d]:50001:t';
 const TOR_CONFIG = ''; // My personal Umbrel
 
 const ADDR_REGTEST = 'bcrt1qx4009e2mpuch20p3uwvwmplaxgnjqwjmenrcfu';

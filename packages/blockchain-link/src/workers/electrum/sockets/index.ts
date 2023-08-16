@@ -1,3 +1,4 @@
+import { parseElectrumUrl } from '@trezor/utils';
 import { CustomError } from '@trezor/blockchain-link-types/lib/constants/errors';
 import { TcpSocket } from './tcp';
 import { TlsSocket } from './tls';
@@ -5,10 +6,9 @@ import { TorSocket } from './tor';
 import type { SocketBase, SocketOptions } from './base';
 
 export const createSocket = (url: string, options?: SocketOptions): SocketBase => {
-    const [host, portString, protocol] = url.replace(/.*:\/\//, '').split(':');
-    if (!host) throw new CustomError('Missing host');
-    const port = Number.parseInt(portString, 10);
-    if (!port) throw new CustomError('Invalid port');
+    const parsed = parseElectrumUrl(url);
+    if (!parsed) throw new CustomError('Invalid electrum url');
+    const { host, port, protocol } = parsed;
     const { timeout, keepAlive, proxyAgent } = options || {};
     // Onion address is TCP over Tor
     if (proxyAgent /* host.endsWith('.onion') */) {
@@ -20,13 +20,11 @@ export const createSocket = (url: string, options?: SocketOptions): SocketBase =
             proxyAgent,
         });
     }
-    // TCP socket
-    if (protocol === 't') {
-        return new TcpSocket({ host, port, timeout, keepAlive });
+    switch (protocol) {
+        case 't': // TCP socket
+            return new TcpSocket({ host, port, timeout, keepAlive });
+        case 's': // TLS socket
+        default:
+            return new TlsSocket({ host, port, timeout, keepAlive });
     }
-    // TLS socket
-    if (!protocol || protocol === 's') {
-        return new TlsSocket({ host, port, timeout, keepAlive });
-    }
-    throw new CustomError('Invalid protocol');
 };
