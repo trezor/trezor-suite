@@ -62,12 +62,12 @@ const useBackendUrlInput = (
     const validate = (value: string) => {
         // Check if URL is valid
         if (!validateUrl(type, value)) {
-            return 'TR_CUSTOM_BACKEND_INVALID_URL';
+            return translationString('TR_CUSTOM_BACKEND_INVALID_URL');
         }
 
         // Check if already exists
         if (currentUrls.find(url => url === value)) {
-            return 'TR_CUSTOM_BACKEND_BACKEND_ALREADY_ADDED';
+            return translationString('TR_CUSTOM_BACKEND_BACKEND_ALREADY_ADDED');
         }
     };
 
