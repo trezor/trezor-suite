@@ -92,6 +92,7 @@
         { "path": "../suite-data" },
         { "path": "../suite-desktop-api" },
         { "path": "../suite-storage" },
+        { "path": "../theme" },
         { "path": "../type-utils" },
         { "path": "../urls" },
         { "path": "../utils" },
