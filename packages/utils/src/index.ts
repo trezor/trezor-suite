@@ -22,6 +22,7 @@ export * from './isNotUndefined';
 export * from './isUrl';
 export * from './mergeDeepObject';
 export * from './objectPartition';
+export * from './parseElectrumUrl';
 export * from './parseHostname';
 export * from './promiseAllSequence';
 export * from './redactUserPath';
