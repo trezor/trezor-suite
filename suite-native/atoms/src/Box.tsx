@@ -3,7 +3,7 @@ import { View, ViewProps, ViewStyle } from 'react-native';
 import { D, pipe } from '@mobily/ts-belt';
 
 import { NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Spacing } from '@trezor/theme';
+import { NativeSpacing } from '@trezor/theme';
 
 import { useDebugView, DebugView } from './DebugView';
 import { TestProps } from './types';
@@ -37,7 +37,7 @@ const spacingStylePropsKeys = [
     'padding',
 ] as const;
 
-type SpacingStyleProps = Partial<Record<(typeof spacingStylePropsKeys)[number], Spacing>>;
+type SpacingStyleProps = Partial<Record<(typeof spacingStylePropsKeys)[number], NativeSpacing>>;
 type LayoutStyleProps = Partial<Pick<ViewStyle, (typeof layoutStylePropsKeys)[number]>>;
 
 type Style = NativeStyleObject | Array<Style | undefined>;
