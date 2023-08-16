@@ -1,4 +1,4 @@
-import { colors, THEME } from './config/colors';
+import { colors, THEME, intermediaryTheme } from './config/colors';
 
 export * as variables from './config/variables';
 export * as animations from './config/animations';
@@ -53,4 +53,4 @@ export * from './components/Note/Note';
 
 export * from './constants/keyboardEvents';
 
-export { colors, THEME };
+export { colors, THEME, intermediaryTheme };
