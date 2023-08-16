@@ -1,9 +1,10 @@
 import React from 'react';
 import styled, { ThemeProvider } from 'styled-components';
 import { storiesOf } from '@storybook/react';
-import { ConfirmOnDevice, Modal, Backdrop, Button, THEME } from '../../index';
+import { ConfirmOnDevice, Modal, Backdrop, Button } from '../../index';
 import { text, boolean, number, select } from '@storybook/addon-knobs';
 import { DeviceModelInternal } from '@trezor/connect';
+import { intermediaryTheme } from '../../config/colors';
 
 const StyledButton = styled(Button)<{ flex: boolean }>`
     ${({ flex }) => flex && 'flex: 1;'}
@@ -86,7 +87,9 @@ storiesOf('Misc/Modals', module)
             const theme = select('Theme', ['light', 'dark'], 'light');
 
             return (
-                <ThemeProvider theme={theme === 'dark' ? THEME.dark : THEME.light}>
+                <ThemeProvider
+                    theme={theme === 'dark' ? intermediaryTheme.dark : intermediaryTheme.light}
+                >
                     <Backdrop>
                         <Modal
                             modalPrompt={
