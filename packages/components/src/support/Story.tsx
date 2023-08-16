@@ -1,24 +1,24 @@
 import styled, { ThemeProvider } from 'styled-components';
-import { THEME, P } from '../index';
+import { P, intermediaryTheme } from '../index';
 
 const Wrapper = styled.div`
     padding: 20px;
     display: flex;
     height: 100%;
     flex-wrap: wrap;
-    background: ${({ theme }) => theme.BG_WHITE};
+    background: ${({ theme }) => theme.backgroundSurfaceElevation0};
     color: ${({ theme }) => theme.TYPE_DARK_GREY};
 `;
 
 const StoryWrapper = (story: any) => (
     <>
         <P size="normal">Light theme</P>
-        <ThemeProvider theme={THEME.light}>
+        <ThemeProvider theme={intermediaryTheme.light}>
             <Wrapper>{story.children}</Wrapper>
         </ThemeProvider>
 
         <P size="normal">Dark theme</P>
-        <ThemeProvider theme={THEME.dark}>
+        <ThemeProvider theme={intermediaryTheme.dark}>
             <Wrapper>{story.children}</Wrapper>
         </ThemeProvider>
     </>
