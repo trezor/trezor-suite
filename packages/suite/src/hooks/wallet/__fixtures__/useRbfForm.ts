@@ -138,6 +138,7 @@ export const composeAndSign = [
                 },
             },
         },
+        composeTransactionCalls: 1,
         signedTx: {
             outputs: [
                 {
@@ -180,6 +181,7 @@ export const composeAndSign = [
                 },
             },
         },
+        composeTransactionCalls: 1,
         signedTx: {
             outputs: [
                 {
@@ -234,6 +236,7 @@ export const composeAndSign = [
                 },
             },
         },
+        composeTransactionCalls: 1,
         signedTx: {
             outputs: [
                 // change-output is gone
@@ -288,6 +291,7 @@ export const composeAndSign = [
                 },
             },
         },
+        composeTransactionCalls: 2, // 1. normal fee, 2. custom fee
         signedTx: {
             outputs: [
                 // change-output is gone
@@ -361,6 +365,7 @@ export const composeAndSign = [
                 },
             },
         },
+        composeTransactionCalls: 1,
         signedTx: {
             outputs: [
                 {
@@ -432,6 +437,7 @@ export const composeAndSign = [
                 },
             },
         },
+        composeTransactionCalls: 2, // 1. normal fee, 2. custom fee
         signedTx: {
             inputs: [{ prev_hash: DCBA }, { prev_hash: ABCD }],
             outputs: [
@@ -507,6 +513,7 @@ export const composeAndSign = [
                 },
             },
         },
+        composeTransactionCalls: 2, // 1. normal fee, 2. custom fee
         signedTx: {
             inputs: [{ prev_hash: DCBA }, { prev_hash: ABCD }],
             outputs: [
@@ -577,6 +584,7 @@ export const composeAndSign = [
                 },
             },
         },
+        composeTransactionCalls: 3, // 1. normal fee, 2. custom fee, 3. send-max
         signedTx: {
             inputs: [{ prev_hash: DCBA }],
             outputs: [
@@ -622,6 +630,7 @@ export const composeAndSign = [
             ],
             changeAddress: undefined,
         }),
+        composeTransactionCalls: 1, // 1. immediate send-max
         composedLevels: {
             normal: {
                 type: 'final',
@@ -650,7 +659,7 @@ export const composeAndSign = [
         },
     },
     {
-        description: 'output decreased. there is not change or new utxo.',
+        description: 'output decreased. there is no change or new utxo.',
         store: {
             selectedAccount: {
                 ...BTC_ACCOUNT,
@@ -682,6 +691,7 @@ export const composeAndSign = [
                 },
             },
         },
+        composeTransactionCalls: 3, // 1. normal fee, 2. custom fee, 3 send-max
         signedTx: {
             inputs: [{ prev_hash: DCBA }],
             outputs: [
@@ -742,6 +752,7 @@ export const composeAndSign = [
                 },
             },
         },
+        composeTransactionCalls: 1,
         signedTx: {
             // outputs are restored
             outputs: [
@@ -803,6 +814,7 @@ export const composeAndSign = [
                 error: 'NOT-ENOUGH-FUNDS',
             },
         },
+        composeTransactionCalls: 4, // 1. normal fee, 2. custom fee, 3. send-max normal fee, 4. send-max custom fee
         // tx is not signed
     },
 ];

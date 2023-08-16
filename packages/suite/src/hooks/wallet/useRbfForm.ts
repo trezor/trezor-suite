@@ -118,6 +118,14 @@ const useRbfState = ({ tx, finalize, chainedTxs }: UseRbfProps, currentState: bo
             token: o.token,
         };
     });
+    // if there is no change output in the transaction **and** there is no other utxos to add try to decrease amount immediately
+    // otherwise use decrease amount only as a fallback (see useEffect below)
+    const setMaxOutputId =
+        account.networkType === 'bitcoin' &&
+        !tx.rbfParams.outputs.some(o => o.type === 'change') &&
+        otherUtxo.length < 1
+            ? outputs.findIndex(o => o.type === 'payment')
+            : undefined;
 
     let { baseFee } = tx.rbfParams;
     if (chainedTxs.length > 0) {
@@ -148,6 +156,7 @@ const useRbfState = ({ tx, finalize, chainedTxs }: UseRbfProps, currentState: bo
             ...DEFAULT_VALUES,
             outputs,
             selectedFee: undefined,
+            setMaxOutputId,
             options: finalize ? ['broadcast'] : ['bitcoinRBF', 'broadcast'],
             ethereumDataHex: tx.rbfParams.ethereumData,
             rbfParams,
@@ -229,11 +238,9 @@ export const useRbf = (props: UseRbfProps) => {
                     outputs.findIndex(o => o.type === 'payment'),
                 );
                 composeRequest();
-            } else {
-                // set-max was already used and still no effect?
-                // do not use set-max anymore and do not try compose again.
-                setValue('setMaxOutputId', undefined);
             }
+            // set-max was already used and still no effect?
+            // do not try compose again and show error
         }
     }, [ctxState.account, composedLevels, composeRequest, getValues, setValue]);
 
