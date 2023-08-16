@@ -139,7 +139,7 @@
                         "flag": true,
                         "averageAnonymityGainPerRound": 0.34,
                         "roundsFailRateBuffer": 10,
-                        "roundsDurationInHours": 3
+                        "roundsDurationInHours": 1
                     }
                 ]
             }
