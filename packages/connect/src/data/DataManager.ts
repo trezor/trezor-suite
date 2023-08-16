@@ -36,12 +36,7 @@ export class DataManager {
         // parse coins definitions
         parseCoinsJson({
             ...this.assets.coins,
-            eth: [
-                // @ts-expect-error
-                ...this.assets.coins.eth,
-                // @ts-expect-error
-                ...this.assets.coinsEth,
-            ],
+            eth: this.assets.coinsEth,
         });
 
         // parse firmware definitions
