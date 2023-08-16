@@ -1,18 +1,13 @@
-import { Borders, borders, NativeBorders, nativeBorders } from './borders';
-import { BoxShadows, boxShadows, NativeBoxShadows, nativeBoxShadows } from './boxShadows';
+import { Borders, NativeBorders, nativeBorders } from './borders';
+import { BoxShadows, NativeBoxShadows, nativeBoxShadows } from './boxShadows';
 import { Colors, colorVariants, ThemeColorVariant } from './colors';
 import { CoinsColors, coinsColors } from './coinsColors';
-import { FontFamilies, fontFamilies, NativeFontFamilies, nativeFontFamilies } from './fontFamilies';
+import { FontFamilies, NativeFontFamilies, nativeFontFamilies } from './fontFamilies';
 import { fontWeights, FontWeights } from './fontWeights';
-import { Sizes, sizes } from './sizes';
-import { NativeSpacings, nativeSpacings, Spacings, spacings } from './spacings';
-import {
-    nativeTypography,
-    NativeTypographyStyles,
-    typography,
-    TypographyStyles,
-} from './typography';
-import { ZIndices, zIndices } from './zIndices';
+import { Sizes } from './sizes';
+import { NativeSpacings, nativeSpacings, Spacings } from './spacings';
+import { nativeTypography, NativeTypographyStyles, TypographyStyles } from './typography';
+import { ZIndices } from './zIndices';
 
 export interface Theme {
     borders: Borders;
@@ -28,22 +23,6 @@ export interface Theme {
 interface PrepareThemeOptions {
     colorVariant: ThemeColorVariant;
 }
-
-export const prepareTheme = ({ colorVariant }: PrepareThemeOptions): Theme => {
-    const colors = colorVariants[colorVariant];
-    // TODO shadows will need to change color according to theme
-
-    return {
-        borders,
-        boxShadows,
-        colors,
-        fontFamilies,
-        sizes,
-        spacings,
-        typography,
-        zIndices,
-    };
-};
 
 export interface NativeTheme {
     borders: NativeBorders;
