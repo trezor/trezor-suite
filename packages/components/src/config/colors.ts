@@ -1,6 +1,8 @@
 // TODO: button hover color could be derived from its based color by applying something like opacity/darkening
 // same goes for gradients
 
+import { colorVariants } from '@trezor/theme';
+
 export const THEME = {
     light: {
         THEME: 'light',
@@ -219,3 +221,8 @@ const oldColors = {
 } as const;
 
 export const colors = { ...oldColors, ...THEME.light } as const;
+
+export const intermediaryTheme = {
+    light: { ...THEME.light, ...colorVariants.standard },
+    dark: { ...THEME.dark, ...colorVariants.dark },
+};
