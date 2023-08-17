@@ -46,7 +46,7 @@ const checkChildren = (children: Array<React.ReactNode>) =>
 
 interface ButtonGroupProps {
     variant?: Exclude<ButtonVariant, 'danger'>;
-    buttonSize?: ButtonSize;
+    size?: ButtonSize;
     isDisabled?: boolean;
     className?: string;
     children: React.ReactElement<ButtonProps | IconButtonProps>[];
@@ -54,7 +54,7 @@ interface ButtonGroupProps {
 
 export const ButtonGroup = ({
     variant = 'primary',
-    buttonSize = 'large',
+    size = 'large',
     isDisabled,
     className,
     children,
@@ -70,7 +70,7 @@ export const ButtonGroup = ({
     }
 
     const childrenWithProps = children.map(child =>
-        React.cloneElement(child, { variant, buttonSize, isDisabled }),
+        React.cloneElement(child, { variant, size, isDisabled }),
     );
 
     return (

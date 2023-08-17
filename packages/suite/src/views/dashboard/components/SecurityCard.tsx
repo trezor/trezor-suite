@@ -137,7 +137,7 @@ export const SecurityCard = ({
                     {cta && variant === 'primary' && (
                         <Action>
                             <Button
-                                fullWidth
+                                isFullWidth
                                 variant="secondary"
                                 isDisabled={cta.isDisabled}
                                 onClick={cta.action}
@@ -160,7 +160,7 @@ export const SecurityCard = ({
                                     isDisabled={cta.isDisabled}
                                     onClick={cta.action}
                                     icon="ARROW_RIGHT"
-                                    alignIcon="right"
+                                    iconAlignment="right"
                                     {...(cta.dataTest
                                         ? {
                                               'data-test': `@dashboard/security-card/${cta.dataTest}/button`,

@@ -52,8 +52,8 @@ export const CoinjoinStatusWheel = ({ accountKey }: CoinjoinStatusWheelProps) =>
                 <StopButton
                     variant="tertiary"
                     icon="STOP"
-                    alignIcon="right"
-                    size={10}
+                    iconAlignment="right"
+                    iconSize={10}
                     color={theme.TYPE_LIGHT_GREY}
                     onClick={() => dispatch(stopCoinjoinSession(accountKey))}
                 >
