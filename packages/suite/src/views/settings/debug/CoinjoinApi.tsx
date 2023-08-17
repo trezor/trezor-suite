@@ -36,7 +36,7 @@ const CoordinatorVersion = ({ version }: { version: CoordinatorServerProps['vers
                 <Button
                     variant="tertiary"
                     icon="EXTERNAL_LINK"
-                    alignIcon="right"
+                    iconAlignment="right"
                     style={{ marginLeft: '8px' }}
                 >
                     {version.commitHash}

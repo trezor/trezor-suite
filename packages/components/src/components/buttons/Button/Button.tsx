@@ -17,10 +17,10 @@ import {
 interface ButtonContainerProps {
     variant: ButtonVariant;
     size: ButtonSize;
-    alignIcon?: IconAlignment;
+    iconAlignment?: IconAlignment;
     hasLabel?: boolean;
     hasIcon?: boolean;
-    fullWidth?: boolean;
+    isFullWidth?: boolean;
 }
 
 export const focusShadowStyle = css`
@@ -36,10 +36,10 @@ export const ButtonContainer = styled.button<ButtonContainerProps>`
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-direction: ${({ alignIcon }) => alignIcon === 'right' && 'row-reverse'};
+    flex-direction: ${({ iconAlignment }) => iconAlignment === 'right' && 'row-reverse'};
     gap: ${({ hasIcon }) => hasIcon && spacingsPx.xs};
     padding: ${({ size, hasLabel }) => getPadding(size, hasLabel)};
-    width: ${({ fullWidth }) => fullWidth && '100%'};
+    width: ${({ isFullWidth }) => isFullWidth && '100%'};
     border-radius: ${borders.radii.full};
     transition: border-color 0.1s ease-out, box-shadow 0.1s ease-out, background 0.1s ease-out;
     outline: none;
@@ -71,25 +71,25 @@ const Content = styled.span<ContentProps>`
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
     variant?: ButtonVariant;
-    buttonSize?: ButtonSize;
+    size?: ButtonSize;
     isDisabled?: boolean;
     isLoading?: boolean;
-    fullWidth?: boolean;
+    isFullWidth?: boolean;
     icon?: IconType;
-    size?: number;
-    alignIcon?: IconAlignment;
+    iconSize?: number;
+    iconAlignment?: IconAlignment;
     'data-test'?: string;
 }
 
 export const Button = ({
     variant = 'primary',
-    buttonSize = 'medium',
+    size = 'medium',
     isDisabled = false,
     isLoading = false,
-    fullWidth = false,
+    isFullWidth = false,
     icon,
-    size,
-    alignIcon = 'left',
+    iconSize,
+    iconAlignment = 'left',
     children, // TODO: should be made required in later refactors
     ...rest
 }: ButtonProps) => {
@@ -99,29 +99,28 @@ export const Button = ({
     const IconComponent = icon ? (
         <Icon
             icon={icon}
-            size={size || getIconSize(buttonSize)}
+            size={iconSize || getIconSize(size)}
             color={getIconColor(variant, isDisabled, theme)}
         />
     ) : null;
 
-    const Loader = <Spinner size={getIconSize(buttonSize)} strokeWidth={2} />;
+    const Loader = <Spinner size={getIconSize(size)} strokeWidth={2} />;
 
     return (
         <ButtonContainer
             variant={variant}
-            size={buttonSize}
+            size={size}
             hasLabel={hasLabel}
-            alignIcon={alignIcon}
+            iconAlignment={iconAlignment}
             disabled={isDisabled || isLoading}
-            fullWidth={fullWidth}
-            hasIcon={!!icon}
+            isFullWidth={isFullWidth}
             {...rest}
         >
             {!isLoading && icon && IconComponent}
             {isLoading && Loader}
 
             {children && (
-                <Content size={buttonSize} disabled={isDisabled || isLoading}>
+                <Content size={size} disabled={isDisabled || isLoading}>
                     {children}
                 </Content>
             )}
