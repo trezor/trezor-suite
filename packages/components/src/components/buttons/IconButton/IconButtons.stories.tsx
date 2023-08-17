@@ -23,7 +23,7 @@ storiesOf('Buttons/IconButton', module).add(
                     <IconButton
                         icon="PALETTE"
                         variant={variant}
-                        buttonSize="medium"
+                        size="medium"
                         data-test={`button-${variant}`}
                         onClick={() => {
                             console.log('click');
@@ -33,7 +33,7 @@ storiesOf('Buttons/IconButton', module).add(
                     <IconButton
                         icon="PALETTE"
                         variant={variant}
-                        buttonSize="small"
+                        size="small"
                         data-test={`button-${variant}`}
                         onClick={() => {
                             console.log('click');
