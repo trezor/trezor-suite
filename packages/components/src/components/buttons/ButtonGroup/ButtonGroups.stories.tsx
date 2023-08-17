@@ -18,13 +18,13 @@ storiesOf('Buttons/ButtonGroup', module).add('All', () => (
             <Button>Button 3</Button>
         </ButtonGroup>
 
-        <ButtonGroup variant="secondary" buttonSize="medium">
+        <ButtonGroup variant="secondary" size="medium">
             <Button>Button 1</Button>
             <Button>Button 2</Button>
             <Button>Button 3</Button>
         </ButtonGroup>
 
-        <ButtonGroup variant="tertiary" buttonSize="small">
+        <ButtonGroup variant="tertiary" size="small">
             <Button>Button 1</Button>
             <Button>Button 2</Button>
             <Button>Button 3</Button>
@@ -42,13 +42,13 @@ storiesOf('Buttons/ButtonGroup', module).add('All', () => (
             <IconButton icon="TWO_USERS" />
         </ButtonGroup>
 
-        <ButtonGroup variant="secondary" buttonSize="medium">
+        <ButtonGroup variant="secondary" size="medium">
             <IconButton icon="PENCIL" />
             <IconButton icon="CLOCK" />
             <IconButton icon="TWO_USERS" />
         </ButtonGroup>
 
-        <ButtonGroup variant="tertiary" buttonSize="small">
+        <ButtonGroup variant="tertiary" size="small">
             <IconButton icon="PENCIL" />
             <IconButton icon="CLOCK" />
             <IconButton icon="TWO_USERS" />

@@ -58,7 +58,7 @@ export const Downloading = ({ hideWindow, progress }: DownloadingProps) => {
                 <StyledButton
                     variant="secondary"
                     icon="CROSS"
-                    alignIcon="right"
+                    iconAlignment="right"
                     onClick={hideWindow}
                 >
                     <Translation id="TR_BACKGROUND_DOWNLOAD" />
