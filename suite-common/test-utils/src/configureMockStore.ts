@@ -32,11 +32,13 @@ export function configureMockStore<S = any, A extends Action = AnyAction>({
     extra = {},
     reducer = (state: any) => state,
     preloadedState,
+    serializableCheck = {},
 }: {
     middleware?: Middleware[];
     extra?: ExtraDependenciesPartial;
     reducer?: Reducer<S, A> | ReducersMapObject<S, A>;
     preloadedState?: PreloadedState<CombinedState<S>>;
+    serializableCheck?: { ignoredActions?: string[] };
 } = {}) {
     let actions: A[] = [];
 
@@ -65,6 +67,7 @@ export function configureMockStore<S = any, A extends Action = AnyAction>({
                 thunk: {
                     extraArgument: mergeDeepObject(extraDependenciesMock, extra),
                 },
+                serializableCheck,
             })
                 .concat([actionLoggerMiddleware])
                 .concat(middleware),

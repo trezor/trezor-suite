@@ -1,4 +1,4 @@
-export { DEFAULT_STORE } from './useSendForm';
+export { getRootReducer } from './useSendForm';
 
 const ABCD = 'abcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcd';
 const DCBA = 'dcbadcbadcbadcbadcbadcbadcbadcbadcbadcbadcbadcbadcbadcbadcbadcba';

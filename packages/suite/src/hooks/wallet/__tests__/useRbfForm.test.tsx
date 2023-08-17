@@ -1,10 +1,7 @@
 import TrezorConnect from '@trezor/connect';
 import React from 'react';
-import { configureStore } from 'src/support/tests/configureStore';
+import { configureMockStore, initPreloadedState } from '@suite-common/test-utils';
 import * as fixtures from '../__fixtures__/useRbfForm';
-import sendFormReducer from 'src/reducers/wallet/sendFormReducer';
-import resizeReducer from 'src/reducers/suite/resizeReducer';
-
 import {
     renderWithProviders,
     waitForLoader,
@@ -51,37 +48,25 @@ jest.mock('@trezor/blockchain-link', () => ({
     },
 }));
 
-export const getInitialState = ({ send, fees, selectedAccount }: any = {}) => ({
-    ...fixtures.DEFAULT_STORE,
-    wallet: {
-        ...fixtures.DEFAULT_STORE.wallet,
-        send: {
-            ...sendFormReducer(undefined, { type: 'foo' } as any),
-            ...send,
-        },
-        fees: {
-            ...fixtures.DEFAULT_STORE.wallet.fees,
-            ...fees,
-        },
-        selectedAccount: selectedAccount ?? fixtures.DEFAULT_STORE.wallet.selectedAccount,
-    },
-    devices: [],
-    resize: resizeReducer(undefined, { type: 'foo' } as any),
-});
+type RootReducerState = ReturnType<ReturnType<typeof fixtures.getRootReducer>>;
+interface Args {
+    send?: Partial<RootReducerState['wallet']['send']>;
+    fees?: any;
+    selectedAccount?: any;
+}
 
-type State = ReturnType<typeof getInitialState>;
-const mockStore = configureStore<State, any>();
+const initStore = ({ send, fees, selectedAccount }: Args = {}) => {
+    const rootReducer = fixtures.getRootReducer(selectedAccount, fees);
 
-const initStore = (state: State) => {
-    const store = mockStore(state);
-    store.subscribe(() => {
-        const action = store.getActions().pop();
-        const prevState = store.getState();
-        store.getState().wallet.send = sendFormReducer(prevState.wallet.send, action);
-        // add action back to stack
-        store.getActions().push(action);
+    return configureMockStore({
+        reducer: rootReducer,
+        preloadedState: initPreloadedState({
+            rootReducer,
+            partialState: {
+                wallet: { send },
+            },
+        }),
     });
-    return store;
 };
 
 interface TestCallback {
@@ -123,7 +108,7 @@ describe('useRbfForm hook', () => {
 
     fixtures.composeAndSign.forEach(f => {
         it(`composeAndSign: ${f.description}`, async () => {
-            const store = initStore(getInitialState(f.store));
+            const store = initStore(f.store);
             const callback: TestCallback = {};
             const { unmount } = renderWithProviders(
                 store,

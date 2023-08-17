@@ -3,48 +3,52 @@ import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants'
 import { accountsActions } from '@suite-common/wallet-core';
 import { PROTO } from '@trezor/connect';
 
+import { combineReducers, createReducer } from '@reduxjs/toolkit';
+import { testMocks } from '@suite-common/test-utils';
+import sendFormReducer from 'src/reducers/wallet/sendFormReducer';
+
 const UTXO = {
-    '00': {
+    '00': testMocks.getUtxo({
         amount: '0',
         address: 'should-never-be-used',
         txid: '0000000000000000000000000000000000000000000000000000000000000000',
         vout: 0,
-    },
-    AA: {
+    }),
+    AA: testMocks.getUtxo({
         amount: '50000000000',
         address: 'AA',
         txid: 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
         vout: 0,
-    },
-    BB: {
+    }),
+    BB: testMocks.getUtxo({
         amount: '25000000000',
         address: 'BB',
         txid: 'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb',
         vout: 0,
-    },
-    CC: {
+    }),
+    CC: testMocks.getUtxo({
         amount: '12500000000',
         address: 'CC',
         txid: 'cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc',
         vout: 0,
-    },
-    DD: {
+    }),
+    DD: testMocks.getUtxo({
         amount: '6250000000',
         address: 'DD',
         txid: 'dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd',
         vout: 0,
-    },
-    EE: {
+    }),
+    EE: testMocks.getUtxo({
         amount: '6250000000',
         address: 'EE',
         txid: 'eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
         vout: 0,
-    },
+    }),
 };
 
 export const BTC_ACCOUNT = {
     status: 'loaded',
-    account: {
+    account: testMocks.getWalletAccount({
         symbol: 'btc',
         networkType: 'bitcoin',
         descriptor: 'xpub',
@@ -52,31 +56,29 @@ export const BTC_ACCOUNT = {
         key: 'xpub-btc-deviceState',
         addresses: {
             change: [
-                { path: "m/44'/0'/0'/1/0", address: '1-change' },
-                { path: "m/44'/0'/0'/1/1", address: '2-change' },
+                { path: "m/44'/0'/0'/1/0", address: '1-change', transfers: 0 },
+                { path: "m/44'/0'/0'/1/1", address: '2-change', transfers: 0 },
             ],
             used: [
-                { path: "m/44'/0'/0'/0/0", address: '1-used' },
-                { path: "m/44'/0'/0'/0/1", address: '2-used' },
+                { path: "m/44'/0'/0'/0/0", address: '1-used', transfers: 1 },
+                { path: "m/44'/0'/0'/0/1", address: '2-used', transfers: 1 },
             ],
             unused: [
-                { path: "m/44'/0'/0'/0/2", address: '1-unused' },
-                { path: "m/44'/0'/0'/0/3", address: '2-unused' },
+                { path: "m/44'/0'/0'/0/2", address: '1-unused', transfers: 0 },
+                { path: "m/44'/0'/0'/0/3", address: '2-unused', transfers: 0 },
             ],
         },
         balance: '100000000000',
         availableBalance: '100000000000',
         formattedBalance: '1000 BTC',
         utxo: Object.values(UTXO),
-        history: {},
-        metadata: {},
-    },
+    }),
     network: { networkType: 'bitcoin', symbol: 'btc', decimals: 8, features: ['rbf'] },
 };
 
 export const ETH_ACCOUNT = {
     status: 'loaded',
-    account: {
+    account: testMocks.getWalletAccount({
         symbol: 'eth',
         networkType: 'ethereum',
         descriptor: '0xdB09b793984B862C430b64B9ed53AcF867cC041F',
@@ -85,17 +87,16 @@ export const ETH_ACCOUNT = {
         balance: '10000000000000000000', // 10 ETH
         availableBalance: '10000000000000000000', // 10 ETH
         misc: { nonce: '0' },
-        history: {},
         tokens: [
             { type: 'ERC20', contract: '0xABCD', symbol: '0xABCD', decimals: 3, balance: '1' },
         ],
-    },
+    }),
     network: { networkType: 'ethereum', symbol: 'eth', decimals: 18, chainId: 1 },
 };
 
 export const XRP_ACCOUNT = {
     status: 'loaded',
-    account: {
+    account: testMocks.getWalletAccount({
         symbol: 'xrp',
         networkType: 'ripple',
         descriptor: 'rAPERVgXZavGgiGv6xBgtiZurirW2yAmY',
@@ -103,110 +104,148 @@ export const XRP_ACCOUNT = {
         key: 'rAPERVgXZavGgiGv6xBgtiZurirW2yAmY-xrp-deviceState',
         balance: '100000000', // 100 XRP
         availableBalance: '100000000', // 100 XRP
-        misc: { reserve: '21' },
-        history: {},
-    },
+        misc: { reserve: '21', sequence: 0 },
+    }),
     network: { networkType: 'ripple', symbol: 'xrp', decimals: 6 },
 };
 
-export const DEFAULT_STORE = {
-    suite: {
-        device: global.JestMocks.getSuiteDevice({
-            state: 'deviceState',
-            connected: true,
-            available: true,
-        }),
-        settings: { debug: {}, theme: { variant: 'light' } },
-        online: true,
-        locks: [],
+const DEVICE = testMocks.getSuiteDevice({
+    state: 'deviceState',
+    connected: true,
+    available: true,
+});
+
+const DEFAULT_FEES = {
+    btc: {
+        minFee: 1,
+        maxFee: 100,
+        blockHeight: 1,
+        blockTime: 1,
+        levels: [{ label: 'normal', feePerUnit: '4', blocks: 1 }],
     },
-    wallet: {
-        accounts: [BTC_ACCOUNT.account, ETH_ACCOUNT.account, XRP_ACCOUNT.account],
-        selectedAccount: BTC_ACCOUNT,
-        coinjoin: {
-            accounts: [],
-        },
-        discovery: [],
-        settings: {
-            localCurrency: 'usd',
-            lastUsedFeeLevel: {},
-            debug: {},
-            bitcoinAmountUnit: PROTO.AmountUnit.BITCOIN,
-        },
-        blockchain: {
-            btc: {},
-            eth: {},
-            xrp: {},
-        },
-        fees: {
-            btc: {
-                minFee: 1,
-                maxFee: 100,
-                blockHeight: 1,
-                blockTime: 1,
-                levels: [{ label: 'normal', feePerUnit: '4', blocks: 1 }],
+    eth: {
+        minFee: 1,
+        maxFee: 100,
+        blockHeight: 1,
+        blockTime: 1,
+        levels: [
+            {
+                label: 'normal',
+                feePerUnit: '3300000000',
+                feeLimit: '21000',
+                blocks: -1,
             },
-            eth: {
-                minFee: 1,
-                maxFee: 100,
-                blockHeight: 1,
-                blockTime: 1,
-                levels: [
-                    { label: 'normal', feePerUnit: '3300000000', feeLimit: '21000', blocks: -1 },
-                ],
-            },
-            xrp: {
-                minFee: 1,
-                maxFee: 100,
-                blockHeight: 1,
-                blockTime: 1,
-                levels: [{ label: 'normal', feePerUnit: '12', blocks: -1 }],
-            },
-        },
-        fiat: {
-            coins: [
-                {
-                    symbol: 'btc',
-                    current: {
-                        symbol: 'btc',
-                        ts: 0,
-                        rates: { usd: 1, eur: 1.2, czk: 22 },
-                    },
-                },
-                {
-                    symbol: 'eth',
-                    current: {
-                        symbol: 'eth',
-                        ts: 0,
-                        rates: { usd: 1, eur: 1.2, czk: 22 },
-                    },
-                },
-                {
-                    symbol: 'xrp',
-                    current: {
-                        symbol: 'xrp',
-                        ts: 0,
-                        rates: { usd: 1, eur: 1.2, czk: 22 },
-                    },
-                },
-            ],
-        },
-        transactions: {
-            transactions: {},
-        },
+        ],
     },
-    devices: [], // to remove?
-    protocol: { sendForm: {} },
-    messageSystem: {
-        validMessages: {
-            banner: [],
-            context: [],
-            modal: [],
-            feature: [],
-        },
-        dismissedMessages: {},
+    xrp: {
+        minFee: 1,
+        maxFee: 100,
+        blockHeight: 1,
+        blockTime: 1,
+        levels: [{ label: 'normal', feePerUnit: '12', blocks: -1 }],
     },
 };
+
+// - default selectedAccount needs to be explicitly passed from test. merging default with custom will override custom
+// - default fees needs to be explicitly passed from test. merge Arrays will add items, not replace them
+export const getRootReducer = (selectedAccount = BTC_ACCOUNT, fees = DEFAULT_FEES) =>
+    combineReducers({
+        suite: createReducer(
+            {
+                locks: [],
+                online: true,
+                device: DEVICE,
+                settings: { debug: {}, theme: { variant: 'light' } },
+            },
+            () => ({}),
+        ),
+        wallet: combineReducers({
+            send: sendFormReducer,
+            accounts: createReducer(
+                [BTC_ACCOUNT.account, ETH_ACCOUNT.account, XRP_ACCOUNT.account],
+                () => ({}),
+            ),
+            selectedAccount: createReducer(selectedAccount, () => ({})),
+            coinjoin: createReducer({ accounts: [] }, () => ({})),
+            discovery: createReducer([], () => ({})),
+            settings: createReducer(
+                {
+                    localCurrency: 'usd',
+                    lastUsedFeeLevel: {},
+                    debug: {},
+                    bitcoinAmountUnit: PROTO.AmountUnit.BITCOIN,
+                },
+                () => ({}),
+            ),
+            blockchain: createReducer(
+                {
+                    btc: {},
+                    eth: {},
+                    xrp: {},
+                },
+                () => ({}),
+            ),
+            fees: createReducer(fees, () => ({})),
+            fiat: createReducer(
+                {
+                    coins: [
+                        {
+                            symbol: 'btc',
+                            current: {
+                                symbol: 'btc',
+                                ts: 0,
+                                rates: { usd: 1, eur: 1.2, czk: 22 },
+                            },
+                        },
+                        {
+                            symbol: 'eth',
+                            current: {
+                                symbol: 'eth',
+                                ts: 0,
+                                rates: { usd: 1, eur: 1.2, czk: 22 },
+                            },
+                        },
+                        {
+                            symbol: 'xrp',
+                            current: {
+                                symbol: 'xrp',
+                                ts: 0,
+                                rates: { usd: 1, eur: 1.2, czk: 22 },
+                            },
+                        },
+                    ],
+                },
+                () => ({}),
+            ),
+            transactions: createReducer(
+                {
+                    transactions: {},
+                },
+                () => ({}),
+            ),
+        }),
+        protocol: createReducer({ sendForm: {} }, () => ({})),
+        messageSystem: createReducer(
+            {
+                validMessages: {
+                    banner: [],
+                    context: [],
+                    modal: [],
+                    feature: [],
+                },
+                dismissedMessages: {},
+            },
+            () => ({}),
+        ),
+        resize: createReducer({}, () => ({})),
+        guide: createReducer({}, () => ({})),
+        metadata: createReducer(
+            { enabled: false, providers: [], selectedProvider: {} },
+            () => ({}),
+        ),
+        router: createReducer({}, () => ({})),
+        modal: createReducer({}, () => ({})),
+    });
 
 const DEFAULT_DRAFT = {
     ...DEFAULT_VALUES,

@@ -25,7 +25,7 @@ import 'fake-indexeddb/auto';
  * @param {Partial<Account>} [account]
  * @returns {Features}
  */
-// @ts-expect-error
+// @ts-expect-error - related to backendType and status
 const getWalletAccount = (account?: Partial<Account>): Account => ({
     deviceState: '7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f',
     index: 0,
@@ -43,6 +43,7 @@ const getWalletAccount = (account?: Partial<Account>): Account => ({
     visible: true,
     balance: '0',
     availableBalance: '0',
+    formattedBalance: '0',
     tokens: [],
     history: { total: 13, tokens: 0, unconfirmed: 0 },
     misc: { nonce: '6' },
@@ -50,6 +51,7 @@ const getWalletAccount = (account?: Partial<Account>): Account => ({
     utxo: undefined,
     marker: undefined,
     addresses: undefined,
+    metadata: { key: 'xpub' },
     ...account,
 });
 
