@@ -7,11 +7,20 @@ import { SUITE } from 'src/actions/suite/constants';
 import * as deviceUtils from 'src/utils/suite/device';
 import type { TrezorDevice, AcquiredDevice, ButtonRequest } from 'src/types/suite';
 
-type State = TrezorDevice[];
-const initialState: State = [];
+type DeviceState = {
+    devices: TrezorDevice[];
+    // TODO add device
+};
+
+const initialState: DeviceState = {
+    devices: [],
+};
 
 export type DeviceRootState = {
-    devices: TrezorDevice[];
+    device: {
+        devices: TrezorDevice[];
+        // TODO add device
+    };
 };
 
 // Use the negated form as it better fits the call sites.
@@ -50,20 +59,20 @@ const merge = (device: AcquiredDevice, upcoming: Partial<AcquiredDevice>): Trezo
 
 /**
  * Action handler: DEVICE.CONNECT + DEVICE.CONNECT_UNACQUIRED
- * @param {State} draft
+ * @param {DeviceState} draft
  * @param {Device} device
  * @returns
  */
-const connectDevice = (draft: State, device: Device) => {
+const connectDevice = (draft: DeviceState, device: Device) => {
     // connected device is unacquired/unreadable
     if (!device.features) {
         // check if device already exists in reducer
-        const unacquiredDevices = draft.filter(d => d.path === device.path);
+        const unacquiredDevices = draft.devices.filter(d => d.path === device.path);
         if (unacquiredDevices.length > 0) {
             // and ignore this action if so
             return;
         }
-        draft.push({
+        draft.devices.push({
             ...device,
             connected: true,
             available: false,
@@ -77,19 +86,23 @@ const connectDevice = (draft: State, device: Device) => {
 
     const { features } = device;
     // find affected devices with current "device_id" (acquired only)
-    const affectedDevices = draft.filter(d => d.features && d.id === device.id) as AcquiredDevice[];
+    const affectedDevices = draft.devices.filter(
+        d => d.features && d.id === device.id,
+    ) as AcquiredDevice[];
     // find unacquired device with current "path" (unacquired device will become acquired)
-    const unacquiredDevices = draft.filter(d => d.path.length > 0 && d.path === device.path);
+    const unacquiredDevices = draft.devices.filter(
+        d => d.path.length > 0 && d.path === device.path,
+    );
     // get not affected devices
     // and exclude unacquired devices with current "device_id" (they will become acquired)
-    const otherDevices: TrezorDevice[] = draft.filter(
+    const otherDevices: TrezorDevice[] = draft.devices.filter(
         d => affectedDevices.indexOf(d as AcquiredDevice) < 0 && unacquiredDevices.indexOf(d) < 0,
     );
 
     // clear draft
-    draft.splice(0, draft.length);
+    draft.devices.splice(0, draft.devices.length);
     // fill draft with not affected devices
-    otherDevices.forEach(d => draft.push(d));
+    otherDevices.forEach(d => draft.devices.push(d));
 
     // prepare new device
     const newDevice: TrezorDevice = {
@@ -100,7 +113,7 @@ const connectDevice = (draft: State, device: Device) => {
         available: true,
         authConfirm: false,
         instance: features.passphrase_protection
-            ? deviceUtils.getNewInstanceNumber(draft, device) || 1
+            ? deviceUtils.getNewInstanceNumber(draft.devices, device) || 1
             : undefined,
         buttonRequests: [],
         metadata: { status: 'disabled' },
@@ -124,22 +137,22 @@ const connectDevice = (draft: State, device: Device) => {
             changedDevices.push(newDevice);
         }
         // fill draft with affectedDevices values
-        changedDevices.forEach(d => draft.push(d));
+        changedDevices.forEach(d => draft.devices.push(d));
     } else {
         // add new device
-        draft.push(newDevice);
+        draft.devices.push(newDevice);
     }
 };
 
 /**
  * Action handler: DEVICE.CHANGED
- * @param {State} draft
+ * @param {DeviceState} draft
  * @param {(Device | TrezorDevice)} device
  * @param {Partial<AcquiredDevice>} [extended]
  * @returns
  */
 const changeDevice = (
-    draft: State,
+    draft: DeviceState,
     device: Device | TrezorDevice,
     extended?: Partial<AcquiredDevice>,
 ) => {
@@ -147,7 +160,7 @@ const changeDevice = (
     if (!device.features) return;
 
     // find devices with the same "device_id"
-    const affectedDevices = draft.filter(
+    const affectedDevices = draft.devices.filter(
         d =>
             d.features &&
             ((d.connected &&
@@ -156,14 +169,16 @@ const changeDevice = (
                 (d.mode === 'bootloader' && d.remember && d.id === device.id)),
     ) as AcquiredDevice[];
 
-    const otherDevices = draft.filter(d => affectedDevices.indexOf(d as AcquiredDevice) === -1);
+    const otherDevices = draft.devices.filter(
+        d => affectedDevices.indexOf(d as AcquiredDevice) === -1,
+    );
     // clear draft
-    draft.splice(0, draft.length);
+    draft.devices.splice(0, draft.devices.length);
     // fill draft with not affected devices
-    otherDevices.forEach(d => draft.push(d));
+    otherDevices.forEach(d => draft.devices.push(d));
 
     if (affectedDevices.length > 0) {
-        // merge incoming device with State
+        // merge incoming device with DeviceState
         const changedDevices = affectedDevices.map(d => {
             // change availability according to "passphrase_protection" field
             if (
@@ -176,18 +191,18 @@ const changeDevice = (
             return merge(d, { ...device, ...extended, available: true });
         });
         // fill draft with affectedDevices values
-        changedDevices.forEach(d => draft.push(d));
+        changedDevices.forEach(d => draft.devices.push(d));
     }
 };
 
 /**
  * Action handler: DEVICE.DISCONNECT
- * @param {State} draft
+ * @param {DeviceState} draft
  * @param {Device} device
  */
-const disconnectDevice = (draft: State, device: Device) => {
+const disconnectDevice = (draft: DeviceState, device: Device) => {
     // find all devices with "path"
-    const affectedDevices = draft.filter(d => d.path === device.path);
+    const affectedDevices = draft.devices.filter(d => d.path === device.path);
     affectedDevices.forEach(d => {
         // do not remove devices with state, they are potential candidates to remember if not remembered already
         const skip = d.features && d.remember;
@@ -196,18 +211,18 @@ const disconnectDevice = (draft: State, device: Device) => {
             d.available = false;
             d.path = '';
         } else {
-            draft.splice(draft.indexOf(d), 1);
+            draft.devices.splice(draft.devices.indexOf(d), 1);
         }
     });
 };
 
 /**
  * Action handler: SUITE.CREATE_DEVICE_INSTANCE
- * @param {State} draft
+ * @param {DeviceState} draft
  * @param {TrezorDevice} device
  * @returns
  */
-const createInstance = (draft: State, device: TrezorDevice) => {
+const createInstance = (draft: DeviceState, device: TrezorDevice) => {
     // only acquired devices
     if (!device || !device.features) return;
     const newDevice: TrezorDevice = {
@@ -221,26 +236,26 @@ const createInstance = (draft: State, device: TrezorDevice) => {
         buttonRequests: [],
         metadata: { status: 'disabled' },
     };
-    draft.push(newDevice);
+    draft.devices.push(newDevice);
 };
 
 /**
  * Action handler: SUITE.REMEMBER_DEVICE
  * Set `remember` field for a single device instance
- * @param {State} draft
+ * @param {DeviceState} draft
  * @param {TrezorDevice} device
  * @param {boolean} remember
  * @param {boolean} forceRemember
  */
 const rememberDevice = (
-    draft: State,
+    draft: DeviceState,
     device: TrezorDevice,
     remember: boolean,
     forceRemember = true,
 ) => {
     // only acquired devices
     if (!device || !device.features) return;
-    draft.forEach(d => {
+    draft.devices.forEach(d => {
         if (deviceUtils.isSelectedInstance(device, d)) {
             d.remember = remember;
             if (forceRemember) d.forceRemember = true;
@@ -252,45 +267,45 @@ const rememberDevice = (
 /**
  * Action handler: SUITE.FORGET_DEVICE
  * Remove all device instances
- * @param {State} draft
+ * @param {DeviceState} draft
  * @param {TrezorDevice} device
  * @returns
  */
-const forget = (draft: State, device: TrezorDevice) => {
+const forget = (draft: DeviceState, device: TrezorDevice) => {
     // only acquired devices
     if (!device || !device.features) return;
-    const index = deviceUtils.findInstanceIndex(draft, device);
-    if (!draft[index]) return;
-    const others = deviceUtils.getDeviceInstances(device, draft, true);
+    const index = deviceUtils.findInstanceIndex(draft.devices, device);
+    if (!draft.devices[index]) return;
+    const others = deviceUtils.getDeviceInstances(device, draft.devices, true);
     if (device.connected && others.length < 1) {
         // do not forget the last instance, just reset state
-        draft[index].state = undefined;
-        draft[index].walletNumber = undefined;
-        draft[index].useEmptyPassphrase = !device.features.passphrase_protection;
-        draft[index].passphraseOnDevice = false;
+        draft.devices[index].state = undefined;
+        draft.devices[index].walletNumber = undefined;
+        draft.devices[index].useEmptyPassphrase = !device.features.passphrase_protection;
+        draft.devices[index].passphraseOnDevice = false;
         // set remember to false to make it disappear after device is disconnected
-        draft[index].remember = false;
-        draft[index].metadata = { status: 'disabled' };
+        draft.devices[index].remember = false;
+        draft.devices[index].metadata = { status: 'disabled' };
     } else {
-        draft.splice(index, 1);
+        draft.devices.splice(index, 1);
     }
 };
 
 const addButtonRequest = (
-    draft: State,
+    draft: DeviceState,
     device: TrezorDevice | undefined,
     buttonRequest?: ButtonRequest,
 ) => {
     // only acquired devices
     if (!device || !device.features) return;
-    const index = deviceUtils.findInstanceIndex(draft, device);
-    if (!draft[index]) return;
+    const index = deviceUtils.findInstanceIndex(draft.devices, device);
+    if (!draft.devices[index]) return;
     // update state
     if (!buttonRequest) {
-        draft[index].buttonRequests = [];
+        draft.devices[index].buttonRequests = [];
         return;
     }
-    draft[index].buttonRequests.push(buttonRequest);
+    draft.devices[index].buttonRequests.push(buttonRequest);
 };
 
 export const prepareDeviceReducer = createReducerWithExtraDeps(initialState, (builder, extra) => {
@@ -365,5 +380,6 @@ export const prepareDeviceReducer = createReducerWithExtraDeps(initialState, (bu
         );
 });
 
-export const selectDevices = (state: DeviceRootState) => state.devices;
-export const selectIsPendingTransportEvent = (state: DeviceRootState) => state.devices.length < 1;
+export const selectDevices = (state: DeviceRootState) => state.device.devices;
+export const selectIsPendingTransportEvent = (state: DeviceRootState) =>
+    state.device.devices.length < 1;

@@ -369,11 +369,14 @@ export const selectDevice =
             const { ts } = device as TrezorDevice;
             if (typeof ts === 'number') {
                 // requested device is a @suite TrezorDevice type. get exact instance from reducer
-                payload = deviceUtils.getSelectedDevice(device as TrezorDevice, getState().devices);
+                payload = deviceUtils.getSelectedDevice(
+                    device as TrezorDevice,
+                    getState().device.devices,
+                );
             } else {
                 // requested device is a @trezor/connect Device type
                 // find all instances and select recently used
-                const instances = getState().devices.filter(d => d.path === device.path);
+                const instances = getState().device.devices.filter(d => d.path === device.path);
                 // eslint-disable-next-line prefer-destructuring
                 payload = deviceUtils.sortByTimestamp(instances)[0];
             }
@@ -439,7 +442,7 @@ export const createDeviceInstance =
             payload: {
                 ...device,
                 useEmptyPassphrase,
-                instance: deviceUtils.getNewInstanceNumber(getState().devices, device),
+                instance: deviceUtils.getNewInstanceNumber(getState().device.devices, device),
             },
         });
     };
@@ -511,7 +514,7 @@ export const handleDeviceDisconnect =
  */
 export const forgetDisconnectedDevices =
     (device: Device) => (dispatch: Dispatch, getState: GetState) => {
-        const deviceInstances = getState().devices.filter(d => d.id === device.id);
+        const deviceInstances = getState().device.devices.filter(d => d.id === device.id);
         deviceInstances.forEach(d => {
             if (d.features && !d.remember) {
                 dispatch(forgetDevice(d));
@@ -549,7 +552,10 @@ export const observeSelectedDevice =
         const selectedDevice = getState().suite.device;
         if (!selectedDevice) return false;
 
-        const deviceFromReducer = deviceUtils.getSelectedDevice(selectedDevice, getState().devices);
+        const deviceFromReducer = deviceUtils.getSelectedDevice(
+            selectedDevice,
+            getState().device.devices,
+        );
         if (!deviceFromReducer) return true;
 
         const changed = comparisonUtils.isChanged(selectedDevice, deviceFromReducer);
@@ -630,11 +636,14 @@ export const authorizeDevice =
         if (response.success) {
             const { state } = response.payload;
             const s = state.split(':')[0];
-            const duplicate = getState().devices.find(
+            const duplicate = getState().device.devices.find(
                 d => d.state && d.state.split(':')[0] === s && d.instance !== device.instance,
             );
             // get fresh data from reducer, `useEmptyPassphrase` might be changed after TrezorConnect call
-            const freshDeviceData = deviceUtils.getSelectedDevice(device, getState().devices);
+            const freshDeviceData = deviceUtils.getSelectedDevice(
+                device,
+                getState().device.devices,
+            );
             if (duplicate) {
                 if (freshDeviceData!.useEmptyPassphrase) {
                     // if currently selected device uses empty passphrase

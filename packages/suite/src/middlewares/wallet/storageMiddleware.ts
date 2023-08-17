@@ -44,7 +44,7 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 )(action)
             ) {
                 const { payload } = action;
-                const device = findAccountDevice(payload, api.getState().devices);
+                const device = findAccountDevice(payload, api.getState().device.devices);
                 // update only transactions for remembered device
                 if (isDeviceRemembered(device)) {
                     storageActions.saveAccounts([payload]);
@@ -57,7 +57,7 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
             }
 
             if (isAnyOf(metadataActions.setAccountAdd)(action)) {
-                const device = findAccountDevice(action.payload, api.getState().devices);
+                const device = findAccountDevice(action.payload, api.getState().device.devices);
                 // if device is remembered, and there is a change in account.metadata (metadataActions.setAccountLoaded), update database
                 if (isDeviceRemembered(device)) {
                     storageActions.saveAccounts([action.payload]);
@@ -93,7 +93,7 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 )(action)
             ) {
                 const { account } = action.payload;
-                const device = findAccountDevice(account, api.getState().devices);
+                const device = findAccountDevice(account, api.getState().device.devices);
                 // update only transactions for remembered device
                 if (isDeviceRemembered(device)) {
                     storageActions.removeAccountTransactions(account);
@@ -114,7 +114,7 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 )(action)
             ) {
                 const { deviceState } = action.payload;
-                const device = api.getState().devices.find(d => d.state === deviceState);
+                const device = api.getState().device.devices.find(d => d.state === deviceState);
                 // update discovery for remembered device
                 if (isDeviceRemembered(device)) {
                     const discovery = selectDiscoveryByDeviceState(api.getState(), deviceState);
@@ -248,7 +248,8 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 case COINJOIN.ACCOUNT_UPDATE_MAX_MING_FEE:
                 case COINJOIN.ACCOUNT_TOGGLE_SKIP_ROUNDS: {
                     const account = selectAccountByKey(api.getState(), action.payload.accountKey);
-                    const device = account && findAccountDevice(account, api.getState().devices);
+                    const device =
+                        account && findAccountDevice(account, api.getState().device.devices);
                     if (device && isDeviceRemembered(device)) {
                         api.dispatch(storageActions.saveCoinjoinAccount(action.payload.accountKey));
                     }

@@ -1,10 +1,12 @@
 import { MiddlewareAPI } from 'redux';
+
 import { DEVICE } from '@trezor/connect';
-import { SUITE } from 'src/actions/suite/constants';
 import { notificationsActions, removeAccountEventsThunk } from '@suite-common/toast-notifications';
+import { accountsActions } from '@suite-common/wallet-core';
+
+import { SUITE } from 'src/actions/suite/constants';
 import * as deviceUtils from 'src/utils/suite/device';
 import { AppState, Action, Dispatch } from 'src/types/suite';
-import { accountsActions } from '@suite-common/wallet-core';
 
 /*
  * Middleware for event notifications.
@@ -26,7 +28,7 @@ const eventsMiddleware =
 
         if (action.type === DEVICE.CONNECT || action.type === DEVICE.CONNECT_UNACQUIRED) {
             // get TrezorDevice from @trezor/connect:Device object
-            const device = api.getState().devices.find(d => d.path === action.payload.path);
+            const device = api.getState().device.devices.find(d => d.path === action.payload.path);
             if (!device) return action; // this shouldn't happen
             const seen = deviceUtils.isSelectedDevice(action.payload, api.getState().suite.device);
 

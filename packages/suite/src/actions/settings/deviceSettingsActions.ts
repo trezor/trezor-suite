@@ -1,7 +1,7 @@
 import TrezorConnect from '@trezor/connect';
 import { analytics, EventType } from '@trezor/suite-analytics';
-
 import { notificationsActions } from '@suite-common/toast-notifications';
+
 import * as suiteActions from 'src/actions/suite/suiteActions';
 import * as deviceUtils from 'src/utils/suite/device';
 import * as modalActions from 'src/actions/suite/modalActions';
@@ -67,7 +67,7 @@ export const wipeDevice = () => async (dispatch: Dispatch, getState: GetState) =
     const bootloaderMode = device.mode === 'bootloader';
 
     // collect devices with old "device.id" to be removed (see description below)
-    const deviceInstances = deviceUtils.getDeviceInstances(device, getState().devices);
+    const deviceInstances = deviceUtils.getDeviceInstances(device, getState().device.devices);
 
     const result = await TrezorConnect.wipeDevice({
         device: {

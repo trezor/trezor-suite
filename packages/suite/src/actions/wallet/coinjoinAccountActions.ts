@@ -1,29 +1,26 @@
 import { ScanAccountProgress, BroadcastedTransactionDetails } from '@trezor/coinjoin';
 import TrezorConnect from '@trezor/connect';
 import { promiseAllSequence } from '@trezor/utils';
-
-import { SUITE } from 'src/actions/suite/constants';
-import * as COINJOIN from './constants/coinjoinConstants';
-import { goto } from '../suite/routerActions';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import * as coinjoinClientActions from './coinjoinClientActions';
-import { CoinjoinService, COORDINATOR_FEE_RATE_MULTIPLIER } from 'src/services/coinjoin';
-import { getAccountProgressHandle, getRegisterAccountParams } from 'src/utils/wallet/coinjoinUtils';
-import { Dispatch, GetState } from 'src/types/suite';
 import { isDevEnv } from '@suite-common/suite-utils';
 import { Network, NetworkSymbol } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
+import {
+    accountsActions,
+    selectAccountByKey,
+    transactionsActions,
+} from '@suite-common/wallet-core';
+import { getAccountTransactions, sortByBIP44AddressIndex } from '@suite-common/wallet-utils';
+
+import { CoinjoinService, COORDINATOR_FEE_RATE_MULTIPLIER } from 'src/services/coinjoin';
+import { getAccountProgressHandle, getRegisterAccountParams } from 'src/utils/wallet/coinjoinUtils';
+import { Dispatch, GetState } from 'src/types/suite';
 import {
     CoinjoinAccount,
     CoinjoinConfig,
     CoinjoinDiscoveryCheckpoint,
     CoinjoinSessionParameters,
 } from 'src/types/wallet/coinjoin';
-import {
-    accountsActions,
-    selectAccountByKey,
-    transactionsActions,
-} from '@suite-common/wallet-core';
 import {
     selectCoinjoinAccounts,
     selectCoinjoinAccountByKey,
@@ -36,8 +33,13 @@ import {
     selectSessionByAccountKey,
     selectWeightedAnonymityByAccountKey,
 } from 'src/reducers/wallet/coinjoinReducer';
-import { getAccountTransactions, sortByBIP44AddressIndex } from '@suite-common/wallet-utils';
+import { SUITE } from 'src/actions/suite/constants';
 import { openModal } from 'src/actions/suite/modalActions';
+import { selectDevices } from 'src/reducers/suite/deviceReducer';
+
+import * as coinjoinClientActions from './coinjoinClientActions';
+import { goto } from '../suite/routerActions';
+import * as COINJOIN from './constants/coinjoinConstants';
 
 export const coinjoinAccountUpdateAnonymity = (accountKey: string, targetAnonymity: number) =>
     ({
@@ -865,8 +867,9 @@ export const stopCoinjoinAccount =
 export const stopCoinjoinSessionByDeviceId =
     (deviceID: string) => (dispatch: Dispatch, getState: GetState) => {
         const state = getState();
+        const devices = selectDevices(getState());
 
-        const disconnectedDevices = state.devices.filter(d => d.id === deviceID && d.remember);
+        const disconnectedDevices = devices.filter(d => d.id === deviceID && d.remember);
         const affectedAccounts = disconnectedDevices.flatMap(d =>
             state.wallet.accounts.filter(
                 a => a.accountType === 'coinjoin' && a.deviceState === d.state,

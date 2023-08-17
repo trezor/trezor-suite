@@ -51,7 +51,7 @@ export const extraDependencies: ExtraDependencies = {
     selectors: {
         selectFeeInfo: (networkSymbol: NetworkSymbol) => (state: AppState) =>
             state.wallet.fees[networkSymbol],
-        selectDevices: (state: AppState) => state.devices,
+        selectDevices: (state: AppState) => state.device.devices,
         selectCurrentDevice: (state: AppState) => state.suite.device,
         selectBitcoinAmountUnit: (state: AppState) => state.wallet.settings.bitcoinAmountUnit,
         selectEnabledNetworks: (state: AppState) => state.wallet.settings.enabledNetworks,
@@ -134,18 +134,20 @@ export const extraDependencies: ExtraDependencies = {
             state,
             { payload }: PayloadAction<{ deviceState: string; metadata: TrezorDevice['metadata'] }>,
         ) => {
-            const index = state.findIndex((d: TrezorDevice) => d.state === payload.deviceState);
-            const device = state[index];
+            const index = state.devices.findIndex(
+                (d: TrezorDevice) => d.state === payload.deviceState,
+            );
+            const device = state.devices[index];
             if (!device) return;
             device.metadata = payload.metadata;
         },
         suiteSelectDeviceReducer: (state, { payload }: PayloadAction<TrezorDevice | undefined>) => {
             // only acquired devices
             if (!payload || !payload.features) return;
-            const index = deviceUtils.findInstanceIndex(state, payload);
-            if (!state[index]) return;
+            const index = deviceUtils.findInstanceIndex(state.devices, payload);
+            if (!state.devices[index]) return;
             // update timestamp
-            state[index].ts = new Date().getTime();
+            state.devices[index].ts = new Date().getTime();
         },
         updatePassphraseModeReducer: (
             state,
@@ -157,25 +159,28 @@ export const extraDependencies: ExtraDependencies = {
         ) => {
             // only acquired devices
             if (!payload || !payload.features) return;
-            const index = deviceUtils.findInstanceIndex(state, payload);
-            if (!state[index]) return;
+            const index = deviceUtils.findInstanceIndex(state.devices, payload);
+            if (!state.deviceState[index]) return;
             // update fields
-            state[index].useEmptyPassphrase = !hidden;
-            state[index].passphraseOnDevice = alwaysOnDevice;
-            state[index].ts = new Date().getTime();
-            if (hidden && typeof state[index].walletNumber !== 'number') {
-                state[index].walletNumber = deviceUtils.getNewWalletNumber(state, state[index]);
+            state.devices[index].useEmptyPassphrase = !hidden;
+            state.devices[index].passphraseOnDevice = alwaysOnDevice;
+            state.devices[index].ts = new Date().getTime();
+            if (hidden && typeof state.devices[index].walletNumber !== 'number') {
+                state.devices[index].walletNumber = deviceUtils.getNewWalletNumber(
+                    state.devices,
+                    state.devices[index],
+                );
             }
-            if (!hidden && typeof state[index].walletNumber === 'number') {
-                delete state[index].walletNumber;
+            if (!hidden && typeof state.devices[index].walletNumber === 'number') {
+                delete state.devices[index].walletNumber;
             }
         },
         suiteAuthFailedReducer: (state, { payload }: PayloadAction<TrezorDevice>) => {
             // only acquired devices
             if (!payload || !payload.features) return;
-            const index = deviceUtils.findInstanceIndex(state, payload);
-            if (!state[index]) return;
-            state[index].authFailed = true;
+            const index = deviceUtils.findInstanceIndex(state.devices, payload);
+            if (!state.devices[index]) return;
+            state.devices[index].authFailed = true;
         },
         suiteAuthDeviceReducer: (
             state,
@@ -183,11 +188,11 @@ export const extraDependencies: ExtraDependencies = {
         ) => {
             // only acquired devices
             if (!action.payload || !action.payload.features) return;
-            const index = deviceUtils.findInstanceIndex(state, action.payload);
-            if (!state[index]) return;
+            const index = deviceUtils.findInstanceIndex(state.devices, action.payload);
+            if (!state.devices[index]) return;
             // update state
-            state[index].state = action.state;
-            delete state[index].authFailed;
+            state.devices[index].state = action.state;
+            delete state.devices[index].authFailed;
         },
         suiteReceiveAuthConfirmReducer: (
             state,
@@ -195,11 +200,11 @@ export const extraDependencies: ExtraDependencies = {
         ) => {
             // only acquired devices
             if (!payload || !payload.features) return;
-            const index = deviceUtils.findInstanceIndex(state, payload);
-            if (!state[index]) return;
+            const index = deviceUtils.findInstanceIndex(state.devices, payload);
+            if (!state.devices[index]) return;
             // update state
-            state[index].authConfirm = !success;
-            state[index].available = success;
+            state.devices[index].authConfirm = !success;
+            state.devices[index].available = success;
         },
     },
     utils: {

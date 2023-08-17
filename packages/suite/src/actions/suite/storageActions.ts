@@ -366,7 +366,7 @@ export const saveFirmware = () => async (_dispatch: Dispatch, getState: GetState
 export const removeDatabase = () => async (dispatch: Dispatch, getState: GetState) => {
     if (!(await db.isAccessible())) return;
 
-    const rememberedDevices = getState().devices.filter(d => d.remember);
+    const rememberedDevices = getState().device.devices.filter(d => d.remember);
     // forget all remembered devices
     rememberedDevices.forEach(d => {
         dispatch(suiteActions.forgetDevice(d));

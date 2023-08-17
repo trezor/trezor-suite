@@ -1,7 +1,10 @@
+import { createAction } from '@reduxjs/toolkit';
+
 import TrezorConnect from '@trezor/connect';
 import { analytics, EventType } from '@trezor/suite-analytics';
-
 import { createDeferred } from '@trezor/utils';
+import { notificationsActions } from '@suite-common/toast-notifications';
+
 import { METADATA } from 'src/actions/suite/constants';
 import { Dispatch, GetState } from 'src/types/suite';
 import {
@@ -23,9 +26,6 @@ import DropboxProvider from 'src/services/suite/metadata/DropboxProvider';
 import GoogleProvider from 'src/services/suite/metadata/GoogleProvider';
 import FileSystemProvider from 'src/services/suite/metadata/FileSystemProvider';
 import { selectSelectedProviderForLabels } from 'src/reducers/suite/metadataReducer';
-
-import { createAction } from '@reduxjs/toolkit';
-import { notificationsActions } from '@suite-common/toast-notifications';
 
 export const setAccountAdd = createAction(METADATA.ACCOUNT_ADD, (payload: Account) => ({
     payload,
@@ -115,7 +115,7 @@ export const disposeMetadata = (keys?: boolean) => (dispatch: Dispatch, getState
             dispatch(setAccountAdd(updatedAccount));
         });
 
-        getState().devices.forEach(device => {
+        getState().device.devices.forEach(device => {
             if (device.state) {
                 // set metadata as disabled for this device, remove all metadata related information
                 dispatch({
@@ -296,7 +296,7 @@ export const fetchMetadata =
             return;
         }
 
-        const device = getState().devices.find(d => d.state === deviceState);
+        const device = getState().device.devices.find(d => d.state === deviceState);
 
         // device is disconnected or something is wrong with it
         if (device?.metadata?.status !== 'enabled') {
@@ -463,7 +463,7 @@ export const fetchMetadata =
 
 export const setAccountMetadataKey =
     (account: Account) => (dispatch: Dispatch, getState: GetState) => {
-        const { devices } = getState();
+        const { devices } = getState().device;
         const device = devices.find(d => d.state === account.deviceState);
         if (
             !device ||
@@ -570,7 +570,7 @@ export const connectProvider =
 export const addDeviceMetadata =
     (payload: Extract<MetadataAddPayload, { type: 'walletLabel' }>) =>
     async (dispatch: Dispatch, getState: GetState) => {
-        const device = getState().devices.find(d => d.state === payload.deviceState);
+        const device = getState().device.devices.find(d => d.state === payload.deviceState);
         const provider = selectSelectedProviderForLabels(getState());
 
         if (!device || device.metadata.status !== 'enabled') return false;
