@@ -2,8 +2,10 @@ import React from 'react';
 import styled from 'styled-components';
 import { Card, Icon, variables } from '@trezor/components';
 import { Translation, FiatValue, FormattedCryptoAmount } from 'src/components/suite';
+import { useSelector } from 'src/hooks/suite';
 import { useRbf, RbfContext, UseRbfProps } from 'src/hooks/wallet/useRbfForm';
 import { formatNetworkAmount, getFeeUnits } from '@suite-common/wallet-utils';
+import { WalletAccountTransaction } from '@suite-common/wallet-types';
 import { RbfFees } from './components/RbfFees';
 import { AffectedTransactions } from './components/AffectedTransactions';
 import { DecreasedOutputs } from './components/DecreasedOutputs';
@@ -101,14 +103,14 @@ const Red = styled.span`
 
 /* children are only for test purposes, this prop is not available in regular build */
 interface ChangeFeeProps extends UseRbfProps {
+    tx: WalletAccountTransaction;
     children?: React.ReactNode;
     showChained: () => void;
 }
 
-export const ChangeFee = (props: ChangeFeeProps) => {
+const ChangeFeeLoaded = (props: ChangeFeeProps) => {
     const contextValues = useRbf(props);
-    if (!contextValues.account) return null; // context without account, should never happen
-    const { tx } = props;
+    const { tx, chainedTxs, showChained, finalize, children } = props;
     const { networkType } = contextValues.account;
     const feeRate =
         networkType === 'bitcoin' ? `${tx.rbfParams?.feeRate} ${getFeeUnits(networkType)}` : null;
@@ -148,11 +150,9 @@ export const ChangeFee = (props: ChangeFeeProps) => {
                         <RbfFees />
                     </Inner>
                     <DecreasedOutputs />
-                    {contextValues.chainedTxs.length > 0 && (
-                        <AffectedTransactions showChained={props.showChained} />
-                    )}
+                    {chainedTxs.length > 0 && <AffectedTransactions showChained={showChained} />}
                 </Box>
-                {props.finalize && (
+                {finalize && (
                     <FinalizeWarning>
                         <InfoIcon icon="INFO" size={16} />
                         <Translation
@@ -161,10 +161,24 @@ export const ChangeFee = (props: ChangeFeeProps) => {
                         />
                     </FinalizeWarning>
                 )}
-                <ReplaceButton finalize={props.finalize} />
+                <ReplaceButton finalize={finalize} />
 
-                {props.children}
+                {children}
             </Wrapper>
         </RbfContext.Provider>
+    );
+};
+
+export const ChangeFee = (props: Omit<ChangeFeeProps, 'selectedAccount' | 'rbfParams'>) => {
+    const selectedAccount = useSelector(state => state.wallet.selectedAccount);
+    if (selectedAccount.status !== 'loaded' || !props.tx.rbfParams) {
+        return null;
+    }
+    return (
+        <ChangeFeeLoaded
+            selectedAccount={selectedAccount}
+            rbfParams={props.tx.rbfParams}
+            {...props}
+        />
     );
 };
