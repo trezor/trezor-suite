@@ -1,251 +1,130 @@
-import { Ref, forwardRef, ButtonHTMLAttributes } from 'react';
-import styled, { css } from 'styled-components';
+import { ButtonHTMLAttributes } from 'react';
+import styled, { css, useTheme } from 'styled-components';
+import { borders, spacingsPx, typography } from '@trezor/theme';
 import { Icon } from '../../assets/Icon/Icon';
-import { IconType, ButtonVariant, SuiteThemeColors } from '../../../support/types';
-import { variables } from '../../../config';
-import { useTheme } from '../../../utils';
+import { IconType } from '../../../support/types';
 import { Spinner } from '../../loaders/Spinner/Spinner';
-import { darken } from 'polished';
+import {
+    ButtonSize,
+    ButtonVariant,
+    getIconColor,
+    getIconSize,
+    getPadding,
+    getVariantStyle,
+    IconAlignment,
+} from '../buttonStyleUtils';
 
-const getPadding = (variant: ButtonVariant, hasLabel: boolean) => {
-    if (variant === 'tertiary') {
-        return '4px 6px';
-    }
-
-    return hasLabel ? '9px 22px' : '8px';
-};
-
-const getColor = (variant: ButtonVariant, isDisabled: boolean, theme: SuiteThemeColors) => {
-    if (isDisabled) return theme.TYPE_LIGHT_GREY;
-
-    switch (variant) {
-        case 'primary':
-        case 'danger':
-            return theme.TYPE_WHITE;
-        case 'tertiary':
-            return theme.TYPE_DARK_GREY;
-        case 'secondary':
-            return theme.TYPE_SECONDARY_TEXT;
-        // no default
-    }
-};
-
-const getIconSize = (variant: ButtonVariant, hasLabel: boolean) => {
-    switch (variant) {
-        case 'tertiary':
-            return 12;
-        default:
-            return hasLabel ? 14 : 16;
-    }
-};
-
-const getFontSize = (variant: ButtonVariant) => {
-    if (variant === 'tertiary') {
-        return variables.FONT_SIZE.TINY;
-    }
-
-    return variables.FONT_SIZE.NORMAL;
-};
-
-interface WrapperProps {
+interface ButtonContainerProps {
     variant: ButtonVariant;
-    hasLabel: boolean;
-    disabled: boolean;
-    fullWidth: boolean;
-    $color: string | undefined;
+    size: ButtonSize;
+    alignIcon?: IconAlignment;
+    hasLabel?: boolean;
+    hasIcon?: boolean;
+    fullWidth?: boolean;
 }
 
-const Wrapper = styled.button<WrapperProps>`
-    display: flex;
-    background: transparent;
-    align-items: center;
-    justify-content: center;
-    border: none;
-    white-space: nowrap;
-    cursor: ${({ disabled }) => (disabled ? 'default' : 'pointer')};
-    border-radius: 8px;
-    font-size: ${({ variant }) => getFontSize(variant)};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    outline: none;
-    padding: ${({ variant, hasLabel }) => getPadding(variant, hasLabel)};
-    transition: ${({ theme }) =>
-        `background ${theme.HOVER_TRANSITION_TIME} ${theme.HOVER_TRANSITION_EFFECT}`};
-    color: ${({ $color, variant, disabled, theme }) =>
-        $color || getColor(variant, disabled, theme)};
-    pointer-events: ${({ disabled }) => disabled && 'none'};
+export const focusShadowStyle = css`
+    border: 1px solid transparent;
 
-    ${({ variant, theme }) =>
-        variant === 'primary' &&
-        css`
-            font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-            background: ${theme.BG_GREEN};
-
-            :hover,
-            :focus,
-            :active {
-                /* we use this color only for this case  */
-                background: ${theme.BG_GREEN_HOVER};
-            }
-        `}
-
-    ${({ variant, theme }) =>
-        variant === 'secondary' &&
-        css`
-            background: ${theme.BG_SECONDARY};
-
-            :hover,
-            :focus,
-            :active {
-                /* we use this color only for this case  */
-                background: ${theme.BG_SECONDARY_HOVER};
-            }
-        `}
-
-    ${({ variant, theme }) =>
-        variant === 'tertiary' &&
-        css`
-            background: ${theme.BG_GREY_ALT};
-
-            :hover,
-            :active,
-            :focus {
-                background: ${darken(theme.HOVER_DARKEN_FILTER, theme.BG_GREY_ALT)};
-            }
-        `};
-
-    ${({ variant, theme }) =>
-        variant === 'danger' &&
-        css`
-            font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-            background: ${theme.BUTTON_RED};
-
-            :hover,
-            :active,
-            :focus {
-                background: ${theme.BUTTON_RED_HOVER};
-            }
-        `}
-
-    ${({ disabled, theme }) =>
-        disabled &&
-        css`
-            background: ${theme.BG_GREY};
-
-            :hover,
-            :active,
-            :focus {
-                background: ${theme.BG_GREY};
-            }
-        `}
-
-    ${({ fullWidth }) =>
-        fullWidth &&
-        css`
-            width: 100%;
-        `}
+    :focus-visible {
+        border-color: ${({ theme }) => theme.backgroundAlertBlueBold};
+        box-shadow: 0px 0px 0px 3px rgba(0, 120, 172, 0.25);
+    }
 `;
 
-interface IconWrapperProps {
-    hasLabel?: boolean;
-    alignIcon?: ButtonProps['alignIcon'];
-    variant?: ButtonProps['variant'];
+export const ButtonContainer = styled.button<ButtonContainerProps>`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: ${({ alignIcon }) => alignIcon === 'right' && 'row-reverse'};
+    gap: ${({ hasIcon }) => hasIcon && spacingsPx.xs};
+    padding: ${({ size, hasLabel }) => getPadding(size, hasLabel)};
+    width: ${({ fullWidth }) => fullWidth && '100%'};
+    border-radius: ${borders.radii.full};
+    transition: border-color 0.1s ease-out, box-shadow 0.1s ease-out, background 0.1s ease-out;
+    outline: none;
+    cursor: pointer;
+
+    ${focusShadowStyle}
+
+    ${({ variant, theme }) => getVariantStyle(variant, theme)}
+
+    :disabled {
+        background: ${({ theme }) => theme.BG_GREY};
+        color: ${({ theme }) => theme.textDisabled};
+        pointer-events: none;
+        cursor: default;
+    }
+`;
+
+interface ContentProps {
+    size: ButtonSize;
+    disabled: boolean;
 }
 
-const IconWrapper = styled.div<IconWrapperProps>`
-    display: flex;
+const Content = styled.span<ContentProps>`
+    height: ${({ size }) => (size === 'small' ? 20 : 24)}px;
+    white-space: nowrap;
 
-    ${({ alignIcon, hasLabel }) =>
-        alignIcon === 'left' &&
-        hasLabel &&
-        css`
-            margin: 0 8px 0 3px;
-        `}
-
-    ${({ alignIcon, hasLabel }) =>
-        alignIcon === 'right' &&
-        hasLabel &&
-        css`
-            margin: 0 0 0 8px;
-        `}
-
-    ${({ alignIcon, hasLabel, variant }) =>
-        variant === 'tertiary' &&
-        hasLabel &&
-        alignIcon === 'right' &&
-        css`
-            margin: 0 0 0 4px;
-        `}
-
-    ${({ alignIcon, hasLabel, variant }) =>
-        variant === 'tertiary' &&
-        hasLabel &&
-        alignIcon === 'left' &&
-        css`
-            margin: 0 4px 0 0;
-        `}
+    ${({ size }) => (size === 'small' ? typography.hint : typography.body)};
 `;
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
     variant?: ButtonVariant;
-    icon?: IconType;
-    size?: number;
+    buttonSize?: ButtonSize;
     isDisabled?: boolean;
     isLoading?: boolean;
     fullWidth?: boolean;
-    alignIcon?: 'left' | 'right';
+    icon?: IconType;
+    size?: number;
+    alignIcon?: IconAlignment;
     'data-test'?: string;
 }
 
-export const Button = forwardRef(
-    (
-        {
-            children,
-            variant = 'primary',
-            icon,
-            size,
-            color,
-            fullWidth = false,
-            isDisabled = false,
-            isLoading = false,
-            alignIcon = 'left',
-            onChange,
-            ...rest
-        }: ButtonProps,
-        ref?: Ref<HTMLButtonElement>,
-    ) => {
-        const theme = useTheme();
-        const hasLabel = !!children;
-        const IconComponent = icon ? (
-            <IconWrapper alignIcon={alignIcon} variant={variant} hasLabel={hasLabel}>
-                <Icon
-                    icon={icon}
-                    size={size || getIconSize(variant, hasLabel)}
-                    color={color || getColor(variant, isDisabled, theme)}
-                />
-            </IconWrapper>
-        ) : null;
-        const Loader = (
-            <IconWrapper alignIcon={alignIcon} variant={variant} hasLabel={hasLabel}>
-                <Spinner size={getIconSize(variant, hasLabel) - 1} color={color} strokeWidth={2} />
-            </IconWrapper>
-        );
-        return (
-            <Wrapper
-                variant={variant}
-                hasLabel={hasLabel}
-                onChange={onChange}
-                disabled={isDisabled || isLoading}
-                fullWidth={fullWidth}
-                $color={color}
-                ref={ref}
-                {...rest}
-            >
-                {!isLoading && alignIcon === 'left' && IconComponent}
-                {isLoading && alignIcon === 'left' && Loader}
-                {children}
-                {!isLoading && alignIcon === 'right' && IconComponent}
-                {isLoading && alignIcon === 'right' && Loader}
-            </Wrapper>
-        );
-    },
-);
+export const Button = ({
+    variant = 'primary',
+    buttonSize = 'medium',
+    isDisabled = false,
+    isLoading = false,
+    fullWidth = false,
+    icon,
+    size,
+    alignIcon = 'left',
+    children, // TODO: should be made required in later refactors
+    ...rest
+}: ButtonProps) => {
+    const theme = useTheme();
+    const hasLabel = !!children;
+
+    const IconComponent = icon ? (
+        <Icon
+            icon={icon}
+            size={size || getIconSize(buttonSize)}
+            color={getIconColor(variant, isDisabled, theme)}
+        />
+    ) : null;
+
+    const Loader = <Spinner size={getIconSize(buttonSize)} strokeWidth={2} />;
+
+    return (
+        <ButtonContainer
+            variant={variant}
+            size={buttonSize}
+            hasLabel={hasLabel}
+            alignIcon={alignIcon}
+            disabled={isDisabled || isLoading}
+            fullWidth={fullWidth}
+            hasIcon={!!icon}
+            {...rest}
+        >
+            {!isLoading && icon && IconComponent}
+            {isLoading && Loader}
+
+            {children && (
+                <Content size={buttonSize} disabled={isDisabled || isLoading}>
+                    {children}
+                </Content>
+            )}
+        </ButtonContainer>
+    );
+};
