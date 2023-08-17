@@ -1,8 +1,10 @@
 import { Button } from '../../../index';
 import { storiesOf } from '@storybook/react';
+import { capitalizeFirstLetter } from '@trezor/utils';
 import { StoryColumn } from '../../../support/Story';
+import { ButtonVariant } from '../buttonStyleUtils';
 
-const variants = ['primary', 'secondary', 'tertiary', 'danger'] as const;
+const variants: Array<ButtonVariant> = ['primary', 'secondary', 'tertiary', 'danger'];
 
 storiesOf('Buttons/Button', module).add(
     'All',
@@ -17,19 +19,38 @@ storiesOf('Buttons/Button', module).add(
                             console.log('click');
                         }}
                     >
-                        {variant[0].toUpperCase()}
-                        {variant.slice(1)}
+                        {capitalizeFirstLetter(variant)}
                     </Button>
                     <Button
                         variant={variant}
-                        data-test={`button-${variant}-icon`}
-                        icon="PLUS"
+                        buttonSize="medium"
+                        data-test={`button-${variant}`}
                         onClick={() => {
                             console.log('click');
                         }}
                     >
-                        {variant[0].toUpperCase()}
-                        {variant.slice(1)} icon
+                        {capitalizeFirstLetter(variant)} medium
+                    </Button>
+                    <Button
+                        variant={variant}
+                        buttonSize="small"
+                        data-test={`button-${variant}`}
+                        onClick={() => {
+                            console.log('click');
+                        }}
+                    >
+                        {capitalizeFirstLetter(variant)} small
+                    </Button>
+
+                    <Button
+                        variant={variant}
+                        data-test={`button-${variant}-icon`}
+                        icon="PALETTE"
+                        onClick={() => {
+                            console.log('click');
+                        }}
+                    >
+                        {capitalizeFirstLetter(variant)} icon
                     </Button>
                     <Button
                         variant={variant}
@@ -37,16 +58,13 @@ storiesOf('Buttons/Button', module).add(
                         alignIcon="right"
                         icon="PLUS"
                     >
-                        {variant[0].toUpperCase()}
-                        {variant.slice(1)} icon right
+                        {capitalizeFirstLetter(variant)} icon right
                     </Button>
                     <Button variant={variant} data-test={`button-${variant}-loading`} isLoading>
-                        {variant[0].toUpperCase()}
-                        {variant.slice(1)} loading
+                        {capitalizeFirstLetter(variant)} loading
                     </Button>
                     <Button variant={variant} data-test={`button-${variant}-full-width`} fullWidth>
-                        {variant[0].toUpperCase()}
-                        {variant.slice(1)} full width
+                        {capitalizeFirstLetter(variant)} full width
                     </Button>
                     <Button
                         variant={variant}
@@ -56,17 +74,8 @@ storiesOf('Buttons/Button', module).add(
                             console.log('click');
                         }}
                     >
-                        {variant[0].toUpperCase()}
-                        {variant.slice(1)} disabled
+                        {capitalizeFirstLetter(variant)} disabled
                     </Button>
-                    <Button
-                        variant={variant}
-                        data-test={`button-${variant}`}
-                        icon="PLUS"
-                        onClick={() => {
-                            console.log('click');
-                        }}
-                    />
                 </StoryColumn>
             ))}
         </>
