@@ -6,10 +6,6 @@ import { THEME } from '../../config/colors';
 
 export type TextAlign = 'left' | 'center' | 'right';
 
-export type ButtonVariant = 'primary' | 'secondary' | 'tertiary' | 'danger';
-
-export type ButtonSize = 'small' | 'large';
-
 export type InputState = 'success' | 'warning' | 'error';
 
 export type InputVariant = 'small' | 'large';
