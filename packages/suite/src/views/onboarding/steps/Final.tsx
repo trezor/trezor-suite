@@ -268,7 +268,7 @@ export const FinalStep = () => {
                             });
                         }}
                         icon="ARROW_RIGHT_LONG"
-                        alignIcon="right"
+                        iconAlignment="right"
                         isDisabled={isWaitingForConfirm}
                     >
                         <Translation id="TR_GO_TO_SUITE" />

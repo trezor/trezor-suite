@@ -56,7 +56,7 @@ export const FirmwareChangelog = ({
                 <Heading>
                     <Translation id="TR_VERSION" values={{ version: versionString }} />
                     <TrezorLink size="small" variant="nostyle" href={notes || changelogUrl}>
-                        <Button variant="tertiary" icon="EXTERNAL_LINK" alignIcon="right">
+                        <Button variant="tertiary" icon="EXTERNAL_LINK" iconAlignment="right">
                             <Translation id="TR_VIEW_ALL" />
                         </Button>
                     </TrezorLink>

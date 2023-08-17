@@ -92,7 +92,7 @@ export const UdevDownload = () => {
             <Manual>
                 <Translation id="TR_UDEV_DOWNLOAD_MANUAL" />
                 <TrezorLink variant="nostyle" href={HELP_CENTER_UDEV_URL}>
-                    <Button variant="tertiary" icon="EXTERNAL_LINK" alignIcon="right">
+                    <Button variant="tertiary" icon="EXTERNAL_LINK" iconAlignment="right">
                         <Translation id="TR_LEARN_MORE" />
                     </Button>
                 </TrezorLink>
