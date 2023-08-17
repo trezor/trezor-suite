@@ -76,7 +76,7 @@ export const EarlyAccessDisable = ({ hideWindow }: EarlyAccessDisableProps) => {
                         <Translation id="TR_EARLY_ACCESS_SKIP_REINSTALL" />
                     </Button>
                     <Link variant="nostyle" href={SUITE_URL}>
-                        <LinkButton icon="EXTERNAL_LINK" alignIcon="right">
+                        <LinkButton icon="EXTERNAL_LINK" iconAlignment="right">
                             <Translation id="TR_EARLY_ACCESS_REINSTALL" />
                         </LinkButton>
                     </Link>

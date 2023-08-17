@@ -160,7 +160,7 @@ const PinInput = ({ isSubmitting, onPinSubmit }: PinInputProps) => {
                 <Button
                     variant="primary"
                     isDisabled={isSubmitting}
-                    fullWidth
+                    isFullWidth
                     onClick={submit}
                     data-test="@pin/submit-button"
                 >

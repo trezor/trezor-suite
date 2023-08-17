@@ -49,7 +49,12 @@ export const VersionWithGithubTooltip = ({ appVersion, isDev }: VersionWithGithu
         }
     >
         <Link href={getReleaseUrl(appVersion)}>
-            <VersionButton variant="tertiary" icon="EXTERNAL_LINK" alignIcon="right" isDev={isDev}>
+            <VersionButton
+                variant="tertiary"
+                icon="EXTERNAL_LINK"
+                iconAlignment="right"
+                isDev={isDev}
+            >
                 {appVersion}
                 {isDev && '-dev'}
             </VersionButton>

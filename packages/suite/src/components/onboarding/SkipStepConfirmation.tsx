@@ -55,7 +55,7 @@ const SkipStepConfirmation = ({ onCancel }: SkipStepConfirmationProps) => {
             bottomBar={
                 <>
                     <Button
-                        variant="danger"
+                        variant="destructive"
                         data-test="@onboarding/skip-button-confirm"
                         onClick={() => goToNextStep(nextStep)}
                     >

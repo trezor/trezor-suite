@@ -53,7 +53,7 @@ export const SelectCustomFirmware = ({ device, onSuccess }: SelectCustomFirmware
             >
                 <Translation id="TR_CUSTOM_FIRMWARE_GITHUB" />
                 <StyledLink variant="nostyle" href={GITHUB_FW_BINARIES_URL}>
-                    <Button variant="tertiary" icon="EXTERNAL_LINK" alignIcon="right">
+                    <Button variant="tertiary" icon="EXTERNAL_LINK" iconAlignment="right">
                         github.com
                     </Button>
                 </StyledLink>
