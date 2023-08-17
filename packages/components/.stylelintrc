@@ -1,11 +1,6 @@
 {
-    "processors": [
-        "stylelint-processor-styled-components"
-    ],
-    "extends": [
-        "stylelint-config-recommended",
-        "stylelint-config-styled-components"
-    ],
+    "processors": ["stylelint-processor-styled-components"],
+    "extends": ["stylelint-config-recommended", "stylelint-config-styled-components"],
     "rules": {
         "indentation": 4,
         "declaration-empty-line-before": null,
@@ -13,19 +8,23 @@
         "max-empty-lines": 1,
         "block-no-empty": null,
         "property-no-unknown": [
-            true, {
+            true,
+            {
                 "ignoreProperties": ["composes", "font-smoothing", "font-smooth"]
             }
         ],
+        "selector-type-no-unknown": [true, { "ignoreTypes": ["/-styled-mixin1/"] }],
         "at-rule-empty-line-before": [
-            "always", {
-                "ignoreAtRules": [
-                    "import"
-                ]
+            "always",
+            {
+                "ignoreAtRules": ["import"]
             }
         ],
-        "at-rule-no-unknown": [ true, {
-            ignoreAtRules: ["each"]
-        }]
+        "at-rule-no-unknown": [
+            true,
+            {
+                "ignoreAtRules": ["each"]
+            }
+        ]
     }
 }
