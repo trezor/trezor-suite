@@ -79,7 +79,12 @@ export const FirmwareVersion = ({ isDeviceLocked }: FirmwareVersionProps) => {
     const handleUpdate = () => dispatch(goto('firmware-index', { params: { cancelable: true } }));
 
     const GithubButton = () => (
-        <Button variant="tertiary" icon={githubButtonIcon} alignIcon="right" disabled={!revision}>
+        <Button
+            variant="tertiary"
+            icon={githubButtonIcon}
+            iconAlignment="right"
+            disabled={!revision}
+        >
             {currentFwVersion}
         </Button>
     );

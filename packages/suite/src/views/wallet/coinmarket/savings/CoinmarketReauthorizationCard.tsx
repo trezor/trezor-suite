@@ -27,7 +27,7 @@ export const CoinmarketReauthorizationCard = ({
             button={{
                 type: 'button',
                 children: <Translation id="TR_SAVINGS_AUTHORIZATION_ERROR_BUTTON_LABEL" />,
-                variant: 'danger',
+                variant: 'destructive',
                 onClick: handleSubmit,
             }}
         >

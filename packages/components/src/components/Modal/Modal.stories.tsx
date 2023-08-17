@@ -11,19 +11,19 @@ const StyledButton = styled(Button)<{ flex: boolean }>`
 
 const Buttons = ({
     count,
-    fullWidth,
+    isFullWidth,
     flex,
     prefix,
 }: {
     count: number;
-    fullWidth: boolean;
+    isFullWidth: boolean;
     flex: boolean;
     prefix: string;
 }) => (
     <>
         {new Array(count).fill(undefined).map((_a, i) => (
             // eslint-disable-next-line react/no-array-index-key
-            <StyledButton key={i} fullWidth={fullWidth} flex={flex} variant="primary">
+            <StyledButton key={i} isFullWidth={isFullWidth} flex={flex} variant="primary">
                 {prefix} {i}
             </StyledButton>
         ))}
@@ -61,7 +61,7 @@ storiesOf('Misc/Modals', module)
                         <Buttons
                             prefix={bottomBarButtonPrefix}
                             count={bottomBarButtonCount}
-                            fullWidth={bottomBarButtonFullWidth}
+                            isFullWidth={bottomBarButtonFullWidth}
                             flex={bottomBarButtonFlex}
                         />
                     ) : undefined

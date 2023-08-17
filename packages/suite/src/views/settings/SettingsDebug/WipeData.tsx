@@ -53,7 +53,7 @@ export const WipeData = () => {
             />
             <ActionColumn>
                 <ActionButton
-                    variant="danger"
+                    variant="destructive"
                     onClick={async () => {
                         await desktopApi.clearUserData();
                         desktopApi.appRestart();
