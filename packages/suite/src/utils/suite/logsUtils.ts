@@ -203,15 +203,17 @@ export const getApplicationInfo = (state: AppState, hideSensitiveInfo: boolean) 
     sessionId: hideSensitiveInfo ? REDACTED_REPLACEMENT : state.analytics.sessionId,
     transport: state.suite.transport?.type,
     transportVersion: state.suite.transport?.version,
-    rememberedStandardWallets: state.devices.filter(d => d.remember && d.useEmptyPassphrase).length,
-    rememberedHiddenWallets: state.devices.filter(d => d.remember && !d.useEmptyPassphrase).length,
+    rememberedStandardWallets: state.device.devices.filter(d => d.remember && d.useEmptyPassphrase)
+        .length,
+    rememberedHiddenWallets: state.device.devices.filter(d => d.remember && !d.useEmptyPassphrase)
+        .length,
     enabledNetworks: state.wallet.settings.enabledNetworks,
     customBackends: getCustomBackends(state.wallet.blockchain)
         .map(({ coin }) => coin)
         .filter(coin => state.wallet.settings.enabledNetworks.includes(coin)),
-    devices: getPhysicalDeviceUniqueIds(state.devices)
-        .map(id => state.devices.find(device => device.id === id) as TrezorDevice) // filter unique devices
-        .concat(state.devices.filter(device => device.id === null)) // add devices in bootloader mode
+    devices: getPhysicalDeviceUniqueIds(state.device.devices)
+        .map(id => state.device.devices.find(device => device.id === id) as TrezorDevice) // filter unique devices
+        .concat(state.device.devices.filter(device => device.id === null)) // add devices in bootloader mode
         .map(device => ({
             id: hideSensitiveInfo ? REDACTED_REPLACEMENT : device.id,
             label: hideSensitiveInfo ? REDACTED_REPLACEMENT : device.label,
@@ -226,10 +228,10 @@ export const getApplicationInfo = (state: AppState, hideSensitiveInfo: boolean) 
             bootloaderHash: device.features ? getBootloaderHash(device) : '',
             numberOfWallets:
                 device.mode !== 'bootloader'
-                    ? state.devices.filter(d => d.id === device.id).length
+                    ? state.device.devices.filter(d => d.id === device.id).length
                     : 1,
         })),
-    wallets: state.devices.map(device => ({
+    wallets: state.device.devices.map(device => ({
         deviceId: hideSensitiveInfo ? REDACTED_REPLACEMENT : device.id,
         deviceLabel: hideSensitiveInfo ? REDACTED_REPLACEMENT : device.label,
         label:

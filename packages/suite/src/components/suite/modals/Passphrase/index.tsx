@@ -2,6 +2,10 @@ import React, { useCallback, useState } from 'react';
 import { useIntl } from 'react-intl';
 
 import styled from 'styled-components';
+
+import { variables, PassphraseTypeCard } from '@trezor/components';
+import TrezorConnect from '@trezor/connect';
+
 import { useSelector, useDispatch } from 'src/hooks/suite';
 import { onPassphraseSubmit } from 'src/actions/suite/modalActions';
 import { selectIsDiscoveryAuthConfirmationRequired } from 'src/reducers/suite/suiteReducer';
@@ -11,8 +15,7 @@ import type { TrezorDevice } from 'src/types/suite';
 import { OpenGuideFromTooltip } from 'src/components/guide';
 import messages from 'src/support/messages';
 
-import { variables, PassphraseTypeCard } from '@trezor/components';
-import TrezorConnect from '@trezor/connect';
+import { selectDevices } from '../../../../reducers/suite/deviceReducer';
 
 const Wrapper = styled.div<{ authConfirmation?: boolean }>`
     display: flex;
@@ -50,7 +53,7 @@ interface PassphraseProps {
 
 export const Passphrase = ({ device }: PassphraseProps) => {
     const [submitted, setSubmitted] = useState(false);
-    const devices = useSelector(state => state.devices);
+    const devices = useSelector(selectDevices);
     const authConfirmation =
         useSelector(selectIsDiscoveryAuthConfirmationRequired) || device.authConfirm;
 

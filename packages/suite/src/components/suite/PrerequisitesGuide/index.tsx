@@ -1,6 +1,10 @@
 import React, { useMemo } from 'react';
+
 import styled, { css } from 'styled-components';
+import { motion } from 'framer-motion';
+
 import { variables, motionEasing } from '@trezor/components';
+
 import { ConnectDevicePrompt } from 'src/components/suite';
 import { isWebUsb } from 'src/utils/suite/transport';
 import { getStatus, deviceNeedsAttention } from 'src/utils/suite/device';
@@ -19,7 +23,7 @@ import { DeviceBootloader } from './components/DeviceBootloader';
 import { DeviceNoFirmware } from './components/DeviceNoFirmware';
 import { DeviceUpdateRequired } from './components/DeviceUpdateRequired';
 import { DeviceDisconnectRequired } from './components/DeviceDisconnectRequired';
-import { motion } from 'framer-motion';
+import { selectDeviceCount } from '../../../reducers/suite/deviceReducer';
 
 const Wrapper = styled.div<{ padded?: boolean }>`
     display: flex;
@@ -59,7 +63,7 @@ export const PrerequisitesGuide = ({
     allowSwitchDevice,
 }: PrerequisitesGuideProps) => {
     const device = useSelector(state => state.suite.device);
-    const devices = useSelector(state => state.devices.length);
+    const deviceCount = useSelector(selectDeviceCount);
     const transport = useSelector(state => state.suite.transport);
 
     const isWebUsbTransport = isWebUsb(transport);
@@ -106,7 +110,7 @@ export const PrerequisitesGuide = ({
             <ConnectDevicePrompt
                 connected={!!device}
                 showWarning={!!(device && deviceNeedsAttention(getStatus(device)))}
-                allowSwitchDevice={allowSwitchDevice && devices > 1}
+                allowSwitchDevice={allowSwitchDevice && deviceCount > 1}
                 prerequisite={prerequisite}
             />
 

@@ -1,3 +1,5 @@
+import { useSelector } from 'react-redux';
+
 import TrezorConnect from '@trezor/connect';
 import { analytics, EventType } from '@trezor/suite-analytics';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -9,6 +11,8 @@ import * as routerActions from 'src/actions/suite/routerActions';
 import { Dispatch, GetState } from 'src/types/suite';
 import * as DEVICE from 'src/constants/suite/device';
 import { SUITE } from 'src/actions/suite/constants';
+
+import { selectDevices } from '../../reducers/suite/deviceReducer';
 
 export const applySettings =
     (params: Parameters<typeof TrezorConnect.applySettings>[0]) =>
@@ -63,11 +67,12 @@ export const changePin =
 
 export const wipeDevice = () => async (dispatch: Dispatch, getState: GetState) => {
     const { device } = getState().suite;
+    const devices = useSelector(selectDevices);
     if (!device) return;
     const bootloaderMode = device.mode === 'bootloader';
 
     // collect devices with old "device.id" to be removed (see description below)
-    const deviceInstances = deviceUtils.getDeviceInstances(device, getState().device.devices);
+    const deviceInstances = deviceUtils.getDeviceInstances(device, devices);
 
     const result = await TrezorConnect.wipeDevice({
         device: {
@@ -84,7 +89,7 @@ export const wipeDevice = () => async (dispatch: Dispatch, getState: GetState) =
         // and call SUITE.FORGET_DEVICE on ALL devices (with old and new device.id)
         const state = getState();
         const newDevice = state.suite.device;
-        deviceInstances.push(...deviceUtils.getDeviceInstances(newDevice!, state.devices));
+        deviceInstances.push(...deviceUtils.getDeviceInstances(newDevice!, devices));
         deviceInstances.forEach(d => {
             dispatch(suiteActions.forgetDevice(d));
         });

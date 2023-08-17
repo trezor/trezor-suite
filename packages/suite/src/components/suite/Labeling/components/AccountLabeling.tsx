@@ -1,11 +1,15 @@
 import React from 'react';
+
 import { findAccountDevice } from '@suite-common/wallet-utils';
+
 import { isSelectedDevice } from 'src/utils/suite/device';
 import { AccountLabel } from 'src/components/suite';
 import { Account as WalletAccount } from 'src/types/wallet';
 import { useSelector } from 'src/hooks/suite';
-import { WalletLabeling } from './WalletLabeling';
 import { selectLabelingDataForAccount } from 'src/reducers/suite/metadataReducer';
+import { selectDevices } from 'src/reducers/suite/deviceReducer';
+
+import { WalletLabeling } from './WalletLabeling';
 
 interface AccountProps {
     account: WalletAccount | WalletAccount[];
@@ -13,7 +17,7 @@ interface AccountProps {
 
 export const AccountLabeling = ({ account }: AccountProps) => {
     const device = useSelector(state => state.suite.device);
-    const devices = useSelector(state => state.devices);
+    const devices = useSelector(selectDevices);
 
     const accounts = !Array.isArray(account) ? [account] : account;
     const { symbol, index, accountType, key } = accounts[0];

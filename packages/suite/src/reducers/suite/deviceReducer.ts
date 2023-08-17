@@ -381,5 +381,6 @@ export const prepareDeviceReducer = createReducerWithExtraDeps(initialState, (bu
 });
 
 export const selectDevices = (state: DeviceRootState) => state.device.devices;
+export const selectDeviceCount = (state: DeviceRootState) => state.device.devices.length;
 export const selectIsPendingTransportEvent = (state: DeviceRootState) =>
     state.device.devices.length < 1;

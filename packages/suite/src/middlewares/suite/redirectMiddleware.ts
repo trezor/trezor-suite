@@ -1,8 +1,10 @@
 import { MiddlewareAPI } from 'redux';
+
 import { SUITE } from 'src/actions/suite/constants';
 import * as routerActions from 'src/actions/suite/routerActions';
-
 import { AppState, Action, Dispatch, TrezorDevice } from 'src/types/suite';
+
+import { selectDevices } from '../../reducers/suite/deviceReducer';
 
 const handleDeviceRedirect = (dispatch: Dispatch, state: AppState, device?: TrezorDevice) => {
     // no device, no redirect
@@ -10,7 +12,7 @@ const handleDeviceRedirect = (dispatch: Dispatch, state: AppState, device?: Trez
         return;
     }
 
-    const { devices } = state;
+    const devices = selectDevices(state);
 
     // more then one device is connected, user might be working with previously connected device.
     // redirect is not desirable here

@@ -195,7 +195,7 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 case GRAPH.ACCOUNT_GRAPH_FAIL: {
                     const device = api
                         .getState()
-                        .devices.find(d => d.state === action.payload.account.deviceState);
+                        .device.devices.find(d => d.state === action.payload.account.deviceState);
                     if (isDeviceRemembered(device)) {
                         storageActions.saveGraph([action.payload]);
                     }
@@ -260,7 +260,7 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                     const state = api.getState();
                     affectedAccounts.forEach(key => {
                         const account = selectAccountByKey(state, key);
-                        const device = account && findAccountDevice(account, state.devices);
+                        const device = account && findAccountDevice(account, state.device.devices);
                         if (device && isDeviceRemembered(device)) {
                             api.dispatch(storageActions.saveCoinjoinAccount(key));
                         }

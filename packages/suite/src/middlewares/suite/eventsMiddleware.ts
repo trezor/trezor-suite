@@ -75,12 +75,12 @@ const eventsMiddleware =
             const { notifications } = api.getState();
             const affectedDevices =
                 action.type === SUITE.FORGET_DEVICE
-                    ? prevState.devices.filter(
+                    ? prevState.device.devices.filter(
                           d =>
                               d.path === action.payload.path &&
                               d.instance === action.payload.instance,
                       )
-                    : prevState.devices.filter(d => d.path === action.payload.path);
+                    : prevState.device.devices.filter(d => d.path === action.payload.path);
             affectedDevices.forEach(d => {
                 if (!d.remember) {
                     const toRemove = notifications.filter(n =>

@@ -1,4 +1,5 @@
 import { DEVICE } from '@trezor/connect';
+
 import { SUITE } from 'src/actions/suite/constants';
 
 const { getConnectDevice, getSuiteDevice } = global.JestMocks;
@@ -10,7 +11,7 @@ const SUITE_DEVICE = getSuiteDevice();
 const connect = [
     {
         description: 'Connect device (0 connected, 0 affected)',
-        initialState: [],
+        initialState: { devices: [] },
         actions: [
             {
                 type: DEVICE.CONNECT,
@@ -28,11 +29,13 @@ const connect = [
     },
     {
         description: 'Connect device (1 connected, 0 affected)',
-        initialState: [
-            getSuiteDevice(undefined, {
-                device_id: 'ignored-device-id',
-            }),
-        ],
+        initialState: {
+            devices: [
+                getSuiteDevice(undefined, {
+                    device_id: 'ignored-device-id',
+                }),
+            ],
+        },
         actions: [
             {
                 type: DEVICE.CONNECT,
@@ -60,7 +63,7 @@ const connect = [
     },
     {
         description: 'Connect device (1 connected, 1 affected)',
-        initialState: [SUITE_DEVICE],
+        initialState: { devices: [SUITE_DEVICE] },
         actions: [
             {
                 type: DEVICE.CONNECT,
@@ -78,12 +81,14 @@ const connect = [
     },
     {
         description: 'Connect device (1 connected, 2 instances, 2 affected)',
-        initialState: [
-            getSuiteDevice({
-                instance: 1,
-            }),
-            SUITE_DEVICE,
-        ],
+        initialState: {
+            devices: [
+                getSuiteDevice({
+                    instance: 1,
+                }),
+                SUITE_DEVICE,
+            ],
+        },
         actions: [
             {
                 type: DEVICE.CONNECT,
@@ -107,12 +112,14 @@ const connect = [
     },
     {
         description: 'Connect device (2 connected, 1 affected)',
-        initialState: [
-            getSuiteDevice(undefined, {
-                device_id: 'ignored-device-id',
-            }),
-            SUITE_DEVICE,
-        ],
+        initialState: {
+            devices: [
+                getSuiteDevice(undefined, {
+                    device_id: 'ignored-device-id',
+                }),
+                SUITE_DEVICE,
+            ],
+        },
         actions: [
             {
                 type: DEVICE.CONNECT,
@@ -139,12 +146,14 @@ const connect = [
     },
     {
         description: 'Connect acquired device and replace unacquired',
-        initialState: [
-            getSuiteDevice({
-                type: 'unacquired',
-                path: '1',
-            }),
-        ],
+        initialState: {
+            devices: [
+                getSuiteDevice({
+                    type: 'unacquired',
+                    path: '1',
+                }),
+            ],
+        },
         actions: [
             {
                 type: DEVICE.CONNECT,
@@ -164,16 +173,18 @@ const connect = [
     {
         description:
             'Connect device with different "passphrase_protection" (create new missing instance)',
-        initialState: [
-            getSuiteDevice(
-                {
-                    instance: 1,
-                },
-                {
-                    passphrase_protection: true,
-                },
-            ),
-        ],
+        initialState: {
+            devices: [
+                getSuiteDevice(
+                    {
+                        instance: 1,
+                    },
+                    {
+                        passphrase_protection: true,
+                    },
+                ),
+            ],
+        },
         actions: [
             {
                 type: DEVICE.CONNECT,
@@ -207,7 +218,7 @@ const connect = [
     },
     {
         description: 'Connect unacquired device',
-        initialState: [],
+        initialState: { devices: [] },
         actions: [
             {
                 type: DEVICE.CONNECT_UNACQUIRED,
@@ -226,12 +237,14 @@ const connect = [
     },
     {
         description: 'Connect unacquired device which already exists in reducer',
-        initialState: [
-            getSuiteDevice({
-                type: 'unacquired',
-                path: '1',
-            }),
-        ],
+        initialState: {
+            devices: [
+                getSuiteDevice({
+                    type: 'unacquired',
+                    path: '1',
+                }),
+            ],
+        },
         actions: [
             {
                 type: DEVICE.CONNECT_UNACQUIRED,
@@ -253,11 +266,13 @@ const connect = [
 const disconnect = [
     {
         description: 'Disconnect device using path',
-        initialState: [
-            getSuiteDevice({
-                path: '1',
-            }),
-        ],
+        initialState: {
+            devices: [
+                getSuiteDevice({
+                    path: '1',
+                }),
+            ],
+        },
         actions: [
             {
                 type: DEVICE.DISCONNECT,
@@ -270,7 +285,7 @@ const disconnect = [
     },
     {
         description: 'Disconnect device using device_id',
-        initialState: [SUITE_DEVICE],
+        initialState: { devices: [SUITE_DEVICE] },
         actions: [
             {
                 type: DEVICE.DISCONNECT,
@@ -281,13 +296,15 @@ const disconnect = [
     },
     {
         description: 'Disconnect remembered device',
-        initialState: [
-            getSuiteDevice({
-                path: '1',
-                remember: true,
-                state: 'abc',
-            }),
-        ],
+        initialState: {
+            devices: [
+                getSuiteDevice({
+                    path: '1',
+                    remember: true,
+                    state: 'abc',
+                }),
+            ],
+        },
         actions: [
             {
                 type: DEVICE.DISCONNECT,
@@ -307,19 +324,21 @@ const disconnect = [
     },
     {
         description: 'Disconnect remembered device (2 instances)',
-        initialState: [
-            getSuiteDevice({
-                path: '1',
-                remember: true,
-                state: 'abc',
-            }),
-            getSuiteDevice({
-                path: '1',
-                remember: true,
-                instance: 1,
-                state: 'cba',
-            }),
-        ],
+        initialState: {
+            devices: [
+                getSuiteDevice({
+                    path: '1',
+                    remember: true,
+                    state: 'abc',
+                }),
+                getSuiteDevice({
+                    path: '1',
+                    remember: true,
+                    instance: 1,
+                    state: 'cba',
+                }),
+            ],
+        },
         actions: [
             {
                 type: DEVICE.DISCONNECT,
@@ -347,20 +366,22 @@ const disconnect = [
     },
     {
         description: 'Disconnect device (2 connected, 1 affected)',
-        initialState: [
-            getSuiteDevice(
-                {
-                    path: '2',
-                    connected: true,
-                },
-                {
-                    device_id: 'ignored-device-id',
-                },
-            ),
-            getSuiteDevice({
-                path: '1',
-            }),
-        ],
+        initialState: {
+            devices: [
+                getSuiteDevice(
+                    {
+                        path: '2',
+                        connected: true,
+                    },
+                    {
+                        device_id: 'ignored-device-id',
+                    },
+                ),
+                getSuiteDevice({
+                    path: '1',
+                }),
+            ],
+        },
         actions: [
             {
                 type: DEVICE.DISCONNECT,
@@ -381,12 +402,14 @@ const disconnect = [
     },
     {
         description: `Disconnect unacquired device`,
-        initialState: [
-            getSuiteDevice({
-                type: 'unacquired',
-                path: '1',
-            }),
-        ],
+        initialState: {
+            devices: [
+                getSuiteDevice({
+                    type: 'unacquired',
+                    path: '1',
+                }),
+            ],
+        },
         actions: [
             {
                 type: DEVICE.DISCONNECT,
@@ -400,7 +423,7 @@ const disconnect = [
     },
     {
         description: `Disconnect device which doesn't exists in reducer`,
-        initialState: [],
+        initialState: { devices: [] },
         actions: [
             {
                 type: DEVICE.DISCONNECT,
@@ -414,17 +437,19 @@ const disconnect = [
 const changed = [
     {
         description: `Change status available > occupied (using path)`,
-        initialState: [
-            getSuiteDevice(
-                {
-                    path: '1',
-                    connected: true,
-                },
-                {
-                    device_id: null,
-                },
-            ),
-        ],
+        initialState: {
+            devices: [
+                getSuiteDevice(
+                    {
+                        path: '1',
+                        connected: true,
+                    },
+                    {
+                        device_id: null,
+                    },
+                ),
+            ],
+        },
         actions: [
             {
                 type: DEVICE.CHANGED,
@@ -450,7 +475,7 @@ const changed = [
     },
     {
         description: `Change unacquired device`,
-        initialState: [],
+        initialState: { devices: [] },
         actions: [
             {
                 type: DEVICE.CHANGED,
@@ -464,12 +489,14 @@ const changed = [
     },
     {
         description: `Change device (2 connected, 1 affected)`,
-        initialState: [
-            getSuiteDevice(undefined, {
-                device_id: 'ignored-device-id',
-            }),
-            getSuiteDevice({ connected: true }),
-        ],
+        initialState: {
+            devices: [
+                getSuiteDevice(undefined, {
+                    device_id: 'ignored-device-id',
+                }),
+                getSuiteDevice({ connected: true }),
+            ],
+        },
         actions: [
             {
                 type: DEVICE.CHANGED,
@@ -495,7 +522,7 @@ const changed = [
     },
     {
         description: `Change device with on device with different "passphrase_protection" (shouldn't be changed)`,
-        initialState: [SUITE_DEVICE],
+        initialState: { devices: [SUITE_DEVICE] },
         actions: [
             {
                 type: DEVICE.CHANGED,
@@ -520,7 +547,7 @@ const changed = [
     },
     {
         description: `Change device which doesn't exists in reducer`,
-        initialState: [],
+        initialState: { devices: [] },
         actions: [
             {
                 type: DEVICE.CHANGED,
@@ -531,14 +558,16 @@ const changed = [
     },
     {
         description: `features are not overridden when device is locked`,
-        initialState: [
-            getSuiteDevice(
-                // Reducer doesn't try to merge non-connected devices.
-                // Set `connected` to `true` to overcome that.
-                { connected: true },
-                { safety_checks: 'Strict', unlocked: true },
-            ),
-        ],
+        initialState: {
+            devices: [
+                getSuiteDevice(
+                    // Reducer doesn't try to merge non-connected devices.
+                    // Set `connected` to `true` to overcome that.
+                    { connected: true },
+                    { safety_checks: 'Strict', unlocked: true },
+                ),
+            ],
+        },
         actions: [
             {
                 type: DEVICE.CHANGED,
@@ -561,7 +590,7 @@ const changed = [
 const updateTimestamp = [
     {
         description: `Select device (1 connected, 1 affected)`,
-        initialState: [SUITE_DEVICE],
+        initialState: { devices: [SUITE_DEVICE] },
         actions: [
             {
                 type: SUITE.SELECT_DEVICE,
@@ -579,12 +608,14 @@ const updateTimestamp = [
     },
     {
         description: `Select device (2 connected, 1 affected)`,
-        initialState: [
-            getSuiteDevice(undefined, {
-                device_id: 'ignored-device-id',
-            }),
-            SUITE_DEVICE,
-        ],
+        initialState: {
+            devices: [
+                getSuiteDevice(undefined, {
+                    device_id: 'ignored-device-id',
+                }),
+                SUITE_DEVICE,
+            ],
+        },
         actions: [
             {
                 type: SUITE.SELECT_DEVICE,
@@ -607,7 +638,7 @@ const updateTimestamp = [
     },
     {
         description: `Select device instance (2 instances, 1 affected)`,
-        initialState: [SUITE_DEVICE, getSuiteDevice({ instance: 1 })],
+        initialState: { devices: [SUITE_DEVICE, getSuiteDevice({ instance: 1 })] },
         actions: [
             {
                 type: SUITE.SELECT_DEVICE,
@@ -632,7 +663,7 @@ const updateTimestamp = [
     },
     {
         description: `Select first then second instance (2 instances, 2 affected)`,
-        initialState: [SUITE_DEVICE, getSuiteDevice({ instance: 1 })],
+        initialState: { devices: [SUITE_DEVICE, getSuiteDevice({ instance: 1 })] },
         actions: [
             {
                 type: SUITE.SELECT_DEVICE,
@@ -661,7 +692,7 @@ const updateTimestamp = [
     },
     {
         description: `Select device (0 connected, 0 affected)`,
-        initialState: [],
+        initialState: { devices: [] },
         actions: [
             {
                 type: SUITE.SELECT_DEVICE,
@@ -672,7 +703,7 @@ const updateTimestamp = [
     },
     {
         description: `Select device which doesn't exists in reducer`,
-        initialState: [],
+        initialState: { devices: [] },
         actions: [
             {
                 type: SUITE.SELECT_DEVICE,
@@ -687,7 +718,7 @@ const updateTimestamp = [
 const changePassphraseMode = [
     {
         description: `Receive passphrase mode: true > false`,
-        initialState: [SUITE_DEVICE],
+        initialState: { devices: [SUITE_DEVICE] },
         actions: [
             {
                 type: SUITE.UPDATE_PASSPHRASE_MODE,
@@ -703,12 +734,14 @@ const changePassphraseMode = [
     },
     {
         description: `Receive passphrase mode (2 connected, 1 affected)`,
-        initialState: [
-            getSuiteDevice(undefined, {
-                device_id: 'ignored-device-id',
-            }),
-            SUITE_DEVICE,
-        ],
+        initialState: {
+            devices: [
+                getSuiteDevice(undefined, {
+                    device_id: 'ignored-device-id',
+                }),
+                SUITE_DEVICE,
+            ],
+        },
         actions: [
             {
                 type: SUITE.UPDATE_PASSPHRASE_MODE,
@@ -733,7 +766,7 @@ const changePassphraseMode = [
     },
     {
         description: `Update passphrase mode (2 instances, 1 affected)`,
-        initialState: [SUITE_DEVICE, getSuiteDevice({ instance: 1 })],
+        initialState: { devices: [SUITE_DEVICE, getSuiteDevice({ instance: 1 })] },
         actions: [
             {
                 type: SUITE.UPDATE_PASSPHRASE_MODE,
@@ -760,7 +793,7 @@ const changePassphraseMode = [
     },
     {
         description: `device is unacquired`,
-        initialState: [SUITE_DEVICE],
+        initialState: { devices: [SUITE_DEVICE] },
         actions: [
             {
                 type: SUITE.UPDATE_PASSPHRASE_MODE,
@@ -778,7 +811,7 @@ const changePassphraseMode = [
     },
     {
         description: `device doesn't exists in reducer`,
-        initialState: [],
+        initialState: { devices: [] },
         actions: [
             {
                 type: SUITE.UPDATE_PASSPHRASE_MODE,
@@ -793,7 +826,7 @@ const changePassphraseMode = [
 const authDevice = [
     {
         description: `Auth device`,
-        initialState: [SUITE_DEVICE],
+        initialState: { devices: [SUITE_DEVICE] },
         actions: [
             {
                 type: SUITE.AUTH_DEVICE,
@@ -809,12 +842,14 @@ const authDevice = [
     },
     {
         description: `Auth device (2 connected, 1 affected)`,
-        initialState: [
-            getSuiteDevice(undefined, {
-                device_id: 'ignored-device-id',
-            }),
-            SUITE_DEVICE,
-        ],
+        initialState: {
+            devices: [
+                getSuiteDevice(undefined, {
+                    device_id: 'ignored-device-id',
+                }),
+                SUITE_DEVICE,
+            ],
+        },
         actions: [
             {
                 type: SUITE.AUTH_DEVICE,
@@ -839,7 +874,7 @@ const authDevice = [
     },
     {
         description: `Auth device (2 instances, 1 affected)`,
-        initialState: [SUITE_DEVICE, getSuiteDevice({ instance: 1 })],
+        initialState: { devices: [SUITE_DEVICE, getSuiteDevice({ instance: 1 })] },
         actions: [
             {
                 type: SUITE.AUTH_DEVICE,
@@ -866,7 +901,7 @@ const authDevice = [
     },
     {
         description: `device is unacquired`,
-        initialState: [SUITE_DEVICE],
+        initialState: { devices: [SUITE_DEVICE] },
         actions: [
             {
                 type: SUITE.AUTH_DEVICE,
@@ -883,8 +918,8 @@ const authDevice = [
         ],
     },
     {
-        description: `device doesn't exists in reducer`,
-        initialState: [],
+        description: `device doesn't exist in reducer`,
+        initialState: { devices: [] },
         actions: [
             {
                 type: SUITE.AUTH_DEVICE,
@@ -899,7 +934,7 @@ const authDevice = [
 const createInstance = [
     {
         description: `Create instance, 1 connected`,
-        initialState: [SUITE_DEVICE],
+        initialState: { devices: [SUITE_DEVICE] },
         actions: [
             {
                 type: SUITE.CREATE_DEVICE_INSTANCE,
@@ -923,12 +958,14 @@ const createInstance = [
     },
     {
         description: `Create instance, 2 connected, 1 affected`,
-        initialState: [
-            getSuiteDevice(undefined, {
-                device_id: 'ignored-device-id',
-            }),
-            SUITE_DEVICE,
-        ],
+        initialState: {
+            devices: [
+                getSuiteDevice(undefined, {
+                    device_id: 'ignored-device-id',
+                }),
+                SUITE_DEVICE,
+            ],
+        },
         actions: [
             {
                 type: SUITE.CREATE_DEVICE_INSTANCE,
@@ -957,7 +994,9 @@ const createInstance = [
     },
     {
         description: `Create instance from instance`,
-        initialState: [SUITE_DEVICE, getSuiteDevice({ instance: 1 })],
+        initialState: {
+            devices: [SUITE_DEVICE, getSuiteDevice({ instance: 1 })],
+        },
         actions: [
             {
                 type: SUITE.CREATE_DEVICE_INSTANCE,
@@ -987,7 +1026,6 @@ const createInstance = [
     },
     {
         description: `device is unacquired`,
-        initialState: [SUITE_DEVICE],
         actions: [
             {
                 type: SUITE.CREATE_DEVICE_INSTANCE,
@@ -996,42 +1034,34 @@ const createInstance = [
                 }),
             },
         ],
+        initialState: { devices: [SUITE_DEVICE] },
         result: [
             {
                 state: undefined,
             },
         ],
     },
-    // {
-    //     description: `device doesn't exists in reducer`,
-    //     initialState: [],
-    //     actions: [
-    //         {
-    //             type: SUITE.CREATE_DEVICE_INSTANCE,
-    //             payload: SUITE_DEVICE,
-    //         },
-    //     ],
-    //     result: [],
-    // },
 ];
 
 const forget = [
     {
         description: `Forget multiple instances (2 connected, 5 instances, 3 affected, last instance remains with undefined state)`,
-        initialState: [
-            getSuiteDevice(undefined, {
-                device_id: 'ignored-device-id',
-            }),
-            getSuiteDevice(
-                { instance: 1 },
-                {
+        initialState: {
+            devices: [
+                getSuiteDevice(undefined, {
                     device_id: 'ignored-device-id',
-                },
-            ),
-            getSuiteDevice({ state: 'state', connected: true, instance: 3 }),
-            SUITE_DEVICE,
-            getSuiteDevice({ instance: 1 }),
-        ],
+                }),
+                getSuiteDevice(
+                    { instance: 1 },
+                    {
+                        device_id: 'ignored-device-id',
+                    },
+                ),
+                getSuiteDevice({ state: 'state', connected: true, instance: 3 }),
+                SUITE_DEVICE,
+                getSuiteDevice({ instance: 1 }),
+            ],
+        },
         actions: [
             {
                 type: SUITE.FORGET_DEVICE,
@@ -1068,20 +1098,22 @@ const forget = [
     },
     {
         description: `Forget three instances one by one (2 connected, 5 instances, 3 affected)`,
-        initialState: [
-            getSuiteDevice(undefined, {
-                device_id: 'ignored-device-id',
-            }),
-            getSuiteDevice(
-                { instance: 1 },
-                {
+        initialState: {
+            devices: [
+                getSuiteDevice(undefined, {
                     device_id: 'ignored-device-id',
-                },
-            ),
-            SUITE_DEVICE,
-            getSuiteDevice({ instance: 1 }),
-            getSuiteDevice({ instance: 3 }),
-        ],
+                }),
+                getSuiteDevice(
+                    { instance: 1 },
+                    {
+                        device_id: 'ignored-device-id',
+                    },
+                ),
+                SUITE_DEVICE,
+                getSuiteDevice({ instance: 1 }),
+                getSuiteDevice({ instance: 3 }),
+            ],
+        },
         actions: [
             {
                 type: SUITE.FORGET_DEVICE,
@@ -1115,7 +1147,7 @@ const forget = [
     },
     {
         description: `device is unacquired`,
-        initialState: [SUITE_DEVICE],
+        initialState: { devices: [SUITE_DEVICE] },
         actions: [
             {
                 type: SUITE.FORGET_DEVICE,
@@ -1131,8 +1163,8 @@ const forget = [
         ],
     },
     {
-        description: `instance doesn't exists in reducer`,
-        initialState: [],
+        description: `instance doesn't exist in reducer`,
+        initialState: { devices: [] },
         actions: [
             {
                 type: SUITE.FORGET_DEVICE,
@@ -1146,7 +1178,7 @@ const forget = [
 const remember = [
     {
         description: `Remember undefined device`,
-        initialState: [SUITE_DEVICE],
+        initialState: { devices: [SUITE_DEVICE] },
         actions: [
             {
                 type: SUITE.REMEMBER_DEVICE,
@@ -1156,7 +1188,7 @@ const remember = [
     },
     {
         description: `Remember unacquired device`,
-        initialState: [SUITE_DEVICE],
+        initialState: { devices: [SUITE_DEVICE] },
         actions: [
             {
                 type: SUITE.REMEMBER_DEVICE,
@@ -1167,7 +1199,7 @@ const remember = [
     },
     {
         description: `Remember stateless device`,
-        initialState: [SUITE_DEVICE],
+        initialState: { devices: [SUITE_DEVICE] },
         actions: [
             {
                 type: SUITE.REMEMBER_DEVICE,
@@ -1179,7 +1211,7 @@ const remember = [
     },
     {
         description: `Force remember device`,
-        initialState: [SUITE_DEVICE],
+        initialState: { devices: [SUITE_DEVICE] },
         actions: [
             {
                 type: SUITE.REMEMBER_DEVICE,
@@ -1192,11 +1224,13 @@ const remember = [
     },
     {
         description: `Remember device success`,
-        initialState: [
-            getSuiteDevice({
-                state: 'abc',
-            }),
-        ],
+        initialState: {
+            devices: [
+                getSuiteDevice({
+                    state: 'abc',
+                }),
+            ],
+        },
         actions: [
             {
                 type: SUITE.REMEMBER_DEVICE,
@@ -1215,31 +1249,33 @@ const remember = [
     },
     {
         description: `Remember device with multiple instances (few are stateless)`,
-        initialState: [
-            getSuiteDevice({
-                state: 'abc',
-            }),
-            getSuiteDevice({
-                state: 'abc',
-                instance: 1,
-            }),
-            getSuiteDevice({
-                instance: 2,
-            }),
-            getSuiteDevice({
-                state: 'abc',
-                instance: 3,
-            }),
-            getSuiteDevice(
-                {
+        initialState: {
+            devices: [
+                getSuiteDevice({
                     state: 'abc',
-                    path: '2',
-                },
-                {
-                    device_id: 'ignored-device',
-                },
-            ),
-        ],
+                }),
+                getSuiteDevice({
+                    state: 'abc',
+                    instance: 1,
+                }),
+                getSuiteDevice({
+                    instance: 2,
+                }),
+                getSuiteDevice({
+                    state: 'abc',
+                    instance: 3,
+                }),
+                getSuiteDevice(
+                    {
+                        state: 'abc',
+                        path: '2',
+                    },
+                    {
+                        device_id: 'ignored-device',
+                    },
+                ),
+            ],
+        },
         actions: [
             {
                 type: SUITE.REMEMBER_DEVICE,
