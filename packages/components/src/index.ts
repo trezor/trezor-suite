@@ -10,6 +10,7 @@ export * from './support/types';
 export * from './utils/hooks';
 
 export * from './components/buttons/Button/Button';
+export * from './components/buttons/IconButton/IconButton';
 export * from './components/buttons/PinButton/PinButton';
 export * from './components/buttons/TooltipButton/TooltipButton';
 export * from './components/assets/Flag/Flag';
