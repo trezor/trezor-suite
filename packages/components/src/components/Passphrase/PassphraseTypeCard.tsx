@@ -395,7 +395,7 @@ export const PassphraseTypeCard = (props: PassphraseTypeCardProps) => {
                                     isDisabled={!enabled || isTooLong}
                                     variant="primary"
                                     onClick={() => submit(value)}
-                                    fullWidth
+                                    isFullWidth
                                 >
                                     {props.submitLabel}
                                 </ActionButton>
@@ -407,7 +407,7 @@ export const PassphraseTypeCard = (props: PassphraseTypeCardProps) => {
                                 isDisabled={!enabled}
                                 variant="tertiary"
                                 onClick={() => submit(value, true)}
-                                fullWidth
+                                isFullWidth
                                 data-test="@passphrase/enter-on-device-button"
                             >
                                 <FormattedMessage

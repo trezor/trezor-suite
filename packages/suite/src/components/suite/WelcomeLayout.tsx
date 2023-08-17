@@ -167,7 +167,7 @@ export const WelcomeLayout = ({ children }: WelcomeLayoutProps) => {
                                             <Button
                                                 variant="tertiary"
                                                 icon="EXTERNAL_LINK"
-                                                alignIcon="right"
+                                                iconAlignment="right"
                                             >
                                                 <Translation id="TR_ONBOARDING_DOWNLOAD_DESKTOP_APP" />
                                             </Button>
@@ -178,7 +178,7 @@ export const WelcomeLayout = ({ children }: WelcomeLayoutProps) => {
                                         <Button
                                             variant="tertiary"
                                             icon="EXTERNAL_LINK"
-                                            alignIcon="right"
+                                            iconAlignment="right"
                                         >
                                             trezor.io
                                         </Button>

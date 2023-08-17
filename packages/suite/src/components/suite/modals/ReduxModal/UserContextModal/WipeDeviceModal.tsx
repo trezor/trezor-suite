@@ -56,7 +56,7 @@ export const WipeDeviceModal = ({ onCancel }: WipeDeviceModalProps) => {
             description={<Translation id="TR_WIPE_DEVICE_TEXT" />}
             bottomBar={
                 <Button
-                    variant="danger"
+                    variant="destructive"
                     onClick={handleWipeDevice}
                     isDisabled={isLocked() || !checkbox1 || !checkbox2}
                     data-test="@wipe/wipe-button"

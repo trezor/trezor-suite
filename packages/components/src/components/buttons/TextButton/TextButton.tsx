@@ -7,20 +7,20 @@ import { Icon } from '../../assets/Icon/Icon';
 import { Spinner } from '../../loaders/Spinner/Spinner';
 
 const TextButtonContainer = styled.button<{
-    buttonSize: ButtonSize;
-    alignIcon: IconAlignment;
+    size: ButtonSize;
+    iconAlignment: IconAlignment;
     hasIcon: boolean;
 }>`
     display: flex;
     align-items: center;
-    flex-direction: ${({ alignIcon }) => alignIcon === 'right' && 'row-reverse'};
+    flex-direction: ${({ iconAlignment }) => iconAlignment === 'right' && 'row-reverse'};
     gap: ${({ hasIcon }) => hasIcon && spacingsPx.xs};
-    height: ${({ buttonSize }) => (buttonSize === 'small' ? 22 : 26)}px;
+    height: ${({ size }) => (size === 'small' ? 22 : 26)}px;
     padding: 4px;
     border-radius: ${borders.radii.xs};
     background: none;
     color: ${({ theme }) => theme.textPrimaryDefault};
-    ${({ buttonSize }) => (buttonSize === 'small' ? typography.hint : typography.body)};
+    ${({ size }) => (size === 'small' ? typography.hint : typography.body)};
     white-space: nowrap;
     transition: border-color 0.1s ease-out, box-shadow 0.1s ease-out, color 0.1s ease-out;
     outline: none;
@@ -51,28 +51,28 @@ const TextButtonContainer = styled.button<{
     }
 `;
 
-export interface TextButtonProps extends Omit<ButtonProps, 'fullWidth' | 'size' | 'variant'> {
+export interface TextButtonProps extends Omit<ButtonProps, 'isFullWidth' | 'iconSize' | 'variant'> {
     children: React.ReactNode;
 }
 
 export const TextButton = ({
     icon,
-    alignIcon = 'left',
-    buttonSize = 'large',
+    iconAlignment = 'left',
+    size = 'large',
     isDisabled = false,
     isLoading = false,
     children,
     ...rest
 }: TextButtonProps) => {
-    const IconComponent = icon ? <Icon icon={icon} size={getIconSize(buttonSize)} /> : null;
+    const IconComponent = icon ? <Icon icon={icon} size={getIconSize(size)} /> : null;
 
-    const Loader = <Spinner size={getIconSize(buttonSize)} strokeWidth={2} />;
+    const Loader = <Spinner size={getIconSize(size)} strokeWidth={2} />;
 
     return (
         <TextButtonContainer
             hasIcon={!!icon}
-            buttonSize={buttonSize}
-            alignIcon={alignIcon}
+            size={size}
+            iconAlignment={iconAlignment}
             disabled={isDisabled || isLoading}
             {...rest}
         >

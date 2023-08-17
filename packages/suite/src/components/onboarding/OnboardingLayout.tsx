@@ -157,7 +157,7 @@ export const OnboardingLayout = ({ children }: OnboardingLayoutProps) => {
                                         <Button
                                             variant="tertiary"
                                             icon="EXTERNAL_LINK"
-                                            alignIcon="right"
+                                            iconAlignment="right"
                                         >
                                             <Translation id="TR_HELP" />
                                         </Button>

@@ -17,7 +17,7 @@ export const NoTransactions = ({ account }: NoTransactionsProps) => {
             title={<Translation id="TR_TRANSACTIONS_NOT_AVAILABLE" />}
             image="CLOUDY"
             actionComponent={
-                <Button variant="primary" icon="EXTERNAL_LINK" alignIcon="right">
+                <Button variant="primary" icon="EXTERNAL_LINK" iconAlignment="right">
                     <TrezorLink variant="nostyle" href={explorerUrl}>
                         <Translation id="TR_SHOW_DETAILS_IN_BLOCK_EXPLORER" />
                     </TrezorLink>
