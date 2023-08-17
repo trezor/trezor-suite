@@ -157,6 +157,12 @@ export type SuiteAnalyticsEvent =
           };
       }
     | {
+          type: EventType.AccountsDashboardBuy;
+          payload: {
+              symbol: string;
+          };
+      }
+    | {
           type: EventType.TransactionCreated;
           payload: {
               action: 'sent' | 'copied' | 'downloaded' | 'replaced';

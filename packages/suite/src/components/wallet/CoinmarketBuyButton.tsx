@@ -4,6 +4,7 @@ import { Button } from '@trezor/components';
 import { NetworkSymbol } from 'src/types/wallet';
 import { Translation } from 'src/components/suite';
 import { useDispatch, useAccountSearch } from 'src/hooks/suite';
+import { EventType, analytics } from '@trezor/suite-analytics';
 
 interface BuyButtonProps {
     symbol: NetworkSymbol;
@@ -15,6 +16,13 @@ export const CoinmarketBuyButton = ({ symbol, dataTest }: BuyButtonProps) => {
     const { setCoinFilter, setSearchString } = useAccountSearch();
 
     const onClick = () => {
+        analytics.report({
+            type: EventType.AccountsDashboardBuy,
+            payload: {
+                symbol,
+            },
+        });
+
         dispatch(
             routerActions.goto('wallet-coinmarket-buy', {
                 params: {
