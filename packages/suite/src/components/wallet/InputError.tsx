@@ -25,7 +25,7 @@ export const InputError = ({ button, message }: InputErrorProps) => (
         {button &&
             ('url' in button ? (
                 <TrezorLink variant="nostyle" href={button.url}>
-                    <StyledButton variant="tertiary" icon="EXTERNAL_LINK" alignIcon="right">
+                    <StyledButton variant="tertiary" icon="EXTERNAL_LINK" iconAlignment="right">
                         <Translation id="TR_LEARN_MORE" />
                     </StyledButton>
                 </TrezorLink>

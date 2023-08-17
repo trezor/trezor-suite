@@ -44,7 +44,7 @@ export const DeviceBootloader = ({ device }: DeviceBootloaderProps) => {
             heading: <Translation id="TR_WIPE_OR_UPDATE" />,
             description: <Translation id="TR_WIPE_OR_UPDATE_DESCRIPTION" />,
             noBullet: true,
-            action: <Button onClick={gotToDeviceSettings} icon="SETTINGS" size={20} />,
+            action: <Button onClick={gotToDeviceSettings} icon="SETTINGS" iconSize={20} />,
         },
     ];
 
