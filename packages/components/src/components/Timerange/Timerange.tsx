@@ -635,14 +635,14 @@ const Timerange = (props: TimerangeProps) => {
                 />
             </Calendar>
             <Buttons>
-                <Button variant="secondary" onClick={onCancel} fullWidth>
+                <Button variant="secondary" onClick={onCancel} isFullWidth>
                     {props.ctaCancel}
                 </Button>
                 <Button
                     variant="primary"
                     isDisabled={!(state.startDate && state.endDate)}
                     onClick={onSubmit}
-                    fullWidth
+                    isFullWidth
                 >
                     {props.ctaSubmit}
                 </Button>
