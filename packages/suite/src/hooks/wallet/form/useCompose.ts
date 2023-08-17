@@ -21,6 +21,8 @@ import { COMPOSE_ERROR_TYPES } from '@suite-common/wallet-constants';
 const DEFAULT_FIELD = 'outputs.0.amount';
 
 interface Props<TFieldValues extends FormState> extends UseFormReturn<TFieldValues> {
+    // theoretically state should be always defined (and it is in case of useRbfForm/useSendForm)
+    // TODO: but it is not in Coinmarket hooks (Spend, Exchange, Sell)
     state?: ComposeActionContext;
     defaultField?: FieldPath<TFieldValues>;
 }
@@ -36,8 +38,7 @@ export const useCompose = <TFieldValues extends FormState>({
     ...props
 }: Props<TFieldValues>) => {
     const [isLoading, setLoading] = useState(false);
-    const [composeRequestID, setComposeRequestID] = useState(0);
-    const composeRequestIDRef = useRef(composeRequestID);
+    const composeRequestIDRef = useRef(0);
     const defaultFieldRef = useRef(defaultField || DEFAULT_FIELD);
     const [composedLevels, setComposedLevels] =
         useState<SendContextValues['composedLevels']>(undefined);
@@ -53,40 +54,14 @@ export const useCompose = <TFieldValues extends FormState>({
     // This allows the hook to set values and errors for fields shared among multiple forms without passing them as arguments.
     const { setError, setValue } = props as unknown as UseFormReturn<FormState>;
 
-    // compose process
-    // call sendFormAction with debounce
-    const compose = useCallback(async () => {
-        if (!state) return;
-        const composeInner = async () => {
-            if (Object.keys(errors).length > 0) return;
-            const values = getValues();
-            const result = await dispatch(composeTransaction(values, state));
-            return result;
-        };
-
-        setLoading(true);
-        // store current request ID before async debounced process and compare it later. see explanation below
-        const resultID = composeRequestIDRef.current;
-        const result = await debounce(composeInner);
-        // RACE-CONDITION NOTE:
-        // resultID could be outdated when composeRequestID was updated by another upcoming/pending composeRequest and render tick didn't process it yet,
-        // therefore another debounce process was not called yet to interrupt current one
-        // unexpected result: `updateComposedValues` is trying to work with updated/newer FormState
-        if (resultID !== composeRequestIDRef.current) return;
-        if (result) {
-            setComposedLevels(result);
-        }
-        setLoading(false);
-    }, [debounce, dispatch, getValues, errors, state]);
-
     // update composeRequestID
     const composeRequest = useCallback(
-        (field = defaultFieldRef.current) => {
+        async (field = defaultFieldRef.current) => {
+            if (!state) return;
             // reset precomposed transactions
             setComposedLevels(undefined);
             // set ref for later use in useEffect
             composeRequestIDRef.current += 1;
-            setComposeRequestID(composeRequestIDRef.current);
             // clear errors from previous compose process
             const composeErrors = findComposeErrors(errors);
             if (composeErrors.length > 0) {
@@ -94,8 +69,36 @@ export const useCompose = <TFieldValues extends FormState>({
             }
             // set field value for later use in updateComposedValues
             setComposeField(field);
+            // start composing
+            setLoading(true);
+
+            // store current request ID before async debounced process and compare it later. see explanation below
+            const resultID = composeRequestIDRef.current;
+            const result = await debounce(() => {
+                if (Object.keys(errors).length > 0) {
+                    return Promise.resolve(undefined);
+                }
+
+                const values = getValues();
+                return dispatch(composeTransaction(values, state));
+            });
+
+            // RACE-CONDITION NOTE:
+            // resultID could be outdated when composeRequestID was updated by another upcoming/pending composeRequest and render tick didn't process it yet,
+            // therefore another debounce process was not called yet to interrupt current one
+            // unexpected result: `updateComposedValues` is trying to work with updated/newer FormState
+            if (resultID === composeRequestIDRef.current) {
+                if (result) {
+                    // set new composed transactions
+                    setComposedLevels(result);
+                } else {
+                    // result undefined: (FormState got errors or sendFormActions got errors)
+                    // undefined result will not be processed by useEffect below, reset loader
+                    setLoading(false);
+                }
+            }
         },
-        [errors, clearErrors],
+        [state, errors, debounce, clearErrors, getValues, dispatch],
     );
 
     // update fields AFTER composedLevels change or selectedFee change (below)
@@ -108,6 +111,7 @@ export const useCompose = <TFieldValues extends FormState>({
                     // composed tx doesn't have an errorMessage (Translation props)
                     // this error is unexpected and should be handled in sendFormActions
                     console.warn('Compose unexpected error', error);
+                    setLoading(false);
                     return;
                 }
 
@@ -125,10 +129,9 @@ export const useCompose = <TFieldValues extends FormState>({
                     setError(defaultFieldRef.current as FieldPath<FormState>, formError);
                 } else if (values.outputs) {
                     // setError to the all `Amount` fields, composeField is not specified (load draft case)
-                    values.outputs.forEach((_, i) => {
-                        setError(`outputs.${i}.amount`, formError);
-                    });
+                    values.outputs.forEach((_, i) => setError(`outputs.${i}.amount`, formError));
                 }
+                setLoading(false);
                 return;
             }
 
@@ -139,6 +142,7 @@ export const useCompose = <TFieldValues extends FormState>({
 
             // update feeLimit field if present (calculated from ethereum data size)
             setValue('estimatedFeeLimit', composed.estimatedFeeLimit);
+            setLoading(false);
         },
         [composeField, getValues, setValue, errors, setError, clearErrors, translationString],
     );
@@ -202,10 +206,12 @@ export const useCompose = <TFieldValues extends FormState>({
         [getValues, setValue, updateComposedValues],
     );
 
-    // handle composeRequestID change, trigger compose process
+    // trigger initial compose process
     useEffect(() => {
-        compose();
-    }, [composeRequestID, compose]);
+        if (state && composeRequestIDRef.current === 0) {
+            composeRequest();
+        }
+    }, [state, composeRequest]);
 
     // handle composedLevels change
     useEffect(() => {

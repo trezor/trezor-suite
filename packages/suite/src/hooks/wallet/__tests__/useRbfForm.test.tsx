@@ -5,7 +5,6 @@ import * as fixtures from '../__fixtures__/useRbfForm';
 import {
     renderWithProviders,
     waitForLoader,
-    waitForRender,
     actionSequence,
     findByTestId,
 } from 'src/support/tests/hooksHelper';
@@ -78,12 +77,8 @@ interface TestCallback {
 const Component = ({ callback }: { callback: TestCallback }) => {
     const values = useRbfContext();
     callback.getContextValues = () => values;
-    const [loading, setLoading] = React.useState(false);
-    React.useEffect(() => {
-        setLoading(values.isLoading);
-    }, [loading, values.isLoading]);
 
-    return loading ? <div>Loading</div> : null;
+    return values.isLoading ? <div>Loading</div> : null;
 };
 
 describe('useRbfForm hook', () => {
@@ -135,13 +130,6 @@ describe('useRbfForm hook', () => {
             await waitForLoader();
 
             if (!callback.getContextValues) throw Error('callback.getContextValues missing');
-
-            if (f.expectRerender) {
-                await waitForRender();
-
-                // wait for possible second render (decrease, set-max calculation)
-                await waitForLoader();
-            }
 
             const { composedLevels } = callback.getContextValues();
 
