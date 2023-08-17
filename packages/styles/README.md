@@ -174,10 +174,10 @@ Extend property could be single object of array of objects:
 ```tsx
 type MyButtonStyleProps = {
     isBlueButton: boolean;
-    buttonSize: 'big' | 'small';
+    size: 'big' | 'small';
 };
 
-const myButtonStyle = prepareStyle<MyButtonStyleProps>((utils, { isBlueButton, buttonSize }) => ({
+const myButtonStyle = prepareStyle<MyButtonStyleProps>((utils, { isBlueButton, size }) => ({
     cursor: 'pointer',
     width: '100px',
     color: colors.red,
@@ -189,7 +189,7 @@ const myButtonStyle = prepareStyle<MyButtonStyleProps>((utils, { isBlueButton, b
             },
         },
         {
-            condition: buttonSize === 'big',
+            condition: size === 'big',
             style: {
                 width: '200px',
             },

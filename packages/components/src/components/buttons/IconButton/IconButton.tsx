@@ -18,8 +18,12 @@ const Label = styled.span<{ isDisabled: boolean }>`
 `;
 
 export interface IconButtonProps
-    extends Omit<ButtonProps, 'fullWidth' | 'size' | 'alignIcon' | 'variant' | 'children'> {
+    extends Omit<
+        ButtonProps,
+        'isFullWidth' | 'iconAlignment' | 'iconSize' | 'variant' | 'children'
+    > {
     icon: IconType;
+    iconSize?: number;
     variant?: Exclude<ButtonVariant, 'danger'>;
     label?: React.ReactNode;
 }
@@ -28,7 +32,8 @@ export const IconButton = ({
     icon,
     label,
     variant = 'primary',
-    buttonSize = 'large',
+    size = 'large',
+    iconSize,
     isDisabled = false,
     isLoading = false,
     ...rest
@@ -38,17 +43,17 @@ export const IconButton = ({
     const IconComponent = (
         <Icon
             icon={icon}
-            size={getIconSize(buttonSize)}
+            size={iconSize || getIconSize(size)}
             color={getIconColor(variant, isDisabled, theme)}
         />
     );
 
-    const Loader = <Spinner size={getIconSize(buttonSize)} strokeWidth={2} />;
+    const Loader = <Spinner size={getIconSize(size)} strokeWidth={2} />;
 
     return (
         <IconButtonContainer
             variant={variant}
-            size={buttonSize}
+            size={size}
             disabled={isDisabled || isLoading}
             {...rest}
         >
