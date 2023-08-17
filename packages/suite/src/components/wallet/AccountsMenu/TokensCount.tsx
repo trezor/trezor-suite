@@ -24,7 +24,7 @@ export const TokensCount = ({ count, onClick }: TokensCountProps) => {
         <ButtonBadge
             icon="PLUS"
             variant="tertiary"
-            size={10}
+            iconSize={10}
             color={theme.TYPE_LIGHT_GREY}
             onClick={onClick}
         >

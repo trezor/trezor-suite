@@ -31,7 +31,7 @@ export const WipeDevice = ({ isDeviceLocked }: WipeDeviceProps) => {
             <ActionColumn>
                 <ActionButton
                     onClick={handleClick}
-                    variant="danger"
+                    variant="destructive"
                     isDisabled={isDeviceLocked}
                     data-test="@settings/device/open-wipe-modal-button"
                 >
