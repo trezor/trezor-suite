@@ -74,6 +74,11 @@ export const actionSequence = <A extends UserAction[]>(
                     await user.hover(element);
                 }
                 if (action.type === 'click') {
+                    const isDisabled = element.getAttributeNames().includes('disabled');
+                    if (isDisabled) {
+                        throw new Error('Unable to perform pointer interaction');
+                    }
+
                     await user.click(element);
                 } else if (action.type === 'input') {
                     const { value } = action;

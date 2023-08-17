@@ -5,9 +5,9 @@ module.exports = {
     logLevel: 'debug',
     addons: [
         getAbsolutePath('@storybook/addon-links'),
+        getAbsolutePath('@storybook/addon-controls'),
         getAbsolutePath('@storybook/addon-knobs'),
         getAbsolutePath('@storybook/addon-viewport'),
-        getAbsolutePath('@storybook/addon-controls'),
     ],
     staticDirs: ['../public'],
     framework: {
