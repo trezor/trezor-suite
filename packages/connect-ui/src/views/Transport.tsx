@@ -15,7 +15,7 @@ export const Transport = () => (
         image={<Image imageSrc={imageSrc} />}
         buttons={
             <Link variant="nostyle" href={SUITE_BRIDGE_URL} onClick={() => window.close()}>
-                <Button variant="primary" icon="EXTERNAL_LINK" alignIcon="right">
+                <Button variant="primary" icon="EXTERNAL_LINK" iconAlignment="right">
                     Install Bridge
                 </Button>
             </Link>

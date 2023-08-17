@@ -30,7 +30,7 @@ export const CustomFirmware = () => {
             <ActionColumn>
                 <ActionButton
                     onClick={openModal}
-                    variant="danger"
+                    variant="destructive"
                     isDisabled={isDeviceLocked}
                     data-test="@settings/device/custom-firmware-modal-button"
                 >

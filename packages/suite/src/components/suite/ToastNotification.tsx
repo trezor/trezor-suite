@@ -86,7 +86,7 @@ const ToastNotification = ({
         <StyledButton
             variant={action.variant || 'tertiary'}
             onClick={action.onClick}
-            fullWidth={action.position === 'bottom'}
+            isFullWidth={action.position === 'bottom'}
             $action={action}
         >
             <Translation id={action.label} />

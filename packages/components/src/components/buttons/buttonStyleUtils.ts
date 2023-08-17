@@ -1,7 +1,7 @@
 import { css, DefaultTheme } from 'styled-components';
 import { spacings, spacingsPx } from '@trezor/theme';
 
-export type ButtonVariant = 'primary' | 'secondary' | 'tertiary' | 'danger';
+export type ButtonVariant = 'primary' | 'secondary' | 'tertiary' | 'destructive';
 export type ButtonSize = 'large' | 'medium' | 'small';
 export type IconAlignment = 'left' | 'right';
 
@@ -31,7 +31,7 @@ export const getIconColor = (variant: ButtonVariant, isDisabled: boolean, theme:
             return theme.iconOnSecondary;
         case 'tertiary':
             return theme.iconOnTertiary;
-        case 'danger':
+        case 'destructive':
             return theme.iconAlertRed;
         // no default
     }
@@ -86,7 +86,7 @@ export const getVariantStyle = (variant: ButtonVariant, theme: DefaultTheme) => 
                     background: ${theme.backgroundTertiaryPressedOnElevation0};
                 }
             `;
-        case 'danger':
+        case 'destructive':
             return css`
                 background: ${theme.backgroundAlertRedSubtleOnElevation0};
                 color: ${theme.textAlertRed};
