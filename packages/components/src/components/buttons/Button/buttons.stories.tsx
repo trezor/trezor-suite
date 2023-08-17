@@ -5,7 +5,7 @@ import { capitalizeFirstLetter } from '@trezor/utils';
 import { StoryColumn } from '../../../support/Story';
 import { ButtonVariant } from '../buttonStyleUtils';
 
-const variants: Array<ButtonVariant> = ['primary', 'secondary', 'tertiary', 'danger'];
+const variants: Array<ButtonVariant> = ['primary', 'secondary', 'tertiary', 'destructive'];
 
 storiesOf('Buttons/Button', module).add(
     'All',
@@ -24,7 +24,7 @@ storiesOf('Buttons/Button', module).add(
                     </Button>
                     <Button
                         variant={variant}
-                        buttonSize="medium"
+                        size="medium"
                         data-test={`button-${variant}`}
                         onClick={() => {
                             console.log('click');
@@ -34,7 +34,7 @@ storiesOf('Buttons/Button', module).add(
                     </Button>
                     <Button
                         variant={variant}
-                        buttonSize="small"
+                        size="small"
                         data-test={`button-${variant}`}
                         onClick={() => {
                             console.log('click');
@@ -56,7 +56,7 @@ storiesOf('Buttons/Button', module).add(
                     <Button
                         variant={variant}
                         data-test={`button-${variant}-icon-right`}
-                        alignIcon="right"
+                        iconAlignment="right"
                         icon="PLUS"
                     >
                         {capitalizeFirstLetter(variant)} icon right
@@ -64,7 +64,11 @@ storiesOf('Buttons/Button', module).add(
                     <Button variant={variant} data-test={`button-${variant}-loading`} isLoading>
                         {capitalizeFirstLetter(variant)} loading
                     </Button>
-                    <Button variant={variant} data-test={`button-${variant}-full-width`} fullWidth>
+                    <Button
+                        variant={variant}
+                        data-test={`button-${variant}-full-width`}
+                        isFullWidth
+                    >
                         {capitalizeFirstLetter(variant)} full width
                     </Button>
                     <Button

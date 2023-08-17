@@ -48,7 +48,7 @@ export const CancelCoinjoin = ({ onClose }: CancelCoinjoinProps) => {
                         <Translation id="TR_CANCEL_COINJOIN_NO" />
                     </CancelButton>
                     <StyledButton
-                        variant="danger"
+                        variant="destructive"
                         onClick={() => {
                             dispatch(stopCoinjoinSession(account.key));
                             onClose();

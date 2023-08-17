@@ -79,7 +79,7 @@ const AddWalletButton = ({
                             : '@switch-device/add-wallet-button'
                     }
                     variant="tertiary"
-                    fullWidth
+                    isFullWidth
                     icon="PLUS"
                     isDisabled={isLocked}
                     onClick={onAddWallet}

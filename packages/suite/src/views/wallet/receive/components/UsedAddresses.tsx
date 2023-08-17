@@ -263,7 +263,7 @@ export const UsedAddresses = ({
                         <Button
                             variant="tertiary"
                             icon="ARROW_DOWN"
-                            alignIcon="right"
+                            iconAlignment="right"
                             onClick={() => setLimit(limit + 20)}
                         >
                             <Translation id="TR_SHOW_MORE" />

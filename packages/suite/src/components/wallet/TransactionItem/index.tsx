@@ -348,7 +348,7 @@ const TransactionItem = React.memo(
                                     <ExpandButton
                                         variant="tertiary"
                                         icon={toExpand > 0 ? 'ARROW_DOWN' : 'ARROW_UP'}
-                                        alignIcon="right"
+                                        iconAlignment="right"
                                         onClick={e => {
                                             setLimit(toExpand > 0 ? limit + 20 : 0);
                                             e.preventDefault();
