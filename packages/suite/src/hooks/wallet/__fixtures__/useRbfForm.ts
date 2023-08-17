@@ -557,7 +557,6 @@ export const composeAndSign = [
                 },
             },
         },
-        expectRerender: true, // caused by output decreasing
         tx: PREPARE_TX({
             outputs: [
                 {
@@ -619,7 +618,6 @@ export const composeAndSign = [
                 },
             },
         },
-        expectRerender: true, // caused by output decreasing
         tx: PREPARE_TX({
             outputs: [
                 {
@@ -667,7 +665,6 @@ export const composeAndSign = [
                 ...BTC_ACCOUNT,
             },
         },
-        expectRerender: true, // caused by output decreasing
         tx: PREPARE_TX({
             outputs: [
                 {
@@ -787,7 +784,6 @@ export const composeAndSign = [
                 ...BTC_ACCOUNT,
             },
         },
-        expectRerender: true,
         tx: PREPARE_TX({
             utxo: [
                 {
