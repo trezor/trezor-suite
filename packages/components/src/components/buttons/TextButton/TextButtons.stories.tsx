@@ -17,7 +17,7 @@ storiesOf('Buttons/TextButton', module).add(
                     Text Button
                 </TextButton>
                 <TextButton
-                    buttonSize="medium"
+                    size="medium"
                     data-test="text-button"
                     onClick={() => {
                         console.log('click');
@@ -27,7 +27,7 @@ storiesOf('Buttons/TextButton', module).add(
                 </TextButton>
 
                 <TextButton
-                    buttonSize="small"
+                    size="small"
                     data-test="text-button"
                     onClick={() => {
                         console.log('click');
