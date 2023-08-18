@@ -7,7 +7,7 @@ const StyledButton = styled(Button)`
     min-width: 180px;
 `;
 
-export const FirmwareContinueButton = (props: ButtonProps) => (
+export const FirmwareContinueButton = (props: Omit<ButtonProps, 'children'>) => (
     <StyledButton {...props} data-test="@firmware/continue-button">
         <Translation id="TR_CONTINUE" />
     </StyledButton>
