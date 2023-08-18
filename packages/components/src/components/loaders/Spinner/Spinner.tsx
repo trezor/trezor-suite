@@ -1,63 +1,83 @@
+import { useState } from 'react';
+import Lottie from 'lottie-react';
 import styled from 'styled-components';
-import { animations } from '../../../config';
+import animationStart from './animationData/refresh-spinner-start.json';
+import animationMiddle from './animationData/refresh-spinner-middle.json';
+import animationEnd from './animationData/refresh-spinner-end-success.json';
+import animationWarn from './animationData/refresh-spinner-end-warning.json';
+
+const StyledLottie = styled(Lottie)<Pick<FluidSpinnerProps, 'size' | 'isGrey'>>`
+    width: ${({ size }) => `${size}px`};
+    height: ${({ size }) => `${size}px`};
+    filter: ${({ isGrey }) => (isGrey ? 'grayscale(1) opacity(0.6)' : 'none')};
+`;
 
 export interface FluidSpinnerProps {
     size?: number;
-    strokeWidth?: number;
-    color?: string;
+    isGrey?: boolean;
+    isWithSpeadup?: boolean;
+    hasFinished?: boolean;
+    hasError?: boolean;
     className?: string;
     dataTest?: string;
 }
 
-const Wrapper = styled.div<FluidSpinnerProps>`
-    /* https://loading.io/css/ */
-    position: relative;
-    width: ${({ size }) => `${size}px`}; /* change to 1em to scale based on used font-size */
-    height: ${({ size }) => `${size}px`}; /* change to 1em to scale based on used font-size */
-
-    div {
-        position: absolute;
-        box-sizing: border-box;
-        width: ${({ size }) => `${size}px`}; /* change to 1em to scale based on used font-size */
-        height: ${({ size }) => `${size}px`}; /* change to 1em to scale based on used font-size */
-        border: ${({ strokeWidth }) => `${strokeWidth}px`} solid transparent; /* change to 0.1em to scale based on used font-size */
-        border-radius: 50%;
-        animation: ${animations.SPIN} 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
-        border-color: #fff transparent transparent transparent;
-        border-top-color: ${({ color }) => color || 'inherit'};
-        will-change: transform;
-    }
-
-    div:nth-child(1) {
-        animation-delay: -0.45s;
-    }
-
-    div:nth-child(2) {
-        animation-delay: -0.3s;
-    }
-
-    div:nth-child(3) {
-        animation-delay: -0.15s;
-    }
-`;
-
 export const Spinner = ({
     size = 100,
-    strokeWidth = 2,
-    color,
+    isGrey = true,
+    isWithSpeadup,
+    hasFinished,
+    hasError,
     className,
     dataTest,
-}: FluidSpinnerProps) => (
-    <Wrapper
-        size={size}
-        strokeWidth={strokeWidth}
-        color={color}
-        className={className}
-        data-test={dataTest}
-    >
-        <div />
-        <div />
-        <div />
-        <div />
-    </Wrapper>
-);
+}: FluidSpinnerProps) => {
+    const [hasStarted, setHasStarted] = useState(false);
+    const [hasFinishedRotation, setHasFinishedRotation] = useState(false);
+
+    const onLoopComplete = () => {
+        if (!hasFinished || !hasError) {
+            return;
+        }
+
+        setHasFinishedRotation(true);
+    };
+
+    const getProps = () => {
+        if (hasFinished && hasFinishedRotation) {
+            return {
+                animationData: animationEnd,
+                loop: false,
+            };
+        }
+
+        if (hasError && hasFinishedRotation) {
+            return {
+                animationData: animationWarn,
+                loop: false,
+            };
+        }
+
+        if (hasStarted || !isWithSpeadup) {
+            return {
+                animationData: animationMiddle,
+                onLoopComplete,
+            };
+        }
+
+        return {
+            animationData: animationStart,
+            onComplete: () => setHasStarted(true),
+            loop: false,
+        };
+    };
+
+    return (
+        <StyledLottie
+            size={size}
+            isGrey={isGrey}
+            className={className}
+            {...getProps()}
+            data-test={dataTest}
+        />
+    );
+};
