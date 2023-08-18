@@ -8,8 +8,8 @@ import { connectInitThunk } from '@suite-common/connect-init';
 import { DEVICE } from '@trezor/connect';
 
 import { configureStore } from 'src/support/tests/configureStore';
-import suiteReducer from 'src/reducers/suite/suiteReducer';
-import deviceReducer from 'src/reducers/suite/deviceReducer';
+import suiteReducer, { selectDevice } from 'src/reducers/suite/suiteReducer';
+import deviceReducer, { selectDevices, selectDevicesCount } from 'src/reducers/suite/deviceReducer';
 import routerReducer from 'src/reducers/suite/routerReducer';
 import modalReducer from 'src/reducers/suite/modalReducer';
 import { discardMockedConnectInitActions } from 'src/utils/suite/storage';
@@ -249,16 +249,13 @@ describe('Suite Actions', () => {
                 const action = store.getActions().pop();
                 expect(action.type).toEqual(f.result);
                 if (f.deviceReducerResult) {
-                    // expect(store.getState().devices).toMatchObject(f.deviceReducerResult);
-                    store.getState().devices.forEach((d, i) => {
+                    const devices = selectDevices(store.getState());
+                    devices.forEach((d, i) => {
                         const dev = f.deviceReducerResult[i];
                         expect(d.state).toEqual(dev.state);
                         expect(d.instance).toEqual(dev.instance);
                         expect(d.useEmptyPassphrase).toEqual(dev.useEmptyPassphrase);
                     });
-                    // expect(store.getState().devices).toEqual(
-                    //     expect.arrayContaining(f.deviceReducerResult),
-                    // );
                 }
             }
         });
@@ -299,14 +296,10 @@ describe('Suite Actions', () => {
             const state = getInitialState(f.state.suite, f.state.devices);
             const store = initStore(state);
             await store.dispatch(suiteActions.switchDuplicatedDevice(f.device, f.duplicate));
-            expect(store.getState().suite.device).toEqual(f.result.selected);
-            expect(store.getState().devices.length).toEqual(f.result.devices.length);
-            // if (!f.result) {
-            //     expect(store.getActions().length).toEqual(0);
-            // } else {
-            //     const action = store.getActions().pop();
-            //     expect(action.type).toEqual(f.result);
-            // }
+            const device = selectDevice(store.getState());
+            const devicesCount = selectDevicesCount(store.getState());
+            expect(device).toEqual(f.result.selected);
+            expect(devicesCount).toEqual(f.result.devices.length);
         });
     });
 

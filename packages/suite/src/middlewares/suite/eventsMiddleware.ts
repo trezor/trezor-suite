@@ -1,10 +1,15 @@
 import { MiddlewareAPI } from 'redux';
+
 import { DEVICE } from '@trezor/connect';
-import { SUITE } from 'src/actions/suite/constants';
 import { notificationsActions, removeAccountEventsThunk } from '@suite-common/toast-notifications';
+import { accountsActions } from '@suite-common/wallet-core';
+
+import { SUITE } from 'src/actions/suite/constants';
 import * as deviceUtils from 'src/utils/suite/device';
 import { AppState, Action, Dispatch } from 'src/types/suite';
-import { accountsActions } from '@suite-common/wallet-core';
+
+import { selectDevices } from '../../reducers/suite/deviceReducer';
+import { selectDevice } from '../../reducers/suite/suiteReducer';
 
 /*
  * Middleware for event notifications.
@@ -26,9 +31,10 @@ const eventsMiddleware =
 
         if (action.type === DEVICE.CONNECT || action.type === DEVICE.CONNECT_UNACQUIRED) {
             // get TrezorDevice from @trezor/connect:Device object
-            const device = api.getState().devices.find(d => d.path === action.payload.path);
+            const devices = selectDevices(api.getState());
+            const device = devices.find(d => d.path === action.payload.path);
             if (!device) return action; // this shouldn't happen
-            const seen = deviceUtils.isSelectedDevice(action.payload, api.getState().suite.device);
+            const seen = deviceUtils.isSelectedDevice(action.payload, selectDevice(api.getState()));
 
             const toRemove = api
                 .getState()
@@ -71,14 +77,15 @@ const eventsMiddleware =
             // remove notifications associated with disconnected device
             // api.dispatch(addEvent({ type: 'disconnected-device' }));
             const { notifications } = api.getState();
+            const devices = selectDevices(prevState);
             const affectedDevices =
                 action.type === SUITE.FORGET_DEVICE
-                    ? prevState.devices.filter(
+                    ? devices.filter(
                           d =>
                               d.path === action.payload.path &&
                               d.instance === action.payload.instance,
                       )
-                    : prevState.devices.filter(d => d.path === action.payload.path);
+                    : devices.filter(d => d.path === action.payload.path);
             affectedDevices.forEach(d => {
                 if (!d.remember) {
                     const toRemove = notifications.filter(n =>

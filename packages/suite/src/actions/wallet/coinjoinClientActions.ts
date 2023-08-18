@@ -9,30 +9,34 @@ import {
     CoinjoinClientEvents,
     RoundPhase,
 } from '@trezor/coinjoin';
-import { SUITE } from 'src/actions/suite/constants';
 import { arrayDistinct, arrayToDictionary, promiseAllSequence } from '@trezor/utils';
-import * as COINJOIN from './constants/coinjoinConstants';
+import { getOsName } from '@trezor/env-utils';
+import { selectAccountByKey } from '@suite-common/wallet-core';
+import { getUtxoOutpoint } from '@suite-common/wallet-utils';
+import { Account } from '@suite-common/wallet-types';
+import { notificationsActions } from '@suite-common/toast-notifications';
+
 import {
     prepareCoinjoinTransaction,
     getSessionDeadline,
     getEstimatedTimePerRound,
 } from 'src/utils/wallet/coinjoinUtils';
 import { getDeviceInstances } from 'src/utils/suite/device';
-import { getOsName } from '@trezor/env-utils';
 import { CoinjoinService } from 'src/services/coinjoin';
-import { selectAccountByKey } from '@suite-common/wallet-core';
-import { getUtxoOutpoint } from '@suite-common/wallet-utils';
 import { Dispatch, GetState } from 'src/types/suite';
-import { Account } from '@suite-common/wallet-types';
 import { CoinjoinAccount, EndRoundState, CoinjoinDebugSettings } from 'src/types/wallet/coinjoin';
 import { onCancel as closeModal, openModal } from 'src/actions/suite/modalActions';
-import { notificationsActions } from '@suite-common/toast-notifications';
+import { SUITE } from 'src/actions/suite/constants';
 import {
     selectRoundsNeededByAccountKey,
     selectRoundsLeftByAccountKey,
     selectRoundsDurationInHours,
     selectCoinjoinAccounts,
 } from 'src/reducers/wallet/coinjoinReducer';
+
+import * as COINJOIN from './constants/coinjoinConstants';
+import { selectDevices } from '../../reducers/suite/deviceReducer';
+import { selectDevice } from '../../reducers/suite/suiteReducer';
 
 const clientEnable = (symbol: Account['symbol']) =>
     ({
@@ -210,9 +214,9 @@ export const endCoinjoinSession = (accountKey: string) => (dispatch: Dispatch) =
 export const setBusyScreen =
     (accountKeys: string[], expiry?: number) => (_dispatch: Dispatch, getState: GetState) => {
         const {
-            devices,
             wallet: { accounts },
         } = getState();
+        const devices = selectDevices(getState());
 
         // collect unique deviceStates from accounts (passphrase)
         const uniqueDeviceStates = accountKeys.flatMap(key => {
@@ -294,7 +298,7 @@ export const stopCoinjoinSession =
         client?.unregisterAccount(account.key);
 
         // cancelCoinjoinAuthorization should be called only if there is no other registered coinjoin account
-        const device = state.devices.find(d => d.state === account.deviceState);
+        const device = selectDevices(state).find(d => d.state === account.deviceState);
         let shouldCancelAuthorization = device?.connected;
         if (device) {
             // find all instances of this physical device
@@ -438,9 +442,9 @@ const getOwnershipProof =
     async (_dispatch: Dispatch, getState: GetState) => {
         const {
             suite: { locks },
-            devices,
             wallet: { coinjoin, accounts },
         } = getState();
+        const devices = selectDevices(getState());
 
         // prepare empty response object
         const response: CoinjoinResponseEvent = {
@@ -549,9 +553,9 @@ const signCoinjoinTx =
     (request: Extract<CoinjoinRequestEvent, { type: 'signature' }>) =>
     async (dispatch: Dispatch, getState: GetState) => {
         const {
-            devices,
             wallet: { coinjoin, accounts },
         } = getState();
+        const devices = selectDevices(getState());
 
         // prepare empty response object
         const response: CoinjoinResponseEvent = {

@@ -17,6 +17,8 @@ import { useDevice, useFirmware, useOnboarding, useSelector } from 'src/hooks/su
 import { ReconnectDevicePrompt, InstallButton, FirmwareOffer } from 'src/components/firmware';
 import { getFwUpdateVersion } from 'src/utils/suite/device';
 
+import { selectDevices } from '../../reducers/suite/deviceReducer';
+
 const Description = styled.div`
     align-items: center;
     display: flex;
@@ -98,7 +100,7 @@ export const FirmwareInitial = ({
     const { device: liveDevice } = useDevice();
     const { setStatus, status } = useFirmware();
     const { goToNextStep, updateAnalytics } = useOnboarding();
-    const devices = useSelector(state => state.devices);
+    const devices = useSelector(selectDevices);
 
     // todo: move to utils device.ts
     const devicesConnected = devices.filter(device => device?.connected);

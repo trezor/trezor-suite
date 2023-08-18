@@ -1,9 +1,14 @@
 /* eslint @typescript-eslint/no-use-before-define: 1 */
+import { createAction } from '@reduxjs/toolkit';
+
 
 import TrezorConnect from '@trezor/connect';
 import { analytics, EventType } from '@trezor/suite-analytics';
 
 import { createDeferred, cloneObject } from '@trezor/utils';
+import { createDeferred } from '@trezor/utils';
+import { notificationsActions } from '@suite-common/toast-notifications';
+
 import { METADATA } from 'src/actions/suite/constants';
 import { Dispatch, GetState, TrezorDevice } from 'src/types/suite';
 import {
@@ -28,9 +33,8 @@ import DropboxProvider from 'src/services/suite/metadata/DropboxProvider';
 import GoogleProvider from 'src/services/suite/metadata/GoogleProvider';
 import FileSystemProvider from 'src/services/suite/metadata/FileSystemProvider';
 import { selectSelectedProviderForLabels } from 'src/reducers/suite/metadataReducer';
-
-import { createAction } from '@reduxjs/toolkit';
-import { notificationsActions } from '@suite-common/toast-notifications';
+import { selectDevices } from 'src/reducers/suite/deviceReducer';
+import { selectDevice } from 'src/reducers/suite/suiteReducer';
 
 export const setAccountAdd = createAction(METADATA.ACCOUNT_ADD, (payload: Account) => ({
     payload,
@@ -101,9 +105,12 @@ const createProviderInstance = (
  */
 export const disposeMetadata = (keys?: boolean) => (dispatch: Dispatch, getState: GetState) => {
     const provider = selectSelectedProviderForLabels(getState());
+    const devices = selectDevices(getState());
+
     if (!provider) {
         return;
     }
+
     dispatch({
         type: METADATA.SET_DATA,
         payload: {
@@ -120,7 +127,7 @@ export const disposeMetadata = (keys?: boolean) => (dispatch: Dispatch, getState
             dispatch(setAccountAdd(updatedAccount));
         });
 
-        getState().devices.forEach(device => {
+        devices.forEach(device => {
             if (device.state) {
                 // set metadata as disabled for this device, remove all metadata related information
                 dispatch({
@@ -402,7 +409,15 @@ export const fetchAndSaveMetadata =
             return;
         }
 
-        const device = getState().devices.find(d => d.state === deviceState);
+        const selectedDeviceState = selectDevice(getState())?.state;
+        const deviceState = deviceStateArg || selectedDeviceState;
+
+        if (!deviceState) {
+            return;
+        }
+
+        const devices = selectDevices(getState());
+        const device = devices.find(d => d.state === deviceState);
 
         try {
             // this triggers renewal of access token if needed. Otherwise multiple requests
@@ -465,7 +480,7 @@ export const fetchAndSaveMetadata =
 export const setAccountMetadataKey =
     (account: Account, encryptionVersion = METADATA.ENCRYPTION_VERSION) =>
     (dispatch: Dispatch, getState: GetState) => {
-        const { devices } = getState();
+      const devices = selectDevices(getState());
         const device = devices.find(d => d.state === account.deviceState);
         if (
             !device ||
@@ -580,7 +595,8 @@ export const connectProvider =
 export const addDeviceMetadata =
     (payload: Extract<MetadataAddPayload, { type: 'walletLabel' }>) =>
     (dispatch: Dispatch, getState: GetState) => {
-        const device = getState().devices.find(d => d.state === payload.deviceState);
+        const devices = selectDevices(getState());
+        const device = devices.find(d => d.state === payload.deviceState);
         const provider = selectSelectedProviderForLabels(getState());
 
         if (!device || device.metadata.status !== 'enabled') return Promise.resolve(false);

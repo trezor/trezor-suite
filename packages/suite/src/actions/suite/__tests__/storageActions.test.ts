@@ -14,7 +14,7 @@ import * as SUITE from 'src/actions/suite/constants/suiteConstants';
 import { accountsReducer, fiatRatesReducer, transactionsReducer } from 'src/reducers/wallet';
 import walletSettingsReducer from 'src/reducers/wallet/settingsReducer';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
-import deviceReducer from 'src/reducers/suite/deviceReducer';
+import deviceReducer, { selectDevicesCount } from 'src/reducers/suite/deviceReducer';
 import sendFormReducer from 'src/reducers/wallet/sendFormReducer';
 import graphReducer from 'src/reducers/wallet/graphReducer';
 import storageMiddleware from 'src/middlewares/wallet/storageMiddleware';
@@ -279,7 +279,8 @@ describe('Storage actions', () => {
 
         // stored devices
         const load1 = store.getState();
-        expect(load1.devices.length).toEqual(3);
+        const load1DevicesCount = selectDevicesCount(load1);
+        expect(load1DevicesCount).toEqual(3);
         expect(load1.devices[0]).toEqual({ ...dev1, path: '' });
 
         // stored discoveries
@@ -329,7 +330,8 @@ describe('Storage actions', () => {
 
         const load2 = store.getState();
         // device deleted, dev2 and dev2Instance1 should still be there
-        expect(load2.devices.length).toEqual(2);
+        const load2DevicesCount = selectDevicesCount(load2);
+        expect(load2DevicesCount).toEqual(2);
         expect(load2.devices[0]).toEqual({ ...dev2, path: '' });
 
         // discovery object for dev1 deleted
@@ -353,7 +355,7 @@ describe('Storage actions', () => {
         await store.dispatch(storageActions.rememberDevice(dev2, false));
         await store.dispatch(storageActions.rememberDevice(dev2Instance1, false));
         store.dispatch(await preloadStore());
-        expect(store.getState().devices.length).toEqual(0);
+        expect(selectDevicesCount(store.getState())).toEqual(0);
     });
 
     it('should remove all txs for the acc', async () => {

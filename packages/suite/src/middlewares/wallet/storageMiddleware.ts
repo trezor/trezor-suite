@@ -28,6 +28,9 @@ import { serializeDiscovery } from 'src/utils/suite/storage';
 import type { AppState, Action as SuiteAction, Dispatch } from 'src/types/suite';
 import type { WalletAction } from 'src/types/wallet';
 
+import { selectDevices } from '../../reducers/suite/deviceReducer';
+import { selectDevice } from '../../reducers/suite/suiteReducer';
+
 const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
     db.onBlocking = () => api.dispatch({ type: STORAGE.ERROR, payload: 'blocking' });
     db.onBlocked = () => api.dispatch({ type: STORAGE.ERROR, payload: 'blocked' });
@@ -44,7 +47,7 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 )(action)
             ) {
                 const { payload } = action;
-                const device = findAccountDevice(payload, api.getState().devices);
+                const device = findAccountDevice(payload, selectDevices(api.getState()));
                 // update only transactions for remembered device
                 if (isDeviceRemembered(device)) {
                     storageActions.saveAccounts([payload]);
@@ -57,7 +60,7 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
             }
 
             if (isAnyOf(metadataActions.setAccountAdd)(action)) {
-                const device = findAccountDevice(action.payload, api.getState().devices);
+                const device = findAccountDevice(action.payload, selectDevices(api.getState()));
                 // if device is remembered, and there is a change in account.metadata (metadataActions.setAccountLoaded), update database
                 if (isDeviceRemembered(device)) {
                     storageActions.saveAccounts([action.payload]);
@@ -93,7 +96,7 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 )(action)
             ) {
                 const { account } = action.payload;
-                const device = findAccountDevice(account, api.getState().devices);
+                const device = findAccountDevice(account, selectDevices(api.getState()));
                 // update only transactions for remembered device
                 if (isDeviceRemembered(device)) {
                     storageActions.removeAccountTransactions(account);
@@ -114,7 +117,8 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 )(action)
             ) {
                 const { deviceState } = action.payload;
-                const device = api.getState().devices.find(d => d.state === deviceState);
+                const devices = selectDevices(api.getState());
+                const device = devices.find(d => d.state === deviceState);
                 // update discovery for remembered device
                 if (isDeviceRemembered(device)) {
                     const discovery = selectDiscoveryByDeviceState(api.getState(), deviceState);
@@ -181,7 +185,8 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                     api.dispatch(storageActions.saveSuiteSettings());
                     break;
                 case SUITE.COINJOIN_RECEIVE_WARNING: {
-                    const isWalletRemembered = api.getState().suite.device?.remember;
+                    const device = selectDevice(api.getState());
+                    const isWalletRemembered = device?.remember;
 
                     if (!isWalletRemembered) {
                         break;
@@ -193,16 +198,17 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
 
                 case GRAPH.ACCOUNT_GRAPH_SUCCESS:
                 case GRAPH.ACCOUNT_GRAPH_FAIL: {
-                    const device = api
-                        .getState()
-                        .devices.find(d => d.state === action.payload.account.deviceState);
+                    const devices = selectDevices(api.getState());
+                    const device = devices.find(
+                        d => d.state === action.payload.account.deviceState,
+                    );
                     if (isDeviceRemembered(device)) {
                         storageActions.saveGraph([action.payload]);
                     }
                     break;
                 }
                 case SEND.STORE_DRAFT: {
-                    const { device } = api.getState().suite;
+                    const device = selectDevice(api.getState());
                     // save drafts for remembered device
                     if (isDeviceRemembered(device)) {
                         storageActions.saveDraft(action.formState, action.key);
@@ -225,7 +231,7 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                     break;
 
                 case FORM_DRAFT.STORE_DRAFT: {
-                    const { device } = api.getState().suite;
+                    const device = selectDevice(api.getState());
                     // save drafts for remembered device
                     if (isDeviceRemembered(device)) {
                         storageActions.saveFormDraft(action.key, action.formDraft);
@@ -248,7 +254,8 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 case COINJOIN.ACCOUNT_UPDATE_MAX_MING_FEE:
                 case COINJOIN.ACCOUNT_TOGGLE_SKIP_ROUNDS: {
                     const account = selectAccountByKey(api.getState(), action.payload.accountKey);
-                    const device = account && findAccountDevice(account, api.getState().devices);
+                    const device =
+                        account && findAccountDevice(account, selectDevices(api.getState()));
                     if (device && isDeviceRemembered(device)) {
                         api.dispatch(storageActions.saveCoinjoinAccount(action.payload.accountKey));
                     }
@@ -257,9 +264,10 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 case COINJOIN.CLIENT_PRISON_EVENT: {
                     const affectedAccounts = action.payload.map(inmate => inmate.accountKey);
                     const state = api.getState();
+                    const devices = selectDevices(state);
                     affectedAccounts.forEach(key => {
                         const account = selectAccountByKey(state, key);
-                        const device = account && findAccountDevice(account, state.devices);
+                        const device = account && findAccountDevice(account, devices);
                         if (device && isDeviceRemembered(device)) {
                             api.dispatch(storageActions.saveCoinjoinAccount(key));
                         }

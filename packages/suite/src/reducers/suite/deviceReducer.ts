@@ -450,6 +450,7 @@ const deviceReducer = (state: State = initialState, action: Action): State =>
     });
 
 export const selectDevices = (state: DeviceRootState) => state.devices;
+export const selectDevicesCount = (state: DeviceRootState) => state.devices.length;
 export const selectIsPendingTransportEvent = (state: DeviceRootState) => state.devices.length < 1;
 
 export default deviceReducer;

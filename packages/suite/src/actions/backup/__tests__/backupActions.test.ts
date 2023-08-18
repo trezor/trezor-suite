@@ -1,14 +1,15 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 /* eslint-disable global-require */
 
-import { configureStore } from 'src/support/tests/configureStore';
 import { mergeDeepObject } from '@trezor/utils';
 import { connectInitThunk } from '@suite-common/connect-init';
+import { notificationsActions } from '@suite-common/toast-notifications';
+import { CommonParams, DeviceModelInternal } from '@trezor/connect';
+
+import { configureStore } from 'src/support/tests/configureStore';
 import { SUITE } from 'src/actions/suite/constants';
 import { BACKUP } from 'src/actions/backup/constants';
 import * as backupActions from 'src/actions/backup/backupActions';
-import { notificationsActions } from '@suite-common/toast-notifications';
-import { CommonParams, DeviceModelInternal } from '@trezor/connect';
 
 jest.mock('@trezor/connect', () => {
     let fixture: any;

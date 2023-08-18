@@ -1,7 +1,5 @@
 import styled from 'styled-components';
-import { AccountLabeling, HiddenPlaceholder } from 'src/components/suite';
-import { selectDevice } from 'src/actions/suite/suiteActions';
-import { goto } from 'src/actions/suite/routerActions';
+
 import {
     findAccountsByNetwork,
     findAccountsByDescriptor,
@@ -10,10 +8,21 @@ import {
     findTransaction,
     getConfirmations,
 } from '@suite-common/wallet-utils';
+import {
+    selectAccounts,
+    selectBlockchainState,
+    selectTransactions,
+} from '@suite-common/wallet-core';
+
+import { selectDevice as selectDeviceSelector } from 'src/reducers/suite/suiteReducer';
+import { AccountLabeling, HiddenPlaceholder } from 'src/components/suite';
+import { selectDevice } from 'src/actions/suite/suiteActions';
+import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { getTxAnchor } from 'src/utils/suite/anchor';
 
 import type { NotificationRendererProps, NotificationViewProps } from '../types';
+import { selectDevices } from '../../../../reducers/suite/deviceReducer';
 
 const StyledHiddenPlaceholder = styled(HiddenPlaceholder)`
     font-variant-numeric: tabular-nums;
@@ -23,11 +32,11 @@ type TransactionRendererProps = NotificationViewProps &
     NotificationRendererProps<'tx-sent' | 'tx-received' | 'tx-confirmed'>;
 
 const TransactionRenderer = ({ render: View, ...props }: TransactionRendererProps) => {
-    const accounts = useSelector(state => state.wallet.accounts);
-    const transactions = useSelector(state => state.wallet.transactions.transactions);
-    const blockchain = useSelector(state => state.wallet.blockchain);
-    const devices = useSelector(state => state.devices);
-    const currentDevice = useSelector(state => state.suite.device);
+    const accounts = useSelector(selectAccounts);
+    const transactions = useSelector(selectTransactions);
+    const blockchain = useSelector(selectBlockchainState);
+    const devices = useSelector(selectDevices);
+    const currentDevice = useSelector(selectDeviceSelector);
     const dispatch = useDispatch();
 
     const { symbol, descriptor, txid, formattedAmount, device } = props.notification;

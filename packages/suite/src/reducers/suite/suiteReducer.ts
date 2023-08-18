@@ -274,16 +274,14 @@ export const selectTorState = (state: SuiteRootState) => {
     };
 };
 
-export const selectDeviceState = (state: SuiteRootState) => {
-    const { device } = state.suite;
-    return device && getStatus(device);
-};
-
 export const selectDebug = (state: SuiteRootState) => state.suite.settings.debug;
 
 export const selectDevice = (state: SuiteRootState) => state.suite.device;
-
 export const selectLanguage = (state: SuiteRootState) => state.suite.settings.language;
+export const selectDeviceState = (state: SuiteRootState) => {
+    const device = selectDevice(state);
+    return device && getStatus(device);
+};
 
 export const selectLocks = (state: SuiteRootState) => state.suite.locks;
 

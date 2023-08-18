@@ -1,10 +1,13 @@
 import { MiddlewareAPI } from 'redux';
+
+import TrezorConnect, { UI } from '@trezor/connect';
+
 import { SUITE } from 'src/actions/suite/constants';
 import { AppState, Action, Dispatch } from 'src/types/suite';
 import { addButtonRequest, removeButtonRequests } from 'src/actions/suite/suiteActions';
 import { ONBOARDING } from 'src/actions/onboarding/constants';
 
-import TrezorConnect, { UI } from '@trezor/connect';
+import { selectDevice } from '../../reducers/suite/suiteReducer';
 
 const buttonRequest =
     (api: MiddlewareAPI<Dispatch, AppState>) =>
@@ -64,7 +67,7 @@ const buttonRequest =
             case UI.INVALID_PIN:
                 api.dispatch(
                     addButtonRequest({
-                        device: api.getState().suite.device,
+                        device: selectDevice(api.getState()),
                         buttonRequest: {
                             code: action.payload.type ? action.payload.type : action.type,
                         },
@@ -75,7 +78,7 @@ const buttonRequest =
                 const { device: _, ...request } = action.payload;
                 api.dispatch(
                     addButtonRequest({
-                        device: api.getState().suite.device,
+                        device: selectDevice(api.getState()),
                         buttonRequest: request,
                     }),
                 );
@@ -84,13 +87,15 @@ const buttonRequest =
             case SUITE.LOCK_DEVICE:
                 if (!action.payload) {
                     api.dispatch(
-                        removeButtonRequests({ device: api.getState().suite.device ?? null }),
+                        removeButtonRequests({ device: selectDevice(api.getState()) ?? null }),
                     );
                 }
                 break;
             case ONBOARDING.SET_STEP_ACTIVE:
                 // clear all device's button requests in each step of the onboarding
-                api.dispatch(removeButtonRequests({ device: api.getState().suite.device ?? null }));
+                api.dispatch(
+                    removeButtonRequests({ device: selectDevice(api.getState()) ?? null }),
+                );
                 break;
             default:
             // no default

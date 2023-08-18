@@ -14,7 +14,7 @@ import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 import { SUITE, ROUTER, MODAL } from 'src/actions/suite/constants';
 import * as walletSettingsActions from 'src/actions/settings/walletSettingsActions';
 import * as suiteActions from 'src/actions/suite/suiteActions';
-import { selectDiscoveryForDevice } from 'src/reducers/suite/suiteReducer';
+import { selectDevice, selectDiscoveryForDevice } from 'src/reducers/suite/suiteReducer';
 import { getApp } from 'src/utils/suite/router';
 
 export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
@@ -67,7 +67,8 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
             return action;
 
         let authorizationIntent = false;
-        const { device, locks } = nextState.suite;
+        const { locks } = nextState.suite;
+        const device = selectDevice(nextState);
         // 1. selected device is acquired but doesn't have a state
         if (
             device &&

@@ -12,6 +12,8 @@ import {
     DEFAULT_WALLET_METADATA,
 } from 'src/actions/suite/constants/metadataConstants';
 
+import { selectDevices } from './deviceReducer';
+
 export const initialState: MetadataState = {
     // is Suite trying to load metadata (get master key -> sync cloud)?
     enabled: false,
@@ -147,7 +149,8 @@ export const selectLabelingDataForWallet = (
     deviceState?: string,
 ) => {
     const provider = selectSelectedProviderForLabels(state);
-    const device = state.devices.find(d => d.state === deviceState);
+    const devices = selectDevices(state);
+    const device = devices.find(d => d.state === deviceState);
     if (device?.metadata.status !== 'enabled') {
         return DEFAULT_WALLET_METADATA;
     }
