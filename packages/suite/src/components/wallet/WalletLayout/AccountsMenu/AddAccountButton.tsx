@@ -16,7 +16,7 @@ const getExplanationMessage = (device: TrezorDevice | undefined, discoveryIsRunn
     return message;
 };
 
-interface AddAccountButtonProps extends ButtonProps {
+interface AddAccountButtonProps extends Omit<ButtonProps, 'children'> {
     device: TrezorDevice | undefined;
     noButtonLabel?: boolean;
     closeMenu?: () => void;

@@ -97,11 +97,7 @@ export const Firmware = ({ shouldSwitchFirmwareType }: FirmwareProps) => {
                         description={
                             <Translation id="TOAST_GENERIC_ERROR" values={{ error: error || '' }} />
                         }
-                        innerActions={
-                            <FirmwareCloseButton onClick={onClose}>
-                                <Translation id="TR_BACK" />
-                            </FirmwareCloseButton>
-                        }
+                        innerActions={<FirmwareCloseButton onClick={onClose} />}
                         nested
                     />
                 );
