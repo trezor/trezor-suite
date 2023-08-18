@@ -18,7 +18,6 @@ interface ButtonContainerProps {
     variant: ButtonVariant;
     size: ButtonSize;
     iconAlignment?: IconAlignment;
-    hasLabel?: boolean;
     hasIcon?: boolean;
     isFullWidth?: boolean;
 }
@@ -38,7 +37,7 @@ export const ButtonContainer = styled.button<ButtonContainerProps>`
     justify-content: center;
     flex-direction: ${({ iconAlignment }) => iconAlignment === 'right' && 'row-reverse'};
     gap: ${({ hasIcon }) => hasIcon && spacingsPx.xs};
-    padding: ${({ size, hasLabel }) => getPadding(size, hasLabel)};
+    padding: ${({ size }) => getPadding(size, true)};
     width: ${({ isFullWidth }) => isFullWidth && '100%'};
     border-radius: ${borders.radii.full};
     transition: border-color 0.1s ease-out, box-shadow 0.1s ease-out, background 0.1s ease-out;
@@ -78,6 +77,7 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
     icon?: IconType;
     iconSize?: number;
     iconAlignment?: IconAlignment;
+    children: React.ReactNode;
     'data-test'?: string;
 }
 
@@ -90,11 +90,10 @@ export const Button = ({
     icon,
     iconSize,
     iconAlignment = 'left',
-    children, // TODO: should be made required in later refactors
+    children,
     ...rest
 }: ButtonProps) => {
     const theme = useTheme();
-    const hasLabel = !!children;
 
     const IconComponent = icon ? (
         <Icon
@@ -110,7 +109,6 @@ export const Button = ({
         <ButtonContainer
             variant={variant}
             size={size}
-            hasLabel={hasLabel}
             iconAlignment={iconAlignment}
             disabled={isDisabled || isLoading}
             isFullWidth={isFullWidth}
