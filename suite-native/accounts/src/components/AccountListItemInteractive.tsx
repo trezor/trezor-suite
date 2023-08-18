@@ -3,9 +3,9 @@ import { useSelector } from 'react-redux';
 
 import { Box } from '@suite-native/atoms';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
+import { AccountsRootState, FiatRatesRootState } from '@suite-common/wallet-core';
 import { selectIsEthereumAccountWithTokensWithFiatRates } from '@suite-native/ethereum-tokens';
 import { SettingsSliceRootState } from '@suite-native/module-settings';
-import { FiatRatesRootState } from '@suite-native/fiat-rates';
 
 import { TokenList } from './TokenList';
 import { AccountListItem, AccountListItemProps } from './AccountListItem';
@@ -18,8 +18,9 @@ export const AccountListItemInteractive = ({
     account,
     onSelectAccount,
 }: AccountListItemInteractiveProps) => {
-    const areTokensDisplayed = useSelector((state: SettingsSliceRootState & FiatRatesRootState) =>
-        selectIsEthereumAccountWithTokensWithFiatRates(state, account.key),
+    const areTokensDisplayed = useSelector(
+        (state: SettingsSliceRootState & FiatRatesRootState & AccountsRootState) =>
+            selectIsEthereumAccountWithTokensWithFiatRates(state, account.key),
     );
 
     return (

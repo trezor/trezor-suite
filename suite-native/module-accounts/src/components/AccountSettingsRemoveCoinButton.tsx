@@ -4,8 +4,8 @@ import { useNavigation } from '@react-navigation/native';
 
 import { Button, TrezorSuiteLiteHeader } from '@suite-native/atoms';
 import {
-    accountsActions,
     AccountsRootState,
+    accountsActions,
     selectAccountByKey,
     selectNumberOfAccounts,
 } from '@suite-common/wallet-core';

@@ -3,9 +3,11 @@ import { memoizeWithArgs } from 'proxy-memoize';
 
 import {
     AccountsRootState,
+    FiatRatesRootState,
+    TransactionsRootState,
     selectAccountByKey,
     selectAccountTransactions,
-    TransactionsRootState,
+    selectFiatRatesByFiatRateKey,
 } from '@suite-common/wallet-core';
 import {
     AccountKey,
@@ -14,13 +16,8 @@ import {
     TokenSymbol,
 } from '@suite-common/wallet-types';
 import { TokenInfo, TokenTransfer } from '@trezor/blockchain-link';
-import {
-    FiatRatesRootState,
-    selectFiatRatesByFiatRateKey,
-    getFiatRateKeyFromTicker,
-} from '@suite-native/fiat-rates';
 import { selectFiatCurrencyCode, SettingsSliceRootState } from '@suite-native/module-settings';
-import { isEthereumAccountSymbol } from '@suite-common/wallet-utils';
+import { isEthereumAccountSymbol, getFiatRateKeyFromTicker } from '@suite-common/wallet-utils';
 
 import { EthereumTokenTransfer, WalletAccountTransaction } from './types';
 
@@ -167,7 +164,7 @@ export const selectAccountOrTokenAccountTransactions = (
 
 export const selectEthereumAccountsTokensWithFiatRates = memoizeWithArgs(
     (
-        state: FiatRatesRootState & SettingsSliceRootState,
+        state: FiatRatesRootState & SettingsSliceRootState & AccountsRootState,
         ethereumAccountKey: string,
     ): TokenInfoBranded[] => {
         const account = selectAccountByKey(state, ethereumAccountKey);
@@ -184,7 +181,7 @@ export const selectEthereumAccountsTokensWithFiatRates = memoizeWithArgs(
 );
 
 export const selectIsEthereumAccountWithTokensWithFiatRates = (
-    state: FiatRatesRootState & SettingsSliceRootState,
+    state: FiatRatesRootState & SettingsSliceRootState & AccountsRootState,
     ethereumAccountKey: AccountKey,
 ): boolean => {
     const account = selectAccountByKey(state, ethereumAccountKey);

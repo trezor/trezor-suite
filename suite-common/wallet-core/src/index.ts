@@ -13,6 +13,7 @@ export * from './fiat-rates/fiatRatesActions';
 export * from './fiat-rates/fiatRatesSelectors';
 export * from './fiat-rates/fiatRatesThunks';
 export * from './fiat-rates/fiatRatesMiddleware';
+export * from './fiat-rates/fiatRatesTypes';
 export * from './discovery/discoveryActions';
 export * from './discovery/discoveryReducer';
 export * from './discovery/discoveryThunks';

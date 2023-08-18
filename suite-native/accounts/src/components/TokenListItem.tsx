@@ -7,9 +7,9 @@ import {
     EthereumTokenToFiatAmountFormatter,
 } from '@suite-native/formatters';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { AccountsRootState } from '@suite-common/wallet-core';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import { selectEthereumAccountTokenSymbol } from '@suite-native/ethereum-tokens';
-import { AccountsRootState } from '@suite-common/wallet-core';
 
 import { accountDescriptionStyle, valuesContainerStyle } from './AccountListItem';
 

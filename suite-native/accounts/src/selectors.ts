@@ -1,11 +1,10 @@
 import { A, pipe } from '@mobily/ts-belt';
 import { memoizeWithArgs } from 'proxy-memoize';
 
-import { AccountsRootState, selectAccounts } from '@suite-common/wallet-core';
+import { AccountsRootState, FiatRatesRootState, selectAccounts } from '@suite-common/wallet-core';
 import { Account, TokenInfoBranded } from '@suite-common/wallet-types';
 import { getNetwork } from '@suite-common/wallet-utils';
 import { selectEthereumAccountsTokensWithFiatRates } from '@suite-native/ethereum-tokens';
-import { FiatRatesRootState } from '@suite-native/fiat-rates';
 import { SettingsSliceRootState } from '@suite-native/module-settings';
 
 /**

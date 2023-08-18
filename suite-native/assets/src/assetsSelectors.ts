@@ -2,13 +2,13 @@ import BigNumber from 'bignumber.js';
 import { memoize } from 'proxy-memoize';
 
 import { networks, NetworkSymbol } from '@suite-common/wallet-config';
-import { selectAccounts, AccountsRootState } from '@suite-common/wallet-core';
 import {
+    AccountsRootState,
     FiatRatesRootState,
+    selectAccounts,
     selectFiatRatesByFiatRateKey,
-    getFiatRateKey,
-} from '@suite-native/fiat-rates';
-import { toFiatCurrency } from '@suite-common/wallet-utils';
+} from '@suite-common/wallet-core';
+import { toFiatCurrency, getFiatRateKey } from '@suite-common/wallet-utils';
 import { selectFiatCurrencyCode, SettingsSliceRootState } from '@suite-native/module-settings';
 
 type Assets = Partial<Record<NetworkSymbol, string[]>>;

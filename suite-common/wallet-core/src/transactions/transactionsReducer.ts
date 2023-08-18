@@ -33,7 +33,7 @@ export type TransactionsRootState = {
             transactions: { [key: AccountKey]: (WalletAccountTransaction | null)[] };
         };
     };
-} & BlockchainRootState;
+};
 
 const initializeAccount = (state: TransactionsState, accountKey: AccountKey) => {
     // initialize an empty array at 'accountKey' index if not yet initialized
@@ -248,7 +248,7 @@ export const selectIsTransactionPending = (
 };
 
 export const selectTransactionConfirmations = (
-    state: TransactionsRootState,
+    state: TransactionsRootState & BlockchainRootState,
     txid: string,
     accountKey: AccountKey,
 ) => {

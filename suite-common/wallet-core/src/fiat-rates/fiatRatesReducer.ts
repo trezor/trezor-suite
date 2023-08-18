@@ -1,8 +1,9 @@
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
-import { Timestamp, FiatRatesState } from '@suite-common/wallet-types';
+import { Timestamp } from '@suite-common/wallet-types';
 import { getFiatRateKeyFromTicker } from '@suite-common/wallet-utils';
 
 import { updateFiatRatesThunk } from './fiatRatesThunks';
+import { FiatRatesState } from './fiatRatesTypes';
 
 export const fiatRatesInitialState: FiatRatesState = {
     current: {},

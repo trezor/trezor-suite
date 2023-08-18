@@ -4,8 +4,8 @@ import { useSelector } from 'react-redux';
 import { AddressQRCode } from '@suite-native/qr-code';
 import { ButtonBackgroundElevation, ErrorMessage } from '@suite-native/atoms';
 import {
-    TransactionsRootState,
     AccountsRootState,
+    TransactionsRootState,
     selectAccountByKey,
     selectPendingAccountAddresses,
     selectIsAccountUtxoBased,

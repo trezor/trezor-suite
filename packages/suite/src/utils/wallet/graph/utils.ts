@@ -18,7 +18,7 @@ export const deviceGraphDataFilterFn = (d: GraphData, deviceState: string | unde
 };
 
 export const ensureHistoryRates = async (
-    symbol: string,
+    symbol: NetworkSymbol,
     data: BlockchainAccountBalanceHistory[],
     fiatCurrency: FiatCurrencyCode,
 ): Promise<BlockchainAccountBalanceHistory[]> => {

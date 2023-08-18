@@ -15,9 +15,9 @@ import {
 import { Badge, Box, HStack, Text } from '@suite-native/atoms';
 import { useFormatters } from '@suite-common/formatters';
 import {
+    TransactionsRootState,
     selectIsTransactionPending,
     selectTransactionBlockTimeById,
-    TransactionsRootState,
 } from '@suite-common/wallet-core';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { EthereumTokenTransfer } from '@suite-native/ethereum-tokens';

@@ -15,7 +15,12 @@ import {
 import { goto } from 'src/actions/suite/routerActions';
 import { fillSendForm } from 'src/actions/suite/protocolActions';
 import { AppState } from 'src/types/suite';
-import { FormState, SendContextValues, UseSendFormState } from '@suite-common/wallet-types';
+import {
+    CoinFiatRates,
+    FormState,
+    SendContextValues,
+    UseSendFormState,
+} from '@suite-common/wallet-types';
 import {
     getFeeLevels,
     getDefaultValues,
@@ -38,10 +43,10 @@ SendContext.displayName = 'SendContext';
 // Props of @wallet-views/send/index
 export interface SendFormProps {
     selectedAccount: AppState['wallet']['selectedAccount'];
-    fiat: AppState['wallet']['fiat'];
     localCurrency: AppState['wallet']['settings']['localCurrency'];
     fees: AppState['wallet']['fees'];
     online: boolean;
+    coins: CoinFiatRates[];
     sendRaw?: boolean;
     metadataEnabled: boolean;
     targetAnonymity?: number;
@@ -59,7 +64,7 @@ const getStateFromProps = (props: UseSendFormProps) => {
     const coinFees = props.fees[symbol];
     const levels = getFeeLevels(networkType, coinFees);
     const feeInfo = { ...coinFees, levels };
-    const fiatRates = props.fiat.coins.find(item => item.symbol === symbol);
+    const fiatRates = props.coins.find(item => item.symbol === symbol);
     const localCurrencyOption = {
         value: props.localCurrency,
         label: props.localCurrency.toUpperCase(),

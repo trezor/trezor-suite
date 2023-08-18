@@ -11,15 +11,13 @@ import {
     Rate,
     RateType,
     TickerId,
-    FiatRatesRootState,
-    AccountsRootState,
-    TransactionsRootState,
 } from '@suite-common/wallet-types';
 import { getFiatRateKeyFromTicker } from '@suite-common/wallet-utils';
 
-import { selectAccountByKey, selectAccounts } from '../accounts/accountsReducer';
-import { selectTransactions } from '../transactions/transactionsReducer';
+import { AccountsRootState, selectAccountByKey, selectAccounts } from '../accounts/accountsReducer';
+import { TransactionsRootState, selectTransactions } from '../transactions/transactionsReducer';
 import { MAX_AGE } from './constants';
+import { FiatRatesRootState } from './fiatRatesTypes';
 
 export const selectFiatRatesByFiatRateKey = (
     state: FiatRatesRootState,

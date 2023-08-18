@@ -1,7 +1,7 @@
 import { TextProps } from '@suite-native/atoms';
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { FiatRates } from '@trezor/blockchain-link';
 import { useFormatters } from '@suite-common/formatters';
+import { FiatRates } from '@trezor/blockchain-link';
 
 import { FormatterProps } from '../types';
 import { AmountText } from './AmountText';

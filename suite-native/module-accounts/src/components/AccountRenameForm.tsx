@@ -12,8 +12,8 @@ import {
     MAX_ACCOUNT_LABEL_LENGTH,
 } from '@suite-native/accounts';
 import {
-    accountsActions,
     AccountsRootState,
+    accountsActions,
     selectAccountByKey,
     selectAccountLabel,
 } from '@suite-common/wallet-core';

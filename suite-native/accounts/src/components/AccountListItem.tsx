@@ -1,11 +1,14 @@
 import { useSelector } from 'react-redux';
 
-import { AccountsRootState, selectFormattedAccountType } from '@suite-common/wallet-core';
+import {
+    AccountsRootState,
+    FiatRatesRootState,
+    selectFormattedAccountType,
+} from '@suite-common/wallet-core';
 import { Badge, Box, RoundedIcon, Text } from '@suite-native/atoms';
 import { Account } from '@suite-common/wallet-types';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
-import { FiatRatesRootState } from '@suite-native/fiat-rates';
 import { selectIsEthereumAccountWithTokensWithFiatRates } from '@suite-native/ethereum-tokens';
 import { SettingsSliceRootState } from '@suite-native/module-settings';
 
@@ -47,8 +50,9 @@ export const AccountListItem = ({ account, areTokensDisplayed = false }: Account
         selectFormattedAccountType(state, account.key),
     );
 
-    const isAccountWithTokens = useSelector((state: FiatRatesRootState & SettingsSliceRootState) =>
-        selectIsEthereumAccountWithTokensWithFiatRates(state, account.key),
+    const isAccountWithTokens = useSelector(
+        (state: FiatRatesRootState & SettingsSliceRootState & AccountsRootState) =>
+            selectIsEthereumAccountWithTokensWithFiatRates(state, account.key),
     );
 
     return (

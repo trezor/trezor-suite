@@ -5,9 +5,9 @@ import { useNavigation } from '@react-navigation/native';
 import { TransactionType } from '@suite-common/wallet-types';
 import { TransactionIcon } from '@suite-native/transactions';
 import {
+    AccountsRootState,
     TransactionsRootState,
     selectTransactionFirstTargetAddress,
-    AccountsRootState,
     selectAccountKeyByDescriptorAndNetworkSymbol,
     selectTransactionByTxidAndAccountKey,
 } from '@suite-common/wallet-core';

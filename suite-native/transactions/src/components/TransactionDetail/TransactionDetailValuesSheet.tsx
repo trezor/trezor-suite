@@ -6,11 +6,8 @@ import { convertCryptoToFiatAmount } from '@suite-common/formatters';
 import { CurrentFiatRates, WalletAccountTransaction } from '@suite-common/wallet-types';
 import { Card, Table, Td, Text, Th, Tr, VStack } from '@suite-native/atoms';
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import {
-    FiatRatesRootState,
-    getFiatRateKey,
-    selectFiatRatesByFiatRateKey,
-} from '@suite-native/fiat-rates';
+import { selectFiatRatesByFiatRateKey, FiatRatesRootState } from '@suite-common/wallet-core';
+import { getFiatRateKey } from '@suite-common/wallet-utils';
 import { selectFiatCurrencyCode } from '@suite-native/module-settings';
 import {
     CryptoToFiatAmountFormatter,

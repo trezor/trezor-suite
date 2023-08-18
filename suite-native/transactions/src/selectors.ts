@@ -1,11 +1,11 @@
 import { memoizeWithArgs } from 'proxy-memoize';
 import { A, G, pipe } from '@mobily/ts-belt';
 
-import { FiatRatesRootState } from '@suite-native/fiat-rates';
 import {
     selectTransactionByTxidAndAccountKey,
     selectTransactionTargets,
     TransactionsRootState,
+    FiatRatesRootState,
 } from '@suite-common/wallet-core';
 import { AccountKey, TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
 import { NetworkSymbol } from '@suite-common/wallet-config';

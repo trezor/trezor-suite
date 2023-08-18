@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
+import { updateFiatRatesThunk } from '@suite-common/wallet-core';
 import { selectFiatCurrencyCode } from '@suite-native/module-settings';
 import {
     AccountsImportStackParamList,
@@ -11,7 +12,6 @@ import {
 } from '@suite-native/navigation';
 import TrezorConnect, { AccountInfo } from '@trezor/connect';
 import { TokenAddress } from '@suite-common/wallet-types';
-import { updateFiatRatesThunk } from '@suite-common/wallet-core';
 
 import { AccountImportLoader } from '../components/AccountImportLoader';
 import { useShowImportError } from '../useShowImportError';

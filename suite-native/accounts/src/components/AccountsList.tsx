@@ -2,9 +2,8 @@ import { useSelector } from 'react-redux';
 
 import { D } from '@mobily/ts-belt';
 
-import { AccountsRootState } from '@suite-common/wallet-core';
+import { AccountsRootState, FiatRatesRootState } from '@suite-common/wallet-core';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
-import { FiatRatesRootState } from '@suite-native/fiat-rates';
 import { SettingsSliceRootState } from '@suite-native/module-settings';
 
 import { AccountsListGroup } from './AccountsListGroup';

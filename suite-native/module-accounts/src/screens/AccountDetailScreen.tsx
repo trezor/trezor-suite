@@ -6,12 +6,12 @@ import { RouteProp, useRoute } from '@react-navigation/native';
 import { RootStackParamList, RootStackRoutes, Screen } from '@suite-native/navigation';
 import {
     AccountsRootState,
+    TransactionsRootState,
+    FiatRatesRootState,
     fetchTransactionsThunk,
     selectAccountLabel,
     selectAccountByKey,
-    TransactionsRootState,
 } from '@suite-common/wallet-core';
-import { FiatRatesRootState } from '@suite-native/fiat-rates';
 import { TransactionList } from '@suite-native/transactions';
 import {
     selectAccountOrTokenAccountTransactions,
