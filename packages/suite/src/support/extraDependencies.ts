@@ -71,7 +71,6 @@ export const extraDependencies: ExtraDependencies = {
     actions: {
         setAccountAddMetadata: metadataActions.setAccountAdd,
         setWalletSettingsLocalCurrency: walletSettingsActions.setLocalCurrency,
-        changeWalletSettingsNetworks: walletSettingsActions.changeNetworks,
         lockDevice: suiteActions.lockDevice,
         appChanged: suiteActions.appChanged,
         setSelectedDevice: deviceActions.selectDevice,

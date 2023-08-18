@@ -20,8 +20,6 @@ import type { PreloadStoreAction } from 'src/support/suite/preloadStore';
 import { GraphData } from 'src/types/wallet/graph';
 import { deviceGraphDataFilterFn } from 'src/utils/wallet/graph';
 import { selectCoinjoinAccountByKey } from 'src/reducers/wallet/coinjoinReducer';
-import { selectCoinsLegacy } from '@suite-common/wallet-core';
-import { useSelector } from 'src/hooks/suite';
 
 import { STORAGE } from './constants';
 
@@ -275,24 +273,6 @@ export const saveBackend =
             true,
         );
     };
-
-export const removeFiatRate =
-    (symbol: string, tokenAddress?: string) => async (_dispatch: Dispatch, _getState: GetState) => {
-        if (!(await db.isAccessible())) return;
-        const key = tokenAddress ? `${symbol}-${tokenAddress}` : symbol;
-        return db.removeItemByPK('fiatRates', key);
-    };
-
-export const saveFiatRates = () => async (_dispatch: Dispatch) => {
-    if (!(await db.isAccessible())) return;
-    const coins = useSelector(selectCoinsLegacy);
-
-    const promises = coins.map(c => {
-        const key = c.tokenAddress ? `${c.symbol}-${c.tokenAddress}` : c.symbol;
-        return db.addItem('fiatRates', c, key, true);
-    });
-    return Promise.all(promises);
-};
 
 export const saveSuiteSettings = () => async (_dispatch: Dispatch, getState: GetState) => {
     if (!(await db.isAccessible())) return;

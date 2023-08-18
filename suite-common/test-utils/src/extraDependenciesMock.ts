@@ -84,7 +84,6 @@ export const extraDependenciesMock: ExtraDependencies = {
     actions: {
         setAccountAddMetadata: mockAction('setAccountAddMetadata'),
         setWalletSettingsLocalCurrency: mockAction('setWalletSettingsLocalCurrency'),
-        changeWalletSettingsNetworks: mockAction('changeWalletSettingsNetworks'),
         lockDevice: mockAction('lockDevice'),
         appChanged: mockAction('appChanged'),
         setSelectedDevice: mockAction('setSelectedDevice'),
