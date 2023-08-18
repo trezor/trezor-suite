@@ -4,10 +4,11 @@ import { Icon } from '../../assets/Icon/Icon';
 import { Spinner } from '../../loaders/Spinner/Spinner';
 import { IconType } from '../../../support/types';
 import { ButtonContainer, ButtonProps } from '../Button/Button';
-import { ButtonVariant, getIconColor, getIconSize } from '../buttonStyleUtils';
+import { ButtonVariant, getIconColor, getIconSize, getPadding } from '../buttonStyleUtils';
 
 const IconButtonContainer = styled(ButtonContainer)`
     position: relative;
+    padding: ${({ size }) => getPadding(size, false)};
 `;
 
 const Label = styled.span<{ isDisabled: boolean }>`
