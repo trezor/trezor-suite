@@ -155,7 +155,7 @@ export const InstallBridge = () => {
                 <StyledImage image={`BRIDGE_CHECK_TREZOR_${DeviceModelInternal.T2T1}`} />
                 {isLoading ? (
                     <LoaderWrapper data-test="@bridge/loading">
-                        <CenteredLoader size={50} strokeWidth={2} />
+                        <CenteredLoader size={50} />
                         <P>
                             <Translation id="TR_GATHERING_INFO" />
                         </P>
