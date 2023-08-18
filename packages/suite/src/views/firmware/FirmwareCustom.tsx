@@ -98,11 +98,7 @@ export const FirmwareCustom = () => {
                                     values={{ error: error || '' }}
                                 />
                             }
-                            innerActions={
-                                <FirmwareCloseButton onClick={onClose}>
-                                    <Translation id="TR_BACK" />
-                                </FirmwareCloseButton>
-                            }
+                            innerActions={<FirmwareCloseButton onClick={onClose} />}
                             nested
                         />
                     );
