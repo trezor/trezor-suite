@@ -8,26 +8,29 @@ const StyledButton = styled(Button)`
     min-width: 180px;
 `;
 
-export const RetryButton = (props: ButtonProps) => (
+export const RetryButton = (props: Omit<ButtonProps, 'children'>) => (
     <Button {...props} data-test="@firmware/retry-button">
         <Translation id="TR_RETRY" />
     </Button>
 );
 
-export const ContinueButton = (props: ButtonProps) => (
+export const ContinueButton = (props: Omit<ButtonProps, 'children'>) => (
     <StyledButton {...props} data-test="@firmware/continue-button">
         <Translation id="TR_CONTINUE" />
     </StyledButton>
 );
 
-const InstallButtonCommon = (props: ButtonProps) => (
+const InstallButtonCommon = (
+    props: Omit<ButtonProps, 'children'> & { children?: React.ReactNode },
+) => (
     <StyledButton {...props} data-test="@firmware/install-button">
         {props.children || <Translation id="TR_INSTALL" />}
     </StyledButton>
 );
 
-interface InstallButtonProps extends ButtonProps {
+interface InstallButtonProps extends Omit<ButtonProps, 'children'> {
     multipleDevicesConnected?: boolean;
+    children?: React.ReactNode;
 }
 
 export const InstallButton = (props: InstallButtonProps) => {
@@ -50,8 +53,6 @@ export const InstallButton = (props: InstallButtonProps) => {
     return <InstallButtonCommon {...props} />;
 };
 
-export const CloseButton = (props: ButtonProps) => (
-    <Button {...props}>
-        <Translation id="TR_CLOSE" />
-    </Button>
-);
+export const CloseButton = (
+    props: Omit<ButtonProps, 'children'> & { children?: React.ReactNode },
+) => <Button {...props}>{props.children || <Translation id="TR_CLOSE" />}</Button>;
