@@ -46,6 +46,7 @@ import { CryptoAmountLimits } from 'src/types/wallet/coinmarketCommonTypes';
 import { useCoinmarketExchangeFormDefaultValues } from './useCoinmarketExchangeFormDefaultValues';
 import { useCompose } from './form/useCompose';
 import { useFees } from './form/useFees';
+import { selectCoinsLegacy } from '@suite-common/wallet-core';
 
 export const ExchangeFormContext = createContext<ExchangeFormContextValues | null>(null);
 ExchangeFormContext.displayName = 'CoinmarketExchangeContext';
@@ -81,8 +82,8 @@ export const useCoinmarketExchangeForm = ({
     const { exchangeInfo, quotesRequest, exchangeCoinInfo } = useSelector(
         state => state.wallet.coinmarket.exchange,
     );
-    const fiat = useSelector(state => state.wallet.fiat);
     const device = useSelector(selectDevice);
+    const coins = useSelector(selectCoinsLegacy);
     const localCurrency = useSelector(state => state.wallet.settings.localCurrency);
     const fees = useSelector(state => state.wallet.fees);
     const dispatch = useDispatch();
@@ -99,7 +100,7 @@ export const useCoinmarketExchangeForm = ({
     const coinFees = fees[symbol];
     const levels = getFeeLevels(networkType, coinFees);
     const feeInfo = { ...coinFees, levels };
-    const fiatRates = fiat.coins.find(item => item.symbol === symbol);
+    const fiatRates = coins.find(item => item.symbol === symbol);
 
     const { getDraft, saveDraft, removeDraft } =
         useFormDraft<ExchangeFormState>('coinmarket-exchange');

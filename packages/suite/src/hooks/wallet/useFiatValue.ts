@@ -1,12 +1,13 @@
+import { selectCoinsLegacy } from '@suite-common/wallet-core';
 import { useSelector } from 'src/hooks/suite';
 
 // TODO: do the calculation here
 export const useFiatValue = () => {
-    const fiat = useSelector(state => state.wallet.fiat);
+    const coins = useSelector(selectCoinsLegacy);
     const localCurrency = useSelector(state => state.wallet.settings.localCurrency);
 
     return {
-        fiat,
+        coins,
         localCurrency,
     };
 };

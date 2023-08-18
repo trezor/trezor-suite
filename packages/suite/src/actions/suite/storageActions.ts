@@ -20,6 +20,8 @@ import type { PreloadStoreAction } from 'src/support/suite/preloadStore';
 import { GraphData } from 'src/types/wallet/graph';
 import { deviceGraphDataFilterFn } from 'src/utils/wallet/graph';
 import { selectCoinjoinAccountByKey } from 'src/reducers/wallet/coinjoinReducer';
+import { selectCoinsLegacy } from '@suite-common/wallet-core';
+import { useSelector } from 'src/hooks/suite';
 
 import { STORAGE } from './constants';
 
@@ -281,9 +283,11 @@ export const removeFiatRate =
         return db.removeItemByPK('fiatRates', key);
     };
 
-export const saveFiatRates = () => async (_dispatch: Dispatch, getState: GetState) => {
+export const saveFiatRates = () => async (_dispatch: Dispatch) => {
     if (!(await db.isAccessible())) return;
-    const promises = getState().wallet.fiat.coins.map(c => {
+    const coins = useSelector(selectCoinsLegacy);
+
+    const promises = coins.map(c => {
         const key = c.tokenAddress ? `${c.symbol}-${c.tokenAddress}` : c.symbol;
         return db.addItem('fiatRates', c, key, true);
     });

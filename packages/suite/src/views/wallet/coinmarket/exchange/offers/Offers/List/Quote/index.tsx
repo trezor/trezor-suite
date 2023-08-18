@@ -15,6 +15,7 @@ import {
     CoinmarketProviderInfo,
     CoinmarketTag,
 } from 'src/views/wallet/coinmarket/common';
+import { selectCoinsLegacy } from '@suite-common/wallet-core';
 
 const Wrapper = styled.div`
     display: flex;
@@ -195,7 +196,7 @@ const Quote = ({ className, quote }: QuoteProps) => {
     const feePerByte = useSelector(
         state => state.wallet.coinmarket.composedTransactionInfo.composed?.feePerByte,
     );
-    const fiat = useSelector(state => state.wallet.fiat);
+    const coins = useSelector(selectCoinsLegacy);
     const localCurrency = useSelector(state => state.wallet.settings.localCurrency);
 
     const { tag, infoNote } = getTagAndInfoNote(quote);
@@ -211,7 +212,7 @@ const Quote = ({ className, quote }: QuoteProps) => {
     let swapFee: number | undefined;
     let swapFeeFiat: string | null = null;
     if (quote.isDex && quote.approvalGasEstimate && quote.swapGasEstimate && feePerByte) {
-        const fiatRates = fiat.coins.find(item => item.symbol === account.symbol);
+        const fiatRates = coins.find(item => item.symbol === account.symbol);
         approvalFee = quote.approvalGasEstimate * Number(feePerByte) * 1e-9;
         approvalFeeFiat = toFiatCurrency(
             approvalFee.toString(),

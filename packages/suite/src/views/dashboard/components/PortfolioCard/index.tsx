@@ -40,7 +40,7 @@ const Wrapper = styled.div`
 `;
 
 const PortfolioCard = memo(() => {
-    const { fiat, localCurrency } = useFiatValue();
+    const { coins, localCurrency } = useFiatValue();
     const { discovery, getDiscoveryStatus, isDiscoveryRunning } = useDiscovery();
     const accounts = useFastAccounts();
     const { dashboardGraphHidden } = useSelector(s => s.suite.flags);
@@ -48,7 +48,7 @@ const PortfolioCard = memo(() => {
 
     const isDeviceEmpty = useMemo(() => accounts.every(a => a.empty), [accounts]);
     const portfolioValue = accountUtils
-        .getTotalFiatBalance(accounts, localCurrency, fiat.coins)
+        .getTotalFiatBalance(accounts, localCurrency, coins)
         .toString();
 
     const discoveryStatus = getDiscoveryStatus();

@@ -16,6 +16,7 @@ import {
     selectTargetAnonymityByAccountKey,
     selectRegisteredUtxosByAccountKey,
 } from 'src/reducers/wallet/coinjoinReducer';
+import { selectCoinsLegacy } from '@suite-common/wallet-core';
 
 const StyledCard = styled(Card)`
     display: flex;
@@ -37,7 +38,6 @@ interface SendLoadedProps extends SendProps {
 // children are only for test purposes, this prop is not available in regular build
 const SendLoaded = ({ children, selectedAccount }: SendLoadedProps) => {
     const props = useSelector(state => ({
-        fiat: state.wallet.fiat,
         localCurrency: state.wallet.settings.localCurrency,
         fees: state.wallet.fees,
         online: state.suite.online,
@@ -47,7 +47,9 @@ const SendLoaded = ({ children, selectedAccount }: SendLoadedProps) => {
         prison: selectRegisteredUtxosByAccountKey(state, selectedAccount.account.key),
     }));
 
-    const sendContextValues = useSendForm({ ...props, selectedAccount });
+    const coins = useSelector(selectCoinsLegacy);
+
+    const sendContextValues = useSendForm({ ...props, selectedAccount, coins });
 
     return (
         <WalletLayout title="TR_NAV_SEND" account={selectedAccount}>

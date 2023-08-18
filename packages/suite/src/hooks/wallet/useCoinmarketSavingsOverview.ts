@@ -7,6 +7,7 @@ import { useCoinmarketNavigation } from 'src/hooks/wallet/useCoinmarketNavigatio
 import { useSelector } from 'src/hooks/suite';
 import { Trade } from 'src/types/wallet/coinmarketCommonTypes';
 import BigNumber from 'bignumber.js';
+import { selectCoinsLegacy } from '@suite-common/wallet-core';
 
 export const SavingsOverviewContext = createContext<SavingsOverviewContextValues | null>(null);
 SavingsOverviewContext.displayName = 'SavingsOverviewContext';
@@ -19,7 +20,7 @@ export const useSavingsOverview = ({
     const { navigateToSavingsSetupContinue } = useCoinmarketNavigation(account);
 
     const trades = useSelector(state => state.wallet.coinmarket.trades);
-    const fiat = useSelector(state => state.wallet.fiat);
+    const coins = useSelector(selectCoinsLegacy);
     const {
         isSavingsTradeLoading,
         isWatchingKYCStatus,
@@ -44,7 +45,7 @@ export const useSavingsOverview = ({
     const savingsTradeItemCompletedExists = savingsCryptoSum.isGreaterThan(0);
 
     let savingsFiatSum = new BigNumber(0);
-    const fiatRates = fiat.coins.find(item => item.symbol === account.symbol);
+    const fiatRates = coins.find(item => item.symbol === account.symbol);
     if (fiatRates?.current?.rates && savingsTrade?.fiatCurrency) {
         const rate = fiatRates.current.rates[savingsTrade.fiatCurrency.toLowerCase()];
         if (rate) {

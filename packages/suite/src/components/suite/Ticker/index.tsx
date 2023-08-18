@@ -4,6 +4,7 @@ import { Tooltip, useTheme, variables, Icon } from '@trezor/components';
 import { FiatValue, Translation, NoRatesTooltip } from 'src/components/suite';
 import { FormattedRelativeTime } from 'react-intl';
 import { useSelector } from 'src/hooks/suite';
+import { selectCoinsLegacy } from '@suite-common/wallet-core';
 
 const FiatRateWrapper = styled.span`
     display: flex;
@@ -22,7 +23,9 @@ interface TickerProps {
     tooltipPos?: 'top' | 'bottom';
 }
 const Ticker = ({ symbol, tooltipPos = 'top' }: TickerProps) => {
-    const rates = useSelector(state => state.wallet.fiat.coins.find(r => r.symbol === symbol));
+    const coins = useSelector(selectCoinsLegacy);
+    const rates = coins.find(r => r.symbol === symbol);
+
     const localCurrency = useSelector(state => state.wallet.settings.localCurrency);
     const theme = useTheme();
 
