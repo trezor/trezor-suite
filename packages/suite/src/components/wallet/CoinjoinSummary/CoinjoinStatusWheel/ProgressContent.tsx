@@ -110,7 +110,7 @@ export const ProgressContent = ({ accountKey, isWheelHovered }: ProgressContentP
         }
 
         if (isLoadingIndicatorShown) {
-            return <StyledLoader size={40} strokeWidth={2} />;
+            return <StyledLoader size={40} />;
         }
 
         if (isAllPrivate && !isSessionActive) {
