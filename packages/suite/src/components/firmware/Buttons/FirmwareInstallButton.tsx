@@ -8,14 +8,17 @@ const StyledButton = styled(Button)`
     min-width: 180px;
 `;
 
-const InstallButtonCommon = (props: ButtonProps) => (
+const InstallButtonCommon = (
+    props: Omit<ButtonProps, 'children'> & { children?: React.ReactNode },
+) => (
     <StyledButton {...props} data-test="@firmware/install-button">
         {props.children || <Translation id="TR_INSTALL" />}
     </StyledButton>
 );
 
-interface FirmwareInstallButtonProps extends ButtonProps {
+interface FirmwareInstallButtonProps extends Omit<ButtonProps, 'children'> {
     multipleDevicesConnected?: boolean;
+    children?: React.ReactNode;
 }
 
 export const FirmwareInstallButton = (props: FirmwareInstallButtonProps) => {
