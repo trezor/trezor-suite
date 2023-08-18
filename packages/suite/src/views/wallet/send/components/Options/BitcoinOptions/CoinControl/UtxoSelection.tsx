@@ -235,7 +235,7 @@ export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
                             cursor="pointer"
                             content={<Translation id="TR_LOADING_TRANSACTION_DETAILS" />}
                         >
-                            <StyledFluidSpinner color={theme.TYPE_LIGHT_GREY} size={14} />
+                            <StyledFluidSpinner size={14} />
                         </Tooltip>
                     )}
                     {anonymity && (

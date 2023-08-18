@@ -49,7 +49,7 @@ export const IconButton = ({
         />
     );
 
-    const Loader = <Spinner size={getIconSize(size)} strokeWidth={2} />;
+    const Loader = <Spinner size={getIconSize(size)} />;
 
     return (
         <IconButtonContainer
