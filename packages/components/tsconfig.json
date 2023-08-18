@@ -6,7 +6,7 @@
         ],
         "outDir": "./libDev"
     },
-    "include": ["."],
+    "include": [".", "**/*.json"],
     "references": [
         {
             "path": "../../suite-common/validators"
