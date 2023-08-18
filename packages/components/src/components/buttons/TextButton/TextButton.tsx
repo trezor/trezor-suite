@@ -66,7 +66,7 @@ export const TextButton = ({
 }: TextButtonProps) => {
     const IconComponent = icon ? <Icon icon={icon} size={getIconSize(size)} /> : null;
 
-    const Loader = <Spinner size={getIconSize(size)} strokeWidth={2} />;
+    const Loader = <Spinner size={getIconSize(size)} />;
 
     return (
         <TextButtonContainer

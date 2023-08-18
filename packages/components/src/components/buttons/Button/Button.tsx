@@ -109,7 +109,7 @@ export const Button = ({
         />
     ) : null;
 
-    const Loader = <Spinner size={getIconSize(size)} strokeWidth={2} />;
+    const Loader = <Spinner size={getIconSize(size)} />;
 
     return (
         <ButtonContainer
@@ -119,6 +119,7 @@ export const Button = ({
             disabled={isDisabled || isLoading}
             isFullWidth={isFullWidth}
             type={type}
+            hasIcon={!!icon || isLoading}
             {...rest}
         >
             {!isLoading && icon && IconComponent}

@@ -1,3 +1,4 @@
+import { StoryObj } from '@storybook/react';
 import { Spinner as SpinnerComponent } from './Spinner';
 
 export default {
@@ -5,9 +6,13 @@ export default {
     component: SpinnerComponent,
 };
 
-export const Spinner = {
+export const Spinner: StoryObj = {
     args: {
         size: 50,
-        strokeWidth: 1,
+    },
+    argTypes: {
+        className: {
+            control: false,
+        },
     },
 };
