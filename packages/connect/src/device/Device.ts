@@ -496,6 +496,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
     async getFeatures() {
         const { message } = await this.getCommands().typedCall('GetFeatures', 'Features', {});
+        message.capabilities = [...message.capabilities, 'Capability_Solana']; // TODO(vl): mock capability
         this._updateFeatures(message);
     }
 
