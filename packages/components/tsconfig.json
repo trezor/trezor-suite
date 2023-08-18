@@ -6,7 +6,7 @@
         ],
         "outDir": "./libDev"
     },
-    "include": ["."],
+    "include": [".", "**/*.json"],
     "references": [
         { "path": "../connect" },
         { "path": "../dom-utils" },
