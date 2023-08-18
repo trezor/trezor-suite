@@ -1,9 +1,8 @@
 import styled from 'styled-components';
-import { Button, useTheme } from '@trezor/components';
-import type { ButtonProps } from '@trezor/components';
+import { IconButton, useTheme, IconButtonProps } from '@trezor/components';
 import { darken } from 'polished';
 
-const StyledButton = styled(Button)`
+const StyledIconButton = styled(IconButton)`
     width: 32px;
     height: 32px;
     background: ${({ theme }) => theme.STROKE_GREY};
@@ -15,10 +14,15 @@ const StyledButton = styled(Button)`
     }
 `;
 
-const CloseButton = (props: ButtonProps) => {
+const CloseButton = (props: Omit<IconButtonProps, 'icon'>) => {
     const theme = useTheme();
     return (
-        <StyledButton icon="CROSS" variant="secondary" color={theme.TYPE_LIGHT_GREY} {...props} />
+        <StyledIconButton
+            icon="CROSS"
+            variant="secondary"
+            color={theme.TYPE_LIGHT_GREY}
+            {...props}
+        />
     );
 };
 
