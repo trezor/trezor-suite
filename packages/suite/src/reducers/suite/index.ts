@@ -1,15 +1,15 @@
 import { Reducer } from '@reduxjs/toolkit';
 
-import { extraDependencies } from 'src/support/extraDependencies';
-
 import { prepareAnalyticsReducer } from '@suite-common/analytics';
 import { prepareMessageSystemReducer } from '@suite-common/message-system';
 import { notificationsReducer } from '@suite-common/toast-notifications';
 import { logsSlice } from '@suite-common/logger';
 
+import { extraDependencies } from 'src/support/extraDependencies';
+
 import router from './routerReducer';
 import suite from './suiteReducer';
-import devices from './deviceReducer';
+import device from './deviceReducer';
 import modal from './modalReducer';
 import resize from './resizeReducer';
 import metadata from './metadataReducer';
@@ -25,7 +25,7 @@ export default {
     suite,
     router,
     modal,
-    devices,
+    device,
     logs: logsSlice.reducer,
     notifications: notificationsReducer,
     resize,

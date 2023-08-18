@@ -54,7 +54,7 @@ const DEVICE = getSuiteDevice({ path: '1', connected: true });
 
 type State = {
     suite: ReturnType<typeof suiteReducer>;
-    devices: ReturnType<typeof deviceReducer>;
+    device: ReturnType<typeof deviceReducer>;
 };
 
 export const getInitialState = (state: Partial<State> = {}) => ({
@@ -62,7 +62,7 @@ export const getInitialState = (state: Partial<State> = {}) => ({
         ...suiteReducer(undefined, { type: '@suite/init' }),
         device: DEVICE,
     },
-    devices: state.devices ?? [DEVICE],
+    device: { devices: state.device?.devices ?? [DEVICE] },
     router: {},
 });
 
@@ -72,10 +72,10 @@ const initStore = (state: State) => {
     const store = mockStore(state);
     store.subscribe(() => {
         const action = store.getActions().pop();
-        const { suite, devices } = store.getState();
+        const { suite, device } = store.getState();
         // process action in reducers
         store.getState().suite = suiteReducer(suite, action);
-        store.getState().devices = deviceReducer(devices, action);
+        store.getState().device = deviceReducer(device, action);
         // add action back to stack
         store.getActions().push(action);
     });

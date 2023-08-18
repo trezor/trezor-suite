@@ -1,4 +1,5 @@
 import { testMocks } from '@suite-common/test-utils';
+
 import * as MODAL from 'src/actions/suite/constants/modalConstants';
 import * as COINJOIN from 'src/actions/wallet/constants/coinjoinConstants';
 
@@ -98,7 +99,9 @@ export const onCoinjoinRoundChanged = [
         description: 'Phase 1. (critical) TrezorConnect.setBusy called on two physical devices',
         connect: undefined,
         state: {
-            devices: [DEVICE, { ...DEVICE, state: 'device-state-2', id: '2' }],
+            device: {
+                devices: [DEVICE, { ...DEVICE, state: 'device-state-2', id: '2' }],
+            },
             accounts: [
                 { key: 'a', deviceState: 'device-state' },
                 { key: 'b', deviceState: 'device-state-2' },
@@ -133,7 +136,9 @@ export const onCoinjoinRoundChanged = [
         description: 'Phase 4. (end) TrezorConnect.setBusy called',
         connect: undefined,
         state: {
-            devices: [{ ...DEVICE, features: { busy: true } }],
+            device: {
+                devices: [{ ...DEVICE, features: { busy: true } }],
+            },
             accounts: [{ key: 'a', deviceState: 'device-state' }],
             selectedAccount: { key: 'a' },
             coinjoin: {
@@ -168,7 +173,9 @@ export const onCoinjoinRoundChanged = [
         description: 'Phase 4. (end) TrezorConnect.setBusy not called (device is not busy)',
         connect: undefined,
         state: {
-            devices: [{ ...DEVICE, features: { busy: false } }],
+            device: {
+                devices: [{ ...DEVICE, features: { busy: false } }],
+            },
             accounts: [{ key: 'a', deviceState: 'device-state' }],
             selectedAccount: { key: 'a' },
             coinjoin: {
@@ -237,7 +244,9 @@ export const onCoinjoinRoundChanged = [
         description: 'Multiple events - coinjoin ends at max rounds',
         connect: undefined,
         state: {
-            devices: [{ ...DEVICE, features: { busy: true } }],
+            device: {
+                devices: [{ ...DEVICE, features: { busy: true } }],
+            },
             accounts: [
                 {
                     key: 'a',
@@ -331,11 +340,13 @@ export const getOwnershipProof = [
             },
         ],
         state: {
-            devices: [
-                DEVICE,
-                { ...DEVICE, state: 'device-state-2' },
-                { ...DEVICE, state: 'device-2-state', id: '2' },
-            ],
+            device: {
+                devices: [
+                    DEVICE,
+                    { ...DEVICE, state: 'device-state-2' },
+                    { ...DEVICE, state: 'device-2-state', id: '2' },
+                ],
+            },
             accounts: [
                 { key: 'account-A', deviceState: 'device-state', utxo: [] },
                 { key: 'account-B', deviceState: 'device-state-2', utxo: [] },
@@ -519,11 +530,13 @@ export const signCoinjoinTx = [
             },
         ],
         state: {
-            devices: [
-                DEVICE,
-                { ...DEVICE, state: 'device-state-2' },
-                { ...DEVICE, state: 'device-2-state', id: '2' },
-            ],
+            device: {
+                devices: [
+                    DEVICE,
+                    { ...DEVICE, state: 'device-state-2' },
+                    { ...DEVICE, state: 'device-2-state', id: '2' },
+                ],
+            },
             accounts: [
                 {
                     key: 'account-A',

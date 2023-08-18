@@ -183,7 +183,7 @@ export const getInitialState = (device = SUITE_DEVICE) => ({
     suite: {
         device,
     },
-    devices: [device],
+    device: { devices: [device] },
     metadata: { enabled: false, providers: [] }, // don't use labeling in unit:tests
     wallet: {
         discovery: discoveryReducer(undefined, { type: 'foo' } as any),
@@ -348,7 +348,7 @@ describe('Discovery Actions', () => {
             const state = getInitialState();
             if (f.device) {
                 state.suite.device = f.device;
-                state.devices = [f.device];
+                state.device.devices = [f.device];
             }
             const store = initStore(state);
             store.dispatch(

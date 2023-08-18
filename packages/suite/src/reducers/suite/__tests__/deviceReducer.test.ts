@@ -1,7 +1,8 @@
-import deviceReducer, { isUnlocked } from 'src/reducers/suite/deviceReducer';
-
-import { Action } from 'src/types/suite';
 import { testMocks } from '@suite-common/test-utils';
+
+import deviceReducer, { isUnlocked } from 'src/reducers/suite/deviceReducer';
+import { Action } from 'src/types/suite';
+
 import fixtures from '../__fixtures__/deviceReducer';
 
 type State = ReturnType<typeof deviceReducer>;
@@ -31,8 +32,8 @@ describe('DEVICE.CONNECT', () => {
                 state = deviceReducer(state, a as Action);
             });
             // console.log('afterSTATE', state);
-            expect(state.length).toEqual(f.result.length);
-            state.forEach((device, i) => {
+            expect(state.devices.length).toEqual(f.result.length);
+            state.devices.forEach((device, i) => {
                 expect(device).toMatchObject(f.result[i]);
             });
         });
@@ -46,8 +47,8 @@ describe('DEVICE.CHANGED', () => {
             f.actions.forEach(a => {
                 state = deviceReducer(state, a as Action);
             });
-            expect(state.length).toEqual(f.result.length);
-            state.forEach((device, i) => {
+            expect(state.devices.length).toEqual(f.result.length);
+            state.devices.forEach((device, i) => {
                 expect(device).toMatchObject(f.result[i]);
             });
         });
@@ -60,10 +61,10 @@ describe('DEVICE.DISCONNECT', () => {
             let state: State = f.initialState;
             f.actions.forEach(a => {
                 // intentionally use "undefined" as state to cover "initialState" line inside reducer
-                state = deviceReducer(state.length === 0 ? undefined : state, a as Action);
+                state = deviceReducer(state.devices.length === 0 ? undefined : state, a as Action);
             });
-            expect(state.length).toEqual(f.result.length);
-            state.forEach((device, i) => {
+            expect(state.devices.length).toEqual(f.result.length);
+            state.devices.forEach((device, i) => {
                 expect(device).toMatchObject(f.result[i]);
             });
         });
@@ -77,9 +78,9 @@ describe('SUITE.SELECT_DEVICE', () => {
             f.actions.forEach(a => {
                 state = deviceReducer(state, a as Action);
             });
-            expect(state.length).toEqual(f.result.length);
+            expect(state.devices.length).toEqual(f.result.length);
             // console.log('afterSTATE', state);
-            state.forEach((device, i) => {
+            state.devices.forEach((device, i) => {
                 expect(device).toMatchObject(f.result[i]);
                 if (f.ts[i] > 0) {
                     expect(device.ts).toBeGreaterThan(0);
@@ -98,8 +99,8 @@ describe('SUITE.UPDATE_PASSPHRASE_MODE', () => {
             f.actions.forEach(a => {
                 state = deviceReducer(state, a as Action);
             });
-            expect(state.length).toEqual(f.result.length);
-            state.forEach((device, i) => {
+            expect(state.devices.length).toEqual(f.result.length);
+            state.devices.forEach((device, i) => {
                 expect(device).toMatchObject(f.result[i]);
             });
         });
@@ -113,8 +114,8 @@ describe('SUITE.AUTH_DEVICE', () => {
             f.actions.forEach(a => {
                 state = deviceReducer(state, a as Action);
             });
-            expect(state.length).toEqual(f.result.length);
-            state.forEach((device, i) => {
+            expect(state.devices.length).toEqual(f.result.length);
+            state.devices.forEach((device, i) => {
                 expect(device).toMatchObject(f.result[i]);
             });
         });
@@ -128,8 +129,8 @@ describe('SUITE.CREATE_DEVICE_INSTANCE', () => {
             f.actions.forEach(a => {
                 state = deviceReducer(state, a as Action);
             });
-            expect(state.length).toEqual(f.result.length);
-            state.forEach((device, i) => {
+            expect(state.devices.length).toEqual(f.result.length);
+            state.devices.forEach((device, i) => {
                 expect(device).toMatchObject(f.result[i]);
             });
         });
@@ -143,8 +144,8 @@ describe('SUITE.FORGET_DEVICE', () => {
             f.actions.forEach(a => {
                 state = deviceReducer(state, a as Action);
             });
-            expect(state.length).toEqual(f.result.length);
-            state.forEach((device, i) => {
+            expect(state.devices.length).toEqual(f.result.length);
+            state.devices.forEach((device, i) => {
                 expect(device).toMatchObject(f.result[i]);
             });
         });
@@ -158,8 +159,8 @@ describe('SUITE.REMEMBER_DEVICE', () => {
             f.actions.forEach(a => {
                 state = deviceReducer(state, a as Action);
             });
-            expect(state.length).toEqual(f.result.length);
-            state.forEach((device, i) => {
+            expect(state.devices.length).toEqual(f.result.length);
+            state.devices.forEach((device, i) => {
                 expect(device).toMatchObject(f.result[i]);
             });
         });

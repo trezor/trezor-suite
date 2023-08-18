@@ -74,7 +74,7 @@ type FirmwareState = ReturnType<typeof firmwareReducer>;
 
 const getInitialState = (
     suite?: Partial<SuiteState>,
-    devices?: DevicesState,
+    device?: Partial<DevicesState>,
     router?: RouterState,
     firmware?: Partial<FirmwareState>,
 ) => ({
@@ -82,7 +82,7 @@ const getInitialState = (
         ...suiteReducer(undefined, { type: 'foo' } as any),
         ...suite,
     },
-    devices: devices || [],
+    device: { devices: device?.devices || [] },
     router: {
         ...routerReducer(undefined, { type: 'foo' } as any),
         ...router,
@@ -106,9 +106,9 @@ const initStore = (state: State) => {
     const store = mockStore(state);
     store.subscribe(() => {
         const action = store.getActions().pop();
-        const { suite, devices, router } = store.getState();
+        const { suite, device, router } = store.getState();
         store.getState().suite = suiteReducer(suite, action);
-        store.getState().devices = deviceReducer(devices, action);
+        store.getState().device = deviceReducer(device, action);
         store.getState().router = routerReducer(router, action);
         // add action back to stack
         store.getActions().push(action);
@@ -139,7 +139,7 @@ describe('Suite Actions', () => {
 
     fixtures.selectDevice.forEach(f => {
         it(`selectDevice: ${f.description}`, async () => {
-            const state = getInitialState({}, f.state.devices);
+            const state = getInitialState({}, f.state.device);
             const store = initStore(state);
             await store.dispatch(suiteActions.selectDevice(f.device));
             if (!f.result) {
@@ -155,7 +155,7 @@ describe('Suite Actions', () => {
         it(`handleDeviceConnect: ${f.description}`, async () => {
             const state = getInitialState(
                 f.state.suite,
-                f.state.devices,
+                f.state.device,
                 undefined,
                 f.state.firmware as FirmwareState,
             );
@@ -172,7 +172,7 @@ describe('Suite Actions', () => {
 
     fixtures.handleDeviceDisconnect.forEach(f => {
         it(`handleDeviceDisconnect: ${f.description}`, () => {
-            const state = getInitialState(f.state.suite, f.state.devices);
+            const state = getInitialState(f.state.suite, f.state.device);
             const store = initStore(state);
             store.dispatch({
                 type: DEVICE.DISCONNECT, // TrezorConnect event to affect "deviceReducer"
@@ -193,7 +193,7 @@ describe('Suite Actions', () => {
 
     fixtures.forgetDisconnectedDevices.forEach(f => {
         it(`forgetDisconnectedDevices: ${f.description}`, () => {
-            const state = getInitialState(f.state.suite, f.state.devices);
+            const state = getInitialState(f.state.suite, f.state.device);
             const store = initStore(state);
             store.dispatch(suiteActions.forgetDisconnectedDevices(f.device));
             const actions = store.getActions();
@@ -206,7 +206,7 @@ describe('Suite Actions', () => {
 
     fixtures.observeSelectedDevice.forEach(f => {
         it(`observeSelectedDevice: ${f.description}`, () => {
-            const state = getInitialState(f.state.suite, f.state.devices);
+            const state = getInitialState(f.state.suite, f.state.device);
             const store = initStore(state);
             const changed = store.dispatch(suiteActions.observeSelectedDevice(f.action as any));
             expect(changed).toEqual(f.changed);
@@ -240,7 +240,7 @@ describe('Suite Actions', () => {
     fixtures.authorizeDevice.forEach(f => {
         it(`authorizeDevice: ${f.description}`, async () => {
             require('@trezor/connect').setTestFixtures(f.getDeviceState);
-            const state = getInitialState(f.suiteState, f.devicesState);
+            const state = getInitialState(f.suiteState, { devices: f.devicesState });
             const store = initStore(state);
             await store.dispatch(suiteActions.authorizeDevice());
             if (!f.result) {
@@ -293,7 +293,7 @@ describe('Suite Actions', () => {
 
     fixtures.switchDuplicatedDevice.forEach(f => {
         it(`createDeviceInstance: ${f.description}`, async () => {
-            const state = getInitialState(f.state.suite, f.state.devices);
+            const state = getInitialState(f.state.suite, f.state.device);
             const store = initStore(state);
             await store.dispatch(suiteActions.switchDuplicatedDevice(f.device, f.duplicate));
             const device = selectDevice(store.getState());

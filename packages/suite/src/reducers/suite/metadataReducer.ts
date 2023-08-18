@@ -3,7 +3,7 @@ import produce from 'immer';
 import { selectAccountByKey } from '@suite-common/wallet-core';
 
 import { STORAGE, METADATA } from 'src/actions/suite/constants';
-import { Action, TrezorDevice } from 'src/types/suite';
+import { Action } from 'src/types/suite';
 import { MetadataState, WalletLabels, AccountLabels } from 'src/types/suite/metadata';
 import { selectDevice, SuiteRootState } from 'src/reducers/suite/suiteReducer';
 import { Account } from 'src/types/wallet';
@@ -12,7 +12,7 @@ import {
     DEFAULT_WALLET_METADATA,
 } from 'src/actions/suite/constants/metadataConstants';
 
-import { selectDevices } from './deviceReducer';
+import { selectDevices, State } from './deviceReducer';
 
 export const initialState: MetadataState = {
     // is Suite trying to load metadata (get master key -> sync cloud)?
@@ -145,7 +145,7 @@ export const selectAccountLabels = (state: {
  * Select metadata of type 'labels' for requested device
  */
 export const selectLabelingDataForWallet = (
-    state: { metadata: MetadataState; devices: TrezorDevice[] },
+    state: { metadata: MetadataState; device: State },
     deviceState?: string,
 ) => {
     const provider = selectSelectedProviderForLabels(state);

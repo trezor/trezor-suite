@@ -56,7 +56,9 @@ export const getInitialState = (override: any) => {
             settings: { debug: {} },
         },
         // doesnt affect anything, just needed for TrezorConnect.init action
-        devices: [],
+        device: {
+            devices: [],
+        },
         wallet: {
             settings: {
                 enabledNetworks: ['btc'],

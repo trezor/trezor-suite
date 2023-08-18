@@ -1,14 +1,18 @@
 import { combineReducers, createReducer } from '@reduxjs/toolkit';
+
 import { configureMockStore, initPreloadedState, testMocks } from '@suite-common/test-utils';
 import { promiseAllSequence } from '@trezor/utils';
+import { prepareMessageSystemReducer } from '@suite-common/message-system';
 
 import { db } from 'src/storage';
 import { accountsReducer } from 'src/reducers/wallet';
 import { coinjoinReducer } from 'src/reducers/wallet/coinjoinReducer';
 import selectedAccountReducer from 'src/reducers/wallet/selectedAccountReducer';
-import { prepareMessageSystemReducer } from '@suite-common/message-system';
 import { extraDependencies } from 'src/support/extraDependencies';
 import modalReducer from 'src/reducers/suite/modalReducer';
+import { coinjoinMiddleware } from 'src/middlewares/wallet/coinjoinMiddleware';
+import { CoinjoinService } from 'src/services/coinjoin/coinjoinService';
+
 import {
     initCoinjoinService,
     onCoinjoinRoundChanged,
@@ -19,8 +23,6 @@ import {
     stopCoinjoinSession,
 } from '../coinjoinClientActions';
 import * as fixtures from '../__fixtures__/coinjoinClientActions';
-import { coinjoinMiddleware } from 'src/middlewares/wallet/coinjoinMiddleware';
-import { CoinjoinService } from 'src/services/coinjoin/coinjoinService';
 
 jest.mock('@trezor/connect', () => global.JestMocks.getTrezorConnect({}));
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -44,7 +46,7 @@ const rootReducer = combineReducers({
         },
         () => ({}),
     ),
-    devices: createReducer([fixtures.DEVICE], () => ({})),
+    device: createReducer({ devices: [fixtures.DEVICE] }, () => ({})),
     modal: modalReducer,
     messageSystem: messageSystemReducer,
     wallet: combineReducers({
@@ -56,7 +58,7 @@ const rootReducer = combineReducers({
 
 type State = ReturnType<typeof rootReducer>;
 type Wallet = Partial<State['wallet']> & {
-    devices?: State['devices'];
+    device?: State['device'];
     suite?: State['suite'];
 };
 
@@ -68,7 +70,7 @@ const initStore = ({ accounts, coinjoin, devices, selectedAccount, suite }: Wall
             rootReducer,
             partialState: {
                 suite,
-                devices,
+                device,
                 wallet: {
                     accounts,
                     coinjoin,

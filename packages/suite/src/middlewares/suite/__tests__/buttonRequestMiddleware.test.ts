@@ -1,6 +1,9 @@
 /* eslint-disable global-require */
 /* eslint-disable @typescript-eslint/no-var-requires */
 
+import { connectInitThunk } from '@suite-common/connect-init';
+import { UI_EVENT, UI } from '@trezor/connect';
+
 import { configureStore } from 'src/support/tests/configureStore';
 import { SUITE } from 'src/actions/suite/constants';
 import routerReducer from 'src/reducers/suite/routerReducer';
@@ -9,9 +12,6 @@ import * as deviceSettingsActions from 'src/actions/settings/deviceSettingsActio
 import suiteMiddleware from 'src/middlewares/suite/suiteMiddleware';
 import buttonRequestMiddleware from 'src/middlewares/suite/buttonRequestMiddleware';
 import { Action } from 'src/types/suite';
-
-import { connectInitThunk } from '@suite-common/connect-init';
-import { UI_EVENT, UI } from '@trezor/connect';
 
 const { getSuiteDevice } = global.JestMocks;
 
@@ -65,7 +65,7 @@ export const getInitialState = () => ({
             enabledNetworks: [],
         },
     },
-    devices: [device],
+    device: { devices: [device] },
 });
 
 type State = ReturnType<typeof getInitialState>;

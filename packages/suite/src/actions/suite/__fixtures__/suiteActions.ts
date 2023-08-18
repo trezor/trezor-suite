@@ -249,7 +249,9 @@ const selectDevice = [
     {
         description: `device not found in reducer`,
         state: {
-            devices: [SUITE_DEVICE_UNACQUIRED],
+            device: {
+                devices: [SUITE_DEVICE_UNACQUIRED],
+            },
         },
         device: SUITE_DEVICE,
         result: {
@@ -259,7 +261,9 @@ const selectDevice = [
     {
         description: `one unacquired device`,
         state: {
-            devices: [SUITE_DEVICE_UNACQUIRED],
+            device: {
+                devices: [SUITE_DEVICE_UNACQUIRED],
+            },
         },
         device: SUITE_DEVICE_UNACQUIRED,
         result: {
@@ -269,13 +273,15 @@ const selectDevice = [
     {
         description: `two unacquired devices`,
         state: {
-            devices: [
-                getSuiteDevice({
-                    type: 'unacquired',
-                    path: '2',
-                }),
-                SUITE_DEVICE_UNACQUIRED,
-            ],
+            device: {
+                devices: [
+                    getSuiteDevice({
+                        type: 'unacquired',
+                        path: '2',
+                    }),
+                    SUITE_DEVICE_UNACQUIRED,
+                ],
+            },
         },
         device: SUITE_DEVICE_UNACQUIRED,
         result: {
@@ -285,15 +291,17 @@ const selectDevice = [
     {
         description: `two instances of device (@suite TrezorDevice)`,
         state: {
-            devices: [
-                getSuiteDevice({
-                    path: '1',
-                }),
-                getSuiteDevice({
-                    path: '1',
-                    instance: 1,
-                }),
-            ],
+            device: {
+                devices: [
+                    getSuiteDevice({
+                        path: '1',
+                    }),
+                    getSuiteDevice({
+                        path: '1',
+                        instance: 1,
+                    }),
+                ],
+            },
         },
         device: getSuiteDevice({
             path: '1',
@@ -309,17 +317,19 @@ const selectDevice = [
     {
         description: `two instances of device (@trezor/connect Device)`,
         state: {
-            devices: [
-                getSuiteDevice({
-                    path: '1',
-                    ts: 1,
-                }),
-                getSuiteDevice({
-                    path: '1',
-                    instance: 1,
-                    ts: 2,
-                }),
-            ],
+            device: {
+                devices: [
+                    getSuiteDevice({
+                        path: '1',
+                        ts: 1,
+                    }),
+                    getSuiteDevice({
+                        path: '1',
+                        instance: 1,
+                        ts: 2,
+                    }),
+                ],
+            },
         },
         device: getConnectDevice({
             path: '1',
@@ -338,7 +348,7 @@ const handleDeviceConnect = [
     {
         description: `select connected device`,
         state: {
-            devices: [SUITE_DEVICE],
+            device: { devices: [SUITE_DEVICE] },
         },
         device: CONNECT_DEVICE,
         result: SUITE.SELECT_DEVICE,
@@ -388,7 +398,7 @@ const handleDeviceDisconnect = [
             suite: {
                 device: SUITE_DEVICE,
             },
-            devices: [SUITE_DEVICE],
+            device: { devices: [SUITE_DEVICE] },
         },
         device: CONNECT_DEVICE,
         result: {
@@ -401,13 +411,15 @@ const handleDeviceDisconnect = [
             suite: {
                 device: SUITE_DEVICE,
             },
-            devices: [
-                getSuiteDevice({
-                    path: '1',
-                    state: 'abc',
-                    remember: true,
-                }),
-            ],
+            device: {
+                devices: [
+                    getSuiteDevice({
+                        path: '1',
+                        state: 'abc',
+                        remember: true,
+                    }),
+                ],
+            },
         },
         device: CONNECT_DEVICE,
     },
@@ -417,21 +429,23 @@ const handleDeviceDisconnect = [
             suite: {
                 device: SUITE_DEVICE,
             },
-            devices: [
-                SUITE_DEVICE,
-                getSuiteDevice({
-                    path: '1',
-                    state: 'cba',
-                    instance: 2,
-                    remember: true,
-                }),
-                getSuiteDevice({
-                    path: '1',
-                    state: 'abc',
-                    instance: 1,
-                    remember: true,
-                }),
-            ],
+            device: {
+                devices: [
+                    SUITE_DEVICE,
+                    getSuiteDevice({
+                        path: '1',
+                        state: 'cba',
+                        instance: 2,
+                        remember: true,
+                    }),
+                    getSuiteDevice({
+                        path: '1',
+                        state: 'abc',
+                        instance: 1,
+                        remember: true,
+                    }),
+                ],
+            },
         },
         device: CONNECT_DEVICE,
         result: {
@@ -443,55 +457,33 @@ const handleDeviceDisconnect = [
             }),
         },
     },
-    // {
-    //     description: `disconnected selected device with router locked`,
-    //     state: {
-    //         suite: {
-    //             device: SUITE_DEVICE,
-    //             locks: [SUITE.LOCK_TYPE.ROUTER],
-    //         },
-    //         devices: [
-    //             SUITE_DEVICE,
-    //             getSuiteDevice(
-    //                 {
-    //                     path: '2',
-    //                 },
-    //                 {
-    //                     device_id: '2',
-    //                 },
-    //             ),
-    //         ],
-    //     },
-    //     device: CONNECT_DEVICE,
-    //     result: {
-    //         payload: undefined,
-    //     },
-    // },
     {
         description: `switch to first unacquired device`,
         state: {
             suite: {
                 device: SUITE_DEVICE,
             },
-            devices: [
-                SUITE_DEVICE,
-                getSuiteDevice({
-                    type: 'unacquired',
-                    path: '3',
-                }),
-                getSuiteDevice({
-                    type: 'unacquired',
-                    path: '2',
-                }),
-                getSuiteDevice(
-                    {
-                        path: '4',
-                    },
-                    {
-                        device_id: '4',
-                    },
-                ),
-            ],
+            device: {
+                devices: [
+                    SUITE_DEVICE,
+                    getSuiteDevice({
+                        type: 'unacquired',
+                        path: '3',
+                    }),
+                    getSuiteDevice({
+                        type: 'unacquired',
+                        path: '2',
+                    }),
+                    getSuiteDevice(
+                        {
+                            path: '4',
+                        },
+                        {
+                            device_id: '4',
+                        },
+                    ),
+                ],
+            },
         },
         device: CONNECT_DEVICE,
         result: {
@@ -507,36 +499,38 @@ const handleDeviceDisconnect = [
             suite: {
                 device: SUITE_DEVICE,
             },
-            devices: [
-                getSuiteDevice(
-                    {
-                        path: '2',
-                    },
-                    {
-                        device_id: '2',
-                    },
-                ),
-                getSuiteDevice(
-                    {
-                        path: '3',
-                        connected: true,
-                        ts: 1,
-                    },
-                    {
-                        device_id: '3',
-                    },
-                ),
-                getSuiteDevice(
-                    {
-                        path: '4',
-                        connected: true,
-                        ts: 2,
-                    },
-                    {
-                        device_id: '4',
-                    },
-                ),
-            ],
+            device: {
+                devices: [
+                    getSuiteDevice(
+                        {
+                            path: '2',
+                        },
+                        {
+                            device_id: '2',
+                        },
+                    ),
+                    getSuiteDevice(
+                        {
+                            path: '3',
+                            connected: true,
+                            ts: 1,
+                        },
+                        {
+                            device_id: '3',
+                        },
+                    ),
+                    getSuiteDevice(
+                        {
+                            path: '4',
+                            connected: true,
+                            ts: 2,
+                        },
+                        {
+                            device_id: '4',
+                        },
+                    ),
+                ],
+            },
         },
         device: CONNECT_DEVICE,
         result: {
@@ -558,35 +552,37 @@ const handleDeviceDisconnect = [
             suite: {
                 device: SUITE_DEVICE,
             },
-            devices: [
-                getSuiteDevice(
-                    {
-                        path: '2',
-                        ts: 2,
-                    },
-                    {
-                        device_id: '2',
-                    },
-                ),
-                getSuiteDevice(
-                    {
-                        path: '3',
-                        ts: 3,
-                    },
-                    {
-                        device_id: '3',
-                    },
-                ),
-                getSuiteDevice(
-                    {
-                        path: '4',
-                        ts: 1,
-                    },
-                    {
-                        device_id: '4',
-                    },
-                ),
-            ],
+            device: {
+                devices: [
+                    getSuiteDevice(
+                        {
+                            path: '2',
+                            ts: 2,
+                        },
+                        {
+                            device_id: '2',
+                        },
+                    ),
+                    getSuiteDevice(
+                        {
+                            path: '3',
+                            ts: 3,
+                        },
+                        {
+                            device_id: '3',
+                        },
+                    ),
+                    getSuiteDevice(
+                        {
+                            path: '4',
+                            ts: 1,
+                        },
+                        {
+                            device_id: '4',
+                        },
+                    ),
+                ],
+            },
         },
         device: CONNECT_DEVICE,
         result: {
@@ -610,7 +606,7 @@ const forgetDisconnectedDevices = [
             suite: {
                 device: SUITE_DEVICE_UNACQUIRED,
             },
-            devices: [SUITE_DEVICE_UNACQUIRED],
+            device: { devices: [SUITE_DEVICE_UNACQUIRED] },
         },
         device: getConnectDevice({
             path: '2',
@@ -623,13 +619,15 @@ const forgetDisconnectedDevices = [
             suite: {
                 device: SUITE_DEVICE,
             },
-            devices: [
-                SUITE_DEVICE,
-                getSuiteDevice({
-                    path: '1',
-                    instance: 1,
-                }),
-            ],
+            device: {
+                devices: [
+                    SUITE_DEVICE,
+                    getSuiteDevice({
+                        path: '1',
+                        instance: 1,
+                    }),
+                ],
+            },
         },
         device: CONNECT_DEVICE,
         result: [
@@ -643,22 +641,24 @@ const forgetDisconnectedDevices = [
             suite: {
                 device: SUITE_DEVICE,
             },
-            devices: [
-                SUITE_DEVICE,
-                getSuiteDevice({
-                    path: '1',
-                    instance: 1,
-                }),
-                getSuiteDevice({
-                    path: '1',
-                    instance: 2,
-                    remember: true,
-                }),
-                getSuiteDevice({
-                    path: '2',
-                    id: 'device-id-2',
-                }),
-            ],
+            device: {
+                devices: [
+                    SUITE_DEVICE,
+                    getSuiteDevice({
+                        path: '1',
+                        instance: 1,
+                    }),
+                    getSuiteDevice({
+                        path: '1',
+                        instance: 2,
+                        remember: true,
+                    }),
+                    getSuiteDevice({
+                        path: '2',
+                        id: 'device-id-2',
+                    }),
+                ],
+            },
         },
         device: CONNECT_DEVICE,
         result: [
@@ -694,7 +694,7 @@ const observeSelectedDevice = [
             suite: {
                 device: SUITE_DEVICE,
             },
-            devices: [SUITE_DEVICE],
+            device: { devices: [SUITE_DEVICE] },
         },
         changed: false,
     },
@@ -707,11 +707,13 @@ const observeSelectedDevice = [
             suite: {
                 device: SUITE_DEVICE,
             },
-            devices: [
-                getSuiteDevice({
-                    connected: true,
-                }),
-            ],
+            device: {
+                devices: [
+                    getSuiteDevice({
+                        connected: true,
+                    }),
+                ],
+            },
         },
         result: SUITE.UPDATE_SELECTED_DEVICE,
         changed: true,
@@ -725,7 +727,7 @@ const observeSelectedDevice = [
             suite: {
                 device: SUITE_DEVICE,
             },
-            devices: [],
+            device: { devices: [] },
         },
         changed: true,
     },
@@ -1049,7 +1051,7 @@ const switchDuplicatedDevice = [
                     instance: 1,
                 }),
             },
-            devices: [SUITE_DEVICE],
+            device: { devices: [SUITE_DEVICE] },
         },
         device: getSuiteDevice({
             instance: 1,

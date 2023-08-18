@@ -1,6 +1,8 @@
-import * as deviceSettingsActions from '../deviceSettingsActions';
-import { SUITE } from 'src/actions/suite/constants';
 import { notificationsActions } from '@suite-common/toast-notifications';
+
+import { SUITE } from 'src/actions/suite/constants';
+
+import * as deviceSettingsActions from '../deviceSettingsActions';
 
 const { getSuiteDevice } = global.JestMocks;
 
@@ -27,24 +29,26 @@ export default [
     {
         description: 'Wipe device with multiple device instances',
         initialState: {
-            devices: [
-                getSuiteDevice({
-                    path: '1',
-                    connected: true,
-                }),
-                getSuiteDevice({
-                    path: '1',
-                    connected: true,
-                    instance: 1,
-                    state: '1',
-                }),
-                getSuiteDevice({
-                    path: '1',
-                    connected: true,
-                    instance: 2,
-                    state: '2',
-                }),
-            ],
+            device: {
+                devices: [
+                    getSuiteDevice({
+                        path: '1',
+                        connected: true,
+                    }),
+                    getSuiteDevice({
+                        path: '1',
+                        connected: true,
+                        instance: 1,
+                        state: '1',
+                    }),
+                    getSuiteDevice({
+                        path: '1',
+                        connected: true,
+                        instance: 2,
+                        state: '2',
+                    }),
+                ],
+            },
         },
         action: () => deviceSettingsActions.wipeDevice(),
         mocks: { success: true, payload: { message: 'Success' } },

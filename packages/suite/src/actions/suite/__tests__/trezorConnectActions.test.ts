@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 /* eslint-disable global-require */
-import { configureStore } from 'src/support/tests/configureStore';
-
 import { DEVICE_EVENT, UI_EVENT, TRANSPORT_EVENT, BLOCKCHAIN_EVENT } from '@trezor/connect';
+import { connectInitThunk } from '@suite-common/connect-init';
+
+import { configureStore } from 'src/support/tests/configureStore';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
 import deviceReducer from 'src/reducers/suite/deviceReducer';
 import { SUITE } from 'src/actions/suite/constants';
-import { connectInitThunk } from '@suite-common/connect-init';
 
 jest.mock('@trezor/connect', () => {
     let fixture: any;
@@ -52,12 +52,12 @@ jest.mock('@trezor/connect', () => {
 
 type SuiteState = ReturnType<typeof suiteReducer>;
 type DevicesState = ReturnType<typeof deviceReducer>;
-export const getInitialState = (suite?: Partial<SuiteState>, devices?: DevicesState) => ({
+export const getInitialState = (suite?: Partial<SuiteState>, device?: Partial<DevicesState>) => ({
     suite: {
         ...suiteReducer(undefined, { type: 'foo' } as any),
         ...suite,
     },
-    devices: devices || [],
+    device: { devices: device?.devices || [] },
     wallet: {
         settings: {
             enabledNetworks: [],
@@ -72,9 +72,9 @@ const initStore = (state: State) => {
     const store = mockStore(state);
     store.subscribe(() => {
         const action = store.getActions().pop();
-        const { suite, devices } = store.getState();
+        const { suite, device } = store.getState();
         store.getState().suite = suiteReducer(suite, action);
-        store.getState().devices = deviceReducer(devices, action);
+        store.getState().device = deviceReducer(device, action);
         // add action back to stack
         store.getActions().push(action);
     });

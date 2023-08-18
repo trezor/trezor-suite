@@ -1,12 +1,13 @@
 /* eslint-disable global-require */
 
-import { configureStore } from 'src/support/tests/configureStore';
+import { connectInitThunk } from '@suite-common/connect-init';
 
+import { configureStore } from 'src/support/tests/configureStore';
 import receiveReducer from 'src/reducers/wallet/receiveReducer';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
 import modalReducer from 'src/reducers/suite/modalReducer';
-import { connectInitThunk } from '@suite-common/connect-init';
 import * as receiveActions from 'src/actions/wallet/receiveActions';
+
 import fixtures from '../__fixtures__/receiveActions';
 
 const { getSuiteDevice } = global.JestMocks;
@@ -91,7 +92,9 @@ interface InitialState {
 }
 
 export const getInitialState = (state: Partial<InitialState> | undefined) => ({
-    devices: [],
+    device: {
+        devices: [],
+    },
     suite: {
         ...suiteReducer(undefined, { type: 'foo' } as any),
         device: getSuiteDevice({ available: true, connected: true }),
