@@ -70,7 +70,7 @@ const Step = ({ phase, currentPhase }: StepProps) => {
         <StepConiainer isCurrent={isCurrent} isComplete={isComplete}>
             {!isComplete && !isCurrent && <Dot>•</Dot>}
 
-            {isCurrent && <Spinner size={16} strokeWidth={2} color={theme.TYPE_LIGHTER_GREY} />}
+            {isCurrent && <Spinner size={16} />}
 
             {isComplete && <Icon icon="CHECK" size={28} color={theme.TYPE_DARK_GREY} />}
         </StepConiainer>
