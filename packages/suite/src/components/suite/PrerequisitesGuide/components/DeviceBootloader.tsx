@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Translation, TroubleshootingTips } from 'src/components/suite';
-import { Button } from '@trezor/components';
+import { IconButton } from '@trezor/components';
 import { useDispatch } from 'src/hooks/suite';
 import { goto } from 'src/actions/suite/routerActions';
 import { TrezorDevice } from 'src/types/suite';
@@ -45,7 +45,7 @@ export const DeviceBootloader = ({ device }: DeviceBootloaderProps) => {
             heading: <Translation id="TR_WIPE_OR_UPDATE" />,
             description: <Translation id="TR_WIPE_OR_UPDATE_DESCRIPTION" />,
             noBullet: true,
-            action: <Button onClick={gotToDeviceSettings} icon="SETTINGS" iconSize={20} />,
+            action: <IconButton onClick={gotToDeviceSettings} icon="SETTINGS" iconSize={20} />,
         },
     ];
 
