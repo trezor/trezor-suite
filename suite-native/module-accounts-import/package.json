@@ -31,7 +31,6 @@
         "@suite-native/atoms": "workspace:*",
         "@suite-native/config": "workspace:*",
         "@suite-native/ethereum-tokens": "workspace:*",
-        "@suite-native/fiat-rates": "workspace:*",
         "@suite-native/formatters": "workspace:*",
         "@suite-native/forms": "workspace:*",
         "@suite-native/module-settings": "workspace:*",

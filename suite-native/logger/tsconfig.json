@@ -9,7 +9,6 @@
         {
             "path": "../../suite-common/wallet-core"
         },
-        { "path": "../fiat-rates" },
         { "path": "../module-settings" }
     ]
 }

@@ -15,7 +15,6 @@
         "@suite-common/logger": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
-        "@suite-native/fiat-rates": "workspace:*",
         "@suite-native/module-settings": "workspace:*"
     }
 }

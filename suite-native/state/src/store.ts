@@ -1,11 +1,10 @@
 import { configureStore, Middleware } from '@reduxjs/toolkit';
 import createDebugger from 'redux-flipper';
 
-import { prepareFiatRatesMiddleware } from '@suite-native/fiat-rates';
 import { logsMiddleware } from '@suite-common/logger';
+import { prepareBlockchainMiddleware, prepareFiatRatesMiddleware } from '@suite-common/wallet-core';
 import { logsMiddleware as nativeLogsMiddleware } from '@suite-native/logger';
 import { messageSystemMiddleware } from '@suite-native/message-system';
-import { prepareBlockchainMiddleware } from '@suite-common/wallet-core';
 import { prepareDeviceMiddleware } from '@suite-native/device';
 
 import { extraDependencies } from './extraDependencies';

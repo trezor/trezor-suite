@@ -5,12 +5,11 @@ import {
     selectDevices,
     selectDevice,
     firmwareActions,
-    discoveryActions,
     selectDiscoveryByDeviceState,
+    discoveryActions,
     accountsActions,
     blockchainActions,
     transactionsActions,
-    fiatRatesActions,
     selectAccountByKey,
     deviceActions,
 } from '@suite-common/wallet-core';
@@ -65,19 +64,6 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 if (isDeviceRemembered(device)) {
                     storageActions.saveAccounts([action.payload]);
                 }
-            }
-
-            if (fiatRatesActions.updateFiatRate.match(action)) {
-                api.dispatch(storageActions.saveFiatRates());
-            }
-
-            if (fiatRatesActions.removeFiatRate.match(action)) {
-                api.dispatch(
-                    storageActions.removeFiatRate(
-                        action.payload.symbol,
-                        action.payload.tokenAddress,
-                    ),
-                );
             }
 
             if (walletSettingsActions.changeNetworks.match(action)) {

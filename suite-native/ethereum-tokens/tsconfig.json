@@ -15,7 +15,6 @@
         {
             "path": "../../suite-common/wallet-utils"
         },
-        { "path": "../fiat-rates" },
         { "path": "../module-settings" },
         {
             "path": "../../packages/blockchain-link"

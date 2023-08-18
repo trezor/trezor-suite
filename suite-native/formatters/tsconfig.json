@@ -22,7 +22,6 @@
         },
         { "path": "../atoms" },
         { "path": "../ethereum-tokens" },
-        { "path": "../fiat-rates" },
         { "path": "../module-settings" },
         {
             "path": "../../packages/blockchain-link"

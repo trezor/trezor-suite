@@ -7781,7 +7781,6 @@ __metadata:
     "@suite-common/wallet-utils": "workspace:*"
     "@suite-native/atoms": "workspace:*"
     "@suite-native/ethereum-tokens": "workspace:*"
-    "@suite-native/fiat-rates": "workspace:*"
     "@suite-native/formatters": "workspace:*"
     "@suite-native/forms": "workspace:*"
     "@suite-native/module-settings": "workspace:*"
@@ -7843,7 +7842,6 @@ __metadata:
     "@suite-native/accounts": "workspace:*"
     "@suite-native/atoms": "workspace:*"
     "@suite-native/ethereum-tokens": "workspace:*"
-    "@suite-native/fiat-rates": "workspace:*"
     "@suite-native/formatters": "workspace:*"
     "@suite-native/module-settings": "workspace:*"
     "@suite-native/navigation": "workspace:*"
@@ -7932,30 +7930,10 @@ __metadata:
     "@suite-common/wallet-core": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@suite-common/wallet-utils": "workspace:*"
-    "@suite-native/fiat-rates": "workspace:*"
     "@suite-native/module-settings": "workspace:*"
     "@trezor/blockchain-link": "workspace:*"
     proxy-memoize: 2.0.2
     react: 18.2.0
-  languageName: unknown
-  linkType: soft
-
-"@suite-native/fiat-rates@workspace:*, @suite-native/fiat-rates@workspace:suite-native/fiat-rates":
-  version: 0.0.0-use.local
-  resolution: "@suite-native/fiat-rates@workspace:suite-native/fiat-rates"
-  dependencies:
-    "@mobily/ts-belt": ^3.13.1
-    "@reduxjs/toolkit": 1.9.5
-    "@suite-common/fiat-services": "workspace:*"
-    "@suite-common/redux-utils": "workspace:*"
-    "@suite-common/suite-config": "workspace:*"
-    "@suite-common/wallet-config": "workspace:*"
-    "@suite-common/wallet-core": "workspace:*"
-    "@suite-common/wallet-types": "workspace:*"
-    "@suite-common/wallet-utils": "workspace:*"
-    "@trezor/connect": "workspace:*"
-    date-fns: ^2.30.0
-    proxy-memoize: 2.0.2
   languageName: unknown
   linkType: soft
 
@@ -7972,7 +7950,6 @@ __metadata:
     "@suite-common/wallet-utils": "workspace:*"
     "@suite-native/atoms": "workspace:*"
     "@suite-native/ethereum-tokens": "workspace:*"
-    "@suite-native/fiat-rates": "workspace:*"
     "@suite-native/module-settings": "workspace:*"
     "@trezor/blockchain-link": "workspace:*"
     "@trezor/styles": "workspace:*"
@@ -8065,7 +8042,6 @@ __metadata:
     "@suite-common/logger": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
-    "@suite-native/fiat-rates": "workspace:*"
     "@suite-native/module-settings": "workspace:*"
   languageName: unknown
   linkType: soft
@@ -8117,7 +8093,6 @@ __metadata:
     "@suite-native/atoms": "workspace:*"
     "@suite-native/config": "workspace:*"
     "@suite-native/ethereum-tokens": "workspace:*"
-    "@suite-native/fiat-rates": "workspace:*"
     "@suite-native/formatters": "workspace:*"
     "@suite-native/forms": "workspace:*"
     "@suite-native/module-settings": "workspace:*"
@@ -8160,7 +8135,6 @@ __metadata:
     "@suite-native/analytics": "workspace:*"
     "@suite-native/atoms": "workspace:*"
     "@suite-native/ethereum-tokens": "workspace:*"
-    "@suite-native/fiat-rates": "workspace:*"
     "@suite-native/formatters": "workspace:*"
     "@suite-native/forms": "workspace:*"
     "@suite-native/graph": "workspace:*"
@@ -8448,7 +8422,6 @@ __metadata:
     "@suite-common/wallet-core": "workspace:*"
     "@suite-native/config": "workspace:*"
     "@suite-native/device": "workspace:*"
-    "@suite-native/fiat-rates": "workspace:*"
     "@suite-native/graph": "workspace:*"
     "@suite-native/logger": "workspace:*"
     "@suite-native/message-system": "workspace:*"
@@ -8552,7 +8525,6 @@ __metadata:
     "@suite-native/analytics": "workspace:*"
     "@suite-native/atoms": "workspace:*"
     "@suite-native/ethereum-tokens": "workspace:*"
-    "@suite-native/fiat-rates": "workspace:*"
     "@suite-native/formatters": "workspace:*"
     "@suite-native/helpers": "workspace:*"
     "@suite-native/module-settings": "workspace:*"
@@ -9594,7 +9566,6 @@ __metadata:
     "@suite-native/atoms": "workspace:*"
     "@suite-native/biometrics": "workspace:*"
     "@suite-native/config": "workspace:*"
-    "@suite-native/fiat-rates": "workspace:*"
     "@suite-native/message-system": "workspace:*"
     "@suite-native/module-accounts": "workspace:*"
     "@suite-native/module-accounts-import": "workspace:*"

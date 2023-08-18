@@ -7,13 +7,11 @@ import {
     accountsActions,
     blockchainActions,
     fetchAndUpdateAccountThunk,
-} from '@suite-common/wallet-core';
-import {
     updateFiatRatesThunk,
     updateMissingTxFiatRatesThunk,
     periodicFetchFiatRatesThunk,
     fetchFiatRatesThunk,
-} from '@suite-native/fiat-rates';
+} from '@suite-common/wallet-core';
 
 const isAnyOfFiatRatesActions = isAnyOf(
     updateFiatRatesThunk.pending,

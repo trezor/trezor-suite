@@ -27,7 +27,6 @@
         { "path": "../atoms" },
         { "path": "../config" },
         { "path": "../ethereum-tokens" },
-        { "path": "../fiat-rates" },
         { "path": "../formatters" },
         { "path": "../forms" },
         { "path": "../module-settings" },

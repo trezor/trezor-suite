@@ -3,17 +3,23 @@ import { memoize, memoizeWithArgs } from 'proxy-memoize';
 
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 import {
+    Account,
+    AccountKey,
+    WalletAccountTransaction,
+    FiatRateKey,
+    FiatRatesStateLegacy,
+    Rate,
+    RateType,
+    TickerId,
+    FiatRatesRootState,
     AccountsRootState,
-    FiatRatesState as FiatRatesStateLegacy,
-    selectAccountByKey,
-    selectAccounts,
-    selectTransactions,
-} from '@suite-common/wallet-core';
-import { Account, AccountKey, WalletAccountTransaction } from '@suite-common/wallet-types';
+    TransactionsRootState,
+} from '@suite-common/wallet-types';
+import { getFiatRateKeyFromTicker } from '@suite-common/wallet-utils';
 
-import { MAX_AGE } from './fiatRatesConst';
-import { FiatRateKey, FiatRatesRootState, Rate, RateType, TickerId } from './types';
-import { getFiatRateKeyFromTicker } from './utils';
+import { selectAccountByKey, selectAccounts } from '../accounts/accountsReducer';
+import { selectTransactions } from '../transactions/transactionsReducer';
+import { MAX_AGE } from './constants';
 
 export const selectFiatRatesByFiatRateKey = (
     state: FiatRatesRootState,
@@ -102,7 +108,10 @@ export const selectTickersToBeUpdated = memoizeWithArgs(
 );
 
 export const selectTransactionsWithMissingRates = memoizeWithArgs(
-    (state: FiatRatesRootState, localCurrency: FiatCurrencyCode) => {
+    (
+        state: FiatRatesRootState & TransactionsRootState & AccountsRootState,
+        localCurrency: FiatCurrencyCode,
+    ) => {
         const accountTransactions = selectTransactions(state);
 
         return pipe(
@@ -132,7 +141,9 @@ export const selectCoinsLegacy = memoize(
         const coins: FiatRatesStateLegacy['coins'] = [];
 
         Object.values(state.wallet.fiat.current).forEach(rate => {
-            const coin = coins.find(c => c.symbol === rate.ticker.symbol);
+            const coin = coins.find(
+                c => c.symbol === rate.ticker.symbol && c.tokenAddress === rate.ticker.tokenAddress,
+            );
             if (coin && coin.current) {
                 coin.current.rates[rate.locale] = rate.rate;
             } else {
@@ -150,7 +161,9 @@ export const selectCoinsLegacy = memoize(
         });
 
         Object.values(state.wallet.fiat.lastWeek).forEach(rate => {
-            const coin = coins.find(c => c.symbol === rate.ticker.symbol);
+            const coin = coins.find(
+                c => c.symbol === rate.ticker.symbol && c.tokenAddress === rate.ticker.tokenAddress,
+            );
             if (coin) {
                 const ticker = coin.lastWeek?.tickers.find(
                     t => t.ts === rate.lastSuccessfulFetchTimestamp,

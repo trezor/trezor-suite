@@ -1,8 +1,7 @@
 import { createThunk } from '@suite-common/redux-utils';
 import { connectInitThunk } from '@suite-common/connect-init';
-import { initBlockchainThunk } from '@suite-common/wallet-core';
+import { initBlockchainThunk, periodicFetchFiatRatesThunk } from '@suite-common/wallet-core';
 import { initAnalyticsThunk } from '@suite-native/analytics';
-import { periodicFetchFiatRatesThunk } from '@suite-native/fiat-rates';
 import { selectFiatCurrencyCode } from '@suite-native/module-settings';
 
 import { setIsAppReady, setIsConnectInitialized } from '../../state/src/appSlice';
