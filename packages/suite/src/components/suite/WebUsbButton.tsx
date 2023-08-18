@@ -2,7 +2,7 @@ import TrezorConnect from '@trezor/connect';
 import { Button, ButtonProps } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 
-export const WebUsbButton = (props: ButtonProps) => (
+export const WebUsbButton = (props: Omit<ButtonProps, 'children'>) => (
     <Button
         {...props}
         icon="SEARCH"
