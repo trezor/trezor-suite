@@ -1,4 +1,4 @@
-import { getDefaultBackendType, isTrezorConnectBackendType } from '../backend';
+import { getDefaultBackendType, isTrezorConnectBackendType } from '../backendUtils';
 
 describe('backend utils', () => {
     test('getDefaultBackendType', () => {
