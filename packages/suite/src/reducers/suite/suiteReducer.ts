@@ -20,6 +20,8 @@ import { ensureLocale } from 'src/utils/suite/l10n';
 import type { Locale } from 'src/config/suite/languages';
 import { SUITE, STORAGE } from 'src/actions/suite/constants';
 import { Action, TrezorDevice, Lock, TorBootstrap, TorStatus } from 'src/types/suite';
+import { getFirmwareVersion } from '@trezor/device-utils';
+import { networks, Network } from '@suite-common/wallet-config';
 
 export interface SuiteRootState {
     suite: SuiteState;
@@ -312,6 +314,35 @@ export const selectIsDiscoveryAuthConfirmationRequired = (
         (discovery.status < DiscoveryStatus.STOPPING ||
             discovery.status === DiscoveryStatus.COMPLETED)
     );
+};
+
+export const selectSupportedNetworks = (state: SuiteRootState) => {
+    const device = selectDevice(state);
+    const deviceModelInternal = device?.features?.internal_model;
+    const firmwareVersion = getFirmwareVersion(device);
+
+    return Object.entries(networks)
+        .map(([symbol, network]) => {
+            const support =
+                'support' in network ? (network.support as Network['support']) : undefined;
+
+            const firmwareSupportRestriction =
+                deviceModelInternal && support?.[deviceModelInternal];
+            const isSupportedByApp =
+                !firmwareSupportRestriction ||
+                versionUtils.isNewerOrEqual(firmwareVersion, firmwareSupportRestriction);
+
+            const unavailableReason = isSupportedByApp
+                ? device?.unavailableCapabilities?.[symbol]
+                : 'update-required';
+
+            if (['no-support', 'no-capability'].includes(unavailableReason || '')) {
+                return null;
+            }
+
+            return symbol;
+        })
+        .filter(Boolean) as Network['symbol'][]; // Filter out null values
 };
 
 export default suiteReducer;
