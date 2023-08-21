@@ -1,5 +1,6 @@
 import TrezorConnect from '@trezor/connect';
 import React from 'react';
+import { screen } from '@testing-library/react';
 import { configureMockStore, initPreloadedState } from '@suite-common/test-utils';
 import * as fixtures from '../__fixtures__/useRbfForm';
 import {
@@ -16,6 +17,9 @@ jest.mock('src/actions/suite/routerActions', () => ({
 }));
 
 jest.mock('react-svg', () => ({ ReactSVG: () => 'SVG' }));
+
+// render only Translation['id']
+jest.mock('src/components/suite/Translation', () => ({ Translation: ({ id }: any) => id }));
 
 // TrezorConnect.composeTransaction is trying to connect to blockchain, to get current block height.
 // Mock whole module to avoid internet connection.
@@ -52,9 +56,10 @@ interface Args {
     send?: Partial<RootReducerState['wallet']['send']>;
     fees?: any;
     selectedAccount?: any;
+    coinjoin?: any;
 }
 
-const initStore = ({ send, fees, selectedAccount }: Args = {}) => {
+const initStore = ({ send, fees, selectedAccount, coinjoin }: Args = {}) => {
     const rootReducer = fixtures.getRootReducer(selectedAccount, fees);
 
     return configureMockStore({
@@ -62,7 +67,7 @@ const initStore = ({ send, fees, selectedAccount }: Args = {}) => {
         preloadedState: initPreloadedState({
             rootReducer,
             partialState: {
-                wallet: { send },
+                wallet: { send, coinjoin },
             },
         }),
     });
@@ -142,7 +147,11 @@ describe('useRbfForm hook', () => {
             }
 
             if (f.decreasedOutputs) {
-                expect(() => findByTestId('@send/decreased-outputs')).not.toThrow();
+                if (typeof f.decreasedOutputs === 'string') {
+                    expect(() => screen.getByText(f.decreasedOutputs)).not.toThrow();
+                } else {
+                    expect(() => findByTestId('@send/decreased-outputs')).not.toThrow();
+                }
             } else {
                 expect(() => findByTestId('@send/decreased-outputs')).toThrow(
                     'Unable to find an element',

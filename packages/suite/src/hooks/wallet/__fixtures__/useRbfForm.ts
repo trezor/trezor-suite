@@ -46,6 +46,20 @@ export const BTC_ACCOUNT = {
     network: { networkType: 'bitcoin', symbol: 'btc', decimals: 8, features: ['rbf'] },
 };
 
+const BTC_CJ_ACCOUNT = {
+    ...BTC_ACCOUNT,
+    account: {
+        ...BTC_ACCOUNT.account,
+        accountType: 'coinjoin',
+        addresses: {
+            ...BTC_ACCOUNT.account.addresses,
+            anonymitySet: {
+                '1MCgrVZjXRJJJhi2Z6SR11GpRjCyvNjscY': 1,
+            },
+        },
+    },
+};
+
 // {
 //     address: '1MCgrVZjXRJJJhi2Z6SR11GpRjCyvNjscY',
 //     // amount: '20000',
@@ -815,6 +829,166 @@ export const composeAndSign = [
         },
         composeTransactionCalls: 4, // 1. normal fee, 2. custom fee, 3. send-max normal fee, 4. send-max custom fee
         // tx is not signed
+    },
+    {
+        description: 'CoinJoin account with not anonymized utxos. decreasing output instead.',
+        store: {
+            selectedAccount: {
+                ...BTC_CJ_ACCOUNT,
+                account: {
+                    ...BTC_CJ_ACCOUNT.account,
+                    utxo: [
+                        {
+                            amount: '30000',
+                            txid: 'abcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcd',
+                            vout: 0,
+                            address:
+                                'bc1ptxs597p3fnpd8gwut5p467ulsydae3rp9z75hd99w8k3ljr9g9rqx6ynaw',
+                            path: "m/44'/0'/0'/0/1",
+                            blockHeight: 1000,
+                            confirmations: 1000,
+                        },
+                    ],
+                    addresses: {
+                        ...BTC_CJ_ACCOUNT.account.addresses,
+                        anonymitySet: {
+                            bc1ptxs597p3fnpd8gwut5p467ulsydae3rp9z75hd99w8k3ljr9g9rqx6ynaw: 1,
+                        },
+                    },
+                },
+            },
+            coinjoin: {
+                accounts: [{ key: BTC_CJ_ACCOUNT.account.key }],
+            },
+        },
+        tx: PREPARE_TX({
+            utxo: [
+                {
+                    amount: '8000',
+                    txid: DCBA,
+                    vout: 0,
+                    address: 'address',
+                    path: "m/44'/0'/0'/0/0",
+                    blockHeight: 0,
+                    confirmations: 0,
+                    required: true,
+                },
+            ],
+            outputs: [
+                {
+                    type: 'payment',
+                    address: '1MCgrVZjXRJJJhi2Z6SR11GpRjCyvNjscY',
+                    amount: '7800',
+                    formattedAmount: '0.000078',
+                },
+            ],
+            feeRate: 11.33,
+            baseFee: 2175.36, // 192 * 11.33,
+            changeAddress: undefined,
+        }),
+        composedLevels: {
+            normal: {
+                type: 'final',
+            },
+        },
+        composeTransactionCalls: 1, // 1. immediate send-max
+        decreasedOutputs: 'TR_NOT_ENOUGH_ANONYMIZED_FUNDS_RBF_WARNING',
+        signedTx: {
+            inputs: [{ prev_hash: DCBA }],
+            outputs: [
+                {
+                    address: '1MCgrVZjXRJJJhi2Z6SR11GpRjCyvNjscY',
+                    amount: '5057',
+                    orig_index: 0,
+                    orig_hash: 'ABCD',
+                },
+            ],
+        },
+    },
+    {
+        description:
+            'CoinJoin account with utxos registered in CJ session. decreasing output instead.',
+        store: {
+            selectedAccount: {
+                ...BTC_CJ_ACCOUNT,
+                account: {
+                    ...BTC_CJ_ACCOUNT.account,
+                    utxo: [
+                        {
+                            amount: '30000',
+                            txid: 'abcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcd',
+                            vout: 0,
+                            address:
+                                'bc1ptxs597p3fnpd8gwut5p467ulsydae3rp9z75hd99w8k3ljr9g9rqx6ynaw',
+                            path: "m/44'/0'/0'/0/1",
+                            blockHeight: 1000,
+                            confirmations: 1000,
+                        },
+                    ],
+                    addresses: {
+                        ...BTC_CJ_ACCOUNT.account.addresses,
+                        anonymitySet: {
+                            bc1ptxs597p3fnpd8gwut5p467ulsydae3rp9z75hd99w8k3ljr9g9rqx6ynaw: 10,
+                        },
+                    },
+                },
+            },
+            coinjoin: {
+                accounts: [
+                    {
+                        key: BTC_CJ_ACCOUNT.account.key,
+                        session: {},
+                        prison: {
+                            cdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdab00000000:
+                                { roundId: '00' },
+                        },
+                    },
+                ],
+            },
+        },
+        tx: PREPARE_TX({
+            utxo: [
+                {
+                    amount: '8000',
+                    txid: DCBA,
+                    vout: 0,
+                    address: 'address',
+                    path: "m/44'/0'/0'/0/0",
+                    blockHeight: 0,
+                    confirmations: 0,
+                    required: true,
+                },
+            ],
+            outputs: [
+                {
+                    type: 'payment',
+                    address: '1MCgrVZjXRJJJhi2Z6SR11GpRjCyvNjscY',
+                    amount: '7800',
+                    formattedAmount: '0.000078',
+                },
+            ],
+            feeRate: 11.33,
+            baseFee: 2175.36, // 192 * 11.33,
+            changeAddress: undefined,
+        }),
+        composedLevels: {
+            normal: {
+                type: 'final',
+            },
+        },
+        composeTransactionCalls: 1, // 1. immediate send-max
+        decreasedOutputs: 'TR_UTXO_REGISTERED_IN_COINJOIN_RBF_WARNING',
+        signedTx: {
+            inputs: [{ prev_hash: DCBA }],
+            outputs: [
+                {
+                    address: '1MCgrVZjXRJJJhi2Z6SR11GpRjCyvNjscY',
+                    amount: '5057',
+                    orig_index: 0,
+                    orig_hash: 'ABCD',
+                },
+            ],
+        },
     },
 ];
 
