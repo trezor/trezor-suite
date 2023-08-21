@@ -1,12 +1,13 @@
 import React, { useCallback, useState } from 'react';
 
-import { Translation, Modal, TrezorLink } from 'src/components/suite';
 import styled from 'styled-components';
 
 import { SUITE_URL } from '@trezor/urls';
 import { analytics, EventType } from '@trezor/suite-analytics';
 import { desktopApi } from '@trezor/suite-desktop-api';
 import { Button, Image } from '@trezor/components';
+
+import { Translation, Modal, TrezorLink } from 'src/components/suite';
 
 import { ImageWrapper, Description, Title } from './styles';
 
