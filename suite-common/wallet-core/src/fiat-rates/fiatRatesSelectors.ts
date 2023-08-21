@@ -16,7 +16,7 @@ import { getFiatRateKeyFromTicker } from '@suite-common/wallet-utils';
 
 import { AccountsRootState, selectAccountByKey, selectAccounts } from '../accounts/accountsReducer';
 import { TransactionsRootState, selectTransactions } from '../transactions/transactionsReducer';
-import { MAX_AGE } from './constants';
+import { MAX_AGE, ONE_WEEK_IN_MS } from './constants';
 import { FiatRatesRootState } from './fiatRatesTypes';
 
 export const selectFiatRatesByFiatRateKey = (
@@ -130,7 +130,6 @@ export const selectTransactionsWithMissingRates = memoizeWithArgs(
     { size: 1 },
 );
 
-const ONE_WEEK_IN_MS = 7 * 24 * 60 * 60 * 1000;
 /**
  * @deprecated Use selectFiatRatesByFiatRateKey or any other selector
  */
