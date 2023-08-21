@@ -1,5 +1,9 @@
 # Storage changelog
 
+## 40
+
+-   removed fiatRates
+
 ## 39
 
 -   `metadata.provider` replaced with array of `metadata.providers`
