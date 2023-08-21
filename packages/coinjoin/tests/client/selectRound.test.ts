@@ -55,7 +55,7 @@ describe('selectRound', () => {
         const result = await getRoundCandidates({
             roundGenerator,
             prison,
-            statusRounds: [{ phase: 1 }, { phase: 0, inputRegistrationEnd: new Date() }] as any,
+            statusRounds: [{ Phase: 1 }, { Phase: 0, InputRegistrationEnd: new Date() }] as any,
             coinjoinRounds: [],
             options: server?.requestOptions,
         });
@@ -69,8 +69,8 @@ describe('selectRound', () => {
             statusRounds: [
                 {
                     ...DEFAULT_ROUND,
-                    coinjoinState: {
-                        events: [],
+                    CoinjoinState: {
+                        Events: [],
                     },
                 },
             ] as any,
@@ -180,11 +180,11 @@ describe('selectRound', () => {
         server?.addListener('test-request', ({ url, data, resolve, reject }) => {
             if (url.endsWith('/select-inputs-for-round')) {
                 spy();
-                if (data.miningFeeRate === 1) {
+                if (data.MiningFeeRate === 1) {
                     reject(500, { error: 'ExpectedRuntimeError' });
                 } else {
                     resolve({
-                        indices: [5], // non existing indices (utxo indexes)
+                        Indices: [5], // non existing indices (utxo indexes)
                     });
                 }
             }
@@ -194,21 +194,19 @@ describe('selectRound', () => {
         const result = await selectInputsForRound({
             aliceGenerator,
             roundCandidates: [
-                {
-                    ...DEFAULT_ROUND,
-                    id: '01',
-                    roundParameters: ROUND_CREATION_EVENT.roundParameters,
-                } as any,
-                {
-                    ...DEFAULT_ROUND,
-                    id: '02',
-                    roundParameters: { ...ROUND_CREATION_EVENT.roundParameters, miningFeeRate: 1 },
-                } as any,
-                {
-                    ...DEFAULT_ROUND,
-                    id: '03',
-                    roundParameters: ROUND_CREATION_EVENT.roundParameters,
-                } as any,
+                createCoinjoinRound([], {
+                    ...server?.requestOptions,
+                    statusRound: { Id: '01' },
+                }),
+                createCoinjoinRound([], {
+                    ...server?.requestOptions,
+                    statusRound: { Id: '02' },
+                    roundParameters: { MiningFeeRate: 1 },
+                }),
+                createCoinjoinRound([], {
+                    ...server?.requestOptions,
+                    statusRound: { Id: '03' },
+                }),
             ],
             accountCandidates: [
                 {
@@ -245,17 +243,17 @@ describe('selectRound', () => {
         const result = await selectInputsForRound({
             aliceGenerator,
             roundCandidates: [
-                {
-                    ...DEFAULT_ROUND,
-                    id: '01',
+                createCoinjoinRound([], {
+                    ...server?.requestOptions,
+                    statusRound: { Id: '01' },
                     roundParameters: {
-                        ...ROUND_CREATION_EVENT.roundParameters,
-                        miningFeeRate: 200,
-                        coordinationFeeRate: {
-                            rate: 0.004,
+                        MiningFeeRate: 200,
+                        CoordinationFeeRate: {
+                            Rate: 0.004,
+                            PlebsDontPayThreshold: 0.004,
                         },
                     },
-                } as any,
+                }),
             ],
             accountCandidates: [
                 {
@@ -289,7 +287,7 @@ describe('selectRound', () => {
         server?.addListener('test-request', ({ url, resolve }) => {
             if (url.endsWith('/select-inputs-for-round')) {
                 spy();
-                resolve({ indices: [0] });
+                resolve({ Indices: [0] });
             }
             resolve();
         });
@@ -297,15 +295,13 @@ describe('selectRound', () => {
         const result = await selectInputsForRound({
             aliceGenerator,
             roundCandidates: [
-                {
-                    ...DEFAULT_ROUND,
-                    id: '01',
+                createCoinjoinRound([], {
+                    ...server?.requestOptions,
+                    statusRound: { Id: '01' },
                     roundParameters: {
-                        ...ROUND_CREATION_EVENT.roundParameters,
-                        maxSuggestedAmount: 1000,
+                        MaxSuggestedAmount: 1000,
                     },
-                    inputs: [],
-                } as any,
+                }),
             ],
             accountCandidates: [
                 {
@@ -326,7 +322,7 @@ describe('selectRound', () => {
         server?.addListener('test-request', ({ url, resolve }) => {
             if (url.endsWith('/select-inputs-for-round')) {
                 spy();
-                resolve({ indices: [0] });
+                resolve({ Indices: [0] });
             }
             resolve();
         });
@@ -334,14 +330,12 @@ describe('selectRound', () => {
         const result = await selectInputsForRound({
             aliceGenerator,
             roundCandidates: [
-                {
-                    ...DEFAULT_ROUND,
-                    inputs: [],
+                createCoinjoinRound([], {
+                    ...server?.requestOptions,
                     roundParameters: {
-                        ...ROUND_CREATION_EVENT.roundParameters,
-                        miningFeeRate: 20000,
+                        MiningFeeRate: 20000,
                     },
-                } as any,
+                }),
             ],
             accountCandidates: [
                 {
@@ -361,11 +355,11 @@ describe('selectRound', () => {
         // pick utxo which amount is greater than miningFeeRate
         server?.addListener('test-request', ({ url, data, resolve }) => {
             if (url.endsWith('/select-inputs-for-round')) {
-                const indices = data.utxos.flatMap((utxo: any, i: number) => {
-                    if (utxo.amount < data.miningFeeRate) return [];
+                const Indices = data.Utxos.flatMap((utxo: any, i: number) => {
+                    if (utxo.Amount < data.MiningFeeRate) return [];
                     return i;
                 });
-                resolve({ indices });
+                resolve({ Indices });
             }
             resolve();
         });
@@ -375,26 +369,26 @@ describe('selectRound', () => {
             roundCandidates: [
                 createCoinjoinRound([], {
                     ...server?.requestOptions,
-                    statusRound: { id: 'ff01', blameOf: '01ff' },
+                    statusRound: { Id: 'ff01', BlameOf: '01ff' },
                 }),
                 createCoinjoinRound([], {
                     ...server?.requestOptions,
-                    statusRound: { id: 'aa02' },
+                    statusRound: { Id: 'aa02' },
                     roundParameters: {
-                        miningFeeRate: 300000, // this round will be skipped, fees to high
+                        MiningFeeRate: 300000, // this round will be skipped, fees to high
                     },
                 }),
                 createCoinjoinRound([], {
                     ...server?.requestOptions,
-                    statusRound: { id: 'ff02', blameOf: '02ff' },
+                    statusRound: { Id: 'ff02', BlameOf: '02ff' },
                 }),
                 createCoinjoinRound([], {
                     ...server?.requestOptions,
-                    statusRound: { id: 'aa01' },
+                    statusRound: { Id: 'aa01' },
                 }),
                 createCoinjoinRound([], {
                     ...server?.requestOptions,
-                    statusRound: { id: 'ff03', blameOf: '03ff' },
+                    statusRound: { Id: 'ff03', BlameOf: '03ff' },
                 }),
             ],
             accountCandidates: [
@@ -425,30 +419,31 @@ describe('selectRound', () => {
         server?.addListener('test-request', ({ url, data, resolve }) => {
             if (url.endsWith('/select-inputs-for-round')) {
                 spy();
-                const indices = data.utxos.flatMap((utxo: any, i: number) => {
-                    if (utxo.amount < 1000 + data.miningFeeRate) return [];
+                const Indices = data.Utxos.flatMap((utxo: any, i: number) => {
+                    if (utxo.Amount < 1000 + data.MiningFeeRate) return [];
                     return i;
                 });
 
                 resolve({
-                    indices,
+                    Indices,
                 });
             }
             resolve();
         });
 
-        const roundWithMiningFee = (miningFeeRate: number) => ({
+        const roundWithMiningFee = (MiningFeeRate: number) => ({
             ...DEFAULT_ROUND,
-            coinjoinState: {
-                events: [
+            CoinjoinState: {
+                Type: '',
+                Events: [
                     {
                         ...ROUND_CREATION_EVENT,
-                        roundParameters: {
-                            ...ROUND_CREATION_EVENT.roundParameters,
-                            miningFeeRate,
-                            allowedOutputAmounts: {
-                                min: 1000, // custom min allowed output amount
-                                max: 1000000000,
+                        RoundParameters: {
+                            ...ROUND_CREATION_EVENT.RoundParameters,
+                            MiningFeeRate,
+                            AllowedOutputAmounts: {
+                                Min: 1000, // custom min allowed output amount
+                                Max: 1000000000,
                             },
                         },
                     },
@@ -483,17 +478,17 @@ describe('selectRound', () => {
             statusRounds: [
                 {
                     ...roundWithMiningFee(20),
-                    id: '01',
+                    Id: '01',
                 },
                 {
                     ...roundWithMiningFee(1),
-                    id: '02',
+                    Id: '02',
                 },
                 {
                     ...roundWithMiningFee(10),
-                    id: '03',
+                    Id: '03',
                 },
-            ] as any,
+            ],
             coinjoinRounds: [],
             prison,
             options: server?.requestOptions,
@@ -509,7 +504,7 @@ describe('selectRound', () => {
         expect(result).toMatchObject({
             id: '02', // this round contains most utxo candidates
             phase: 0,
-            roundParameters: { miningFeeRate: 1 },
+            roundParameters: { MiningFeeRate: 1 },
             commitmentData: expect.any(String),
         });
     });
@@ -549,8 +544,8 @@ describe('selectRound', () => {
                 },
             ],
             statusRounds: [
-                { ...DEFAULT_ROUND, id: '01' },
-                { ...DEFAULT_ROUND, id: '02', blameOf },
+                { ...DEFAULT_ROUND, Id: '01' },
+                { ...DEFAULT_ROUND, Id: '02', BlameOf: blameOf },
             ],
             coinjoinRounds: [],
             prison,

@@ -12,54 +12,54 @@ type RequestData = Record<string, any>;
 const DEFAULT = {
     // middleware
     'get-anonymity-scores': {
-        results: [],
+        Results: [],
     },
     'select-inputs-for-round': {
-        indices: [],
+        Indices: [],
     },
     'get-real-credential-requests': (data?: RequestData): RequestData => {
-        if (!data || !data.amountsToRequest) {
-            return { realCredentialRequests: {} };
+        if (!data || !data.AmountsToRequest) {
+            return { RealCredentialRequests: {} };
         }
         return {
-            realCredentialRequests: {
-                credentialsRequest: {
-                    Delta: data.amountsToRequest[0],
-                    Presented: data.credentialsToPresent,
-                    Requested: data.amountsToRequest,
+            RealCredentialRequests: {
+                CredentialsRequest: {
+                    Delta: data.AmountsToRequest[0],
+                    Presented: data.CredentialsToPresent,
+                    Requested: data.AmountsToRequest,
                 },
             },
         };
     },
     'get-zero-credential-requests': {
-        zeroCredentialRequests: {
-            credentialsRequest: {
+        ZeroCredentialRequests: {
+            CredentialsRequest: {
                 Delta: 0,
                 Presented: [],
-                Requested: [{ ma: '00' }, { ma: '01' }],
+                Requested: [{ Ma: '00' }, { Ma: '01' }],
                 Proofs: [{}, {}],
             },
-            credentialsResponseValidation: {
+            CredentialsResponseValidation: {
                 Presented: [],
                 Requested: [
-                    { ma: '00', value: 0 },
-                    { ma: '01', value: 0 },
+                    { Ma: '00', Value: 0 },
+                    { Ma: '01', Value: 0 },
                 ],
             },
         },
     },
     'get-credentials': (data?: RequestData): RequestData => {
-        if (!data || !data.credentialsResponse) {
-            return { credentials: [{}, {}] };
+        if (!data || !data.CredentialsResponse) {
+            return { Credentials: [{}, {}] };
         }
         return {
-            credentials: data.credentialsResponse,
+            Credentials: data.CredentialsResponse,
         };
     },
-    'get-outputs-amounts': { outputAmounts: [] },
-    'init-liquidity-clue': { rawLiquidityClue: null },
-    'update-liquidity-clue': { rawLiquidityClue: null },
-    'get-liquidity-clue': { liquidityClue: 1 },
+    'get-outputs-amounts': { OutputAmounts: [] },
+    'init-liquidity-clue': { RawLiquidityClue: null },
+    'update-liquidity-clue': { RawLiquidityClue: null },
+    'get-liquidity-clue': { LiquidityClue: 1 },
     // payment request server
     'payment-request': {
         recipient_name: 'trezor.io',
@@ -67,26 +67,26 @@ const DEFAULT = {
     },
     // coordinator
     'api/Software/versions': {
-        clientVersion: '0',
+        ClientVersion: '0',
         BackenMajordVersion: '0',
         LegalDocumentsVersion: '0',
-        ww2LegalDocumentsVersion: '0',
-        commitHash: '000000',
+        Ww2LegalDocumentsVersion: '0',
+        CommitHash: '000000',
     },
     status: {
-        roundStates: [DEFAULT_ROUND],
-        coinJoinFeeRateMedians: FEE_RATE_MEDIANS,
-        affiliateInformation: AFFILIATE_INFO,
+        RoundStates: [DEFAULT_ROUND],
+        CoinJoinFeeRateMedians: FEE_RATE_MEDIANS,
+        AffiliateInformation: AFFILIATE_INFO,
     },
     'input-registration': {
-        aliceId: Math.random().toString(),
+        AliceId: Math.random().toString(),
     },
     'connection-confirmation': {
-        realAmountCredentials: {
-            credentialsRequest: {},
+        RealAmountCredentials: {
+            CredentialsRequest: {},
         },
-        realVsizeCredentials: {
-            credentialsRequest: {},
+        RealVsizeCredentials: {
+            CredentialsRequest: {},
         },
     },
     'credential-issuance': (data?: RequestData): RequestData => {
@@ -94,17 +94,17 @@ const DEFAULT = {
             return {};
         }
         return {
-            realAmountCredentials: data.RealAmountCredentialRequests.Requested.map((a: number) => ({
-                value: a,
+            RealAmountCredentials: data.RealAmountCredentialRequests.Requested.map((a: number) => ({
+                Value: a,
             })),
-            realVsizeCredentials: data.RealVsizeCredentialRequests.Requested.map((a: number) => ({
-                value: a,
+            RealVsizeCredentials: data.RealVsizeCredentialRequests.Requested.map((a: number) => ({
+                Value: a,
             })),
-            zeroAmountCredentials: data.ZeroAmountCredentialRequests.Requested.map(() => ({
-                value: 0,
+            ZeroAmountCredentials: data.ZeroAmountCredentialRequests.Requested.map(() => ({
+                Value: 0,
             })),
-            zeroVsizeCredentials: data.ZeroVsizeCredentialsRequests.Requested.map(() => ({
-                value: 0,
+            ZeroVsizeCredentials: data.ZeroVsizeCredentialsRequests.Requested.map(() => ({
+                Value: 0,
             })),
         };
     },

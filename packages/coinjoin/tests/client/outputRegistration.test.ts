@@ -48,7 +48,7 @@ describe('outputRegistration', () => {
         server?.addListener('test-request', ({ url, resolve, reject }) => {
             if (url.endsWith('/output-registration')) {
                 // do not accept **any** output
-                reject(500, { errorCode: 'AlreadyRegisteredScript' });
+                reject(500, { ErrorCode: 'AlreadyRegisteredScript' });
             }
             resolve();
         });

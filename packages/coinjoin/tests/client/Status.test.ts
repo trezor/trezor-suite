@@ -2,7 +2,12 @@ import { Status } from '../../src/client/Status';
 import * as http from '../../src/client/coordinatorRequest';
 import { STATUS_TIMEOUT } from '../../src/constants';
 import { createServer } from '../mocks/server';
-import { AFFILIATE_INFO, DEFAULT_ROUND, STATUS_EVENT } from '../fixtures/round.fixture';
+import {
+    AFFILIATE_INFO,
+    DEFAULT_ROUND,
+    STATUS_EVENT,
+    createCoinjoinRound,
+} from '../fixtures/round.fixture';
 
 // using fakeTimers and async callbacks
 const fastForward = (time: number) =>
@@ -63,7 +68,7 @@ describe('Status', () => {
             }
             return Promise.resolve({
                 ...STATUS_EVENT,
-                roundStates: [{ ...DEFAULT_ROUND }],
+                RoundStates: [{ ...DEFAULT_ROUND }],
             });
         });
 
@@ -103,11 +108,12 @@ describe('Status', () => {
     });
 
     it('setStatusTimeout by following CoinjoinRound', async () => {
-        const coinjoinRound = {
-            ...DEFAULT_ROUND,
-            phaseDeadline: Date.now() + 1000, // initial phaseDeadline is lower than STATUS_TIMEOUT.enabled / 2
-            inputs: [],
-        };
+        const coinjoinRound = createCoinjoinRound([], {
+            round: {
+                phaseDeadline: Date.now() + 1000, // initial phaseDeadline is lower than STATUS_TIMEOUT.enabled / 2
+            },
+            ...server?.requestOptions,
+        });
 
         jest.useFakeTimers();
 
@@ -119,7 +125,7 @@ describe('Status', () => {
             }
             return Promise.resolve({
                 ...STATUS_EVENT,
-                roundStates: [{ ...DEFAULT_ROUND, phase: coordinatorRequestSpy.mock.calls.length }], // increment phase on each request to trigger update event
+                RoundStates: [{ ...DEFAULT_ROUND, Phase: coordinatorRequestSpy.mock.calls.length }], // increment phase on each request to trigger update event
             });
         });
 
@@ -162,7 +168,7 @@ describe('Status', () => {
             }
             return Promise.resolve({
                 ...STATUS_EVENT,
-                roundStates: [{ ...DEFAULT_ROUND }],
+                RoundStates: [{ ...DEFAULT_ROUND }],
             });
         });
 
@@ -229,7 +235,7 @@ describe('Status', () => {
                 if (request === 6) {
                     resolve({
                         ...STATUS_EVENT,
-                        roundStates: [{ ...DEFAULT_ROUND, phase: 1 }],
+                        RoundStates: [{ ...DEFAULT_ROUND, Phase: 1 }],
                     });
                 } else if (request > 0 && request % 2 === 0) {
                     // timeout error on every second request
@@ -268,7 +274,7 @@ describe('Status', () => {
     it('Status onStatusChange with delayed affiliateRequest', async () => {
         const round = {
             ...DEFAULT_ROUND,
-            phase: 3,
+            Phase: 3,
         };
 
         const affiliateDataBase64 = Buffer.from('{}', 'utf-8').toString('base64');
@@ -280,13 +286,13 @@ describe('Status', () => {
             }
             return Promise.resolve({
                 ...STATUS_EVENT,
-                roundStates: [{ ...round }], // NOTE: always return new reference for the Round from mock
-                affiliateInformation: {
+                RoundStates: [{ ...round }], // NOTE: always return new reference for the Round from mock
+                AffiliateInformation: {
                     ...AFFILIATE_INFO,
-                    affiliateData:
+                    AffiliateData:
                         coordinatorRequestSpy.mock.calls.length > 3 // return affiliateData after 3rd iteration
-                            ? { [round.id]: { trezor: affiliateDataBase64 } }
-                            : AFFILIATE_INFO.affiliateData,
+                            ? { [round.Id]: { trezor: affiliateDataBase64 } }
+                            : AFFILIATE_INFO.AffiliateData,
                 },
             });
         });
@@ -313,7 +319,7 @@ describe('Status', () => {
         expect(onUpdateListener).toHaveBeenCalledTimes(4); // affiliateData added at 3rd iteration
 
         expect(onUpdateListener.mock.calls[3][0]).toMatchObject({
-            changed: [{ affiliateRequest: affiliateDataBase64 }],
+            changed: [{ AffiliateRequest: affiliateDataBase64 }],
         });
     });
 
@@ -322,7 +328,7 @@ describe('Status', () => {
             if (url.endsWith('/status')) {
                 resolve({
                     ...STATUS_EVENT,
-                    roundStates: [{}],
+                    RoundStates: [{}],
                 });
             }
             resolve();

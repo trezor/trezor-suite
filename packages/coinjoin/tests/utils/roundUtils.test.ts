@@ -27,21 +27,21 @@ describe('roundUtils', () => {
     it('estimatePhaseDeadline', () => {
         const round = {
             ...DEFAULT_ROUND,
-            coinjoinState: {
-                events: [
+            CoinjoinState: {
+                Events: [
                     {
                         Type: 'RoundCreated',
-                        roundParameters: {
-                            connectionConfirmationTimeout: '0d 0h 1m 0s',
-                            outputRegistrationTimeout: '0d 0h 2m 0s',
-                            transactionSigningTimeout: '0d 0h 3m 0s',
+                        RoundParameters: {
+                            ConnectionConfirmationTimeout: '0d 0h 1m 0s',
+                            OutputRegistrationTimeout: '0d 0h 2m 0s',
+                            TransactionSigningTimeout: '0d 0h 3m 0s',
                         },
                     },
                 ],
             },
         } as typeof DEFAULT_ROUND;
 
-        const base = new Date(round.inputRegistrationEnd).getTime() + ROUND_REGISTRATION_END_OFFSET;
+        const base = new Date(round.InputRegistrationEnd).getTime() + ROUND_REGISTRATION_END_OFFSET;
         expect(estimatePhaseDeadline(DEFAULT_ROUND)).toEqual(base);
 
         // result may vary +-5 milliseconds
@@ -54,7 +54,7 @@ describe('roundUtils', () => {
         expectInRange(
             estimatePhaseDeadline({
                 ...round,
-                phase: 1,
+                Phase: 1,
             }),
             Date.now() + timeouts,
         );
@@ -62,7 +62,7 @@ describe('roundUtils', () => {
         expectInRange(
             estimatePhaseDeadline({
                 ...round,
-                phase: 2,
+                Phase: 2,
             }),
             Date.now() + timeouts * 2,
         );
@@ -70,7 +70,7 @@ describe('roundUtils', () => {
         expectInRange(
             estimatePhaseDeadline({
                 ...round,
-                phase: 3,
+                Phase: 3,
             }),
             Date.now() + timeouts * 3,
         );
@@ -78,7 +78,7 @@ describe('roundUtils', () => {
         expectInRange(
             estimatePhaseDeadline({
                 ...round,
-                phase: 4,
+                Phase: 4,
             }),
             Date.now() + timeouts * 3,
         );
@@ -96,13 +96,13 @@ describe('roundUtils', () => {
     it('getAffiliateRequest', () => {
         const response = getAffiliateRequest(
             {
-                coordinationFeeRate: {
-                    rate: 0.005,
-                    plebsDontPayThreshold: 1000000,
+                CoordinationFeeRate: {
+                    Rate: 0.005,
+                    PlebsDontPayThreshold: 1000000,
                 },
-                allowedInputAmounts: {
-                    min: 5000,
-                    max: 134375000000,
+                AllowedInputAmounts: {
+                    Min: 5000,
+                    Max: 134375000000,
                 },
             } as any, // incomplete roundParams
             Buffer.from(
