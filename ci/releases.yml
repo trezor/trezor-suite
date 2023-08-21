@@ -105,7 +105,7 @@ msg-system codesign deploy:
 
 # connect v9 deploy to production jobs
 
-# Create rollback copy of connect.trezo.io
+# Create rollback copy of connect.trezor.io
 connect v9 rollback production:
   stage: deploy to production
   only:
@@ -116,19 +116,15 @@ connect v9 rollback production:
   needs:
     - connect-web build
     - connect-explorer build
+    - connect v9 deploy production
   script:
     - source ${CONNECT_DEPLOY_KEYFILE}
-    - aws s3 sync s3://connect.trezor.io s3://rollback-connect.trezor.io
+    - aws s3 sync --delete s3://rollback-connect.trezor.io/9/ s3://connect.trezor.io/9/
   tags:
     - connect_deploy
 
-# Deploy connect v9 to connect.trezor.io
-connect v9 deploy production:
+.connect v9 deploy:
   stage: deploy to production
-  only:
-    refs:
-      - release/connect-v9
-  when: manual
   dependencies:
     - connect-web build
     - connect-explorer build
@@ -136,9 +132,24 @@ connect v9 deploy production:
     - release commit messages
     - connect-web build
     - connect-explorer build
-  before_script: []
-  script:
+  before_script:
     - source ${CONNECT_DEPLOY_KEYFILE}
-    - ./ci/scripts/connect-release.sh 9
   tags:
     - connect_deploy
+  only:
+    refs:
+      - release/connect-v9
+
+connect v9 deploy staging:
+  extends: .connect v9 deploy
+  script:
+    - ./ci/scripts/connect-release-staging.sh 9
+
+# Deploy connect v9 to connect.trezor.io from staging-conntect.trezor.io
+connect v9 deploy production:
+  extends: .connect v9 deploy
+  when: manual
+  script:
+    - ./ci/scripts/connect-release-production.sh 9
+# todo: copy from old-production to production
+# connect v9 revert production
