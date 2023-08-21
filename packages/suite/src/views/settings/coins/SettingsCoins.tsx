@@ -10,6 +10,7 @@ import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDevice, useSelector } from 'src/hooks/suite';
 import { FirmwareTypeSuggestion } from './FirmwareTypeSuggestion';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
+import { selectSupportedNetworks } from 'src/reducers/suite/suiteReducer';
 
 const StyledSettingsLayout = styled(SettingsLayout)`
     & > * + * {
@@ -21,6 +22,10 @@ export const SettingsCoins = () => {
     const { firmwareTypeBannerClosed } = useSelector(state => state.suite.flags);
 
     const { mainnets, testnets, enabledNetworks, setEnabled } = useEnabledNetworks();
+    const supportedNetworks = useSelector(selectSupportedNetworks);
+    const supportedEnabledNetworks = enabledNetworks.filter(enabledNetwork =>
+        supportedNetworks.includes(enabledNetwork),
+    );
 
     const { anchorRef: anchorRefCrypto, shouldHighlight: shouldHighlightCrypto } = useAnchor(
         SettingsAnchor.Crypto,
@@ -31,14 +36,18 @@ export const SettingsCoins = () => {
     const { device } = useDevice();
 
     const bitcoinOnlyFirmware = hasBitcoinOnlyFirmware(device);
-    const onlyBitcoinEnabled =
-        !!enabledNetworks.length &&
-        enabledNetworks.every(coin => ['btc', 'regtest', 'test'].includes(coin));
+    const bitcoinNetworks = ['btc', 'test', 'regtest'];
+
+    const onlyBitcoinNetworksEnabled =
+        !!supportedEnabledNetworks.length &&
+        supportedEnabledNetworks.every(coin => bitcoinNetworks.includes(coin));
+
     const showDeviceBanner = device?.connected === false; // device is remembered and disconnected
+
     const showFirmwareTypeBanner =
         !firmwareTypeBannerClosed &&
         device &&
-        (bitcoinOnlyFirmware || (!bitcoinOnlyFirmware && onlyBitcoinEnabled));
+        (bitcoinOnlyFirmware || (!bitcoinOnlyFirmware && onlyBitcoinNetworksEnabled));
 
     return (
         <StyledSettingsLayout>
