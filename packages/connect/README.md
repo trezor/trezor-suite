@@ -86,4 +86,4 @@ A collection of examples on how to implement @trezor/connect in various environm
 
 ## Tests
 
-For integration testing against trezord and emulator refer to [this document](https://github.com/trezor/trezor-suite/blob/develop/packages/integration-tests/projects/connect/README.md).
+For integration testing against trezord and emulator refer to [this document](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/e2e/README.md).
