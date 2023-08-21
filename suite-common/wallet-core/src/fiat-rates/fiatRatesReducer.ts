@@ -15,7 +15,7 @@ export const prepareFiatRatesReducer = createReducerWithExtraDeps(
     builder => {
         builder
             .addCase(updateFiatRatesThunk.pending, (state, action) => {
-                const { ticker, localCurrency, rateType = 'current' } = action.meta.arg;
+                const { ticker, localCurrency, rateType } = action.meta.arg;
                 const fiatRateKey = getFiatRateKeyFromTicker(ticker, localCurrency);
                 let currentRate = state[rateType]?.[fiatRateKey];
 
@@ -39,7 +39,8 @@ export const prepareFiatRatesReducer = createReducerWithExtraDeps(
             .addCase(updateFiatRatesThunk.fulfilled, (state, action) => {
                 if (!action.payload) return;
 
-                const { ticker, localCurrency, rateType = 'current' } = action.meta.arg;
+                const { ticker, localCurrency, rateType, lastSuccessfulFetchTimestamp } =
+                    action.meta.arg;
                 const fiatRateKey = getFiatRateKeyFromTicker(ticker, localCurrency);
 
                 const currentRate = state[rateType]?.[fiatRateKey];
@@ -50,13 +51,13 @@ export const prepareFiatRatesReducer = createReducerWithExtraDeps(
                 state[rateType][fiatRateKey] = {
                     ...currentRate,
                     rate: action.payload,
-                    lastSuccessfulFetchTimestamp: Date.now() as Timestamp,
+                    lastSuccessfulFetchTimestamp,
                     isLoading: false,
                     error: null,
                 };
             })
             .addCase(updateFiatRatesThunk.rejected, (state, action) => {
-                const { ticker, localCurrency, rateType = 'current' } = action.meta.arg;
+                const { ticker, localCurrency, rateType } = action.meta.arg;
                 const fiatRateKey = getFiatRateKeyFromTicker(ticker, localCurrency);
                 const currentRate = state[rateType]?.[fiatRateKey];
 

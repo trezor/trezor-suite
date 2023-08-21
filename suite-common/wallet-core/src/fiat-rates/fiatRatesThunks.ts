@@ -7,7 +7,7 @@ import {
 } from '@suite-common/fiat-services';
 import { createThunk } from '@suite-common/redux-utils';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
-import { Account, TickerId, RateType } from '@suite-common/wallet-types';
+import { Account, TickerId, RateType, Timestamp } from '@suite-common/wallet-types';
 import { isTestnet } from '@suite-common/wallet-utils';
 import TrezorConnect, { AccountTransaction } from '@trezor/connect';
 import { networks } from '@suite-common/wallet-config';
@@ -126,12 +126,13 @@ const fetchFn: Record<RateType, typeof fetchFiatRate> = {
 type UpdateCurrentFiatRatesThunkPayload = {
     ticker: TickerId;
     localCurrency: FiatCurrencyCode;
-    rateType?: RateType;
+    lastSuccessfulFetchTimestamp: Timestamp;
+    rateType: RateType;
 };
 
 export const updateFiatRatesThunk = createThunk(
     `${actionPrefix}/updateFiatRates`,
-    async ({ ticker, localCurrency, rateType = 'current' }: UpdateCurrentFiatRatesThunkPayload) => {
+    async ({ ticker, localCurrency, rateType }: UpdateCurrentFiatRatesThunkPayload) => {
         const rate = await fetchFn[rateType](ticker, localCurrency);
 
         if (!rate) {
@@ -173,6 +174,7 @@ export const fetchFiatRatesThunk = createThunk(
                         ticker,
                         localCurrency,
                         rateType,
+                        lastSuccessfulFetchTimestamp: Date.now() as Timestamp,
                     }),
                 ),
             ),

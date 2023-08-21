@@ -11,7 +11,7 @@ import {
     StackToStackCompositeScreenProps,
 } from '@suite-native/navigation';
 import TrezorConnect, { AccountInfo } from '@trezor/connect';
-import { TokenAddress } from '@suite-common/wallet-types';
+import { Timestamp, TokenAddress } from '@suite-common/wallet-types';
 
 import { AccountImportLoader } from '../components/AccountImportLoader';
 import { useShowImportError } from '../useShowImportError';
@@ -77,6 +77,7 @@ export const AccountImportLoadingScreen = ({
                         },
                         rateType: 'current',
                         localCurrency: fiatCurrency,
+                        lastSuccessfulFetchTimestamp: Date.now() as Timestamp,
                     }),
                 ),
             ]);
@@ -93,6 +94,7 @@ export const AccountImportLoadingScreen = ({
                                     },
                                     rateType: 'current',
                                     localCurrency: fiatCurrency,
+                                    lastSuccessfulFetchTimestamp: Date.now() as Timestamp,
                                 }),
                             );
                         });
