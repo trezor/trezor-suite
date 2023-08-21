@@ -14,7 +14,10 @@ import {
     selectTransactions,
 } from '@suite-common/wallet-core';
 
-import { selectDevice as selectDeviceSelector } from 'src/reducers/suite/suiteReducer';
+import {
+    selectDevice as selectDeviceSelector,
+    selectDevices,
+} from 'src/reducers/suite/deviceReducer';
 import { AccountLabeling, HiddenPlaceholder } from 'src/components/suite';
 import { selectDevice } from 'src/actions/suite/suiteActions';
 import { goto } from 'src/actions/suite/routerActions';
@@ -22,7 +25,6 @@ import { useDispatch, useSelector } from 'src/hooks/suite';
 import { getTxAnchor } from 'src/utils/suite/anchor';
 
 import type { NotificationRendererProps, NotificationViewProps } from '../types';
-import { selectDevices } from '../../../../reducers/suite/deviceReducer';
 
 const StyledHiddenPlaceholder = styled(HiddenPlaceholder)`
     font-variant-numeric: tabular-nums;

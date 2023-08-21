@@ -1,6 +1,10 @@
 import styled, { css } from 'styled-components';
+
 import { useTheme, Icon, Input, CoinLogo } from '@trezor/components';
+
 import { useSelector, useAccountSearch, useTranslation } from 'src/hooks/suite';
+
+import { selectDevice } from '../../../reducers/suite/deviceReducer';
 
 const Wrapper = styled.div`
     background: ${({ theme }) => theme.BG_WHITE};
@@ -74,7 +78,7 @@ export const AccountSearchBox = (props: AccountSearchBoxProps) => {
     const { translationString } = useTranslation();
     const { coinFilter, setCoinFilter, searchString, setSearchString } = useAccountSearch();
     const enabledNetworks = useSelector(state => state.wallet.settings.enabledNetworks);
-    const device = useSelector(state => state.suite.device);
+    const device = useSelector(selectDevice);
 
     const unavailableCapabilities = device?.unavailableCapabilities ?? {};
     const supportedNetworks = enabledNetworks.filter(symbol => !unavailableCapabilities[symbol]);

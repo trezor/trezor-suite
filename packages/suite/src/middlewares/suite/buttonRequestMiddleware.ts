@@ -7,7 +7,7 @@ import { AppState, Action, Dispatch } from 'src/types/suite';
 import { addButtonRequest, removeButtonRequests } from 'src/actions/suite/suiteActions';
 import { ONBOARDING } from 'src/actions/onboarding/constants';
 
-import { selectDevice } from '../../reducers/suite/suiteReducer';
+import { selectDevice } from '../../reducers/suite/deviceReducer';
 
 const buttonRequest =
     (api: MiddlewareAPI<Dispatch, AppState>) =>
@@ -17,7 +17,7 @@ const buttonRequest =
         // in case when "passphrase on device" was chosen in <PassphraseModal /> do not display this modal ever again.
         // catch passphrase request and respond immediately with `passphraseOnDevice: true` without action propagation
         if (action.type === UI.REQUEST_PASSPHRASE) {
-            const { device } = api.getState().suite;
+            const device = selectDevice(api.getState());
             if (
                 device &&
                 device.features &&

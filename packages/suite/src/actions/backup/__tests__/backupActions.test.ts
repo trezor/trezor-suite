@@ -44,6 +44,11 @@ jest.mock('@trezor/connect', () => {
 export const getInitialState = (override: any) => {
     const defaults = {
         suite: {
+            locks: [3],
+            settings: { debug: {} },
+        },
+        // doesnt affect anything, just needed for TrezorConnect.init action
+        device: {
             device: {
                 connected: true,
                 type: 'acquired',
@@ -52,11 +57,6 @@ export const getInitialState = (override: any) => {
                     internal_model: DeviceModelInternal.T2T1,
                 },
             },
-            locks: [3],
-            settings: { debug: {} },
-        },
-        // doesnt affect anything, just needed for TrezorConnect.init action
-        device: {
             devices: [],
         },
         wallet: {
@@ -89,7 +89,7 @@ describe('Backup Actions', () => {
         await store.dispatch(connectInitThunk());
 
         await store.dispatch(
-            backupActions.backupDevice({ device: store.getState().suite.device } as CommonParams),
+            backupActions.backupDevice({ device: store.getState().device.device } as CommonParams),
         );
 
         expect(store.getActions().shift()).toMatchObject({
@@ -123,7 +123,7 @@ describe('Backup Actions', () => {
         await store.dispatch(connectInitThunk());
 
         await store.dispatch(
-            backupActions.backupDevice({ device: store.getState().suite.device } as CommonParams),
+            backupActions.backupDevice({ device: store.getState().device.device } as CommonParams),
         );
 
         expect(store.getActions().shift()).toMatchObject({

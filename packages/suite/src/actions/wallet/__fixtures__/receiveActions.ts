@@ -1,8 +1,10 @@
-import * as receiveActions from 'src/actions/wallet/receiveActions';
-import { RECEIVE } from '../constants';
-import { MODAL, SUITE } from 'src/actions/suite/constants';
 import { connectInitThunk } from '@suite-common/connect-init';
 import { notificationsActions } from '@suite-common/toast-notifications';
+
+import * as receiveActions from 'src/actions/wallet/receiveActions';
+import { MODAL, SUITE } from 'src/actions/suite/constants';
+
+import { RECEIVE } from '../constants';
 
 const { getSuiteDevice } = global.JestMocks;
 
@@ -149,6 +151,8 @@ export default [
         initialState: {
             suite: {
                 settings: { debug: {} },
+            },
+            device: {
                 device: getSuiteDevice({ connected: false }),
             },
         },

@@ -7,7 +7,7 @@ import { DeviceModelInternal } from '@trezor/connect';
 
 import { configureStore, filterThunkActionTypes } from 'src/support/tests/configureStore';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
-import { TrezorDevice } from 'src/types/suite';
+import { State as DeviceState } from 'src/reducers/suite/deviceReducer';
 import { extraDependencies } from 'src/support/extraDependencies';
 
 import { actions, reducerActions } from '../__fixtures__/firmwareActions';
@@ -21,7 +21,7 @@ type FirmwareState = ReturnType<typeof firmwareReducer>;
 interface InitialState {
     suite?: Partial<SuiteState>;
     firmware?: Partial<FirmwareState>;
-    devices?: TrezorDevice[];
+    device?: Partial<DeviceState>;
 }
 
 jest.mock('@trezor/connect', () => {
@@ -68,10 +68,16 @@ jest.mock('@trezor/suite-analytics', () => global.JestMocks.getAnalytics());
 
 export const getInitialState = (override?: InitialState): any => {
     const suite = override ? override.suite : undefined;
-    const devices = override ? override.devices : [];
+    const device = override ? override.device : undefined;
 
     return {
         suite: {
+            locks: [],
+            flags: {},
+            ...suite,
+        },
+        firmware: firmwareReducer(undefined, { type: 'foo' } as any),
+        device: {
             device: {
                 connected: true,
                 type: 'acquired',
@@ -80,12 +86,8 @@ export const getInitialState = (override?: InitialState): any => {
                     internal_model: DeviceModelInternal.T2T1,
                 },
             },
-            locks: [],
-            flags: {},
-            ...suite,
+            ...device,
         },
-        firmware: firmwareReducer(undefined, { type: 'foo' } as any),
-        devices,
         analytics: {
             enabled: false,
         },

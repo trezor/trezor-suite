@@ -9,9 +9,7 @@ import * as routerActions from 'src/actions/suite/routerActions';
 import { Dispatch, GetState } from 'src/types/suite';
 import * as DEVICE from 'src/constants/suite/device';
 import { SUITE } from 'src/actions/suite/constants';
-
-import { selectDevices } from '../../reducers/suite/deviceReducer';
-import { selectDevice } from '../../reducers/suite/suiteReducer';
+import { selectDevices, selectDevice } from 'src/reducers/suite/deviceReducer';
 
 export const applySettings =
     (params: Parameters<typeof TrezorConnect.applySettings>[0]) =>

@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 
 import { Button, variables } from '@trezor/components';
+
 import { Translation } from 'src/components/suite';
 import { Section } from 'src/components/dashboard';
 import { AcquiredDevice } from 'src/types/suite';
@@ -10,7 +11,9 @@ import { createDeviceInstance, setFlag } from 'src/actions/suite/suiteActions';
 import { applySettings, changePin } from 'src/actions/settings/deviceSettingsActions';
 import { goto } from 'src/actions/suite/routerActions';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
+
 import { SecurityCard, SecurityCardProps } from '../SecurityCard';
+import { selectDevice } from '../../../../reducers/suite/deviceReducer';
 
 const Content = styled.div`
     display: grid;
@@ -27,7 +30,7 @@ const Content = styled.div`
 
 const SecurityFeatures = () => {
     const discreetMode = useSelector(state => state.wallet.settings.discreetMode);
-    const device = useSelector(state => state.suite.device);
+    const device = useSelector(selectDevice);
     const flags = useSelector(state => state.suite.flags);
     const dispatch = useDispatch();
 

@@ -1,17 +1,20 @@
 import { darken } from 'polished';
 import styled from 'styled-components';
+
 import { TREZOR_FORUM_URL, TREZOR_SUPPORT_URL } from '@trezor/urls';
 import { analytics, EventType } from '@trezor/suite-analytics';
 import { resolveStaticPath, isDevEnv } from '@suite-common/suite-utils';
+import { Icon, Link, variables } from '@trezor/components';
+import { isDesktop } from '@trezor/env-utils';
+import { getFirmwareVersion } from '@trezor/device-utils';
 
 import { Translation } from 'src/components/suite';
 import { setView } from 'src/actions/suite/guideActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { Icon, Link, variables } from '@trezor/components';
 import { ViewWrapper, Header, Content } from 'src/components/guide';
-import { isDesktop } from '@trezor/env-utils';
 import { UpdateState } from 'src/reducers/suite/desktopUpdateReducer';
-import { getFirmwareVersion } from '@trezor/device-utils';
+
+import { selectDevice } from '../../reducers/suite/deviceReducer';
 
 const Section = styled.div`
     & + & {
@@ -100,7 +103,7 @@ const LabelSubheadline = styled.div`
 
 export const SupportFeedbackSelection = () => {
     const desktopUpdate = useSelector(state => state.desktopUpdate);
-    const device = useSelector(state => state.suite.device);
+    const device = useSelector(selectDevice);
     const dispatch = useDispatch();
 
     const appUpToDate =

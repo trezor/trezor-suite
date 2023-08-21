@@ -7,11 +7,10 @@ import { isWebUsb } from 'src/utils/suite/transport';
 import { getBackgroundRoute } from 'src/utils/suite/router';
 import { ForegroundAppProps } from 'src/types/suite';
 import { useSelector } from 'src/hooks/suite';
+import { selectDevice, selectDevices } from 'src/reducers/suite/deviceReducer';
 
 import DeviceItem from './components/DeviceItem';
 import { WebUsbButton } from '../WebUsbButton';
-import { selectDevice } from '../../../reducers/suite/suiteReducer';
-import { selectDevices } from '../../../reducers/suite/deviceReducer';
 
 const DeviceItemsWrapper = styled.div`
     display: flex;

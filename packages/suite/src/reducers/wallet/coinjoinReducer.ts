@@ -3,8 +3,16 @@ import BigNumber from 'bignumber.js';
 
 import { getInputSize, getOutputSize, RoundPhase } from '@trezor/coinjoin';
 import { PartialRecord } from '@trezor/type-utils';
-import { STORAGE } from 'src/actions/suite/constants';
 import { Account, AccountKey } from '@suite-common/wallet-types';
+import { accountsActions, AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
+import {
+    Feature,
+    MessageSystemRootState,
+    selectIsFeatureDisabled,
+    selectFeatureConfig,
+} from '@suite-common/message-system';
+
+import { STORAGE } from 'src/actions/suite/constants';
 import {
     CoinjoinAccount,
     CoinjoinDebugSettings,
@@ -14,7 +22,6 @@ import {
 import { COINJOIN } from 'src/actions/wallet/constants';
 import { Action } from 'src/types/suite';
 import {
-    selectDeviceState,
     selectIsDeviceLocked,
     selectTorState,
     SuiteRootState,
@@ -44,14 +51,9 @@ import {
     ZKSNACKS_LEGAL_DOCUMENTS_VERSION,
     TREZOR_LEGAL_DOCUMENTS_VERSION,
 } from 'src/services/coinjoin';
-import { accountsActions, AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
-import {
-    Feature,
-    MessageSystemRootState,
-    selectIsFeatureDisabled,
-    selectFeatureConfig,
-} from '@suite-common/message-system';
+
 import { SelectedAccountRootState, selectSelectedAccount } from './selectedAccountReducer';
+import { DeviceRootState, selectDeviceState } from '../suite/deviceReducer';
 
 export interface CoinjoinState {
     accounts: CoinjoinAccount[];
@@ -900,7 +902,7 @@ export const selectHasAnonymitySetError = (state: CoinjoinRootState) => {
 };
 
 export const selectCoinjoinSessionBlockerByAccountKey = (
-    state: CoinjoinRootState,
+    state: CoinjoinRootState & DeviceRootState,
     accountKey: AccountKey,
 ) => {
     if (selectSessionByAccountKey(state, accountKey)?.starting) {
@@ -933,7 +935,7 @@ export const selectCoinjoinSessionBlockerByAccountKey = (
     }
 };
 
-export const selectCurrentCoinjoinWheelStates = (state: CoinjoinRootState) => {
+export const selectCurrentCoinjoinWheelStates = (state: CoinjoinRootState & DeviceRootState) => {
     const { notAnonymized } = selectCurrentCoinjoinBalanceBreakdown(state);
     const { key, balance } = selectSelectedAccount(state) || {};
     const coinjoinAccount = selectCoinjoinAccountByKey(state, key || '');

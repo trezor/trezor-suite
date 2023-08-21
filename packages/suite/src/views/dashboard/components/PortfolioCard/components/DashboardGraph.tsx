@@ -2,17 +2,19 @@ import { memo, useState, useEffect, useCallback } from 'react';
 import { getUnixTime } from 'date-fns';
 import styled from 'styled-components';
 
+import { variables, Button } from '@trezor/components';
+import { calcTicks, calcTicksFromData } from '@suite-common/suite-utils';
+
 import { CARD_PADDING_SIZE } from 'src/constants/suite/layout';
 import GraphWorker from 'src/support/workers/graph';
 import { getGraphDataForInterval, updateGraphData } from 'src/actions/wallet/graphActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { Account } from 'src/types/wallet';
 import { TransactionsGraph, Translation, HiddenPlaceholder } from 'src/components/suite';
-
-import { variables, Button } from '@trezor/components';
-import { calcTicks, calcTicksFromData } from '@suite-common/suite-utils';
 import { AggregatedDashboardHistory } from 'src/types/wallet/graph';
 import { getMinMaxValueFromData } from 'src/utils/wallet/graph';
+
+import { selectDevice } from '../../../../../reducers/suite/deviceReducer';
 
 const Wrapper = styled.div`
     display: flex;
@@ -46,7 +48,7 @@ interface DashboardGraphProps {
 // DashboardGraph.whyDidYouRender = true;
 export const DashboardGraph = memo(({ accounts }: DashboardGraphProps) => {
     const { error, isLoading, selectedRange } = useSelector(state => state.wallet.graph);
-    const selectedDevice = useSelector(state => state.suite.device);
+    const selectedDevice = useSelector(selectDevice);
     const localCurrency = useSelector(state => state.wallet.settings.localCurrency);
     const dispatch = useDispatch();
 

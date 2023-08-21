@@ -7,8 +7,7 @@ import { useSelector } from 'src/hooks/suite';
 import { selectLabelingDataForAccount } from 'src/reducers/suite/metadataReducer';
 
 import { WalletLabeling } from './WalletLabeling';
-import { selectDevices } from '../../../../reducers/suite/deviceReducer';
-import { selectDevice } from '../../../../reducers/suite/suiteReducer';
+import { selectDevices, selectDevice } from '../../../../reducers/suite/deviceReducer';
 
 interface AccountProps {
     account: WalletAccount | WalletAccount[];

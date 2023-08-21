@@ -27,8 +27,8 @@ import {
     DebugModeOptions,
     AutodetectSettings,
     selectTorState,
-    selectDevice as selectDeviceSelector,
 } from 'src/reducers/suite/suiteReducer';
+import { selectDevice as selectDeviceSelector } from 'src/reducers/suite/deviceReducer';
 import type { TranslationKey } from 'src/components/suite/Translation/components/BaseTranslation';
 
 import { SUITE, METADATA } from './constants';
@@ -638,7 +638,7 @@ export const authorizeDevice =
         if (response.success) {
             const { state } = response.payload;
             const s = state.split(':')[0];
-            const duplicate = devices.find(
+            const duplicate = devices?.find(
                 d => d.state && d.state.split(':')[0] === s && d.instance !== device.instance,
             );
             // get fresh data from reducer, `useEmptyPassphrase` might be changed after TrezorConnect call

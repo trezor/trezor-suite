@@ -1,3 +1,7 @@
+import { notificationsActions } from '@suite-common/toast-notifications';
+import TrezorConnect from '@trezor/connect';
+import { getDerivationType } from '@suite-common/wallet-utils';
+
 import { RECEIVE } from 'src/actions/wallet/constants';
 import * as modalActions from 'src/actions/suite/modalActions';
 import { GetState, Dispatch } from 'src/types/suite';
@@ -8,9 +12,7 @@ import {
     getAddressType,
 } from 'src/utils/wallet/cardanoUtils';
 
-import { notificationsActions } from '@suite-common/toast-notifications';
-import TrezorConnect from '@trezor/connect';
-import { getDerivationType } from '@suite-common/wallet-utils';
+import { selectDevice } from '../../reducers/suite/deviceReducer';
 
 export type ReceiveAction =
     | { type: typeof RECEIVE.DISPOSE }
@@ -44,7 +46,7 @@ export const openAddressModal =
 
 export const showAddress =
     (path: string, address: string) => async (dispatch: Dispatch, getState: GetState) => {
-        const { device } = getState().suite;
+        const device = selectDevice(getState());
         const { account } = getState().wallet.selectedAccount;
         if (!device || !account) return;
 

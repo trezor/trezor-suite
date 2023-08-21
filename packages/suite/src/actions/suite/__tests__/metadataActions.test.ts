@@ -66,16 +66,16 @@ export const getInitialState = (state?: InitialState) => {
     const settings = suite?.settings || { debug: {} };
     const debug = settings?.debug || {};
     const initAction: any = { type: STORAGE.LOAD, payload: { metadata } };
+
     return {
         metadata: metadataReducer(metadata, initAction),
-        device: { devices: device ? [device] : [] }, // device is needed for notification/event
+        device: { devices: device ? [device] : [], device }, // device is needed for notification/event
         suite: {
             ...suite,
             settings: {
                 ...settings,
                 debug, // debug settings are needed for OAuth API
             },
-            device, // device is needed for notification/event
         },
         wallet: {
             accounts,
@@ -114,8 +114,7 @@ const initStore = (state: State) => {
         // @ts-expect-error
         store.getState().suite = suiteReducer(suite, action);
         store.getState().wallet.accounts = accountsReducer(wallet.accounts, action);
-        store.getState().device = deviceReducer(device, action);
-        // store.
+        store.getState().device = deviceReducer(device, action) as any;
     });
     return store;
 };

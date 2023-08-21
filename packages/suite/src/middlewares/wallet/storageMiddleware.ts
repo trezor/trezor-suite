@@ -27,9 +27,7 @@ import { isDeviceRemembered } from 'src/utils/suite/device';
 import { serializeDiscovery } from 'src/utils/suite/storage';
 import type { AppState, Action as SuiteAction, Dispatch } from 'src/types/suite';
 import type { WalletAction } from 'src/types/wallet';
-
-import { selectDevices } from '../../reducers/suite/deviceReducer';
-import { selectDevice } from '../../reducers/suite/suiteReducer';
+import { selectDevices, selectDevice } from 'src/reducers/suite/deviceReducer';
 
 const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
     db.onBlocking = () => api.dispatch({ type: STORAGE.ERROR, payload: 'blocking' });

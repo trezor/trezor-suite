@@ -7,9 +7,7 @@ import { accountsActions } from '@suite-common/wallet-core';
 import { SUITE } from 'src/actions/suite/constants';
 import * as deviceUtils from 'src/utils/suite/device';
 import { AppState, Action, Dispatch } from 'src/types/suite';
-
-import { selectDevices } from '../../reducers/suite/deviceReducer';
-import { selectDevice } from '../../reducers/suite/suiteReducer';
+import { selectDevices, selectDevice } from 'src/reducers/suite/deviceReducer';
 
 /*
  * Middleware for event notifications.

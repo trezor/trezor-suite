@@ -1,21 +1,23 @@
 import { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import styled from 'styled-components';
+
 import { useTheme, variables, Icon, Image, motionAnimation } from '@trezor/components';
+
 import { Translation } from 'src/components/suite';
 import * as deviceUtils from 'src/utils/suite/device';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { goto } from 'src/actions/suite/routerActions';
 import { acquireDevice, createDeviceInstance, selectDevice } from 'src/actions/suite/suiteActions';
+import { selectDevice as selectDeviceSelector } from 'src/reducers/suite/deviceReducer';
 import { OpenGuideFromTooltip } from 'src/components/guide';
+import type { TrezorDevice, AcquiredDevice, ForegroundAppProps } from 'src/types/suite';
+import type { getBackgroundRoute } from 'src/utils/suite/router';
 
 import { WalletInstance } from '../WalletInstance';
 import ColHeader from './components/ColHeader';
 import AddWalletButton from './components/AddWalletButton';
 import DeviceHeaderButton from './components/DeviceHeaderButton';
-
-import type { TrezorDevice, AcquiredDevice, ForegroundAppProps } from 'src/types/suite';
-import type { getBackgroundRoute } from 'src/utils/suite/router';
 
 const DeviceWrapper = styled.div`
     display: flex;
@@ -127,7 +129,7 @@ interface DeviceItemProps {
 }
 
 const DeviceItem = ({ device, instances, onCancel, backgroundRoute }: DeviceItemProps) => {
-    const selectedDevice = useSelector(state => state.suite.device);
+    const selectedDevice = useSelector(selectDeviceSelector);
     const dispatch = useDispatch();
 
     const theme = useTheme();

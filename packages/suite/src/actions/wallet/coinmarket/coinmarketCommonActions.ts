@@ -1,3 +1,16 @@
+import { isDesktop } from '@trezor/env-utils';
+import { notificationsActions } from '@suite-common/toast-notifications';
+import TrezorConnect, { PROTO } from '@trezor/connect';
+import {
+    amountToSatoshi,
+    formatAmount,
+    getAccountDecimals,
+    hasNetworkFeatures,
+    parseFormDraftKey,
+    getDerivationType,
+} from '@suite-common/wallet-utils';
+import { Output } from '@suite-common/wallet-types/src';
+
 import { GetState, Dispatch } from 'src/types/suite';
 import * as modalActions from 'src/actions/suite/modalActions';
 import { getUnusedAddressFromAccount } from 'src/utils/wallet/coinmarket/coinmarketUtils';
@@ -13,25 +26,13 @@ import {
 import { submitRequestForm as envSubmitRequestForm } from 'src/utils/suite/env';
 import * as formDraftActions from 'src/actions/wallet/formDraftActions';
 
-import { isDesktop } from '@trezor/env-utils';
-import { notificationsActions } from '@suite-common/toast-notifications';
-import TrezorConnect, { PROTO } from '@trezor/connect';
-import {
-    amountToSatoshi,
-    formatAmount,
-    getAccountDecimals,
-    hasNetworkFeatures,
-    parseFormDraftKey,
-    getDerivationType,
-} from '@suite-common/wallet-utils';
-import { Output } from '@suite-common/wallet-types/src';
-
 import {
     COINMARKET_BUY,
     COINMARKET_EXCHANGE,
     COINMARKET_SAVINGS,
     COINMARKET_COMMON,
 } from '../constants';
+import { selectDevice } from '../../../reducers/suite/deviceReducer';
 
 export type CoinmarketCommonAction =
     | {
@@ -63,7 +64,7 @@ export const verifyAddress =
             | typeof COINMARKET_SAVINGS.VERIFY_ADDRESS,
     ) =>
     async (dispatch: Dispatch, getState: GetState) => {
-        const { device } = getState().suite;
+        const device = selectDevice(getState());
         if (!device || !account) return;
         const accountAddress = getUnusedAddressFromAccount(account);
         address = address ?? accountAddress.address;
@@ -159,7 +160,7 @@ export const submitRequestForm =
         };
     }) =>
     (dispatch: Dispatch, getState: GetState) => {
-        const { device } = getState().suite;
+        const device = selectDevice(getState());
         if (device && !device.remember && !isDesktop()) {
             dispatch(suiteActions.toggleRememberDevice(device, true));
         }

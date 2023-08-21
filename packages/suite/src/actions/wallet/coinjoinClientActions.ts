@@ -35,8 +35,7 @@ import {
 } from 'src/reducers/wallet/coinjoinReducer';
 
 import * as COINJOIN from './constants/coinjoinConstants';
-import { selectDevices } from '../../reducers/suite/deviceReducer';
-import { selectDevice } from '../../reducers/suite/suiteReducer';
+import { selectDevices, selectDevice } from '../../reducers/suite/deviceReducer';
 
 const clientEnable = (symbol: Account['symbol']) =>
     ({

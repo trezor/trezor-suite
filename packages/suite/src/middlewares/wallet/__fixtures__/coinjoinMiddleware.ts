@@ -54,9 +54,9 @@ const COINJOIN_ACCOUNT_B = {
 const DEFAULT_STATE = {
     device: {
         devices: [DEVICE_A, DEVICE_B],
+        device: DEVICE_A,
     },
     suite: {
-        device: DEVICE_A,
         torStatus: 'Enabled',
     } as SuiteState,
     wallet: {

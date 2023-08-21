@@ -8,8 +8,12 @@ import { connectInitThunk } from '@suite-common/connect-init';
 import { DEVICE } from '@trezor/connect';
 
 import { configureStore } from 'src/support/tests/configureStore';
-import suiteReducer, { selectDevice } from 'src/reducers/suite/suiteReducer';
-import deviceReducer, { selectDevices, selectDevicesCount } from 'src/reducers/suite/deviceReducer';
+import suiteReducer from 'src/reducers/suite/suiteReducer';
+import deviceReducer, {
+    selectDevices,
+    selectDevicesCount,
+    selectDevice,
+} from 'src/reducers/suite/deviceReducer';
 import routerReducer from 'src/reducers/suite/routerReducer';
 import modalReducer from 'src/reducers/suite/modalReducer';
 import { discardMockedConnectInitActions } from 'src/utils/suite/storage';
@@ -82,7 +86,10 @@ const getInitialState = (
         ...suiteReducer(undefined, { type: 'foo' } as any),
         ...suite,
     },
-    device: { devices: device?.devices || [] },
+    device: {
+        ...deviceReducer(undefined, { type: 'foo' } as any),
+        ...device,
+    },
     router: {
         ...routerReducer(undefined, { type: 'foo' } as any),
         ...router,
@@ -222,7 +229,7 @@ describe('Suite Actions', () => {
     fixtures.acquireDevice.forEach(f => {
         it(`acquireDevice: ${f.description}`, async () => {
             require('@trezor/connect').setTestFixtures(f.getFeatures);
-            const state = getInitialState(f.state);
+            const state = getInitialState(undefined, f.state.device);
             const store = initStore(state);
             store.dispatch(connectInitThunk()); // trezorConnectActions.connectInitThunk needs to be called in order to wrap "getFeatures" with lockUi action
             await store.dispatch(suiteActions.acquireDevice(f.requestedDevice));
@@ -240,7 +247,10 @@ describe('Suite Actions', () => {
     fixtures.authorizeDevice.forEach(f => {
         it(`authorizeDevice: ${f.description}`, async () => {
             require('@trezor/connect').setTestFixtures(f.getDeviceState);
-            const state = getInitialState(f.suiteState, { devices: f.devicesState });
+            const state = getInitialState(undefined, {
+                device: f.suiteState?.device,
+                devices: f.devicesState ?? [],
+            });
             const store = initStore(state);
             await store.dispatch(suiteActions.authorizeDevice());
             if (!f.result) {
@@ -264,7 +274,7 @@ describe('Suite Actions', () => {
     fixtures.authConfirm.forEach(f => {
         it(`authConfirm: ${f.description}`, async () => {
             require('@trezor/connect').setTestFixtures(f.getDeviceState);
-            const state = getInitialState(f.state);
+            const state = getInitialState(undefined, f.state);
             const store = initStore(state);
             await store.dispatch(suiteActions.authConfirm());
             if (!f.result) {
@@ -279,9 +289,9 @@ describe('Suite Actions', () => {
     fixtures.createDeviceInstance.forEach(f => {
         it(`createDeviceInstance: ${f.description}`, async () => {
             require('@trezor/connect').setTestFixtures(f.applySettings);
-            const state = getInitialState(f.state);
+            const state = getInitialState(undefined, f.state.device);
             const store = initStore(state);
-            await store.dispatch(suiteActions.createDeviceInstance(f.state.device));
+            await store.dispatch(suiteActions.createDeviceInstance(f.state.device.device));
             if (!f.result) {
                 expect(store.getActions().length).toEqual(0);
             } else {
@@ -293,7 +303,7 @@ describe('Suite Actions', () => {
 
     fixtures.switchDuplicatedDevice.forEach(f => {
         it(`createDeviceInstance: ${f.description}`, async () => {
-            const state = getInitialState(f.state.suite, f.state.device);
+            const state = getInitialState(undefined, f.state.device);
             const store = initStore(state);
             await store.dispatch(suiteActions.switchDuplicatedDevice(f.device, f.duplicate));
             const device = selectDevice(store.getState());

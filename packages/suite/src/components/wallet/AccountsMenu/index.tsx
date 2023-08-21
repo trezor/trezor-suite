@@ -1,17 +1,19 @@
 import { useCallback, useState } from 'react';
 import styled, { css } from 'styled-components';
-import { useDiscovery, useAccountSearch, useSelector } from 'src/hooks/suite';
-import { H2, variables, useTheme, Icon, LoadingContent } from '@trezor/components';
-import { Translation, AddAccountButton } from 'src/components/suite';
 
+import { H2, variables, useTheme, Icon, LoadingContent } from '@trezor/components';
 import { sortByCoin, getFailedAccounts, accountSearchFn } from '@suite-common/wallet-utils';
+
+import { useDiscovery, useAccountSearch, useSelector } from 'src/hooks/suite';
+import { Translation, AddAccountButton } from 'src/components/suite';
 import { Account } from 'src/types/wallet';
+import { selectAccountLabels } from 'src/reducers/suite/metadataReducer';
 
 import { AccountSearchBox } from './AccountSearchBox';
 import { AccountGroup } from './AccountGroup';
 import { AccountItem } from './AccountItem';
 import { AccountItemSkeleton } from './AccountItemSkeleton';
-import { selectAccountLabels } from 'src/reducers/suite/metadataReducer';
+import { selectDevice } from '../../../reducers/suite/deviceReducer';
 
 const Wrapper = styled.div<{ isInline?: boolean }>`
     display: flex;
@@ -123,7 +125,7 @@ type AccountsMenuProps = {
 };
 
 export const AccountsMenu = ({ isMenuInline }: AccountsMenuProps) => {
-    const device = useSelector(state => state.suite.device);
+    const device = useSelector(selectDevice);
     const accounts = useSelector(state => state.wallet.accounts);
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
     const coinjoinIsPreloading = useSelector(state => state.wallet.coinjoin.isPreloading);

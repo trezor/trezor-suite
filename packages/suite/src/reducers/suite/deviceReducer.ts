@@ -1,17 +1,25 @@
 import produce from 'immer';
 
 import { Device, DEVICE, Features } from '@trezor/connect';
+import { DiscoveryRootState, selectDiscoveryByDeviceState } from '@suite-common/wallet-core';
+import { DiscoveryStatus } from '@suite-common/wallet-constants';
+import { getFirmwareVersion } from '@trezor/device-utils';
+import { Network, networks } from '@suite-common/wallet-config';
+import { versionUtils } from '@trezor/utils';
 
 import { SUITE, STORAGE, METADATA } from 'src/actions/suite/constants';
 import * as deviceUtils from 'src/utils/suite/device';
 import type { TrezorDevice, AcquiredDevice, Action, ButtonRequest } from 'src/types/suite';
+import { getStatus } from 'src/utils/suite/device';
 
-export type State = { devices: TrezorDevice[] };
-const initialState: State = { devices: [] };
+export type State = { devices: TrezorDevice[]; device?: TrezorDevice };
+
+const initialState: State = { devices: [], device: undefined };
 
 export type DeviceRootState = {
     device: {
         devices: TrezorDevice[];
+        device?: TrezorDevice;
     };
 };
 
@@ -428,9 +436,6 @@ const deviceReducer = (state: State = initialState, action: Action): State =>
             case DEVICE.DISCONNECT:
                 disconnectDevice(draft, action.payload);
                 break;
-            case SUITE.SELECT_DEVICE:
-                updateTimestamp(draft, action.payload);
-                break;
             case SUITE.UPDATE_PASSPHRASE_MODE:
                 changePassphraseMode(draft, action.payload, action.hidden, action.alwaysOnDevice);
                 break;
@@ -455,6 +460,19 @@ const deviceReducer = (state: State = initialState, action: Action): State =>
             case SUITE.ADD_BUTTON_REQUEST:
                 addButtonRequest(draft, action.payload.device, action.payload.buttonRequest);
                 break;
+            case SUITE.SELECT_DEVICE:
+                updateTimestamp(draft, action.payload);
+                draft.device = action.payload;
+                break;
+            case SUITE.UPDATE_SELECTED_DEVICE:
+                draft.device = action.payload;
+                break;
+            case SUITE.REQUEST_DEVICE_RECONNECT:
+                if (draft.device) {
+                    draft.device.reconnectRequested = true;
+                }
+                break;
+
             case METADATA.SET_DEVICE_METADATA:
                 setMetadata(draft, action.payload.deviceState, action.payload.metadata);
                 break;
@@ -466,5 +484,64 @@ export const selectDevices = (state: DeviceRootState) => state.device?.devices;
 export const selectDevicesCount = (state: DeviceRootState) => state.device?.devices?.length;
 export const selectIsPendingTransportEvent = (state: DeviceRootState) =>
     state.device.devices.length < 1;
+
+export const selectDevice = (state: DeviceRootState) => state.device.device;
+
+export const selectDeviceUnavailableCapabilities = (state: DeviceRootState) =>
+    state.device.device?.unavailableCapabilities;
+
+export const selectDeviceState = (state: DeviceRootState) => {
+    const device = selectDevice(state);
+    return device && getStatus(device);
+};
+
+export const selectDiscoveryForDevice = (state: DiscoveryRootState & { device: State }) =>
+    selectDiscoveryByDeviceState(state, state.device.device?.state);
+
+/**
+ * Helper selector called from components
+ * return `true` if discovery process is running/completed and `authConfirm` is required
+ */
+export const selectIsDiscoveryAuthConfirmationRequired = (
+    state: DiscoveryRootState & DeviceRootState,
+) => {
+    const discovery = selectDiscoveryForDevice(state);
+
+    return (
+        discovery &&
+        discovery.authConfirm &&
+        (discovery.status < DiscoveryStatus.STOPPING ||
+            discovery.status === DiscoveryStatus.COMPLETED)
+    );
+};
+
+export const selectSupportedNetworks = (state: DeviceRootState) => {
+    const device = selectDevice(state);
+    const deviceModelInternal = device?.features?.internal_model;
+    const firmwareVersion = getFirmwareVersion(device);
+
+    return Object.entries(networks)
+        .map(([symbol, network]) => {
+            const support =
+                'support' in network ? (network.support as Network['support']) : undefined;
+
+            const firmwareSupportRestriction =
+                deviceModelInternal && support?.[deviceModelInternal];
+            const isSupportedByApp =
+                !firmwareSupportRestriction ||
+                versionUtils.isNewerOrEqual(firmwareVersion, firmwareSupportRestriction);
+
+            const unavailableReason = isSupportedByApp
+                ? device?.unavailableCapabilities?.[symbol]
+                : 'update-required';
+
+            if (['no-support', 'no-capability'].includes(unavailableReason || '')) {
+                return null;
+            }
+
+            return symbol;
+        })
+        .filter(Boolean) as Network['symbol'][]; // Filter out null values
+};
 
 export default deviceReducer;

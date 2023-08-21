@@ -52,7 +52,8 @@ export const DEFAULT_STORE = {
         selectedAccount: selectedAccountReducer(undefined, { type: 'foo' } as any),
         transactions: transactionsReducer(undefined, { type: 'foo' } as any),
     },
-    suite: {
+    suite: {},
+    device: {
         device: undefined,
     },
 };

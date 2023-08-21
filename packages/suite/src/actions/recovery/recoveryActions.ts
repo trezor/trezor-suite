@@ -9,6 +9,8 @@ import { WordCount } from 'src/types/recovery';
 import { DEFAULT_PASSPHRASE_PROTECTION } from 'src/constants/suite/device';
 import { SUITE } from 'src/actions/suite/constants';
 
+import { selectDevice } from '../../reducers/suite/deviceReducer';
+
 export type SeedInputStatus =
     | 'initial'
     | 'select-word-count'
@@ -54,7 +56,7 @@ const submit = (word: string) => () => {
 
 const checkSeed = () => async (dispatch: Dispatch, getState: GetState) => {
     const { advancedRecovery, wordsCount } = getState().recovery;
-    const { device } = getState().suite;
+    const device = selectDevice(getState());
 
     if (!device?.features) return;
 
@@ -92,7 +94,7 @@ const checkSeed = () => async (dispatch: Dispatch, getState: GetState) => {
 
 const recoverDevice = () => async (dispatch: Dispatch, getState: GetState) => {
     const { advancedRecovery, wordsCount } = getState().recovery;
-    const { device } = getState().suite;
+    const device = selectDevice(getState());
     if (!device?.features) {
         return;
     }
@@ -142,8 +144,8 @@ const recoverDevice = () => async (dispatch: Dispatch, getState: GetState) => {
 // In such case, we need to call again the call that brought device into recovery mode (either proper recovery
 // or seed check). This way, communication is renewed and host starts receiving messages from device again.
 const rerun = () => async (dispatch: Dispatch, getState: GetState) => {
-    const { suite, router } = getState();
-    const { device } = suite;
+    const { router } = getState();
+    const device = selectDevice(getState());
     if (!device?.features) {
         return;
     }

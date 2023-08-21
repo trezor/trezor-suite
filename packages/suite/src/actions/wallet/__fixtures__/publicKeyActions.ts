@@ -1,7 +1,8 @@
-import * as publicKeyActions from 'src/actions/wallet/publicKeyActions';
-import { MODAL } from 'src/actions/suite/constants';
 import { connectInitThunk } from '@suite-common/connect-init';
 import { notificationsActions } from '@suite-common/toast-notifications';
+
+import * as publicKeyActions from 'src/actions/wallet/publicKeyActions';
+import { MODAL } from 'src/actions/suite/constants';
 
 const { getSuiteDevice } = global.JestMocks;
 
@@ -75,7 +76,7 @@ export default [
     {
         description: 'Show public key, device not connected',
         initialState: {
-            suite: {
+            device: {
                 device: getSuiteDevice({ connected: false }),
             },
         },
@@ -94,7 +95,7 @@ export default [
     {
         description: 'Show public key, device is undefined',
         initialState: {
-            suite: {
+            device: {
                 device: undefined,
             },
         },

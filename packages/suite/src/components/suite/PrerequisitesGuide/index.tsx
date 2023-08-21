@@ -9,6 +9,7 @@ import { isWebUsb } from 'src/utils/suite/transport';
 import { getStatus, deviceNeedsAttention } from 'src/utils/suite/device';
 import { useSelector } from 'src/hooks/suite';
 import type { PrerequisiteType } from 'src/types/suite';
+import { selectDevicesCount, selectDevice } from 'src/reducers/suite/deviceReducer';
 
 import { Transport } from './components/Transport';
 import { DeviceConnect } from './components/DeviceConnect';
@@ -22,8 +23,6 @@ import { DeviceBootloader } from './components/DeviceBootloader';
 import { DeviceNoFirmware } from './components/DeviceNoFirmware';
 import { DeviceUpdateRequired } from './components/DeviceUpdateRequired';
 import { DeviceDisconnectRequired } from './components/DeviceDisconnectRequired';
-import { selectDevicesCount } from '../../../reducers/suite/deviceReducer';
-import { selectDevice } from '../../../reducers/suite/suiteReducer';
 
 const Wrapper = styled.div<{ padded?: boolean }>`
     display: flex;

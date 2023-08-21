@@ -155,11 +155,11 @@ export const getRootReducer = (selectedAccount = BTC_ACCOUNT, fees = DEFAULT_FEE
             {
                 locks: [],
                 online: true,
-                device: DEVICE,
                 settings: { debug: {}, theme: { variant: 'light' } },
             },
             () => ({}),
         ),
+        device: createReducer({ device: DEVICE }, () => {}),
         wallet: combineReducers({
             send: sendFormReducer,
             accounts: createReducer(

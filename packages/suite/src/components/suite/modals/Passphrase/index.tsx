@@ -8,14 +8,15 @@ import TrezorConnect from '@trezor/connect';
 
 import { useSelector, useDispatch } from 'src/hooks/suite';
 import { onPassphraseSubmit } from 'src/actions/suite/modalActions';
-import { selectIsDiscoveryAuthConfirmationRequired } from 'src/reducers/suite/suiteReducer';
+import {
+    selectIsDiscoveryAuthConfirmationRequired,
+    selectDevices,
+} from 'src/reducers/suite/deviceReducer';
 import * as deviceUtils from 'src/utils/suite/device';
 import { Translation, Modal } from 'src/components/suite';
 import type { TrezorDevice } from 'src/types/suite';
 import { OpenGuideFromTooltip } from 'src/components/guide';
 import messages from 'src/support/messages';
-
-import { selectDevices } from '../../../../reducers/suite/deviceReducer';
 
 const Wrapper = styled.div<{ authConfirmation?: boolean }>`
     display: flex;

@@ -33,8 +33,8 @@ import DropboxProvider from 'src/services/suite/metadata/DropboxProvider';
 import GoogleProvider from 'src/services/suite/metadata/GoogleProvider';
 import FileSystemProvider from 'src/services/suite/metadata/FileSystemProvider';
 import { selectSelectedProviderForLabels } from 'src/reducers/suite/metadataReducer';
-import { selectDevices } from 'src/reducers/suite/deviceReducer';
-import { selectDevice } from 'src/reducers/suite/suiteReducer';
+
+import { selectDevices, selectDevice } from 'src/reducers/suite/deviceReducer';
 
 export const setAccountAdd = createAction(METADATA.ACCOUNT_ADD, (payload: Account) => ({
     payload,
@@ -792,7 +792,7 @@ const encryptAndSaveMetadata =
 export const setDeviceMetadataKey =
     (encryptionVersion = METADATA.ENCRYPTION_VERSION) =>
     async (dispatch: Dispatch, getState: GetState) => {
-        const { device } = getState().suite;
+      const device = selectDevice(getState());
         if (!device || !device.state || !device.connected) return;
 
         if (device.metadata.status === 'enabled') return;
@@ -881,7 +881,7 @@ export const addMetadata = (payload: MetadataAddPayload) => (dispatch: Dispatch)
 export const init =
     (force = false) =>
     async (dispatch: Dispatch, getState: GetState) => {
-        const { device } = getState().suite;
+        const device = selectDevice(getState());
 
         // 1. set metadata enabled globally
         if (!getState().metadata.enabled) {
@@ -903,7 +903,7 @@ export const init =
 
         // did user confirm labeling on device? or maybe device was not connected
         // so suite does not have keys and needs to stop here
-        if (getState().suite.device?.metadata.status !== 'enabled') {
+        if (getState().device.device?.metadata.status !== 'enabled') {
             // if no, end here
             dispatch({ type: METADATA.SET_INITIATING, payload: false });
             dispatch({ type: METADATA.SET_EDITING, payload: undefined });
@@ -918,7 +918,7 @@ export const init =
 
         // 3. connect to provider
         if (
-            getState().suite.device?.metadata.status === 'enabled' &&
+            getState().device.device?.metadata.status === 'enabled' &&
             !getState().metadata.providers?.length
         ) {
             if (!getState().metadata.initiating) {

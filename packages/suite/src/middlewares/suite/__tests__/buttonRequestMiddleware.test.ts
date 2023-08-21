@@ -58,14 +58,16 @@ export const getInitialState = () => ({
     router: routerReducer(undefined, { type: 'foo' } as any),
     suite: {
         ...suiteReducer(undefined, { type: 'foo' } as any),
-        ...{ device },
     },
     wallet: {
         settings: {
             enabledNetworks: [],
         },
     },
-    device: { devices: [device] },
+    device: {
+        devices: [device],
+        ...{ device },
+    },
 });
 
 type State = ReturnType<typeof getInitialState>;

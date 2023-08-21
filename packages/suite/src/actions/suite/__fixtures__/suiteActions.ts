@@ -349,6 +349,7 @@ const handleDeviceConnect = [
         description: `select connected device`,
         state: {
             device: { devices: [SUITE_DEVICE] },
+            suite: {},
         },
         device: CONNECT_DEVICE,
         result: SUITE.SELECT_DEVICE,
@@ -356,18 +357,18 @@ const handleDeviceConnect = [
     {
         description: `ignore`,
         state: {
-            suite: {
-                device: SUITE_DEVICE,
-            },
+            device: { device: SUITE_DEVICE },
+            suite: {},
         },
         device: CONNECT_DEVICE,
     },
     {
         description: `waiting-for-bootloader`,
         state: {
-            suite: {
+            device: {
                 device: SUITE_DEVICE,
             },
+            suite: {},
             firmware: { status: 'waiting-for-bootloader' },
         },
         device: getConnectDevice({ path: '3', mode: 'bootloader' }),
@@ -384,9 +385,8 @@ const handleDeviceDisconnect = [
     {
         description: `disconnect not selected device`,
         state: {
-            suite: {
-                device: SUITE_DEVICE,
-            },
+            suite: {},
+            device: { device: SUITE_DEVICE },
         },
         device: getConnectDevice({
             path: '2',
@@ -395,10 +395,11 @@ const handleDeviceDisconnect = [
     {
         description: `disconnected selected device`,
         state: {
-            suite: {
+            suite: {},
+            device: {
                 device: SUITE_DEVICE,
+                devices: [SUITE_DEVICE],
             },
-            device: { devices: [SUITE_DEVICE] },
         },
         device: CONNECT_DEVICE,
         result: {
@@ -408,10 +409,9 @@ const handleDeviceDisconnect = [
     {
         description: `disconnected selected remembered device (no action)`,
         state: {
-            suite: {
-                device: SUITE_DEVICE,
-            },
+            suite: {},
             device: {
+                device: SUITE_DEVICE,
                 devices: [
                     getSuiteDevice({
                         path: '1',
@@ -426,10 +426,9 @@ const handleDeviceDisconnect = [
     {
         description: `disconnected selected device (3 instances: 2 remembered, 1 stateless which will be removed, no action)`,
         state: {
-            suite: {
-                device: SUITE_DEVICE,
-            },
+            suite: {},
             device: {
+                device: SUITE_DEVICE,
                 devices: [
                     SUITE_DEVICE,
                     getSuiteDevice({
@@ -460,10 +459,9 @@ const handleDeviceDisconnect = [
     {
         description: `switch to first unacquired device`,
         state: {
-            suite: {
-                device: SUITE_DEVICE,
-            },
+            suite: {},
             device: {
+                device: SUITE_DEVICE,
                 devices: [
                     SUITE_DEVICE,
                     getSuiteDevice({
@@ -496,10 +494,9 @@ const handleDeviceDisconnect = [
     {
         description: `switch to first connected device`,
         state: {
-            suite: {
-                device: SUITE_DEVICE,
-            },
+            suite: {},
             device: {
+                device: SUITE_DEVICE,
                 devices: [
                     getSuiteDevice(
                         {
@@ -549,10 +546,9 @@ const handleDeviceDisconnect = [
     {
         description: `switch to recently used device`,
         state: {
-            suite: {
-                device: SUITE_DEVICE,
-            },
+            suite: {},
             device: {
+                device: SUITE_DEVICE,
                 devices: [
                     getSuiteDevice(
                         {
@@ -603,10 +599,11 @@ const forgetDisconnectedDevices = [
     {
         description: `no affected devices (unacquired)`,
         state: {
-            suite: {
+            suite: {},
+            device: {
                 device: SUITE_DEVICE_UNACQUIRED,
+                devices: [SUITE_DEVICE_UNACQUIRED],
             },
-            device: { devices: [SUITE_DEVICE_UNACQUIRED] },
         },
         device: getConnectDevice({
             path: '2',
@@ -616,10 +613,9 @@ const forgetDisconnectedDevices = [
     {
         description: `no remembered devices, all affected`,
         state: {
-            suite: {
-                device: SUITE_DEVICE,
-            },
+            suite: {},
             device: {
+                device: SUITE_DEVICE,
                 devices: [
                     SUITE_DEVICE,
                     getSuiteDevice({
@@ -638,10 +634,9 @@ const forgetDisconnectedDevices = [
     {
         description: `mix of affected and unaffected devices`,
         state: {
-            suite: {
-                device: SUITE_DEVICE,
-            },
+            suite: {},
             device: {
+                device: SUITE_DEVICE,
                 devices: [
                     SUITE_DEVICE,
                     getSuiteDevice({
@@ -691,10 +686,11 @@ const observeSelectedDevice = [
             type: DEVICE.CONNECT,
         },
         state: {
-            suite: {
+            suite: {},
+            device: {
                 device: SUITE_DEVICE,
+                devices: [SUITE_DEVICE],
             },
-            device: { devices: [SUITE_DEVICE] },
         },
         changed: false,
     },
@@ -704,10 +700,9 @@ const observeSelectedDevice = [
             type: DEVICE.CONNECT,
         },
         state: {
-            suite: {
-                device: SUITE_DEVICE,
-            },
+            suite: {},
             device: {
+                device: SUITE_DEVICE,
                 devices: [
                     getSuiteDevice({
                         connected: true,
@@ -724,10 +719,11 @@ const observeSelectedDevice = [
             type: DEVICE.CONNECT,
         },
         state: {
-            suite: {
+            suite: {},
+            device: {
                 device: SUITE_DEVICE,
+                devices: [],
             },
-            device: { devices: [] },
         },
         changed: true,
     },
@@ -737,20 +733,26 @@ const acquireDevice = [
     {
         description: `success`,
         state: {
-            device: SUITE_DEVICE,
+            device: {
+                device: SUITE_DEVICE,
+            },
         },
         result: SUITE.LOCK_DEVICE,
     },
     {
         description: `success with requestedDevice param`,
-        state: {},
+        state: {
+            device: {},
+        },
         requestedDevice: SUITE_DEVICE,
         result: SUITE.LOCK_DEVICE,
     },
     {
         description: `with TrezorConnect error`,
         state: {
-            device: SUITE_DEVICE,
+            device: {
+                device: SUITE_DEVICE,
+            },
         },
         getFeatures: {
             success: false,
@@ -762,7 +764,7 @@ const acquireDevice = [
     },
     {
         description: `without device`,
-        state: {},
+        state: { device: {} },
     },
 ];
 
@@ -989,28 +991,34 @@ const createDeviceInstance = [
     {
         description: `with unacquired device`,
         state: {
-            device: getSuiteDevice({
-                type: 'unacquired',
-                connected: true,
-            }),
+            device: {
+                device: getSuiteDevice({
+                    type: 'unacquired',
+                    connected: true,
+                }),
+            },
         },
         result: undefined,
     },
     {
         description: `without passphrase_protection`,
         state: {
-            device: getSuiteDevice({
-                connected: true,
-            }),
+            device: {
+                device: getSuiteDevice({
+                    connected: true,
+                }),
+            },
         },
         result: SUITE.CREATE_DEVICE_INSTANCE,
     },
     {
         description: `without passphrase_protection and @trezor/connect error`,
         state: {
-            device: getSuiteDevice({
-                connected: true,
-            }),
+            device: {
+                device: getSuiteDevice({
+                    connected: true,
+                }),
+            },
         },
         applySettings: {
             success: false,
@@ -1023,14 +1031,16 @@ const createDeviceInstance = [
     {
         description: `with passphrase_protection enabled`,
         state: {
-            device: getSuiteDevice(
-                {
-                    connected: true,
-                },
-                {
-                    passphrase_protection: true,
-                },
-            ),
+            device: {
+                device: getSuiteDevice(
+                    {
+                        connected: true,
+                    },
+                    {
+                        passphrase_protection: true,
+                    },
+                ),
+            },
         },
         applySettings: {
             success: false,
@@ -1046,12 +1056,12 @@ const switchDuplicatedDevice = [
     {
         description: `success`,
         state: {
-            suite: {
+            device: {
+                devices: [SUITE_DEVICE],
                 device: getSuiteDevice({
                     instance: 1,
                 }),
             },
-            device: { devices: [SUITE_DEVICE] },
         },
         device: getSuiteDevice({
             instance: 1,

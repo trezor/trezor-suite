@@ -15,13 +15,15 @@ import {
     selectSessionProgressByAccountKey,
     selectRoundsDurationInHours,
 } from 'src/reducers/wallet/coinjoinReducer';
-import { selectDevice as selectDeviceSelector } from 'src/reducers/suite/suiteReducer';
+import {
+    selectDevice as selectDeviceSelector,
+    selectDevices,
+} from 'src/reducers/suite/deviceReducer';
 
 import { CountdownTimer } from './CountdownTimer';
 import { WalletLabeling } from './Labeling';
 import { ProgressPie } from './ProgressPie';
 import { Translation } from './Translation';
-import { selectDevices } from '../../reducers/suite/deviceReducer';
 
 const SPACING = 6;
 

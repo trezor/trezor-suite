@@ -1,19 +1,22 @@
 import styled, { useTheme } from 'styled-components';
 import BigNumber from 'bignumber.js';
+import { AnimatePresence } from 'framer-motion';
+
+import { variables, Icon, Button, colors, LoadingContent } from '@trezor/components';
+
 import { NETWORKS } from 'src/config/wallet';
 import { Section } from 'src/components/dashboard';
-import { AssetTable, AssetTableSkeleton } from './components/AssetTable';
-import { AssetGrid, AssetGridSkeleton } from './components/AssetGrid';
 import { Account, Network } from 'src/types/wallet';
-import { variables, Icon, Button, colors, LoadingContent } from '@trezor/components';
 import { Card, Translation } from 'src/components/suite';
 import { useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
 import { useAccounts } from 'src/hooks/wallet';
 import { setFlag } from 'src/actions/suite/suiteActions';
 import { goto } from 'src/actions/suite/routerActions';
-import { AnimatePresence } from 'framer-motion';
 import { useEnabledNetworks } from 'src/hooks/settings/useEnabledNetworks';
-import { selectSupportedNetworks } from 'src/reducers/suite/suiteReducer';
+import { selectSupportedNetworks } from 'src/reducers/suite/deviceReducer';
+
+import { AssetGrid, AssetGridSkeleton } from './components/AssetGrid';
+import { AssetTable, AssetTableSkeleton } from './components/AssetTable';
 
 const StyledCard = styled(Card)`
     flex-direction: column;

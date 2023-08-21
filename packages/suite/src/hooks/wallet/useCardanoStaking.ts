@@ -1,5 +1,10 @@
 import { useState, useCallback, useMemo } from 'react';
 
+import { isTestnet, getDerivationType } from '@suite-common/wallet-utils';
+import { notificationsActions } from '@suite-common/toast-notifications';
+import trezorConnect, { PROTO } from '@trezor/connect';
+import { addFakePendingCardanoTxThunk } from '@suite-common/wallet-core';
+
 import { ActionAvailability, CardanoStaking } from 'src/types/wallet/cardanoStaking';
 import { SUITE } from 'src/actions/suite/constants';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -18,13 +23,10 @@ import {
 } from 'src/utils/wallet/cardanoUtils';
 import { AppState } from 'src/types/suite';
 
-import { isTestnet, getDerivationType } from '@suite-common/wallet-utils';
-import { notificationsActions } from '@suite-common/toast-notifications';
-import trezorConnect, { PROTO } from '@trezor/connect';
-import { addFakePendingCardanoTxThunk } from '@suite-common/wallet-core';
+import { selectDevice } from '../../reducers/suite/deviceReducer';
 
 const getDeviceAvailability = (
-    device: AppState['suite']['device'],
+    device: AppState['device']['device'],
     locks: AppState['suite']['locks'],
 ) => {
     // Handle all external cases where it is not possible to make delegate or withdrawal action
@@ -63,7 +65,7 @@ export const useCardanoStaking = (): CardanoStaking => {
         throw Error('useCardanoStaking used for other network');
     }
 
-    const device = useSelector(state => state.suite.device);
+    const device = useSelector(selectDevice);
     const locks = useSelector(state => state.suite.locks);
     const cardanoStaking = useSelector(state => state.wallet.cardanoStaking);
     const dispatch = useDispatch();

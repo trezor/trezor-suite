@@ -12,10 +12,9 @@ import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { acquireDevice } from 'src/actions/suite/suiteActions';
 import * as deviceUtils from 'src/utils/suite/device';
+import { selectDevicesCount, selectDevice } from 'src/reducers/suite/deviceReducer';
 
 import { DeviceStatus } from './DeviceStatus';
-import { selectDevicesCount } from '../../../../../reducers/suite/deviceReducer';
-import { selectDevice } from '../../../../../reducers/suite/suiteReducer';
 
 const ArrowDown = styled(Icon)`
     margin-left: 4px;

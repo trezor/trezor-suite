@@ -9,6 +9,7 @@ import modalReducer from 'src/reducers/suite/modalReducer';
 import * as receiveActions from 'src/actions/wallet/receiveActions';
 
 import fixtures from '../__fixtures__/receiveActions';
+import deviceReducer from '../../../reducers/suite/deviceReducer';
 
 const { getSuiteDevice } = global.JestMocks;
 
@@ -74,6 +75,7 @@ jest.mock('@trezor/connect', () => {
 type ReceiveState = ReturnType<typeof receiveReducer>;
 type SuiteState = ReturnType<typeof suiteReducer>;
 type ModalState = ReturnType<typeof modalReducer>;
+type DeviceState = ReturnType<typeof deviceReducer>;
 
 interface InitialState {
     suite: Partial<SuiteState>;
@@ -88,16 +90,14 @@ interface InitialState {
             enabledNetworks: string[];
         };
     };
+    device: Partial<DeviceState>;
     modal: ModalState;
 }
 
 export const getInitialState = (state: Partial<InitialState> | undefined) => ({
-    device: {
-        devices: [],
-    },
     suite: {
         ...suiteReducer(undefined, { type: 'foo' } as any),
-        device: getSuiteDevice({ available: true, connected: true }),
+        ...state?.suite,
     },
     wallet: {
         receive: receiveReducer([], { type: 'foo' } as any),
@@ -109,9 +109,17 @@ export const getInitialState = (state: Partial<InitialState> | undefined) => ({
         settings: {
             enabledNetworks: ['btc'],
         },
+        ...state?.wallet,
     },
-    modal: modalReducer(undefined, { type: 'foo' } as any),
-    ...state,
+    modal: {
+        ...modalReducer(undefined, { type: 'foo' } as any),
+        ...state?.modal,
+    },
+    device: {
+        ...deviceReducer(undefined, { type: 'foo' } as any),
+        device: getSuiteDevice({ available: true, connected: true }),
+        ...state?.device,
+    },
 });
 
 type State = ReturnType<typeof getInitialState>;

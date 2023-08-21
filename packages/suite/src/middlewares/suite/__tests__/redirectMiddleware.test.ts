@@ -32,7 +32,10 @@ const getInitialState = (
         ...suiteReducer(undefined, { type: 'foo' } as any),
         ...suite,
     },
-    device: { devices: device?.devices || [] },
+    device: {
+        ...deviceReducer(undefined, { type: 'foo' } as any),
+        ...device,
+    },
     router: {
         ...routerReducer(undefined, { type: 'foo' } as any),
         ...router,
@@ -93,7 +96,9 @@ describe('redirectMiddleware', () => {
         it('SUITE.SELECT_DEVICE reset wallet params', () => {
             const store = initStore(
                 getInitialState(
+                    undefined,
                     {
+                        devices: [],
                         device: getSuiteDevice(
                             {
                                 path: '2',
@@ -103,7 +108,6 @@ describe('redirectMiddleware', () => {
                             },
                         ),
                     },
-                    undefined,
                     {
                         app: 'wallet',
                         params: {

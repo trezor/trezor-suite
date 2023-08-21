@@ -60,9 +60,11 @@ type State = {
 export const getInitialState = (state: Partial<State> = {}) => ({
     suite: {
         ...suiteReducer(undefined, { type: '@suite/init' }),
+    },
+    device: {
+        devices: state.device?.devices ?? [DEVICE],
         device: DEVICE,
     },
-    device: { devices: state.device?.devices ?? [DEVICE] },
     router: {},
 });
 

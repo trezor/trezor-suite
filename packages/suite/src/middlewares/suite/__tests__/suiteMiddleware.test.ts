@@ -10,6 +10,8 @@ import type { Action } from 'src/types/suite';
 import { extraDependencies } from 'src/support/extraDependencies';
 import { appChanged } from 'src/actions/suite/suiteActions';
 
+import deviceReducer from '../../../reducers/suite/deviceReducer';
+
 type SuiteState = ReturnType<typeof suiteReducer>;
 type RouterState = ReturnType<typeof routerReducer>;
 
@@ -23,6 +25,9 @@ const getInitialState = (router?: RouterState, suite?: Partial<SuiteState>) => (
     suite: {
         ...suiteReducer(undefined, { type: 'foo' } as any),
         ...suite,
+    },
+    device: {
+        ...deviceReducer(undefined, { type: 'foo' } as any),
     },
     modal: modalReducer(undefined, { type: 'foo' } as any),
     analytics: analyticsReducer(undefined, {

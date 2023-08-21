@@ -13,12 +13,14 @@ import { useDispatch, useSelector, useOnboarding } from 'src/hooks/suite';
 import { resetDevice } from 'src/actions/settings/deviceSettingsActions';
 import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
 
+import { selectDevice } from '../../../reducers/suite/deviceReducer';
+
 export const ResetDeviceStep = () => {
     const [submitted, setSubmitted] = useState(false);
 
     const { goToPreviousStep, goToNextStep, updateAnalytics } = useOnboarding();
 
-    const device = useSelector(state => state.suite.device);
+    const device = useSelector(selectDevice);
     const isActionAbortable = useSelector(selectIsActionAbortable);
     const dispatch = useDispatch();
 
