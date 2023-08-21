@@ -64,9 +64,6 @@ export const prepareFiatRatesMiddleware = createMiddlewareWithExtraDeps(
         }
 
         if (blockchainActions.connected.match(action)) {
-            // TODO: verify if this is necessary, it should work only based on addTransaction action
-            // just to be safe, refetch historical rates for transactions stored without these rates
-            // dispatch(updateMissingTxFiatRatesThunk());
             dispatch(
                 fetchFiatRatesThunk({
                     rateType: 'current',
