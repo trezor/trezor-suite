@@ -266,7 +266,7 @@ connect-web build:
     - yarn workspace @trezor/connect-explorer-webextension build
 
   artifacts:
-    expire_in: 1 week
+    expire_in: 14 days
     paths:
       - packages/connect-iframe/build
       - packages/connect-web/build
