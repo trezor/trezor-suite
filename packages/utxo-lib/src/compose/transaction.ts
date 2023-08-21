@@ -60,10 +60,8 @@ export function createTransaction<Input extends ComposeInput, Change extends Com
     if (skipPermutation) {
         return {
             inputs: convertedInputs,
-            outputs: {
-                sorted: convertedOutputs,
-                permutation: defaultPermutation,
-            },
+            outputs: convertedOutputs,
+            outputsPermutation: defaultPermutation,
         };
     }
 
@@ -74,9 +72,7 @@ export function createTransaction<Input extends ComposeInput, Change extends Com
 
     return {
         inputs: convertedInputs.sort(inputComparator),
-        outputs: {
-            sorted: sortedOutputs,
-            permutation,
-        },
+        outputs: sortedOutputs,
+        outputsPermutation: permutation,
     };
 }
