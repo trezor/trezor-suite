@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Button } from '@trezor/components';
 import { Translation, Modal } from 'src/components/suite';
@@ -16,6 +16,8 @@ import { AccountTypeSelect } from './components/AccountTypeSelect';
 import { SelectNetwork } from './components/SelectNetwork';
 import { EnableNetwork } from './components/EnableNetwork';
 import { AddAccountButton } from './components/AddAccountButton';
+import { useEnabledNetworks } from 'src/hooks/settings/useEnabledNetworks';
+import { selectSupportedNetworks } from 'src/reducers/suite/suiteReducer';
 
 const StyledModal = styled(Modal)`
     width: 560px;
@@ -37,9 +39,26 @@ export const AddAccount = ({ device, onCancel, symbol, noRedirect }: AddAccountP
     const accounts = useSelector(state => state.wallet.accounts);
     const app = useSelector(state => state.router.app);
     const debug = useSelector(state => state.suite.settings.debug);
-    const enabledNetworksSymbols = useSelector(state => state.wallet.settings.enabledNetworks);
     const isCoinjoinPublic = useSelector(selectIsPublic);
     const dispatch = useDispatch();
+
+    const { mainnets, testnets, enabledNetworks: enabledNetworksSymbols } = useEnabledNetworks();
+
+    const mainnetSymbols = mainnets.map(mainnet => mainnet.symbol);
+    const testnetSymbols = testnets.map(testnet => testnet.symbol);
+
+    const supportedNetworks = useSelector(selectSupportedNetworks);
+    const supportedMainnetNetworks = supportedNetworks.filter(network =>
+        mainnetSymbols.includes(network),
+    );
+
+    const hasMainnetNetworksToEnable = supportedMainnetNetworks.some(
+        network => !enabledNetworksSymbols.includes(network),
+    );
+
+    const allTestnetNetworksDisabled = !supportedNetworks.some(
+        network => testnetSymbols.includes(network) && enabledNetworksSymbols.includes(network),
+    );
 
     const isCoinjoinVisible = isCoinjoinPublic || debug.showDebugMenu;
 
@@ -58,7 +77,6 @@ export const AddAccount = ({ device, onCancel, symbol, noRedirect }: AddAccountP
     const [enabledNetworks, disabledNetworks] = arrayPartition(internalNetworks, network =>
         enabledNetworksSymbols.includes(network.symbol),
     );
-    const hasDisabledNetworks = !!disabledNetworks?.length;
 
     const [disabledMainnetNetworks, disabledTestnetNetworks] = arrayPartition(
         disabledNetworks,
@@ -181,7 +199,7 @@ export const AddAccount = ({ device, onCancel, symbol, noRedirect }: AddAccountP
                 selectedNetworks={selectedNetworks}
                 handleNetworkSelection={handleNetworkSelection}
             />
-            {!selectedNetworkEnabled && hasDisabledNetworks && (
+            {hasMainnetNetworksToEnable && !selectedNetworkEnabled && (
                 <EnableNetwork
                     networks={disabledMainnetNetworks}
                     testnetNetworks={availableDisabledTestnetNetworks}
