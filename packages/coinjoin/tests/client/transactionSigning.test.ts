@@ -44,7 +44,7 @@ describe('transactionSigning', () => {
     it('getTransactionData: read affiliate-request and update-liquidity-clue', async () => {
         server?.addListener('test-request', ({ url, data, resolve }) => {
             if (url.endsWith('/update-liquidity-clue')) {
-                resolve({ rawLiquidityClue: data.externalAmounts[0] });
+                resolve({ RawLiquidityClue: data.ExternalAmounts[0] });
             }
             resolve();
         });
@@ -78,60 +78,60 @@ describe('transactionSigning', () => {
                         ],
                         coinjoinState: {
                             Type: '',
-                            events: [
+                            Events: [
                                 {
                                     Type: 'InputAdded',
-                                    coin: {
-                                        outpoint:
+                                    Coin: {
+                                        Outpoint:
                                             '1B5B1FEEA4DFED4253DB5F639011A744A337B25A67975310439233BD8A1DC49F00000000',
-                                        txOut: {
-                                            scriptPubKey:
+                                        TxOut: {
+                                            ScriptPubKey:
                                                 '1 6a6daebd9abae25cdd376b811190163eb00c58e87da1867ba8546229098231c3',
-                                            value: 12300000,
+                                            Value: 12300000,
                                         },
                                     },
-                                    ownershipProof: 'not-relevant',
+                                    OwnershipProof: 'not-relevant',
                                 },
                                 {
                                     Type: 'InputAdded', // external input
-                                    coin: {
-                                        outpoint:
+                                    Coin: {
+                                        Outpoint:
                                             '000000000000000000000000000000000000000000000000000000000000000001000000',
-                                        txOut: {
-                                            scriptPubKey:
+                                        TxOut: {
+                                            ScriptPubKey:
                                                 '1 b899b1962f24757bf8f641d125a88944d1541272cc86da7815ff7899e368b2d4',
-                                            value: 12300000,
+                                            Value: 12300000,
                                         },
                                     },
-                                    ownershipProof: 'not-relevant',
+                                    OwnershipProof: 'not-relevant',
                                 },
                                 {
                                     Type: 'InputAdded',
-                                    coin: {
-                                        outpoint:
+                                    Coin: {
+                                        Outpoint:
                                             '1B5B1FEEA4DFED4253DB5F639011A744A337B25A67975310439233BD8A1DC49F00000000',
-                                        txOut: {
-                                            scriptPubKey:
+                                        TxOut: {
+                                            ScriptPubKey:
                                                 '1 6a6daebd9abae25cdd376b811190163eb00c58e87da1867ba8546229098231c3',
-                                            value: 12300000,
+                                            Value: 12300000,
                                         },
                                     },
-                                    ownershipProof: 'not-relevant',
+                                    OwnershipProof: 'not-relevant',
                                 },
                                 {
                                     Type: 'OutputAdded', // external output
-                                    output: {
-                                        scriptPubKey:
+                                    Output: {
+                                        ScriptPubKey:
                                             '1 b899b1962f24757bf8f641d125a88944d1541272cc86da7815ff7899e368b2d4',
-                                        value: 2000000,
+                                        Value: 2000000,
                                     },
                                 },
                                 {
                                     Type: 'OutputAdded',
-                                    output: {
-                                        scriptPubKey:
+                                    Output: {
+                                        ScriptPubKey:
                                             '1 b67b77a4cac9a32c463e5bbe0c6cbfbab3c86cb59518e5661766056e6a7e849c',
-                                        value: 12300000 - 5000000 - 2000000 - 11000,
+                                        Value: 12300000 - 5000000 - 2000000 - 11000,
                                     },
                                 },
                             ],
@@ -214,19 +214,19 @@ describe('transactionSigning', () => {
                         ],
                         coinjoinState: {
                             Type: '',
-                            events: [
+                            Events: [
                                 {
                                     Type: 'InputAdded',
-                                    coin: {
-                                        outpoint:
+                                    Coin: {
+                                        Outpoint:
                                             '1B5B1FEEA4DFED4253DB5F639011A744A337B25A67975310439233BD8A1DC49F00000000',
-                                        txOut: {
-                                            scriptPubKey:
+                                        TxOut: {
+                                            ScriptPubKey:
                                                 '1 6a6daebd9abae25cdd376b811190163eb00c58e87da1867ba8546229098231c3',
-                                            value: 12300000,
+                                            Value: 12300000,
                                         },
                                     },
-                                    ownershipProof: 'not-relevant',
+                                    OwnershipProof: 'not-relevant',
                                 },
                             ],
                         },
@@ -291,7 +291,7 @@ describe('transactionSigning', () => {
                         alreadyProvided = true;
                         reject(403); // Simulate cloudflare error. Enforce to repeat the request
                     } else {
-                        reject(500, { errorCode: 'WitnessAlreadyProvided' });
+                        reject(500, { ErrorCode: 'WitnessAlreadyProvided' });
                     }
                 }
             }
@@ -353,7 +353,7 @@ describe('transactionSigning', () => {
     it('failed to send signatures', async () => {
         server?.addListener('test-request', ({ url, resolve, reject }) => {
             if (url.endsWith('/transaction-signature')) {
-                reject(500, { errorCode: 'WrongPhase' });
+                reject(500, { ErrorCode: 'WrongPhase' });
             }
             resolve();
         });

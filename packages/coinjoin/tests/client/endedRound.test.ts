@@ -33,7 +33,7 @@ describe('ended', () => {
                 createInput('account-A', 'A1', {
                     ownershipProof: '01A1',
                     registrationData: {
-                        aliceId: '01A1-01a1',
+                        AliceId: '01A1-01a1',
                     },
                     realAmountCredentials: {},
                     realVsizeCredentials: {},
@@ -61,7 +61,7 @@ describe('ended', () => {
                 createInput('account-A', 'A1', {
                     ownershipProof: '01A1',
                     registrationData: {
-                        aliceId: '01A1-01a1',
+                        AliceId: '01A1-01a1',
                     },
                     realAmountCredentials: {},
                     realVsizeCredentials: {},
@@ -92,7 +92,7 @@ describe('ended', () => {
                 createInput('account-A', 'A1', {
                     ownershipProof: '01A1',
                     registrationData: {
-                        aliceId: '01A1-01a1',
+                        AliceId: '01A1-01a1',
                     },
                     realAmountCredentials: {},
                     realVsizeCredentials: {},
@@ -133,7 +133,7 @@ describe('ended', () => {
                 createInput('account-A', 'A1', {
                     ownershipProof: '01A1',
                     registrationData: {
-                        aliceId: '01A1-01a1',
+                        AliceId: '01A1-01a1',
                     },
                     realAmountCredentials: {},
                     realVsizeCredentials: {},
@@ -173,7 +173,7 @@ describe('ended', () => {
                 createInput('account-A', 'A1', {
                     ownershipProof: '01A1',
                     registrationData: {
-                        aliceId: '01A1-01a1',
+                        AliceId: '01A1-01a1',
                     },
                     realAmountCredentials: {},
                     realVsizeCredentials: {},
@@ -214,7 +214,7 @@ describe('ended', () => {
                 createInput('account-A', '0'.repeat(72), {
                     ownershipProof: '01A1',
                     registrationData: {
-                        aliceId: '01A1-01a1',
+                        AliceId: '01A1-01a1',
                     },
                     realAmountCredentials: {},
                     realVsizeCredentials: {},
@@ -255,7 +255,7 @@ describe('ended', () => {
                 createInput('account-A', '0'.repeat(72), {
                     ownershipProof: '01A1',
                     registrationData: {
-                        aliceId: '01A1-01a1',
+                        AliceId: '01A1-01a1',
                     },
                     realAmountCredentials: {},
                     realVsizeCredentials: {},
@@ -296,7 +296,7 @@ describe('ended', () => {
                 createInput('account-A', '0'.repeat(72), {
                     ownershipProof: '01A1',
                     registrationData: {
-                        aliceId: '01A1-01a1',
+                        AliceId: '01A1-01a1',
                     },
                     realAmountCredentials: {},
                     realVsizeCredentials: {},
@@ -332,7 +332,7 @@ describe('ended', () => {
                 createInput('account-A', '0'.repeat(72), {
                     ownershipProof: '01A1',
                     registrationData: {
-                        aliceId: '01A1-01a1',
+                        AliceId: '01A1-01a1',
                     },
                     realAmountCredentials: {},
                     realVsizeCredentials: {},

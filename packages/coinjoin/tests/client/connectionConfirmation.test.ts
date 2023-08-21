@@ -56,7 +56,7 @@ describe('connectionConfirmation', () => {
                 [
                     createInput('account-A', 'A1', {
                         registrationData: {
-                            aliceId: '01A1-01a1',
+                            AliceId: '01A1-01a1',
                         },
                         realAmountCredentials: {},
                         realVsizeCredentials: {},
@@ -66,7 +66,7 @@ describe('connectionConfirmation', () => {
                     }),
                     createInput('account-B', 'B1', {
                         registrationData: {
-                            aliceId: '01B1-01b1',
+                            AliceId: '01B1-01b1',
                         },
                         realAmountCredentials: {},
                         realVsizeCredentials: {},
@@ -75,12 +75,13 @@ describe('connectionConfirmation', () => {
                 {
                     ...server?.requestOptions,
                     roundParameters: {
-                        connectionConfirmationTimeout: '0d 0h 0m 4s',
+                        ConnectionConfirmationTimeout: '0d 0h 0m 4s',
                     },
                 },
             ),
             server?.requestOptions,
         );
+
         response.inputs.forEach(input => {
             expect(input.confirmationData).toMatchObject({});
             expect(input.confirmedAmountCredentials).toMatchObject({});
@@ -106,14 +107,14 @@ describe('connectionConfirmation', () => {
                 [
                     createInput('account-A', 'A1', {
                         registrationData: {
-                            aliceId: '01A1-01a1',
+                            AliceId: '01A1-01a1',
                         },
                         realAmountCredentials: {},
                         realVsizeCredentials: {},
                     }),
                     createInput('account-B', 'B1', {
                         registrationData: {
-                            aliceId: '01B1-01b1',
+                            AliceId: '01B1-01b1',
                         },
                         realAmountCredentials: {},
                         realVsizeCredentials: {},
@@ -122,7 +123,7 @@ describe('connectionConfirmation', () => {
                 {
                     ...server?.requestOptions,
                     roundParameters: {
-                        connectionConfirmationTimeout: '0d 0h 0m 2s',
+                        ConnectionConfirmationTimeout: '0d 0h 0m 2s',
                     },
                     round: {
                         phaseDeadline: Date.now() + 500,
@@ -159,7 +160,7 @@ describe('connectionConfirmation', () => {
 
         const alice = createInput('account-A', 'A1', {
             registrationData: {
-                aliceId: '01A1-01a1',
+                AliceId: '01A1-01a1',
             },
             realAmountCredentials: {},
             realVsizeCredentials: {},
@@ -169,7 +170,7 @@ describe('connectionConfirmation', () => {
             createCoinjoinRound([alice], {
                 ...server?.requestOptions,
                 roundParameters: {
-                    connectionConfirmationTimeout: '0d 0h 0m 2s', // intervalDelay = 1 sec
+                    ConnectionConfirmationTimeout: '0d 0h 0m 2s', // intervalDelay = 1 sec
                 },
                 round: {
                     phaseDeadline: Date.now() + 5000,
@@ -196,7 +197,7 @@ describe('connectionConfirmation', () => {
     it('connection-confirmation interval aborted, Alice unregistered', done => {
         const alice = createInput('account-A', 'A1', {
             registrationData: {
-                aliceId: '01A1-01a1',
+                AliceId: '01A1-01a1',
             },
             realAmountCredentials: {},
             realVsizeCredentials: {},
@@ -206,7 +207,7 @@ describe('connectionConfirmation', () => {
             createCoinjoinRound([alice], {
                 ...server?.requestOptions,
                 roundParameters: {
-                    connectionConfirmationTimeout: '0d 0h 0m 2s', // intervalDelay = 1 sec
+                    ConnectionConfirmationTimeout: '0d 0h 0m 2s', // intervalDelay = 1 sec
                 },
                 round: {
                     phaseDeadline: Date.now() + 1000, // phase will end in less than intervalDelay
@@ -240,21 +241,21 @@ describe('connectionConfirmation', () => {
                 [
                     createInput('account-A', 'A1', {
                         registrationData: {
-                            aliceId: '01A1-01a1',
+                            AliceId: '01A1-01a1',
                         },
                         realAmountCredentials: {},
                         realVsizeCredentials: {},
                     }),
                     createInput('account-A', 'A2', {
                         registrationData: {
-                            aliceId: '01A2-01a2',
+                            AliceId: '01A2-01a2',
                         },
                         realAmountCredentials: {},
                         realVsizeCredentials: {},
                     }),
                     createInput('account-A', 'A3', {
                         registrationData: {
-                            aliceId: '01A3-01a3',
+                            AliceId: '01A3-01a3',
                         },
                         realAmountCredentials: {},
                         realVsizeCredentials: {},
@@ -264,7 +265,7 @@ describe('connectionConfirmation', () => {
                     ...server?.requestOptions,
                     round: { phase: 1, id: '01' },
                     roundParameters: {
-                        connectionConfirmationTimeout: '0d 0h 0m 4s',
+                        ConnectionConfirmationTimeout: '0d 0h 0m 4s',
                     },
                 },
             ),

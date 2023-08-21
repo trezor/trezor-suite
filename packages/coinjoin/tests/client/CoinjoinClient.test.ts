@@ -22,9 +22,9 @@ describe(`CoinjoinClient`, () => {
         server?.addListener('test-request', ({ url, resolve }) => {
             if (url.endsWith('/status')) {
                 resolve({
-                    roundStates: [DEFAULT_ROUND],
-                    coinJoinFeeRateMedians: FEE_RATE_MEDIANS,
-                    affiliateInformation: AFFILIATE_INFO,
+                    RoundStates: [DEFAULT_ROUND],
+                    CoinJoinFeeRateMedians: FEE_RATE_MEDIANS,
+                    AffiliateInformation: AFFILIATE_INFO,
                 });
             }
             resolve();
@@ -44,34 +44,34 @@ describe(`CoinjoinClient`, () => {
         server?.addListener('test-request', ({ url, resolve }) => {
             if (url.endsWith('/status')) {
                 resolve({
-                    coinJoinFeeRateMedians: FEE_RATE_MEDIANS,
-                    affiliateInformation: AFFILIATE_INFO,
-                    roundStates: [
+                    CoinJoinFeeRateMedians: FEE_RATE_MEDIANS,
+                    AffiliateInformation: AFFILIATE_INFO,
+                    RoundStates: [
                         DEFAULT_ROUND,
                         {
                             ...DEFAULT_ROUND,
-                            id: '8080808080808080808080808080808080808080808080808080808080808080',
-                            phase: 1,
-                            coinjoinState: {
-                                events: [
+                            Id: '8080808080808080808080808080808080808080808080808080808080808080',
+                            Phase: 1,
+                            CoinjoinState: {
+                                Events: [
                                     {
                                         Type: 'InputAdded',
-                                        coin: {
-                                            outpoint:
+                                        Coin: {
+                                            Outpoint:
                                                 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA00000000',
-                                            txOut: {
-                                                scriptPubKey:
+                                            TxOut: {
+                                                ScriptPubKey:
                                                     '51208b0bc63a6c9c4459fe510d7c42c8dade5e8070ca623a9aed9086a7d21a3423b2',
-                                                value: 10000,
+                                                Value: 10000,
                                             },
                                         },
                                     },
                                     {
                                         Type: 'OutputAdded',
-                                        output: {
-                                            scriptPubKey:
+                                        Output: {
+                                            ScriptPubKey:
                                                 '1 0ffeae3fbd08c25521369afbb6d7dacec99f3b24b6113c2fe497bede04723789',
-                                            value: 8000,
+                                            Value: 8000,
                                         },
                                     },
                                 ],
@@ -79,28 +79,28 @@ describe(`CoinjoinClient`, () => {
                         },
                         {
                             ...DEFAULT_ROUND,
-                            id: '9090909090909090909090909090909090909090909090909090909090909090',
-                            phase: 2,
-                            coinjoinState: {
-                                events: [
+                            Id: '9090909090909090909090909090909090909090909090909090909090909090',
+                            Phase: 2,
+                            CoinjoinState: {
+                                Events: [
                                     {
                                         Type: 'InputAdded',
-                                        coin: {
-                                            outpoint:
+                                        Coin: {
+                                            Outpoint:
                                                 'BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB00000000',
-                                            txOut: {
-                                                scriptPubKey:
+                                            TxOut: {
+                                                ScriptPubKey:
                                                     '51208b0bc63a6c9c4459fe510d7c42c8dade5e8070ca623a9aed9086a7d21a3423b2',
-                                                value: 10000,
+                                                Value: 10000,
                                             },
                                         },
                                     },
                                     {
                                         Type: 'OutputAdded',
-                                        output: {
-                                            scriptPubKey:
+                                        Output: {
+                                            ScriptPubKey:
                                                 '1 a52d19f3baa0000803d228a67307439c66bbaca8929ce889305e0445b5febad7',
-                                            value: 8000,
+                                            Value: 8000,
                                         },
                                     },
                                 ],

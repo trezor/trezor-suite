@@ -40,9 +40,9 @@ describe('outputRegistration', () => {
             const availableVsize: number[] = [];
             server?.addListener('test-request', ({ url, resolve, data }) => {
                 if (url.endsWith('/get-outputs-amounts')) {
-                    availableVsize.push(data.availableVsize);
+                    availableVsize.push(data.AvailableVsize);
                     resolve({
-                        outputAmounts: f.outputAmounts,
+                        OutputAmounts: f.outputAmounts,
                     });
                 }
                 if (url.endsWith('/credential-issuance')) {
@@ -52,16 +52,16 @@ describe('outputRegistration', () => {
             });
 
             // NOTE: scriptPubKey is only used to calculate external output size, it can be reused for all inputs
-            const scriptPubKey =
+            const ScriptPubKey =
                 '1 6a6daebd9abae25cdd376b811190163eb00c58e87da1867ba8546229098231c3';
             const inputs = f.inputs.map(i => createInput(...(i as Parameters<typeof createInput>)));
             const events: any[] = inputs.map(i => ({
                 Type: 'InputAdded',
-                coin: {
-                    outpoint: i.outpoint,
-                    txOut: {
-                        scriptPubKey,
-                        value: i.amount,
+                Coin: {
+                    Outpoint: i.outpoint,
+                    TxOut: {
+                        ScriptPubKey,
+                        Value: i.amount,
                     },
                 },
             }));
@@ -73,7 +73,7 @@ describe('outputRegistration', () => {
                         phase: 3,
                         coinjoinState: {
                             Type: '',
-                            events: [...events, INPUT_ADDED_EVENT],
+                            Events: [...events, INPUT_ADDED_EVENT],
                         },
                     },
                     roundParameters: f.roundParameters,

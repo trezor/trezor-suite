@@ -57,8 +57,8 @@ export class MockBackendClient extends CoinjoinBackendClient {
             );
             if (from >= 0)
                 return this.mockResponse(200, {
-                    bestHeight: -1,
-                    filters: this.blocks
+                    BestHeight: -1,
+                    Filters: this.blocks
                         .slice(from, from + count)
                         .map(
                             ({ height, hash, filter, previousBlockHash }) =>

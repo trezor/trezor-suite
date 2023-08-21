@@ -21,7 +21,7 @@ describe('http', () => {
 
     it('with 500 error', async () => {
         server?.addListener('test-request', ({ reject }) => {
-            reject(500, { errorCode: 'InternalErrorCodeExample' });
+            reject(500, { ErrorCode: 'InternalErrorCodeExample' });
         });
 
         await expect(coordinatorRequest('status', {}, { baseUrl })).rejects.toThrow(
@@ -115,7 +115,7 @@ describe('http', () => {
         );
 
         expect(spy).toBeCalledTimes(2);
-        expect(resp.roundStates.length).toEqual(1);
+        expect(resp.RoundStates.length).toEqual(1);
     });
 
     it('with ECONNREFUSED error', async () => {
@@ -147,11 +147,11 @@ describe('http', () => {
 
     it('successful', done => {
         coordinatorRequest('input-registration', {}, { baseUrl }).then(resp => {
-            expect(resp).toMatchObject({ aliceId: expect.any(String) });
+            expect(resp).toMatchObject({ AliceId: expect.any(String) });
         });
         // without baseUrl
         coordinatorRequest<any>(`status`, {}, { baseUrl }).then(resp => {
-            expect(resp.roundStates.length).toEqual(1);
+            expect(resp.RoundStates.length).toEqual(1);
         });
         // without json response
         coordinatorRequest('ready-to-sign', {}, { baseUrl }).then(resp => {

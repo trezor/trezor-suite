@@ -59,7 +59,7 @@ describe(`CoinjoinRound`, () => {
                 createInput('account-A', 'A1', {
                     ownershipProof: '01A1',
                     registrationData: {
-                        aliceId: '01A1-01a1',
+                        AliceId: '01A1-01a1',
                     },
                     realAmountCredentials: {},
                     realVsizeCredentials: {},
@@ -88,7 +88,7 @@ describe(`CoinjoinRound`, () => {
         await round.process([]);
 
         // change phase to Ended
-        await round.onPhaseChange({ ...DEFAULT_ROUND, phase: 4, endRoundState: 5 });
+        await round.onPhaseChange({ ...DEFAULT_ROUND, Phase: 4, EndRoundState: 5 });
 
         await round.process([]);
 
@@ -103,7 +103,7 @@ describe(`CoinjoinRound`, () => {
                 createInput('account-A', 'A1', {
                     ownershipProof: '01A1',
                     registrationData: {
-                        aliceId: '01A1-01a1',
+                        AliceId: '01A1-01a1',
                     },
                     realAmountCredentials: {},
                     realVsizeCredentials: {},
@@ -211,7 +211,7 @@ describe(`CoinjoinRound`, () => {
                 ...server?.requestOptions,
                 round: { phaseDeadline: Date.now() + 10000 },
                 roundParameters: {
-                    connectionConfirmationTimeout: '0d 0h 0m 4s',
+                    ConnectionConfirmationTimeout: '0d 0h 0m 4s',
                 },
             },
         );
@@ -225,7 +225,7 @@ describe(`CoinjoinRound`, () => {
         expect(registrationSpy).toBeCalledTimes(0); // no registrations yet
 
         // change Round phase before input-registration was called
-        await round.onPhaseChange({ ...DEFAULT_ROUND, phase: 1 });
+        await round.onPhaseChange({ ...DEFAULT_ROUND, Phase: 1 });
 
         // registrationData should be assigned,
         // confirmationInterval should be assigned,
@@ -271,7 +271,7 @@ describe(`CoinjoinRound`, () => {
                 ...server?.requestOptions,
                 round: { phaseDeadline: Date.now() + 10000 },
                 roundParameters: {
-                    connectionConfirmationTimeout: '0d 0h 0m 5s',
+                    ConnectionConfirmationTimeout: '0d 0h 0m 5s',
                 },
             },
         );
@@ -284,7 +284,7 @@ describe(`CoinjoinRound`, () => {
         await new Promise(resolve => setTimeout(resolve, 500));
 
         // change Round phase before input-registration was called
-        await round.onPhaseChange({ ...DEFAULT_ROUND, phase: 1 });
+        await round.onPhaseChange({ ...DEFAULT_ROUND, Phase: 1 });
 
         // registrationData should NOT be assigned,
         // confirmationInterval should NOT be assigned,
@@ -334,7 +334,7 @@ describe(`CoinjoinRound`, () => {
         await new Promise(resolve => setTimeout(resolve, 500));
 
         // change Round phase to Ended
-        await round.onPhaseChange({ ...DEFAULT_ROUND, phase: 4 });
+        await round.onPhaseChange({ ...DEFAULT_ROUND, Phase: 4 });
 
         expect(round.inputs.length).toBe(0); // no valid inputs, requests aborted
         expect(round.failed.length).toBe(0); // no errored inputs, inputs with errors in inputRegistration are not passed further
@@ -403,7 +403,7 @@ describe(`CoinjoinRound`, () => {
                 ...server?.requestOptions,
                 round: { phaseDeadline: Date.now() + 10000 },
                 roundParameters: {
-                    connectionConfirmationTimeout: '0d 0h 0m 4s',
+                    ConnectionConfirmationTimeout: '0d 0h 0m 4s',
                 },
             },
         );
