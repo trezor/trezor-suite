@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react';
 
-import { AccordionItem, Divider, Text, VStack } from '@suite-native/atoms';
+import { AccordionItem, Text, VStack } from '@suite-native/atoms';
 import { Link } from '@suite-native/link';
 
 type FAQ = {
@@ -50,7 +50,6 @@ export const FAQInfoPanel = () => (
         {faqMap.map(({ question, answer }) => (
             <React.Fragment key={question}>
                 <AccordionItem title={question} content={answer} />
-                <Divider />
             </React.Fragment>
         ))}
     </VStack>

@@ -18,16 +18,25 @@ const stackStyle = prepareNativeStyle(_ => ({
     width: '100%',
 }));
 
+const trezorDescriptionTextStyle = prepareNativeStyle(_ => ({
+    lineHeight: 32,
+}));
+
 export const AboutUsBanners = () => {
     const openLink = useOpenLink();
     const { applyStyle } = useNativeStyles();
 
     return (
-        <>
+        <VStack>
             <Card style={applyStyle(cardStyle, { backgroundColor: 'backgroundNeutralBold' })}>
                 <VStack spacing="large" style={applyStyle(stackStyle)}>
                     <Icon color="iconOnPrimary" name="trezor" />
-                    <Text color="textOnPrimary">
+                    <Text
+                        align="center"
+                        color="textOnPrimary"
+                        variant="titleSmall"
+                        style={applyStyle(trezorDescriptionTextStyle)}
+                    >
                         Trezor Suite Lite is a safe and secure way to stay connected to the crypto
                         on your hardware wallet. Track coin balances on the go without exposing your
                         private data. Easily create and send payment addresses to anyone.
@@ -41,16 +50,19 @@ export const AboutUsBanners = () => {
                     </Text>
                     <HStack spacing="large">
                         <IconButton
+                            size="large"
                             colorScheme="tertiaryElevation1"
                             iconName="facebook"
                             onPress={() => openLink('https://www.facebook.com/trezor.io')}
                         />
                         <IconButton
+                            size="large"
                             colorScheme="tertiaryElevation1"
                             iconName="twitter"
                             onPress={() => openLink('https://twitter.com/Trezor')}
                         />
                         <IconButton
+                            size="large"
                             colorScheme="tertiaryElevation1"
                             iconName="github"
                             onPress={() => openLink('https://github.com/trezor')}
@@ -58,6 +70,6 @@ export const AboutUsBanners = () => {
                     </HStack>
                 </VStack>
             </Card>
-        </>
+        </VStack>
     );
 };

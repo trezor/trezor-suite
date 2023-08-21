@@ -65,7 +65,7 @@ export const AccountImportOverviewCard = ({
                 {shouldDisplayDeleteIcon && (
                     <IconButton
                         data-testID="@account-import/coin-synced/delete-icon"
-                        iconName="trash"
+                        iconName="trashAlt"
                         colorScheme="tertiaryElevation1"
                         onPress={handleNavigateToQRScan}
                         size="medium"

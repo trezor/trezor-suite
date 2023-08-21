@@ -2,7 +2,7 @@ import React from 'react';
 
 import { Atom, useAtom } from 'jotai';
 
-import { Box, Text } from '@suite-native/atoms';
+import { HStack, Text } from '@suite-native/atoms';
 import { Icon, IconName } from '@suite-common/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
@@ -22,6 +22,8 @@ type PercentageChangeProps = {
     hasPriceIncreasedAtom: HasPriceIncreasedAtom;
 };
 
+const PRICE_CHANGE_ICON_SIZE = 6;
+
 const PercentageChange = ({
     percentageChangeAtom,
     hasPriceIncreasedAtom,
@@ -30,7 +32,7 @@ const PercentageChange = ({
     const [hasPriceIncreased] = useAtom(hasPriceIncreasedAtom);
 
     return (
-        <Text color={getColorForPercentageChange(hasPriceIncreased)} variant="hint">
+        <Text color={getColorForPercentageChange(hasPriceIncreased)} variant="label">
             {percentageChange.toFixed(2)}%
         </Text>
     );
@@ -49,7 +51,7 @@ const PercentageChangeArrow = ({
         <Icon
             name={iconName}
             color={getColorForPercentageChange(hasPriceIncreased)}
-            size="extraSmall"
+            customSize={PRICE_CHANGE_ICON_SIZE}
         />
     );
 };

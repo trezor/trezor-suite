@@ -11,6 +11,6 @@ type ListItemIconProps = {
 
 export const ListItemIcon = ({ iconName }: ListItemIconProps) => (
     <Box justifyContent="center" alignItems="center" marginRight="medium">
-        <RoundedIcon name={iconName} color="iconSubdued" />
+        <RoundedIcon name={iconName} color="iconSubdued" iconSize="mediumLarge" />
     </Box>
 );

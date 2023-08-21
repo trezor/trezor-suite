@@ -1,20 +1,11 @@
 import React, { useState } from 'react';
 
-import {
-    Box,
-    Text,
-    Button,
-    Card,
-    BottomSheet,
-    BottomSheetProps,
-    VStack,
-} from '@suite-native/atoms';
+import { Box, Button, BottomSheet, BottomSheetProps, VStack } from '@suite-native/atoms';
 import { networks, NetworkSymbol, NetworkType } from '@suite-common/wallet-config';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { useCopyToClipboard } from '@suite-native/helpers';
 
-import { QRCode } from './QRCode';
-import { XpubOverlayWarning } from './XpubQRCodeWarningOverlay';
+import { XpubQRCodeCard } from './XpubQRCodeCard';
 
 type XpubQRCodeBottomSheetProps = Pick<BottomSheetProps, 'isVisible'> & {
     onClose: () => void;
@@ -22,22 +13,12 @@ type XpubQRCodeBottomSheetProps = Pick<BottomSheetProps, 'isVisible'> & {
     networkSymbol: NetworkSymbol;
 };
 
-const XPUB_CARD_HEIGHT = 440;
-
 const networkTypeToSheetTitleMap: Record<NetworkType, string> = {
     bitcoin: 'Public key (XPUB)',
     cardano: 'Public key (XPUB)',
     ethereum: 'Receive address',
     ripple: 'Receive address',
 };
-
-const xpubCardStyle = prepareNativeStyle(utils => ({
-    height: XPUB_CARD_HEIGHT,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginHorizontal: utils.spacings.small,
-    marginTop: utils.spacings.small,
-}));
 
 const buttonStyle = prepareNativeStyle(utils => ({
     paddingHorizontal: utils.spacings.medium,
@@ -47,30 +28,6 @@ const networkSymbolHasXpub = (networkSymbol: NetworkSymbol) => {
     // These coins don't have XPUB but public address instead
     if (networkSymbol === 'eth' || networkSymbol === 'xrp' || networkSymbol === 'etc') return false;
     return true;
-};
-
-const XpubQRCodeCard = ({
-    isXpubShown,
-    qrCodeData,
-}: {
-    isXpubShown: boolean;
-    qrCodeData: string;
-}) => {
-    const { applyStyle } = useNativeStyles();
-    return (
-        <Card style={applyStyle(xpubCardStyle)}>
-            {isXpubShown ? (
-                <>
-                    <QRCode data={qrCodeData} />
-                    <Box margin="small" alignItems="center" justifyContent="center">
-                        <Text align="center">{qrCodeData}</Text>
-                    </Box>
-                </>
-            ) : (
-                <XpubOverlayWarning />
-            )}
-        </Card>
-    );
 };
 
 export const XpubQRCodeBottomSheet = ({

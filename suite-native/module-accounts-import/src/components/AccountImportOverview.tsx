@@ -15,7 +15,7 @@ type AssetsOverviewProps = {
 
 export const AccountImportOverview = ({ balance, networkSymbol }: AssetsOverviewProps) => (
     <AccountImportOverviewCard
-        icon={<RoundedIcon name={networkSymbol} size="large" />}
+        icon={<RoundedIcon name={networkSymbol} iconSize="large" />}
         coinName={networks[networkSymbol].name}
         symbol={networkSymbol}
         cryptoAmount={

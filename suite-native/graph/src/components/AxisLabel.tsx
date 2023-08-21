@@ -58,7 +58,7 @@ export const AxisLabel = ({ x, value }: AxisLabelProps) => {
             onLayout={handleLayoutOverflow}
             ref={viewRef}
         >
-            <FiatAmountFormatter value={String(value)} />
+            <FiatAmountFormatter value={String(value)} variant="label" color="textDisabled" />
         </View>
     );
 };

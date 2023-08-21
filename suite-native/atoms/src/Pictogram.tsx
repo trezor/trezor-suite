@@ -91,14 +91,16 @@ export const Pictogram = ({ variant, icon, title, subtitle, size = 'large' }: Pi
                     <Icon name={icon} color={iconColor} customSize={ICON_SIZE} />
                 </Box>
             </Box>
-            <VStack alignItems="center">
-                <Text variant="titleSmall" align="center">
-                    {title}
-                </Text>
-                <Text color="textSubdued" align="center">
-                    {subtitle}
-                </Text>
-            </VStack>
+            {title && (
+                <VStack alignItems="center">
+                    <Text variant="titleSmall" align="center">
+                        {title}
+                    </Text>
+                    <Text color="textSubdued" align="center">
+                        {subtitle}
+                    </Text>
+                </VStack>
+            )}
         </VStack>
     );
 };

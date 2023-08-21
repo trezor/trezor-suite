@@ -9,7 +9,7 @@ import {
     ScreenHeader,
     StackProps,
 } from '@suite-native/navigation';
-import { Box, Card, Text, VStack } from '@suite-native/atoms';
+import { Box, Card, HStack, Text, VStack } from '@suite-native/atoms';
 import {
     AccountsRootState,
     selectAccountByKey,
@@ -19,11 +19,16 @@ import {
 import { CryptoIcon } from '@suite-common/icons';
 
 import { AccountRenameButton } from '../components/AccountRenameButton';
-import { AccountSettingsShowXpub } from '../components/AccountSettingsShowXpub';
-import { AccountSettingsRemoveCoin } from '../components/AccountSettingsRemoveCoin';
+import { AccountSettingsShowXpubButton } from '../components/AccountSettingsShowXpubButton';
+import { AccountSettingsRemoveCoinButton } from '../components/AccountSettingsRemoveCoinButton';
 
 const AccountDetailSettingsRow = ({ title, children }: { title: string; children: ReactNode }) => (
-    <Box flexDirection="row" alignItems="center" justifyContent="space-between">
+    <Box
+        paddingVertical="small"
+        flexDirection="row"
+        alignItems="center"
+        justifyContent="space-between"
+    >
         <Text variant="hint" color="textSubdued">
             {title}
         </Text>
@@ -32,12 +37,10 @@ const AccountDetailSettingsRow = ({ title, children }: { title: string; children
 );
 
 const CryptoNameWithIcon = ({ symbol }: { symbol: NetworkSymbol }) => (
-    <Box flexDirection="row" alignItems="center" justifyContent="flex-end">
+    <HStack spacing="small" flexDirection="row" alignItems="center" justifyContent="flex-end">
         <Text variant="hint">{networks[symbol].name}</Text>
-        <Box marginLeft="small">
-            <CryptoIcon symbol={symbol} size="extraSmall" />
-        </Box>
-    </Box>
+        <CryptoIcon symbol={symbol} size="extraSmall" />
+    </HStack>
 );
 
 export const AccountSettingsScreen = ({
@@ -71,7 +74,7 @@ export const AccountSettingsScreen = ({
         >
             <Box flex={1} justifyContent="space-between">
                 <Card>
-                    <VStack spacing="large">
+                    <VStack spacing="extraSmall">
                         <AccountDetailSettingsRow title="Coin">
                             <CryptoNameWithIcon symbol={account.symbol} />
                         </AccountDetailSettingsRow>
@@ -82,9 +85,9 @@ export const AccountSettingsScreen = ({
                         )}
                     </VStack>
                 </Card>
-                <VStack spacing="small">
-                    <AccountSettingsShowXpub accountKey={account.key} />
-                    <AccountSettingsRemoveCoin accountKey={account.key} />
+                <VStack marginHorizontal="medium" spacing="medium">
+                    <AccountSettingsShowXpubButton accountKey={account.key} />
+                    <AccountSettingsRemoveCoinButton accountKey={account.key} />
                 </VStack>
             </Box>
         </Screen>

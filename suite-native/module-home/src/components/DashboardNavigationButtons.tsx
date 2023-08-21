@@ -2,7 +2,7 @@ import React from 'react';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { Button, Divider, VStack } from '@suite-native/atoms';
+import { Box, Button, Divider, VStack } from '@suite-native/atoms';
 import {
     AccountsImportStackRoutes,
     RootStackParamList,
@@ -25,23 +25,27 @@ export const DashboardNavigationButtons = () => {
 
     return (
         <VStack spacing="large">
-            <Button
-                data-testID="@home/portfolio/sync-coins-button"
-                colorScheme="tertiaryElevation0"
-                size="large"
-                onPress={handleImportAssets}
-            >
-                Sync my coins
-            </Button>
+            <Box marginHorizontal="medium">
+                <Button
+                    data-testID="@home/portfolio/sync-coins-button"
+                    colorScheme="tertiaryElevation0"
+                    size="large"
+                    onPress={handleImportAssets}
+                >
+                    Sync my coins
+                </Button>
+            </Box>
             <Divider />
-            <Button
-                data-testID="@home/portolio/recieve-button"
-                size="large"
-                onPress={handleReceive}
-                iconLeft="receive"
-            >
-                Receive
-            </Button>
+            <Box marginHorizontal="medium">
+                <Button
+                    data-testID="@home/portolio/recieve-button"
+                    size="large"
+                    onPress={handleReceive}
+                    iconLeft="receive"
+                >
+                    Receive
+                </Button>
+            </Box>
         </VStack>
     );
 };
