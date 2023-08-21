@@ -11,7 +11,6 @@ import { Translation } from 'src/components/suite';
 import { useDevice, useDispatch } from 'src/hooks/suite';
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';
 import { authConfirm, authorizeDevice } from 'src/actions/suite/suiteActions';
-import { openModal } from 'src/actions/suite/modalActions';
 import { goto } from 'src/actions/suite/routerActions';
 import { DiscoveryStatusType } from 'src/types/wallet';
 
@@ -115,7 +114,6 @@ const discoveryFailedMessage = (discovery?: Discovery) => {
 
 export const Exception = ({ exception, discovery }: ExceptionProps) => {
     const dispatch = useDispatch();
-    const { device } = useDevice();
 
     switch (exception.type) {
         case 'auth-failed':
@@ -144,19 +142,8 @@ export const Exception = ({ exception, discovery }: ExceptionProps) => {
                     cta={[
                         {
                             action: () => dispatch(goto('settings-coins')),
-                            variant: 'secondary',
                             icon: 'SETTINGS',
                             label: 'TR_COIN_SETTINGS',
-                        },
-                        {
-                            action: () =>
-                                dispatch(
-                                    openModal({
-                                        type: 'add-account',
-                                        device: device!,
-                                    }),
-                                ),
-                            label: 'TR_ADD_ACCOUNT',
                         },
                     ]}
                     dataTestBase={exception.type}
