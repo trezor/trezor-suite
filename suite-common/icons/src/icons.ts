@@ -103,6 +103,7 @@ export const cryptoIcons = {
     name: require('../assets/cryptoIcons/name.svg'),
     nmc: require('../assets/cryptoIcons/nmc.svg'),
     regtest: require('../assets/cryptoIcons/regtest.svg'),
+    sol: require('../assets/cryptoIcons/sol.svg'),
     tada: require('../assets/cryptoIcons/tada.svg'),
     test: require('../assets/cryptoIcons/test.svg'),
     tsep: require('../assets/cryptoIcons/tsep_tgor.svg'),
@@ -111,7 +112,6 @@ export const cryptoIcons = {
     vtc: require('../assets/cryptoIcons/vtc.svg'),
     xrp: require('../assets/cryptoIcons/xrp.svg'),
     zec: require('../assets/cryptoIcons/zec.svg'),
-    sol: require('../assets/cryptoIcons/ada.svg'), // TODO(vl): add icons
 } as const;
 export type CryptoIconName = keyof typeof cryptoIcons;
 
