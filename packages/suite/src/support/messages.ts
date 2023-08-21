@@ -6730,7 +6730,7 @@ export default defineMessages({
     },
     TR_ONBOARDING_NEW_VERSION: {
         id: 'TR_ONBOARDING_NEW_VERSION',
-        defaultMessage: 'New Version',
+        defaultMessage: 'Latest version',
     },
     TR_RECOVERY_MATRIX_DISPLAYED_ON_TREZOR: {
         id: 'TR_RECOVERY_MATRIX_DISPLAYED_ON_TREZOR',
