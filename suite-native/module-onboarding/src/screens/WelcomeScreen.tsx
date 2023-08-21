@@ -1,8 +1,8 @@
-import React, { ReactNode } from 'react';
+import React from 'react';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { Box, Text, Image } from '@suite-native/atoms';
+import { Box, Text, Image, TrezorSuiteLiteHeader } from '@suite-native/atoms';
 import {
     OnboardingStackParamList,
     OnboardingStackRoutes,
@@ -11,16 +11,14 @@ import {
 } from '@suite-native/navigation';
 import { Icon } from '@suite-common/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Color } from '@trezor/theme';
 import { useActiveColorScheme } from '@suite-native/theme';
 
 import { OnboardingFooter } from '../components/OnboardingFooter';
 
-const titleStyle = prepareNativeStyle(utils => ({
+const titleStyle = prepareNativeStyle(_ => ({
     maxWidth: '60%',
     textAlign: 'center',
     marginBottom: 12,
-    ...utils.typography.titleMedium,
 }));
 
 const imageContainerStyle = prepareNativeStyle(() => ({
@@ -28,12 +26,6 @@ const imageContainerStyle = prepareNativeStyle(() => ({
     left: 0,
     top: 0,
 }));
-
-const TitleText = ({ children, color }: { children: ReactNode; color: Color }) => (
-    <Text variant="titleMedium" color={color} style={{ textAlign: 'center' }}>
-        {children}
-    </Text>
-);
 
 export const WelcomeScreen = () => {
     const navigation =
@@ -66,10 +58,8 @@ export const WelcomeScreen = () => {
                             <Box marginBottom="large">
                                 <Icon size="large" name="trezor" color="backgroundPrimaryDefault" />
                             </Box>
-                            <Text style={applyStyle(titleStyle)}>
-                                <TitleText color="textDefault">Welcome to</TitleText>
-                                <TitleText color="textSecondaryHighlight"> Trezor Suite</TitleText>
-                                <TitleText color="textSubdued"> Lite</TitleText>
+                            <Text variant="titleMedium" style={applyStyle(titleStyle)}>
+                                Welcome to <TrezorSuiteLiteHeader textVariant="titleMedium" />
                             </Text>
                         </Box>
                         <Text color="textSubdued" align="center">
