@@ -82,7 +82,7 @@ describe('composeTx addresses cross-check', () => {
 
                     expect(tx).toMatchObject(f.result[key]);
 
-                    expect(tx.transaction.inputs.length).toEqual(f.request.utxos.length);
+                    expect(tx.inputs.length).toEqual(f.request.utxos.length);
 
                     verifyTxBytes(tx, txType);
                 });

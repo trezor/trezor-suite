@@ -51,9 +51,9 @@ function getFinalResult<
         fee: fee.toString(),
         feePerByte: feePerByte.toString(),
         bytes,
-        transaction,
         max,
         totalSpent,
+        ...transaction,
     };
 }
 
