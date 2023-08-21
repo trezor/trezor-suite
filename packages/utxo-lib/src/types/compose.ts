@@ -129,13 +129,14 @@ export type ComposeResultError =
           message: string;
       };
 
-export interface ComposeResultNonFinal {
+export interface ComposeResultNonFinal<Input extends ComposeInput> {
     type: 'nonfinal';
     max?: string;
     totalSpent: string; // all the outputs, no fee, no change
     fee: string;
     feePerByte: string;
     bytes: number;
+    inputs: Input[];
 }
 
 export interface ComposeResultFinal<
@@ -158,4 +159,4 @@ export type ComposeResult<
     Input extends ComposeInput,
     Output extends ComposeOutput,
     Change extends ComposeChangeAddress,
-> = ComposeResultError | ComposeResultNonFinal | ComposeResultFinal<Input, Output, Change>;
+> = ComposeResultError | ComposeResultNonFinal<Input> | ComposeResultFinal<Input, Output, Change>;

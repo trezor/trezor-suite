@@ -23,9 +23,12 @@ export function getErrorResult(error: unknown): ComposeResultError {
     return { type: 'error', error: 'COINSELECT', message };
 }
 
-function getNonfinalResult(result: CoinSelectSuccess): ComposeResultNonFinal {
+function getNonfinalResult<Input extends ComposeInput>(
+    utxos: Input[],
+    result: CoinSelectSuccess,
+): ComposeResultNonFinal<Input> {
     const { max, fee, feePerByte, bytes, totalSpent } = result.payload;
-
+    const inputs = result.payload.inputs.map(input => utxos[input.i]);
     return {
         type: 'nonfinal',
         fee: fee.toString(),
@@ -33,6 +36,7 @@ function getNonfinalResult(result: CoinSelectSuccess): ComposeResultNonFinal {
         bytes,
         max,
         totalSpent,
+        inputs,
     };
 }
 
@@ -83,7 +87,7 @@ export function getResult<
     const splitOutputs = splitByCompleteness(request.outputs);
 
     if (splitOutputs.incomplete.length > 0) {
-        return getNonfinalResult(result);
+        return getNonfinalResult(request.utxos, result);
     }
 
     const transaction = createTransaction(
