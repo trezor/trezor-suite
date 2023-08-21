@@ -3,14 +3,14 @@ import { View } from 'react-native';
 
 import { NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-type CardProps = {
+export type CardProps = {
     children: ReactNode;
     style?: NativeStyleObject;
 };
 
 const cardStyle = prepareNativeStyle(utils => ({
     backgroundColor: utils.colors.backgroundSurfaceElevation1,
-    borderRadius: utils.borders.radii.large / 2,
+    borderRadius: utils.borders.radii.medium,
     padding: utils.spacings.medium,
 
     ...utils.boxShadows.small,

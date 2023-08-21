@@ -3,7 +3,7 @@ import { View } from 'react-native';
 
 import { useFocusEffect } from '@react-navigation/native';
 
-import { Box, Button, Card, TextDivider, VStack } from '@suite-native/atoms';
+import { Box, Button, HeaderedCard, TextDivider, VStack } from '@suite-native/atoms';
 import { isDevelopOrDebugEnv } from '@suite-native/config';
 import { Form, TextInputField, useForm } from '@suite-native/forms';
 import {
@@ -135,14 +135,14 @@ export const XpubScanScreen = ({
                 />
             }
         >
-            <Card>
-                <SelectableNetworkItem
-                    cryptoCurrencyName={networkName}
-                    cryptoCurrencySymbol={networkSymbol}
-                    iconName={networkSymbol}
-                    onPressActionButton={() => navigation.goBack()}
-                />
-            </Card>
+            <HeaderedCard
+                title="Coin to sync"
+                buttonTitle="Change"
+                buttonIcon="discover"
+                onButtonPress={handleGoBack}
+            >
+                <SelectableNetworkItem symbol={networkSymbol} />
+            </HeaderedCard>
             <Box marginHorizontal="medium">
                 <View style={applyStyle(cameraStyle)}>
                     <XpubImportSection

@@ -27,7 +27,8 @@ export * from './Badge';
 export * from './Divider';
 export * from './TextDivider';
 export * from './ProgressBar';
-export * from './Card';
+export * from './Card/Card';
+export * from './Card/HeaderedCard';
 export * from './StepsProgressBar';
 export * from './ErrorMessage';
 export * from './Table';
@@ -35,5 +36,6 @@ export * from './Loader';
 export * from './Toggle';
 export * from './Pictogram';
 export * from './RoundedIcon';
+export * from './TrezorSuiteLiteHeader';
 
 export { useDebugView } from './DebugView';
