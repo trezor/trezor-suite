@@ -1,5 +1,4 @@
 import React from 'react';
-import { openModal } from 'src/actions/suite/modalActions';
 import { goto } from 'src/actions/suite/routerActions';
 import { useDevice, useDispatch } from 'src/hooks/suite';
 import { Translation } from 'src/components/suite';
@@ -17,11 +16,6 @@ const DiscoveryEmpty = () => {
     const isDisabled = !device || !device.connected || device.authFailed || device.authConfirm;
 
     const goToCoinsSettings = () => dispatch(goto('settings-coins'));
-    const addAccount = () =>
-        openModal({
-            type: 'add-account',
-            device: device!,
-        });
 
     return (
         <AccountExceptionLayout
@@ -31,18 +25,11 @@ const DiscoveryEmpty = () => {
             actions={[
                 {
                     key: '1',
-                    variant: 'secondary',
                     isLoading: isDeviceLocked,
                     isDisabled,
+                    icon: 'SETTINGS',
                     onClick: goToCoinsSettings,
                     children: <Translation id="TR_COIN_SETTINGS" />,
-                },
-                {
-                    key: '2',
-                    isLoading: isDeviceLocked,
-                    isDisabled,
-                    onClick: addAccount,
-                    children: <Translation id="TR_ADD_ACCOUNT" />,
                 },
             ]}
         />
