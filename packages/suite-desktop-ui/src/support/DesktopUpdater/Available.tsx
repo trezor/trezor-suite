@@ -2,13 +2,14 @@ import React from 'react';
 import ReactMarkdown from 'react-markdown';
 
 import styled from 'styled-components';
+
+import { Button, H2, variables, Link } from '@trezor/components';
+import { desktopApi, UpdateInfo } from '@trezor/suite-desktop-api';
+
 import { Translation, Modal } from 'src/components/suite';
 import { useDispatch } from 'src/hooks/suite';
 import { getReleaseUrl } from 'src/services/github';
 import { download } from 'src/actions/suite/desktopUpdateActions';
-
-import { Button, H2, variables, Link } from '@trezor/components';
-import { desktopApi, UpdateInfo } from '@trezor/suite-desktop-api';
 
 const GreenH2 = styled(H2)`
     text-align: left;

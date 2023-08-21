@@ -4,6 +4,13 @@ import { Router as RouterProvider } from 'react-router-dom';
 
 import { createRoot } from 'react-dom/client';
 import { init as initSentry } from '@sentry/electron/renderer';
+
+import { SENTRY_CONFIG } from '@suite-common/sentry';
+import { desktopApi } from '@trezor/suite-desktop-api';
+import { FormatterProvider } from '@suite-common/formatters';
+import { createIpcProxy } from '@trezor/ipc-proxy';
+import TrezorConnect from '@trezor/connect';
+
 import { initStore } from 'src/reducers/store';
 import { preloadStore } from 'src/support/suite/preloadStore';
 import Metadata from 'src/components/suite/Metadata';
@@ -25,12 +32,6 @@ import history from 'src/support/history';
 import { ModalContextProvider } from 'src/support/suite/ModalContext';
 import { desktopHandshake } from 'src/actions/suite/suiteActions';
 import * as STORAGE from 'src/actions/suite/constants/storageConstants';
-
-import { SENTRY_CONFIG } from '@suite-common/sentry';
-import { desktopApi } from '@trezor/suite-desktop-api';
-import { FormatterProvider } from '@suite-common/formatters';
-import { createIpcProxy } from '@trezor/ipc-proxy';
-import TrezorConnect from '@trezor/connect';
 
 import { DesktopUpdater } from './support/DesktopUpdater';
 import { AppRouter } from './support/Router';

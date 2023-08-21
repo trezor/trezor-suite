@@ -1,11 +1,12 @@
 import React from 'react';
 
 import styled from 'styled-components';
+
+import { Modal } from '@trezor/components';
+
 import { ThemeProvider } from 'src/support/suite/ThemeProvider';
 import { TorLoader } from 'src/components/suite';
 import { useTor } from 'src/support/suite/useTor';
-
-import { Modal } from '@trezor/components';
 
 const Wrapper = styled.div`
     height: 100%;

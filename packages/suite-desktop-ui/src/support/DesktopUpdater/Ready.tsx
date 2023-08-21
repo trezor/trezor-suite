@@ -1,11 +1,12 @@
 import React from 'react';
+
 import styled from 'styled-components';
+
+import { Button, H2, variables } from '@trezor/components';
 
 import { Translation, Modal } from 'src/components/suite';
 import { useDispatch } from 'src/hooks/suite';
 import { installUpdate } from 'src/actions/suite/desktopUpdateActions';
-
-import { Button, H2, variables } from '@trezor/components';
 
 const Description = styled.span`
     font-size: ${variables.FONT_SIZE.SMALL};
