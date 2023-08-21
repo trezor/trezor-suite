@@ -20,7 +20,7 @@ const progressBarWrapperStyle = prepareNativeStyle(utils => ({
 const progressBarItemStyle = prepareNativeStyle<{ isActive: boolean }>((utils, { isActive }) => ({
     width: 24,
     height: 2,
-    marginRight: utils.spacings.small / 2,
+    marginRight: utils.spacings.extraSmall,
     borderRadius: utils.borders.radii.small / 4,
     backgroundColor: isActive
         ? utils.colors.backgroundPrimaryDefault

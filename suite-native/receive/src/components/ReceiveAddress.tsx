@@ -2,7 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { AddressQRCode } from '@suite-native/qr-code';
-import { Card, ButtonBackgroundElevation, ErrorMessage } from '@suite-native/atoms';
+import { ButtonBackgroundElevation, ErrorMessage } from '@suite-native/atoms';
 import {
     TransactionsRootState,
     AccountsRootState,
@@ -45,11 +45,6 @@ export const ReceiveAddress = ({ accountKey, backgroundElevation = '0' }: Receiv
         return <ErrorMessage errorMessage="Something went wrong" />;
 
     return (
-        <Card>
-            <AddressQRCode
-                address={freshAddress.address}
-                backgroundElevation={backgroundElevation}
-            />
-        </Card>
+        <AddressQRCode address={freshAddress.address} backgroundElevation={backgroundElevation} />
     );
 };

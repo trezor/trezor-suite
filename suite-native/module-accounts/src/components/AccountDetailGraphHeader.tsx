@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { atom, useAtomValue } from 'jotai';
 
-import { Box, Divider, Text } from '@suite-native/atoms';
+import { HStack, VStack } from '@suite-native/atoms';
 import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import {
     emptyGraphPoint,
@@ -14,6 +14,7 @@ import {
 import { FiatAmountFormatter } from '@suite-native/formatters';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { FiatGraphPointWithCryptoBalance } from '@suite-common/graph';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { AccountDetailCryptoValue } from './AccountDetailCryptoValue';
 
@@ -48,11 +49,17 @@ const CryptoBalance = ({ accountSymbol }: { accountSymbol: NetworkSymbol }) => {
     );
 };
 
+const fiatBalanceStyle = prepareNativeStyle(utils => ({
+    marginBottom: -utils.spacings.small,
+}));
+
 const FiatBalance = ({ accountSymbol }: { accountSymbol: NetworkSymbol }) => {
     const selectedPoint = useAtomValue(selectedPointAtom);
+    const { applyStyle } = useNativeStyles();
 
     return (
         <FiatAmountFormatter
+            style={applyStyle(fiatBalanceStyle)}
             value={String(selectedPoint.value)}
             network={accountSymbol}
             variant="titleLarge"
@@ -71,28 +78,19 @@ export const AccountDetailGraphHeader = ({ accountKey }: AccountBalanceProps) =>
     if (!account) return null;
 
     return (
-        <Box>
-            <Box marginBottom="large" justifyContent="center" alignItems="center">
-                <CryptoBalance accountSymbol={account.symbol} />
-                <FiatBalance accountSymbol={account.symbol} />
-                <Box flexDirection="row" alignItems="center">
-                    <Box marginRight="small">
-                        <Text variant="hint" color="textSubdued">
-                            <GraphDateFormatter
-                                firstPointDate={firstPointDate}
-                                selectedPointAtom={selectedPointAtom}
-                            />
-                        </Text>
-                    </Box>
-                    <PriceChangeIndicator
-                        hasPriceIncreasedAtom={hasPriceIncreasedAtom}
-                        percentageChangeAtom={percentageChangeAtom}
-                    />
-                </Box>
-            </Box>
-            <Box marginBottom="large">
-                <Divider />
-            </Box>
-        </Box>
+        <VStack spacing="small" alignItems="center">
+            <CryptoBalance accountSymbol={account.symbol} />
+            <FiatBalance accountSymbol={account.symbol} />
+            <HStack>
+                <GraphDateFormatter
+                    firstPointDate={firstPointDate}
+                    selectedPointAtom={selectedPointAtom}
+                />
+                <PriceChangeIndicator
+                    hasPriceIncreasedAtom={hasPriceIncreasedAtom}
+                    percentageChangeAtom={percentageChangeAtom}
+                />
+            </HStack>
+        </VStack>
     );
 };

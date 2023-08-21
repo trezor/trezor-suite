@@ -16,13 +16,10 @@ export type AccountListItemProps = {
 };
 
 const accountListItemStyle = prepareNativeStyle<{ isFollowedByTokens: boolean }>(
-    (utils, { isFollowedByTokens }) => ({
+    (_, { isFollowedByTokens }) => ({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItem: 'center',
-        backgroundColor: utils.colors.backgroundSurfaceElevation1,
-        padding: utils.spacings.medium,
-        borderRadius: utils.borders.radii.medium,
         extend: {
             condition: isFollowedByTokens,
             style: {

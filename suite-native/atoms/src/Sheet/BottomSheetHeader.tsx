@@ -5,7 +5,6 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { Text } from '../Text';
 import { IconButton } from '../Button/IconButton';
-import { Divider } from '../Divider';
 import { Box } from '../Box';
 
 type BottomSheetHeaderProps = {
@@ -19,8 +18,8 @@ const sheetHeaderStyle = prepareNativeStyle(utils => ({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: utils.spacings.large,
+    paddingTop: utils.spacings.extraLarge,
     paddingBottom: utils.spacings.medium,
-    paddingTop: utils.spacings.large,
 }));
 
 const titlesContainer = prepareNativeStyle(_ => ({
@@ -70,7 +69,6 @@ export const BottomSheetHeader = ({ title, subtitle, onCloseSheet }: BottomSheet
                     size="medium"
                 />
             </View>
-            <Divider />
         </Box>
     );
 };

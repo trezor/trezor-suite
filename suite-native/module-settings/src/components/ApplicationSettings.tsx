@@ -32,35 +32,33 @@ export const ApplicationSettings = () => {
     };
 
     return (
-        <>
-            <SettingsSection title="Application">
-                {isDevButtonVisible && (
-                    <SettingsSectionItem
-                        iconName="placeholder"
-                        title="DEV utils"
-                        subtitle="Only for devs and internal testers."
-                        onPress={() => navigation.navigate(RootStackRoutes.DevUtilsStack)}
-                    />
-                )}
+        <SettingsSection title="Application">
+            {isDevButtonVisible && (
                 <SettingsSectionItem
-                    iconName="flag"
-                    title="Localization"
-                    subtitle="Currency, Bitcoin units"
-                    onPress={() => handleNavigation(SettingsStackRoutes.SettingsLocalization)}
+                    iconName="placeholder"
+                    title="DEV utils"
+                    subtitle="Only for devs and internal testers."
+                    onPress={() => navigation.navigate(RootStackRoutes.DevUtilsStack)}
                 />
-                <SettingsSectionItem
-                    title="Customization"
-                    iconName="palette"
-                    subtitle="Color scheme"
-                    onPress={() => handleNavigation(SettingsStackRoutes.SettingsCustomization)}
-                />
-                <SettingsSectionItem
-                    title="Privacy & Security"
-                    iconName="eye"
-                    subtitle="Analytics, Discreet mode, Biometrics"
-                    onPress={() => handleNavigation(SettingsStackRoutes.SettingsPrivacyAndSecurity)}
-                />
-            </SettingsSection>
-        </>
+            )}
+            <SettingsSectionItem
+                iconName="flag"
+                title="Localization"
+                subtitle="Currency, Bitcoin units"
+                onPress={() => handleNavigation(SettingsStackRoutes.SettingsLocalization)}
+            />
+            <SettingsSectionItem
+                title="Customization"
+                iconName="palette"
+                subtitle="Color scheme"
+                onPress={() => handleNavigation(SettingsStackRoutes.SettingsCustomization)}
+            />
+            <SettingsSectionItem
+                title="Privacy & Security"
+                iconName="eye"
+                subtitle="Analytics, Discreet mode, Biometrics"
+                onPress={() => handleNavigation(SettingsStackRoutes.SettingsPrivacyAndSecurity)}
+            />
+        </SettingsSection>
     );
 };

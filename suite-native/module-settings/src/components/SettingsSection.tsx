@@ -24,8 +24,8 @@ export const SettingsSection = ({
             flexDirection="row"
             justifyContent="space-between"
             alignItems="center"
-            marginBottom="medium"
-            marginLeft="small"
+            marginBottom="extraLarge"
+            marginLeft="medium"
         >
             <Box>
                 <Text variant="titleSmall">{title}</Text>

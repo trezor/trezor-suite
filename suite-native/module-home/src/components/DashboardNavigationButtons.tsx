@@ -2,8 +2,7 @@ import React from 'react';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { Button, VStack } from '@suite-native/atoms';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { Button, Divider, VStack } from '@suite-native/atoms';
 import {
     AccountsImportStackRoutes,
     RootStackParamList,
@@ -11,13 +10,8 @@ import {
     StackNavigationProps,
 } from '@suite-native/navigation';
 
-const importStyle = prepareNativeStyle(_ => ({
-    marginTop: 12,
-}));
-
 export const DashboardNavigationButtons = () => {
     const navigation = useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes>>();
-    const { applyStyle } = useNativeStyles();
 
     const handleImportAssets = () => {
         navigation.navigate(RootStackRoutes.AccountsImport, {
@@ -30,7 +24,7 @@ export const DashboardNavigationButtons = () => {
     };
 
     return (
-        <VStack style={applyStyle(importStyle)} spacing="small">
+        <VStack spacing="large">
             <Button
                 data-testID="@home/portfolio/sync-coins-button"
                 colorScheme="tertiaryElevation0"
@@ -39,6 +33,7 @@ export const DashboardNavigationButtons = () => {
             >
                 Sync my coins
             </Button>
+            <Divider />
             <Button
                 data-testID="@home/portolio/recieve-button"
                 size="large"

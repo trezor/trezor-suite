@@ -22,6 +22,7 @@ type AccordionItemProps = {
 const triggerStyle = prepareNativeStyle(utils => ({
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'center',
     paddingVertical: utils.spacings.small,
 }));
 

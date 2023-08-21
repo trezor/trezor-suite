@@ -56,7 +56,7 @@ export const PortfolioGraphHeader = () => {
 
     return (
         <Box>
-            <VStack spacing="small" alignItems="center">
+            <VStack spacing="extraSmall" alignItems="center">
                 <Text color="textSubdued" variant="hint">
                     My portfolio balance
                 </Text>

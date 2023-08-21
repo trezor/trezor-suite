@@ -27,7 +27,7 @@ export const TokenList = ({ accountKey, onSelectAccount }: TokenListProps) => {
 
     return (
         <>
-            {accountTokens.map((token, index) => (
+            {accountTokens.map(token => (
                 <TokenListItem
                     key={token.contract}
                     contract={token.contract}
@@ -35,7 +35,6 @@ export const TokenList = ({ accountKey, onSelectAccount }: TokenListProps) => {
                     onSelectAccount={onSelectAccount}
                     balance={token.balance}
                     label={getEthereumTokenName(token.name)}
-                    isLast={accountTokens?.length - 1 === index}
                 />
             ))}
         </>

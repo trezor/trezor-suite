@@ -39,18 +39,16 @@ export const AccountDetailGraph = ({ accountKey }: AccountDetailGraphProps) => {
 
     return (
         <Box>
-            <Box marginBottom="large">
-                <Graph<FiatGraphPointWithCryptoBalance>
-                    onPointSelected={setSelectedPoint}
-                    onGestureEnd={setInitialSelectedPoints}
-                    points={graphPoints}
-                    loading={isLoading}
-                    error={error}
-                    onTryAgain={refetch}
-                    events={graphEvents}
-                />
-                <TimeSwitch selectedTimeFrame={timeframe} onSelectTimeFrame={onSelectTimeFrame} />
-            </Box>
+            <Graph<FiatGraphPointWithCryptoBalance>
+                onPointSelected={setSelectedPoint}
+                onGestureEnd={setInitialSelectedPoints}
+                points={graphPoints}
+                loading={isLoading}
+                error={error}
+                onTryAgain={refetch}
+                events={graphEvents}
+            />
+            <TimeSwitch selectedTimeFrame={timeframe} onSelectTimeFrame={onSelectTimeFrame} />
         </Box>
     );
 };

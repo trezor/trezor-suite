@@ -26,8 +26,8 @@ type ToastStyle = {
 const ToastContainerStyle = prepareNativeStyle<{ backgroundColor: Color }>(
     (utils, { backgroundColor }) => ({
         backgroundColor: utils.colors[backgroundColor],
-        paddingVertical: utils.spacings.small / 2,
-        paddingLeft: utils.spacings.small / 2,
+        paddingVertical: utils.spacings.extraSmall,
+        paddingLeft: utils.spacings.extraSmall,
         paddingRight: utils.spacings.medium,
         borderRadius: utils.borders.radii.round,
     }),

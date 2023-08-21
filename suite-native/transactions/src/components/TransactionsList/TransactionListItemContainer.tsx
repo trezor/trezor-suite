@@ -171,7 +171,7 @@ export const TransactionListItemContainer = ({
                     />
                 )}
                 <Box marginLeft="medium" flex={1}>
-                    <HStack flexDirection="row" alignItems="center" spacing={4}>
+                    <HStack flexDirection="row" alignItems="center" spacing="extraSmall">
                         <Text>{transactionTitle}</Text>
                         {hasIncludedCoins && <Badge label={includedCoinsLabel} size="small" />}
                     </HStack>

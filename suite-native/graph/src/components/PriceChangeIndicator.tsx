@@ -54,10 +54,6 @@ const PercentageChangeArrow = ({
     );
 };
 
-const arrowStyle = prepareNativeStyle(() => ({
-    marginRight: 4,
-}));
-
 const priceIncreaseWrapperStyle = prepareNativeStyle<{ hasPriceIncreased: boolean }>(
     (utils, { hasPriceIncreased }) => ({
         backgroundColor: hasPriceIncreased
@@ -66,7 +62,7 @@ const priceIncreaseWrapperStyle = prepareNativeStyle<{ hasPriceIncreased: boolea
         flexDirection: 'row',
         alignItems: 'center',
         paddingHorizontal: utils.spacings.small,
-        paddingVertical: utils.spacings.small / 4,
+        paddingVertical: utils.spacings.extraSmall / 2,
         borderRadius: utils.borders.radii.round,
     }),
 );
@@ -79,14 +75,15 @@ export const PriceChangeIndicator = ({
     const [hasPriceIncreased] = useAtom(hasPriceIncreasedAtom);
 
     return (
-        <Box style={applyStyle(priceIncreaseWrapperStyle, { hasPriceIncreased })}>
-            <Box style={applyStyle(arrowStyle)}>
-                <PercentageChangeArrow hasPriceIncreasedAtom={hasPriceIncreasedAtom} />
-            </Box>
+        <HStack
+            spacing={PRICE_CHANGE_ICON_SIZE}
+            style={applyStyle(priceIncreaseWrapperStyle, { hasPriceIncreased })}
+        >
+            <PercentageChangeArrow hasPriceIncreasedAtom={hasPriceIncreasedAtom} />
             <PercentageChange
                 hasPriceIncreasedAtom={hasPriceIncreasedAtom}
                 percentageChangeAtom={percentageChangeAtom}
             />
-        </Box>
+        </HStack>
     );
 };

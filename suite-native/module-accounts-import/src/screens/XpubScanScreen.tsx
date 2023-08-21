@@ -64,7 +64,7 @@ export const XpubScanScreen = ({
 
     useFocusEffect(resetToDefaultValues);
 
-    const { networkType, name: networkName } = networks[networkSymbol];
+    const { networkType } = networks[networkSymbol];
     const inputLabel = networkTypeToInputLabelMap[networkType];
 
     const goToAccountImportScreen = ({ xpubAddress }: XpubFormValues) => {
@@ -125,15 +125,13 @@ export const XpubScanScreen = ({
         });
     };
 
+    const handleOpenHint = () => setIsHintSheetVisible(true);
+    const handleGoBack = () => navigation.goBack();
+
     return (
         <Screen
             header={<AccountImportHeader activeStep={2} />}
-            footer={
-                <XpubHint
-                    networkType={networkType}
-                    handleOpen={() => setIsHintSheetVisible(true)}
-                />
-            }
+            footer={<XpubHint networkType={networkType} handleOpen={handleOpenHint} />}
         >
             <HeaderedCard
                 title="Coin to sync"
