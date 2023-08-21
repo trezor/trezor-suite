@@ -99,10 +99,8 @@ export interface ComposedTransaction<
     Change extends ComposeChangeAddress,
 > {
     inputs: Input[];
-    outputs: {
-        sorted: (ComposedTransactionOutputs<Output> | (Change & ComposeOutputChange))[];
-        permutation: number[];
-    };
+    outputs: (ComposedTransactionOutputs<Output> | (Change & ComposeOutputChange))[];
+    outputsPermutation: number[];
 }
 
 // Result from `composeTx` module
@@ -143,14 +141,16 @@ export interface ComposeResultFinal<
     Input extends ComposeInput,
     Output extends ComposeOutput,
     Change extends ComposeChangeAddress,
-> {
+> extends ComposedTransaction<Input, Output, Change> {
     type: 'final';
     max?: string;
     totalSpent: string; // all the outputs, no fee, no change
     fee: string;
     feePerByte: string;
     bytes: number;
-    transaction: ComposedTransaction<Input, Output, Change>;
+    inputs: Input[];
+    outputs: (ComposedTransactionOutputs<Output> | (Change & ComposeOutputChange))[];
+    outputsPermutation: number[];
 }
 
 export type ComposeResult<

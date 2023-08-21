@@ -196,11 +196,11 @@ export function verifyTxBytes(
     network?: Network,
 ) {
     const calc = new TxWeightCalculator();
-    tx.transaction.inputs.forEach(() => {
+    tx.inputs.forEach(() => {
         calc.addInputByKey(txType);
     });
 
-    tx.transaction.outputs.sorted.forEach(out => {
+    tx.outputs.forEach(out => {
         if (out.type === 'opreturn') {
             calc.addOutput({ length: 2 + out.dataHex.length / 2 });
         }

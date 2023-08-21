@@ -31,20 +31,16 @@ export default [
             feePerByte: '10.421875',
             max: undefined,
             totalSpent: '102001',
-            transaction: {
-                outputs: {
-                    permutation: [0],
-                    sorted: [
-                        {
-                            address: '1BitcoinEaterAddressDontSendf59kuE',
-                            amount: '100000',
-                            type: 'payment',
-                            customField: 'prove that payment output is generic',
-                        },
-                    ],
+            inputs: [UTXO],
+            outputs: [
+                {
+                    address: '1BitcoinEaterAddressDontSendf59kuE',
+                    amount: '100000',
+                    type: 'payment',
+                    customField: 'prove that payment output is generic',
                 },
-                inputs: [UTXO],
-            },
+            ],
+            outputsPermutation: [0],
             type: 'final',
         },
     },
@@ -69,19 +65,15 @@ export default [
             feePerByte: '10.421875', // feeRate is greater than requested because of dust limit
             max: undefined,
             totalSpent: '102001',
-            transaction: {
-                outputs: {
-                    permutation: [0],
-                    sorted: [
-                        {
-                            address: '1BitcoinEaterAddressDontSendf59kuE',
-                            amount: '100000',
-                            type: 'payment',
-                        },
-                    ],
+            inputs: [UTXO],
+            outputs: [
+                {
+                    address: '1BitcoinEaterAddressDontSendf59kuE',
+                    amount: '100000',
+                    type: 'payment',
                 },
-                inputs: [UTXO],
-            },
+            ],
+            outputsPermutation: [0],
             type: 'final',
         },
     },
@@ -157,24 +149,15 @@ export default [
             feePerByte: '10',
             max: '49999998080',
             totalSpent: '50000000000',
-            transaction: {
-                outputs: {
-                    permutation: [0],
-                    sorted: [
-                        {
-                            address: '1BitcoinEaterAddressDontSendf59kuE',
-                            amount: '49999998080',
-                            type: 'payment',
-                        },
-                    ],
+            inputs: [{ ...UTXO, amount: '50000000000' }],
+            outputs: [
+                {
+                    address: '1BitcoinEaterAddressDontSendf59kuE',
+                    amount: '49999998080',
+                    type: 'payment',
                 },
-                inputs: [
-                    {
-                        ...UTXO,
-                        amount: '50000000000',
-                    },
-                ],
-            },
+            ],
+            outputsPermutation: [0],
             type: 'final',
         },
     },
@@ -199,20 +182,16 @@ export default [
             feePerByte: '10',
             max: '100081',
             totalSpent: '102001',
-            transaction: {
-                outputs: {
-                    permutation: [0],
-                    sorted: [
-                        {
-                            address: '1BitcoinEaterAddressDontSendf59kuE',
-                            amount: '100081',
-                            type: 'payment',
-                            customField: 'prove that send-max output is generic',
-                        },
-                    ],
+            inputs: [UTXO],
+            outputs: [
+                {
+                    address: '1BitcoinEaterAddressDontSendf59kuE',
+                    amount: '100081',
+                    type: 'payment',
+                    customField: 'prove that send-max output is generic',
                 },
-                inputs: [UTXO],
-            },
+            ],
+            outputsPermutation: [0],
             type: 'final',
         },
     },
@@ -357,30 +336,26 @@ export default [
             feePerByte: '10',
             max: undefined,
             totalSpent: '52600',
-            transaction: {
-                outputs: {
-                    permutation: [1, 0, 2],
-                    sorted: [
-                        {
-                            address: '1LetUsDestroyBitcoinTogether398Nrg',
-                            amount: '20000',
-                            type: 'payment',
-                        },
-                        {
-                            address: '1BitcoinEaterAddressDontSendf59kuE',
-                            amount: '30000',
-                            type: 'payment',
-                        },
-                        {
-                            address: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT',
-                            path: [44, 1, 1, 0],
-                            amount: '49401',
-                            type: 'change',
-                        },
-                    ],
+            inputs: [UTXO],
+            outputs: [
+                {
+                    address: '1LetUsDestroyBitcoinTogether398Nrg',
+                    amount: '20000',
+                    type: 'payment',
                 },
-                inputs: [UTXO],
-            },
+                {
+                    address: '1BitcoinEaterAddressDontSendf59kuE',
+                    amount: '30000',
+                    type: 'payment',
+                },
+                {
+                    address: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT',
+                    path: [44, 1, 1, 0],
+                    amount: '49401',
+                    type: 'change',
+                },
+            ],
+            outputsPermutation: [1, 0, 2],
             type: 'final',
         },
     },
@@ -413,30 +388,26 @@ export default [
             feePerByte: '10.711538461538462',
             max: undefined,
             totalSpent: '52785',
-            transaction: {
-                outputs: {
-                    permutation: [1, 0, 2],
-                    sorted: [
-                        {
-                            address: '1LetUsDestroyBitcoinTogether398Nrg',
-                            amount: '20000',
-                            type: 'payment',
-                        },
-                        {
-                            address: '1BitcoinEaterAddressDontSendf59kuE',
-                            amount: '30000',
-                            type: 'payment',
-                        },
-                        {
-                            path: "m/44'/0'/0'/1/0",
-                            address: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT',
-                            amount: '49216',
-                            type: 'change',
-                        },
-                    ],
+            inputs: [UTXO],
+            outputs: [
+                {
+                    address: '1LetUsDestroyBitcoinTogether398Nrg',
+                    amount: '20000',
+                    type: 'payment',
                 },
-                inputs: [UTXO],
-            },
+                {
+                    address: '1BitcoinEaterAddressDontSendf59kuE',
+                    amount: '30000',
+                    type: 'payment',
+                },
+                {
+                    path: "m/44'/0'/0'/1/0",
+                    address: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT',
+                    amount: '49216',
+                    type: 'change',
+                },
+            ],
+            outputsPermutation: [1, 0, 2],
             type: 'final',
         },
     },
@@ -467,29 +438,25 @@ export default [
             feePerByte: '10',
             max: undefined,
             totalSpent: '51980',
-            transaction: {
-                outputs: {
-                    permutation: [1, 0, 2],
-                    sorted: [
-                        {
-                            address: '3FyVFsEyyBPzHjD3qUEgX7Jsn4tcHNZFkn',
-                            amount: '20000',
-                            type: 'payment',
-                        },
-                        {
-                            address: '3LRW7jeCvQCRdPF8S3yUCfRAx4eqXFmdcr',
-                            amount: '30000',
-                            type: 'payment',
-                        },
-                        {
-                            address: '3LRW7jeCvQCRdPF8S3yUCfRAx4eqXFmdcr',
-                            amount: '50021',
-                            type: 'change',
-                        },
-                    ],
+            inputs: [UTXO],
+            outputs: [
+                {
+                    address: '3FyVFsEyyBPzHjD3qUEgX7Jsn4tcHNZFkn',
+                    amount: '20000',
+                    type: 'payment',
                 },
-                inputs: [UTXO],
-            },
+                {
+                    address: '3LRW7jeCvQCRdPF8S3yUCfRAx4eqXFmdcr',
+                    amount: '30000',
+                    type: 'payment',
+                },
+                {
+                    address: '3LRW7jeCvQCRdPF8S3yUCfRAx4eqXFmdcr',
+                    amount: '50021',
+                    type: 'change',
+                },
+            ],
+            outputsPermutation: [1, 0, 2],
             type: 'final',
         },
     },
@@ -525,25 +492,15 @@ export default [
             feePerByte: '10.421875',
             max: undefined,
             totalSpent: '102001',
-            transaction: {
-                outputs: {
-                    permutation: [0],
-                    sorted: [
-                        {
-                            address: '1BitcoinEaterAddressDontSendf59kuE',
-                            amount: '100000',
-                            type: 'payment',
-                        },
-                    ],
+            inputs: [{ ...UTXO, confirmations: 100, vout: 1 }],
+            outputs: [
+                {
+                    address: '1BitcoinEaterAddressDontSendf59kuE',
+                    amount: '100000',
+                    type: 'payment',
                 },
-                inputs: [
-                    {
-                        ...UTXO,
-                        confirmations: 100,
-                        vout: 1,
-                    },
-                ],
-            },
+            ],
+            outputsPermutation: [0],
             type: 'final',
         },
     },
@@ -600,28 +557,18 @@ export default [
             feePerByte: '11.770588235294118',
             max: undefined,
             totalSpent: '204002',
-            transaction: {
-                outputs: {
-                    permutation: [0],
-                    sorted: [
-                        {
-                            address: '1BitcoinEaterAddressDontSendf59kuE',
-                            amount: '200000',
-                            type: 'payment',
-                        },
-                    ],
+            inputs: [
+                { ...UTXO, vout: 1 },
+                { ...UTXO, vout: 2 },
+            ],
+            outputs: [
+                {
+                    address: '1BitcoinEaterAddressDontSendf59kuE',
+                    amount: '200000',
+                    type: 'payment',
                 },
-                inputs: [
-                    {
-                        ...UTXO,
-                        vout: 1,
-                    },
-                    {
-                        ...UTXO,
-                        vout: 2,
-                    },
-                ],
-            },
+            ],
+            outputsPermutation: [0],
             type: 'final',
         },
     },
@@ -652,29 +599,25 @@ export default [
             feePerByte: '10',
             max: undefined,
             totalSpent: '62000',
-            transaction: {
-                outputs: {
-                    permutation: [1, 0, 2],
-                    sorted: [
-                        {
-                            address: '1LetUsDestroyBitcoinTogether398Nrg',
-                            amount: '30000',
-                            type: 'payment',
-                        },
-                        {
-                            address: '3LRW7jeCvQCRdPF8S3yUCfRAx4eqXFmdcr',
-                            amount: '30000',
-                            type: 'payment',
-                        },
-                        {
-                            address: '3LRW7jeCvQCRdPF8S3yUCfRAx4eqXFmdcr',
-                            amount: '40001',
-                            type: 'change',
-                        },
-                    ],
+            inputs: [UTXO],
+            outputs: [
+                {
+                    address: '1LetUsDestroyBitcoinTogether398Nrg',
+                    amount: '30000',
+                    type: 'payment',
                 },
-                inputs: [UTXO],
-            },
+                {
+                    address: '3LRW7jeCvQCRdPF8S3yUCfRAx4eqXFmdcr',
+                    amount: '30000',
+                    type: 'payment',
+                },
+                {
+                    address: '3LRW7jeCvQCRdPF8S3yUCfRAx4eqXFmdcr',
+                    amount: '40001',
+                    type: 'change',
+                },
+            ],
+            outputsPermutation: [1, 0, 2],
             type: 'final',
         },
     },
@@ -705,24 +648,15 @@ export default [
             feePerByte: '324.64925373134326',
             max: undefined,
             totalSpent: '972463',
-            transaction: {
-                outputs: {
-                    permutation: [0],
-                    sorted: [
-                        {
-                            address: '3LRW7jeCvQCRdPF8S3yUCfRAx4eqXFmdcr',
-                            amount: '928960',
-                            type: 'payment',
-                        },
-                    ],
+            inputs: [{ ...UTXO, amount: '972463' }],
+            outputs: [
+                {
+                    address: '3LRW7jeCvQCRdPF8S3yUCfRAx4eqXFmdcr',
+                    amount: '928960',
+                    type: 'payment',
                 },
-                inputs: [
-                    {
-                        ...UTXO,
-                        amount: '972463',
-                    },
-                ],
-            },
+            ],
+            outputsPermutation: [0],
             type: 'final',
         },
     },
@@ -747,24 +681,20 @@ export default [
             feePerByte: '10',
             max: undefined,
             totalSpent: '2070',
-            transaction: {
-                outputs: {
-                    permutation: [0, 1],
-                    sorted: [
-                        {
-                            dataHex: 'deadbeef',
-                            type: 'opreturn',
-                            customField: 'prove that opreturn output is generic',
-                        },
-                        {
-                            address: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT',
-                            amount: '99931',
-                            type: 'change',
-                        },
-                    ],
+            inputs: [UTXO],
+            outputs: [
+                {
+                    dataHex: 'deadbeef',
+                    type: 'opreturn',
+                    customField: 'prove that opreturn output is generic',
                 },
-                inputs: [UTXO],
-            },
+                {
+                    address: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT',
+                    amount: '99931',
+                    type: 'change',
+                },
+            ],
+            outputsPermutation: [0, 1],
             type: 'final',
         },
     },
@@ -792,27 +722,23 @@ export default [
             feePerByte: '10',
             max: undefined,
             totalSpent: '2210',
-            transaction: {
-                outputs: {
-                    permutation: [1, 0, 2],
-                    sorted: [
-                        {
-                            dataHex: 'c0ffee',
-                            type: 'opreturn',
-                        },
-                        {
-                            dataHex: 'deadbeef',
-                            type: 'opreturn',
-                        },
-                        {
-                            address: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT',
-                            amount: '99791',
-                            type: 'change',
-                        },
-                    ],
+            inputs: [UTXO],
+            outputs: [
+                {
+                    dataHex: 'c0ffee',
+                    type: 'opreturn',
                 },
-                inputs: [UTXO],
-            },
+                {
+                    dataHex: 'deadbeef',
+                    type: 'opreturn',
+                },
+                {
+                    address: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT',
+                    amount: '99791',
+                    type: 'change',
+                },
+            ],
+            outputsPermutation: [1, 0, 2],
             type: 'final',
         },
     },
@@ -843,24 +769,15 @@ export default [
             feePerByte: '13.636363636363637',
             max: undefined,
             totalSpent: '101500',
-            transaction: {
-                outputs: {
-                    permutation: [0],
-                    sorted: [
-                        {
-                            address: 'bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq',
-                            amount: '100000',
-                            type: 'payment',
-                        },
-                    ],
+            inputs: [{ ...UTXO, amount: '101500' }],
+            outputs: [
+                {
+                    address: 'bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq',
+                    amount: '100000',
+                    type: 'payment',
                 },
-                inputs: [
-                    {
-                        ...UTXO,
-                        amount: '101500',
-                    },
-                ],
-            },
+            ],
+            outputsPermutation: [0],
             type: 'final',
         },
     },
@@ -892,29 +809,20 @@ export default [
             feePerByte: '10',
             max: undefined,
             totalSpent: '101410',
-            transaction: {
-                outputs: {
-                    permutation: [1, 0],
-                    sorted: [
-                        {
-                            address: 'bc1qafk4yhqvj4wep57m62dgrmutldusqde8adh20d',
-                            amount: '490',
-                            type: 'change',
-                        },
-                        {
-                            address: 'bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq',
-                            amount: '100000',
-                            type: 'payment',
-                        },
-                    ],
+            inputs: [{ ...UTXO, amount: '101900' }],
+            outputs: [
+                {
+                    address: 'bc1qafk4yhqvj4wep57m62dgrmutldusqde8adh20d',
+                    amount: '490',
+                    type: 'change',
                 },
-                inputs: [
-                    {
-                        ...UTXO,
-                        amount: '101900',
-                    },
-                ],
-            },
+                {
+                    address: 'bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq',
+                    amount: '100000',
+                    type: 'payment',
+                },
+            ],
+            outputsPermutation: [1, 0],
             type: 'final',
         },
     },
@@ -940,19 +848,15 @@ export default [
             feePerByte: '11.194029850746269',
             max: undefined,
             totalSpent: '101500',
-            transaction: {
-                outputs: {
-                    permutation: [0],
-                    sorted: [
-                        {
-                            address: '3NukJ6fYZJ5Kk8bPjycAnruZkE5Q7UW7i8',
-                            amount: '100000',
-                            type: 'payment',
-                        },
-                    ],
+            inputs: [{ ...UTXO, amount: '101500' }],
+            outputs: [
+                {
+                    address: '3NukJ6fYZJ5Kk8bPjycAnruZkE5Q7UW7i8',
+                    amount: '100000',
+                    type: 'payment',
                 },
-                inputs: [{ ...UTXO, amount: '101500' }],
-            },
+            ],
+            outputsPermutation: [0],
             type: 'final',
         },
     },
@@ -984,29 +888,20 @@ export default [
             feePerByte: '10',
             max: undefined,
             totalSpent: '101660',
-            transaction: {
-                outputs: {
-                    permutation: [1, 0],
-                    sorted: [
-                        {
-                            address: '3LRW7jeCvQCRdPF8S3yUCfRAx4eqXFmdcr',
-                            amount: '340',
-                            type: 'change',
-                        },
-                        {
-                            address: '3NukJ6fYZJ5Kk8bPjycAnruZkE5Q7UW7i8',
-                            amount: '100000',
-                            type: 'payment',
-                        },
-                    ],
+            inputs: [{ ...UTXO, amount: '102000' }],
+            outputs: [
+                {
+                    address: '3LRW7jeCvQCRdPF8S3yUCfRAx4eqXFmdcr',
+                    amount: '340',
+                    type: 'change',
                 },
-                inputs: [
-                    {
-                        ...UTXO,
-                        amount: '102000',
-                    },
-                ],
-            },
+                {
+                    address: '3NukJ6fYZJ5Kk8bPjycAnruZkE5Q7UW7i8',
+                    amount: '100000',
+                    type: 'payment',
+                },
+            ],
+            outputsPermutation: [1, 0],
             type: 'final',
         },
     },
@@ -1039,25 +934,15 @@ export default [
             feePerByte: '13.513513513513514',
             max: undefined,
             totalSpent: '101500',
-            transaction: {
-                outputs: {
-                    permutation: [0],
-                    sorted: [
-                        {
-                            address:
-                                'bc1ptxs597p3fnpd8gwut5p467ulsydae3rp9z75hd99w8k3ljr9g9rqx6ynaw',
-                            amount: '100000',
-                            type: 'payment',
-                        },
-                    ],
+            inputs: [{ ...UTXO, amount: '101500' }],
+            outputs: [
+                {
+                    address: 'bc1ptxs597p3fnpd8gwut5p467ulsydae3rp9z75hd99w8k3ljr9g9rqx6ynaw',
+                    amount: '100000',
+                    type: 'payment',
                 },
-                inputs: [
-                    {
-                        ...UTXO,
-                        amount: '101500',
-                    },
-                ],
-            },
+            ],
+            outputsPermutation: [0],
             type: 'final',
         },
     },
@@ -1091,31 +976,20 @@ export default [
             feePerByte: '10',
             max: undefined,
             totalSpent: '101540',
-            transaction: {
-                outputs: {
-                    permutation: [1, 0],
-                    sorted: [
-                        {
-                            address:
-                                'bc1pgypgja2hmcx2l6s2ssq75k6ev68ved6nujcspt47dgvkp8euc70s6uegk6',
-                            amount: '460',
-                            type: 'change',
-                        },
-                        {
-                            address:
-                                'bc1ptxs597p3fnpd8gwut5p467ulsydae3rp9z75hd99w8k3ljr9g9rqx6ynaw',
-                            amount: '100000',
-                            type: 'payment',
-                        },
-                    ],
+            inputs: [{ ...UTXO, amount: '102000' }],
+            outputs: [
+                {
+                    address: 'bc1pgypgja2hmcx2l6s2ssq75k6ev68ved6nujcspt47dgvkp8euc70s6uegk6',
+                    amount: '460',
+                    type: 'change',
                 },
-                inputs: [
-                    {
-                        ...UTXO,
-                        amount: '102000',
-                    },
-                ],
-            },
+                {
+                    address: 'bc1ptxs597p3fnpd8gwut5p467ulsydae3rp9z75hd99w8k3ljr9g9rqx6ynaw',
+                    amount: '100000',
+                    type: 'payment',
+                },
+            ],
+            outputsPermutation: [1, 0],
             type: 'final',
         },
     },
@@ -1163,19 +1037,15 @@ export default [
             feePerByte: '10.421875',
             max: undefined,
             totalSpent: '102001',
-            transaction: {
-                outputs: {
-                    permutation: [0],
-                    sorted: [
-                        {
-                            address: 'bitcoincash:qp6e6enhpy0fwwu7nkvlr8rgl06ru0c9lywalz8st5',
-                            amount: '100000',
-                            type: 'payment',
-                        },
-                    ],
+            inputs: [UTXO],
+            outputs: [
+                {
+                    address: 'bitcoincash:qp6e6enhpy0fwwu7nkvlr8rgl06ru0c9lywalz8st5',
+                    amount: '100000',
+                    type: 'payment',
                 },
-                inputs: [UTXO],
-            },
+            ],
+            outputsPermutation: [0],
             type: 'final',
         },
     },
@@ -1235,43 +1105,39 @@ export default [
             feePerByte: '10',
             max: undefined,
             totalSpent: '103740',
-            transaction: {
-                outputs: {
-                    permutation: [1, 0],
-                    sorted: [
-                        {
-                            amount: '16842',
-                            address: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT',
-                            type: 'change',
-                        },
-                        {
-                            address: '1BitcoinEaterAddressDontSendf59kuE',
-                            amount: '100000',
-                            type: 'payment',
-                        },
-                    ],
+            inputs: [
+                {
+                    txid: 'a4dc0ffeee',
+                    vout: 0,
+                    amount: '65291',
+                    coinbase: true,
+                    confirmations: 200,
+                    own: false,
+                    required: true,
                 },
-                inputs: [
-                    {
-                        txid: 'a4dc0ffeee',
-                        vout: 0,
-                        amount: '65291',
-                        coinbase: true,
-                        confirmations: 200,
-                        own: false,
-                        required: true,
-                    },
-                    {
-                        txid: 'b4dc0ffeee',
-                        vout: 0,
-                        amount: '55291',
-                        coinbase: false,
-                        confirmations: 0,
-                        own: false,
-                        required: true,
-                    },
-                ],
-            },
+                {
+                    txid: 'b4dc0ffeee',
+                    vout: 0,
+                    amount: '55291',
+                    coinbase: false,
+                    confirmations: 0,
+                    own: false,
+                    required: true,
+                },
+            ],
+            outputs: [
+                {
+                    amount: '16842',
+                    address: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT',
+                    type: 'change',
+                },
+                {
+                    address: '1BitcoinEaterAddressDontSendf59kuE',
+                    amount: '100000',
+                    type: 'payment',
+                },
+            ],
+            outputsPermutation: [1, 0],
             type: 'final',
         },
     },
@@ -1314,41 +1180,37 @@ export default [
             feePerByte: '10',
             max: undefined,
             totalSpent: '73740',
-            transaction: {
-                outputs: {
-                    permutation: [0, 1],
-                    sorted: [
-                        {
-                            address: '1BitcoinEaterAddressDontSendf59kuE',
-                            amount: '70000',
-                            type: 'payment',
-                        },
-                        {
-                            amount: '46842',
-                            address: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT',
-                            type: 'change',
-                        },
-                    ],
+            inputs: [
+                {
+                    txid: 'a4dc0ffeee',
+                    vout: 0,
+                    amount: '65291',
+                    coinbase: false,
+                    confirmations: 60,
+                    own: false,
                 },
-                inputs: [
-                    {
-                        txid: 'a4dc0ffeee',
-                        vout: 0,
-                        amount: '65291',
-                        coinbase: false,
-                        confirmations: 60,
-                        own: false,
-                    },
-                    {
-                        txid: 'b4dc0ffeee',
-                        vout: 1,
-                        amount: '55291',
-                        coinbase: false,
-                        confirmations: 50,
-                        own: false,
-                    },
-                ],
-            },
+                {
+                    txid: 'b4dc0ffeee',
+                    vout: 1,
+                    amount: '55291',
+                    coinbase: false,
+                    confirmations: 50,
+                    own: false,
+                },
+            ],
+            outputs: [
+                {
+                    address: '1BitcoinEaterAddressDontSendf59kuE',
+                    amount: '70000',
+                    type: 'payment',
+                },
+                {
+                    amount: '46842',
+                    address: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT',
+                    type: 'change',
+                },
+            ],
+            outputsPermutation: [0, 1],
             type: 'final',
         },
     },
@@ -1384,33 +1246,29 @@ export default [
             feePerByte: '1000',
             max: undefined,
             totalSpent: '11556856849999960000',
-            transaction: {
-                outputs: {
-                    permutation: [1, 0],
-                    sorted: [
-                        {
-                            address: 'DKu2a8Wo6zC2dmBBYXwUG3fxWDHbKnNiPj',
-                            amount: '6800040000',
-                            type: 'change',
-                        },
-                        {
-                            address: 'DDn7UV1CrqVefzwrHyw7H2zEZZKqfzR2ZD',
-                            amount: '11556856849999734000',
-                            type: 'payment',
-                        },
-                    ],
+            inputs: [
+                {
+                    coinbase: false,
+                    confirmations: 2272181,
+                    vout: 1,
+                    own: false,
+                    txid: '78c3ee88226c7f63060fbf27ab0450961c09241bfd56a12ce164881791c7c6e5',
+                    amount: '11556856856800000000',
                 },
-                inputs: [
-                    {
-                        coinbase: false,
-                        confirmations: 2272181,
-                        vout: 1,
-                        own: false,
-                        txid: '78c3ee88226c7f63060fbf27ab0450961c09241bfd56a12ce164881791c7c6e5',
-                        amount: '11556856856800000000',
-                    },
-                ],
-            },
+            ],
+            outputs: [
+                {
+                    address: 'DKu2a8Wo6zC2dmBBYXwUG3fxWDHbKnNiPj',
+                    amount: '6800040000',
+                    type: 'change',
+                },
+                {
+                    address: 'DDn7UV1CrqVefzwrHyw7H2zEZZKqfzR2ZD',
+                    amount: '11556856849999734000',
+                    type: 'payment',
+                },
+            ],
+            outputsPermutation: [1, 0],
             type: 'final',
         },
     },
