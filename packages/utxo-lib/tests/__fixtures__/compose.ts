@@ -98,6 +98,7 @@ export default [
             max: undefined,
             totalSpent: '102001',
             type: 'nonfinal',
+            inputs: [UTXO],
         },
     },
     {
@@ -1013,6 +1014,7 @@ export default [
             max: '100081',
             totalSpent: '102001',
             type: 'nonfinal',
+            inputs: [UTXO],
         },
     },
     {
