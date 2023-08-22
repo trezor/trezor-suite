@@ -2109,7 +2109,7 @@ export default defineMessages({
         id: 'TR_COIN_DISCOVERY_IN_PROGRESS',
     },
     TR_COINS: {
-        defaultMessage: 'Crypto',
+        defaultMessage: 'Coins',
         id: 'TR_COINS',
     },
     TR_CONFIRM: {
