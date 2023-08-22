@@ -79,12 +79,82 @@ const getInfo = async (request: Request<MessageTypes.GetInfo>) => {
     } as const;
 };
 
+const subscribeBlock = async ({ state, connect, post }: Context) => {
+    if (state.getSubscription('block')) return;
+    const api = await connect();
+
+    // the solana RPC api has subscribe method, see here: https://www.quicknode.com/docs/solana/rootSubscribe
+    // but solana block height is updated so often that it slows down the whole application and overloads the the api
+    // so we instead use setInterval to check for new blocks every 10 seconds
+    const interval = setInterval(async () => {
+        const blockHeight = await api.getBlockHeight('finalized');
+        const { blockhash: blockHash } = await api.getParsedBlock(blockHeight, {
+            maxSupportedTransactionVersion: 0,
+        });
+
+        if (blockHeight) {
+            post({
+                id: -1,
+                type: RESPONSES.NOTIFICATION,
+                payload: {
+                    type: 'block',
+                    payload: {
+                        blockHeight,
+                        blockHash,
+                    },
+                },
+            });
+        }
+    }, 10000);
+    // we save the interval in the state so we can clear it later
+    state.addSubscription('block', interval);
+};
+
+const unsubscribeBlock = ({ state }: Context) => {
+    if (!state.getSubscription('block')) return;
+    const interval = state.getSubscription('block') as NodeJS.Timer;
+    clearInterval(interval);
+    state.removeSubscription('block');
+};
+
+const subscribe = (request: Request<MessageTypes.Subscribe>) => {
+    switch (request.payload.type) {
+        case 'block':
+            subscribeBlock(request);
+            break;
+        default:
+            throw new CustomError('worker_unknown_request', `+${request.type}`);
+    }
+    return {
+        type: RESPONSES.SUBSCRIBE,
+        payload: { subscribed: true },
+    } as const;
+};
+
+const unsubscribe = (request: Request<MessageTypes.Unsubscribe>) => {
+    switch (request.payload.type) {
+        case 'block':
+            unsubscribeBlock(request);
+            break;
+        default:
+            throw new CustomError('worker_unknown_request', `+${request.type}`);
+    }
+    return {
+        type: RESPONSES.SUBSCRIBE,
+        payload: { subscribed: false },
+    } as const;
+};
+
 const onRequest = (request: Request<MessageTypes.Message>) => {
     switch (request.type) {
         case MESSAGES.GET_ACCOUNT_INFO:
             return getAccountInfo(request);
         case MESSAGES.GET_INFO:
             return getInfo(request);
+        case MESSAGES.SUBSCRIBE:
+            return subscribe(request);
+        case MESSAGES.UNSUBSCRIBE:
+            return unsubscribe(request);
         default:
             throw new CustomError('worker_unknown_request', `+${request.type}`);
     }
