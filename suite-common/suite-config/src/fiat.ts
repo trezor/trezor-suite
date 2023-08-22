@@ -45,6 +45,7 @@ export const fiatCurrencies = {
     xdr: { label: 'xdr', value: 'XDR' },
     xag: { label: 'xag', value: 'XAG' },
     xau: { label: 'xau', value: 'XAU' },
+    sol: { label: 'sol', value: 'Solana' },
 } as const;
 
 export type FiatCurrencyCode = keyof typeof fiatCurrencies;
