@@ -45,7 +45,7 @@ export const extraDependencies: ExtraDependencies = {
         cardanoValidatePendingTxOnBlock: cardanoStakingActions.validatePendingTxOnBlock,
         cardanoFetchTrezorPools: cardanoStakingActions.fetchTrezorPools,
         initMetadata: metadataActions.init,
-        fetchMetadata: metadataActions.fetchMetadata,
+        fetchAndSaveMetadata: metadataActions.fetchAndSaveMetadata,
     },
     selectors: {
         selectFeeInfo: (networkSymbol: NetworkSymbol) => (state: AppState) =>

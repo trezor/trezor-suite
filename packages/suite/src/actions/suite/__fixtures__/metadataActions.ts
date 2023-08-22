@@ -335,66 +335,6 @@ const addAccountMetadata = [
     },
 ];
 
-const fetchMetadata = [
-    {
-        description: `Without provider`,
-        initialState: {
-            metadata: undefined,
-        },
-        result: undefined,
-    },
-    {
-        description: 'Metadata not enabled',
-        initialState: {
-            metadata: {
-                enabled: true,
-                selectedProvider: {
-                    tokens: { refreshToken: 'foo' },
-                    type: 'google',
-                    user: 'batman',
-                },
-                providers: [],
-            },
-            device: { state: 'device-state', metadata: { status: 'cancelled' } },
-            accounts: [],
-        },
-        params: 'device-state',
-    },
-    {
-        description: 'Metadata enabled - decode device metadata',
-        initialState: {
-            metadata: {
-                enabled: true,
-                selectedProvider: {
-                    type: 'dropbox',
-                    user: 'User Name',
-                    tokens: { refreshToken: 'oauth-token' },
-                },
-                providers: [],
-            },
-            device: {
-                state: 'mkUHEWSY9zaq4A4RjicJSPSPPxZ1dr2CfF@B45F1224E1EFDEE921BE328F:undefined',
-                metadata: {
-                    status: 'enabled',
-                    aesKey: 'f2734778f6b87864a02fc1e0ad2c69fcfc1160d86fff43b5acbef6f90772cba1',
-                },
-            },
-        },
-        params: 'mkUHEWSY9zaq4A4RjicJSPSPPxZ1dr2CfF@B45F1224E1EFDEE921BE328F:undefined',
-        result: [
-            {
-                type: '@metadata/wallet-loaded',
-                payload: {
-                    deviceState:
-                        'mkUHEWSY9zaq4A4RjicJSPSPPxZ1dr2CfF@B45F1224E1EFDEE921BE328F:undefined',
-                    walletLabel: 'k',
-                },
-            },
-        ],
-    },
-    // todo: decode account metadata
-];
-
 const connectProvider = [
     {
         description: 'Dropbox',
@@ -631,7 +571,6 @@ export {
     setAccountMetadataKey,
     addDeviceMetadata,
     addAccountMetadata,
-    fetchMetadata,
     connectProvider,
     addMetadata,
     init,
