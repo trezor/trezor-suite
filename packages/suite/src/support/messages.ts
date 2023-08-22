@@ -6803,7 +6803,12 @@ export default defineMessages({
     TR_ONBOARDING_COINS_STEP_DESCRIPTION: {
         id: 'TR_ONBOARDING_COINS_STEP_DESCRIPTION',
         defaultMessage:
-            'Select cryptocurrencies to show in Trezor Suite. You can change this setting at any time. Some coins are ERC20 tokens and can be used by enabling Ethereum below.',
+            'Select which coins to show in Trezor Suite. You can change this setting anytime. Some coins are ERC20 tokens and can be used by enabling Ethereum below.',
+    },
+    TR_ONBOARDING_COINS_STEP_DESCRIPTION_BITCOIN_ONLY: {
+        id: 'TR_ONBOARDING_COINS_STEP_DESCRIPTION_BITCOIN_ONLY',
+        defaultMessage:
+            'Select which coins to show in Trezor Suite. You can change this setting anytime.',
     },
     TR_WHAT_DATA_WE_COLLECT: {
         id: 'TR_WHAT_DATA_WE_COLLECT',
