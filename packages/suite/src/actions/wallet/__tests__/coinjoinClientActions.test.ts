@@ -19,6 +19,7 @@ import {
 } from '../coinjoinClientActions';
 import * as fixtures from '../__fixtures__/coinjoinClientActions';
 import { coinjoinMiddleware } from 'src/middlewares/wallet/coinjoinMiddleware';
+import { CoinjoinService } from 'src/services/coinjoin/coinjoinService';
 
 jest.mock('@trezor/connect', () => global.JestMocks.getTrezorConnect({}));
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -151,6 +152,105 @@ describe('coinjoinClientActions', () => {
 
             expect(response).toMatchObject(f.result.response);
         });
+    });
+
+    it('initCoinjoinService and restore prison', async () => {
+        const store = initStore({
+            accounts: [
+                {
+                    key: 'account-A',
+                    symbol: 'btc',
+                    utxo: [
+                        {
+                            txid: '123400000000000000000000000000000000000000000000000000000000dbca',
+                            vout: 5,
+                        },
+                    ],
+                    addresses: {
+                        change: [
+                            { address: 'A1', transfers: 1 },
+                            { address: 'A2', transfers: 0 },
+                            { address: 'A2', transfers: 0 },
+                        ],
+                    },
+                },
+            ],
+            coinjoin: {
+                clients: {},
+                accounts: [
+                    {
+                        key: 'account-A',
+                        symbol: 'btc',
+                        prison: {
+                            '000000': { type: 'input', sentenceEnd: Infinity },
+                            A1: { type: 'output', sentenceEnd: Infinity },
+                            A2: { type: 'output', sentenceEnd: Infinity },
+                            A3: { type: 'output', sentenceEnd: 10000 },
+                        },
+                    },
+                    {
+                        key: 'account-B',
+                        symbol: 'btc',
+                        prison: {},
+                    },
+                ],
+                debug: {
+                    coinjoinServerEnvironment: { btc: 'staging' },
+                },
+            },
+        } as any); // partial required state
+
+        const spy = jest.spyOn(CoinjoinService, 'createInstance');
+        const cli1 = await store.dispatch(initCoinjoinService('btc'));
+        const cli2 = await store.dispatch(initCoinjoinService('btc'));
+        expect(cli1).toEqual(cli2);
+        expect(spy.mock.calls[0][0]).toEqual({
+            environment: 'staging',
+            network: 'btc',
+            prison: [
+                {
+                    accountKey: 'account-A',
+                    id: 'A2',
+                    sentenceEnd: Infinity,
+                    type: 'output',
+                },
+                {
+                    accountKey: 'account-A',
+                    id: 'A3',
+                    sentenceEnd: 10000,
+                    type: 'output',
+                },
+            ],
+        });
+        spy.mockClear();
+
+        // for coverage, init same instance multiple times without waiting
+        store.dispatch(initCoinjoinService('test')).then(cli3 => {
+            expect(cli3?.client.settings.network).toEqual('test');
+        });
+        const cli3a = await store.dispatch(initCoinjoinService('test'));
+        expect(cli3a).toBe(undefined); // undefined because cli3 is not loaded yet
+    });
+
+    it('initCoinjoinService and throw error', async () => {
+        const store = initStore();
+        const cli = await store.dispatch(initCoinjoinService('ltc')); // ltc not supported
+        expect(cli).toBe(undefined);
+    });
+
+    it('initCoinjoinService and fail to enable', async () => {
+        const store = initStore();
+        const spy = jest.spyOn(CoinjoinService, 'createInstance').mockImplementationOnce(
+            () =>
+                ({
+                    client: {
+                        enable: () => Promise.resolve({ success: false, error: 'Some error' }),
+                    },
+                } as any),
+        );
+        const cli = await store.dispatch(initCoinjoinService('btc'));
+        expect(cli).toBe(undefined);
+        spy.mockClear();
     });
 
     it('setDebugSettings', () => {
