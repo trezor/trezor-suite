@@ -244,15 +244,8 @@ export const AccountsMenu = ({ isMenuInline }: AccountsMenuProps) => {
         );
     };
 
-    const listedAccountsLength =
-        normalAccounts.length +
-        coinjoinAccounts.length +
-        segwitAccounts.length +
-        legacyAccounts.length +
-        ledgerAccounts.length;
-
     const accountsComponent =
-        listedAccountsLength > 0 || !searchString ? (
+        filteredAccounts.length > 0 || !searchString ? (
             <>
                 {buildGroup('coinjoin', coinjoinAccounts)}
                 {buildGroup('normal', normalAccounts)}
