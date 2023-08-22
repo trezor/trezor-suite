@@ -11,7 +11,7 @@ import { AccountSearchBox } from './AccountSearchBox';
 import { AccountGroup } from './AccountGroup';
 import { AccountItem } from './AccountItem';
 import { AccountItemSkeleton } from './AccountItemSkeleton';
-import { selectLabelingDataForSelectedAccount } from 'src/reducers/suite/metadataReducer';
+import { selectAccountLabels } from 'src/reducers/suite/metadataReducer';
 
 const Wrapper = styled.div<{ isInline?: boolean }>`
     display: flex;
@@ -127,7 +127,6 @@ export const AccountsMenu = ({ isMenuInline }: AccountsMenuProps) => {
     const accounts = useSelector(state => state.wallet.accounts);
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
     const coinjoinIsPreloading = useSelector(state => state.wallet.coinjoin.isPreloading);
-    const { accountLabel } = useSelector(selectLabelingDataForSelectedAccount);
 
     const [isExpanded, setIsExpanded] = useState(false);
     const [animatedIcon, setAnimatedIcon] = useState(false);
@@ -142,6 +141,8 @@ export const AccountsMenu = ({ isMenuInline }: AccountsMenuProps) => {
     const selectedItemRef = useCallback((_item: HTMLDivElement | null) => {
         // TODO: scroll to selected item
     }, []);
+
+    const accountLabels = useSelector(selectAccountLabels);
 
     if (!device || !discovery) {
         // TODO: default empty state while retrieving data from the device
@@ -165,7 +166,7 @@ export const AccountsMenu = ({ isMenuInline }: AccountsMenuProps) => {
     const list = sortByCoin(accounts.filter(a => a.deviceState === device.state).concat(failed));
     const filteredAccounts =
         searchString || coinFilter
-            ? list.filter(a => accountSearchFn(a, searchString, coinFilter, accountLabel))
+            ? list.filter(a => accountSearchFn(a, searchString, coinFilter, accountLabels[a.key]))
             : list;
     // always show first "normal" account even if they are empty
     const normalAccounts = filteredAccounts.filter(
@@ -234,6 +235,7 @@ export const AccountsMenu = ({ isMenuInline }: AccountsMenuProps) => {
                             account={account}
                             selected={selected}
                             closeMenu={() => setIsExpanded(false)}
+                            accountLabel={accountLabels[account.key]}
                         />
                     );
                 })}

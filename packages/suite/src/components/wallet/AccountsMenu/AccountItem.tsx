@@ -4,12 +4,11 @@ import styled from 'styled-components';
 import { isTestnet } from '@suite-common/wallet-utils';
 import { AccountLabel, FiatValue } from 'src/components/suite';
 import { Stack, SkeletonRectangle } from 'src/components/suite/Skeleton';
-import { useDispatch, useLoadingSkeleton, useSelector } from 'src/hooks/suite';
+import { useDispatch, useLoadingSkeleton } from 'src/hooks/suite';
 import { CoinBalance } from 'src/components/wallet';
 import { Account } from 'src/types/wallet';
 import { goto } from 'src/actions/suite/routerActions';
 import { TokensCount } from './TokensCount';
-import { selectLabelingDataForAccount } from 'src/reducers/suite/metadataReducer';
 
 const activeClassName = 'selected';
 interface WrapperProps {
@@ -103,13 +102,17 @@ export const AccountHeader = styled.div`
 
 interface AccountItemProps {
     account: Account;
+    accountLabel?: string;
     selected: boolean;
     closeMenu: () => void;
 }
 
 // Using `React.forwardRef` to be able to pass `ref` (item) TO parent (Menu/index)
 export const AccountItem = forwardRef(
-    ({ account, selected, closeMenu }: AccountItemProps, ref: React.Ref<HTMLDivElement>) => {
+    (
+        { account, accountLabel, selected, closeMenu }: AccountItemProps,
+        ref: React.Ref<HTMLDivElement>,
+    ) => {
         const dispatch = useDispatch();
 
         const { shouldAnimate } = useLoadingSkeleton();
@@ -140,9 +143,6 @@ export const AccountItem = forwardRef(
         const isBalanceShown = account.backendType !== 'coinjoin' || account.status !== 'initial';
 
         const dataTestKey = `@account-menu/${symbol}/${accountType}/${index}`;
-        const { accountLabel } = useSelector(state =>
-            selectLabelingDataForAccount(state, account.key),
-        );
 
         return (
             <Wrapper selected={selected} type={accountType} ref={ref}>
