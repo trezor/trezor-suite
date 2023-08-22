@@ -31,8 +31,6 @@
   "FIRMWARE_USER_HAS_SEED_CHECKBOX_DESC": "Sí, ho faig!",
   "FIRMWARE_USER_TAKES_RESPONSIBILITY_CHECKBOX_DESC": "Accepto el risc",
   "FW_CAPABILITY_CONNECT_OUTDATED": "Es requereix actualitzar l'aplicació",
-  "FW_CAPABILITY_NO_CAPABILITY": "No compatible",
-  "FW_CAPABILITY_NO_SUPPORT": "No compatible",
   "FW_CAPABILITY_UPDATE_REQUIRED": "Actualització necessària",
   "IMPORT_CSV": "Importar",
   "LABELING_ACCOUNT": "{networkName} #{index}",

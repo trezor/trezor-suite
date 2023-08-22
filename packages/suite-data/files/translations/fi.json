@@ -31,8 +31,6 @@
   "FIRMWARE_USER_HAS_SEED_CHECKBOX_DESC": "Kyllä",
   "FIRMWARE_USER_TAKES_RESPONSIBILITY_CHECKBOX_DESC": "Hyväksyn riskin",
   "FW_CAPABILITY_CONNECT_OUTDATED": "Sovelluspäivitys vaaditaan",
-  "FW_CAPABILITY_NO_CAPABILITY": "Ei tuettu",
-  "FW_CAPABILITY_NO_SUPPORT": "Ei tuettu",
   "FW_CAPABILITY_UPDATE_REQUIRED": "Päivitys vaaditaan",
   "IMPORT_CSV": "Tuo",
   "INCLUDING_FEE": "Sis. siirtomaksun",

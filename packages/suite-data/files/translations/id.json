@@ -19,7 +19,7 @@
   "COPY_TRANSACTION_TO_CLIPBOARD": "Salin transaksi yang belum diproses",
   "CUSTOM_FEE_IS_NOT_INTEGER": "Masukkan bilangan bulat",
   "CUSTOM_FEE_IS_NOT_SET": "Masukkan biaya yang diinginkan",
-  "CUSTOM_FEE_LIMIT_BELOW_RECOMMENDED": "Batas gas terlalu rendah {button}",
+  "CUSTOM_FEE_LIMIT_BELOW_RECOMMENDED": "Batas gas terlalu rendah",
   "CUSTOM_FEE_LIMIT_USE_RECOMMENDED": "Gunakan yang direkomendasikan.",
   "CUSTOM_FEE_NOT_IN_RANGE": "Masukkan biaya antara {minFee} dan {maxFee}",
   "DATA_ETH": "Data",

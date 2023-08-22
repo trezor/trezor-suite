@@ -166,7 +166,6 @@
   "TR_BUY_DETAIL_ERROR_TITLE": "Не вдалося виконати транзакцію",
   "TR_BUY_DETAIL_PENDING_SUPPORT": "Перейти до служби підтримки провайдера",
   "TR_BUY_DETAIL_PENDING_TITLE": "Обробка вашої транзакції...",
-  "TR_BUY_DETAIL_SUBMITTED_CANCEL": "Скасувати транзакцію",
   "TR_BUY_DETAIL_SUBMITTED_GATE": "Перейти до платіжного шлюзу",
   "TR_BUY_DETAIL_SUBMITTED_TEXT": "Натисніть кнопку нижче, щоб закінчити введення даних на сайті провайдера.",
   "TR_BUY_DETAIL_SUBMITTED_TITLE": "Чекаємо на ваш платіж...",
