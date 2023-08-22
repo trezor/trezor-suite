@@ -28,7 +28,7 @@ export type ExtraDependencies = {
         }>;
         cardanoFetchTrezorPools: SuiteCompatibleThunk<'tADA' | 'ADA'>;
         initMetadata: SuiteCompatibleThunk<boolean>;
-        fetchMetadata: SuiteCompatibleThunk<string>;
+        fetchAndSaveMetadata: SuiteCompatibleThunk<string>;
     };
     selectors: {
         selectFeeInfo: (networkSymbol: NetworkSymbol) => SuiteCompatibleSelector<FeeInfo>;

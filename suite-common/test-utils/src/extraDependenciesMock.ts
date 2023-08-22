@@ -54,7 +54,7 @@ export const extraDependenciesMock: ExtraDependencies = {
     thunks: {
         cardanoValidatePendingTxOnBlock: mockThunk('validatePendingTxOnBlock'),
         cardanoFetchTrezorPools: mockThunk('fetchTrezorPools'),
-        fetchMetadata: mockThunk('fetchMetadata'),
+        fetchAndSaveMetadata: mockThunk('fetchAndSaveMetadata'),
         initMetadata: mockThunk('initMetadata'),
     },
     selectors: {

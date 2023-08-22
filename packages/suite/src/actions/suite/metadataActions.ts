@@ -3,7 +3,7 @@ import { analytics, EventType } from '@trezor/suite-analytics';
 
 import { createDeferred } from '@trezor/utils';
 import { METADATA } from 'src/actions/suite/constants';
-import { Dispatch, GetState } from 'src/types/suite';
+import { Dispatch, GetState, TrezorDevice } from 'src/types/suite';
 import {
     MetadataProviderType,
     MetadataProvider,
@@ -15,6 +15,9 @@ import {
     ProviderErrorAction,
     Labels,
     DataType,
+    MetadataEncryptionVersion,
+    WalletLabels,
+    AccountLabels,
 } from 'src/types/suite/metadata';
 import { Account } from 'src/types/wallet';
 import * as metadataUtils from 'src/utils/suite/metadata';
@@ -276,10 +279,117 @@ export const initProvider = () => (dispatch: Dispatch) => {
     return decision.promise;
 };
 
+const setMetadata =
+    ({
+        provider,
+        fileName,
+        data,
+    }: {
+        provider: MetadataProvider;
+        fileName: string;
+        data: WalletLabels | AccountLabels | undefined;
+    }) =>
+    (dispatch: Dispatch) => {
+        dispatch({
+            type: METADATA.SET_DATA,
+            payload: {
+                provider,
+                data: {
+                    [fileName]: data,
+                },
+            },
+        });
+    };
+
+export const getLabelableEntities =
+    (deviceState: string) => (_dispatch: Dispatch, getState: GetState) => {
+        const { accounts } = getState().wallet;
+        const { devices } = getState();
+
+        return [
+            ...accounts
+                .filter(a => a.deviceState === deviceState)
+                .map(account => ({
+                    ...account.metadata,
+                    key: account.key,
+                    type: 'account' as const,
+                })),
+            ...devices
+                .filter((device: TrezorDevice) => device.state === deviceState)
+                .map((device: TrezorDevice) => ({
+                    ...device.metadata,
+                    state: device.state,
+                    type: 'device' as const,
+                })),
+        ];
+    };
+
+type LabelableEntity = ReturnType<ReturnType<typeof getLabelableEntities>>[number];
+
 export const fetchMetadata =
+    ({
+        provider,
+        entity,
+        encryptionVersion = METADATA.ENCRYPTION_VERSION,
+    }: {
+        provider: MetadataProvider;
+        entity: LabelableEntity;
+        encryptionVersion?: MetadataEncryptionVersion;
+    }) =>
+    async (dispatch: Dispatch) => {
+        const providerInstance = dispatch(
+            getProviderInstance({
+                clientId: provider.clientId,
+            }),
+        );
+
+        if (!providerInstance) {
+            throw new Error('no provider instance');
+        }
+
+        if (entity.type === 'device' && entity.status !== 'enabled') {
+            throw new Error('metadata not enabled'); // because of ts
+        }
+
+        const entityMetadata = entity[encryptionVersion];
+        if (!entityMetadata) {
+            throw new Error('trying to fetch entity without metadata');
+        }
+
+        const { fileName, aesKey } = entityMetadata;
+
+        const response = await providerInstance.getFileContent(fileName);
+
+        if (!response.success) {
+            throw response;
+        }
+
+        if (!response.payload) {
+            return undefined;
+        }
+
+        // we found associated metadata file for given account, decrypt it and return it
+        const decryptedData = metadataUtils.decrypt(
+            metadataUtils.arrayBufferToBuffer(response.payload),
+            aesKey,
+        );
+
+        return {
+            fileName,
+            data: decryptedData,
+        };
+    };
+
+export const fetchAndSaveMetadata =
     (deviceStateArg?: string) => async (dispatch: Dispatch, getState: GetState) => {
         const provider = selectSelectedProviderForLabels(getState());
         if (!provider) return;
+
+        const deviceState = deviceStateArg || getState().suite.device?.state;
+
+        if (!deviceState) {
+            return;
+        }
 
         const providerInstance = dispatch(
             getProviderInstance({
@@ -290,154 +400,43 @@ export const fetchMetadata =
             return;
         }
 
-        const deviceState = deviceStateArg || getState().suite.device?.state;
-
-        if (!deviceState) {
-            return;
-        }
-
         const device = getState().devices.find(d => d.state === deviceState);
 
-        // device is disconnected or something is wrong with it
-        if (device?.metadata?.status !== 'enabled') {
-            if (fetchIntervals[deviceState]) {
-                clearInterval(fetchIntervals[deviceState]);
-                delete fetchIntervals[deviceState];
-            }
-            return;
-        }
+        try {
+            // this triggers renewal of access token if needed. Otherwise multiple requests
+            // to renew access token are issued by every provider.getFileContent
+            const response = await providerInstance.getProviderDetails();
 
-        // this triggers renewal of access token if needed. Otherwise multiple requests
-        // to renew access token are issued by every provider.getFileContent
-        const response = await providerInstance.getProviderDetails();
-        if (!response.success) {
-            return dispatch(
-                handleProviderError({
-                    error: response,
-                    action: ProviderErrorAction.LOAD,
-                    clientId: provider.clientId,
-                }),
-            );
-        }
-
-        const deviceFileContentP = new Promise<void>((resolve, reject) => {
-            if (device?.metadata?.status !== 'enabled') {
-                return reject(new Error('metadata not enabled for this device'));
-            }
-            const { fileName, aesKey } = device.metadata[METADATA.ENCRYPTION_VERSION] || {};
-            if (!fileName || !aesKey) {
-                return reject(
-                    new Error(
-                        `filename or aesKey of version ${METADATA.ENCRYPTION_VERSION} does not exist for device ${device.path}`,
-                    ),
-                );
-            }
-            return providerInstance.getFileContent(fileName).then(result => {
-                // ts-stuff
-                if (device?.metadata?.status !== 'enabled') {
-                    // this should never happen
-                    return reject(new Error('metadata not enabled for this device'));
-                }
-
-                if (!result.success) {
-                    return reject(result);
-                }
-
-                const json = { walletLabel: '' };
-                if (result.payload) {
-                    try {
-                        const decryptedData = metadataUtils.decrypt(
-                            metadataUtils.arrayBufferToBuffer(result.payload),
-                            aesKey,
-                        );
-
-                        dispatch({
-                            type: METADATA.SET_DATA,
-                            payload: {
-                                provider,
-                                data: {
-                                    [fileName]: decryptedData,
-                                },
-                            },
-                        });
-                        Object.assign(json, decryptedData);
-                    } catch (err) {
-                        const error = providerInstance.error('OTHER_ERROR', err.message);
-                        return reject(error);
-                    }
-                }
-
-                resolve();
-            });
-        });
-
-        const accounts = getState().wallet.accounts.filter(
-            a => a.deviceState === deviceState && a.metadata[METADATA.ENCRYPTION_VERSION]?.fileName,
-        );
-
-        const accountPromises = accounts.map(async account => {
-            if (!provider) return; // ts
-            const { fileName, aesKey } = account.metadata[METADATA.ENCRYPTION_VERSION] || {};
-            if (!fileName || !aesKey) {
-                console.error(
-                    `filename or aesKey of version ${METADATA.ENCRYPTION_VERSION} does not exist for account ${account.path}`,
+            if (!response.success) {
+                dispatch(
+                    handleProviderError({
+                        error: response,
+                        action: ProviderErrorAction.LOAD,
+                        clientId: provider.clientId,
+                    }),
                 );
                 return;
             }
-            const response = await providerInstance.getFileContent(fileName);
 
-            if (!response.success) {
-                throw new Error(response.error);
-            }
-
-            const json = { accountLabel: '', outputLabels: {}, addressLabels: {} };
-
-            if (response.payload) {
-                try {
-                    // we found associated metadata file for given account, decrypt it
-                    // and save its metadata into reducer;
-                    const decryptedData = metadataUtils.decrypt(
-                        metadataUtils.arrayBufferToBuffer(response.payload),
-                        aesKey,
-                    );
-
-                    Object.assign(json, decryptedData);
-
-                    dispatch({
-                        type: METADATA.SET_DATA,
-                        payload: {
-                            provider,
-                            data: {
-                                [fileName]: json,
-                            },
-                        },
-                    });
-                } catch (err) {
-                    const error = providerInstance.error('OTHER_ERROR', err.message);
-                    return dispatch(
-                        handleProviderError({
-                            error,
-                            action: ProviderErrorAction.LOAD,
-                            clientId: provider.clientId,
-                        }),
-                    );
+            // device is disconnected or something is wrong with it
+            if (device?.metadata?.status !== 'enabled') {
+                if (fetchIntervals[deviceState]) {
+                    clearInterval(fetchIntervals[deviceState]);
+                    delete fetchIntervals[deviceState];
                 }
+                return;
             }
-        });
 
-        const promises = [deviceFileContentP, ...accountPromises];
+            const labelableEntities = dispatch(getLabelableEntities(deviceState));
 
-        try {
-            await Promise.all(promises);
-            // if interval for watching provider is not set, create it
-            if (!fetchIntervals[deviceState]) {
-                fetchIntervals[deviceState] = setInterval(() => {
-                    if (!getState().suite.online) {
-                        return;
+            const promises = labelableEntities.map(entity =>
+                dispatch(fetchMetadata({ provider, entity })).then(result => {
+                    if (result) {
+                        dispatch(setMetadata({ ...result, provider }));
                     }
-                    dispatch(fetchMetadata(deviceState));
-                }, METADATA.FETCH_INTERVAL);
-            }
+                }),
+            );
+            await Promise.all(promises);
         } catch (error) {
             // This handles cases of providers that do not support token renewal.
             // We want those to work normally as long as their short-lived token allows. And only if
@@ -617,7 +616,7 @@ export const addDeviceMetadata =
         try {
             const encrypted = await metadataUtils.encrypt(
                 {
-                    version:  METADATA.FORMAT_VERSION,
+                    version: METADATA.FORMAT_VERSION,
                     walletLabel,
                 },
                 aesKey,
@@ -738,7 +737,7 @@ export const addAccountMetadata =
         // todo: can't this throw? heh?
         const encrypted = await metadataUtils.encrypt(
             {
-                version:  METADATA.FORMAT_VERSION,
+                version: METADATA.FORMAT_VERSION,
                 accountLabel: nextMetadata.accountLabel,
                 outputLabels: nextMetadata.outputLabels,
                 addressLabels: nextMetadata.addressLabels,
@@ -909,9 +908,20 @@ export const init =
             }
         }
 
-        if (getState().metadata.initiating) {
-            await dispatch(fetchMetadata(device.state));
-            dispatch({ type: METADATA.SET_INITIATING, payload: false });
+        await dispatch(fetchAndSaveMetadata(device.state));
+        dispatch({ type: METADATA.SET_INITIATING, payload: false });
+
+        // 7. if interval for watching provider is not set, create it
+        if (device.state && !fetchIntervals[device.state]) {
+            // todo: possible race condition that has been around since always
+            // user is editing label and at that very moment update arrives. updates to specific entities should be probably discarded in such case?
+            fetchIntervals[device.state] = setInterval(() => {
+                const { device } = getState().suite;
+                if (!getState().suite.online || !device?.state) {
+                    return;
+                }
+                dispatch(fetchAndSaveMetadata(device.state));
+            }, METADATA.FETCH_INTERVAL);
         }
 
         return true;
