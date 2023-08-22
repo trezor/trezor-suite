@@ -11,26 +11,26 @@ import {
     getAccountSpecific,
 } from '@suite-common/wallet-utils';
 
-import { actionPrefix } from './constants';
+import { accountActionsPrefix } from './constants';
 
-const disposeAccount = createAction(`${actionPrefix}/disposeAccount`);
+const disposeAccount = createAction(`${accountActionsPrefix}/disposeAccount`);
 
 const updateSelectedAccount = createAction(
-    `${actionPrefix}/updateSelectedAccount`,
+    `${accountActionsPrefix}/updateSelectedAccount`,
     (payload: SelectedAccountStatus): { payload: SelectedAccountStatus } => ({
         payload,
     }),
 );
 
 const removeAccount = createAction(
-    `${actionPrefix}/removeAccount`,
+    `${accountActionsPrefix}/removeAccount`,
     (payload: Account[]): { payload: Account[] } => ({
         payload,
     }),
 );
 
 const createAccount = createAction(
-    `${actionPrefix}/createAccount`,
+    `${accountActionsPrefix}/createAccount`,
     (
         deviceState: string,
         discoveryItem: DiscoveryItem,
@@ -84,7 +84,7 @@ const createAccount = createAction(
 );
 
 const updateAccount = createAction(
-    `${actionPrefix}/updateAccount`,
+    `${accountActionsPrefix}/updateAccount`,
     (account: Account, accountInfo: AccountInfo | null = null): { payload: Account } => {
         if (accountInfo) {
             return {
@@ -115,7 +115,7 @@ const updateAccount = createAction(
 );
 
 const renameAccount = createAction(
-    `${actionPrefix}/renameAccount`,
+    `${accountActionsPrefix}/renameAccount`,
     (accountKey: string, accountLabel: string) => ({
         payload: {
             accountKey,
@@ -125,7 +125,7 @@ const renameAccount = createAction(
 );
 
 const startCoinjoinAccountSync = createAction(
-    `${actionPrefix}/startCoinjoinAccountSync`,
+    `${accountActionsPrefix}/startCoinjoinAccountSync`,
     (account: Extract<Account, { backendType: 'coinjoin' }>) => ({
         payload: {
             accountKey: account.key,
@@ -134,7 +134,7 @@ const startCoinjoinAccountSync = createAction(
 );
 
 const endCoinjoinAccountSync = createAction(
-    `${actionPrefix}/endCoinjoinAccountSync`,
+    `${accountActionsPrefix}/endCoinjoinAccountSync`,
     (
         account: Extract<Account, { backendType: 'coinjoin' }>,
         status: Extract<Account, { backendType: 'coinjoin' }>['status'],
@@ -147,7 +147,7 @@ const endCoinjoinAccountSync = createAction(
 );
 
 const changeAccountVisibility = createAction(
-    `${actionPrefix}/changeAccountVisibility`,
+    `${accountActionsPrefix}/changeAccountVisibility`,
     (account: Account, visible = true): { payload: Account } => ({
         payload: {
             ...account,

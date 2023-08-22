@@ -4,7 +4,6 @@ import { Account, WalletAccountTransaction, AccountKey } from '@suite-common/wal
 import { findTransaction, getConfirmations, isPending } from '@suite-common/wallet-utils';
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 
-import { fiatRatesActions } from '../fiat-rates/fiatRatesActions';
 import { accountsActions } from '../accounts/accountsActions';
 import { transactionsActions } from './transactionsActions';
 import {
@@ -145,7 +144,7 @@ export const prepareTransactionsReducer = createReducerWithExtraDeps(
                     delete state.transactions[a.key];
                 });
             })
-            .addCase(fiatRatesActions.updateTransactionFiatRate, (state, { payload }) => {
+            .addCase(transactionsActions.updateTransactionFiatRate, (state, { payload }) => {
                 payload.forEach(u => {
                     updateTransaction(state, u.account, u.txid, u.updateObject);
                 });

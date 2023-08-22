@@ -9,7 +9,6 @@ export * from './blockchain/blockchainReducer';
 export * from './blockchain/blockchainThunks';
 export * from './blockchain/blockchainMiddleware';
 export * from './fiat-rates/fiatRatesReducer';
-export * from './fiat-rates/fiatRatesActions';
 export * from './fiat-rates/fiatRatesSelectors';
 export * from './fiat-rates/fiatRatesThunks';
 export * from './fiat-rates/fiatRatesMiddleware';

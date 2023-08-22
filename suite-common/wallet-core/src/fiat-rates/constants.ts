@@ -1,6 +1,6 @@
 import { RateType } from 'suite-common/wallet-types';
 
-export const actionPrefix = '@common/wallet-core/fiat-rates';
+export const fiatRatesActionsPrefix = '@common/wallet-core/fiat-rates';
 
 export const ONE_WEEK_IN_MS = 7 * 24 * 60 * 60 * 1000;
 
