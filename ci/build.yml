@@ -262,7 +262,7 @@ connect-web build:
     # build webextension examples with latest trezor.io and latest npm package
     - node ./packages/connect-examples/update-webextensions.js --trezor-connect-src "https://suite.corp.sldev.cz/connect/${CI_COMMIT_REF_NAME}/"
     # build webextension examples with latest trezor.io and outdated npm package (current production)
-    - node ./packages/connect-examples/update-webextensions.js --trezor-connect-src "https://suite.corp.sldev.cz/connect/${CI_COMMIT_REF_NAME}/" --build-folder build-legacy --npm-src="https://connect.trezor.io/9/trezor-connect.js"
+    - node ./packages/connect-examples/update-webextensions.js --trezor-connect-src "https://suite.corp.sldev.cz/connect/${CI_COMMIT_REF_NAME}/" --build-folder build-legacy --npm-src "https://connect.trezor.io/9/trezor-connect.js"
     - yarn workspace @trezor/connect-explorer-webextension build
 
   artifacts:
