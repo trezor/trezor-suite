@@ -62,6 +62,7 @@ export const Language = () => {
 
     const { options, systemOption } = useLanguageOptions();
 
+    const isCommunityLanguage = LANGUAGES[language].type === 'community';
     const selectedValue =
         autodetectLanguage && !isTranslationMode()
             ? systemOption
@@ -97,9 +98,9 @@ export const Language = () => {
         >
             <TextColumn
                 title={<Translation id="TR_LANGUAGE" />}
-                description={<Translation id="TR_LANGUAGE_DESCRIPTION" />}
+                description={isCommunityLanguage && <Translation id="TR_LANGUAGE_DESCRIPTION" />}
                 buttonTitle={<Translation id="TR_LANGUAGE_CREDITS" />}
-                buttonLink={CROWDIN_URL}
+                buttonLink={isCommunityLanguage ? CROWDIN_URL : undefined}
             />
             <ActionColumn>
                 <ActionSelect
