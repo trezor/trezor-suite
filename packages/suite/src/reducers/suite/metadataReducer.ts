@@ -124,6 +124,28 @@ export const selectLabelingDataForAccount = (
 };
 
 /**
+ * Returns dict <account-key: account-label>
+ */
+export const selectAccountLabels = (state: {
+    metadata: MetadataState;
+    wallet: { accounts: Account[] };
+}) => {
+    const provider = selectSelectedProviderForLabels(state);
+
+    return state.wallet.accounts.reduce((dict, account) => {
+        const metadataKeys = account?.metadata?.[METADATA.ENCRYPTION_VERSION];
+        if (!metadataKeys || !metadataKeys?.fileName || !provider?.data[metadataKeys.fileName]) {
+            return dict;
+        }
+        const data = provider.data[metadataKeys.fileName];
+        if ('accountLabel' in data) {
+            dict[account.key] = data.accountLabel;
+        }
+        return dict;
+    }, {} as Record<string, string | undefined>);
+};
+
+/**
  * Select metadata of type 'labels' for requested device
  */
 export const selectLabelingDataForWallet = (
