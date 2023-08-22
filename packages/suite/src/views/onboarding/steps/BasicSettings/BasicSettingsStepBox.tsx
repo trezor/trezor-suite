@@ -19,6 +19,10 @@ const StyledCollapsibleBox = styled(CollapsibleBox)`
     box-shadow: none;
     margin-top: 12px;
     width: 100%;
+
+    ${CollapsibleBox.Header} {
+        padding: 24px 12px 24px 6px;
+    }
 `;
 
 const StyledCoinsGroup = styled(CoinsGroup)`
