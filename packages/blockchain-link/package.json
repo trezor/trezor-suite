@@ -67,6 +67,7 @@
         "worker-loader": "^3.0.8"
     },
     "dependencies": {
+        "@solana/web3.js": "^1.78.4",
         "@trezor/blockchain-link-types": "workspace:*",
         "@trezor/blockchain-link-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
