@@ -26,6 +26,8 @@ export const POPUP = {
     CANCEL_POPUP_REQUEST: 'ui-cancel-popup-request',
     // Message called from inline element in popup.html (window.closeWindow), this is used only with webextensions to properly handle popup close event
     CLOSE_WINDOW: 'window.close',
+    // todo: shouldn't it be UI_RESPONSE?
+    ANALYTICS_RESPONSE: 'popup-analytics-response',
 } as const;
 
 export interface PopupInit {
@@ -58,6 +60,11 @@ export interface PopupClosedMessage {
     payload: { error: any } | null;
 }
 
+export interface PopupAnalyticsResponse {
+    type: typeof POPUP.ANALYTICS_RESPONSE;
+    payload: { enabled: boolean };
+}
+
 export type PopupEvent =
     | {
           type: typeof POPUP.LOADED | typeof POPUP.CANCEL_POPUP_REQUEST;
@@ -66,7 +73,8 @@ export type PopupEvent =
     | PopupInit
     | PopupHandshake
     | PopupError
-    | PopupClosedMessage;
+    | PopupClosedMessage
+    | PopupAnalyticsResponse;
 
 export type PopupEventMessage = PopupEvent & { event: typeof UI_EVENT };
 

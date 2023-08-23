@@ -30,6 +30,7 @@ import { suggestBridgeInstaller } from '@trezor/connect/src/data/transportInfo';
 import { suggestUdevInstaller } from '@trezor/connect/src/data/udevInfo';
 import { storage, getSystemInfo, getInstallerPackage } from '@trezor/connect-common';
 import { parseConnectSettings, isOriginWhitelisted } from './connectSettings';
+import { analytics, EventType } from '@trezor/connect-analytics';
 
 let _core: Core | undefined;
 
@@ -87,13 +88,44 @@ const handleMessage = (event: PostMessageEvent) => {
 
         const method = _core.getCurrentMethod()[0];
         (method.initAsync ? method?.initAsync() : Promise.resolve()).finally(() => {
+            const transport = _core!.getTransportInfo();
+            const settings = DataManager.getSettings();
+
             postMessage(
                 createPopupMessage(POPUP.HANDSHAKE, {
                     settings: DataManager.getSettings(),
-                    transport: _core!.getTransportInfo(),
+                    transport,
                     method: method ? method.info : undefined, // method.info might change based on initAsync
                 }),
             );
+
+            // eslint-disable-next-line camelcase
+            const { tracking_enabled, tracking_id } = storage.load();
+
+            // eslint-disable-next-line camelcase
+            analytics.init(tracking_enabled || false, {
+                // eslint-disable-next-line camelcase
+                instanceId: tracking_id,
+                commitId: process.env.COMMIT_HASH || '',
+                isDev: process.env.NODE_ENV === 'development',
+                useQueue: true,
+            });
+
+            const { method: methodName, ...payload } = method.payload;
+
+            analytics.report({
+                type: EventType.AppReady,
+                payload: {
+                    version: settings?.version,
+                    origin: settings?.origin,
+                    referrerApp: settings?.manifest?.appUrl,
+                    referrerEmail: settings?.manifest?.email,
+                    method: methodName,
+                    payload: method.payload ? Object.keys(payload) : undefined,
+                    transportType: transport?.type,
+                    transportVersion: transport?.version,
+                },
+            });
         });
     }
 
@@ -101,6 +133,14 @@ const handleMessage = (event: PostMessageEvent) => {
     if (data.type === POPUP.CLOSED) {
         if (_popupMessagePort instanceof MessagePort) {
             _popupMessagePort = undefined;
+        }
+    }
+
+    if (data.type === POPUP.ANALYTICS_RESPONSE) {
+        if (data.payload.enabled) {
+            analytics.enable();
+        } else {
+            analytics.disable();
         }
     }
 

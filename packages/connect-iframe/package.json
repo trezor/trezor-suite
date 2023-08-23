@@ -12,6 +12,7 @@
     },
     "dependencies": {
         "@trezor/connect": "workspace:*",
+        "@trezor/connect-analytics": "workspace:*",
         "@trezor/connect-common": "workspace:*"
     },
     "devDependencies": {
