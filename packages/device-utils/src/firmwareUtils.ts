@@ -21,3 +21,5 @@ export const getFirmwareVersion = (device?: Device) => {
 
 export const hasBitcoinOnlyFirmware = (device?: Device) =>
     device?.firmwareType === FirmwareType.BitcoinOnly;
+
+export const isBitcoinOnlyDevice = (device?: Device) => device?.features?.unit_btconly;
