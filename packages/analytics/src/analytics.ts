@@ -70,7 +70,7 @@ export class Analytics<T extends AnalyticsEvent> {
                 `${!this.version ? 'version, ' : ''}`;
 
             console.error(
-                `Unable to report. Analytics is not initialized! Missing: ${listOfMissingFields}`,
+                `Unable to report ${data.type}. Analytics is not initialized! Missing: ${listOfMissingFields}`,
             );
             return;
         }
