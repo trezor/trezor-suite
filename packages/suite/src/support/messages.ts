@@ -2543,6 +2543,12 @@ export default defineMessages({
         description: 'Main text on firmware page for devices without firmware',
         id: 'TR_FIRMWARE_SUBHEADING_NONE',
     },
+    TR_FIRMWARE_SUBHEADING_NONE_BITCOIN_ONLY_DEVICE: {
+        defaultMessage:
+            'Your device is shipped without any pre-installed firmware. Click below to install the latest Bitcoin-only version.',
+        description: 'Main text on firmware page for Bitcoin-only devices without firmware',
+        id: 'TR_FIRMWARE_SUBHEADING_NONE_BITCOIN_ONLY_DEVICE',
+    },
     TR_FIRMWARE_SUBHEADING_UNKNOWN: {
         defaultMessage:
             'Your device is ready to receive the latest full-featured firmware in order to be used safely. If you use only bitcoin, we recommend installing <button>{bitcoinOnly} firmware</button>.',
@@ -2554,6 +2560,11 @@ export default defineMessages({
         defaultMessage: 'Lightweight firmware supporting only Bitcoin operations.',
         description: 'Explanation of Bitcoin-only firmware in onboarding',
         id: 'TR_FIRMWARE_SUBHEADING_BITCOIN',
+    },
+    TR_FIRMWARE_SUBHEADING_UNKNOWN_BITCOIN_ONLY_DEVICE: {
+        defaultMessage: 'Lightweight firmware supporting only Bitcoin operations.',
+        description: 'Explanation of Bitcoin-only firmware in onboarding for Bitcoin-only devices',
+        id: 'TR_FIRMWARE_SUBHEADING_UNKNOWN_BITCOIN_ONLY_DEVICE',
     },
     TR_CHANGE_FIRMWARE_TYPE_ANYTIME: {
         defaultMessage: 'You can change your firmware type in Settings anytime.',
