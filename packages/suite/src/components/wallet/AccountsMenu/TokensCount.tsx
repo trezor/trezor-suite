@@ -1,6 +1,6 @@
 import { MouseEventHandler } from 'react';
 import styled from 'styled-components';
-import { Button, variables, useTheme } from '@trezor/components';
+import { Button, variables } from '@trezor/components';
 import { Translation } from 'src/components/suite/Translation';
 
 const ButtonBadge = styled(Button)`
@@ -11,6 +11,10 @@ const ButtonBadge = styled(Button)`
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     background: ${({ theme }) => theme.STROKE_GREY_ALT};
     color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+
+    path {
+        fill: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    }
 `;
 
 interface TokensCountProps {
@@ -18,17 +22,8 @@ interface TokensCountProps {
     onClick: MouseEventHandler<HTMLButtonElement>;
 }
 
-export const TokensCount = ({ count, onClick }: TokensCountProps) => {
-    const theme = useTheme();
-    return (
-        <ButtonBadge
-            icon="PLUS"
-            variant="tertiary"
-            iconSize={10}
-            color={theme.TYPE_LIGHT_GREY}
-            onClick={onClick}
-        >
-            <Translation id="TR_TOKENS_COUNT" values={{ count }} />
-        </ButtonBadge>
-    );
-};
+export const TokensCount = ({ count, onClick }: TokensCountProps) => (
+    <ButtonBadge icon="PLUS" variant="tertiary" iconSize={10} onClick={onClick}>
+        <Translation id="TR_TOKENS_COUNT" values={{ count }} />
+    </ButtonBadge>
+);
