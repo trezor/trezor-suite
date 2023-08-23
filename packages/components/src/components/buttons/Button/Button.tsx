@@ -68,7 +68,12 @@ const Content = styled.span<ContentProps>`
     ${({ size }) => (size === 'small' ? typography.hint : typography.body)};
 `;
 
-export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+type SelectedHTMLButtonProps = Pick<
+    ButtonHTMLAttributes<HTMLButtonElement>,
+    'onClick' | 'onMouseOver' | 'onMouseLeave' | 'type'
+>;
+
+export interface ButtonProps extends SelectedHTMLButtonProps {
     variant?: ButtonVariant;
     size?: ButtonSize;
     isDisabled?: boolean;
@@ -90,6 +95,7 @@ export const Button = ({
     icon,
     iconSize,
     iconAlignment = 'left',
+    type = 'button',
     children,
     ...rest
 }: ButtonProps) => {
@@ -112,6 +118,7 @@ export const Button = ({
             iconAlignment={iconAlignment}
             disabled={isDisabled || isLoading}
             isFullWidth={isFullWidth}
+            type={type}
             {...rest}
         >
             {!isLoading && icon && IconComponent}
