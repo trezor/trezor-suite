@@ -2,7 +2,7 @@ import { useState } from 'react';
 import styled from 'styled-components';
 import { DATA_URL, HELP_CENTER_TOR_URL, GITHUB_BRIDGE_CHANGELOG_URL } from '@trezor/urls';
 import { Translation, TrezorLink, Modal, Metadata } from 'src/components/suite';
-import { Button, P, Link, Select, Image, useTheme, variables, Spinner } from '@trezor/components';
+import { Button, P, Link, Select, Image, variables, Spinner } from '@trezor/components';
 import { goto } from 'src/actions/suite/routerActions';
 import { isDesktop, isWeb } from '@trezor/env-utils';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -21,6 +21,12 @@ const Content = styled.div`
     @media screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
         padding: 0;
         min-width: 0;
+    }
+`;
+
+const StyledButton = styled(Button)`
+    path {
+        fill: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     }
 `;
 
@@ -101,7 +107,6 @@ export const InstallBridge = () => {
     const { isTorEnabled } = useSelector(selectTorState);
     const transport = useSelector(state => state.suite.transport);
     const dispatch = useDispatch();
-    const theme = useTheme();
 
     const installers: Installer[] =
         transport && transport.bridge
@@ -189,36 +194,31 @@ export const InstallBridge = () => {
             <Footer>
                 {transportAvailable && (
                     <Col justify="flex-start">
-                        <Button
+                        <StyledButton
                             icon="ARROW_LEFT"
                             variant="tertiary"
-                            color={theme.TYPE_LIGHT_GREY}
                             onClick={goToWallet}
                             data-test="@bridge/goto/wallet-index"
                         >
                             <Translation id="TR_TAKE_ME_BACK_TO_WALLET" />
-                        </Button>
+                        </StyledButton>
                     </Col>
                 )}
                 {!isLoading && (
                     <>
                         <Col justify="center">
                             <Link variant="nostyle" href={GITHUB_BRIDGE_CHANGELOG_URL}>
-                                <Button icon="LOG" color={theme.TYPE_LIGHT_GREY} variant="tertiary">
+                                <StyledButton icon="LOG" variant="tertiary">
                                     <Translation id="TR_CHANGELOG" />
-                                </Button>
+                                </StyledButton>
                             </Link>
                         </Col>
                         <Col justify="flex-end">
                             {data && target?.signature && (
                                 <TrezorLink variant="nostyle" href={data.uri + target.signature}>
-                                    <Button
-                                        color={theme.TYPE_LIGHT_GREY}
-                                        icon="SIGNATURE"
-                                        variant="tertiary"
-                                    >
+                                    <StyledButton icon="SIGNATURE" variant="tertiary">
                                         <Translation id="TR_CHECK_PGP_SIGNATURE" />
-                                    </Button>
+                                    </StyledButton>
                                 </TrezorLink>
                             )}
                         </Col>
