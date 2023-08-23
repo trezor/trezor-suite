@@ -62,7 +62,16 @@ export class Analytics<T extends AnalyticsEvent> {
 
     public report = (data: T, config?: ReportConfig) => {
         if (!this.url || !this.instanceId || !this.sessionId || !this.commitId || !this.version) {
-            console.error('Unable to report. Analytics is not initialized');
+            const listOfMissingFields =
+                `${!this.url ? 'url, ' : ''}` +
+                `${!this.instanceId ? 'instanceId, ' : ''}` +
+                `${!this.sessionId ? 'sessionId, ' : ''}` +
+                `${!this.commitId ? 'commitId, ' : ''}` +
+                `${!this.version ? 'version, ' : ''}`;
+
+            console.error(
+                `Unable to report. Analytics is not initialized! Missing: ${listOfMissingFields}`,
+            );
             return;
         }
 
