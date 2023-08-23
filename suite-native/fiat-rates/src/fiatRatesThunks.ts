@@ -77,7 +77,7 @@ const fetchFiatRate = async (
         coin: symbol,
         token: tokenAddress,
         currencies: [fiatCurrency],
-    }); // TODO(vl): add solana conversion rates
+    });
 
     const rate = success ? payload.rates?.[fiatCurrency] : null;
     if (rate) return rate;

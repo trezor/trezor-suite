@@ -11,7 +11,7 @@ const networkTypeToButtonTitleMap: Record<NetworkType, string> = {
     cardano: 'Show public key (XPUB)',
     ethereum: 'Show receive address',
     ripple: 'Show receive address',
-    solana: 'Show receive address', // TODO(vl): address
+    solana: 'Show receive address',
 };
 
 const networkTypeToSheetTitleMap: Record<NetworkType, string> = {
@@ -19,7 +19,7 @@ const networkTypeToSheetTitleMap: Record<NetworkType, string> = {
     cardano: 'Public key (XPUB)',
     ethereum: 'Receive address',
     ripple: 'Receive address',
-    solana: 'Receive address', // TODO(vl): address
+    solana: 'Receive address',
 };
 
 export const AccountSettingsShowXpub = ({ accountKey }: { accountKey: string }) => {

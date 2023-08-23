@@ -54,5 +54,3 @@ export const assetsFixtureSingleAsset: AssetType[] = [
         fiatBalance: '98.26',
     },
 ];
-
-// TODO(vl): add solana asset tests
