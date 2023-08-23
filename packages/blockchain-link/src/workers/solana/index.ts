@@ -5,7 +5,7 @@ import { BaseWorker, ContextType, CONTEXT } from '../baseWorker';
 import { MESSAGES, RESPONSES } from '@trezor/blockchain-link-types/lib/constants';
 import { Connection, PublicKey } from '@solana/web3.js';
 
-type SolanaAPI = Connection;
+export type SolanaAPI = Connection;
 
 type Context = ContextType<SolanaAPI>;
 type Request<T> = T & Context;
