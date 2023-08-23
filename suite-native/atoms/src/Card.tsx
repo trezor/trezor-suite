@@ -12,6 +12,8 @@ const cardStyle = prepareNativeStyle(utils => ({
     backgroundColor: utils.colors.backgroundSurfaceElevation1,
     borderRadius: utils.borders.radii.large / 2,
     padding: utils.spacings.medium,
+
+    ...utils.boxShadows.small,
 }));
 
 export const Card = ({ children, style }: CardProps) => {
