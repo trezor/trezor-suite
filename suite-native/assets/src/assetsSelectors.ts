@@ -73,7 +73,7 @@ export const selectAssetsWithBalances = memoize((state: AssetsRootState) => {
             const asset: AssetType = {
                 symbol: networkSymbol,
                 network,
-                assetBalance: balancesPerNetwork[networkSymbol] ?? new BigNumber(0), // TODO(vl): get asset balance
+                assetBalance: balancesPerNetwork[networkSymbol] ?? new BigNumber(0),
                 fiatBalance,
             };
             return asset;
