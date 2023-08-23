@@ -68,8 +68,6 @@ describe('Coin Settings', () => {
             'coin-settings-disabled-all-dashboard',
         );
         cy.getTestElement('@exception/discovery-empty/primary-button').click();
-        cy.getTestElement('@modal/close-button').click();
-        cy.getTestElement('@exception/discovery-empty/secondary-button').click();
 
         // just do some clicking on switches and check result
         ['btc', ...defaultUnchecked].forEach(network => {
