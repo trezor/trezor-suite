@@ -1,5 +1,5 @@
 import { DeviceModelInternal, type TransportInfo } from '@trezor/connect';
-import { pickByDeviceModel } from '@trezor/device-utils';
+import { isBitcoinOnlyDevice, pickByDeviceModel } from '@trezor/device-utils';
 import { isDeviceRemembered } from '@suite-common/suite-utils';
 
 import { SettingsLayout } from 'src/components/settings';
@@ -44,6 +44,7 @@ export const SettingsDevice = () => {
     const bootloaderMode = device?.mode === 'bootloader';
     const deviceRemembered = isDeviceRemembered(device) && !device?.connected;
     const deviceModelInternal = device?.features?.internal_model;
+    const bitcoinOnlyDevice = isBitcoinOnlyDevice(device);
 
     if (deviceSettingsUnavailable(device, transport)) {
         return (
@@ -113,7 +114,9 @@ export const SettingsDevice = () => {
 
             <SettingsSection title={<Translation id="TR_FIRMWARE" />} icon="FIRMWARE">
                 <FirmwareVersion isDeviceLocked={isDeviceLocked} />
-                {!bootloaderMode && <FirmwareTypeChange isDeviceLocked={isDeviceLocked} />}
+                {(!bootloaderMode || bitcoinOnlyDevice) && (
+                    <FirmwareTypeChange isDeviceLocked={isDeviceLocked} />
+                )}
             </SettingsSection>
 
             {!bootloaderMode && (

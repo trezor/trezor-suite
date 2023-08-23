@@ -7,9 +7,14 @@ import { goto } from 'src/actions/suite/routerActions';
 import { Button } from '@trezor/components';
 import { useAnchor } from 'src/hooks/suite/useAnchor';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
-import { getFirmwareVersion, hasBitcoinOnlyFirmware } from '@trezor/device-utils';
+import {
+    getFirmwareVersion,
+    hasBitcoinOnlyFirmware,
+    isBitcoinOnlyDevice,
+} from '@trezor/device-utils';
 import { HELP_FIRMWARE_TYPE } from '@trezor/urls';
 import { getSuiteFirmwareTypeString } from 'src/utils/firmware';
+import { FirmwareType } from '@trezor/connect';
 
 const Version = styled.div`
     span {
@@ -35,8 +40,11 @@ export const FirmwareTypeChange = ({ isDeviceLocked }: FirmwareTypeProps) => {
         return null;
     }
 
+    const bitcoinOnlyDevice = isBitcoinOnlyDevice(device);
     const currentFwVersion = getFirmwareVersion(device);
-    const currentFwType = getSuiteFirmwareTypeString(device.firmwareType);
+    const currentFwType = getSuiteFirmwareTypeString(
+        device.firmwareType || (bitcoinOnlyDevice ? FirmwareType.BitcoinOnly : undefined),
+    );
     const actionButtonId = hasBitcoinOnlyFirmware(device)
         ? 'TR_SWITCH_TO_REGULAR'
         : 'TR_SWITCH_TO_BITCOIN_ONLY';
@@ -76,22 +84,24 @@ export const FirmwareTypeChange = ({ isDeviceLocked }: FirmwareTypeProps) => {
                     )
                 }
             />
-            <ActionColumn>
-                <ActionButton
-                    variant="secondary"
-                    onClick={handleAction}
-                    data-test="@settings/device/switch-fw-type-button"
-                    isDisabled={isDeviceLocked}
-                >
-                    <Translation
-                        id={actionButtonId}
-                        values={{
-                            bitcoinOnly: <Translation id="TR_FIRMWARE_TYPE_BITCOIN_ONLY" />,
-                            regular: <Translation id="TR_FIRMWARE_TYPE_REGULAR" />,
-                        }}
-                    />
-                </ActionButton>
-            </ActionColumn>
+            {!bitcoinOnlyDevice && (
+                <ActionColumn>
+                    <ActionButton
+                        variant="secondary"
+                        onClick={handleAction}
+                        data-test="@settings/device/switch-fw-type-button"
+                        isDisabled={isDeviceLocked}
+                    >
+                        <Translation
+                            id={actionButtonId}
+                            values={{
+                                bitcoinOnly: <Translation id="TR_FIRMWARE_TYPE_BITCOIN_ONLY" />,
+                                regular: <Translation id="TR_FIRMWARE_TYPE_REGULAR" />,
+                            }}
+                        />
+                    </ActionButton>
+                </ActionColumn>
+            )}
         </SectionItem>
     );
 };
