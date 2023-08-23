@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useWatch, Control } from 'react-hook-form';
+
+import { TextInput } from 'react-native/types';
 
 import { Box, Text, Button, VStack } from '@suite-native/atoms';
 import { TextInputField, Form } from '@suite-native/forms';
@@ -41,6 +43,7 @@ export const AccountRenameForm = ({ accountKey, onSubmit }: AccountRenameFormPro
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
+    const inputRef = useRef<TextInput>(null);
 
     const accountLabel = useSelector((state: AccountsRootState) =>
         selectAccountLabel(state, accountKey),
@@ -52,6 +55,11 @@ export const AccountRenameForm = ({ accountKey, onSubmit }: AccountRenameFormPro
         formState: { isValid },
         control,
     } = form;
+
+    // Focus account label input field and open keyboard on the first render.
+    useEffect(() => {
+        inputRef.current?.focus();
+    }, [inputRef]);
 
     if (!account) return null;
 
@@ -65,6 +73,7 @@ export const AccountRenameForm = ({ accountKey, onSubmit }: AccountRenameFormPro
             <Form form={form}>
                 <VStack spacing="small">
                     <TextInputField
+                        ref={inputRef}
                         name="accountLabel"
                         label="Coin label"
                         maxLength={MAX_ACCOUNT_LABEL_LENGTH}

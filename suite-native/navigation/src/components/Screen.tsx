@@ -24,6 +24,7 @@ type ScreenProps = {
     backgroundColor?: Color;
     customVerticalPadding?: number;
     customHorizontalPadding?: number;
+    extraKeyboardAvoidingViewHeight?: number;
 };
 
 const screenContainerStyle = prepareNativeStyle<{
@@ -85,6 +86,7 @@ export const Screen = ({
     backgroundColor = 'backgroundSurfaceElevation0',
     customVerticalPadding = nativeSpacings.small,
     customHorizontalPadding = nativeSpacings.small,
+    extraKeyboardAvoidingViewHeight = 0,
 }: ScreenProps) => {
     const {
         applyStyle,
@@ -148,6 +150,7 @@ export const Screen = ({
                 isScrollable={isScrollable}
                 customVerticalPadding={customVerticalPadding}
                 customHorizontalPadding={customHorizontalPadding}
+                extraKeyboardAvoidingViewHeight={extraKeyboardAvoidingViewHeight}
             >
                 {children}
             </ScreenContent>

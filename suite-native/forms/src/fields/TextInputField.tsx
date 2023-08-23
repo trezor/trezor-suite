@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { forwardRef } from 'react';
+
+import { TextInput } from 'react-native/types';
 
 import { Input, InputWrapper, InputProps, InputWrapperProps } from '@suite-native/atoms';
 
@@ -17,34 +19,30 @@ export interface FieldProps extends AllowedTextInputFieldProps, AllowedInputWrap
     defaultValue?: string;
 }
 
-export const TextInputField = ({
-    name,
-    label,
-    hint,
-    onBlur,
-    defaultValue = '',
-    ...otherProps
-}: FieldProps) => {
-    const field = useField({ name, label, defaultValue });
-    const { errorMessage, onBlur: hookFormOnBlur, onChange, value, hasError } = field; // prejmenovat
+export const TextInputField = forwardRef<TextInput, FieldProps>(
+    ({ name, label, hint, onBlur, defaultValue = '', ...otherProps }, ref) => {
+        const field = useField({ name, label, defaultValue });
+        const { errorMessage, onBlur: hookFormOnBlur, onChange, value, hasError } = field;
 
-    const handleOnBlur = () => {
-        hookFormOnBlur();
-        if (onBlur) {
-            onBlur();
-        }
-    };
+        const handleOnBlur = () => {
+            hookFormOnBlur();
+            if (onBlur) {
+                onBlur();
+            }
+        };
 
-    return (
-        <InputWrapper error={errorMessage} hint={hint}>
-            <Input
-                {...otherProps}
-                onBlur={handleOnBlur}
-                onChangeText={onChange}
-                value={value}
-                hasError={hasError}
-                label={label}
-            />
-        </InputWrapper>
-    );
-};
+        return (
+            <InputWrapper error={errorMessage} hint={hint}>
+                <Input
+                    {...otherProps}
+                    onBlur={handleOnBlur}
+                    onChangeText={onChange}
+                    value={value}
+                    hasError={hasError}
+                    label={label}
+                    ref={ref}
+                />
+            </InputWrapper>
+        );
+    },
+);

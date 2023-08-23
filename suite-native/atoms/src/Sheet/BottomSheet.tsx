@@ -108,6 +108,7 @@ export const BottomSheet = ({
                                 isCloseScrollEnabled ? panGestureRef.current : scrollViewRef.current
                             }
                             onScroll={scrollEvent}
+                            keyboardShouldPersistTaps="handled"
                         >
                             <Animated.View>
                                 <Box paddingHorizontal="medium">{children}</Box>
