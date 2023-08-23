@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { IconButton, useTheme, IconButtonProps } from '@trezor/components';
+import { IconButton, IconButtonProps } from '@trezor/components';
 import { darken } from 'polished';
 
 const StyledIconButton = styled(IconButton)`
@@ -12,16 +12,12 @@ const StyledIconButton = styled(IconButton)`
     &:active {
         background: ${({ theme }) => darken(theme.HOVER_DARKEN_FILTER, theme.STROKE_GREY)};
     }
+
+    path {
+        fill: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    }
 `;
 
-export const CloseButton = (props: Omit<IconButtonProps, 'icon'>) => {
-    const theme = useTheme();
-    return (
-        <StyledIconButton
-            icon="CROSS"
-            variant="secondary"
-            color={theme.TYPE_LIGHT_GREY}
-            {...props}
-        />
-    );
-};
+export const CloseButton = (props: Omit<IconButtonProps, 'icon'>) => (
+    <StyledIconButton icon="CROSS" variant="secondary" {...props} />
+);
