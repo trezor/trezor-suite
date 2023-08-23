@@ -1,16 +1,20 @@
 import React from 'react';
+import styled from 'styled-components';
 import { Button, ButtonProps } from '@trezor/components';
 
+const StyledButton = styled(Button)`
+    background-color: initial;
+`;
+
 const ButtonBack = (props: ButtonProps) => (
-    <Button
+    <StyledButton
         data-test="@onboarding/back-button"
         variant="tertiary"
         icon="ARROW_LEFT"
         {...props}
-        style={{ backgroundColor: 'initial' }}
     >
         {props.children}
-    </Button>
+    </StyledButton>
 );
 
 export default ButtonBack;

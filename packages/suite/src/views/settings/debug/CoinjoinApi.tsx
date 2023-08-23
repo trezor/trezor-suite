@@ -14,6 +14,10 @@ const StyledActionSelect = styled(ActionSelect)`
     min-width: 256px;
 `;
 
+const StyledButton = styled(Button)`
+    margin-left: 8px;
+`;
+
 const CoordinatorVersionContainer = styled.div`
     display: flex;
     flex-direction: row;
@@ -34,14 +38,9 @@ const CoordinatorVersion = ({ version }: { version: CoordinatorServerProps['vers
         <CoordinatorVersionContainer>
             Build{' '}
             <Link href={`https://github.com/zkSNACKs/WalletWasabi/commit/${version.commitHash}`}>
-                <Button
-                    variant="tertiary"
-                    icon="EXTERNAL_LINK"
-                    iconAlignment="right"
-                    style={{ marginLeft: '8px' }}
-                >
+                <StyledButton variant="tertiary" icon="EXTERNAL_LINK" iconAlignment="right">
                     {version.commitHash}
-                </Button>
+                </StyledButton>
             </Link>
         </CoordinatorVersionContainer>
     );
