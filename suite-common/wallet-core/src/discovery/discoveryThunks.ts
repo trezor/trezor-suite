@@ -396,6 +396,8 @@ export const startDiscoveryThunk = createThunk(
             });
         }
 
+        // SOLANA MOCK START (this block will be reverted once solana is supported by @trezor/connect and trezor-firmware)
+
         // prepare bundle of accounts to discover, exclude unsupported account types
         const bundleWithSol = await dispatch(
             getBundleThunk({
@@ -433,6 +435,8 @@ export const startDiscoveryThunk = createThunk(
         }
 
         const bundle = bundleWithSol.filter(({ networkType }) => networkType !== 'solana');
+
+        // SOLANA MOCK END
 
         // discovery process complete
         if (bundle.length === 0) {
