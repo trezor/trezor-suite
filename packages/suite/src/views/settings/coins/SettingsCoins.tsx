@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
+import { hasBitcoinOnlyFirmware, isBitcoinOnlyDevice } from '@trezor/device-utils';
 import { selectSupportedNetworks } from '@suite-common/wallet-core';
 
 import { SettingsLayout } from 'src/components/settings';
@@ -42,12 +42,14 @@ export const SettingsCoins = () => {
     const onlyBitcoinNetworksEnabled =
         !!supportedEnabledNetworks.length &&
         supportedEnabledNetworks.every(coin => bitcoinNetworks.includes(coin));
+    const bitcoinOnlyDevice = isBitcoinOnlyDevice(device);
 
     const showDeviceBanner = device?.connected === false; // device is remembered and disconnected
 
     const showFirmwareTypeBanner =
         !firmwareTypeBannerClosed &&
         device &&
+        !bitcoinOnlyDevice &&
         (bitcoinOnlyFirmware || (!bitcoinOnlyFirmware && onlyBitcoinNetworksEnabled));
 
     return (
