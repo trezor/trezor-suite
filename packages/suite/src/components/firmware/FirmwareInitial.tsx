@@ -4,8 +4,12 @@ import styled from 'styled-components';
 
 import { getFwUpdateVersion } from '@suite-common/suite-utils';
 import { Note } from '@trezor/components';
-import { TrezorDevice } from '@suite-common/suite-types';
-import { getFirmwareVersion, hasBitcoinOnlyFirmware } from '@trezor/device-utils';
+import { AcquiredDevice, TrezorDevice } from '@suite-common/suite-types';
+import {
+    getFirmwareVersion,
+    hasBitcoinOnlyFirmware,
+    isBitcoinOnlyDevice,
+} from '@trezor/device-utils';
 import { FirmwareType } from '@trezor/connect';
 import { selectDevices } from '@suite-common/wallet-core';
 
@@ -14,7 +18,7 @@ import {
     OnboardingStepBox,
     OnboardingButtonSkip,
 } from 'src/components/onboarding';
-import { Translation } from 'src/components/suite';
+import { Translation } from '../suite';
 import { useDevice, useFirmware, useOnboarding, useSelector } from 'src/hooks/suite';
 import {
     ReconnectDevicePrompt,
@@ -91,6 +95,19 @@ const getDescription = ({
     return 'TR_ONBOARDING_NEW_FW_DESCRIPTION';
 };
 
+const getNoFirmwareInstalledSubheading = (device: AcquiredDevice) => {
+    const bitcoinOnlyDevice = isBitcoinOnlyDevice(device);
+
+    if (bitcoinOnlyDevice) {
+        return device.firmware === 'none'
+            ? 'TR_FIRMWARE_SUBHEADING_NONE_BITCOIN_ONLY_DEVICE'
+            : 'TR_FIRMWARE_SUBHEADING_UNKNOWN_BITCOIN_ONLY_DEVICE';
+    }
+    return device.firmware === 'none'
+        ? 'TR_FIRMWARE_SUBHEADING_NONE'
+        : 'TR_FIRMWARE_SUBHEADING_UNKNOWN';
+};
+
 export const FirmwareInitial = ({
     cachedDevice,
     setCachedDevice,
@@ -143,7 +160,8 @@ export const FirmwareInitial = ({
         currentFwVersion &&
         availableFwVersion === currentFwVersion
     );
-    const isCurrentlyBitcoinOnly = hasBitcoinOnlyFirmware(device);
+    const bitcoinOnlyDevice = isBitcoinOnlyDevice(device);
+    const isCurrentlyBitcoinOnly = hasBitcoinOnlyFirmware(device) || bitcoinOnlyDevice;
     const targetFirmwareType =
         // switching to Regular
         (isCurrentlyBitcoinOnly && shouldSwitchFirmwareType) ||
@@ -211,17 +229,15 @@ export const FirmwareInitial = ({
             ),
         };
     } else if (['none', 'unknown'].includes(device.firmware)) {
+        const subheadingId = getNoFirmwareInstalledSubheading(device);
+
         // No firmware installed
         // Device without firmware is already in bootloader mode even if it doesn't report it
         content = {
             heading: <Translation id="TR_INSTALL_FIRMWARE" />,
             description: (
                 <Translation
-                    id={
-                        device.firmware === 'none'
-                            ? 'TR_FIRMWARE_SUBHEADING_NONE'
-                            : 'TR_FIRMWARE_SUBHEADING_UNKNOWN'
-                    }
+                    id={subheadingId}
                     values={{
                         i: chunks => <i>{chunks}</i>,
                         button: chunks => (
@@ -234,11 +250,11 @@ export const FirmwareInitial = ({
                 />
             ),
             body: cachedDevice?.firmwareRelease ? (
-                <FirmwareOffer device={cachedDevice} />
+                <FirmwareOffer device={cachedDevice} targetFirmwareType={targetFirmwareType} />
             ) : undefined,
             innerActions: (
                 <FirmwareInstallButton
-                    onClick={() => installFirmware(FirmwareType.Regular)}
+                    onClick={() => installFirmware(targetFirmwareType)}
                     multipleDevicesConnected={multipleDevicesConnected}
                 />
             ),
