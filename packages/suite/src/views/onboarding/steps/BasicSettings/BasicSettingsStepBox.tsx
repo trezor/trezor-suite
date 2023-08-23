@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { OnboardingStepBox, OnboardingStepBoxProps } from 'src/components/onboarding';
-import { CoinsGroup, Translation } from 'src/components/suite';
+import { CoinsGroup, TooltipSymbol, Translation } from 'src/components/suite';
 import { useEnabledNetworks } from 'src/hooks/settings/useEnabledNetworks';
 import { CollapsibleBox } from '@trezor/components';
 
@@ -47,7 +47,14 @@ export const BasicSettingsStepBox = (props: OnboardingStepBoxProps) => {
             />
             <StyledCollapsibleBox
                 noContentPadding
-                heading={<Translation id="TR_TESTNET_COINS" />}
+                heading={
+                    <>
+                        <Translation id="TR_TESTNET_COINS" />
+                        <TooltipSymbol
+                            content={<Translation id="TR_TESTNET_COINS_DESCRIPTION" />}
+                        />
+                    </>
+                }
                 variant="large"
             >
                 <StyledCoinsGroup
