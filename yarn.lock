@@ -9024,6 +9024,7 @@ __metadata:
   resolution: "@trezor/connect-iframe@workspace:packages/connect-iframe"
   dependencies:
     "@trezor/connect": "workspace:*"
+    "@trezor/connect-analytics": "workspace:*"
     "@trezor/connect-common": "workspace:*"
     "@trezor/env-utils": "workspace:*"
     copy-webpack-plugin: ^11.0.0
