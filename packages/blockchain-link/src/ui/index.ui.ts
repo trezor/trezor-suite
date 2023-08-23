@@ -4,6 +4,7 @@ import BlockfrostWorker from '../workers/blockfrost/index';
 import CONFIG from './config';
 import BlockchainLink from '../index';
 import { getInputValue, fillValues, onClear } from './utils';
+import SolanaWorker from '../workers/solana';
 
 const instances: BlockchainLink[] = [];
 
@@ -378,6 +379,10 @@ CONFIG.forEach(i => {
 
     if (i.blockchain.worker.includes('blockfrost')) {
         worker = BlockfrostWorker;
+    }
+
+    if (i.blockchain.worker.includes('solana')) {
+        worker = SolanaWorker;
     }
 
     const b = new BlockchainLink({
