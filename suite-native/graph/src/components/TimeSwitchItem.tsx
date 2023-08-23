@@ -30,6 +30,7 @@ const switchItemStyle = prepareNativeStyle<ItemStyleProps>((utils, { isSelected 
         style: {
             backgroundColor: utils.colors.backgroundSurfaceElevation1,
             borderRadius: utils.borders.radii.round,
+            ...utils.boxShadows.small,
         },
     },
 }));
