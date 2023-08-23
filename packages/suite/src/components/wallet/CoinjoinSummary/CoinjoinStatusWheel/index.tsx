@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { variables, Card, Button, useTheme } from '@trezor/components';
+import { variables, Card, Button } from '@trezor/components';
 import { ProgressWheel } from './ProgressWheel';
 import { StatusMessage } from './StatusMessage';
 import { useSelector } from 'src/hooks/suite/useSelector';
@@ -27,6 +27,10 @@ const StopButton = styled(Button)`
     /* 23px button height + 7 margin = 30 height of StatusMessage */
     margin-top: 7px;
     background: none;
+
+    path {
+        fill: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    }
 `;
 
 interface CoinjoinStatusWheelProps {
@@ -38,7 +42,6 @@ export const CoinjoinStatusWheel = ({ accountKey }: CoinjoinStatusWheelProps) =>
         selectCurrentCoinjoinWheelStates,
     );
 
-    const theme = useTheme();
     const dispatch = useDispatch();
 
     return (
@@ -55,7 +58,6 @@ export const CoinjoinStatusWheel = ({ accountKey }: CoinjoinStatusWheelProps) =>
                     icon="STOP"
                     iconAlignment="right"
                     iconSize={10}
-                    color={theme.TYPE_LIGHT_GREY}
                     onClick={() => dispatch(stopCoinjoinSession(accountKey))}
                 >
                     <Translation id="TR_STOP" />

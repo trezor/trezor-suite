@@ -1,12 +1,20 @@
 import React from 'react';
+import styled from 'styled-components';
 
 import { Translation } from 'src/components/suite';
 import { TrezorDevice } from 'src/types/suite';
 import { useDiscovery, useDispatch } from 'src/hooks/suite';
 import { openModal } from 'src/actions/suite/modalActions';
 
-import { Button, Tooltip, ButtonProps, useTheme } from '@trezor/components';
+import { Button, Tooltip, ButtonProps } from '@trezor/components';
 import { DiscoveryStatus } from '@suite-common/wallet-constants';
+
+const StyledButton = styled(Button)`
+    path {
+        fill: ${({ theme, isDisabled }) =>
+            isDisabled ? theme.TYPE_LIGHT_GREY : theme.TYPE_SECONDARY_TEXT};
+    }
+`;
 
 const getExplanationMessage = (device: TrezorDevice | undefined, discoveryIsRunning: boolean) => {
     let message;
@@ -32,7 +40,6 @@ const AddAccountButton = ({
     closeMenu,
     ...rest
 }: AddAccountButtonProps) => {
-    const theme = useTheme();
     const { discovery } = useDiscovery();
     const dispatch = useDispatch();
 
@@ -49,7 +56,7 @@ const AddAccountButton = ({
     const tooltipMessage = getExplanationMessage(device, discoveryIsRunning);
 
     const ButtonComponent = (
-        <Button
+        <StyledButton
             onClick={
                 device
                     ? () => {
@@ -65,14 +72,11 @@ const AddAccountButton = ({
             }
             icon="PLUS"
             variant="secondary"
-            color={
-                addAccountDisabled || isDisabled ? theme.TYPE_LIGHT_GREY : theme.TYPE_SECONDARY_TEXT
-            }
             isDisabled={addAccountDisabled || isDisabled}
             {...rest}
         >
             {!noButtonLabel && <Translation id="TR_ADD_ACCOUNT" />}
-        </Button>
+        </StyledButton>
     );
 
     if (tooltipMessage) {
