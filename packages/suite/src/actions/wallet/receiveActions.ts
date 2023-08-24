@@ -31,9 +31,7 @@ export const showUnverifiedAddress =
                 type: 'address',
                 value: address,
                 addressPath: path,
-                networkType: account.networkType,
                 symbol: account.symbol,
-                isCancelable: true,
             }),
         );
         dispatch({
@@ -52,8 +50,6 @@ export const showAddress =
         const modalPayload = {
             value: address,
             addressPath: path,
-            networkType: account.networkType,
-            symbol: account.symbol,
         };
 
         // Show warning when device is not connected
@@ -116,8 +112,8 @@ export const showAddress =
                 modalActions.openModal({
                     type: 'address',
                     ...modalPayload,
+                    symbol: account.symbol,
                     isConfirmed: true,
-                    isCancelable: true,
                 }),
             );
             dispatch({

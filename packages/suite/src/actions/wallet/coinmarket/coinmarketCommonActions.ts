@@ -70,23 +70,15 @@ export const verifyAddress =
         path = path ?? accountAddress.path;
         if (!path || !address) return;
 
-        const { networkType, symbol } = account;
         const { useEmptyPassphrase, connected, available } = device;
-
-        const modalPayload = {
-            device,
-            value: address,
-            networkType,
-            symbol,
-            addressPath: path,
-        };
 
         // Show warning when device is not connected
         if (!connected || !available) {
             dispatch(
                 modalActions.openModal({
                     type: 'unverified-address',
-                    ...modalPayload,
+                    value: address,
+                    addressPath: path,
                 }),
             );
             return;

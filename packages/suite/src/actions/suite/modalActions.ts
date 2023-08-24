@@ -25,9 +25,7 @@ export type UserContextPayload =
           value: string;
           addressPath: string;
           symbol: NetworkSymbol;
-          networkType: Account['networkType'];
           isConfirmed?: boolean;
-          isCancelable?: boolean;
       }
     | {
           type: 'xpub';
@@ -36,7 +34,6 @@ export type UserContextPayload =
           symbol: NetworkSymbol;
           accountLabel: AccountLabels['accountLabel'];
           isConfirmed?: boolean;
-          isCancelable?: boolean;
       }
     | {
           type: 'passphrase-duplicate';
