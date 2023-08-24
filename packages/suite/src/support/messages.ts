@@ -6055,10 +6055,6 @@ export default defineMessages({
         defaultMessage:
             'Failed to sync labeling data with cloud provider {provider}. User was logged out.',
     },
-    TR_TRY_VERIFYING_ON_DEVICE_AGAIN: {
-        id: 'TR_TRY_VERIFYING_ON_DEVICE_AGAIN',
-        defaultMessage: 'Try again',
-    },
     TR_REVEAL_ADDRESS: {
         id: 'TR_REVEAL_ADDRESS',
         defaultMessage: 'Reveal address',

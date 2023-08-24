@@ -22,7 +22,6 @@ export type UserContextPayload =
       }
     | {
           type: 'address';
-          device: TrezorDevice;
           value: string;
           addressPath: string;
           symbol: NetworkSymbol;
@@ -32,7 +31,6 @@ export type UserContextPayload =
       }
     | {
           type: 'xpub';
-          device: TrezorDevice;
           value: string;
           accountIndex: number;
           symbol: NetworkSymbol;

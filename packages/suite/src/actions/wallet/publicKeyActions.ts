@@ -7,15 +7,13 @@ import { selectLabelingDataForSelectedAccount } from 'src/reducers/suite/metadat
 export const openXpubModal =
     (params?: Pick<Extract<modalActions.UserContextPayload, { type: 'xpub' }>, 'isConfirmed'>) =>
     (dispatch: Dispatch, getState: GetState) => {
-        const { device } = getState().suite;
         const { account } = getState().wallet.selectedAccount;
         const { accountLabel } = selectLabelingDataForSelectedAccount(getState());
-        if (!device || !account) return;
+        if (!account) return;
 
         dispatch(
             modalActions.openModal({
                 type: 'xpub',
-                device,
                 value: account.descriptor,
                 accountIndex: account.index,
                 symbol: account.symbol,

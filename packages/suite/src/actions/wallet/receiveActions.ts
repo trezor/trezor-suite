@@ -23,13 +23,12 @@ export const dispose = (): ReceiveAction => ({
 
 export const showUnverifiedAddress =
     (path: string, address: string) => (dispatch: Dispatch, getState: GetState) => {
-        const { device } = getState().suite;
         const { account } = getState().wallet.selectedAccount;
-        if (!device || !account) return;
+        if (!account) return;
+
         dispatch(
             modalActions.openModal({
                 type: 'address',
-                device,
                 value: address,
                 addressPath: path,
                 networkType: account.networkType,
@@ -51,7 +50,6 @@ export const showAddress =
         if (!device || !account) return;
 
         const modalPayload = {
-            device,
             value: address,
             addressPath: path,
             networkType: account.networkType,

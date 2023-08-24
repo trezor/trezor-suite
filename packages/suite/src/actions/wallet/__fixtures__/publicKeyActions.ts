@@ -20,22 +20,6 @@ export default [
         },
     },
     {
-        description: 'Show unverified public key, device is undefined',
-        initialState: {
-            suite: {
-                device: undefined,
-            },
-        },
-        mocks: {},
-        action: () => publicKeyActions.openXpubModal(),
-        result: {
-            actions: [
-                { type: connectInitThunk.pending.type, payload: undefined },
-                { type: connectInitThunk.fulfilled.type, payload: undefined },
-            ],
-        },
-    },
-    {
         description: 'Show public key success (bitcoin)',
         initialState: undefined,
         mocks: {},

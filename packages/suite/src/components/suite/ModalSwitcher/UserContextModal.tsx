@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 
-import { onCancel as onCancelAction } from 'src/actions/suite/modalActions';
+import { onCancel as onCancelAction, UserContextPayload } from 'src/actions/suite/modalActions';
 import { MODAL } from 'src/actions/suite/constants';
 import { useDispatch } from 'src/hooks/suite';
 import {
@@ -45,6 +45,14 @@ export const UserContextModal = ({
 }: ReduxModalProps<typeof MODAL.CONTEXT_USER>) => {
     const dispatch = useDispatch();
 
+    const verifyAddress = useCallback(() => {
+        const { addressPath, value } = payload as Extract<
+            UserContextPayload,
+            { type: 'unverified-address' }
+        >;
+        return showAddress(addressPath, value);
+    }, [payload]);
+
     const onCancel = () => dispatch(onCancelAction());
 
     switch (payload.type) {
@@ -62,8 +70,10 @@ export const UserContextModal = ({
                 <ConfirmUnverified
                     showUnverifiedButtonText="TR_SHOW_UNVERIFIED_ADDRESS"
                     warningText="TR_ADDRESS_PHISHING_WARNING"
-                    verify={() => showAddress(payload.addressPath, payload.value)}
-                    showUnverified={() => showUnverifiedAddress(payload.addressPath, payload.value)}
+                    verify={verifyAddress}
+                    showUnverified={() =>
+                        openAddressModal({ addressPath: payload.addressPath, value: payload.value })
+                    }
                     onCancel={onCancel}
                 />
             );
