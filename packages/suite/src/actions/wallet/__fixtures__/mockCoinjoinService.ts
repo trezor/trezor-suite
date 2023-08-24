@@ -1,12 +1,23 @@
+import { EventEmitter } from 'events';
+
 export const mockCoinjoinService = () => {
     const allowed = ['btc', 'test'];
     const clients: Record<string, any> = {}; // @trezor/coinjoin CoinjoinClient
+    const clientEmitter = new EventEmitter();
+    clientEmitter.setMaxListeners(Infinity);
+
     const getMockedInstance = (network: string) => {
         const client = {
             settings: { coordinatorName: '', network },
-            on: jest.fn(),
-            off: jest.fn(),
-            emit: jest.fn(),
+            on: jest.fn((...args: Parameters<typeof clientEmitter.on>) => {
+                clientEmitter.on(...args);
+            }),
+            off: jest.fn((...args: Parameters<typeof clientEmitter.off>) => {
+                clientEmitter.off(...args);
+            }),
+            emit: jest.fn((eventName: string, ...args: any[]) => {
+                clientEmitter.emit(eventName, ...args);
+            }),
             enable: jest.fn(() =>
                 Promise.resolve({
                     success: true,
@@ -19,6 +30,7 @@ export const mockCoinjoinService = () => {
             registerAccount: jest.fn(),
             unregisterAccount: jest.fn(),
             updateAccount: jest.fn(),
+            resolveRequest: jest.fn(),
             analyzeTransactions: jest.fn(() => ({ anonymityScores: {}, rawLiquidityClue: 0 })),
         };
         const backend = {

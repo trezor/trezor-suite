@@ -13,9 +13,10 @@ import {
     initCoinjoinService,
     onCoinjoinRoundChanged,
     onCoinjoinClientRequest,
-    signCoinjoinTx,
     setDebugSettings,
     clientEmitException,
+    pauseCoinjoinSession,
+    stopCoinjoinSession,
 } from '../coinjoinClientActions';
 import * as fixtures from '../__fixtures__/coinjoinClientActions';
 import { coinjoinMiddleware } from 'src/middlewares/wallet/coinjoinMiddleware';
@@ -54,15 +55,19 @@ const rootReducer = combineReducers({
 });
 
 type State = ReturnType<typeof rootReducer>;
-type Wallet = Partial<State['wallet']> & { devices?: State['devices'] };
+type Wallet = Partial<State['wallet']> & {
+    devices?: State['devices'];
+    suite?: State['suite'];
+};
 
-const initStore = ({ accounts, coinjoin, devices, selectedAccount }: Wallet = {}) => {
+const initStore = ({ accounts, coinjoin, devices, selectedAccount, suite }: Wallet = {}) => {
     // State != suite AppState, therefore <any>
     const store = configureMockStore<any>({
         reducer: rootReducer,
         preloadedState: initPreloadedState({
             rootReducer,
             partialState: {
+                suite,
                 devices,
                 wallet: {
                     accounts,
@@ -118,9 +123,9 @@ describe('coinjoinClientActions', () => {
         });
     });
 
-    fixtures.onCoinjoinClientRequest.forEach(f => {
-        it(`onCoinjoinClientRequest: ${f.description}`, async () => {
-            const store = initStore(f.state as Wallet);
+    fixtures.getOwnershipProof.forEach(f => {
+        it(`getOwnershipProof: ${f.description}`, async () => {
+            const store = initStore(f.state as any); // params are incomplete
             TrezorConnect.setTestFixtures(f.connect);
 
             const response = await store.dispatch(onCoinjoinClientRequest(f.params as any));
@@ -138,8 +143,8 @@ describe('coinjoinClientActions', () => {
             const store = initStore(f.state as any);
             TrezorConnect.setTestFixtures(f.connect);
 
-            const response = await store.dispatch(
-                signCoinjoinTx(f.params as any), // params are incomplete
+            const [response] = await store.dispatch(
+                onCoinjoinClientRequest([f.params as any]), // params are incomplete
             );
 
             expect(TrezorConnect.signTransaction).toBeCalledTimes(
@@ -253,6 +258,17 @@ describe('coinjoinClientActions', () => {
         spy.mockClear();
     });
 
+    fixtures.clientEvents.forEach(f => {
+        it(`CoinjoinClient events: ${f.description}`, async () => {
+            const store = initStore(f.state as Wallet);
+
+            const cli = await store.dispatch(initCoinjoinService('btc'));
+            cli?.client.emit(f.event as any, f.params);
+
+            expect(store.getState().wallet.coinjoin).toMatchObject(f.result);
+        });
+    });
+
     it('setDebugSettings', () => {
         const store = initStore();
         expect(store.getState().wallet.coinjoin.debug).toBeUndefined();
@@ -357,5 +373,80 @@ describe('coinjoinClientActions', () => {
             payload: [{ key: 'btc-account1' }],
         });
         expect(cli.client.emit).toBeCalledTimes(4);
+    });
+
+    // for coverage: edge cases, missing data etc...
+    it('pauseCoinjoinSession without related account', () => {
+        const store = initStore();
+        store.dispatch(pauseCoinjoinSession('account-Z'));
+    });
+
+    it('stopCoinjoinSession without connected device', async () => {
+        const store = initStore({
+            accounts: [{ key: 'account-A', symbol: 'btc' }],
+        } as any);
+
+        TrezorConnect.setTestFixtures([{ success: false }]);
+
+        await store.dispatch(initCoinjoinService('btc'));
+
+        store.dispatch(stopCoinjoinSession('account-A'));
+    });
+
+    it('stopCoinjoinSession with error from Trezor', async () => {
+        const store = initStore({
+            accounts: [{ key: 'account-A', symbol: 'btc', deviceState: 'device-state' }],
+        } as any);
+
+        TrezorConnect.setTestFixtures([{ success: false, payload: { error: 'Firmware error' } }]);
+
+        await store.dispatch(initCoinjoinService('btc'));
+
+        store.dispatch(stopCoinjoinSession('account-A'));
+
+        expect(TrezorConnect.cancelCoinjoinAuthorization).toBeCalledTimes(1);
+    });
+
+    it('stopCoinjoinSession but not cancel authorization', async () => {
+        const store = initStore({
+            devices: [fixtures.DEVICE, { ...fixtures.DEVICE, state: 'device-state-2' }],
+            accounts: [
+                {
+                    key: 'account-A',
+                    accountType: 'coinjoin',
+                    symbol: 'btc',
+                    deviceState: 'device-state',
+                },
+                {
+                    key: 'account-B',
+                    accountType: 'coinjoin',
+                    symbol: 'btc',
+                    deviceState: 'device-state-2',
+                },
+            ],
+            coinjoin: {
+                accounts: [
+                    { key: 'account-A', session: {} },
+                    { key: 'account-B', session: {} },
+                ],
+            },
+        } as any);
+
+        await store.dispatch(initCoinjoinService('btc'));
+
+        store.dispatch(stopCoinjoinSession('account-A'));
+
+        expect(TrezorConnect.cancelCoinjoinAuthorization).toBeCalledTimes(0);
+    });
+
+    it('CoinjoinClient events', async () => {
+        const store = initStore();
+        const cli = await store.dispatch(initCoinjoinService('btc'));
+
+        // other requests are covered by fixtures.getOwnershipProof and fixtures.signCoinjoinTx
+        cli?.client.emit('request', [{ type: 'unknown' } as any]);
+
+        cli?.client.emit('log', { level: 'warn', payload: 'Warn' });
+        cli?.client.emit('log', { level: 'error', payload: 'Error' });
     });
 });
