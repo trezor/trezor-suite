@@ -7,6 +7,7 @@ import type {
     AddressNotification,
     Send,
     FiatRatesNotification,
+    FilterRequestParams,
 } from '@trezor/blockchain-link-types/lib/blockbook';
 import type {
     GetFiatRatesForTimestamps,
@@ -75,8 +76,33 @@ export class BlockbookAPI extends BaseWebsocket<BlockbookEvents> {
         return this.send('getBlock', { id: `${block}` });
     }
 
-    getMempoolFilters(fromTimestamp?: number) {
-        return this.send('getMempoolFilters', { fromTimestamp, scriptType: 'taproot' });
+    getBlockFilter(blockHash: string, filterParams?: FilterRequestParams) {
+        return this.send('getBlockFilter', {
+            blockHash,
+            scriptType: 'taproot-noordinals',
+            ...filterParams,
+        });
+    }
+
+    getBlockFiltersBatch(
+        bestKnownBlockHash: string,
+        pageSize?: number,
+        filterParams?: FilterRequestParams,
+    ) {
+        return this.send('getBlockFiltersBatch', {
+            bestKnownBlockHash,
+            pageSize,
+            scriptType: 'taproot-noordinals',
+            ...filterParams,
+        });
+    }
+
+    getMempoolFilters(fromTimestamp?: number, filterParams?: FilterRequestParams) {
+        return this.send('getMempoolFilters', {
+            fromTimestamp,
+            scriptType: 'taproot-noordinals',
+            ...filterParams,
+        });
     }
 
     getAccountInfo(payload: AccountInfoParams) {
