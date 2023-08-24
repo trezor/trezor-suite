@@ -83,30 +83,18 @@ const config: webpack.Configuration = {
                     from: `${STATIC_SRC}/popup.css`,
                     to: DIST,
                 },
-            ],
-        }),
-        // legacy fonts, should be removed once refactoring into React is finished
-        new CopyPlugin({
-            patterns: [
+                // legacy fonts, should be removed once refactoring into React is finished
                 {
                     from: `${STATIC_SRC}/fonts`,
                     to: `${DIST}/fonts`,
                 },
-            ],
-        }),
-        new CopyPlugin({
-            patterns: [
                 {
                     from: `${path.join(__dirname, '../../suite-data/files/fonts')}`,
                     to: `${DIST}/fonts`,
                 },
-            ],
-        }),
-        new CopyPlugin({
-            patterns: [
                 {
-                    from: `${STATIC_SRC}/images`,
-                    to: `${DIST}/images`,
+                    from: path.join(__dirname, '../../suite-data/files/images/png/trezor-*'),
+                    to: `${DIST}/images/[name][ext]`,
                 },
             ],
         }),
