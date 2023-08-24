@@ -14,7 +14,7 @@ export default [
         description: 'Show unverified address',
         initialState: undefined,
         mocks: {},
-        action: () => receiveActions.showUnverifiedAddress(PATH, ADDRESS),
+        action: () => receiveActions.openAddressModal({ addressPath: PATH, value: ADDRESS }),
         result: {
             actions: [
                 { type: connectInitThunk.pending.type, payload: undefined },
