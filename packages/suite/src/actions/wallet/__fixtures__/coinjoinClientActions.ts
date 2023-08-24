@@ -9,7 +9,7 @@ export const DEVICE = testMocks.getSuiteDevice({
     remember: true,
 });
 
-const SESSION = { signedRounds: [] as string[], maxRounds: 10 };
+const SESSION = { signedRounds: [] as string[], sessionPhaseQueue: [], maxRounds: 10 };
 
 export const onCoinjoinRoundChanged = [
     {
@@ -198,6 +198,42 @@ export const onCoinjoinRoundChanged = [
         },
     },
     {
+        description: 'Phase 4. (end) with autostop enabled',
+        connect: undefined,
+        state: {
+            devices: [{ ...DEVICE, features: { busy: false } }],
+            accounts: [{ key: 'account-A', deviceState: 'device-state' }],
+            selectedAccount: { key: 'account-A' },
+            coinjoin: {
+                accounts: [
+                    {
+                        key: 'account-A',
+                        session: {
+                            signedRounds: ['1', '2'],
+                            maxRounds: 10,
+                            isAutoStopEnabled: true,
+                        },
+                    },
+                ],
+            },
+        },
+        params: {
+            phase: 4,
+            endRoundState: 4,
+            inputs: [{ accountKey: 'account-A' }],
+            failed: [],
+            roundDeadline: Date.now() + 1000,
+        },
+        result: {
+            actions: [
+                COINJOIN.SESSION_ROUND_CHANGED,
+                COINJOIN.SESSION_TX_BROADCASTED,
+                COINJOIN.ACCOUNT_UNREGISTER,
+            ],
+            trezorConnectCalledTimes: 0,
+        },
+    },
+    {
         description: 'Multiple events - coinjoin ends at max rounds',
         connect: undefined,
         state: {
@@ -273,7 +309,7 @@ export const onCoinjoinRoundChanged = [
     },
 ];
 
-export const onCoinjoinClientRequest = [
+export const getOwnershipProof = [
     {
         description: 'getOwnershipProof success with 3 accounts, 2 passphrases, 2 physical devices',
         connect: [
@@ -301,9 +337,9 @@ export const onCoinjoinClientRequest = [
                 { ...DEVICE, state: 'device-2-state', id: '2' },
             ],
             accounts: [
-                { key: 'account-A', deviceState: 'device-state', utxo: [{}, {}] },
-                { key: 'account-B', deviceState: 'device-state-2', utxo: [{}, {}] },
-                { key: 'account-C', deviceState: 'device-2-state', utxo: [{}, {}] },
+                { key: 'account-A', deviceState: 'device-state', utxo: [] },
+                { key: 'account-B', deviceState: 'device-state-2', utxo: [] },
+                { key: 'account-C', deviceState: 'device-2-state', utxo: [] },
             ],
             coinjoin: {
                 clients: {},
@@ -326,7 +362,7 @@ export const onCoinjoinClientRequest = [
                     { accountKey: 'account-C', path: 'm/10025', outpoint: 'CA' },
                     { accountKey: 'account-C', path: 'm/10025', outpoint: 'CB' },
                 ],
-                commitmentDate: '0011',
+                commitmentData: '0011',
             },
         ],
         result: {
@@ -341,6 +377,114 @@ export const onCoinjoinClientRequest = [
                         { outpoint: 'BB', ownershipProof: 'BB0011' },
                         { outpoint: 'CA', ownershipProof: 'CA0011' },
                         { outpoint: 'CB', ownershipProof: 'CB0011' },
+                    ],
+                },
+            ],
+        },
+    },
+    {
+        description:
+            'getOwnershipProof unsuccessful with error from Trezor and one unresolved request',
+        connect: [
+            {
+                success: false,
+                payload: {
+                    error: 'Firmware error',
+                },
+            },
+            {
+                success: true,
+                payload: [],
+            },
+        ],
+        state: {
+            devices: [DEVICE, { ...DEVICE, state: 'device-state-2' }],
+            accounts: [
+                { key: 'account-A', deviceState: 'device-state', utxo: [] },
+                { key: 'account-B', deviceState: 'device-state-2', utxo: [] },
+            ],
+            coinjoin: {
+                clients: {},
+                accounts: [
+                    { key: 'account-A', session: SESSION },
+                    { key: 'account-B', session: SESSION },
+                ],
+            },
+        },
+        params: [
+            {
+                type: 'ownership',
+                roundId: '11',
+                inputs: [
+                    { accountKey: 'account-A', path: 'm/10025', outpoint: 'AA' },
+                    { accountKey: 'account-B', path: 'm/10025', outpoint: 'BA' },
+                ],
+                commitmentData: '0011',
+            },
+        ],
+        result: {
+            trezorConnectCalledTimes: 2,
+            response: [
+                {
+                    type: 'ownership',
+                    inputs: [
+                        { outpoint: 'AA', error: 'Firmware error' },
+                        { outpoint: 'BA', error: 'Request unresolved' },
+                    ],
+                },
+            ],
+        },
+    },
+    {
+        description: 'getOwnershipProof unsuccessful with multiple unresolved inputs',
+        connect: [],
+        state: {
+            suite: {
+                locks: [2],
+            },
+            devices: [
+                DEVICE,
+                { ...DEVICE, state: 'device-state-2' },
+                { ...DEVICE, state: 'device-2-state', id: '2', connected: false },
+                { ...DEVICE, state: 'device-3-state', id: '3' },
+            ],
+            accounts: [
+                { key: 'account-A', deviceState: 'device-state', utxo: [] },
+                { key: 'account-B', deviceState: 'device-state-2', utxo: [] },
+                { key: 'account-C', deviceState: 'device-2-state', utxo: [] },
+            ],
+            coinjoin: {
+                clients: {},
+                accounts: [
+                    { key: 'account-A', session: SESSION },
+                    { key: 'account-B' },
+                    { key: 'account-C', session: SESSION },
+                ],
+            },
+        },
+        params: [
+            {
+                type: 'ownership',
+                roundId: '11',
+                inputs: [
+                    { accountKey: 'account-A', path: 'm/10025', outpoint: 'AA' },
+                    { accountKey: 'account-B', path: 'm/10025', outpoint: 'BA' },
+                    { accountKey: 'account-B2', path: 'm/10025', outpoint: 'B2AA' },
+                    { accountKey: 'account-C', path: 'm/10025', outpoint: 'CA' },
+                ],
+                commitmentData: '0011',
+            },
+        ],
+        result: {
+            trezorConnectCalledTimes: 0,
+            response: [
+                {
+                    type: 'ownership',
+                    inputs: [
+                        { outpoint: 'AA', error: 'Device locked' },
+                        { outpoint: 'BA', error: 'Account without session' },
+                        { outpoint: 'B2AA', error: 'Account not found' },
+                        { outpoint: 'CA', error: 'Device disconnected' },
                     ],
                 },
             ],
@@ -494,7 +638,7 @@ export const signCoinjoinTx = [
                     coinjoin_flags_array: [],
                 },
             },
-            liquidityClues: [],
+            liquidityClues: [{ accountKey: 'account-A', rawLiquidityClue: 1 }],
         },
         result: {
             actions: [],
@@ -573,6 +717,399 @@ export const signCoinjoinTx = [
                     },
                 ],
             },
+        },
+    },
+    {
+        description: 'signCoinjoinTx unsuccessful with error from Trezor',
+        connect: [
+            {
+                success: false,
+                payload: {
+                    error: 'Firmware error',
+                },
+            },
+        ],
+        state: {
+            devices: [DEVICE],
+            accounts: [
+                {
+                    key: 'account-A',
+                    deviceState: 'device-state',
+                    utxo: [
+                        {
+                            txid: '123400000000000000000000000000000000000000000000000000000000dbca',
+                            vout: 5,
+                        },
+                    ],
+                    addresses: {
+                        change: [{ address: 'A1' }, { address: 'A2' }],
+                    },
+                },
+            ],
+            coinjoin: {
+                clients: {},
+                accounts: [{ key: 'account-A', session: SESSION, unlockPath: {} }],
+            },
+        },
+        params: {
+            type: 'signature',
+            roundId: '1',
+            inputs: [
+                {
+                    accountKey: 'account-A',
+                    outpoint:
+                        'cadb00000000000000000000000000000000000000000000000000000000341205000000',
+                    path: 'm/10025',
+                },
+            ],
+            transaction: {
+                inputs: [
+                    {
+                        outpoint:
+                            'cadb00000000000000000000000000000000000000000000000000000000341205000000', // account-A
+                        path: 'm/10025',
+                        amount: 1000000,
+                        commitmentData: '',
+                        scriptPubKey: '',
+                    },
+                ],
+                outputs: [
+                    { address: 'A1', path: 'm/10025', amount: 500000 }, // account-A
+                    { address: 'A2', path: 'm/10025', amount: 499500 }, // account-A
+                ],
+                affiliateRequest: {
+                    coinjoin_flags_array: [],
+                },
+            },
+            liquidityClues: [],
+        },
+        result: {
+            actions: [],
+            trezorConnectCalledTimes: 1,
+            trezorConnectCalledWith: [
+                {
+                    inputs: [
+                        { script_type: 'SPENDTAPROOT' }, // account-A
+                    ],
+                    outputs: [
+                        { script_type: 'PAYTOTAPROOT' }, // account-A
+                        { script_type: 'PAYTOTAPROOT' }, // account-A
+                    ],
+                },
+            ],
+            // this will be sent back to @trezor/coinjoin
+            response: {
+                type: 'signature',
+                roundId: '1',
+                inputs: [
+                    {
+                        outpoint:
+                            'cadb00000000000000000000000000000000000000000000000000000000341205000000',
+                        error: expect.any(String), // depends on OS "2.1.1-df0963ec (linux) Firmware error"
+                    },
+                ],
+            },
+        },
+    },
+    {
+        description:
+            'signCoinjoinTx unsuccessful with unresolved inputs (missing session, missing account, disconnected device)',
+        connect: [
+            {
+                success: true,
+                payload: {
+                    signatures: ['', '', ''],
+                },
+            },
+        ],
+        state: {
+            devices: [
+                DEVICE,
+                { ...DEVICE, state: 'device-state-2' },
+                { ...DEVICE, state: 'device-2-state', id: '2', connected: false },
+            ],
+            accounts: [
+                {
+                    key: 'account-A',
+                    deviceState: 'device-state',
+                    utxo: [
+                        {
+                            txid: '123400000000000000000000000000000000000000000000000000000000dbca',
+                            vout: 5,
+                        },
+                    ],
+                    addresses: {
+                        change: [{ address: 'A1' }, { address: 'A2' }],
+                    },
+                },
+                {
+                    key: 'account-B',
+                    deviceState: 'device-state-2',
+                    utxo: [
+                        {
+                            txid: '123400000000000000000000000000000000000000000000000000000000dbca',
+                            vout: 1,
+                        },
+                    ],
+                    addresses: {
+                        change: [{ address: 'B1' }, { address: 'B2' }],
+                    },
+                },
+                {
+                    key: 'account-C',
+                    deviceState: 'device-2-state',
+                    utxo: [
+                        {
+                            txid: '123400000000000000000000000000000000000000000000000000000000dbca',
+                            vout: 2,
+                        },
+                    ],
+                    addresses: {
+                        change: [{ address: 'C1' }, { address: 'C2' }],
+                    },
+                },
+            ],
+            coinjoin: {
+                clients: {},
+                accounts: [
+                    { key: 'account-A', unlockPath: {} },
+                    { key: 'account-B', session: SESSION, unlockPath: {} },
+                    { key: 'account-C', session: SESSION, unlockPath: {} },
+                ],
+            },
+        },
+        params: {
+            type: 'signature',
+            roundId: '1',
+            inputs: [
+                {
+                    accountKey: 'account-A',
+                    outpoint:
+                        'cadb00000000000000000000000000000000000000000000000000000000341205000000',
+                    path: 'm/10025',
+                },
+                {
+                    accountKey: 'account-B',
+                    outpoint:
+                        'cadb00000000000000000000000000000000000000000000000000000000341201000000',
+                    path: 'm/10025',
+                },
+                {
+                    accountKey: 'account-B2',
+                    outpoint:
+                        'cadb00000000000000000000000000000000000000000000000000000000341201100000',
+                    path: 'm/10025',
+                },
+                {
+                    accountKey: 'account-C',
+                    outpoint:
+                        'cadb00000000000000000000000000000000000000000000000000000000341202000000',
+                    path: 'm/10025',
+                },
+            ],
+            transaction: {
+                inputs: [
+                    {
+                        outpoint:
+                            'cadb00000000000000000000000000000000000000000000000000000000341205000000', // account-A
+                        path: 'm/10025',
+                        amount: 1000000,
+                        commitmentData: '',
+                        scriptPubKey: '',
+                    },
+                ],
+                outputs: [
+                    { address: 'A1', path: 'm/10025', amount: 500000 }, // account-A
+                ],
+                affiliateRequest: {
+                    coinjoin_flags_array: [],
+                },
+            },
+            liquidityClues: [],
+        },
+        result: {
+            actions: [],
+            trezorConnectCalledTimes: 1,
+            trezorConnectCalledWith: [
+                {
+                    device: {
+                        state: 'device-state-2',
+                    },
+                    inputs: [
+                        { script_type: 'EXTERNAL' }, // account-A
+                    ],
+                    outputs: [
+                        { script_type: 'PAYTOADDRESS' }, // account-A
+                    ],
+                },
+            ],
+            // this will be sent back to @trezor/coinjoin
+            response: {
+                type: 'signature',
+                roundId: '1',
+                inputs: [
+                    {
+                        outpoint:
+                            'cadb00000000000000000000000000000000000000000000000000000000341205000000',
+                        error: 'Account without session',
+                    },
+                    {
+                        outpoint:
+                            'cadb00000000000000000000000000000000000000000000000000000000341201100000',
+                        error: 'Account not found',
+                    },
+                    {
+                        outpoint:
+                            'cadb00000000000000000000000000000000000000000000000000000000341202000000',
+                        error: 'Device disconnected',
+                    },
+                    {
+                        outpoint:
+                            'cadb00000000000000000000000000000000000000000000000000000000341201000000',
+                        error: 'Request unresolved',
+                        // unresolved request because transaction data contains only input from account-A
+                        // obviously in that case tx should be rejected by the device...
+                    },
+                ],
+            },
+        },
+    },
+];
+
+export const clientEvents = [
+    {
+        description: 'StatusEvent updates client values',
+        event: 'status',
+        state: {},
+        params: {
+            rounds: [
+                { id: '00', phase: 0 },
+                { id: '01', phase: 3 },
+            ],
+            changed: [],
+            feeRateMedian: 129,
+            coordinationFeeRate: {
+                rate: 0.003,
+                plebsDontPayThreshold: 1000000,
+            },
+            allowedInputAmounts: { min: 5000, max: 134375000000 },
+        },
+        result: {
+            clients: {
+                btc: {
+                    status: 'loaded',
+                    coordinationFeeRate: {
+                        rate: 0.003,
+                        plebsDontPayThreshold: 1000000,
+                    },
+                    allowedInputAmounts: { min: 5000, max: 134375000000 },
+                    rounds: [
+                        { id: '00', phase: 0 },
+                        { id: '01', phase: 3 },
+                    ],
+                },
+            },
+        },
+    },
+    {
+        description: 'PrisonEvent adds input to prison',
+        event: 'prison',
+        state: {
+            coinjoin: {
+                accounts: [{ key: 'account-A' }],
+            },
+        },
+        params: {
+            prison: [
+                {
+                    type: 'input',
+                    accountKey: 'account-A',
+                    id: 'cadb00000000000000000000000000000000000000000000000000000000341205000000',
+                    sentenceStart: Date.now(),
+                    sentenceEnd: Date.now() + 100,
+                    errorCode: 'blameOf',
+                },
+                {
+                    type: 'account',
+                    accountKey: 'account-A',
+                    id: 'account-A',
+                    sentenceStart: Date.now(),
+                    sentenceEnd: Date.now() + 100,
+                    errorCode: 'blameOf',
+                },
+            ],
+        },
+        result: {
+            accounts: [
+                {
+                    key: 'account-A',
+                    prison: {
+                        cadb00000000000000000000000000000000000000000000000000000000341205000000: {
+                            type: 'input',
+                            errorCode: 'blameOf',
+                        },
+                    },
+                },
+            ],
+        },
+    },
+    {
+        description: 'RoundChanged sessionDeadline updated',
+        event: 'round',
+        state: {
+            accounts: [{ key: 'account-A', deviceState: 'device-state' }],
+            coinjoin: {
+                config: {
+                    averageAnonymityGainPerRound: 1,
+                },
+                accounts: [{ key: 'account-A', session: SESSION }],
+            },
+        },
+        params: {
+            round: {
+                id: '00',
+                phase: 0,
+                endRoundState: 0,
+                inputs: [{ accountKey: 'account-A' }],
+                failed: [],
+                addresses: [],
+                phaseDeadline: Date.now() + 1000,
+                roundDeadline: Date.now() + 10000,
+            },
+        },
+        result: {
+            accounts: [
+                {
+                    key: 'account-A',
+                    session: {
+                        sessionDeadline: expect.any(Number),
+                    },
+                },
+            ],
+        },
+    },
+    {
+        description: 'SessionPhase sessionPhaseQueue updated',
+        event: 'session-phase',
+        state: {
+            accounts: [{ key: 'account-A', deviceState: 'device-state' }],
+            coinjoin: {
+                accounts: [{ key: 'account-A', session: SESSION }],
+            },
+        },
+        params: {
+            phase: 101,
+            accountKeys: ['account-A'],
+        },
+        result: {
+            accounts: [
+                {
+                    key: 'account-A',
+                    session: {
+                        sessionPhaseQueue: [101],
+                    },
+                },
+            ],
         },
     },
 ];
