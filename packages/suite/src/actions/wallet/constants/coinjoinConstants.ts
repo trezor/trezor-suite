@@ -28,7 +28,6 @@ export const SESSION_AUTOSTOP = '@coinjoin/session-autostop';
 export const SESSION_RESTORE = '@coinjoin/session-restore';
 export const SESSION_ROUND_CHANGED = '@coinjoin/session-round-changed';
 export const SESSION_COMPLETED = '@coinjoin/session-completed';
-export const SESSION_OWNERSHIP = '@coinjoin/session-ownership';
 export const SESSION_TX_SIGNED = '@coinjoin/session-tx-signed';
 export const SESSION_TX_CANDIDATE = '@coinjoin/session-tx-candidate';
 export const SESSION_TX_BROADCASTED = '@coinjoin/session-tx-broadcasted';

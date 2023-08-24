@@ -810,13 +810,14 @@ export const selectWeightedAnonymityByAccountKey = (
     const anonymitySet = account?.addresses?.anonymitySet || {};
     const utxos = account?.utxo || [];
     const weightedAnonymitySum = BigNumber.sum(
+        0,
         ...utxos.map(utxo =>
             new BigNumber(utxo.amount).times(
                 Math.min(targetAnonymity, anonymitySet[utxo.address] || 1),
             ),
         ),
     );
-    const amountsSum = BigNumber.sum(...utxos.map(utxo => utxo.amount));
+    const amountsSum = BigNumber.sum(0, ...utxos.map(utxo => utxo.amount));
 
     return amountsSum.isZero() ? 1 : weightedAnonymitySum.div(amountsSum).toNumber();
 };
