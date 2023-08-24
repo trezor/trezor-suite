@@ -21,23 +21,28 @@ export const dispose = (): ReceiveAction => ({
     type: RECEIVE.DISPOSE,
 });
 
-export const showUnverifiedAddress =
-    (path: string, address: string) => (dispatch: Dispatch, getState: GetState) => {
+export const openAddressModal =
+    (
+        params: Pick<
+            Extract<modalActions.UserContextPayload, { type: 'address' }>,
+            'addressPath' | 'value' | 'isConfirmed'
+        >,
+    ) =>
+    (dispatch: Dispatch, getState: GetState) => {
         const { account } = getState().wallet.selectedAccount;
         if (!account) return;
 
         dispatch(
             modalActions.openModal({
                 type: 'address',
-                value: address,
-                addressPath: path,
                 symbol: account.symbol,
+                ...params,
             }),
         );
         dispatch({
-            type: RECEIVE.SHOW_UNVERIFIED_ADDRESS,
-            path,
-            address,
+            type: params.isConfirmed ? RECEIVE.SHOW_ADDRESS : RECEIVE.SHOW_UNVERIFIED_ADDRESS,
+            path: params.addressPath,
+            address: params.value,
         });
     };
 
@@ -108,19 +113,7 @@ export const showAddress =
 
         if (response.success) {
             // show second part of the "confirm address" modal
-            dispatch(
-                modalActions.openModal({
-                    type: 'address',
-                    ...modalPayload,
-                    symbol: account.symbol,
-                    isConfirmed: true,
-                }),
-            );
-            dispatch({
-                type: RECEIVE.SHOW_ADDRESS,
-                path,
-                address,
-            });
+            dispatch(openAddressModal({ ...modalPayload, isConfirmed: true }));
         } else {
             dispatch(modalActions.onCancel());
             // special case: device no-backup permissions not granted

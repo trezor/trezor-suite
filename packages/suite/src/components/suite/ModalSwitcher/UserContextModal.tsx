@@ -35,7 +35,7 @@ import { DisableTorStopCoinjoin } from 'src/components/suite/modals/DisableTorSt
 import { UnecoCoinjoinWarning } from 'src/components/suite/modals/UnecoCoinjoinWarning';
 import type { AcquiredDevice } from 'src/types/suite';
 import { openXpubModal, showXpub } from 'src/actions/wallet/publicKeyActions';
-import { showAddress, showUnverifiedAddress } from 'src/actions/wallet/receiveActions';
+import { showAddress, openAddressModal } from 'src/actions/wallet/receiveActions';
 import type { ReduxModalProps } from './types';
 
 /** Modals opened as a result of user action */
@@ -83,7 +83,7 @@ export const UserContextModal = ({
                     showUnverifiedButtonText="TR_SHOW_UNVERIFIED_XPUB"
                     warningText="TR_XPUB_PHISHING_WARNING"
                     verify={showXpub}
-                    showUnverified={() => openXpubModal()}
+                    showUnverified={openXpubModal}
                     onCancel={onCancel}
                 />
             );
