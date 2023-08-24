@@ -13,6 +13,9 @@ import type {
     Utxo as BlockbookUtxo,
     WsInfoRes,
     WsBlockHashRes,
+    WsBlockFilterReq,
+    WsBlockFiltersBatchReq,
+    MempoolTxidFilterEntries,
     Token as BlockbookToken,
     EthereumParsedInputData as BlockbookEthereumParsedInputData,
     EthereumSpecific as BlockbookEthereumSpecific,
@@ -43,14 +46,22 @@ export interface Block {
     txs: Transaction[];
 }
 
-export interface MempoolFiltersParams {
-    scriptType: 'taproot';
+export interface FilterRequestParams {
+    scriptType: 'taproot' | 'taproot-noordinals';
+    M?: number;
+}
+
+export interface MempoolFiltersParams extends FilterRequestParams {
     fromTimestamp?: number;
 }
 
-export interface MempoolFilters {
-    entries?: { [txid: string]: string };
+export interface FilterResponse {
+    P: number;
+    M: number;
+    zeroedKey: boolean;
 }
+
+type BlockFiltersBatch = `${string}:${string}:${string}`[];
 
 // XPUBAddress, ERC20, ERC721, ERC1155 - blockbook generated type (Token) is not strict enough
 export type XPUBAddress = {
@@ -191,9 +202,17 @@ declare function FSend(method: 'getInfo'): Promise<ServerInfo>;
 declare function FSend(method: 'getBlockHash', params: { height: number }): Promise<BlockHash>;
 declare function FSend(method: 'getBlock', params: { id: string }): Promise<Block>;
 declare function FSend(
+    method: 'getBlockFilter',
+    params: WsBlockFilterReq & FilterRequestParams,
+): Promise<FilterResponse & { blockFilter: string }>;
+declare function FSend(
+    method: 'getBlockFiltersBatch',
+    params: WsBlockFiltersBatchReq & FilterRequestParams,
+): Promise<FilterResponse & { blockFiltersBatch: BlockFiltersBatch }>;
+declare function FSend(
     method: 'getMempoolFilters',
     params: MempoolFiltersParams,
-): Promise<MempoolFilters>;
+): Promise<FilterResponse & MempoolTxidFilterEntries>;
 declare function FSend(method: 'getAccountInfo', params: AccountInfoParams): Promise<AccountInfo>;
 declare function FSend(method: 'getAccountUtxo', params: AccountUtxoParams): Promise<AccountUtxo>;
 declare function FSend(method: 'getTransaction', params: { txid: string }): Promise<Transaction>;
