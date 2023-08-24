@@ -83,6 +83,7 @@ export const icons = {
     userFocus: require('../assets/icons/userFocus.svg'),
     warningCircle: require('../assets/icons/warningCircle.svg'),
     warningCircleLight: require('../assets/icons/warningCircleLight.svg'),
+    warningOctagon: require('../assets/icons/warningOctagon.svg'),
     warningTriangle: require('../assets/icons/warningTriangle.svg'),
     warningTriangleLight: require('../assets/icons/warningTriangleLight.svg'),
 } as const;

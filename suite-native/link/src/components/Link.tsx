@@ -7,29 +7,48 @@ import Animated, {
     useSharedValue,
 } from 'react-native-reanimated';
 
-import { useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { Color } from '@trezor/theme';
 
 import { useOpenLink } from '../useOpenLink';
 
 type LinkProps = {
     label: string;
     href: string;
+    isUnderlined?: boolean;
+    textColor?: Color;
+    textPressedColor?: Color;
 };
+
+const textStyle = prepareNativeStyle<{ isUnderlined: boolean }>((_, { isUnderlined }) => ({
+    extend: {
+        condition: isUnderlined,
+        style: {
+            textDecorationLine: 'underline',
+        },
+    },
+}));
 
 const ANIMATION_DURATION = 100;
 const IS_NOT_PRESSED_VALUE = 0;
 const IS_PRESSED_VALUE = 1;
 
-export const Link = ({ href, label }: LinkProps) => {
-    const { utils } = useNativeStyles();
+export const Link = ({
+    href,
+    label,
+    isUnderlined = false,
+    textColor = 'textPrimaryDefault',
+    textPressedColor = 'textPrimaryPressed',
+}: LinkProps) => {
+    const { utils, applyStyle } = useNativeStyles();
     const openLink = useOpenLink();
     const isPressed = useSharedValue(IS_NOT_PRESSED_VALUE);
 
-    const textColorStyle = useAnimatedStyle(() => ({
+    const animatedTextColorStyle = useAnimatedStyle(() => ({
         color: interpolateColor(
             isPressed.value,
             [IS_NOT_PRESSED_VALUE, IS_PRESSED_VALUE],
-            [utils.colors.textPrimaryDefault, utils.colors.textPrimaryPressed],
+            [utils.colors[textColor], utils.colors[textPressedColor]],
         ),
     }));
 
@@ -51,7 +70,7 @@ export const Link = ({ href, label }: LinkProps) => {
             onPressIn={handlePressIn}
             onPress={handlePress}
             onPressOut={handlePressOut}
-            style={textColorStyle}
+            style={[applyStyle(textStyle, { isUnderlined }), animatedTextColorStyle]}
             suppressHighlighting
         >
             {label}

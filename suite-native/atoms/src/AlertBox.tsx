@@ -37,7 +37,7 @@ export const AlertBox = ({ title, isIconVisible = true }: AlertBoxProps) => {
                     <RoundedIcon
                         name="info"
                         color="iconAlertBlue"
-                        size="medium"
+                        iconSize="medium"
                         backgroundColor="backgroundAlertBlueSubtleOnElevation1"
                     />
                 </Box>

@@ -33,6 +33,11 @@ export const selectActiveContextMessages = makeSelectActiveMessagesByCategory('c
 export const selectActiveModalMessages = makeSelectActiveMessagesByCategory('modal');
 export const selectActiveFeatureMessages = makeSelectActiveMessagesByCategory('feature');
 
+export const selectIsAnyBannerMessageActive = (state: MessageSystemRootState) => {
+    const activeBannerMessages = selectActiveBannerMessages(state);
+    return activeBannerMessages.length > 0;
+};
+
 export const selectBannerMessage = memoize((state: MessageSystemRootState) => {
     const activeBannerMessages = selectActiveBannerMessages(state);
     return activeBannerMessages[0];

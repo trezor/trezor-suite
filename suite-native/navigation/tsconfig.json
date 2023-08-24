@@ -4,6 +4,9 @@
     "references": [
         { "path": "../../suite-common/icons" },
         {
+            "path": "../../suite-common/message-system"
+        },
+        {
             "path": "../../suite-common/suite-constants"
         },
         {

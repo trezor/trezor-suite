@@ -2,6 +2,7 @@
     "extends": "../../tsconfig.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
+        { "path": "../../suite-common/icons" },
         {
             "path": "../../suite-common/message-system"
         },
@@ -9,7 +10,14 @@
             "path": "../../suite-common/redux-utils"
         },
         {
+            "path": "../../suite-common/suite-types"
+        },
+        {
             "path": "../../suite-common/wallet-core"
-        }
+        },
+        { "path": "../atoms" },
+        { "path": "../link" },
+        { "path": "../../packages/styles" },
+        { "path": "../../packages/theme" }
     ]
 }

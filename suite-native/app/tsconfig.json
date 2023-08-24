@@ -30,6 +30,7 @@
         { "path": "../biometrics" },
         { "path": "../config" },
         { "path": "../fiat-rates" },
+        { "path": "../message-system" },
         { "path": "../module-accounts" },
         { "path": "../module-accounts-import" },
         { "path": "../module-dev-utils" },

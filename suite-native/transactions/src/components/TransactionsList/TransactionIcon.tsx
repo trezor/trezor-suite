@@ -49,7 +49,7 @@ export const TransactionIcon = ({
             <RoundedIcon
                 name={transactionIconMap[transactionType]}
                 color={iconColor}
-                size="mediumLarge"
+                iconSize="mediumLarge"
             />
             {isAnimated && <TransactionIconSpinner radius={SPINNER_RADIUS} color={iconColor} />}
             <Box style={applyStyle(cryptoIconStyle)}>
