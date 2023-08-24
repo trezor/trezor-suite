@@ -2,6 +2,7 @@ import { TypedEmitter } from '@trezor/utils/lib/typedEventEmitter';
 
 import * as coordinator from './coordinator';
 import { transformStatus } from '../utils/roundUtils';
+import { patchResponse } from '../utils/http';
 import { coordinatorRequest } from './coordinatorRequest';
 import { STATUS_TIMEOUT } from '../constants';
 import { RoundPhase } from '../enums';
@@ -229,7 +230,7 @@ export class Status extends TypedEmitter<StatusEvents> {
                 identity: this.identities[0],
                 attempts: 3, // schedule 3 attempts on start
             },
-        );
+        ).then(patchResponse);
 
         return version
             ? ({
