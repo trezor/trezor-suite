@@ -2,7 +2,7 @@ import { scheduleAction, enumUtils } from '@trezor/utils';
 
 import { HTTP_REQUEST_TIMEOUT } from '../constants';
 import { WabiSabiProtocolErrorCode } from '../enums';
-import { httpPost, httpGet, RequestOptions } from '../utils/http';
+import { httpPost, httpGet, patchResponse, RequestOptions } from '../utils/http';
 
 export type { RequestOptions } from '../utils/http';
 
@@ -114,9 +114,10 @@ export const coordinatorRequest = async <R = void>(
         return result;
     }
 
+    const protocolError = patchResponse(result);
     // catch WabiSabiProtocolException
-    if (typeof result === 'object' && 'ErrorCode' in result) {
-        throw new WabiSabiProtocolException(result);
+    if (typeof protocolError === 'object' && 'ErrorCode' in protocolError) {
+        throw new WabiSabiProtocolException(protocolError);
     }
 
     // fallback error

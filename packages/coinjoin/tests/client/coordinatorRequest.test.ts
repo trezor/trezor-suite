@@ -1,4 +1,5 @@
 import { coordinatorRequest } from '../../src/client/coordinatorRequest';
+import { patchResponse } from '../../src/utils/http';
 import { createServer } from '../mocks/server';
 
 let server: Awaited<ReturnType<typeof createServer>>;
@@ -168,5 +169,71 @@ describe('http', () => {
         });
         server?.addListener('test-handle-request', requestListener);
         await coordinatorRequest('status', {}, { baseUrl, identity: 'abcd' });
+    });
+
+    it('patchResponse camelCaseToPascalCase', async () => {
+        server?.addListener('test-request', ({ url, resolve, reject }) => {
+            if (url.endsWith('/get-camel-case')) {
+                return resolve({
+                    foo: 'bar',
+                    nestedObject: {
+                        childArray1: [1, 2],
+                        childArray2: [{ key1: true, key2: null, key3: 'string', key4: 1 }],
+                        childObject1: null,
+                        childObject2: {
+                            field1: {
+                                field2: {
+                                    field3: {},
+                                    field4: [],
+                                },
+                            },
+                        },
+                        affiliateData: {
+                            abcd01234: { trezor: 'base64data', foo: 1 },
+                        },
+                    },
+                });
+            }
+            if (url.endsWith('/get-exception')) {
+                reject(500, {
+                    type: 'Exception',
+                    errorCode: 'InputBanned',
+                    description: 'Some description',
+                    exceptionData: { type: 'InputBannedExceptionData', bannedUntil: '00:00:00' },
+                });
+            }
+        });
+
+        const response = await coordinatorRequest('get-camel-case', {}, { baseUrl }).then(
+            patchResponse,
+        );
+        expect(response).toEqual({
+            Foo: 'bar',
+            NestedObject: {
+                ChildArray1: [1, 2],
+                ChildArray2: [{ Key1: true, Key2: null, Key3: 'string', Key4: 1 }],
+                ChildObject1: null,
+                ChildObject2: {
+                    Field1: {
+                        Field2: {
+                            Field3: {},
+                            Field4: [],
+                        },
+                    },
+                },
+                AffiliateData: {
+                    abcd01234: { trezor: 'base64data', foo: 1 },
+                },
+            },
+        });
+
+        try {
+            await coordinatorRequest('get-exception', {}, { baseUrl });
+        } catch (error) {
+            expect(error.type).toBe('Exception');
+            expect(error.errorCode).toBe(10); // string transformed to enum
+            expect(error.exceptionData.Type).toBe('InputBannedExceptionData');
+            expect(error.exceptionData.BannedUntil).toBe('00:00:00');
+        }
     });
 });
