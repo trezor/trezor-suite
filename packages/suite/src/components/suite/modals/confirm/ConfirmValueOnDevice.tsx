@@ -1,15 +1,16 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 
 import { Translation, Modal } from 'src/components/suite';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { QrCode, QRCODE_PADDING, QRCODE_SIZE } from 'src/components/suite/QrCode';
-import { TrezorDevice } from 'src/types/suite/index';
 import { Button, ConfirmOnDevice, ModalProps, variables } from '@trezor/components';
 import { copyToClipboard } from '@trezor/dom-utils';
 import DeviceDisconnected from './Address/components/DeviceDisconnected';
 import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
+import { MODAL } from 'src/actions/suite/constants';
+import { ThunkAction } from 'src/types/suite';
 
 const Wrapper = styled.div`
     display: flex;
@@ -50,10 +51,10 @@ const StyledDeviceDisconnected = styled(DeviceDisconnected)`
 `;
 
 export interface ConfirmDeviceScreenProps extends Pick<ModalProps, 'onCancel' | 'heading'> {
-    device: TrezorDevice;
     copyButtonText: React.ReactNode;
     copyButtonDataTest?: string;
     isConfirmed?: boolean;
+    validateOnDevice: () => ThunkAction;
     value: string;
     valueDataTest?: string;
 }
@@ -61,17 +62,17 @@ export interface ConfirmDeviceScreenProps extends Pick<ModalProps, 'onCancel' | 
 export const ConfirmValueOnDevice = ({
     copyButtonText,
     copyButtonDataTest,
-    device,
     heading,
     isConfirmed,
     onCancel,
+    validateOnDevice,
     value,
     valueDataTest,
 }: ConfirmDeviceScreenProps) => {
+    const device = useSelector(state => state.suite.device);
+    const modalContext = useSelector(state => state.modal.context);
     const dispatch = useDispatch();
-
-    const showCopyButton = isConfirmed || !device.connected;
-
+    const showCopyButton = isConfirmed || !device?.connected;
     const isActionAbortable = useSelector(selectIsActionAbortable) || showCopyButton;
 
     const copy = () => {
@@ -81,12 +82,19 @@ export const ConfirmValueOnDevice = ({
         }
     };
 
+    // Device connected while the modal is open -> validate on device.
+    useEffect(() => {
+        if (device?.connected && modalContext === MODAL.CONTEXT_USER && !isConfirmed) {
+            dispatch(validateOnDevice());
+        }
+    }, [device?.connected, dispatch, isConfirmed, modalContext, validateOnDevice]);
+
     return (
         <StyledModal
             isCancelable={isActionAbortable}
             heading={heading}
             modalPrompt={
-                device.connected ? (
+                device?.connected ? (
                     <ConfirmOnDevice
                         title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
                         deviceModelInternal={device.features?.internal_model}
@@ -97,7 +105,7 @@ export const ConfirmValueOnDevice = ({
             onCancel={onCancel}
         >
             <Wrapper>
-                {!device.connected && <StyledDeviceDisconnected label={device.label} />}
+                {device?.connected === false && <StyledDeviceDisconnected label={device.label} />}
                 <QrCode value={value} />
                 <Value data-test={valueDataTest}>{value}</Value>
                 {showCopyButton && (

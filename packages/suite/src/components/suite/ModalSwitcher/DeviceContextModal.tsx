@@ -91,8 +91,8 @@ export const DeviceContextModal = ({
         case 'ButtonRequest_Address':
             return account && data?.address ? (
                 <ConfirmAddress
-                    device={device}
                     value={data.address}
+                    addressPath={data.serializedPath}
                     symbol={account.symbol}
                     onCancel={abort}
                 />
@@ -100,7 +100,6 @@ export const DeviceContextModal = ({
         case 'ButtonRequest_PublicKey':
             return account ? (
                 <ConfirmXpub
-                    device={device}
                     value={account.descriptor}
                     symbol={account.symbol}
                     accountIndex={account.index}

@@ -9,8 +9,6 @@ const { getSuiteDevice } = global.JestMocks;
 const PATH = "m/49'/0'/0'/0/0";
 const ADDRESS = 'AddRe5s';
 
-const UNAVAILABLE_DEVICE = getSuiteDevice({ available: false });
-
 export default [
     {
         description: 'Show unverified address',
@@ -27,23 +25,6 @@ export default [
                     path: PATH,
                     address: ADDRESS,
                 },
-            ],
-        },
-    },
-    {
-        description: 'Show unverified address, device is undefined',
-        initialState: {
-            suite: {
-                device: undefined,
-                settings: { debug: {} },
-            },
-        },
-        mocks: {},
-        action: () => receiveActions.showUnverifiedAddress(PATH, ADDRESS),
-        result: {
-            actions: [
-                { type: connectInitThunk.pending.type, payload: undefined },
-                { type: connectInitThunk.fulfilled.type, payload: undefined },
             ],
         },
     },
@@ -179,25 +160,8 @@ export default [
                 { type: connectInitThunk.fulfilled.type, payload: undefined },
                 {
                     type: MODAL.OPEN_USER_CONTEXT,
-                    payload: { device: UNAVAILABLE_DEVICE, addressPath: PATH },
+                    payload: { addressPath: PATH, value: ADDRESS },
                 },
-            ],
-        },
-    },
-    {
-        description: 'Show address, device is undefined',
-        initialState: {
-            suite: {
-                settings: { debug: {} },
-                device: undefined,
-            },
-        },
-        mocks: {},
-        action: () => receiveActions.showAddress(PATH, ADDRESS),
-        result: {
-            actions: [
-                { type: connectInitThunk.pending.type, payload: undefined },
-                { type: connectInitThunk.fulfilled.type, payload: undefined },
             ],
         },
     },

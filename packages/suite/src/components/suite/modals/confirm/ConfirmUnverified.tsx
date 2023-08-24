@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';
@@ -14,7 +14,7 @@ const StyledImage = styled(Image)`
 `;
 
 const StyledModal = styled(Modal)`
-    width: 500px;
+    width: 520px;
 `;
 
 const StyledButton = styled(Button)`
@@ -38,6 +38,13 @@ export const ConfirmUnverified = ({
     const dispatch = useDispatch();
     const { device, isLocked } = useDevice();
 
+    // Device connected while the modal is open -> switch to verification modal.
+    useEffect(() => {
+        if (device?.connected) {
+            dispatch(verify());
+        }
+    }, [device?.connected, dispatch, verify]);
+
     // just to make TS happy
     if (!device) return null;
 
@@ -49,22 +56,15 @@ export const ConfirmUnverified = ({
     const description = isPassphraseRequired
         ? 'TR_PLEASE_ENABLE_PASSPHRASE'
         : 'TR_PLEASE_CONNECT_YOUR_DEVICE';
-    const primaryButtonText = isPassphraseRequired
-        ? 'TR_ACCOUNT_ENABLE_PASSPHRASE'
-        : 'TR_TRY_VERIFYING_ON_DEVICE_AGAIN';
 
-    const verifyAndContinue = async () => {
+    const enablePassphraseAndContinue = async () => {
         if (!device.available) {
             const result = await dispatch(applySettings({ use_passphrase: true }));
             if (!result || !result.success) return;
         }
-        onCancel();
         dispatch(verify());
     };
-    const showUnverifiedAndContinue = () => {
-        onCancel();
-        dispatch(showUnverified());
-    };
+    const continueUnverified = () => dispatch(showUnverified());
 
     return (
         <StyledModal
@@ -79,16 +79,18 @@ export const ConfirmUnverified = ({
             }
             bottomBar={
                 <>
-                    <Button variant="secondary" onClick={showUnverifiedAndContinue}>
+                    <Button variant="secondary" onClick={continueUnverified}>
                         <Translation id={showUnverifiedButtonText} />
                     </Button>
-                    <StyledButton
-                        variant="primary"
-                        onClick={verifyAndContinue}
-                        isDisabled={isDeviceLocked}
-                    >
-                        <Translation id={primaryButtonText} />
-                    </StyledButton>
+                    {isPassphraseRequired && (
+                        <StyledButton
+                            variant="primary"
+                            onClick={enablePassphraseAndContinue}
+                            isDisabled={isDeviceLocked}
+                        >
+                            <Translation id="TR_ACCOUNT_ENABLE_PASSPHRASE" />
+                        </StyledButton>
+                    )}
                 </>
             }
         >
