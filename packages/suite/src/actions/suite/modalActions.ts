@@ -24,7 +24,6 @@ export type UserContextPayload =
           type: 'address';
           value: string;
           addressPath: string;
-          symbol: NetworkSymbol;
           isConfirmed?: boolean;
       }
     | {

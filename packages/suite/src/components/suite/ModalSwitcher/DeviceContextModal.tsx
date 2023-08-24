@@ -93,7 +93,6 @@ export const DeviceContextModal = ({
                 <ConfirmAddress
                     value={data.address}
                     addressPath={data.serializedPath}
-                    symbol={account.symbol}
                     onCancel={abort}
                 />
             ) : null;
