@@ -28,14 +28,10 @@ export const openAddressModal =
             'addressPath' | 'value' | 'isConfirmed'
         >,
     ) =>
-    (dispatch: Dispatch, getState: GetState) => {
-        const { account } = getState().wallet.selectedAccount;
-        if (!account) return;
-
+    (dispatch: Dispatch) => {
         dispatch(
             modalActions.openModal({
                 type: 'address',
-                symbol: account.symbol,
                 ...params,
             }),
         );

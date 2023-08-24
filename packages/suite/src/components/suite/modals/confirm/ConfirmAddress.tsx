@@ -2,13 +2,13 @@ import React, { useCallback } from 'react';
 
 import { showAddress } from 'src/actions/wallet/receiveActions';
 import { Translation } from 'src/components/suite';
-import { NetworkSymbol } from 'src/types/wallet';
+import { useSelector } from 'src/hooks/suite';
+import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 import { ConfirmValueOnDevice, ConfirmDeviceScreenProps } from './ConfirmValueOnDevice';
 
 interface ConfirmAddressProps
     extends Pick<ConfirmDeviceScreenProps, 'isConfirmed' | 'onCancel' | 'value'> {
     addressPath: string;
-    symbol: NetworkSymbol;
 }
 
 export const ConfirmAddress = ({ addressPath, value, ...props }: ConfirmAddressProps) => {
