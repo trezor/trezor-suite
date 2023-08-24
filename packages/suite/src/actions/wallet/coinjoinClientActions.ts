@@ -16,6 +16,7 @@ import {
     getSessionDeadline,
     getEstimatedTimePerRound,
 } from 'src/utils/wallet/coinjoinUtils';
+import { getDeviceInstances } from 'src/utils/suite/device';
 import { getOsName } from '@trezor/env-utils';
 import { CoinjoinService } from 'src/services/coinjoin';
 import { selectAccountByKey } from '@suite-common/wallet-core';
@@ -111,15 +112,6 @@ const clientSessionCompleted = (accountKey: string) =>
         },
     } as const);
 
-const clientSessionOwnership = (accountKey: string, roundId: string) =>
-    ({
-        type: COINJOIN.SESSION_OWNERSHIP,
-        payload: {
-            accountKey,
-            roundId,
-        },
-    } as const);
-
 const clientSessionTxSigned = (payload: {
     accountKey: string;
     roundId: string;
@@ -187,7 +179,6 @@ export type CoinjoinClientAction =
     | ReturnType<typeof clientOnPrisonEvent>
     | ReturnType<typeof clientSessionRoundChanged>
     | ReturnType<typeof clientSessionCompleted>
-    | ReturnType<typeof clientSessionOwnership>
     | ReturnType<typeof clientSessionPhase>
     | ReturnType<typeof clientSessionTxSigned>
     | ReturnType<typeof clientSessionTxCandidate>
@@ -294,7 +285,8 @@ export const pauseCoinjoinSession =
 // called from coinjoin account UI or exceptions like device disconnection, forget wallet/account etc.
 export const stopCoinjoinSession =
     (accountKey: string) => async (dispatch: Dispatch, getState: GetState) => {
-        const account = selectAccountByKey(getState(), accountKey);
+        const state = getState();
+        const account = selectAccountByKey(state, accountKey);
 
         if (!account) {
             return;
@@ -302,16 +294,34 @@ export const stopCoinjoinSession =
 
         // get @trezor/coinjoin client if available
         const client = getCoinjoinClient(account.symbol);
-        if (!client) {
-            return;
+        // unregister account in @trezor/coinjoin
+        client?.unregisterAccount(account.key);
+
+        // cancelCoinjoinAuthorization should be called only if there is no other registered coinjoin account
+        const device = state.devices.find(d => d.state === account.deviceState);
+        let shouldCancelAuthorization = device?.connected;
+        if (device) {
+            // find all instances of this physical device
+            const deviceInstances = getDeviceInstances(device, state.devices);
+            // find other coinjoin accounts related to this physical device
+            const otherAccounts = deviceInstances.flatMap(d =>
+                state.wallet.accounts.filter(
+                    a =>
+                        a.accountType === 'coinjoin' &&
+                        a.key !== accountKey &&
+                        a.deviceState === d.state,
+                ),
+            );
+            // find coinjoin account with session
+            const otherRegisteredAccounts = otherAccounts.flatMap(a =>
+                state.wallet.coinjoin.accounts.filter(cja => cja.key === a.key && cja.session),
+            );
+            if (otherRegisteredAccounts.length > 0) {
+                shouldCancelAuthorization = false;
+            }
         }
 
-        // unregister account in @trezor/coinjoin
-        client.unregisterAccount(account.key);
-
-        const { device } = getState().suite;
-
-        if (device?.connected) {
+        if (shouldCancelAuthorization) {
             const result = await TrezorConnect.cancelCoinjoinAuthorization({
                 device,
                 useEmptyPassphrase: device?.useEmptyPassphrase,
@@ -427,7 +437,7 @@ export const onCoinjoinRoundChanged =
 const coinjoinResponseError = (utxos: CoinjoinRequestEvent['inputs'], error: string) =>
     utxos.map(u => ({ outpoint: u.outpoint, error }));
 
-export const getOwnershipProof =
+const getOwnershipProof =
     (request: Extract<CoinjoinRequestEvent, { type: 'ownership' }>) =>
     async (_dispatch: Dispatch, getState: GetState) => {
         const {
@@ -539,7 +549,7 @@ export const clientEmitException =
         });
     };
 
-export const signCoinjoinTx =
+const signCoinjoinTx =
     (request: Extract<CoinjoinRequestEvent, { type: 'signature' }>) =>
     async (dispatch: Dispatch, getState: GetState) => {
         const {
@@ -562,7 +572,7 @@ export const signCoinjoinTx =
         );
 
         const groupParamsByDevice = Object.keys(groupUtxosByAccount).flatMap(key => {
-            const coinjoinAccount = coinjoin.accounts.find(r => r.key === key && r.session);
+            const coinjoinAccount = coinjoin.accounts.find(r => r.key === key);
             const realAccount = accounts.find(a => a.key === key);
             const utxos = groupUtxosByAccount[key];
             if (!coinjoinAccount || !realAccount) {
