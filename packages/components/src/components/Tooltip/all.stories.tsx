@@ -38,14 +38,6 @@ storiesOf('Misc/Tooltip', module).add(
                     <span>Tooltip right</span>
                 </Tooltip>
             </TooltipWrapper>
-            <TooltipWrapper data-test="tooltip-top">
-                <Tooltip
-                    content="Simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy"
-                    readMore={{ link: 'https://www.trezor.io', text: 'Read more' }}
-                >
-                    <span>Tooltip wth read more link</span>
-                </Tooltip>
-            </TooltipWrapper>
             <TooltipWrapper data-test="tooltip-rich">
                 <Tooltip
                     rich
