@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react';
 
 import { IconName, Icon } from '@suite-common/icons';
-import { Color } from '@trezor/theme';
+import { Color, TypographyStyle } from '@trezor/theme';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { Box } from './Box';
@@ -18,6 +18,7 @@ type PictogramProps = {
     icon: IconName;
     size?: PictogramSize;
     title?: ReactNode;
+    titleVariant?: TypographyStyle;
     subtitle?: string;
 };
 
@@ -69,7 +70,14 @@ const circleContainerStyle = prepareNativeStyle<CircleStyleProps>(
     }),
 );
 
-export const Pictogram = ({ variant, icon, title, subtitle, size = 'large' }: PictogramProps) => {
+export const Pictogram = ({
+    variant,
+    icon,
+    title,
+    subtitle,
+    titleVariant = 'titleSmall',
+    size = 'large',
+}: PictogramProps) => {
     const { applyStyle } = useNativeStyles();
     const { outerBackgroundColor, innerBackgroundColor, iconColor } = pictogramVariantsMap[variant];
     const { outerRingSize, innerRingSize } = sizeToDimensionsMap[size];
@@ -93,7 +101,7 @@ export const Pictogram = ({ variant, icon, title, subtitle, size = 'large' }: Pi
             </Box>
             {title && (
                 <VStack alignItems="center">
-                    <Text variant="titleSmall" align="center">
+                    <Text variant={titleVariant} align="center">
                         {title}
                     </Text>
                     <Text color="textSubdued" align="center">
