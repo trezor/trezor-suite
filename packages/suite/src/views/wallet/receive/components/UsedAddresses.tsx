@@ -111,12 +111,13 @@ const DEFAULT_LIMIT = 10;
 interface ItemProps {
     index: number;
     addr: AccountAddress;
+    locked: boolean;
     symbol: Network['symbol'];
     metadataPayload: MetadataAddPayload;
     onClick: () => void;
 }
 
-const Item = ({ addr, symbol, onClick, metadataPayload, index }: ItemProps) => {
+const Item = ({ addr, locked, symbol, onClick, metadataPayload, index }: ItemProps) => {
     // Currently used addresses are always partially hidden
     // The only place where full address is shown is confirm-addr modal
     const [isHovered, setIsHovered] = React.useState(false);
@@ -166,6 +167,8 @@ const Item = ({ addr, symbol, onClick, metadataPayload, index }: ItemProps) => {
                     <Button
                         data-test={`@wallet/receive/reveal-address-button/${index}`}
                         variant="tertiary"
+                        disabled={locked}
+                        isLoading={locked}
                         onClick={onClick}
                     >
                         <Translation id="TR_REVEAL_ADDRESS" />
@@ -242,15 +245,14 @@ export const UsedAddresses = ({
                         key={addr.path}
                         addr={addr}
                         symbol={account.symbol}
+                        locked={locked}
                         metadataPayload={{
                             type: 'addressLabel',
                             accountKey: account.key,
                             defaultValue: addr.address,
                             value: addressLabels[addr.address],
                         }}
-                        onClick={() =>
-                            !locked ? dispatch(showAddress(addr.path, addr.address)) : undefined
-                        }
+                        onClick={() => dispatch(showAddress(addr.path, addr.address))}
                     />
                 ))}
             </GridTable>
