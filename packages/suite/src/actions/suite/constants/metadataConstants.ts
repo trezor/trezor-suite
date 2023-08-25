@@ -1,4 +1,8 @@
-import { MetadataEncryptionVersion } from '@suite-common/metadata-types';
+import {
+    MetadataEncryptionVersion,
+    AccountLabels,
+    WalletLabels,
+} from '@suite-common/metadata-types';
 
 export const ENABLE = '@metadata/enable';
 export const DISABLE = '@metadata/disable';
@@ -39,3 +43,12 @@ export const GOOGLE_IMPLICIT_FLOW_CLIENT_ID =
 export const DROPBOX_CLIENT_ID = 'wg0yz2pbgjyhoda';
 
 export const ENCRYPTION_VERSION: MetadataEncryptionVersion = 1;
+export const DEFAULT_ACCOUNT_METADATA: AccountLabels = {
+    accountLabel: '',
+    outputLabels: {},
+    addressLabels: {},
+};
+
+export const DEFAULT_WALLET_METADATA: WalletLabels = {
+    walletLabel: '',
+};
