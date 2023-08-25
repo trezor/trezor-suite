@@ -66,7 +66,6 @@ export const getUnusedAddressFromAccount = (account: Account) => {
         case 'ripple':
         case 'ethereum':
         case 'solana': {
-            // TODO(vl): address
             return {
                 address: account.descriptor,
                 path: account.path,
