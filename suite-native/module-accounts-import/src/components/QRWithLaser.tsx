@@ -88,10 +88,10 @@ const RoundedCorner = ({ x = 0, y = 0, width, height, ...restProps }: RoundedCor
 };
 
 export const QrWithLaser = () => {
-    const width = 300;
-    const height = 330;
-    const qrCodeWidth = 150;
-    const roundedRectWidth = 222;
+    const width = 340;
+    const height = 260;
+    const qrCodeWidth = 200;
+    const roundedRectWidth = 224;
 
     const {
         utils: { colors },

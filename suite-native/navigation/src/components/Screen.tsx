@@ -71,7 +71,8 @@ const screenHeaderStyle = prepareNativeStyle<{
 }>((utils, { insets, customHorizontalPadding }) => ({
     paddingLeft: Math.max(insets.left, customHorizontalPadding),
     paddingRight: Math.max(insets.right, customHorizontalPadding),
-    paddingVertical: utils.spacings.small,
+    paddingTop: utils.spacings.large,
+    paddingBottom: utils.spacings.extraLarge,
 }));
 
 export const Screen = ({

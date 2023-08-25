@@ -2,7 +2,7 @@ import React from 'react';
 
 import { Atom, useAtom } from 'jotai';
 
-import { Box, Text } from '@suite-native/atoms';
+import { HStack, Text } from '@suite-native/atoms';
 import { Icon, IconName } from '@suite-common/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
@@ -22,6 +22,8 @@ type PercentageChangeProps = {
     hasPriceIncreasedAtom: HasPriceIncreasedAtom;
 };
 
+const PRICE_CHANGE_ICON_SIZE = 6;
+
 const PercentageChange = ({
     percentageChangeAtom,
     hasPriceIncreasedAtom,
@@ -30,7 +32,7 @@ const PercentageChange = ({
     const [hasPriceIncreased] = useAtom(hasPriceIncreasedAtom);
 
     return (
-        <Text color={getColorForPercentageChange(hasPriceIncreased)} variant="hint">
+        <Text color={getColorForPercentageChange(hasPriceIncreased)} variant="label">
             {percentageChange.toFixed(2)}%
         </Text>
     );
@@ -49,14 +51,10 @@ const PercentageChangeArrow = ({
         <Icon
             name={iconName}
             color={getColorForPercentageChange(hasPriceIncreased)}
-            size="extraSmall"
+            customSize={PRICE_CHANGE_ICON_SIZE}
         />
     );
 };
-
-const arrowStyle = prepareNativeStyle(() => ({
-    marginRight: 4,
-}));
 
 const priceIncreaseWrapperStyle = prepareNativeStyle<{ hasPriceIncreased: boolean }>(
     (utils, { hasPriceIncreased }) => ({
@@ -66,7 +64,7 @@ const priceIncreaseWrapperStyle = prepareNativeStyle<{ hasPriceIncreased: boolea
         flexDirection: 'row',
         alignItems: 'center',
         paddingHorizontal: utils.spacings.small,
-        paddingVertical: utils.spacings.small / 4,
+        paddingVertical: utils.spacings.extraSmall / 2,
         borderRadius: utils.borders.radii.round,
     }),
 );
@@ -79,14 +77,15 @@ export const PriceChangeIndicator = ({
     const [hasPriceIncreased] = useAtom(hasPriceIncreasedAtom);
 
     return (
-        <Box style={applyStyle(priceIncreaseWrapperStyle, { hasPriceIncreased })}>
-            <Box style={applyStyle(arrowStyle)}>
-                <PercentageChangeArrow hasPriceIncreasedAtom={hasPriceIncreasedAtom} />
-            </Box>
+        <HStack
+            spacing={PRICE_CHANGE_ICON_SIZE}
+            style={applyStyle(priceIncreaseWrapperStyle, { hasPriceIncreased })}
+        >
+            <PercentageChangeArrow hasPriceIncreasedAtom={hasPriceIncreasedAtom} />
             <PercentageChange
                 hasPriceIncreasedAtom={hasPriceIncreasedAtom}
                 percentageChangeAtom={percentageChangeAtom}
             />
-        </Box>
+        </HStack>
     );
 };

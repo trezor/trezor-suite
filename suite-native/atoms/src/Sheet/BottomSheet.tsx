@@ -10,7 +10,7 @@ import { BottomSheetContainer } from './BottomSheetContainer';
 import { useBottomSheetAnimation } from './useBottomSheetAnimation';
 import { BottomSheetHeader } from './BottomSheetHeader';
 
-type BottomSheetProps = {
+export type BottomSheetProps = {
     isVisible: boolean;
     onClose: (isVisible: boolean) => void;
     children: ReactNode;
@@ -21,6 +21,9 @@ type BottomSheetProps = {
 type WrapperStyleProps = {
     insetBottom: number;
 };
+
+const DEFAULT_INSET_BOTTOM = 50;
+
 const sheetWrapperStyle = prepareNativeStyle<WrapperStyleProps>((utils, { insetBottom }) => ({
     backgroundColor: utils.colors.backgroundSurfaceElevation0,
     borderTopLeftRadius: utils.borders.radii.large,
@@ -72,6 +75,8 @@ export const BottomSheet = ({
         closeSheetAnimated();
     };
 
+    const insetBottom = Math.max(insets.bottom, DEFAULT_INSET_BOTTOM);
+
     return (
         <BottomSheetContainer isVisible={isVisible} onClose={handleCloseSheet}>
             <Animated.View
@@ -88,7 +93,7 @@ export const BottomSheet = ({
                         style={[
                             animatedSheetWrapperStyle,
                             applyStyle(sheetWrapperStyle, {
-                                insetBottom: insets.bottom,
+                                insetBottom,
                             }),
                         ]}
                     >

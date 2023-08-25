@@ -40,7 +40,7 @@ export const ListItem = ({
                 <ListItemText title={title} subtitle={subtitle} isTextTruncated={isTextTruncated} />
                 {hasRightArrow && (
                     <View style={applyStyle(listItemRightArrowContainerStyle)}>
-                        <Icon name="circleRight" color="iconPrimaryDefault" />
+                        <Icon name="circleRightLight" color="iconPrimaryDefault" />
                     </View>
                 )}
             </Box>

@@ -1,3 +1,5 @@
+import { ReactNode } from 'react';
+
 import { atom } from 'jotai';
 import { RequireAllOrNone } from 'type-fest';
 
@@ -6,7 +8,7 @@ import { ButtonColorScheme, PictogramVariant } from '@suite-native/atoms';
 
 export type Alert = RequireAllOrNone<
     {
-        title: string;
+        title: ReactNode;
         description: string;
         icon: IconName;
         pictogramVariant: PictogramVariant;

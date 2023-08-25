@@ -18,6 +18,7 @@ const alertSheetContainerStyle = prepareNativeStyle(utils => ({
     alignItems: 'center',
     paddingTop: utils.spacings.extraLarge,
     paddingHorizontal: utils.spacings.large,
+    paddingVertical: utils.spacings.extraLarge,
     marginBottom: utils.spacings.extraLarge,
     marginHorizontal: utils.spacings.small,
     borderRadius: utils.borders.radii.medium,
@@ -94,6 +95,7 @@ export const AlertSheet = ({ alert }: AlertSheetProps) => {
 
                                 <VStack spacing="medium">
                                     <Button
+                                        size="large"
                                         colorScheme={primaryButtonVariant}
                                         onPress={handlePressPrimaryButton}
                                     >
@@ -101,6 +103,7 @@ export const AlertSheet = ({ alert }: AlertSheetProps) => {
                                     </Button>
                                     {secondaryButtonTitle && (
                                         <Button
+                                            size="large"
                                             colorScheme="tertiaryElevation1"
                                             onPress={handlePressSecondaryButton}
                                         >

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Card, Pictogram } from '@suite-native/atoms';
+import { Box, Pictogram } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 const overlayStyle = prepareNativeStyle(utils => ({
@@ -12,7 +12,7 @@ const overlayStyle = prepareNativeStyle(utils => ({
 export const XpubOverlayWarning = () => {
     const { applyStyle } = useNativeStyles();
     return (
-        <Card style={applyStyle(overlayStyle)}>
+        <Box style={applyStyle(overlayStyle)}>
             <Pictogram
                 variant="yellow"
                 icon="warningCircleLight"
@@ -20,6 +20,6 @@ export const XpubOverlayWarning = () => {
                 subtitle="Sharing your public key (XPUB) with a third party gives them the ability to
                         view your transaction history."
             />
-        </Card>
+        </Box>
     );
 };

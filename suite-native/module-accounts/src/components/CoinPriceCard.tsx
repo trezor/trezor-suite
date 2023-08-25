@@ -79,34 +79,32 @@ export const CoinPriceCard = ({ accountKey }: CoinPriceCardProps) => {
     const coinName = networks[networkSymbol].name;
 
     return (
-        <Box marginTop="medium" marginBottom="large">
-            <Card style={applyStyle(cardStyle)}>
-                <Box flexDirection="row" alignItems="center" flex={1}>
-                    <Box marginRight="medium">
-                        <RoundedIcon name={networkSymbol} />
-                    </Box>
-                    <Box style={applyStyle(cardContentStyle)}>
-                        <Text variant="label" color="textSubdued">
-                            {coinName} price
-                        </Text>
-                        {currentValue && (
-                            <FiatAmountFormatter
-                                network={networkSymbol}
-                                value={`${currentValue}`}
-                                variant="titleSmall"
-                                isDiscreetText={false}
-                            />
-                        )}
-                    </Box>
+        <Card style={applyStyle(cardStyle)}>
+            <Box flexDirection="row" alignItems="center" flex={1}>
+                <Box marginRight="medium">
+                    <RoundedIcon name={networkSymbol} />
                 </Box>
-                {valuePercentageChange ? (
-                    <PriceChangeIndicator valuePercentageChange={valuePercentageChange} />
-                ) : (
-                    <Box alignItems="center" justifyContent="center">
-                        <Loader size="large" />
-                    </Box>
-                )}
-            </Card>
-        </Box>
+                <Box style={applyStyle(cardContentStyle)}>
+                    <Text variant="label" color="textSubdued">
+                        {coinName} price
+                    </Text>
+                    {currentValue && (
+                        <FiatAmountFormatter
+                            network={networkSymbol}
+                            value={`${currentValue}`}
+                            variant="titleSmall"
+                            isDiscreetText={false}
+                        />
+                    )}
+                </Box>
+            </Box>
+            {valuePercentageChange ? (
+                <PriceChangeIndicator valuePercentageChange={valuePercentageChange} />
+            ) : (
+                <Box alignItems="center" justifyContent="center">
+                    <Loader size="large" />
+                </Box>
+            )}
+        </Card>
     );
 };

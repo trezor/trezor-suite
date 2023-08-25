@@ -1,7 +1,6 @@
 import React, { ReactNode } from 'react';
 
-import { AccordionItem, Box, Text, VStack } from '@suite-native/atoms';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { AccordionItem, Text, VStack } from '@suite-native/atoms';
 import { Link } from '@suite-native/link';
 
 type FAQ = {
@@ -46,21 +45,12 @@ const faqMap: FAQ[] = [
     },
 ];
 
-const accordionItemStyle = prepareNativeStyle(utils => ({
-    paddingVertical: utils.spacings.medium,
-    borderBottomWidth: 1,
-    borderBottomColor: utils.colors.borderOnElevation0,
-}));
-
-export const FAQInfoPanel = () => {
-    const { applyStyle } = useNativeStyles();
-    return (
-        <VStack>
-            {faqMap.map(({ question, answer }) => (
-                <Box key={question} style={applyStyle(accordionItemStyle)}>
-                    <AccordionItem title={question} content={answer} />
-                </Box>
-            ))}
-        </VStack>
-    );
-};
+export const FAQInfoPanel = () => (
+    <VStack marginHorizontal="medium">
+        {faqMap.map(({ question, answer }) => (
+            <React.Fragment key={question}>
+                <AccordionItem title={question} content={answer} />
+            </React.Fragment>
+        ))}
+    </VStack>
+);

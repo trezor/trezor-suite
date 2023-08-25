@@ -5,6 +5,7 @@ import { useSetAtom } from 'jotai';
 
 import { useGraphForAllAccounts, Graph, TimeSwitch } from '@suite-native/graph';
 import { selectFiatCurrency } from '@suite-native/module-settings';
+import { VStack } from '@suite-native/atoms';
 
 import {
     PortfolioGraphHeader,
@@ -34,7 +35,7 @@ export const PortfolioGraph = () => {
     useEffect(setInitialSelectedPoints, [setInitialSelectedPoints]);
 
     return (
-        <>
+        <VStack spacing="large">
             <PortfolioGraphHeader />
 
             <Graph
@@ -46,6 +47,6 @@ export const PortfolioGraph = () => {
                 error={error}
             />
             <TimeSwitch selectedTimeFrame={timeframe} onSelectTimeFrame={onSelectTimeFrame} />
-        </>
+        </VStack>
     );
 };

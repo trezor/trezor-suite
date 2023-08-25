@@ -53,7 +53,7 @@ const BadgeStyle = prepareNativeStyle<BadgeStyleProps>(
             {
                 condition: isIconDisplayed,
                 style: {
-                    paddingLeft: utils.spacings.small / 2,
+                    paddingLeft: utils.spacings.extraSmall,
                 },
             },
         ],
@@ -127,7 +127,7 @@ export const Badge = ({
                 isIconDisplayed: !!icon,
                 isDisabled,
             })}
-            spacing={utils.spacings.small / 2}
+            spacing={utils.spacings.extraSmall}
         >
             {icon && badgeIcon}
             <Text color={textColor} variant={textVariant} numberOfLines={1} ellipsizeMode="tail">

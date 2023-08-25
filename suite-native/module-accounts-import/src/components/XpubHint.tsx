@@ -1,10 +1,9 @@
 import React from 'react';
-import { TouchableOpacity, KeyboardAvoidingView, Platform } from 'react-native';
+import { KeyboardAvoidingView, Platform } from 'react-native';
 
 import { NetworkType } from '@suite-common/wallet-config';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Box, Text } from '@suite-native/atoms';
-import { Icon } from '@suite-common/icons';
+import { Box, TextButton } from '@suite-native/atoms';
 
 import { defaultAssets, networkToAssetsMap } from './XpubHintBottomSheet';
 
@@ -31,19 +30,15 @@ export const XpubHint = ({ networkType, handleOpen }: XpubScanHintSheet) => {
 
     return (
         <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-            {/*  TODO : Replace with a TextButton atom component when ready.
-                 issue: https://github.com/trezor/trezor-suite/issues/9084 */}
-            <TouchableOpacity onPress={handleOpen} style={applyStyle(sheetTriggerStyle)}>
-                <Box marginRight="small">
-                    <Icon name="question" size="medium" color="iconPrimaryDefault" />
-                </Box>
-                <Text
+            <Box style={applyStyle(sheetTriggerStyle)}>
+                <TextButton
+                    iconLeft="question"
+                    onPress={handleOpen}
                     data-testID="@accounts-import/sync-coins/xpub-help-link"
-                    color="textPrimaryDefault"
                 >
                     {title}
-                </Text>
-            </TouchableOpacity>
+                </TextButton>
+            </Box>
         </KeyboardAvoidingView>
     );
 };

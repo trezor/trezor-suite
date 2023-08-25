@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { Box, Button, Divider, Text } from '@suite-native/atoms';
+import { Box, Button, Divider, Text, VStack } from '@suite-native/atoms';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import {
     AccountsRootState,
@@ -68,10 +68,10 @@ const TransactionListHeaderContent = ({
 
     if (isGraphDisplayed) {
         return (
-            <>
+            <VStack spacing="large">
                 <AccountDetailGraphHeader accountKey={accountKey} />
                 <AccountDetailGraph accountKey={accountKey} />
-            </>
+            </VStack>
         );
     }
     if (isTokenAccount) {
@@ -124,31 +124,34 @@ export const TransactionListHeader = memo(
         const isPriceCardDisplayed = !isTestnetAccount && !isTokenDetail;
 
         return (
-            <>
-                <TransactionListHeaderContent
-                    accountKey={accountKey}
-                    tokenContract={tokenContract}
-                />
-                {accountHasTransactions && (
-                    <Box marginVertical="large" paddingHorizontal="medium">
-                        <Button iconLeft="receive" size="large" onPress={handleReceive}>
-                            Receive
-                        </Button>
-                    </Box>
-                )}
-                {isPriceCardDisplayed && <CoinPriceCard accountKey={accountKey} />}
+            <Box marginBottom="small">
+                <VStack spacing="large">
+                    <TransactionListHeaderContent
+                        accountKey={accountKey}
+                        tokenContract={tokenContract}
+                    />
+                    {accountHasTransactions && (
+                        <Box marginVertical="medium" paddingHorizontal="medium">
+                            <Button iconLeft="receive" size="large" onPress={handleReceive}>
+                                Receive
+                            </Button>
+                        </Box>
+                    )}
+                    {isPriceCardDisplayed && <CoinPriceCard accountKey={accountKey} />}
 
-                <Divider />
-                <Box marginTop="extraLarge" marginBottom="medium" marginHorizontal="large">
-                    <Text variant="titleSmall">Transactions</Text>
-                </Box>
+                    <Divider />
+                    <Box marginVertical="small" marginHorizontal="large">
+                        <Text variant="titleSmall">Transactions</Text>
+                    </Box>
+                </VStack>
+
                 {isEthereumAccountDetail && accountHasTransactions && (
                     <IncludeTokensToggle
                         isToggled={areTokensIncluded}
                         onToggle={toggleIncludeTokenTransactions}
                     />
                 )}
-            </>
+            </Box>
         );
     },
 );

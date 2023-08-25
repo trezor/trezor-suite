@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { XpubQRCode } from '@suite-native/qr-code';
-import { BottomSheet, Button } from '@suite-native/atoms';
+import { XpubQRCodeBottomSheet } from '@suite-native/qr-code';
+import { Button } from '@suite-native/atoms';
 import { networks, NetworkType } from '@suite-common/wallet-config';
 import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 
@@ -13,14 +13,7 @@ const networkTypeToButtonTitleMap: Record<NetworkType, string> = {
     ripple: 'Show receive address',
 };
 
-const networkTypeToSheetTitleMap: Record<NetworkType, string> = {
-    bitcoin: 'Public key (XPUB)',
-    cardano: 'Public key (XPUB)',
-    ethereum: 'Receive address',
-    ripple: 'Receive address',
-};
-
-export const AccountSettingsShowXpub = ({ accountKey }: { accountKey: string }) => {
+export const AccountSettingsShowXpubButton = ({ accountKey }: { accountKey: string }) => {
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
@@ -36,20 +29,20 @@ export const AccountSettingsShowXpub = ({ accountKey }: { accountKey: string }) 
 
     return (
         <>
-            <Button onPress={() => setIsXpubVisible(true)} colorScheme="tertiaryElevation0">
+            <Button
+                size="large"
+                onPress={() => setIsXpubVisible(true)}
+                colorScheme="tertiaryElevation0"
+            >
                 {networkTypeToButtonTitleMap[networkType]}
             </Button>
-            <BottomSheet
-                title={networkTypeToSheetTitleMap[networkType]}
+
+            <XpubQRCodeBottomSheet
                 isVisible={isXpubVisible}
                 onClose={handleClose}
-            >
-                <XpubQRCode
-                    data={account.descriptor}
-                    onCopy={handleClose}
-                    networkSymbol={account.symbol}
-                />
-            </BottomSheet>
+                networkSymbol={account.symbol}
+                qrCodeData={account.descriptor}
+            />
         </>
     );
 };

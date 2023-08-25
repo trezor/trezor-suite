@@ -4,6 +4,7 @@ import { Atom, useAtomValue } from 'jotai';
 
 import { useFormatters } from '@suite-common/formatters';
 import { FiatGraphPoint } from '@suite-common/graph';
+import { Text } from '@suite-native/atoms';
 
 type SelectedPointAtom = Atom<FiatGraphPoint>;
 
@@ -34,9 +35,15 @@ export const GraphDateFormatter = ({
 }: GraphDateFormatterProps) => {
     const millisecondElapsedFromFistPoint = new Date().getTime() - firstPointDate.getTime();
     // this check is significantly faster than using date-fns/differenceInWeeks(days)
-    if (millisecondElapsedFromFistPoint < millisecondsPerTwoWeek) {
-        return <WeekFormatter selectedPointAtom={selectedPointAtom} />;
-    }
+    const isWeekFormatted = millisecondElapsedFromFistPoint < millisecondsPerTwoWeek;
 
-    return <OtherDateFormatter selectedPointAtom={selectedPointAtom} />;
+    return (
+        <Text variant="hint" color="textSubdued">
+            {isWeekFormatted ? (
+                <WeekFormatter selectedPointAtom={selectedPointAtom} />
+            ) : (
+                <OtherDateFormatter selectedPointAtom={selectedPointAtom} />
+            )}
+        </Text>
+    );
 };

@@ -2,7 +2,7 @@ import React from 'react';
 
 import { atom, useAtomValue } from 'jotai';
 
-import { Box, Text } from '@suite-native/atoms';
+import { Box, HStack, Text, VStack } from '@suite-native/atoms';
 import { FiatAmountFormatter } from '@suite-native/formatters';
 import {
     emptyGraphPoint,
@@ -10,8 +10,8 @@ import {
     percentageDiff,
     PriceChangeIndicator,
 } from '@suite-native/graph';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { FiatGraphPoint } from '@suite-common/graph';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 // use atomic jotai structure for absolute minimum re-renders and maximum performance
 // otherwise graph will be freezing on slower device while point swipe gesture
@@ -31,22 +31,17 @@ const hasPriceIncreasedAtom = atom(get => {
     return percentageChange >= 0;
 });
 
-const headerStyle = prepareNativeStyle(utils => ({
-    marginBottom: utils.spacings.small,
-}));
-
-const dateAndPriceChangeContainerStyle = prepareNativeStyle(_ => ({
-    flexDirection: 'row',
-    alignItems: 'center',
-    flexWrap: 'wrap',
-    justifyContent: 'center',
+const fiatAmountStyle = prepareNativeStyle(utils => ({
+    marginBottom: -utils.spacings.small,
 }));
 
 const Balance = () => {
     const point = useAtomValue(selectedPointAtom);
+    const { applyStyle } = useNativeStyles();
 
     return (
         <FiatAmountFormatter
+            style={applyStyle(fiatAmountStyle)}
             value={String(point.value)}
             variant="titleLarge"
             color="textDefault"
@@ -57,31 +52,28 @@ const Balance = () => {
 };
 
 export const PortfolioGraphHeader = () => {
-    const { applyStyle } = useNativeStyles();
     const { date: firstPointDate } = useAtomValue(referencePointAtom);
 
     return (
-        <Box flexDirection="row" justifyContent="center" marginTop="large">
-            <Box alignItems="center">
-                <Text color="textSubdued" variant="hint" style={applyStyle(headerStyle)}>
+        <Box>
+            <VStack spacing="small" alignItems="center">
+                <Text color="textSubdued" variant="hint">
                     My portfolio balance
                 </Text>
-                <Balance />
-                <Box style={applyStyle(dateAndPriceChangeContainerStyle)}>
-                    <Box marginRight="small">
-                        <Text variant="hint" color="textSubdued">
-                            <GraphDateFormatter
-                                firstPointDate={firstPointDate}
-                                selectedPointAtom={selectedPointAtom}
-                            />
-                        </Text>
-                    </Box>
+                <Box justifyContent="center" alignItems="center">
+                    <Balance />
+                </Box>
+                <HStack>
+                    <GraphDateFormatter
+                        firstPointDate={firstPointDate}
+                        selectedPointAtom={selectedPointAtom}
+                    />
                     <PriceChangeIndicator
                         hasPriceIncreasedAtom={hasPriceIncreasedAtom}
                         percentageChangeAtom={percentageChangeAtom}
                     />
-                </Box>
-            </Box>
+                </HStack>
+            </VStack>
         </Box>
     );
 };

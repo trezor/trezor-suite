@@ -50,8 +50,8 @@ const stepperDotWrapperStyle = prepareNativeStyle(utils => ({
 }));
 
 const stepperDotStyle = prepareNativeStyle(utils => ({
-    width: utils.spacings.small / 2,
-    height: utils.spacings.small / 2,
+    width: utils.spacings.extraSmall,
+    height: utils.spacings.extraSmall,
     borderRadius: utils.borders.radii.round,
     backgroundColor: utils.colors.backgroundNeutralSubdued,
 }));

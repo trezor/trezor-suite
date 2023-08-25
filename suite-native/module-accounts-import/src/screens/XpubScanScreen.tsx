@@ -3,7 +3,7 @@ import { View } from 'react-native';
 
 import { useFocusEffect } from '@react-navigation/native';
 
-import { Box, Button, Card, TextDivider, VStack } from '@suite-native/atoms';
+import { Box, Button, HeaderedCard, TextDivider, VStack } from '@suite-native/atoms';
 import { isDevelopOrDebugEnv } from '@suite-native/config';
 import { Form, TextInputField, useForm } from '@suite-native/forms';
 import {
@@ -64,7 +64,7 @@ export const XpubScanScreen = ({
 
     useFocusEffect(resetToDefaultValues);
 
-    const { networkType, name: networkName } = networks[networkSymbol];
+    const { networkType } = networks[networkSymbol];
     const inputLabel = networkTypeToInputLabelMap[networkType];
 
     const goToAccountImportScreen = ({ xpubAddress }: XpubFormValues) => {
@@ -125,24 +125,22 @@ export const XpubScanScreen = ({
         });
     };
 
+    const handleOpenHint = () => setIsHintSheetVisible(true);
+    const handleGoBack = () => navigation.goBack();
+
     return (
         <Screen
             header={<AccountImportHeader activeStep={2} />}
-            footer={
-                <XpubHint
-                    networkType={networkType}
-                    handleOpen={() => setIsHintSheetVisible(true)}
-                />
-            }
+            footer={<XpubHint networkType={networkType} handleOpen={handleOpenHint} />}
         >
-            <Card>
-                <SelectableNetworkItem
-                    cryptoCurrencyName={networkName}
-                    cryptoCurrencySymbol={networkSymbol}
-                    iconName={networkSymbol}
-                    onPressActionButton={() => navigation.goBack()}
-                />
-            </Card>
+            <HeaderedCard
+                title="Coin to sync"
+                buttonTitle="Change"
+                buttonIcon="discover"
+                onButtonPress={handleGoBack}
+            >
+                <SelectableNetworkItem symbol={networkSymbol} />
+            </HeaderedCard>
             <Box marginHorizontal="medium">
                 <View style={applyStyle(cameraStyle)}>
                     <XpubImportSection

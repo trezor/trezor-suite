@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 
-import { AlertBox, Badge, Box, ErrorMessage, RoundedIcon, Text, VStack } from '@suite-native/atoms';
+import { Badge, Box, ErrorMessage, RoundedIcon, Text, VStack } from '@suite-native/atoms';
 import {
     EthereumTokenAmountFormatter,
     EthereumTokenToFiatAmountFormatter,
@@ -19,13 +19,6 @@ type TokenReceiveCardProps = {
     accountKey: AccountKey;
     contract: TokenAddress;
 };
-
-const tokenReceiveCardStyle = prepareNativeStyle(utils => ({
-    backgroundColor: utils.colors.backgroundSurfaceElevation1,
-    padding: utils.spacings.medium,
-
-    borderRadius: utils.borders.radii.medium,
-}));
 
 const tokenDescriptionStyle = prepareNativeStyle(_ => ({
     flexShrink: 1,
@@ -59,12 +52,7 @@ export const TokenReceiveCard = ({ contract, accountKey }: TokenReceiveCardProps
 
     return (
         <VStack>
-            <Box
-                flexDirection="row"
-                justifyContent="space-between"
-                alignItems="center"
-                style={applyStyle(tokenReceiveCardStyle)}
-            >
+            <Box flexDirection="row" justifyContent="space-between" alignItems="center">
                 <Box flex={1} flexDirection="row" alignItems="center">
                     <Box marginRight="medium">
                         <RoundedIcon name={contract} />
@@ -92,10 +80,6 @@ export const TokenReceiveCard = ({ contract, accountKey }: TokenReceiveCardProps
                     />
                 </Box>
             </Box>
-            <AlertBox
-                title="Your receive address is your Ethereum address."
-                isIconVisible={false}
-            />
         </VStack>
     );
 };

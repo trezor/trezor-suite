@@ -13,13 +13,7 @@ type AccountDetailBalanceProps = {
 
 export const AccountDetailCryptoValue = React.memo(
     ({ value, networkSymbol, isBalance = true }: AccountDetailBalanceProps) => (
-        <HStack
-            spacing="small"
-            flexDirection="row"
-            alignItems="center"
-            marginBottom="large"
-            justifyContent="center"
-        >
+        <HStack spacing="small" flexDirection="row" alignItems="center" justifyContent="center">
             <CryptoIcon symbol={networkSymbol} size="extraSmall" />
             <CryptoAmountFormatter
                 value={value}

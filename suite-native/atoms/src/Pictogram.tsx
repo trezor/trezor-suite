@@ -9,11 +9,15 @@ import { Text } from './Text';
 import { VStack } from './Stack';
 
 export type PictogramVariant = 'green' | 'red' | 'yellow';
+type PictogramSize = 'small' | 'large';
+
+const ICON_SIZE = 40;
 
 type PictogramProps = {
     variant: PictogramVariant;
     icon: IconName;
-    title: ReactNode;
+    size?: PictogramSize;
+    title?: ReactNode;
     subtitle?: string;
 };
 
@@ -40,9 +44,17 @@ const pictogramVariantsMap = {
     },
 } as const satisfies Record<PictogramVariant, PictogramStyle>;
 
-const OUTER_RING_SIZE = 114;
-const INNER_RING_SIZE = 80;
-const ICON_SIZE = 48;
+type PictogramSizeProps = { outerRingSize: number; innerRingSize: number };
+const sizeToDimensionsMap = {
+    small: {
+        outerRingSize: 88,
+        innerRingSize: 64,
+    },
+    large: {
+        outerRingSize: 114,
+        innerRingSize: 80,
+    },
+} as const satisfies Record<PictogramSize, PictogramSizeProps>;
 
 type CircleStyleProps = { backgroundColorName: Color; size: number };
 
@@ -57,34 +69,38 @@ const circleContainerStyle = prepareNativeStyle<CircleStyleProps>(
     }),
 );
 
-export const Pictogram = ({ variant, icon, title, subtitle }: PictogramProps) => {
+export const Pictogram = ({ variant, icon, title, subtitle, size = 'large' }: PictogramProps) => {
     const { applyStyle } = useNativeStyles();
     const { outerBackgroundColor, innerBackgroundColor, iconColor } = pictogramVariantsMap[variant];
+    const { outerRingSize, innerRingSize } = sizeToDimensionsMap[size];
+
     return (
-        <VStack alignItems="center" spacing="medium">
+        <VStack alignItems="center" spacing="large">
             <Box
                 style={applyStyle(circleContainerStyle, {
                     backgroundColorName: outerBackgroundColor,
-                    size: OUTER_RING_SIZE,
+                    size: outerRingSize,
                 })}
             >
                 <Box
                     style={applyStyle(circleContainerStyle, {
                         backgroundColorName: innerBackgroundColor,
-                        size: INNER_RING_SIZE,
+                        size: innerRingSize,
                     })}
                 >
                     <Icon name={icon} color={iconColor} customSize={ICON_SIZE} />
                 </Box>
             </Box>
-            <VStack alignItems="center">
-                <Text variant="titleSmall" align="center">
-                    {title}
-                </Text>
-                <Text color="textSubdued" align="center">
-                    {subtitle}
-                </Text>
-            </VStack>
+            {title && (
+                <VStack alignItems="center">
+                    <Text variant="titleSmall" align="center">
+                        {title}
+                    </Text>
+                    <Text color="textSubdued" align="center">
+                        {subtitle}
+                    </Text>
+                </VStack>
+            )}
         </VStack>
     );
 };
