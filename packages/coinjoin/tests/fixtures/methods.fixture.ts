@@ -25,7 +25,7 @@ export const BLOCKS = [
     {
         height: 1,
         hash: '09f69854a4572575e2a8af0dea70ff5efd46957e2cb60e81c0d760098ab48b44',
-        filter: '01656c90', // receive 1 out
+        filter: '03a282604dcbe72d0e', // receive 1 out
         previousBlockHash: BASE_HASH,
         txs: [
             {
@@ -66,7 +66,7 @@ export const BLOCKS = [
     {
         height: 2,
         hash: '5513d63651bbb32985b54fa9e0e530553e3e9cebdd10feae7f019c04edb80f61',
-        filter: '0298ad7857d0c0', // receive 1 in, receive 2 out
+        filter: '02044071f773c0', // receive 1 in, receive 2 out
         previousBlockHash: '09f69854a4572575e2a8af0dea70ff5efd46957e2cb60e81c0d760098ab48b44',
         txs: [
             {
@@ -101,14 +101,14 @@ export const BLOCKS = [
     {
         height: 3,
         hash: '295578a3c8eb87736a5e657b06a0933f7ec5f82c43f8418fdb38f74c0fc066c7',
-        filter: '0802a1103e91e638632d0f148d8c4618cc6118aeaad3d0', // nothing
+        filter: '', // empty
         previousBlockHash: '5513d63651bbb32985b54fa9e0e530553e3e9cebdd10feae7f019c04edb80f61',
         txs: [],
     },
     {
         height: 4,
         hash: '12de06b8ae4bbc660e3f565c876c606f5a1bd3463364c6abfc882b5ff6dd86e3',
-        filter: '03018bfa4d4731ee2480', // receive 1 out
+        filter: '030361ceb3dfc1c1e600', // receive 1 out
         previousBlockHash: '295578a3c8eb87736a5e657b06a0933f7ec5f82c43f8418fdb38f74c0fc066c7',
         txs: [
             {
@@ -152,14 +152,14 @@ export const BLOCKS = [
     {
         height: 5,
         hash: '2c2c65aad93eebe235955e170913fd6558453dd999a4ded6249bbdc9d54da1f7',
-        filter: '08a4afd740dddb6185ca00666d22a55fc9252008f9cda0', // nothing
+        filter: '03c1e18a1589b6051780', // no match
         previousBlockHash: '12de06b8ae4bbc660e3f565c876c606f5a1bd3463364c6abfc882b5ff6dd86e3',
         txs: [],
     },
     {
         height: 6,
         hash: '5021a2185f27ad04d45f1b53c873b2231311aea99e0f1d7a6252167540b9db4c',
-        filter: '03a69058941e6f5fc1', // receive 2 in, receive 1 out, change 1 out'
+        filter: '036e6e302da2ce028c', // receive 2 in, receive 1 out, change 1 out'
         previousBlockHash: '2c2c65aad93eebe235955e170913fd6558453dd999a4ded6249bbdc9d54da1f7',
         txs: [
             {
@@ -200,7 +200,7 @@ export const BLOCKS = [
     {
         height: 7,
         hash: '01d37c4490e9ddaf6b5c886eaa215b8d0b658c93ea42cfd871b226f606672c0b',
-        filter: '023eee59053e40', // receive 1 in, change 1 in, receive 1 out'
+        filter: '02020f2a9a0ac0', // receive 1 in, change 1 in, receive 1 out'
         previousBlockHash: '5021a2185f27ad04d45f1b53c873b2231311aea99e0f1d7a6252167540b9db4c',
         txs: [
             {
@@ -241,7 +241,7 @@ export const BLOCKS = [
     {
         height: 8,
         hash: '36d01c975372c363d94f0e9e22e8a61a6a52e3408c98920ef1587b024ec487e3',
-        filter: '02782a5165c980', // receive 1 out
+        filter: '023e09f4f752a0', // receive 1 out
         previousBlockHash: '01d37c4490e9ddaf6b5c886eaa215b8d0b658c93ea42cfd871b226f606672c0b',
         txs: [
             {
