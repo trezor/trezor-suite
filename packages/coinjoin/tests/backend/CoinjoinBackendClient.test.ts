@@ -1,4 +1,3 @@
-import * as http from '../../src/utils/http';
 import { CoinjoinBackendClient } from '../../src/backend/CoinjoinBackendClient';
 import { COINJOIN_BACKEND_SETTINGS } from '../fixtures/config.fixture';
 
@@ -72,31 +71,6 @@ describe('CoinjoinBackendClient', () => {
             expect(id).toMatch(/theft:[a-z0-9]+/);
             expect(arr.indexOf(id)).toBe(i);
         });
-    });
-
-    it('Wabisabi switch identities on 403', async () => {
-        const identities: string[] = [];
-        jest.spyOn(http, 'httpGet').mockImplementation((_, __, { identity } = {}) => {
-            identities.push(identity!);
-            return Promise.resolve({ status: identity === 'bar' ? 404 : 403 } as Response);
-        });
-
-        await expect(() =>
-            client.fetchFilters('abc', 123, { identity: 'foo', attempts: 4, gap: 0 }),
-        ).rejects.toThrow();
-        await expect(() =>
-            client.fetchMempoolTxids({ identity: 'bar', /* default attempts: 3 */ gap: 0 }),
-        ).rejects.toThrow();
-
-        expect(identities.length).toBe(7);
-
-        expect(identities[0]).toBe('foo');
-        identities.slice(1, 4).forEach((id, i, arr) => {
-            expect(id).toMatch(/foo:[a-z0-9]+/);
-            expect(arr.indexOf(id)).toBe(i);
-        });
-
-        identities.slice(4, 7).forEach(id => expect(id).toBe('bar'));
     });
 
     it('Blockbook onion with fallback', async () => {

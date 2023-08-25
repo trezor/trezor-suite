@@ -1,4 +1,3 @@
-import * as http from '../../src/utils/http';
 import { CoinjoinBackendClient } from '../../src/backend/CoinjoinBackendClient';
 import { COINJOIN_BACKEND_SETTINGS } from '../fixtures/config.fixture';
 
@@ -22,7 +21,6 @@ export class MockBackendClient extends CoinjoinBackendClient {
         this.mempool = [];
         this.transactions = [];
 
-        jest.spyOn(http, 'httpGet').mockImplementation(this.getWabisabiMock.bind(this));
         jest.spyOn(this.websockets, 'getOrCreate').mockImplementation(
             this.getBlockbookMock.bind(this),
         );
@@ -36,37 +34,6 @@ export class MockBackendClient extends CoinjoinBackendClient {
         this.blocks = blocks;
         this.mempool = mempool;
         this.transactions = blocks.flatMap(block => block.txs).concat(mempool);
-    }
-
-    private mockResponse(status: number, content?: any) {
-        const defaultContent = status === 404 ? 'Not found' : undefined;
-        return Promise.resolve({
-            status,
-            json: () => Promise.resolve(content ?? defaultContent),
-        } as Response);
-    }
-
-    private getWabisabiMock(url: string, { bestKnownBlockHash, count }: Record<string, any> = {}) {
-        if (url.endsWith('Blockchain/filters')) {
-            if (typeof bestKnownBlockHash !== 'string') this.mockResponse(404);
-            if (typeof count !== 'number') return this.mockResponse(404);
-            if (this.blocks[this.blocks.length - 1].hash === bestKnownBlockHash)
-                return this.mockResponse(204);
-            const from = this.blocks.findIndex(
-                ({ previousBlockHash }) => previousBlockHash === bestKnownBlockHash,
-            );
-            if (from >= 0)
-                return this.mockResponse(200, {
-                    BestHeight: -1,
-                    Filters: this.blocks
-                        .slice(from, from + count)
-                        .map(
-                            ({ height, hash, filter, previousBlockHash }) =>
-                                `${height}:${hash}:${filter}:${previousBlockHash}:${999}`,
-                        ),
-                });
-        }
-        return this.mockResponse(404);
     }
 
     private getBlockbookMock() {
