@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import styled, { css } from 'styled-components';
 
-import { FONT_SIZE, SCREEN_SIZE, Z_INDEX } from '../../../config/variables';
+import { FONT_SIZE, Z_INDEX } from '../../../config/variables';
 import { InputState, InputVariant } from '../../../support/types';
 import { useTheme } from '../../../utils';
 import { Icon } from '../../assets/Icon/Icon';
@@ -16,14 +16,10 @@ import {
     LabelAddon,
 } from '../InputStyles';
 
-const Wrapper = styled.div<Pick<InputProps, 'width' | 'alignInputRight'>>`
+const Wrapper = styled.div<Pick<InputProps, 'width'>>`
     display: inline-flex;
     flex-direction: column;
     width: ${({ width }) => (width ? `${width}px` : '100%')};
-
-    @media (min-width: ${SCREEN_SIZE.SM}) {
-        align-items: ${({ alignInputRight }) => alignInputRight && 'flex-end'};
-    }
 `;
 
 interface StyledInputProps extends InputProps {
@@ -121,7 +117,6 @@ export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> 
     wrapperProps?: Record<string, any>;
     inputState?: InputState;
     addonAlign?: AddonAlignment;
-    alignInputRight?: boolean;
     errorPosition?: 'bottom' | 'right';
     noError?: boolean;
     noTopLabel?: boolean;
@@ -155,7 +150,6 @@ const Input = ({
     clearButton,
     onClear,
     addonAlign = 'right',
-    alignInputRight,
     errorPosition = 'bottom',
     noError = false,
     noTopLabel = false,
@@ -187,7 +181,6 @@ const Input = ({
     return (
         <Wrapper
             width={width}
-            alignInputRight={alignInputRight}
             data-test={dataTest}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
