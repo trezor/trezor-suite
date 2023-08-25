@@ -55,10 +55,12 @@ const middleware = [
 const excludedActions = [addLog.type];
 
 if (!process.env.CODESIGN_BUILD) {
-    const excludeLogger = (_getState: any, action: any): boolean => {
-        const pass = excludedActions.filter(act => action.type === act);
-        return pass.length === 0;
-    };
+    const excludeLogger = (_getState: any, action: any): boolean =>
+        // exclude generated lifecycle actions
+        // https://redux-toolkit.js.org/api/createAsyncThunk#promise-lifecycle-actions
+        !action?.meta?.requestId &&
+        // explicitly excluded actions
+        !excludedActions.some(act => action.type === act);
 
     const logger = createLogger({
         level: 'info',
