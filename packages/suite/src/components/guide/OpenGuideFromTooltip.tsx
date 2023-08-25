@@ -1,8 +1,9 @@
 import { MouseEvent } from 'react';
-import styled from 'styled-components';
+import styled, { useTheme } from 'styled-components';
 import { transparentize } from 'polished';
 
 import { Icon } from '@trezor/components';
+import { borders, spacingsPx, typography } from '@trezor/theme';
 import { Translation } from 'src/components/suite';
 // importing directly, otherwise unit tests fail, seems to be a styled-components issue
 import { TrezorLink } from 'src/components/suite/TrezorLink';
@@ -10,27 +11,22 @@ import { useGuideOpenNode } from 'src/hooks/guide';
 
 const OpenGuideLink = styled(TrezorLink)`
     display: flex;
-    align-items: center;
+    align-items: baseline;
     justify-content: space-between;
+    gap: ${spacingsPx.xxs};
+    padding: ${spacingsPx.xxxs} ${spacingsPx.xs};
+    border-radius: ${borders.radii.sm};
+    cursor: pointer;
+
+    :hover {
+        background: ${({ theme }) => transparentize(0.9, theme.backgroundAlertYellowBold)};
+    }
 `;
 
 const StyledText = styled.span`
-    color: ${({ theme }) => theme.TYPE_ORANGE};
-    font-weight: 500;
+    color: ${({ theme }) => theme.iconAlertYellow};
+    ${typography.hint}
     overflow: hidden;
-    max-width: 0;
-    transition: max-width 0.3s;
-`;
-
-const StyledIconWrap = styled.span`
-    width: 20px;
-    height: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.3s ease-in-out;
-    border-radius: 50%;
-    background-color: ${({ theme }) => transparentize(0.85, theme.TYPE_ORANGE)};
 `;
 
 type OpenGuideFromTooltipProps = {
@@ -41,6 +37,7 @@ type OpenGuideFromTooltipProps = {
 
 export const OpenGuideFromTooltip = ({ id, instance, dataTest }: OpenGuideFromTooltipProps) => {
     const { openNodeById } = useGuideOpenNode();
+    const theme = useTheme();
 
     return (
         <OpenGuideLink
@@ -52,12 +49,10 @@ export const OpenGuideFromTooltip = ({ id, instance, dataTest }: OpenGuideFromTo
             }}
             variant="nostyle"
         >
+            <Icon size={12} color={theme.iconAlertYellow} icon="LIGHTBULB" />
             <StyledText>
                 <Translation id="TR_LEARN" />
             </StyledText>
-            <StyledIconWrap>
-                <Icon size={12} color="#c19009" icon="LIGHTBULB" />
-            </StyledIconWrap>
         </OpenGuideLink>
     );
 };
