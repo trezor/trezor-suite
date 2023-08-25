@@ -7,6 +7,10 @@ import { Action, TrezorDevice } from 'src/types/suite';
 import { MetadataState, WalletLabels, AccountLabels } from 'src/types/suite/metadata';
 import { selectDevice, SuiteRootState } from 'src/reducers/suite/suiteReducer';
 import { Account } from 'src/types/wallet';
+import {
+    DEFAULT_ACCOUNT_METADATA,
+    DEFAULT_WALLET_METADATA,
+} from 'src/actions/suite/constants/metadataConstants';
 
 export const initialState: MetadataState = {
     // is Suite trying to load metadata (get master key -> sync cloud)?
@@ -16,16 +20,6 @@ export const initialState: MetadataState = {
     selectedProvider: {
         labels: '',
     },
-};
-
-const initialAccountLabels: AccountLabels = {
-    addressLabels: {},
-    outputLabels: {},
-    accountLabel: '',
-};
-
-const initialWalletLabels: WalletLabels = {
-    walletLabel: '',
 };
 
 type MetadataRootState = {
@@ -99,7 +93,7 @@ export const selectLabelingDataForSelectedAccount = (state: {
 
     const metadataKeys = selectedAccount?.account?.metadata[METADATA.ENCRYPTION_VERSION];
     if (!metadataKeys || !metadataKeys.fileName || !provider?.data[metadataKeys.fileName]) {
-        return initialAccountLabels;
+        return DEFAULT_ACCOUNT_METADATA;
     }
 
     return provider.data[metadataKeys.fileName] as AccountLabels;
@@ -117,7 +111,7 @@ export const selectLabelingDataForAccount = (
     const metadataKeys = account?.metadata?.[METADATA.ENCRYPTION_VERSION];
 
     if (!metadataKeys || !metadataKeys?.fileName || !provider?.data[metadataKeys.fileName]) {
-        return initialAccountLabels;
+        return DEFAULT_ACCOUNT_METADATA;
     }
 
     return provider.data[metadataKeys.fileName] as AccountLabels;
@@ -155,14 +149,14 @@ export const selectLabelingDataForWallet = (
     const provider = selectSelectedProviderForLabels(state);
     const device = state.devices.find(d => d.state === deviceState);
     if (device?.metadata.status !== 'enabled') {
-        return initialWalletLabels;
+        return DEFAULT_WALLET_METADATA;
     }
     const metadataKeys = device?.metadata[METADATA.ENCRYPTION_VERSION];
 
     if (metadataKeys && metadataKeys.fileName && provider?.data[metadataKeys.fileName]) {
         return provider.data[metadataKeys.fileName] as WalletLabels;
     }
-    return initialWalletLabels;
+    return DEFAULT_WALLET_METADATA;
 };
 
 // is everything ready (more or less) to add label?
