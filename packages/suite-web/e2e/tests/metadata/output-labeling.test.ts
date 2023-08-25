@@ -9,6 +9,7 @@ const providers = ['google'] as const;
 describe('Metadata - Output labeling', () => {
     beforeEach(() => {
         cy.viewport(1080, 1440).resetDb();
+        cy.task('rmDir', { dir: Cypress.config('downloadsFolder'), recursive: true, force: true });
     });
 
     providers.forEach(provider => {
