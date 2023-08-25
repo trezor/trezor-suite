@@ -10,6 +10,7 @@ import type {
 import type {
     Transaction as BlockbookTransaction,
     VinVout,
+    FilterResponse,
 } from '@trezor/blockchain-link-types/lib/blockbook';
 
 import type { CoinjoinBackendClient } from '../backend/CoinjoinBackendClient';
@@ -31,18 +32,16 @@ export type BlockFilter = {
     blockHeight: number;
     blockHash: string;
     filter: string;
-    prevHash: string;
-    blockTime: number;
 };
 
 export type BlockFilterResponse =
     | { status: 'up-to-date' }
     | { status: 'not-found' }
-    | {
-          status: 'ok';
-          bestHeight: number;
-          filters: BlockFilter[];
-      };
+    | ({ status: 'ok'; filters: BlockFilter[] } & Partial<FilterResponse>);
+
+export type MempoolFilterResponse = Partial<FilterResponse> & {
+    entries: { [txid: string]: string };
+};
 
 export type ScanAccountContext = {
     client: CoinjoinBackendClient;
@@ -109,7 +108,7 @@ export type FilterControllerContext = {
     onProgressInfo?: OnProgressInfo;
 };
 
-export type FilterClient = Pick<CoinjoinBackendClient, 'fetchFilters'>;
+export type FilterClient = Pick<CoinjoinBackendClient, 'fetchNetworkInfo' | 'fetchBlockFilters'>;
 
 export type MempoolClient = Pick<
     CoinjoinBackendClient,

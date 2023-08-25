@@ -98,8 +98,8 @@ export class CoinjoinMempoolController {
 
         const filters = await this.client
             .fetchMempoolFilters()
-            .then(res =>
-                Object.entries(res).map(
+            .then(({ entries }) =>
+                Object.entries(entries).map(
                     ([txid, filter]) => [txid, getMempoolMultiFilter(filter, txid)] as const,
                 ),
             );
@@ -179,7 +179,7 @@ export class CoinjoinMempoolController {
 
         const mempoolTxids = await this.client
             .fetchMempoolFilters()
-            .then(filters => Object.keys(filters));
+            .then(({ entries }) => Object.keys(entries));
         const keepTxids = mempoolTxids.filter(txid => this.mempool.has(txid));
         const removeTxids = Array.from(this.mempool.keys()).filter(
             txid => !keepTxids.includes(txid),

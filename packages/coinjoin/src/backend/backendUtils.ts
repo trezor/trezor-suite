@@ -59,6 +59,8 @@ export const identifyWsError = (error: Error) => {
         // file://./../../../blockchain-link-types/src/constants/errors.ts
         case 'Websocket timeout':
             return 'ERROR_TIMEOUT';
+        case 'Block not found':
+            return 'ERROR_BLOCK_NOT_FOUND';
         default:
             return 'ERROR_OTHER';
     }
