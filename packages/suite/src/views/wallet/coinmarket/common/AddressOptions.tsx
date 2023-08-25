@@ -102,7 +102,7 @@ export const AddressOptions = <TFieldValues extends AddressOptionsFormState>({
             name="address"
             render={({ field: { onChange } }) => (
                 <Select
-                    onChange={onChange}
+                    onChange={({ address }) => onChange(address)}
                     isClearable={false}
                     value={value}
                     options={buildOptions(addresses)}
