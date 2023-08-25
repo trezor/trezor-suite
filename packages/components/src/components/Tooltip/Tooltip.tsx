@@ -1,97 +1,72 @@
 import styled from 'styled-components';
-import { useMemo, useRef, useState, ReactNode, ReactElement } from 'react';
+import { useMemo, useRef, useState, ReactElement } from 'react';
 import { motion, Variants } from 'framer-motion';
 import Tippy, { TippyProps } from '@tippyjs/react/headless';
 import { Instance } from 'tippy.js';
 import { transparentize } from 'polished';
-import { Link } from '../typography/Link/Link';
+import { borders, boxShadows, spacings, spacingsPx, typography } from '@trezor/theme';
 
 import * as variables from '../../config/variables';
+import { Icon } from '../assets/Icon/Icon';
+import { IconType } from '../../support/types';
 
 type Cursor = 'inherit' | 'pointer' | 'help' | 'default' | 'not-allowed';
 
-const OpenGuideInner = styled.span`
-    float: right;
+const BoxDefault = styled(motion.div)<{ $maxWidth: string | number }>`
+    background: ${({ theme }) => theme.backgroundNeutralBold};
+    color: ${({ theme }) => theme.textOnPrimary};
+    border-radius: ${borders.radii.sm};
+    text-align: left;
+    box-shadow: ${boxShadows.elevation3};
+    max-width: ${props => props.$maxWidth}px;
+    ${typography.hint}
+`;
+
+const HeaderContainer = styled.div`
     display: flex;
     align-items: center;
-    justify-content: flex-end;
-    transition: all 0.3s ease-in-out;
-    width: auto;
-    min-width: 61px;
-    padding-left: 8px;
-    margin-left: 8px;
-    height: 20px;
-    border-radius: 50%;
-    cursor: pointer;
-    position: relative;
+    justify-content: space-between;
+    width: 100%;
+    padding: ${spacingsPx.xs};
 `;
 
-const BoxDefault = styled(motion.div)<{ $maxWidth: string | number }>`
-    padding: 8px;
-    background: ${({ theme }) => theme.BG_TOOLTIP};
-    color: ${({ theme }) => theme.TYPE_WHITE};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    border-radius: 10px;
-    font-size: ${variables.FONT_SIZE.TINY};
-    text-align: left;
-    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2);
-    max-width: ${props => props.$maxWidth}px;
-
-    @media all and (min-width: ${variables.SCREEN_SIZE.MD}) {
-        &:hover ${OpenGuideInner} {
-            border-radius: 26px;
-            background-color: ${({ theme }) => transparentize(0.85, theme.TYPE_ORANGE)};
-            & > a span:first-child {
-                max-width: 100px;
-            }
-            & > a span:last-child {
-                background-color: transparent;
-            }
-        }
-    }
-`;
-
+// legacy component – to be removed
 const BoxRich = styled(motion.div)<{ $maxWidth: string | number }>`
     padding: 24px;
     background: ${({ theme }) => theme.BG_WHITE_ALT};
     color: ${({ theme }) => theme.TYPE_DARK_GREY};
-    border-radius: 8px;
+    border-radius: ${borders.radii.sm};
     font-size: ${variables.FONT_SIZE.NORMAL};
     text-align: left;
     box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.2);
     max-width: ${props => props.$maxWidth}px;
 `;
 
-const Content = styled.div<{ dashed?: boolean; cursor: Cursor }>`
-    & > * {
-        cursor: ${props => props.cursor};
-        ${({ dashed, theme }) =>
-            dashed && `border-bottom: 1.5px dashed ${transparentize(0.66, theme.TYPE_LIGHT_GREY)};`}
-    }
-`;
-
-const ReadMoreLink = styled(Link)`
-    padding: 10px 0;
-    justify-content: center;
-    align-items: center;
+const StyledTooltipTitle = styled.div`
     display: flex;
+    align-items: center;
+    gap: ${spacingsPx.xxs};
+    color: ${({ theme }) => theme.textSubdued};
+    ${typography.hint}
 `;
 
-const StyledTooltipTitle = styled.span`
-    display: inline-flex;
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
-    font-size: ${variables.FONT_SIZE.SMALL};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    margin-bottom: 8px;
+const OpenGuideInner = styled.span`
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    margin-left: auto;
 `;
 
-const StyledContent = styled.div`
-    font-size: ${variables.FONT_SIZE.TINY};
-    font-stretch: normal;
-    font-style: normal;
-    line-height: 1.5;
-    letter-spacing: normal;
-    text-align: left;
+const TooltipContent = styled.div`
+    padding: ${spacingsPx.xs};
+`;
+
+const Content = styled.div<{ dashed: boolean; cursor: Cursor }>`
+    > * {
+        border-bottom: ${({ dashed, theme }) =>
+            dashed && `1.5px dashed ${transparentize(0.66, theme.TYPE_LIGHT_GREY)}`};
+        cursor: ${({ cursor }) => cursor};
+    }
 `;
 
 const animationStartOffset = 10;
@@ -104,36 +79,34 @@ const getTranslateStyle = (placement: TippyProps['placement']) => {
 };
 
 export type TooltipProps = Omit<TippyProps, 'offset'> & {
-    children: ReactNode | JSX.Element | JSX.Element[] | string;
-    readMore?: { link: string; text: ReactNode } | null;
     rich?: boolean;
     dashed?: boolean;
     offset?: number;
     cursor?: Cursor;
     guideAnchor?: (instance: Instance) => ReactElement;
-    title?: ReactElement;
+    title?: React.ReactElement;
+    headerIcon?: IconType;
 };
 
 export const Tooltip = ({
     placement = 'top',
     interactive = true,
     children,
+    rich = false, // legacy prop
+    dashed = false,
     duration = 150,
     delay = 200,
-    animation = true,
-    className,
-    readMore = null,
-    rich = false,
-    dashed = false,
     maxWidth = 400,
     offset = 10,
     cursor = 'help',
     content,
     guideAnchor,
     title,
+    headerIcon,
     disabled,
     onShow,
     onHide,
+    className,
     ...rest
 }: TooltipProps) => {
     const [isShown, setIsShown] = useState(false);
@@ -141,7 +114,7 @@ export const Tooltip = ({
     const tooltipRef = useRef<Element>(null);
 
     // set data-test attribute to Tippy https://github.com/atomiks/tippyjs-react/issues/89
-    const onCreate = (instance: any) => {
+    const onCreate = (instance: Instance) => {
         const content = instance.popper;
         content.setAttribute('data-test', '@tooltip');
     };
@@ -154,20 +127,36 @@ export const Tooltip = ({
         [placement],
     );
 
-    return content && children ? (
+    const handleOnShow = (instance: Instance) => {
+        onShow?.(instance);
+        setIsShown(true);
+    };
+
+    const handleOnHide = (instance: Instance) => {
+        onHide?.(instance);
+        setIsShown(false);
+    };
+
+    const onAnimateComplete = () => {
+        if (isShown) {
+            return;
+        }
+        // @ts-expect-error
+        tooltipRef.current?._tippy?.unmount(); //  eslint-disable-line no-underscore-dangle
+    };
+
+    if (!content || !children) {
+        return <>{children}</>;
+    }
+
+    return (
         <div className={className}>
             <Tippy
                 zIndex={variables.Z_INDEX.TOOLTIP}
                 placement={placement}
-                animation={!(guideAnchor && isShown) && animation}
-                onShow={instance => {
-                    onShow?.(instance);
-                    setIsShown(true);
-                }}
-                onHide={instance => {
-                    onHide?.(instance);
-                    setIsShown(false);
-                }}
+                animation={!(guideAnchor && isShown)}
+                onShow={handleOnShow}
+                onHide={handleOnHide}
                 duration={duration}
                 delay={delay}
                 offset={[0, offset]}
@@ -185,14 +174,11 @@ export const Tooltip = ({
                             variants={animationVariants}
                             animate={isShown ? 'shown' : 'hidden'}
                             transition={{ duration: 0.2, ease: 'easeInOut' }}
-                            onAnimationComplete={
-                                // @ts-expect-error
-                                isShown ? () => {} : tooltipRef.current?._tippy?.unmount //  eslint-disable-line no-underscore-dangle
-                            }
+                            onAnimationComplete={onAnimateComplete}
                             {...attrs}
                         >
                             {title && <StyledTooltipTitle>{title}</StyledTooltipTitle>}
-                            <StyledContent>{content}</StyledContent>
+                            <div>{content}</div>
                         </BoxRich>
                     ) : (
                         <BoxDefault
@@ -201,26 +187,26 @@ export const Tooltip = ({
                             variants={animationVariants}
                             animate={isShown ? 'shown' : 'hidden'}
                             transition={{ duration: 0.2, ease: 'easeInOut' }}
-                            onAnimationComplete={
-                                // @ts-expect-error
-                                isShown ? () => {} : tooltipRef.current?._tippy?.unmount //  eslint-disable-line no-underscore-dangle
-                            }
+                            onAnimationComplete={onAnimateComplete}
                             {...attrs}
                         >
-                            {title && <StyledTooltipTitle>{title}</StyledTooltipTitle>}
-                            {guideAnchor && instance && (
-                                <OpenGuideInner>{guideAnchor(instance)}</OpenGuideInner>
+                            {(title || guideAnchor) && (
+                                <HeaderContainer>
+                                    {title && (
+                                        <StyledTooltipTitle>
+                                            {headerIcon && (
+                                                <Icon icon={headerIcon} size={spacings.md} />
+                                            )}
+                                            {title}
+                                        </StyledTooltipTitle>
+                                    )}
+
+                                    {guideAnchor && instance && (
+                                        <OpenGuideInner>{guideAnchor(instance)}</OpenGuideInner>
+                                    )}
+                                </HeaderContainer>
                             )}
-                            <StyledContent>{content}</StyledContent>
-                            {readMore && (
-                                <ReadMoreLink
-                                    variant="nostyle"
-                                    href={readMore.link}
-                                    target="_blank"
-                                >
-                                    {readMore.text}
-                                </ReadMoreLink>
-                            )}
+                            <TooltipContent>{content}</TooltipContent>
                         </BoxDefault>
                     )
                 }
@@ -230,7 +216,5 @@ export const Tooltip = ({
                 </Content>
             </Tippy>
         </div>
-    ) : (
-        <>{children}</>
     );
 };
