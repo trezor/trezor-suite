@@ -1,13 +1,22 @@
-import type { BlockFilter, FilterClient } from '../../src/types/backend';
+import type { FilterClient } from '../../src/types/backend';
+import type { MockBlockFilter } from '../fixtures/filters.fixture';
 
 export class MockFilterClient implements FilterClient {
-    private filters: BlockFilter[] = [];
+    private filters: MockBlockFilter[] = [];
 
-    setFixture(filters: BlockFilter[]) {
+    setFixture(filters: MockBlockFilter[]) {
         this.filters = filters;
     }
 
-    fetchFilters(knownHash: string, count: number): ReturnType<FilterClient['fetchFilters']> {
+    fetchNetworkInfo(): ReturnType<FilterClient['fetchNetworkInfo']> {
+        const tip = this.filters[this.filters.length - 1];
+        return Promise.resolve({ bestHeight: tip.blockHeight } as any);
+    }
+
+    fetchBlockFilters(
+        knownHash: string,
+        count: number,
+    ): ReturnType<FilterClient['fetchBlockFilters']> {
         const tip = this.filters[this.filters.length - 1];
         if (knownHash === tip.blockHash) {
             return Promise.resolve({ status: 'up-to-date' });
@@ -17,7 +26,6 @@ export class MockFilterClient implements FilterClient {
             ? Promise.resolve({ status: 'not-found' })
             : Promise.resolve({
                   status: 'ok',
-                  bestHeight: tip.blockHeight,
                   filters: this.filters.slice(from, from + count),
               });
     }
