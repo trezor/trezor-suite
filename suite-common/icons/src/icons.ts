@@ -8,6 +8,7 @@ export const icons = {
     action: require('../assets/icons/action.svg'),
     actionHorizontal: require('../assets/icons/actionHorizontal.svg'),
     arrowDown: require('../assets/icons/arrowDown.svg'),
+    arrowDownLight: require('../assets/icons/arrowDownLight.svg'),
     arrowURightDown: require('../assets/icons/arrowURightDown.svg'),
     arrowUp: require('../assets/icons/arrowUp.svg'),
     arrowUpRight: require('../assets/icons/arrowUpRight.svg'),
