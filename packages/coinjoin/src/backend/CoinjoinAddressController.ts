@@ -3,7 +3,7 @@
 import type { Network } from '@trezor/utxo-lib';
 
 import { deriveAddresses } from './backendUtils';
-import { getBlockAddressScript } from './filters';
+import { getAddressScript } from './filters';
 import type { AccountAddress, ScanAccountCheckpoint, AccountCache } from '../types/backend';
 import { DISCOVERY_LOOKOUT, DISCOVERY_LOOKOUT_EXTENDED } from '../constants';
 
@@ -50,7 +50,7 @@ export class CoinjoinAddressController {
             ({ address, path }) => ({
                 address,
                 path,
-                script: getBlockAddressScript(address, this.network),
+                script: getAddressScript(address, this.network),
             }),
         );
     }

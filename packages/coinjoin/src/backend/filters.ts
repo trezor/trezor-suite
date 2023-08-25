@@ -9,44 +9,37 @@ import { U64 } from 'n64';
 
 import { address as addressBjs, Network } from '@trezor/utxo-lib';
 
-const M = new U64(1 << 20);
+const P_DEFAULT = 20;
+const M_DEFAULT = 1 << 20;
 const KEY_SIZE = 16;
+const ZERO_KEY = Buffer.alloc(KEY_SIZE);
 
-const createFilter = (data: Buffer) => {
-    const filter = Golomb.fromNBytes(20, data);
+type FilterParams = {
+    P?: number;
+    M?: number;
+    key?: string;
+};
+
+const createFilter = (data: Buffer, { P = P_DEFAULT, M = M_DEFAULT }) => {
+    const filter = Golomb.fromNBytes(P, data);
     // In golomb package, M is hardcoded to 784931. With custom value, m must be calculated separately (as M * n).
-    filter.m = M.mul(new U64(filter.n));
+    filter.m = new U64(M).mul(new U64(filter.n));
     return filter;
 };
 
-export const getBlockAddressScript = (address: string, network: Network) => {
-    const script = addressBjs.toOutputScript(address, network);
-    return Buffer.concat([Buffer.from([script.length + 6]), script]);
-};
-
-export const getMempoolAddressScript = (address: string, network: Network) =>
+export const getAddressScript = (address: string, network: Network) =>
     addressBjs.toOutputScript(address, network);
 
-const getFilter = (filterHex: string, keyBuffer: Buffer) => {
-    const filter = createFilter(Buffer.from(filterHex, 'hex'));
-    const key = keyBuffer.subarray(0, KEY_SIZE);
-    return (script: Buffer) => filter.match(key, script);
+export const getFilter = (filterHex: string, { P, M, key }: FilterParams = {}) => {
+    if (!filterHex) return () => false;
+    const filter = createFilter(Buffer.from(filterHex, 'hex'), { P, M });
+    const keyBuffer = key ? Buffer.from(key, 'hex').subarray(0, KEY_SIZE) : ZERO_KEY;
+    return (script: Buffer) => filter.match(keyBuffer, script);
 };
 
-export const getBlockFilter = (filterHex: string, blockHash: string) =>
-    getFilter(filterHex, Buffer.from(blockHash, 'hex').reverse());
-
-export const getMempoolFilter = (filterHex: string, txid: string) =>
-    getFilter(filterHex, Buffer.from(txid, 'hex'));
-
-const getMultiFilter = (filterHex: string, keyBuffer: Buffer) => {
-    const filter = createFilter(Buffer.from(filterHex, 'hex'));
-    const key = keyBuffer.subarray(0, KEY_SIZE);
-    return (scripts: Buffer[]) => filter.matchAny(key, scripts);
+export const getMultiFilter = (filterHex: string, { P, M, key }: FilterParams = {}) => {
+    if (!filterHex) return () => false;
+    const filter = createFilter(Buffer.from(filterHex, 'hex'), { P, M });
+    const keyBuffer = key ? Buffer.from(key, 'hex').subarray(0, KEY_SIZE) : ZERO_KEY;
+    return (scripts: Buffer[]) => !!scripts.length && filter.matchAny(keyBuffer, scripts);
 };
-
-export const getBlockMultiFilter = (filterHex: string, blockHash: string) =>
-    getMultiFilter(filterHex, Buffer.from(blockHash, 'hex').reverse());
-
-export const getMempoolMultiFilter = (filterHex: string, txid: string) =>
-    getMultiFilter(filterHex, Buffer.from(txid, 'hex'));
