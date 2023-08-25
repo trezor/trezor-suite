@@ -496,14 +496,20 @@ export const setAccountMetadataKey =
 /**
  * Fill any record in reducer that may have metadata with metadata keys (not values).
  */
-const syncMetadataKeys = () => (dispatch: Dispatch, getState: GetState) => {
-    getState().wallet.accounts.forEach(account => {
-        const accountWithMetadata = dispatch(setAccountMetadataKey(account));
-        dispatch(setAccountAdd(accountWithMetadata));
-    });
-    // note that devices are intentionally omitted here - device receives metadata
-    // keys sooner when enabling labeling on device;
-};
+const syncMetadataKeys =
+    (encryptionVersion = METADATA.ENCRYPTION_VERSION) =>
+    (dispatch: Dispatch, getState: GetState) => {
+        const accountsWithoutKeys = getState().wallet.accounts.filter(
+            acc => !acc.metadata[encryptionVersion]?.fileName,
+        );
+
+        accountsWithoutKeys.forEach(account => {
+            const accountWithMetadata = dispatch(setAccountMetadataKey(account));
+            dispatch(setAccountAdd(accountWithMetadata));
+        });
+        // note that devices are intentionally omitted here - device receives metadata
+        // keys sooner when enabling labeling on device;
+    };
 
 export const selectProvider =
     ({ dataType, clientId }: { dataType: DataType; clientId: string }) =>
