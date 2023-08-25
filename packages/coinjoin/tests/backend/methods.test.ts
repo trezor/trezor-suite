@@ -27,7 +27,7 @@ const hasFilters = (r: BlockFilterResponse): r is Extract<BlockFilterResponse, {
 
 describe(`CoinjoinBackend methods`, () => {
     const client = new MockBackendClient();
-    const fetchFiltersMock = jest.spyOn(client, 'fetchFilters');
+    const fetchFiltersMock = jest.spyOn(client, 'fetchBlockFilters');
     const fetchBlockMock = jest.spyOn(client, 'fetchBlock');
 
     const getRequestedFilters = () =>
