@@ -4,9 +4,9 @@ import type { BlockbookAPI } from '@trezor/blockchain-link/lib/workers/blockbook
 
 import { httpGet, patchResponse, RequestOptions } from '../utils/http';
 import type {
-    BlockFilter,
     BlockbookBlock,
     BlockFilterResponse,
+    MempoolFilterResponse,
     BlockbookTransaction,
 } from '../types/backend';
 import type { CoinjoinBackendSettings, Logger } from '../types';
@@ -81,11 +81,34 @@ export class CoinjoinBackendClient {
         );
     }
 
+    fetchBlockFilters(bestKnownBlockHash: string, pageSize: number, options?: RequestOptions) {
+        return this.getBlockbookApi(
+            api =>
+                api
+                    .getBlockFiltersBatch(bestKnownBlockHash, pageSize)
+                    .then<BlockFilterResponse>(({ blockFiltersBatch, ...rest }) => {
+                        if (!blockFiltersBatch.length) return { status: 'up-to-date' };
+                        const filters = blockFiltersBatch.map(item => {
+                            const [blockHeight, blockHash, filter] = item.split(':');
+                            return { blockHeight: Number(blockHeight), blockHash, filter };
+                        });
+                        return { status: 'ok', filters, ...rest };
+                    })
+                    .catch<BlockFilterResponse>(error => {
+                        if (identifyWsError(error) === 'ERROR_BLOCK_NOT_FOUND') {
+                            return { status: 'not-found' };
+                        }
+                        throw error;
+                    }),
+            { ...options, timeout: FILTERS_REQUEST_TIMEOUT },
+        );
+    }
+
     fetchMempoolFilters(timestamp?: number, options?: RequestOptions) {
         return this.getBlockbookApi(api => api.getMempoolFilters(timestamp), {
             ...options,
             timeout: FILTERS_REQUEST_TIMEOUT,
-        }).then(({ entries }) => entries ?? {});
+        }).then<MempoolFilterResponse>(({ entries = {}, ...rest }) => ({ entries, ...rest }));
     }
 
     private reconnect = async () => {
