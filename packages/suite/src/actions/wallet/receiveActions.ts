@@ -48,6 +48,7 @@ export const showAddress =
     (path: string, address: string) => async (dispatch: Dispatch, getState: GetState) => {
         const { device } = getState().suite;
         const { account } = getState().wallet.selectedAccount;
+
         if (!device || !account) return;
 
         const modalPayload = {
@@ -103,6 +104,9 @@ export const showAddress =
                 break;
             case 'bitcoin':
                 response = await TrezorConnect.getAddress(params);
+                break;
+            case 'solana':
+                response = await TrezorConnect.solanaGetAddress(params);
                 break;
             default:
                 response = {
