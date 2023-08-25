@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { View } from 'react-native';
+import Animated, { FadeIn } from 'react-native-reanimated';
 
 import { useFocusEffect } from '@react-navigation/native';
 
@@ -32,6 +33,11 @@ const networkTypeToInputLabelMap: Record<NetworkType, string> = {
     ripple: 'Enter receive address manually',
 };
 
+const FORM_BUTTON_FADE_IN_DURATION = 200;
+
+// Extra padding needed to make multiline xpub input form visible even with the sticky footer.
+const EXTRA_KEYBOARD_AVOIDING_VIEW_HEIGHT = 350;
+
 const cameraStyle = prepareNativeStyle(utils => ({
     alignItems: 'center',
     marginTop: 20,
@@ -57,6 +63,8 @@ export const XpubScanScreen = ({
     const watchXpubAddress = watch('xpubAddress');
     const { networkSymbol } = route.params;
     const [isHintSheetVisible, setIsHintSheetVisible] = useState(false);
+
+    const isXpubFormFilled = watchXpubAddress?.length > 0;
 
     const resetToDefaultValues = useCallback(() => {
         setIsCameraRequested(false);
@@ -132,6 +140,7 @@ export const XpubScanScreen = ({
         <Screen
             header={<AccountImportHeader activeStep={2} />}
             footer={<XpubHint networkType={networkType} handleOpen={handleOpenHint} />}
+            extraKeyboardAvoidingViewHeight={EXTRA_KEYBOARD_AVOIDING_VIEW_HEIGHT}
         >
             <HeaderedCard
                 title="Coin to sync"
@@ -156,15 +165,19 @@ export const XpubScanScreen = ({
                             data-testID="@accounts-import/sync-coins/xpub-input"
                             name="xpubAddress"
                             label={inputLabel}
+                            multiline
                         />
-                        <Button
-                            data-testID="@accounts-import/sync-coins/xpub-submit"
-                            onPress={onXpubFormSubmit}
-                            size="large"
-                            isDisabled={!watchXpubAddress?.length}
-                        >
-                            Confirm
-                        </Button>
+                        {isXpubFormFilled && (
+                            <Animated.View entering={FadeIn.duration(FORM_BUTTON_FADE_IN_DURATION)}>
+                                <Button
+                                    data-testID="@accounts-import/sync-coins/xpub-submit"
+                                    onPress={onXpubFormSubmit}
+                                    size="large"
+                                >
+                                    Confirm
+                                </Button>
+                            </Animated.View>
+                        )}
                     </VStack>
                 </Form>
                 {isDevelopOrDebugEnv() && (

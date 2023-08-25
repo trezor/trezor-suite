@@ -24,12 +24,13 @@ import { ACCESSIBILITY_FONTSIZE_MULTIPLIER } from '../Text';
 export type InputProps = TextInputProps & {
     value: string;
     label: string;
-    onSubmitEditing?: (value: string) => void;
     hasError?: boolean;
     hasWarning?: boolean;
     leftIcon?: ReactNode;
 };
 
+const INPUT_LABEL_TOP_PADDING = 35;
+const INPUT_LABEL_TOP_PADDING_MINIMIZED = 40;
 const INPUT_WRAPPER_PADDING_HORIZONTAL = 14 * ACCESSIBILITY_FONTSIZE_MULTIPLIER;
 const INPUT_WRAPPER_PADDING_VERTICAL = 17 * ACCESSIBILITY_FONTSIZE_MULTIPLIER;
 const INPUT_WRAPPER_PADDING_VERTICAL_MINIMIZED =
@@ -41,6 +42,7 @@ type InputWrapperStyleProps = {
     hasWarning: boolean;
     hasError: boolean;
     isLabelMinimized: boolean;
+    isFocused: boolean;
 };
 
 type InputLabelStyleProps = {
@@ -53,16 +55,21 @@ type InputStyleProps = {
 };
 
 const inputWrapperStyle = prepareNativeStyle<InputWrapperStyleProps>(
-    (utils, { hasError, hasWarning }) => ({
-        borderWidth: utils.borders.widths.small,
-        borderColor: utils.colors.borderOnElevation0,
+    (utils, { hasError, hasWarning, isFocused }) => ({
         backgroundColor: utils.colors.backgroundNeutralSubtleOnElevation0,
-        borderRadius: utils.borders.radii.small,
+        borderRadius: 1.5 * utils.borders.radii.small,
         paddingHorizontal: INPUT_WRAPPER_PADDING_HORIZONTAL,
         paddingBottom: INPUT_WRAPPER_PADDING_VERTICAL_MINIMIZED,
-        height: INPUT_WRAPPER_HEIGHT,
+        minHeight: INPUT_WRAPPER_HEIGHT,
         justifyContent: 'flex-end',
         extend: [
+            {
+                condition: isFocused,
+                style: {
+                    borderColor: utils.colors.borderFocus,
+                    borderWidth: utils.borders.widths.small,
+                },
+            },
             {
                 condition: hasWarning,
                 style: {
@@ -85,13 +92,13 @@ const inputStyle = prepareNativeStyle<InputStyleProps>((utils, { isIconDisplayed
     ...utils.typography.body,
     alignItems: 'center',
     justifyContent: 'center',
-    height: INPUT_TEXT_HEIGHT,
+    minHeight: INPUT_TEXT_HEIGHT,
     color: utils.colors.textDefault,
     left: isIconDisplayed ? utils.spacings.large : 0,
     borderWidth: 0,
     flex: 1,
     // Make the text input uniform on both platforms (https://stackoverflow.com/a/68458803/1281305)
-    paddingTop: 0,
+    paddingTop: utils.typography.body.lineHeight,
     paddingBottom: 0,
 }));
 
@@ -108,10 +115,12 @@ const inputLabelStyle = prepareNativeStyle(
         color: utils.colors.textSubdued,
         position: 'absolute',
         left: INPUT_WRAPPER_PADDING_HORIZONTAL + (isIconDisplayed ? utils.spacings.large : 0),
+        top: INPUT_LABEL_TOP_PADDING,
         extend: {
             condition: isLabelMinimized,
             style: {
                 ...D.deleteKey(utils.typography.label, 'fontSize'),
+                top: INPUT_LABEL_TOP_PADDING_MINIMIZED,
             },
         },
     }),
@@ -168,10 +177,8 @@ export const Input = React.forwardRef<TextInput, InputProps>(
     (
         {
             value,
-            onChange,
             onFocus,
             onBlur,
-            onSubmitEditing,
             label,
             leftIcon,
             hasError = false,
@@ -200,40 +207,44 @@ export const Input = React.forwardRef<TextInput, InputProps>(
         };
 
         return (
-            <Box
-                style={applyStyle(inputWrapperStyle, {
-                    hasError,
-                    hasWarning,
-                    isLabelMinimized,
-                })}
-            >
-                {leftIcon && <Box style={applyStyle(leftIconStyle)}>{leftIcon}</Box>}
-                <Animated.Text
-                    style={[
-                        /*
+            <>
+                <Box
+                    style={applyStyle(inputWrapperStyle, {
+                        hasError,
+                        hasWarning,
+                        isLabelMinimized,
+                        isFocused,
+                    })}
+                >
+                    {leftIcon && <Box style={applyStyle(leftIconStyle)}>{leftIcon}</Box>}
+                    <Animated.Text
+                        style={[
+                            /*
                             fontSize has to be defined by the animation style itself.
                             Otherwise, it re-renders and blinks when the size is defined
                             in both places (native and animated style).
                             */
-                        animatedInputLabelStyle,
-                        applyStyle(inputLabelStyle, { isLabelMinimized, isIconDisplayed }),
-                    ]}
-                    numberOfLines={1}
-                >
-                    {label}
-                </Animated.Text>
-                <Box flexDirection="row" alignItems="center">
-                    <TextInput
-                        ref={ref}
-                        style={applyStyle(inputStyle, { isIconDisplayed })}
-                        onFocus={handleOnFocus}
-                        onBlur={handleOnBlur}
-                        hitSlop={inputHitSlop}
-                        value={value}
-                        {...props}
-                    />
+                            animatedInputLabelStyle,
+                            applyStyle(inputLabelStyle, { isLabelMinimized, isIconDisplayed }),
+                        ]}
+                        numberOfLines={1}
+                    >
+                        {label}
+                    </Animated.Text>
+                    <Box flexDirection="row" alignItems="center">
+                        <TextInput
+                            ref={ref}
+                            style={applyStyle(inputStyle, { isIconDisplayed })}
+                            onFocus={handleOnFocus}
+                            onBlur={handleOnBlur}
+                            hitSlop={inputHitSlop}
+                            value={value}
+                            {...props}
+                        />
+                    </Box>
                 </Box>
-            </Box>
+                {isLabelMinimized}
+            </>
         );
     },
 );
