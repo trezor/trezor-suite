@@ -4,27 +4,20 @@ import styled, { css } from 'styled-components';
 
 import { Button, INPUT_HEIGHTS, Input } from '@trezor/components';
 import { Translation } from 'src/components/suite';
-import { useDevice, useDispatch, useTranslation } from 'src/hooks/suite';
+import { useDevice, useDispatch, useTranslation, useLayoutSize } from 'src/hooks/suite';
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';
 import { MAX_LABEL_LENGTH } from 'src/constants/suite/device';
-import { SCREEN_SIZE } from '@trezor/components/src/config/variables';
 import { isAscii } from '@trezor/utils';
+import { SCREEN_SIZE } from '@trezor/components/src/config/variables';
 
 const StyledInput = styled(Input)<{ isVertical?: boolean }>`
     ${props =>
         props.isVertical &&
         css`
-            margin: 4px 0 4px 4px;
-
             &:not(:first-child) {
                 margin-left: 8px;
             }
-
-            @media (max-width: ${SCREEN_SIZE.SM}) {
-                margin: 0px 0 10px;
-                width: 100%;
-            }
-        `}
+        `};
 `;
 
 const StyledButton = styled(Button)<{ isVertical?: boolean; isDisabled: boolean }>`
@@ -34,7 +27,7 @@ const StyledButton = styled(Button)<{ isVertical?: boolean; isDisabled: boolean 
         props.isVertical &&
         css`
             min-width: 170px;
-            margin: 4px 0 4px 4px;
+            margin: 4px 0;
             &:not(:first-child) {
                 margin-left: 8px;
 
@@ -45,7 +38,6 @@ const StyledButton = styled(Button)<{ isVertical?: boolean; isDisabled: boolean 
 
             @media (max-width: ${SCREEN_SIZE.SM}) {
                 width: 100%;
-                margin: 0;
             }
         `}
 `;
@@ -66,6 +58,7 @@ export const ChangeDeviceLabel = ({
     const { translationString } = useTranslation();
     const { device } = useDevice();
     const dispatch = useDispatch();
+    const { isMobileLayout } = useLayoutSize();
 
     const [label, setLabel] = useState(device?.label === placeholder ? '' : device?.label);
     const [error, setError] = useState<string | null>(null);
@@ -100,7 +93,7 @@ export const ChangeDeviceLabel = ({
     return (
         <>
             <StyledInput
-                width={170}
+                width={!isMobileLayout ? 170 : undefined}
                 isVertical={isVertical}
                 noTopLabel
                 bottomText={error}
