@@ -1,7 +1,6 @@
 import styled from 'styled-components';
-import { Tooltip } from '../../index';
-import { storiesOf } from '@storybook/react';
-import { select, number, text, boolean } from '@storybook/addon-knobs';
+import { Tooltip as TooltipComponent, TooltipProps } from '../../index';
+import { StoryObj } from '@storybook/react';
 
 const Center = styled.div`
     display: flex;
@@ -10,32 +9,39 @@ const Center = styled.div`
     padding: 100px 0px;
 `;
 
-Center.displayName = 'CenterWrapper';
+export default {
+    title: 'Misc/Tooltip',
+    component: TooltipComponent,
+};
 
-storiesOf('Misc/Tooltip', module).add('Tooltip', () => {
-    const placement: any = select(
-        'Placement',
-        {
-            Top: 'top',
-            Bottom: 'bottom',
-            Left: 'left',
-            Right: 'right',
-        },
-        'bottom',
-    );
-
-    return (
+export const Tooltip: StoryObj<TooltipProps> = {
+    render: args => (
         <Center>
-            <Tooltip
-                maxWidth={number('Max width', 280)}
-                offset={number('Offset (distance)', 10)}
-                placement={placement}
-                dashed={boolean('Dashed', false)}
-                cursor={select('Cursor', ['help', 'inherit', 'default'], 'help')}
-                content={text('Content', 'Passphrase is an optional feature.')}
-            >
+            <TooltipComponent {...args}>
                 <span>Text with tooltip</span>
-            </Tooltip>
+            </TooltipComponent>
         </Center>
-    );
-});
+    ),
+    args: {
+        content: 'Passphrase is an optional feature',
+        offset: 10,
+    },
+    argTypes: {
+        maxWidth: {
+            type: 'number',
+        },
+        title: {
+            options: [null, <span>Title</span>],
+        },
+        placement: {
+            control: 'radio',
+            options: ['top', 'bottom', 'left', 'right'],
+        },
+        cursor: {
+            options: ['pointer', 'help', 'not-allowed', 'default'],
+        },
+        guideAnchor: {
+            control: { type: 'null' },
+        },
+    },
+};
