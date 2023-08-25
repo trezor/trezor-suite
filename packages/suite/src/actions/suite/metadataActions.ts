@@ -1,7 +1,9 @@
+/* eslint @typescript-eslint/no-use-before-define: 1 */
+
 import TrezorConnect from '@trezor/connect';
 import { analytics, EventType } from '@trezor/suite-analytics';
 
-import { createDeferred } from '@trezor/utils';
+import { createDeferred, cloneObject } from '@trezor/utils';
 import { METADATA } from 'src/actions/suite/constants';
 import { Dispatch, GetState, TrezorDevice } from 'src/types/suite';
 import {
@@ -574,27 +576,27 @@ export const connectProvider =
 
 export const addDeviceMetadata =
     (payload: Extract<MetadataAddPayload, { type: 'walletLabel' }>) =>
-    async (dispatch: Dispatch, getState: GetState) => {
+    (dispatch: Dispatch, getState: GetState) => {
         const device = getState().devices.find(d => d.state === payload.deviceState);
         const provider = selectSelectedProviderForLabels(getState());
 
-        if (!device || device.metadata.status !== 'enabled') return false;
+        if (!device || device.metadata.status !== 'enabled') return Promise.resolve(false);
 
-        if (!device || !provider) return false;
+        if (!provider) return Promise.resolve(false);
 
         const { fileName, aesKey } = device.metadata[METADATA.ENCRYPTION_VERSION] || {};
         if (!fileName || !aesKey) {
             console.error('fileName or aesKey is missing for device', device.state);
-            return;
+            return Promise.resolve(false);
         }
+
         // todo: not danger overwrite empty?
         const metadata = fileName ? provider.data[fileName] : undefined;
 
-        const nextMetadata = metadata
-            ? JSON.parse(JSON.stringify(metadata))
-            : {
-                  walletLabel: '',
-              };
+        const nextMetadata = cloneObject(
+            metadata ?? METADATA.DEFAULT_WALLET_METADATA,
+        ) as WalletLabels;
+
         const walletLabel =
             typeof payload.value === 'string' && payload.value.length > 0
                 ? payload.value
@@ -602,53 +604,22 @@ export const addDeviceMetadata =
 
         nextMetadata.walletLabel = walletLabel;
 
-        dispatch({
-            type: METADATA.SET_DATA,
-            payload: {
+        dispatch(
+            setMetadata({
                 provider,
-                data: {
-                    [fileName]: nextMetadata,
-                },
-            },
-        });
+                fileName,
+                data: nextMetadata,
+            }),
+        );
 
-        const providerInstance = dispatch(getProviderInstance({ clientId: provider.clientId }));
-
-        if (!providerInstance) {
-            // provider should always be set here
-            return false;
-        }
-
-        try {
-            const encrypted = await metadataUtils.encrypt(
-                {
-                    version: METADATA.FORMAT_VERSION,
-                    walletLabel,
-                },
+        return dispatch(
+            encryptAndSaveMetadata({
+                data: { walletLabel },
                 aesKey,
-            );
-            const result = await providerInstance.setFileContent(fileName, encrypted);
-            if (!result.success) {
-                dispatch(
-                    handleProviderError({
-                        error: result,
-                        action: ProviderErrorAction.SAVE,
-                        clientId: provider.clientId,
-                    }),
-                );
-                return false;
-            }
-            return true;
-        } catch (err) {
-            const error = providerInstance.error('OTHER_ERROR', err.message);
-            return dispatch(
-                handleProviderError({
-                    error,
-                    action: ProviderErrorAction.SAVE,
-                    clientId: provider.clientId,
-                }),
-            );
-        }
+                fileName,
+                provider,
+            }),
+        );
     };
 
 /**
@@ -661,32 +632,30 @@ export const addAccountMetadata =
     async (dispatch: Dispatch, getState: GetState) => {
         const account = getState().wallet.accounts.find(a => a.key === payload.accountKey);
         const provider = selectSelectedProviderForLabels(getState());
+
         if (!account || !provider) return false;
 
         // todo: not danger overwrite empty?
-        const fileName = account.metadata?.[METADATA.ENCRYPTION_VERSION]?.fileName;
-        const metadata = fileName ? provider.data[fileName] : undefined;
+        const { fileName, aesKey } = account.metadata?.[METADATA.ENCRYPTION_VERSION] || {};
 
-        if (!fileName) {
+        if (!fileName || !aesKey) {
             throw new Error(
                 `filename of version ${METADATA.ENCRYPTION_VERSION} does not exist for account ${account.path}`,
             );
         }
+        const data = provider.data[fileName];
 
-        const nextMetadata = metadata
-            ? JSON.parse(JSON.stringify(metadata))
-            : {
-                  outputLabels: {},
-                  addressLabels: {},
-                  accountLabel: '',
-              };
+        const nextMetadata = cloneObject(
+            data ?? METADATA.DEFAULT_ACCOUNT_METADATA,
+        ) as AccountLabels;
 
         if (payload.type === 'outputLabel') {
             if (typeof payload.value !== 'string' || payload.value.length === 0) {
                 if (!nextMetadata.outputLabels[payload.txid]) return false;
                 delete nextMetadata.outputLabels[payload.txid][payload.outputIndex];
-                if (Object.keys(nextMetadata.outputLabels[payload.txid]).length === 0)
+                if (Object.keys(nextMetadata.outputLabels[payload.txid]).length === 0) {
                     delete nextMetadata.outputLabels[payload.txid];
+                }
             } else {
                 if (!nextMetadata.outputLabels[payload.txid]) {
                     nextMetadata.outputLabels[payload.txid] = {};
@@ -718,54 +687,84 @@ export const addAccountMetadata =
             }
         }
 
-        dispatch({
-            type: METADATA.SET_DATA,
-            payload: {
+        dispatch(
+            setMetadata({
+                fileName,
                 provider,
-                data: {
-                    [fileName]: nextMetadata,
-                },
-            },
-        });
+                data: nextMetadata,
+            }),
+        );
 
         // we might intentionally skip saving metadata content to persistent storage.
         if (!save) return true;
 
-        const providerInstance = await dispatch(
-            getProviderInstance({ clientId: provider.clientId }),
+        await dispatch(
+            encryptAndSaveMetadata({
+                data: {
+                    accountLabel: nextMetadata.accountLabel,
+                    outputLabels: nextMetadata.outputLabels,
+                    addressLabels: nextMetadata.addressLabels,
+                },
+                aesKey,
+                fileName,
+                provider,
+            }),
         );
 
+        return true;
+    };
+
+const encryptAndSaveMetadata =
+    ({
+        data,
+        aesKey,
+        fileName,
+        provider,
+    }: {
+        data: AccountLabels | WalletLabels;
+        aesKey: string;
+        fileName: string;
+        provider: MetadataProvider;
+    }) =>
+    async (dispatch: Dispatch) => {
+        const providerInstance = dispatch(getProviderInstance({ clientId: provider.clientId }));
+
         if (!providerInstance) {
-            // provider should always be set here (see init)
+            // provider should always be set here
             return false;
         }
 
-        // todo: can't this throw? heh?
-        const encrypted = await metadataUtils.encrypt(
-            {
-                version: METADATA.FORMAT_VERSION,
-                accountLabel: nextMetadata.accountLabel,
-                outputLabels: nextMetadata.outputLabels,
-                addressLabels: nextMetadata.addressLabels,
-            },
-            account.metadata[METADATA.ENCRYPTION_VERSION]!.aesKey,
-        );
+        try {
+            const encrypted = await metadataUtils.encrypt(
+                {
+                    version: METADATA.FORMAT_VERSION,
+                    ...data,
+                },
+                aesKey,
+            );
 
-        const result = await providerInstance.setFileContent(
-            account.metadata[METADATA.ENCRYPTION_VERSION]!.fileName,
-            encrypted,
-        );
-        if (!result.success) {
+            const result = await providerInstance.setFileContent(fileName, encrypted);
+            if (!result.success) {
+                dispatch(
+                    handleProviderError({
+                        error: result,
+                        action: ProviderErrorAction.SAVE,
+                        clientId: provider.clientId,
+                    }),
+                );
+                return false;
+            }
+        } catch (err) {
+            const error = providerInstance.error('OTHER_ERROR', err.message);
             dispatch(
                 handleProviderError({
-                    error: result,
+                    error,
                     action: ProviderErrorAction.SAVE,
                     clientId: provider.clientId,
                 }),
             );
             return false;
         }
-        return true;
     };
 
 /**
@@ -913,7 +912,6 @@ export const init =
                 return false;
             }
         }
-
         await dispatch(fetchAndSaveMetadata(device.state));
         dispatch({ type: METADATA.SET_INITIATING, payload: false });
 
