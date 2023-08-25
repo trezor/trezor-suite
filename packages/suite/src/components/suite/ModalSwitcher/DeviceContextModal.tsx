@@ -19,9 +19,6 @@ import {
     ConfirmAddress,
     ConfirmXpub,
 } from 'src/components/suite/modals';
-import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
-import { selectLabelingDataForSelectedAccount } from 'src/reducers/suite/metadataReducer';
-
 import type { ReduxModalProps } from './types';
 
 /** Modals requested by Device from `trezor-connect` */
@@ -31,8 +28,6 @@ export const DeviceContextModal = ({
     data,
 }: ReduxModalProps<typeof MODAL.CONTEXT_DEVICE>) => {
     const device = useSelector(state => state.suite.device);
-    const account = useSelector(selectSelectedAccount);
-    const { accountLabel } = useSelector(selectLabelingDataForSelectedAccount);
     const intl = useIntl();
 
     if (!device) return null;
@@ -89,7 +84,7 @@ export const DeviceContextModal = ({
         case 'ButtonRequest_PinEntry':
             return <ConfirmActionModal device={device} renderer={renderer} />;
         case 'ButtonRequest_Address':
-            return account && data?.address ? (
+            return data ? (
                 <ConfirmAddress
                     value={data.address}
                     addressPath={data.serializedPath}
@@ -97,15 +92,7 @@ export const DeviceContextModal = ({
                 />
             ) : null;
         case 'ButtonRequest_PublicKey':
-            return account ? (
-                <ConfirmXpub
-                    value={account.descriptor}
-                    symbol={account.symbol}
-                    accountIndex={account.index}
-                    accountLabel={accountLabel}
-                    onCancel={abort}
-                />
-            ) : null;
+            return <ConfirmXpub onCancel={abort} />;
         default:
             return null;
     }
