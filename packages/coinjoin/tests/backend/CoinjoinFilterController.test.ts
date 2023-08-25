@@ -1,24 +1,23 @@
 import { CoinjoinFilterController } from '../../src/backend/CoinjoinFilterController';
-import { BlockFilter } from '../../src/types/backend';
-import { mockFilterSequence } from '../fixtures/filters.fixture';
+import { MockBlockFilter, mockFilterSequence } from '../fixtures/filters.fixture';
 import { COINJOIN_BACKEND_SETTINGS } from '../fixtures/config.fixture';
 import { MockFilterClient } from '../mocks/MockFilterClient';
 
 const FILTER_COUNT = 16;
 const FILTER_MIDDLE = 8;
 
-const FILTERS: BlockFilter[] = mockFilterSequence(
+const FILTERS: MockBlockFilter[] = mockFilterSequence(
     FILTER_COUNT,
     COINJOIN_BACKEND_SETTINGS.baseBlockHeight,
     COINJOIN_BACKEND_SETTINGS.baseBlockHash,
 );
 
-const REORG_FILTER: BlockFilter = {
+const REORG_FILTER: MockBlockFilter = {
     blockHeight: 9,
-    blockTime: 90,
     blockHash: 'nope',
     filter: 'nope',
     prevHash: FILTERS[FILTER_MIDDLE - 1].blockHash,
+    filterParams: { key: 'nope' },
 };
 
 const REORG_FILTERS = FILTERS.slice(0, FILTER_MIDDLE).concat(REORG_FILTER);
