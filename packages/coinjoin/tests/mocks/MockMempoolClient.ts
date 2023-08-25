@@ -19,9 +19,9 @@ export class MockMempoolClient implements MempoolClient {
     }
 
     fetchMempoolFilters() {
-        return Promise.resolve(
-            Object.fromEntries(this.mempoolTxs.map(({ txid, filter }) => [txid, filter])),
-        );
+        return Promise.resolve({
+            entries: Object.fromEntries(this.mempoolTxs.map(({ txid, filter }) => [txid, filter])),
+        });
     }
 
     fetchTransaction(txid: string) {
