@@ -10,6 +10,16 @@ export type SolanaAPI = Connection;
 type Context = ContextType<SolanaAPI>;
 type Request<T> = T & Context;
 
+const pushTransaction = async (request: Request<MessageTypes.PushTransaction>) => {
+    const txHash = request.payload.startsWith('0x') ? request.payload.slice(2) : request.payload;
+    const api = await request.connect();
+    const payload = await api.sendRawTransaction(Buffer.from(txHash, 'hex'));
+    return {
+        type: RESPONSES.PUSH_TRANSACTION,
+        payload,
+    } as const;
+};
+
 const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => {
     const { payload } = request;
     const api = await request.connect();
@@ -151,6 +161,8 @@ const onRequest = (request: Request<MessageTypes.Message>) => {
             return getAccountInfo(request);
         case MESSAGES.GET_INFO:
             return getInfo(request);
+        case MESSAGES.PUSH_TRANSACTION:
+            return pushTransaction(request);
         case MESSAGES.SUBSCRIBE:
             return subscribe(request);
         case MESSAGES.UNSUBSCRIBE:

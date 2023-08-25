@@ -60,7 +60,14 @@ const Raw = ({ network }: RawProps) => {
     const { ref: inputRef, ...inputField } = register(inputName, {
         required: translationString('RAW_TX_NOT_SET'),
         validate: (value: string) => {
-            if (!isHexValid(value, network.networkType === 'ethereum' ? '0x' : undefined))
+            if (
+                !isHexValid(
+                    value,
+                    network.networkType === 'ethereum' || network.networkType === 'solana'
+                        ? '0x'
+                        : undefined,
+                )
+            )
                 return translationString('DATA_NOT_VALID_HEX');
         },
     });
