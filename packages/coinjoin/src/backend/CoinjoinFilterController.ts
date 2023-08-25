@@ -39,7 +39,9 @@ export class CoinjoinFilterController {
         const fetchFilterBatch = async ({ blockHeight, blockHash }: typeof latestCheckpoint) => ({
             height: blockHeight,
             hash: blockHash,
-            response: await this.client.fetchFilters(blockHash, batchSize, { signal: abortSignal }),
+            response: await this.client.fetchBlockFilters(blockHash, batchSize, {
+                signal: abortSignal,
+            }),
         });
 
         onProgressInfo?.({
@@ -64,10 +66,15 @@ export class CoinjoinFilterController {
         // If there are filters, iterate over them and fetch subsequent batch
         if (batch.response.status === 'ok') {
             const from = batch.height;
+            const { bestHeight } = await this.client.fetchNetworkInfo({ signal: abortSignal });
             const progressCooldown = createCooldown(PROGRESS_INFO_COOLDOWN);
             do {
-                const { filters, bestHeight: to } = batch.response;
+                const { filters, M, P, zeroedKey } = batch.response;
                 const [last] = filters.slice(-1);
+
+                // In case of new block mined during the discovery, its height
+                // is used as `to` instead of `bestHeight` from the beginning
+                const to = Math.max(bestHeight, last.blockHeight);
 
                 onProgressInfo?.({
                     stage: 'block',
@@ -84,7 +91,8 @@ export class CoinjoinFilterController {
                 });
                 // eslint-disable-next-line no-restricted-syntax
                 for (const filter of filters) {
-                    yield filter;
+                    const filterParams = { M, P, key: zeroedKey ? undefined : filter.blockHash };
+                    yield { ...filter, filterParams };
                     if (progressCooldown())
                         onProgressInfo?.({
                             stage: 'block',
