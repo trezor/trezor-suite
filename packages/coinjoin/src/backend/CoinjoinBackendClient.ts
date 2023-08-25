@@ -2,7 +2,7 @@ import { scheduleAction, arrayShuffle, urlToOnion } from '@trezor/utils';
 import { TypedEmitter } from '@trezor/utils/lib/typedEventEmitter';
 import type { BlockbookAPI } from '@trezor/blockchain-link/lib/workers/blockbook/websocket';
 
-import { httpGet, patchResponse, RequestOptions } from '../utils/http';
+import { RequestOptions } from '../utils/http';
 import type {
     BlockbookBlock,
     BlockFilterResponse,
@@ -21,7 +21,6 @@ type CoinjoinBackendClientSettings = CoinjoinBackendSettings & {
 
 export class CoinjoinBackendClient {
     protected readonly logger;
-    protected readonly wabisabiUrl;
     protected readonly blockbookUrls;
     protected readonly onionDomains;
     protected readonly websockets;
@@ -30,7 +29,6 @@ export class CoinjoinBackendClient {
     protected blockbookRequestId;
     protected persistentApi?: BlockbookAPI;
 
-    private readonly identityWabisabi = 'WabisabiApi';
     private readonly identitiesBlockbook = [
         'Blockbook_1',
         'Blockbook_2',
@@ -40,7 +38,6 @@ export class CoinjoinBackendClient {
 
     constructor(settings: CoinjoinBackendClientSettings) {
         this.logger = settings.logger;
-        this.wabisabiUrl = `${settings.wabisabiBackendUrl}api/v4/btc`;
         this.blockbookUrls = arrayShuffle(settings.blockbookUrls);
         this.onionDomains = settings.onionDomains ?? {};
         this.blockbookRequestId = Math.floor(Math.random() * settings.blockbookUrls.length);
@@ -50,8 +47,6 @@ export class CoinjoinBackendClient {
         // which is then emitted in this.reconnect()
         this.emitter = new TypedEmitter<{ mempoolDisconnected: void }>();
     }
-
-    // Blockbook methods
 
     fetchBlock(height: number, options?: RequestOptions): Promise<BlockbookBlock> {
         const identity = this.identitiesBlockbook[height & 0x3]; // Works only when identities.length === 4
@@ -191,92 +186,6 @@ export class CoinjoinBackendClient {
                 return callbackFn(api);
             },
             { attempts: 3, timeout: HTTP_REQUEST_TIMEOUT, gap: HTTP_REQUEST_GAP, ...options },
-        );
-    }
-
-    // Wabisabi methods
-
-    fetchFilters(
-        bestKnownBlockHash: string,
-        count: number,
-        options?: RequestOptions,
-    ): Promise<BlockFilterResponse> {
-        return this.fetchFromWabisabi(
-            this.handleFiltersResponse,
-            { ...options, timeout: FILTERS_REQUEST_TIMEOUT },
-            'Blockchain/filters',
-            { bestKnownBlockHash, count },
-        );
-    }
-
-    protected async handleFiltersResponse(response: Response): Promise<BlockFilterResponse> {
-        switch (response.status) {
-            // Provided hash is a tip
-            case 204:
-                return { status: 'up-to-date' };
-            case 200: {
-                const result: { BestHeight: number; Filters: string[] } = await response
-                    .json()
-                    .then(patchResponse);
-                const filters = result.Filters.map<BlockFilter>(data => {
-                    const [blockHeight, blockHash, filter, prevHash, blockTime] = data.split(':');
-                    return {
-                        blockHeight: Number(blockHeight),
-                        blockHash,
-                        filter,
-                        prevHash,
-                        blockTime: Number(blockTime),
-                    };
-                });
-                return {
-                    status: 'ok',
-                    bestHeight: result.BestHeight,
-                    filters,
-                };
-            }
-            // hash does not exist, probably reorg
-            case 404:
-                return { status: 'not-found' };
-            default: {
-                const error = await response.json().catch(() => response.statusText);
-                throw new Error(`${response.status}: ${error}`);
-            }
-        }
-    }
-
-    fetchMempoolTxids(options?: RequestOptions): Promise<string[]> {
-        return this.fetchFromWabisabi(
-            this.handleMempoolResponse,
-            options,
-            'Blockchain/mempool-hashes',
-        );
-    }
-
-    protected handleMempoolResponse(response: Response) {
-        if (response.status === 200) {
-            return response.json();
-        }
-        throw new Error(`${response.status}: ${response.statusText}`);
-    }
-
-    private fetchFromWabisabi<T>(
-        callbackFn: (r: Response) => Promise<T>,
-        { identity = this.identityWabisabi, ...options }: RequestOptions = {},
-        path: string,
-        query?: Record<string, any>,
-    ): Promise<T> {
-        return scheduleAction(
-            async signal => {
-                const url = `${this.wabisabiUrl}/${path}`;
-                this.logger?.debug(`GET ${url}${query ? `?${new URLSearchParams(query)}` : ''}`);
-                const response = await httpGet(url, query, { identity, ...options, signal });
-                // switch identity in case of 403 (possibly blocked by Cloudflare)
-                if (response.status === 403) {
-                    identity = resetIdentityCircuit(identity);
-                }
-                return callbackFn.call(this, response);
-            },
-            { attempts: 3, timeout: HTTP_REQUEST_TIMEOUT, gap: HTTP_REQUEST_GAP, ...options }, // default attempts/timeout could be overriden by options
         );
     }
 }
