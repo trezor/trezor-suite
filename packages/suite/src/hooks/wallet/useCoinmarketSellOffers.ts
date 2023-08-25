@@ -241,10 +241,13 @@ export const useOffers = ({ selectedAccount }: UseOffersProps) => {
             const cryptoStringAmount = shouldSendInSats
                 ? amountToSatoshi(selectedQuote.cryptoStringAmount, network.decimals)
                 : selectedQuote.cryptoStringAmount;
+            const destinationPaymentExtraId =
+                selectedQuote.destinationPaymentExtraId || trade?.data?.destinationPaymentExtraId;
             const result = await recomposeAndSign(
                 selectedAccount,
                 destinationAddress,
                 cryptoStringAmount,
+                destinationPaymentExtraId,
             );
             if (result?.success) {
                 // send txid to the server as confirmation
@@ -253,9 +256,7 @@ export const useOffers = ({ selectedAccount }: UseOffersProps) => {
                     ...selectedQuote,
                     txid,
                     destinationAddress,
-                    destinationPaymentExtraId:
-                        selectedQuote?.destinationPaymentExtraId ||
-                        trade?.data?.destinationPaymentExtraId,
+                    destinationPaymentExtraId,
                 };
                 const response = await invityAPI.doSellConfirm(quote);
                 if (!response) {
