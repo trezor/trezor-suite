@@ -1,3 +1,10 @@
+# 1.1.15
+
+-   chore(transport): merge lowlevel folder with utils (1d8d76637)
+-   chore(transport): reorganize protocol related logic (cbabe2e2c)
+-   refactor(transport): small change in interface device type (fb73caa39)
+-   chore: introduce protobuf and protocol packages (072042e77)
+
 # 1.1.14
 
 -   chore(deps): bump protobufjs from 6.11.3 to 7.2.4 (d0cb6caae)
