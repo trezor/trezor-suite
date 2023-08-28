@@ -1,9 +1,9 @@
 import { useState, useEffect, useCallback, ReactNode, FC, HtmlHTMLAttributes } from 'react';
 import { motion } from 'framer-motion';
 import styled, { css } from 'styled-components';
-import { Icon } from '../assets/Icon/Icon';
-import * as variables from '../../config/variables';
-import * as motionConfig from '../../config/motion';
+import { typography, spacingsPx, borders } from '@trezor/theme';
+import { Icon } from '@suite-common/icons/src/webComponents';
+import { motionEasing } from '../../config/motion';
 
 const animationVariants = {
     closed: {
@@ -17,87 +17,59 @@ const animationVariants = {
 };
 
 const Wrapper = styled.div<Pick<CollapsibleBoxProps, 'variant'>>`
-    display: flex;
-    flex-direction: column;
-    background: ${({ theme }) => theme.BG_GREY};
     margin-bottom: 20px;
-
-    ${({ variant }) =>
-        (variant === 'tiny' || variant === 'small') &&
-        css`
-            border-radius: 4px;
-        `}
+    background: ${({ theme }) => theme.backgroundSurfaceElevation1};
+    border-radius: ${borders.radii.sm};
 
     ${({ variant, theme }) =>
         variant === 'large' &&
         css`
-            border-radius: 16px;
-            box-shadow: 0 2px 5px 0 ${theme.BOX_SHADOW_BLACK_20};
+            border-radius: ${borders.radii.md};
+            box-shadow: 0 2px 5px 0 ${theme.BOX_SHADOW_BLACK_20}; // TODO: use theme
         `}
 `;
 
-const Header = styled.div<Pick<CollapsibleBoxProps, 'variant' | 'headerJustifyContent'>>`
+const Header = styled.div<Pick<CollapsibleBoxProps, 'variant'>>`
     display: flex;
-    justify-content: ${({ headerJustifyContent }) => headerJustifyContent};
+    justify-content: space-between;
     align-items: center;
+    gap: ${spacingsPx.xl};
+    padding: ${({ variant }) =>
+        variant === 'small'
+            ? `${spacingsPx.sm} ${spacingsPx.md}`
+            : `${spacingsPx.md} ${spacingsPx.xl}`};
     cursor: pointer;
-
-    ${({ variant }) =>
-        variant === 'tiny' &&
-        css`
-            padding: 8px 16px;
-        `}
-
-    ${({ variant }) =>
-        variant === 'small' &&
-        css`
-            padding: 12px 16px;
-        `}
-
-    ${({ variant }) =>
-        variant === 'large' &&
-        css`
-            padding: 24px 30px;
-
-            ${variables.SCREEN_QUERY.MOBILE} {
-                padding: 24px 18px;
-            }
-        `}
 `;
 
-const IconWrapper = styled.div<Pick<CollapsibleBoxProps, 'headerJustifyContent'>>`
+const IconWrapper = styled.div`
     display: flex;
     align-items: center;
     overflow: hidden;
-    margin-left: 24px;
-    padding-left: ${({ headerJustifyContent }) => headerJustifyContent === 'center' && '2px'};
 `;
 
 const IconLabel = styled.div`
-    margin-right: 6px;
-    margin-left: 28px;
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
-    font-size: ${variables.FONT_SIZE.SMALL};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    margin-right: ${spacingsPx.sm};
+    color: ${({ theme }) => theme.textSubdued};
+    ${typography.hint}
 `;
 
 const Heading = styled.span<Pick<CollapsibleBoxProps, 'variant'>>`
     display: flex;
     align-items: center;
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    ${typography.body}
+`;
 
-    ${({ variant }) =>
-        variant === 'tiny' &&
-        css`
-            font-size: ${variables.NEUE_FONT_SIZE.NANO};
-        `}
+const SubHeading = styled.span`
+    ${typography.hint}
+    color: ${({ theme }) => theme.textSubdued};
+`;
 
-    ${({ variant }) =>
-        (variant === 'small' || variant === 'large') &&
-        css`
-            font-size: ${variables.NEUE_FONT_SIZE.SMALL};
-        `}
+const easingValues = motionEasing.transition.join(', ');
+const ANIMATION_DURATION = 0.4;
+const StyledIcon = styled(Icon)<{ isCollapsed?: boolean }>`
+    transform: ${({ isCollapsed }) => (isCollapsed ? 'rotate(0deg)' : 'rotate(180deg)')};
+    transition: transform ${ANIMATION_DURATION}s cubic-bezier(${easingValues});
+    transform-origin: center;
 `;
 
 const Content = styled.div<{
@@ -106,42 +78,26 @@ const Content = styled.div<{
 }>`
     display: flex;
     flex-direction: column;
+    padding: ${({ $noContentPadding, variant }) =>
+        !$noContentPadding &&
+        (variant === 'small'
+            ? `${spacingsPx.lg} ${spacingsPx.md}`
+            : `${spacingsPx.xl} ${spacingsPx.md}`)};
+    border-top: 1px solid ${({ theme }) => theme.borderOnElevation1};
     overflow: hidden;
-    border-top: 1px solid ${({ theme }) => theme.STROKE_GREY};
-
-    ${({ $noContentPadding, variant }) =>
-        !$noContentPadding &&
-        variant === 'tiny' &&
-        css`
-            padding: 15px 16px;
-        `}
-
-    ${({ $noContentPadding, variant }) =>
-        !$noContentPadding &&
-        variant === 'small' &&
-        css`
-            padding: 20px 16px;
-        `}
-
-    ${({ $noContentPadding, variant }) =>
-        !$noContentPadding &&
-        variant === 'large' &&
-        css`
-            padding: 20px 30px;
-        `}
 `;
 
 const Collapser = styled(motion.div)`
     overflow: hidden;
 `;
 
-interface CollapsibleBoxProps extends HtmlHTMLAttributes<HTMLDivElement> {
-    heading: ReactNode;
-    variant: 'tiny' | 'small' | 'large';
-    iconLabel?: ReactNode;
-    children?: ReactNode;
+export interface CollapsibleBoxProps extends HtmlHTMLAttributes<HTMLDivElement> {
+    heading?: React.ReactNode;
+    subHeading?: React.ReactNode;
+    variant: 'small' | 'large'; // TODO: reevaluate variants
+    iconLabel?: React.ReactNode;
+    children?: React.ReactNode;
     noContentPadding?: boolean;
-    headerJustifyContent?: 'space-between' | 'center';
     opened?: boolean;
     onCollapse?: () => void;
     headingButton?: ({
@@ -162,11 +118,11 @@ type CollapsibleBoxSubcomponents = {
 
 const CollapsibleBox: FC<CollapsibleBoxProps> & CollapsibleBoxSubcomponents = ({
     heading,
+    subHeading,
     iconLabel,
     children,
     noContentPadding,
     variant = 'small',
-    headerJustifyContent = 'space-between',
     opened = false,
     onCollapse,
     headingButton,
@@ -187,24 +143,19 @@ const CollapsibleBox: FC<CollapsibleBoxProps> & CollapsibleBoxSubcomponents = ({
 
     return (
         <Wrapper variant={variant} {...rest}>
-            <Header
-                variant={variant}
-                headerJustifyContent={headerJustifyContent}
-                onClick={handleHeaderClick}
-            >
-                <Heading variant={variant}>{heading ?? iconLabel}</Heading>
+            <Header variant={variant} onClick={handleHeaderClick}>
+                <div>
+                    <Heading variant={variant}>{heading ?? iconLabel}</Heading>
+                    <SubHeading>{subHeading}</SubHeading>
+                </div>
 
                 {headingButton ? (
                     headingButton({ collapsed, animatedIcon })
                 ) : (
-                    <IconWrapper headerJustifyContent={headerJustifyContent}>
-                        {heading && iconLabel && <IconLabel>{iconLabel}</IconLabel>}
-                        <Icon
-                            icon="ARROW_DOWN"
-                            size={variant === 'tiny' ? 12 : 20}
-                            canAnimate={animatedIcon}
-                            isActive={!collapsed}
-                        />
+                    <IconWrapper>
+                        {iconLabel && <IconLabel>{iconLabel}</IconLabel>}
+
+                        <StyledIcon isCollapsed={collapsed} name="caretCircleDown" size="medium" />
                     </IconWrapper>
                 )}
             </Header>
@@ -213,7 +164,7 @@ const CollapsibleBox: FC<CollapsibleBoxProps> & CollapsibleBoxSubcomponents = ({
                 initial={false} // Prevents animation on mount when expanded === false
                 variants={animationVariants}
                 animate={!collapsed ? 'expanded' : 'closed'}
-                transition={{ duration: 0.4, ease: motionConfig.motionEasing.transition }}
+                transition={{ duration: ANIMATION_DURATION, ease: motionEasing.transition }}
                 data-test="@collapsible-box/body"
             >
                 <Content variant={variant} $noContentPadding={noContentPadding}>
