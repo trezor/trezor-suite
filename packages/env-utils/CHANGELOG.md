@@ -1,3 +1,7 @@
+# 1.0.5
+
+-   chore: remove some unecessary build:lib (0a5d8267c)
+
 # 1.0.3
 
 -   fix(env-utils): prevent react-native dependencies to be bundled in suite-desktop (818d91047)
