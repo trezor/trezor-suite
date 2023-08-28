@@ -50,7 +50,7 @@ export const DeviceAuthenticityOptOutModal = ({ onCancel }: DeviceAuthenticityOp
             heading={<Translation id="TR_DEVICE_AUTHENTICITY_OPT_OUT_MODAL_HEADING" />}
             bottomBar={
                 <Button
-                    variant="danger"
+                    variant="destructive"
                     onClick={handleDeviceAuthenticityOptOut}
                     isDisabled={!isConfirmed}
                     data-test="@device-authenticity/opt-out/button"
