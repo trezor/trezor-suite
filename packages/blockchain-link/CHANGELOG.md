@@ -1,3 +1,10 @@
+# 2.1.16
+
+-   feat(blockchain-link): ipv6 electrum support (1d4b5471c)
+-   fix(blockchain-link): WsWrapper default export (0c5297e56)
+-   feat(blockchain-link): return tx hex in blockbook transactions (6aba6f094)
+-   feat(blockchain-link): add baseWebsocket options (951bd3e29)
+
 # 2.1.14
 
 -   fix(coinjoin): pending ws message closing recovery (0171cf3ef)
