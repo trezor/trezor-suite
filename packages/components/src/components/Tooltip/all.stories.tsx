@@ -40,7 +40,7 @@ storiesOf('Misc/Tooltip', module).add(
             </TooltipWrapper>
             <TooltipWrapper data-test="tooltip-rich">
                 <Tooltip
-                    rich
+                    isLarge
                     content={
                         <RichContentExample>
                             <h1>Rich content example</h1>
