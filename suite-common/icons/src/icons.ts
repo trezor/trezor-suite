@@ -16,6 +16,7 @@ export const icons = {
     biometric: require('../assets/icons/biometric.svg'),
     bugBeetle: require('../assets/icons/bugBeetle.svg'),
     calendar: require('../assets/icons/calendar.svg'),
+    caretCircleDown: require('../assets/icons/caretCircleDown.svg'),
     change: require('../assets/icons/change.svg'),
     check: require('../assets/icons/check.svg'),
     checkCircle: require('../assets/icons/checkCircle.svg'),
