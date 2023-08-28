@@ -17,6 +17,7 @@ jobs:
           git remote set-url origin https://github.com/trezor/trezor-suite.git
           git config user.name "GitHub Actions Bot"
           git config user.email ""
+          git pull origin develop
       - name: Rebase the suite-e branch on develop
         id: rebase
         run: |
