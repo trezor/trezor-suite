@@ -162,7 +162,7 @@ type PassphraseTypeCardProps = {
     singleColModal?: boolean;
     authConfirmation?: boolean;
     onSubmit: (value: string, passphraseOnDevice?: boolean) => void;
-    learnMoreTooltipOnClick?: TooltipProps['guideAnchor'];
+    learnMoreTooltipOnClick?: TooltipProps['addon'];
     learnMoreTooltipAppendTo?: TooltipProps['appendTo'];
 };
 
@@ -294,7 +294,7 @@ export const PassphraseTypeCard = (props: PassphraseTypeCardProps) => {
                                                 defaultMessage="Learn more about the difference"
                                             />
                                         }
-                                        guideAnchor={props.learnMoreTooltipOnClick}
+                                        addon={props.learnMoreTooltipOnClick}
                                         content={
                                             <FormattedMessage
                                                 id="TR_HIDDEN_WALLET_TOOLTIP"
