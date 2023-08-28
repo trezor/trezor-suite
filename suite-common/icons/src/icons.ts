@@ -67,6 +67,7 @@ export const icons = {
     receiveAlt: require('../assets/icons/receiveAlt.svg'),
     reject: require('../assets/icons/reject.svg'),
     search: require('../assets/icons/search.svg'),
+    searchLight: require('../assets/icons/searchLight.svg'),
     send: require('../assets/icons/send.svg'),
     sendAlt: require('../assets/icons/sendAlt.svg'),
     settings: require('../assets/icons/settings.svg'),
