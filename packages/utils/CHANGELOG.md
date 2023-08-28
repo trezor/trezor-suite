@@ -1,3 +1,8 @@
+# 9.0.12
+
+-   feat(utils): add parseElectrumUrl util (61dce520d)
+-   feat(utils): add urlToOnion util (37251e0bc)
+
 # 9.0.10
 
 -   chore(utils): optimized promiseAllSequence (971fd1d8b)
