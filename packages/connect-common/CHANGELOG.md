@@ -1,3 +1,12 @@
+# 0.0.19
+
+-   chore(connect): update coins.json (trezor-common f2374ae) (3b21c4308)
+-   chore(connect-\*): change model to internal model (8edb0a59d)
+-   feat(suite): add Sepolia (bc2236c1c)
+-   fix(connect-common): put back goerli and etc records for suite/blockchain-link (23783a3ef)
+-   chore(connect): remove unused rskip60 field from coininfo (e686e143c)
+-   chore(connect): update coins.json (ebcb36d75)
+
 # 0.0.17
 
 -   chore: forgotten renaming to T1/TT (5decd0839)
