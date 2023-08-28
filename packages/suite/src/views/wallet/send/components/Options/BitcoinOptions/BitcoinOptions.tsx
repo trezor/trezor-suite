@@ -91,7 +91,7 @@ export const BitcoinOptions = () => {
                 <Left>
                     {!locktimeEnabled && (
                         <Tooltip
-                            guideAnchor={instance => (
+                            addon={instance => (
                                 <OpenGuideFromTooltip
                                     id="/3_send-and-receive/transactions-in-depth/locktime.md"
                                     instance={instance}
@@ -118,7 +118,7 @@ export const BitcoinOptions = () => {
                         network.features?.includes('rbf') &&
                         !locktimeEnabled && (
                             <Tooltip
-                                guideAnchor={instance => (
+                                addon={instance => (
                                     <OpenGuideFromTooltip
                                         id="/3_send-and-receive/5_replace-by-fee-rbf.md"
                                         instance={instance}
@@ -156,7 +156,7 @@ export const BitcoinOptions = () => {
                     </Tooltip>
                     {!utxoSelectionEnabled && (
                         <Tooltip
-                            guideAnchor={instance => (
+                            addon={instance => (
                                 <OpenGuideFromTooltip
                                     id="/5_coinjoin-and-coin-control/coin-control.md"
                                     instance={instance}
