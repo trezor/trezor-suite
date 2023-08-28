@@ -2,8 +2,16 @@
     "name": "@trezor/protobuf",
     "version": "1.0.0",
     "license": "See LICENSE.md in repo root",
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/trezor/trezor-suite.git"
+    },
+    "bugs": {
+        "url": "https://github.com/trezor/trezor-suite/issues"
+    },
     "sideEffects": false,
     "main": "lib/index",
+    "npmPublishAccess": "public",
     "files": [
         "lib/",
         "!**/*.map",
