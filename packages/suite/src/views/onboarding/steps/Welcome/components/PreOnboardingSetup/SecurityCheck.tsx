@@ -101,7 +101,8 @@ const SecurityCheck = () => {
                         strong: chunks => (
                             <StyledTooltip
                                 placement="left"
-                                rich
+                                isLarge
+                                title={<Translation id="TR_HOLOGRAM_STEP_HEADING" />}
                                 content={<Hologram device={device} />}
                             >
                                 <Underline>{chunks}</Underline>

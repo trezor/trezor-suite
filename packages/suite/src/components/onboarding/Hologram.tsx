@@ -8,18 +8,6 @@ import { Translation, TrezorLink } from 'src/components/suite';
 import type { TrezorDevice } from 'src/types/suite';
 import { getPackagingUrl } from 'src/utils/suite/device';
 
-const Wrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-    width: 300px;
-`;
-
-const HologramHeading = styled.span`
-    font-size: ${variables.FONT_SIZE.NORMAL};
-    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-    margin-bottom: 16px;
-`;
-
 const HologramSubHeading = styled.span`
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
@@ -34,6 +22,10 @@ const StyledWarning = styled(Warning)`
     width: calc(100% + 16px);
     margin: 0px -8px;
     font-size: ${variables.FONT_SIZE.TINY};
+
+    a {
+        color: ${({ theme }) => theme.backgroundAlertYellowBold};
+    }
 `;
 
 interface HologramProps {
@@ -44,11 +36,7 @@ export const Hologram = ({ device }: HologramProps) => {
     const packagingUrl = getPackagingUrl(device);
 
     return (
-        <Wrapper>
-            <HologramHeading>
-                <Translation id="TR_HOLOGRAM_STEP_HEADING" />
-            </HologramHeading>
-
+        <>
             <HologramSubHeading>
                 <Translation id="TR_HOLOGRAM_STEP_SUBHEADING" />
             </HologramSubHeading>
@@ -79,6 +67,6 @@ export const Hologram = ({ device }: HologramProps) => {
                     }}
                 />
             </StyledWarning>
-        </Wrapper>
+        </>
     );
 };
