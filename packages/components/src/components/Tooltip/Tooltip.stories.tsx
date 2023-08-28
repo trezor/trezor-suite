@@ -9,6 +9,13 @@ const Center = styled.div`
     padding: 100px 0px;
 `;
 
+const Addon = styled.span`
+    background: blue;
+    padding: 4px 8px;
+    border-radius: 4px;
+    color: white;
+`;
+
 export default {
     title: 'Misc/Tooltip',
     component: TooltipComponent,
@@ -31,7 +38,15 @@ export const Tooltip: StoryObj<TooltipProps> = {
             type: 'number',
         },
         title: {
-            options: [null, <span>Title</span>],
+            options: ['null', 'title'],
+            mapping: { null: null, title: <span>Title</span> },
+            control: {
+                type: 'select',
+                labels: {
+                    null: 'Null',
+                    title: 'Title',
+                },
+            },
         },
         placement: {
             control: 'radio',
@@ -40,8 +55,16 @@ export const Tooltip: StoryObj<TooltipProps> = {
         cursor: {
             options: ['pointer', 'help', 'not-allowed', 'default'],
         },
-        guideAnchor: {
-            control: { type: 'null' },
+        addon: {
+            options: ['null', 'addon'],
+            mapping: { null: null, addon: <Addon>Addon</Addon> },
+            control: {
+                type: 'select',
+                labels: {
+                    null: 'Null',
+                    addon: 'Addon',
+                },
+            },
         },
     },
 };
