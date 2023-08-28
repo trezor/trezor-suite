@@ -110,7 +110,12 @@ const noFirmwareChecklist = [
                 id="TR_ONBOARDING_DEVICE_CHECK_1"
                 values={{
                     strong: chunks => (
-                        <StyledTooltip placement="left" rich content={<Hologram />}>
+                        <StyledTooltip
+                            placement="left"
+                            isLarge
+                            title={<Translation id="TR_HOLOGRAM_STEP_HEADING" />}
+                            content={<Hologram />}
+                        >
                             <Underline>{chunks}</Underline>
                         </StyledTooltip>
                     ),

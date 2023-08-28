@@ -9,18 +9,6 @@ import { Translation, TrezorLink } from 'src/components/suite';
 import { useRef } from 'react';
 import { useSelector } from 'src/hooks/suite';
 
-const Wrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-    width: 300px;
-`;
-
-const HologramHeading = styled.span`
-    font-size: ${variables.FONT_SIZE.NORMAL};
-    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-    margin-bottom: 16px;
-`;
-
 const HologramSubHeading = styled.span`
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
@@ -35,6 +23,10 @@ const StyledWarning = styled(Warning)`
     width: calc(100% + 16px);
     margin: 0px -8px;
     font-size: ${variables.FONT_SIZE.TINY};
+
+    a {
+        color: ${({ theme }) => theme.backgroundAlertYellowBold};
+    }
 `;
 
 export const Hologram = () => {
@@ -44,11 +36,7 @@ export const Hologram = () => {
     const hologramRef = useRef<HTMLVideoElement>(null);
 
     return (
-        <Wrapper>
-            <HologramHeading>
-                <Translation id="TR_HOLOGRAM_STEP_HEADING" />
-            </HologramHeading>
-
+        <>
             <HologramSubHeading>
                 <Translation id="TR_HOLOGRAM_STEP_SUBHEADING" />
             </HologramSubHeading>
@@ -90,6 +78,6 @@ export const Hologram = () => {
                     }}
                 />
             </StyledWarning>
-        </Wrapper>
+        </>
     );
 };
