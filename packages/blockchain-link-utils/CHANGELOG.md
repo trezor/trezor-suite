@@ -1,3 +1,7 @@
+# 1.0.6
+
+-   feat(blockchain-link): return tx hex in blockbook transactions (6aba6f094)
+
 # 1.0.5
 
 -   fix(blockchain-link): use tx `rbf` flag from backend (c5f7a5033)
