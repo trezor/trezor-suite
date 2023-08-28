@@ -1,7 +1,12 @@
-# unreleased
+# 9.1.2
 
--   fix: FirmwareType is undefined in case of bootloader mode
--   change: FirmwareType changed from type to enum
+-   feat(connect): analytics method name and method param names (23df6d8)
+-   feat(connect): improve calculation of fees and dust limit. (d726aab, 9d1ef05, 60f1e26, 2187c34, d84e3ca)
+-   fix(connect): device.firmwareType can't be safely determined in bootloader mode so we set it to undefined (c3d33a0)
+-   feat(connect): signTransaction with refTxs passed as AccountTransaction interface (d7ec435)
+-   feat(connect): decoding ethereum definitions which allows richer UI in connect-popup (0e9356f)
+-   feat(connect-explorer): updated examples ethereum (b025834, e58c416), applySettings (1a28816)
+-   feat(connect-explorer): render docs from docs folder on index page (93fddc4)
 
 # 9.1.1
 
