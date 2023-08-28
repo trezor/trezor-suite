@@ -12,7 +12,7 @@ import { IconType } from '../../support/types';
 
 type Cursor = 'inherit' | 'pointer' | 'help' | 'default' | 'not-allowed';
 
-const BoxDefault = styled(motion.div)<{ $maxWidth: string | number }>`
+const TooltipContainer = styled(motion.div)<{ $maxWidth: string | number; $isLarge: boolean }>`
     background: ${({ theme }) => theme.backgroundNeutralBold};
     color: ${({ theme }) => theme.textOnPrimary};
     border-radius: ${borders.radii.sm};
@@ -20,34 +20,28 @@ const BoxDefault = styled(motion.div)<{ $maxWidth: string | number }>`
     box-shadow: ${boxShadows.elevation3};
     max-width: ${props => props.$maxWidth}px;
     ${typography.hint}
+
+    > div {
+        padding: ${({ $isLarge }) =>
+            $isLarge ? `${spacingsPx.sm} ${spacingsPx.md} ${spacingsPx.xs}` : spacingsPx.xs};
+    }
 `;
 
 const HeaderContainer = styled.div`
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: ${spacingsPx.sm};
     width: 100%;
-    padding: ${spacingsPx.xs};
 `;
 
-// legacy component – to be removed
-const BoxRich = styled(motion.div)<{ $maxWidth: string | number }>`
-    padding: 24px;
-    background: ${({ theme }) => theme.BG_WHITE_ALT};
-    color: ${({ theme }) => theme.TYPE_DARK_GREY};
-    border-radius: ${borders.radii.sm};
-    font-size: ${variables.FONT_SIZE.NORMAL};
-    text-align: left;
-    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.2);
-    max-width: ${props => props.$maxWidth}px;
-`;
-
-const StyledTooltipTitle = styled.div`
+const TooltipTitle = styled.div<{ isLarge: boolean }>`
     display: flex;
     align-items: center;
     gap: ${spacingsPx.xxs};
+    width: 100%;
     color: ${({ theme }) => theme.textSubdued};
-    ${typography.hint}
+    ${({ isLarge }) => (isLarge ? typography.highlight : typography.hint)}
 `;
 
 const OpenGuideInner = styled.span`
@@ -55,10 +49,6 @@ const OpenGuideInner = styled.span`
     align-items: center;
     justify-content: flex-end;
     margin-left: auto;
-`;
-
-const TooltipContent = styled.div`
-    padding: ${spacingsPx.xs};
 `;
 
 const Content = styled.div<{ dashed: boolean; cursor: Cursor }>`
@@ -79,7 +69,7 @@ const getTranslateStyle = (placement: TippyProps['placement']) => {
 };
 
 export type TooltipProps = Omit<TippyProps, 'offset'> & {
-    rich?: boolean;
+    isLarge?: boolean;
     dashed?: boolean;
     offset?: number;
     cursor?: Cursor;
@@ -92,7 +82,7 @@ export const Tooltip = ({
     placement = 'top',
     interactive = true,
     children,
-    rich = false, // legacy prop
+    isLarge = false,
     dashed = false,
     duration = 150,
     delay = 200,
@@ -166,50 +156,37 @@ export const Tooltip = ({
                 ref={tooltipRef}
                 disabled={disabled}
                 {...rest}
-                render={(attrs, _content, instance) =>
-                    rich ? (
-                        <BoxRich
-                            $maxWidth={maxWidth}
-                            tabIndex={-1}
-                            variants={animationVariants}
-                            animate={isShown ? 'shown' : 'hidden'}
-                            transition={{ duration: 0.2, ease: 'easeInOut' }}
-                            onAnimationComplete={onAnimateComplete}
-                            {...attrs}
-                        >
-                            {title && <StyledTooltipTitle>{title}</StyledTooltipTitle>}
-                            <div>{content}</div>
-                        </BoxRich>
-                    ) : (
-                        <BoxDefault
-                            $maxWidth={maxWidth}
-                            tabIndex={-1}
-                            variants={animationVariants}
-                            animate={isShown ? 'shown' : 'hidden'}
-                            transition={{ duration: 0.2, ease: 'easeInOut' }}
-                            onAnimationComplete={onAnimateComplete}
-                            {...attrs}
-                        >
-                            {(title || guideAnchor) && (
-                                <HeaderContainer>
-                                    {title && (
-                                        <StyledTooltipTitle>
-                                            {headerIcon && (
-                                                <Icon icon={headerIcon} size={spacings.md} />
-                                            )}
-                                            {title}
-                                        </StyledTooltipTitle>
-                                    )}
+                render={(attrs, _content, instance) => (
+                    <TooltipContainer
+                        $isLarge={isLarge}
+                        $maxWidth={maxWidth}
+                        tabIndex={-1}
+                        variants={animationVariants}
+                        animate={isShown ? 'shown' : 'hidden'}
+                        transition={{ duration: 0.2, ease: 'easeInOut' }}
+                        onAnimationComplete={onAnimateComplete}
+                        {...attrs}
+                    >
+                        {(title || guideAnchor) && (
+                            <HeaderContainer>
+                                {title && (
+                                    <TooltipTitle isLarge={isLarge}>
+                                        {headerIcon && (
+                                            <Icon icon={headerIcon} size={spacings.md} />
+                                        )}
+                                        {title}
+                                    </TooltipTitle>
+                                )}
 
-                                    {guideAnchor && instance && (
-                                        <OpenGuideInner>{guideAnchor(instance)}</OpenGuideInner>
-                                    )}
-                                </HeaderContainer>
-                            )}
-                            <TooltipContent>{content}</TooltipContent>
-                        </BoxDefault>
-                    )
-                }
+                                {guideAnchor && instance && (
+                                    <OpenGuideInner>{guideAnchor(instance)}</OpenGuideInner>
+                                )}
+                            </HeaderContainer>
+                        )}
+
+                        <div>{content}</div>
+                    </TooltipContainer>
+                )}
             >
                 <Content dashed={dashed} cursor={disabled ? 'default' : cursor}>
                     {children}
