@@ -89,7 +89,7 @@ const Raw = ({ network }: RawProps) => {
                     bottomText={error?.message}
                     label={
                         <Tooltip
-                            guideAnchor={instance => (
+                            addon={instance => (
                                 <OpenGuideFromTooltip
                                     id="/3_send-and-receive/transactions-in-depth/send-raw.md"
                                     instance={instance}
