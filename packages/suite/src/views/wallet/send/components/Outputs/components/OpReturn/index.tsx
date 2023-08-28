@@ -83,7 +83,7 @@ const OpReturn = ({ outputId }: { outputId: number }) => {
                 label={
                     <Label>
                         <Tooltip
-                            guideAnchor={instance => (
+                            addon={instance => (
                                 <OpenGuideFromTooltip
                                     id="/3_send-and-receive/transactions-in-depth/op_return.md"
                                     instance={instance}

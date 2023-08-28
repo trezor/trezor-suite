@@ -1,6 +1,6 @@
 import styled from 'styled-components';
-import { useMemo, useRef, useState, ReactElement } from 'react';
-import { motion, Variants } from 'framer-motion';
+import { useRef, useState, ReactElement, isValidElement } from 'react';
+import { motion } from 'framer-motion';
 import Tippy, { TippyProps } from '@tippyjs/react/headless';
 import { Instance } from 'tippy.js';
 import { transparentize } from 'polished';
@@ -12,7 +12,23 @@ import { IconType } from '../../support/types';
 
 type Cursor = 'inherit' | 'pointer' | 'help' | 'default' | 'not-allowed';
 
-const TooltipContainer = styled(motion.div)<{ $maxWidth: string | number; $isLarge: boolean }>`
+const getContainerPadding = (isLarge: boolean, isWithHeader: boolean) => {
+    if (isLarge) {
+        if (isWithHeader) {
+            return `${spacingsPx.sm} ${spacingsPx.md} ${spacingsPx.xs}`;
+        }
+
+        return `${spacingsPx.xs} ${spacingsPx.md}`;
+    }
+
+    return spacingsPx.xs;
+};
+
+const TooltipContainer = styled(motion.div)<{
+    $maxWidth: string | number;
+    isLarge: boolean;
+    isWithHeader: boolean;
+}>`
     background: ${({ theme }) => theme.backgroundNeutralBold};
     color: ${({ theme }) => theme.textOnPrimary};
     border-radius: ${borders.radii.sm};
@@ -22,8 +38,7 @@ const TooltipContainer = styled(motion.div)<{ $maxWidth: string | number; $isLar
     ${typography.hint}
 
     > div {
-        padding: ${({ $isLarge }) =>
-            $isLarge ? `${spacingsPx.sm} ${spacingsPx.md} ${spacingsPx.xs}` : spacingsPx.xs};
+        padding: ${({ isLarge, isWithHeader }) => getContainerPadding(isLarge, isWithHeader)};
     }
 `;
 
@@ -44,10 +59,7 @@ const TooltipTitle = styled.div<{ isLarge: boolean }>`
     ${({ isLarge }) => (isLarge ? typography.highlight : typography.hint)}
 `;
 
-const OpenGuideInner = styled.span`
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
+const Addon = styled.div`
     margin-left: auto;
 `;
 
@@ -61,11 +73,18 @@ const Content = styled.div<{ dashed: boolean; cursor: Cursor }>`
 
 const animationStartOffset = 10;
 const getTranslateStyle = (placement: TippyProps['placement']) => {
-    if (placement === 'top') return `translate(0px, ${animationStartOffset}px)`;
-    if (placement === 'bottom') return `translate(0px, -${animationStartOffset}px)`;
-    if (placement === 'left') return `translate(${animationStartOffset}px, 0px)`;
-    if (placement === 'right') return `translate(-${animationStartOffset}px, 0px)`;
-    return '';
+    switch (placement) {
+        case 'top':
+            return `translate(0px, ${animationStartOffset}px)`;
+        case 'bottom':
+            return `translate(0px, -${animationStartOffset}px)`;
+        case 'left':
+            return `translate(${animationStartOffset}px, 0px)`;
+        case 'right':
+            return `translate(-${animationStartOffset}px, 0px)`;
+        default:
+            return '';
+    }
 };
 
 export type TooltipProps = Omit<TippyProps, 'offset'> & {
@@ -73,8 +92,8 @@ export type TooltipProps = Omit<TippyProps, 'offset'> & {
     dashed?: boolean;
     offset?: number;
     cursor?: Cursor;
-    guideAnchor?: (instance: Instance) => ReactElement;
-    title?: React.ReactElement;
+    addon?: (instance: Instance) => ReactElement | ReactElement;
+    title?: ReactElement;
     headerIcon?: IconType;
 };
 
@@ -90,7 +109,7 @@ export const Tooltip = ({
     offset = 10,
     cursor = 'help',
     content,
-    guideAnchor,
+    addon,
     title,
     headerIcon,
     disabled,
@@ -109,13 +128,10 @@ export const Tooltip = ({
         content.setAttribute('data-test', '@tooltip');
     };
 
-    const animationVariants = useMemo<Variants>(
-        () => ({
-            shown: { opacity: 1, transform: 'translate(0px, 0px)' },
-            hidden: { opacity: 0, transform: `${getTranslateStyle(placement)}` },
-        }),
-        [placement],
-    );
+    const animationVariants = {
+        shown: { opacity: 1, transform: 'translate(0px, 0px)' },
+        hidden: { opacity: 0, transform: `${getTranslateStyle(placement)}` },
+    };
 
     const handleOnShow = (instance: Instance) => {
         onShow?.(instance);
@@ -127,14 +143,6 @@ export const Tooltip = ({
         setIsShown(false);
     };
 
-    const onAnimateComplete = () => {
-        if (isShown) {
-            return;
-        }
-        // @ts-expect-error
-        tooltipRef.current?._tippy?.unmount(); //  eslint-disable-line no-underscore-dangle
-    };
-
     if (!content || !children) {
         return <>{children}</>;
     }
@@ -144,7 +152,7 @@ export const Tooltip = ({
             <Tippy
                 zIndex={variables.Z_INDEX.TOOLTIP}
                 placement={placement}
-                animation={!(guideAnchor && isShown)}
+                animation
                 onShow={handleOnShow}
                 onHide={handleOnHide}
                 duration={duration}
@@ -158,16 +166,16 @@ export const Tooltip = ({
                 {...rest}
                 render={(attrs, _content, instance) => (
                     <TooltipContainer
-                        $isLarge={isLarge}
+                        isLarge={isLarge}
+                        isWithHeader={!!(title || addon)}
                         $maxWidth={maxWidth}
                         tabIndex={-1}
                         variants={animationVariants}
                         animate={isShown ? 'shown' : 'hidden'}
                         transition={{ duration: 0.2, ease: 'easeInOut' }}
-                        onAnimationComplete={onAnimateComplete}
                         {...attrs}
                     >
-                        {(title || guideAnchor) && (
+                        {(title || addon) && (
                             <HeaderContainer>
                                 {title && (
                                     <TooltipTitle isLarge={isLarge}>
@@ -178,8 +186,8 @@ export const Tooltip = ({
                                     </TooltipTitle>
                                 )}
 
-                                {guideAnchor && instance && (
-                                    <OpenGuideInner>{guideAnchor(instance)}</OpenGuideInner>
+                                {addon && instance && (
+                                    <Addon>{isValidElement(addon) ? addon : addon(instance)}</Addon>
                                 )}
                             </HeaderContainer>
                         )}
