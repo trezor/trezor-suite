@@ -1,3 +1,7 @@
+# 1.0.5
+
+-   feat(blockchain-link): return tx hex in blockbook transactions (6aba6f094)
+
 # 1.0.3
 
 -   chore(blockchain-link): add addrTxCount (2d6e12535)
