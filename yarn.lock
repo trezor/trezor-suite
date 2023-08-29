@@ -9507,7 +9507,7 @@ __metadata:
     esbuild: ^0.18.6
     glob: ^10.2.7
     jest: ^26.6.3
-    openpgp: ^5.9.0
+    openpgp: ^5.10.1
     rimraf: ^5.0.1
     systeminformation: ^5.18.3
     tsx: ^3.12.7
@@ -28133,12 +28133,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"openpgp@npm:^5.9.0":
-  version: 5.9.0
-  resolution: "openpgp@npm:5.9.0"
+"openpgp@npm:^5.10.1":
+  version: 5.10.1
+  resolution: "openpgp@npm:5.10.1"
   dependencies:
     asn1.js: ^5.0.0
-  checksum: 787e9e5169aa514ac309e1f813699d1c080ebd579db25d6ec89d1f2bf225d7eeb615364ca3ada543e6445d6363ea49ffec90ffa306274033a5cf01694b01632a
+  checksum: beea90d10e83a20e7516b34493b57af8e526eaf3e935038464a866bfdc94e9b5e78e1ac5e97bb38356e45865d805ecd352c75b3434bb60793af8af5f3a12fff6
   languageName: node
   linkType: hard
 
