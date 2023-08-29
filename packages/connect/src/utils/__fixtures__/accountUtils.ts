@@ -1,19 +1,23 @@
 import coinsJSON from '@trezor/connect-common/files/coins.json';
 import coinsJSONEth from '@trezor/connect-common/files/coins-eth.json';
+import blockchainLinkJSON from '@trezor/connect-common/files/blockchain-link.json';
 
 import { getAccountLabel, isUtxoBased } from '../accountUtils';
 
 import {
     parseCoinsJson,
     getBitcoinNetwork,
-    getEthereumNetwork,
+    getEthereumNetworkFromCoinsJSON,
     getMiscNetwork,
 } from '../../data/coinInfo';
 
-parseCoinsJson({
-    ...coinsJSON,
-    eth: coinsJSONEth,
-});
+parseCoinsJson(
+    {
+        ...coinsJSON,
+        eth: coinsJSONEth,
+    },
+    blockchainLinkJSON,
+);
 
 export const getAccountLabelFixtures: TestFixtures<typeof getAccountLabel> = [
     {

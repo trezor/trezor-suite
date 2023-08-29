@@ -7,6 +7,8 @@ export const getAssetByUrl = (url: string) => {
             return require('@trezor/connect-common/files/coins.json');
         case './data/coins-eth.json':
             return require('@trezor/connect-common/files/coins-eth.json');
+        case './data/blockchain-link.json':
+            return require('@trezor/connect-common/files/blockchain-link.json');
         case './data/bridge/releases.json':
             return require('@trezor/connect-common/files/bridge/releases.json');
         case './data/firmware/1/releases.json':

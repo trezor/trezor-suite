@@ -1,5 +1,6 @@
 import coinsJSON from '@trezor/connect-common/files/coins.json';
 import coinsJSONEth from '@trezor/connect-common/files/coins-eth.json';
+import blockchainLinkJSON from '@trezor/connect-common/files/blockchain-link.json';
 
 import { parseCoinsJson, getAllNetworks } from '../../data/coinInfo';
 
@@ -14,10 +15,13 @@ describe('utils/deviceFeaturesUtils', () => {
         jest.clearAllMocks();
     });
     beforeAll(() => {
-        parseCoinsJson({
-            ...coinsJSON,
-            eth: coinsJSONEth,
-        });
+        parseCoinsJson(
+            {
+                ...coinsJSON,
+                eth: coinsJSONEth,
+            },
+            blockchainLinkJSON,
+        );
     });
 
     it('parseCapabilities', () => {

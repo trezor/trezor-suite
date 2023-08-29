@@ -161,7 +161,7 @@ export const getCoinName = (path: number[]) => {
     return network ? network.name : 'Unknown coin';
 };
 
-const parseBitcoinNetworksJson = (json: any) => {
+const parseBitcoinNetworksJson = (json: any, blockchainLink?: any) => {
     Object.keys(json).forEach(key => {
         const coin = json[key];
         const shortcut = coin.coin_shortcut;
@@ -189,7 +189,6 @@ const parseBitcoinNetworksJson = (json: any) => {
             // bip115: not used
             // bitcore: not used,
             // blockbook: not used,
-            blockchainLink: coin.blockchain_link,
             cashAddrPrefix: coin.cashaddr_prefix,
             label: coin.coin_label,
             name: coin.coin_name,
@@ -227,6 +226,7 @@ const parseBitcoinNetworksJson = (json: any) => {
 
             decimals: coin.decimals,
             ...getBitcoinFeeLevels(coin),
+            blockchainLink: blockchainLink?.[shortcut],
         });
     });
 };
@@ -237,29 +237,28 @@ export const ethereumNetworkInfoBase = {
     ...getEthereumFeeLevels(),
 };
 
-const parseEthereumNetworksJson = (json: any) => {
+const parseEthereumNetworksJson = (json: any, blockchainLink?: any) => {
     Object.keys(json).forEach(key => {
         const network = json[key];
 
         ethereumNetworks.push({
             ...ethereumNetworkInfoBase,
-            blockchainLink: network.blockchain_link,
             chainId: network.chain_id,
             label: network.name,
             name: network.name,
             shortcut: network.shortcut,
             slip44: network.slip44,
             support: network.support,
+            blockchainLink: blockchainLink?.[network.shortcut],
         });
     });
 };
 
-const parseMiscNetworksJSON = (json: any, type?: 'misc' | 'nem') => {
+const parseMiscNetworksJSON = (json: any, type: 'misc' | 'nem', blockchainLink: any) => {
     Object.keys(json).forEach(key => {
         const network = json[key];
         miscNetworks.push({
             type: type || 'misc',
-            blockchainLink: network.blockchain_link,
             curve: network.curve,
             label: network.name,
             name: network.name,
@@ -268,21 +267,22 @@ const parseMiscNetworksJSON = (json: any, type?: 'misc' | 'nem') => {
             support: network.support,
             decimals: network.decimals,
             ...getMiscFeeLevels(network),
+            blockchainLink: blockchainLink?.[network.shortcut],
         });
     });
 };
 
-export const parseCoinsJson = (json: any) => {
+export const parseCoinsJson = (json: any, blockchainLink: any) => {
     Object.keys(json).forEach(key => {
         switch (key) {
             case 'bitcoin':
-                return parseBitcoinNetworksJson(json[key]);
+                return parseBitcoinNetworksJson(json[key], blockchainLink);
             case 'eth':
-                return parseEthereumNetworksJson(json[key]);
+                return parseEthereumNetworksJson(json[key], blockchainLink);
             case 'misc':
-                return parseMiscNetworksJSON(json[key]);
+                return parseMiscNetworksJSON(json[key], 'misc', blockchainLink);
             case 'nem':
-                return parseMiscNetworksJSON(json[key], 'nem');
+                return parseMiscNetworksJSON(json[key], 'nem', blockchainLink);
             // no default
         }
     });

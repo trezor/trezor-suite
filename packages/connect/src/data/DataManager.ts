@@ -34,10 +34,13 @@ export class DataManager {
         parseBridgeJSON(this.assets.bridge);
 
         // parse coins definitions
-        parseCoinsJson({
-            ...this.assets.coins,
-            eth: this.assets.coinsEth,
-        });
+        parseCoinsJson(
+            {
+                ...this.assets.coins,
+                eth: this.assets.coinsEth,
+            },
+            this.assets.blockchainLink,
+        );
 
         // parse firmware definitions
         parseFirmware(this.assets['firmware-t1'], 1);

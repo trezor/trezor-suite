@@ -1,9 +1,10 @@
 import coinsJSON from '@trezor/connect-common/files/coins.json';
+import blockchainLinkJSON from '@trezor/connect-common/files/blockchain-link.json';
 import { parseCoinsJson, getCoinInfo, getUniqueNetworks, getAllNetworks } from '../coinInfo';
 
 describe('data/coinInfo', () => {
     beforeAll(() => {
-        parseCoinsJson(coinsJSON);
+        parseCoinsJson(coinsJSON, blockchainLinkJSON);
     });
 
     it('getUniqueNetworks', () => {

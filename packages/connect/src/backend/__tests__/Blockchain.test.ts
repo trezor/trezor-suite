@@ -1,5 +1,6 @@
 import coinsJSON from '@trezor/connect-common/files/coins.json';
 import ethereumCoinsJSON from '@trezor/connect-common/files/coins-eth.json';
+import blockchainLinkJSON from '@trezor/connect-common/files/blockchain-link.json';
 import BlockchainLink from '@trezor/blockchain-link';
 import { parseCoinsJson, getBitcoinNetwork, getEthereumNetwork } from '../../data/coinInfo';
 import { initBlockchain } from '../BlockchainLink';
@@ -35,7 +36,7 @@ jest.mock('@trezor/blockchain-link', () => ({
 
 describe('backend/Blockchain', () => {
     // load coin definitions
-    parseCoinsJson({ ...coinsJSON, eth: ethereumCoinsJSON });
+    parseCoinsJson({ ...coinsJSON, eth: ethereumCoinsJSON }, blockchainLinkJSON);
 
     it('cache estimated fees (bitcoin-like)', async () => {
         jest.useFakeTimers();
