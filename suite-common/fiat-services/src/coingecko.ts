@@ -154,13 +154,14 @@ export const getFiatRatesForTimestamps = async (
     const url = `${coinUrl}/${urlEndpoint}${params}`;
 
     // returns pairs of [timestamp, fiatRate]
-    const { prices }: { prices: Array<[number, number]> } = await fetchCoinGecko(url);
-
-    if (!prices || prices.length === 0) return null;
+    const response = await fetchCoinGecko(url);
+    if (!response?.prices || response?.prices.length === 0) {
+        return null;
+    }
 
     const tickers = timestamps.map(ts => ({
         ts,
-        rates: { [fiatCurrencyCode]: findClosestTimestampValue(ts, prices) },
+        rates: { [fiatCurrencyCode]: findClosestTimestampValue(ts, response.prices) },
     }));
 
     return {
