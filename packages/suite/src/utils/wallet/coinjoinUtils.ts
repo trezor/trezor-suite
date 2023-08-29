@@ -320,7 +320,7 @@ export const getRoundPhaseFromSessionPhase = (sessionPhase: SessionPhase): Round
     roundPhases[Number(String(sessionPhase)[0]) - 1];
 
 export const getFirstSessionPhaseFromRoundPhase = (roundPhase?: RoundPhase): SessionPhase =>
-    Number(`${(roundPhase || 0) + 1}1`);
+    Number(`${(roundPhase || 0) + 1}01`);
 
 export const getAccountProgressHandle = (account: Pick<Account, 'key'>) =>
     createHash('sha256').update(account.key).digest('hex').slice(0, 16);
