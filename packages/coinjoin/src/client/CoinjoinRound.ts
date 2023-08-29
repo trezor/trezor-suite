@@ -8,7 +8,7 @@ import {
     getCoinjoinRoundDeadlines,
 } from '../utils/roundUtils';
 import { ROUND_PHASE_PROCESS_TIMEOUT, ACCOUNT_BUSY_TIMEOUT } from '../constants';
-import { RoundPhase, EndRoundState, SessionPhase } from '../enums';
+import { EndRoundState, RoundPhase, SessionPhase } from '../enums';
 import { AccountAddress, RegisterAccountParams } from '../types/account';
 import {
     SerializedCoinjoinRound,

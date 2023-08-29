@@ -1,6 +1,6 @@
+import { SessionPhase } from '@trezor/coinjoin';
 import { COINJOIN } from 'src/actions/wallet/constants';
 import { initialState } from 'src/reducers/wallet/coinjoinReducer';
-import { SessionPhase } from 'src/types/wallet/coinjoin';
 
 const account = {
     key: 'A',

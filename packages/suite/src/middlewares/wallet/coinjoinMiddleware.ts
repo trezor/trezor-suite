@@ -15,7 +15,7 @@ import {
     messageSystemActions,
 } from '@suite-common/message-system';
 import { addToast } from '@suite-common/toast-notifications';
-import { SessionPhase } from '@trezor/coinjoin';
+import { RoundPhase, SessionPhase } from '@trezor/coinjoin';
 import { UI, DEVICE } from '@trezor/connect';
 import { arrayDistinct } from '@trezor/utils';
 
@@ -31,7 +31,7 @@ import * as coinjoinClientActions from 'src/actions/wallet/coinjoinClientActions
 import * as storageActions from 'src/actions/suite/storageActions';
 import { CoinjoinService } from 'src/services/coinjoin';
 import type { AppState, Action, Dispatch } from 'src/types/suite';
-import { CoinjoinConfig, RoundPhase } from 'src/types/wallet/coinjoin';
+import { CoinjoinConfig } from 'src/types/wallet/coinjoin';
 import {
     selectCoinjoinAccountByKey,
     selectIsAnySessionInCriticalPhase,

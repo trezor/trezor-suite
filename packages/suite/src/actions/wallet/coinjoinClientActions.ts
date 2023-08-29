@@ -7,6 +7,7 @@ import {
     CoinjoinRequestEvent,
     CoinjoinResponseEvent,
     CoinjoinClientEvents,
+    RoundPhase,
 } from '@trezor/coinjoin';
 import { SUITE } from 'src/actions/suite/constants';
 import { arrayDistinct, arrayToDictionary, promiseAllSequence } from '@trezor/utils';
@@ -23,12 +24,7 @@ import { selectAccountByKey } from '@suite-common/wallet-core';
 import { getUtxoOutpoint } from '@suite-common/wallet-utils';
 import { Dispatch, GetState } from 'src/types/suite';
 import { Account } from '@suite-common/wallet-types';
-import {
-    RoundPhase,
-    CoinjoinAccount,
-    EndRoundState,
-    CoinjoinDebugSettings,
-} from 'src/types/wallet/coinjoin';
+import { CoinjoinAccount, EndRoundState, CoinjoinDebugSettings } from 'src/types/wallet/coinjoin';
 import { onCancel as closeModal, openModal } from 'src/actions/suite/modalActions';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
