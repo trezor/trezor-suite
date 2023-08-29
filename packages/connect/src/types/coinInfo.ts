@@ -66,6 +66,7 @@ export interface EthereumNetworkInfo extends Common {
     type: 'ethereum';
     chainId: number;
     network?: typeof undefined;
+    encoded_network?: ArrayBuffer;
 }
 
 export interface MiscNetworkInfo extends Common {

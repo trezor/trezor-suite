@@ -3,10 +3,11 @@ import fetch from 'cross-fetch';
 import { EthereumDefinitions } from '@trezor/protobuf/lib/messages';
 import { trzd } from '@trezor/protocol';
 import { parseConfigure, decode as decodeProtobuf } from '@trezor/protobuf';
-import { DataManager } from '../../data/DataManager';
-import { validateParams } from '../common/paramsValidator';
-import { EthereumNetworkInfo } from '../../types';
-import { ethereumNetworkInfoBase } from '../../data/coinInfo';
+import { DataManager } from './DataManager';
+import { validateParams } from '../api/common/paramsValidator';
+import { EthereumNetworkInfo } from '../types';
+import { ethereumNetworkInfoBase } from './coinInfo';
+import blockchainLinkJSON from '@trezor/connect-common/files/blockchain-link.json';
 
 interface GetEthereumDefinitions {
     chainId?: number;
@@ -150,18 +151,23 @@ export const decodeEthereumDefinition = (
  */
 export const ethereumNetworkInfoFromDefinition = (
     definition: EthereumNetworkDefinitionDecoded,
-): EthereumNetworkInfo => ({
-    ...ethereumNetworkInfoBase,
+): EthereumNetworkInfo => {
+    const [shortcut, chainId] = definition.symbol.split(':');
 
-    chainId: definition.chain_id,
-    label: definition.name,
-    name: definition.name,
-    slip44: definition.slip44,
-    shortcut: definition.symbol,
-    support: {
-        connect: true,
-        trezor1: '1.6.2',
-        trezor2: '2.0.7',
-    },
-    blockchainLink: undefined,
-});
+    return {
+        ...ethereumNetworkInfoBase,
+
+        chainId: definition.chain_id,
+        label: definition.name,
+        name: definition.name,
+        slip44: definition.slip44,
+        shortcut: definition.symbol,
+        support: {
+            connect: true,
+            trezor1: '1.6.2',
+            trezor2: '2.0.7',
+        },
+        // @ts-expect-error
+        blockchainLink: blockchainLinkJSON[chainId || shortcut],
+    };
+};

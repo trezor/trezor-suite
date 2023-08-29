@@ -10,6 +10,11 @@ import type {
     MiscNetworkInfo,
 } from '../types/coinInfo';
 import { cloneObject } from '@trezor/utils';
+import {
+    getEthereumDefinitions,
+    decodeEthereumDefinition,
+    ethereumNetworkInfoFromDefinition,
+} from './ethereumDefinitions';
 
 const bitcoinNetworks: BitcoinNetworkInfo[] = [];
 const ethereumNetworks: EthereumNetworkInfo[] = [];
@@ -30,16 +35,64 @@ export const getBitcoinNetwork = (pathOrName: number[] | string) => {
     return networks.find(n => n.slip44 === slip44);
 };
 
-export const getEthereumNetwork = (pathOrName: number[] | string) => {
+export const getEthereumNetworkFromCoinsJSON = (pathOrName: number[] | string) => {
     const networks = cloneObject(ethereumNetworks);
+    let network;
+
+    // find static network by path or name
     if (typeof pathOrName === 'string') {
         const name = pathOrName.toLowerCase();
-        return networks.find(
+        network = networks.find(
             n => n.name.toLowerCase() === name || n.shortcut.toLowerCase() === name,
         );
     }
-    const slip44 = fromHardened(pathOrName[1]);
-    return networks.find(n => n.slip44 === slip44);
+    if (network) {
+        return network;
+    }
+
+    // find network by slip44
+    const slip44 = typeof pathOrName[1] === 'number' ? fromHardened(pathOrName[1]) : undefined;
+    network = networks.find(n => n.slip44 === slip44);
+
+    if (network) {
+        return network;
+    }
+};
+
+export const getEthereumNetwork = async (pathOrName: number[] | string) => {
+    let network = getEthereumNetworkFromCoinsJSON(pathOrName);
+
+    if (network) {
+        return network;
+    }
+
+    const slip44 = typeof pathOrName[1] === 'number' ? fromHardened(pathOrName[1]) : undefined;
+
+    // find network definition on data.trezor.io
+
+    const definitions = await getEthereumDefinitions({
+        slip44,
+    });
+
+    const decoded = decodeEthereumDefinition(definitions);
+    if (decoded.network) {
+        network = {
+            ...ethereumNetworkInfoFromDefinition(decoded.network),
+            encoded_network: definitions.encoded_network,
+        };
+    }
+
+    if (!network) {
+        // todo: should it throw on this level?
+        throw ERRORS.TypedError('Method_UnknownCoin');
+    }
+
+    // cache decoded network locally in networks list so that it does not have to be fetched again next time
+    if (!ethereumNetworks.some(n => n.chainId === network!.chainId)) {
+        ethereumNetworks.push(network);
+    }
+
+    return network;
 };
 
 export const getMiscNetwork = (pathOrName: number[] | string) => {
@@ -152,7 +205,7 @@ export const getCoinInfoByHash = (hash: string, networkInfo: any) => {
     return result;
 };
 
-export const getCoinInfo = (currency: string) =>
+export const getCoinInfo = async (currency: string) =>
     getBitcoinNetwork(currency) || getEthereumNetwork(currency) || getMiscNetwork(currency);
 
 export const getCoinName = (path: number[]) => {
