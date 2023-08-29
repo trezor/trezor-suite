@@ -55,6 +55,7 @@
         "format:verify": "yarn prettier --check \"**/*.{js,ts,tsx,mdx,md,html,json}\"",
         "update-submodules": "./scripts/update-submodules.sh",
         "update-coins": "./scripts/update-coins.sh",
+        "update-models": "./scripts/update-models.sh",
         "update-protobuf": "yarn workspace @trezor/protobuf update:protobuf",
         "update-coinjoin-middleware": "yarn workspace @trezor/suite-data update-coinjoin-middleware",
         "prepare-release": "./scripts/prepare-release.sh",
