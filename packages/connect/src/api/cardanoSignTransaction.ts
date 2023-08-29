@@ -77,7 +77,7 @@ export default class CardanoSignTransaction extends AbstractMethod<
     'cardanoSignTransaction',
     CardanoSignTransactionParams
 > {
-    init() {
+    async init() {
         this.requiredPermissions = ['read', 'write'];
         this.firmwareRange = getFirmwareRange(
             this.name,

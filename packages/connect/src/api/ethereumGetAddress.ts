@@ -26,7 +26,7 @@ export default class EthereumGetAddress extends AbstractMethod<'ethereumGetAddre
     progress = 0;
     confirmed?: boolean;
 
-    init() {
+    async init() {
         this.requiredPermissions = ['read'];
 
         // create a bundle with only one batch if bundle doesn't exists

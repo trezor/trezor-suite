@@ -11,7 +11,7 @@ export default class NEMSignTransaction extends AbstractMethod<
     'nemSignTransaction',
     PROTO.NEMSignTx
 > {
-    init() {
+    async init() {
         this.requiredPermissions = ['read', 'write'];
         this.firmwareRange = getFirmwareRange(this.name, getMiscNetwork('NEM'), this.firmwareRange);
 

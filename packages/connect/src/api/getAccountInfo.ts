@@ -20,7 +20,7 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
     hasBundle?: boolean;
     discovery?: Discovery;
 
-    init() {
+    async init() {
         this.requiredPermissions = ['read'];
         this.useDevice = true;
         this.useUi = true;

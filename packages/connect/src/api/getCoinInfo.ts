@@ -11,7 +11,7 @@ type Params = {
 };
 
 export default class GetCoinInfo extends AbstractMethod<'getCoinInfo', Params> {
-    init() {
+    async init() {
         this.requiredPermissions = [];
         this.useDevice = false;
         this.useUi = false;

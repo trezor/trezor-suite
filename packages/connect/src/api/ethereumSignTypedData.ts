@@ -29,7 +29,7 @@ type Params = (
     definitions?: EthereumDefinitions;
 };
 export default class EthereumSignTypedData extends AbstractMethod<'ethereumSignTypedData', Params> {
-    init() {
+    async init() {
         this.requiredPermissions = ['read', 'write'];
 
         const { payload } = this;

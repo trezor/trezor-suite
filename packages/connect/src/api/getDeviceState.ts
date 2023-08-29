@@ -3,7 +3,7 @@
 import { AbstractMethod } from '../core/AbstractMethod';
 
 export default class GetDeviceState extends AbstractMethod<'getDeviceState'> {
-    init() {
+    async init() {
         this.requiredPermissions = [];
     }
 

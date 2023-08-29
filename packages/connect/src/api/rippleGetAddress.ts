@@ -16,7 +16,7 @@ export default class RippleGetAddress extends AbstractMethod<'rippleGetAddress',
     progress = 0;
     confirmed?: boolean;
 
-    init() {
+    async init() {
         this.requiredPermissions = ['read'];
         this.firmwareRange = getFirmwareRange(
             this.name,

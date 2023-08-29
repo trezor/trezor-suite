@@ -11,7 +11,7 @@ import type { PROTO } from '../constants';
 export default class RequestLogin extends AbstractMethod<'requestLogin', PROTO.SignIdentity> {
     asyncChallenge?: boolean;
 
-    init() {
+    async init() {
         this.requiredPermissions = ['read', 'write'];
         this.firmwareRange = getFirmwareRange(this.name, null, this.firmwareRange);
         this.useEmptyPassphrase = true;

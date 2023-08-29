@@ -14,7 +14,7 @@ export default class TezosGetPublicKey extends AbstractMethod<
     hasBundle?: boolean;
     confirmed?: boolean;
 
-    init() {
+    async init() {
         this.requiredPermissions = ['read'];
         this.firmwareRange = getFirmwareRange(
             this.name,

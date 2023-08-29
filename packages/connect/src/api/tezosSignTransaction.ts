@@ -11,7 +11,7 @@ export default class TezosSignTransaction extends AbstractMethod<
     'tezosSignTransaction',
     PROTO.TezosSignTx
 > {
-    init() {
+    async init() {
         this.requiredPermissions = ['read', 'write'];
         this.firmwareRange = getFirmwareRange(
             this.name,

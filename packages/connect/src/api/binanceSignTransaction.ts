@@ -17,7 +17,7 @@ export default class BinanceSignTransaction extends AbstractMethod<
     'binanceSignTransaction',
     Params
 > {
-    init() {
+    async init() {
         this.requiredPermissions = ['read', 'write'];
         this.firmwareRange = getFirmwareRange(this.name, getMiscNetwork('BNB'), this.firmwareRange);
 

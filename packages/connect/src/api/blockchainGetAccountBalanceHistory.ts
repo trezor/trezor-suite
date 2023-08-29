@@ -16,7 +16,7 @@ export default class BlockchainGetAccountBalanceHistory extends AbstractMethod<
     'blockchainGetAccountBalanceHistory',
     Params
 > {
-    init() {
+    async init() {
         this.useDevice = false;
         this.useUi = false;
 

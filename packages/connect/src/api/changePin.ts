@@ -5,7 +5,7 @@ import { validateParams } from './common/paramsValidator';
 import type { PROTO } from '../constants';
 
 export default class ChangePin extends AbstractMethod<'changePin', PROTO.ChangePin> {
-    init() {
+    async init() {
         this.requiredPermissions = ['management'];
         this.useDeviceState = false;
 

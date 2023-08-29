@@ -17,7 +17,7 @@ type Params = PROTO.EthereumSignMessage & {
 };
 
 export default class EthereumSignMessage extends AbstractMethod<'ethereumSignMessage', Params> {
-    init() {
+    async init() {
         this.requiredPermissions = ['read', 'write'];
 
         const { payload } = this;

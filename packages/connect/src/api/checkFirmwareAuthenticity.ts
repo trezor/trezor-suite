@@ -7,7 +7,7 @@ import { httpRequest } from '../utils/assets';
 import { FirmwareType } from '../types';
 
 export default class CheckFirmwareAuthenticity extends AbstractMethod<'checkFirmwareAuthenticity'> {
-    init() {
+    async init() {
         this.useEmptyPassphrase = true;
         this.requiredPermissions = ['management'];
         this.useDeviceState = false;

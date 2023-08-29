@@ -6,7 +6,7 @@ export default class CancelCoinjoinAuthorization extends AbstractMethod<
     'cancelCoinjoinAuthorization',
     PROTO.CancelAuthorization
 > {
-    init() {
+    async init() {
         const { payload } = this;
 
         this.firmwareRange = getFirmwareRange(this.name, null, this.firmwareRange);

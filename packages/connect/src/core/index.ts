@@ -300,14 +300,11 @@ export const onCall = async (message: CoreMessage) => {
         method.postMessage = postMessage;
         method.getPopupPromise = getPopupPromise;
         method.createUiPromise = createUiPromise;
-        // start validation process
-        method.init();
 
         _callMethods.push(method);
 
-        if (method.initAsync) {
-            await method.initAsync();
-        }
+        // start validation process
+        await method.init();
     } catch (error) {
         postMessage(createPopupMessage(POPUP.CANCEL_POPUP_REQUEST));
         postMessage(createResponseMessage(responseID, false, { error }));

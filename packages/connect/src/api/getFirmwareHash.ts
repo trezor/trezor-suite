@@ -7,7 +7,7 @@ export default class GetFirmwareHash extends AbstractMethod<
     'getFirmwareHash',
     PROTO.GetFirmwareHash
 > {
-    init() {
+    async init() {
         this.requiredPermissions = ['management'];
         this.useEmptyPassphrase = true;
         this.useDeviceState = false;

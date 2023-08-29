@@ -6,7 +6,7 @@ import { DataManager } from '../data/DataManager';
 import { reconnectAllBackends } from '../backend/BlockchainLink';
 
 export default class SetProxy extends AbstractMethod<'setProxy'> {
-    init() {
+    async init() {
         this.requiredPermissions = [];
         this.useDevice = false;
         this.useUi = false;

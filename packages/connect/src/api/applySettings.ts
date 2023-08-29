@@ -6,7 +6,7 @@ import { validateParams } from './common/paramsValidator';
 import type { PROTO } from '../constants';
 
 export default class ApplySettings extends AbstractMethod<'applySettings', PROTO.ApplySettings> {
-    init() {
+    async init() {
         this.requiredPermissions = ['management'];
         this.useDeviceState = false;
         const { payload } = this;

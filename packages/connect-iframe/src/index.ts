@@ -87,7 +87,7 @@ const handleMessage = (event: PostMessageEvent) => {
         }
 
         const method = _core.getCurrentMethod()[0];
-        (method.initAsync ? method?.initAsync() : Promise.resolve()).finally(() => {
+        method.init().finally(() => {
             const transport = _core!.getTransportInfo();
             const settings = DataManager.getSettings();
 
@@ -95,7 +95,7 @@ const handleMessage = (event: PostMessageEvent) => {
                 createPopupMessage(POPUP.HANDSHAKE, {
                     settings: DataManager.getSettings(),
                     transport,
-                    method: method ? method.info : undefined, // method.info might change based on initAsync
+                    method: method ? method.info : undefined, // method.info might change based on method.init
                 }),
             );
 

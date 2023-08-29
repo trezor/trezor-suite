@@ -16,7 +16,7 @@ export default class BinanceGetAddress extends AbstractMethod<'binanceGetAddress
     progress = 0;
     confirmed?: boolean;
 
-    init() {
+    async init() {
         this.requiredPermissions = ['read'];
         this.firmwareRange = getFirmwareRange(this.name, getMiscNetwork('BNB'), this.firmwareRange);
 

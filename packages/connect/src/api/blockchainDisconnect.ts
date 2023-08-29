@@ -12,7 +12,7 @@ type Params = {
 };
 
 export default class BlockchainDisconnect extends AbstractMethod<'blockchainDisconnect', Params> {
-    init() {
+    async init() {
         this.requiredPermissions = [];
         this.useDevice = false;
         this.useUi = false;

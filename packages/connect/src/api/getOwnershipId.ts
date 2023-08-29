@@ -12,7 +12,7 @@ export default class GetOwnershipId extends AbstractMethod<
     hasBundle?: boolean;
     confirmed?: boolean;
 
-    init() {
+    async init() {
         this.requiredPermissions = ['read'];
 
         // create a bundle with only one batch if bundle doesn't exists

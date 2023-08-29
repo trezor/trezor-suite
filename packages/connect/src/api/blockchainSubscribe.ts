@@ -13,7 +13,7 @@ type Params = {
 };
 
 export default class BlockchainSubscribe extends AbstractMethod<'blockchainSubscribe', Params> {
-    init() {
+    async init() {
         this.useDevice = false;
         this.useUi = false;
 

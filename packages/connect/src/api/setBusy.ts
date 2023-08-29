@@ -4,7 +4,7 @@ import { PROTO } from '../constants';
 import { getFirmwareRange, validateParams } from './common/paramsValidator';
 
 export default class SetBusy extends AbstractMethod<'setBusy', PROTO.SetBusy> {
-    init() {
+    async init() {
         this.useDeviceState = false;
         this.requiredPermissions = ['management'];
 

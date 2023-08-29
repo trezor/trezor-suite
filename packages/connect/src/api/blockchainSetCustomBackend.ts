@@ -15,7 +15,7 @@ export default class BlockchainSetCustomBackend extends AbstractMethod<
     'blockchainSetCustomBackend',
     Params
 > {
-    init() {
+    async init() {
         this.requiredPermissions = [];
         this.useDevice = false;
         this.useUi = false;

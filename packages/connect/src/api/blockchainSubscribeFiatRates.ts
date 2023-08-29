@@ -16,7 +16,7 @@ export default class BlockchainSubscribeFiatRates extends AbstractMethod<
     'blockchainSubscribeFiatRates',
     Params
 > {
-    init() {
+    async init() {
         this.useDevice = false;
         this.useUi = false;
 

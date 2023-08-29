@@ -6,7 +6,7 @@ import { validateParams } from './common/paramsValidator';
 import type { PROTO } from '../constants';
 
 export default class RecoveryDevice extends AbstractMethod<'recoveryDevice', PROTO.RecoveryDevice> {
-    init() {
+    async init() {
         this.requiredPermissions = ['management'];
         this.useEmptyPassphrase = true;
 

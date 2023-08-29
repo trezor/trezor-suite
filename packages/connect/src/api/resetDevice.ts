@@ -8,7 +8,7 @@ import type { PROTO } from '../constants';
 export default class ResetDevice extends AbstractMethod<'resetDevice', PROTO.ResetDevice> {
     confirmed?: boolean;
 
-    init() {
+    async init() {
         this.allowDeviceMode = [UI.INITIALIZE, UI.SEEDLESS];
         this.useDeviceState = false;
         this.requiredPermissions = ['management'];

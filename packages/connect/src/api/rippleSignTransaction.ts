@@ -10,7 +10,7 @@ export default class RippleSignTransaction extends AbstractMethod<
     'rippleSignTransaction',
     PROTO.RippleSignTx
 > {
-    init() {
+    async init() {
         this.requiredPermissions = ['read', 'write'];
         this.firmwareRange = getFirmwareRange(
             this.name,

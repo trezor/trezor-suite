@@ -17,7 +17,7 @@ export default class BlockchainGetCurrentFiatRates extends AbstractMethod<
     'blockchainGetCurrentFiatRates',
     Params
 > {
-    init() {
+    async init() {
         this.useDevice = false;
         this.useUi = false;
 

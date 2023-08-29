@@ -7,7 +7,7 @@ export default class ShowDeviceTutorial extends AbstractMethod<
     'showDeviceTutorial',
     PROTO.ShowDeviceTutorial
 > {
-    init() {
+    async init() {
         this.firmwareRange = getFirmwareRange(this.name, null, this.firmwareRange);
         this.useEmptyPassphrase = true;
         this.useDeviceState = false;

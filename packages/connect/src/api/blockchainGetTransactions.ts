@@ -16,7 +16,7 @@ export default class BlockchainGetTransactions extends AbstractMethod<
     'blockchainGetTransactions',
     Params
 > {
-    init() {
+    async init() {
         this.useDevice = false;
         this.useUi = false;
 

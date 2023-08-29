@@ -7,7 +7,7 @@ import { getFirmwareRange } from './common/paramsValidator';
 export default class WipeDevice extends AbstractMethod<'wipeDevice'> {
     confirmed?: boolean;
 
-    init() {
+    async init() {
         this.allowDeviceMode = [UI.INITIALIZE, UI.SEEDLESS, UI.BOOTLOADER];
         this.useDeviceState = false;
         this.requiredPermissions = ['management'];

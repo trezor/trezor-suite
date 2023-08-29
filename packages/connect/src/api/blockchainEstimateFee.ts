@@ -14,7 +14,7 @@ type Params = {
 };
 
 export default class BlockchainEstimateFee extends AbstractMethod<'blockchainEstimateFee', Params> {
-    init() {
+    async init() {
         this.useDevice = false;
         this.useUi = false;
 

@@ -18,7 +18,7 @@ export default class BlockchainGetFiatRatesForTimestamps extends AbstractMethod<
     'blockchainGetFiatRatesForTimestamps',
     Params
 > {
-    init() {
+    async init() {
         this.useDevice = false;
         this.useUi = false;
 

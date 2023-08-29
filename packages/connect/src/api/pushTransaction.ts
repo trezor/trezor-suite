@@ -13,7 +13,7 @@ type Params = {
 };
 
 export default class PushTransaction extends AbstractMethod<'pushTransaction', Params> {
-    init() {
+    async init() {
         this.requiredPermissions = [];
         this.useUi = false;
         this.useDevice = false;

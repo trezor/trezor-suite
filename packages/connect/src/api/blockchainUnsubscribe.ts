@@ -13,7 +13,7 @@ type Params = {
 };
 
 export default class BlockchainUnsubscribe extends AbstractMethod<'blockchainUnsubscribe', Params> {
-    init() {
+    async init() {
         this.useDevice = false;
         this.useUi = false;
 
