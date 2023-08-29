@@ -1,43 +1,47 @@
-export enum SessionPhase {
+export const SessionPhase = {
     // RoundPhase.InputRegistration
-    RoundSearch = 101,
-    CoinSelection = 102,
-    RoundPairing = 103,
-    CoinRegistration = 104,
+    RoundSearch: 101,
+    CoinSelection: 102,
+    RoundPairing: 103,
+    CoinRegistration: 104,
     // error phases
-    AccountMissingUtxos = 151,
-    SkippingRound = 152,
-    RetryingRoundPairing = 153,
-    AffiliateServerOffline = 154,
-    CriticalError = 155,
-    BlockedUtxos = 156,
+    AccountMissingUtxos: 151,
+    SkippingRound: 152,
+    RetryingRoundPairing: 153,
+    AffiliateServerOffline: 154,
+    CriticalError: 155,
+    BlockedUtxos: 156,
 
     // RoundPhase.ConnectionConfirmation
-    AwaitingConfirmation = 201,
-    AwaitingOthersConfirmation = 202,
+    AwaitingConfirmation: 201,
+    AwaitingOthersConfirmation: 202,
 
     // RoundPhase.OutputRegistration
-    RegisteringOutputs = 301,
-    AwaitingOthersOutputs = 302,
+    RegisteringOutputs: 301,
+    AwaitingOthersOutputs: 302,
     // error phase
-    OutputRegistrationFailed = 351,
+    OutputRegistrationFailed: 351,
 
     // RoundPhase.TransactionSigning
-    AwaitingCoinjoinTransaction = 401,
-    TransactionSigning = 402,
-    SendingSignature = 403,
-    AwaitingOtherSignatures = 404,
+    AwaitingCoinjoinTransaction: 401,
+    TransactionSigning: 402,
+    SendingSignature: 403,
+    AwaitingOtherSignatures: 404,
     // error phases
-    SignatureFailed = 451,
-}
+    SignatureFailed: 451,
+} as const;
 
-export enum RoundPhase {
-    InputRegistration = 0,
-    ConnectionConfirmation = 1,
-    OutputRegistration = 2,
-    TransactionSigning = 3,
-    Ended = 4,
-}
+export type SessionPhase = (typeof SessionPhase)[keyof typeof SessionPhase];
+
+export const RoundPhase = {
+    InputRegistration: 0,
+    ConnectionConfirmation: 1,
+    OutputRegistration: 2,
+    TransactionSigning: 3,
+    Ended: 4,
+} as const;
+
+export type RoundPhase = (typeof RoundPhase)[keyof typeof RoundPhase];
 
 export enum EndRoundState {
     None = 0,

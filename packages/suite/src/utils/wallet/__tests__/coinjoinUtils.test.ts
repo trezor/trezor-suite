@@ -22,6 +22,35 @@ describe('calculateAnonymityProgress', () => {
     });
 });
 
+describe('getRoundPhaseFromSessionPhase', () => {
+    it('gets correct value or throws', () => {
+        fixtures.getRoundPhaseFromSessionPhase.forEach(({ sessionPhase, result }) => {
+            const getSessionPhase = () => coinjoinUtils.getRoundPhaseFromSessionPhase(sessionPhase);
+
+            if (result === 'error') {
+                expect(getSessionPhase).toThrowError();
+            } else {
+                expect(getSessionPhase()).toEqual(result);
+            }
+        });
+    });
+});
+
+describe('getFirstSessionPhaseFromRoundPhase', () => {
+    it('gets correct value or throws', () => {
+        fixtures.getFirstSessionPhaseFromRoundPhase.forEach(({ roundPhase, result }) => {
+            const getSessionPhase = () =>
+                coinjoinUtils.getFirstSessionPhaseFromRoundPhase(roundPhase);
+
+            if (result === 'error') {
+                expect(getSessionPhase).toThrowError();
+            } else {
+                expect(getSessionPhase()).toEqual(result);
+            }
+        });
+    });
+});
+
 describe('cleanAnonymityGains', () => {
     it('cleans correctly', () => {
         fixtures.cleanAnonymityGains.forEach(({ params, resultLength }) => {

@@ -1,13 +1,12 @@
 import produce from 'immer';
 import BigNumber from 'bignumber.js';
 
-import { getInputSize, getOutputSize } from '@trezor/coinjoin';
+import { getInputSize, getOutputSize, RoundPhase } from '@trezor/coinjoin';
 import { PartialRecord } from '@trezor/type-utils';
 import { STORAGE } from 'src/actions/suite/constants';
 import { Account, AccountKey } from '@suite-common/wallet-types';
 import {
     CoinjoinAccount,
-    RoundPhase,
     CoinjoinDebugSettings,
     CoinjoinConfig,
     CoinjoinClientInstance,

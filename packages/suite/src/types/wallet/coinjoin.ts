@@ -16,7 +16,8 @@ import {
     WabiSabiProtocolErrorCode,
 } from '@trezor/coinjoin/src/enums';
 
-export { RoundPhase, SessionPhase, EndRoundState, WabiSabiProtocolErrorCode };
+export { EndRoundState, WabiSabiProtocolErrorCode };
+export type { RoundPhase, SessionPhase };
 
 export interface CoinjoinSetup {
     targetAnonymity: number;
