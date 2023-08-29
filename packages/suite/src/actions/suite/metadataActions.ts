@@ -463,7 +463,8 @@ export const fetchAndSaveMetadata =
     };
 
 export const setAccountMetadataKey =
-    (account: Account) => (dispatch: Dispatch, getState: GetState) => {
+    (account: Account, encryptionVersion = METADATA.ENCRYPTION_VERSION) =>
+    (dispatch: Dispatch, getState: GetState) => {
         const { devices } = getState();
         const device = devices.find(d => d.state === account.deviceState);
         if (
@@ -474,19 +475,21 @@ export const setAccountMetadataKey =
             return account;
         }
 
+        const deviceMetaKey = device.metadata[encryptionVersion]?.key;
+
+        if (!deviceMetaKey) {
+            throw new Error('device meta key is missing');
+        }
         try {
-            const metaKey = metadataUtils.deriveMetadataKey(
-                device.metadata[METADATA.ENCRYPTION_VERSION].key,
-                account.metadata.key,
-            );
-            const fileName = `${metadataUtils.deriveFilename(metaKey)}.mtdt`;
+            const metaKey = metadataUtils.deriveMetadataKey(deviceMetaKey, account.metadata.key);
+            const fileName = metadataUtils.deriveFilenameForLabeling(metaKey, encryptionVersion);
 
             const aesKey = metadataUtils.deriveAesKey(metaKey);
             return {
                 ...account,
                 metadata: {
                     ...account.metadata,
-                    [METADATA.ENCRYPTION_VERSION]: { fileName, aesKey },
+                    [encryptionVersion]: { fileName, aesKey },
                 },
             };
         } catch (error) {
@@ -770,76 +773,78 @@ const encryptAndSaveMetadata =
 /**
  * Generate device master-key
  * */
-export const setDeviceMetadataKey = () => async (dispatch: Dispatch, getState: GetState) => {
-    if (!getState().metadata.enabled) return;
-    const { device } = getState().suite;
-    if (!device || !device.state || !device.connected) return;
+export const setDeviceMetadataKey =
+    (encryptionVersion = METADATA.ENCRYPTION_VERSION) =>
+    async (dispatch: Dispatch, getState: GetState) => {
+        const { device } = getState().suite;
+        if (!device || !device.state || !device.connected) return;
 
-    // master key already exists
-    if (device.metadata.status === 'enabled') return;
+        if (device.metadata.status === 'enabled') return;
 
-    const result = await TrezorConnect.cipherKeyValue({
-        device: {
-            path: device.path,
-            state: device.state,
-            instance: device.instance,
-        },
-        useEmptyPassphrase: device.useEmptyPassphrase,
-        path: METADATA.ENABLE_LABELING_PATH,
-        key: METADATA.ENABLE_LABELING_KEY,
-        value: METADATA.ENABLE_LABELING_VALUE,
-        encrypt: true,
-        askOnEncrypt: true,
-        askOnDecrypt: true,
-    });
+        const result = await TrezorConnect.cipherKeyValue({
+            device: {
+                path: device.path,
+                state: device.state,
+                instance: device.instance,
+            },
+            useEmptyPassphrase: device.useEmptyPassphrase,
+            ...METADATA.ENCRYPTION_VERSION_CONFIGS[encryptionVersion],
+        });
 
-    if (result.success) {
-        if (!getState().metadata.enabled) {
+        if (result.success) {
+            if (!getState().metadata.enabled) {
+                dispatch({
+                    type: METADATA.ENABLE,
+                });
+            }
+
+            const [stateAddress] = device.state.split('@'); // address@device_id:instance
+            const metaKey = metadataUtils.deriveMetadataKey(result.payload.value, stateAddress);
+            const fileName = metadataUtils.deriveFilenameForLabeling(metaKey, encryptionVersion);
+            const aesKey = metadataUtils.deriveAesKey(metaKey);
+
             dispatch({
-                type: METADATA.ENABLE,
+                type: METADATA.SET_DEVICE_METADATA,
+                payload: {
+                    deviceState: device.state,
+                    metadata: {
+                        ...device.metadata,
+                        status: 'enabled',
+                        [encryptionVersion]: {
+                            fileName,
+                            aesKey,
+                            key: result.payload.value,
+                        },
+                    },
+                },
+            });
+        } else {
+            // TODO: After metadata migration is implemented, I am not sure that 'cancelled' state makes sense
+            // anymore. With version 2 encryption user does not even have the option to cancel metadata on device
+            // user only has option to cancel labeling during migration. How should we handle this?
+            dispatch({
+                type: METADATA.SET_DEVICE_METADATA,
+                payload: {
+                    deviceState: device.state,
+                    metadata: {
+                        status: 'cancelled',
+                    },
+                },
+            });
+
+            // in effort to resolve https://github.com/trezor/trezor-suite/issues/2315
+            // also turn of global metadata.enabled setting
+            // pros:
+            // - user without saved device is not bothered with labeling when reloading page
+            // cons:
+            // - it makes concept device.metadata.status "cancelled" useless
+            // - new device will not be prompted with metadata when connected so even when there is
+            //   existing metadata for this device, user will not see it until he clicks "add label" button
+            dispatch({
+                type: METADATA.DISABLE,
             });
         }
-
-        const [stateAddress] = device.state.split('@'); // address@device_id:instance
-        const metaKey = metadataUtils.deriveMetadataKey(result.payload.value, stateAddress);
-        const fileName = `${metadataUtils.deriveFilename(metaKey)}.mtdt`;
-        const aesKey = metadataUtils.deriveAesKey(metaKey);
-
-        dispatch({
-            type: METADATA.SET_DEVICE_METADATA,
-            payload: {
-                deviceState: device.state,
-                metadata: {
-                    ...device.metadata,
-                    status: 'enabled',
-                    [METADATA.ENCRYPTION_VERSION]: { fileName, aesKey, key: result.payload.value },
-                },
-            },
-        });
-    } else {
-        dispatch({
-            type: METADATA.SET_DEVICE_METADATA,
-            payload: {
-                deviceState: device.state,
-                metadata: {
-                    status: 'cancelled',
-                },
-            },
-        });
-
-        // in effort to resolve https://github.com/trezor/trezor-suite/issues/2315
-        // also turn of global metadata.enabled setting
-        // pros:
-        // - user without saved device is not bothered with labeling when reloading page
-        // cons:
-        // - it makes concept device.metadata.status "cancelled" useless
-        // - new device will not be prompted with metadata when connected so even when there is
-        //   existing metadata for this device, user will not see it until he clicks "add label" button
-        dispatch({
-            type: METADATA.DISABLE,
-        });
-    }
-};
+    };
 
 export const addMetadata = (payload: MetadataAddPayload) => (dispatch: Dispatch) => {
     if (payload.type === 'walletLabel') {

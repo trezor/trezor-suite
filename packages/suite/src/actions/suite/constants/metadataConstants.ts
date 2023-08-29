@@ -3,6 +3,7 @@ import {
     AccountLabels,
     WalletLabels,
 } from '@suite-common/metadata-types';
+import { TrezorConnect } from '@trezor/connect';
 
 export const ENABLE = '@metadata/enable';
 export const DISABLE = '@metadata/disable';
@@ -43,6 +44,29 @@ export const GOOGLE_IMPLICIT_FLOW_CLIENT_ID =
 export const DROPBOX_CLIENT_ID = 'wg0yz2pbgjyhoda';
 
 export const ENCRYPTION_VERSION: MetadataEncryptionVersion = 1;
+
+export const ENCRYPTION_VERSION_CONFIGS: Record<
+    MetadataEncryptionVersion,
+    Parameters<TrezorConnect['cipherKeyValue']>[0]['bundle'][0]
+> = {
+    1: {
+        path: ENABLE_LABELING_PATH,
+        key: ENABLE_LABELING_KEY,
+        value: ENABLE_LABELING_VALUE,
+        encrypt: true,
+        askOnEncrypt: true,
+        askOnDecrypt: true,
+    },
+    2: {
+        path: ENABLE_LABELING_PATH,
+        key: ENABLE_LABELING_KEY,
+        value: ENABLE_LABELING_VALUE,
+        encrypt: true,
+        askOnEncrypt: false,
+        askOnDecrypt: false,
+    },
+};
+
 export const DEFAULT_ACCOUNT_METADATA: AccountLabels = {
     accountLabel: '',
     outputLabels: {},
