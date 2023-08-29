@@ -17,7 +17,8 @@ parseCoinsJson(
 export const getNetworkLabelFixtures: TestFixtures<typeof getNetworkLabel> = [
     {
         description: 'eth',
-        input: ['Export #NETWORK address', getEthereumNetwork('eth')],
+        // @ts-expect-error
+        input: ['Export #NETWORK address', coinsJSONEth[0]],
         output: 'Export Ethereum address',
     },
 ];

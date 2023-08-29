@@ -2,18 +2,13 @@
 
 import { AbstractMethod, MethodReturnType } from '../core/AbstractMethod';
 import { validateParams, getFirmwareRange } from './common/paramsValidator';
-import { validatePath, getSerializedPath, getSlip44ByPath } from '../utils/pathUtils';
+import { validatePath, getSerializedPath } from '../utils/pathUtils';
 import { getNetworkLabel } from '../utils/ethereumUtils';
 import { getEthereumNetwork, getUniqueNetworks } from '../data/coinInfo';
 import { stripHexPrefix } from '../utils/formatUtils';
 import { PROTO, ERRORS } from '../constants';
 import { UI, createUiMessage } from '../events';
 import type { EthereumNetworkInfo } from '../types';
-import {
-    getEthereumDefinitions,
-    decodeEthereumDefinition,
-    ethereumNetworkInfoFromDefinition,
-} from './ethereum/ethereumDefinitions';
 
 type Params = PROTO.EthereumGetAddress & {
     address?: string;
@@ -41,25 +36,29 @@ export default class EthereumGetAddress extends AbstractMethod<'ethereumGetAddre
             { name: 'useEventListener', type: 'boolean' },
         ]);
 
-        this.params = payload.bundle.map(batch => {
-            // validate incoming parameters for each batch
-            validateParams(batch, [
-                { name: 'path', required: true },
-                { name: 'address', type: 'string' },
-                { name: 'showOnTrezor', type: 'boolean' },
-            ]);
+        this.params = await Promise.all(
+            payload.bundle.map(async batch => {
+                // validate incoming parameters for each batch
+                validateParams(batch, [
+                    { name: 'path', required: true },
+                    { name: 'address', type: 'string' },
+                    { name: 'showOnTrezor', type: 'boolean' },
+                ]);
 
-            const path = validatePath(batch.path, 3);
-            const network = getEthereumNetwork(path);
-            this.firmwareRange = getFirmwareRange(this.name, network, this.firmwareRange);
+                const path = validatePath(batch.path, 3);
+                const network = await getEthereumNetwork(path);
+                this.firmwareRange = getFirmwareRange(this.name, network, this.firmwareRange);
 
-            return {
-                address_n: path,
-                show_display: typeof batch.showOnTrezor === 'boolean' ? batch.showOnTrezor : true,
-                address: batch.address,
-                network,
-            };
-        });
+                return {
+                    address_n: path,
+                    show_display:
+                        typeof batch.showOnTrezor === 'boolean' ? batch.showOnTrezor : true,
+                    address: batch.address,
+                    network,
+                    encoded_network: network.encoded_network,
+                };
+            }),
+        );
 
         const useEventListener =
             payload.useEventListener &&
@@ -68,27 +67,6 @@ export default class EthereumGetAddress extends AbstractMethod<'ethereumGetAddre
             this.params[0].show_display;
         this.confirmed = useEventListener;
         this.useUi = !useEventListener;
-    }
-
-    async initAsync(): Promise<void> {
-        for (let i = 0; i < this.params.length; i++) {
-            // network was maybe already set from 'well-known' definition in init method.
-            if (!this.params[i].network) {
-                const slip44 = getSlip44ByPath(this.params[i].address_n);
-
-                const definitions = await getEthereumDefinitions({
-                    slip44,
-                });
-
-                const decoded = decodeEthereumDefinition(definitions);
-                if (decoded.network) {
-                    this.params[i].network = ethereumNetworkInfoFromDefinition(decoded.network);
-                }
-                if (definitions.encoded_network) {
-                    this.params[i].encoded_network = definitions.encoded_network;
-                }
-            }
-        }
     }
 
     get info() {

@@ -71,7 +71,7 @@ describe('backend/Blockchain', () => {
     });
 
     it('cache estimated fees (ethereum-like)', async () => {
-        const coinInfo = getEthereumNetwork('Ethereum');
+        const coinInfo = await getEthereumNetwork('Ethereum');
         if (!coinInfo) throw new Error('coinInfo is missing');
 
         const spy = jest.spyOn(BlockchainLink.prototype, 'estimateFee');

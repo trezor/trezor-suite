@@ -24,7 +24,7 @@ export default class BlockchainUnsubscribeFiatRates extends AbstractMethod<
         // validate incoming parameters
         validateParams(payload, [{ name: 'coin', type: 'string', required: true }]);
 
-        const coinInfo = getCoinInfo(payload.coin);
+        const coinInfo = await getCoinInfo(payload.coin);
         if (!coinInfo) {
             throw ERRORS.TypedError('Method_UnknownCoin');
         }

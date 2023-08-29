@@ -37,57 +37,59 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
         // validate bundle type
         validateParams(payload, [{ name: 'bundle', type: 'array' }]);
 
-        this.params = payload.bundle.map(batch => {
-            // validate incoming parameters
-            validateParams(batch, [
-                { name: 'coin', type: 'string', required: true },
-                { name: 'descriptor', type: 'string' },
-                { name: 'path', type: 'string' },
+        this.params = await Promise.all(
+            payload.bundle.map(async batch => {
+                // validate incoming parameters
+                validateParams(batch, [
+                    { name: 'coin', type: 'string', required: true },
+                    { name: 'descriptor', type: 'string' },
+                    { name: 'path', type: 'string' },
 
-                { name: 'details', type: 'string' },
-                { name: 'tokens', type: 'string' },
-                { name: 'page', type: 'number' },
-                { name: 'pageSize', type: 'number' },
-                { name: 'from', type: 'number' },
-                { name: 'to', type: 'number' },
-                { name: 'contractFilter', type: 'string' },
-                { name: 'gap', type: 'number' },
-                { name: 'marker', type: 'object' },
-                { name: 'defaultAccountType', type: 'string' },
-                { name: 'derivationType', type: 'number' },
-            ]);
+                    { name: 'details', type: 'string' },
+                    { name: 'tokens', type: 'string' },
+                    { name: 'page', type: 'number' },
+                    { name: 'pageSize', type: 'number' },
+                    { name: 'from', type: 'number' },
+                    { name: 'to', type: 'number' },
+                    { name: 'contractFilter', type: 'string' },
+                    { name: 'gap', type: 'number' },
+                    { name: 'marker', type: 'object' },
+                    { name: 'defaultAccountType', type: 'string' },
+                    { name: 'derivationType', type: 'number' },
+                ]);
 
-            // validate coin info
-            const coinInfo = getCoinInfo(batch.coin);
-            if (!coinInfo) {
-                throw ERRORS.TypedError('Method_UnknownCoin');
-            }
-            // validate backend
-            isBackendSupported(coinInfo);
-            // validate path if exists
-            let address_n: number[] = [];
-            if (batch.path) {
-                address_n = validatePath(batch.path, 3);
-                // since there is no descriptor device will be used
-                willUseDevice = typeof batch.descriptor !== 'string';
-            }
-            if (!batch.path && !batch.descriptor) {
-                if (payload.bundle.length > 1) {
-                    throw Error('Discovery for multiple coins in not supported');
+                // validate coin info
+                const coinInfo = await getCoinInfo(batch.coin);
+                if (!coinInfo) {
+                    throw ERRORS.TypedError('Method_UnknownCoin');
                 }
-                // device will be used in Discovery
-                willUseDevice = true;
-            }
+                // validate backend
+                isBackendSupported(coinInfo);
+                // validate path if exists
+                let address_n: number[] = [];
+                if (batch.path) {
+                    address_n = validatePath(batch.path, 3);
+                    // since there is no descriptor device will be used
+                    willUseDevice = typeof batch.descriptor !== 'string';
+                }
+                if (!batch.path && !batch.descriptor) {
+                    if (payload.bundle.length > 1) {
+                        throw Error('Discovery for multiple coins in not supported');
+                    }
+                    // device will be used in Discovery
+                    willUseDevice = true;
+                }
 
-            // set firmware range
-            this.firmwareRange = getFirmwareRange(this.name, coinInfo, this.firmwareRange);
+                // set firmware range
+                this.firmwareRange = getFirmwareRange(this.name, coinInfo, this.firmwareRange);
 
-            return {
-                ...batch,
-                address_n,
-                coinInfo,
-            };
-        });
+                return {
+                    ...batch,
+                    address_n,
+                    coinInfo,
+                };
+            }),
+        );
 
         this.useDevice = willUseDevice;
         this.useUi = willUseDevice;

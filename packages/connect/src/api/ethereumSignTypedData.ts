@@ -15,7 +15,7 @@ import type {
 } from '../types/api/ethereum';
 import { getFieldType, parseArrayType, encodeData } from './ethereum/ethereumSignTypedData';
 import { messageToHex } from '../utils/formatUtils';
-import { getEthereumDefinitions } from './ethereum/ethereumDefinitions';
+import { getEthereumDefinitions } from '../data/ethereumDefinitions';
 import type { EthereumNetworkInfo } from '../types';
 import type { EthereumDefinitions } from '@trezor/protobuf/lib/messages';
 import { DeviceModelInternal } from '../types';
@@ -46,7 +46,7 @@ export default class EthereumSignTypedData extends AbstractMethod<'ethereumSignT
         ]);
 
         const path = validatePath(payload.path, 3);
-        const network = getEthereumNetwork(path);
+        const network = await getEthereumNetwork(path);
         this.firmwareRange = getFirmwareRange(this.name, network, this.firmwareRange);
 
         this.params = {
@@ -93,9 +93,7 @@ export default class EthereumSignTypedData extends AbstractMethod<'ethereumSignT
                 );
             }
         }
-    }
 
-    async initAsync() {
         if (this.params.network) return;
 
         const { address_n } = this.params;
@@ -106,10 +104,7 @@ export default class EthereumSignTypedData extends AbstractMethod<'ethereumSignT
     }
 
     get info() {
-        return getNetworkLabel(
-            'Sign #NETWORK typed data',
-            getEthereumNetwork(this.params.address_n),
-        );
+        return getNetworkLabel('Sign #NETWORK typed data', this.params.network);
     }
 
     async run() {

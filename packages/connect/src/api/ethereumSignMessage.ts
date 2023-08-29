@@ -7,7 +7,7 @@ import { getEthereumNetwork } from '../data/coinInfo';
 import { getNetworkLabel } from '../utils/ethereumUtils';
 import { messageToHex } from '../utils/formatUtils';
 import type { PROTO } from '../constants';
-import { getEthereumDefinitions } from './ethereum/ethereumDefinitions';
+import { getEthereumDefinitions } from '../data/ethereumDefinitions';
 import type { EthereumNetworkInfo } from '../types';
 import type { EthereumDefinitions } from '@trezor/protobuf/lib/messages';
 
@@ -30,7 +30,7 @@ export default class EthereumSignMessage extends AbstractMethod<'ethereumSignMes
         ]);
 
         const path = validatePath(payload.path, 3);
-        const network = getEthereumNetwork(path);
+        const network = await getEthereumNetwork(path);
         this.firmwareRange = getFirmwareRange(this.name, network, this.firmwareRange);
 
         const messageHex = payload.hex
@@ -39,10 +39,9 @@ export default class EthereumSignMessage extends AbstractMethod<'ethereumSignMes
         this.params = {
             address_n: path,
             message: messageHex,
+            network,
         };
-    }
 
-    async initAsync() {
         if (this.params.network) return;
 
         const { address_n } = this.params;
@@ -53,7 +52,7 @@ export default class EthereumSignMessage extends AbstractMethod<'ethereumSignMes
     }
 
     get info() {
-        return getNetworkLabel('Sign #NETWORK message', getEthereumNetwork(this.params.address_n));
+        return getNetworkLabel('Sign #NETWORK message', this.params.network);
     }
 
     async run() {

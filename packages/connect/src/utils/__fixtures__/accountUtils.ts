@@ -40,7 +40,7 @@ export const isUtxoBasedFixtures: TestFixtures<typeof isUtxoBased> = [
     },
     {
         description: 'eth',
-        input: [getEthereumNetwork('eth')!],
+        input: [getEthereumNetworkFromCoinsJSON('eth')!],
         output: false,
     },
 ];

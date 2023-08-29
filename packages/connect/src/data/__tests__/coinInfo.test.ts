@@ -7,15 +7,15 @@ describe('data/coinInfo', () => {
         parseCoinsJson(coinsJSON, blockchainLinkJSON);
     });
 
-    it('getUniqueNetworks', () => {
+    it('getUniqueNetworks', async () => {
         const inputs = [
-            getCoinInfo('btc'),
-            getCoinInfo('ltc'),
-            getCoinInfo('btc'),
-            getCoinInfo('ltc'),
-            getCoinInfo('ltc'),
+            await getCoinInfo('btc'),
+            await getCoinInfo('ltc'),
+            await getCoinInfo('btc'),
+            await getCoinInfo('ltc'),
+            await getCoinInfo('ltc'),
         ];
-        const result = [getCoinInfo('btc'), getCoinInfo('ltc')];
+        const result = [await getCoinInfo('btc'), await getCoinInfo('ltc')];
         expect(getUniqueNetworks(inputs)).toEqual(result);
     });
 

@@ -11,7 +11,7 @@ import {
     getEthereumDefinitions,
     decodeEthereumDefinition,
     ethereumNetworkInfoFromDefinition,
-} from './ethereum/ethereumDefinitions';
+} from '../data/ethereumDefinitions';
 import type { EthereumTransaction, EthereumTransactionEIP1559 } from '../types/api/ethereum';
 import type { EthereumNetworkInfo } from '../types';
 import type { EthereumDefinitions } from '@trezor/protobuf/lib/messages';
@@ -59,7 +59,7 @@ export default class EthereumSignTransaction extends AbstractMethod<
         ]);
 
         const path = validatePath(payload.path, 3);
-        const network = getEthereumNetwork(path);
+        const network = await getEthereumNetwork(path);
 
         // incoming transaction should be in EthereumTx format
         // https://github.com/ethereumjs/ethereumjs-tx
@@ -113,9 +113,7 @@ export default class EthereumSignTransaction extends AbstractMethod<
             },
             network,
         };
-    }
 
-    async initAsync(): Promise<void> {
         // eth && token => yes
         // evm && token => yes
         // eth && !token => no
