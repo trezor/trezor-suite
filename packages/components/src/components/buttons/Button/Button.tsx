@@ -1,19 +1,19 @@
-import { ButtonHTMLAttributes } from 'react';
-import styled, { css, useTheme } from 'styled-components';
-import { borders, boxShadows, spacingsPx, typography } from '@trezor/theme';
+import styled, { useTheme } from 'styled-components';
+import { borders, spacingsPx, typography } from '@trezor/theme';
 import { Icon } from '../../assets/Icon/Icon';
 import { IconType } from '../../../support/types';
 import { Spinner } from '../../loaders/Spinner/Spinner';
 import {
     ButtonSize,
     ButtonVariant,
+    focusShadowStyle,
     getIconColor,
     getIconSize,
     getPadding,
     getVariantStyle,
     IconAlignment,
 } from '../buttonStyleUtils';
-import { MEDIA_QUERY } from '../../../config/variables';
+import { ButtonHTMLAttributes } from 'react';
 
 interface ButtonContainerProps {
     variant: ButtonVariant;
@@ -22,21 +22,6 @@ interface ButtonContainerProps {
     hasIcon?: boolean;
     isFullWidth?: boolean;
 }
-
-export const focusShadowStyle = css`
-    border: 1px solid transparent;
-
-    :focus-visible {
-        border-color: ${({ theme }) => theme.backgroundAlertBlueBold};
-        box-shadow: ${boxShadows.focusedLight};
-    }
-
-    ${MEDIA_QUERY.DARK_THEME} {
-        :focus-visible {
-            box-shadow: ${boxShadows.focusedDark};
-        }
-    }
-`;
 
 export const ButtonContainer = styled.button<ButtonContainerProps>`
     display: flex;
