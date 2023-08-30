@@ -423,6 +423,7 @@ export const networks = {
         bip43Path: "m/44'/501'/i'/0'", // TODO(vl): accounts and paths
         decimals: 9,
         testnet: false,
+        chainId: 1399811149,
         // features: ['tokens', 'staking'],
         explorer: {
             tx: '', // TODO(vl): add explorer links
