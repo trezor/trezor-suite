@@ -163,7 +163,7 @@ export const Fees = <TFieldValues extends FormState>({
     const labelComponent =
         showLabel || label ? (
             <Label rbfForm={rbfForm}>
-                <Translation id={label ?? 'FEE'} />
+                <Translation id={label || (networkType === 'ethereum' ? 'MAX_FEE' : 'FEE')} />
             </Label>
         ) : null;
 

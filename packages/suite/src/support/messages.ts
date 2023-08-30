@@ -5554,6 +5554,11 @@ export default defineMessages({
         description: 'Label in Send form',
         id: 'FEE',
     },
+    MAX_FEE: {
+        defaultMessage: 'Maximum fee',
+        description: 'Label in Send form for Ethereum network type',
+        id: 'MAX_FEE',
+    },
     FEE_LEVEL_CUSTOM: {
         defaultMessage: 'Custom',
         id: 'FEE_LEVEL_CUSTOM',

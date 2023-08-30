@@ -58,6 +58,7 @@ export type Props = OutputProps & {
 const Output = (props: Props) => {
     const { type, state, label, value, symbol, token, account } = props;
     let outputLabel: React.ReactNode = label;
+    const { networkType } = account;
 
     if (type === 'locktime') {
         const isTimestamp = new BigNumber(value).gte(BTC_LOCKTIME_VALUE);
@@ -66,7 +67,7 @@ const Output = (props: Props) => {
         );
     }
     if (type === 'fee') {
-        outputLabel = <Translation id="FEE" />;
+        outputLabel = <Translation id={networkType === 'ethereum' ? 'MAX_FEE' : 'FEE'} />;
     }
     if (type === 'contract') {
         outputLabel = <Translation id="TR_CONTRACT" />;
