@@ -41,7 +41,6 @@ const svgoConfig = {
                 },
             },
         },
-        'removeXMLNS',
         'prefixIds',
         // it's necessary to remove all dimension tags to allow resizing
         'removeDimensions',

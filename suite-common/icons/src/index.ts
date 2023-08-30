@@ -5,3 +5,4 @@ export * from './components/CryptoIconWithPercentage';
 export * from './components/FlagIcon';
 export * from './components/Icon';
 export * from './utils';
+export * from './config';
