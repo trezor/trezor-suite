@@ -54,7 +54,7 @@ export const Data = ({ close }: DataProps) => {
             if (!amount) {
                 setAmount(0, '0');
             }
-            if ((event.target.value === '' || asciiError) && amount === '0') {
+            if (event.target.value === '' && amount === '0') {
                 setAmount(0, '');
             }
             composeTransaction(inputAsciiName);
@@ -62,14 +62,11 @@ export const Data = ({ close }: DataProps) => {
     });
     const { ref: hexRef, ...hexField } = register(inputHexName, {
         onChange: event => {
-            setValue(
-                inputAsciiName,
-                !hexError ? Buffer.from(event.target.value, 'hex').toString('ascii') : '',
-            );
+            setValue(inputAsciiName, Buffer.from(event.target.value, 'hex').toString('ascii'));
             if (!amount) {
                 setValue(inputAmountName, '0');
             }
-            if ((event.target.value === '' || hexError) && amount === '0') {
+            if (event.target.value === '' && amount === '0') {
                 setValue(inputAmountName, '');
             }
             composeTransaction(inputHexName);
