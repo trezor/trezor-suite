@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { Textarea, Icon } from '@trezor/components';
 import { QuestionTooltip } from 'src/components/suite';
@@ -35,6 +35,7 @@ export const Data = ({ close }: DataProps) => {
         setValue,
         setAmount,
         composeTransaction,
+        trigger,
         watch,
     } = useSendFormContext();
     const { translationString } = useTranslation();
@@ -79,6 +80,14 @@ export const Data = ({ close }: DataProps) => {
             if (value.length > 8192 * 2) return translationString('DATA_HEX_TOO_BIG'); // 8192 bytes limit for protobuf single message encoding in FW
         },
     });
+
+    // Trigger amount validation after data is set. This removes the validation message if amount is 0.
+    // A transaction with 0 amount is valid as long as it has data - this type of transaction can be used to interact with contract.
+    useEffect(() => {
+        if (amount === '0' && hexValue) {
+            trigger(inputAmountName);
+        }
+    }, [amount, hexValue, trigger]);
 
     return (
         <Wrapper>
