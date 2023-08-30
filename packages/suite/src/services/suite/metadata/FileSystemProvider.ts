@@ -62,6 +62,18 @@ class FileSystemProvider extends AbstractMetadataProvider {
         return this.ok(response.payload);
     }
 
+    async renameFile(from: string, to: string) {
+        const response = await desktopApi.metadataRenameFile({
+            file: from,
+            to,
+        });
+
+        if (!response.success) {
+            return this.error('PROVIDER_ERROR', response.error);
+        }
+        return this.ok(undefined);
+    }
+
     isConnected() {
         return true;
     }

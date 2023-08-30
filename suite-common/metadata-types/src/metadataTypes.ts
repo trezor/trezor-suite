@@ -124,6 +124,8 @@ export abstract class AbstractMetadataProvider {
      */
     abstract getFilesList(): Result<string[] | undefined>;
 
+    abstract renameFile(from: string, to: string): Result<void>;
+
     ok(): Success<void>;
     ok<T>(payload: T): Success<T>;
     ok(payload?: any) {
