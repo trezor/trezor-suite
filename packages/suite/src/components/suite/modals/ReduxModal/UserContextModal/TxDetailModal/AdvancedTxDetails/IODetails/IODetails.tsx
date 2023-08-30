@@ -407,7 +407,7 @@ const CollapsibleIOSection = ({
     opened,
 }: CollapsibleIOSectionProps) =>
     inputs?.length || outputs?.length ? (
-        <StyledCollapsibleBox heading={heading} opened={opened} variant="large">
+        <StyledCollapsibleBox heading={heading} isOpen={opened} variant="large">
             <IOSectionColumn tx={tx} inputs={inputs} outputs={outputs} />
         </StyledCollapsibleBox>
     ) : null;
