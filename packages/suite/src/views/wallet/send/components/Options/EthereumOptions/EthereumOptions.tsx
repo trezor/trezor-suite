@@ -23,7 +23,7 @@ const StyledButton = styled(Button)`
     margin-right: 8px;
 `;
 
-const EthereumOptions = () => {
+export const EthereumOptions = () => {
     const { getDefaultValue, toggleOption, composeTransaction } = useSendFormContext();
 
     const options = getDefaultValue('options', []);
@@ -69,5 +69,3 @@ const EthereumOptions = () => {
         </Wrapper>
     );
 };
-
-export default EthereumOptions;

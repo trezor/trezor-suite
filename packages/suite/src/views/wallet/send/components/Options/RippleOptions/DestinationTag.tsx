@@ -12,7 +12,7 @@ interface DestinationTagProps {
     close: () => void;
 }
 
-const DestinationTag = ({ close }: DestinationTagProps) => {
+export const DestinationTag = ({ close }: DestinationTagProps) => {
     const {
         register,
         getDefaultValue,
@@ -54,5 +54,3 @@ const DestinationTag = ({ close }: DestinationTagProps) => {
         />
     );
 };
-
-export default DestinationTag;
