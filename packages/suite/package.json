@@ -28,6 +28,7 @@
         "@sentry/core": "^7.56.0",
         "@suite-common/analytics": "workspace:*",
         "@suite-common/connect-init": "workspace:*",
+        "@suite-common/device-authenticity": "workspace:*",
         "@suite-common/fiat-services": "workspace:*",
         "@suite-common/formatters": "workspace:*",
         "@suite-common/intl-types": "workspace:*",
