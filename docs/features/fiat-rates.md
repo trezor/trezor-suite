@@ -39,7 +39,7 @@ Every rate stored in `wallet.fiat` reducer is checked in 2-minute interval. If t
 #### Current fiat rates for ERC-20 tokens
 
 List of tokens is part of the account object (`account.tokens`).
-Fiat rates for ERC-20 tokens are fetched on `ACCOUNT.CREATE` (fired during account discovery) and `ACCOUNT.UPDATE` (new token can appear after receiving a token transaction). These actions are interc-epted in `fiatRatesMiddleware`.
+Fiat rates for ERC-20 tokens are fetched on `ACCOUNT.CREATE` (fired during account discovery) and `ACCOUNT.UPDATE` (new token can appear after receiving a token transaction). These actions are intercepted in `fiatRatesMiddleware`.
 
 ### Weekly fiat rates
 
