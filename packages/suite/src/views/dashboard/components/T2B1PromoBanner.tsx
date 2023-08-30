@@ -279,12 +279,7 @@ export const T2B1PromoBanner = () => {
                             <Translation id="TR_SHOP_NOW" />
                         </ButtonShopNow>
                     </LinkButtonShopNow>
-                    <ButtonClose
-                        icon="CROSS_LIGHT"
-                        color="white"
-                        variant="secondary"
-                        onClick={onCloseBanner}
-                    />
+                    <ButtonClose icon="CROSS_LIGHT" variant="secondary" onClick={onCloseBanner} />
                 </BannerWrapper>
             )}
         </AnimatePresence>
