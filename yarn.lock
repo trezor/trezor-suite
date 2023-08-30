@@ -4090,9 +4090,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-sig-util@npm:^5.1.0":
-  version: 5.1.0
-  resolution: "@metamask/eth-sig-util@npm:5.1.0"
+"@metamask/eth-sig-util@npm:^6.0.0":
+  version: 6.0.0
+  resolution: "@metamask/eth-sig-util@npm:6.0.0"
   dependencies:
     "@ethereumjs/util": ^8.0.6
     bn.js: ^4.12.0
@@ -4100,7 +4100,7 @@ __metadata:
     ethjs-util: ^0.1.6
     tweetnacl: ^1.0.3
     tweetnacl-util: ^0.15.1
-  checksum: c639e3bf91625faeb0230a6314f0b2d05e8f5e2989542d3e0eed1d21b7b286e1860f68629870fd7e568c1a599b3993c4210403fb4c84a625fb1e75ef676eab4f
+  checksum: 76c173faed20d0d896561dbf3eb4ec3173e33288bf8844919643fd3e9fb6bc78f1ba8bd8a82252f4d13526ded4cc1aee27ae78f5b32642d9f97ef15fa230a12e
   languageName: node
   linkType: hard
 
@@ -9059,12 +9059,12 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/connect-plugin-ethereum@workspace:packages/connect-plugin-ethereum"
   dependencies:
-    "@metamask/eth-sig-util": ^5.1.0
+    "@metamask/eth-sig-util": ^6.0.0
     jest: ^26.6.3
     rimraf: ^5.0.1
     typescript: 4.9.5
   peerDependencies:
-    "@metamask/eth-sig-util": ^5.1.0
+    "@metamask/eth-sig-util": ^6.0.0
   languageName: unknown
   linkType: soft
 
