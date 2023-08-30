@@ -12,6 +12,7 @@ import type { ObjectValues } from '@trezor/type-utils';
 import type { UiEvent, DeviceEvent, TransportEvent, BlockchainEvent } from '@trezor/connect';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { messageSystemActions } from '@suite-common/message-system';
+import { deviceAuthenticityActions } from '@suite-common/device-authenticity';
 import type { Route } from '@suite-common/suite-types';
 
 import type { RouterAction } from 'src/actions/suite/routerActions';
@@ -61,6 +62,9 @@ type AnalyticsAction = ReturnType<(typeof analyticsActions)[keyof typeof analyti
 type FirmwareAction = ReturnType<(typeof firmwareActions)[keyof typeof firmwareActions]>;
 type DeviceAction = ReturnType<(typeof deviceActions)[keyof typeof deviceActions]>;
 type DiscoveryAction = ReturnType<(typeof discoveryActions)[keyof typeof discoveryActions]>;
+type DeviceAuthenticityAction = ReturnType<
+    (typeof deviceAuthenticityActions)[keyof typeof deviceAuthenticityActions]
+>;
 
 // all actions from all apps used to properly type Dispatch.
 export type Action =
@@ -85,7 +89,8 @@ export type Action =
     | GuideAction
     | ProtocolAction
     | DiscoveryAction
-    | DeviceAction;
+    | DeviceAction
+    | DeviceAuthenticityAction;
 
 export type ThunkAction = TAction<any, AppState, any, Action>;
 
