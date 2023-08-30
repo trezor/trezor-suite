@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { AppState } from 'react-native';
+import { AppState, Platform } from 'react-native';
 
 import * as LocalAuthentication from 'expo-local-authentication';
 
@@ -34,7 +34,7 @@ export const useBiometrics = () => {
 
     const handleAuthentication = useCallback(async () => {
         // Stop the authentication flow if the user leaves the app.
-        if (appState.current !== 'active') {
+        if (appState.current !== 'active' && Platform.OS === 'android') {
             LocalAuthentication.cancelAuthenticate();
             return;
         }
