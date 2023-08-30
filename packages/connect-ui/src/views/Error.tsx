@@ -10,6 +10,10 @@ import { isFirefox } from '@trezor/env-utils';
 const WhiteCollapsibleBox = styled(CollapsibleBox)`
     background: ${({ theme }) => theme.BG_WHITE};
     width: 500px;
+
+    ${CollapsibleBox.Content} {
+        padding: 0;
+    }
 `;
 
 export interface ErrorViewProps {
@@ -241,7 +245,7 @@ export const ErrorView = (props: ErrorViewProps) => {
                 <TipsContainer>
                     {tips.map(tip => (
                         <WhiteCollapsibleBox
-                            opened={tips.length === 1}
+                            isOpen={tips.length === 1}
                             key={tip.title}
                             heading={
                                 <Heading>
@@ -252,7 +256,6 @@ export const ErrorView = (props: ErrorViewProps) => {
                                 </Heading>
                             }
                             variant="large"
-                            noContentPadding
                         >
                             <StepsList>
                                 {tip.detail.steps.map((step, index) => (
