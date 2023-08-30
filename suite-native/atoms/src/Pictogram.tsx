@@ -74,7 +74,7 @@ export const Pictogram = ({ variant, icon, title, subtitle }: PictogramProps) =>
                         size: INNER_RING_SIZE,
                     })}
                 >
-                    <Icon name={icon} color={iconColor} customSize={ICON_SIZE} />
+                    <Icon name={icon} color={iconColor} size={ICON_SIZE} />
                 </Box>
             </Box>
             <VStack alignItems="center">
