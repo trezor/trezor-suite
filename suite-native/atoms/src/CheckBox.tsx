@@ -55,7 +55,7 @@ export const CheckBox = ({ isChecked, isDisabled = false, onChange, style }: Che
             accessibilityState={{ checked: isChecked, disabled: isDisabled }}
             style={[applyStyle(checkBoxStyle, { isChecked, isDisabled }), style]}
         >
-            {isChecked && <Icon name="check" color="iconOnPrimary" customSize={CHECKMARK_SIZE} />}
+            {isChecked && <Icon name="check" color="iconOnPrimary" size={CHECKMARK_SIZE} />}
         </TouchableOpacity>
     );
 };

@@ -53,7 +53,11 @@ export const WipeCode = ({ isDeviceLocked }: Props) => {
             />
 
             <ActionColumn>
-                <ActionButton onClick={enableWipeCode} isDisabled={isDeviceLocked} variant="danger">
+                <ActionButton
+                    onClick={enableWipeCode}
+                    isDisabled={isDeviceLocked}
+                    variant="destructive"
+                >
                     <Translation
                         id={
                             isDeviceProtectedByWipeCode
@@ -67,7 +71,7 @@ export const WipeCode = ({ isDeviceLocked }: Props) => {
                     <ActionButton
                         onClick={disableWipeCode}
                         isDisabled={isDeviceLocked}
-                        variant="danger"
+                        variant="destructive"
                     >
                         <Translation id="TR_REMOVE_WIPE_CODE" />
                     </ActionButton>

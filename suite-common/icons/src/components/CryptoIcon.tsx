@@ -1,26 +1,11 @@
 import { Canvas, ImageSVG, useSVG } from '@shopify/react-native-skia';
 
 import { networks } from '@suite-common/wallet-config';
-import { TokenAddress } from '@suite-common/wallet-types';
 
 import { CryptoIconName, cryptoIcons } from '../icons';
 import { genericTokenIcon, TokenIconName, tokenIcons } from '../tokenIcons';
+import { CoinSymbol, CryptoIconProps, cryptoIconSizes } from '../config';
 import { useRerenderOnAppStateChange } from '../useRerenderOnAppState';
-
-export type CoinSymbol = CryptoIconName | TokenAddress;
-
-type CryptoIconProps = {
-    symbol: CoinSymbol;
-    size?: CryptoIconSize;
-};
-
-export const cryptoIconSizes = {
-    extraSmall: 16,
-    small: 24,
-    large: 42,
-} as const;
-
-export type CryptoIconSize = keyof typeof cryptoIconSizes;
 
 const getIconFile = (symbol: CoinSymbol) => {
     if (symbol in networks) return cryptoIcons[symbol as CryptoIconName];
