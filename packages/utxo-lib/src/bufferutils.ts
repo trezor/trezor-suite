@@ -99,12 +99,6 @@ export function cloneBuffer(buffer: Buffer): Buffer {
     return clone;
 }
 
-export function getChunkSize(n: number) {
-    const buf = Buffer.allocUnsafe(1);
-    buf.writeUInt8(n);
-    return buf;
-}
-
 // These types need to be defined here, otherwise
 // importing @trezor/utxo-lib/lib from blockchain-link fails
 // because of missing pushdata-bitcoin types
@@ -124,7 +118,7 @@ export const readPushDataInt: ReadPushDataInt = pushdata.decode;
 // export const varIntBuffer = varuint.encode; // TODO: not-used
 export const varIntSize = varuint.encodingLength;
 export const writePushDataInt: WritePushDataInt = pushdata.encode;
-export const { reverseBuffer } = bufferUtils;
+export const { reverseBuffer, getChunkSize } = bufferUtils;
 
 /**
  * Helper class for serialization of bitcoin data types into a pre-allocated buffer.
