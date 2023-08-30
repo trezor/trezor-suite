@@ -23,6 +23,10 @@ const StyledCollapsibleBox = styled(CollapsibleBox)`
     ${CollapsibleBox.Header} {
         padding: 24px 12px 24px 6px;
     }
+
+    ${CollapsibleBox.Content} {
+        padding: 0;
+    }
 `;
 
 const StyledCoinsGroup = styled(CoinGroup)`
@@ -46,7 +50,6 @@ export const BasicSettingsStepBox = (props: OnboardingStepBoxProps) => {
                 selectedNetworks={enabledNetworks}
             />
             <StyledCollapsibleBox
-                noContentPadding
                 heading={
                     <>
                         <Translation id="TR_TESTNET_COINS" />

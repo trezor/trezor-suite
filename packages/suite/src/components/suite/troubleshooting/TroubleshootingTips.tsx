@@ -32,11 +32,7 @@ const Bullet = styled.span`
 const Items = styled.div`
     display: flex;
     flex-direction: column;
-    padding: 20px 20px;
-
-    ${variables.SCREEN_QUERY.MOBILE} {
-        padding: 20px 18px;
-    }
+    margin-bottom: 20px;
 `;
 
 const Item = styled.div`
@@ -63,13 +59,10 @@ const ItemAction = styled.div`
 const ContactSupport = styled.div`
     display: flex;
     justify-content: space-between;
+    margin: 24px -16px 0;
+    padding: 20px 20px 0;
     border-top: 1px solid ${({ theme }) => theme.STROKE_GREY};
-    padding: 18px 30px;
     align-items: center;
-
-    ${variables.SCREEN_QUERY.MOBILE} {
-        padding: 18px 20px;
-    }
 `;
 
 const FooterText = styled.span`
@@ -128,8 +121,7 @@ export const TroubleshootingTips = ({
             variant="large"
             heading={cta}
             iconLabel={label}
-            noContentPadding
-            opened={opened}
+            isOpen={opened}
             data-test={dataTest || '@onboarding/expand-troubleshooting-tips'}
         >
             {items.length > 0 && <Items>{memoizedItems}</Items>}
