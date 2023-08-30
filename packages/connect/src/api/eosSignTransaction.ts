@@ -15,7 +15,7 @@ type Params = {
 };
 
 export default class EosSignTransaction extends AbstractMethod<'eosSignTransaction', Params> {
-    init() {
+    async init() {
         this.requiredPermissions = ['read', 'write'];
         this.firmwareRange = getFirmwareRange(this.name, getMiscNetwork('EOS'), this.firmwareRange);
 

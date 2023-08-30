@@ -52,6 +52,10 @@ export const config = {
             url: './data/coins-eth.json',
         },
         {
+            name: 'blockchainLink',
+            url: './data/blockchain-link.json',
+        },
+        {
             name: 'bridge',
             url: './data/bridge/releases.json',
         },
@@ -105,9 +109,13 @@ export const config = {
             ],
         },
         {
-            coin: ['eth', 'tsep', 'tgor'],
+            coin: ['eth'],
             min: ['1.8.0', '2.1.0'],
             comment: ['There were protobuf backwards incompatible changes.'],
+        },
+        {
+            coin: ['tsep', 'tgor'],
+            min: ['1.11.2', '2.5.2'],
         },
         {
             methods: ['rippleGetAddress', 'rippleSignTransaction'],

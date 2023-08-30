@@ -13,7 +13,7 @@ type Params = {
 };
 
 export default class BlockchainSubscribe extends AbstractMethod<'blockchainSubscribe', Params> {
-    init() {
+    async init() {
         this.useDevice = false;
         this.useUi = false;
 
@@ -31,7 +31,7 @@ export default class BlockchainSubscribe extends AbstractMethod<'blockchainSubsc
             });
         }
 
-        const coinInfo = getCoinInfo(payload.coin);
+        const coinInfo = await getCoinInfo(payload.coin);
         if (!coinInfo) {
             throw ERRORS.TypedError('Method_UnknownCoin');
         }

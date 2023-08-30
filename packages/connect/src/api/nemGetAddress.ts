@@ -20,7 +20,7 @@ export default class NEMGetAddress extends AbstractMethod<'nemGetAddress', Param
     progress = 0;
     confirmed?: boolean;
 
-    init() {
+    async init() {
         this.requiredPermissions = ['read'];
         this.firmwareRange = getFirmwareRange(this.name, getMiscNetwork('NEM'), this.firmwareRange);
 

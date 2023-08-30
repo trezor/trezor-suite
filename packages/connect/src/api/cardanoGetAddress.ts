@@ -22,7 +22,7 @@ export default class CardanoGetAddress extends AbstractMethod<'cardanoGetAddress
     progress = 0;
     confirmed?: boolean;
 
-    init() {
+    async init() {
         this.requiredPermissions = ['read'];
         this.firmwareRange = getFirmwareRange(
             this.name,

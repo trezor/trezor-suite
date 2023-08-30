@@ -1,9 +1,5 @@
 [
     {
-        "blockchain_link": {
-            "type": "blockbook",
-            "url": ["https://eth1.trezor.io", "https://eth2.trezor.io"]
-        },
         "chain": "eth",
         "chain_id": 1,
         "name": "Ethereum",
@@ -16,60 +12,5 @@
             "trezor2": "2.0.7"
         },
         "url": "https://ethereum.org"
-    },
-    {
-        "blockchain_link": {
-            "type": "blockbook",
-            "url": ["https://sepolia1.trezor.io"]
-        },
-        "chain": "sep",
-        "chain_id": 11155111,
-        "name": "Sepolia",
-        "rskip60": false,
-        "shortcut": "tSEP",
-        "slip44": 1,
-        "support": {
-            "connect": true,
-            "suite": false,
-            "trezor1": "1.11.2",
-            "trezor2": "2.5.2"
-        },
-        "url": "https://sepolia.otterscan.io"
-    },
-    {
-        "blockchain_link": {
-            "type": "blockbook",
-            "url": ["https://goerli1.trezor.io", "https://goerli2.trezor.io"]
-        },
-        "chain": "gor",
-        "chain_id": 5,
-        "name": "G\u00f6rli",
-        "shortcut": "tGOR",
-        "slip44": 1,
-        "support": {
-            "connect": true,
-            "suite": false,
-            "trezor1": "1.11.2",
-            "trezor2": "2.5.2"
-        },
-        "url": "https://goerli.net/#about"
-    },
-    {
-        "blockchain_link": {
-            "type": "blockbook",
-            "url": ["https://etc1.trezor.io", "https://etc2.trezor.io"]
-        },
-        "chain": "etc",
-        "chain_id": 61,
-        "name": "Ethereum Classic",
-        "shortcut": "ETC",
-        "slip44": 61,
-        "support": {
-            "connect": true,
-            "suite": true,
-            "trezor1": "1.6.2",
-            "trezor2": "2.0.7"
-        },
-        "url": "https://ethereumclassic.org"
     }
 ]

@@ -24,7 +24,7 @@ type Params = {
 };
 
 export default class FirmwareUpdate extends AbstractMethod<'firmwareUpdate', Params> {
-    init() {
+    async init() {
         this.useEmptyPassphrase = true;
         this.requiredPermissions = ['management'];
         this.allowDeviceMode = [UI.BOOTLOADER, UI.INITIALIZE];

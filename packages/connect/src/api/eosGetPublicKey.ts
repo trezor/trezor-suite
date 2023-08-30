@@ -14,7 +14,7 @@ export default class EosGetPublicKey extends AbstractMethod<
     hasBundle?: boolean;
     confirmed?: boolean;
 
-    init() {
+    async init() {
         this.requiredPermissions = ['read'];
         this.firmwareRange = getFirmwareRange(this.name, getMiscNetwork('EOS'), this.firmwareRange);
 

@@ -14,7 +14,7 @@ type Params = {
 };
 
 export default class BlockchainEstimateFee extends AbstractMethod<'blockchainEstimateFee', Params> {
-    init() {
+    async init() {
         this.useDevice = false;
         this.useUi = false;
 
@@ -44,7 +44,7 @@ export default class BlockchainEstimateFee extends AbstractMethod<'blockchainEst
                 ]);
             }
         }
-        const coinInfo = getCoinInfo(payload.coin);
+        const coinInfo = await getCoinInfo(payload.coin);
 
         if (!coinInfo) {
             throw ERRORS.TypedError('Method_UnknownCoin');

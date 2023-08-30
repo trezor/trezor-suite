@@ -9,7 +9,7 @@ export default class EthereumVerifyMessage extends AbstractMethod<
     'ethereumVerifyMessage',
     PROTO.EthereumVerifyMessage
 > {
-    init() {
+    async init() {
         this.requiredPermissions = ['read', 'write'];
         this.firmwareRange = getFirmwareRange(this.name, null, this.firmwareRange);
 

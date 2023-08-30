@@ -1,0 +1,133 @@
+{
+    "BTC": {
+        "type": "blockbook",
+        "url": [
+            "https://btc1.trezor.io",
+            "https://btc2.trezor.io",
+            "https://btc3.trezor.io",
+            "https://btc4.trezor.io",
+            "https://btc5.trezor.io"
+        ]
+    },
+    "TEST": {
+        "type": "blockbook",
+        "url": ["https://tbtc1.trezor.io", "https://tbtc2.trezor.io"]
+    },
+    "BCH": {
+        "type": "blockbook",
+        "url": [
+            "https://bch1.trezor.io",
+            "https://bch2.trezor.io",
+            "https://bch3.trezor.io",
+            "https://bch4.trezor.io",
+            "https://bch5.trezor.io"
+        ]
+    },
+    "BTG": {
+        "type": "blockbook",
+        "url": [
+            "https://btg1.trezor.io",
+            "https://btg2.trezor.io",
+            "https://btg3.trezor.io",
+            "https://btg4.trezor.io",
+            "https://btg5.trezor.io"
+        ]
+    },
+    "DASH": {
+        "type": "blockbook",
+        "url": [
+            "https://dash1.trezor.io",
+            "https://dash2.trezor.io",
+            "https://dash3.trezor.io",
+            "https://dash4.trezor.io",
+            "https://dash5.trezor.io"
+        ]
+    },
+    "DGB": {
+        "type": "blockbook",
+        "url": ["https://dgb1.trezor.io", "https://dgb2.trezor.io"]
+    },
+    "DOGE": {
+        "type": "blockbook",
+        "url": [
+            "https://doge1.trezor.io",
+            "https://doge2.trezor.io",
+            "https://doge3.trezor.io",
+            "https://doge4.trezor.io",
+            "https://doge5.trezor.io"
+        ]
+    },
+    "FJC": { "type": "blockbook", "url": ["https://explorer.fujicoin.org"] },
+    "LTC": {
+        "type": "blockbook",
+        "url": [
+            "https://ltc1.trezor.io",
+            "https://ltc2.trezor.io",
+            "https://ltc3.trezor.io",
+            "https://ltc4.trezor.io",
+            "https://ltc5.trezor.io"
+        ]
+    },
+    "MONA": { "type": "blockbook", "url": ["https://blockbook.electrum-mona.org"] },
+    "NMC": {
+        "type": "blockbook",
+        "url": ["https://nmc1.trezor.io", "https://nmc2.trezor.io"]
+    },
+    "PPC": { "type": "blockbook", "url": ["https://blockbook.peercoin.net"] },
+    "tPPC": { "type": "blockbook", "url": ["https://tblockbook.peercoin.net"] },
+    "RVN": { "type": "blockbook", "url": ["https://blockbook.ravencoin.org"] },
+    "RITO": { "type": "blockbook", "url": ["https://blockbook.ritocoin.org"] },
+    "SYS": { "type": "blockbook", "url": ["https://blockbook.elint.services"] },
+    "VTC": {
+        "type": "blockbook",
+        "url": [
+            "https://vtc1.trezor.io",
+            "https://vtc2.trezor.io",
+            "https://vtc3.trezor.io",
+            "https://vtc4.trezor.io",
+            "https://vtc5.trezor.io"
+        ]
+    },
+    "ZEC": {
+        "type": "blockbook",
+        "url": [
+            "https://zec1.trezor.io",
+            "https://zec2.trezor.io",
+            "https://zec3.trezor.io",
+            "https://zec4.trezor.io",
+            "https://zec5.trezor.io"
+        ]
+    },
+    "ADA": {
+        "type": "blockfrost",
+        "url": ["wss://trezor-cardano-mainnet.blockfrost.io"]
+    },
+    "tADA": {
+        "type": "blockfrost",
+        "url": ["wss://trezor-cardano-preview.blockfrost.io"]
+    },
+    "tXRP": {
+        "type": "ripple",
+        "url": ["wss://s.altnet.rippletest.net"]
+    },
+    "XRP": {
+        "type": "ripple",
+        "url": ["wss://s1.ripple.com", "wss://s-east.ripple.com", "wss://s-west.ripple.com"]
+    },
+    "ETH": {
+        "type": "blockbook",
+        "url": ["https://eth1.trezor.io", "https://eth2.trezor.io"]
+    },
+    "tSEP:11155111": {
+        "type": "blockbook",
+        "url": ["https://sepolia1.trezor.io"]
+    },
+    "tGOR:5": {
+        "type": "blockbook",
+        "url": ["https://goerli1.trezor.io", "https://goerli2.trezor.io"]
+    },
+    "ETC": {
+        "type": "blockbook",
+        "url": ["https://etc1.trezor.io", "https://etc2.trezor.io"]
+    }
+}

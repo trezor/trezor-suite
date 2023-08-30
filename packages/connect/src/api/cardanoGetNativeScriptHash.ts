@@ -11,7 +11,7 @@ export default class CardanoGetNativeScriptHash extends AbstractMethod<
     'cardanoGetNativeScriptHash',
     PROTO.CardanoGetNativeScriptHash
 > {
-    init() {
+    async init() {
         this.requiredPermissions = ['read'];
         this.firmwareRange = getFirmwareRange(
             this.name,

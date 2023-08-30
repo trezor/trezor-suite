@@ -25,7 +25,7 @@ export const ERROR_CODES = {
     Method_Override: 'override', // inner "error", it's more like a interruption
     Method_NoResponse: 'Call resolved without response', // thrown by npm index(es), call to Core resolved without response, should not happen
 
-    Backend_NotSupported: 'BlockchainLink settings not found in coins.json', // thrown by methods which using backends, blockchainLink not defined for this coin
+    Backend_NotSupported: 'BlockchainLink settings not found in blockchain-link.json', // thrown by methods which using backends, blockchainLink not defined for this coin
     Backend_WorkerMissing: '', // thrown by BlockchainLink class, worker not specified
     Backend_Disconnected: 'Backend disconnected', // thrown by BlockchainLink class
     Backend_Invalid: 'Invalid backend', // thrown by BlockchainLink class, invalid backend (ie: backend for wrong coin set)

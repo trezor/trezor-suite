@@ -1,20 +1,21 @@
 import coinsJSON from '@trezor/connect-common/files/coins.json';
+import blockchainLinkJSON from '@trezor/connect-common/files/blockchain-link.json';
 import { parseCoinsJson, getCoinInfo, getUniqueNetworks, getAllNetworks } from '../coinInfo';
 
 describe('data/coinInfo', () => {
     beforeAll(() => {
-        parseCoinsJson(coinsJSON);
+        parseCoinsJson(coinsJSON, blockchainLinkJSON);
     });
 
-    it('getUniqueNetworks', () => {
+    it('getUniqueNetworks', async () => {
         const inputs = [
-            getCoinInfo('btc'),
-            getCoinInfo('ltc'),
-            getCoinInfo('btc'),
-            getCoinInfo('ltc'),
-            getCoinInfo('ltc'),
+            await getCoinInfo('btc'),
+            await getCoinInfo('ltc'),
+            await getCoinInfo('btc'),
+            await getCoinInfo('ltc'),
+            await getCoinInfo('ltc'),
         ];
-        const result = [getCoinInfo('btc'), getCoinInfo('ltc')];
+        const result = [await getCoinInfo('btc'), await getCoinInfo('ltc')];
         expect(getUniqueNetworks(inputs)).toEqual(result);
     });
 

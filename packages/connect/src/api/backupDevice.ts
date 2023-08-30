@@ -4,7 +4,7 @@ import { AbstractMethod } from '../core/AbstractMethod';
 import { UI, createUiMessage } from '../events';
 
 export default class BackupDevice extends AbstractMethod<'backupDevice'> {
-    init() {
+    async init() {
         this.requiredPermissions = ['management'];
         this.useDeviceState = false;
     }

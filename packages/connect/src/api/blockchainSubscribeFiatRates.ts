@@ -16,7 +16,7 @@ export default class BlockchainSubscribeFiatRates extends AbstractMethod<
     'blockchainSubscribeFiatRates',
     Params
 > {
-    init() {
+    async init() {
         this.useDevice = false;
         this.useUi = false;
 
@@ -28,7 +28,7 @@ export default class BlockchainSubscribeFiatRates extends AbstractMethod<
             { name: 'coin', type: 'string', required: true },
         ]);
 
-        const coinInfo = getCoinInfo(payload.coin);
+        const coinInfo = await getCoinInfo(payload.coin);
         if (!coinInfo) {
             throw ERRORS.TypedError('Method_UnknownCoin');
         }

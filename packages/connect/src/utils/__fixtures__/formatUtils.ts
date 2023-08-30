@@ -1,10 +1,11 @@
 import coinsJSON from '@trezor/connect-common/files/coins.json';
+import blockchainLinkJSON from '@trezor/connect-common/files/blockchain-link.json';
 
 import { formatAmount } from '../formatUtils';
 
 import { parseCoinsJson, getBitcoinNetwork } from '../../data/coinInfo';
 
-parseCoinsJson(coinsJSON);
+parseCoinsJson(coinsJSON, blockchainLinkJSON);
 
 export const formatAmountFixtures: TestFixtures<typeof formatAmount> = [
     {

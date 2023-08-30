@@ -8,7 +8,7 @@ import { messageToHex } from '../utils/formatUtils';
 import { PROTO, ERRORS } from '../constants';
 
 export default class VerifyMessage extends AbstractMethod<'verifyMessage', PROTO.VerifyMessage> {
-    init() {
+    async init() {
         this.requiredPermissions = ['read', 'write'];
 
         const { payload } = this;

@@ -12,7 +12,7 @@ export default class CipherKeyValue extends AbstractMethod<
 > {
     hasBundle?: boolean;
 
-    init() {
+    async init() {
         this.requiredPermissions = ['read', 'write'];
         this.firmwareRange = getFirmwareRange(this.name, null, this.firmwareRange);
 

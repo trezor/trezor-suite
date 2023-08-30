@@ -4,7 +4,7 @@ import { validatePath } from '../utils/pathUtils';
 import { getFirmwareRange, validateParams } from './common/paramsValidator';
 
 export default class UnlockPath extends AbstractMethod<'unlockPath', PROTO.UnlockPath> {
-    init() {
+    async init() {
         this.requiredPermissions = ['read'];
         this.skipFinalReload = true;
         this.firmwareRange = getFirmwareRange(this.name, undefined, this.firmwareRange);

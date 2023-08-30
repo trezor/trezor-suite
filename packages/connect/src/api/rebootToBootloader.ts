@@ -7,7 +7,7 @@ import { UI, createUiMessage } from '../events';
 export default class RebootToBootloader extends AbstractMethod<'rebootToBootloader'> {
     confirmed?: boolean;
 
-    init() {
+    async init() {
         this.allowDeviceMode = [UI.INITIALIZE, UI.SEEDLESS];
         this.skipFinalReload = true;
         this.keepSession = false;

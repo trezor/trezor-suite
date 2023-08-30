@@ -19,7 +19,7 @@ export default class GetAddress extends AbstractMethod<'getAddress', Params[]> {
     progress = 0;
     confirmed?: boolean;
 
-    init() {
+    async init() {
         this.requiredPermissions = ['read'];
 
         // create a bundle with only one batch if bundle doesn't exists

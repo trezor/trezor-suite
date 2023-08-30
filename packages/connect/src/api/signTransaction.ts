@@ -42,7 +42,7 @@ type Params = {
 };
 
 export default class SignTransaction extends AbstractMethod<'signTransaction', Params> {
-    init() {
+    async init() {
         this.requiredPermissions = ['read', 'write'];
 
         const { payload } = this;

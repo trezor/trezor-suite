@@ -6,7 +6,7 @@ import { UI, createUiMessage } from '../events';
 import type { PROTO } from '../constants';
 
 export default class ApplyFlags extends AbstractMethod<'applyFlags', PROTO.ApplyFlags> {
-    init() {
+    async init() {
         this.requiredPermissions = ['management'];
         this.useDeviceState = false;
 

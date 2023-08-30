@@ -23,7 +23,7 @@ export default class StellarSignTransaction extends AbstractMethod<
     'stellarSignTransaction',
     Params
 > {
-    init() {
+    async init() {
         this.requiredPermissions = ['read', 'write'];
         this.firmwareRange = getFirmwareRange(
             this.name,

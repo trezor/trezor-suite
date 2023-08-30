@@ -16,7 +16,7 @@ export default class StellarGetAddress extends AbstractMethod<'stellarGetAddress
     progress = 0;
     confirmed?: boolean;
 
-    init() {
+    async init() {
         this.requiredPermissions = ['read'];
         this.firmwareRange = getFirmwareRange(
             this.name,

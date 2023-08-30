@@ -9,7 +9,7 @@ import type { BitcoinNetworkInfo } from '../types';
 import type { PROTO } from '../constants';
 
 export default class SignMessage extends AbstractMethod<'signMessage', PROTO.SignMessage> {
-    init() {
+    async init() {
         this.requiredPermissions = ['read', 'write'];
 
         const { payload } = this;

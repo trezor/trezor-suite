@@ -8,7 +8,7 @@ export default class AuthorizeCoinjoin extends AbstractMethod<
     'authorizeCoinjoin',
     PROTO.AuthorizeCoinJoin
 > {
-    init() {
+    async init() {
         const { payload } = this;
 
         validateParams(payload, [

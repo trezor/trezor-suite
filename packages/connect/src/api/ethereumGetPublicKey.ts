@@ -17,7 +17,7 @@ export default class EthereumGetPublicKey extends AbstractMethod<'ethereumGetPub
     hasBundle?: boolean;
     confirmed?: boolean;
 
-    init() {
+    async init() {
         this.requiredPermissions = ['read'];
 
         // create a bundle with only one batch if bundle doesn't exists
@@ -29,22 +29,25 @@ export default class EthereumGetPublicKey extends AbstractMethod<'ethereumGetPub
         // validate bundle type
         validateParams(payload, [{ name: 'bundle', type: 'array' }]);
 
-        this.params = payload.bundle.map(batch => {
-            // validate incoming parameters for each batch
-            validateParams(batch, [
-                { name: 'path', required: true },
-                { name: 'showOnTrezor', type: 'boolean' },
-            ]);
+        this.params = await Promise.all(
+            payload.bundle.map(async batch => {
+                // validate incoming parameters for each batch
+                validateParams(batch, [
+                    { name: 'path', required: true },
+                    { name: 'showOnTrezor', type: 'boolean' },
+                ]);
 
-            const path = validatePath(batch.path, 3);
-            const network = getEthereumNetwork(path);
-            this.firmwareRange = getFirmwareRange(this.name, network, this.firmwareRange);
-            return {
-                address_n: path,
-                show_display: typeof batch.showOnTrezor === 'boolean' ? batch.showOnTrezor : false,
-                network,
-            };
-        });
+                const path = validatePath(batch.path, 3);
+                const network = await getEthereumNetwork(path);
+                this.firmwareRange = getFirmwareRange(this.name, network!, this.firmwareRange);
+                return {
+                    address_n: path,
+                    show_display:
+                        typeof batch.showOnTrezor === 'boolean' ? batch.showOnTrezor : false,
+                    network,
+                };
+            }),
+        );
     }
 
     get info() {

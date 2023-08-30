@@ -13,7 +13,7 @@ type Params = {
 };
 
 export default class PushTransaction extends AbstractMethod<'pushTransaction', Params> {
-    init() {
+    async init() {
         this.requiredPermissions = [];
         this.useUi = false;
         this.useDevice = false;
@@ -26,7 +26,7 @@ export default class PushTransaction extends AbstractMethod<'pushTransaction', P
             { name: 'coin', type: 'string', required: true },
         ]);
 
-        const coinInfo = getCoinInfo(payload.coin);
+        const coinInfo = await getCoinInfo(payload.coin);
         if (!coinInfo) {
             throw ERRORS.TypedError('Method_UnknownCoin');
         }
