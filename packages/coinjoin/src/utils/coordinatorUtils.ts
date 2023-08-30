@@ -1,8 +1,9 @@
+import { bufferUtils } from '@trezor/utils';
 import {
     payments,
     address as baddress,
     script as bscript,
-    bufferutils,
+    bufferutils as bUtils,
     Network,
 } from '@trezor/utxo-lib';
 
@@ -92,10 +93,10 @@ export const getExternalOutputSize = (scriptPubKey: string) => {
 
 // read index, hash and txid from input `outpoint`
 export const readOutpoint = (outpoint: string) => {
-    const reader = new bufferutils.BufferReader(Buffer.from(outpoint, 'hex'));
+    const reader = new bUtils.BufferReader(Buffer.from(outpoint, 'hex'));
     const txid = reader.readSlice(32);
     const index = reader.readUInt32();
-    const hash = bufferutils.reverseBuffer(txid).toString('hex');
+    const hash = bUtils.reverseBuffer(txid).toString('hex');
     return { index, hash, txid: txid.toString('hex') };
 };
 
@@ -146,14 +147,9 @@ export const sortOutputs = (a: CoinjoinOutput, b: CoinjoinOutput) => {
 // bip-0141 format: chunks size + (chunk[i].size + chunk[i]),
 export const getWitnessFromSignature = (signature: string) => {
     const chunks = [Buffer.from(signature, 'hex')]; // NOTE: Trezor signature = only one chunk
-    const getChunkSize = (n: number) => {
-        const buf = Buffer.allocUnsafe(1);
-        buf.writeUInt8(n);
-        return buf;
-    };
     const prefixedChunks = chunks.reduce(
-        (arr, chunk) => arr.concat([getChunkSize(chunk.length), chunk]),
-        [getChunkSize(chunks.length)],
+        (arr, chunk) => arr.concat([bufferUtils.getChunkSize(chunk.length), chunk]),
+        [bufferUtils.getChunkSize(chunks.length)],
     );
 
     return Buffer.concat(prefixedChunks).toString('hex');
