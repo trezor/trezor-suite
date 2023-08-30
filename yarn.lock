@@ -6679,6 +6679,8 @@ __metadata:
     react: "npm:18.2.0"
     react-native: "npm:0.71.8"
     react-native-reanimated: "npm:3.6.1"
+    react-svg: "npm:^16.1.17"
+    styled-components: "npm:^5.3.10"
     svgo: "npm:3.0.2"
     tsx: "npm:^4.6.2"
     typescript: "npm:5.3.2"
@@ -8394,6 +8396,7 @@ __metadata:
     "@storybook/client-api": "npm:^7.5.3"
     "@storybook/react": "npm:^7.5.3"
     "@storybook/react-webpack5": "npm:^7.5.3"
+    "@suite-common/icons": "workspace:*"
     "@tippyjs/react": "npm:^4.2.6"
     "@trezor/connect": "workspace:*"
     "@trezor/dom-utils": "workspace:*"
@@ -28914,7 +28917,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-svg@npm:^16.1.29":
+"react-svg@npm:^16.1.17, react-svg@npm:^16.1.29":
   version: 16.1.29
   resolution: "react-svg@npm:16.1.29"
   dependencies:

@@ -18,7 +18,9 @@
         "@trezor/theme": "workspace:*",
         "react": "18.2.0",
         "react-native": "0.71.8",
-        "react-native-reanimated": "3.6.1"
+        "react-native-reanimated": "3.6.1",
+        "react-svg": "^16.1.17",
+        "styled-components": "^5.3.10"
     },
     "devDependencies": {
         "jest": "29.5.0",
