@@ -24,7 +24,7 @@ export const InputCSV = ({ onSubmit }: InputCSVProps) => {
             <Textarea noTopLabel noError isMonospace rows={9} innerRef={textAreaRef} />
             <Button
                 variant="primary"
-                fullWidth
+                isFullWidth
                 onClick={() => onSubmit(textAreaRef.current?.value || '')}
             >
                 <Translation id="IMPORT_CSV" />
