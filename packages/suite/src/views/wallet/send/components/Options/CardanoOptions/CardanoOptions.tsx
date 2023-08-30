@@ -32,7 +32,7 @@ const Right = styled.div`
     display: flex;
 `;
 
-const CardanoOptions = () => {
+export const CardanoOptions = () => {
     const { addOutput } = useSendFormContext();
 
     return (
@@ -53,5 +53,3 @@ const CardanoOptions = () => {
         </Wrapper>
     );
 };
-
-export default CardanoOptions;

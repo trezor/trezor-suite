@@ -4,7 +4,7 @@ import { useSendFormContext } from 'src/hooks/wallet';
 import { Translation } from 'src/components/suite';
 import { OnOffSwitcher } from 'src/components/wallet';
 import { Button, Tooltip } from '@trezor/components';
-import DestinationTag from './components/DestinationTag';
+import { DestinationTag } from './DestinationTag';
 
 const Wrapper = styled.div`
     display: flex;
@@ -22,7 +22,7 @@ const StyledButton = styled(Button)`
     margin-right: 8px;
 `;
 
-const RippleOptions = () => {
+export const RippleOptions = () => {
     const { getDefaultValue, toggleOption, composeTransaction, resetDefaultValue } =
         useSendFormContext();
 
@@ -79,5 +79,3 @@ const RippleOptions = () => {
         </Wrapper>
     );
 };
-
-export default RippleOptions;

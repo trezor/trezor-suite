@@ -3,10 +3,10 @@ import styled from 'styled-components';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { variables } from '@trezor/components';
 
-import { BitcoinOptions } from './components/BitcoinOptions';
-import EthereumOptions from './components/EthereumOptions';
-import RippleOptions from './components/RippleOptions';
-import CardanoOptions from './components/CardanoOptions';
+import { BitcoinOptions } from './BitcoinOptions/BitcoinOptions';
+import { EthereumOptions } from './EthereumOptions/EthereumOptions';
+import { RippleOptions } from './RippleOptions/RippleOptions';
+import { CardanoOptions } from './CardanoOptions/CardanoOptions';
 
 const Wrapper = styled.div`
     display: flex;
@@ -28,7 +28,7 @@ const Line = styled.div`
     margin-top: 10px;
 `;
 
-const Options = () => {
+export const Options = () => {
     const {
         account: { networkType },
     } = useSendFormContext();
@@ -45,5 +45,3 @@ const Options = () => {
         </Wrapper>
     );
 };
-
-export default Options;
