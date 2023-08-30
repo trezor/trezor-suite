@@ -8,7 +8,7 @@ import { setDebugMode } from 'src/actions/suite/suiteActions';
 export const CheckFirmwareAuthenticity = () => {
     const [inProgress, setInProgress] = useState(false);
 
-    const { checkFirmwareAuthenticity } = useFirmware();
+    const { checkFirmwareAuthenticity, checkDeviceAuthenticityThunk } = useFirmware();
 
     const debug = useSelector(state => state.suite.settings.debug);
     const dispatch = useDispatch();
@@ -22,8 +22,26 @@ export const CheckFirmwareAuthenticity = () => {
         setInProgress(false);
     };
 
+    const onCheckDeviceAuthenticity = async () => {
+        setInProgress(true);
+        await checkDeviceAuthenticityThunk({ allowDebugKeys: true });
+        setInProgress(false);
+    };
+
     return (
         <>
+            <SectionItem data-test="@settings/debug/check-device-authenticity">
+                <TextColumn title="Check device authenticity" description="" />
+                <ActionColumn>
+                    <Button
+                        onClick={onCheckDeviceAuthenticity}
+                        isLoading={inProgress}
+                        isDisabled={inProgress}
+                    >
+                        Check device authenticity
+                    </Button>
+                </ActionColumn>
+            </SectionItem>
             <SectionItem data-test="@settings/debug/check-firmware-authenticity">
                 <TextColumn
                     title="Check firmware authenticity"
