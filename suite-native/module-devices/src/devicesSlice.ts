@@ -62,9 +62,7 @@ export const hiddenDevice: TrezorDevice = {
     available: true,
     ts: 0,
     buttonRequests: [],
-    metadata: {
-        status: 'disabled',
-    },
+    metadata: {},
     unavailableCapabilities: {},
 };
 

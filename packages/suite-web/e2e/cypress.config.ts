@@ -78,7 +78,7 @@ export default defineConfig({
                 addMatchImageSnapshotPlugin(on, config);
             });
             on('task', {
-                metadataStartProvider: async provider => {
+                metadataStartProvider: async (provider: 'dropbox' | 'google') => {
                     switch (provider) {
                         case 'dropbox':
                             await mocked.dropbox.start();
@@ -137,6 +137,18 @@ export default defineConfig({
                             return mocked.dropbox.requests;
                         case 'google':
                             return mocked.google.requests;
+                        default:
+                            throw new Error('not a valid case');
+                    }
+                },
+                metadataGetFilesList: ({ provider }) => {
+                    switch (provider) {
+                        case 'dropbox':
+                            return Object.keys(mocked.dropbox.files).map(name =>
+                                name.replace('/apps/trezor/', ''),
+                            );
+                        case 'google':
+                            return Object.keys(mocked.google.files);
                         default:
                             throw new Error('not a valid case');
                     }

@@ -13,7 +13,7 @@ export const WalletLabeling = ({ device, shouldUseDeviceLabel }: WalletLabelling
     const { walletLabel } = useSelector(state => selectLabelingDataForWallet(state, device.state));
 
     let label: string | undefined;
-    if (device.metadata.status === 'enabled' && walletLabel) {
+    if (walletLabel) {
         label = walletLabel;
     } else if (device.state) {
         label = device.useEmptyPassphrase

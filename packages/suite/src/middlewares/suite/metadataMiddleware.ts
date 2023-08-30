@@ -1,7 +1,7 @@
 import { MiddlewareAPI } from 'redux';
 import * as metadataActions from 'src/actions/suite/metadataActions';
 import { AppState, Action, Dispatch } from 'src/types/suite';
-import { ROUTER, SUITE } from 'src/actions/suite/constants';
+import { ROUTER } from 'src/actions/suite/constants';
 import { accountsActions } from '@suite-common/wallet-core';
 
 const metadata =
@@ -12,19 +12,33 @@ const metadata =
             action.payload = api.dispatch(metadataActions.setAccountMetadataKey(action.payload));
         }
 
+        const prevState = api.getState().metadata.entities || [];
+
         // pass action
         next(action);
 
         switch (action.type) {
-            case SUITE.RECEIVE_AUTH_CONFIRM:
-                if (
-                    action.success &&
-                    api.getState().metadata.enabled &&
-                    action.payload.metadata.status === 'disabled'
-                ) {
-                    api.dispatch(metadataActions.init());
+            // detect changes in state in labelable entities.
+            // if labelable entitities differ from previous state after discovery completed init metadata
+
+            case '@common/wallet-core/discovery/complete': {
+                const nextState = api.dispatch(metadataActions.getLabelableEntitiesDescriptors());
+                if (api.getState().metadata.enabled) {
+                    if (prevState.join('') !== nextState.join('')) {
+                        api.dispatch(metadataActions.init());
+                    } else {
+                        console.log('states are equal!');
+                    }
                 }
+
+                api.dispatch(metadataActions.setEntititesDescriptors(nextState));
+
                 break;
+            }
+            // note:
+            // @suite/auth-device (device received state) causing labelalble entities change - but there is already
+            // redirection to routes that trigger discovery and thus '@common/wallet-core/discovery/complete' so no need to cover it here
+
             case ROUTER.LOCATION_CHANGE:
                 // if there is editing field active, changing route turns it inactive
                 if (api.getState().metadata.editing) {

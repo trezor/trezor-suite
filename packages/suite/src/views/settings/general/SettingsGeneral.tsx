@@ -6,7 +6,6 @@ import { selectTorState } from 'src/reducers/suite/suiteReducer';
 import { selectEnabledNetworks } from 'src/reducers/wallet/settingsReducer';
 import { NETWORKS } from 'src/config/wallet';
 import { isDesktop, isWeb } from '@trezor/env-utils';
-
 import { Language } from './Language';
 import { Fiat } from './Fiat';
 import { Labeling } from './Labeling';
@@ -22,15 +21,16 @@ import { VersionWithUpdate } from './VersionWithUpdate';
 import { EarlyAccess } from './EarlyAccess';
 import { BitcoinAmountUnit } from './BitcoinAmountUnit';
 import { DesktopSuiteBanner } from './DesktopSuiteBanner';
-import { selectDevice } from '../../../reducers/suite/deviceReducer';
+import {
+    selectIsLabelingInitPossible,
+    selectSelectedProviderForLabels,
+} from 'src/reducers/suite/metadataReducer';
 
 export const SettingsGeneral = () => {
     const isPromoHidden = useSelector(state => state.suite.settings.isDesktopSuitePromoHidden);
     const { isTorEnabled } = useSelector(selectTorState);
     const enabledNetworks = useSelector(selectEnabledNetworks);
     const desktopUpdate = useSelector(state => state.desktopUpdate);
-    const metadata = useSelector(state => state.metadata);
-    const device = useSelector(selectDevice);
 
     const { isMobileLayout } = useLayoutSize();
 
@@ -39,9 +39,8 @@ export const SettingsGeneral = () => {
             enabledNetworks.includes(symbol) && features?.includes('amount-unit'),
     );
 
-    const isMetadataEnabled = metadata.enabled && !metadata.initiating;
-    const isProviderConnected =
-        metadata.enabled && device?.metadata.status === 'enabled' && !!metadata.providers.length;
+    const isLabelingInitPossible = useSelector(selectIsLabelingInitPossible);
+    const isProviderConnected = useSelector(selectSelectedProviderForLabels);
 
     return (
         <SettingsLayout data-test="@settings/index">
@@ -55,7 +54,7 @@ export const SettingsGeneral = () => {
 
             <SettingsSection title={<Translation id="TR_LABELING" />} icon="TAG_MINIMAL">
                 <Labeling />
-                {isMetadataEnabled &&
+                {isLabelingInitPossible &&
                     (isProviderConnected ? (
                         <DisconnectLabelingProvider />
                     ) : (

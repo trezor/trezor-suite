@@ -4,7 +4,9 @@ export interface LabelableEntityKeys {
 }
 
 export type DeviceEntityKeys = {
-    [Version in MetadataEncryptionVersion]?: LabelableEntityKeys & { key: string };
+    [Version in MetadataEncryptionVersion]?: LabelableEntityKeys & {
+        key: string; // metadata master key
+    };
 };
 
 export type AccountEntityKeys = {
@@ -161,13 +163,7 @@ export interface WalletLabels {
 
 export type Labels = AccountLabels | WalletLabels;
 
-export type DeviceMetadata =
-    | {
-          status: 'disabled' | 'cancelled'; // user rejects "Enable labeling" on device
-      }
-    | ({
-          status: 'enabled';
-      } & DeviceEntityKeys);
+export type DeviceMetadata = DeviceEntityKeys;
 
 type Data = Record<
     LabelableEntityKeys['fileName'], // unique "id" for mapping with labelable entitties
@@ -207,7 +203,28 @@ export interface MetadataState {
     // information in reducer to make it easily accessible in UI.
     // field shall hold default value for which user may add metadata (address, txId, etc...);
     editing?: string;
+    /**
+     * Initiating is used in UI to display loader and disallow user to edit labels until init is finished
+     * which happens after discovery is finished.
+     * TODO: this could be improved, we only need to wait for all accounts to be loaded. once a single account
+     * is loaded and we have device master key we are able to add labels without interaction with device => we don't need to wait for discovery to finish
+     */
     initiating?: boolean;
+
+    /**
+     * entitites represent state of labelable entities in suite known to metadata module.
+     * this is used to track changes in labelable entities and trigger metadata init (and metadata migration) when needed.
+     */
+    entities?: string[];
+    /**
+     * migration failed, typical reasons:
+     * - user clicked cancel button on device when "Enable labeling" was shown.
+     * - device disconnected
+     *
+     * we need to disable editing labels in this state otherwiser user might add a label which would cause next attempt to migrate data not to find
+     * previously saved labels for that labelable entity.
+     */
+    failedMigration: { [deviceState: string]: boolean };
 }
 
 export type OAuthServerEnvironment = 'production' | 'staging' | 'localhost';

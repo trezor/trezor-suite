@@ -312,7 +312,7 @@ export const startDiscoveryThunk = createThunk(
     async (_, { dispatch, getState, extra }): Promise<void> => {
         const {
             selectors: { selectMetadata, selectDevice, selectDiscoveryForDevice },
-            thunks: { initMetadata, fetchAndSaveMetadata },
+            thunks: { initMetadata },
             actions: { requestAuthConfirm },
         } = extra;
         const device = selectDevice(getState());
@@ -350,19 +350,13 @@ export const startDiscoveryThunk = createThunk(
         }
 
         const { deviceState, authConfirm } = discovery;
-        const metadataEnabled = metadata.enabled && device.metadata.status === 'disabled';
+        const metadataEnabled = metadata.enabled && device.metadata[2]; // todo: can't import constant
 
         // start process
         if (
             discovery.status === DiscoveryStatus.IDLE ||
             discovery.status > DiscoveryStatus.STOPPING
         ) {
-            // metadata are enabled in settings but metadata master key does not exist for this device
-            // try to generate device metadata master key if passphrase is not used
-            if (!authConfirm && metadataEnabled) {
-                await dispatch(initMetadata(false));
-            }
-
             dispatch({
                 type: startDiscovery.type,
                 payload: {
@@ -421,9 +415,9 @@ export const startDiscoveryThunk = createThunk(
 
             // if previous discovery status was running (typically after application start or when user added a new account)
             // trigger fetch metadata; necessary to load account labels
-            if (discovery.status === DiscoveryStatus.RUNNING) {
-                dispatch(fetchAndSaveMetadata(deviceState));
-            }
+            // if (discovery.status === DiscoveryStatus.RUNNING && device.state) {
+            //     await dispatch(fetchAndSaveMetadata(device.state));
+            // }
 
             dispatch(
                 completeDiscovery({

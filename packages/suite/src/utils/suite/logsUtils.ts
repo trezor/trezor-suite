@@ -27,7 +27,7 @@ import { Discovery } from '@suite-common/wallet-types';
 
 import { getIsTorEnabled } from 'src/utils/suite/tor';
 import { AppState, TrezorDevice } from 'src/types/suite';
-import { SUITE } from 'src/actions/suite/constants';
+import { METADATA, SUITE } from 'src/actions/suite/constants';
 import { Account } from 'src/types/wallet';
 import { selectLabelingDataForWallet } from 'src/reducers/suite/metadataReducer';
 
@@ -237,7 +237,7 @@ export const getApplicationInfo = (state: AppState, hideSensitiveInfo: boolean) 
         deviceLabel: hideSensitiveInfo ? REDACTED_REPLACEMENT : device.label,
         label:
             // eslint-disable-next-line no-nested-ternary
-            device.metadata.status === 'enabled'
+            device.metadata[METADATA.ENCRYPTION_VERSION]
                 ? hideSensitiveInfo
                     ? REDACTED_REPLACEMENT
                     : selectLabelingDataForWallet(state).walletLabel

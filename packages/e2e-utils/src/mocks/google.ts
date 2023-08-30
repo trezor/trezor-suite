@@ -35,7 +35,7 @@ class File {
  * Mock implementation of Google Drive service intended to be used in e2e tests.
  */
 export class GoogleMock {
-    files: Record<string, any> = {};
+    files: Record<string, File> = {};
     nextResponse: null | Record<string, any> = null;
     // store requests for assertions in tests
     requests: string[] = [];
@@ -151,6 +151,12 @@ export class GoogleMock {
         app.get('/drive/v3/files', express.json(), (_req, res) => {
             res.json({
                 files: Object.values(this.files),
+            });
+        });
+
+        app.get('/drive/api/v3/reference/files/list', express.json(), (_req, res) => {
+            res.json({
+                files: Object.keys(this.files),
             });
         });
 

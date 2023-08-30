@@ -29,36 +29,6 @@ const setDeviceMetadataKey = [
         },
     },
     {
-        description: `Master key cancelled`,
-        connect: {
-            success: false,
-        },
-        initialState: {
-            metadata: { enabled: true, providers: [] },
-            device: { state: 'device-state', connected: true, metadata: { status: 'disabled' } },
-        },
-        result: [
-            {
-                type: METADATA.SET_DEVICE_METADATA,
-                payload: {
-                    metadata: {
-                        status: 'cancelled',
-                    },
-                },
-            },
-            {
-                type: SUITE.UPDATE_SELECTED_DEVICE,
-                payload: {
-                    state: 'device-state',
-                    metadata: { status: 'cancelled' },
-                },
-            },
-            {
-                type: METADATA.DISABLE,
-            },
-        ],
-    },
-    {
         description: `Master key successfully generated`,
         initialState: {
             metadata: { enabled: true, providers: [] },
@@ -101,9 +71,9 @@ const setDeviceMetadataKey = [
                 payload: {
                     deviceState: 'device-state',
                     metadata: {
-                        1: {
+                        2: {
                             fileName:
-                                'c734ff5106c4910aa3444f3672cc2c82d8cb4595f0527be672d8b100ed82908f.mtdt',
+                                'c734ff5106c4910aa3444f3672cc2c82d8cb4595f0527be672d8b100ed82908f_v2.mtdt',
                             aesKey: 'bc37a9a8c6cfa6ab2f75b384df2745895d75f2c572a195ccff59ae9958aaf0e8',
                             key: '20c8bf0701213cdcf4c2f56fd0096c1772322d42fb9c4d0ddf6bb122d713d2f3',
                         },
@@ -115,10 +85,10 @@ const setDeviceMetadataKey = [
                 type: SUITE.UPDATE_SELECTED_DEVICE,
                 payload: {
                     metadata: {
-                        1: {
+                        2: {
                             aesKey: 'bc37a9a8c6cfa6ab2f75b384df2745895d75f2c572a195ccff59ae9958aaf0e8',
                             fileName:
-                                'c734ff5106c4910aa3444f3672cc2c82d8cb4595f0527be672d8b100ed82908f.mtdt',
+                                'c734ff5106c4910aa3444f3672cc2c82d8cb4595f0527be672d8b100ed82908f_v2.mtdt',
                             key: '20c8bf0701213cdcf4c2f56fd0096c1772322d42fb9c4d0ddf6bb122d713d2f3',
                         },
                         status: 'enabled',
@@ -145,8 +115,9 @@ const setAccountMetadataKey = [
             device: {
                 metadata: {
                     status: 'enabled',
-                    key: '20c8bf0701213cdcf4c2f56fd0096c1772322d42fb9c4d0ddf6bb122d713d2f3',
-                    providers: [],
+                    2: {
+                        key: '20c8bf0701213cdcf4c2f56fd0096c1772322d42fb9c4d0ddf6bb122d713d2f3',
+                    },
                 },
             },
         },
@@ -157,7 +128,11 @@ const setAccountMetadataKey = [
         },
         result: {
             metadata: {
-                key: 'xpub6CVKsQYXc9awxgV1tWbG4foDvdcnieK2JkbpPEBKB5WwAPKBZ1mstLbKVB4ov7QzxzjaxNK6EfmNY5Jsk2cG26EVcEkycGW4tchT2dyUhrx',
+                2: {
+                    fileName:
+                        '828652b66f2e6f919fbb7fe4c9609d4891ed531c6fac4c28441e53ebe577ac85_v2.mtdt',
+                    aesKey: '9bc3736f0b45cd681854a724b5bba67b9da1e50bc9983fd2dd56e53e74b75480',
+                },
             },
         },
     },
@@ -180,7 +155,7 @@ const addDeviceMetadata = [
             device: {
                 state: 'device-state',
                 metadata: {
-                    1: {
+                    2: {
                         aesKey: 'eb0f1f0238c7fa8018c6101f4e887b871ce07b99d01d5ea57089b82f93149557',
                         fileName:
                             '039fe833cba71d84b7bf4c99d44468ee48e311e741cbfcd6daf5263f584ef9f6',
@@ -305,7 +280,7 @@ const addAccountMetadata = [
             accounts: [
                 {
                     metadata: {
-                        1: {
+                        2: {
                             aesKey: '9bc3736f0b45cd681854a724b5bba67b9da1e50bc9983fd2dd56e53e74b75480',
                             fileName: 'filename-123',
                         },
@@ -347,10 +322,10 @@ const connectProvider = [
                 type: '@metadata/add-provider',
                 payload: {
                     type: 'dropbox',
-                    tokens: { refreshToken: 'token-haf-mnau' },
-                    user: 'haf',
+                    tokens: { refreshToken: 'token' },
+                    user: 'power-user',
                     isCloud: true,
-                    clientId: 'wg0yz2pbgjyhoda',
+                    clientId: 'meow',
                     data: {},
                 },
             },
@@ -473,8 +448,25 @@ const init = [
     {
         description: 'metadata already enabled',
         initialState: {
-            device: { state: 'device-state', metadata: { status: 'enabled' } },
-            metadata: { enabled: true, selectedProvider: {}, providers: [] },
+            device: {
+                state: 'device-state',
+                connected: true,
+                metadata: {
+                    status: 'enabled',
+                    '2': {
+                        fileName:
+                            'c734ff5106c4910aa3444f3672cc2c82d8cb4595f0527be672d8b100ed82908f_v2.mtdt',
+                        aesKey: 'bc37a9a8c6cfa6ab2f75b384df2745895d75f2c572a195ccff59ae9958aaf0e8',
+                        key: '20c8bf0701213cdcf4c2f56fd0096c1772322d42fb9c4d0ddf6bb122d713d2f3',
+                    },
+                },
+            },
+            metadata: {
+                enabled: true,
+                selectedProvider: {},
+                providers: [],
+                migration: { status: 'idle' },
+            },
         },
         result: [
             { type: '@metadata/set-initiating', payload: true },
@@ -497,6 +489,9 @@ const init = [
                 type: '@metadata/set-selected-provider',
                 payload: { dataType: 'labels', clientId: 'wg0yz2pbgjyhoda' },
             },
+            {
+                type: '@metadata/set-migration-status',
+            },
             { type: '@metadata/set-initiating', payload: false },
         ],
     },
@@ -504,10 +499,14 @@ const init = [
         description: 'metadata not enabled',
         initialState: {
             device: { state: 'device-state', connected: true, metadata: { status: 'disabled' } },
-            metadata: { enabled: false, providers: [], selectedProvider: {} },
+            metadata: {
+                enabled: false,
+                providers: [],
+                selectedProvider: {},
+                migration: { status: 'idle' },
+            },
             suite: { online: true },
         },
-        params: true,
         result: [
             { type: '@metadata/enable' },
             { type: '@metadata/set-initiating', payload: true },
@@ -516,9 +515,9 @@ const init = [
                 payload: {
                     deviceState: 'device-state',
                     metadata: {
-                        '1': {
+                        '2': {
                             fileName:
-                                'c734ff5106c4910aa3444f3672cc2c82d8cb4595f0527be672d8b100ed82908f.mtdt',
+                                'c734ff5106c4910aa3444f3672cc2c82d8cb4595f0527be672d8b100ed82908f_v2.mtdt',
                             aesKey: 'bc37a9a8c6cfa6ab2f75b384df2745895d75f2c572a195ccff59ae9958aaf0e8',
                             key: '20c8bf0701213cdcf4c2f56fd0096c1772322d42fb9c4d0ddf6bb122d713d2f3',
                         },
@@ -532,9 +531,9 @@ const init = [
                     state: 'device-state',
                     connected: true,
                     metadata: {
-                        '1': {
+                        '2': {
                             fileName:
-                                'c734ff5106c4910aa3444f3672cc2c82d8cb4595f0527be672d8b100ed82908f.mtdt',
+                                'c734ff5106c4910aa3444f3672cc2c82d8cb4595f0527be672d8b100ed82908f_v2.mtdt',
                             aesKey: 'bc37a9a8c6cfa6ab2f75b384df2745895d75f2c572a195ccff59ae9958aaf0e8',
                             key: '20c8bf0701213cdcf4c2f56fd0096c1772322d42fb9c4d0ddf6bb122d713d2f3',
                         },
@@ -561,8 +560,129 @@ const init = [
                 type: '@metadata/set-selected-provider',
                 payload: { dataType: 'labels', clientId: 'wg0yz2pbgjyhoda' },
             },
+            {
+                type: '@metadata/set-migration-status',
+            },
             { type: '@metadata/set-initiating', payload: false },
         ],
+    },
+];
+
+const getLabelableEntitiesDescriptors = [
+    {
+        description: 'device with state',
+        initialState: {
+            device: { state: 'device-state' },
+        },
+        result: ['device-state'],
+    },
+    {
+        description: 'device without state',
+        initialState: {
+            device: { state: undefined },
+        },
+        result: [],
+    },
+    {
+        description: 'accounts',
+        initialState: {
+            device: { state: 'meow' },
+            accounts: [
+                {
+                    deviceState: 'meow',
+                    key: 'account-key',
+                },
+            ],
+        },
+        result: ['account-key', 'meow'],
+    },
+];
+
+const disposeMetadata = [
+    {
+        description: '',
+        initialState: {
+            device: { state: 'device-state', metadata: { status: 'enabled' } },
+            metadata: {
+                providers: [
+                    {
+                        type: 'dropbox',
+                        data: {
+                            'filename-123': {
+                                outputLabels: {
+                                    TXID: {
+                                        0: 'Foo',
+                                    },
+                                },
+                            },
+                        },
+                        clientId: 'clientId',
+                    },
+                ],
+                selectedProvider: { labels: 'clientId' },
+            },
+        },
+        params: [],
+        result: {
+            metadata: {
+                providers: [
+                    {
+                        type: 'dropbox',
+                        data: {},
+                        clientId: 'clientId',
+                    },
+                ],
+                selectedProvider: {
+                    labels: 'clientId',
+                },
+            },
+        },
+    },
+    {
+        description: 'keys',
+        initialState: {
+            device: {
+                state: 'device-state',
+                metadata: { status: 'enabled', 2: { fileName: 'foo', aesKey: 'bar' } },
+            },
+            metadata: {
+                providers: [
+                    {
+                        type: 'dropbox',
+                        data: {
+                            'filename-123': {
+                                outputLabels: {
+                                    TXID: {
+                                        0: 'Foo',
+                                    },
+                                },
+                            },
+                        },
+                        clientId: 'clientId',
+                    },
+                ],
+                selectedProvider: { labels: 'clientId' },
+            },
+            accounts: [
+                {
+                    deviceState: 'device-state',
+                    key: 'account-key',
+                    metadata: {
+                        2: {
+                            fileName: 'foo',
+                            aesKey: 'bar',
+                        },
+                    },
+                },
+            ],
+        },
+        params: [true],
+        result: {
+            suite: { device: { state: 'device-state', metadata: { status: 'disabled' } } },
+            wallet: {
+                accounts: [{ deviceState: 'device-state', key: 'account-key', metadata: {} }],
+            },
+        },
     },
 ];
 
@@ -574,4 +694,6 @@ export {
     connectProvider,
     addMetadata,
     init,
+    getLabelableEntitiesDescriptors,
+    disposeMetadata,
 };

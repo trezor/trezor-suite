@@ -12,6 +12,7 @@ import {
 } from 'src/actions/suite/constants/metadataConstants';
 
 import { DeviceRootState, selectDevice, selectDevices, State } from './deviceReducer';
+import { SuiteRootState } from './suiteReducer';
 
 export const initialState: MetadataState = {
     // is Suite trying to load metadata (get master key -> sync cloud)?
@@ -21,11 +22,14 @@ export const initialState: MetadataState = {
     selectedProvider: {
         labels: '',
     },
+    entities: [],
+    failedMigration: {},
 };
 
 type MetadataRootState = {
     metadata: MetadataState;
-} & DeviceRootState;
+} & DeviceRootState &
+    SuiteRootState;
 
 const metadataReducer = (state = initialState, action: Action): MetadataState =>
     produce(state, draft => {
@@ -42,7 +46,9 @@ const metadataReducer = (state = initialState, action: Action): MetadataState =>
                 draft.providers.push(action.payload);
                 break;
             case METADATA.REMOVE_PROVIDER:
-                draft.providers = draft.providers.filter(p => p.type !== action.payload.type);
+                draft.providers = draft.providers.filter(
+                    p => p.clientId !== action.payload.clientId,
+                );
                 break;
             case METADATA.SET_SELECTED_PROVIDER:
                 draft.selectedProvider[action.payload.dataType] = action.payload.clientId;
@@ -70,6 +76,17 @@ const metadataReducer = (state = initialState, action: Action): MetadataState =>
 
                 break;
             }
+            case METADATA.SET_ENTITIES_DESCRIPTORS:
+                draft.entities = action.payload;
+                break;
+            case METADATA.SET_FAILED_MIGRATION:
+                if (action.payload.failed) {
+                    draft.failedMigration[action.payload.deviceState] = action.payload.failed;
+                } else {
+                    delete draft.failedMigration[action.payload.deviceState];
+                }
+                break;
+
             // no default
         }
     });
@@ -118,6 +135,14 @@ export const selectLabelingDataForAccount = (
     return provider.data[metadataKeys.fileName] as AccountLabels;
 };
 
+export const selectAccountLabelForAccount = (
+    state: { metadata: MetadataState; wallet: { accounts: Account[] } },
+    accountKey: string,
+) => {
+    const labelingData = selectLabelingDataForAccount(state, accountKey);
+    return labelingData.accountLabel;
+};
+
 /**
  * Returns dict <account-key: account-label>
  */
@@ -150,7 +175,7 @@ export const selectLabelingDataForWallet = (
     const provider = selectSelectedProviderForLabels(state);
     const devices = selectDevices(state);
     const device = devices.find(d => d.state === deviceState);
-    if (device?.metadata.status !== 'enabled') {
+    if (!device?.metadata[METADATA.ENCRYPTION_VERSION]) {
         return DEFAULT_WALLET_METADATA;
     }
     const metadataKeys = device?.metadata[METADATA.ENCRYPTION_VERSION];
@@ -161,13 +186,35 @@ export const selectLabelingDataForWallet = (
     return DEFAULT_WALLET_METADATA;
 };
 
-// is everything ready (more or less) to add label?
+/**
+ * Is everything ready to add label?
+ */
 export const selectIsLabelingAvailable = (state: MetadataRootState) => {
-    const { enabled } = selectMetadata(state);
+    const { enabled, failedMigration } = selectMetadata(state);
     const provider = selectSelectedProviderForLabels(state);
     const device = selectDevice(state);
 
-    return !!(enabled && device?.metadata?.status === 'enabled' && provider);
+    return (
+        enabled &&
+        device?.metadata?.[METADATA.ENCRYPTION_VERSION] &&
+        !!provider &&
+        device.state &&
+        !failedMigration[device.state]
+    );
+};
+
+/**
+ it is possible to initiate metadata 
+ */
+export const selectIsLabelingInitPossible = (state: MetadataRootState) => {
+    const device = selectDevice(state);
+
+    return (
+        // device already has keys or it is at least connected and authorized
+        (device?.metadata?.[METADATA.ENCRYPTION_VERSION] || (device?.connected && device.state)) &&
+        // storage provider is connected or we are at least able to connect to it
+        (selectSelectedProviderForLabels(state) || state.suite.online)
+    );
 };
 
 export default metadataReducer;
