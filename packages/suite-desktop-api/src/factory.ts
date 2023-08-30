@@ -79,7 +79,12 @@ export const factory = <R extends StrictIpcRenderer<any>>(ipcRenderer?: R): Desk
             return Promise.resolve({ success: false, error: 'invalid params' });
         },
         metadataGetFiles: () => ipcRenderer.invoke('metadata/get-files'),
-
+        metadataRenameFile: options => {
+            if (validation.isObject({ file: 'string', to: 'string' }, options)) {
+                return ipcRenderer.invoke('metadata/rename-file', options);
+            }
+            return Promise.resolve({ success: false, error: 'invalid params' });
+        },
         // HttpReceiver
         getHttpReceiverAddress: route => {
             if (validation.isPrimitive('string', route)) {

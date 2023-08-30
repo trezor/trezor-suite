@@ -359,6 +359,20 @@ class Client {
         return response.json;
     }
 
+    static async updateMetadata(params: UpdateParams, id: string) {
+        const response = await Client.call(
+            `https://www.googleapis.com/drive/v3/files/${id}?uploadType=multipart`,
+            {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': `multipart/related; boundary="${BOUNDARY}"`,
+                },
+            },
+            params,
+        );
+        return response.json;
+    }
+
     /**
      * tldr: utility function that performs file search by its name and returns file name if file was found, otherwise returns undefined
      *

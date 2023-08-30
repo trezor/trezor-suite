@@ -118,6 +118,26 @@ class GoogleProvider extends AbstractMetadataProvider {
         }
     }
 
+    async renameFile(from: string, to: string) {
+        try {
+            const id = await GoogleClient.getIdByName(from, true);
+
+            await GoogleClient.updateMetadata(
+                {
+                    body: {
+                        name: to,
+                        mimeType: 'text/plain;charset=UTF-8',
+                    },
+                },
+                id,
+            );
+
+            return this.ok(undefined);
+        } catch (error) {
+            return this.handleProviderError(error);
+        }
+    }
+
     async getProviderDetails() {
         try {
             const response = await GoogleClient.getTokenInfo();

@@ -95,6 +95,23 @@ export const readDir = async (directory: string): Promise<InvokeResult<string[]>
     }
 };
 
+export const rename = async (
+    directory: string,
+    from: string,
+    to: string,
+): Promise<InvokeResult> => {
+    const dir = path.join(app.getPath('userData'), directory);
+
+    try {
+        await fs.promises.rename(path.join(dir, from), path.join(dir, to));
+
+        return { success: true };
+    } catch (error) {
+        global.logger.error('user-data', `Rename file name failed: ${error.message}`);
+        return { success: false, error: error.message, code: error.code };
+    }
+};
+
 export const clear = async (): Promise<InvokeResult> => {
     const dir = path.normalize(app.getPath('userData'));
     try {
