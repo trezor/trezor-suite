@@ -24,6 +24,9 @@ export const CollapsibleBox: StoryObj = {
         subHeading: {
             type: 'string',
         },
+        iconLabel: {
+            type: 'string',
+        },
         children: { control: { disable: true } },
         onCollapse: { control: { disable: true } },
     },
