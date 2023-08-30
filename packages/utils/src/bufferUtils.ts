@@ -9,3 +9,9 @@ export const reverseBuffer = (src: Buffer) => {
     }
     return buffer;
 };
+
+export const getChunkSize = (n: number) => {
+    const buf = Buffer.allocUnsafe(1);
+    buf.writeUInt8(n);
+    return buf;
+};
