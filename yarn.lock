@@ -7821,6 +7821,8 @@ __metadata:
     react: 18.2.0
     react-native: 0.71.8
     react-native-reanimated: 3.5.4
+    react-svg: ^16.1.17
+    styled-components: ^5.3.10
     svgo: 3.0.2
     tsx: ^3.12.7
     typescript: 4.9.5
@@ -9415,6 +9417,7 @@ __metadata:
     "@storybook/core": ^6.5.16
     "@storybook/react": ^7.2.3
     "@storybook/react-webpack5": ^7.2.3
+    "@suite-common/icons": "workspace:*"
     "@tippyjs/react": ^4.2.6
     "@trezor/connect": "workspace:*"
     "@trezor/dom-utils": "workspace:*"

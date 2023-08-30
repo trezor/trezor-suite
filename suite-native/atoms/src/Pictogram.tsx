@@ -96,7 +96,7 @@ export const Pictogram = ({
                         size: innerRingSize,
                     })}
                 >
-                    <Icon name={icon} color={iconColor} customSize={ICON_SIZE} />
+                    <Icon name={icon} color={iconColor} size={ICON_SIZE} />
                 </Box>
             </Box>
             {title && (

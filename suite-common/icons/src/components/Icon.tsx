@@ -5,27 +5,10 @@ import { Canvas, ImageSVG, useSVG, Group, Skia, BlendMode } from '@shopify/react
 import { useNativeStyles } from '@trezor/styles';
 import { Color, CSSColor } from '@trezor/theme';
 
-import { IconName, icons } from '../icons';
+import { icons } from '../icons';
+import { getIconSize, IconProps } from '../config';
 
 export type IconColor = Color | SharedValue<CSSColor>;
-
-type IconProps = {
-    name: IconName;
-    size?: IconSize;
-    customSize?: number;
-    color?: IconColor;
-};
-
-export const iconSizes = {
-    extraSmall: 8,
-    small: 12,
-    medium: 16,
-    mediumLarge: 20,
-    large: 24,
-    extraLarge: 32,
-} as const;
-
-export type IconSize = keyof typeof iconSizes;
 
 // This type-guard has to be set as 'worklet' to be executable via Reanimated on the UI thread.
 const isReanimatedSharedValue = (value: IconColor): value is SharedValue<CSSColor> => {
@@ -34,12 +17,16 @@ const isReanimatedSharedValue = (value: IconColor): value is SharedValue<CSSColo
     return typeof value === 'object' && 'value' in value;
 };
 
-export const Icon = ({ name, customSize, size = 'large', color = 'iconDefault' }: IconProps) => {
+interface NativeIconProps extends Omit<IconProps, 'color'> {
+    color?: IconColor;
+}
+
+export const Icon = ({ name, size = 'large', color = 'iconDefault' }: NativeIconProps) => {
     const svg = useSVG(icons[name]);
     const {
         utils: { colors },
     } = useNativeStyles();
-    const sizeNumber = customSize || iconSizes[size];
+    const sizeNumber = getIconSize(size);
 
     // Paint has to be Reanimated derived value, to allow color transition animation on the UI thread.
     const paint = useDerivedValue(() => {
