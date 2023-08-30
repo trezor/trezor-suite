@@ -983,8 +983,8 @@ export const clientEvents = [
         state: {},
         params: {
             rounds: [
-                { id: '00', phase: 0 },
-                { id: '01', phase: 3 },
+                { Id: '00', Phase: 0 },
+                { Id: '01', Phase: 3 },
             ],
             changed: [],
             feeRateMedian: 129,
