@@ -1,17 +1,22 @@
 import * as deviceUtils from '@suite-common/suite-utils';
 import { getStatus } from '@suite-common/suite-utils';
-import { Device, Features } from '@trezor/connect';
+import { Device, Features, AuthenticateDeviceResult } from '@trezor/connect';
 import { DiscoveryStatus } from '@suite-common/wallet-constants';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { Network, networks } from '@suite-common/wallet-config';
 import { versionUtils } from '@trezor/utils';
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 import { TrezorDevice, AcquiredDevice, ButtonRequest } from '@suite-common/suite-types';
+import { deviceAuthenticityActions } from '@suite-common/device-authenticity';
 
 import { deviceActions } from './deviceActions';
 import { DiscoveryRootState, selectDiscoveryByDeviceState } from '../discovery/discoveryReducer';
 
-export type State = { devices: TrezorDevice[]; selectedDevice?: TrezorDevice };
+export type State = {
+    devices: TrezorDevice[];
+    selectedDevice?: TrezorDevice;
+    deviceAuthenticity?: Record<string, AuthenticateDeviceResult>;
+};
 
 const initialState: State = { devices: [], selectedDevice: undefined };
 
@@ -19,6 +24,7 @@ export type DeviceRootState = {
     device: {
         devices: TrezorDevice[];
         selectedDevice?: TrezorDevice;
+        deviceAuthenticity?: State['deviceAuthenticity'];
     };
 };
 
@@ -421,6 +427,17 @@ const addButtonRequest = (
     draft.devices[index].buttonRequests.push(buttonRequest);
 };
 
+export const setDeviceAuthenticity = (
+    draft: State,
+    device: TrezorDevice,
+    result: AuthenticateDeviceResult,
+) => {
+    if (!device.id) return;
+    draft.deviceAuthenticity = {
+        [device.id]: result,
+    };
+};
+
 export const prepareDeviceReducer = createReducerWithExtraDeps(initialState, (builder, extra) => {
     builder
         .addCase(deviceActions.connectDevice, (state, { payload }) => {
@@ -470,6 +487,9 @@ export const prepareDeviceReducer = createReducerWithExtraDeps(initialState, (bu
         })
         .addCase(deviceActions.updateSelectedDevice, (state, { payload }) => {
             state.selectedDevice = payload;
+        })
+        .addCase(deviceAuthenticityActions.result, (state, { payload }) => {
+            setDeviceAuthenticity(state, payload.device, payload.result);
         })
         .addCase(extra.actionTypes.setDeviceMetadata, extra.reducers.setDeviceMetadataReducer)
         .addCase(extra.actionTypes.storageLoad, extra.reducers.storageLoadDevices);

@@ -7,6 +7,7 @@ import {
     selectFirmware,
     firmwareActions,
 } from '@suite-common/wallet-core';
+import { checkDeviceAuthenticityThunk } from '@suite-common/device-authenticity';
 import { FirmwareStatus } from '@suite-common/suite-types';
 
 import { useActions, useSelector } from 'src/hooks/suite';
@@ -27,6 +28,7 @@ export const useFirmware = () => {
         firmwareUpdate,
         firmwareCustom,
         checkFirmwareAuthenticity,
+        checkDeviceAuthenticityThunk,
     });
 
     return {
