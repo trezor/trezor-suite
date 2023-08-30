@@ -35,6 +35,7 @@ export const Data = ({ close }: DataProps) => {
         setValue,
         setAmount,
         composeTransaction,
+        resetDefaultValue,
         trigger,
         watch,
     } = useSendFormContext();
@@ -45,34 +46,44 @@ export const Data = ({ close }: DataProps) => {
     const asciiError = errors.ethereumDataAscii;
     const hexError = errors.ethereumDataHex;
 
-    const { ref: asciiRef, ...asciiField } = register(inputAsciiName, {
-        onChange: event => {
-            setValue(inputHexName, Buffer.from(event.target.value, 'ascii').toString('hex'), {
-                shouldValidate: true,
-            });
-            if (!amount) {
+    const handleClose = () => {
+        resetDefaultValue(inputAsciiName);
+        resetDefaultValue(inputHexName);
+        if (amount === '0') {
+            setAmount(0, '');
+        }
+        close();
+    };
+
+    const getChangeHandler =
+        (isHex: boolean) => (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+            setValue(
+                isHex ? inputAsciiName : inputHexName,
+                Buffer.from(event.target.value, isHex ? 'hex' : 'ascii').toString(
+                    isHex ? 'ascii' : 'hex',
+                ),
+                { shouldValidate: true },
+            );
+            if (!event.target.value && amount === '0') {
+                setAmount(0, '');
+            } else if (event.target.value && amount === '') {
                 setAmount(0, '0');
             }
-            if (event.target.value === '' && amount === '0') {
-                setAmount(0, '');
-            }
-            composeTransaction(inputAsciiName);
-        },
+            composeTransaction(isHex ? inputHexName : inputAsciiName);
+        };
+
+    const { ref: asciiRef, ...asciiField } = register(inputAsciiName, {
+        onChange: getChangeHandler(false),
     });
     const { ref: hexRef, ...hexField } = register(inputHexName, {
-        onChange: event => {
-            setValue(inputAsciiName, Buffer.from(event.target.value, 'hex').toString('ascii'));
-            if (!amount) {
-                setValue(inputAmountName, '0');
-            }
-            if (event.target.value === '' && amount === '0') {
-                setValue(inputAmountName, '');
-            }
-            composeTransaction(inputHexName);
-        },
+        onChange: getChangeHandler(true),
         validate: value => {
-            if (value && !isHexValid(value, '0x')) return translationString('DATA_NOT_VALID_HEX');
-            if (value && value.length > 8192 * 2) return translationString('DATA_HEX_TOO_BIG'); // 8192 bytes limit for protobuf single message encoding in FW
+            if (value && !isHexValid(value, '0x')) {
+                return translationString('DATA_NOT_VALID_HEX');
+            }
+            if (value && value.length > 8192 * 2) {
+                return translationString('DATA_HEX_TOO_BIG'); // 8192 bytes limit for protobuf single message encoding in FW
+            }
         },
     });
 
@@ -110,12 +121,7 @@ export const Data = ({ close }: DataProps) => {
                         size={20}
                         icon="CROSS"
                         data-test="send/close-ethereum-data"
-                        onClick={() => {
-                            if (amount === '0') {
-                                setValue('outputs.0.amount', '');
-                            }
-                            close();
-                        }}
+                        onClick={handleClose}
                     />
                 }
                 innerRef={hexRef}
