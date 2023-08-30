@@ -19,6 +19,9 @@
             "path": "../../suite-common/connect-init"
         },
         {
+            "path": "../../suite-common/device-authenticity"
+        },
+        {
             "path": "../../suite-common/fiat-services"
         },
         {

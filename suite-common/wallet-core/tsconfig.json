@@ -2,6 +2,7 @@
     "extends": "../../tsconfig.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
+        { "path": "../device-authenticity" },
         { "path": "../fiat-services" },
         { "path": "../redux-utils" },
         { "path": "../suite-config" },
