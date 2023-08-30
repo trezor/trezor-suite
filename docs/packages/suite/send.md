@@ -137,7 +137,6 @@ Additional field in send form, activated by "Add data" option. Same behavior as 
 
 ### Data errors:
 
--   DATA_NOT_SET
 -   DATA_NOT_VALID_HEX
 -   DATA_HEX_TOO_BIG (data size limit: 8192 bytes for protobuf single message encoding)
 
