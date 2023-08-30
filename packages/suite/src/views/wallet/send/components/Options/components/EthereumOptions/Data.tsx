@@ -46,7 +46,6 @@ export const Data = ({ close }: DataProps) => {
     const hexError = errors.ethereumDataHex;
 
     const { ref: asciiRef, ...asciiField } = register(inputAsciiName, {
-        required: translationString('DATA_NOT_SET'),
         onChange: event => {
             setValue(inputHexName, Buffer.from(event.target.value, 'ascii').toString('hex'), {
                 shouldValidate: true,
@@ -71,10 +70,9 @@ export const Data = ({ close }: DataProps) => {
             }
             composeTransaction(inputHexName);
         },
-        required: translationString('DATA_NOT_SET'),
-        validate: (value = '') => {
-            if (!isHexValid(value, '0x')) return translationString('DATA_NOT_VALID_HEX');
-            if (value.length > 8192 * 2) return translationString('DATA_HEX_TOO_BIG'); // 8192 bytes limit for protobuf single message encoding in FW
+        validate: value => {
+            if (value && !isHexValid(value, '0x')) return translationString('DATA_NOT_VALID_HEX');
+            if (value && value.length > 8192 * 2) return translationString('DATA_HEX_TOO_BIG'); // 8192 bytes limit for protobuf single message encoding in FW
         },
     });
 
