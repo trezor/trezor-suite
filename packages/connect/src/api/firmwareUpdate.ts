@@ -1,6 +1,6 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/FirmwareUpdate.js
 
-import randombytes from 'randombytes';
+import { randomBytes } from 'crypto';
 import { AbstractMethod } from '../core/AbstractMethod';
 import { ERRORS } from '../constants';
 import { UI, createUiMessage } from '../events';
@@ -120,6 +120,6 @@ export default class FirmwareUpdate extends AbstractMethod<'firmwareUpdate', Par
             { payload: shouldStripFwHeaders(device.features) ? stripped : binary },
         );
 
-        return calculateFirmwareHash(device.features.major_version, stripped, randombytes(32));
+        return calculateFirmwareHash(device.features.major_version, stripped, randomBytes(32));
     }
 }

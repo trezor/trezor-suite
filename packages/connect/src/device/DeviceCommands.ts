@@ -1,6 +1,6 @@
 // original file https://github.com/trezor/connect/blob/develop/src/js/device/DeviceCommands.js
 
-import randombytes from 'randombytes';
+import { randomBytes } from 'crypto';
 import { Transport, Messages } from '@trezor/transport';
 import { ERRORS, NETWORK } from '../constants';
 import { DEVICE } from '../events';
@@ -53,7 +53,7 @@ const assertType = (res: DefaultMessageResponse, resType: string | string[]) => 
 
 const generateEntropy = (len: number) => {
     try {
-        return randombytes(len);
+        return randomBytes(len);
     } catch (err) {
         throw ERRORS.TypedError(
             'Runtime',

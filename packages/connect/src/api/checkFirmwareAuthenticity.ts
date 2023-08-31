@@ -1,4 +1,4 @@
-import randombytes from 'randombytes';
+import { randomBytes } from 'crypto';
 import { AbstractMethod } from '../core/AbstractMethod';
 import { stripFwHeaders, calculateFirmwareHash } from './firmware';
 import { getReleases } from '../data/firmwareInfo';
@@ -47,7 +47,7 @@ export default class CheckFirmwareAuthenticity extends AbstractMethod<'checkFirm
         const { hash: expectedFirmwareHash, challenge } = calculateFirmwareHash(
             device.features.major_version,
             stripFwHeaders(fw),
-            randombytes(32),
+            randomBytes(32),
         );
 
         const result = await this.device
