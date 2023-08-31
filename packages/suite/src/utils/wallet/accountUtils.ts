@@ -12,7 +12,7 @@ export const getSelectedAccount = (
     // imported account index has 'i' prefix
     // const isImported = /^i\d+$/i.test(routerParams.accountIndex);
     // const index: number = isImported
-    //     ? parseInt(routerParams.accountIndex.substr(1), 10)
+    //     ? parseInt(routerParams.accountIndex.substring(1), 10)
     //     : parseInt(routerParams.accountIndex, 10);
 
     return (

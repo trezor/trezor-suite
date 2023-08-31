@@ -12,7 +12,7 @@ const cacheFiles = (dir, cache = {}) => {
             cacheFiles(filePath, cache);
         } else if (file.endsWith('.json')) {
             // use shortened hash
-            const key = file.substr(0, 6);
+            const key = file.substring(0, 6);
             if (cache[key]) throw Error(`TX_CACHE duplicated key: ${key} file: ${file}`);
 
             try {

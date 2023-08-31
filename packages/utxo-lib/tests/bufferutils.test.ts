@@ -21,7 +21,7 @@ describe('bufferutils', () => {
             it(`decodes ${f.hexPD} correctly`, () => {
                 const buffer = Buffer.from(f.hexPD, 'hex');
                 const d = bufferutils.readPushDataInt(buffer, 0);
-                const fopcode = parseInt(f.hexPD.substr(0, 2), 16);
+                const fopcode = parseInt(f.hexPD.substring(0, 2), 16);
 
                 expect(d.opcode).toEqual(fopcode);
                 expect(d.number).toEqual(f.dec);
