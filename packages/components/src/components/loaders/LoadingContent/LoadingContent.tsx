@@ -1,4 +1,4 @@
-import React from 'react';
+import { ReactNode } from 'react';
 import styled, { css } from 'styled-components';
 import { useTheme } from '../../../utils';
 import { Icon } from '../../assets/Icon/Icon';
@@ -24,7 +24,7 @@ const LoaderCell = styled.div<Required<Omit<LoadingContentProps, 'isSuccessful'>
 `;
 
 export type LoadingContentProps = {
-    children: React.ReactNode;
+    children: ReactNode;
     isLoading?: boolean;
     size?: number;
     isSuccessful?: boolean;

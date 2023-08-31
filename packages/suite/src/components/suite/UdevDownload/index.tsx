@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import styled from 'styled-components';
 import { DATA_URL, HELP_CENTER_UDEV_URL } from '@trezor/urls';
 import { Translation, TrezorLink } from 'src/components/suite';

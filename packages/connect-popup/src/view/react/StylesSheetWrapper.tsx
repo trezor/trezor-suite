@@ -1,8 +1,8 @@
-import React from 'react';
+import { ReactNode } from 'react';
 import { StyleSheetManager } from 'styled-components';
 
 interface StyleSheetWrapperProps {
-    children: React.ReactNode;
+    children: ReactNode;
 }
 
 export const StyleSheetWrapper = ({ children }: StyleSheetWrapperProps) => {

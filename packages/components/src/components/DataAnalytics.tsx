@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { Fragment, useState, ReactNode } from 'react';
 import styled from 'styled-components';
 
 import { FormattedMessage } from 'react-intl';
@@ -107,8 +107,8 @@ const collectedData = [
 
 type DataAnalyticsProps = {
     onConfirm: (trackingEnabled: boolean) => void;
-    analyticsLink?: (chunks: React.ReactNode[]) => JSX.Element;
-    tosLink?: (chunks: React.ReactNode[]) => JSX.Element;
+    analyticsLink?: (chunks: ReactNode[]) => JSX.Element;
+    tosLink?: (chunks: ReactNode[]) => JSX.Element;
 };
 
 // This component is used in connect-ui, therefore it's located in this library,
@@ -148,12 +148,12 @@ export const DataAnalytics = ({ onConfirm, analyticsLink, tosLink }: DataAnalyti
                     <Category>
                         {collectedData.map((category, i) => (
                             // eslint-disable-next-line react/no-array-index-key
-                            <React.Fragment key={i}>
+                            <Fragment key={i}>
                                 <CategoryName>{category.name}</CategoryName>
                                 <CategoryItems>
                                     <Label>{category.item}</Label>
                                 </CategoryItems>
-                            </React.Fragment>
+                            </Fragment>
                         ))}
                     </Category>
                 </CollapsibleBox>

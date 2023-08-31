@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import styled from 'styled-components';
 
 import { Dropdown, DropdownRef, CoinLogo, variables } from '@trezor/components';

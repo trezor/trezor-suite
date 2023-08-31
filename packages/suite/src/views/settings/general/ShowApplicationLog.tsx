@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { openModal } from 'src/actions/suite/modalActions';
 import { useDispatch } from 'src/hooks/suite';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from 'src/components/suite/Settings';

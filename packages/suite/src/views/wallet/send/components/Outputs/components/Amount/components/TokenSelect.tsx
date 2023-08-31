@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useMemo, useEffect } from 'react';
 import { Controller } from 'react-hook-form';
 import { Select, variables } from '@trezor/components';
 import { components } from 'react-select';
@@ -120,7 +120,7 @@ export const TokenSelect = ({ output, outputId }: TokenSelectProps) => {
     } = useSendFormContext();
     const coins = useSelector(state => state.wallet.fiat.coins);
 
-    const sortedTokens = React.useMemo(() => {
+    const sortedTokens = useMemo(() => {
         const tokensWithRates = enhanceTokensWithRates(account.tokens, coins);
 
         return tokensWithRates.sort(sortTokensWithRates);

@@ -1,4 +1,4 @@
-import React from 'react';
+import { ReactNode } from 'react';
 import styled, { css } from 'styled-components';
 
 const rightAlignedStyles = css`
@@ -23,10 +23,10 @@ const Column = styled.div<{ textAlign: 'left' | 'right' }>`
 `;
 
 interface AmountRowProps {
-    firstColumn?: React.ReactNode;
-    secondColumn?: React.ReactNode;
-    thirdColumn?: React.ReactNode;
-    fourthColumn?: React.ReactNode;
+    firstColumn?: ReactNode;
+    secondColumn?: ReactNode;
+    thirdColumn?: ReactNode;
+    fourthColumn?: ReactNode;
 }
 
 export const AmountRow = ({

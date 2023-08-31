@@ -1,4 +1,3 @@
-import React from 'react';
 import { Translation } from 'src/components/suite';
 import { OnboardingButtonCta } from 'src/components/onboarding';
 import { useDevice, useOnboarding, useSelector } from 'src/hooks/suite';

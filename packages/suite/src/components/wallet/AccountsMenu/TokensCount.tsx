@@ -1,4 +1,4 @@
-import React from 'react';
+import { MouseEventHandler } from 'react';
 import styled from 'styled-components';
 import { Button, variables, useTheme } from '@trezor/components';
 import { Translation } from 'src/components/suite/Translation';
@@ -15,7 +15,7 @@ const ButtonBadge = styled(Button)`
 
 interface TokensCountProps {
     count: number;
-    onClick: React.MouseEventHandler<HTMLButtonElement>;
+    onClick: MouseEventHandler<HTMLButtonElement>;
 }
 
 export const TokensCount = ({ count, onClick }: TokensCountProps) => {

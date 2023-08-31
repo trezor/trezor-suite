@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components';
 
 import { Input, Textarea, Select, Checkbox, RadioButton, Switch, Button, Range } from '../../index';

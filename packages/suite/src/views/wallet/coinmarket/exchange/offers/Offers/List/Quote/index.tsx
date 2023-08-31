@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components';
 import { Button, variables, Icon, useTheme, H2 } from '@trezor/components';
 import { FormattedCryptoAmount, QuestionTooltip, Translation } from 'src/components/suite';

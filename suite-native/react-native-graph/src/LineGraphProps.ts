@@ -1,4 +1,4 @@
-import type React from 'react';
+import type { ComponentType, ReactElement } from 'react';
 import type { ViewProps } from 'react-native';
 import type { SharedValue } from 'react-native-reanimated';
 
@@ -127,17 +127,17 @@ export type AnimatedLineGraphProps<TEventPayload extends object> = BaseLineGraph
     /**
      * The element that renders the selection dot
      */
-    SelectionDot?: React.ComponentType<SelectionDotProps> | null;
+    SelectionDot?: ComponentType<SelectionDotProps> | null;
 
     /**
      * The element that gets rendered above the Graph (usually the "max" point/value of the Graph)
      */
-    TopAxisLabel?: () => React.ReactElement | null;
+    TopAxisLabel?: () => ReactElement | null;
 
     /**
      * The element that gets rendered below the Graph (usually the "min" point/value of the Graph)
      */
-    BottomAxisLabel?: () => React.ReactElement | null;
+    BottomAxisLabel?: () => ReactElement | null;
 
     /**
      * All points to be marked in the graph. The position will be calculated based on the `date` property according to points of the graph.
@@ -147,11 +147,11 @@ export type AnimatedLineGraphProps<TEventPayload extends object> = BaseLineGraph
     /**
      * The element that renders each event of the graph.
      */
-    EventComponent?: React.ComponentType<EventComponentProps<TEventPayload>> | null;
+    EventComponent?: ComponentType<EventComponentProps<TEventPayload>> | null;
     /**
      * The element that gets rendered on hover on an EventComponent element.
      */
-    EventTooltipComponent?: React.ComponentType<EventTooltipComponentProps<TEventPayload>> | null;
+    EventTooltipComponent?: ComponentType<EventTooltipComponentProps<TEventPayload>> | null;
 
     /**
      * Called once the user hover on EventComponent element.

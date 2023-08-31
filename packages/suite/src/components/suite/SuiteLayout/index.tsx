@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState, ReactNode } from 'react';
 import styled from 'styled-components';
 
 import { variables } from '@trezor/components';
@@ -90,7 +90,7 @@ const DefaultPaddings = styled.div`
 `;
 
 type SuiteLayoutProps = {
-    children: React.ReactNode;
+    children: ReactNode;
 };
 
 export const SuiteLayout = ({ children }: SuiteLayoutProps) => {

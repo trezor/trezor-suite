@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import { OnboardingLayout } from 'src/components/onboarding';
 import { WelcomeLayout } from 'src/components/suite';
 import { ReduxModal } from 'src/components/suite/ModalSwitcher/ReduxModal';

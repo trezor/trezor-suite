@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { onCancel as onCancelAction } from 'src/actions/suite/modalActions';
 import { MODAL } from 'src/actions/suite/constants';
 import { useDispatch } from 'src/hooks/suite';

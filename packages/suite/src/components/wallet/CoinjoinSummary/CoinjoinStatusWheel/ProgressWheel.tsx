@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import { useCallback, useState } from 'react';
 import styled, { css, DefaultTheme } from 'styled-components';
 import { animations, Tooltip } from '@trezor/components';
 import { ProgressContent, Container as ProgressContentContainer } from './ProgressContent';

@@ -1,8 +1,8 @@
-import React from 'react';
+import { ReactNode } from 'react';
 import { IntlProvider } from 'react-intl';
 
 interface IntlWrapperProps {
-    children: React.ReactNode;
+    children: ReactNode;
 }
 
 export const IntlWrapper = ({ children }: IntlWrapperProps) => (

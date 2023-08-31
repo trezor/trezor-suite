@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { fiatCurrencies } from '@suite-common/suite-config';
 import { NumberInput } from 'src/components/suite';
 import { Select } from '@trezor/components';

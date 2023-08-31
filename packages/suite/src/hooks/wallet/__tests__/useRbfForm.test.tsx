@@ -1,5 +1,4 @@
 import TrezorConnect from '@trezor/connect';
-import React from 'react';
 import { screen } from '@testing-library/react';
 import { configureMockStore, initPreloadedState } from '@suite-common/test-utils';
 import * as fixtures from '../__fixtures__/useRbfForm';

@@ -1,4 +1,4 @@
-import React from 'react';
+import { useState, useEffect } from 'react';
 import { filterThunkActionTypes } from 'src/support/tests/configureStore';
 import { configureMockStore, initPreloadedState } from '@suite-common/test-utils';
 import { DeepPartial } from 'react-hook-form';
@@ -74,8 +74,8 @@ const Component = ({ callback }: { callback: TestCallback }) => {
     // sendForm.state.isLoading field is updated **BEFORE** last render of react-hook-form
     // results are verified **BEFORE** components are finally rerendered.
     // force additional re-render here (using state update) before removing loader from the view
-    const [loading, setLoading] = React.useState(false);
-    React.useEffect(() => {
+    const [loading, setLoading] = useState(false);
+    useEffect(() => {
         setLoading(values.isLoading);
     }, [loading, values.isLoading]);
 

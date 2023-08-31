@@ -1,4 +1,3 @@
-import React from 'react';
 import { StoryWrapper } from '../src/support/Story';
 
 export const decorators = [

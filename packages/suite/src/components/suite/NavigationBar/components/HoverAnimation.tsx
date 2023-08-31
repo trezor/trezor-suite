@@ -1,4 +1,4 @@
-import React from 'react';
+import { ReactNode } from 'react';
 import styled, { css } from 'styled-components';
 import { transparentize } from 'polished';
 import { variables } from '@trezor/components/src/config';
@@ -44,7 +44,7 @@ const Wrapper = styled.div<{ size?: string; isHoverable?: boolean }>`
 
 interface HoverAnimationProps {
     isHoverable?: boolean;
-    children: React.ReactNode;
+    children: ReactNode;
     className?: string;
 }
 

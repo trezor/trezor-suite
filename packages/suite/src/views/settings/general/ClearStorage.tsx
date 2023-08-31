@@ -1,4 +1,3 @@
-import React from 'react';
 import { desktopApi } from '@trezor/suite-desktop-api';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from 'src/components/suite/Settings';
 import { Translation } from 'src/components/suite';

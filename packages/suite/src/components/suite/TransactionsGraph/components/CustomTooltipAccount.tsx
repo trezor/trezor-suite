@@ -1,5 +1,3 @@
-import React from 'react';
-
 import styled from 'styled-components';
 import { TooltipProps } from 'recharts';
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';

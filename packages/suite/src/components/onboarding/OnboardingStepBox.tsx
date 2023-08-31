@@ -1,4 +1,4 @@
-import React from 'react';
+import { ReactNode } from 'react';
 import styled from 'styled-components';
 import TrezorConnect, { DeviceModelInternal } from '@trezor/connect';
 import { ConfirmOnDevice, Backdrop, variables } from '@trezor/components';
@@ -43,12 +43,12 @@ const StyledCollapsibleCard = styled(CollapsibleOnboardingCard)<{ $isBackDropVis
 `;
 
 export interface OnboardingStepBoxProps extends CollapsibleOnboardingCardProps {
-    innerActions?: React.ReactNode;
-    outerActions?: React.ReactNode;
+    innerActions?: ReactNode;
+    outerActions?: ReactNode;
     deviceModelInternal?: DeviceModelInternal;
     disableConfirmWrapper?: boolean;
     nested?: boolean;
-    devicePromptTitle?: React.ReactNode;
+    devicePromptTitle?: ReactNode;
     isActionAbortable?: boolean;
 }
 

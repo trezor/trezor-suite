@@ -1,4 +1,4 @@
-import React from 'react';
+import { ReactNode } from 'react';
 import styled from 'styled-components';
 import { variables } from '@trezor/components';
 import invityApi from 'src/services/suite/invityAPI';
@@ -34,7 +34,7 @@ const Text = styled.div`
 `;
 
 interface CoinmarketPaymentTypeProps {
-    children?: React.ReactNode;
+    children?: ReactNode;
     method?: BuyCryptoPaymentMethod | SellCryptoPaymentMethod | SavingsPaymentMethod;
     methodName?: string;
 }

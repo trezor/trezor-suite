@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import styled from 'styled-components';
 import { useSelector } from 'src/hooks/suite';
 import { Account } from 'src/types/wallet';

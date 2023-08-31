@@ -1,4 +1,4 @@
-import React from 'react';
+import { ReactNode } from 'react';
 import styled from 'styled-components';
 
 import { Card } from 'src/components/suite';
@@ -25,7 +25,7 @@ const StyledCard = styled(Card)`
 `;
 
 interface SendProps {
-    children: React.ReactNode;
+    children: ReactNode;
 }
 
 interface SendLoadedProps extends SendProps {

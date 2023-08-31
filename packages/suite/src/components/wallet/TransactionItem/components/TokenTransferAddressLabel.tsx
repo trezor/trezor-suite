@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components';
 import { ArrayElement } from '@trezor/type-utils';
 import { Translation, AddressLabeling } from 'src/components/suite';

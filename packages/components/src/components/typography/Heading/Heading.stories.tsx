@@ -1,4 +1,3 @@
-import React from 'react';
 import { H1, H2 } from '../../../index';
 import { storiesOf } from '@storybook/react';
 import { select, text } from '@storybook/addon-knobs';

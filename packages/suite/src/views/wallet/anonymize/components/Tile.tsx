@@ -1,4 +1,4 @@
-import React from 'react';
+import { ReactNode } from 'react';
 import styled, { css } from 'styled-components';
 
 import { Image, PngImage, variables } from '@trezor/components';
@@ -105,9 +105,9 @@ const Description = styled.p`
 `;
 
 export interface TileProps {
-    description: React.ReactNode;
+    description: ReactNode;
     image: PngImage;
-    title: React.ReactNode;
+    title: ReactNode;
 }
 
 export const Tile = ({ description, image, title }: TileProps) => (

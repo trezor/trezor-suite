@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import { ReactNode } from 'react';
 import { ThemeProvider } from 'react-fela';
 
 import { prepareNativeTheme } from '@trezor/theme';

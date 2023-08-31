@@ -2,7 +2,7 @@
 // prerequisites management (1st level Preloader, 2nd level Onboarding - UnexpectedStates, 3rd level Firmware)
 // I think that with some effort this could be also removed and optimized
 
-import React from 'react';
+import { ReactNode } from 'react';
 import styled from 'styled-components';
 import { useSelector } from 'src/hooks/suite';
 import { ConnectDevicePrompt } from 'src/components/suite';
@@ -30,7 +30,7 @@ const ContentWrapper = styled(motion.div)`
 interface ConnectDevicePromptManagerProps {
     device: TrezorDevice | undefined;
     className?: string;
-    children?: React.ReactNode;
+    children?: ReactNode;
 }
 
 /**

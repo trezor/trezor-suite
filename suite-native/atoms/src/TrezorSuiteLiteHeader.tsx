@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { TypographyStyle } from '@trezor/theme';
 
 import { Text } from './Text';

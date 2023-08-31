@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 
 import { Checkbox } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';

@@ -1,4 +1,4 @@
-import React from 'react';
+import { ReactNode } from 'react';
 import styled from 'styled-components';
 import { H2, variables } from '@trezor/components';
 import type { ExtendedMessageDescriptor } from 'src/types/suite';
@@ -34,7 +34,7 @@ const StyledTitle = styled(H2)`
 `;
 
 type WalletLayoutHeaderProps = {
-    children?: React.ReactNode;
+    children?: ReactNode;
     title: ExtendedMessageDescriptor['id'];
 };
 

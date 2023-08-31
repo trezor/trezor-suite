@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import styled from 'styled-components';
 import { Button, H2, P, Image, variables } from '@trezor/components';
 import { SelectWordCount, SelectRecoveryType } from 'src/components/recovery';

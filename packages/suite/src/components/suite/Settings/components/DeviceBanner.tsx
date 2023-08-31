@@ -1,4 +1,4 @@
-import React from 'react';
+import { ReactNode } from 'react';
 import styled from 'styled-components';
 import { P, variables } from '@trezor/components';
 
@@ -48,8 +48,8 @@ const Title = styled(P)`
 `;
 
 interface DeviceBannerProps {
-    title: React.ReactNode;
-    description?: React.ReactNode;
+    title: ReactNode;
+    description?: ReactNode;
 }
 
 export const DeviceBanner = ({ title, description }: DeviceBannerProps) => {

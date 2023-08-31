@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components';
 import { H1, P, Button, variables } from '@trezor/components';
 import { db } from 'src/storage';

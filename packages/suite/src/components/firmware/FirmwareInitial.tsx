@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState, Dispatch, SetStateAction } from 'react';
 
 import styled from 'styled-components';
 
@@ -44,7 +44,7 @@ const StyledConnectDevicePrompt = styled(ConnectDevicePromptManager)`
 
 interface FirmwareInitialProps {
     cachedDevice?: TrezorDevice;
-    setCachedDevice: React.Dispatch<React.SetStateAction<TrezorDevice | undefined>>;
+    setCachedDevice: Dispatch<SetStateAction<TrezorDevice | undefined>>;
     // This component is shared between Onboarding flow and standalone fw update modal with few minor UI changes
     // If it is set to true, then you know it is being rendered in standalone fw update modal
     standaloneFwUpdate?: boolean;

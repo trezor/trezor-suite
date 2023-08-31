@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { Translation } from 'src/components/suite';
 import { ConfirmValueOnDevice, ConfirmDeviceScreenProps } from './ConfirmValueOnDevice';
 import { showXpub } from 'src/actions/wallet/publicKeyActions';

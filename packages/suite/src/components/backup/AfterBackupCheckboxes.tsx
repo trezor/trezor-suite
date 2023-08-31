@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { CheckItem, Translation } from 'src/components/suite';

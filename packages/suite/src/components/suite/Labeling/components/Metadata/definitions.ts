@@ -1,14 +1,15 @@
+import { ReactNode } from 'react';
 import { MetadataAddPayload } from 'src/types/suite/metadata';
 
 export interface DropdownMenuItem {
     key: string;
-    label: React.ReactNode;
+    label: ReactNode;
     callback?: () => boolean | void;
     'data-test'?: string;
 }
 
 export interface Props {
-    defaultVisibleValue?: React.ReactNode;
+    defaultVisibleValue?: ReactNode;
     payload: MetadataAddPayload;
     dropdownOptions?: DropdownMenuItem[];
     isDisabled?: boolean;

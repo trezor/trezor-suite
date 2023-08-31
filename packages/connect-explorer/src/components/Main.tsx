@@ -1,4 +1,4 @@
-import React from 'react';
+import { ReactNode } from 'react';
 import styled, { ThemeProvider } from 'styled-components';
 
 import { THEME } from '@trezor/components';
@@ -19,7 +19,7 @@ const MainComponent = styled.main`
 `;
 
 interface MainProps {
-    children: React.ReactNode;
+    children: ReactNode;
 }
 
 export const Main = ({ children }: MainProps) => (

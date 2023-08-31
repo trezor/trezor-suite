@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components';
 import { resolveStaticPath } from '@suite-common/suite-utils';
 import { Card, SVG_IMAGES, variables } from '@trezor/components';

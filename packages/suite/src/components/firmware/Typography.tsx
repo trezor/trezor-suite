@@ -1,7 +1,7 @@
 // Unfortunately, design is constantly changing and @trezor/components do not comply at the moment.
 // So I am creating this proxy typography which matches current design and makes future refactoring relatively easy.
 
-import React from 'react';
+import { ReactNode } from 'react';
 import styled, { css } from 'styled-components';
 
 import { P as OrigP, H1 as OrigH1, H2 as OrigH2, variables } from '@trezor/components';
@@ -9,7 +9,7 @@ import { P as OrigP, H1 as OrigH1, H2 as OrigH2, variables } from '@trezor/compo
 const { FONT_WEIGHT } = variables;
 
 interface Props {
-    children: React.ReactNode;
+    children: ReactNode;
 }
 
 const StyledP = styled(OrigP)`

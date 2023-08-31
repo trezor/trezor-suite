@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { AnimatePresence, HTMLMotionProps, motion } from 'framer-motion';
 import styled from 'styled-components';
 

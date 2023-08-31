@@ -1,4 +1,4 @@
-import React from 'react';
+import { ReactNode } from 'react';
 import styled from 'styled-components';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Icon, variables, RadioButton, motionAnimation } from '@trezor/components';
@@ -79,7 +79,7 @@ export const DecreasedOutputs = () => {
     // no set-max means that no output was decreased
     if (!showDecreasedOutputs || typeof setMaxOutputId !== 'number') return null;
 
-    let reducedAmount: React.ReactNode = null;
+    let reducedAmount: ReactNode = null;
     if (composedLevels) {
         const precomposedTx = composedLevels[selectedFee || 'normal'];
         if (precomposedTx.type === 'final') {

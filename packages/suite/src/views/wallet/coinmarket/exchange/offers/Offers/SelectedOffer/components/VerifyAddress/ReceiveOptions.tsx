@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import styled from 'styled-components';
 import useTimeoutFn from 'react-use/lib/useTimeoutFn';
 import { variables, CoinLogo, Select, Icon, useTheme } from '@trezor/components';

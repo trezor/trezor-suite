@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import styled from 'styled-components';
 
 import { AccountAddress } from '@trezor/connect';
@@ -120,7 +120,7 @@ interface ItemProps {
 const Item = ({ addr, locked, symbol, onClick, metadataPayload, index }: ItemProps) => {
     // Currently used addresses are always partially hidden
     // The only place where full address is shown is confirm-addr modal
-    const [isHovered, setIsHovered] = React.useState(false);
+    const [isHovered, setIsHovered] = useState(false);
     const amount = formatNetworkAmount(addr.received || '0', symbol);
     const fresh = !addr.transfers;
     const address = addr.address.substring(0, 20);

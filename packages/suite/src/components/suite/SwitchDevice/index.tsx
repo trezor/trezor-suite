@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components';
 import { Translation } from 'src/components/suite/Translation';
 import { Modal } from 'src/components/suite';

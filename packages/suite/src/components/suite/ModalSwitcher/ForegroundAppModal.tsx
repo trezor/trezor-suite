@@ -1,4 +1,3 @@
-import React from 'react';
 import { Firmware } from 'src/views/firmware';
 import { FirmwareCustom } from 'src/views/firmware/FirmwareCustom';
 import { Recovery } from 'src/views/recovery';

@@ -1,4 +1,4 @@
-import React from 'react';
+import { MouseEventHandler } from 'react';
 import styled from 'styled-components';
 
 import { Button } from '@trezor/components';
@@ -15,9 +15,7 @@ const StyledButton = styled(Button)`
 `;
 
 interface InputErrorProps {
-    button?:
-        | { onClick: React.MouseEventHandler<HTMLButtonElement>; text: string }
-        | { url: string };
+    button?: { onClick: MouseEventHandler<HTMLButtonElement>; text: string } | { url: string };
     message?: string;
 }
 

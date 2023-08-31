@@ -1,8 +1,8 @@
-import React from 'react';
+import { createContext, ReactNode } from 'react';
 import { Control, FieldValues, UseFormReturn } from 'react-hook-form';
 
 export interface FormProps<TFieldValues extends FieldValues> {
-    children?: React.ReactNode;
+    children?: ReactNode;
     form: UseFormReturn<TFieldValues>;
 }
 
@@ -10,7 +10,7 @@ interface FormContextValue<TFieldValues extends FieldValues> {
     control: Control<TFieldValues>;
 }
 
-export const FormContext = React.createContext<FormContextValue<FieldValues>>(
+export const FormContext = createContext<FormContextValue<FieldValues>>(
     {} as FormContextValue<FieldValues>,
 );
 

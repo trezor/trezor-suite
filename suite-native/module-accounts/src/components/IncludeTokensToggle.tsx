@@ -1,4 +1,3 @@
-import React from 'react';
 import Animated, { FadeIn } from 'react-native-reanimated';
 
 import { AlertBox, Box, Toggle, VStack } from '@suite-native/atoms';

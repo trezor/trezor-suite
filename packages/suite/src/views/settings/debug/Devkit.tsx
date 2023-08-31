@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { firmwareActions, selectUseDevkit } from '@suite-common/wallet-core';
 import { Switch } from '@trezor/components';
 

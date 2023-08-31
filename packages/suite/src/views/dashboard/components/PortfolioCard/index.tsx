@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import { memo, useMemo } from 'react';
 import styled from 'styled-components';
 import { Dropdown } from '@trezor/components';
 import { Card, QuestionTooltip, Translation } from 'src/components/suite';
@@ -39,7 +39,7 @@ const Wrapper = styled.div`
     display: flex;
 `;
 
-const PortfolioCard = React.memo(() => {
+const PortfolioCard = memo(() => {
     const { fiat, localCurrency } = useFiatValue();
     const { discovery, getDiscoveryStatus, isDiscoveryRunning } = useDiscovery();
     const accounts = useFastAccounts();

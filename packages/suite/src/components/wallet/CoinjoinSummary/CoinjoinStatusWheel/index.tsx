@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components';
 import { variables, Card, Button, useTheme } from '@trezor/components';
 import { ProgressWheel } from './ProgressWheel';

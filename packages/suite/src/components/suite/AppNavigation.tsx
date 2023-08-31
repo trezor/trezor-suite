@@ -1,4 +1,4 @@
-import React, { useRef, useLayoutEffect, useState } from 'react';
+import { useRef, useLayoutEffect, useState, ReactNode } from 'react';
 import styled, { css } from 'styled-components';
 import { variables, IconProps, useTheme, Button, Icon, Dropdown } from '@trezor/components';
 import { AccountFormCloseButton, AppNavigationTooltip } from 'src/components/suite';
@@ -185,7 +185,7 @@ export type AppNavigationItem = {
 
 interface AppNavigationProps {
     items: AppNavigationItem[];
-    primaryContent?: React.ReactNode;
+    primaryContent?: ReactNode;
     maxWidth?: 'small' | 'default';
     inView?: boolean;
 }

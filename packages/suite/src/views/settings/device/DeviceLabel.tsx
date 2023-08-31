@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { Translation } from 'src/components/suite';
 import { ActionColumn, SectionItem, TextColumn } from 'src/components/suite/Settings';
 import { MAX_LABEL_LENGTH } from 'src/constants/suite/device';

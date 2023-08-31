@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import styled from 'styled-components';
 import { useDevice, useDispatch } from 'src/hooks/suite';
 import { RadioButton, Button, H3, P, Warning } from '@trezor/components';

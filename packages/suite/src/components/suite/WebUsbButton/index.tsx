@@ -1,4 +1,3 @@
-import React from 'react';
 import TrezorConnect from '@trezor/connect';
 import { Button, ButtonProps } from '@trezor/components';
 import { Translation } from 'src/components/suite';

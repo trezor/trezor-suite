@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { P, Button, Image } from '@trezor/components';

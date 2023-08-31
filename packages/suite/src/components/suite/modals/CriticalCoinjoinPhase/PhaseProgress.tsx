@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components';
 import { CoinjoinSession, SessionPhase } from 'src/types/wallet/coinjoin';
 import { Spinner, Icon, useTheme, variables } from '@trezor/components';

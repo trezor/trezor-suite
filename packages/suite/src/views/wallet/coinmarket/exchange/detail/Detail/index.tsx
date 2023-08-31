@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components';
 import { Card, variables } from '@trezor/components';
 import { CoinmarketExchangeOfferInfo, CoinmarketExchangeTopPanel } from 'src/components/wallet';

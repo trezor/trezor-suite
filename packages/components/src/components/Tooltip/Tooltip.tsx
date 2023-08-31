@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import React, { ReactNode, useMemo, useRef, useState } from 'react';
+import { useMemo, useRef, useState, ReactNode, ReactElement } from 'react';
 import { motion, Variants } from 'framer-motion';
 import Tippy, { TippyProps } from '@tippyjs/react/headless';
 import { Instance } from 'tippy.js';
@@ -110,8 +110,8 @@ export type TooltipProps = Omit<TippyProps, 'offset'> & {
     dashed?: boolean;
     offset?: number;
     cursor?: Cursor;
-    guideAnchor?: (instance: Instance) => React.ReactElement;
-    title?: React.ReactElement;
+    guideAnchor?: (instance: Instance) => ReactElement;
+    title?: ReactElement;
 };
 
 export const Tooltip = ({

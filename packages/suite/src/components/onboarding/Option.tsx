@@ -1,4 +1,4 @@
-import React from 'react';
+import { ReactNode, HTMLAttributes } from 'react';
 import styled, { css } from 'styled-components';
 import { Icon, IconProps, variables } from '@trezor/components';
 
@@ -64,9 +64,9 @@ export const OptionsDivider = styled.div`
     flex: 0 0 24px;
 `;
 
-interface OptionProps extends React.HTMLAttributes<HTMLDivElement> {
-    heading: React.ReactNode;
-    description?: React.ReactNode;
+interface OptionProps extends HTMLAttributes<HTMLDivElement> {
+    heading: ReactNode;
+    description?: ReactNode;
     icon?: IconProps['icon'];
 }
 

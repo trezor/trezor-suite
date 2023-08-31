@@ -1,6 +1,6 @@
 import { useSelector } from 'src/hooks/suite';
 import { Icon, useTheme, variables } from '@trezor/components';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import styled from 'styled-components';
 import NotificationGroup from './components/NotificationGroup';
 import { Translation } from 'src/components/suite';

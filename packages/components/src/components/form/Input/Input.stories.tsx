@@ -1,4 +1,4 @@
-import React from 'react';
+import { ChangeEvent } from 'react';
 import { useArgs } from '@storybook/client-api';
 
 import { Input as InputComponent } from './Input';
@@ -40,7 +40,7 @@ export const Input = {
     render: ({ ...args }) => {
         // eslint-disable-next-line
         const [{ value }, updateArgs] = useArgs();
-        const handleValue = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const handleValue = (e: ChangeEvent<HTMLInputElement>) => {
             updateArgs({ value: e.target.value });
         };
 

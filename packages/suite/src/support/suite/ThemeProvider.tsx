@@ -1,11 +1,11 @@
-import React from 'react';
+import { ReactNode } from 'react';
 import { ThemeProvider as SCThemeProvider } from 'styled-components';
 import { getThemeColors } from 'src/utils/suite/theme';
 import { getOsTheme } from 'src/utils/suite/env';
 import GlobalStyle from './styles/GlobalStyle';
 
 type ThemeProviderProps = {
-    children: React.ReactNode;
+    children: ReactNode;
     themeVariant?: 'light' | 'dark';
 };
 

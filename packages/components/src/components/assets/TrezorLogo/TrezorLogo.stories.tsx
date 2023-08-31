@@ -1,4 +1,3 @@
-import React from 'react';
 import { TrezorLogo } from '../../../index';
 import { storiesOf } from '@storybook/react';
 import { number, select } from '@storybook/addon-knobs';

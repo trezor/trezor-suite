@@ -1,4 +1,3 @@
-import React from 'react';
 import { ResponsiveContainer, ResponsiveContainerProps } from 'recharts';
 
 // https://github.com/recharts/recharts/issues/1767#issuecomment-598607012

@@ -1,4 +1,3 @@
-import React from 'react';
 import { useSelector } from 'react-redux';
 
 import { Box, Card, Text, VStack } from '@suite-native/atoms';

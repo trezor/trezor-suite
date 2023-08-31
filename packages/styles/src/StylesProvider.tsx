@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import { ReactNode } from 'react';
 import { RendererProvider, ThemeProvider } from 'react-fela';
 
 import { IRenderer } from 'fela';

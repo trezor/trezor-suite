@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState, ReactNode } from 'react';
 import { Provider } from 'react-redux';
 
 import { EnhancedStore } from '@reduxjs/toolkit';
@@ -9,7 +9,7 @@ import { StorageProvider } from '@suite-native/storage';
 import { initStore } from './store';
 
 type StoreProviderProps = {
-    children: React.ReactNode;
+    children: ReactNode;
 };
 
 export const StoreProvider = ({ children }: StoreProviderProps) => {

@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { G } from '@mobily/ts-belt';
 
 import { Box } from '@suite-native/atoms';

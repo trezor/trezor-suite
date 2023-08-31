@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useTheme } from '@trezor/components';

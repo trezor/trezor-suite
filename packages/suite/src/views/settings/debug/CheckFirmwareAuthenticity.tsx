@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 import { Button, Switch } from '@trezor/components';
 import { ActionColumn, SectionItem, TextColumn } from 'src/components/suite/Settings';

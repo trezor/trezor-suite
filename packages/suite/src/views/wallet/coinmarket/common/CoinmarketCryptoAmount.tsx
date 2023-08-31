@@ -1,4 +1,3 @@
-import React from 'react';
 import { FormattedCryptoAmount } from 'src/components/suite';
 
 interface CoinmarketCryptoAmountProps {

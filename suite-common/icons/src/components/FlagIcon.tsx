@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { Canvas, ImageSVG, useSVG } from '@shopify/react-native-skia';
 
 import { FlagIconName, flagIcons } from '../icons';

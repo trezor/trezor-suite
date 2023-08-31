@@ -1,4 +1,3 @@
-import React from 'react';
 import { components } from 'react-select';
 import styled from 'styled-components';
 import { Select, SelectProps } from '@trezor/components';

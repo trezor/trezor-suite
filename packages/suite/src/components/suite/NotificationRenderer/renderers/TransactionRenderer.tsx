@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components';
 import { AccountLabeling, HiddenPlaceholder } from 'src/components/suite';
 import { selectDevice } from 'src/actions/suite/suiteActions';

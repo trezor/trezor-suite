@@ -1,4 +1,3 @@
-import React from 'react';
 import { Alert, Share } from 'react-native';
 
 import { pipe, S, A } from '@mobily/ts-belt';

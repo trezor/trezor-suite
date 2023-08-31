@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import styled from 'styled-components';
 import { Translation, Modal } from 'src/components/suite';
 import type { ExtendedMessageDescriptor } from 'src/types/suite';

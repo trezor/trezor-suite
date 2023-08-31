@@ -1,4 +1,4 @@
-import React from 'react';
+import { ReactNode } from 'react';
 import { WalletParams } from 'src/types/wallet';
 import { AppNavigation, AppNavigationItem } from 'src/components/suite/AppNavigation';
 import { Translation } from 'src/components/suite/Translation';
@@ -11,7 +11,7 @@ import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReduce
 interface AccountNavigationProps {
     filterPosition?: 'primary' | 'secondary';
     dataTestSuffix?: string;
-    primaryContent?: React.ReactNode;
+    primaryContent?: ReactNode;
     inView?: boolean;
 }
 

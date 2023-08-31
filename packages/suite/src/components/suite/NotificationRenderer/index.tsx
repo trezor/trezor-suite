@@ -1,4 +1,3 @@
-import React from 'react';
 import { DEVICE } from '@trezor/connect';
 import { SUITE } from 'src/actions/suite/constants';
 import ActionRenderer from './renderers/ActionRenderer';

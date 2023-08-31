@@ -1,4 +1,4 @@
-import React, { ComponentType } from 'react';
+import { ComponentType, ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 import styled, { css } from 'styled-components';
 import TrezorConnect from '@trezor/connect';
@@ -128,7 +128,7 @@ export interface DevicePromptModalProps {
     isAbortable?: boolean;
     onAbort?: () => void;
     className?: string;
-    children?: React.ReactNode;
+    children?: ReactNode;
     'data-test'?: string;
 }
 

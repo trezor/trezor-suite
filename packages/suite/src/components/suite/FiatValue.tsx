@@ -1,4 +1,4 @@
-import React from 'react';
+import { ReactElement } from 'react';
 import styled from 'styled-components';
 import { selectCoins } from '@suite-common/wallet-core';
 import { HiddenPlaceholder } from 'src/components/suite';
@@ -29,7 +29,7 @@ interface CommonOwnProps {
     symbol: Network['symbol'] | string;
     tokenAddress?: string;
     fiatCurrency?: string;
-    children?: (props: Params) => React.ReactElement | null;
+    children?: (props: Params) => ReactElement | null;
     showApproximationIndicator?: boolean;
     disableHiddenPlaceholder?: boolean;
     fiatAmountFormatterOptions?: FormatNumberOptions;

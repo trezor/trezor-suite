@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import styled from 'styled-components';
 import { Button, P } from '@trezor/components';
 import { Modal, Translation } from 'src/components/suite';

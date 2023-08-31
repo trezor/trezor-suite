@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Pressable, PressableProps } from 'react-native';
 import Animated from 'react-native-reanimated';
 

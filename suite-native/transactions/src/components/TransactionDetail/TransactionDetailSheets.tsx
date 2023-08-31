@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 import { AccountKey, WalletAccountTransaction } from '@suite-common/wallet-types';
 import { Card, VStack } from '@suite-native/atoms';

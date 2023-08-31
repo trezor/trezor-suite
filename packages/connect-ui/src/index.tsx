@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState, useMemo } from 'react';
+import { useCallback, useEffect, useState, useMemo, ReactNode } from 'react';
 
 import styled from 'styled-components';
 
@@ -70,7 +70,7 @@ export const ConnectUI = ({ postMessage, clearLegacyView }: ConnectUIProps) => {
     }, []);
 
     const [Component, Notifications] = useMemo(() => {
-        let component: React.ReactNode | null;
+        let component: ReactNode | null;
 
         // component (main screen)
 

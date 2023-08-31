@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { TooltipProps } from 'recharts';
 
 import { useFormatters } from '@suite-common/formatters';

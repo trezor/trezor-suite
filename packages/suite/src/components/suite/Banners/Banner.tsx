@@ -1,4 +1,4 @@
-import React from 'react';
+import { ReactNode } from 'react';
 import styled from 'styled-components';
 import { Button, Icon, SuiteThemeColors, useTheme, variables } from '@trezor/components';
 
@@ -109,10 +109,10 @@ const CancelWrapper = styled.div`
 `;
 
 interface BannerProps {
-    body: React.ReactNode;
+    body: ReactNode;
     variant: 'info' | 'warning' | 'critical';
     action?: {
-        label: React.ReactNode | string;
+        label: ReactNode | string;
         onClick: () => void;
         'data-test': string;
     };

@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { SettingsLayout } from 'src/components/settings';
 import { SettingsSection } from 'src/components/suite/Settings';
 import { Translation } from 'src/components/suite';

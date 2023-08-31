@@ -1,4 +1,3 @@
-import React from 'react';
 import { Icon, variables, colors } from '../../../index';
 import { storiesOf } from '@storybook/react';
 import { number, select, color } from '@storybook/addon-knobs';

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState, ReactElement } from 'react';
 import { View, StyleSheet, LayoutChangeEvent } from 'react-native';
 import Reanimated, {
     runOnJS,
@@ -79,7 +79,7 @@ export function AnimatedLineGraph<TEventPayload extends object>({
     EventTooltipComponent,
     onEventHover,
     ...props
-}: AnimatedLineGraphProps<TEventPayload>): React.ReactElement {
+}: AnimatedLineGraphProps<TEventPayload>): ReactElement {
     const [width, setWidth] = useState(0);
     const [height, setHeight] = useState(0);
     const interpolateProgress = useValue(0);

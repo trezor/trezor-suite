@@ -1,5 +1,5 @@
 import styled, { css } from 'styled-components';
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Lottie, { LottieOptions } from 'lottie-react';
 import * as semver from 'semver';
 import { resolveStaticPath } from '@suite-common/suite-utils';

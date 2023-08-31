@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import { useCallback, useState, Ref, ReactNode, ReactElement, InputHTMLAttributes } from 'react';
 import styled, { css } from 'styled-components';
 
 import { FONT_SIZE, Z_INDEX } from '../../../config/variables';
@@ -95,15 +95,15 @@ const Row = styled.div<Pick<InputProps, 'errorPosition'>>`
 
 type AddonAlignment = 'left' | 'right';
 
-export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
     value?: string;
-    innerRef?: React.Ref<HTMLInputElement>;
-    label?: React.ReactElement | string;
-    labelAddon?: React.ReactElement;
-    labelRight?: React.ReactElement;
-    innerAddon?: React.ReactElement;
-    topLabelRight?: React.ReactNode;
-    bottomText?: React.ReactNode;
+    innerRef?: Ref<HTMLInputElement>;
+    label?: ReactElement | string;
+    labelAddon?: ReactElement;
+    labelRight?: ReactElement;
+    innerAddon?: ReactElement;
+    topLabelRight?: ReactNode;
+    bottomText?: ReactNode;
     isMonospace?: boolean;
     isDisabled?: boolean;
     variant?: InputVariant;

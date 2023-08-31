@@ -1,4 +1,13 @@
-import React, { useCallback, useLayoutEffect, useRef, useState } from 'react';
+import {
+    useCallback,
+    useLayoutEffect,
+    useRef,
+    useState,
+    KeyboardEvent,
+    ClipboardEvent,
+    FormEvent,
+} from 'react';
+
 import { Control, FieldValues, useController, UseControllerProps } from 'react-hook-form';
 import BigNumber from 'bignumber.js';
 
@@ -289,7 +298,7 @@ export const NumberInput = <TFieldValues extends FieldValues>({
 
     // copy the non-formatted value
     const handleCopy = useCallback(
-        (e: React.ClipboardEvent<HTMLInputElement>) => {
+        (e: ClipboardEvent<HTMLInputElement>) => {
             if (!inputRef.current) {
                 return;
             }
@@ -309,7 +318,7 @@ export const NumberInput = <TFieldValues extends FieldValues>({
 
     // cut the non-formatted value and manually clear the input
     const handleCut = useCallback(
-        (e: React.ClipboardEvent<HTMLInputElement>) => {
+        (e: ClipboardEvent<HTMLInputElement>) => {
             handleCopy(e);
 
             if (!inputRef.current) {
@@ -331,18 +340,15 @@ export const NumberInput = <TFieldValues extends FieldValues>({
     );
 
     // only allow digits and separators
-    const handleOnBeforeInput = useCallback(
-        (e: React.FormEvent<HTMLInputElement> & { data: string }) => {
-            if (/[\d.,]/g.test(e.data)) {
-                // reset the redo history when a new digit is entered
-                setRedoHistory([]);
-                return;
-            }
+    const handleOnBeforeInput = useCallback((e: FormEvent<HTMLInputElement> & { data: string }) => {
+        if (/[\d.,]/g.test(e.data)) {
+            // reset the redo history when a new digit is entered
+            setRedoHistory([]);
+            return;
+        }
 
-            e.preventDefault();
-        },
-        [],
-    );
+        e.preventDefault();
+    }, []);
 
     // checks for separators at pos + cursorCharacterOffset and moves the cursor to pos + cursorPositionOffset
     const handleCursorShift = useCallback(
@@ -391,7 +397,7 @@ export const NumberInput = <TFieldValues extends FieldValues>({
 
     // jump over group separators when navigatind the input
     const handleKeyNav = useCallback(
-        (e: React.KeyboardEvent<HTMLInputElement>) => {
+        (e: KeyboardEvent<HTMLInputElement>) => {
             const pressedKey = e.key;
 
             if (pressedKey === 'ArrowRight') handleCursorShift(0, 1);
@@ -424,7 +430,7 @@ export const NumberInput = <TFieldValues extends FieldValues>({
     }, [redoHistory, handleChange]);
 
     const handleKeyDown = useCallback(
-        (e: React.KeyboardEvent<HTMLInputElement>) => {
+        (e: KeyboardEvent<HTMLInputElement>) => {
             const pressedKey = e.key;
             setPressedKey(pressedKey);
 

@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import { ReactNode } from 'react';
 import { View } from 'react-native';
 
 import { RequireAllOrNone } from 'type-fest';

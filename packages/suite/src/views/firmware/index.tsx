@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import styled from 'styled-components';
 import { closeModalApp } from 'src/actions/suite/routerActions';
 import { TrezorDevice } from 'src/types/suite';

@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components';
 
 import { TorLoader, Modal } from 'src/components/suite';

@@ -1,4 +1,3 @@
-import React from 'react';
 import styled, { css, keyframes } from 'styled-components';
 import { AnimatePresence, motion } from 'framer-motion';
 import { FreeFocusInside } from 'react-focus-lock';

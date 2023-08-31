@@ -1,4 +1,3 @@
-import React from 'react';
 import { authorizeDevice } from 'src/actions/suite/suiteActions';
 import { useDevice, useDispatch } from 'src/hooks/suite';
 import { Translation } from 'src/components/suite';

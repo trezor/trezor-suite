@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components';
 import TrezorLink from 'src/components/suite/TrezorLink';
 import { WalletAccountTransaction } from '@suite-common/wallet-types';

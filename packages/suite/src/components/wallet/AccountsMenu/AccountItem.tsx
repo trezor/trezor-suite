@@ -1,4 +1,4 @@
-import React, { forwardRef } from 'react';
+import { forwardRef, Ref, MouseEventHandler } from 'react';
 import { CoinLogo, variables } from '@trezor/components';
 import styled from 'styled-components';
 import { isTestnet } from '@suite-common/wallet-utils';
@@ -107,11 +107,11 @@ interface AccountItemProps {
     closeMenu: () => void;
 }
 
-// Using `React.forwardRef` to be able to pass `ref` (item) TO parent (Menu/index)
+// Using `forwardRef` to be able to pass `ref` (item) TO parent (Menu/index)
 export const AccountItem = forwardRef(
     (
         { account, accountLabel, selected, closeMenu }: AccountItemProps,
-        ref: React.Ref<HTMLDivElement>,
+        ref: Ref<HTMLDivElement>,
     ) => {
         const dispatch = useDispatch();
 
@@ -125,7 +125,7 @@ export const AccountItem = forwardRef(
             accountType,
         };
 
-        const handleClickOnTokens: React.MouseEventHandler = event => {
+        const handleClickOnTokens: MouseEventHandler = event => {
             event.stopPropagation();
             closeMenu();
             dispatch(goto('wallet-tokens', { params: accountRouteParams }));

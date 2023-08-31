@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState, ChangeEvent, MouseEventHandler } from 'react';
 import styled from 'styled-components';
 import { Translation, AccountLabeling, FormattedCryptoAmount } from 'src/components/suite';
 import {
@@ -190,7 +190,7 @@ const SendSwapTransactionComponent = () => {
         provider: providerName,
     };
 
-    const toggleSlippage = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    const toggleSlippage: MouseEventHandler<HTMLButtonElement> = e => {
         e.preventDefault();
         setSlippageSettings(!slippageSettings);
     };
@@ -207,7 +207,7 @@ const SendSwapTransactionComponent = () => {
         }
     };
 
-    const changeCustomSlippage = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const changeCustomSlippage = (event: ChangeEvent<HTMLInputElement>) => {
         const { value } = event.target;
         setCustomSlippage(value);
         if (!value) {

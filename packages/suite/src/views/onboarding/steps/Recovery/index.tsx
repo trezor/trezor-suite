@@ -1,4 +1,3 @@
-import React from 'react';
 import { OnboardingButtonCta } from 'src/components/onboarding';
 import { SelectWordCount, SelectRecoveryType, SelectRecoveryWord } from 'src/components/recovery';
 import { Translation } from 'src/components/suite';

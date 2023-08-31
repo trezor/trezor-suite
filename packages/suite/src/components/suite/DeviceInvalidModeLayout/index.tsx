@@ -1,4 +1,4 @@
-import React from 'react';
+import { ReactNode } from 'react';
 import styled, { css } from 'styled-components';
 import { Button, Image, ImageType } from '@trezor/components';
 import { Translation } from 'src/components/suite';
@@ -34,11 +34,11 @@ const StyledModal = styled(Modal)`
  */
 
 type DeviceInvalidModeLayoutProps = {
-    title: React.ReactNode;
-    text?: React.ReactNode;
+    title: ReactNode;
+    text?: ReactNode;
     image?: ImageType;
     allowSwitchDevice?: boolean;
-    resolveButton?: React.ReactNode;
+    resolveButton?: ReactNode;
     ['data-test']?: string;
 };
 

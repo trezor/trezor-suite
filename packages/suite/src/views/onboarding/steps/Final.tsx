@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import styled, { css } from 'styled-components';
 import useMeasure from 'react-use/lib/useMeasure';
 import { analytics, EventType } from '@trezor/suite-analytics';

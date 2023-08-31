@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components';
 import { Icon, useTheme, variables, CoinLogo, H3 } from '@trezor/components';
 import { Translation, FormattedDateWithBullet } from 'src/components/suite';

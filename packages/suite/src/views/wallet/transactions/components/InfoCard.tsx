@@ -1,4 +1,4 @@
-import React from 'react';
+import { ReactNode } from 'react';
 import styled from 'styled-components';
 import { variables, Card } from '@trezor/components';
 import {
@@ -63,9 +63,9 @@ const StyledFormattedValue = styled(FormattedCryptoAmount)`
 `;
 
 type InfoCardProps = {
-    title: React.ReactNode;
-    value: React.ReactNode;
-    secondaryValue: React.ReactNode;
+    title: ReactNode;
+    value: ReactNode;
+    secondaryValue: ReactNode;
     symbol?: Account['symbol'];
     isNumeric?: boolean;
     isLoading?: boolean;

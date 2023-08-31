@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { Easing, useDerivedValue, useSharedValue, withTiming } from 'react-native-reanimated';
 
 import {

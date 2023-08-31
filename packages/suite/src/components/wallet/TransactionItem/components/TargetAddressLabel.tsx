@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components';
 import { WalletAccountTransaction } from 'src/types/wallet';
 import { ArrayElement } from '@trezor/type-utils';

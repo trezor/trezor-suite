@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components';
 
 import GoogleClient from 'src/services/google';

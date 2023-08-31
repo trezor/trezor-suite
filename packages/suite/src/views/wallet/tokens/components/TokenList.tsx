@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import { useMemo, Fragment } from 'react';
 import styled, { css } from 'styled-components';
 import { variables, useTheme, Icon, Card } from '@trezor/components';
 import { FiatValue, FormattedCryptoAmount, TrezorLink } from 'src/components/suite';
@@ -73,7 +73,7 @@ export const TokenList = ({ tokens, explorerUrl, isTestnet, networkType }: Token
     const theme = useTheme();
     const coins = useSelector(state => state.wallet.fiat.coins);
 
-    const sortedTokens = React.useMemo(() => {
+    const sortedTokens = useMemo(() => {
         const tokensWithRates = enhanceTokensWithRates(tokens, coins);
 
         return tokensWithRates.sort(sortTokensWithRates);

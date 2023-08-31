@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { useIntl } from 'react-intl';
 import styled from 'styled-components';
 import TrezorConnect from '@trezor/connect';

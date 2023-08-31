@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect, ReactNode } from 'react';
 import styled from 'styled-components';
 
 import { Translation, Modal } from 'src/components/suite';
@@ -51,7 +51,7 @@ const StyledDeviceDisconnected = styled(DeviceDisconnected)`
 `;
 
 export interface ConfirmDeviceScreenProps extends Pick<ModalProps, 'onCancel' | 'heading'> {
-    copyButtonText: React.ReactNode;
+    copyButtonText: ReactNode;
     copyButtonDataTest?: string;
     isConfirmed?: boolean;
     validateOnDevice: () => ThunkAction;

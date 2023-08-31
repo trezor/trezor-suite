@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components';
 import { Translation, Modal } from 'src/components/suite';
 import UdevDownload from 'src/components/suite/UdevDownload';

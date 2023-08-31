@@ -1,4 +1,4 @@
-import React, { ReactNode, useEffect, useState } from 'react';
+import { forwardRef, ReactNode, useEffect, useState } from 'react';
 import {
     TextInput,
     NativeSyntheticEvent,
@@ -173,7 +173,7 @@ const useInputLabelAnimationStyles = ({
     };
 };
 
-export const Input = React.forwardRef<TextInput, InputProps>(
+export const Input = forwardRef<TextInput, InputProps>(
     (
         {
             value,

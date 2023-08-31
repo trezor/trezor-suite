@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { Translation } from 'src/components/suite';
 import { useDispatch } from 'src/hooks/suite';
 import { goto } from 'src/actions/suite/routerActions';

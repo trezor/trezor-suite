@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { Screen, ScreenHeader } from '@suite-native/navigation';
 import { Box } from '@suite-native/atoms';
 

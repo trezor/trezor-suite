@@ -1,4 +1,4 @@
-import React, { forwardRef } from 'react';
+import { forwardRef } from 'react';
 import { formatNetworkAmount, isTestnet } from '@suite-common/wallet-utils';
 import { Translation } from 'src/components/suite/Translation';
 import Indicator from './Indicator';

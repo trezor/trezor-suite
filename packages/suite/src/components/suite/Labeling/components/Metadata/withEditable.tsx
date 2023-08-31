@@ -1,4 +1,12 @@
-import React, { useEffect, useState, useCallback, useRef } from 'react';
+import {
+    useEffect,
+    useState,
+    useCallback,
+    useRef,
+    ReactNode,
+    FunctionComponent,
+    PropsWithChildren,
+} from 'react';
 import styled, { css } from 'styled-components';
 import { Icon, useTheme, KEYBOARD_CODE } from '@trezor/components';
 
@@ -47,7 +55,7 @@ const Editable = styled.div<{ value?: string; isButton?: boolean; touched: boole
 
 interface WithEditableProps {
     originalValue?: string;
-    defaultVisibleValue: React.ReactNode;
+    defaultVisibleValue: ReactNode;
     onSubmit: (value: string | undefined) => void;
     onBlur: () => void;
     isButton?: boolean;
@@ -58,7 +66,7 @@ interface WithEditableProps {
  * and control buttons (submit, cancel).
  */
 export const withEditable =
-    (WrappedComponent: React.FunctionComponent<React.PropsWithChildren>) =>
+    (WrappedComponent: FunctionComponent<PropsWithChildren>) =>
     ({ onSubmit, onBlur, ...props }: WithEditableProps) => {
         const [touched, setTouched] = useState(false);
         // value is used to mirror divRef.current.textContent so that its changes force react to render

@@ -1,4 +1,3 @@
-import React from 'react';
 import { HELP_CENTER_RECOVERY_SEED_URL } from '@trezor/urls';
 
 import { Translation } from 'src/components/suite';

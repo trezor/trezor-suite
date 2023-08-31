@@ -1,4 +1,3 @@
-import React from 'react';
 import styled, { useTheme } from 'styled-components';
 import BigNumber from 'bignumber.js';
 import { NETWORKS } from 'src/config/wallet';

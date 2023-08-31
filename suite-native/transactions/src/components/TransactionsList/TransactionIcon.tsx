@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { Box, RoundedIcon } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { TransactionType } from '@suite-common/wallet-types';

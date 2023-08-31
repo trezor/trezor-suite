@@ -1,6 +1,6 @@
 /* eslint-disable react/no-unused-prop-types */
 
-import React from 'react';
+import { ReactNode } from 'react';
 
 import styled from 'styled-components';
 
@@ -45,7 +45,7 @@ interface Tip {
     icon: IconProps['icon'];
     title: string;
     detail: {
-        steps: React.ReactNode[];
+        steps: ReactNode[];
     };
 }
 

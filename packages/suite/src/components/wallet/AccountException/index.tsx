@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components';
 import { H2 } from '@trezor/components';
 import { SelectedAccountException } from '@suite-common/wallet-types';

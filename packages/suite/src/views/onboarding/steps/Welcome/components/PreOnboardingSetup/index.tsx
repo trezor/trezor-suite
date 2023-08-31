@@ -1,4 +1,4 @@
-import React from 'react';
+import { ReactNode } from 'react';
 import { analytics } from '@trezor/suite-analytics';
 import { DOCS_ANALYTICS_URL, DATA_TOS_URL } from '@trezor/urls';
 import { DataAnalytics } from '@trezor/components';
@@ -43,12 +43,12 @@ const PreOnboardingSetup = () => {
     return (
         <DataAnalytics
             onConfirm={onConfirm}
-            analyticsLink={(chunks: React.ReactNode[]) => (
+            analyticsLink={(chunks: ReactNode[]) => (
                 <StyledTrezorLink variant="underline" href={DOCS_ANALYTICS_URL}>
                     {chunks}
                 </StyledTrezorLink>
             )}
-            tosLink={(chunks: React.ReactNode[]) => (
+            tosLink={(chunks: ReactNode[]) => (
                 <StyledTrezorLink variant="underline" href={DATA_TOS_URL}>
                     {chunks}
                 </StyledTrezorLink>

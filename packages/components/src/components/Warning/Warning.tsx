@@ -1,4 +1,4 @@
-import React from 'react';
+import { ReactNode } from 'react';
 import styled from 'styled-components';
 import { transparentize } from 'polished';
 
@@ -56,7 +56,7 @@ const Wrapper = styled.div<{ variant: Variant; withIcon?: boolean }>`
 `;
 
 export interface WarningProps {
-    children: React.ReactNode;
+    children: ReactNode;
     className?: string;
     variant?: Variant;
     withIcon?: boolean;

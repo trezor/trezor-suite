@@ -1,4 +1,4 @@
-import React, { ReactElement, ReactNode } from 'react';
+import { ReactElement, ReactNode } from 'react';
 import styled, { css } from 'styled-components';
 
 import { WalletAccountTransaction } from '@suite-common/wallet-types';
@@ -176,7 +176,7 @@ const IOGridRow = ({
 };
 
 interface GridGroupWrapperProps {
-    heading?: React.ReactNode;
+    heading?: ReactNode;
     inputsLength?: number;
     outputsLength?: number;
     children: ReactElement | ReactElement[];
@@ -395,7 +395,7 @@ const IOSectionColumn = ({ tx, inputs, outputs }: IOSectionColumnProps) => {
 };
 
 type CollapsibleIOSectionProps = IOSectionColumnProps & {
-    heading?: React.ReactNode;
+    heading?: ReactNode;
     opened?: boolean;
 };
 

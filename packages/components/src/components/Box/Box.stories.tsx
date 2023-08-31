@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components';
 import { Box as BoxComponent } from './Box';
 import { FONT_WEIGHT } from '../../config/variables';

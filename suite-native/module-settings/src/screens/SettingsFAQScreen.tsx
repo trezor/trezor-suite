@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { Screen, ScreenHeader } from '@suite-native/navigation';
 import { VStack, Card, Text, Button, HStack, Pictogram } from '@suite-native/atoms';
 import { useOpenLink } from '@suite-native/link';

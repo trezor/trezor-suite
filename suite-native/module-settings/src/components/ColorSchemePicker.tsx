@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { HStack, Text, VStack } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 

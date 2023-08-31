@@ -1,4 +1,3 @@
-import React from 'react';
 import { Translation } from 'src/components/suite/Translation';
 import { TroubleshootingTips } from 'src/components/suite';
 import {

@@ -1,4 +1,3 @@
-import React from 'react';
 import { DEVICE } from '@trezor/connect';
 import { useDispatch } from 'src/hooks/suite';
 import { acquireDevice, selectDevice } from 'src/actions/suite/suiteActions';

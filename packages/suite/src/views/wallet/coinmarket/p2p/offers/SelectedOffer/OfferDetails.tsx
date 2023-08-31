@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components';
 import { useFormatters } from '@suite-common/formatters';
 import { AccountLabeling, Translation } from 'src/components/suite';

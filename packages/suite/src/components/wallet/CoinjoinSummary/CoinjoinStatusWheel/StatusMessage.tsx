@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components';
 import { SESSION_PHASE_MESSAGES } from 'src/constants/suite/coinjoin';
 import { variables } from '@trezor/components';

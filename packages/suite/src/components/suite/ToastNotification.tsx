@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useRef, useState } from 'react';
+import { useLayoutEffect, useRef, useState } from 'react';
 import styled, { css } from 'styled-components';
 import { Button, Icon, useTheme, variables } from '@trezor/components';
 import { Translation } from 'src/components/suite';

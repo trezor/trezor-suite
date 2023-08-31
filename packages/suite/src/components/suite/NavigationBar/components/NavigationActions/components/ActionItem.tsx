@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import { useMemo, Ref, forwardRef, ReactNode, HTMLAttributes } from 'react';
 import styled from 'styled-components';
 import { useTheme, Icon, IconProps, variables, Spinner, Tooltip } from '@trezor/components';
 import { FADE_IN } from '@trezor/components/src/config/animations';
@@ -99,8 +99,8 @@ const Indicator = styled.div`
 
 export type IndicatorStatus = 'check' | 'alert' | 'loading';
 
-interface CommonProps extends Pick<React.HTMLAttributes<HTMLDivElement>, 'onClick'> {
-    label: React.ReactNode;
+interface CommonProps extends Pick<HTMLAttributes<HTMLDivElement>, 'onClick'> {
+    label: ReactNode;
     isActive?: boolean;
     isOpen?: boolean;
     indicator?: IndicatorStatus;
@@ -110,7 +110,7 @@ interface CommonProps extends Pick<React.HTMLAttributes<HTMLDivElement>, 'onClic
 }
 
 interface CustomIconComponentProps extends CommonProps {
-    iconComponent: React.ReactNode;
+    iconComponent: ReactNode;
     icon?: never;
 }
 interface IconComponentProps extends CommonProps {
@@ -122,7 +122,7 @@ type ActionItemProps = CustomIconComponentProps | IconComponentProps;
 
 // Reason to use forwardRef: We want the user to be able to close Notifications dropdown by clicking somewhere else.
 // In order to achieve that behavior, we need to pass reference to ActionItem
-export const ActionItem = React.forwardRef(
+export const ActionItem = forwardRef(
     (
         {
             icon,
@@ -136,7 +136,7 @@ export const ActionItem = React.forwardRef(
             onClick,
             'data-test': dataTest,
         }: ActionItemProps,
-        ref: React.Ref<HTMLDivElement>,
+        ref: Ref<HTMLDivElement>,
     ) => {
         const theme = useTheme();
 

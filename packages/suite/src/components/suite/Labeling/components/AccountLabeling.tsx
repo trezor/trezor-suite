@@ -1,4 +1,3 @@
-import React from 'react';
 import { findAccountDevice } from '@suite-common/wallet-utils';
 import { isSelectedDevice } from 'src/utils/suite/device';
 import { AccountLabel } from 'src/components/suite';

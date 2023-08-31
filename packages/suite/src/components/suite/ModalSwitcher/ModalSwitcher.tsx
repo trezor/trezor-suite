@@ -1,4 +1,3 @@
-import React from 'react';
 import DiscoveryLoader from 'src/components/suite/DiscoveryLoader';
 import { usePreferredModal } from 'src/hooks/suite/usePreferredModal';
 

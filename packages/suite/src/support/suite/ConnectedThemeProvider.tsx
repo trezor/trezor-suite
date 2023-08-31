@@ -1,9 +1,9 @@
-import React from 'react';
+import { ReactNode } from 'react';
 import { useSelector } from 'src/hooks/suite';
 import { ThemeProvider } from './ThemeProvider';
 
 interface ConnectedThemeProviderProps {
-    children: React.ReactNode;
+    children: ReactNode;
 }
 
 export const ConnectedThemeProvider = ({ children }: ConnectedThemeProviderProps) => {

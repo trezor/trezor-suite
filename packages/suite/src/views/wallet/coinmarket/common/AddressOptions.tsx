@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect, ReactElement } from 'react';
 import styled from 'styled-components';
 import type { AccountAddress } from '@trezor/connect';
 import { Translation, FiatValue, FormattedCryptoAmount } from 'src/components/suite';
@@ -47,7 +47,7 @@ const buildOptions = (addresses: Account['addresses']) => {
     if (!addresses) return undefined;
 
     interface Options {
-        label: React.ReactElement;
+        label: ReactElement;
         options: AccountAddress[];
     }
 

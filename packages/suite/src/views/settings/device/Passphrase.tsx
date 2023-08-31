@@ -1,4 +1,3 @@
-import React from 'react';
 import { HELP_CENTER_PASSPHRASE_URL } from '@trezor/urls';
 import { analytics, EventType } from '@trezor/suite-analytics';
 

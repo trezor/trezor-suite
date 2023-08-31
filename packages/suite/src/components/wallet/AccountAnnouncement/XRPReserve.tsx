@@ -1,4 +1,3 @@
-import React from 'react';
 import Bignumber from 'bignumber.js';
 import { NotificationCard, Translation, ReadMoreLink } from 'src/components/suite';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';

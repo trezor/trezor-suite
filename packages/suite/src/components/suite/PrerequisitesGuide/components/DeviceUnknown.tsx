@@ -1,4 +1,3 @@
-import React from 'react';
 import { Translation, TroubleshootingTips } from 'src/components/suite';
 
 export const DeviceUnknown = () => (

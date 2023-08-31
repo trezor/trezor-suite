@@ -1,4 +1,4 @@
-import React from 'react';
+import { ComponentProps } from 'react';
 import { FormattedDate as IntlFormattedDate } from 'react-intl';
 import styled from 'styled-components';
 
@@ -17,7 +17,7 @@ const Timestamp = styled.span`
     white-space: nowrap;
 `;
 
-interface Props extends React.ComponentProps<typeof IntlFormattedDate> {
+interface Props extends ComponentProps<typeof IntlFormattedDate> {
     date?: boolean;
     time?: boolean;
 }

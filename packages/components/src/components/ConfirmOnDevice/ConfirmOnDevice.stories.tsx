@@ -1,4 +1,3 @@
-import React from 'react';
 import { ConfirmOnDevice as ConfirmOnDeviceComponent } from './ConfirmOnDevice';
 import { StoryColumn } from '../../support/Story';
 import { DeviceModelInternal } from '@trezor/connect';

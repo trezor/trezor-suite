@@ -1,4 +1,3 @@
-import React from 'react';
 import { Account } from 'src/types/wallet';
 import { FormattedCryptoAmount } from 'src/components/suite';
 

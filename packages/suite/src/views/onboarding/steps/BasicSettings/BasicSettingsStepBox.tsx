@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import styled from 'styled-components';
 import { OnboardingStepBox, OnboardingStepBoxProps } from 'src/components/onboarding';
 import { CoinsGroup, TooltipSymbol, Translation } from 'src/components/suite';

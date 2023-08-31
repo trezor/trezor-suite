@@ -1,4 +1,3 @@
-import React from 'react';
 import { Banner } from './Banner';
 import { setTranslationMode } from 'src/utils/suite/l10n';
 

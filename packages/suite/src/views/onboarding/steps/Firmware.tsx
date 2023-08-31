@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { OnboardingButtonBack, OnboardingStepBox } from 'src/components/onboarding';
 import { Translation } from 'src/components/suite';
 import {

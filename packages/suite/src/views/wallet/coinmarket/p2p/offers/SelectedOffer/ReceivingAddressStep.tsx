@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components';
 import { useDevice, useDispatch } from 'src/hooks/suite';
 import { Translation } from 'src/components/suite';

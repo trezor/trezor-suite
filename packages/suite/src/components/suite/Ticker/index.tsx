@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components';
 import { differenceInMinutes } from 'date-fns';
 import { Tooltip, useTheme, variables, Icon } from '@trezor/components';

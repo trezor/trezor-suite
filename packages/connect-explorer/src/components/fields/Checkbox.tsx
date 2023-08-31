@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { Checkbox as CheckboxComponent } from '@trezor/components';
 
 import type { Field } from '../../types';

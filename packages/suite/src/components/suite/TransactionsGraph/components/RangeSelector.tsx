@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import { useState, useRef } from 'react';
 
 import styled, { css } from 'styled-components';
 import { Translation } from 'src/components/suite';

@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { capitalizeFirstLetter } from '@trezor/utils';
 import { ActionColumn, SectionItem, TextColumn, ActionButton } from 'src/components/suite/Settings';
 import { useSelector, useDispatch } from 'src/hooks/suite';

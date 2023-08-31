@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Loading } from 'src/components/suite';
 import styled from 'styled-components';
 

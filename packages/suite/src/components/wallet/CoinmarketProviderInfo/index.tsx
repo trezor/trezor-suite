@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components';
 import { variables } from '@trezor/components';
 import invityApi from 'src/services/suite/invityAPI';

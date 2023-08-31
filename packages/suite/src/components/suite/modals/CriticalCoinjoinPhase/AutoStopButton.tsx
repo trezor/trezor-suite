@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import styled, { css } from 'styled-components';
 import { Icon, IconType, useTheme, variables } from '@trezor/components';
 import { TranslationKey } from '@suite-common/intl-types';

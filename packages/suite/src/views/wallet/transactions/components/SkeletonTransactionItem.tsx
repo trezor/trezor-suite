@@ -1,4 +1,3 @@
-import React from 'react';
 import { SkeletonRectangle, Spread, Stack } from 'src/components/suite/Skeleton';
 
 export const SkeletonTransactionItem = () => (

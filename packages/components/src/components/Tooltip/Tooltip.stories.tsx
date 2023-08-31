@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components';
 import { Tooltip } from '../../index';
 import { storiesOf } from '@storybook/react';

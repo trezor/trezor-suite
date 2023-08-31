@@ -1,4 +1,4 @@
-import React from 'react';
+import { forwardRef, ReactNode, HTMLAttributes } from 'react';
 import styled from 'styled-components';
 
 const Wrapper = styled.div<{ paddingSize: string }>`
@@ -23,15 +23,15 @@ const getPaddingSize = (
     return '20px';
 };
 
-export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
-    children?: React.ReactNode;
+export interface CardProps extends HTMLAttributes<HTMLDivElement> {
+    children?: ReactNode;
     largePadding?: boolean;
     noPadding?: boolean;
     noVerticalPadding?: boolean;
     customPadding?: string;
 }
 
-export const Card = React.forwardRef<HTMLDivElement, CardProps>(
+export const Card = forwardRef<HTMLDivElement, CardProps>(
     ({ children, largePadding, noPadding, noVerticalPadding, customPadding, ...rest }, ref) => (
         <Wrapper
             ref={ref}

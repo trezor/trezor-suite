@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components';
 import { FormattedNumber } from 'react-intl';
 import { Translation } from './Translation';

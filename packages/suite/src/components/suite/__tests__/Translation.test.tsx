@@ -1,4 +1,3 @@
-import React from 'react';
 import createComponentWithIntl from 'src/support/tests/IntlHelper';
 import { Translation } from '../Translation';
 

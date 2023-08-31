@@ -1,4 +1,4 @@
-import React from 'react';
+import { Children, BlockquoteHTMLAttributes, cloneElement, isValidElement } from 'react';
 import styled from 'styled-components';
 
 import { Warning } from '@trezor/components';
@@ -28,13 +28,13 @@ const REGEX = new RegExp(`^(${BULB_EMOJI}|${WARNING_EMOJI})\\s*`);
 // This is a hack to sneak a bit more complex component into the generated markup.
 // We use markdown quotes in the source to render hints and warnings in Guide.
 // The displayed variant is determined by an emoji at the start of the markdown quote.
-export const GuideHint = ({ children }: React.BlockquoteHTMLAttributes<HTMLQuoteElement>) => {
+export const GuideHint = ({ children }: BlockquoteHTMLAttributes<HTMLQuoteElement>) => {
     // We dig the message from children to check for an emoji indicating the component variant.
     // There should be three children, with the first and the last being just newline characters - we filter them out as invalid elements.
     // The middle one is a ReactElement whose children are the content of the message (array of strings and ReactElements - a, strong etc.).
     // The first element is the start of the message which should hold the emoji.
-    const message: string[] | undefined = React.Children.map(children, child => {
-        if (React.isValidElement(child)) {
+    const message: string[] | undefined = Children.map(children, child => {
+        if (isValidElement(child)) {
             return child.props.children;
         }
         return false;
@@ -52,9 +52,9 @@ export const GuideHint = ({ children }: React.BlockquoteHTMLAttributes<HTMLQuote
     }
 
     // Clone the children to avoid mutating them and prevent weird bugs.
-    const clonedChildren = React.Children.map(children, child => {
-        if (React.isValidElement(child)) {
-            return React.cloneElement(child, {
+    const clonedChildren = Children.map(children, child => {
+        if (isValidElement(child)) {
+            return cloneElement(child, {
                 ...child.props,
                 children: updatedMessage || child.props.children,
             });

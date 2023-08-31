@@ -1,4 +1,3 @@
-import React from 'react';
 import { Translation } from 'src/components/suite';
 import { AccountExceptionLayout, WalletLayout } from 'src/components/wallet';
 import { useSelector } from 'src/hooks/suite';

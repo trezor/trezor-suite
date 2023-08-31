@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import { ReactNode } from 'react';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
 import { Icon, IconName } from '@suite-common/icons/src';

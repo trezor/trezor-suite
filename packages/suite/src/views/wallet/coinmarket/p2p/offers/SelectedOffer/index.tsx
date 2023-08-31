@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components';
 import { Translation } from 'src/components/suite';
 import { Card, Icon, colors, variables } from '@trezor/components';

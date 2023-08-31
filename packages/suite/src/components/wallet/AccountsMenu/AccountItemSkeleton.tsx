@@ -1,4 +1,3 @@
-import React from 'react';
 import { SkeletonCircle, SkeletonRectangle, Stack } from 'src/components/suite/Skeleton';
 import { useLoadingSkeleton } from 'src/hooks/suite';
 import { AccountHeader, Left, Right } from './AccountItem';

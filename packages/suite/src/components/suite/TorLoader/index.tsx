@@ -1,4 +1,4 @@
-import React, { useState, useEffect, ComponentType } from 'react';
+import { useState, useEffect, ComponentType } from 'react';
 
 import styled from 'styled-components';
 import { TorStatus } from 'src/types/suite';

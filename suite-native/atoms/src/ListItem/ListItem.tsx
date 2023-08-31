@@ -1,4 +1,3 @@
-import React from 'react';
 import { TouchableOpacity, TouchableOpacityProps, View } from 'react-native';
 
 import { Icon } from '@suite-common/icons';

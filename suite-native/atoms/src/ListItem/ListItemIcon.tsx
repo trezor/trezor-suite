@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { IconName } from '@suite-common/icons';
 
 import { Box } from '../Box';

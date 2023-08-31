@@ -1,4 +1,4 @@
-import React from 'react';
+import { ReactNode } from 'react';
 import styled from 'styled-components';
 import { transparentize } from 'polished';
 
@@ -41,8 +41,8 @@ const StyledIcon = styled(Icon)<{ backgroundColor?: string }>`
 `;
 
 interface UtxoSelectionListProps {
-    description: React.ReactNode;
-    heading: React.ReactNode;
+    description: ReactNode;
+    heading: ReactNode;
     icon: IconType;
     iconColor?: string;
     utxos: AccountUtxo[];

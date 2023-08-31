@@ -1,4 +1,4 @@
-import React from 'react';
+import { ReactNode, HTMLAttributes } from 'react';
 import styled, { css } from 'styled-components';
 import { motion } from 'framer-motion';
 import { H1, Icon, Image, ImageType, motionEasing, variables } from '@trezor/components';
@@ -170,18 +170,18 @@ const CloseIcon = styled(Icon)`
     background: transparent;
 `;
 
-export interface CollapsibleOnboardingCardProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface CollapsibleOnboardingCardProps extends HTMLAttributes<HTMLDivElement> {
     image?: ImageType;
     variant?: 'small' | 'large';
     expandable?: boolean;
     expanded?: boolean;
     nested?: boolean;
     onToggle?: () => void;
-    expandableIcon?: React.ReactNode;
-    heading?: React.ReactNode;
-    description?: React.ReactNode;
-    children?: React.ReactNode;
-    tag?: React.ReactNode;
+    expandableIcon?: ReactNode;
+    heading?: ReactNode;
+    description?: ReactNode;
+    children?: ReactNode;
+    tag?: ReactNode;
 }
 
 export const CollapsibleOnboardingCard = ({

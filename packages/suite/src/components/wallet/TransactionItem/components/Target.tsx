@@ -1,4 +1,3 @@
-import React from 'react';
 import { getIsZeroValuePhishing } from '@suite-common/suite-utils';
 import { FiatValue, Translation, MetadataLabeling, AddressLabeling } from 'src/components/suite';
 import { ArrayElement } from '@trezor/type-utils';

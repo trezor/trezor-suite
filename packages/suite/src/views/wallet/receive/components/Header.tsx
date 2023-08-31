@@ -1,4 +1,3 @@
-import React from 'react';
 import { H2, P } from '@trezor/components';
 import { Account } from 'src/types/wallet';
 import styled from 'styled-components';

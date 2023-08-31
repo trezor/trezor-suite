@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import * as STEP from 'src/constants/onboarding/steps';
 import {
     OnboardingButtonBack,

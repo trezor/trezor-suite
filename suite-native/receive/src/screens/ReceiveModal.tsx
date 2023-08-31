@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { CommonActions, RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
 import {

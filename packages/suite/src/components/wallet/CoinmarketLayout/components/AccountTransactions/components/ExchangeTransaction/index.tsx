@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components';
 import { ExchangeProviderInfo } from 'invity-api';
 import { Button, Icon, variables, useTheme } from '@trezor/components';

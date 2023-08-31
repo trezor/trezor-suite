@@ -1,4 +1,4 @@
-import React, { ReactNode, useMemo, useState } from 'react';
+import { useMemo, useState, ReactNode } from 'react';
 
 import {
     CryptoIcon,

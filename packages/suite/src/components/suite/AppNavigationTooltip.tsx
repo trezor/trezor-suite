@@ -1,11 +1,11 @@
-import React from 'react';
+import { ReactNode } from 'react';
 
 import { Translation } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
 import { Tooltip } from '@trezor/components';
 
 interface AppNavigationTooltipProps {
-    children: React.ReactNode;
+    children: ReactNode;
     isActiveTab?: boolean;
 }
 

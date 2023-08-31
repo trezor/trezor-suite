@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components';
 import invityAPI from 'src/services/suite/invityAPI';
 import { FormattedCryptoAmount, Translation } from 'src/components/suite';

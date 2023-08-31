@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components';
 import { CoinLogo, variables, types } from '../../../index';
 import { StoryColumn } from '../../../support/Story';

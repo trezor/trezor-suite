@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { HELP_CENTER_PIN_URL } from '@trezor/urls';
 import { variables, useTheme } from '@trezor/components';

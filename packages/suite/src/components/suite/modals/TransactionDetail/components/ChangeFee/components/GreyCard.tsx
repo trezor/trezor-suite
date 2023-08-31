@@ -1,4 +1,4 @@
-import React from 'react';
+import { ReactNode } from 'react';
 import styled from 'styled-components';
 import { Card } from '@trezor/components';
 
@@ -12,6 +12,4 @@ const Wrapper = styled(Card)`
     margin-top: 12px;
 `;
 
-export const GreyCard = (props: { children?: React.ReactNode }) => (
-    <Wrapper>{props.children}</Wrapper>
-);
+export const GreyCard = (props: { children?: ReactNode }) => <Wrapper>{props.children}</Wrapper>;

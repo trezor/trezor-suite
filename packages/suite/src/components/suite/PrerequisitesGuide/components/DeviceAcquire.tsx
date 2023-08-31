@@ -1,4 +1,4 @@
-import React from 'react';
+import { MouseEventHandler } from 'react';
 import { Button } from '@trezor/components';
 
 import { Translation, TroubleshootingTips } from 'src/components/suite';
@@ -12,7 +12,7 @@ export const DeviceAcquire = () => {
 
     const isDeviceLocked = isLocked();
 
-    const handleClick: React.MouseEventHandler = e => {
+    const handleClick: MouseEventHandler = e => {
         e.stopPropagation();
         dispatch(acquireDevice());
     };

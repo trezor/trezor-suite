@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect, ReactNode } from 'react';
 import { useLocation } from 'react-router';
 
 import Header from '../components/Header';
@@ -7,7 +7,7 @@ import * as routerActions from '../actions/routerActions';
 import { useActions } from '../hooks';
 
 interface AppContainerProps {
-    children: React.ReactNode;
+    children: ReactNode;
 }
 
 const AppContainer = ({ children }: AppContainerProps) => {

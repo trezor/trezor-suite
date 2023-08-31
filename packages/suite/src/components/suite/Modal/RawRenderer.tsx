@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components';
 import { Modal, ModalProps, H1 } from '@trezor/components';
 

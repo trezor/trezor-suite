@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { Ref, forwardRef, ButtonHTMLAttributes } from 'react';
 import styled, { css } from 'styled-components';
 import { Icon } from '../../assets/Icon/Icon';
 import { IconType, ButtonVariant, SuiteThemeColors } from '../../../support/types';
@@ -185,7 +185,7 @@ const IconWrapper = styled.div<IconWrapperProps>`
         `}
 `;
 
-export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
     variant?: ButtonVariant;
     icon?: IconType;
     size?: number;
@@ -196,7 +196,7 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
     'data-test'?: string;
 }
 
-export const Button = React.forwardRef(
+export const Button = forwardRef(
     (
         {
             children,
@@ -211,7 +211,7 @@ export const Button = React.forwardRef(
             onChange,
             ...rest
         }: ButtonProps,
-        ref?: React.Ref<HTMLButtonElement>,
+        ref?: Ref<HTMLButtonElement>,
     ) => {
         const theme = useTheme();
         const hasLabel = !!children;

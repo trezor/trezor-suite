@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { A } from '@mobily/ts-belt';
 
 import { Box, VStack, Text } from '@suite-native/atoms';

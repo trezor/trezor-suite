@@ -1,4 +1,4 @@
-import React from 'react';
+import { ReactNode } from 'react';
 import styled from 'styled-components';
 import { variables } from '@trezor/components';
 import { FiatValue } from 'src/components/suite/FiatValue';
@@ -35,8 +35,8 @@ const CryptoAmount = styled(FormattedCryptoAmount)<{ color?: string }>`
 `;
 
 interface CryptoAmountWithHeaderProps {
-    header: React.ReactNode;
-    headerIcon?: React.ReactNode;
+    header: ReactNode;
+    headerIcon?: ReactNode;
     value: string;
     symbol: NetworkSymbol;
     color?: string;

@@ -1,4 +1,4 @@
-import React from 'react';
+import { FC } from 'react';
 
 import { Color } from '@trezor/theme';
 
@@ -17,4 +17,4 @@ const iconSizes = {
 type IconSize = keyof typeof iconSizes;
 
 // This will be used for web in the future
-export const Icon: React.FC<IconProps> = () => null;
+export const Icon: FC<IconProps> = () => null;

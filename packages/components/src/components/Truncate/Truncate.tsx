@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState, ReactNode, MouseEventHandler } from 'react';
 import styled, { useTheme } from 'styled-components';
 import ReactTruncate from 'react-truncate';
 import { Icon } from '../assets/Icon/Icon';
@@ -22,7 +22,7 @@ const StyledButton = styled.button`
 `;
 
 type TruncateProps = {
-    children: React.ReactNode;
+    children: ReactNode;
     lines?: number;
 };
 
@@ -35,7 +35,7 @@ export const Truncate = ({ children, lines = 1 }: TruncateProps) => {
         setTruncated(truncated);
     };
 
-    const toggleLines = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    const toggleLines: MouseEventHandler<HTMLButtonElement> = e => {
         e.preventDefault();
         setExpanded(!expanded);
     };

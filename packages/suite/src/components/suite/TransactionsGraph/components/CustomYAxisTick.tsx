@@ -1,4 +1,4 @@
-import React, { useRef, useLayoutEffect } from 'react';
+import { useRef, useLayoutEffect } from 'react';
 import { useTheme } from '@trezor/components';
 import { FormattedCryptoAmount } from 'src/components/suite';
 import { useFormatters } from '@suite-common/formatters';

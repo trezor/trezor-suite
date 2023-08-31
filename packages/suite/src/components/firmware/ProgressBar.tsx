@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState, ReactNode } from 'react';
 import { Icon, Progress, variables, useTheme } from '@trezor/components';
 import styled from 'styled-components';
 
@@ -42,7 +42,7 @@ const Percentage = styled.div`
 interface ProgressBarProps {
     current: number; // current progress
     total: number; // total number of increments
-    label: React.ReactNode;
+    label: ReactNode;
     maintainCompletedState?: boolean; // will maintain 100% completed state, even if current becomes 0 after completion
     fakeProgressDuration?: number; // Will increment progress each second till it hits `fakeProgressBarrier`.
     fakeProgressBarrier?: number; // Barrier where fake progress will wait for real `current` progress to catch up.

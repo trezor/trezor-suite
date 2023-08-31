@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import styled, { css } from 'styled-components';
 import { variables, motionEasing } from '@trezor/components';
 import { ConnectDevicePrompt } from 'src/components/suite';

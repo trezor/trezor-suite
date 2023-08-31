@@ -1,4 +1,3 @@
-import React from 'react';
 import { Icon, useTheme } from '@trezor/components';
 import { TrezorDevice } from 'src/types/suite';
 

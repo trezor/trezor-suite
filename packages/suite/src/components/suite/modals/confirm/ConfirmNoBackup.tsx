@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components';
 
 import { onReceiveConfirmation } from 'src/actions/suite/modalActions';

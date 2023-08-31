@@ -1,4 +1,3 @@
-import React from 'react';
 import { Translation } from 'src/components/suite';
 import { AccountExceptionLayout } from 'src/components/wallet';
 

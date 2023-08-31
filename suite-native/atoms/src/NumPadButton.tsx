@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import { useCallback } from 'react';
 import { Platform, TouchableHighlight } from 'react-native';
 
 import { useNativeStyles, NativeStyleObject, prepareNativeStyle } from '@trezor/styles';

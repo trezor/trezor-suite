@@ -1,4 +1,4 @@
-import React from 'react';
+import { ReactNode, MouseEvent } from 'react';
 import styled, { css } from 'styled-components';
 import { Icon, IconProps } from '../../assets/Icon/Icon';
 import { useTheme } from '../../../utils';
@@ -53,8 +53,8 @@ interface LinkProps {
     to?: any;
     target?: string;
     size?: ParagraphSize;
-    onClick?: (event: React.MouseEvent<any>) => void;
-    children?: React.ReactNode;
+    onClick?: (event: MouseEvent<any>) => void;
+    children?: ReactNode;
     className?: string;
     variant?: 'default' | 'nostyle' | 'underline';
     icon?: IconProps['icon'];
@@ -69,7 +69,7 @@ const Link = ({ icon, iconProps, ...props }: LinkProps) => {
             target={props.target || '_blank'}
             rel="noreferrer noopener"
             {...props} // make sure {...props} is passed before calling onCLick()
-            onClick={(e: React.MouseEvent<any>) => {
+            onClick={(e: MouseEvent<any>) => {
                 // if the user passed custom onClick action, run it first
                 if (props.onClick) {
                     props.onClick(e);

@@ -1,4 +1,4 @@
-import React from 'react';
+import { MouseEvent } from 'react';
 import styled from 'styled-components';
 import { variables, useTheme, Icon, Input } from '@trezor/components';
 
@@ -16,7 +16,7 @@ const StyledInput = styled(Input)`
 
 interface InputPinProps {
     value: string;
-    onDeleteClick: (event?: React.MouseEvent<any>) => void;
+    onDeleteClick: (event?: MouseEvent<any>) => void;
 }
 
 const InputPin = ({ value, onDeleteClick }: InputPinProps) => {

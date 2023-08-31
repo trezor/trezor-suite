@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState, ReactNode, KeyboardEvent } from 'react';
 import ReactSelect, {
     components as ReactSelectComponents,
     Props as ReactSelectProps,
@@ -230,11 +230,11 @@ const isOptionGrouped = (x: OptionsOrGroups<Option, GroupBase<Option>>): x is Gr
 interface CommonProps extends Omit<ReactSelectProps<Option>, 'onChange'> {
     withDropdownIndicator?: boolean;
     isClean?: boolean;
-    label?: React.ReactNode;
+    label?: ReactNode;
     wrapperProps?: Record<string, any>;
     variant?: InputVariant;
     noError?: boolean;
-    bottomText?: React.ReactNode;
+    bottomText?: ReactNode;
     hideTextCursor?: boolean; // this prop hides blinking text cursor
     minWidth?: string;
     inputState?: InputState;
@@ -309,7 +309,7 @@ export const Select = ({
     }, []);
 
     const onKeyDown = useCallback(
-        async (event: React.KeyboardEvent) => {
+        async (event: KeyboardEvent) => {
             if (!useKeyPressScroll || !selectRef.current) {
                 return;
             }

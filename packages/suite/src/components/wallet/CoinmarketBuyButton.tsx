@@ -1,4 +1,3 @@
-import React from 'react';
 import * as routerActions from 'src/actions/suite/routerActions';
 import { Button } from '@trezor/components';
 import { NetworkSymbol } from 'src/types/wallet';

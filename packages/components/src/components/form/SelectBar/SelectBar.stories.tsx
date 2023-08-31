@@ -1,4 +1,3 @@
-import React from 'react';
 import { useArgs } from '@storybook/client-api';
 
 import { SelectBar as SelectBarComponent } from './SelectBar';

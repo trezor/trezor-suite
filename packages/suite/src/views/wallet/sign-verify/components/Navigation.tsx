@@ -1,4 +1,3 @@
-import React from 'react';
 import { WalletLayoutNavigation, WalletLayoutNavLink } from 'src/components/wallet';
 
 export type NavPages = 'sign' | 'verify';

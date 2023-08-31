@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState, ChangeEventHandler } from 'react';
 import { analytics, EventType } from '@trezor/suite-analytics';
 import styled, { css } from 'styled-components';
 
@@ -63,7 +63,7 @@ export const ChangeDeviceLabel = ({
     const [label, setLabel] = useState(device?.label === placeholder ? '' : device?.label);
     const [error, setError] = useState<string | null>(null);
 
-    const handleChange: React.ChangeEventHandler<HTMLInputElement> = ({ target: { value } }) => {
+    const handleChange: ChangeEventHandler<HTMLInputElement> = ({ target: { value } }) => {
         setLabel(value);
 
         if (value.length > MAX_LABEL_LENGTH) {

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { TouchableOpacity } from 'react-native';
 
 import { BottomSheet, Box, Card, RoundedIcon, Text } from '@suite-native/atoms';

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { LayoutChangeEvent } from 'react-native';
 
 import { useAtom } from 'jotai';

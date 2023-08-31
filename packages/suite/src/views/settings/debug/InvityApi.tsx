@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components';
 
 import { ActionColumn, ActionSelect, SectionItem, TextColumn } from 'src/components/suite/Settings';

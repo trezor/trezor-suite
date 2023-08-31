@@ -1,4 +1,3 @@
-import React from 'react';
 import { useArgs } from '@storybook/client-api';
 
 import { Select as SelectComponent } from './Select';

@@ -1,13 +1,13 @@
-import React from 'react';
+import { ReactNode } from 'react';
 import styled from 'styled-components';
 import { variables, Button, Icon } from '@trezor/components';
 import { Translation, TrezorLink } from 'src/components/suite';
 
 interface TextColumnProps {
-    title?: React.ReactNode;
-    description?: React.ReactNode;
+    title?: ReactNode;
+    description?: ReactNode;
     buttonLink?: string;
-    buttonTitle?: React.ReactNode;
+    buttonTitle?: ReactNode;
 }
 
 const Wrapper = styled.div`

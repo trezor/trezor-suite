@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { useSelector } from 'src/hooks/suite';
 import { WalletLayoutHeader } from 'src/components/wallet';
 import { CoinjoinConfirmation } from 'src/views/wallet/anonymize/components/CoinjoinConfirmation';

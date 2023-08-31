@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { Button, Link, Image } from '@trezor/components';
 import type { UiEvent } from '@trezor/connect';
 import { SUITE_BRIDGE_URL } from '@trezor/urls';

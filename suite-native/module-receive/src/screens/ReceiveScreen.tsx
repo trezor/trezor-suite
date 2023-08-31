@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { RouteProp, useRoute } from '@react-navigation/native';
 
 import { ReceiveAccount } from '@suite-native/receive';

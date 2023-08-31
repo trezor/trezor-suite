@@ -1,4 +1,4 @@
-import React from 'react';
+import { MouseEventHandler } from 'react';
 import styled, { css } from 'styled-components';
 import { darken } from 'polished';
 
@@ -175,7 +175,7 @@ export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
     const utxoTagIconColor = isDisabled ? theme.TYPE_LIGHT_GREY : theme.TYPE_DARK_GREY;
 
     const handleCheckbox = () => toggleUtxoSelection(utxo);
-    const showTransactionDetail: React.MouseEventHandler = e => {
+    const showTransactionDetail: MouseEventHandler = e => {
         e.stopPropagation(); // do not trigger the checkbox
         if (transaction) {
             dispatch(openModal({ type: 'transaction-detail', tx: transaction }));

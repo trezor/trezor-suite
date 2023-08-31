@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import { analytics, EventType } from '@trezor/suite-analytics';
 
 import { desktopApi, SuiteThemeVariant } from '@trezor/suite-desktop-api';

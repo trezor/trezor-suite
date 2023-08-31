@@ -1,4 +1,4 @@
-import React from 'react';
+import { ReactNode } from 'react';
 import { WalletLayout, CoinjoinExplanation } from 'src/components/wallet';
 import { useSelector } from 'src/hooks/suite';
 import { AppState } from 'src/types/suite';
@@ -13,7 +13,7 @@ import { CoinjoinAccountDiscoveryProgress } from 'src/components/wallet/WalletLa
 
 interface LayoutProps {
     selectedAccount: AppState['wallet']['selectedAccount'];
-    children?: React.ReactNode;
+    children?: ReactNode;
     showEmptyHeaderPlaceholder?: boolean;
 }
 

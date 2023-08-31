@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { Atom, useAtom } from 'jotai';
 
 import { HStack, Text } from '@suite-native/atoms';

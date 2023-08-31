@@ -1,4 +1,4 @@
-import React from 'react';
+import { useState } from 'react';
 import styled from 'styled-components';
 import { Button, H3, P, CoinLogo, variables } from '@trezor/components';
 import { Modal, Translation } from 'src/components/suite';
@@ -83,7 +83,7 @@ type DisableTorProps = Omit<Extract<UserContextPayload, { type: 'disable-tor' }>
 
 export const DisableTor = ({ onCancel, decision }: DisableTorProps) => {
     const dispatch = useDispatch();
-    const [coin, setCoin] = React.useState<Network['symbol']>();
+    const [coin, setCoin] = useState<Network['symbol']>();
     const onionBackends = useCustomBackends().filter(({ urls }) => urls.every(isOnionUrl));
 
     const onDisableTor = () => {

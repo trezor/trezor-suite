@@ -1,4 +1,4 @@
-import React from 'react';
+import { HTMLAttributes, EventHandler, SyntheticEvent, KeyboardEvent } from 'react';
 import styled from 'styled-components';
 import { darken } from 'polished';
 import { KEYBOARD_CODE } from '../../../constants/keyboardEvents';
@@ -58,11 +58,11 @@ const Label = styled.div`
     text-align: left;
 `;
 
-export interface CheckboxProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface CheckboxProps extends HTMLAttributes<HTMLDivElement> {
     color?: string;
     isChecked?: boolean;
     isDisabled?: boolean;
-    onClick: React.EventHandler<React.SyntheticEvent>;
+    onClick: EventHandler<SyntheticEvent>;
 }
 
 export const Checkbox = ({
@@ -79,7 +79,7 @@ export const Checkbox = ({
         if (isDisabled) return;
         onClick(event);
     };
-    const handleKeyUp = (event: React.KeyboardEvent<HTMLElement>) => {
+    const handleKeyUp = (event: KeyboardEvent<HTMLElement>) => {
         if (event.code === KEYBOARD_CODE.SPACE) {
             handleClick(event);
         }

@@ -1,4 +1,3 @@
-import React from 'react';
 import { ActionButton, ActionColumn, TextColumn, Row } from 'src/components/suite/Settings';
 import { Translation } from 'src/components/suite';
 import { useDispatch } from 'src/hooks/suite/useDispatch';

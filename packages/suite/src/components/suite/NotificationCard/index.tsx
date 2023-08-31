@@ -1,4 +1,4 @@
-import React from 'react';
+import { ReactNode } from 'react';
 import styled from 'styled-components';
 import {
     Icon,
@@ -14,7 +14,7 @@ import { darken } from 'polished';
 // TODO: move to components
 
 interface NotificationCardProps {
-    children: React.ReactNode;
+    children: ReactNode;
     variant: 'loader' | 'info' | 'warning' | 'critical';
     button?: ButtonProps;
     className?: string;

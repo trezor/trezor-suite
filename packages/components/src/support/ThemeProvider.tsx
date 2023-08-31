@@ -1,8 +1,8 @@
-import React from 'react';
+import { createContext } from 'react';
 import { THEME } from '../config/colors';
 import { SuiteThemeColors } from './types';
 
-const ThemeContext = React.createContext<SuiteThemeColors>(THEME.light);
+const ThemeContext = createContext<SuiteThemeColors>(THEME.light);
 
 interface ThemeProviderProps {
     theme: SuiteThemeColors;

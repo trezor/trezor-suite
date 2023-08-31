@@ -1,4 +1,4 @@
-import React, { createContext, useCallback, useState } from 'react';
+import { createContext, useCallback, useState, ReactNode, UIEventHandler } from 'react';
 import styled from 'styled-components';
 import { variables } from '@trezor/components';
 
@@ -14,13 +14,13 @@ const Wrapper = styled.div`
 export const ContentScrolledContext = createContext<boolean>(false);
 
 type ViewWrapperProps = {
-    children: React.ReactNode;
+    children: ReactNode;
 };
 
 export const ViewWrapper = ({ children }: ViewWrapperProps) => {
     const [isScrolled, setIsScrolled] = useState<boolean>(false);
 
-    const onScroll = useCallback((e: React.UIEvent<HTMLDivElement, UIEvent>) => {
+    const onScroll: UIEventHandler<HTMLDivElement> = useCallback(e => {
         if (e?.currentTarget?.scrollTop) {
             setIsScrolled(true);
         } else {

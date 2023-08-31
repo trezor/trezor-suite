@@ -1,7 +1,7 @@
-import React from 'react';
+import { ButtonHTMLAttributes } from 'react';
 import { Button } from '@trezor/components';
 
-interface ButtonAltProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+interface ButtonAltProps extends ButtonHTMLAttributes<HTMLButtonElement> {
     isDisabled?: boolean;
 }
 

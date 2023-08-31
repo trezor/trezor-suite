@@ -1,4 +1,4 @@
-import React from 'react';
+import { ChangeEvent } from 'react';
 import { useArgs } from '@storybook/client-api';
 
 import { Textarea as TextareaComponent } from './Textarea';
@@ -42,7 +42,7 @@ export const Textarea = {
     render: ({ ...args }) => {
         // eslint-disable-next-line
         const [{ value }, updateArgs] = useArgs();
-        const handleValue = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+        const handleValue = (e: ChangeEvent<HTMLTextAreaElement>) => {
             updateArgs({ value: e.target.value });
         };
 

@@ -1,4 +1,4 @@
-import React, { ReactNode, useEffect, useContext } from 'react';
+import { useEffect, useContext, ReactNode } from 'react';
 import { Platform, StatusBar, View } from 'react-native';
 import { useSafeAreaInsets, EdgeInsets } from 'react-native-safe-area-context';
 import { useSelector } from 'react-redux';

@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import { ReactNode } from 'react';
 import { TouchableOpacity } from 'react-native';
 
 import { Box, Text, VStack, Card } from '@suite-native/atoms';

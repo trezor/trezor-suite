@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { useNavigation } from '@react-navigation/core';
 
 import { Box, Button, Divider } from '@suite-native/atoms';

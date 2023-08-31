@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components';
 import { SellProviderInfo } from 'invity-api';
 import { useWatchSellTrade } from 'src/hooks/wallet/useCoinmarket';

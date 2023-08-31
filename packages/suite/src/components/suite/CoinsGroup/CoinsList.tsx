@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components';
 import { Tooltip } from '@trezor/components';
 import { Coin, Translation } from 'src/components/suite';

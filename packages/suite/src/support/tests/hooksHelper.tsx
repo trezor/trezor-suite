@@ -1,4 +1,4 @@
-import React from 'react';
+import { ReactNode } from 'react';
 import { Provider } from 'react-redux';
 import { IntlProvider } from 'react-intl';
 import { act, render, screen, waitForElementToBeRemoved } from '@testing-library/react';
@@ -7,7 +7,7 @@ import userEvent from '@testing-library/user-event';
 import { MockedFormatterProvider } from '@suite-common/formatters';
 
 // used in hooks tests
-export const renderWithProviders = (store: any, children: React.ReactNode) => {
+export const renderWithProviders = (store: any, children: ReactNode) => {
     const renderMethods = render(
         <Provider store={store}>
             <ConnectedThemeProvider>

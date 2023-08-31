@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import styled, { useTheme } from 'styled-components';
 import Lottie from 'lottie-react';
 

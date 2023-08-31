@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components';
 import { useActions, useSelector } from '../hooks';
 import * as trezorConnectActions from '../actions/trezorConnectActions';

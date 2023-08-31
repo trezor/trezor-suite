@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components';
 import { ExchangeTrade } from 'invity-api';
 import { variables, CoinLogo } from '@trezor/components';

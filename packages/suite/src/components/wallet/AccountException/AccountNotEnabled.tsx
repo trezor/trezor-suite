@@ -1,4 +1,3 @@
-import React from 'react';
 import { changeCoinVisibility } from 'src/actions/settings/walletSettingsActions';
 import { useDevice, useDispatch } from 'src/hooks/suite';
 import { Network } from 'src/types/wallet';

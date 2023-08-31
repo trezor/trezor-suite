@@ -1,4 +1,4 @@
-import React, { memo, useState, useEffect, useCallback } from 'react';
+import { memo, useState, useEffect, useCallback } from 'react';
 import { getUnixTime } from 'date-fns';
 import styled from 'styled-components';
 

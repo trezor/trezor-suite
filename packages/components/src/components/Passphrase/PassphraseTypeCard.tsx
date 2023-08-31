@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useRef, useEffect, useCallback, ReactNode, ChangeEvent } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 
 import { AnimatePresence, motion } from 'framer-motion';
@@ -154,9 +154,9 @@ const Content = styled.div`
 `;
 
 type PassphraseTypeCardProps = {
-    title?: React.ReactNode;
-    description?: React.ReactNode;
-    submitLabel: React.ReactNode;
+    title?: ReactNode;
+    description?: ReactNode;
+    submitLabel: ReactNode;
     type: 'standard' | 'hidden';
     offerPassphraseOnDevice?: boolean;
     singleColModal?: boolean;
@@ -204,7 +204,7 @@ export const PassphraseTypeCard = (props: PassphraseTypeCardProps) => {
         }
     }, [enterPressed, canSubmit, submit, value]);
 
-    const onPassphraseChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const onPassphraseChange = (event: ChangeEvent<HTMLInputElement>) => {
         const tmpValue = event.target.value;
         // spread current value into array
         const newValue = [...value];

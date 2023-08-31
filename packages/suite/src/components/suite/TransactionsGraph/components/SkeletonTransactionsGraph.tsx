@@ -1,4 +1,4 @@
-import React from 'react';
+import { ComponentProps } from 'react';
 import styled from 'styled-components';
 import { variables } from '@trezor/components';
 import { useLoadingSkeleton } from 'src/hooks/suite';
@@ -17,7 +17,7 @@ const SkeletonWrapper = styled.div`
     }
 `;
 
-const SkeletonBar = (props: React.ComponentProps<typeof SkeletonRectangle>) => (
+const SkeletonBar = (props: ComponentProps<typeof SkeletonRectangle>) => (
     <SkeletonRectangle borderRadius="4px 4px 0px 0px" {...props} />
 );
 

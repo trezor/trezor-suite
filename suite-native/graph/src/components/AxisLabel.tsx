@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { Dimensions, View } from 'react-native';
 
 import { useDiscreetMode } from '@suite-native/atoms';

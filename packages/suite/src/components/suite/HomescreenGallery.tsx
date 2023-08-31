@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components';
 import { analytics, EventType } from '@trezor/suite-analytics';
 import { resolveStaticPath } from '@suite-common/suite-utils';

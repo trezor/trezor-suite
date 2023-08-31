@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { ListItem, ListItemProps } from '@suite-native/atoms';
 
 export const SettingsSectionItem = ({ title, subtitle, iconName, onPress }: ListItemProps) => (

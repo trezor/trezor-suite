@@ -1,5 +1,3 @@
-import React from 'react';
-
 export type DataContext = Record<string, unknown>;
 
 interface FormatDefinition<TInput, TOutput, TDataContext extends DataContext> {

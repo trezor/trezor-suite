@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Dimensions, View } from 'react-native';
 import ReactQRCode from 'react-qr-code';
 

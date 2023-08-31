@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { Box, Button } from '@suite-native/atoms';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 

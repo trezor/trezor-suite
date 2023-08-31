@@ -1,5 +1,6 @@
 /* stylelint-disable indentation */
-import React, { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState, ReactNode, MouseEvent } from 'react';
+
 import styled, { css } from 'styled-components';
 
 import { useKeyPress } from '@trezor/react-utils';
@@ -170,21 +171,21 @@ const BackIcon = styled(Icon)`
 `;
 
 interface ModalProps {
-    children?: React.ReactNode;
-    heading?: React.ReactNode;
-    subheading?: React.ReactNode;
-    modalPrompt?: React.ReactNode;
+    children?: ReactNode;
+    heading?: ReactNode;
+    subheading?: ReactNode;
+    modalPrompt?: ReactNode;
     headerIcon?: IconType;
     isHeadingCentered?: boolean;
-    description?: React.ReactNode;
-    bottomBar?: React.ReactNode;
+    description?: ReactNode;
+    bottomBar?: ReactNode;
     isCancelable?: boolean;
     onBackClick?: () => void;
     onCancel?: () => void;
-    onClick?: (e: React.MouseEvent<HTMLDivElement>) => void;
+    onClick?: (e: MouseEvent<HTMLDivElement>) => void;
     totalProgressBarSteps?: number;
     currentProgressBarStep?: number;
-    headerComponents?: Array<React.ReactNode>;
+    headerComponents?: Array<ReactNode>;
     className?: string;
     'data-test'?: string;
 }
