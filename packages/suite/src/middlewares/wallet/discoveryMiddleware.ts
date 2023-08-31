@@ -7,7 +7,7 @@ import {
     stopDiscoveryThunk,
     updateNetworkSettingsThunk,
 } from '@suite-common/wallet-core';
-import TrezorConnect, { UI } from '@trezor/connect';
+import { UI } from '@trezor/connect';
 import { DiscoveryStatus } from '@suite-common/wallet-constants';
 import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 
@@ -28,22 +28,6 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
 
         if (action.type === SUITE.FORGET_DEVICE && action.payload.state) {
             dispatch(discoveryActions.removeDiscovery(action.payload.state));
-        }
-
-        // temporary workaround, needs to be changed in @trezor/connect
-        // BLOCK action propagation (via next() function) and respond to @trezor/connect
-        // otherwise devices without backup will receive several "confirmation" modals during discovery process
-        const isCoinmarketExchange = prevState.router.route?.name === 'wallet-coinmarket-exchange';
-
-        if (
-            action.type === UI.REQUEST_CONFIRMATION &&
-            (discoveryIsRunning || isCoinmarketExchange)
-        ) {
-            TrezorConnect.uiResponse({
-                type: UI.RECEIVE_CONFIRMATION,
-                payload: true,
-            });
-            return action;
         }
 
         // do not close user context modals during discovery

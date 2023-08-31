@@ -347,6 +347,7 @@ export const fetchTransactionsThunk = createThunk(
             page, // useful for every network except ripple
             pageSize: perPage,
             ...(marker ? { marker } : {}), // set marker only if it is not undefined (ripple), otherwise it fails on marker validation
+            suppressBackupWarning: true,
         });
 
         if (signal.aborted) return;

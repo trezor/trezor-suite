@@ -39,6 +39,7 @@ export type DiscoveryItem = {
     coin: Account['symbol'];
     details?: 'basic' | 'tokens' | 'tokenBalances' | 'txids' | 'txs';
     pageSize?: number;
+    suppressBackupWarning?: boolean;
     // wallet
     index: number;
     accountType: Account['accountType'];

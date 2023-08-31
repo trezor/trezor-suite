@@ -110,6 +110,7 @@ export const composeTransaction =
             const accountResponse = await TrezorConnect.getAccountInfo({
                 descriptor: address,
                 coin: account.symbol,
+                suppressBackupWarning: true,
             });
             if (accountResponse.success && accountResponse.payload.empty) {
                 requiredAmount = new BigNumber(accountResponse.payload.misc!.reserve!);

@@ -40,6 +40,7 @@ export const AddToken = ({ onCancel }: AddTokenProps) => {
                 descriptor: acc.descriptor,
                 details: 'tokenBalances',
                 contractFilter: contractAddress,
+                suppressBackupWarning: true,
             });
 
             if (response.success) {
