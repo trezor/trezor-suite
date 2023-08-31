@@ -9194,7 +9194,6 @@ __metadata:
     "@trezor/utxo-lib": "workspace:*"
     "@types/karma": ^6.3.4
     "@types/parse-uri": ^1.0.0
-    "@types/randombytes": ^2.0.0
     bignumber.js: ^9.1.1
     blakejs: ^1.2.1
     bs58: ^5.0.0
@@ -9210,7 +9209,6 @@ __metadata:
     karma-jasmine-async: ^0.0.1
     karma-sourcemap-loader: ^0.4.0
     karma-webpack: ^5.0.0
-    randombytes: 2.1.0
     rimraf: ^5.0.1
     ts-node: ^10.9.1
     tsx: ^3.12.7
@@ -30038,7 +30036,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"randombytes@npm:2.1.0, randombytes@npm:^2.0.0, randombytes@npm:^2.0.1, randombytes@npm:^2.0.5, randombytes@npm:^2.1.0":
+"randombytes@npm:^2.0.0, randombytes@npm:^2.0.1, randombytes@npm:^2.0.5, randombytes@npm:^2.1.0":
   version: 2.1.0
   resolution: "randombytes@npm:2.1.0"
   dependencies:
