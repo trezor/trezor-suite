@@ -920,7 +920,7 @@ export const getUtxoOutpoint = (utxo: { txid: string; vout: number }) => {
 // https://developer.bitcoin.org/reference/transactions.html#outpoint-the-specific-part-of-a-specific-output
 export const readUtxoOutpoint = (outpoint: string) => {
     const buffer = Buffer.from(outpoint, 'hex');
-    const txid = bufferUtils.reverseBuffer(buffer.slice(0, 32));
+    const txid = bufferUtils.reverseBuffer(buffer.subarray(0, 32));
     const vout = buffer.readUInt32LE(txid.length);
     return { txid: txid.toString('hex'), vout };
 };

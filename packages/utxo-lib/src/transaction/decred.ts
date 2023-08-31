@@ -82,7 +82,7 @@ function toBuffer(
     }
 
     // avoid slicing unless necessary
-    if (initialOffset !== undefined) return buffer.slice(initialOffset, bufferWriter.offset);
+    if (initialOffset !== undefined) return buffer.subarray(initialOffset, bufferWriter.offset);
     return buffer;
 }
 

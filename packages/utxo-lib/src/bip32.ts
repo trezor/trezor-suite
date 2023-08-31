@@ -143,7 +143,7 @@ class BIP32 implements BIP32Interface {
     }
 
     get fingerprint(): Buffer {
-        return this.identifier.slice(0, 4);
+        return this.identifier.subarray(0, 4);
     }
 
     get compressed(): boolean {
@@ -234,8 +234,8 @@ class BIP32 implements BIP32Interface {
         }
 
         const I = crypto.hmacSHA512(this.chainCode, data);
-        const IL = I.slice(0, 32);
-        const IR = I.slice(32);
+        const IL = I.subarray(0, 32);
+        const IR = I.subarray(32);
 
         // if parse256(IL) >= n, proceed with the next value for i
         if (!ecc.isPrivate(IL)) return this.derive(index + 1);
@@ -361,19 +361,19 @@ export function fromBase58(inString: string, network?: Network): BIP32Interface 
     if (depth === 0 && index !== 0) throw new TypeError('Invalid index');
 
     // 32 bytes: the chain code
-    const chainCode = buffer.slice(13, 45);
+    const chainCode = buffer.subarray(13, 45);
     let hd: BIP32Interface;
 
     // 33 bytes: private key data (0x00 + k)
     if (version === network.bip32.private) {
         if (buffer.readUInt8(45) !== 0x00) throw new TypeError('Invalid private key');
-        const k = buffer.slice(46, 78);
+        const k = buffer.subarray(46, 78);
 
         hd = fromPrivateKeyLocal(k, chainCode, network, depth, index, parentFingerprint);
 
         // 33 bytes: public key data (0x02 + X or 0x03 + X)
     } else {
-        const X = buffer.slice(45, 78);
+        const X = buffer.subarray(45, 78);
 
         hd = fromPublicKeyLocal(X, chainCode, network, depth, index, parentFingerprint);
     }
@@ -404,8 +404,8 @@ export function fromSeed(seed: Buffer, network?: Network): BIP32Interface {
     network = network || BITCOIN;
 
     const I = crypto.hmacSHA512(Buffer.from('Bitcoin seed', 'utf8'), seed);
-    const IL = I.slice(0, 32);
-    const IR = I.slice(32);
+    const IL = I.subarray(0, 32);
+    const IR = I.subarray(32);
 
     return fromPrivateKey(IL, IR, network);
 }

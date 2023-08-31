@@ -53,7 +53,7 @@ function tapTweakPubkey(pubkey: Buffer, tapTreeRoot?: Buffer) {
 const liftX = (pubkey: Buffer) => {
     // bip32.derive returns one additional byte in publicKey
     const offset = pubkey.length === 33 ? 1 : 0;
-    return pubkey.slice(offset);
+    return pubkey.subarray(offset);
 };
 
 // output: OP_1 {witnessProgram}
@@ -94,7 +94,7 @@ export function p2tr(a: Payment, opts?: PaymentOpts): Payment {
         return bech32m.encode(network.bech32, words);
     });
     lazy.prop(o, 'hash', () => {
-        if (a.output) return a.output.slice(2);
+        if (a.output) return a.output.subarray(2);
         if (a.address) return _address().data;
         if (a.pubkey) {
             return tapTweakPubkey(liftX(a.pubkey)).pubkey;
@@ -123,7 +123,7 @@ export function p2tr(a: Payment, opts?: PaymentOpts): Payment {
         if (a.output) {
             if (a.output[0] !== OPS.OP_1 || a.output[1] !== 0x20)
                 throw new TypeError('p2tr output is invalid');
-            const hash2 = a.output.slice(2);
+            const hash2 = a.output.subarray(2);
             if (hash.length > 0 && !hash.equals(hash2)) throw new TypeError('Hash mismatch');
             else hash = hash2;
         }

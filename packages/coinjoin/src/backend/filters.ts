@@ -29,7 +29,7 @@ export const getMempoolAddressScript = (address: string, network: Network) =>
 
 const getFilter = (filterHex: string, keyBuffer: Buffer) => {
     const filter = createFilter(Buffer.from(filterHex, 'hex'));
-    const key = keyBuffer.slice(0, KEY_SIZE);
+    const key = keyBuffer.subarray(0, KEY_SIZE);
     return (script: Buffer) => filter.match(key, script);
 };
 
@@ -41,7 +41,7 @@ export const getMempoolFilter = (filterHex: string, txid: string) =>
 
 const getMultiFilter = (filterHex: string, keyBuffer: Buffer) => {
     const filter = createFilter(Buffer.from(filterHex, 'hex'));
-    const key = keyBuffer.slice(0, KEY_SIZE);
+    const key = keyBuffer.subarray(0, KEY_SIZE);
     return (scripts: Buffer[]) => filter.matchAny(key, scripts);
 };
 
