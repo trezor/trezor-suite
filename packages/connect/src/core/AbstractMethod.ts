@@ -80,7 +80,7 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
 
     confirmation?(): Promise<boolean | undefined>;
 
-    noBackupConfirmation?(): Promise<boolean>;
+    noBackupConfirmation?(allowSuppression?: boolean): Promise<boolean>;
 
     getButtonRequestData?(code: string): UiRequestButtonData | undefined;
 

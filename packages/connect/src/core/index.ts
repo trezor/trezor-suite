@@ -493,7 +493,7 @@ export const onCall = async (message: CoreMessage) => {
 
             const deviceNeedsBackup = device.features.needs_backup;
             if (deviceNeedsBackup && typeof method.noBackupConfirmation === 'function') {
-                const permitted = await method.noBackupConfirmation();
+                const permitted = await method.noBackupConfirmation(!isUsingPopup);
                 if (!permitted) {
                     // interrupt process and go to "final" block
                     return Promise.reject(ERRORS.TypedError('Method_PermissionsNotGranted'));
