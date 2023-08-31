@@ -306,7 +306,8 @@ export const onCall = async (message: CoreMessage) => {
         _callMethods.push(method);
 
         if (method.initAsync) {
-            await method.initAsync();
+            method.initAsyncPromise = method.initAsync();
+            await method.initAsyncPromise;
         }
     } catch (error) {
         postMessage(createPopupMessage(POPUP.CANCEL_POPUP_REQUEST));
