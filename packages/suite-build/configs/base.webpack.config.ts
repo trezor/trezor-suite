@@ -176,6 +176,9 @@ const config: webpack.Configuration = {
             __SENTRY_TRACING__: false, // needs to be removed when we introduce performance monitoring in trezor-suite
         }),
         new webpack.ProvidePlugin({
+            React: 'react',
+        }),
+        new webpack.ProvidePlugin({
             Buffer: ['buffer', 'Buffer'],
             process: 'process',
         }),
