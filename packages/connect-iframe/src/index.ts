@@ -87,7 +87,7 @@ const handleMessage = (event: PostMessageEvent) => {
         }
 
         const method = _core.getCurrentMethod()[0];
-        (method.initAsync ? method?.initAsync() : Promise.resolve()).finally(() => {
+        (method.initAsyncPromise ? method.initAsyncPromise : Promise.resolve()).finally(() => {
             const transport = _core!.getTransportInfo();
             const settings = DataManager.getSettings();
 
