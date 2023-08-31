@@ -56,6 +56,7 @@ export interface Address {
 export interface GetPublicKey {
     path: string | number[];
     showOnTrezor?: boolean;
+    suppressBackupWarning?: boolean;
 }
 
 export interface PublicKey {

@@ -51,6 +51,7 @@ params are forwarded to [BlockBook backend](https://github.com/trezor/blockbook/
 -   `contractFilter` — `string` Ethereum-like accounts only: get ERC20 token info and balance
 -   `marker` — `{ ledger: number, seq: number }` XRP accounts only, transaction history page marker
 -   `defaultAccountType` — `'normal' | 'segwit' | 'legacy'` Bitcoin-like accounts only: specify which account group is displayed as default in popup, subject of `Using discovery`
+-   `suppressBackupWarning` - `boolean` By default, this method will emit an event to show a warning if the wallet does not have a backup. This option suppresses the message.
 
 ### Example
 

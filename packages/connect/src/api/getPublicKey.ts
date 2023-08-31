@@ -11,6 +11,7 @@ import type { PROTO } from '../constants';
 
 type Params = PROTO.GetPublicKey & {
     coinInfo?: BitcoinNetworkInfo;
+    suppressBackupWarning?: boolean;
     unlockPath?: PROTO.UnlockPath;
 };
 
@@ -41,6 +42,7 @@ export default class GetPublicKey extends AbstractMethod<'getPublicKey', Params[
                 { name: 'ignoreXpubMagic', type: 'boolean' },
                 { name: 'ecdsaCurveName', type: 'boolean' },
                 { name: 'unlockPath', type: 'object' },
+                { name: 'suppressBackupWarning', type: 'boolean' },
             ]);
 
             if (batch.unlockPath) {
@@ -76,6 +78,7 @@ export default class GetPublicKey extends AbstractMethod<'getPublicKey', Params[
                 ecdsa_curve_name: batch.ecdsaCurveName,
                 coinInfo,
                 unlockPath: batch.unlockPath,
+                suppress_backup_warning: batch.suppressBackupWarning,
             };
         });
     }
@@ -112,7 +115,13 @@ export default class GetPublicKey extends AbstractMethod<'getPublicKey', Params[
         return this.confirmed;
     }
 
-    async noBackupConfirmation() {
+    async noBackupConfirmation(allowSuppression?: boolean) {
+        if (
+            allowSuppression &&
+            this.params.every(batch => batch.suppressBackupWarning || !batch.show_display)
+        ) {
+            return true;
+        }
         // wait for popup window
         await this.getPopupPromise().promise;
         // initialize user response promise

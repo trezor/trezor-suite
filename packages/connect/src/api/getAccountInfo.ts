@@ -55,6 +55,7 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
                 { name: 'marker', type: 'object' },
                 { name: 'defaultAccountType', type: 'string' },
                 { name: 'derivationType', type: 'number' },
+                { name: 'suppressBackupWarning', type: 'boolean' },
             ]);
 
             // validate coin info
@@ -161,7 +162,10 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
         return uiResp.payload;
     }
 
-    async noBackupConfirmation() {
+    async noBackupConfirmation(allowSuppression?: boolean) {
+        if (allowSuppression && this.params.every(batch => batch.suppressBackupWarning)) {
+            return true;
+        }
         // wait for popup window
         await this.getPopupPromise().promise;
         // initialize user response promise
