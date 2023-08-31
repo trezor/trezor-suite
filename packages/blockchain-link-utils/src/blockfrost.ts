@@ -43,7 +43,7 @@ export const transformUtxos = (utxos: BlockfrostUtxos[]): Utxo[] => {
 const hexToString = (input: string): string => {
     let str = '';
     for (let n = 0; n < input.length; n += 2) {
-        str += String.fromCharCode(parseInt(input.substr(n, 2), 16));
+        str += String.fromCharCode(parseInt(input.substring(n, n + 2), 16));
     }
 
     return str;

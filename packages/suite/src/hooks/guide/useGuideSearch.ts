@@ -21,7 +21,7 @@ export type SearchResult = {
 };
 
 const getPreview = (markdown: string, query: string, index: number) => {
-    const previewStart = markdown.substr(0, Math.max(index - 10, 0)).lastIndexOf(' ') + 1;
+    const previewStart = markdown.substring(0, Math.max(index - 10, 0)).lastIndexOf(' ') + 1;
     const previewEnd = markdown.indexOf(' ', index + query.length + 20);
     return {
         content: markdown.slice(previewStart, previewEnd),

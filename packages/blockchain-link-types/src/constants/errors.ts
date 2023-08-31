@@ -34,7 +34,7 @@ export class CustomError extends Error {
                 if (this.message === '') {
                     this.message = msg;
                 } else if (message.indexOf('+') === 0) {
-                    this.message = `${msg} ${message.substr(1, message.length)}`;
+                    this.message = `${msg} ${message.substring(1)}`;
                 }
             }
         }
