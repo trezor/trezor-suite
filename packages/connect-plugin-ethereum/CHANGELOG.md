@@ -1,6 +1,6 @@
-9.0.2 (UNRELEASED)
+9.0.2
 
--   updated `@metamask/eth-sig-util` from `^5.0.2` to `^5.1.0`
+-   updated `@metamask/eth-sig-util` from `^5.0.2` to `^6.0.0`
 
 9.0.1
 
