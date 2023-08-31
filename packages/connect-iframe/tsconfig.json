@@ -4,6 +4,7 @@
         "outDir": "./libDev",
         "types": ["web", "w3c-web-usb", "jest"]
     },
+    "include": [".", "**/*.json"],
     "references": [
         { "path": "../connect" },
         { "path": "../connect-analytics" },

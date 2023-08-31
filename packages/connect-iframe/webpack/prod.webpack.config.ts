@@ -1,13 +1,17 @@
 import path from 'path';
+import { execSync } from 'child_process';
 import webpack from 'webpack';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
 import TerserPlugin from 'terser-webpack-plugin';
+import { version } from '../package.json';
 
 const COMMON_DATA_SRC = '../../packages/connect-common/files';
 const MESSAGES_SRC = '../../packages/protobuf/messages.json';
 
 const DIST = path.resolve(__dirname, '../build');
+
+const commitHash = execSync('git rev-parse HEAD').toString().trim();
 
 const config: webpack.Configuration = {
     target: 'web',
@@ -116,6 +120,14 @@ const config: webpack.Configuration = {
             template: path.resolve(__dirname, '../src/static/iframe.html'),
             minify: false,
             inject: false,
+        }),
+        new webpack.DefinePlugin({
+            process: {
+                env: {
+                    VERSION: JSON.stringify(version),
+                    COMMIT_HASH: JSON.stringify(commitHash),
+                },
+            },
         }),
     ],
 
