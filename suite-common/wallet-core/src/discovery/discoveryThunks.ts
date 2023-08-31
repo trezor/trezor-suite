@@ -221,6 +221,7 @@ const getBundleThunk = createThunk(
                     accountType,
                     networkType: configNetwork.networkType,
                     derivationType: getDerivationType(accountType),
+                    suppressBackupWarning: true,
                 });
             }
         });

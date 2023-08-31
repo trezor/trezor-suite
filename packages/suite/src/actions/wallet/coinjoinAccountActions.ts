@@ -577,6 +577,7 @@ export const createCoinjoinAccount =
             device,
             useEmptyPassphrase: device?.useEmptyPassphrase,
             coin: network.symbol,
+            suppressBackupWarning: true,
         });
         if (!publicKey.success) {
             dispatch(handleError(publicKey.payload.error));

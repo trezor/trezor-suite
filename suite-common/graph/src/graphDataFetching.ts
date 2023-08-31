@@ -76,7 +76,7 @@ export const getAccountBalanceHistory = async ({
             // issue: https://github.com/trezor/trezor-suite/issues/8888
             currencies: ['usd'],
         }),
-        TrezorConnect.getAccountInfo({ coin, descriptor }),
+        TrezorConnect.getAccountInfo({ coin, descriptor, suppressBackupWarning: true }),
     ]);
 
     if (!accountMovementHistory?.success) {

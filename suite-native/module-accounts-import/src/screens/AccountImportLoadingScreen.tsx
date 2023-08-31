@@ -69,6 +69,7 @@ export const AccountImportLoadingScreen = ({
                     coin: networkSymbol,
                     descriptor: xpubAddress,
                     details: 'tokenBalances',
+                    suppressBackupWarning: true,
                 }),
                 dispatch(
                     updateFiatRatesThunk({
