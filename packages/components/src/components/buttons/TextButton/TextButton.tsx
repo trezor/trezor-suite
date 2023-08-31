@@ -22,7 +22,10 @@ const TextButtonContainer = styled.button<{
     color: ${({ theme }) => theme.textPrimaryDefault};
     ${({ size }) => (size === 'small' ? typography.hint : typography.body)};
     white-space: nowrap;
-    transition: border-color 0.1s ease-out, box-shadow 0.1s ease-out, color 0.1s ease-out;
+    transition:
+        border-color 0.1s ease-out,
+        box-shadow 0.1s ease-out,
+        color 0.1s ease-out;
     outline: none;
     cursor: pointer;
 

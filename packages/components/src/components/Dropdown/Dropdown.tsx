@@ -5,14 +5,10 @@ import {
     forwardRef,
     useImperativeHandle,
     useCallback,
-    ReactNode,
-    Fragment,
-    ButtonHTMLAttributes,
-    ReactElement,
-    ComponentType,
     cloneElement,
+    Ref,
+    MouseEvent,
 } from 'react';
-
 import { createPortal } from 'react-dom';
 import styled, { css } from 'styled-components';
 import { useOnClickOutside } from '@trezor/react-utils';
@@ -20,10 +16,6 @@ import { FONT_WEIGHT, Z_INDEX, FONT_SIZE } from '../../config/variables';
 import { animations } from '../../config';
 import { useTheme } from '../../utils/hooks';
 import { Icon, IconProps } from '../assets/Icon/Icon';
-
-const Wrapper = styled.div<{ absolutePosition: boolean }>`
-    position: ${props => (props.absolutePosition ? 'static' : 'relative')};
-`;
 
 const MasterLinkComponent = styled.button<{
     topMargin?: number;
@@ -69,7 +61,7 @@ const MasterLinkComponentIcon = styled(Icon)`
 const Menu = styled.ul<MenuProps>`
     display: flex;
     flex-direction: column;
-    position: absolute;
+    position: fixed;
     flex: 1;
     min-width: ${props => props.minWidth}px;
     box-shadow:
@@ -81,50 +73,16 @@ const Menu = styled.ul<MenuProps>`
     z-index: ${Z_INDEX.NAVIGATION_BAR};
     animation: ${animations.DROPDOWN_MENU} 0.15s ease-in-out;
 
-    ${props =>
-        props.coords &&
+    ${({ coords }) =>
+        coords &&
         css`
-            top: ${props.coords[1]}px;
-            left: ${props.coords[0]}px;
+            top: ${coords.y}px;
+            left: ${coords.x}px;
         `}
 
     list-style-type: none;
-    margin-top: ${props =>
-        props.alignMenu === 'top-left' || props.alignMenu === 'top-right'
-            ? `-${props.offset}px`
-            : `${props.offset}px`};
     background: ${({ theme }) => theme.BG_WHITE};
     overflow: hidden;
-
-    ${props =>
-        props.alignMenu === 'left' &&
-        !props.coords &&
-        css`
-            left: 0px;
-        `};
-
-    ${props =>
-        props.alignMenu === 'right' &&
-        !props.coords &&
-        css`
-            right: 0px;
-        `};
-
-    ${props =>
-        props.alignMenu === 'top-left' &&
-        !props.coords &&
-        css`
-            left: 0px;
-            top: ${props.menuSize ? `-${props.menuSize[1]}px` : '0px'};
-        `};
-
-    ${props =>
-        props.alignMenu === 'top-right' &&
-        !props.coords &&
-        css`
-            right: 0px;
-            top: ${props.menuSize ? `-${props.menuSize[1]}px` : '0px'};
-        `};
 
     ${props =>
         props.borderRadius &&
@@ -205,9 +163,61 @@ const MoreIcon = styled(Icon)<{ $isDisabled?: boolean }>`
     }
 `;
 
+type Coords = { x: number; y: number };
+type Dimensions = { width: number; height: number };
+
+const getAdjustedCoords = (
+    coords: Coords,
+    alignMenu: MenuAlignment,
+    menuDimentions: Dimensions,
+    toggleDimentions?: Dimensions,
+): Coords | undefined => {
+    if (!coords) {
+        return;
+    }
+
+    let { x, y } = coords;
+    const { width, height } = menuDimentions;
+    const OFFSET = 4;
+
+    switch (alignMenu) {
+        case 'top-right':
+            x -= width;
+            y -= height;
+            if (toggleDimentions) {
+                x += toggleDimentions.width + OFFSET;
+                y -= OFFSET;
+            }
+            break;
+        case 'top-left':
+            y -= height;
+
+            if (toggleDimentions) {
+                x -= OFFSET;
+                y -= OFFSET;
+            }
+            break;
+        case 'right':
+            x -= width;
+            if (toggleDimentions) {
+                x += toggleDimentions.width + OFFSET;
+                y += toggleDimentions.height + OFFSET;
+            }
+            break;
+        case 'left':
+        default:
+            if (toggleDimentions) {
+                x -= OFFSET;
+                y += toggleDimentions.height + OFFSET;
+            }
+    }
+
+    return { x, y };
+};
+
 interface DropdownMenuItem {
     key: string;
-    label: ReactNode;
+    label: React.ReactNode;
     callback?: () => any | Promise<any>;
     icon?: IconProps['icon'] | JSX.Element;
     iconRight?: IconProps['icon'];
@@ -223,22 +233,24 @@ interface DropdownMenuItem {
 export interface GroupedMenuItems {
     key: string;
     options: DropdownMenuItem[];
-    label?: ReactNode;
+    label?: React.ReactNode;
 }
 
-interface MenuItemProps {
+export interface MenuItemProps {
     item: DropdownMenuItem;
 }
 
 interface MasterLink {
-    label: ReactNode;
+    label: React.ReactNode;
     icon: IconProps['icon'];
     callback?: () => void;
 }
-interface MenuProps {
-    alignMenu?: 'left' | 'right' | 'top-left' | 'top-right';
+
+type MenuAlignment = 'left' | 'right' | 'top-left' | 'top-right';
+
+export interface MenuProps {
+    alignMenu?: MenuAlignment;
     coords?: Coords;
-    menuSize?: Coords;
     offset?: number;
     topPadding?: number;
     bottomPadding?: number;
@@ -246,67 +258,82 @@ interface MenuProps {
     borderRadius?: number;
     minWidth?: number;
     masterLink?: MasterLink;
+    className?: string;
 }
 
-type DropdownProps = MenuProps &
-    Omit<ButtonHTMLAttributes<HTMLDivElement>, 'disabled'> & {
-        children?: ReactElement<any>;
-        absolutePosition?: boolean;
-        items: GroupedMenuItems[];
-        components?: {
-            DropdownMenuItem?: ComponentType<MenuItemProps>;
-            DropdownMenu?: ComponentType<MenuProps>;
-        };
-        offset?: number;
-        isDisabled?: boolean;
-        appendTo?: HTMLElement;
-        hoverContent?: ReactNode;
-        onToggle?: (isToggled: boolean) => void;
-    };
+export type DropdownProps = MenuProps & {
+    children?: React.ReactElement<any>;
+    renderOnClickPosition?: boolean;
+    items: GroupedMenuItems[];
+    isDisabled?: boolean;
+    appendTo?: HTMLElement;
+    onToggle?: (isToggled: boolean) => void;
+};
 
-interface DropdownRef {
+export interface DropdownRef {
     close: () => void;
     open: () => void;
 }
 
-type Coords = [number, number] | undefined;
-
-const Dropdown = forwardRef(
+export const Dropdown = forwardRef(
     (
         {
             children,
             className,
             items,
-            components,
             isDisabled,
-            absolutePosition,
+            renderOnClickPosition,
             alignMenu = 'left',
-            offset = 10,
             appendTo,
             topPadding = 8,
             bottomPadding = 8,
             horizontalPadding = 0,
             minWidth = 140,
             onToggle,
-            hoverContent,
             masterLink,
             ...rest
         }: DropdownProps,
         ref,
     ) => {
-        const theme = useTheme();
         const [toggled, setToggledState] = useState(false);
-        const [coords, setCoords] = useState<Coords>(undefined);
-        const [menuSize, setMenuSize] = useState<Coords>(undefined);
-        const menuRef = useRef<HTMLUListElement>(null);
-        const toggleRef = useRef<any>(null);
-        const MenuComponent = components?.DropdownMenu ?? Menu;
-        const MenuItemComponent = components?.DropdownMenuItem ?? MenuItem;
+        const [coords, setCoords] = useState<Coords>();
+        const [clickPos, setclickPos] = useState<Coords>();
 
-        const visibleItems = items.map(group => ({
-            ...group,
-            options: group.options.filter(item => !item.isHidden),
-        }));
+        const theme = useTheme();
+        const menuRef = useRef<HTMLUListElement>(null);
+        const toggleRef = useRef<HTMLElement>(null);
+
+        useLayoutEffect(() => {
+            if (!toggleRef.current || !menuRef.current) {
+                return;
+            }
+
+            let coordsToUse: Coords;
+            let toggleDimentions;
+            if (clickPos) {
+                coordsToUse = clickPos;
+            } else {
+                const { x, y, width, height } = toggleRef.current.getBoundingClientRect();
+
+                coordsToUse = { x, y };
+                toggleDimentions = { width, height };
+            }
+
+            if (!coordsToUse) {
+                return;
+            }
+
+            const { width, height } = menuRef.current?.getBoundingClientRect();
+
+            const adjustedCoords = getAdjustedCoords(
+                coordsToUse,
+                alignMenu,
+                { width, height },
+                toggleDimentions,
+            );
+
+            setCoords(adjustedCoords);
+        }, [toggled, clickPos, alignMenu]);
 
         const setToggled = useCallback(
             (isToggled: boolean) => {
@@ -316,34 +343,11 @@ const Dropdown = forwardRef(
             [onToggle],
         );
 
-        useLayoutEffect(() => {
-            if (menuRef.current && toggled) {
-                const rect = menuRef.current.getBoundingClientRect();
-                setMenuSize([rect.width, rect.height]);
-            }
-        }, [toggled]);
-
         useImperativeHandle(ref, () => ({
             close: () => {
                 setToggled(false);
             },
         }));
-
-        const setAdjustedCoords = (c: Coords) => {
-            if (!c) {
-                setCoords(c);
-                return;
-            }
-
-            let x = c[0];
-            const y = c[1];
-            if (menuRef.current) {
-                const rect = menuRef.current.getBoundingClientRect();
-                x += rect.width;
-            }
-
-            setCoords([x, y]);
-        };
 
         useOnClickOutside([menuRef, toggleRef], () => {
             if (toggled) {
@@ -354,7 +358,6 @@ const Dropdown = forwardRef(
         const onMenuItemClick = (item: DropdownMenuItem) => {
             // Close the menu if item is not disabled and if
             // a) callback func is not defined
-            // or
             // b) callback is defined and returns true/void
             if (!item.isDisabled) {
                 if (item.callback) {
@@ -368,35 +371,36 @@ const Dropdown = forwardRef(
             }
         };
 
-        const toggleComponent = children ? (
+        const onToggleClick = (e: MouseEvent) => {
+            if (isDisabled) {
+                return;
+            }
+
+            setToggled(!toggled);
+            if (renderOnClickPosition) {
+                setclickPos({ x: e.pageX, y: e.pageY });
+            }
+        };
+
+        const ToggleComponent = children ? (
             cloneElement(children, {
                 ref: toggleRef,
                 isDisabled,
-                onClick: !isDisabled
-                    ? (e: any) => {
-                          e.stopPropagation();
-                          e.preventDefault();
-                          if (children.props.onClick) children.props.onClick(e);
-                          setToggled(!toggled);
-                          setAdjustedCoords([e.pageX, e.pageY]);
-                      }
-                    : undefined,
+                onClick: (e: MouseEvent): void => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    children.props.onClick?.(e);
+                    onToggleClick(e);
+                },
             })
         ) : (
             <MoreIcon
-                ref={toggleRef}
+                ref={toggleRef as Ref<HTMLDivElement>}
                 size={24}
                 icon="MORE"
                 color={!isDisabled ? theme.TYPE_DARK_GREY : theme.TYPE_LIGHT_GREY}
                 $isDisabled={isDisabled}
-                onClick={
-                    !isDisabled
-                        ? e => {
-                              setToggled(!toggled);
-                              setAdjustedCoords([e.pageX, e.pageY]);
-                          }
-                        : undefined
-                }
+                onClick={onToggleClick}
                 {...rest}
             />
         );
@@ -414,13 +418,16 @@ const Dropdown = forwardRef(
             return null;
         };
 
+        const visibleItems = items.map(group => ({
+            ...group,
+            options: group.options.filter(item => !item.isHidden),
+        }));
+
         const menu = (
-            <MenuComponent
+            <Menu
                 ref={menuRef}
                 alignMenu={alignMenu}
-                menuSize={menuSize}
-                offset={offset}
-                coords={absolutePosition ? coords : undefined}
+                coords={coords}
                 topPadding={topPadding}
                 bottomPadding={bottomPadding}
                 horizontalPadding={horizontalPadding}
@@ -446,10 +453,10 @@ const Dropdown = forwardRef(
                     </MasterLinkComponent>
                 )}
                 {visibleItems.map(group => (
-                    <Fragment key={group.key}>
+                    <div key={group.key}>
                         {group.label && <Group>{group.label}</Group>}
                         {group.options.map(item => (
-                            <MenuItemComponent
+                            <MenuItem
                                 onClick={e => {
                                     e.stopPropagation();
                                     onMenuItemClick(item);
@@ -469,29 +476,20 @@ const Dropdown = forwardRef(
                                         />
                                     </IconRight>
                                 )}
-                            </MenuItemComponent>
+                            </MenuItem>
                         ))}
-                    </Fragment>
+                    </div>
                 ))}
-            </MenuComponent>
+            </Menu>
         );
 
-        const portalMenu = absolutePosition && appendTo ? createPortal(menu, appendTo) : menu;
+        const PortalMenu = createPortal(menu, document.body);
 
         return (
-            <Wrapper className={className} absolutePosition={!!absolutePosition}>
-                {toggleComponent}
-                {toggled && portalMenu}
-            </Wrapper>
+            <div className={className}>
+                {ToggleComponent}
+                {toggled && PortalMenu}
+            </div>
         );
     },
 );
-
-Dropdown.displayName = 'Dropdown';
-export type {
-    DropdownRef,
-    DropdownProps,
-    MenuItemProps as DropdownMenuItemProps,
-    MenuProps as DropdownMenuProps,
-};
-export { Dropdown };
