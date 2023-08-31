@@ -23,7 +23,10 @@ const Container = styled.div<Pick<SwitchProps, 'isChecked' | 'isDisabled' | 'isA
     background: ${({ isChecked, isDisabled, theme }) =>
         getInputColor(theme, { checked: isChecked, disabled: isDisabled })};
     border-radius: ${borders.radii.sm};
-    transition: background 0.2s ease 0s, border-color 0.1s ease-out, box-shadow 0.1s ease-out;
+    transition:
+        background 0.2s ease 0s,
+        border-color 0.1s ease-out,
+        box-shadow 0.1s ease-out;
     cursor: ${({ isDisabled }) => !isDisabled && 'pointer'};
     box-sizing: border-box;
     border: 1px solid ${({ theme, isAlert }) => `${isAlert ? theme.borderAlertRed : 'transparent'}`};
