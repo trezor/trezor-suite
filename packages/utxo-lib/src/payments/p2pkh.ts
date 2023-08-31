@@ -48,7 +48,7 @@ export function p2pkh(a: Payment, opts?: PaymentOpts): Payment {
         return bs58check.encodeAddress(o.hash, network.pubKeyHash, network);
     });
     lazy.prop(o, 'hash', () => {
-        if (a.output) return a.output.slice(3, 23);
+        if (a.output) return a.output.subarray(3, 23);
         if (a.address) return _address().hash;
         if (a.pubkey || o.pubkey) return bcrypto.hash160(a.pubkey! || o.pubkey!);
     });
@@ -107,7 +107,7 @@ export function p2pkh(a: Payment, opts?: PaymentOpts): Payment {
             )
                 throw new TypeError('Output is invalid');
 
-            const hash2 = a.output.slice(3, 23);
+            const hash2 = a.output.subarray(3, 23);
             if (hash.length > 0 && !hash.equals(hash2)) throw new TypeError('Hash mismatch');
             else hash = hash2;
         }

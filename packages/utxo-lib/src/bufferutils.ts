@@ -238,7 +238,7 @@ export class BufferReader {
         if (this.buffer.length < this.offset + n) {
             throw new Error('Cannot read slice out of bounds');
         }
-        const result = this.buffer.slice(this.offset, this.offset + n);
+        const result = this.buffer.subarray(this.offset, this.offset + n);
         this.offset += n;
         return result;
     }

@@ -58,7 +58,7 @@ export function p2wpkh(a: Payment, opts?: PaymentOpts): Payment {
         return bech32.encode(network.bech32, words);
     });
     lazy.prop(o, 'hash', () => {
-        if (a.output) return a.output.slice(2, 22);
+        if (a.output) return a.output.subarray(2, 22);
         if (a.address) return _address().data;
         if (a.pubkey || o.pubkey) return bcrypto.hash160(a.pubkey! || o.pubkey!);
     });
@@ -105,9 +105,9 @@ export function p2wpkh(a: Payment, opts?: PaymentOpts): Payment {
         if (a.output) {
             if (a.output.length !== 22 || a.output[0] !== OPS.OP_0 || a.output[1] !== 0x14)
                 throw new TypeError('Output is invalid');
-            if (hash.length > 0 && !hash.equals(a.output.slice(2)))
+            if (hash.length > 0 && !hash.equals(a.output.subarray(2)))
                 throw new TypeError('Hash mismatch');
-            else hash = a.output.slice(2);
+            else hash = a.output.subarray(2);
         }
 
         if (a.pubkey) {

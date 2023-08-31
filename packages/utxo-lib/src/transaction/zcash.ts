@@ -287,7 +287,7 @@ function toBuffer(tx: TransactionBase<ZcashSpecific>, buffer?: Buffer, initialOf
     }
 
     // avoid slicing unless necessary
-    if (initialOffset !== undefined) return buffer.slice(initialOffset, bufferWriter.offset);
+    if (initialOffset !== undefined) return buffer.subarray(initialOffset, bufferWriter.offset);
     return buffer;
 }
 
@@ -302,7 +302,7 @@ function getExtraData(tx: TransactionBase<ZcashSpecific>) {
         tx.ins.reduce((sum, input) => sum + 40 + varSliceSize(input.script), 0) + // inputs
         tx.outs.reduce((sum, output) => sum + 8 + varSliceSize(output.script), 0) + // outputs
         4; // locktime
-    return tx.toBuffer().slice(offset);
+    return tx.toBuffer().subarray(offset);
 }
 
 function getBlake2bDigestHash(buffer: Buffer, personalization: string | Buffer) {

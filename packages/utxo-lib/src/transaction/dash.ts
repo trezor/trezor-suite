@@ -61,7 +61,7 @@ function toBuffer(
     if (tx.specific?.extraPayload) bufferWriter.writeVarSlice(tx.specific.extraPayload);
 
     // avoid slicing unless necessary
-    if (initialOffset !== undefined) return buffer.slice(initialOffset, bufferWriter.offset);
+    if (initialOffset !== undefined) return buffer.subarray(initialOffset, bufferWriter.offset);
     return buffer;
 }
 

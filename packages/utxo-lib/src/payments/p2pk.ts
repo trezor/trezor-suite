@@ -40,7 +40,7 @@ export function p2pk(a: Payment, opts?: PaymentOpts): Payment {
     });
     lazy.prop(o, 'pubkey', () => {
         if (!a.output) return;
-        return a.output.slice(1, -1);
+        return a.output.subarray(1, -1);
     });
     lazy.prop(o, 'signature', () => {
         if (!a.input) return;
