@@ -7,7 +7,7 @@ import { prepareFirmwareReducer } from '@suite-common/wallet-core';
 import { connectInitThunk } from '@suite-common/connect-init';
 import { DEVICE } from '@trezor/connect';
 
-import { configureStore } from 'src/support/tests/configureStore';
+import { configureStore, filterThunkActionTypes } from 'src/support/tests/configureStore';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
 import {
     prepareDeviceReducer,
@@ -156,8 +156,8 @@ describe('Suite Actions', () => {
             if (!f.result) {
                 expect(store.getActions().length).toEqual(0);
             } else {
-                const action = store.getActions().pop();
-                expect(action.payload).toEqual(f.result.payload);
+                const action = filterThunkActionTypes(store.getActions()).pop();
+                expect(action?.payload).toEqual(f.result.payload);
             }
         });
     });

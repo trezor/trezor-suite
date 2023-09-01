@@ -17,7 +17,7 @@ export const CoinjoinAccountDiscovery = () => {
     const isRememberVisible = device && (!deviceRemembered || shouldRememberCardPersist);
 
     const toggleRemember = (device: TrezorDevice) => {
-        dispatch(toggleRememberDevice(device));
+        dispatch(toggleRememberDevice({ device }));
         setShouldRememberCardPersist(true);
     };
 

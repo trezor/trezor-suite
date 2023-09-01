@@ -125,7 +125,7 @@ export const WalletInstance = ({
     );
     const dataTestBase = `@switch-device/wallet-on-index/${index}`;
 
-    const handleRememberChange = () => dispatch(toggleRememberDevice(instance));
+    const handleRememberChange = () => dispatch(toggleRememberDevice({ device: instance }));
     const handleEject = () => {
         dispatch(deviceActions.forgetDevice(instance));
         analytics.report({

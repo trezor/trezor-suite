@@ -323,8 +323,9 @@ export const lockRouter = (payload: boolean): SuiteAction => ({
  * - from user action in `@suite-components/DeviceMenu`
  * @param {(Device | TrezorDevice | undefined)} device
  */
-export const selectDevice =
-    (device?: Device | TrezorDevice) => (dispatch: Dispatch, getState: GetState) => {
+export const selectDevice = createThunk(
+    `${MODULE_PREFIX}/selectDevice`,
+    (device: Device | TrezorDevice | undefined, { dispatch, getState }) => {
         let payload: TrezorDevice | typeof undefined;
         const devices = selectDevices(getState());
         if (device) {
@@ -344,7 +345,8 @@ export const selectDevice =
 
         // 3. select requested device
         dispatch(deviceActions.selectDevice(payload));
-    };
+    },
+);
 
 /**
  * Toggles remembering the given device. I.e. if given device is not remembered it will become remembered
@@ -353,20 +355,22 @@ export const selectDevice =
  *
  * Use `forgetDevice` to forget a device regardless if its current state.
  */
-export const toggleRememberDevice =
-    (payload: TrezorDevice, forceRemember?: true) => (dispatch: Dispatch) => {
+export const toggleRememberDevice = createThunk(
+    `${MODULE_PREFIX}/toggleRememberDevice`,
+    ({ device, forceRemember }: { device: TrezorDevice; forceRemember?: true }, { dispatch }) => {
         analytics.report({
-            type: payload.remember ? EventType.SwitchDeviceForget : EventType.SwitchDeviceRemember,
+            type: device.remember ? EventType.SwitchDeviceForget : EventType.SwitchDeviceRemember,
         });
         return dispatch(
             deviceActions.rememberDevice({
-                device: payload,
-                remember: !payload.remember || !!forceRemember,
+                device,
+                remember: !device.remember || !!forceRemember,
                 // if device is already remembered, do not force it, it would remove the remember on return to suite
-                forceRemember: payload.remember ? undefined : forceRemember,
+                forceRemember: device.remember ? undefined : forceRemember,
             }),
         );
-    };
+    },
+);
 
 /**
  * Triggered by `@trezor/connect DEVICE_EVENT`
@@ -693,7 +697,7 @@ export const initDevices = createThunk(
             // if there are force remember devices, forget them and pick the first one of them as selected device
             const forcedDevices = devices.filter(d => d.forceRemember && d.remember);
             forcedDevices.forEach(d => {
-                dispatch(toggleRememberDevice(d));
+                dispatch(toggleRememberDevice({ device: d }));
             });
             dispatch(
                 selectDevice(
