@@ -377,9 +377,15 @@ export const toggleRememberDevice = createThunk(
  * @param {Device} device
  * @param {boolean} [useEmptyPassphrase=false]
  */
-export const createDeviceInstance =
-    (device: TrezorDevice, useEmptyPassphrase = false) =>
-    async (dispatch: Dispatch, getState: GetState) => {
+export const createDeviceInstance = createThunk(
+    `${MODULE_PREFIX}/createDeviceInstance`,
+    async (
+        {
+            device,
+            useEmptyPassphrase = false,
+        }: { device: TrezorDevice; useEmptyPassphrase?: boolean },
+        { dispatch, getState },
+    ) => {
         if (!device.features) return;
         if (!device.features.passphrase_protection) {
             const response = await TrezorConnect.applySettings({
@@ -397,38 +403,42 @@ export const createDeviceInstance =
             dispatch(notificationsActions.addToast({ type: 'settings-applied' }));
         }
 
-        const devices = selectDevices(getState());
-      dispatch(
-        deviceActions.createDeviceInstance({
-          ...device,
-          useEmptyPassphrase,
-          instance: deviceUtils.getNewInstanceNumber(devices, device),
-        }),
-      );
-    };
+      const devices = selectDevices(getState());
+        dispatch(
+            deviceActions.createDeviceInstance({
+                ...device,
+                useEmptyPassphrase,
+                instance: deviceUtils.getNewInstanceNumber(devices, device),
+            }),
+        );
+    },
+);
 
 /**
  * Triggered by `@trezor/connect DEVICE_EVENT`
  * @param {Device} device
  */
-export const handleDeviceConnect = (device: Device) => (dispatch: Dispatch, getState: GetState) => {
-    const selectedDevice = selectDeviceSelector(getState());
-    const firmware = selectFirmware(getState());
-    // We are waiting for device in bootloader mode (only in firmware update)
-    if (
-        selectedDevice &&
-        device.features &&
-        device.mode === 'bootloader' &&
-        ['reconnect-in-normal', 'waiting-for-bootloader'].includes(firmware.status)
-    ) {
-        dispatch(selectDevice(device));
-    }
-    if (!selectedDevice) {
-        dispatch(selectDevice(device));
-    } else {
-        // TODO: show some nice notification/tooltip in DeviceMenu
-    }
-};
+export const handleDeviceConnect = createThunk(
+    `${MODULE_PREFIX}/handleDeviceConnect`,
+    (device: Device, { dispatch, getState }) => {
+        const selectedDevice = selectDeviceSelector(getState());
+        const firmware = selectFirmware(getState());
+        // We are waiting for device in bootloader mode (only in firmware update)
+        if (
+            selectedDevice &&
+            device.features &&
+            device.mode === 'bootloader' &&
+            ['reconnect-in-normal', 'waiting-for-bootloader'].includes(firmware.status)
+        ) {
+            dispatch(selectDevice(device));
+        }
+        if (!selectedDevice) {
+            dispatch(selectDevice(device));
+        } else {
+            // TODO: show some nice notification/tooltip in DeviceMenu
+        }
+    },
+);
 
 /**
  * Triggered by `@trezor/connect DEVICE_EVENT`
@@ -640,7 +650,7 @@ export const authConfirm = () => async (dispatch: Dispatch, getState: GetState) 
         // handle error passed from Passphrase modal
         if (response.payload.error === 'auth-confirm-cancel') {
             // needs await to propagate all actions
-            await dispatch(createDeviceInstance(device));
+            await dispatch(createDeviceInstance({ device }));
             // forget previous empty wallet
             dispatch(deviceActions.forgetDevice(device));
             return;

@@ -173,10 +173,10 @@ describe('Suite Actions', () => {
             const store = initStore(state);
             await store.dispatch(suiteActions.handleDeviceConnect(f.device));
             if (!f.result) {
-                expect(store.getActions().length).toEqual(0);
+                expect(filterThunkActionTypes(store.getActions()).length).toEqual(0);
             } else {
-                const action = store.getActions().pop();
-                expect(action.type).toEqual(f.result);
+                const action = filterThunkActionTypes(store.getActions()).pop();
+                expect(action?.type).toEqual(f.result);
             }
         });
     });
@@ -295,12 +295,14 @@ describe('Suite Actions', () => {
             require('@trezor/connect').setTestFixtures(f.applySettings);
             const state = getInitialState(undefined, f.state.device);
             const store = initStore(state);
-            await store.dispatch(suiteActions.createDeviceInstance(f.state.device.selectedDevice));
+            await store.dispatch(
+                suiteActions.createDeviceInstance({ device: f.state.device.selectedDevice }),
+            );
             if (!f.result) {
-                expect(store.getActions().length).toEqual(0);
+                expect(filterThunkActionTypes(store.getActions()).length).toEqual(0);
             } else {
-                const action = store.getActions().pop();
-                expect(action.type).toEqual(f.result);
+                const action = filterThunkActionTypes(store.getActions()).pop();
+                expect(action?.type).toEqual(f.result);
             }
         });
     });

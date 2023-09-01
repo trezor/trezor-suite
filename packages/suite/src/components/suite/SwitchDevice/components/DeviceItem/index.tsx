@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import styled from 'styled-components';
 
-
 import * as deviceUtils from '@suite-common/suite-utils';
 import { useTheme, variables, Icon, Image, motionAnimation } from '@trezor/components';
 
@@ -170,7 +169,7 @@ const DeviceItem = ({ device, instances, onCancel, backgroundRoute }: DeviceItem
     };
 
     const addDeviceInstance = async (instance: DeviceItemProps['device']) => {
-        await dispatch(createDeviceInstance(instance));
+        await dispatch(createDeviceInstance({ device: instance }));
         handleRedirection();
     };
 

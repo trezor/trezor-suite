@@ -137,7 +137,8 @@ const SecurityFeatures = () => {
               heading: <Translation id="TR_PASSPHRASE_PROTECTION_ENABLED" />,
               cta: {
                   label: <Translation id="TR_CREATE_HIDDEN_WALLET" />,
-                  action: () => dispatch(createDeviceInstance(device as AcquiredDevice)),
+                  action: () =>
+                      dispatch(createDeviceInstance({ device: device as AcquiredDevice })),
                   dataTest: 'create-hidden-wallet',
                   isDisabled: isDeviceLocked,
               },
