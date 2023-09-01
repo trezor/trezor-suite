@@ -2,14 +2,10 @@ import { test as testPlaywright, expect as expectPlaywright } from '@playwright/
 
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
-import { patchBinaries, launchSuite, waitForDataTestSelector } from '../support/common';
+import { launchSuite, waitForDataTestSelector } from '../support/common';
 
 testPlaywright.describe.serial('Bridge', () => {
     testPlaywright.beforeAll(async () => {
-        // todo: some problems with path in dev and production and tests. tldr tests are expecting
-        // binaries somewhere where they are not, so I copy them to that place. Maybe I find a
-        // better solution later
-        await patchBinaries();
         // We make sure that bridge from trezor-user-env is stopped.
         // So we properly test the electron app spawning bridge binary.
         await TrezorUserEnvLink.api.trezorUserEnvConnect();

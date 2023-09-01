@@ -1,6 +1,6 @@
 import { Page, test as testPlaywright, expect as expectPlaywright } from '@playwright/test';
 
-import { patchBinaries, launchSuite } from '../support/common';
+import { launchSuite } from '../support/common';
 import { NetworkAnalyzer } from '../support/networkAnalyzer';
 
 const timeout = 1000 * 60 * 5; // 5 minutes because it takes a while to start tor.
@@ -32,13 +32,6 @@ const turnOnTorInSettings = async (window: Page, shouldEnableTor = true) => {
 };
 
 testPlaywright.describe('Tor loading screen', () => {
-    testPlaywright.beforeAll(async () => {
-        // todo: some problems with path in dev and production and tests. tldr tests are expecting
-        // binaries somewhere where they are not, so I copy them to that place. Maybe I find a
-        // better solution later
-        await patchBinaries();
-    });
-
     testPlaywright('Tor loading screen: happy path', async () => {
         testPlaywright.setTimeout(timeout);
 
