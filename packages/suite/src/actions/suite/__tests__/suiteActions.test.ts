@@ -240,12 +240,14 @@ describe('Suite Actions', () => {
             store.dispatch(connectInitThunk()); // trezorConnectActions.connectInitThunk needs to be called in order to wrap "getFeatures" with lockUi action
             await store.dispatch(suiteActions.acquireDevice(f.requestedDevice));
             // we are not interested in thunk state here
-            const expectedActions = discardMockedConnectInitActions(store.getActions());
+            const expectedActions = filterThunkActionTypes(
+                discardMockedConnectInitActions(store.getActions()),
+            );
             if (!f.result) {
                 expect(expectedActions.length).toEqual(0);
             } else {
                 const action = expectedActions.pop();
-                expect(action.type).toEqual(f.result);
+                expect(action?.type).toEqual(f.result);
             }
         });
     });
@@ -260,10 +262,10 @@ describe('Suite Actions', () => {
             const store = initStore(state);
             await store.dispatch(suiteActions.authorizeDevice());
             if (!f.result) {
-                expect(store.getActions().length).toEqual(0);
+                expect(filterThunkActionTypes(store.getActions()).length).toEqual(0);
             } else {
-                const action = store.getActions().pop();
-                expect(action.type).toEqual(f.result);
+                const action = filterThunkActionTypes(store.getActions()).pop();
+                expect(action?.type).toEqual(f.result);
                 if (f.deviceReducerResult) {
                     const devices = selectDevices(store.getState());
                     devices.forEach((d, i) => {
@@ -284,9 +286,9 @@ describe('Suite Actions', () => {
             const store = initStore(state);
             await store.dispatch(suiteActions.authConfirm());
             if (!f.result) {
-                expect(store.getActions().length).toEqual(0);
+                expect(filterThunkActionTypes(store.getActions()).length).toEqual(0);
             } else {
-                const action = store.getActions().pop();
+                const action = filterThunkActionTypes(store.getActions()).pop();
                 expect(action).toMatchObject(f.result);
             }
         });

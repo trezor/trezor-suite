@@ -1,6 +1,5 @@
 import styled from 'styled-components';
 
-
 import * as deviceUtils from '@suite-common/suite-utils';
 
 import { Translation } from 'src/components/suite/Translation';

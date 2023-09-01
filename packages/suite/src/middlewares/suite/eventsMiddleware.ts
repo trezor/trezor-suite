@@ -1,15 +1,13 @@
 import { MiddlewareAPI } from 'redux';
 
-
 import * as deviceUtils from '@suite-common/suite-utils';
 import { DEVICE } from '@trezor/connect';
 import { notificationsActions, removeAccountEventsThunk } from '@suite-common/toast-notifications';
+import { accountsActions } from '@suite-common/wallet-core';
 
 import { SUITE } from 'src/actions/suite/constants';
 import { AppState, Action, Dispatch } from 'src/types/suite';
 import { selectDevices, selectDevice } from 'src/reducers/suite/deviceReducer';
-import { accountsActions } from '@suite-common/wallet-core';
-
 
 import { deviceActions } from '../../actions/suite/deviceActions';
 
@@ -80,14 +78,11 @@ const eventsMiddleware =
             // api.dispatch(addEvent({ type: 'disconnected-device' }));
             const { notifications } = api.getState();
             const devices = selectDevices(prevState);
-            const affectedDevices =
-              deviceActions.forgetDevice.match(action)
-                    ? devices.filter(
-                          d =>
-                              d.path === action.payload.path &&
-                              d.instance === action.payload.instance,
-                      )
-                    : devices.filter(d => d.path === action.payload.path);
+            const affectedDevices = deviceActions.forgetDevice.match(action)
+                ? devices.filter(
+                      d => d.path === action.payload.path && d.instance === action.payload.instance,
+                  )
+                : devices.filter(d => d.path === action.payload.path);
             affectedDevices.forEach(d => {
                 if (!d.remember) {
                     const toRemove = notifications.filter(n =>

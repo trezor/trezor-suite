@@ -1,5 +1,6 @@
 import { DeviceModelInternal, type TransportInfo } from '@trezor/connect';
 import { pickByDeviceModel } from '@trezor/device-utils';
+import { isDeviceRemembered } from '@suite-common/suite-utils';
 
 import { SettingsLayout } from 'src/components/settings';
 import { Translation } from 'src/components/suite';

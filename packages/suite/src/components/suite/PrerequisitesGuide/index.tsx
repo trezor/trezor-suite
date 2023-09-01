@@ -2,7 +2,6 @@ import { useMemo } from 'react';
 import styled, { css } from 'styled-components';
 import { motion } from 'framer-motion';
 
-
 import { getStatus, deviceNeedsAttention } from '@suite-common/suite-utils';
 import { variables, motionEasing } from '@trezor/components';
 

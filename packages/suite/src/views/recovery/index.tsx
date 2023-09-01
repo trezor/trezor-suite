@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { useIntl } from 'react-intl';
+
 import styled from 'styled-components';
 
 import { getCheckBackupUrl } from '@suite-common/suite-utils';

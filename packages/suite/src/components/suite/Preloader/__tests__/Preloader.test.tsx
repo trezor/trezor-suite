@@ -1,7 +1,6 @@
-import { configureStore } from 'src/support/tests/configureStore';
-
 import * as envUtils from '@trezor/env-utils';
 
+import { configureStore } from 'src/support/tests/configureStore';
 import { renderWithProviders, findByTestId } from 'src/support/tests/hooksHelper';
 
 import Preloader from '..';

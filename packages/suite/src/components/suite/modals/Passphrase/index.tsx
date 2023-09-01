@@ -5,8 +5,6 @@ import styled from 'styled-components';
 
 import { variables, PassphraseTypeCard } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
-
-
 import * as deviceUtils from '@suite-common/suite-utils';
 
 import { useSelector, useDispatch } from 'src/hooks/suite';

@@ -403,7 +403,7 @@ export const createDeviceInstance = createThunk(
             dispatch(notificationsActions.addToast({ type: 'settings-applied' }));
         }
 
-      const devices = selectDevices(getState());
+        const devices = selectDevices(getState());
         dispatch(
             deviceActions.createDeviceInstance({
                 ...device,
@@ -544,8 +544,9 @@ export const observeSelectedDevice =
  * Fetch device features without asking for pin/passphrase
  * this is the only place where useEmptyPassphrase should be always set to "true"
  */
-export const acquireDevice =
-    (requestedDevice?: TrezorDevice) => async (dispatch: Dispatch, getState: GetState) => {
+export const acquireDevice = createThunk(
+    `${MODULE_PREFIX}/acquireDevice`,
+    async (requestedDevice: TrezorDevice | undefined, { dispatch, getState }) => {
         const selectedDevice = selectDeviceSelector(getState());
         if (!selectedDevice && !requestedDevice) return;
         const device = requestedDevice || selectedDevice;
@@ -564,15 +565,16 @@ export const acquireDevice =
                 }),
             );
         }
-    };
+    },
+);
 
 /**
  * Called from `discoveryMiddleware`
  * Fetch device state, update `devices` reducer as result of SUITE.AUTH_DEVICE
  */
-export const authorizeDevice =
-    () =>
-    async (dispatch: Dispatch, getState: GetState): Promise<boolean> => {
+export const authorizeDevice = createThunk(
+    `${MODULE_PREFIX}/authorizeDevice`,
+    async (_, { dispatch, getState }): Promise<boolean> => {
         const device = selectDeviceSelector(getState());
         if (!device) return false;
         const isDeviceReady =
@@ -632,51 +634,55 @@ export const authorizeDevice =
             notificationsActions.addToast({ type: 'auth-failed', error: response.payload.error }),
         );
         return false;
-    };
+    },
+);
 
 /**
  * Called from `suiteMiddleware`
  */
-export const authConfirm = () => async (dispatch: Dispatch, getState: GetState) => {
-    const device = selectDeviceSelector(getState());
-    if (!device) return false;
+export const authConfirm = createThunk(
+    `${MODULE_PREFIX}/authConfirm`,
+    async (_, { dispatch, getState }) => {
+        const device = selectDeviceSelector(getState());
+        if (!device) return false;
 
-    const response = await TrezorConnect.getDeviceState({
-        device: {
-            path: device.path,
-            instance: device.instance,
-            state: undefined,
-        },
-        keepSession: false,
-    });
+        const response = await TrezorConnect.getDeviceState({
+            device: {
+                path: device.path,
+                instance: device.instance,
+                state: undefined,
+            },
+            keepSession: false,
+        });
 
-    if (!response.success) {
-        // handle error passed from Passphrase modal
-        if (response.payload.error === 'auth-confirm-cancel') {
-            // needs await to propagate all actions
-            await dispatch(createDeviceInstance({ device }));
-            // forget previous empty wallet
-            dispatch(deviceActions.forgetDevice(device));
+        if (!response.success) {
+            // handle error passed from Passphrase modal
+            if (response.payload.error === 'auth-confirm-cancel') {
+                // needs await to propagate all actions
+                await dispatch(createDeviceInstance({ device }));
+                // forget previous empty wallet
+                dispatch(deviceActions.forgetDevice(device));
+                return;
+            }
+            dispatch(
+                notificationsActions.addToast({
+                    type: 'auth-confirm-error',
+                    error: response.payload.error,
+                }),
+            );
+            dispatch(deviceActions.receiveAuthConfirm({ device, success: false }));
             return;
         }
-        dispatch(
-            notificationsActions.addToast({
-                type: 'auth-confirm-error',
-                error: response.payload.error,
-            }),
-        );
-        dispatch(deviceActions.receiveAuthConfirm({ device, success: false }));
-        return;
-    }
 
-    if (response.payload.state !== device.state) {
-        dispatch(notificationsActions.addToast({ type: 'auth-confirm-error' }));
-        dispatch(deviceActions.receiveAuthConfirm({ device, success: false }));
-        return;
-    }
+        if (response.payload.state !== device.state) {
+            dispatch(notificationsActions.addToast({ type: 'auth-confirm-error' }));
+            dispatch(deviceActions.receiveAuthConfirm({ device, success: false }));
+            return;
+        }
 
-    dispatch(deviceActions.receiveAuthConfirm({ device, success: true }));
-};
+        dispatch(deviceActions.receiveAuthConfirm({ device, success: true }));
+    },
+);
 
 export const switchDuplicatedDevice = createThunk(
     `${MODULE_PREFIX}/switchDuplicatedDevice`,

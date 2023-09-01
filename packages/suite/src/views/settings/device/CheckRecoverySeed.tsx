@@ -1,3 +1,5 @@
+import { getCheckBackupUrl } from '@suite-common/suite-utils';
+
 import { Translation } from 'src/components/suite';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from 'src/components/suite/Settings';
 import { useDevice, useDispatch } from 'src/hooks/suite';

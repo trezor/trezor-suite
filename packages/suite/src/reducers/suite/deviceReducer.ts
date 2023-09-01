@@ -11,7 +11,6 @@ import { TrezorDevice, AcquiredDevice, ButtonRequest } from '@suite-common/suite
 
 import { deviceActions } from 'src/actions/suite/deviceActions';
 
-
 export type State = { devices: TrezorDevice[]; selectedDevice?: TrezorDevice };
 
 const initialState: State = { devices: [], selectedDevice: undefined };

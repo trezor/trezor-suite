@@ -18,7 +18,6 @@ import * as fixtures from '../__fixtures__/metadataActions';
 
 const deviceReducer = prepareDeviceReducer(extraDependencies);
 
-
 jest.mock('@trezor/connect', () => {
     let fixture: any;
 

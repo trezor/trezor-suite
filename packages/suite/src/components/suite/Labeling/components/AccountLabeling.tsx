@@ -1,14 +1,13 @@
 import { findAccountDevice } from '@suite-common/wallet-utils';
-
 import { isSelectedDevice } from '@suite-common/suite-utils';
 
 import { AccountLabel } from 'src/components/suite';
 import { Account as WalletAccount } from 'src/types/wallet';
 import { useSelector } from 'src/hooks/suite';
 import { selectLabelingDataForAccount } from 'src/reducers/suite/metadataReducer';
+import { selectDevices, selectDevice } from 'src/reducers/suite/deviceReducer';
 
 import { WalletLabeling } from './WalletLabeling';
-import { selectDevices, selectDevice } from 'src/reducers/suite/deviceReducer';
 
 interface AccountProps {
     account: WalletAccount | WalletAccount[];
