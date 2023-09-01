@@ -6,8 +6,6 @@ import { goto } from 'src/actions/suite/routerActions';
 import { Translation, Modal } from 'src/components/suite';
 import { useDispatch } from 'src/hooks/suite/useDispatch';
 import { Button, Image } from '@trezor/components';
-import { ReduxModalProps } from 'src/components/suite/ModalSwitcher/types';
-import { TranslationKey } from 'src/components/suite/Translation';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 
 const ImageWrapper = styled.div`
@@ -18,11 +16,7 @@ const StyledModal = styled(Modal)`
     width: 600px;
 `;
 
-interface ConfirmNoBackupProps extends Pick<ReduxModalProps, 'renderer'> {
-    buttonText: TranslationKey;
-}
-
-export const ConfirmNoBackup = ({ buttonText }: ConfirmNoBackupProps) => {
+export const ConfirmNoBackup = () => {
     const dispatch = useDispatch();
 
     const confirm = () => dispatch(onReceiveConfirmation(true));
@@ -45,7 +39,7 @@ export const ConfirmNoBackup = ({ buttonText }: ConfirmNoBackupProps) => {
                         onClick={confirm}
                         data-test="@no-backup/take-risk-button"
                     >
-                        <Translation id={buttonText} />
+                        <Translation id="TR_CONTINUE_ANYWAY" />
                     </Button>
                     <Button onClick={goToSettings}>
                         <Translation id="TR_CREATE_BACKUP" />
