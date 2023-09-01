@@ -444,8 +444,9 @@ export const handleDeviceConnect = createThunk(
  * Triggered by `@trezor/connect DEVICE_EVENT`
  * @param {Device} device
  */
-export const handleDeviceDisconnect =
-    (device: Device) => (dispatch: Dispatch, getState: GetState) => {
+export const handleDeviceDisconnect = createThunk(
+    `${MODULE_PREFIX}/handleDeviceDisconnect`,
+    (device: Device, { dispatch, getState }) => {
         const selectedDevice = selectDeviceSelector(getState());
         const router = selectRouter(getState());
         const devices = selectDevices(getState());
@@ -475,15 +476,17 @@ export const handleDeviceDisconnect =
 
         const available = deviceUtils.getFirstDeviceInstance(devices);
         dispatch(selectDevice(available[0]));
-    };
+    },
+);
 
 /**
  * Triggered by `@trezor/connect DEVICE_EVENT` via suiteMiddleware
  * Remove all data related to all instances of disconnected device if they are not remembered
  * @param {Device} device
  */
-export const forgetDisconnectedDevices =
-    (device: Device) => (dispatch: Dispatch, getState: GetState) => {
+export const forgetDisconnectedDevices = createThunk(
+    `${MODULE_PREFIX}/forgetDisconnectedDevices`,
+    (device: Device, { dispatch, getState }) => {
         const devices = selectDevices(getState());
         const deviceInstances = devices.filter(d => d.id === device.id);
         deviceInstances.forEach(d => {
@@ -491,7 +494,8 @@ export const forgetDisconnectedDevices =
                 dispatch(deviceActions.forgetDevice(d));
             }
         });
-    };
+    },
+);
 
 /**
  * list of actions which has influence on `device` field inside `suite` reducer

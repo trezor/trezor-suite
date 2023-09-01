@@ -191,7 +191,9 @@ describe('Suite Actions', () => {
             });
             store.dispatch(suiteActions.handleDeviceDisconnect(f.device));
             if (!f.result) {
-                expect(store.getActions().length).toEqual(1); // only DEVICE.DISCONNECT action present
+                expect(filterThunkActionTypes(store.getActions()).pop()?.type).toEqual(
+                    deviceActions.deviceDisconnect.type,
+                );
             } else {
                 const action = store.getActions().pop();
                 if (f.result.type) {
@@ -207,7 +209,7 @@ describe('Suite Actions', () => {
             const state = getInitialState(f.state.suite, f.state.device);
             const store = initStore(state);
             store.dispatch(suiteActions.forgetDisconnectedDevices(f.device));
-            const actions = store.getActions();
+            const actions = filterThunkActionTypes(store.getActions());
             expect(actions.length).toEqual(f.result.length);
             actions.forEach((a, i) => {
                 expect(a.payload).toMatchObject(f.result[i]);
