@@ -3268,13 +3268,9 @@ export default defineMessages({
             'If you only need Bitcoin wallet operations, you can install <button>{bitcoinOnly}</button> firmware.',
         id: 'TR_SETTINGS_COINS_BITCOIN_ONLY_FIRMWARE_SUGGESTION',
     },
-    TR_SHOW_ADDRESS_ANYWAY: {
-        defaultMessage: 'Show address anyway',
-        id: 'TR_SHOW_ADDRESS_ANYWAY',
-    },
-    TR_SHOW_XPUB_ANYWAY: {
-        defaultMessage: 'Show public key anyway',
-        id: 'TR_SHOW_XPUB_ANYWAY',
+    TR_CONTINUE_ANYWAY: {
+        defaultMessage: 'Continue anyway',
+        id: 'TR_CONTINUE_ANYWAY',
     },
     TR_SHOW_DETAILS: {
         defaultMessage: 'Update now',
