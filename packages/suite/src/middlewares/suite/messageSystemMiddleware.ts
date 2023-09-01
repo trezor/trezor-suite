@@ -11,12 +11,12 @@ import { SUITE } from 'src/actions/suite/constants';
 import * as walletSettingsActions from 'src/actions/settings/walletSettingsActions';
 import { getIsTorEnabled } from 'src/utils/suite/tor';
 import type { AppState, Action, Dispatch } from 'src/types/suite';
-
-import { selectDevice } from '../../reducers/suite/deviceReducer';
+import { deviceActions } from 'src/actions/suite/deviceActions';
+import { selectDevice } from 'src/reducers/suite/deviceReducer';
 
 // actions which can affect message system messages
 const actions = [
-    SUITE.SELECT_DEVICE,
+    deviceActions.selectDevice.type,
     SUITE.TOR_STATUS,
     messageSystemActions.fetchSuccessUpdate.type,
     walletSettingsActions.changeNetworks.type,

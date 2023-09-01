@@ -4,18 +4,21 @@ import { DEVICE } from '@trezor/connect';
 
 import { configureStore } from 'src/support/tests/configureStore';
 import * as routerActions from 'src/actions/suite/routerActions';
-import { SUITE } from 'src/actions/suite/constants';
 import routerReducer from 'src/reducers/suite/routerReducer';
-import deviceReducer from 'src/reducers/suite/deviceReducer';
+import { prepareDeviceReducer } from 'src/reducers/suite/deviceReducer';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
 import modalReducer from 'src/reducers/suite/modalReducer';
 import suiteMiddleware from 'src/middlewares/suite/suiteMiddleware';
 import redirectMiddleware from 'src/middlewares/suite/redirectMiddleware';
 import { Action } from 'src/types/suite';
+import { extraDependencies } from 'src/support/extraDependencies';
+import { deviceActions } from 'src/actions/suite/deviceActions';
 
 const { getSuiteDevice } = global.JestMocks;
 
 jest.mock('src/actions/suite/storageActions', () => ({ __esModule: true }));
+
+const deviceReducer = prepareDeviceReducer(extraDependencies);
 
 type SuiteState = ReturnType<typeof suiteReducer>;
 type DevicesState = ReturnType<typeof deviceReducer>;
@@ -128,7 +131,7 @@ describe('redirectMiddleware', () => {
                 ),
             );
             store.dispatch({
-                type: SUITE.SELECT_DEVICE,
+                type: deviceActions.selectDevice.type,
                 payload: getSuiteDevice(),
             });
             expect(goto).toHaveBeenNthCalledWith(1, 'wallet-index');

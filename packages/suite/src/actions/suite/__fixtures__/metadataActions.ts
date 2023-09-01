@@ -1,4 +1,6 @@
-import { METADATA, SUITE } from 'src/actions/suite/constants';
+import { METADATA } from 'src/actions/suite/constants';
+
+import { deviceActions } from '../deviceActions';
 
 const setDeviceMetadataKey = [
     {
@@ -47,7 +49,7 @@ const setDeviceMetadataKey = [
                 },
             },
             {
-                type: SUITE.UPDATE_SELECTED_DEVICE,
+                type: deviceActions.updateSelectedDevice.type,
                 payload: {
                     state: 'device-state',
                     metadata: { status: 'cancelled' },
@@ -74,7 +76,7 @@ const setDeviceMetadataKey = [
                 },
             },
             {
-                type: SUITE.UPDATE_SELECTED_DEVICE,
+                type: deviceActions.updateSelectedDevice.type,
             },
         ],
     },
@@ -112,7 +114,7 @@ const setDeviceMetadataKey = [
                 },
             },
             {
-                type: SUITE.UPDATE_SELECTED_DEVICE,
+                type: deviceActions.updateSelectedDevice.type,
                 payload: {
                     metadata: {
                         1: {
@@ -527,7 +529,7 @@ const init = [
                 },
             },
             {
-                type: '@suite/update-selected-device',
+                type: deviceActions.updateSelectedDevice.type,
                 payload: {
                     state: 'device-state',
                     connected: true,

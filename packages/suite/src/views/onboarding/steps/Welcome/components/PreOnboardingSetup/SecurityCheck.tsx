@@ -1,12 +1,13 @@
 import styled from 'styled-components';
 
+
+import { getConnectedDeviceStatus } from '@suite-common/suite-utils';
 import { TREZOR_SUPPORT_URL } from '@trezor/urls';
 import { Icon, Tooltip, variables, useTheme } from '@trezor/components';
 
 import { useOnboarding, useSelector } from 'src/hooks/suite';
 import { Translation, TrezorLink } from 'src/components/suite';
 import { Hologram, OnboardingButtonCta, OnboardingButtonSkip } from 'src/components/onboarding';
-import { getConnectedDeviceStatus } from 'src/utils/suite/device';
 import { CollapsibleOnboardingCard } from 'src/components/onboarding/CollapsibleOnboardingCard';
 import { selectDevice } from 'src/reducers/suite/deviceReducer';
 

@@ -2,6 +2,7 @@ import { useEffect, useState, Dispatch, SetStateAction } from 'react';
 
 import styled from 'styled-components';
 
+import { getFwUpdateVersion } from '@suite-common/suite-utils';
 import { Note } from '@trezor/components';
 import { TrezorDevice } from '@suite-common/suite-types';
 import { getFirmwareVersion, hasBitcoinOnlyFirmware } from '@trezor/device-utils';
@@ -19,7 +20,6 @@ import {
     FirmwareInstallButton,
     FirmwareOffer,
 } from 'src/components/firmware';
-import { getFwUpdateVersion } from 'src/utils/suite/device';
 
 import { selectDevices } from '../../reducers/suite/deviceReducer';
 

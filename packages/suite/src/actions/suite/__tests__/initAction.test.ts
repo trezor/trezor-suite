@@ -22,7 +22,7 @@ import { SUITE, ROUTER } from 'src/actions/suite/constants';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
 import modalReducer from 'src/reducers/suite/modalReducer';
 import routerReducer from 'src/reducers/suite/routerReducer';
-import deviceReducer from 'src/reducers/suite/deviceReducer';
+import { prepareDeviceReducer } from 'src/reducers/suite/deviceReducer';
 import metadataReducer from 'src/reducers/suite/metadataReducer';
 import walletReducers from 'src/reducers/wallet';
 import { init } from 'src/actions/suite/initAction';
@@ -30,8 +30,9 @@ import suiteMiddleware from 'src/middlewares/suite/suiteMiddleware';
 import type { AppState } from 'src/types/suite';
 import { extraDependencies } from 'src/support/extraDependencies';
 
-import { appChanged } from '../suiteActions';
+import { appChanged, initDevices } from '../suiteActions';
 
+const deviceReducer = prepareDeviceReducer(extraDependencies);
 const analyticsReducer = prepareAnalyticsReducer(extraDependencies);
 const messageSystemReducer = prepareMessageSystemReducer(extraDependencies);
 
@@ -82,6 +83,7 @@ const fixtures: Fixture[] = [
         },
         actions: [
             SUITE.INIT,
+            initDevices.pending.type,
             analyticsActions.initAnalytics.type,
             SUITE.SET_LANGUAGE,
             initMessageSystemThunk.pending.type,
@@ -90,6 +92,7 @@ const fixtures: Fixture[] = [
             ROUTER.LOCATION_CHANGE,
             SUITE.LOCK_ROUTER,
             connectInitThunk.pending.type,
+            initDevices.fulfilled.type,
             connectInitThunk.fulfilled.type,
             initBlockchainThunk.pending.type,
             preloadFeeInfoThunk.pending.type,
@@ -111,11 +114,13 @@ const fixtures: Fixture[] = [
         },
         actions: [
             SUITE.INIT,
+            initDevices.pending.type,
             analyticsActions.initAnalytics.type,
             SUITE.SET_LANGUAGE,
             initMessageSystemThunk.pending.type,
             fetchConfigThunk.pending.type,
             connectInitThunk.pending.type,
+            initDevices.fulfilled.type,
             connectInitThunk.fulfilled.type,
             initBlockchainThunk.pending.type,
             preloadFeeInfoThunk.pending.type,
@@ -138,11 +143,13 @@ const fixtures: Fixture[] = [
         },
         actions: [
             SUITE.INIT,
+            initDevices.pending.type,
             analyticsActions.initAnalytics.type,
             SUITE.SET_LANGUAGE,
             initMessageSystemThunk.pending.type,
             fetchConfigThunk.pending.type,
             connectInitThunk.pending.type,
+            initDevices.fulfilled.type,
             connectInitThunk.fulfilled.type,
             initBlockchainThunk.pending.type,
             preloadFeeInfoThunk.pending.type,
@@ -165,6 +172,7 @@ const fixtures: Fixture[] = [
         },
         actions: [
             SUITE.INIT,
+            initDevices.pending.type,
             analyticsActions.initAnalytics.type,
             SUITE.SET_LANGUAGE,
             initMessageSystemThunk.pending.type,
@@ -173,6 +181,7 @@ const fixtures: Fixture[] = [
             ROUTER.LOCATION_CHANGE,
             SUITE.LOCK_ROUTER,
             connectInitThunk.pending.type,
+            initDevices.fulfilled.type,
             connectInitThunk.rejected.type,
             SUITE.ERROR,
         ],

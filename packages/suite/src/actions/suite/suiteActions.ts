@@ -1,17 +1,18 @@
 import { createAction } from '@reduxjs/toolkit';
 
+import * as deviceUtils from '@suite-common/suite-utils';
+import { sortByTimestamp } from '@suite-common/suite-utils';
 import { checkFirmwareAuthenticity, selectFirmware } from '@suite-common/wallet-core';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { getCustomBackends } from '@suite-common/wallet-utils';
 import { desktopApi, HandshakeElectron } from '@trezor/suite-desktop-api';
 import { analytics, EventType } from '@trezor/suite-analytics';
 import TrezorConnect, { Device, DEVICE } from '@trezor/connect';
+import { createThunk } from '@suite-common/redux-utils';
 
 import { TorStatus } from 'src/types/suite';
 import * as comparisonUtils from 'src/utils/suite/comparisonUtils';
-import * as deviceUtils from 'src/utils/suite/device';
 import { isOnionUrl } from 'src/utils/suite/tor';
-import { sortByTimestamp } from 'src/utils/suite/device';
 import * as modalActions from 'src/actions/suite/modalActions';
 import type { Locale } from 'src/config/suite/languages';
 import type {
@@ -19,7 +20,6 @@ import type {
     Dispatch,
     GetState,
     TrezorDevice,
-    ButtonRequest,
     AppState,
     TorBootstrap,
 } from 'src/types/suite';
@@ -34,32 +34,14 @@ import type { TranslationKey } from 'src/components/suite/Translation/components
 import { SUITE, METADATA } from './constants';
 import { selectDevices } from '../../reducers/suite/deviceReducer';
 import { selectRouter } from '../../reducers/suite/routerReducer';
+import { deviceActions, MODULE_PREFIX } from './deviceActions';
 
 export type SuiteAction =
     | { type: typeof SUITE.INIT }
     | { type: typeof SUITE.READY }
     | { type: typeof SUITE.ERROR; error: string }
     | { type: typeof SUITE.DESKTOP_HANDSHAKE; payload: HandshakeElectron }
-    | { type: typeof SUITE.SELECT_DEVICE; payload?: TrezorDevice }
-    | { type: typeof SUITE.UPDATE_SELECTED_DEVICE; payload: TrezorDevice }
-    | {
-          type: typeof SUITE.UPDATE_PASSPHRASE_MODE;
-          payload: TrezorDevice;
-          hidden: boolean;
-          alwaysOnDevice?: boolean;
-      }
-    | { type: typeof SUITE.AUTH_DEVICE; payload: TrezorDevice; state: string }
-    | { type: typeof SUITE.AUTH_FAILED; payload: TrezorDevice }
     | { type: typeof requestAuthConfirm.type }
-    | { type: typeof SUITE.RECEIVE_AUTH_CONFIRM; payload: TrezorDevice; success: boolean }
-    | { type: typeof SUITE.CREATE_DEVICE_INSTANCE; payload: TrezorDevice }
-    | { type: typeof SUITE.FORGET_DEVICE; payload: TrezorDevice }
-    | {
-          type: typeof SUITE.REMEMBER_DEVICE;
-          payload: TrezorDevice;
-          remember: boolean;
-          forceRemember?: true;
-      }
     | {
           type: typeof SUITE.SET_LANGUAGE;
           locale: Locale;
@@ -81,13 +63,6 @@ export type SuiteAction =
       }
     | { type: typeof SUITE.APP_CHANGED; payload: AppState['router']['app'] }
     | {
-          type: typeof SUITE.ADD_BUTTON_REQUEST;
-          payload: {
-              device: TrezorDevice | undefined;
-              buttonRequest?: ButtonRequest;
-          };
-      }
-    | {
           type: typeof SUITE.SET_THEME;
           variant: AppState['suite']['settings']['theme']['variant'];
       }
@@ -95,16 +70,7 @@ export type SuiteAction =
           type: typeof SUITE.SET_AUTODETECT;
           payload: Partial<AutodetectSettings>;
       }
-    | { type: typeof SUITE.REQUEST_DEVICE_RECONNECT };
-
-export const updateSelectedDevice = createAction(
-    SUITE.UPDATE_SELECTED_DEVICE,
-    (payload: TrezorDevice) => ({ payload }),
-);
-
-export const setSelectedDevice = createAction(SUITE.SELECT_DEVICE, (payload?: TrezorDevice) => ({
-    payload,
-}));
+    | { type: typeof deviceActions.requestDeviceReconnect.type };
 
 export const appChanged = createAction(
     SUITE.APP_CHANGED,
@@ -121,18 +87,11 @@ export const desktopHandshake = (payload: HandshakeElectron): SuiteAction => ({
 export const requestAuthConfirm = createAction(SUITE.REQUEST_AUTH_CONFIRM);
 
 export const removeButtonRequests = createAction(
-    SUITE.ADD_BUTTON_REQUEST,
+    deviceActions.addButtonRequest.type,
     ({ device }: { device: TrezorDevice | null }) => ({
         payload: {
             device,
         },
-    }),
-);
-
-export const addButtonRequest = createAction(
-    SUITE.ADD_BUTTON_REQUEST,
-    (payload: { device: TrezorDevice | undefined; buttonRequest: ButtonRequest }) => ({
-        payload,
     }),
 );
 
@@ -384,7 +343,7 @@ export const selectDevice =
         }
 
         // 3. select requested device
-        dispatch(setSelectedDevice(payload));
+        dispatch(deviceActions.selectDevice(payload));
     };
 
 /**
@@ -399,19 +358,15 @@ export const toggleRememberDevice =
         analytics.report({
             type: payload.remember ? EventType.SwitchDeviceForget : EventType.SwitchDeviceRemember,
         });
-        return dispatch({
-            type: SUITE.REMEMBER_DEVICE,
-            payload,
-            remember: !payload.remember || !!forceRemember,
-            // if device is already remembered, do not force it, it would remove the remember on return to suite
-            forceRemember: payload.remember ? undefined : forceRemember,
-        });
+        return dispatch(
+            deviceActions.rememberDevice({
+                device: payload,
+                remember: !payload.remember || !!forceRemember,
+                // if device is already remembered, do not force it, it would remove the remember on return to suite
+                forceRemember: payload.remember ? undefined : forceRemember,
+            }),
+        );
     };
-
-export const forgetDevice = (payload: TrezorDevice): SuiteAction => ({
-    type: SUITE.FORGET_DEVICE,
-    payload,
-});
 
 /**
  * Triggered by `@trezor/connect DEVICE_EVENT`
@@ -439,14 +394,13 @@ export const createDeviceInstance =
         }
 
         const devices = selectDevices(getState());
-        dispatch({
-            type: SUITE.CREATE_DEVICE_INSTANCE,
-            payload: {
-                ...device,
-                useEmptyPassphrase,
-                instance: deviceUtils.getNewInstanceNumber(devices, device),
-            },
-        });
+      dispatch(
+        deviceActions.createDeviceInstance({
+          ...device,
+          useEmptyPassphrase,
+          instance: deviceUtils.getNewInstanceNumber(devices, device),
+        }),
+      );
     };
 
 /**
@@ -520,7 +474,7 @@ export const forgetDisconnectedDevices =
         const deviceInstances = devices.filter(d => d.id === device.id);
         deviceInstances.forEach(d => {
             if (d.features && !d.remember) {
-                dispatch(forgetDevice(d));
+                dispatch(deviceActions.forgetDevice(d));
             }
         });
     };
@@ -530,14 +484,14 @@ export const forgetDisconnectedDevices =
  * all other actions should be ignored
  */
 const actions = [
-    SUITE.AUTH_DEVICE,
-    SUITE.AUTH_FAILED,
-    setSelectedDevice.type,
-    SUITE.RECEIVE_AUTH_CONFIRM,
-    SUITE.UPDATE_PASSPHRASE_MODE,
-    SUITE.ADD_BUTTON_REQUEST,
-    SUITE.REMEMBER_DEVICE,
-    SUITE.FORGET_DEVICE,
+    deviceActions.authDevice.type,
+    deviceActions.authFailed.type,
+    deviceActions.selectDevice.type,
+    deviceActions.receiveAuthConfirm.type,
+    deviceActions.updatePassphraseMode.type,
+    deviceActions.addButtonRequest.type,
+    deviceActions.rememberDevice.type,
+    deviceActions.forgetDevice.type,
     METADATA.SET_DEVICE_METADATA,
     ...Object.values(DEVICE).filter(v => typeof v === 'string'),
 ];
@@ -561,7 +515,7 @@ export const observeSelectedDevice =
 
         const changed = comparisonUtils.isChanged(selectedDevice, deviceFromReducer);
         if (changed) {
-            dispatch(updateSelectedDevice(deviceFromReducer));
+            dispatch(deviceActions.updateSelectedDevice(deviceFromReducer));
         }
 
         return changed;
@@ -593,15 +547,6 @@ export const acquireDevice =
             );
         }
     };
-
-/**
- * Inner action used in `authorizeDevice`
- */
-const updatePassphraseMode = (device: TrezorDevice, hidden: boolean): SuiteAction => ({
-    type: SUITE.UPDATE_PASSPHRASE_MODE,
-    payload: device,
-    hidden,
-});
 
 /**
  * Called from `discoveryMiddleware`
@@ -647,9 +592,11 @@ export const authorizeDevice =
                 if (freshDeviceData!.useEmptyPassphrase) {
                     // if currently selected device uses empty passphrase
                     // make sure that founded duplicate will also use empty passphrase
-                    dispatch(updatePassphraseMode(duplicate, false));
+                    dispatch(
+                        deviceActions.updatePassphraseMode({ device: duplicate, hidden: false }),
+                    );
                     // reset useEmptyPassphrase field for selected device to allow future PassphraseRequests
-                    dispatch(updatePassphraseMode(device, true));
+                    dispatch(deviceActions.updatePassphraseMode({ device, hidden: true }));
                 }
                 dispatch(
                     modalActions.openModal({ type: 'passphrase-duplicate', device, duplicate }),
@@ -657,29 +604,17 @@ export const authorizeDevice =
                 return false;
             }
 
-            dispatch({
-                type: SUITE.AUTH_DEVICE,
-                payload: freshDeviceData,
-                state,
-            });
+            dispatch(deviceActions.authDevice({ device: freshDeviceData as TrezorDevice, state }));
+
             return true;
         }
 
-        dispatch({ type: SUITE.AUTH_FAILED, payload: device });
+        dispatch(deviceActions.authFailed(device));
         dispatch(
             notificationsActions.addToast({ type: 'auth-failed', error: response.payload.error }),
         );
         return false;
     };
-
-/**
- * Inner action used in `authConfirm`
- */
-const receiveAuthConfirm = (device: TrezorDevice, success: boolean): SuiteAction => ({
-    type: SUITE.RECEIVE_AUTH_CONFIRM,
-    payload: device,
-    success,
-});
 
 /**
  * Called from `suiteMiddleware`
@@ -703,7 +638,7 @@ export const authConfirm = () => async (dispatch: Dispatch, getState: GetState) 
             // needs await to propagate all actions
             await dispatch(createDeviceInstance(device));
             // forget previous empty wallet
-            dispatch(forgetDevice(device));
+            dispatch(deviceActions.forgetDevice(device));
             return;
         }
         dispatch(
@@ -712,24 +647,25 @@ export const authConfirm = () => async (dispatch: Dispatch, getState: GetState) 
                 error: response.payload.error,
             }),
         );
-        dispatch(receiveAuthConfirm(device, false));
+        dispatch(deviceActions.receiveAuthConfirm({ device, success: false }));
         return;
     }
 
     if (response.payload.state !== device.state) {
         dispatch(notificationsActions.addToast({ type: 'auth-confirm-error' }));
-        dispatch(receiveAuthConfirm(device, false));
+        dispatch(deviceActions.receiveAuthConfirm({ device, success: false }));
         return;
     }
 
-    dispatch(receiveAuthConfirm(device, true));
+    dispatch(deviceActions.receiveAuthConfirm({ device, success: true }));
 };
 
-/**
- * Called from `suiteMiddleware`
- */
-export const switchDuplicatedDevice =
-    (device: TrezorDevice, duplicate: TrezorDevice) => async (dispatch: Dispatch) => {
+export const switchDuplicatedDevice = createThunk(
+    `${MODULE_PREFIX}/switchDuplicatedDevice`,
+    async (
+        { device, duplicate }: { device: TrezorDevice; duplicate: TrezorDevice },
+        { dispatch },
+    ) => {
         // close modal
         dispatch(modalActions.onCancel());
         // release session from authorizeDevice
@@ -743,27 +679,27 @@ export const switchDuplicatedDevice =
         // forgetDevice > suiteMiddleware > handleDeviceDisconnect > selectDevice (first available)
         await dispatch(selectDevice(duplicate));
         // remove stateless instance
-        dispatch(forgetDevice(device));
-    };
+        dispatch(deviceActions.forgetDevice(device));
+    },
+);
 
-export const requestDeviceReconnect = () => ({
-    type: SUITE.REQUEST_DEVICE_RECONNECT,
-});
+export const initDevices = createThunk(
+    `${MODULE_PREFIX}/initDevices`,
+    (_, { dispatch, getState }) => {
+        const devices = selectDevices(getState());
+        const device = selectDeviceSelector(getState());
 
-export const initDevices = () => (dispatch: Dispatch, getState: GetState) => {
-    const devices = selectDevices(getState());
-    const device = selectDeviceSelector(getState());
-
-    if (!device && devices && devices[0]) {
-        // if there are force remember devices, forget them and pick the first one of them as selected device
-        const forcedDevices = devices.filter(d => d.forceRemember && d.remember);
-        forcedDevices.forEach(d => {
-            dispatch(toggleRememberDevice(d));
-        });
-        dispatch(
-            selectDevice(
-                forcedDevices.length ? forcedDevices[0] : sortByTimestamp([...devices])[0],
-            ),
-        );
-    }
-};
+        if (!device && devices && devices[0]) {
+            // if there are force remember devices, forget them and pick the first one of them as selected device
+            const forcedDevices = devices.filter(d => d.forceRemember && d.remember);
+            forcedDevices.forEach(d => {
+                dispatch(toggleRememberDevice(d));
+            });
+            dispatch(
+                selectDevice(
+                    forcedDevices.length ? forcedDevices[0] : sortByTimestamp([...devices])[0],
+                ),
+            );
+        }
+    },
+);

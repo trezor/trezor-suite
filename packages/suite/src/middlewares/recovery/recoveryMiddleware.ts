@@ -1,10 +1,13 @@
-import { UI } from '@trezor/connect';
 import { MiddlewareAPI } from 'redux';
+
+import { UI } from '@trezor/connect';
+
 import { SUITE } from 'src/actions/suite/constants';
 import * as recoveryActions from 'src/actions/recovery/recoveryActions';
 import * as onboardingActions from 'src/actions/onboarding/onboardingActions';
-
 import { AppState, Action, Dispatch } from 'src/types/suite';
+
+import { deviceActions } from '../../actions/suite/deviceActions';
 
 const recovery =
     (api: MiddlewareAPI<Dispatch, AppState>) =>
@@ -28,7 +31,7 @@ const recovery =
         }
 
         if (
-            action.type === SUITE.UPDATE_SELECTED_DEVICE &&
+            deviceActions.updateSelectedDevice.match(action) &&
             action.payload?.features?.recovery_mode &&
             recovery.status !== 'in-progress'
         ) {

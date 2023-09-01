@@ -1,8 +1,10 @@
 import styled from 'styled-components';
+
+import * as deviceUtils from '@suite-common/suite-utils';
 import { useTheme, Icon } from '@trezor/components';
+
 import { Translation } from 'src/components/suite';
 import NotificationCard from 'src/components/suite/NotificationCard'; // on purpose to avoid hacky sc overriding
-import * as deviceUtils from 'src/utils/suite/device';
 import { TrezorDevice } from 'src/types/suite';
 
 const GrayNotificationCard = styled(NotificationCard)`

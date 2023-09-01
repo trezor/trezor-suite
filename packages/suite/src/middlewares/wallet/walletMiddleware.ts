@@ -1,10 +1,6 @@
 import type { MiddlewareAPI } from 'redux';
+import { isAnyOf } from '@reduxjs/toolkit';
 
-import { ROUTER, SUITE } from 'src/actions/suite/constants';
-import { WALLET_SETTINGS } from 'src/actions/settings/constants';
-import * as selectedAccountActions from 'src/actions/wallet/selectedAccountActions';
-import * as sendFormActions from 'src/actions/wallet/sendFormActions';
-import * as modalActions from 'src/actions/suite/modalActions';
 import {
     accountsActions,
     blockchainActions,
@@ -13,13 +9,20 @@ import {
     transactionsActions,
     unsubscribeBlockchainThunk,
 } from '@suite-common/wallet-core';
+import { settingsCommonConfig } from '@suite-common/suite-config';
+
+import { ROUTER } from 'src/actions/suite/constants';
+import { WALLET_SETTINGS } from 'src/actions/settings/constants';
+import * as selectedAccountActions from 'src/actions/wallet/selectedAccountActions';
+import * as sendFormActions from 'src/actions/wallet/sendFormActions';
+import * as modalActions from 'src/actions/suite/modalActions';
 import * as receiveActions from 'src/actions/wallet/receiveActions';
 import * as cardanoStakingActions from 'src/actions/wallet/cardanoStakingActions';
 import * as coinmarketCommonActions from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
 import * as coinmarketBuyActions from 'src/actions/wallet/coinmarketBuyActions';
 import type { AppState, Action, Dispatch } from 'src/types/suite';
-import { isAnyOf } from '@reduxjs/toolkit';
-import { settingsCommonConfig } from '@suite-common/suite-config';
+
+import { deviceActions } from '../../actions/suite/deviceActions';
 
 const walletMiddleware =
     (api: MiddlewareAPI<Dispatch, AppState>) =>
@@ -27,7 +30,7 @@ const walletMiddleware =
     (action: Action): Action => {
         const prevState = api.getState();
 
-        if (action.type === SUITE.FORGET_DEVICE) {
+        if (deviceActions.forgetDevice.match(action)) {
             const deviceState = action.payload.state;
             const accounts = api
                 .getState()
@@ -75,7 +78,7 @@ const walletMiddleware =
 
         const prevRouter = prevState.router;
         const nextRouter = api.getState().router;
-        let resetReducers = action.type === SUITE.SELECT_DEVICE;
+        let resetReducers = action.type === deviceActions.selectDevice.type;
 
         // show modal when leaving the spend tab in active trade
         if (action.type === ROUTER.LOCATION_CHANGE) {
@@ -90,7 +93,7 @@ const walletMiddleware =
         }
 
         if (
-            action.type === SUITE.FORGET_DEVICE &&
+            deviceActions.forgetDevice.match(action) &&
             prevState.wallet.selectedAccount.account?.deviceState === action.payload.state
         ) {
             // if currently selected account is related to forgotten device

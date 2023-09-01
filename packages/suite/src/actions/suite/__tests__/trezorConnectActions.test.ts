@@ -5,8 +5,11 @@ import { connectInitThunk } from '@suite-common/connect-init';
 
 import { configureStore } from 'src/support/tests/configureStore';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
-import deviceReducer from 'src/reducers/suite/deviceReducer';
+import { prepareDeviceReducer } from 'src/reducers/suite/deviceReducer';
 import { SUITE } from 'src/actions/suite/constants';
+import { extraDependencies } from 'src/support/extraDependencies';
+
+const deviceReducer = prepareDeviceReducer(extraDependencies);
 
 jest.mock('@trezor/connect', () => {
     let fixture: any;
@@ -33,7 +36,11 @@ jest.mock('@trezor/connect', () => {
         UI_EVENT: 'UI_EVENT',
         TRANSPORT_EVENT: 'TRANSPORT_EVENT',
         BLOCKCHAIN_EVENT: 'BLOCKCHAIN_EVENT',
-        DEVICE: {},
+        DEVICE: {
+            CONNECT_UNACQUIRED: 'device-connect_unacquired',
+            CHANGED: 'device-changed',
+            DISCONNECT: 'device-disconnect',
+        },
         TRANSPORT: {},
         BLOCKCHAIN: {},
         PROTO,

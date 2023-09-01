@@ -8,6 +8,7 @@ import * as suiteActions from 'src/actions/suite/suiteActions';
 import { AppState, Action, Dispatch } from 'src/types/suite';
 import { handleProtocolRequest } from 'src/actions/suite/protocolActions';
 import { appChanged } from 'src/actions/suite/suiteActions';
+import { deviceActions } from 'src/actions/suite/deviceActions';
 
 const suite =
     (api: MiddlewareAPI<Dispatch, AppState>) =>
@@ -26,6 +27,14 @@ const suite =
 
         // pass action to reducers
         next(action);
+
+        if (deviceActions.createDeviceInstance.match(action)) {
+            api.dispatch(suiteActions.selectDevice(action.payload));
+        }
+
+        if (deviceActions.forgetDevice.match(action)) {
+            api.dispatch(suiteActions.handleDeviceDisconnect(action.payload));
+        }
 
         switch (action.type) {
             case SUITE.DESKTOP_HANDSHAKE:
@@ -48,12 +57,6 @@ const suite =
             case DEVICE.DISCONNECT:
                 api.dispatch(suiteActions.handleDeviceDisconnect(action.payload));
                 break;
-            case SUITE.FORGET_DEVICE:
-                api.dispatch(suiteActions.handleDeviceDisconnect(action.payload));
-                break;
-            case SUITE.CREATE_DEVICE_INSTANCE:
-                api.dispatch(suiteActions.selectDevice(action.payload));
-                break;
             case SUITE.REQUEST_AUTH_CONFIRM:
                 api.dispatch(suiteActions.authConfirm());
                 break;
@@ -62,9 +65,7 @@ const suite =
         }
 
         // keep suite reducer synchronized with other reducers (selected device)
-        if (api.dispatch(suiteActions.observeSelectedDevice(action))) {
-            // device changed
-        }
+        api.dispatch(suiteActions.observeSelectedDevice(action));
 
         return action;
     };

@@ -12,6 +12,9 @@ jest.mock('@trezor/connect', () => ({
         RECEIVE_PASSPHRASE: 'ui-receive_passphrase',
         RECEIVE_CONFIRMATION: 'ui-receive_confirmation',
     },
+    DEVICE: {
+        CONNECT: 'device-connect',
+    },
     PROTO: {
         AmountUnit: {
             Bitcoin: 'BTC',

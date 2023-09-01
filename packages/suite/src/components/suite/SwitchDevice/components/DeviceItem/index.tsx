@@ -2,10 +2,11 @@ import { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import styled from 'styled-components';
 
+
+import * as deviceUtils from '@suite-common/suite-utils';
 import { useTheme, variables, Icon, Image, motionAnimation } from '@trezor/components';
 
 import { Translation } from 'src/components/suite';
-import * as deviceUtils from 'src/utils/suite/device';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { goto } from 'src/actions/suite/routerActions';
 import { acquireDevice, createDeviceInstance, selectDevice } from 'src/actions/suite/suiteActions';

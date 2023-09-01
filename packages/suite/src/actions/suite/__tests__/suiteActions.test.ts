@@ -9,10 +9,11 @@ import { DEVICE } from '@trezor/connect';
 
 import { configureStore } from 'src/support/tests/configureStore';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
-import deviceReducer, {
+import {
+    prepareDeviceReducer,
+    selectDevice,
     selectDevices,
     selectDevicesCount,
-    selectDevice,
 } from 'src/reducers/suite/deviceReducer';
 import routerReducer from 'src/reducers/suite/routerReducer';
 import modalReducer from 'src/reducers/suite/modalReducer';
@@ -22,10 +23,12 @@ import { extraDependencies } from 'src/support/extraDependencies';
 import { SUITE } from '../constants';
 import * as suiteActions from '../suiteActions';
 import fixtures from '../__fixtures__/suiteActions';
+import { deviceActions } from '../deviceActions';
 
 const { getSuiteDevice } = global.JestMocks;
 
 const firmwareReducer = prepareFirmwareReducer(extraDependencies);
+const deviceReducer = prepareDeviceReducer(extraDependencies);
 
 jest.mock('@trezor/connect', () => {
     let fixture: any;
@@ -55,6 +58,7 @@ jest.mock('@trezor/connect', () => {
                 },
         },
         DEVICE: {
+            CHANGED: 'device-changed',
             CONNECT: 'device-connect',
             DISCONNECT: 'device-disconnect',
         },
@@ -305,7 +309,9 @@ describe('Suite Actions', () => {
         it(`createDeviceInstance: ${f.description}`, async () => {
             const state = getInitialState(undefined, f.state.device);
             const store = initStore(state);
-            await store.dispatch(suiteActions.switchDuplicatedDevice(f.device, f.duplicate));
+            await store.dispatch(
+                suiteActions.switchDuplicatedDevice({ device: f.device, duplicate: f.duplicate }),
+            );
             const device = selectDevice(store.getState());
             const devicesCount = selectDevicesCount(store.getState());
             expect(device).toEqual(f.result.selected);
@@ -316,8 +322,8 @@ describe('Suite Actions', () => {
     // just for coverage
     it('misc', () => {
         const SUITE_DEVICE = getSuiteDevice({ path: '1' });
-        expect(suiteActions.forgetDevice(SUITE_DEVICE)).toMatchObject({
-            type: SUITE.FORGET_DEVICE,
+        expect(deviceActions.forgetDevice(SUITE_DEVICE)).toMatchObject({
+            type: deviceActions.forgetDevice.type,
         });
         expect(suiteActions.setDebugMode({ showDebugMenu: true })).toMatchObject({
             type: SUITE.SET_DEBUG_MODE,

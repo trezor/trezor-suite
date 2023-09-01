@@ -1,8 +1,9 @@
 import styled from 'styled-components';
 
-import { Translation, TrezorLink } from 'src/components/suite';
-import { getChangelogUrl } from 'src/utils/suite/device';
+import { getChangelogUrl } from '@suite-common/suite-utils';
 import { Button, variables } from '@trezor/components';
+
+import { Translation, TrezorLink } from 'src/components/suite';
 import { AcquiredDevice } from 'src/types/suite/index';
 
 const Wrapper = styled.div`

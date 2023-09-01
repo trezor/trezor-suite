@@ -1,16 +1,16 @@
-import produce from 'immer';
-
-import { Device, DEVICE, Features } from '@trezor/connect';
+import * as deviceUtils from '@suite-common/suite-utils';
+import { getStatus } from '@suite-common/suite-utils';
+import { Device, Features } from '@trezor/connect';
 import { DiscoveryRootState, selectDiscoveryByDeviceState } from '@suite-common/wallet-core';
 import { DiscoveryStatus } from '@suite-common/wallet-constants';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { Network, networks } from '@suite-common/wallet-config';
 import { versionUtils } from '@trezor/utils';
+import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
+import { TrezorDevice, AcquiredDevice, ButtonRequest } from '@suite-common/suite-types';
 
-import { SUITE, STORAGE, METADATA } from 'src/actions/suite/constants';
-import * as deviceUtils from 'src/utils/suite/device';
-import type { TrezorDevice, AcquiredDevice, Action, ButtonRequest } from 'src/types/suite';
-import { getStatus } from 'src/utils/suite/device';
+import { deviceActions } from 'src/actions/suite/deviceActions';
+
 
 export type State = { devices: TrezorDevice[]; selectedDevice?: TrezorDevice };
 
@@ -412,73 +412,59 @@ const addButtonRequest = (
     draft.devices[index].buttonRequests.push(buttonRequest);
 };
 
-const setMetadata = (draft: State, state: string, metadata: TrezorDevice['metadata']) => {
-    const index = draft.devices.findIndex(d => d.state === state);
-    const device = draft.devices[index];
-    if (!device) return;
-    device.metadata = metadata;
-};
-
-const deviceReducer = (state: State = initialState, action: Action): State =>
-    produce(state, draft => {
-        switch (action.type) {
-            case STORAGE.LOAD:
-                return {
-                    devices: action.payload.devices,
-                };
-            case DEVICE.CONNECT:
-            case DEVICE.CONNECT_UNACQUIRED:
-                connectDevice(draft, action.payload);
-                break;
-            case DEVICE.CHANGED:
-                changeDevice(draft, action.payload, { connected: true, available: true });
-                break;
-            case DEVICE.DISCONNECT:
-                disconnectDevice(draft, action.payload);
-                break;
-            case SUITE.UPDATE_PASSPHRASE_MODE:
-                changePassphraseMode(draft, action.payload, action.hidden, action.alwaysOnDevice);
-                break;
-            case SUITE.AUTH_DEVICE:
-                authDevice(draft, action.payload, action.state);
-                break;
-            case SUITE.AUTH_FAILED:
-                authFailed(draft, action.payload);
-                break;
-            case SUITE.RECEIVE_AUTH_CONFIRM:
-                authConfirm(draft, action.payload, action.success);
-                break;
-            case SUITE.CREATE_DEVICE_INSTANCE:
-                createInstance(draft, action.payload);
-                break;
-            case SUITE.REMEMBER_DEVICE:
-                remember(draft, action.payload, action.remember, action.forceRemember);
-                break;
-            case SUITE.FORGET_DEVICE:
-                forget(draft, action.payload);
-                break;
-            case SUITE.ADD_BUTTON_REQUEST:
-                addButtonRequest(draft, action.payload.device, action.payload.buttonRequest);
-                break;
-            case SUITE.SELECT_DEVICE:
-                updateTimestamp(draft, action.payload);
-                draft.selectedDevice = action.payload;
-                break;
-            case SUITE.UPDATE_SELECTED_DEVICE:
-                draft.selectedDevice = action.payload;
-                break;
-            case SUITE.REQUEST_DEVICE_RECONNECT:
-                if (draft.selectedDevice) {
-                    draft.selectedDevice.reconnectRequested = true;
-                }
-                break;
-
-            case METADATA.SET_DEVICE_METADATA:
-                setMetadata(draft, action.payload.deviceState, action.payload.metadata);
-                break;
-            // no default
-        }
-    });
+export const prepareDeviceReducer = createReducerWithExtraDeps(initialState, (builder, extra) => {
+    builder
+        .addCase(deviceActions.connectDevice, (state, { payload }) => {
+            connectDevice(state, payload);
+        })
+        .addCase(deviceActions.connectUnacquiredDevice, (state, { payload }) => {
+            connectDevice(state, payload);
+        })
+        .addCase(deviceActions.deviceChanged, (state, { payload }) => {
+            changeDevice(state, payload, { connected: true, available: true });
+        })
+        .addCase(deviceActions.deviceDisconnect, (state, { payload }) => {
+            disconnectDevice(state, payload);
+        })
+        .addCase(deviceActions.updatePassphraseMode, (state, { payload }) => {
+            changePassphraseMode(state, payload.device, payload.hidden, payload.alwaysOnDevice);
+        })
+        .addCase(deviceActions.authFailed, (state, { payload }) => {
+            authFailed(state, payload);
+        })
+        .addCase(deviceActions.receiveAuthConfirm, (state, { payload }) => {
+            authConfirm(state, payload.device, payload.success);
+        })
+        .addCase(deviceActions.createDeviceInstance, (state, { payload }) => {
+            createInstance(state, payload);
+        })
+        .addCase(deviceActions.rememberDevice, (state, { payload }) => {
+            remember(state, payload.device, payload.remember, payload.forceRemember);
+        })
+        .addCase(deviceActions.forgetDevice, (state, { payload }) => {
+            forget(state, payload);
+        })
+        .addCase(deviceActions.authDevice, (state, { payload }) => {
+            authDevice(state, payload.device, payload.state);
+        })
+        .addCase(deviceActions.addButtonRequest, (state, { payload }) => {
+            addButtonRequest(state, payload.device, payload.buttonRequest);
+        })
+        .addCase(deviceActions.requestDeviceReconnect, state => {
+            if (state.selectedDevice) {
+                state.selectedDevice.reconnectRequested = true;
+            }
+        })
+        .addCase(deviceActions.selectDevice, (state, { payload }) => {
+            updateTimestamp(state, payload);
+            state.selectedDevice = payload;
+        })
+        .addCase(deviceActions.updateSelectedDevice, (state, { payload }) => {
+            state.selectedDevice = payload;
+        })
+        .addCase(extra.actionTypes.setDeviceMetadata, extra.reducers.setDeviceMetadataReducer)
+        .addCase(extra.actionTypes.storageLoad, extra.reducers.storageLoadDevices);
+});
 
 export const selectDevices = (state: DeviceRootState) => state.device?.devices;
 export const selectDevicesCount = (state: DeviceRootState) => state.device?.devices?.length;
@@ -543,5 +529,3 @@ export const selectSupportedNetworks = (state: DeviceRootState) => {
         })
         .filter(Boolean) as Network['symbol'][]; // Filter out null values
 };
-
-export default deviceReducer;

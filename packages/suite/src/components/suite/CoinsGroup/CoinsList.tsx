@@ -1,5 +1,7 @@
 import styled from 'styled-components';
 
+
+import { getCoinUnavailabilityMessage } from '@suite-common/suite-utils';
 import { Tooltip } from '@trezor/components';
 import { Coin, Translation } from 'src/components/suite';
 import { useDevice, useSelector } from 'src/hooks/suite';
@@ -8,7 +10,6 @@ import { getFirmwareVersion, isDeviceInBootloaderMode } from '@trezor/device-uti
 import { versionUtils } from '@trezor/utils';
 
 import { selectSupportedNetworks } from 'src/reducers/suite/deviceReducer';
-import { getCoinUnavailabilityMessage } from 'src/utils/suite/device';
 
 const Wrapper = styled.div`
     width: 100%;

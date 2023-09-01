@@ -24,14 +24,14 @@ import {
 } from '@trezor/device-utils';
 import { DeepPartial } from '@trezor/type-utils';
 import { Discovery } from '@suite-common/wallet-types';
+import { getPhysicalDeviceUniqueIds } from '@suite-common/suite-utils';
 
 import { getIsTorEnabled } from 'src/utils/suite/tor';
 import { AppState, TrezorDevice } from 'src/types/suite';
-import { SUITE } from 'src/actions/suite/constants';
 import { Account } from 'src/types/wallet';
 import { selectLabelingDataForWallet } from 'src/reducers/suite/metadataReducer';
+import { deviceActions } from 'src/actions/suite/deviceActions';
 
-import { getPhysicalDeviceUniqueIds } from './device';
 import { selectDevices } from '../../reducers/suite/deviceReducer';
 
 export const REDACTED_REPLACEMENT = '[redacted]';
@@ -106,29 +106,31 @@ export const redactDevice = (device: DeepPartial<TrezorDevice> | undefined) => {
 export const redactAction = (action: LogEntry) => {
     let payload;
 
+    if (accountsActions.updateSelectedAccount.match(action)) {
+        payload = {
+            ...action.payload,
+            account: redactAccount(action.payload?.account),
+            network: undefined,
+            discovery: undefined,
+        };
+    }
+
+    if (deviceActions.authDevice.match(action)) {
+        payload = {
+            state: REDACTED_REPLACEMENT,
+            ...redactDevice(action.payload.device),
+        };
+    }
+
     switch (action.type) {
-        case accountsActions.updateSelectedAccount.type:
-            payload = {
-                ...action.payload,
-                account: redactAccount(action.payload?.account),
-                network: undefined,
-                discovery: undefined,
-            };
-            break;
         case accountsActions.createAccount.type:
         case accountsActions.updateAccount.type:
             payload = redactAccount(action.payload);
             break;
-        case SUITE.AUTH_DEVICE:
-            payload = {
-                state: REDACTED_REPLACEMENT,
-                ...redactDevice(action.payload),
-            };
-            break;
         case DEVICE.CONNECT:
         case DEVICE.DISCONNECT:
-        case SUITE.UPDATE_SELECTED_DEVICE:
-        case SUITE.REMEMBER_DEVICE:
+        case deviceActions.updateSelectedDevice.type:
+        case deviceActions.rememberDevice.type:
             payload = redactDevice(action.payload);
             break;
         case discoveryActions.completeDiscovery.type:

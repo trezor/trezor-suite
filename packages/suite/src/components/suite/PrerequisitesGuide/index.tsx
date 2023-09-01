@@ -2,11 +2,12 @@ import { useMemo } from 'react';
 import styled, { css } from 'styled-components';
 import { motion } from 'framer-motion';
 
+
+import { getStatus, deviceNeedsAttention } from '@suite-common/suite-utils';
 import { variables, motionEasing } from '@trezor/components';
 
 import { ConnectDevicePrompt } from 'src/components/suite';
 import { isWebUsb } from 'src/utils/suite/transport';
-import { getStatus, deviceNeedsAttention } from 'src/utils/suite/device';
 import { useSelector } from 'src/hooks/suite';
 import type { PrerequisiteType } from 'src/types/suite';
 import { selectDevicesCount, selectDevice } from 'src/reducers/suite/deviceReducer';

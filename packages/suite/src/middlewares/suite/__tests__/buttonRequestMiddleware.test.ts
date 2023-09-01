@@ -12,6 +12,7 @@ import * as deviceSettingsActions from 'src/actions/settings/deviceSettingsActio
 import suiteMiddleware from 'src/middlewares/suite/suiteMiddleware';
 import buttonRequestMiddleware from 'src/middlewares/suite/buttonRequestMiddleware';
 import { Action } from 'src/types/suite';
+import { deviceActions } from 'src/actions/suite/deviceActions';
 
 const { getSuiteDevice } = global.JestMocks;
 
@@ -103,16 +104,16 @@ describe('buttonRequest middleware', () => {
             { type: SUITE.LOCK_DEVICE, payload: true },
             { type: UI.REQUEST_BUTTON, payload: { code: 'ButtonRequest_ProtectCall' } },
             {
-                type: SUITE.ADD_BUTTON_REQUEST,
+                type: deviceActions.addButtonRequest.type,
                 payload: { buttonRequest: { code: 'ButtonRequest_ProtectCall' }, device },
             },
             { type: UI.REQUEST_PIN, payload: { type: 'PinMatrixRequestType_NewFirst', device } },
             {
-                type: SUITE.ADD_BUTTON_REQUEST,
+                type: deviceActions.addButtonRequest.type,
                 payload: { buttonRequest: { code: 'PinMatrixRequestType_NewFirst' }, device },
             },
             { type: SUITE.LOCK_DEVICE, payload: false },
-            { type: SUITE.ADD_BUTTON_REQUEST, payload: { device } },
+            { type: deviceActions.addButtonRequest.type, payload: { device } },
         ]);
     });
 });

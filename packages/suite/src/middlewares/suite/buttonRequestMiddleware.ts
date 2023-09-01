@@ -4,10 +4,11 @@ import TrezorConnect, { UI } from '@trezor/connect';
 
 import { SUITE } from 'src/actions/suite/constants';
 import { AppState, Action, Dispatch } from 'src/types/suite';
-import { addButtonRequest, removeButtonRequests } from 'src/actions/suite/suiteActions';
+import { removeButtonRequests } from 'src/actions/suite/suiteActions';
 import { ONBOARDING } from 'src/actions/onboarding/constants';
 
-import { selectDevice } from '../../reducers/suite/deviceReducer';
+import { selectDevice } from 'src/reducers/suite/deviceReducer';
+import { deviceActions } from 'src/actions/suite/deviceActions';
 
 const buttonRequest =
     (api: MiddlewareAPI<Dispatch, AppState>) =>
@@ -66,7 +67,7 @@ const buttonRequest =
             case UI.REQUEST_PIN:
             case UI.INVALID_PIN:
                 api.dispatch(
-                    addButtonRequest({
+                    deviceActions.addButtonRequest({
                         device: selectDevice(api.getState()),
                         buttonRequest: {
                             code: action.payload.type ? action.payload.type : action.type,
@@ -77,7 +78,7 @@ const buttonRequest =
             case UI.REQUEST_BUTTON: {
                 const { device: _, ...request } = action.payload;
                 api.dispatch(
-                    addButtonRequest({
+                    deviceActions.addButtonRequest({
                         device: selectDevice(api.getState()),
                         buttonRequest: request,
                     }),

@@ -7,9 +7,8 @@ import * as routerActions from 'src/actions/suite/routerActions';
 import { Dispatch, GetState } from 'src/types/suite';
 import { WordCount } from 'src/types/recovery';
 import { DEFAULT_PASSPHRASE_PROTECTION } from 'src/constants/suite/device';
-import { SUITE } from 'src/actions/suite/constants';
-
-import { selectDevice } from '../../reducers/suite/deviceReducer';
+import { deviceActions } from 'src/actions/suite/deviceActions';
+import { selectDevice } from 'src/reducers/suite/deviceReducer';
 
 export type SeedInputStatus =
     | 'initial'
@@ -130,7 +129,7 @@ const recoverDevice = () => async (dispatch: Dispatch, getState: GetState) => {
         // It means that when user finished the onboarding process a standard wallet is automatically
         // discovered instead of asking for selecting between standard wallet and a passphrase.
         // This action takes cares of setting useEmptyPassphrase to false (handled by deviceReducer).
-        dispatch({ type: SUITE.UPDATE_PASSPHRASE_MODE, payload: device, hidden: true });
+        dispatch(deviceActions.updatePassphraseMode({ device, hidden: true }));
     }
 
     if (!response.success) {

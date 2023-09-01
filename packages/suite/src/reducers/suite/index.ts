@@ -9,7 +9,7 @@ import { extraDependencies } from 'src/support/extraDependencies';
 
 import router from './routerReducer';
 import suite from './suiteReducer';
-import device from './deviceReducer';
+import { prepareDeviceReducer } from './deviceReducer';
 import modal from './modalReducer';
 import resize from './resizeReducer';
 import metadata from './metadataReducer';
@@ -20,7 +20,7 @@ import protocol from './protocolReducer';
 const analytics = prepareAnalyticsReducer(extraDependencies);
 // Type annotation as workaround for typecheck error "The inferred type of 'default' cannot be named..."
 const messageSystem: Reducer = prepareMessageSystemReducer(extraDependencies);
-
+const device = prepareDeviceReducer(extraDependencies);
 export default {
     suite,
     router,

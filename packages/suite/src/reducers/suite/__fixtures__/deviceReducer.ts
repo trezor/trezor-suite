@@ -1,6 +1,6 @@
 import { DEVICE } from '@trezor/connect';
 
-import { SUITE } from 'src/actions/suite/constants';
+import { deviceActions } from 'src/actions/suite/deviceActions';
 
 const { getConnectDevice, getSuiteDevice } = global.JestMocks;
 
@@ -598,7 +598,7 @@ const updateTimestamp = [
         initialState: { devices: [SUITE_DEVICE] },
         actions: [
             {
-                type: SUITE.SELECT_DEVICE,
+                type: deviceActions.selectDevice.type,
                 payload: SUITE_DEVICE,
             },
         ],
@@ -623,7 +623,7 @@ const updateTimestamp = [
         },
         actions: [
             {
-                type: SUITE.SELECT_DEVICE,
+                type: deviceActions.selectDevice.type,
                 payload: SUITE_DEVICE,
             },
         ],
@@ -648,7 +648,7 @@ const updateTimestamp = [
         },
         actions: [
             {
-                type: SUITE.SELECT_DEVICE,
+                type: deviceActions.selectDevice.type,
                 payload: getSuiteDevice({ instance: 1 }),
             },
         ],
@@ -675,11 +675,11 @@ const updateTimestamp = [
         },
         actions: [
             {
-                type: SUITE.SELECT_DEVICE,
+                type: deviceActions.selectDevice.type,
                 payload: SUITE_DEVICE,
             },
             {
-                type: SUITE.SELECT_DEVICE,
+                type: deviceActions.selectDevice.type,
                 payload: getSuiteDevice({ instance: 1 }),
             },
         ],
@@ -704,7 +704,7 @@ const updateTimestamp = [
         initialState: { devices: [] },
         actions: [
             {
-                type: SUITE.SELECT_DEVICE,
+                type: deviceActions.selectDevice.type,
             },
         ],
         result: [],
@@ -715,7 +715,7 @@ const updateTimestamp = [
         initialState: { devices: [] },
         actions: [
             {
-                type: SUITE.SELECT_DEVICE,
+                type: deviceActions.selectDevice.type,
                 payload: SUITE_DEVICE,
             },
         ],
@@ -730,9 +730,11 @@ const changePassphraseMode = [
         initialState: { devices: [SUITE_DEVICE] },
         actions: [
             {
-                type: SUITE.UPDATE_PASSPHRASE_MODE,
-                payload: SUITE_DEVICE,
-                hidden: true,
+                type: deviceActions.updatePassphraseMode.type,
+                payload: {
+                    hidden: true,
+                    device: SUITE_DEVICE,
+                },
             },
         ],
         result: [
@@ -753,9 +755,11 @@ const changePassphraseMode = [
         },
         actions: [
             {
-                type: SUITE.UPDATE_PASSPHRASE_MODE,
-                payload: SUITE_DEVICE,
-                hidden: true,
+                type: deviceActions.updatePassphraseMode.type,
+                payload: {
+                    device: SUITE_DEVICE,
+                    hidden: true,
+                },
             },
         ],
         result: [
@@ -780,9 +784,11 @@ const changePassphraseMode = [
         },
         actions: [
             {
-                type: SUITE.UPDATE_PASSPHRASE_MODE,
-                payload: getSuiteDevice({ instance: 1 }),
-                hidden: true,
+                type: deviceActions.updatePassphraseMode.type,
+                payload: {
+                    device: getSuiteDevice({ instance: 1 }),
+                    hidden: true,
+                },
             },
         ],
         result: [
@@ -807,11 +813,13 @@ const changePassphraseMode = [
         initialState: { devices: [SUITE_DEVICE] },
         actions: [
             {
-                type: SUITE.UPDATE_PASSPHRASE_MODE,
-                payload: getConnectDevice({
-                    type: 'unacquired',
-                }),
-                hidden: false,
+                type: deviceActions.updatePassphraseMode.type,
+                payload: {
+                    device: getConnectDevice({
+                        type: 'unacquired',
+                    }),
+                    hidden: false,
+                },
             },
         ],
         result: [
@@ -825,9 +833,11 @@ const changePassphraseMode = [
         initialState: { devices: [] },
         actions: [
             {
-                type: SUITE.UPDATE_PASSPHRASE_MODE,
-                payload: SUITE_DEVICE,
-                hidden: false,
+                type: deviceActions.updatePassphraseMode.type,
+                payload: {
+                    hidden: false,
+                    device: SUITE_DEVICE,
+                },
             },
         ],
         result: [],
@@ -840,9 +850,11 @@ const authDevice = [
         initialState: { devices: [SUITE_DEVICE] },
         actions: [
             {
-                type: SUITE.AUTH_DEVICE,
-                payload: SUITE_DEVICE,
-                state: 'A',
+                type: deviceActions.authDevice.type,
+                payload: {
+                    device: SUITE_DEVICE,
+                    state: 'A',
+                },
             },
         ],
         result: [
@@ -863,9 +875,11 @@ const authDevice = [
         },
         actions: [
             {
-                type: SUITE.AUTH_DEVICE,
-                payload: SUITE_DEVICE,
-                state: 'A',
+                type: deviceActions.authDevice.type,
+                payload: {
+                    device: SUITE_DEVICE,
+                    state: 'A',
+                },
             },
         ],
         result: [
@@ -890,9 +904,11 @@ const authDevice = [
         },
         actions: [
             {
-                type: SUITE.AUTH_DEVICE,
-                payload: getSuiteDevice({ instance: 1 }),
-                state: 'A',
+                type: deviceActions.authDevice.type,
+                payload: {
+                    device: getSuiteDevice({ instance: 1 }),
+                    state: 'A',
+                },
             },
         ],
         result: [
@@ -917,11 +933,13 @@ const authDevice = [
         initialState: { devices: [SUITE_DEVICE] },
         actions: [
             {
-                type: SUITE.AUTH_DEVICE,
-                payload: getConnectDevice({
-                    type: 'unacquired',
-                }),
-                state: 'A',
+                type: deviceActions.authDevice.type,
+                payload: {
+                    device: getConnectDevice({
+                        type: 'unacquired',
+                    }),
+                    state: 'A',
+                },
             },
         ],
         result: [
@@ -935,9 +953,11 @@ const authDevice = [
         initialState: { devices: [] },
         actions: [
             {
-                type: SUITE.AUTH_DEVICE,
-                payload: SUITE_DEVICE,
-                state: 'A',
+                type: deviceActions.authDevice.type,
+                payload: {
+                    device: SUITE_DEVICE,
+                    state: 'A',
+                },
             },
         ],
         result: [],
@@ -950,7 +970,7 @@ const createInstance = [
         initialState: { devices: [SUITE_DEVICE] },
         actions: [
             {
-                type: SUITE.CREATE_DEVICE_INSTANCE,
+                type: deviceActions.createDeviceInstance.type,
                 payload: getSuiteDevice({ useEmptyPassphrase: false, instance: 1 }),
             },
         ],
@@ -981,7 +1001,7 @@ const createInstance = [
         },
         actions: [
             {
-                type: SUITE.CREATE_DEVICE_INSTANCE,
+                type: deviceActions.createDeviceInstance.type,
                 payload: getSuiteDevice({ useEmptyPassphrase: false, instance: 1 }),
             },
         ],
@@ -1012,7 +1032,7 @@ const createInstance = [
         },
         actions: [
             {
-                type: SUITE.CREATE_DEVICE_INSTANCE,
+                type: deviceActions.createDeviceInstance.type,
                 payload: getSuiteDevice({ useEmptyPassphrase: false, instance: 2 }),
             },
         ],
@@ -1042,7 +1062,7 @@ const createInstance = [
         initialState: { devices: [SUITE_DEVICE] },
         actions: [
             {
-                type: SUITE.CREATE_DEVICE_INSTANCE,
+                type: deviceActions.createDeviceInstance.type,
                 payload: getSuiteDevice({
                     type: 'unacquired',
                 }),
@@ -1077,15 +1097,15 @@ const forget = [
         },
         actions: [
             {
-                type: SUITE.FORGET_DEVICE,
+                type: deviceActions.forgetDevice.type,
                 payload: getSuiteDevice({ instance: 1 }),
             },
             {
-                type: SUITE.FORGET_DEVICE,
+                type: deviceActions.forgetDevice.type,
                 payload: SUITE_DEVICE,
             },
             {
-                type: SUITE.FORGET_DEVICE,
+                type: deviceActions.forgetDevice.type,
                 payload: getSuiteDevice({ connected: true, instance: 3 }),
             },
         ],
@@ -1129,17 +1149,17 @@ const forget = [
         },
         actions: [
             {
-                type: SUITE.FORGET_DEVICE,
+                type: deviceActions.forgetDevice.type,
                 payload: getSuiteDevice({ instance: 3 }),
             },
             {
-                type: SUITE.FORGET_DEVICE,
+                type: deviceActions.forgetDevice.type,
                 payload: getSuiteDevice(undefined, {
                     device_id: 'ignored-device-id',
                 }),
             },
             {
-                type: SUITE.FORGET_DEVICE,
+                type: deviceActions.forgetDevice.type,
                 payload: SUITE_DEVICE,
             },
         ],
@@ -1163,7 +1183,7 @@ const forget = [
         initialState: { devices: [SUITE_DEVICE] },
         actions: [
             {
-                type: SUITE.FORGET_DEVICE,
+                type: deviceActions.forgetDevice.type,
                 payload: getSuiteDevice({
                     type: 'unacquired',
                 }),
@@ -1180,7 +1200,7 @@ const forget = [
         initialState: { devices: [] },
         actions: [
             {
-                type: SUITE.FORGET_DEVICE,
+                type: deviceActions.forgetDevice.type,
                 payload: SUITE_DEVICE,
             },
         ],
@@ -1194,7 +1214,8 @@ const remember = [
         initialState: { devices: [SUITE_DEVICE] },
         actions: [
             {
-                type: SUITE.REMEMBER_DEVICE,
+                type: deviceActions.rememberDevice.type,
+                payload: {},
             },
         ],
         result: [SUITE_DEVICE],
@@ -1204,8 +1225,10 @@ const remember = [
         initialState: { devices: [SUITE_DEVICE] },
         actions: [
             {
-                type: SUITE.REMEMBER_DEVICE,
-                payload: getSuiteDevice({ type: 'unacquired' }),
+                type: deviceActions.rememberDevice.type,
+                payload: {
+                    device: getSuiteDevice({ type: 'unacquired' }),
+                },
             },
         ],
         result: [SUITE_DEVICE],
@@ -1215,9 +1238,11 @@ const remember = [
         initialState: { devices: [SUITE_DEVICE] },
         actions: [
             {
-                type: SUITE.REMEMBER_DEVICE,
-                payload: SUITE_DEVICE,
-                remember: true,
+                type: deviceActions.rememberDevice.type,
+                payload: {
+                    device: SUITE_DEVICE,
+                    remember: true,
+                },
             },
         ],
         result: [{ ...SUITE_DEVICE, remember: true }],
@@ -1227,10 +1252,12 @@ const remember = [
         initialState: { devices: [SUITE_DEVICE] },
         actions: [
             {
-                type: SUITE.REMEMBER_DEVICE,
-                payload: SUITE_DEVICE,
-                remember: true,
-                forceRemember: true,
+                type: deviceActions.rememberDevice.type,
+                payload: {
+                    device: SUITE_DEVICE,
+                    remember: true,
+                    forceRemember: true,
+                },
             },
         ],
         result: [getSuiteDevice({ remember: true, forceRemember: true })],
@@ -1246,11 +1273,13 @@ const remember = [
         },
         actions: [
             {
-                type: SUITE.REMEMBER_DEVICE,
-                payload: getSuiteDevice({
-                    state: 'abc',
-                }),
-                remember: true,
+                type: deviceActions.rememberDevice.type,
+                payload: {
+                    device: getSuiteDevice({
+                        state: 'abc',
+                    }),
+                    remember: true,
+                },
             },
         ],
         result: [
@@ -1291,19 +1320,23 @@ const remember = [
         },
         actions: [
             {
-                type: SUITE.REMEMBER_DEVICE,
-                payload: getSuiteDevice({
-                    state: 'abc',
-                }),
-                remember: true,
+                type: deviceActions.rememberDevice.type,
+                payload: {
+                    device: getSuiteDevice({
+                        state: 'abc',
+                    }),
+                    remember: true,
+                },
             },
             {
-                type: SUITE.REMEMBER_DEVICE,
-                payload: getSuiteDevice({
-                    state: 'abc',
-                    instance: 3,
-                }),
-                remember: true,
+                type: deviceActions.rememberDevice.type,
+                payload: {
+                    device: getSuiteDevice({
+                        state: 'abc',
+                        instance: 3,
+                    }),
+                    remember: true,
+                },
             },
         ],
         result: [

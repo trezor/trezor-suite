@@ -25,6 +25,8 @@ import { AppState, Action, Dispatch } from 'src/types/suite';
 
 import { selectDevice } from '../../reducers/suite/deviceReducer';
 
+import { deviceActions } from '../../actions/suite/deviceActions';
+
 const deviceContextName = 'trezor-device';
 
 const breadcrumbActions = [
@@ -43,14 +45,14 @@ const breadcrumbActions = [
     DESKTOP_UPDATE.NOT_AVAILABLE,
     DESKTOP_UPDATE.READY,
     MODAL.CLOSE,
-    SUITE.AUTH_DEVICE,
+    deviceActions.authDevice.type,
     DEVICE.CONNECT,
     DEVICE.DISCONNECT,
     accountsActions.createAccount.type,
     accountsActions.updateAccount.type,
     discoveryActions.completeDiscovery.type,
-    SUITE.UPDATE_SELECTED_DEVICE,
-    SUITE.REMEMBER_DEVICE,
+    deviceActions.updateSelectedDevice.type,
+    deviceActions.rememberDevice.type,
     METADATA.ADD_PROVIDER,
     walletSettingsActions.changeNetworks.type,
     TRANSPORT.START,
@@ -61,7 +63,7 @@ const breadcrumbActions = [
     DESKTOP_UPDATE.ALLOW_PRERELEASE,
     SUITE.TOR_STATUS,
     SUITE.ONLINE_STATUS,
-    SUITE.ADD_BUTTON_REQUEST,
+    deviceActions.addButtonRequest.type,
     PROTOCOL.SAVE_COIN_PROTOCOL,
     MODAL.OPEN_USER_CONTEXT,
 ];

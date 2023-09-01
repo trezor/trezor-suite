@@ -5,6 +5,8 @@ import * as routerActions from 'src/actions/suite/routerActions';
 import { AppState, Action, Dispatch, TrezorDevice } from 'src/types/suite';
 import { selectDevice, selectDevices } from 'src/reducers/suite/deviceReducer';
 
+import { deviceActions } from '../../actions/suite/deviceActions';
+
 const handleDeviceRedirect = (dispatch: Dispatch, state: AppState, device?: TrezorDevice) => {
     // no device, no redirect
     if (!device || !device.features) {
@@ -54,7 +56,7 @@ const redirect =
             next(action);
             // router is locked, no redirect except for switch-device modal app
             if (
-                action.type === SUITE.SELECT_DEVICE &&
+                deviceActions.selectDevice.match(action) &&
                 !action.payload &&
                 api.getState().router.app === 'switch-device'
             ) {
@@ -63,13 +65,8 @@ const redirect =
             return action;
         }
 
-        switch (action.type) {
-            // todo: this will not get call after acquiring device!
-            case SUITE.SELECT_DEVICE:
-                handleDeviceRedirect(api.dispatch, api.getState(), action.payload);
-                break;
-            default:
-                break;
+        if (deviceActions.selectDevice.match(action)) {
+            handleDeviceRedirect(api.dispatch, api.getState(), action.payload);
         }
 
         next(action);

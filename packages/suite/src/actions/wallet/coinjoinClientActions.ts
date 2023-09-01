@@ -15,13 +15,13 @@ import { selectAccountByKey } from '@suite-common/wallet-core';
 import { getUtxoOutpoint } from '@suite-common/wallet-utils';
 import { Account } from '@suite-common/wallet-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
+import { getDeviceInstances } from '@suite-common/suite-utils';
 
 import {
     prepareCoinjoinTransaction,
     getSessionDeadline,
     getEstimatedTimePerRound,
 } from 'src/utils/wallet/coinjoinUtils';
-import { getDeviceInstances } from 'src/utils/suite/device';
 import { CoinjoinService } from 'src/services/coinjoin';
 import { Dispatch, GetState } from 'src/types/suite';
 import { CoinjoinAccount, EndRoundState, CoinjoinDebugSettings } from 'src/types/wallet/coinjoin';
@@ -517,7 +517,7 @@ const getOwnershipProof =
                     return;
                 }
                 utxos.forEach(u => {
-                    response.inputs.push({ outpoint: u.outpoint, error: proof.payload.error });
+                    response.inputs.push({ outpoint: u.outpoint, error: proof.payload?.error });
                 });
             }),
         );

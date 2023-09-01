@@ -18,6 +18,7 @@ import {
 import { WALLET_SETTINGS } from 'src/actions/settings/constants';
 import * as walletSettingsActions from 'src/actions/settings/walletSettingsActions';
 import { redactTransactionIdFromAnchor } from 'src/utils/suite/analytics';
+import { deviceActions } from 'src/actions/suite/deviceActions';
 
 const log =
     (api: MiddlewareAPI<Dispatch, AppState>) =>
@@ -33,6 +34,19 @@ const log =
                     type: action.type,
                 }),
             );
+        }
+
+        if (deviceActions.addButtonRequest.match(action)) {
+            if (action.payload.buttonRequest) {
+                api.dispatch(
+                    addLog({
+                        type: action.type,
+                        payload: {
+                            code: action.payload.buttonRequest.code,
+                        },
+                    }),
+                );
+            }
         }
 
         switch (action.type) {
@@ -74,12 +88,12 @@ const log =
                     }),
                 );
                 break;
-            case SUITE.AUTH_DEVICE:
+            case deviceActions.authDevice.type:
             case DEVICE.CONNECT:
             case DEVICE.DISCONNECT:
             case discoveryActions.completeDiscovery.type:
-            case SUITE.UPDATE_SELECTED_DEVICE:
-            case SUITE.REMEMBER_DEVICE:
+            case deviceActions.updateSelectedDevice.type:
+            case deviceActions.rememberDevice.type:
                 api.dispatch(
                     addLog({
                         type: action.type,
@@ -142,18 +156,6 @@ const log =
                         },
                     }),
                 );
-                break;
-            case SUITE.ADD_BUTTON_REQUEST:
-                if (action.payload.buttonRequest) {
-                    api.dispatch(
-                        addLog({
-                            type: action.type,
-                            payload: {
-                                code: action.payload.buttonRequest.code,
-                            },
-                        }),
-                    );
-                }
                 break;
             case PROTOCOL.SAVE_COIN_PROTOCOL:
                 api.dispatch(

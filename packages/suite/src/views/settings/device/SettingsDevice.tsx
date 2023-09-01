@@ -1,11 +1,11 @@
 import { DeviceModelInternal, type TransportInfo } from '@trezor/connect';
+import { pickByDeviceModel } from '@trezor/device-utils';
 
 import { SettingsLayout } from 'src/components/settings';
 import { Translation } from 'src/components/suite';
 import { SettingsSection, DeviceBanner } from 'src/components/suite/Settings';
-import { isDeviceRemembered } from 'src/utils/suite/device';
 import { useDevice, useSelector } from 'src/hooks/suite';
-import { pickByDeviceModel } from '@trezor/device-utils';
+import type { TrezorDevice } from 'src/types/suite';
 
 import { BackupRecoverySeed } from './BackupRecoverySeed';
 import { BackupFailed } from './BackupFailed';
@@ -22,8 +22,6 @@ import { DisplayRotation } from './DisplayRotation';
 import { AutoLock } from './AutoLock';
 import { WipeDevice } from './WipeDevice';
 import { CustomFirmware } from './CustomFirmware';
-
-import type { TrezorDevice } from 'src/types/suite';
 
 const deviceSettingsUnavailable = (device?: TrezorDevice, transport?: Partial<TransportInfo>) => {
     const noTransportAvailable = transport && !transport.type;

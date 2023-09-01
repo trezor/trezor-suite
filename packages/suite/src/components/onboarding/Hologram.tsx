@@ -1,11 +1,12 @@
 import styled from 'styled-components';
 
-import { DeviceAnimation } from 'src/components/onboarding';
+import { getPackagingUrl } from '@suite-common/suite-utils';
 import { Warning, variables } from '@trezor/components';
 import { TREZOR_RESELLERS_URL, TREZOR_SUPPORT_URL } from '@trezor/urls';
+
+import { DeviceAnimation } from 'src/components/onboarding';
 import { Translation, TrezorLink } from 'src/components/suite';
 import type { TrezorDevice } from 'src/types/suite';
-import { getPackagingUrl } from 'src/utils/suite/device';
 
 const Wrapper = styled.div`
     display: flex;

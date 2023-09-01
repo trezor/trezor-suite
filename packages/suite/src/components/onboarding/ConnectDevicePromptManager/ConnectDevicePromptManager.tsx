@@ -4,18 +4,20 @@
 
 import { ReactNode } from 'react';
 import styled from 'styled-components';
+import { motion } from 'framer-motion';
+
+import { getConnectedDeviceStatus } from '@suite-common/suite-utils';
+import { motionEasing } from '@trezor/components';
+
 import { useSelector } from 'src/hooks/suite';
 import { ConnectDevicePrompt } from 'src/components/suite';
 import { isWebUsb } from 'src/utils/suite/transport';
-import { getConnectedDeviceStatus } from 'src/utils/suite/device';
 import type { TrezorDevice } from 'src/types/suite';
 
 // todo: these should be replaced
 import { NoTransport } from './components/NoTransport';
 import { NoDeviceDetected } from './components/NoDeviceDetected';
 import { UnexpectedDeviceState } from './components/UnexpectedDeviceState';
-import { motion } from 'framer-motion';
-import { motionEasing } from '@trezor/components';
 
 const Wrapper = styled.div`
     display: flex;

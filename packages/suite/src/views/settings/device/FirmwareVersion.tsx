@@ -1,12 +1,13 @@
 import styled from 'styled-components';
+
+import { getChangelogUrl, getFwUpdateVersion } from '@suite-common/suite-utils';
 import { getFirmwareVersion } from '@trezor/device-utils';
+import { Button, Tooltip } from '@trezor/components';
 
 import { Translation, TrezorLink } from 'src/components/suite';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from 'src/components/suite/Settings';
 import { useDevice, useDispatch } from 'src/hooks/suite';
 import { goto } from 'src/actions/suite/routerActions';
-import { getChangelogUrl, getFwUpdateVersion } from 'src/utils/suite/device';
-import { Button, Tooltip } from '@trezor/components';
 import { AcquiredDevice } from 'src/types/suite';
 import { useAnchor } from 'src/hooks/suite/useAnchor';
 import { SettingsAnchor } from 'src/constants/suite/anchors';

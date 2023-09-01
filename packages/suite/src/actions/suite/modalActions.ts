@@ -1,12 +1,13 @@
 import TrezorConnect, { UI } from '@trezor/connect';
 import { createDeferred, Deferred, DeferredResponse } from '@trezor/utils';
 
-import { MODAL, SUITE } from 'src/actions/suite/constants';
+import { MODAL } from 'src/actions/suite/constants';
 import { Route, Dispatch, GetState, TrezorDevice } from 'src/types/suite';
 import { Account, WalletAccountTransaction } from 'src/types/wallet';
 import { RequestEnableTorResponse } from 'src/components/suite/modals/RequestEnableTor';
+import { selectDevice } from 'src/reducers/suite/deviceReducer';
 
-import { selectDevice } from '../../reducers/suite/deviceReducer';
+import { deviceActions } from './deviceActions';
 
 export type UserContextPayload =
     | {
@@ -202,12 +203,13 @@ export const onPassphraseSubmit =
 
         if (!device.state) {
             // call SUITE.UPDATE_PASSPHRASE_MODE action to set or remove walletNumber
-            dispatch({
-                type: SUITE.UPDATE_PASSPHRASE_MODE,
-                payload: device,
-                hidden: passphraseOnDevice || !!value,
-                alwaysOnDevice: passphraseOnDevice,
-            });
+            dispatch(
+                deviceActions.updatePassphraseMode({
+                    device,
+                    hidden: passphraseOnDevice || !!value,
+                    alwaysOnDevice: passphraseOnDevice,
+                }),
+            );
         }
 
         TrezorConnect.uiResponse({
