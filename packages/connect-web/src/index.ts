@@ -23,7 +23,7 @@ import {
     CallMethod,
 } from '@trezor/connect/lib/exports';
 import { factory } from '@trezor/connect/lib/factory';
-import { initLog } from '@trezor/connect/lib/utils/debug';
+import { initLog, initSharedLogger } from '@trezor/connect/lib/utils/debug';
 import { config } from '@trezor/connect/lib/data/config';
 
 import * as iframe from './iframe';
@@ -32,7 +32,7 @@ import webUSBButton from './webusb/button';
 import { parseConnectSettings } from './connectSettings';
 
 const eventEmitter = new EventEmitter();
-const _log = initLog('@trezor/connect');
+const _log = initLog('@trezor/connect-web');
 
 let _settings = parseConnectSettings();
 let _popupManager: popup.PopupManager | undefined;
@@ -143,6 +143,9 @@ const init = async (settings: Partial<ConnectSettings> = {}): Promise<void> => {
     }
 
     _settings = parseConnectSettings({ ..._settings, ...settings });
+    if (_settings.connectSrc) {
+        initSharedLogger(`${_settings.connectSrc}workers/shared-logger-worker.js`);
+    }
 
     if (!_settings.manifest) {
         throw ERRORS.TypedError('Init_ManifestMissing');
