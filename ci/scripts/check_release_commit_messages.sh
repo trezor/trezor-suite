@@ -2,7 +2,7 @@
 
 fail=0
 
-git fetch origin develop
+git fetch origin develop --depth 300
 
 # list all commits between HEAD and develop
 for commit in $(git rev-list origin/develop..)
