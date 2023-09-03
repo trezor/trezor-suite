@@ -4,4 +4,7 @@ export const mediaQueries = {
         process.env.NODE_ENV === 'test'
             ? '&.some-class-that-definitely-does-not-exist'
             : '@media print',
+    touch: '@media (hover: none)',
+    hover: '@media (hover: hover)',
+    dark_theme: '@media (prefers-color-scheme: dark)',
 };
