@@ -25,15 +25,15 @@ jobs:
           git rebase develop
           if git status --porcelain | grep -q "^UU"; then
             echo "Rebase conflicts detected"
-            echo "::set-output name=status::conflicts"
+            echo "STATUS=conflicts" >> $GITHUB_OUTPUT
           elif [ $? -ne 0 ]; then
             echo "unknown error during rebase"
-            echo "::set-output name=status::error"
+            echo "STATUS=error" >> $GITHUB_OUTPUT
           else
             echo 'Rebase successful'
           fi
       - name: Push the rebased suite-e branch
-        if: steps.rebase.outputs.status != 'conflicts' && steps.rebase.outputs.status != 'error'
+        if: steps.rebase.outputs.STATUS != 'conflicts' && steps.rebase.outputs.STATUS != 'error'
         run: |
           echo 'Pushing suite-e branch'
           git push --force-with-lease
