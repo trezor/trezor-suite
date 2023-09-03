@@ -7,3 +7,4 @@ export * from './useDirection';
 export * from './mergeStyleObjects';
 export * from './mergeStyles';
 export * from './breakpoints';
+export * from './mediaQueries';
