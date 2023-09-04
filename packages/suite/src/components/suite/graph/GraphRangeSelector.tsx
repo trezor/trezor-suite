@@ -156,8 +156,6 @@ export const GraphRangeSelector = ({
             ))}
             <Dropdown
                 ref={dropdownRef}
-                topPadding={0}
-                bottomPadding={0}
                 alignMenu={align}
                 items={[
                     {

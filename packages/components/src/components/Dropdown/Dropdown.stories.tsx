@@ -46,7 +46,6 @@ export const Dropdown: StoryObj<DropdownProps> = {
                         callback: () => {
                             console.log('item 1 clicked');
                         },
-                        isRounded: true,
                     },
                     {
                         key: '2',
@@ -55,7 +54,6 @@ export const Dropdown: StoryObj<DropdownProps> = {
                             console.log('item 2 clicked - disabled');
                         },
                         icon: 'LIGHTBULB',
-                        isRounded: true,
                         isDisabled: true,
                     },
                     {
@@ -65,7 +63,6 @@ export const Dropdown: StoryObj<DropdownProps> = {
                             console.log('item 3 clicked - disabled');
                         },
                         iconRight: 'ARROW_RIGHT',
-                        isRounded: true,
                         isDisabled: true,
                     },
                     {
@@ -74,7 +71,6 @@ export const Dropdown: StoryObj<DropdownProps> = {
                         callback: () => {
                             console.log('item 4 clicked');
                         },
-                        isRounded: true,
                     },
                     {
                         key: '5',
