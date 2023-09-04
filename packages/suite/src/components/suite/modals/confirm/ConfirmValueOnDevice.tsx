@@ -71,9 +71,12 @@ export const ConfirmValueOnDevice = ({
 }: ConfirmDeviceScreenProps) => {
     const device = useSelector(selectDevice);
     const modalContext = useSelector(state => state.modal.context);
+    const isActionAbortable = useSelector(selectIsActionAbortable);
     const dispatch = useDispatch();
-    const showCopyButton = isConfirmed || !device?.connected;
-    const isActionAbortable = useSelector(selectIsActionAbortable) || showCopyButton;
+
+    const canConfirmOnDevice = !!(device?.connected && device?.available);
+    const showCopyButton = isConfirmed || !canConfirmOnDevice;
+    const isCancelable = isActionAbortable || showCopyButton;
 
     const copy = () => {
         const result = copyToClipboard(value);
@@ -84,29 +87,17 @@ export const ConfirmValueOnDevice = ({
 
     // Device connected while the modal is open -> validate on device.
     useEffect(() => {
-        if (
-            device?.connected &&
-            device?.available &&
-            modalContext === MODAL.CONTEXT_USER &&
-            !isConfirmed
-        ) {
+        if (canConfirmOnDevice && modalContext === MODAL.CONTEXT_USER && !isConfirmed) {
             dispatch(validateOnDevice());
         }
-    }, [
-        device?.available,
-        device?.connected,
-        dispatch,
-        isConfirmed,
-        modalContext,
-        validateOnDevice,
-    ]);
+    }, [canConfirmOnDevice, dispatch, isConfirmed, modalContext, validateOnDevice]);
 
     return (
         <StyledModal
-            isCancelable={isActionAbortable}
+            isCancelable={isCancelable}
             heading={heading}
             modalPrompt={
-                device?.connected ? (
+                canConfirmOnDevice ? (
                     <ConfirmOnDevice
                         title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
                         deviceModelInternal={device.features?.internal_model}
@@ -117,7 +108,7 @@ export const ConfirmValueOnDevice = ({
             onCancel={onCancel}
         >
             <Wrapper>
-                {device?.connected === false && <StyledDeviceDisconnected label={device.label} />}
+                {device && !device?.connected && <StyledDeviceDisconnected label={device.label} />}
                 <QrCode value={value} />
                 <Value data-test={valueDataTest}>{value}</Value>
                 {showCopyButton && (
