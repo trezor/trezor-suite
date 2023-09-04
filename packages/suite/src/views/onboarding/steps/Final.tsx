@@ -206,7 +206,6 @@ export const FinalStep = () => {
                                 <Dropdown
                                     ref={dropdownRef}
                                     alignMenu="right"
-                                    offset={16}
                                     isDisabled={!shouldOfferChangeHomescreen || isWaitingForConfirm}
                                     items={[
                                         {
