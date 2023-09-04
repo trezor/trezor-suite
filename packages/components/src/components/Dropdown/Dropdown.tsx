@@ -250,7 +250,6 @@ type MenuAlignment = 'left' | 'right' | 'top-left' | 'top-right';
 export interface MenuProps {
     alignMenu?: MenuAlignment;
     coords?: Coords;
-    offset?: number;
     topPadding?: number;
     bottomPadding?: number;
     horizontalPadding?: number;
@@ -265,7 +264,6 @@ export type DropdownProps = MenuProps & {
     renderOnClickPosition?: boolean;
     items: GroupedMenuItems[];
     isDisabled?: boolean;
-    appendTo?: HTMLElement;
     onToggle?: (isToggled: boolean) => void;
 };
 
@@ -277,19 +275,18 @@ export interface DropdownRef {
 export const Dropdown = forwardRef(
     (
         {
-            children,
-            className,
             items,
             isDisabled,
             renderOnClickPosition,
+            masterLink,
             alignMenu = 'left',
-            appendTo,
             topPadding = 8,
             bottomPadding = 8,
             horizontalPadding = 0,
             minWidth = 140,
             onToggle,
-            masterLink,
+            className,
+            children,
             ...rest
         }: DropdownProps,
         ref,
