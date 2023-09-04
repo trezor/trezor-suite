@@ -73,6 +73,7 @@ export const Dropdown = forwardRef(
     (
         {
             items,
+            content,
             isDisabled,
             renderOnClickPosition,
             masterLink,
@@ -172,6 +173,7 @@ export const Dropdown = forwardRef(
             <Menu
                 ref={menuRef}
                 items={items}
+                content={content}
                 coords={coords}
                 setToggled={setToggled}
                 alignMenu={alignMenu}
