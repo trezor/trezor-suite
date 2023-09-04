@@ -63,7 +63,6 @@ export const NavNotifications = ({
                 onToggle={handleToggleChange}
                 ref={dropdownRef}
                 alignMenu="right"
-                offset={4}
                 items={[
                     {
                         key: 'dropdown',
