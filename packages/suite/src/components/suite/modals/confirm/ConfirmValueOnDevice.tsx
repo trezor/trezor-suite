@@ -8,7 +8,7 @@ import { QrCode, QRCODE_PADDING, QRCODE_SIZE } from 'src/components/suite/QrCode
 import { Button, ConfirmOnDevice, ModalProps, variables } from '@trezor/components';
 import { copyToClipboard } from '@trezor/dom-utils';
 import DeviceDisconnected from './Address/components/DeviceDisconnected';
-import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
+import { selectDevice, selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
 import { MODAL } from 'src/actions/suite/constants';
 import { ThunkAction } from 'src/types/suite';
 
@@ -69,7 +69,7 @@ export const ConfirmValueOnDevice = ({
     value,
     valueDataTest,
 }: ConfirmDeviceScreenProps) => {
-    const device = useSelector(state => state.suite.device);
+    const device = useSelector(selectDevice);
     const modalContext = useSelector(state => state.modal.context);
     const dispatch = useDispatch();
     const showCopyButton = isConfirmed || !device?.connected;
@@ -84,10 +84,22 @@ export const ConfirmValueOnDevice = ({
 
     // Device connected while the modal is open -> validate on device.
     useEffect(() => {
-        if (device?.connected && modalContext === MODAL.CONTEXT_USER && !isConfirmed) {
+        if (
+            device?.connected &&
+            device?.available &&
+            modalContext === MODAL.CONTEXT_USER &&
+            !isConfirmed
+        ) {
             dispatch(validateOnDevice());
         }
-    }, [device?.connected, dispatch, isConfirmed, modalContext, validateOnDevice]);
+    }, [
+        device?.available,
+        device?.connected,
+        dispatch,
+        isConfirmed,
+        modalContext,
+        validateOnDevice,
+    ]);
 
     return (
         <StyledModal
