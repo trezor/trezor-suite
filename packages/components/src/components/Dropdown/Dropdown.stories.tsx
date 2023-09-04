@@ -1,5 +1,14 @@
+import React from 'react';
+import styled from 'styled-components';
 import { Dropdown as DropdownComponent, DropdownProps } from './Dropdown';
 import { StoryObj } from '@storybook/react';
+
+const Center = styled.div`
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    padding: 100px 0px;
+`;
 
 export default {
     title: 'Misc/Dropdown',
@@ -7,6 +16,11 @@ export default {
 };
 
 export const Dropdown: StoryObj<DropdownProps> = {
+    render: args => (
+        <Center>
+            <DropdownComponent {...args} />
+        </Center>
+    ),
     args: {
         masterLink: {
             callback: () => {
