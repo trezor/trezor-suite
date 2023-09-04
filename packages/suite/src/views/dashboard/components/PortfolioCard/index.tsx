@@ -105,7 +105,7 @@ const PortfolioCard = memo(() => {
                                 label: 'Graph View',
                                 options: [
                                     {
-                                        noHover: true,
+                                        noHoverEffect: true,
                                         key: 'graphView',
                                         label: <GraphScaleDropdownItem />,
                                         callback: () => false,
