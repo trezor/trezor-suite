@@ -11,66 +11,51 @@ import {
 } from 'react';
 import { createPortal } from 'react-dom';
 import styled, { css } from 'styled-components';
+import { borders, boxShadows, spacings, spacingsPx, typography } from '@trezor/theme';
 import { useOnClickOutside } from '@trezor/react-utils';
-import { FONT_WEIGHT, Z_INDEX, FONT_SIZE } from '../../config/variables';
+import { Z_INDEX } from '../../config/variables';
 import { animations } from '../../config';
 import { useTheme } from '../../utils/hooks';
 import { Icon, IconProps } from '../assets/Icon/Icon';
 
-const MasterLinkComponent = styled.button<{
-    topMargin?: number;
-    rightMargin?: number;
-}>`
-    border: 0;
-    background: none;
+const MasterLinkComponent = styled.button`
     position: absolute;
-    top: 15px;
-    right: 10px;
-    font-size: 11px;
-    letter-spacing: 0.4px;
-    color: ${({ theme }) => theme.TYPE_GREEN};
-    font-weight: ${FONT_WEIGHT.BOLD};
-    text-transform: uppercase;
+    top: 16px;
+    right: 16px;
     display: flex;
-    cursor: pointer;
+    align-items: center;
+    gap: ${spacingsPx.xxs};
+    background: none;
+    letter-spacing: 0.4px;
+    color: ${({ theme }) => theme.textPrimaryDefault};
+    text-transform: uppercase;
+    border: 0;
     opacity: 0;
+    cursor: pointer;
     transform: translateX(-10px);
-    transition: all 0.3s ease;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+    ${typography.label};
 
-    & > * + * {
-        margin-left: 5px;
+    :hover {
+        opacity: 0.6 !important;
     }
-
-    ${props =>
-        props.topMargin &&
-        css`
-            margin-top: ${props.topMargin}px;
-        `}
-
-    ${props =>
-        props.rightMargin &&
-        css`
-            margin-right: calc(${props.rightMargin}px + 5px);
-        `}
 `;
 
-const MasterLinkComponentIcon = styled(Icon)`
-    margin-top: 1px;
-`;
-
-const Menu = styled.ul<MenuProps>`
+const Menu = styled.ul<Pick<MenuProps, 'coords' | 'alignMenu'>>`
+    position: fixed;
     display: flex;
     flex-direction: column;
-    position: fixed;
     flex: 1;
-    min-width: ${props => props.minWidth}px;
-    box-shadow: 0 2px 7px 0 ${({ theme }) => theme.BOX_SHADOW_BLACK_15},
-        0 2px 3px 0 ${({ theme }) => theme.BOX_SHADOW_BLACK_5};
-    padding: ${props => props.topPadding}px ${props => props.horizontalPadding}px
-        ${props => props.bottomPadding}px;
-    border-radius: 10px;
+    padding: ${spacingsPx.sm};
+    min-width: 140px;
+    border-radius: ${borders.radii.md};
+    background: ${({ theme }) => theme.backgroundSurfaceElevation1};
+    box-shadow: ${boxShadows.elevation3};
     z-index: ${Z_INDEX.NAVIGATION_BAR};
     animation: ${animations.DROPDOWN_MENU} 0.15s ease-in-out;
+    list-style-type: none;
+    overflow: hidden;
+    ${typography.hint}
 
     ${({ coords }) =>
         coords &&
@@ -79,86 +64,78 @@ const Menu = styled.ul<MenuProps>`
             left: ${coords.x}px;
         `}
 
-    list-style-type: none;
-    background: ${({ theme }) => theme.BG_WHITE};
-    overflow: hidden;
-
-    ${props =>
-        props.borderRadius &&
-        css`
-            border-radius: ${props.borderRadius}px;
-        `};
-
-    &:hover ${MasterLinkComponent} {
+    :hover ${MasterLinkComponent} {
         opacity: 1;
         transform: translateX(0);
     }
 `;
 
-const Group = styled.li`
+const GroupLabel = styled.li`
+    padding: ${spacingsPx.sm} ${spacingsPx.sm} ${spacingsPx.xxs};
     color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
-    font-size: ${FONT_SIZE.TINY};
-    font-weight: ${FONT_WEIGHT.MEDIUM};
-    padding: 10px 16px 10px 16px;
+    ${typography.label};
     cursor: default;
+
+    :first-of-type {
+        padding-top: ${spacingsPx.xxs};
+    }
 `;
 
-const MenuItem = styled.li<MenuItemProps>`
+type MenuItemsProps = Pick<
+    DropdownMenuItem,
+    'noPadding' | 'isDisabled' | 'noHover' | 'separatorBefore'
+>;
+
+const MenuItem = styled.li<MenuItemsProps>`
     position: relative;
     display: flex;
     align-items: center;
-    padding: ${({ item }) => (!item.noPadding ? '8px 16px' : '0px')};
-    border-radius: ${({ item }) => item.isRounded && ' 4px'};
-    color: ${({ item, theme }) =>
-        !item.isDisabled ? theme.TYPE_DARK_GREY : theme.TYPE_LIGHT_GREY};
-    font-size: ${FONT_SIZE.SMALL};
-    font-weight: ${FONT_WEIGHT.MEDIUM};
+    justify-content: space-between;
+    gap: ${spacingsPx.sm};
+    padding: ${({ noPadding }) => (!noPadding ? `${spacingsPx.xs} ${spacingsPx.sm}` : 0)};
+    border-radius: ${borders.radii.xs};
+    color: ${({ isDisabled, theme }) => (!isDisabled ? theme.textDefault : theme.textDisabled)};
     white-space: nowrap;
-    transition: all 0.2s ease;
-    cursor: ${({ item }) => (!item.isDisabled && !item.noHover ? 'pointer' : 'default')};
+    transition: background 0.2s ease;
+    cursor: pointer;
 
-    :hover {
-        background: ${({ item, theme }) =>
-            !item.isDisabled && !item.noHover && theme.BG_WHITE_ALT_HOVER};
+    > span {
+        margin-right: auto;
     }
 
-    ${({ item, theme }) =>
-        item.separatorBefore &&
+    :hover {
+        background: ${({ theme }) => theme.backgroundSurfaceElevation2};
+    }
+
+    ${({ noHover, isDisabled }) =>
+        (noHover || isDisabled) &&
         css`
-            margin-top: 17px;
+            pointer-events: none;
+            cursor: default;
+        `}
+
+    ${({ separatorBefore, theme }) =>
+        separatorBefore &&
+        css`
+            margin-top: ${spacingsPx.md};
 
             :after {
                 position: absolute;
-                width: calc(100% - 32px);
-                top: -9px;
-                left: 16px;
+                width: 100%;
+                top: -${spacingsPx.xs};
+                left: 0;
+                border-top: 1px solid ${theme.borderOnElevation1};
                 content: '';
-                border-top: 1px solid ${theme.STROKE_GREY};
             }
         `}
 `;
 
-const MenuItemLabel = styled.div`
-    width: 100%;
-`;
-
-const IconLeft = styled.div`
-    margin-right: 16px;
-`;
-
-const IconRight = styled.div`
-    margin-left: auto;
-    & > * {
-        margin-left: 16px;
-    }
-`;
-
 const MoreIcon = styled(Icon)<{ $isDisabled?: boolean }>`
-    transition: background 0.1s;
-    border-radius: 6px;
+    transition: background 0.2s;
+    border-radius: ${borders.radii.xs};
 
     :hover {
-        background: ${({ $isDisabled, theme }) => !$isDisabled && theme.STROKE_GREY};
+        background: ${({ $isDisabled, theme }) => !$isDisabled && theme.backgroundNeutralSubdued};
     }
 `;
 
@@ -218,11 +195,10 @@ interface DropdownMenuItem {
     key: string;
     label: React.ReactNode;
     callback?: () => any | Promise<any>;
-    icon?: IconProps['icon'] | JSX.Element;
+    icon?: IconProps['icon'];
     iconRight?: IconProps['icon'];
     isDisabled?: boolean;
     isHidden?: boolean;
-    isRounded?: boolean;
     noPadding?: boolean;
     noHover?: boolean;
     separatorBefore?: boolean;
@@ -233,10 +209,6 @@ export interface GroupedMenuItems {
     key: string;
     options: DropdownMenuItem[];
     label?: React.ReactNode;
-}
-
-export interface MenuItemProps {
-    item: DropdownMenuItem;
 }
 
 interface MasterLink {
@@ -250,21 +222,16 @@ type MenuAlignment = 'left' | 'right' | 'top-left' | 'top-right';
 export interface MenuProps {
     alignMenu?: MenuAlignment;
     coords?: Coords;
-    topPadding?: number;
-    bottomPadding?: number;
-    horizontalPadding?: number;
-    borderRadius?: number;
-    minWidth?: number;
     masterLink?: MasterLink;
     className?: string;
 }
 
 export type DropdownProps = MenuProps & {
-    children?: React.ReactElement<any>;
-    renderOnClickPosition?: boolean;
     items: GroupedMenuItems[];
     isDisabled?: boolean;
+    renderOnClickPosition?: boolean;
     onToggle?: (isToggled: boolean) => void;
+    children?: React.ReactElement<any>;
 };
 
 export interface DropdownRef {
@@ -280,10 +247,6 @@ export const Dropdown = forwardRef(
             renderOnClickPosition,
             masterLink,
             alignMenu = 'left',
-            topPadding = 8,
-            bottomPadding = 8,
-            horizontalPadding = 0,
-            minWidth = 140,
             onToggle,
             className,
             children,
@@ -401,38 +364,15 @@ export const Dropdown = forwardRef(
             />
         );
 
-        const getIconComponent = (item: DropdownMenuItem) => {
-            if (item.icon) {
-                return typeof item.icon === 'string' ? (
-                    <IconLeft>
-                        <Icon icon={item.icon} size={16} color={theme.TYPE_DARK_GREY} />
-                    </IconLeft>
-                ) : (
-                    item.icon
-                );
-            }
-            return null;
-        };
-
         const visibleItems = items.map(group => ({
             ...group,
             options: group.options.filter(item => !item.isHidden),
         }));
 
         const menu = (
-            <Menu
-                ref={menuRef}
-                alignMenu={alignMenu}
-                coords={coords}
-                topPadding={topPadding}
-                bottomPadding={bottomPadding}
-                horizontalPadding={horizontalPadding}
-                minWidth={minWidth}
-            >
+            <Menu ref={menuRef} alignMenu={alignMenu} coords={coords}>
                 {masterLink && (
                     <MasterLinkComponent
-                        topMargin={topPadding}
-                        rightMargin={horizontalPadding}
                         onClick={() => {
                             if (masterLink.callback) {
                                 masterLink.callback();
@@ -441,16 +381,12 @@ export const Dropdown = forwardRef(
                         }}
                     >
                         <span>{masterLink.label}</span>
-                        <MasterLinkComponentIcon
-                            icon={masterLink.icon}
-                            size={10}
-                            color={theme.TYPE_GREEN}
-                        />
+                        <Icon icon={masterLink.icon} size={spacings.sm} color={theme.TYPE_GREEN} />
                     </MasterLinkComponent>
                 )}
                 {visibleItems.map(group => (
-                    <div key={group.key}>
-                        {group.label && <Group>{group.label}</Group>}
+                    <React.Fragment key={group.key}>
+                        {group.label && <GroupLabel>{group.label}</GroupLabel>}
                         {group.options.map(item => (
                             <MenuItem
                                 onClick={e => {
@@ -459,22 +395,19 @@ export const Dropdown = forwardRef(
                                 }}
                                 data-test={item['data-test']}
                                 key={item.key}
-                                item={item}
+                                isDisabled={item.isDisabled}
+                                noPadding={item.noPadding}
+                                noHover={item.noHover}
+                                separatorBefore={item.separatorBefore}
                             >
-                                {getIconComponent(item)}
-                                <MenuItemLabel>{item.label}</MenuItemLabel>
+                                {item.icon && <Icon icon={item.icon} size={spacings.md} />}
+                                <span>{item.label}</span>
                                 {item.iconRight && (
-                                    <IconRight>
-                                        <Icon
-                                            icon={item.iconRight}
-                                            size={16}
-                                            color={theme.TYPE_DARK_GREY}
-                                        />
-                                    </IconRight>
+                                    <Icon icon={item.iconRight} size={spacings.md} />
                                 )}
                             </MenuItem>
                         ))}
-                    </div>
+                    </React.Fragment>
                 ))}
             </Menu>
         );
