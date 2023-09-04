@@ -71,7 +71,7 @@ const GroupLabel = styled.li`
 
 type MenuItemsProps = Pick<
     DropdownMenuItemProps,
-    'noPadding' | 'isDisabled' | 'noHover' | 'separatorBefore'
+    'noPadding' | 'isDisabled' | 'noHoverEffect' | 'separatorBefore'
 >;
 
 const MenuItemContainer = styled.li<MenuItemsProps>`
@@ -86,14 +86,15 @@ const MenuItemContainer = styled.li<MenuItemsProps>`
     white-space: nowrap;
     transition: background 0.2s ease;
     pointer-events: ${({ isDisabled }) => (isDisabled ? 'none' : 'auto')};
-    cursor: ${({ noHover }) => (noHover ? 'default' : 'pointer')};
+    cursor: ${({ noHoverEffect }) => (noHoverEffect ? 'default' : 'pointer')};
 
     > span {
         margin-right: auto;
     }
 
     :hover {
-        background: ${({ theme, noHover }) => !noHover && theme.backgroundSurfaceElevation0};
+        background: ${({ theme, noHoverEffect }) =>
+            !noHoverEffect && theme.backgroundSurfaceElevation0};
     }
 
     ${({ separatorBefore, theme }) =>
@@ -152,7 +153,7 @@ interface DropdownMenuItemProps {
     isDisabled?: boolean;
     isHidden?: boolean;
     noPadding?: boolean;
-    noHover?: boolean;
+    noHoverEffect?: boolean;
     separatorBefore?: boolean;
     'data-test'?: string;
 }
@@ -212,14 +213,7 @@ export const Menu = forwardRef<HTMLUListElement, MenuProps>(
 
         return (
             <Container ref={ref} alignMenu={alignMenu} coords={coords}>
-                {masterLink && (
-                    <MasterLink
-                        icon={masterLink.icon}
-                        label={masterLink.label}
-                        callback={masterLink.callback}
-                        setToggled={setToggled}
-                    />
-                )}
+                {masterLink && <MasterLink setToggled={setToggled} {...masterLink} />}
 
                 {visibleItems.map(group => (
                     <React.Fragment key={group.key}>

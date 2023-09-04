@@ -163,7 +163,7 @@ export const GraphRangeSelector = ({
                         options: [
                             {
                                 noPadding: true,
-                                noHover: true,
+                                noHoverEffect: true,
                                 key: 'timerange',
                                 label: (
                                     <Timerange
