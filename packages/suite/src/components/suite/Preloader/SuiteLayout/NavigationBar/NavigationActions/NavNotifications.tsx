@@ -64,27 +64,11 @@ export const NavNotifications = ({
                 onToggle={handleToggleChange}
                 ref={dropdownRef}
                 alignMenu="right"
-                items={[
-                    {
-                        key: 'dropdown',
-
-                        options: [
-                            {
-                                key: 'notifications',
-                                label: (
-                                    <NotificationsWrapper>
-                                        <Notifications
-                                            onCancel={() => dropdownRef.current!.close()}
-                                        />
-                                    </NotificationsWrapper>
-                                ),
-                                noPadding: true,
-                                noHoverEffect: true, // no hover effect
-                                callback: () => false, // don't close Dropdown on mouse click automatically
-                            },
-                        ],
-                    },
-                ]}
+                content={
+                    <NotificationsWrapper>
+                        <Notifications onCancel={() => dropdownRef.current!.close()} />
+                    </NotificationsWrapper>
+                }
             >
                 <ActionItem
                     label={<Translation id="TR_NOTIFICATIONS" />}
