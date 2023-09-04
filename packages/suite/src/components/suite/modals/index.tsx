@@ -17,6 +17,7 @@ export { ConfirmNoBackup } from './confirm/ConfirmNoBackup';
 export { ReviewTransaction } from './ReviewTransaction';
 export { ImportTransaction } from './ImportTransaction';
 export { ConfirmUnverified } from './confirm/ConfirmUnverified';
+export { ConfirmUnverifiedAddress } from './confirm/ConfirmUnverifiedAddress';
 export { AddAccount } from './AddAccount';
 export { QrScanner } from './QrScanner';
 export { BackgroundGallery } from './BackgroundGallery';
