@@ -6,7 +6,8 @@ import { Translation, Modal } from 'src/components/suite';
 import { TranslationKey } from 'src/components/suite/Translation';
 import { useDevice, useDispatch } from 'src/hooks/suite';
 import { ThunkAction } from 'src/types/suite';
-import { Button, Image, ModalProps } from '@trezor/components';
+import { Button, Image } from '@trezor/components';
+import { onCancel } from 'src/actions/suite/modalActions';
 
 const StyledImage = styled(Image)`
     align-self: center;
@@ -21,7 +22,7 @@ const StyledButton = styled(Button)`
     flex-grow: 1;
 `;
 
-interface ConfirmUnverifiedProps extends Required<Pick<ModalProps, 'onCancel'>> {
+interface ConfirmUnverifiedProps {
     showUnverifiedButtonText: TranslationKey;
     showUnverified: () => ThunkAction;
     verify: () => ThunkAction;
@@ -30,7 +31,6 @@ interface ConfirmUnverifiedProps extends Required<Pick<ModalProps, 'onCancel'>> 
 
 export const ConfirmUnverified = ({
     showUnverifiedButtonText,
-    onCancel,
     showUnverified,
     verify,
     warningText,
@@ -65,12 +65,13 @@ export const ConfirmUnverified = ({
         dispatch(verify());
     };
     const continueUnverified = () => dispatch(showUnverified());
+    const close = () => dispatch(onCancel());
 
     return (
         <StyledModal
             heading={<Translation id={deviceStatus} values={{ deviceLabel: device.label }} />}
             isCancelable
-            onCancel={onCancel}
+            onCancel={close}
             description={
                 <Translation
                     id={warningText}

@@ -1,6 +1,6 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 
-import { onCancel as onCancelAction, UserContextPayload } from 'src/actions/suite/modalActions';
+import { onCancel as onCancelAction } from 'src/actions/suite/modalActions';
 import { MODAL } from 'src/actions/suite/constants';
 import { useDispatch } from 'src/hooks/suite';
 import {
@@ -30,12 +30,12 @@ import {
     CoinjoinSuccess,
     MoreRoundsNeeded,
     ConfirmUnverified,
+    ConfirmUnverifiedAddress,
 } from 'src/components/suite/modals';
 import { DisableTorStopCoinjoin } from 'src/components/suite/modals/DisableTorStopCoinjoin';
 import { UnecoCoinjoinWarning } from 'src/components/suite/modals/UnecoCoinjoinWarning';
 import type { AcquiredDevice } from 'src/types/suite';
 import { openXpubModal, showXpub } from 'src/actions/wallet/publicKeyActions';
-import { showAddress, openAddressModal } from 'src/actions/wallet/receiveActions';
 import type { ReduxModalProps } from './types';
 
 /** Modals opened as a result of user action */
@@ -44,14 +44,6 @@ export const UserContextModal = ({
     renderer,
 }: ReduxModalProps<typeof MODAL.CONTEXT_USER>) => {
     const dispatch = useDispatch();
-
-    const verifyAddress = useCallback(() => {
-        const { addressPath, value } = payload as Extract<
-            UserContextPayload,
-            { type: 'unverified-address' }
-        >;
-        return showAddress(addressPath, value);
-    }, [payload]);
 
     const onCancel = () => dispatch(onCancelAction());
 
@@ -67,13 +59,9 @@ export const UserContextModal = ({
             );
         case 'unverified-address':
             return (
-                <ConfirmUnverified
-                    showUnverifiedButtonText="TR_SHOW_UNVERIFIED_ADDRESS"
-                    warningText="TR_ADDRESS_PHISHING_WARNING"
-                    verify={verifyAddress}
-                    showUnverified={() =>
-                        openAddressModal({ addressPath: payload.addressPath, value: payload.value })
-                    }
+                <ConfirmUnverifiedAddress
+                    addressPath={payload.addressPath}
+                    value={payload.value}
                     onCancel={onCancel}
                 />
             );
@@ -84,7 +72,6 @@ export const UserContextModal = ({
                     warningText="TR_XPUB_PHISHING_WARNING"
                     verify={showXpub}
                     showUnverified={openXpubModal}
-                    onCancel={onCancel}
                 />
             );
         case 'address':
