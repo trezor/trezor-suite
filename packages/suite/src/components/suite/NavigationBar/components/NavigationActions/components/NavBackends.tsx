@@ -89,8 +89,6 @@ export const NavBackends = ({ customBackends }: NavBackendsProps) => {
                 onToggle={() => setOpen(!open)}
                 ref={dropdownRef}
                 alignMenu="right"
-                topPadding={0}
-                minWidth={230}
                 masterLink={{
                     callback: goToCoinsSettings,
                     label: <Translation id="TR_MANAGE" />,
