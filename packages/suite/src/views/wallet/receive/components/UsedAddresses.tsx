@@ -167,7 +167,7 @@ const Item = ({ addr, locked, symbol, onClick, metadataPayload, index }: ItemPro
                     <Button
                         data-test={`@wallet/receive/reveal-address-button/${index}`}
                         variant="tertiary"
-                        disabled={locked}
+                        isDisabled={locked}
                         isLoading={locked}
                         onClick={onClick}
                     >

@@ -51,7 +51,7 @@ const PercentageChangeArrow = ({
         <Icon
             name={iconName}
             color={getColorForPercentageChange(hasPriceIncreased)}
-            customSize={PRICE_CHANGE_ICON_SIZE}
+            size={PRICE_CHANGE_ICON_SIZE}
         />
     );
 };
