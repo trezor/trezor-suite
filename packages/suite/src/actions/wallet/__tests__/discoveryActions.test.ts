@@ -182,7 +182,7 @@ const SUITE_DEVICE = getSuiteDevice({ state: 'device-state', connected: true });
 export const getInitialState = (device = SUITE_DEVICE) => ({
     device: {
         devices: [device],
-        device,
+        selectedDevice: device,
     },
     metadata: { enabled: false, providers: [] }, // don't use labeling in unit:tests
     wallet: {
@@ -347,7 +347,7 @@ describe('Discovery Actions', () => {
         it(`Change network: ${f.description}`, () => {
             const state = getInitialState();
             if (f.device) {
-                state.device.device = f.device;
+                state.device.selectedDevice = f.device;
                 state.device.devices = [f.device];
             }
             const store = initStore(state);
@@ -386,7 +386,7 @@ describe('Discovery Actions', () => {
 
     it('Start discovery with device without auth confirmation', async () => {
         const state = getInitialState();
-        state.device.device = getSuiteDevice({ authConfirm: true });
+        state.device.selectedDevice = getSuiteDevice({ authConfirm: true });
         const store = initStore(state);
         await store.dispatch(startDiscoveryThunk());
         const action = filterThunkActionTypes(store.getActions()).pop();
@@ -575,7 +575,7 @@ describe('Discovery Actions', () => {
             }),
         );
         // "disconnect" device
-        store.getState().device.device.connected = false;
+        store.getState().device.selectedDevice.connected = false;
         await store.dispatch(startDiscoveryThunk());
         const action = filterThunkActionTypes(store.getActions()).pop();
         expect(action?.type).toEqual(discoveryActions.completeDiscovery.type);
@@ -724,7 +724,7 @@ describe('Discovery Actions', () => {
             connect: { success: true },
         });
         const state = getInitialState();
-        state.device.device = getSuiteDevice({
+        state.device.selectedDevice = getSuiteDevice({
             state: 'device-state',
             connected: true,
             useEmptyPassphrase: false, // mandatory
@@ -738,7 +738,7 @@ describe('Discovery Actions', () => {
         store.dispatch(
             createDiscoveryThunk({
                 deviceState: 'device-state',
-                device: state.device.device,
+                device: state.device.selectedDevice,
             }),
         );
         await store.dispatch(startDiscoveryThunk());

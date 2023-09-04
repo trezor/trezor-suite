@@ -54,6 +54,6 @@ export const DEFAULT_STORE = {
     },
     suite: {},
     device: {
-        device: undefined,
+        selectedDevice: undefined,
     },
 };

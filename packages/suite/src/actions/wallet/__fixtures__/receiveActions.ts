@@ -153,7 +153,7 @@ export default [
                 settings: { debug: {} },
             },
             device: {
-                device: getSuiteDevice({ connected: false }),
+                selectedDevice: getSuiteDevice({ connected: false }),
             },
         },
         mocks: {},

@@ -248,7 +248,7 @@ describe('Suite Actions', () => {
         it(`authorizeDevice: ${f.description}`, async () => {
             require('@trezor/connect').setTestFixtures(f.getDeviceState);
             const state = getInitialState(undefined, {
-                device: f.suiteState?.device,
+                selectedDevice: f.suiteState?.selectedDevice,
                 devices: f.devicesState ?? [],
             });
             const store = initStore(state);
@@ -291,7 +291,7 @@ describe('Suite Actions', () => {
             require('@trezor/connect').setTestFixtures(f.applySettings);
             const state = getInitialState(undefined, f.state.device);
             const store = initStore(state);
-            await store.dispatch(suiteActions.createDeviceInstance(f.state.device.device));
+            await store.dispatch(suiteActions.createDeviceInstance(f.state.device.selectedDevice));
             if (!f.result) {
                 expect(store.getActions().length).toEqual(0);
             } else {

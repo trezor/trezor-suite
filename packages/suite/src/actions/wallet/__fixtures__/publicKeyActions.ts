@@ -11,7 +11,7 @@ export default [
         description: 'Show unverified public key',
         initialState: undefined,
         mocks: {},
-        action: () => publicKeyActions.openXpubModal(),
+        action: publicKeyActions.openXpubModal,
         result: {
             actions: [
                 { type: connectInitThunk.pending.type, payload: undefined },
@@ -24,7 +24,7 @@ export default [
         description: 'Show public key success (bitcoin)',
         initialState: undefined,
         mocks: {},
-        action: () => publicKeyActions.showXpub(),
+        action: publicKeyActions.showXpub,
         result: {
             actions: [
                 { type: connectInitThunk.pending.type, payload: undefined },
@@ -40,7 +40,7 @@ export default [
             networkType: 'cardano',
         },
         mocks: {},
-        action: () => publicKeyActions.showXpub(),
+        action: publicKeyActions.showXpub,
         result: {
             actions: [
                 { type: connectInitThunk.pending.type, payload: undefined },
@@ -56,7 +56,7 @@ export default [
             networkType: 'ethereum',
         },
         mocks: {},
-        action: () => publicKeyActions.showXpub(),
+        action: publicKeyActions.showXpub,
         result: {
             actions: [
                 { type: connectInitThunk.pending.type, payload: undefined },
@@ -77,11 +77,11 @@ export default [
         description: 'Show public key, device not connected',
         initialState: {
             device: {
-                device: getSuiteDevice({ connected: false }),
+                selectedDevice: getSuiteDevice({ connected: false }),
             },
         },
         mocks: {},
-        action: () => publicKeyActions.showXpub(),
+        action: publicKeyActions.showXpub,
         result: {
             actions: [
                 { type: connectInitThunk.pending.type, payload: undefined },
@@ -96,11 +96,11 @@ export default [
         description: 'Show public key, device is undefined',
         initialState: {
             device: {
-                device: undefined,
+                selectedDevice: undefined,
             },
         },
         mocks: {},
-        action: () => publicKeyActions.showXpub(),
+        action: publicKeyActions.showXpub,
         result: {
             actions: [
                 { type: connectInitThunk.pending.type, payload: undefined },
@@ -114,7 +114,7 @@ export default [
         mocks: {
             getPublicKey: { success: false, payload: { error: 'Runtime error' } },
         },
-        action: () => publicKeyActions.showXpub(),
+        action: publicKeyActions.showXpub,
         result: {
             actions: [
                 { type: connectInitThunk.pending.type, payload: undefined },
@@ -137,7 +137,7 @@ export default [
                 payload: { error: 'Runtime error', code: 'Method_PermissionsNotGranted' },
             },
         },
-        action: () => publicKeyActions.showXpub(),
+        action: publicKeyActions.showXpub,
         result: {
             actions: [
                 { type: connectInitThunk.pending.type, payload: undefined },

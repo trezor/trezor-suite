@@ -26,7 +26,7 @@ import { AppState } from 'src/types/suite';
 import { selectDevice } from '../../reducers/suite/deviceReducer';
 
 const getDeviceAvailability = (
-    device: AppState['device']['device'],
+    device: AppState['device']['selectedDevice'],
     locks: AppState['suite']['locks'],
 ) => {
     // Handle all external cases where it is not possible to make delegate or withdrawal action

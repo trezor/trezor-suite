@@ -32,7 +32,7 @@ const rootReducer = combineReducers({
         },
         () => ({}),
     ),
-    device: createReducer({ devices: [DEVICE], device: DEVICE }, () => ({})),
+    device: createReducer({ devices: [DEVICE], selectedDevice: DEVICE }, () => ({})),
     modal: () => ({}),
     wallet: combineReducers({
         coinjoin: coinjoinReducer,

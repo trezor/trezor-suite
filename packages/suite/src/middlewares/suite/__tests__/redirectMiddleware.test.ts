@@ -99,7 +99,7 @@ describe('redirectMiddleware', () => {
                     undefined,
                     {
                         devices: [],
-                        device: getSuiteDevice(
+                        selectedDevice: getSuiteDevice(
                             {
                                 path: '2',
                             },

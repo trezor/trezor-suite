@@ -1,12 +1,9 @@
 /* eslint @typescript-eslint/no-use-before-define: 1 */
 import { createAction } from '@reduxjs/toolkit';
 
-
 import TrezorConnect from '@trezor/connect';
 import { analytics, EventType } from '@trezor/suite-analytics';
-
 import { createDeferred, cloneObject } from '@trezor/utils';
-import { createDeferred } from '@trezor/utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 
 import { METADATA } from 'src/actions/suite/constants';
@@ -33,7 +30,6 @@ import DropboxProvider from 'src/services/suite/metadata/DropboxProvider';
 import GoogleProvider from 'src/services/suite/metadata/GoogleProvider';
 import FileSystemProvider from 'src/services/suite/metadata/FileSystemProvider';
 import { selectSelectedProviderForLabels } from 'src/reducers/suite/metadataReducer';
-
 import { selectDevices, selectDevice } from 'src/reducers/suite/deviceReducer';
 
 export const setAccountAdd = createAction(METADATA.ACCOUNT_ADD, (payload: Account) => ({
@@ -313,7 +309,7 @@ const setMetadata =
 export const getLabelableEntities =
     (deviceState: string) => (_dispatch: Dispatch, getState: GetState) => {
         const { accounts } = getState().wallet;
-        const { devices } = getState();
+        const devices = selectDevices(getState());
 
         return [
             ...accounts
@@ -394,7 +390,8 @@ export const fetchAndSaveMetadata =
         const provider = selectSelectedProviderForLabels(getState());
         if (!provider) return;
 
-        const deviceState = deviceStateArg || getState().suite.device?.state;
+        const selectedDeviceState = selectDevice(getState())?.state;
+        const deviceState = deviceStateArg || selectedDeviceState;
 
         if (!deviceState) {
             return;
@@ -406,13 +403,6 @@ export const fetchAndSaveMetadata =
             }),
         );
         if (!providerInstance) {
-            return;
-        }
-
-        const selectedDeviceState = selectDevice(getState())?.state;
-        const deviceState = deviceStateArg || selectedDeviceState;
-
-        if (!deviceState) {
             return;
         }
 
@@ -480,7 +470,7 @@ export const fetchAndSaveMetadata =
 export const setAccountMetadataKey =
     (account: Account, encryptionVersion = METADATA.ENCRYPTION_VERSION) =>
     (dispatch: Dispatch, getState: GetState) => {
-      const devices = selectDevices(getState());
+        const devices = selectDevices(getState());
         const device = devices.find(d => d.state === account.deviceState);
         if (
             !device ||
@@ -792,7 +782,7 @@ const encryptAndSaveMetadata =
 export const setDeviceMetadataKey =
     (encryptionVersion = METADATA.ENCRYPTION_VERSION) =>
     async (dispatch: Dispatch, getState: GetState) => {
-      const device = selectDevice(getState());
+        const device = selectDevice(getState());
         if (!device || !device.state || !device.connected) return;
 
         if (device.metadata.status === 'enabled') return;
@@ -903,7 +893,7 @@ export const init =
 
         // did user confirm labeling on device? or maybe device was not connected
         // so suite does not have keys and needs to stop here
-        if (getState().device.device?.metadata.status !== 'enabled') {
+        if (getState().device.selectedDevice?.metadata.status !== 'enabled') {
             // if no, end here
             dispatch({ type: METADATA.SET_INITIATING, payload: false });
             dispatch({ type: METADATA.SET_EDITING, payload: undefined });
@@ -918,7 +908,7 @@ export const init =
 
         // 3. connect to provider
         if (
-            getState().device.device?.metadata.status === 'enabled' &&
+            getState().device.selectedDevice?.metadata.status === 'enabled' &&
             !getState().metadata.providers?.length
         ) {
             if (!getState().metadata.initiating) {
@@ -941,11 +931,11 @@ export const init =
             // todo: possible race condition that has been around since always
             // user is editing label and at that very moment update arrives. updates to specific entities should be probably discarded in such case?
             fetchIntervals[device.state] = setInterval(() => {
-                const { device } = getState().suite;
-                if (!getState().suite.online || !device?.state) {
+                const selectedDevice = selectDevice(getState());
+                if (!getState().suite.online || !selectedDevice?.state) {
                     return;
                 }
-                dispatch(fetchAndSaveMetadata(device.state));
+                dispatch(fetchAndSaveMetadata(selectedDevice.state));
             }, METADATA.FETCH_INTERVAL);
         }
 

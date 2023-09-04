@@ -19,7 +19,7 @@ export type ContextValues = {
     quotes: AppState['wallet']['coinmarket']['sell']['quotes'];
     alternativeQuotes: AppState['wallet']['coinmarket']['sell']['alternativeQuotes'];
     quotesRequest: AppState['wallet']['coinmarket']['sell']['quotesRequest'];
-    device: AppState['device']['device'];
+    device: AppState['device']['selectedDevice'];
     selectedQuote?: SellFiatTrade;
     trade?: TradeSell;
     suiteReceiveAccounts?: AppState['wallet']['accounts'];

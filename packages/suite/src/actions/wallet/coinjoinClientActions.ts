@@ -33,9 +33,9 @@ import {
     selectRoundsDurationInHours,
     selectCoinjoinAccounts,
 } from 'src/reducers/wallet/coinjoinReducer';
+import { selectDevices } from 'src/reducers/suite/deviceReducer';
 
 import * as COINJOIN from './constants/coinjoinConstants';
-import { selectDevices, selectDevice } from '../../reducers/suite/deviceReducer';
 
 const clientEnable = (symbol: Account['symbol']) =>
     ({
@@ -301,7 +301,8 @@ export const stopCoinjoinSession =
         let shouldCancelAuthorization = device?.connected;
         if (device) {
             // find all instances of this physical device
-            const deviceInstances = getDeviceInstances(device, state.devices);
+            const devices = selectDevices(state);
+            const deviceInstances = getDeviceInstances(device, devices);
             // find other coinjoin accounts related to this physical device
             const otherAccounts = deviceInstances.flatMap(d =>
                 state.wallet.accounts.filter(

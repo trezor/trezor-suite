@@ -49,7 +49,7 @@ export const getInitialState = (override: any) => {
         },
         // doesnt affect anything, just needed for TrezorConnect.init action
         device: {
-            device: {
+            selectedDevice: {
                 connected: true,
                 type: 'acquired',
                 features: {
@@ -89,7 +89,9 @@ describe('Backup Actions', () => {
         await store.dispatch(connectInitThunk());
 
         await store.dispatch(
-            backupActions.backupDevice({ device: store.getState().device.device } as CommonParams),
+            backupActions.backupDevice({
+                device: store.getState().device.selectedDevice,
+            } as CommonParams),
         );
 
         expect(store.getActions().shift()).toMatchObject({
@@ -123,7 +125,9 @@ describe('Backup Actions', () => {
         await store.dispatch(connectInitThunk());
 
         await store.dispatch(
-            backupActions.backupDevice({ device: store.getState().device.device } as CommonParams),
+            backupActions.backupDevice({
+                device: store.getState().device.selectedDevice,
+            } as CommonParams),
         );
 
         expect(store.getActions().shift()).toMatchObject({

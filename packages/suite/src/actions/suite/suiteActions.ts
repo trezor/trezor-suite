@@ -421,7 +421,6 @@ export const forgetDevice = (payload: TrezorDevice): SuiteAction => ({
 export const createDeviceInstance =
     (device: TrezorDevice, useEmptyPassphrase = false) =>
     async (dispatch: Dispatch, getState: GetState) => {
-        const devices = selectDevices(getState());
         if (!device.features) return;
         if (!device.features.passphrase_protection) {
             const response = await TrezorConnect.applySettings({
@@ -439,6 +438,7 @@ export const createDeviceInstance =
             dispatch(notificationsActions.addToast({ type: 'settings-applied' }));
         }
 
+        const devices = selectDevices(getState());
         dispatch({
             type: SUITE.CREATE_DEVICE_INSTANCE,
             payload: {
@@ -611,7 +611,6 @@ export const authorizeDevice =
     () =>
     async (dispatch: Dispatch, getState: GetState): Promise<boolean> => {
         const device = selectDeviceSelector(getState());
-        const devices = selectDevices(getState());
         if (!device) return false;
         const isDeviceReady =
             device.connected &&
@@ -638,6 +637,7 @@ export const authorizeDevice =
         if (response.success) {
             const { state } = response.payload;
             const s = state.split(':')[0];
+            const devices = selectDevices(getState());
             const duplicate = devices?.find(
                 d => d.state && d.state.split(':')[0] === s && d.instance !== device.instance,
             );

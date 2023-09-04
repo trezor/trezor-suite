@@ -1,4 +1,7 @@
 import { useState } from 'react';
+
+import { getFirmwareVersion } from '@trezor/device-utils';
+
 import { OnboardingButtonBack, OnboardingStepBox } from 'src/components/onboarding';
 import { Translation } from 'src/components/suite';
 import {

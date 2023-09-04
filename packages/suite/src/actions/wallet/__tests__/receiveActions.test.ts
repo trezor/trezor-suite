@@ -117,7 +117,7 @@ export const getInitialState = (state: Partial<InitialState> | undefined) => ({
     },
     device: {
         ...deviceReducer(undefined, { type: 'foo' } as any),
-        device: getSuiteDevice({ available: true, connected: true }),
+        selectedDevice: getSuiteDevice({ available: true, connected: true }),
         ...state?.device,
     },
 });

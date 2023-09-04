@@ -27,7 +27,7 @@ export const getInitialState = (custom?: any): any => ({
         locks: [],
     },
     device: {
-        device: {
+        selectedDevice: {
             features: {
                 major_version: 2,
                 internal_model: DeviceModelInternal.T2T1,

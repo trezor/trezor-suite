@@ -5,7 +5,7 @@ import path from 'path';
 
 import { configureStore } from 'src/support/tests/configureStore';
 import metadataReducer from 'src/reducers/suite/metadataReducer';
-import suiteReducer, { SuiteState } from 'src/reducers/suite/suiteReducer';
+import { SuiteState } from 'src/reducers/suite/suiteReducer';
 import deviceReducer from 'src/reducers/suite/deviceReducer';
 import DropboxProvider from 'src/services/suite/metadata/DropboxProvider';
 import suiteMiddleware from 'src/middlewares/suite/suiteMiddleware';
@@ -69,7 +69,7 @@ export const getInitialState = (state?: InitialState) => {
 
     return {
         metadata: metadataReducer(metadata, initAction),
-        device: { devices: device ? [device] : [], device }, // device is needed for notification/event
+        device: { devices: device ? [device] : [], selectedDevice: device }, // device is needed for notification/event
         suite: {
             ...suite,
             settings: {
@@ -109,10 +109,8 @@ const initStore = (state: State) => {
                     action.payload.decision.resolve(true);
             }
         }
-        const { metadata, suite, device, wallet } = store.getState();
+        const { metadata, device, wallet } = store.getState();
         store.getState().metadata = metadataReducer(metadata, action);
-        // @ts-expect-error
-        store.getState().suite = suiteReducer(suite, action);
         store.getState().wallet.accounts = accountsReducer(wallet.accounts, action);
         store.getState().device = deviceReducer(device, action) as any;
     });

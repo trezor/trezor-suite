@@ -18,7 +18,7 @@ export type ContextValues = {
     floatQuotes: AppState['wallet']['coinmarket']['exchange']['floatQuotes'];
     dexQuotes: AppState['wallet']['coinmarket']['exchange']['dexQuotes'];
     quotesRequest: AppState['wallet']['coinmarket']['exchange']['quotesRequest'];
-    device: AppState['device']['device'];
+    device: AppState['device']['selectedDevice'];
     selectedQuote?: ExchangeTrade;
     setSelectedQuote: (quote?: ExchangeTrade) => void;
     suiteReceiveAccounts?: AppState['wallet']['accounts'];

@@ -70,7 +70,7 @@ const device = testMocks.getSuiteDevice({
 });
 
 const rootReducer = combineReducers({
-    device: createReducer({ devices: [device], device }, () => {}),
+    device: createReducer({ devices: [device], selectedDevice: device }, () => {}),
     wallet: combineReducers({
         selectedAccount: createReducer(
             {
@@ -95,7 +95,7 @@ const rootReducer = combineReducers({
 });
 
 interface StateOverrides {
-    device?: Pick<DeviceState, 'device'>;
+    device?: Pick<DeviceState, 'selectedDevice'>;
     networkType?: string;
 }
 

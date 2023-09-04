@@ -188,7 +188,7 @@ describe('firmware middleware', () => {
                     firmwareHash: '345',
                 },
                 {
-                    device: getSuiteDevice(),
+                    selectedDevice: getSuiteDevice(),
                 },
             ),
         );

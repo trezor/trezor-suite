@@ -12,7 +12,7 @@ export const VERIFY_BUY_ADDRESS_FIXTURES = [
         description: 'verifyAddress, bitcoin account',
         initialState: {
             device: {
-                device: AVAILABLE_DEVICE,
+                selectedDevice: AVAILABLE_DEVICE,
             },
         },
         params: {
@@ -35,7 +35,7 @@ export const VERIFY_BUY_ADDRESS_FIXTURES = [
         description: 'verifyAddress, ethereum account',
         initialState: {
             device: {
-                device: AVAILABLE_DEVICE,
+                selectedDevice: AVAILABLE_DEVICE,
             },
         },
         params: {
@@ -58,7 +58,7 @@ export const VERIFY_BUY_ADDRESS_FIXTURES = [
         description: 'verifyAddress, ripple account',
         initialState: {
             device: {
-                device: AVAILABLE_DEVICE,
+                selectedDevice: AVAILABLE_DEVICE,
             },
         },
         params: {
@@ -81,7 +81,7 @@ export const VERIFY_BUY_ADDRESS_FIXTURES = [
         description: 'verifyAddress, ripple account, unavailable device',
         initialState: {
             device: {
-                device: UNAVAILABLE_DEVICE,
+                selectedDevice: UNAVAILABLE_DEVICE,
             },
         },
         params: {
@@ -111,7 +111,7 @@ export const VERIFY_EXCHANGE_ADDRESS_FIXTURES = [
         description: 'verifyAddress, bitcoin account, in exchange',
         initialState: {
             device: {
-                device: AVAILABLE_DEVICE,
+                selectedDevice: AVAILABLE_DEVICE,
             },
         },
         params: {

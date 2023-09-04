@@ -12,7 +12,6 @@ export const getInitialState = (state?: ProtocolState) => ({
         ...protocolReducer(undefined, { type: 'foo' } as any),
         ...state,
     },
-    suite: {},
     device: {
         device: undefined,
     },

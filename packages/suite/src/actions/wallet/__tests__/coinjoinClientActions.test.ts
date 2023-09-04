@@ -39,14 +39,13 @@ const rootReducer = combineReducers({
     suite: createReducer(
         {
             locks: [],
-            device: fixtures.DEVICE,
             settings: {
                 debug: {},
             },
         },
         () => ({}),
     ),
-    device: createReducer({ devices: [fixtures.DEVICE] }, () => ({})),
+    device: createReducer({ devices: [fixtures.DEVICE], device: fixtures.DEVICE }, () => ({})),
     modal: modalReducer,
     messageSystem: messageSystemReducer,
     wallet: combineReducers({
@@ -62,7 +61,7 @@ type Wallet = Partial<State['wallet']> & {
     suite?: State['suite'];
 };
 
-const initStore = ({ accounts, coinjoin, devices, selectedAccount, suite }: Wallet = {}) => {
+const initStore = ({ accounts, coinjoin, device, selectedAccount, suite }: Wallet = {}) => {
     // State != suite AppState, therefore <any>
     const store = configureMockStore<any>({
         reducer: rootReducer,
@@ -70,7 +69,10 @@ const initStore = ({ accounts, coinjoin, devices, selectedAccount, suite }: Wall
             rootReducer,
             partialState: {
                 suite,
-                device,
+                device: {
+                    device: device?.device,
+                    devices: device?.devices,
+                },
                 wallet: {
                     accounts,
                     coinjoin,
@@ -411,7 +413,9 @@ describe('coinjoinClientActions', () => {
 
     it('stopCoinjoinSession but not cancel authorization', async () => {
         const store = initStore({
-            devices: [fixtures.DEVICE, { ...fixtures.DEVICE, state: 'device-state-2' }],
+            device: {
+                devices: [fixtures.DEVICE, { ...fixtures.DEVICE, state: 'device-state-2' }],
+            },
             accounts: [
                 {
                     key: 'account-A',

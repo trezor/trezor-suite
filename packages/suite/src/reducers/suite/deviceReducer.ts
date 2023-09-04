@@ -12,14 +12,14 @@ import * as deviceUtils from 'src/utils/suite/device';
 import type { TrezorDevice, AcquiredDevice, Action, ButtonRequest } from 'src/types/suite';
 import { getStatus } from 'src/utils/suite/device';
 
-export type State = { devices: TrezorDevice[]; device?: TrezorDevice };
+export type State = { devices: TrezorDevice[]; selectedDevice?: TrezorDevice };
 
-const initialState: State = { devices: [], device: undefined };
+const initialState: State = { devices: [], selectedDevice: undefined };
 
 export type DeviceRootState = {
     device: {
         devices: TrezorDevice[];
-        device?: TrezorDevice;
+        selectedDevice?: TrezorDevice;
     };
 };
 
@@ -462,14 +462,14 @@ const deviceReducer = (state: State = initialState, action: Action): State =>
                 break;
             case SUITE.SELECT_DEVICE:
                 updateTimestamp(draft, action.payload);
-                draft.device = action.payload;
+                draft.selectedDevice = action.payload;
                 break;
             case SUITE.UPDATE_SELECTED_DEVICE:
-                draft.device = action.payload;
+                draft.selectedDevice = action.payload;
                 break;
             case SUITE.REQUEST_DEVICE_RECONNECT:
-                if (draft.device) {
-                    draft.device.reconnectRequested = true;
+                if (draft.selectedDevice) {
+                    draft.selectedDevice.reconnectRequested = true;
                 }
                 break;
 
@@ -485,10 +485,10 @@ export const selectDevicesCount = (state: DeviceRootState) => state.device?.devi
 export const selectIsPendingTransportEvent = (state: DeviceRootState) =>
     state.device.devices.length < 1;
 
-export const selectDevice = (state: DeviceRootState) => state.device.device;
+export const selectDevice = (state: DeviceRootState) => state.device.selectedDevice;
 
 export const selectDeviceUnavailableCapabilities = (state: DeviceRootState) =>
-    state.device.device?.unavailableCapabilities;
+    state.device.selectedDevice?.unavailableCapabilities;
 
 export const selectDeviceState = (state: DeviceRootState) => {
     const device = selectDevice(state);
@@ -496,7 +496,7 @@ export const selectDeviceState = (state: DeviceRootState) => {
 };
 
 export const selectDiscoveryForDevice = (state: DiscoveryRootState & { device: State }) =>
-    selectDiscoveryByDeviceState(state, state.device.device?.state);
+    selectDiscoveryByDeviceState(state, state.device.selectedDevice?.state);
 
 /**
  * Helper selector called from components

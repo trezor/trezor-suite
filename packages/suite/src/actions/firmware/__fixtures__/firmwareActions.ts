@@ -34,7 +34,7 @@ export const actions = [
         initialState: {
             device: {
                 devices: [bootloaderDevice],
-                device: bootloaderDevice,
+                selectedDevice: bootloaderDevice,
             },
             suite: {},
         },
@@ -60,7 +60,7 @@ export const actions = [
         initialState: {
             device: {
                 devices: [bootloaderDevice],
-                device: bootloaderDevice,
+                selectedDevice: bootloaderDevice,
             },
             suite: {},
         },
@@ -86,7 +86,7 @@ export const actions = [
         },
         initialState: {
             device: {
-                device: bootloaderDeviceNeedsIntermediary,
+                selectedDevice: bootloaderDeviceNeedsIntermediary,
                 devices: [bootloaderDeviceNeedsIntermediary],
             },
             suite: {},
@@ -112,7 +112,7 @@ export const actions = [
         },
         initialState: {
             device: {
-                device: getSuiteDevice({
+                selectedDevice: getSuiteDevice({
                     connected: true,
                     mode: 'bootloader',
                     features: getDeviceFeatures({
@@ -153,7 +153,7 @@ export const actions = [
         },
         initialState: {
             device: {
-                device: getSuiteDevice({
+                selectedDevice: getSuiteDevice({
                     connected: true,
                     mode: 'bootloader',
                     features: getDeviceFeatures({
@@ -189,7 +189,7 @@ export const actions = [
         action: () => firmwareUpdate(),
         initialState: {
             device: {
-                device: undefined,
+                selectedDevice: undefined,
             },
             suite: {},
         },
@@ -202,7 +202,7 @@ export const actions = [
         action: () => firmwareUpdate(),
         initialState: {
             device: {
-                device: getSuiteDevice({ connected: true, mode: 'normal' }),
+                selectedDevice: getSuiteDevice({ connected: true, mode: 'normal' }),
                 devices: [getSuiteDevice({ connected: true, mode: 'normal' })],
             },
             suite: {},
@@ -218,7 +218,7 @@ export const actions = [
         action: () => firmwareUpdate(),
         initialState: {
             device: {
-                device: bootloaderDevice,
+                selectedDevice: bootloaderDevice,
                 devices: [bootloaderDevice],
             },
             suite: {},
@@ -243,7 +243,7 @@ export const actions = [
         action: () => firmwareUpdate(),
         initialState: {
             device: {
-                device: bootloaderDevice,
+                selectedDevice: bootloaderDevice,
                 devices: [bootloaderDevice],
             },
             suite: {},

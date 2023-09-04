@@ -409,7 +409,9 @@ export const getOwnershipProof = [
             },
         ],
         state: {
-            devices: [DEVICE, { ...DEVICE, state: 'device-state-2' }],
+            device: {
+                devices: [DEVICE, { ...DEVICE, state: 'device-state-2' }],
+            },
             accounts: [
                 { key: 'account-A', deviceState: 'device-state', utxo: [] },
                 { key: 'account-B', deviceState: 'device-state-2', utxo: [] },
@@ -743,7 +745,9 @@ export const signCoinjoinTx = [
             },
         ],
         state: {
-            devices: [DEVICE],
+            device: {
+                devices: [DEVICE],
+            },
             accounts: [
                 {
                     key: 'account-A',
@@ -836,11 +840,13 @@ export const signCoinjoinTx = [
             },
         ],
         state: {
-            devices: [
-                DEVICE,
-                { ...DEVICE, state: 'device-state-2' },
-                { ...DEVICE, state: 'device-2-state', id: '2', connected: false },
-            ],
+            device: {
+                devices: [
+                    DEVICE,
+                    { ...DEVICE, state: 'device-state-2' },
+                    { ...DEVICE, state: 'device-2-state', id: '2', connected: false },
+                ],
+            },
             accounts: [
                 {
                     key: 'account-A',

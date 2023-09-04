@@ -50,17 +50,17 @@ export const extraDependencies: ExtraDependencies = {
         selectFeeInfo: (networkSymbol: NetworkSymbol) => (state: AppState) =>
             state.wallet.fees[networkSymbol],
         selectDevices: (state: AppState) => state.device.devices,
-        selectCurrentDevice: (state: AppState) => state.device.device,
+        selectCurrentDevice: (state: AppState) => state.device.selectedDevice,
         selectBitcoinAmountUnit: (state: AppState) => state.wallet.settings.bitcoinAmountUnit,
         selectEnabledNetworks: (state: AppState) => state.wallet.settings.enabledNetworks,
         selectLocalCurrency: (state: AppState) => state.wallet.settings.localCurrency,
         selectIsPendingTransportEvent,
         selectDebugSettings: (state: AppState) => state.suite.settings.debug,
         selectDesktopBinDir: (state: AppState) => state.desktop?.paths?.binDir,
-        selectDevice: (state: AppState) => state.device.device,
+        selectDevice: (state: AppState) => state.device.selectedDevice,
         selectMetadata: (state: AppState) => state.metadata,
         selectDiscoveryForDevice: (state: DiscoveryRootState & DeviceRootState) =>
-            selectDiscoveryByDeviceState(state, state.device.device?.state),
+            selectDiscoveryByDeviceState(state, state.device.selectedDevice?.state),
         selectRouterApp: (state: AppState) => state.router.app,
     },
     actions: {

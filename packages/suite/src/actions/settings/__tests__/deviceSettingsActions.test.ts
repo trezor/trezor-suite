@@ -63,7 +63,7 @@ export const getInitialState = (state: Partial<State> = {}) => ({
     },
     device: {
         devices: state.device?.devices ?? [DEVICE],
-        device: DEVICE,
+        selectedDevice: DEVICE,
     },
     router: {},
 });

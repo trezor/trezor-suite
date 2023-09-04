@@ -78,7 +78,7 @@ export const getInitialState = (override?: InitialState): any => {
         },
         firmware: firmwareReducer(undefined, { type: 'foo' } as any),
         device: {
-            device: {
+            selectedDevice: {
                 connected: true,
                 type: 'acquired',
                 features: {

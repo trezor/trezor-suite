@@ -66,7 +66,7 @@ export const getInitialState = () => ({
     },
     device: {
         devices: [device],
-        ...{ device },
+        selectedDevice: device,
     },
 });
 

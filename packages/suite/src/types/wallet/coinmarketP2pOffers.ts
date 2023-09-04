@@ -14,7 +14,7 @@ export enum P2pStep {
 }
 
 export type ContextValues = {
-    device: AppState['device']['device'];
+    device: AppState['device']['selectedDevice'];
     account: Account;
     providers?: { [name: string]: P2pProviderInfo };
     timer: Timer;
