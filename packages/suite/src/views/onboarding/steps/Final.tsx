@@ -224,7 +224,7 @@ export const FinalStep = () => {
                                                         </GalleryWrapper>
                                                     ),
                                                     noPadding: true,
-                                                    noHover: true, // no hover effect
+                                                    noHoverEffect: true, // no hover effect
                                                     callback: () => false, // don't close Dropdown on mouse click automatically
                                                 },
                                             ],

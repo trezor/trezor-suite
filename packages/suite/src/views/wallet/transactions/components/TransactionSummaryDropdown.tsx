@@ -12,7 +12,7 @@ export const TransactionSummaryDropdown = () => (
                 options: [
                     {
                         key: 'graphView',
-                        noHover: true,
+                        noHoverEffect: true,
                         label: <GraphScaleDropdownItem />,
                         callback: () => false,
                     },
