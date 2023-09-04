@@ -99,4 +99,11 @@ export const Dropdown: StoryObj<DropdownProps> = {
             },
         ],
     },
+    argTypes: {
+        masterLink: { control: { disable: true } },
+        items: { control: { disable: true } },
+        content: { control: { disable: true } },
+        className: { control: { disable: true } },
+        coords: { control: { disable: true } },
+    },
 };
