@@ -159,7 +159,7 @@ export const RangeSelector = ({ onSelectedRange, className, align }: RangeSelect
                         options: [
                             {
                                 noPadding: true,
-                                noHover: true,
+                                noHoverEffect: true,
                                 key: 'timerange',
                                 label: (
                                     <Timerange
