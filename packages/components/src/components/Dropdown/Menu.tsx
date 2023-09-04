@@ -71,7 +71,7 @@ const GroupLabel = styled.li`
 
 type MenuItemsProps = Pick<
     DropdownMenuItemProps,
-    'noPadding' | 'isDisabled' | 'noHoverEffect' | 'separatorBefore'
+    'isDisabled' | 'noHoverEffect' | 'separatorBefore'
 >;
 
 const MenuItemContainer = styled.li<MenuItemsProps>`
@@ -80,7 +80,7 @@ const MenuItemContainer = styled.li<MenuItemsProps>`
     align-items: center;
     justify-content: space-between;
     gap: ${spacingsPx.sm};
-    padding: ${({ noPadding }) => (!noPadding ? `${spacingsPx.xs} ${spacingsPx.sm}` : 0)};
+    padding: ${spacingsPx.xs} ${spacingsPx.sm};
     border-radius: ${borders.radii.xs};
     color: ${({ isDisabled, theme }) => (!isDisabled ? theme.textDefault : theme.textDisabled)};
     white-space: nowrap;
@@ -112,12 +112,6 @@ const MenuItemContainer = styled.li<MenuItemsProps>`
             }
         `}
 `;
-
-export interface GroupedMenuItems {
-    key: string;
-    options: DropdownMenuItemProps[];
-    label?: React.ReactNode;
-}
 
 interface MasterLinkProps {
     label: React.ReactNode;
@@ -152,7 +146,6 @@ interface DropdownMenuItemProps {
     iconRight?: IconProps['icon'];
     isDisabled?: boolean;
     isHidden?: boolean;
-    noPadding?: boolean;
     noHoverEffect?: boolean;
     separatorBefore?: boolean;
     'data-test'?: string;
@@ -194,10 +187,31 @@ const MenuItem = ({
     );
 };
 
+export interface GroupedMenuItems {
+    key: string;
+    options: DropdownMenuItemProps[];
+    label?: React.ReactNode;
+}
+
+const Group = ({
+    label,
+    options,
+    setToggled,
+}: GroupedMenuItems & { setToggled: (toggled: boolean) => void }) => (
+    <>
+        {label && <GroupLabel>{label}</GroupLabel>}
+
+        {options.map(item => (
+            <MenuItem setToggled={setToggled} {...item} />
+        ))}
+    </>
+);
+
 export type MenuAlignment = 'left' | 'right' | 'top-left' | 'top-right';
 
 export interface MenuProps {
-    items: GroupedMenuItems[];
+    items?: GroupedMenuItems[];
+    content?: React.ReactNode;
     alignMenu?: MenuAlignment;
     coords?: Coords;
     masterLink?: Omit<MasterLinkProps, 'setToggled'>;
@@ -205,8 +219,8 @@ export interface MenuProps {
 }
 
 export const Menu = forwardRef<HTMLUListElement, MenuProps>(
-    ({ items, setToggled, alignMenu, coords, masterLink }, ref) => {
-        const visibleItems = items.map(group => ({
+    ({ items, content, setToggled, alignMenu, coords, masterLink }, ref) => {
+        const visibleItems = items?.map(group => ({
             ...group,
             options: group.options.filter(item => !item.isHidden),
         }));
@@ -215,15 +229,10 @@ export const Menu = forwardRef<HTMLUListElement, MenuProps>(
             <Container ref={ref} alignMenu={alignMenu} coords={coords}>
                 {masterLink && <MasterLink setToggled={setToggled} {...masterLink} />}
 
-                {visibleItems.map(group => (
-                    <React.Fragment key={group.key}>
-                        {group.label && <GroupLabel>{group.label}</GroupLabel>}
+                {content && content}
 
-                        {group.options.map(item => (
-                            <MenuItem setToggled={setToggled} {...item} />
-                        ))}
-                    </React.Fragment>
-                ))}
+                {visibleItems &&
+                    visibleItems.map(group => <Group setToggled={setToggled} {...group} />)}
             </Container>
         );
     },
