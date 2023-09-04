@@ -313,7 +313,6 @@ export const AppNavigation = ({ items, primaryContent, maxWidth, inView }: AppNa
                                 <AppNavigationTooltip>
                                     <StyledDropdown
                                         alignMenu="right"
-                                        offset={8}
                                         isDisabled={isAccountLoading}
                                         items={[
                                             {
@@ -360,7 +359,6 @@ export const AppNavigation = ({ items, primaryContent, maxWidth, inView }: AppNa
                                     <AppNavigationTooltip>
                                         <StyledDropdown
                                             alignMenu="right"
-                                            offset={5}
                                             isDisabled={isAccountLoading}
                                             data-test="@wallet/menu/extra-dropdown"
                                             items={[
