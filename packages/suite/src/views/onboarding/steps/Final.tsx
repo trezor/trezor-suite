@@ -207,28 +207,15 @@ export const FinalStep = () => {
                                     ref={dropdownRef}
                                     alignMenu="right"
                                     isDisabled={!shouldOfferChangeHomescreen || isWaitingForConfirm}
-                                    items={[
-                                        {
-                                            key: 'dropdown',
-                                            options: [
-                                                {
-                                                    key: 'gallery',
-                                                    label: (
-                                                        <GalleryWrapper>
-                                                            <HomescreenGallery
-                                                                onConfirm={() => {
-                                                                    dropdownRef.current?.close();
-                                                                }}
-                                                            />
-                                                        </GalleryWrapper>
-                                                    ),
-                                                    noPadding: true,
-                                                    noHoverEffect: true, // no hover effect
-                                                    callback: () => false, // don't close Dropdown on mouse click automatically
-                                                },
-                                            ],
-                                        },
-                                    ]}
+                                    content={
+                                        <GalleryWrapper>
+                                            <HomescreenGallery
+                                                onConfirm={() => {
+                                                    dropdownRef.current?.close();
+                                                }}
+                                            />
+                                        </GalleryWrapper>
+                                    }
                                 >
                                     <StyledButton onClick={() => setState(null)}>
                                         <StyledIcon size={16} icon="DASHBOARD" />
