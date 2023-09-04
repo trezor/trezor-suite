@@ -152,8 +152,6 @@ export const RangeSelector = ({ onSelectedRange, className, align }: RangeSelect
             ))}
             <Dropdown
                 ref={dropdownRef}
-                topPadding={0}
-                bottomPadding={0}
                 alignMenu={align}
                 items={[
                     {
