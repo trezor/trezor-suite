@@ -8,12 +8,7 @@ const Wrapper = styled.div`
 `;
 
 const StyledCard = styled(Card)`
-    display: flex;
-    flex-direction: column;
     align-items: center;
-    padding: 10px;
-    flex: 1;
-    transition: background-color 0.7s ease-out;
 `;
 
 const Header = styled.div`
@@ -92,8 +87,6 @@ const Line = styled.div`
     height: 1px;
     margin: 10px 0;
     background: ${({ theme }) => theme.STROKE_GREY};
-
-    /* border-top: 1px solid ${({ theme }) => theme.STROKE_GREY}; */
 `;
 
 export interface SecurityCardProps extends CardProps {
@@ -130,7 +123,7 @@ export const SecurityCard = ({
                     )}
                 </Circle>
             </Header>
-            <StyledCard noPadding>
+            <StyledCard>
                 <Title>{heading}</Title>
                 <Description>{description}</Description>
                 <Footer>
