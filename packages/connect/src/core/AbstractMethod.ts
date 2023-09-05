@@ -1,4 +1,5 @@
 import { storage } from '@trezor/connect-common';
+import { Deferred } from '@trezor/utils';
 import { DataManager } from '../data/DataManager';
 import { ERRORS, NETWORK } from '../constants';
 import {
@@ -9,11 +10,9 @@ import {
     CallMethodPayload,
     CallMethodResponse,
     UiRequestButtonData,
-    UiPromise,
-    UiPromiseResponse,
+    UiPromiseCreator,
     PostMessage,
 } from '../events';
-import { Deferred } from '../utils/deferred';
 import { versionCompare } from '../utils/versionUtils';
 import { getHost } from '../utils/urlUtils';
 import type { Device } from '../device/Device';
@@ -90,10 +89,7 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
     // @ts-expect-error: strictPropertyInitialization
     getPopupPromise: () => Deferred<void>;
     // @ts-expect-error: strictPropertyInitialization
-    createUiPromise: <T extends UiPromiseResponse['type']>(
-        promiseId: T,
-        device?: Device,
-    ) => UiPromise<T>;
+    createUiPromise: UiPromiseCreator;
     // @ts-expect-error: strictPropertyInitialization
     removeUiPromise: (promise: Deferred<any>) => void;
 
