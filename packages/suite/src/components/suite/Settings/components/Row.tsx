@@ -1,25 +1,19 @@
-import { HTMLAttributes } from 'react';
+import { ReactNode } from 'react';
 import styled from 'styled-components';
 
-const Content = styled.div`
+const Container = styled.div`
     display: flex;
     flex: 1;
-    justify-content: space-between;
-    padding: 16px 0px;
-`;
+    padding-bottom: 16px;
 
-const Wrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-    &:not(:first-child) {
+    :not(:first-child) {
+        padding-top: 16px;
         border-top: 1px solid ${({ theme }) => theme.STROKE_GREY};
     }
 `;
 
-type RowProps = HTMLAttributes<HTMLDivElement>;
+interface RowProps {
+    children: ReactNode;
+}
 
-export const Row = ({ children, ...rest }: RowProps) => (
-    <Wrapper>
-        <Content {...rest}>{children}</Content>
-    </Wrapper>
-);
+export const Row = ({ children }: RowProps) => <Container>{children}</Container>;
