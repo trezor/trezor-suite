@@ -14,7 +14,6 @@ import { HELP_CENTER_BIP32_URL, HELP_CENTER_XPUB_URL } from '@trezor/urls';
 import { showXpub } from 'src/actions/wallet/publicKeyActions';
 import { WalletLayout } from 'src/components/wallet';
 import { NETWORKS } from 'src/config/wallet';
-import { CARD_PADDING_SIZE } from 'src/constants/suite/layout';
 import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 import { CoinjoinLogs } from './CoinjoinLogs';
 import { CoinjoinSetup } from './CoinjoinSetup/CoinjoinSetup';
@@ -48,14 +47,12 @@ const AccountTypeLabel = styled.div`
 
 const StyledCard = styled(Card)`
     flex-direction: column;
-    padding-top: ${CARD_PADDING_SIZE};
-    padding-bottom: ${CARD_PADDING_SIZE};
 
-    :first-child {
+    > :first-child {
         padding-top: 0;
     }
 
-    :last-child {
+    > :last-child {
         padding-bottom: 0;
     }
 `;
@@ -109,7 +106,7 @@ const Details = () => {
                     </>
                 )}
 
-                <StyledCard largePadding>
+                <StyledCard withLargePadding>
                     <Row>
                         <TextColumn
                             title={<Translation id="TR_ACCOUNT_DETAILS_TYPE_HEADER" />}

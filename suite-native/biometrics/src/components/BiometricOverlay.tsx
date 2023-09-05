@@ -32,7 +32,7 @@ export const BiometricOverlay = ({ isDisplayed }: BiometricsOverlayProps) => {
     return (
         <Box style={applyStyle(overlayWrapperStyle, { isDisplayed })}>
             <BlurredScreenOverlay isDimmed={false} blurValue={15} />
-            <Icon name="trezor" customSize={70} color="iconDefault" />
+            <Icon name="trezor" size={70} color="iconDefault" />
         </Box>
     );
 };
