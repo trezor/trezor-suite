@@ -4,7 +4,6 @@ import {
     OnboardingStepBox,
     OnboardingStepBoxProps,
 } from 'src/components/onboarding';
-import { Translation } from 'src/components/suite';
 import { goToPreviousStep } from 'src/actions/onboarding/onboardingActions';
 import { setStatus } from 'src/actions/recovery/recoveryActions';
 import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
@@ -54,9 +53,7 @@ const RecoveryStepBox = (props: OnboardingStepBoxProps) => {
                     <OnboardingButtonBack
                         onClick={() => handleBack()}
                         data-test="@onboarding/recovery/back-button"
-                    >
-                        <Translation id="TR_BACK" />
-                    </OnboardingButtonBack>
+                    />
                 ) : undefined
             }
             {...props}

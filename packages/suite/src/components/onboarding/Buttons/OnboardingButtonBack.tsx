@@ -1,6 +1,7 @@
 import { Button, ButtonProps } from '@trezor/components';
+import { Translation } from 'src/components/suite';
 
-const ButtonBack = (props: ButtonProps) => (
+export const OnboardingButtonBack = (props: ButtonProps) => (
     <Button
         data-test="@onboarding/back-button"
         variant="tertiary"
@@ -8,8 +9,6 @@ const ButtonBack = (props: ButtonProps) => (
         {...props}
         style={{ backgroundColor: 'initial' }}
     >
-        {props.children}
+        <Translation id="TR_BACK" />
     </Button>
 );
-
-export default ButtonBack;

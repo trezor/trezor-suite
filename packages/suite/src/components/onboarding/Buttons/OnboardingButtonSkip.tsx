@@ -10,10 +10,8 @@ const StyledSpan = styled.span`
     font-size: ${variables.FONT_SIZE.SMALL};
 `;
 
-const ButtonSkip = (props: HtmlHTMLAttributes<HTMLSpanElement>) => (
+export const OnboardingButtonSkip = (props: HtmlHTMLAttributes<HTMLSpanElement>) => (
     <StyledSpan data-test="@onboarding/skip-button" {...props}>
         {props.children}
     </StyledSpan>
 );
-
-export default ButtonSkip;

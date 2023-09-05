@@ -28,7 +28,7 @@ interface SkipStepConfirmationProps {
     onCancel: () => void;
 }
 
-const SkipStepConfirmation = ({ onCancel }: SkipStepConfirmationProps) => {
+export const SkipStepConfirmation = ({ onCancel }: SkipStepConfirmationProps) => {
     const { activeStepId, goToNextStep } = useOnboarding();
 
     let text;
@@ -72,5 +72,3 @@ const SkipStepConfirmation = ({ onCancel }: SkipStepConfirmationProps) => {
         </StyledModal>
     );
 };
-
-export default SkipStepConfirmation;

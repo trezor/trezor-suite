@@ -2,9 +2,8 @@ import { useState } from 'react';
 import * as STEP from 'src/constants/onboarding/steps';
 import {
     OnboardingButtonBack,
-    Option,
+    OnboardingOption,
     OptionsWrapper,
-    OptionWrapper,
     OptionsDivider,
     OnboardingStepBox,
 } from 'src/components/onboarding';
@@ -78,41 +77,35 @@ export const ResetDeviceStep = () => {
             outerActions={
                 !isWaitingForConfirmation ? (
                     // There is no point to show back button if user can't click it because confirmOnDevice bubble is active
-                    <OnboardingButtonBack onClick={() => goToPreviousStep()}>
-                        <Translation id="TR_BACK" />
-                    </OnboardingButtonBack>
+                    <OnboardingButtonBack onClick={() => goToPreviousStep()} />
                 ) : undefined
             }
         >
             {!isWaitingForConfirmation ? (
                 // Show options to chose from only if we are not waiting for confirmation on the device (because that means user has already chosen )
                 <OptionsWrapper fullWidth={false}>
-                    <OptionWrapper>
-                        <Option
-                            icon="SEED_SINGLE"
-                            data-test={
-                                isShamirBackupAvailable
-                                    ? '@onboarding/button-standard-backup'
-                                    : '@onboarding/only-backup-option-button'
-                            }
-                            onClick={handleSingleseedReset}
-                            heading={<Translation id="SINGLE_SEED" />}
-                            description={<Translation id="SINGLE_SEED_DESCRIPTION" />}
-                        />
-                    </OptionWrapper>
+                    <OnboardingOption
+                        icon="SEED_SINGLE"
+                        data-test={
+                            isShamirBackupAvailable
+                                ? '@onboarding/button-standard-backup'
+                                : '@onboarding/only-backup-option-button'
+                        }
+                        onClick={handleSingleseedReset}
+                        heading={<Translation id="SINGLE_SEED" />}
+                        description={<Translation id="SINGLE_SEED_DESCRIPTION" />}
+                    />
 
                     {isShamirBackupAvailable && (
                         <>
                             <OptionsDivider />
-                            <OptionWrapper>
-                                <Option
-                                    icon="SEED_SHAMIR"
-                                    data-test="@onboarding/shamir-backup-option-button"
-                                    onClick={handleShamirReset}
-                                    heading={<Translation id="SHAMIR_SEED" />}
-                                    description={<Translation id="SHAMIR_SEED_DESCRIPTION" />}
-                                />
-                            </OptionWrapper>
+                            <OnboardingOption
+                                icon="SEED_SHAMIR"
+                                data-test="@onboarding/shamir-backup-option-button"
+                                onClick={handleShamirReset}
+                                heading={<Translation id="SHAMIR_SEED" />}
+                                description={<Translation id="SHAMIR_SEED_DESCRIPTION" />}
+                            />
                         </>
                     )}
                 </OptionsWrapper>

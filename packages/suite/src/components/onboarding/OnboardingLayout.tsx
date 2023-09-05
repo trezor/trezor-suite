@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { TrezorLogo, Button, variables } from '@trezor/components';
 import { TREZOR_SUPPORT_URL } from '@trezor/urls';
 import { TrezorLink, Translation } from 'src/components/suite';
-import { ProgressBar } from 'src/components/onboarding';
+import { OnboardingProgressBar } from 'src/components/onboarding';
 import { useSelector, useOnboarding } from 'src/hooks/suite';
 import { MAX_WIDTH } from 'src/constants/suite/layout';
 import steps from 'src/config/onboarding/steps';
@@ -164,7 +164,7 @@ export const OnboardingLayout = ({ children }: OnboardingLayoutProps) => {
                                 </LogoHeaderRow>
 
                                 <ProgressBarRow>
-                                    <ProgressBar
+                                    <OnboardingProgressBar
                                         steps={progressBarSteps}
                                         activeStep={activeStep.stepGroup}
                                     />
