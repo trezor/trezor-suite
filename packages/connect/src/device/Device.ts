@@ -125,6 +125,8 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
     name = 'Trezor';
 
+    color?: string;
+
     constructor(transport: Transport, descriptor: Descriptor) {
         super();
 
@@ -552,6 +554,16 @@ export class Device extends TypedEmitter<DeviceEvents> {
         const deviceInfo = models[feat.internal_model];
 
         this.name = deviceInfo.name;
+
+        if (feat?.unit_color) {
+            const deviceUnitColor = feat.unit_color.toString();
+
+            if (deviceUnitColor in deviceInfo.colors) {
+                this.color = (deviceInfo.colors as Record<string, string>)[
+                    deviceUnitColor
+                ].toLowerCase();
+            }
+        }
     }
 
     isUnacquired() {
@@ -712,6 +724,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
             status,
             mode: this.getMode(),
             name: this.name,
+            color: this.color,
             firmware: this.firmwareStatus,
             firmwareRelease: this.firmwareRelease,
             firmwareType: this.firmwareType,
