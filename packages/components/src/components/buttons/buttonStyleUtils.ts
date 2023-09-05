@@ -52,49 +52,49 @@ export const getIconSize = (size: ButtonSize) => {
     }
 };
 
-export const getVariantStyle = (variant: ButtonVariant, theme: DefaultTheme) => {
+export const getVariantStyle = (variant: ButtonVariant) => {
     switch (variant) {
         case 'primary':
             return css`
-                background: ${theme.backgroundPrimaryDefault};
-                color: ${theme.textOnPrimary};
+                background: ${({ theme }) => theme.backgroundPrimaryDefault};
+                color: ${({ theme }) => theme.textOnPrimary};
 
                 :hover,
                 :active {
                     /* we use this color only for this case  */
-                    background: ${theme.backgroundPrimaryPressed};
+                    background: ${({ theme }) => theme.backgroundPrimaryPressed};
                 }
             `;
 
         case 'secondary':
             return css`
-                background: ${theme.backgroundSecondaryDefault};
-                color: ${theme.textOnSecondary};
+                background: ${({ theme }) => theme.backgroundSecondaryDefault};
+                color: ${({ theme }) => theme.textOnSecondary};
 
                 :hover,
                 :active {
                     /* we use this color only for this case  */
-                    background: ${theme.backgroundSecondaryPressed};
+                    background: ${({ theme }) => theme.backgroundSecondaryPressed};
                 }
             `;
         case 'tertiary':
             return css`
-                background: ${theme.backgroundTertiaryDefaultOnElevation0};
-                color: ${theme.textOnTertiary};
+                background: ${({ theme }) => theme.backgroundTertiaryDefaultOnElevation0};
+                color: ${({ theme }) => theme.textOnTertiary};
 
                 :hover,
                 :active {
-                    background: ${theme.backgroundTertiaryPressedOnElevation0};
+                    background: ${({ theme }) => theme.backgroundTertiaryPressedOnElevation0};
                 }
             `;
         case 'destructive':
             return css`
-                background: ${theme.backgroundAlertRedSubtleOnElevation0};
-                color: ${theme.textAlertRed};
+                background: ${({ theme }) => theme.backgroundAlertRedSubtleOnElevation0};
+                color: ${({ theme }) => theme.textAlertRed};
 
                 :hover,
                 :active {
-                    background: ${theme.backgroundAlertRedSubtleOnElevation1};
+                    background: ${({ theme }) => theme.backgroundAlertRedSubtleOnElevation1};
                 }
             `;
 
