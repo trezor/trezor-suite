@@ -32,6 +32,7 @@ export type KnownDevice = {
     firmware: DeviceFirmwareStatus;
     firmwareRelease?: ReleaseInfo | null;
     firmwareType?: FirmwareType;
+    name: string;
     status: DeviceStatus;
     mode: DeviceMode;
     state?: string;
@@ -49,6 +50,7 @@ export type UnknownDevice = {
     firmware?: typeof undefined;
     firmwareRelease?: typeof undefined;
     firmwareType?: typeof undefined;
+    name: string;
     status?: typeof undefined;
     mode?: typeof undefined;
     state?: typeof undefined;
@@ -65,6 +67,7 @@ export type UnreadableDevice = {
     firmware?: typeof undefined;
     firmwareRelease?: typeof undefined;
     firmwareType?: typeof undefined;
+    name: string;
     status?: typeof undefined;
     mode?: typeof undefined;
     state?: typeof undefined;
