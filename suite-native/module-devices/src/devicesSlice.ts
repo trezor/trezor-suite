@@ -16,6 +16,7 @@ export const hiddenDevice: TrezorDevice = {
     label: 'Hidden device with imported accounts',
     path: '1',
     firmware: 'valid',
+    name: 'Trezor Model T',
     features: {
         vendor: 'trezor.io',
         major_version: 2,

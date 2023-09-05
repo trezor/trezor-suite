@@ -4,11 +4,7 @@ import { Tooltip } from '@trezor/components';
 import { Coin, Translation } from 'src/components/suite';
 import { useDevice, useSelector } from 'src/hooks/suite';
 import type { Network } from 'src/types/wallet';
-import {
-    getDeviceDisplayName,
-    getFirmwareVersion,
-    isDeviceInBootloaderMode,
-} from '@trezor/device-utils';
+import { getFirmwareVersion, isDeviceInBootloaderMode } from '@trezor/device-utils';
 import { selectSupportedNetworks } from 'src/reducers/suite/suiteReducer';
 import { versionUtils } from '@trezor/utils';
 import { getCoinUnavailabilityMessage } from 'src/utils/suite/device';
@@ -49,7 +45,7 @@ export const CoinsList = ({
     const isBootloaderMode = isDeviceInBootloaderMode(device);
     const firmwareVersion = getFirmwareVersion(device);
 
-    const deviceDisplayName = getDeviceDisplayName(device?.features?.internal_model);
+    const deviceDisplayName = device?.name;
 
     return (
         <Wrapper>
