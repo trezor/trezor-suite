@@ -1,9 +1,9 @@
 import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
 import { analytics, EventType } from '@trezor/suite-analytics';
+import { Card, Textarea, Button, Icon, Tooltip, variables } from '@trezor/components';
 
-import { Card, Translation } from 'src/components/suite';
-import { Textarea, Button, Icon, Tooltip, variables } from '@trezor/components';
+import { Translation } from 'src/components/suite';
 import { useDispatch, useTranslation } from 'src/hooks/suite';
 import { pushRawTransaction, sendRaw } from 'src/actions/wallet/sendFormActions';
 import { getInputState, isHexValid } from '@suite-common/wallet-utils';
