@@ -1,21 +1,6 @@
 import { ReactNode } from 'react';
 import styled from 'styled-components';
 import { variables, Card } from '@trezor/components';
-import { CARD_PADDING_SIZE, CARD_PADDING_SIZE_LARGE } from 'src/constants/suite/layout';
-
-const getPaddingSize = (
-    largePadding?: boolean,
-    noPadding?: boolean,
-    noVerticalPadding?: boolean,
-) => {
-    if (noPadding) return '0px';
-    if (noVerticalPadding) {
-        if (largePadding) return `0px ${CARD_PADDING_SIZE_LARGE}`;
-        return `0px ${CARD_PADDING_SIZE}`;
-    }
-    if (largePadding) return CARD_PADDING_SIZE_LARGE;
-    return CARD_PADDING_SIZE;
-};
 
 const Wrapper = styled.div`
     display: flex;
@@ -48,18 +33,15 @@ export interface CardWithHeaderProps {
     customHeader?: ReactNode;
     title?: string | ReactNode;
     description?: string | ReactNode;
-    largePadding?: boolean;
+    withLargePadding?: boolean;
     noPadding?: boolean;
-    noVerticalPadding?: boolean;
 }
 
+// LEGACY COMPONENT – DO NOT USE, use Card from the component package instead
 export const CardWithHeader = ({
     children,
     title,
     description,
-    largePadding,
-    noPadding,
-    noVerticalPadding,
     customHeader,
     ...rest
 }: CardWithHeaderProps) => (
@@ -71,11 +53,6 @@ export const CardWithHeader = ({
             </Header>
         )}
         {customHeader}
-        <Content
-            customPadding={getPaddingSize(largePadding, noPadding, noVerticalPadding)}
-            {...rest}
-        >
-            {children}
-        </Content>
+        <Content {...rest}>{children}</Content>
     </Wrapper>
 );
