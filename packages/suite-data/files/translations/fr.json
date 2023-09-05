@@ -703,7 +703,6 @@
   "TR_LTC_ADDRESS_INFO": "Litecoin a changé le format des adresses. Trouvez plus d'informations sur la façon de convertir votre adresse sur notre blog. {TR_LEARN_MORE}",
   "TR_MAKE_SURE_NO_ONE_CAN_PEEK": "Assurez-vous que personne ne peut jeter un coup d'œil au-dessus de votre épaule ou qu'aucune caméra ne regarde votre écran. Personne ne devrait jamais voir votre graine de récuperation.",
   "TR_MANAGE": "gérer",
-  "TR_MAX_LABEL_LENGTH_IS": "La longueur maximale de l'étiquette est de {length} caractères",
   "TR_MESSAGE": "Message",
   "TR_MINED_TIME": "Temps miné",
   "TR_MY_ACCOUNTS": "Mes comptes",

@@ -19,7 +19,7 @@
   "COPY_TRANSACTION_TO_CLIPBOARD": "Скопіювати RAW транзакцію",
   "CUSTOM_FEE_IS_NOT_INTEGER": "Введіть ціле число",
   "CUSTOM_FEE_IS_NOT_SET": "Введіть бажану комісію",
-  "CUSTOM_FEE_LIMIT_BELOW_RECOMMENDED": "Занадто малий ліміт газу {button}",
+  "CUSTOM_FEE_LIMIT_BELOW_RECOMMENDED": "Занадто малий ліміт газу",
   "CUSTOM_FEE_LIMIT_USE_RECOMMENDED": "Використовувати рекомендований",
   "CUSTOM_FEE_NOT_IN_RANGE": "Введіть комісію між {minFee} та {maxFee}",
   "DATA_ETH": "Дані",
