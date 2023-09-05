@@ -2,8 +2,7 @@ import { Translation } from 'src/components/suite';
 import { useOnboarding } from 'src/hooks/suite';
 import * as STEP from 'src/constants/onboarding/steps';
 import {
-    Option,
-    OptionWrapper,
+    OnboardingOption,
     OptionsWrapper,
     OptionsDivider,
     OnboardingStepBox,
@@ -18,31 +17,27 @@ const CreateOrRecoverStep = () => {
             heading={<Translation id="TR_WELCOME_TO_TREZOR_TEXT_WALLET_CREATION" />}
         >
             <OptionsWrapper>
-                <OptionWrapper>
-                    <Option
-                        icon="NEW"
-                        data-test="@onboarding/path-create-button"
-                        onClick={() => {
-                            addPath(STEP.PATH_CREATE);
-                            goToNextStep();
-                            updateAnalytics({ seed: 'create' });
-                        }}
-                        heading={<Translation id="TR_CREATE_WALLET" />}
-                    />
-                </OptionWrapper>
+                <OnboardingOption
+                    icon="NEW"
+                    data-test="@onboarding/path-create-button"
+                    onClick={() => {
+                        addPath(STEP.PATH_CREATE);
+                        goToNextStep();
+                        updateAnalytics({ seed: 'create' });
+                    }}
+                    heading={<Translation id="TR_CREATE_WALLET" />}
+                />
                 <OptionsDivider />
-                <OptionWrapper>
-                    <Option
-                        icon="RECOVER"
-                        data-test="@onboarding/path-recovery-button"
-                        onClick={() => {
-                            addPath(STEP.PATH_RECOVERY);
-                            goToNextStep();
-                            updateAnalytics({ seed: 'recovery' });
-                        }}
-                        heading={<Translation id="TR_RESTORE_EXISTING_WALLET" />}
-                    />
-                </OptionWrapper>
+                <OnboardingOption
+                    icon="RECOVER"
+                    data-test="@onboarding/path-recovery-button"
+                    onClick={() => {
+                        addPath(STEP.PATH_RECOVERY);
+                        goToNextStep();
+                        updateAnalytics({ seed: 'recovery' });
+                    }}
+                    heading={<Translation id="TR_RESTORE_EXISTING_WALLET" />}
+                />
             </OptionsWrapper>
         </OnboardingStepBox>
     );

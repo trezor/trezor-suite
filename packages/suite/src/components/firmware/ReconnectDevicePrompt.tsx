@@ -6,7 +6,7 @@ import { pickByDeviceModel, getFirmwareVersion } from '@trezor/device-utils';
 import { H1, Button, ConfirmOnDevice, variables } from '@trezor/components';
 import { Modal, Translation, WebUsbButton } from 'src/components/suite';
 import { DeviceConfirmImage } from 'src/components/suite/images/DeviceConfirmImage';
-import { DeviceAnimation } from 'src/components/onboarding/DeviceAnimation';
+import { DeviceAnimation } from 'src/components/onboarding';
 import { useDevice, useFirmware } from 'src/hooks/suite';
 import {
     useRebootRequest,

@@ -1,4 +1,5 @@
-import { OnboardingButtonAlt, OnboardingStepBox } from 'src/components/onboarding';
+import { Button } from '@trezor/components';
+import { OnboardingStepBox } from 'src/components/onboarding';
 import { Translation } from 'src/components/suite';
 import { useOnboarding } from 'src/hooks/suite';
 
@@ -16,15 +17,16 @@ const IsSameDevice = () => {
                 </>
             }
             innerActions={
-                <OnboardingButtonAlt
+                <Button
                     onClick={() => {
                         resetOnboarding();
                         enableOnboardingReducer(true);
                     }}
+                    variant="secondary"
                     data-test="@onboarding/unexpected-state/is-same/start-over-button"
                 >
                     <Translation id="TR_START_AGAIN" />
-                </OnboardingButtonAlt>
+                </Button>
             }
         />
     );

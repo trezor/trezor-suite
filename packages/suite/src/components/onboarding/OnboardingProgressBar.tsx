@@ -89,7 +89,7 @@ const ConfettiIcon = styled(Icon)`
     margin-left: 1px;
 `;
 
-interface ProgressBarProps {
+interface OnboardingProgressBarProps {
     steps: {
         key: string;
         label?: ReactNode;
@@ -98,7 +98,11 @@ interface ProgressBarProps {
     className?: string;
 }
 
-export const ProgressBar = ({ steps, activeStep, className }: ProgressBarProps) => {
+export const OnboardingProgressBar = ({
+    steps,
+    activeStep,
+    className,
+}: OnboardingProgressBarProps) => {
     const theme = useTheme();
     return (
         <ProgressBarWrapper className={className}>

@@ -5,6 +5,6 @@ const StyledButton = styled(Button)`
     min-width: 180px;
 `;
 
-const ButtonCta = (props: ButtonProps) => <StyledButton {...props}>{props.children}</StyledButton>;
-
-export default ButtonCta;
+export const OnboardingButtonCta = (props: ButtonProps) => (
+    <StyledButton {...props}>{props.children}</StyledButton>
+);

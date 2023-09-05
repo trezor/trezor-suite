@@ -55,22 +55,22 @@ export const OptionsWrapper = styled.div<{ fullWidth?: boolean }>`
         `}
 `;
 
-export const OptionWrapper = styled.div`
-    display: flex;
-    width: 100%;
-`;
-
 export const OptionsDivider = styled.div`
     flex: 0 0 24px;
 `;
 
-interface OptionProps extends HTMLAttributes<HTMLDivElement> {
+interface OnboardingOptionProps extends React.HTMLAttributes<HTMLDivElement> {
     heading: ReactNode;
     description?: ReactNode;
     icon?: IconProps['icon'];
 }
 
-export const Option = ({ icon, heading, description, ...rest }: OptionProps) => (
+export const OnboardingOption = ({
+    icon,
+    heading,
+    description,
+    ...rest
+}: OnboardingOptionProps) => (
     <Wrapper {...rest}>
         {icon && (
             <IconWrapper>
