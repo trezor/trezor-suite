@@ -19,9 +19,7 @@ export const AddressLabeling = ({ address, knownOnly }: AddressLabelingProps) =>
     const relevantAccounts = findAccountsByAddress(address, accounts);
 
     if (relevantAccounts.length < 1) {
-        return !knownOnly ? (
-            <IOAddress txAddress={address} showCopyIcon={false} isWalletAddress />
-        ) : null;
+        return !knownOnly ? <IOAddress txAddress={address} isWalletAddress /> : null;
     }
 
     return <AccountLabeling account={relevantAccounts[0]} />;

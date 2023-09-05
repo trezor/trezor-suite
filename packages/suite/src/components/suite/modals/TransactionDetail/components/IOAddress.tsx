@@ -17,9 +17,9 @@ const IconWrapper = styled.div`
     }
 `;
 
-const onHoverTextOverflowContainerHover = css`
+const onHoverTextOverflowContainerHover = css<{ isWalletAddress: boolean }>`
     border-radius: 2px;
-    background-color: ${({ theme }) => theme.BG_GREY};
+    background-color: ${({ theme, isWalletAddress }) => !isWalletAddress && theme.BG_GREY};
     outline: 4px solid ${({ theme }) => theme.BG_GREY};
     z-index: 3;
 
@@ -34,17 +34,18 @@ const TextOverflowContainer = styled.div<{ isWalletAddress: boolean }>`
     max-width: ${({ isWalletAddress }) => (isWalletAddress ? '40ch' : '100%')};
     overflow: hidden;
     color: ${({ theme }) => theme.TYPE_DARK_GREY};
-    cursor: ${({ isWalletAddress }) => (isWalletAddress ? 'text' : 'cursor')};
+    cursor: pointer;
     user-select: none;
-    color: ${({ isWalletAddress }) => (isWalletAddress ? '#959596' : '#eaebed')};
+    color: ${({ isWalletAddress, theme }) =>
+        isWalletAddress ? theme.TYPE_LIGHT_GREY : theme.TYPE_DARK_GREY};
 
     @media (hover: none) {
-        ${({ isWalletAddress }) => !isWalletAddress && onHoverTextOverflowContainerHover}
+        ${onHoverTextOverflowContainerHover}
     }
 
     :hover,
     :focus {
-        ${({ isWalletAddress }) => !isWalletAddress && onHoverTextOverflowContainerHover}
+        ${onHoverTextOverflowContainerHover}
     }
 
     ${({ isWalletAddress }) =>
@@ -70,16 +71,10 @@ const SpanTextEnd = styled.span`
 interface IOAddressProps {
     explorerUrl?: string;
     txAddress?: string;
-    showCopyIcon?: boolean;
     isWalletAddress?: boolean;
 }
 
-export const IOAddress = ({
-    txAddress,
-    explorerUrl,
-    showCopyIcon = true,
-    isWalletAddress = false,
-}: IOAddressProps) => {
+export const IOAddress = ({ txAddress, explorerUrl, isWalletAddress = false }: IOAddressProps) => {
     const [isClicked, setIsClicked] = useState(false);
     const theme = useTheme();
 
@@ -109,15 +104,9 @@ export const IOAddress = ({
                         <SpanTextEnd onClick={copy}>{txAddress.slice(-4)}</SpanTextEnd>
                     </>
                 )}
-                {showCopyIcon && (
-                    <IconWrapper onClick={copy}>
-                        <Icon
-                            icon={isClicked ? 'CHECK' : 'COPY'}
-                            size={12}
-                            color={theme.BG_WHITE}
-                        />
-                    </IconWrapper>
-                )}
+                <IconWrapper onClick={copy}>
+                    <Icon icon={isClicked ? 'CHECK' : 'COPY'} size={12} color={theme.BG_WHITE} />
+                </IconWrapper>
                 {explorerUrl ? (
                     <IconWrapper>
                         <Link size="tiny" variant="nostyle" href={`${explorerUrl}${txAddress}`}>

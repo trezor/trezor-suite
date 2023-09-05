@@ -42,7 +42,6 @@ export const TargetAddressLabel = ({ target, type, accountMetadata }: TargetAddr
                         // eslint-disable-next-line react/no-array-index-key
                         key={i}
                         txAddress={accountMetadata?.addressLabels[a] || a}
-                        showCopyIcon={false}
                         isWalletAddress
                     />
                 ),
