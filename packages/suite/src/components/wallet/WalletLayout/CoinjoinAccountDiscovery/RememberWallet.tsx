@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
-import { Card, Translation } from 'src/components/suite';
-import { Image, Note, Switch, variables } from '@trezor/components';
+import { Card, Image, Note, Switch, variables } from '@trezor/components';
+import { Translation } from 'src/components/suite';
 
 const Container = styled(Card)`
     align-items: center;
