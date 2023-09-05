@@ -2,6 +2,7 @@
 import EventEmitter from 'events';
 
 import { TRANSPORT, TRANSPORT_ERROR } from '@trezor/transport';
+import { createDeferred, Deferred } from '@trezor/utils';
 
 import { DataManager } from '../data/DataManager';
 import { DeviceList } from '../device/DeviceList';
@@ -24,11 +25,11 @@ import {
     TransportInfo,
     CoreMessage,
     UiPromise,
+    AnyUiPromise,
+    UiPromiseCreator,
     UiPromiseResponse,
 } from '../events';
 import { getMethod } from './method';
-
-import { create as createDeferred, Deferred } from '../utils/deferred';
 import { resolveAfter } from '../utils/promiseUtils';
 import { initLog, enableLog } from '../utils/debug';
 import { dispose as disposeBackend } from '../backend/BlockchainLink';
@@ -43,7 +44,7 @@ type AbstractMethod = ReturnType<typeof getMethod>;
 let _core: Core; // Class with event emitter
 let _deviceList: DeviceList | undefined; // Instance of DeviceList
 let _popupPromise: Deferred<void> | undefined; // Waiting for popup handshake
-let _uiPromises: UiPromise<UiPromiseResponse['type']>[] = []; // Waiting for ui response
+const _uiPromises: AnyUiPromise[] = []; // Waiting for ui response
 const _callMethods: AbstractMethod[] = []; // generic type is irrelevant. only common functions are called at this level
 let _preferredDevice: CommonParams['device'];
 let _interactionTimeout: InteractionTimeout;
@@ -103,9 +104,12 @@ const interactionTimeout = () =>
  * @returns {Deferred<UiPromise>}
  * @memberof Core
  */
-const createUiPromise = <T extends UiPromiseResponse['type']>(promiseEvent: T, device?: Device) => {
-    const uiPromise: UiPromise<T> = createDeferred(promiseEvent, device);
-    _uiPromises.push(uiPromise as any);
+const createUiPromise: UiPromiseCreator = (promiseEvent, device) => {
+    const uiPromise: UiPromise<typeof promiseEvent> = {
+        ...createDeferred(promiseEvent),
+        device,
+    };
+    _uiPromises.push(uiPromise as unknown as AnyUiPromise);
 
     // Interaction timeout
     interactionTimeout();
@@ -123,7 +127,7 @@ const findUiPromise = <T extends UiPromiseResponse['type']>(promiseEvent: T) =>
     _uiPromises.find(p => p.id === promiseEvent) as UiPromise<T> | undefined;
 
 const removeUiPromise = (promise: Deferred<any>) => {
-    _uiPromises = _uiPromises.filter(p => p !== promise);
+    _uiPromises.splice(0).push(..._uiPromises.filter(p => p !== promise));
 };
 
 /**
@@ -675,7 +679,7 @@ export const onCall = async (message: CoreMessage) => {
 const cleanup = () => {
     // closePopup(); // this causes problem when action is interrupted (example: bootloader mode)
     _popupPromise = undefined;
-    _uiPromises = []; // TODO: remove only promises with params callId
+    _uiPromises.splice(0);
     _interactionTimeout.stop();
     _log.debug('Cleanup...');
 };
@@ -832,7 +836,7 @@ const onPopupClosed = (customErrorMessage?: string) => {
             _uiPromises.forEach(p => {
                 p.reject(error);
             });
-            _uiPromises = [];
+            _uiPromises.splice(0);
         }
         if (_popupPromise) {
             _popupPromise.reject(error);
@@ -881,7 +885,7 @@ const handleDeviceSelectionChanges = (interruptDevice?: DeviceTyped) => {
         const { path } = interruptDevice;
         let shouldClosePopup = false;
         _uiPromises.forEach(p => {
-            if (p.data && p.data.getDevicePath() === path) {
+            if (p.device && p.device.getDevicePath() === path) {
                 if (p.id === DEVICE.DISCONNECT) {
                     p.resolve({ type: DEVICE.DISCONNECT });
                 }
