@@ -3,7 +3,6 @@ import { DeviceConfirmImage } from './DeviceConfirmImage';
 import { CheckItem } from './CheckItem';
 import { PrerequisitesGuide } from './PrerequisitesGuide/PrerequisitesGuide';
 import { WelcomeLayout } from './WelcomeLayout';
-import { CardWithHeader } from './CardWithHeader';
 import { NotificationCard } from './NotificationCard';
 import { WordInput } from './WordInput';
 import { WordInputAdvanced } from './WordInputAdvanced';
@@ -57,7 +56,6 @@ export {
     DeviceInvalidModeLayout,
     PrerequisitesGuide,
     WelcomeLayout,
-    CardWithHeader as Card,
     NotificationCard,
     FiatValue,
     Translation,

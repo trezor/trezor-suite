@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 import styled from 'styled-components';
+import { Card, Warning } from '@trezor/components';
 
-import { Card, Translation } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
 import { WalletLayout } from 'src/components/wallet';
 import { useSendForm, SendContext, UseSendFormProps } from 'src/hooks/wallet/useSendForm';
@@ -16,8 +16,8 @@ import {
     selectTargetAnonymityByAccountKey,
     selectRegisteredUtxosByAccountKey,
 } from 'src/reducers/wallet/coinjoinReducer';
-import { Warning } from '@trezor/components';
 import { selectCoinsLegacy } from '@suite-common/wallet-core';
+import { Translation } from 'src/components/suite';
 
 const StyledCard = styled(Card)`
     display: flex;

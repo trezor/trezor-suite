@@ -1,9 +1,9 @@
 import { useMemo } from 'react';
 import styled, { useTheme } from 'styled-components';
 
-import { H3, Icon, LottieAnimation, ProgressBar, variables } from '@trezor/components';
+import { Card, H3, Icon, LottieAnimation, ProgressBar, variables } from '@trezor/components';
 import { localizeNumber } from '@suite-common/wallet-utils';
-import { Card, Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite';
 import { useCoinjoinAccountLoadingProgress } from 'src/hooks/coinjoin';
 import { RotatingFacts } from './RotatingFacts';
 import { useSelector } from 'src/hooks/suite';
