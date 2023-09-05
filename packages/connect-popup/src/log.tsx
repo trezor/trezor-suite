@@ -2,18 +2,19 @@ import React, { useEffect, useState } from 'react';
 import styled, { ThemeProvider } from 'styled-components';
 import { createRoot } from 'react-dom/client';
 
-import { LogMessage } from '@trezor/connect/src/utils/debug';
-import { Button, P, THEME, variables } from '@trezor/components';
 import { ErrorBoundary } from '@trezor/connect-ui/src/support/ErrorBoundary';
 import { GlobalStyle } from '@trezor/connect-ui/src/support/GlobalStyle';
 import { InfoPanel } from '@trezor/connect-ui/src/components/InfoPanel';
 import { View } from '@trezor/connect-ui/src/components/View';
+import { Button, P, THEME, variables } from '@trezor/components';
+import { LogMessage } from '@trezor/connect/src/utils/debug';
 
 interface ReactWrapperProps {
     children: React.ReactNode;
 }
 
 const MAX_ENTRIES = 1000;
+const LOG_DEBOUNCE_TIME = 1000;
 
 const ThemeWrapper = ({ children }: ReactWrapperProps) => (
     <ThemeProvider theme={THEME.light}>{children}</ThemeProvider>
@@ -77,11 +78,24 @@ const DownloadButton = ({ array, filename }: { array: any[]; filename: string })
     );
 };
 
+let logDebounceCache: any[] = [];
+let logDebounceTimeout: ReturnType<typeof setTimeout> | undefined;
+
 const logInConsole = (logs: any[]) => {
-    logs.forEach(log => {
-        const { prefix, css, message } = log;
-        console.log(`%c${prefix}`, css, ...message);
-    });
+    // Logs in console are debounced in order to try to make sure that
+    // the logs are printed in the correct timestamp order.
+    logDebounceCache.push(...logs);
+    logDebounceCache.sort((a, b) => a.timestamp - b.timestamp);
+    if (logDebounceTimeout) {
+        clearTimeout(logDebounceTimeout);
+    }
+    logDebounceTimeout = setTimeout(() => {
+        logDebounceCache.forEach(log => {
+            const { prefix, css, message } = log;
+            console.log(`%c${prefix}`, css, ...message);
+        });
+        logDebounceCache = [];
+    }, LOG_DEBOUNCE_TIME);
 };
 
 const useLogWorker = (setLogs: React.Dispatch<React.SetStateAction<any[]>>) => {
