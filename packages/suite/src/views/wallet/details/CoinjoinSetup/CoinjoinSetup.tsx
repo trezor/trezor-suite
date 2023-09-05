@@ -15,6 +15,10 @@ const SetupContainer = styled.div`
     padding: 18px;
 `;
 
+const StyledCard = styled(Card)`
+    padding: 8px;
+`;
+
 const SetupOptions = styled.div`
     display: flex;
     flex-wrap: wrap;
@@ -54,7 +58,7 @@ export const CoinjoinSetup = ({ accountKey }: CoinjoinSetupProps) => {
     const setCustomSetup = () => handleSetupOptionChange(false);
 
     return (
-        <Card customPadding="8px">
+        <StyledCard>
             {hasSession && (
                 <Warning variant="info">
                     <Translation id="TR_DISABLED_ANONYMITY_CHANGE_MESSAGE" />
@@ -101,6 +105,6 @@ export const CoinjoinSetup = ({ accountKey }: CoinjoinSetupProps) => {
                     )}
                 </AnimatePresence>
             </SetupContainer>
-        </Card>
+        </StyledCard>
     );
 };
