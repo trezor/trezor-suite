@@ -1,8 +1,8 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/helpers/paramsValidator.js
+import { versionUtils } from '@trezor/utils';
 
 import { ERRORS } from '../../constants';
 import { fromHardened } from '../../utils/pathUtils';
-import { versionCompare } from '../../utils/versionUtils';
 import { config } from '../../data/config';
 import type { CoinInfo, FirmwareRange } from '../../types';
 
@@ -107,13 +107,13 @@ export const getFirmwareRange = (
     if (coinInfo) {
         if (!coinInfo.support || typeof coinInfo.support.trezor1 !== 'string') {
             current['1'].min = '0';
-        } else if (versionCompare(coinInfo.support.trezor1, current['1'].min) > 0) {
+        } else if (versionUtils.isNewer(coinInfo.support.trezor1, current['1'].min)) {
             current['1'].min = coinInfo.support.trezor1;
         }
 
         if (!coinInfo.support || typeof coinInfo.support.trezor2 !== 'string') {
             current['2'].min = '0';
-        } else if (versionCompare(coinInfo.support.trezor2, current['2'].min) > 0) {
+        } else if (versionUtils.isNewer(coinInfo.support.trezor2, current['2'].min)) {
             current['2'].min = coinInfo.support.trezor2;
         }
     }
@@ -164,14 +164,14 @@ export const getFirmwareRange = (
             if (
                 t1 === '0' ||
                 current['1'].min === '0' ||
-                versionCompare(current['1'].min, t1) < 0
+                !versionUtils.isNewerOrEqual(current['1'].min, t1)
             ) {
                 current['1'].min = t1;
             }
             if (
                 t2 === '0' ||
                 current['2'].min === '0' ||
-                versionCompare(current['2'].min, t2) < 0
+                !versionUtils.isNewerOrEqual(current['2'].min, t2)
             ) {
                 current['2'].min = t2;
             }
@@ -181,14 +181,14 @@ export const getFirmwareRange = (
             if (
                 t1 === '0' ||
                 current['1'].max === '0' ||
-                versionCompare(current['1'].max, t1) < 0
+                !versionUtils.isNewerOrEqual(current['1'].max, t1)
             ) {
                 current['1'].max = t1;
             }
             if (
                 t2 === '0' ||
                 current['2'].max === '0' ||
-                versionCompare(current['2'].max, t2) < 0
+                !versionUtils.isNewerOrEqual(current['2'].max, t2)
             ) {
                 current['2'].max = t2;
             }

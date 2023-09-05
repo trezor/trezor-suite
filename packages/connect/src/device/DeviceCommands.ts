@@ -2,6 +2,7 @@
 
 import { randomBytes } from 'crypto';
 import { Transport, Messages } from '@trezor/transport';
+import { versionUtils } from '@trezor/utils';
 import { ERRORS, NETWORK } from '../constants';
 import { DEVICE } from '../events';
 import * as hdnodeUtils from '../utils/hdnodeUtils';
@@ -14,7 +15,6 @@ import {
     toHardened,
 } from '../utils/pathUtils';
 import { getAccountAddressN } from '../utils/accountUtils';
-import { versionCompare } from '../utils/versionUtils';
 import { getSegwitNetwork, getBech32Network } from '../data/coinInfo';
 import { initLog } from '../utils/debug';
 
@@ -730,7 +730,7 @@ export class DeviceCommands {
          * user interactions in progress, so we have to do it manually.
          */
         const { name, version } = this.transport;
-        if (name === 'BridgeTransport' && versionCompare(version, '2.0.28') < 1) {
+        if (name === 'BridgeTransport' && !versionUtils.isNewer(version, '2.0.28')) {
             try {
                 await this.device.legacyForceRelease();
             } catch (err) {

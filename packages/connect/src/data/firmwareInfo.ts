@@ -15,7 +15,6 @@ import type {
     VersionArray,
     IntermediaryVersion,
 } from '../types';
-import { isVersionArray } from '../utils/versionUtils';
 
 const releases: { [key: number]: FirmwareRelease[] } = {};
 releases[1] = [];
@@ -156,13 +155,13 @@ const getSafeReleases = ({ features, releases }: GetInfoProps) => {
 
     const firmwareVersion = [major_version, minor_version, patch_version];
 
-    if (!isVersionArray(firmwareVersion)) {
+    if (!versionUtils.isVersionArray(firmwareVersion)) {
         return [];
     }
 
     if (major_version === 2 && bootloader_mode) {
         const fwVersion = [fw_major, fw_minor, fw_patch];
-        if (isVersionArray(fwVersion)) {
+        if (versionUtils.isVersionArray(fwVersion)) {
             // in bootloader, T2T1, T2B1 knows its firmware, so we still may filter "by firmware".
             return filterSafeListByFirmware(releases, fwVersion);
         }

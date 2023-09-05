@@ -1,7 +1,7 @@
 // original file https://github.com/trezor/connect/blob/develop/src/js/device/Device.js
 
 import { TypedEmitter } from '@trezor/utils/lib/typedEventEmitter';
-import { createDeferred, Deferred } from '@trezor/utils';
+import { createDeferred, Deferred, versionUtils } from '@trezor/utils';
 import { DeviceCommands } from './DeviceCommands';
 import { PROTO, ERRORS, NETWORK } from '../constants';
 import { DEVICE, DeviceButtonRequestPayload, UI } from '../events';
@@ -13,7 +13,6 @@ import {
     parseRevision,
     ensureInternalModelFeature,
 } from '../utils/deviceFeaturesUtils';
-import { versionCompare } from '../utils/versionUtils';
 import { initLog } from '../utils/debug';
 import type { Transport, Descriptor } from '@trezor/transport';
 import {
@@ -516,7 +515,10 @@ export class Device extends TypedEmitter<DeviceEvents> {
             this.features.capabilities &&
             this.features.capabilities.join('') !== capabilities.join('');
         // check if FW version or capabilities did change
-        if (versionCompare(version, this.getVersion()) !== 0 || capabilitiesDidChange) {
+        if (
+            !versionUtils.isEqual(version.join('.'), this.getVersion().join('.')) ||
+            capabilitiesDidChange
+        ) {
             this.unavailableCapabilities = getUnavailableCapabilities(feat, getAllNetworks());
             this.firmwareStatus = getFirmwareStatus(feat);
             this.firmwareRelease = getRelease(feat);
@@ -610,7 +612,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
         if (!this.features) return false;
         const modelVersion =
             typeof versions === 'string' ? versions : versions[this.features.major_version - 1];
-        return versionCompare(this.getVersion(), modelVersion) >= 0;
+        return versionUtils.isNewerOrEqual(this.getVersion().join('.'), modelVersion);
     }
 
     isUsed() {
