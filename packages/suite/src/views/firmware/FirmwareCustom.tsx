@@ -12,7 +12,7 @@ import { ConnectDevicePromptManager, OnboardingStepBox } from 'src/components/on
 import { useCachedDevice } from 'src/hooks/firmware/useCachedDevice';
 import {
     FirmwareInstallation,
-    CloseButton,
+    FirmwareCloseButton,
     CheckSeedStep,
     ReconnectDevicePrompt,
     SelectCustomFirmware,
@@ -99,9 +99,9 @@ export const FirmwareCustom = () => {
                                 />
                             }
                             innerActions={
-                                <CloseButton onClick={onClose}>
+                                <FirmwareCloseButton onClick={onClose}>
                                     <Translation id="TR_BACK" />
-                                </CloseButton>
+                                </FirmwareCloseButton>
                             }
                             nested
                         />

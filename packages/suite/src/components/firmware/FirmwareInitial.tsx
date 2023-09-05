@@ -14,7 +14,11 @@ import {
 } from 'src/components/onboarding';
 import { Translation } from 'src/components/suite';
 import { useDevice, useFirmware, useOnboarding, useSelector } from 'src/hooks/suite';
-import { ReconnectDevicePrompt, InstallButton, FirmwareOffer } from 'src/components/firmware';
+import {
+    ReconnectDevicePrompt,
+    FirmwareInstallButton,
+    FirmwareOffer,
+} from 'src/components/firmware';
 import { getFwUpdateVersion } from 'src/utils/suite/device';
 
 import { selectDevices } from '../../reducers/suite/deviceReducer';
@@ -180,7 +184,7 @@ export const FirmwareInitial = ({
             ) : undefined,
             innerActions: (
                 <ButtonRow>
-                    <InstallButton
+                    <FirmwareInstallButton
                         variant="secondary"
                         onClick={() => installFirmware(FirmwareType.Regular)}
                         multipleDevicesConnected={multipleDevicesConnected}
@@ -191,9 +195,9 @@ export const FirmwareInitial = ({
                                 regular: <Translation id="TR_FIRMWARE_TYPE_REGULAR" />,
                             }}
                         />
-                    </InstallButton>
+                    </FirmwareInstallButton>
 
-                    <InstallButton
+                    <FirmwareInstallButton
                         onClick={() => installFirmware(FirmwareType.BitcoinOnly)}
                         multipleDevicesConnected={multipleDevicesConnected}
                     >
@@ -203,7 +207,7 @@ export const FirmwareInitial = ({
                                 bitcoinOnly: <Translation id="TR_FIRMWARE_TYPE_BITCOIN_ONLY" />,
                             }}
                         />
-                    </InstallButton>
+                    </FirmwareInstallButton>
                 </ButtonRow>
             ),
         };
@@ -234,7 +238,7 @@ export const FirmwareInitial = ({
                 <FirmwareOffer device={cachedDevice} />
             ) : undefined,
             innerActions: (
-                <InstallButton
+                <FirmwareInstallButton
                     onClick={() => installFirmware(FirmwareType.Regular)}
                     multipleDevicesConnected={multipleDevicesConnected}
                 />
@@ -281,7 +285,7 @@ export const FirmwareInitial = ({
             ),
             body: <FirmwareOffer device={device} targetFirmwareType={targetFirmwareType} />,
             innerActions: (
-                <InstallButton
+                <FirmwareInstallButton
                     onClick={() => {
                         setStatus(standaloneFwUpdate ? 'check-seed' : 'waiting-for-bootloader');
                         updateAnalytics({ firmware: 'update' });

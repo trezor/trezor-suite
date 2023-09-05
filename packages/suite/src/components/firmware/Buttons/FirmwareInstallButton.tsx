@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+
 import { Button, ButtonProps, Tooltip } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 import { useTranslation } from 'src/hooks/suite';
@@ -7,30 +8,19 @@ const StyledButton = styled(Button)`
     min-width: 180px;
 `;
 
-export const RetryButton = (props: ButtonProps) => (
-    <Button {...props} data-test="@firmware/retry-button">
-        <Translation id="TR_RETRY" />
-    </Button>
-);
-
-export const ContinueButton = (props: ButtonProps) => (
-    <StyledButton {...props} data-test="@firmware/continue-button">
-        <Translation id="TR_CONTINUE" />
-    </StyledButton>
-);
-
 const InstallButtonCommon = (props: ButtonProps) => (
     <StyledButton {...props} data-test="@firmware/install-button">
         {props.children || <Translation id="TR_INSTALL" />}
     </StyledButton>
 );
 
-interface InstallButtonProps extends ButtonProps {
+interface FirmwareInstallButtonProps extends ButtonProps {
     multipleDevicesConnected?: boolean;
 }
 
-export const InstallButton = (props: InstallButtonProps) => {
+export const FirmwareInstallButton = (props: FirmwareInstallButtonProps) => {
     const { translationString } = useTranslation();
+
     if (props.multipleDevicesConnected) {
         return (
             <Tooltip
@@ -48,9 +38,3 @@ export const InstallButton = (props: InstallButtonProps) => {
 
     return <InstallButtonCommon {...props} />;
 };
-
-export const CloseButton = (props: ButtonProps) => (
-    <Button {...props}>
-        <Translation id="TR_CLOSE" />
-    </Button>
-);
