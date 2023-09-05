@@ -2,7 +2,6 @@ import React, { memo, useState, useEffect, useCallback } from 'react';
 import { getUnixTime } from 'date-fns';
 import styled from 'styled-components';
 
-import { CARD_PADDING_SIZE } from 'src/constants/suite/layout';
 import GraphWorker from 'src/support/workers/graph';
 import { getGraphDataForInterval, updateGraphData } from 'src/actions/wallet/graphActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -23,7 +22,7 @@ const Wrapper = styled.div`
 const GraphWrapper = styled(HiddenPlaceholder)`
     display: flex;
     flex: 1 1 auto;
-    padding: ${CARD_PADDING_SIZE} 0px;
+    padding: 16px 0px;
     height: 320px;
 `;
 
