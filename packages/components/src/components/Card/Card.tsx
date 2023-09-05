@@ -1,43 +1,40 @@
-import { forwardRef, ReactNode, HTMLAttributes } from 'react';
+import { forwardRef, ReactNode } from 'react';
 import styled from 'styled-components';
+import { borders, boxShadows, spacings } from '@trezor/theme';
 
-const Wrapper = styled.div<{ paddingSize: string }>`
+const Wrapper = styled.div<{ $elevation: Elevation; $paddingSize: number }>`
     display: flex;
     flex-direction: column;
-    border-radius: 12px;
-    padding: ${props => props.paddingSize};
-    background: ${({ theme }) => theme.BG_WHITE};
+    padding: ${({ $paddingSize }) => $paddingSize}px;
+    background: ${({ theme }) => theme.backgroundSurfaceElevation1};
+    border-radius: ${borders.radii.md};
+    box-shadow: ${({ $elevation }) => $elevation && boxShadows[`elevation${$elevation}`]};
 `;
 
-const getPaddingSize = (
-    largePadding?: boolean,
-    noPadding?: boolean,
-    noVerticalPadding?: boolean,
-) => {
-    if (noPadding) return '0px';
-    if (noVerticalPadding) {
-        if (largePadding) return `0px 26px`;
-        return `0px 20px`;
-    }
-    if (largePadding) return '26px';
-    return '20px';
+const getPaddingSize = (withLargePadding?: boolean, noPadding?: boolean) => {
+    if (noPadding) return 0;
+    if (withLargePadding) return spacings.lg;
+    return spacings.sm;
 };
 
-export interface CardProps extends HTMLAttributes<HTMLDivElement> {
-    children?: ReactNode;
-    largePadding?: boolean;
+type Elevation = 0 | 1 | 3;
+
+export interface CardProps {
+    elevation?: Elevation;
+    withLargePadding?: boolean;
     noPadding?: boolean;
-    noVerticalPadding?: boolean;
-    customPadding?: string;
+    onMouseEnter?: () => void;
+    onMouseLeave?: () => void;
+    children?: ReactNode;
+    className?: string;
 }
 
 export const Card = forwardRef<HTMLDivElement, CardProps>(
-    ({ children, largePadding, noPadding, noVerticalPadding, customPadding, ...rest }, ref) => (
+    ({ elevation = 1, withLargePadding, noPadding, children, ...rest }, ref) => (
         <Wrapper
             ref={ref}
-            paddingSize={
-                customPadding || getPaddingSize(largePadding, noPadding, noVerticalPadding)
-            }
+            $elevation={elevation}
+            $paddingSize={getPaddingSize(withLargePadding, noPadding)}
             {...rest}
         >
             {children}
