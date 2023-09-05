@@ -35,11 +35,11 @@ export const BiometricsBottomSheetIcons = ({
     return (
         <HStack spacing="extraSmall">
             <Box style={applyStyle(iconWrapperStyle)}>
-                <Icon name={primaryIcon} color="iconPrimaryDefault" customSize={ICON_SIZE} />
+                <Icon name={primaryIcon} color="iconPrimaryDefault" size={ICON_SIZE} />
             </Box>
             {isSecondaryIconDisplayed && (
                 <Box style={applyStyle(iconWrapperStyle)}>
-                    <Icon name="face" color="iconPrimaryDefault" customSize={ICON_SIZE} />
+                    <Icon name="face" color="iconPrimaryDefault" size={ICON_SIZE} />
                 </Box>
             )}
         </HStack>

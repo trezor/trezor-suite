@@ -7,7 +7,6 @@ import { variables, Button } from '@trezor/components';
 import { calcTicks, calcTicksFromData } from '@suite-common/suite-utils';
 import { selectDevice } from '@suite-common/wallet-core';
 
-import { CARD_PADDING_SIZE } from 'src/constants/suite/layout';
 import GraphWorker from 'src/support/workers/graph';
 import { getGraphDataForInterval, updateGraphData } from 'src/actions/wallet/graphActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -25,7 +24,7 @@ const Wrapper = styled.div`
 const GraphWrapper = styled(HiddenPlaceholder)`
     display: flex;
     flex: 1 1 auto;
-    padding: ${CARD_PADDING_SIZE} 0;
+    padding: 16px 0;
     height: 320px;
 `;
 
