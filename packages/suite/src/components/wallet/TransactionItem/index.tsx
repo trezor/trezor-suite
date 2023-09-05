@@ -1,5 +1,5 @@
 /* eslint-disable react/no-array-index-key */
-import React, { useState } from 'react';
+import { memo, Fragment, useState } from 'react';
 import styled, { css } from 'styled-components';
 import { AnimatePresence } from 'framer-motion';
 import { variables, Button, Card } from '@trezor/components';
@@ -88,7 +88,7 @@ interface TransactionItemProps {
     index: number;
 }
 
-const TransactionItem = React.memo(
+const TransactionItem = memo(
     ({
         transaction,
         accountKey,
@@ -202,7 +202,7 @@ const TransactionItem = React.memo(
                                 {!isUnknown && type !== 'failed' && previewTargets.length ? (
                                     <>
                                         {previewTargets.map((t, i) => (
-                                            <React.Fragment key={i}>
+                                            <Fragment key={i}>
                                                 {t.type === 'target' && (
                                                     <Target
                                                         // render first n targets, n = DEFAULT_LIMIT
@@ -246,14 +246,14 @@ const TransactionItem = React.memo(
                                                         }
                                                     />
                                                 )}
-                                            </React.Fragment>
+                                            </Fragment>
                                         ))}
                                         <AnimatePresence initial={false}>
                                             {limit > 0 &&
                                                 allOutputs
                                                     .slice(DEFAULT_LIMIT, DEFAULT_LIMIT + limit)
                                                     .map((t, i) => (
-                                                        <React.Fragment key={i}>
+                                                        <Fragment key={i}>
                                                             {t.type === 'target' && (
                                                                 <Target
                                                                     target={t.payload}
@@ -302,7 +302,7 @@ const TransactionItem = React.memo(
                                                                     }
                                                                 />
                                                             )}
-                                                        </React.Fragment>
+                                                        </Fragment>
                                                     ))}
                                         </AnimatePresence>
                                     </>

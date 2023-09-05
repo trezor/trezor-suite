@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, ReactNode } from 'react';
 
 import { analytics, AppUpdateEventStatus, EventType } from '@trezor/suite-analytics';
 import { desktopApi } from '@trezor/suite-desktop-api';
@@ -17,7 +17,7 @@ import { EarlyAccessEnable } from './DesktopUpdater/EarlyAccessEnable';
 import { EarlyAccessDisable } from './DesktopUpdater/EarlyAccessDisable';
 
 interface DesktopUpdaterProps {
-    children: React.ReactNode;
+    children: ReactNode;
 }
 
 export const DesktopUpdater = ({ children }: DesktopUpdaterProps) => {

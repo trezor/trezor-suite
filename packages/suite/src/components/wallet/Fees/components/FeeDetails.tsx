@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { FeeLevel } from '@trezor/connect';
 import { variables } from '@trezor/components';

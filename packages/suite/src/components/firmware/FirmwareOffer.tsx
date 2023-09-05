@@ -1,5 +1,3 @@
-import React from 'react';
-
 import styled from 'styled-components';
 
 import { Icon, Tooltip, variables } from '@trezor/components';

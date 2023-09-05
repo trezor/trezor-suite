@@ -1,4 +1,3 @@
-import React from 'react';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import { Dimensions } from 'react-native';
 

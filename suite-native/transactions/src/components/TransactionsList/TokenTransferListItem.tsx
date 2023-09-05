@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { AccountKey } from '@suite-common/wallet-types';
 import { EthereumTokenTransfer } from '@suite-native/ethereum-tokens';
 import {

@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import { ReactNode } from 'react';
 
 import { Screen } from '@suite-native/navigation';
 import { Box } from '@suite-native/atoms';

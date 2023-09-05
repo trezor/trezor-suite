@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import { useMemo, ReactNode } from 'react';
 import styled from 'styled-components';
 
 import { TrezorLogo, Button, variables } from '@trezor/components';
@@ -127,7 +127,7 @@ const progressBarSteps = [
 ];
 
 interface OnboardingLayoutProps {
-    children: React.ReactNode;
+    children: ReactNode;
 }
 
 export const OnboardingLayout = ({ children }: OnboardingLayoutProps) => {

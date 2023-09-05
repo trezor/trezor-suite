@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components';
 
 import * as STEP from 'src/constants/onboarding/steps';

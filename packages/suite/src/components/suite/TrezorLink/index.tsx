@@ -1,4 +1,3 @@
-import React from 'react';
 import { Link, LinkProps } from '@trezor/components';
 import { useExternalLink } from 'src/hooks/suite';
 

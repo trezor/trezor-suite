@@ -1,4 +1,3 @@
-import React from 'react';
 import { analytics, EventType } from '@trezor/suite-analytics';
 
 import { setOnionLinks } from 'src/actions/suite/suiteActions';

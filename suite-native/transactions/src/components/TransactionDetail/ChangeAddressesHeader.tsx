@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { Box, HStack, Text } from '@suite-native/atoms';
 import { Icon } from '@suite-common/icons';
 

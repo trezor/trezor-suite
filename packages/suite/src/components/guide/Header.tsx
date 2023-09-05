@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import { useContext } from 'react';
 import styled, { css } from 'styled-components';
 import { darken, transparentize } from 'polished';
 import { analytics, EventType } from '@trezor/suite-analytics';

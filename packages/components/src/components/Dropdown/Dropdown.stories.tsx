@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { Dropdown } from './Dropdown';
 import { storiesOf } from '@storybook/react';
 import { select, number, boolean } from '@storybook/addon-knobs';

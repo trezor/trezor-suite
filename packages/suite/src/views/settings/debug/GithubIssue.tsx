@@ -1,4 +1,3 @@
-import React from 'react';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from 'src/components/suite/Settings';
 import { useDevice, useSelector } from 'src/hooks/suite';
 import { openGithubIssue } from 'src/services/github';

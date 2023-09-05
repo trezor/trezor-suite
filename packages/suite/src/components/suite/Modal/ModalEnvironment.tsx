@@ -1,10 +1,10 @@
-import React from 'react';
+import { ReactNode } from 'react';
 import FocusLock from 'react-focus-lock';
 import { Backdrop } from '@trezor/components';
 
 type ModalEnvironmentProps = {
     onClickBackdrop?: () => void;
-    children: React.ReactNode;
+    children: ReactNode;
 };
 
 export const ModalEnvironment = ({ onClickBackdrop, children }: ModalEnvironmentProps) => (

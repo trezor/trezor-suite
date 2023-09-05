@@ -1,4 +1,4 @@
-import React from 'react';
+import { ImgHTMLAttributes } from 'react';
 import { ReactSVG } from 'react-svg';
 import styled from 'styled-components';
 import { LOGOS } from './trezorLogos';
@@ -18,7 +18,7 @@ const StyledReactSVG = styled(ReactSVG)`
     color: ${({ theme }) => theme.TYPE_DARK_GREY};
 `;
 
-export interface TrezorLogoProps extends React.ImgHTMLAttributes<HTMLImageElement> {
+export interface TrezorLogoProps extends ImgHTMLAttributes<HTMLImageElement> {
     type: TrezorLogoType;
     width?: string | number;
     height?: string | number;

@@ -9,7 +9,6 @@ import {
     SystemInfo,
     createUiResponse,
 } from '@trezor/connect';
-import React from 'react';
 import { createRoot } from 'react-dom/client';
 
 import { ConnectUI } from '@trezor/connect-ui';

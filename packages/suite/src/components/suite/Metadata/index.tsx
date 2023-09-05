@@ -1,4 +1,3 @@
-import React from 'react';
 import { SUITE_URL } from '@trezor/urls';
 import Helmet from 'react-helmet';
 import { useIntl } from 'react-intl';

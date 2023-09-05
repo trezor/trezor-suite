@@ -1,6 +1,5 @@
 // TODO: remove whole file, replaced by @suite-components/PrerequisitesGuide/components/DeviceAcquire
 
-import React from 'react';
 import { useDevice, useDispatch } from 'src/hooks/suite';
 import { acquireDevice } from 'src/actions/suite/suiteActions';
 import { Button } from '@trezor/components';

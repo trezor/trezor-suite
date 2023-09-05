@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useDispatch, useDevice } from 'src/hooks/suite';
 
 import { toggleRememberDevice } from 'src/actions/suite/suiteActions';

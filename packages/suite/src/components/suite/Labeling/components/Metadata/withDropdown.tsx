@@ -1,4 +1,4 @@
-import React from 'react';
+import { FC } from 'react';
 import styled from 'styled-components';
 
 import { Dropdown } from '@trezor/components';
@@ -24,7 +24,7 @@ type Props = RequiredKey<ExtendedProps, 'dropdownOptions'>;
 /**
  * Returns component wrapped into Dropdown.
  */
-export const withDropdown = (WrappedComponent: React.FC<Props>) => (props: Props) =>
+export const withDropdown = (WrappedComponent: FC<Props>) => (props: Props) =>
     (
         <StyledDropdown
             isDisabled={props.editActive}

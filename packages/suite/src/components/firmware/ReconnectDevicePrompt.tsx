@@ -1,4 +1,4 @@
-import React from 'react';
+import { ReactNode } from 'react';
 import styled, { css } from 'styled-components';
 import * as semver from 'semver';
 import { pickByDeviceModel, getFirmwareVersion } from '@trezor/device-utils';
@@ -183,7 +183,7 @@ const ReconnectLabel = ({
 interface ReconnectStepProps {
     order?: number;
     active: boolean;
-    children: React.ReactNode;
+    children: ReactNode;
     dataTest: string;
 }
 

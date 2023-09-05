@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState, ReactNode, Dispatch, SetStateAction } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import styled from 'styled-components';
 import { Icon, P, useTheme, variables } from '@trezor/components';
@@ -83,7 +83,7 @@ const HeaderWrapper = styled.div`
 `;
 
 interface Props {
-    children: React.ReactNode;
+    children: ReactNode;
 }
 
 const PlusIconWrapper = ({ children }: Props) => (
@@ -94,15 +94,9 @@ const StyledIcon = styled(Icon)`
     padding-right: 15px;
 `;
 
-const Label = styled(
-    ({ isExpanded, ...rest }: { isExpanded: boolean; children: React.ReactNode }) => (
-        <P
-            size={isExpanded ? 'small' : 'normal'}
-            weight={isExpanded ? 'bold' : 'normal'}
-            {...rest}
-        />
-    ),
-)`
+const Label = styled(({ isExpanded, ...rest }: { isExpanded: boolean; children: ReactNode }) => (
+    <P size={isExpanded ? 'small' : 'normal'} weight={isExpanded ? 'bold' : 'normal'} {...rest} />
+))`
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     color: ${({ theme }) => theme.TYPE_DARK_GREY};
     transition: all ${animationDuration}s ease-in-out;
@@ -113,7 +107,7 @@ const Header = ({
     setExpanded,
 }: {
     isExpanded: boolean;
-    setExpanded: React.Dispatch<React.SetStateAction<boolean>>;
+    setExpanded: Dispatch<SetStateAction<boolean>>;
 }) => {
     const theme = useTheme();
     return (

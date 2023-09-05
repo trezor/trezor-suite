@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { WalletLayout, WalletLayoutHeader } from 'src/components/wallet';
 import { useDevice, useSelector } from 'src/hooks/suite';
 

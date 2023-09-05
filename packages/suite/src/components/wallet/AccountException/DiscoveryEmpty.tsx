@@ -1,4 +1,3 @@
-import React from 'react';
 import { goto } from 'src/actions/suite/routerActions';
 import { useDevice, useDispatch } from 'src/hooks/suite';
 import { Translation } from 'src/components/suite';

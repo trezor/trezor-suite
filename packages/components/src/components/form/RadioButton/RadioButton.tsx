@@ -1,4 +1,4 @@
-import React from 'react';
+import { HTMLAttributes, KeyboardEvent, MouseEvent } from 'react';
 import styled from 'styled-components';
 import { FONT_SIZE, FONT_WEIGHT } from '../../../config/variables';
 import { KEYBOARD_CODE } from '../../../constants/keyboardEvents';
@@ -54,10 +54,8 @@ const Label = styled.div`
     line-height: 22px;
 `;
 
-interface RadioButtonProps extends React.HTMLAttributes<HTMLDivElement> {
-    onClick: (
-        event: React.KeyboardEvent<HTMLElement> | React.MouseEvent<HTMLElement> | null,
-    ) => any;
+interface RadioButtonProps extends HTMLAttributes<HTMLDivElement> {
+    onClick: (event: KeyboardEvent<HTMLElement> | MouseEvent<HTMLElement> | null) => any;
     isChecked?: boolean;
     disabled?: boolean;
 }
@@ -73,7 +71,7 @@ export const RadioButton = ({
         if (disabled) return;
         onClick(event);
     };
-    const handleKeyUp = (event: React.KeyboardEvent<HTMLElement>) => {
+    const handleKeyUp = (event: KeyboardEvent<HTMLElement>) => {
         if (event.code === KEYBOARD_CODE.SPACE) {
             handleClick(event);
         }

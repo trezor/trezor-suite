@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import { Spinner, Dropdown } from '@trezor/components';
 import { analytics, EventType } from '@trezor/suite-analytics';
 import { Translation } from 'src/components/suite';

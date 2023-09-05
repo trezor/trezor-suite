@@ -1,4 +1,3 @@
-import React from 'react';
 import BigNumber from 'bignumber.js';
 import { Input, Icon } from '@trezor/components';
 import { QuestionTooltip } from 'src/components/suite';

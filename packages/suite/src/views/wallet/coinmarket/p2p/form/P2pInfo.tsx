@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components';
 import { Translation } from 'src/components/suite';
 import { Note, Tooltip, variables } from '@trezor/components';

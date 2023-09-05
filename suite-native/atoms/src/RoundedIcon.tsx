@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { G } from '@mobily/ts-belt';
 
 import { CryptoIcon, CoinSymbol, Icon, IconName, icons, IconSize } from '@suite-common/icons';

@@ -1,4 +1,4 @@
-import React from 'react';
+import { ReactNode } from 'react';
 import styled from 'styled-components';
 import { Image, Icon, IconProps, variables } from '@trezor/components';
 import { useGuide } from 'src/hooks/guide';
@@ -50,7 +50,7 @@ const StyledImage = styled(Image)`
 
 interface CommonItemProps {
     key: string;
-    title: React.ReactNode;
+    title: ReactNode;
 }
 
 interface DeviceImageItem extends CommonItemProps {

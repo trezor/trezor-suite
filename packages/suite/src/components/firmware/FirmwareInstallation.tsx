@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { Button } from '@trezor/components';
 import { getTextForStatus } from 'src/utils/firmware';
 import { Translation, WebUsbButton } from 'src/components/suite';

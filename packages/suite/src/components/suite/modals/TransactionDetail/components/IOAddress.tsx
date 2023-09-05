@@ -1,6 +1,6 @@
 import { HiddenPlaceholder } from 'src/components/suite/HiddenPlaceholder';
 import { Icon, Link, useTheme } from '@trezor/components';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { copyToClipboard } from '@trezor/dom-utils';
 import styled, { css } from 'styled-components';
 

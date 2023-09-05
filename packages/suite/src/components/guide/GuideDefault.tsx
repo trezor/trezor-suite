@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { darken } from 'polished';
 import styled from 'styled-components';
 import { analytics, EventType } from '@trezor/suite-analytics';

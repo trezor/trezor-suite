@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import { ReactNode } from 'react';
 import { useSelector } from 'react-redux';
 
 import { Box, Text } from '@suite-native/atoms';

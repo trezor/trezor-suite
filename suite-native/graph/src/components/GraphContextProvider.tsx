@@ -1,4 +1,4 @@
-import React from 'react';
+import { ReactNode } from 'react';
 import { IntlProvider } from 'react-intl';
 
 // FIXME this is only temporary until Intl refactor will be finished
@@ -8,7 +8,7 @@ import { createRenderer, StylesProvider } from '@trezor/styles';
 import { prepareNativeTheme } from '@trezor/theme';
 
 type ProviderProps = {
-    children: React.ReactNode;
+    children: ReactNode;
 };
 
 const renderer = createRenderer();

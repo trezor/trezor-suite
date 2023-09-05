@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components';
 
 import { Switch, Button, Link } from '@trezor/components';

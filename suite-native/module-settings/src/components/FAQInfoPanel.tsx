@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import { Fragment, ReactNode } from 'react';
 
 import { AccordionItem, Text, VStack } from '@suite-native/atoms';
 import { Link } from '@suite-native/link';
@@ -48,9 +48,9 @@ const faqMap: FAQ[] = [
 export const FAQInfoPanel = () => (
     <VStack marginHorizontal="medium">
         {faqMap.map(({ question, answer }) => (
-            <React.Fragment key={question}>
+            <Fragment key={question}>
                 <AccordionItem title={question} content={answer} />
-            </React.Fragment>
+            </Fragment>
         ))}
     </VStack>
 );

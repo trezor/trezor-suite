@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import styled from 'styled-components';
 import { Translation, PrerequisitesGuide } from 'src/components/suite';
 import { PinMatrix } from 'src/components/suite/PinMatrix';

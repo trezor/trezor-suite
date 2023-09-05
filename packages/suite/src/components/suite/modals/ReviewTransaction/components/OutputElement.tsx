@@ -1,4 +1,4 @@
-import React, { forwardRef } from 'react';
+import { forwardRef, ReactNode } from 'react';
 import styled from 'styled-components';
 
 import { Truncate, variables } from '@trezor/components';
@@ -108,7 +108,7 @@ const DotSeparator = styled.div`
 
 export type OutputElementLine = {
     id: string;
-    label: React.ReactNode;
+    label: ReactNode;
     value: string;
     plainValue?: boolean;
 };
@@ -124,13 +124,8 @@ export type OutputElementProps = {
     account: Account;
 };
 
-const TruncateWrapper = ({
-    condition,
-    children,
-}: {
-    condition: boolean;
-    children?: React.ReactNode;
-}) => (condition ? <Truncate>{children}</Truncate> : <>{children}</>);
+const TruncateWrapper = ({ condition, children }: { condition: boolean; children?: ReactNode }) =>
+    condition ? <Truncate>{children}</Truncate> : <>{children}</>;
 
 // token name is fingerprint in Cardano
 const getFingerprint = (

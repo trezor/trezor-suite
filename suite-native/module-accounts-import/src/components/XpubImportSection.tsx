@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Box, Button } from '@suite-native/atoms';
 import { networks, NetworkSymbol } from '@suite-common/wallet-config';

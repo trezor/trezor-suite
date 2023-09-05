@@ -1,4 +1,3 @@
-import React from 'react';
 import { H1, LoadingContent as LoadingContentComponent } from '../../../index';
 
 export default {

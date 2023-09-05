@@ -1,4 +1,4 @@
-import React from 'react';
+import { ReactNode } from 'react';
 import styled from 'styled-components';
 
 import { Checkbox, variables } from '@trezor/components';
@@ -28,8 +28,8 @@ const CheckboxText = styled.div`
 `;
 
 interface CheckItemProps {
-    title: React.ReactNode;
-    description: React.ReactNode;
+    title: ReactNode;
+    description: ReactNode;
     isChecked: boolean;
     link?: JSX.Element;
     onClick: () => void;

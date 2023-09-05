@@ -1,4 +1,4 @@
-import React from 'react';
+import { ReactNode } from 'react';
 import { View } from 'react-native';
 
 import { Icon, IconName } from '@suite-common/icons';
@@ -12,7 +12,7 @@ type HintVariant = 'hint' | 'error';
 type HintProps = {
     variant?: HintVariant;
     style?: NativeStyleObject;
-    children?: React.ReactNode;
+    children?: ReactNode;
 };
 
 const hintStyle = prepareNativeStyle(() => ({

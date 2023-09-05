@@ -1,4 +1,4 @@
-import React from 'react';
+import { FC } from 'react';
 
 import { CryptoIconName } from '../icons';
 
@@ -15,4 +15,4 @@ const cryptoIconSizes = {
 type CryptoIconSize = keyof typeof cryptoIconSizes;
 
 // This will be used for web in the future
-export const CryptoIcon: React.FC<CryptoIconProps> = () => null;
+export const CryptoIcon: FC<CryptoIconProps> = () => null;

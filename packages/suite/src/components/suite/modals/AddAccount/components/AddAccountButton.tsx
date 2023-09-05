@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import { useCallback } from 'react';
 import { analytics, EventType } from '@trezor/suite-analytics';
 import { Account, Network } from 'src/types/wallet';
 import { UnavailableCapability } from '@trezor/connect';

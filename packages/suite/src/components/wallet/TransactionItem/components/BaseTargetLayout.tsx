@@ -1,4 +1,4 @@
-import React from 'react';
+import { ReactNode } from 'react';
 import styled, { css } from 'styled-components';
 import { motion } from 'framer-motion';
 import { HiddenPlaceholder } from 'src/components/suite';
@@ -93,9 +93,9 @@ const TimelineLine = styled.div<{ show: boolean; top?: boolean }>`
 `;
 
 interface BaseTargetLayoutProps {
-    addressLabel: React.ReactNode;
-    amount?: React.ReactNode;
-    fiatAmount?: React.ReactNode;
+    addressLabel: ReactNode;
+    amount?: ReactNode;
+    fiatAmount?: ReactNode;
     useAnimation?: boolean;
     singleRowLayout?: boolean;
     isFirst?: boolean;

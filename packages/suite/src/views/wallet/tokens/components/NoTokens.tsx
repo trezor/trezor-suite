@@ -1,4 +1,3 @@
-import React from 'react';
 import { Button } from '@trezor/components';
 import { AccountExceptionLayout } from 'src/components/wallet';
 import { Translation } from 'src/components/suite';

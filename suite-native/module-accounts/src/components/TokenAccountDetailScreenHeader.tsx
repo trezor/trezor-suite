@@ -1,4 +1,3 @@
-import React from 'react';
 import { useSelector } from 'react-redux';
 
 import { Badge, Box, Text } from '@suite-native/atoms';

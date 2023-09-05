@@ -1,4 +1,3 @@
-import React from 'react';
 import { Dropdown } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 import { useDispatch } from 'src/hooks/suite';

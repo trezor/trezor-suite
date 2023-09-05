@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { Icon, Warning } from '@trezor/components';
 import { Translation } from 'src/components/suite/Translation';

@@ -1,4 +1,4 @@
-import React from 'react';
+import { ReactNode } from 'react';
 import styled from 'styled-components';
 import { AccountsMenu, AccountException, AccountTopPanel } from 'src/components/wallet';
 import { MAX_WIDTH_WALLET_CONTENT } from 'src/constants/suite/layout';
@@ -30,7 +30,7 @@ type WalletLayoutProps = {
     title: ExtendedMessageDescriptor['id'];
     account: AppState['wallet']['selectedAccount'];
     showEmptyHeaderPlaceholder?: boolean;
-    children?: React.ReactNode;
+    children?: ReactNode;
 };
 
 export const WalletLayout = ({

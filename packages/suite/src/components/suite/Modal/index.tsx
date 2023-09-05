@@ -1,4 +1,4 @@
-import React, { ComponentType } from 'react';
+import { ComponentType } from 'react';
 import { Modal as TrezorModal, ModalProps as TrezorModalProps } from '@trezor/components';
 import { DefaultRenderer } from './DefaultRenderer';
 

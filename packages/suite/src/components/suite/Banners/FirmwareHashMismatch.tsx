@@ -1,4 +1,3 @@
-import React from 'react';
 import { Banner } from './Banner';
 import { Translation } from 'src/components/suite';
 

@@ -1,4 +1,4 @@
-import React from 'react';
+import { ReactNode } from 'react';
 import styled from 'styled-components';
 import { AnimatePresence, motion } from 'framer-motion';
 
@@ -96,7 +96,7 @@ const SettingsWrapper = styled.div`
 `;
 
 interface WelcomeLayoutProps {
-    children: React.ReactNode;
+    children: ReactNode;
 }
 
 // WelcomeLayout is a top-level wrapper similar to @suite-components/SuiteLayout

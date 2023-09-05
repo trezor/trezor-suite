@@ -1,4 +1,4 @@
-import React from 'react';
+import { MouseEvent } from 'react';
 import { Button } from '@trezor/components';
 import { Translation, TroubleshootingTips } from 'src/components/suite';
 import { useDispatch } from 'src/hooks/suite';
@@ -8,7 +8,7 @@ import { enableOnboardingReducer, resetOnboarding } from 'src/actions/onboarding
 export const DeviceInitialize = () => {
     const dispatch = useDispatch();
 
-    const handleCtaClick = (e: React.MouseEvent) => {
+    const handleCtaClick = (e: MouseEvent) => {
         e.stopPropagation();
         // in case this prerequisite (device-initialize) is displayed inside onboarding app we need to reset onboarding state
         dispatch(resetOnboarding());

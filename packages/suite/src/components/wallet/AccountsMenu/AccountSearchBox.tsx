@@ -1,4 +1,3 @@
-import React from 'react';
 import styled, { css } from 'styled-components';
 import { useTheme, Icon, Input, CoinLogo } from '@trezor/components';
 import { useSelector, useAccountSearch, useTranslation } from 'src/hooks/suite';

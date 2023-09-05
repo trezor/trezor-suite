@@ -1,4 +1,4 @@
-import React from 'react';
+import { ComponentType } from 'react';
 import { WalletLayout } from 'src/components/wallet';
 import { useSelector } from 'src/hooks/suite';
 import type { ExtendedMessageDescriptor } from 'src/types/suite';
@@ -13,7 +13,7 @@ export interface WithSelectedAccountLoadedOptions {
 }
 
 export const withSelectedAccountLoaded = (
-    WrappedComponent: React.ComponentType<WithSelectedAccountLoadedProps>,
+    WrappedComponent: ComponentType<WithSelectedAccountLoadedProps>,
     options: WithSelectedAccountLoadedOptions,
 ) => {
     const { title } = options;

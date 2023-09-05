@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { memo, useState } from 'react';
 
 import styled from 'styled-components';
 import { ComposedChart, Tooltip, Bar, YAxis, XAxis, Line, CartesianGrid, Cell } from 'recharts';
@@ -51,7 +51,7 @@ const Description = styled.div`
     flex: 1;
 `;
 
-const TransactionsGraph = React.memo((props: Props) => {
+const TransactionsGraph = memo((props: Props) => {
     const { isLoading, data, selectedRange, xTicks } = props;
     const [maxYTickWidth, setMaxYTickWidth] = useState(20);
 

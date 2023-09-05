@@ -1,4 +1,3 @@
-import React from 'react';
 import { useDocs } from '../hooks/useDocs';
 
 export const About = () => {

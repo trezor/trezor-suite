@@ -1,4 +1,3 @@
-import React from 'react';
 import { MODAL } from 'src/actions/suite/constants';
 import { ConfirmNoBackup } from 'src/components/suite/modals';
 

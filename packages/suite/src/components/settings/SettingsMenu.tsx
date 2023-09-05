@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import styled, { css } from 'styled-components';
 
 import { CloseButton, Translation, AppNavigationPanel, AppNavigation } from 'src/components/suite';

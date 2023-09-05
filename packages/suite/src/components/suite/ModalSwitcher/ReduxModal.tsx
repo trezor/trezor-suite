@@ -1,4 +1,3 @@
-import React from 'react';
 import { MODAL } from 'src/actions/suite/constants';
 
 import { DeviceContextModal } from './DeviceContextModal';

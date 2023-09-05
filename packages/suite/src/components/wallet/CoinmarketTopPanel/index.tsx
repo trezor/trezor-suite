@@ -3,7 +3,6 @@ import { MAX_WIDTH } from 'src/constants/suite/layout';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { AccountLabeling } from 'src/components/suite';
 import { Icon, variables } from '@trezor/components';
-import React from 'react';
 import styled from 'styled-components';
 import { Route } from 'src/types/suite';
 

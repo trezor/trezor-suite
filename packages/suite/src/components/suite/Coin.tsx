@@ -1,4 +1,4 @@
-import React from 'react';
+import { MouseEvent } from 'react';
 import { transparentize } from 'polished';
 import styled, { css } from 'styled-components';
 import { variables, CoinLogo, Icon, useTheme } from '@trezor/components';
@@ -8,7 +8,7 @@ import type { Network } from 'src/types/wallet';
 
 const SettingsWrapper = styled.div<{
     toggled: boolean;
-    onClick: ((e: React.MouseEvent) => void) | undefined;
+    onClick: ((e: MouseEvent) => void) | undefined;
 }>`
     display: flex;
     align-self: stretch;
@@ -177,7 +177,7 @@ export const Coin = ({
 
     const onSettingsClick =
         onSettings &&
-        ((e: React.MouseEvent) => {
+        ((e: MouseEvent) => {
             e.stopPropagation();
             onSettings();
         });

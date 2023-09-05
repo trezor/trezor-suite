@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { Icon, Input, Spinner, variables } from '@trezor/components';
 import { Translation } from 'src/components/suite';

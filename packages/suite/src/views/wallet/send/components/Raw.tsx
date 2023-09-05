@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
 import { analytics, EventType } from '@trezor/suite-analytics';

@@ -1,5 +1,12 @@
 import { variables } from '../../../config';
-import React, { useLayoutEffect, useRef, useState } from 'react';
+import {
+    useLayoutEffect,
+    useRef,
+    useState,
+    ReactNode,
+    KeyboardEventHandler,
+    ChangeEventHandler,
+} from 'react';
 import styled, { css, CSSObject } from 'styled-components';
 import { useTheme } from '../../../utils';
 
@@ -94,11 +101,11 @@ const LabelsWrapper = styled.div<{ count: number; $width?: number }>`
 export interface RangeProps {
     className?: string;
     disabled?: boolean;
-    labels?: Array<{ value: string | number; component?: React.ReactNode }>;
+    labels?: Array<{ value: string | number; component?: ReactNode }>;
     max?: number;
     min?: number;
-    onChange: React.ChangeEventHandler<HTMLInputElement>;
-    onKeyDown?: React.KeyboardEventHandler;
+    onChange: ChangeEventHandler<HTMLInputElement>;
+    onKeyDown?: KeyboardEventHandler;
     onLabelClick?: (value: number) => void;
     step?: string;
     thumbStyle?: CSSObject;

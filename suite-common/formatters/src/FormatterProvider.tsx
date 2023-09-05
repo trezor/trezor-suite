@@ -1,4 +1,4 @@
-import React, { createContext, useMemo } from 'react';
+import { createContext, useMemo, ReactNode } from 'react';
 import { useIntl } from 'react-intl';
 
 import { FormatNumberOptions } from '@formatjs/intl';
@@ -25,7 +25,7 @@ import { prepareNetworkSymbolFormatter } from './formatters/prepareNetworkSymbol
 import { MonthNameFormatter } from './formatters/prepareMonthNameFormatter';
 
 type FormatterProviderProps = {
-    children: React.ReactNode;
+    children: ReactNode;
     config: FormatterProviderConfig;
 };
 

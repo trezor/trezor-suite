@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { LoadingContent, Switch } from '@trezor/components';
 import { TOR_PROJECT_URL } from '@trezor/urls';
 import { useDispatch, useSelector } from 'src/hooks/suite';

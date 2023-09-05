@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components';
 import { withSelectedAccountLoaded, WithSelectedAccountLoadedProps } from 'src/components/wallet';
 import {

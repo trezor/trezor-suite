@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { TrezorDevice } from 'src/types/suite';
 import { useTranslation } from 'src/hooks/suite/useTranslation';
 import { useSelector } from 'src/hooks/suite/useSelector';

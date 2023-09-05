@@ -1,4 +1,4 @@
-import React from 'react';
+import { ComponentProps } from 'react';
 
 import styled from 'styled-components';
 
@@ -45,15 +45,15 @@ const Actions = styled.div`
 `;
 
 interface CTA {
-    label?: React.ComponentProps<typeof Translation>['id'];
-    variant?: React.ComponentProps<typeof Button>['variant'];
+    label?: ComponentProps<typeof Translation>['id'];
+    variant?: ComponentProps<typeof Button>['variant'];
     action: () => void;
     icon?: IconProps['icon'];
 }
 
 interface ContainerProps {
-    title: React.ComponentProps<typeof Translation>['id'];
-    description: React.ComponentProps<typeof Translation>['id'] | JSX.Element;
+    title: ComponentProps<typeof Translation>['id'];
+    description: ComponentProps<typeof Translation>['id'] | JSX.Element;
     cta: CTA | CTA[];
     dataTestBase: string;
 }

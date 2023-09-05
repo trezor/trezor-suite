@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { DeviceModelInternal, type TransportInfo } from '@trezor/connect';
 
 import { SettingsLayout } from 'src/components/settings';

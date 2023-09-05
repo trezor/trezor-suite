@@ -1,4 +1,4 @@
-import React from 'react';
+import { ReactNode } from 'react';
 import styled from 'styled-components';
 import { Icon } from '../../assets/Icon/Icon';
 import { Tooltip } from '../../Tooltip/Tooltip';
@@ -19,7 +19,7 @@ const InfoIcon = styled(Icon)`
 
 export interface TooltipButtonProps extends ButtonProps {
     interactiveTooltip?: boolean;
-    tooltipContent: React.ReactNode;
+    tooltipContent: ReactNode;
 }
 
 export const TooltipButton = ({

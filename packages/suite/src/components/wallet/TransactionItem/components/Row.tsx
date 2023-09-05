@@ -1,4 +1,3 @@
-import React from 'react';
 import BigNumber from 'bignumber.js';
 import { FiatValue, Translation } from 'src/components/suite';
 import {

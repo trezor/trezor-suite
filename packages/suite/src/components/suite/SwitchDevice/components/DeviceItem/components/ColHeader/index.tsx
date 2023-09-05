@@ -1,4 +1,4 @@
-import React from 'react';
+import { ReactNode } from 'react';
 import styled from 'styled-components';
 import { Tooltip, TooltipProps, variables } from '@trezor/components';
 
@@ -17,7 +17,7 @@ const Text = styled.span`
 `;
 
 interface ColHeaderProps {
-    children?: React.ReactNode;
+    children?: ReactNode;
     tooltipContent?: TooltipProps['content'];
     tooltipOpenGuide?: TooltipProps['guideAnchor'];
 }

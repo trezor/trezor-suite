@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState, ReactNode } from 'react';
 import styled from 'styled-components';
 import { Network, WalletAccountTransaction } from 'src/types/wallet';
 import { DayHeader } from './DayHeader';
@@ -20,7 +20,7 @@ const TransactionsGroupWrapper = styled.div`
 interface TransactionsGroupProps {
     dateKey: string;
     transactions: WalletAccountTransaction[];
-    children?: React.ReactNode;
+    children?: ReactNode;
     symbol: Network['symbol'];
     localCurrency: string;
     index: number;

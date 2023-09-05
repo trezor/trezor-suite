@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { Account } from 'src/types/wallet';

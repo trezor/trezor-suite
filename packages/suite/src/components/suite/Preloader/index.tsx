@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 
 import { SuiteLayout } from 'src/components/suite';
 import InitialLoading from './components/InitialLoading';

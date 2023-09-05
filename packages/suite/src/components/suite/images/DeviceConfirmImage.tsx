@@ -1,4 +1,3 @@
-import React from 'react';
 import { TrezorDevice } from 'src/types/suite';
 import { Image, ImageProps } from '@trezor/components';
 

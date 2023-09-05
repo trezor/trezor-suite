@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { analytics, EventType } from '@trezor/suite-analytics';
 import { FiatCurrencyCode, fiatCurrencies } from '@suite-common/suite-config';
 

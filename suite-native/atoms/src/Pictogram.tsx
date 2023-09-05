@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import { ReactNode } from 'react';
 
 import { IconName, Icon } from '@suite-common/icons';
 import { Color, TypographyStyle } from '@trezor/theme';

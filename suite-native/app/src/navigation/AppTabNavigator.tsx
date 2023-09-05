@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { BottomTabBarProps, createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import { ReceiveStackNavigator } from '@suite-native/module-receive';

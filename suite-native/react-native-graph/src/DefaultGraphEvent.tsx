@@ -1,4 +1,3 @@
-import React from 'react';
 import { useDerivedValue, withSpring } from 'react-native-reanimated';
 
 import { Circle, Group } from '@shopify/react-native-skia';

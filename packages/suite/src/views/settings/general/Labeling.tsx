@@ -1,4 +1,3 @@
-import React from 'react';
 import { analytics, EventType } from '@trezor/suite-analytics';
 import { LoadingContent, Switch, Tooltip } from '@trezor/components';
 import { HELP_CENTER_LABELING } from '@trezor/urls';

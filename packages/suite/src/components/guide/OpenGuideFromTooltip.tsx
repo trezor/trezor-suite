@@ -1,4 +1,4 @@
-import React from 'react';
+import { MouseEvent } from 'react';
 import { Icon } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 import TrezorLink from 'src/components/suite/TrezorLink';
@@ -43,7 +43,7 @@ export const OpenGuideFromTooltip = ({ id, instance, dataTest }: OpenGuideFromTo
     return (
         <OpenGuideLink
             data-test={dataTest}
-            onClick={(e: React.MouseEvent<any>) => {
+            onClick={(e: MouseEvent<any>) => {
                 e.stopPropagation();
                 instance.hide();
                 openNodeById(id);

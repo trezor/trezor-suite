@@ -1,4 +1,4 @@
-import React from 'react';
+import { ReactNode } from 'react';
 import styled from 'styled-components';
 import { variables } from '../../config';
 
@@ -32,7 +32,7 @@ const Wrapper = styled.div`
 
 export type BackdropProps = {
     onClick?: () => void;
-    children?: React.ReactNode;
+    children?: ReactNode;
     className?: string;
 };
 

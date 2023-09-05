@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { getEnv, getChangelog, getBuildVersionNumber } from '@suite-native/config';
 import { getSuiteVersion, getCommitHash } from '@trezor/env-utils';
 import { ListItem, VStack } from '@suite-native/atoms';

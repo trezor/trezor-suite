@@ -1,4 +1,3 @@
-import React from 'react';
 import { WalletLayout } from 'src/components/wallet';
 import { isTestnet } from '@suite-common/wallet-utils';
 import { useSelector } from 'src/hooks/suite';

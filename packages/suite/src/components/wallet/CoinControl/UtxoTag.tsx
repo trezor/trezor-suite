@@ -1,10 +1,10 @@
-import React from 'react';
+import { ReactNode } from 'react';
 import { Icon, Tooltip, IconType } from '@trezor/components';
 
 interface UtxoTagProps {
     icon: IconType;
     iconColor: string;
-    tooltipMessage: React.ReactNode;
+    tooltipMessage: ReactNode;
 }
 
 export const UtxoTag = ({ icon, iconColor, tooltipMessage }: UtxoTagProps) => (

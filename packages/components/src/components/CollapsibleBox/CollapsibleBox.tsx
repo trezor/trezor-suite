@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, ReactNode, FC, HtmlHTMLAttributes } from 'react';
 import { motion } from 'framer-motion';
 import styled, { css } from 'styled-components';
 import { Icon } from '../assets/Icon/Icon';
@@ -135,11 +135,11 @@ const Collapser = styled(motion.div)`
     overflow: hidden;
 `;
 
-interface CollapsibleBoxProps extends React.HtmlHTMLAttributes<HTMLDivElement> {
-    heading: React.ReactNode;
+interface CollapsibleBoxProps extends HtmlHTMLAttributes<HTMLDivElement> {
+    heading: ReactNode;
     variant: 'tiny' | 'small' | 'large';
-    iconLabel?: React.ReactNode;
-    children?: React.ReactNode;
+    iconLabel?: ReactNode;
+    children?: ReactNode;
     noContentPadding?: boolean;
     headerJustifyContent?: 'space-between' | 'center';
     opened?: boolean;
@@ -150,7 +150,7 @@ interface CollapsibleBoxProps extends React.HtmlHTMLAttributes<HTMLDivElement> {
     }: {
         collapsed: boolean;
         animatedIcon: boolean;
-    }) => React.ReactNode;
+    }) => ReactNode;
 }
 
 type CollapsibleBoxSubcomponents = {
@@ -160,7 +160,7 @@ type CollapsibleBoxSubcomponents = {
     IconWrapper: typeof IconWrapper;
 };
 
-const CollapsibleBox: React.FC<CollapsibleBoxProps> & CollapsibleBoxSubcomponents = ({
+const CollapsibleBox: FC<CollapsibleBoxProps> & CollapsibleBoxSubcomponents = ({
     heading,
     iconLabel,
     children,

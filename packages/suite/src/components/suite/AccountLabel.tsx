@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components';
 import { getTitleForNetwork, getTitleForCoinjoinAccount } from '@suite-common/wallet-utils';
 import { Translation } from 'src/components/suite';

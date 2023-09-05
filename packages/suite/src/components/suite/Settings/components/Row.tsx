@@ -1,4 +1,4 @@
-import React from 'react';
+import { HTMLAttributes } from 'react';
 import styled from 'styled-components';
 
 const Content = styled.div`
@@ -16,7 +16,7 @@ const Wrapper = styled.div`
     }
 `;
 
-type RowProps = React.HTMLAttributes<HTMLDivElement>;
+type RowProps = HTMLAttributes<HTMLDivElement>;
 
 export const Row = ({ children, ...rest }: RowProps) => (
     <Wrapper>

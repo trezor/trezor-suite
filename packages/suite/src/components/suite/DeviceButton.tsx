@@ -1,4 +1,4 @@
-import React from 'react';
+import { ReactNode } from 'react';
 
 import { Button, Tooltip } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/connect';
@@ -8,8 +8,8 @@ interface DeviceButtonProps {
     isLoading?: boolean;
     onClick: () => void;
     deviceModelInternal: DeviceModelInternal;
-    tooltipContent?: React.ReactNode;
-    children: React.ReactNode;
+    tooltipContent?: ReactNode;
+    children: ReactNode;
 }
 
 export const DeviceButton = ({

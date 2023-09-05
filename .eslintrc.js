@@ -140,6 +140,7 @@ module.exports = {
         // TSC checks it.
         'no-undef': 'off',
         'react/jsx-no-undef': 'off',
+        'react/react-in-jsx-scope': 'off',
         // React Hooks.
         'react-hooks/rules-of-hooks': 'error',
         'react-hooks/exhaustive-deps': 'error',

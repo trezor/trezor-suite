@@ -1,4 +1,4 @@
-import React from 'react';
+import { ReactNode } from 'react';
 import styled from 'styled-components';
 
 const Wrapper = styled.div`
@@ -7,7 +7,7 @@ const Wrapper = styled.div`
 `;
 
 type ContentProps = {
-    children: React.ReactNode;
+    children: ReactNode;
 };
 
 export const Content = ({ children }: ContentProps) => <Wrapper>{children}</Wrapper>;

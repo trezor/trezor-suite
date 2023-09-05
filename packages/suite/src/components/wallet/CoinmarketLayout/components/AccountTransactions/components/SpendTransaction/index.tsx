@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components';
 import { Translation, FormattedDate, FormattedCryptoAmount } from 'src/components/suite';
 import { variables } from '@trezor/components';

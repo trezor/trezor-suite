@@ -1,4 +1,4 @@
-import React from 'react';
+import { MouseEventHandler } from 'react';
 import { Button } from '@trezor/components';
 
 import { Translation, TroubleshootingTips } from 'src/components/suite';
@@ -8,7 +8,7 @@ import { goto } from 'src/actions/suite/routerActions';
 export const DeviceUpdateRequired = () => {
     const dispatch = useDispatch();
 
-    const handleClick: React.MouseEventHandler = e => {
+    const handleClick: MouseEventHandler = e => {
         e.stopPropagation();
         dispatch(goto('firmware-index'));
     };

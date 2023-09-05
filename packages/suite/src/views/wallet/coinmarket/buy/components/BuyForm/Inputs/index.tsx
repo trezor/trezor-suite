@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import styled from 'styled-components';
 import invityAPI from 'src/services/suite/invityAPI';
 import { Controller } from 'react-hook-form';

@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { useNavigation } from '@react-navigation/native';
 
 import { Box, Text, Image, TrezorSuiteLiteHeader } from '@suite-native/atoms';

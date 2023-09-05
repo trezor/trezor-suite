@@ -1,4 +1,3 @@
-import React from 'react';
 import { useDevice, useDispatch } from 'src/hooks/suite';
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';
 import { NotificationCard, Translation } from 'src/components/suite';

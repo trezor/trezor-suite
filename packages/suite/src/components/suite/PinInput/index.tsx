@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import styled, { css } from 'styled-components';
 import { Button, PinButton, KEYBOARD_CODE } from '@trezor/components';
 import InputPin from './components/InputPin';

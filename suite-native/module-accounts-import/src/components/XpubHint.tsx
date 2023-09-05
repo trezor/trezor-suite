@@ -1,4 +1,3 @@
-import React from 'react';
 import { KeyboardAvoidingView, Platform } from 'react-native';
 
 import { NetworkType } from '@suite-common/wallet-config';

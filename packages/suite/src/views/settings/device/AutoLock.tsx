@@ -1,4 +1,3 @@
-import React from 'react';
 import { analytics, EventType } from '@trezor/suite-analytics';
 
 import { Translation } from 'src/components/suite';

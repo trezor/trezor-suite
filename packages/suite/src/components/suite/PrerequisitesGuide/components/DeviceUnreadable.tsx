@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState, MouseEvent } from 'react';
 import { Button } from '@trezor/components';
 import { desktopApi } from '@trezor/suite-desktop-api';
 import { isDesktop, isLinux } from '@trezor/env-utils';
@@ -41,7 +41,7 @@ const UdevDesktop = () => {
 
     const dispatch = useDispatch();
 
-    const handleCtaClick = async (event: React.MouseEvent) => {
+    const handleCtaClick = async (event: MouseEvent) => {
         event.preventDefault();
         event.stopPropagation();
 

@@ -1,5 +1,3 @@
-import React from 'react';
-
 import styled from 'styled-components';
 import BigNumber from 'bignumber.js';
 import { Translation, HiddenPlaceholder, FormattedDate } from 'src/components/suite';

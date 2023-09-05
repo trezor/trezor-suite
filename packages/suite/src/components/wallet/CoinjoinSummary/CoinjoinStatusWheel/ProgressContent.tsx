@@ -1,4 +1,3 @@
-import React from 'react';
 import styled, { css } from 'styled-components';
 import { Spinner, Icon, Tooltip, useTheme, variables } from '@trezor/components';
 import { Translation } from 'src/components/suite/Translation';

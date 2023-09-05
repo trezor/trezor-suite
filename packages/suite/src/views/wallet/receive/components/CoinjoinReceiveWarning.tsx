@@ -1,4 +1,3 @@
-import React from 'react';
 import styled, { useTheme } from 'styled-components';
 import { darken } from 'polished';
 import { useDispatch, useSelector } from 'src/hooks/suite';

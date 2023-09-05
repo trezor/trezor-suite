@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components';
 import { Fees } from 'src/components/wallet/Fees';
 import { useCoinmarketSellFormContext } from 'src/hooks/wallet/useCoinmarketSellForm';

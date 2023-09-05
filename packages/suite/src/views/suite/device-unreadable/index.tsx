@@ -1,6 +1,5 @@
 // TODO: remove whole file, replaced by @suite-components/PrerequisitesGuide/components/DeviceUnreadable
 
-import React from 'react';
 import { goto } from 'src/actions/suite/routerActions';
 import { Button } from '@trezor/components';
 import { DeviceInvalidModeLayout, Translation } from 'src/components/suite';

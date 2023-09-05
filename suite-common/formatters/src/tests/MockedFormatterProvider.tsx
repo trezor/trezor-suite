@@ -1,4 +1,4 @@
-import React from 'react';
+import { ReactNode } from 'react';
 import { useIntl } from 'react-intl';
 
 import { PROTO } from '@trezor/connect';
@@ -6,7 +6,7 @@ import { PROTO } from '@trezor/connect';
 import { FormatterProviderContext, getFormatters } from '../FormatterProvider';
 
 type MockedFormatterProviderProps = {
-    children: React.ReactNode;
+    children: ReactNode;
 };
 
 export const MockedFormatterProvider = ({ children }: MockedFormatterProviderProps) => {

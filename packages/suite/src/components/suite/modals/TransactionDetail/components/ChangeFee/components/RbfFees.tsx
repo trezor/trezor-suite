@@ -1,4 +1,3 @@
-import React from 'react';
 import { Fees } from 'src/components/wallet/Fees';
 import { useRbfContext } from 'src/hooks/wallet/useRbfForm';
 

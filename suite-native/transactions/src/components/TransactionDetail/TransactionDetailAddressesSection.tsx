@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
 import { Box, Divider, Text } from '@suite-native/atoms';

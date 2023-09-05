@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { Card, HStack, IconButton, Text, VStack } from '@suite-native/atoms';
 import { Icon } from '@suite-common/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';

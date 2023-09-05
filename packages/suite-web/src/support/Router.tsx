@@ -1,10 +1,10 @@
-import React, { lazy, memo, Suspense } from 'react';
+import { lazy, memo, Suspense, LazyExoticComponent } from 'react';
 import { Switch, Route } from 'react-router-dom';
 
 import routes from 'src/constants/suite/routes';
 import { BundleLoader } from 'src/components/suite';
 
-const components: { [key: string]: React.LazyExoticComponent<any> } = {
+const components: { [key: string]: LazyExoticComponent<any> } = {
     'suite-index': lazy(() => import(/* webpackChunkName: "dashboard" */ 'src/views/dashboard')),
     'notifications-index': lazy(
         () => import(/* webpackChunkName: "notifications" */ 'src/views/suite/notifications'),
@@ -142,7 +142,7 @@ const AppRouter = () => (
     // inititating strict mode higher would throw an error from react-helmet
     // TODO: replace react-helmet with a maintained alternative
     // strict mode is commented out because of its interplay with compose errors in send form
-    // <React.StrictMode>
+    // <StrictMode>
     <Suspense fallback={<BundleLoader />}>
         <Switch>
             {routes.map(route => (
@@ -155,7 +155,7 @@ const AppRouter = () => (
             ))}
         </Switch>
     </Suspense>
-    // </React.StrictMode>
+    // </StrictMode>
 );
 
 export default memo(AppRouter);

@@ -1,4 +1,3 @@
-import React from 'react';
 import BigNumber from 'bignumber.js';
 import styled, { css } from 'styled-components';
 import {

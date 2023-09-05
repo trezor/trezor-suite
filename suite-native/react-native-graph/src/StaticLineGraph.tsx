@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState, ReactElement } from 'react';
 import { View, StyleSheet, LayoutChangeEvent } from 'react-native';
 
 import { Canvas, LinearGradient, Path, vec } from '@shopify/react-native-skia';
@@ -20,7 +20,7 @@ export function StaticLineGraph({
     enableFadeInMask,
     style,
     ...props
-}: StaticLineGraphProps): React.ReactElement {
+}: StaticLineGraphProps): ReactElement {
     const [width, setWidth] = useState(0);
     const [height, setHeight] = useState(0);
 

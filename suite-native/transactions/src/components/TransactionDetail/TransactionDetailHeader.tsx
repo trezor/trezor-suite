@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { Box, Text, useDiscreetMode } from '@suite-native/atoms';
 import { Icon, IconName } from '@suite-common/icons';
 import { TransactionType } from '@suite-common/wallet-types';

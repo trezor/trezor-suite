@@ -1,4 +1,4 @@
-import React from 'react';
+import { ReactElement } from 'react';
 import styled from 'styled-components';
 import { variables } from '@trezor/components';
 import { Translation } from 'src/components/suite';
@@ -96,9 +96,7 @@ const Navigation = styled.div`
 `;
 
 type WalletLayoutNavigationProps = {
-    children:
-        | React.ReactElement<WalletLayoutNavLinkProps>
-        | React.ReactElement<WalletLayoutNavLinkProps>[];
+    children: ReactElement<WalletLayoutNavLinkProps> | ReactElement<WalletLayoutNavLinkProps>[];
 };
 
 export const WalletLayoutNavigation = ({ children }: WalletLayoutNavigationProps) => (

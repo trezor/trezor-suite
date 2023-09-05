@@ -1,5 +1,3 @@
-import React from 'react';
-
 export const ExtensionPopup = () => {
     const openExplorerTab = () => {
         chrome.tabs.create({ url: 'connect-explorer.html' });

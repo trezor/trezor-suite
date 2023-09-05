@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { networks, NetworkSymbol } from '@suite-common/wallet-config';
 import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
 import { RoundedIcon, VStack } from '@suite-native/atoms';

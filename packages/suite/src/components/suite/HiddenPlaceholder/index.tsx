@@ -1,4 +1,4 @@
-import React from 'react';
+import { ReactNode } from 'react';
 import styled, { css } from 'styled-components';
 import { useSelector } from 'src/hooks/suite';
 
@@ -22,7 +22,7 @@ const Wrapper = styled.span<WrapperProps>`
 
 interface HiddenPlaceholderProps {
     intensity?: number;
-    children: React.ReactNode;
+    children: ReactNode;
     className?: string;
     ['data-test']?: string;
 }

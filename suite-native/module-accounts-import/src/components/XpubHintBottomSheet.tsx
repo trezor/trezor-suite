@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import { ReactNode } from 'react';
 
 import { BottomSheet, Box, Button, Text, VStack } from '@suite-native/atoms';
 import { Video, VideoName } from '@suite-native/video-assets';

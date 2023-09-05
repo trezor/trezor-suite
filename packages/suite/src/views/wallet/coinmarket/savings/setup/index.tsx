@@ -1,4 +1,3 @@
-import React from 'react';
 import { withCoinmarket, WithSelectedAccountLoadedProps } from 'src/components/wallet';
 import styled from 'styled-components';
 import { Button, variables, Select, Flag } from '@trezor/components';

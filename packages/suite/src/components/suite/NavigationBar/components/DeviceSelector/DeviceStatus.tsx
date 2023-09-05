@@ -1,4 +1,3 @@
-import React from 'react';
 import { Icon, variables, useTheme, SuiteThemeColors } from '@trezor/components';
 import styled from 'styled-components';
 import * as deviceUtils from 'src/utils/suite/device';

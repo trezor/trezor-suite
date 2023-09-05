@@ -1,4 +1,4 @@
-import React, { ReactNode, useMemo, useRef } from 'react';
+import { useMemo, useRef, ReactNode } from 'react';
 
 import {
     NavigationContainer,

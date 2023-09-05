@@ -1,7 +1,3 @@
-import React from 'react';
-
-// the min-allowed-height of the bar should be equal to (or higher than) the border radius
-// if the min-height is lower than the border-radius, the bar of such a min-height won't be visible
 const MIN_ALLOWED_HEIGHT = 2;
 const BAR_BORDER_RADIUS = 2;
 

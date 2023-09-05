@@ -1,4 +1,4 @@
-import React from 'react';
+import { ReactNode, HTMLAttributes } from 'react';
 import styled from 'styled-components';
 import { Icon, useTheme, variables } from '@trezor/components';
 
@@ -20,9 +20,9 @@ const Body = styled.div`
     flex: 1;
 `;
 
-interface WarnHeaderProps extends React.HTMLAttributes<HTMLDivElement> {
-    action?: React.ReactNode;
-    children?: React.ReactNode;
+interface WarnHeaderProps extends HTMLAttributes<HTMLDivElement> {
+    action?: ReactNode;
+    children?: ReactNode;
 }
 
 export const WarnHeader = ({ action, children, ...rest }: WarnHeaderProps) => {

@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components';
 import { Button, Image } from '@trezor/components';
 import { Translation, Modal } from 'src/components/suite';

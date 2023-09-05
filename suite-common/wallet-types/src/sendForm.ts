@@ -1,3 +1,4 @@
+import { Dispatch, SetStateAction } from 'react';
 import { FieldPath, UseFormReturn } from 'react-hook-form';
 
 import { Network } from '@suite-common/wallet-config';
@@ -120,7 +121,7 @@ export type SendContextValues<TFormValues extends FormState = FormState> =
             addOpReturn: () => void;
             removeOpReturn: (index: number) => void;
             // useSendFormCompose
-            setDraftSaveRequest: React.Dispatch<React.SetStateAction<boolean>>;
+            setDraftSaveRequest: Dispatch<SetStateAction<boolean>>;
             // UTXO selection
             utxoSelection: UtxoSelectionContext;
         };

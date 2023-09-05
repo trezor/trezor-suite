@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import { ReactNode } from 'react';
 import { Pressable } from 'react-native';
 
 import { useSetAtom } from 'jotai';

@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components';
 import NotificationRenderer from 'src/components/suite/NotificationRenderer';
 import NotificationView from '../NotificationView';

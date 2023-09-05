@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components';
 import { Link, H2, P } from '@trezor/components';
 import { Modal } from 'src/components/suite';

@@ -1,4 +1,4 @@
-import React from 'react';
+import { memo } from 'react';
 import styled from 'styled-components';
 import { Network } from 'src/types/wallet';
 import { CoinLogo, Icon, variables, useTheme } from '@trezor/components';
@@ -93,7 +93,7 @@ interface AssetGridProps {
     cryptoValue: string;
 }
 
-export const AssetGrid = React.memo(({ network, failed, cryptoValue }: AssetGridProps) => {
+export const AssetGrid = memo(({ network, failed, cryptoValue }: AssetGridProps) => {
     const { symbol, name } = network;
     const dispatch = useDispatch();
     const theme = useTheme();

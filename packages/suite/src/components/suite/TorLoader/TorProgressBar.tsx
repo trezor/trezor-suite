@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components';
 
 import { Button, Progress, Icon, variables } from '@trezor/components';

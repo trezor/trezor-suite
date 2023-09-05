@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { Box, Pictogram } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 

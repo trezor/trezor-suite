@@ -1,4 +1,4 @@
-import React from 'react';
+import { ReactNode } from 'react';
 import styled from 'styled-components';
 import { Card, Icon, variables } from '@trezor/components';
 import { Translation, FiatValue, FormattedCryptoAmount } from 'src/components/suite';
@@ -104,7 +104,7 @@ const Red = styled.span`
 /* children are only for test purposes, this prop is not available in regular build */
 interface ChangeFeeProps extends UseRbfProps {
     tx: WalletAccountTransaction;
-    children?: React.ReactNode;
+    children?: ReactNode;
     showChained: () => void;
 }
 

@@ -5,7 +5,12 @@ const babelConfig = {
     presets: [
         ['@babel/preset-env', { targets: { node: 'current' }, modules: 'commonjs' }],
         '@babel/preset-typescript',
-        '@babel/preset-react',
+        [
+            '@babel/preset-react',
+            {
+                runtime: 'automatic',
+            },
+        ],
     ],
 };
 

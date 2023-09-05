@@ -1,4 +1,4 @@
-import React from 'react';
+import { ReactNode } from 'react';
 import styled from 'styled-components';
 import { Image, ImageType, P, variables } from '@trezor/components';
 import { Translation } from 'src/components/suite/Translation';
@@ -94,8 +94,8 @@ const Container = styled.div`
 export interface ProcessStepProps {
     number: number;
     image: ImageType;
-    title: React.ReactNode;
-    description: React.ReactNode;
+    title: ReactNode;
+    description: ReactNode;
 }
 
 export const ProcessStep = ({ number, image, title, description }: ProcessStepProps) => (

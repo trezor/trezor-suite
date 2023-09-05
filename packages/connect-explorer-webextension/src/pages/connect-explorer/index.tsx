@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { createRoot } from 'react-dom/client';
 
 import App from '@trezor/connect-explorer/src/router';

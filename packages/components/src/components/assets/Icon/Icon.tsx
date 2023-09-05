@@ -1,6 +1,6 @@
 import styled, { keyframes, css } from 'styled-components';
 
-import React from 'react';
+import { Ref, forwardRef, SVGAttributes } from 'react';
 import { ReactSVG } from 'react-svg';
 import { IconType } from '../../../support/types';
 import { useTheme } from '../../../utils';
@@ -84,7 +84,7 @@ const SvgWrapper = styled.div<{
 `;
 
 type WrapperProps = Omit<IconProps, 'icon'>;
-export interface IconProps extends React.SVGAttributes<HTMLDivElement> {
+export interface IconProps extends SVGAttributes<HTMLDivElement> {
     className?: string;
     icon: IconType;
     size?: number;
@@ -96,7 +96,7 @@ export interface IconProps extends React.SVGAttributes<HTMLDivElement> {
     'data-test'?: string;
 }
 
-export const Icon = React.forwardRef(
+export const Icon = forwardRef(
     (
         {
             icon,
@@ -113,7 +113,7 @@ export const Icon = React.forwardRef(
             onFocus,
             'data-test': dataTest,
         }: IconProps,
-        ref?: React.Ref<HTMLDivElement>,
+        ref?: Ref<HTMLDivElement>,
     ) => {
         const theme = useTheme();
         const defaultColor = color ?? theme.TYPE_LIGHT_GREY;

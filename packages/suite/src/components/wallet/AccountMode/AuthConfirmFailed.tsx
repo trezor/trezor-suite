@@ -1,4 +1,3 @@
-import React from 'react';
 import { NotificationCard, Translation } from 'src/components/suite';
 import { authConfirm } from 'src/actions/suite/suiteActions';
 import { useDevice, useDispatch } from 'src/hooks/suite';

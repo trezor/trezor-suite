@@ -1,4 +1,4 @@
-import React, { useRef, useCallback, useMemo, useState } from 'react';
+import { useRef, useCallback, useMemo, useState, MouseEvent, DragEvent, ChangeEvent } from 'react';
 import styled from 'styled-components';
 import { P, Icon } from '@trezor/components';
 import { Translation } from 'src/components/suite';
@@ -59,22 +59,22 @@ export const useDropZone = ({ accept, onSelect, className }: DropZoneProps) => {
         }
     }, [inputRef]);
 
-    const prevent = useCallback((event: React.MouseEvent) => {
+    const prevent = useCallback((event: MouseEvent) => {
         event.preventDefault();
     }, []);
 
-    const onDragEnter = useCallback((event: React.MouseEvent) => {
+    const onDragEnter = useCallback((event: MouseEvent) => {
         event.preventDefault();
         event.currentTarget?.classList?.add('dragging');
     }, []);
 
-    const onDragLeave = useCallback((event: React.MouseEvent) => {
+    const onDragLeave = useCallback((event: MouseEvent) => {
         event.preventDefault();
         event.currentTarget?.classList?.remove('dragging');
     }, []);
 
     const onDrop = useCallback(
-        (event: React.DragEvent) => {
+        (event: DragEvent) => {
             event.preventDefault();
             event.currentTarget?.classList?.remove('dragging');
             if (event.dataTransfer) {
@@ -87,7 +87,7 @@ export const useDropZone = ({ accept, onSelect, className }: DropZoneProps) => {
     );
 
     const onInputChange = useCallback(
-        (event: React.ChangeEvent<HTMLInputElement>) => {
+        (event: ChangeEvent<HTMLInputElement>) => {
             event.stopPropagation();
             if (event.target?.value && event.target.files) {
                 readFileContent(event.target.files[0]);
@@ -98,7 +98,7 @@ export const useDropZone = ({ accept, onSelect, className }: DropZoneProps) => {
         [readFileContent],
     );
 
-    const onInputClick = useCallback((event: React.MouseEvent) => {
+    const onInputClick = useCallback((event: MouseEvent) => {
         event.stopPropagation();
     }, []);
 

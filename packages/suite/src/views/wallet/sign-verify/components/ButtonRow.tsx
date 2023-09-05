@@ -2,7 +2,7 @@ import { Translation } from 'src/components/suite';
 
 import { useLayoutSize } from 'src/hooks/suite';
 import { Button, variables } from '@trezor/components';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import styled from 'styled-components';
 
 export const Row = styled.div`

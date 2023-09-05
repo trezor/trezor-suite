@@ -1,4 +1,4 @@
-import React from 'react';
+import { ReactNode } from 'react';
 import styled from 'styled-components';
 import { variables } from '@trezor/components';
 import type { ExtendedMessageDescriptor } from 'src/types/suite';
@@ -16,8 +16,8 @@ const Body = styled.div`
 `;
 
 type ConditionalActionRendererProps = NotificationRendererProps & {
-    header: React.ReactNode;
-    body: React.ReactNode;
+    header: ReactNode;
+    body: ReactNode;
     icon?: JSX.Element;
     actionLabel: ExtendedMessageDescriptor['id'];
     actionAllowed: boolean;

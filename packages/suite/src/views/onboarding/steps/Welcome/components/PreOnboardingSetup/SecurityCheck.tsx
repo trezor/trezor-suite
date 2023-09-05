@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components';
 import { TREZOR_SUPPORT_URL } from '@trezor/urls';
 import { Icon, Tooltip, variables, useTheme } from '@trezor/components';

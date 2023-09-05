@@ -1,4 +1,4 @@
-import React from 'react';
+import { ReactNode } from 'react';
 import { FormattedMessage } from 'react-intl';
 // We cannot use aliases here because this file is directly imported by the @suite-common/intl-types
 // It's little hacky by this will be solved when PR for refactor intl will be merged.
@@ -19,7 +19,7 @@ export type ExtendedMessageDescriptor = CommonExtendedMessageDescriptor;
 type MsgType = OwnProps & ExtendedMessageDescriptor;
 
 export const isMsgType = (
-    props: MsgType | React.ReactNode | ExtendedMessageDescriptor | Date | FormatXMLElementFn,
+    props: MsgType | ReactNode | ExtendedMessageDescriptor | Date | FormatXMLElementFn,
 ): props is MsgType =>
     typeof props === 'object' && props !== null && (props as MsgType).id !== undefined;
 

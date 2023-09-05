@@ -1,4 +1,4 @@
-import React from 'react';
+import { ReactNode } from 'react';
 import styled from 'styled-components';
 import { darken } from 'polished';
 import { analytics, EventType } from '@trezor/suite-analytics';
@@ -67,7 +67,7 @@ const Image = styled.img`
 
 type GuideNodeProps = {
     node: GuideNodeType;
-    description?: React.ReactNode;
+    description?: ReactNode;
 };
 
 export const GuideNode = ({ node, description }: GuideNodeProps) => {

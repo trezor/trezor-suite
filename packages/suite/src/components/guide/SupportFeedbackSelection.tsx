@@ -1,4 +1,3 @@
-import React from 'react';
 import { darken } from 'polished';
 import styled from 'styled-components';
 import { TREZOR_FORUM_URL, TREZOR_SUPPORT_URL } from '@trezor/urls';

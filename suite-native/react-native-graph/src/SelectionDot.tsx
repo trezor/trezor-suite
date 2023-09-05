@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import { useCallback, ReactElement } from 'react';
 import { runOnJS, useAnimatedReaction } from 'react-native-reanimated';
 
 import {
@@ -20,7 +20,7 @@ export function SelectionDot({
     color,
     circleX,
     circleY,
-}: SelectionDotProps): React.ReactElement {
+}: SelectionDotProps): ReactElement {
     const circleRadius = useValue(0);
     const circleStrokeRadius = useComputedValue(
         () => circleRadius.current * CIRCLE_RADIUS_MULTIPLIER,

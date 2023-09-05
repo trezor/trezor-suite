@@ -1,4 +1,4 @@
-import React from 'react';
+import { ButtonHTMLAttributes } from 'react';
 import styled from 'styled-components';
 
 const Button = styled.button`
@@ -42,8 +42,7 @@ const Button = styled.button`
     }
 `;
 
-export interface PinButtonProps
-    extends Pick<React.ButtonHTMLAttributes<HTMLButtonElement>, 'onClick'> {
+export interface PinButtonProps extends Pick<ButtonHTMLAttributes<HTMLButtonElement>, 'onClick'> {
     'data-value': string;
 }
 

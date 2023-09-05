@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import styled from 'styled-components';
 import BigNumber from 'bignumber.js';
 import { isZero, amountToSatoshi } from '@suite-common/wallet-utils';

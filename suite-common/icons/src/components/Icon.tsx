@@ -1,4 +1,3 @@
-import React from 'react';
 import { SharedValue, useDerivedValue } from 'react-native-reanimated';
 
 import { Canvas, ImageSVG, useSVG, Group, Skia, BlendMode } from '@shopify/react-native-skia';

@@ -1,4 +1,4 @@
-import React, { useRef, useCallback, useState } from 'react';
+import { useRef, useCallback, useState } from 'react';
 import styled from 'styled-components';
 import { analytics, EventType } from '@trezor/suite-analytics';
 

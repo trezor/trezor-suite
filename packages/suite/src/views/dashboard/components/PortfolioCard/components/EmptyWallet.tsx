@@ -1,4 +1,4 @@
-import React from 'react';
+import { HTMLAttributes } from 'react';
 import styled from 'styled-components';
 import { variables, H3, Image } from '@trezor/components';
 import { Translation } from 'src/components/suite';
@@ -44,7 +44,7 @@ const SecurityItem = styled.div`
     }
 `;
 
-type EmptyWalletProps = React.HTMLAttributes<HTMLDivElement>;
+type EmptyWalletProps = HTMLAttributes<HTMLDivElement>;
 
 export const EmptyWallet = (props: EmptyWalletProps) => (
     <Wrapper {...props} data-test="@dashboard/wallet-ready">

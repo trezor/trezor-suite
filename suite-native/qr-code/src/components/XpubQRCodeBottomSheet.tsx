@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 import { Box, Button, BottomSheet, BottomSheetProps, VStack } from '@suite-native/atoms';
 import { networks, NetworkSymbol, NetworkType } from '@suite-common/wallet-config';

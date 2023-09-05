@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components';
 import { Translation, Modal, ModalProps } from 'src/components/suite';
 import { PinMatrix, PIN_MATRIX_MAX_WIDTH } from 'src/components/suite/PinMatrix';

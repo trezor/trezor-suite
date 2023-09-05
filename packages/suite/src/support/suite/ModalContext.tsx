@@ -1,8 +1,8 @@
-import React, { useContext, useRef, createContext } from 'react';
+import { useContext, useRef, createContext, RefObject, ReactNode } from 'react';
 
 type ModalContextData = {
     isDisabled: boolean;
-    modalTarget: React.RefObject<HTMLDivElement> | null;
+    modalTarget: RefObject<HTMLDivElement> | null;
 };
 
 const ModalContext = createContext<ModalContextData>({
@@ -14,7 +14,7 @@ export const useModalTarget = () => useContext(ModalContext).modalTarget?.curren
 
 type ModalContextProviderProps = {
     isDisabled?: boolean;
-    children: React.ReactNode;
+    children: ReactNode;
 };
 
 export const ModalContextProvider = ({

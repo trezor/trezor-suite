@@ -1,4 +1,3 @@
-import React from 'react';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from 'src/components/suite/Settings';
 
 // TODO add possibility to throw testing error from Electron main process

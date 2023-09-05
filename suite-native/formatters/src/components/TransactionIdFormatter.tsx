@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { Text, TextProps } from '@suite-native/atoms';
 import { WalletAccountTransaction } from '@suite-common/wallet-types';
 

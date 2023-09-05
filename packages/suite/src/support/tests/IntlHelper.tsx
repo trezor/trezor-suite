@@ -1,4 +1,4 @@
-import React from 'react';
+import { ReactChild } from 'react';
 import renderer from 'react-test-renderer';
 import { IntlProvider } from 'react-intl';
 import { Provider } from 'react-redux';
@@ -8,7 +8,7 @@ interface Props {
     locale: string;
 }
 
-const createComponentWithIntl = (children: React.ReactChild, props?: Props) => {
+const createComponentWithIntl = (children: ReactChild, props?: Props) => {
     const { locale = 'en' } = props || {};
 
     // Mock store because our custom wrapper around FormattedMessage (Translation component)

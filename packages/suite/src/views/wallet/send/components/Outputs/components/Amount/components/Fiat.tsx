@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import { useCallback } from 'react';
 import BigNumber from 'bignumber.js';
 import styled from 'styled-components';
 import { Controller } from 'react-hook-form';

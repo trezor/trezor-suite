@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, ReactNode, ChangeEvent } from 'react';
 import styled, { css } from 'styled-components';
 import { analytics, EventType } from '@trezor/suite-analytics';
 import { getFirmwareVersion } from '@trezor/device-utils';
@@ -81,7 +81,7 @@ const AnonymousDataItem = styled.li`
 
 type RatingItem = {
     id: Rating;
-    value: React.ReactNode;
+    value: ReactNode;
 };
 
 const MESSAGE_CHARACTER_LIMIT = 1000;
@@ -110,7 +110,7 @@ const ratingOptions: RatingItem[] = [
 
 /** A format compatible with React Select component. */
 type FeedbackCategoryOption = {
-    label: React.ReactNode;
+    label: ReactNode;
     value: FeedbackCategory;
 };
 
@@ -122,10 +122,10 @@ export const Feedback = ({ type }: FeedbackProps) => {
     const { device } = useDevice();
     const dispatch = useDispatch();
     const router = useSelector(state => state.router);
-    const [description, setDescription] = React.useState('');
-    const [rating, setRating] = React.useState<RatingItem>();
+    const [description, setDescription] = useState('');
+    const [rating, setRating] = useState<RatingItem>();
 
-    const feedbackCategories: { [key in FeedbackCategory]: React.ReactNode } = {
+    const feedbackCategories: { [key in FeedbackCategory]: ReactNode } = {
         dashboard: <Translation id="TR_FEEDBACK_CATEGORY_DASHBOARD" />,
         account: <Translation id="TR_FEEDBACK_CATEGORY_ACCOUNT" />,
         settings: <Translation id="TR_FEEDBACK_CATEGORY_SETTINGS" />,
@@ -161,7 +161,7 @@ export const Feedback = ({ type }: FeedbackProps) => {
                 return undefined;
         }
     };
-    const [category, setCategory] = React.useState(getDefaultCategory());
+    const [category, setCategory] = useState(getDefaultCategory());
 
     const categoryToOption = (category: FeedbackCategory): FeedbackCategoryOption => ({
         value: category,
@@ -289,7 +289,7 @@ export const Feedback = ({ type }: FeedbackProps) => {
                 <Textarea
                     rows={8}
                     value={description}
-                    onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
+                    onChange={(e: ChangeEvent<HTMLTextAreaElement>) =>
                         setDescription(e.target.value)
                     }
                     noTopLabel

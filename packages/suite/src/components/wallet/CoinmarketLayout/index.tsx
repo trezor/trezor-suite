@@ -1,6 +1,6 @@
 import { WalletLayout, CoinmarketFooter, WalletLayoutHeader } from 'src/components/wallet';
 import { Card, Button, variables } from '@trezor/components';
-import React, { ReactNode } from 'react';
+import { ReactNode } from 'react';
 import styled from 'styled-components';
 import Navigation from './components/Navigation';
 import AccountTransactions from './components/AccountTransactions';

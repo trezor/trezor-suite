@@ -1,4 +1,4 @@
-import React from 'react';
+import { memo } from 'react';
 import { TouchableOpacity } from 'react-native';
 import { useSelector } from 'react-redux';
 
@@ -53,7 +53,7 @@ const iconStyle = prepareNativeStyle(() => ({
     marginRight: 6,
 }));
 
-export const AssetItem = React.memo(
+export const AssetItem = memo(
     ({
         cryptoCurrencySymbol,
         cryptoCurrencyValue,

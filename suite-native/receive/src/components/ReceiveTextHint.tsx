@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { Box, VStack, Text, Pictogram, TrezorSuiteLiteHeader } from '@suite-native/atoms';
 
 export const ReceiveTextHint = () => (

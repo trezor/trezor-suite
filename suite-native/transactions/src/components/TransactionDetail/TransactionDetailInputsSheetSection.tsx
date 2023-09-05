@@ -1,4 +1,4 @@
-import React from 'react';
+import { ReactNode, Fragment } from 'react';
 
 import { A, G } from '@mobily/ts-belt';
 
@@ -59,7 +59,7 @@ const TransactionAddressAmount = ({
 
 type TransactionTransferSectionProps = {
     transfers: TransactionTranfer[];
-    header: React.ReactNode;
+    header: ReactNode;
 };
 
 export const TransactionDetailInputsSheetSection = ({
@@ -84,7 +84,7 @@ export const TransactionDetailInputsSheetSection = ({
             <Card>
                 <Box flexDirection="row" justifyContent="space-between">
                     {transfers.map(({ inputs, outputs, symbol, decimals }) => (
-                        <React.Fragment key={symbol}>
+                        <Fragment key={symbol}>
                             <Box style={applyStyle(addressAmountColumnStyle)}>
                                 {inputs.map(({ address, amount }) => (
                                     <TransactionAddressAmount
@@ -108,7 +108,7 @@ export const TransactionDetailInputsSheetSection = ({
                                     />
                                 ))}
                             </Box>
-                        </React.Fragment>
+                        </Fragment>
                     ))}
                 </Box>
             </Card>

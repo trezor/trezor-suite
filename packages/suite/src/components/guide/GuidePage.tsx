@@ -1,4 +1,3 @@
-import React from 'react';
 import { useSelector } from 'src/hooks/suite';
 import { Header, Content, ViewWrapper, GuideMarkdown } from 'src/components/guide';
 import { Translation } from 'src/components/suite';

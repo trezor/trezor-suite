@@ -2,7 +2,6 @@ import { AppState } from 'src/types/suite';
 import { variables, P } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 import { getSeenAndUnseenNotifications } from 'src/utils/suite/notification';
-import React from 'react';
 import styled from 'styled-components';
 import NotificationList from '../NotificationList';
 

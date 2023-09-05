@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import { useMemo, ReactPortal } from 'react';
 import { createPortal } from 'react-dom';
 import { Modal, ModalProps, Icon, colors } from '@trezor/components';
 import { useGuide } from 'src/hooks/guide';
@@ -11,7 +11,7 @@ export const DefaultRenderer = ({
     isCancelable,
     onCancel,
     ...rest
-}: ModalProps): React.ReactPortal | null => {
+}: ModalProps): ReactPortal | null => {
     const { openGuide } = useGuide();
     const { isMobileLayout } = useLayoutSize();
     const modalTarget = useModalTarget();

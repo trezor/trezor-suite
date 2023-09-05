@@ -1,4 +1,3 @@
-import React from 'react';
 import { useFormatters } from '@suite-common/formatters';
 
 interface CoinmarketFiatAmountProps {

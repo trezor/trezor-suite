@@ -1,4 +1,4 @@
-import React from 'react';
+import { ReactNode } from 'react';
 import BigNumber from 'bignumber.js';
 import { Translation } from 'src/components/suite';
 import { formatNetworkAmount, formatAmount, isTestnet } from '@suite-common/wallet-utils';
@@ -57,7 +57,7 @@ export type Props = OutputProps & {
 
 const Output = (props: Props) => {
     const { type, state, label, value, symbol, token, account } = props;
-    let outputLabel: React.ReactNode = label;
+    let outputLabel: ReactNode = label;
     const { networkType } = account;
 
     if (type === 'locktime') {

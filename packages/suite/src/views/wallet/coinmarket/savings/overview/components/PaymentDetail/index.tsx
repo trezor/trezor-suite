@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import parseISO from 'date-fns/parseISO';
 import format from 'date-fns/format';
 import styled from 'styled-components';

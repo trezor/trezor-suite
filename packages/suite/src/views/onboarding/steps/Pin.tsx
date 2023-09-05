@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Translation } from 'src/components/suite';
 import { PinMatrix } from 'src/components/suite/PinMatrix';
 import {

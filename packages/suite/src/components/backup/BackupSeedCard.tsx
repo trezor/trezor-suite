@@ -1,4 +1,4 @@
-import React from 'react';
+import { ReactNode, SyntheticEvent } from 'react';
 import styled from 'styled-components';
 import { darken } from 'polished';
 import { Icon, IconProps, variables, useTheme, Checkbox } from '@trezor/components';
@@ -68,7 +68,7 @@ const IconWrapper = styled.div`
 `;
 
 interface BackupSeedCardProps {
-    label: React.ReactNode;
+    label: ReactNode;
     icon: IconProps['icon'];
     isChecked: boolean;
     onClick: () => void;
@@ -84,7 +84,7 @@ export const BackupSeedCard = ({
 }: BackupSeedCardProps) => {
     const theme = useTheme();
 
-    const handleCheckboxClick = (e: React.SyntheticEvent<HTMLElement>) => {
+    const handleCheckboxClick = (e: SyntheticEvent<HTMLElement>) => {
         e.stopPropagation();
         onClick();
     };

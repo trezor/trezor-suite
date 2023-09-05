@@ -1,4 +1,4 @@
-import React from 'react';
+import { ReactNode } from 'react';
 import styled from 'styled-components';
 import { variables, Card } from '@trezor/components';
 import { CARD_PADDING_SIZE, CARD_PADDING_SIZE_LARGE } from 'src/constants/suite/layout';
@@ -44,10 +44,10 @@ const Title = styled.div`
 const Description = styled.div``;
 
 export interface CardWithHeaderProps {
-    children?: React.ReactNode;
-    customHeader?: React.ReactNode;
-    title?: string | React.ReactNode;
-    description?: string | React.ReactNode;
+    children?: ReactNode;
+    customHeader?: ReactNode;
+    title?: string | ReactNode;
+    description?: string | ReactNode;
     largePadding?: boolean;
     noPadding?: boolean;
     noVerticalPadding?: boolean;

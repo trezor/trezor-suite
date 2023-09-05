@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { DiscreetText, Text, TextProps } from '@suite-native/atoms';
 
 type AmountTextProps = {

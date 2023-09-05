@@ -1,4 +1,3 @@
-import React from 'react';
 import { GestureResponderEvent } from 'react-native';
 import Animated, {
     useAnimatedStyle,

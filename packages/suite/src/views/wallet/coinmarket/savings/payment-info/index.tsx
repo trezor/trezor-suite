@@ -7,7 +7,6 @@ import {
 } from 'src/components/wallet';
 import { useSavingsPaymentInfo } from 'src/hooks/wallet/useCoinmarketSavingsPaymentInfo';
 import { Button } from '@trezor/components';
-import React from 'react';
 import styled from 'styled-components';
 import { Translation } from 'src/components/suite';
 import { useFormatters } from '@suite-common/formatters';

@@ -1,4 +1,4 @@
-import React, { ReactNode, ReactElement } from 'react';
+import { ReactNode, ReactElement } from 'react';
 import styled from 'styled-components';
 import { Card, variables, P, Icon, types, useTheme } from '@trezor/components';
 

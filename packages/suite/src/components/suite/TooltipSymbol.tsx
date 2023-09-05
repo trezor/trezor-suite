@@ -1,4 +1,4 @@
-import React from 'react';
+import { ReactNode } from 'react';
 import styled from 'styled-components';
 import { Tooltip, Icon, IconType } from '@trezor/components';
 
@@ -8,7 +8,7 @@ const InlineTooltip = styled(Tooltip)`
 `;
 
 type TooltipSymbolProps = {
-    content: React.ReactNode;
+    content: ReactNode;
     icon?: IconType;
 };
 

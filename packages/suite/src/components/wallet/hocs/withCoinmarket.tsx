@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect, ComponentType } from 'react';
 import { CoinmarketLayout, withSelectedAccountLoaded } from 'src/components/wallet';
 import type { AppState, ExtendedMessageDescriptor } from 'src/types/suite';
 import { useDispatch } from 'src/hooks/suite';
@@ -17,7 +17,7 @@ interface WithCoinmarketSavingsLoadedOptions {
 }
 
 export const withCoinmarket = (
-    WrappedComponent: React.ComponentType<WithCoinmarketProps>,
+    WrappedComponent: ComponentType<WithCoinmarketProps>,
     options: WithCoinmarketSavingsLoadedOptions,
 ) => {
     const displayName = WrappedComponent.displayName || WrappedComponent.name || 'Component';

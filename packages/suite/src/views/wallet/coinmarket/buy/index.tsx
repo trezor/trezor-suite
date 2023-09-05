@@ -1,4 +1,3 @@
-import React from 'react';
 import { useCoinmarketBuyForm, BuyFormContext } from 'src/hooks/wallet/useCoinmarketBuyForm';
 import {
     CoinmarketLayout,

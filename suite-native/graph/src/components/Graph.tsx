@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 
 import { N } from '@mobily/ts-belt';
 import * as Haptics from 'expo-haptics';

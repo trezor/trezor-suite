@@ -1,4 +1,4 @@
-import React from 'react';
+import { memo } from 'react';
 
 import { HStack } from '@suite-native/atoms';
 import { CryptoAmountFormatter } from '@suite-native/formatters';
@@ -11,7 +11,7 @@ type AccountDetailBalanceProps = {
     isBalance?: boolean;
 };
 
-export const AccountDetailCryptoValue = React.memo(
+export const AccountDetailCryptoValue = memo(
     ({ value, networkSymbol, isBalance = true }: AccountDetailBalanceProps) => (
         <HStack spacing="small" flexDirection="row" alignItems="center" justifyContent="center">
             <CryptoIcon symbol={networkSymbol} size="extraSmall" />

@@ -1,4 +1,4 @@
-import React from 'react';
+import { ReactText } from 'react';
 import styled from 'styled-components';
 import { variables, H2, Button, Card, ButtonProps, Image, ImageProps } from '@trezor/components';
 
@@ -54,7 +54,7 @@ interface AccountExceptionLayoutProps {
     description?: JSX.Element | string;
     image?: Extract<ImageProps, { image: any }>['image'];
     imageComponent?: JSX.Element;
-    actions?: ({ key: React.ReactText } & ButtonProps)[];
+    actions?: ({ key: ReactText } & ButtonProps)[];
     actionComponent?: JSX.Element;
 }
 

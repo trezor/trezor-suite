@@ -1,4 +1,4 @@
-import React from 'react';
+import { ReactNode } from 'react';
 import styled from 'styled-components';
 
 const Container = styled.div<{
@@ -24,7 +24,7 @@ interface ProgressPieInterface {
     size?: number;
     color?: string;
     backgroundColor?: string;
-    children?: React.ReactNode;
+    children?: ReactNode;
     className?: string;
 }
 

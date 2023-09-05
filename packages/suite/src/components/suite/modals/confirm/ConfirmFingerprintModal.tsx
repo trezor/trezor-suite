@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components';
 import { ConfirmOnDevice } from '@trezor/components';
 import { Translation, Modal, ModalProps } from 'src/components/suite';

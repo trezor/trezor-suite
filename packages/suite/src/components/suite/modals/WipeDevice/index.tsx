@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import styled from 'styled-components';
 import { Button, Image } from '@trezor/components';
 import { Translation, CheckItem, Modal } from 'src/components/suite';

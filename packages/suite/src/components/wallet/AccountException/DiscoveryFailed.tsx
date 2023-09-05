@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { restartDiscoveryThunk } from '@suite-common/wallet-core';
 
 import { Translation } from 'src/components/suite';

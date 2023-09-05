@@ -1,4 +1,13 @@
-import React, { useState, useCallback, useRef, useEffect } from 'react';
+import {
+    useState,
+    useCallback,
+    useRef,
+    useEffect,
+    Dispatch,
+    SetStateAction,
+    ChangeEvent,
+    KeyboardEvent,
+} from 'react';
 import styled, { css } from 'styled-components';
 import { Input, Icon, useTheme, Tooltip, KEYBOARD_CODE } from '@trezor/components';
 import { useDispatch } from 'src/hooks/suite';
@@ -37,8 +46,8 @@ const StyledInput = styled(Input)<{ expanded: boolean }>`
 export interface SearchProps {
     account: Account;
     search: string;
-    setSearch: React.Dispatch<React.SetStateAction<string>>;
-    setSelectedPage: React.Dispatch<React.SetStateAction<number>>;
+    setSearch: Dispatch<SetStateAction<string>>;
+    setSelectedPage: Dispatch<SetStateAction<number>>;
 }
 
 export const SearchAction = ({ account, search, setSearch, setSelectedPage }: SearchProps) => {
@@ -64,7 +73,7 @@ export const SearchAction = ({ account, search, setSearch, setSelectedPage }: Se
     }, [setExpanded, search]);
 
     const onKeyDown = useCallback(
-        (event: React.KeyboardEvent) => {
+        (event: KeyboardEvent) => {
             // Handle esc (unfocus)
             if (event.code === KEYBOARD_CODE.ESCAPE && inputRef.current) {
                 setSearch('');
@@ -75,7 +84,7 @@ export const SearchAction = ({ account, search, setSearch, setSelectedPage }: Se
     );
 
     const onSearch = useCallback(
-        async ({ target }: React.ChangeEvent<HTMLInputElement>) => {
+        async ({ target }: ChangeEvent<HTMLInputElement>) => {
             setSelectedPage(1);
             setSearch(target.value);
 
@@ -124,8 +133,10 @@ export const SearchAction = ({ account, search, setSearch, setSelectedPage }: Se
         setExpanded(false);
         setSearch('');
 
+        // @ts-expect-error
         document.addEventListener('keydown', onSearchKeys);
         return () => {
+            // @ts-expect-error
             document.removeEventListener('keydown', onSearchKeys);
         };
     }, [account.symbol, account.index, account.accountType, setSearch, onSearchKeys]);

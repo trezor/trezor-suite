@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { Checkbox } from '@trezor/components';
 import { desktopApi } from '@trezor/suite-desktop-api';
 

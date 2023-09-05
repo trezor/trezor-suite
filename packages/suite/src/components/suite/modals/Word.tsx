@@ -1,4 +1,3 @@
-import React from 'react';
 import TrezorConnect from '@trezor/connect';
 import { Translation, WordInput, Modal, ModalProps } from 'src/components/suite';
 import styled from 'styled-components';

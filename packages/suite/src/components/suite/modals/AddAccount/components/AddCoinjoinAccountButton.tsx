@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { createTimeoutPromise } from '@trezor/utils';
 import { Translation } from 'src/components/suite';
 import { useSelector, useDispatch } from 'src/hooks/suite';

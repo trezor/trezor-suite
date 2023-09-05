@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import styled from 'styled-components';
 import { ConfirmOnDevice } from '@trezor/components';
 import { useDevice, useDispatch, useFirmware } from 'src/hooks/suite';

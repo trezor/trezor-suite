@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { Canvas, ImageSVG, useSVG } from '@shopify/react-native-skia';
 
 import { networks } from '@suite-common/wallet-config';

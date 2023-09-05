@@ -1,4 +1,3 @@
-import React from 'react';
 import { useCoinmarketSellFormContext } from 'src/hooks/wallet/useCoinmarketSellForm';
 import { Translation } from 'src/components/suite';
 import { Wrapper, FeesWrapper, NoProviders } from 'src/views/wallet/coinmarket';

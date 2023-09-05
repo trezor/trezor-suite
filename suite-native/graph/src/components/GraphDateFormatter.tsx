@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { Atom, useAtomValue } from 'jotai';
 
 import { useFormatters } from '@suite-common/formatters';

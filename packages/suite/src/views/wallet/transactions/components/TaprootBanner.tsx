@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components';
 import { variables, H2, Button, Card, Icon, useTheme } from '@trezor/components';
 import { Translation } from 'src/components/suite';

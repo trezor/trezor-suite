@@ -1,4 +1,3 @@
-import React from 'react';
 import { Button } from '../../../index';
 import { storiesOf } from '@storybook/react';
 import { StoryColumn } from '../../../support/Story';

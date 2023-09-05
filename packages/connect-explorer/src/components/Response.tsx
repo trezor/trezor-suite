@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components';
 import { Inspector } from 'react-inspector';
 import type { AppState } from '../types';

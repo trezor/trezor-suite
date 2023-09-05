@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { Option, OptionsWrapper, OptionsDivider } from 'src/components/onboarding';
 import { Translation } from 'src/components/suite';
 

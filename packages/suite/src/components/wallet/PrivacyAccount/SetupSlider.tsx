@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import { useRef, ReactNode, KeyboardEventHandler, ChangeEventHandler } from 'react';
 import styled from 'styled-components';
 
 import { useSelector } from 'src/hooks/suite/useSelector';
@@ -32,9 +32,9 @@ const StyledSliderInput = styled(SliderInput)<{ width?: number }>`
 interface SetupSliderProps
     extends Pick<SliderInputProps, 'isDisabled' | 'max' | 'min' | 'onChange' | 'unit'>,
         Pick<RangeProps, 'labels' | 'onLabelClick' | 'trackStyle'> {
-    children?: React.ReactNode;
-    description: React.ReactNode;
-    heading: React.ReactNode;
+    children?: ReactNode;
+    description: ReactNode;
+    heading: ReactNode;
     inputWidth?: number;
     modifyPosition?: (value: number) => number;
     sliderValue?: RangeProps['value'];
@@ -67,7 +67,7 @@ export const SetupSlider = ({
         inputRef.current?.setPreviousValue(value);
         onChange(value);
     };
-    const handleSliderChange: React.ChangeEventHandler<HTMLInputElement> = e => {
+    const handleSliderChange: ChangeEventHandler<HTMLInputElement> = e => {
         let value = Number(e.target.value);
         // Adjust position for a logarithmic slider.
         if (modifyPosition) {
@@ -76,7 +76,7 @@ export const SetupSlider = ({
         handleChange(value);
     };
     // Adjust arrow controls for a logarithmic slider.
-    const handleKeyDown: React.KeyboardEventHandler = e => {
+    const handleKeyDown: KeyboardEventHandler = e => {
         if (['ArrowRight', 'ArrowUp'].includes(e.key) && value < max) {
             e.preventDefault();
             handleChange(value + 1);

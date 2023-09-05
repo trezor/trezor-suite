@@ -1,9 +1,9 @@
-import React from 'react';
+import { ReactNode } from 'react';
 import { TooltipButton, ButtonProps } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 
 interface AddButtonProps extends ButtonProps {
-    disabledMessage: React.ReactNode;
+    disabledMessage: ReactNode;
     handleClick: () => void;
 }
 

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState, ReactNode } from 'react';
 import { DateRange } from 'react-date-range';
 import styled, { css } from 'styled-components';
 
@@ -596,8 +596,8 @@ export interface TimerangeProps {
     startDate?: Date;
     endDate?: Date;
     locale?: Locale;
-    ctaCancel: React.ReactNode | string;
-    ctaSubmit: React.ReactNode | string;
+    ctaCancel: ReactNode | string;
+    ctaSubmit: ReactNode | string;
 }
 
 const Timerange = (props: TimerangeProps) => {

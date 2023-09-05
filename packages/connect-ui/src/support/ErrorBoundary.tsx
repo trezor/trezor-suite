@@ -1,20 +1,20 @@
-import React from 'react';
+import { ReactNode, Component, ErrorInfo } from 'react';
 
 interface StateProps {
     error: Error | null | undefined;
 }
 
 interface Props {
-    children: React.ReactNode;
+    children: ReactNode;
 }
 
-export class ErrorBoundary extends React.Component<Props, StateProps> {
+export class ErrorBoundary extends Component<Props, StateProps> {
     constructor(props: Props) {
         super(props);
         this.state = { error: null };
     }
 
-    componentDidCatch(error: Error | null, _errorInfo: React.ErrorInfo) {
+    componentDidCatch(error: Error | null, _errorInfo: ErrorInfo) {
         this.setState({ error });
     }
 

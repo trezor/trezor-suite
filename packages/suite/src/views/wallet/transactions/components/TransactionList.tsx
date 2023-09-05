@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useEffect, useRef } from 'react';
+import { useMemo, useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import useDebounce from 'react-use/lib/useDebounce';
 

@@ -1,4 +1,3 @@
-import React from 'react';
 import { PROTO } from '@trezor/connect';
 
 import { ActionColumn, ActionSelect, SectionItem, TextColumn } from 'src/components/suite/Settings';

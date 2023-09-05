@@ -1,4 +1,4 @@
-import React from 'react';
+import { FC } from 'react';
 
 import { FlagIconName } from '../icons';
 
@@ -14,4 +14,4 @@ const flagIconSizes = {
 type FlagIconSize = keyof typeof flagIconSizes;
 
 // This will be used for web in the future
-export const FlagIcon: React.FC<FlagIconProps> = () => null;
+export const FlagIcon: FC<FlagIconProps> = () => null;

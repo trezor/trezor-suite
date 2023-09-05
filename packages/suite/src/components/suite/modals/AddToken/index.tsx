@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState, ChangeEvent } from 'react';
 import styled from 'styled-components';
 import TrezorConnect, { TokenInfo } from '@trezor/connect';
 import { analytics, EventType } from '@trezor/suite-analytics';
@@ -75,7 +75,7 @@ export const AddToken = ({ onCancel }: AddTokenProps) => {
     // it shouldn't be possible to open this modal without having selected account
     if (!account) return null;
 
-    const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const onChange = (e: ChangeEvent<HTMLInputElement>) => {
         const addr = e.target.value;
 
         const alreadyAdded = account.tokens?.find(

@@ -1,4 +1,12 @@
-import React, { useEffect, useState, useRef } from 'react';
+import {
+    useEffect,
+    useState,
+    useRef,
+    ReactNode,
+    ReactElement,
+    isValidElement,
+    cloneElement,
+} from 'react';
 import styled from 'styled-components';
 import { H1, variables } from '@trezor/components';
 import { MAX_WIDTH, MAX_WIDTH_WALLET_CONTENT } from 'src/constants/suite/layout';
@@ -57,11 +65,11 @@ const TitleRow = styled(Row)`
 const Delimeter = styled.div``;
 
 interface AppNavigationPanelProps {
-    title: React.ReactNode;
-    titleContent?: (isAppNavigationPanelInView: boolean) => React.ReactNode | undefined;
+    title: ReactNode;
+    titleContent?: (isAppNavigationPanelInView: boolean) => ReactNode | undefined;
     maxWidth: 'small' | 'default';
-    navigation?: React.ReactElement<{ inView: boolean }>;
-    children?: React.ReactNode;
+    navigation?: ReactElement<{ inView: boolean }>;
+    children?: ReactNode;
     className?: string;
 }
 
@@ -111,7 +119,7 @@ export const AppNavigationPanel = ({
                     </BasicInfo>
                 </Content>
             </Wrapper>
-            {React.isValidElement(navigation) && React.cloneElement(navigation, { inView })}
+            {isValidElement(navigation) && cloneElement(navigation, { inView })}
             <Delimeter />
         </>
     );

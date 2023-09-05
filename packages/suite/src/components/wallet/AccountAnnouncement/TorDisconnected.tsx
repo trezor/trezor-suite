@@ -1,4 +1,3 @@
-import React from 'react';
 import { NotificationCard, Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { toggleTor } from 'src/actions/suite/suiteActions';

@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import React from 'react';
 import { FlagType } from '../../../support/types';
 
 const Wrapper = styled.div`

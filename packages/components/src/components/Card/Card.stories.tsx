@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components';
 import { Card as CardComponent } from './Card';
 import { variables } from '../../index';

@@ -1,4 +1,4 @@
-import React from 'react';
+import { ImgHTMLAttributes } from 'react';
 import styled from 'styled-components';
 import { PngImage, SvgImage, PNG_IMAGES, SVG_IMAGES } from './images';
 
@@ -44,7 +44,7 @@ const buildSrcSet = <
 
 export type ImageType = PngImage | SvgImage;
 
-export type ImageProps = React.ImgHTMLAttributes<Omit<HTMLImageElement, 'src'>> &
+export type ImageProps = ImgHTMLAttributes<Omit<HTMLImageElement, 'src'>> &
     (
         | {
               image: ImageType;

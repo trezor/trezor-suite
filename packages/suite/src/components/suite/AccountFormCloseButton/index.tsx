@@ -1,4 +1,3 @@
-import React from 'react';
 import { useDispatch } from 'src/hooks/suite';
 import { goto } from 'src/actions/suite/routerActions';
 import { CloseButton } from 'src/components/suite';

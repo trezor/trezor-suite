@@ -1,4 +1,3 @@
-import React from 'react';
 import { withSelectedAccountLoaded, WithSelectedAccountLoadedProps } from 'src/components/wallet';
 import styled from 'styled-components';
 import { CoinmarketSellOffersContext, useOffers } from 'src/hooks/wallet/useCoinmarketSellOffers';

@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import { useCallback, useState } from 'react';
 import styled, { css } from 'styled-components';
 import { useDiscovery, useAccountSearch, useSelector } from 'src/hooks/suite';
 import { H2, variables, useTheme, Icon, LoadingContent } from '@trezor/components';

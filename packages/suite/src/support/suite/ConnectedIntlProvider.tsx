@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect, ReactNode } from 'react';
 import { IntlProvider } from 'react-intl';
 import enMessages from '@trezor/suite-data/files/translations/en.json';
 import { useSelector } from 'src/hooks/suite/useSelector';
@@ -30,7 +30,7 @@ const useFetchMessages = (locale: Locale) => {
 };
 
 interface ConnectedIntlProviderProps {
-    children: React.ReactNode;
+    children: ReactNode;
 }
 
 export const ConnectedIntlProvider = ({ children }: ConnectedIntlProviderProps) => {

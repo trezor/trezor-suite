@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { Translation } from 'src/components/suite';

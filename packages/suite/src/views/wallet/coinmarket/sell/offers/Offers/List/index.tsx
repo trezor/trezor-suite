@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components';
 import { CoinLogo, variables, Icon, H2 } from '@trezor/components';
 import { SellFiatTrade } from 'invity-api';

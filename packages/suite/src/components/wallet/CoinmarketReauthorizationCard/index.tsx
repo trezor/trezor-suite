@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import { useCallback } from 'react';
 import styled from 'styled-components';
 import { NotificationCard, Translation } from 'src/components/suite';
 import { SavingsTrade } from 'invity-api';

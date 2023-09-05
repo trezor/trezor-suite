@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components';
 import { variables, Button } from '@trezor/components';
 import { copyToClipboard } from '@trezor/dom-utils';

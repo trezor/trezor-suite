@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components';
 
 import { DeviceAnimation } from 'src/components/onboarding';

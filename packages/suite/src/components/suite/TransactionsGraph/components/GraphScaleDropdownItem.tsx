@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { useGraph } from 'src/hooks/suite';
 import { Translation } from 'src/components/suite';
 

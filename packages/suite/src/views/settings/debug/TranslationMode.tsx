@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { Switch } from '@trezor/components';
 import { ActionColumn, SectionItem, TextColumn } from 'src/components/suite/Settings';
 import { isTranslationMode, setTranslationMode } from 'src/utils/suite/l10n';

@@ -1,4 +1,3 @@
-import React from 'react';
 import { Translation } from 'src/components/suite';
 import { getTxHeaderSymbol } from '@suite-common/wallet-utils';
 import { WalletAccountTransaction } from 'src/types/wallet';

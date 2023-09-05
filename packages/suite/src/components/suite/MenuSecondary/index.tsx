@@ -1,4 +1,4 @@
-import React from 'react';
+import { ReactNode } from 'react';
 import styled from 'styled-components';
 
 import { variables } from '@trezor/components';
@@ -18,7 +18,7 @@ const Wrapper = styled.div`
 `;
 
 interface MenuSecondaryProps {
-    children: React.ReactNode;
+    children: ReactNode;
 }
 
 const MenuSecondary = ({ children }: MenuSecondaryProps) => (

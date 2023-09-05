@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import styled, { css } from 'styled-components';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useSendFormContext } from 'src/hooks/wallet';

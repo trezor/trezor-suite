@@ -1,4 +1,3 @@
-import React from 'react';
 import { NotificationCard } from 'src/components/suite';
 import { Link } from '@trezor/components';
 import { useSelector } from 'src/hooks/suite';

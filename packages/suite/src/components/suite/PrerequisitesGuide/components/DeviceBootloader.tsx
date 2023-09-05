@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components';
 import { Translation, TroubleshootingTips } from 'src/components/suite';
 import { Button } from '@trezor/components';

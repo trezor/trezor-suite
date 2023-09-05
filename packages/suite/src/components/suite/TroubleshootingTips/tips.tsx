@@ -1,4 +1,3 @@
-import React from 'react';
 import TrezorLink from 'src/components/suite/TrezorLink';
 import { Translation } from 'src/components/suite/Translation';
 import { isWeb, isLinux, isAndroid } from '@trezor/env-utils';

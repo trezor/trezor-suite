@@ -1,4 +1,3 @@
-import React from 'react';
 import { useSelector } from 'react-redux';
 
 import { AccountKey, WalletAccountTransaction } from '@suite-common/wallet-types';

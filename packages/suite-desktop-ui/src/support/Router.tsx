@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import { memo, ComponentType } from 'react';
 import { Switch, Route } from 'react-router-dom';
 
 import routes from 'src/constants/suite/routes';
@@ -35,7 +35,7 @@ import { SettingsCoins } from 'src/views/settings/coins/SettingsCoins';
 import { SettingsDebug } from 'src/views/settings/debug/SettingsDebug';
 import { SettingsDevice } from 'src/views/settings/device/SettingsDevice';
 
-const components: { [key: string]: React.ComponentType<any> } = {
+const components: { [key: string]: ComponentType<any> } = {
     'suite-index': Index,
     'notifications-index': Notification,
 

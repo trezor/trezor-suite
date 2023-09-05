@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { ActionColumn, SectionItem, TextColumn, ActionButton } from 'src/components/suite/Settings';
 import { useDispatch } from 'src/hooks/suite';
 import * as metadataActions from 'src/actions/suite/metadataActions';

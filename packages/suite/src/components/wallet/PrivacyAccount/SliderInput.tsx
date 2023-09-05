@@ -1,4 +1,12 @@
-import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
+import {
+    forwardRef,
+    useEffect,
+    useImperativeHandle,
+    useRef,
+    useState,
+    KeyboardEvent,
+    ChangeEvent,
+} from 'react';
 import styled from 'styled-components';
 import { Input, InputProps, variables } from '@trezor/components';
 
@@ -62,7 +70,7 @@ export const SliderInput = forwardRef<
         }
     }, [value]); // eslint-disable-line react-hooks/exhaustive-deps
 
-    const handleChange = ({ target }: React.ChangeEvent<HTMLInputElement>) => {
+    const handleChange = ({ target }: ChangeEvent<HTMLInputElement>) => {
         if (target.value === '') {
             setInputValue('');
 
@@ -101,7 +109,7 @@ export const SliderInput = forwardRef<
         onChange(formattedNumber);
     };
 
-    const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
         if (event.key === 'Enter') {
             inputRef.current?.blur();
         }

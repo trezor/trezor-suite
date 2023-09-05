@@ -1,4 +1,3 @@
-import React from 'react';
 import { Controller } from 'react-hook-form';
 import styled from 'styled-components';
 import { Translation } from 'src/components/suite';

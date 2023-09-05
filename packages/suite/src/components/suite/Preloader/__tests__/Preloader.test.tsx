@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { configureStore } from 'src/support/tests/configureStore';
 import { renderWithProviders, findByTestId } from 'src/support/tests/hooksHelper';
 

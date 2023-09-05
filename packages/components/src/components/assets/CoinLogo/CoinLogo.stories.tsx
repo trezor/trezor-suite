@@ -1,4 +1,3 @@
-import React from 'react';
 import { CoinLogo, variables } from '../../../index';
 import { storiesOf } from '@storybook/react';
 import { number, select } from '@storybook/addon-knobs';

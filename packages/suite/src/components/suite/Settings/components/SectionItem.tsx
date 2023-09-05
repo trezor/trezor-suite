@@ -1,4 +1,4 @@
-import React from 'react';
+import { forwardRef, HTMLAttributes } from 'react';
 import styled from 'styled-components';
 
 import { variables } from '@trezor/components';
@@ -42,11 +42,11 @@ const Content = styled.div`
     }
 `;
 
-interface SectionItemProps extends React.HTMLAttributes<HTMLDivElement> {
+interface SectionItemProps extends HTMLAttributes<HTMLDivElement> {
     shouldHighlight?: boolean;
 }
 
-export const SectionItem = React.forwardRef<HTMLDivElement, SectionItemProps>(
+export const SectionItem = forwardRef<HTMLDivElement, SectionItemProps>(
     ({ children, shouldHighlight, ...rest }, ref) => (
         <Wrapper ref={ref} shouldHighlight={shouldHighlight} {...rest}>
             <Content>{children}</Content>

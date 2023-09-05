@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components';
 import { useRouteMatch } from 'react-router-dom';
 import { fillSendForm, resetProtocol } from 'src/actions/suite/protocolActions';

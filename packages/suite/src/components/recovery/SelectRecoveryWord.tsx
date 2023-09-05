@@ -1,4 +1,3 @@
-import React from 'react';
 import { useRecovery } from 'src/hooks/suite';
 import { WordInput, WordInputAdvanced } from 'src/components/suite';
 

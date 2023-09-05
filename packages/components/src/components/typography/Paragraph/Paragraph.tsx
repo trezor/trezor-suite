@@ -1,4 +1,4 @@
-import React from 'react';
+import { ReactNode, HTMLAttributes } from 'react';
 import styled, { css } from 'styled-components';
 import { variables } from '../../../config';
 import { ParagraphSize } from '../../../support/types';
@@ -46,8 +46,8 @@ const Paragraph = styled.div<PProps>`
         `}
 `;
 
-interface PProps extends React.HTMLAttributes<HTMLDivElement> {
-    children: React.ReactNode;
+interface PProps extends HTMLAttributes<HTMLDivElement> {
+    children: ReactNode;
     className?: string;
     size?: ParagraphSize;
     weight?: 'normal' | 'bold' | 'medium';

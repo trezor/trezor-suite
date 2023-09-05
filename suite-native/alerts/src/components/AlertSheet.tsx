@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { Modal, Pressable } from 'react-native';
 import Animated from 'react-native-reanimated';
 

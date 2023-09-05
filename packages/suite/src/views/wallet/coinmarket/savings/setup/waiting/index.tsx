@@ -1,4 +1,3 @@
-import React from 'react';
 import { withCoinmarket, WithSelectedAccountLoadedProps } from 'src/components/wallet';
 import { useCoinmarketSavingsSetupWaiting } from 'src/hooks/wallet/useCoinmarketSavingsSetupWaiting';
 import { Button, Spinner } from '@trezor/components';

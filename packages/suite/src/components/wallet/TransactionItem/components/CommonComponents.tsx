@@ -1,4 +1,3 @@
-import React from 'react';
 import styled, { css } from 'styled-components';
 import { variables } from '@trezor/components';
 import { FormattedCryptoAmount, FormattedNftAmount, HiddenPlaceholder } from 'src/components/suite';

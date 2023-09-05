@@ -1,4 +1,4 @@
-import React from 'react';
+import { ImgHTMLAttributes } from 'react';
 import { ReactSVG } from 'react-svg';
 import styled from 'styled-components';
 import { COINS } from './coins';
@@ -14,7 +14,7 @@ const SvgWrapper = styled.div<Omit<CoinLogoProps, 'symbol'>>`
     }
 `;
 
-export interface CoinLogoProps extends React.ImgHTMLAttributes<HTMLImageElement> {
+export interface CoinLogoProps extends ImgHTMLAttributes<HTMLImageElement> {
     symbol: CoinType;
     className?: string;
     size?: number;

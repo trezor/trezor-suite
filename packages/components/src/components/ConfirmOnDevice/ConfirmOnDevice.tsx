@@ -1,4 +1,4 @@
-import React from 'react';
+import { ReactNode } from 'react';
 import styled, { css } from 'styled-components';
 import { Image } from '../Image/Image';
 import { variables, animations } from '../../config';
@@ -128,8 +128,8 @@ const isStepActive = (index: number, activeStep?: number) => {
 };
 
 export interface ConfirmOnDeviceProps {
-    title: React.ReactNode;
-    successText?: React.ReactNode;
+    title: ReactNode;
+    successText?: ReactNode;
     deviceModelInternal?: DeviceModelInternal;
     steps?: number;
     activeStep?: number;

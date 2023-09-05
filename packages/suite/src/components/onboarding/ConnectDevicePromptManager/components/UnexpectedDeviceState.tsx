@@ -1,4 +1,3 @@
-import React from 'react';
 import { Translation, TroubleshootingTips } from 'src/components/suite';
 import {
     TROUBLESHOOTING_TIP_BRIDGE_STATUS,

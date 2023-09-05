@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { TextProps } from '@suite-native/atoms';
 import { TokenSymbol } from '@suite-common/wallet-types';
 import { localizeNumber } from '@suite-common/wallet-utils';

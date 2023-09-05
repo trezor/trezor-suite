@@ -1,4 +1,4 @@
-import React from 'react';
+import { ReactNode, Fragment } from 'react';
 import styled, { css } from 'styled-components';
 import { Icon, variables, useTheme } from '@trezor/components';
 
@@ -88,7 +88,7 @@ const Divider = styled.div`
 interface ProgressBarProps {
     steps: {
         key: string;
-        label?: React.ReactNode;
+        label?: ReactNode;
     }[];
     activeStep?: number;
     className?: string;
@@ -102,7 +102,7 @@ export const ProgressBar = ({ steps, activeStep, className }: ProgressBarProps) 
                 const stepCompleted = (activeStep ?? 0) > index;
                 const stepActive = index === activeStep;
                 return (
-                    <React.Fragment key={step.key}>
+                    <Fragment key={step.key}>
                         <StepWrapper active={stepActive}>
                             <IconWrapper active={stepActive} stepCompleted={stepCompleted}>
                                 {stepCompleted ? (
@@ -115,7 +115,7 @@ export const ProgressBar = ({ steps, activeStep, className }: ProgressBarProps) 
                             <Label>{step.label}</Label>
                         </StepWrapper>
                         {index < steps.length - 1 && <Divider />}
-                    </React.Fragment>
+                    </Fragment>
                 );
             })}
         </ProgressBarWrapper>

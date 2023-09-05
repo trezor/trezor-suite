@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components';
 import { P2pFormContext, useCoinmarketP2pForm } from 'src/hooks/wallet/useCoinmarketP2pForm';
 import {

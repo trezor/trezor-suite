@@ -1,4 +1,4 @@
-import React from 'react';
+import { ReactNode } from 'react';
 import styled, { useTheme } from 'styled-components';
 
 import { Icon } from '../assets/Icon/Icon';
@@ -20,7 +20,7 @@ const Text = styled.div<{ $color?: string }>`
 `;
 
 export interface NoteProps {
-    children: React.ReactNode;
+    children: ReactNode;
     className?: string;
     color?: string;
 }

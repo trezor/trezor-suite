@@ -1,4 +1,3 @@
-import React from 'react';
 import { Translation } from 'src/components/suite/Translation';
 import { useCardanoStaking } from 'src/hooks/wallet/useCardanoStaking';
 import { Warning } from '@trezor/components';

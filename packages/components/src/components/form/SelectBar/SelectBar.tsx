@@ -1,4 +1,4 @@
-import React, { useState, useEffect, ReactNode, useCallback } from 'react';
+import { useState, useEffect, ReactNode, useCallback } from 'react';
 import styled, { css } from 'styled-components';
 import { SCREEN_SIZE, FONT_SIZE, FONT_WEIGHT } from '../../../config/variables';
 import { INPUT_BORDER_RADIUS, Label, LabelLeft } from '../InputStyles';

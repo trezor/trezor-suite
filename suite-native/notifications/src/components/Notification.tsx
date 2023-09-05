@@ -1,4 +1,4 @@
-import React, { ReactNode, useEffect } from 'react';
+import { useEffect, ReactNode } from 'react';
 import Animated, {
     SlideOutUp,
     useAnimatedGestureHandler,

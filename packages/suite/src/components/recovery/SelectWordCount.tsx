@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components';
 import { Option, OptionsWrapper, OptionsDivider } from 'src/components/onboarding';
 

@@ -1,4 +1,3 @@
-import React from 'react';
 import { TouchableOpacity } from 'react-native';
 import { useDispatch } from 'react-redux';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';

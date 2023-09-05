@@ -1,4 +1,4 @@
-import React from 'react';
+import { ReactNode } from 'react';
 import styled from 'styled-components';
 import { variables } from '@trezor/components';
 
@@ -45,8 +45,8 @@ const Description = styled.div`
 
 interface InstructionStepProps {
     number: string;
-    title: React.ReactNode;
-    children: React.ReactNode;
+    title: ReactNode;
+    children: ReactNode;
 }
 
 export const InstructionStep = ({ number, title, children }: InstructionStepProps) => (

@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components';
 import { useTheme, Button, variables, Icon, H2 } from '@trezor/components';
 import {

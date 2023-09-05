@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components';
 import { Image, SuiteThemeColors } from '@trezor/components';
 import { OnlineStatus } from 'invity-api';

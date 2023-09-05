@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useRef, useEffect, useCallback, Dispatch, SetStateAction } from 'react';
 import { FieldPath, UseFormReturn } from 'react-hook-form';
 import {
     FormState,
@@ -24,7 +24,7 @@ type Props = UseFormReturn<FormState> & {
     excludedUtxos: ExcludedUtxos;
     account: UseSendFormState['account']; // account from the component props !== state.account
     updateContext: SendContextValues['updateContext'];
-    setLoading: React.Dispatch<React.SetStateAction<boolean>>;
+    setLoading: Dispatch<SetStateAction<boolean>>;
     setAmount: (index: number, amount: string) => void;
     targetAnonymity?: number;
     prison?: Record<string, unknown>;
