@@ -39,7 +39,7 @@ const Percentage = styled.div`
     height: 24px;
 `;
 
-interface ProgressBarProps {
+interface FirmwareProgressBarProps {
     current: number; // current progress
     total: number; // total number of increments
     label: ReactNode;
@@ -48,14 +48,14 @@ interface ProgressBarProps {
     fakeProgressBarrier?: number; // Barrier where fake progress will wait for real `current` progress to catch up.
 }
 
-export const ProgressBar = ({
+export const FirmwareProgressBar = ({
     label,
     total,
     current,
     maintainCompletedState,
     fakeProgressDuration,
     fakeProgressBarrier = 90,
-}: ProgressBarProps) => {
+}: FirmwareProgressBarProps) => {
     const theme = useTheme();
     const [storedProgress, setStoreProgress] = useState(0);
     const progress = (100 / total) * current;
