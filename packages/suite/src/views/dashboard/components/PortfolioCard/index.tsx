@@ -1,8 +1,7 @@
 import { memo, useMemo } from 'react';
 import styled from 'styled-components';
-import { Dropdown } from '@trezor/components';
+import { Dropdown, Card } from '@trezor/components';
 import {
-    Card,
     GraphScaleDropdownItem,
     GraphSkeleton,
     QuestionTooltip,
@@ -19,10 +18,6 @@ import { Header } from './components/Header';
 import { Exception } from './components/Exception';
 import { EmptyWallet } from './components/EmptyWallet';
 import { DashboardGraph } from './components/DashboardGraph';
-
-const StyledCard = styled(Card)`
-    flex-direction: column;
-`;
 
 const Body = styled.div`
     align-items: center;
@@ -142,7 +137,7 @@ const PortfolioCard = memo(() => {
                 ) : undefined
             }
         >
-            <StyledCard noPadding>
+            <Card noPadding>
                 {discoveryStatus && discoveryStatus.status === 'exception' ? null : (
                     <Header
                         showGraphControls={showGraphControls}
@@ -157,8 +152,9 @@ const PortfolioCard = memo(() => {
                         buyClickHandler={goToBuy}
                     />
                 )}
+
                 {body && <Body>{body}</Body>}
-            </StyledCard>
+            </Card>
         </DashboardSection>
     );
 });
