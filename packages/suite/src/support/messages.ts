@@ -2213,7 +2213,7 @@ export default defineMessages({
         id: 'TR_DEVICE_DISCONNECTED_DURING_ACTION_DESCRIPTION',
     },
     TR_DEVICE_LABEL_IS_NOT_BACKED_UP: {
-        defaultMessage: 'Device {deviceLabel} is not backed up',
+        defaultMessage: 'Device "{deviceLabel}" is not backed up',
         id: 'TR_DEVICE_LABEL_IS_NOT_BACKED_UP',
     },
     TR_DEVICE_NOT_CONNECTED: {
@@ -2225,7 +2225,7 @@ export default defineMessages({
         id: 'TR_DEVICE_FW_UNKNOWN',
     },
     TR_DEVICE_LABEL_IS_NOT_CONNECTED: {
-        defaultMessage: 'Device {deviceLabel} is not connected',
+        defaultMessage: 'Device "{deviceLabel}" is not connected',
         id: 'TR_DEVICE_LABEL_IS_NOT_CONNECTED',
     },
     TR_DEVICE_LABEL_IS_UNAVAILABLE: {
@@ -2470,7 +2470,7 @@ export default defineMessages({
         id: 'TR_ENTER_PASSPHRASE_ON_DEVICE',
     },
     TR_ENTER_PASSPHRASE_ON_DEVICE_LABEL: {
-        defaultMessage: 'Enter passphrase on {deviceLabel}',
+        defaultMessage: 'Enter passphrase on "{deviceLabel}"',
         id: 'TR_ENTER_PASSPHRASE_ON_DEVICE_LABEL',
     },
     TR_ENTER_PIN: {
@@ -2673,7 +2673,7 @@ export default defineMessages({
         id: 'TR_INSTALL',
     },
     TR_INSTALL_REGULAR: {
-        defaultMessage: 'Install {regular}',
+        defaultMessage: 'Install {regular} firmware',
         description: 'Install button for Regular firmware',
         id: 'TR_INSTALL_REGULAR',
     },
@@ -3260,12 +3260,12 @@ export default defineMessages({
         id: 'TR_SETTINGS_DEVICE_BANNER_DESCRIPTION_BOOTLOADER_NO_TOUCH',
     },
     TR_SETTINGS_COINS_REGULAR_FIRMWARE_SUGGESTION: {
-        defaultMessage: 'For more coins, install <button>{regular}</button> firmware.',
+        defaultMessage: 'To access more coins, install <button>{regular}</button> firmware.',
         id: 'TR_SETTINGS_COINS_REGULAR_FIRMWARE_SUGGESTION',
     },
     TR_SETTINGS_COINS_BITCOIN_ONLY_FIRMWARE_SUGGESTION: {
         defaultMessage:
-            'If you only need Bitcoin wallet operations, you can install <button>{bitcoinOnly}</button> firmware.',
+            'If you only need Bitcoin wallet operations, you can install the <button>{bitcoinOnly}</button> firmware.',
         id: 'TR_SETTINGS_COINS_BITCOIN_ONLY_FIRMWARE_SUGGESTION',
     },
     TR_CONTINUE_ANYWAY: {
@@ -4142,13 +4142,13 @@ export default defineMessages({
     TR_CHECK_RECOVERY_SEED_DESC_T2T1: {
         id: 'TR_CHECK_RECOVERY_SEED_DESC_T2T1',
         defaultMessage:
-            'Your recovery seed (wallet backup) is entered using the Trezor Model T touchscreen. This avoids exposing any of your sensitive information to a potentially insecure computer or web browser.',
+            'Your recovery seed (wallet backup) is entered using the touchscreen. This avoids exposing any of your sensitive information to a potentially insecure computer or web browser.',
         dynamic: true,
     },
     TR_CHECK_RECOVERY_SEED_DESC_T2B1: {
         id: 'TR_CHECK_RECOVERY_SEED_DESC_T2B1',
         defaultMessage:
-            "Use the Trezor Model R 2-button pad to enter your recovery seed (wallet backup). By doing this, you're keeping all your sensitive info safe and sound, away from any shady or insecure computer or web browser.",
+            "Use the 2-button pad to enter your recovery seed (wallet backup). By doing this, you're keeping all your sensitive info safe and sound, away from any shady or insecure computer or web browser.",
         dynamic: true,
     },
     TR_SELECT_NUMBER_OF_WORDS: {
@@ -4783,12 +4783,12 @@ export default defineMessages({
     TR_LABEL_REQUIREMENTS: {
         id: 'TR_LABEL_REQUIREMENTS',
         defaultMessage:
-            'Names can be up to {length} characters and only characters of the English alphabet are allowed.',
+            'Names can have a maximum length of {length} characters and can only include characters from the English alphabet.',
         description: 'How many characters may be in device label and of what type.',
     },
     TR_LABEL_ERROR_LENGTH: {
         id: 'TR_LABEL_ERROR_LENGTH',
-        defaultMessage: 'Name must be {length} characters or less',
+        defaultMessage: 'Must be {{length}} characters or less',
     },
     TR_LABEL_ERROR_CHARACTERS: {
         id: 'TR_LABEL_ERROR_CHARACTERS',
@@ -5052,15 +5052,16 @@ export default defineMessages({
     },
     TR_SWITCH_TO_BOOTLOADER_HOLD_BOTH_BUTTONS: {
         id: 'TR_SWITCH_TO_BOOTLOADER_HOLD_BOTH_BUTTONS',
-        defaultMessage: 'Hold both buttons while connecting device',
+        defaultMessage: 'Press and hold both buttons while reconnecting the USB cable.',
     },
     TR_SWITCH_TO_BOOTLOADER_HOLD_LEFT_BUTTON: {
         id: 'TR_SWITCH_TO_BOOTLOADER_HOLD_LEFT_BUTTON',
-        defaultMessage: 'Hold one or both buttons while you reconnect the USB cable.',
+        defaultMessage: 'Press and hold the left button while reconnecting the USB cable.',
     },
     TR_SWITCH_TO_BOOTLOADER_SWIPE_YOUR_FINGERS: {
         id: 'TR_SWITCH_TO_BOOTLOADER_SWIPE_YOUR_FINGERS',
-        defaultMessage: 'Swipe your finger across the touchscreen while connecting cable.',
+        defaultMessage:
+            'Swipe your finger across the touchscreen while reconnecting the USB cable.',
     },
     BACKUP_BACKUP_ALREADY_FINISHED_HEADING: {
         id: 'BACKUP_BACKUP_ALREADY_FINISHED_HEADING',
@@ -6364,7 +6365,7 @@ export default defineMessages({
     TR_TRANSACTIONS_SEARCH_TIP_8: {
         id: 'TR_TRANSACTIONS_SEARCH_TIP_8',
         defaultMessage:
-            'Tip: You can display results matching at least one of multiple searches by grouping them with the OR operator (|). For example <strong>2022-12-31 | 2023-01-01</strong> will show all transactions that have happened on the 31st of December 20202 or the 1st of January 2023.',
+            'Tip: You can display results matching at least one of multiple searches by grouping them with the OR operator (|). For example <strong>2022-12-31 | 2023-01-01</strong> will show all transactions that have happened on the 31st of December 2022 or the 1st of January 2023.',
     },
     TR_TRANSACTIONS_SEARCH_TIP_9: {
         id: 'TR_TRANSACTIONS_SEARCH_TIP_9',

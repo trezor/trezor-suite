@@ -439,7 +439,6 @@
   "TR_LOG_DESCRIPTION": "V prípade komunikácie s našim tímom podpory je k dispozícii protokol obsahujúci všetky potrebné technické informácie.",
   "TR_LTC_ADDRESS_INFO": "Litecoin zmenil formát adries. Viac informácií o tom, ako konvertovať svoju adresu, nájdete na našom blogu. {TR_LEARN_MORE}",
   "TR_MANAGE": "spravovať",
-  "TR_MAX_LABEL_LENGTH_IS": "Názvy môžu mať maximálne {length} znakov.",
   "TR_MESSAGE": "Správa",
   "TR_MY_ACCOUNTS": "Moje účty",
   "TR_MY_ASSETS": "Aktíva",
