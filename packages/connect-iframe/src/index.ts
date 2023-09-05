@@ -12,6 +12,7 @@ import {
     POPUP,
     IFRAME,
     UI,
+    DEVICE,
     parseMessage,
     createResponseMessage,
     createIFrameMessage,
@@ -237,6 +238,11 @@ const shouldUiEventBeSentToHost = (message: CoreMessage) => {
         UI.BUNDLE_PROGRESS,
         UI.ADDRESS_VALIDATION,
         RESPONSE_EVENT,
+        DEVICE.CONNECT,
+        DEVICE.CONNECT_UNACQUIRED,
+        DEVICE.CHANGED,
+        DEVICE.DISCONNECT,
+        DEVICE.BUTTON,
     ];
     return whitelistedMessages.includes(message.type);
 };
