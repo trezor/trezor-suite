@@ -1,6 +1,7 @@
 // original file https://github.com/trezor/connect/blob/develop/src/js/device/Device.js
 
 import { TypedEmitter } from '@trezor/utils/lib/typedEventEmitter';
+import { createDeferred, Deferred } from '@trezor/utils';
 import { DeviceCommands } from './DeviceCommands';
 import { PROTO, ERRORS, NETWORK } from '../constants';
 import { DEVICE, DeviceButtonRequestPayload, UI } from '../events';
@@ -13,7 +14,6 @@ import {
     ensureInternalModelFeature,
 } from '../utils/deviceFeaturesUtils';
 import { versionCompare } from '../utils/versionUtils';
-import { create as createDeferred, Deferred } from '../utils/deferred';
 import { initLog } from '../utils/debug';
 import type { Transport, Descriptor } from '@trezor/transport';
 import {
@@ -97,7 +97,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
     acquirePromise?: ReturnType<Transport['acquire']> = undefined;
     releasePromise?: ReturnType<Transport['release']> = undefined;
 
-    runPromise?: Deferred<void> | null;
+    runPromise?: Deferred<void>;
 
     loaded = false;
 
@@ -171,7 +171,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
         if (!acquireResult.success) {
             if (this.runPromise) {
                 this.runPromise.reject(new Error(acquireResult.error));
-                this.runPromise = null;
+                delete this.runPromise;
             }
             throw acquireResult.error;
         }
@@ -225,7 +225,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
     async cleanup() {
         this.removeAllListeners();
         // make sure that Device_CallInProgress will not be thrown
-        this.runPromise = null;
+        delete this.runPromise;
         await this.release();
     }
 
@@ -237,9 +237,11 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
         options = parseRunOptions(options);
 
-        this.runPromise = createDeferred(this._runInner.bind(this, fn, options));
+        const runPromise = createDeferred();
+        this.runPromise = runPromise;
 
-        return this.runPromise.promise;
+        // either finish with result or reject runPromise
+        return Promise.race([this._runInner(fn, options), runPromise.promise]);
     }
 
     async override(error: Error) {
@@ -261,7 +263,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
         if (this.runPromise) {
             // reject inner defer
             this.runPromise.reject(error);
-            this.runPromise = null;
+            delete this.runPromise;
         }
         if (this.commands) {
             await this.commands.cancel();
@@ -272,7 +274,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
      * TODO: this does not work properly (even before transport-refactor)
      * one of the problem here is, that this.runPromise.reject is caught in src/core finally block that triggers
      * device release. This is not right because we know that somebody else has already taken control of device
-     * which means that session managament does not make sense anymore. releasing device, on the other hand
+     * which means that session management does not make sense anymore. releasing device, on the other hand
      * makes sense, because this instance of connect might be the only one who has the right to do it.
      */
     interruptionFromOutside() {
@@ -283,18 +285,18 @@ export class Device extends TypedEmitter<DeviceEvents> {
         }
         if (this.runPromise) {
             this.runPromise.reject(ERRORS.TypedError('Device_UsedElsewhere'));
-            this.runPromise = null;
+            delete this.runPromise;
         }
 
         // session was acquired by another instance. but another might not have power to release interface
-        // so it only notified about its session acquiral and the interrupted instance shoud cooperata
+        // so it only notified about its session acquiral and the interrupted instance should cooperate
         // and release device too.
         this.transport.releaseDevice(this.originalDescriptor.path);
     }
 
     async _runInner<X>(fn: (() => Promise<X>) | undefined, options: RunOptions): Promise<void> {
         // typically when using cancel/override, device might be releasing
-        // note: I am tempted to do this check at the begining of device.acquire but on the other hand I would like
+        // note: I am tempted to do this check at the beginning of device.acquire but on the other hand I would like
         // to have methods as atomic as possible and shift responsibility for deciding when to call them on the caller
         if (this.releasePromise) {
             await this.releasePromise.promise;
@@ -335,7 +337,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
                     return this._runInner(() => Promise.resolve({}), options);
                 }
                 this.inconsistent = true;
-                this.runPromise = null;
+                delete this.runPromise;
                 return Promise.reject(
                     ERRORS.TypedError(
                         'Device_InitializeFailed',
@@ -381,7 +383,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
             this.runPromise.resolve();
         }
 
-        this.runPromise = null;
+        delete this.runPromise;
 
         if (!this.loaded) {
             this.loaded = true;
@@ -576,7 +578,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
         this.activitySessionID = null; // set to null to prevent transport.release
         this.interruptionFromUser(ERRORS.TypedError('Device_Disconnected'));
-        this.runPromise = null;
+        delete this.runPromise;
     }
 
     isBootloader() {
