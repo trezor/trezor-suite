@@ -2,12 +2,11 @@ import { forwardRef, HTMLAttributes } from 'react';
 import styled from 'styled-components';
 
 import { variables } from '@trezor/components';
-import { CARD_PADDING_SIZE } from 'src/constants/suite/layout';
 import { SECONDARY_PANEL_HEIGHT } from 'src/components/suite/AppNavigation/AppNavigation';
 import { anchorOutlineStyles } from 'src/utils/suite/anchor';
 
 const Wrapper = styled.div<{ shouldHighlight?: boolean }>`
-    padding: 0 ${CARD_PADDING_SIZE};
+    padding: 0 16px;
     display: flex;
     flex-direction: column;
 
@@ -35,7 +34,7 @@ const Wrapper = styled.div<{ shouldHighlight?: boolean }>`
 
 const Content = styled.div`
     display: flex;
-    padding: ${CARD_PADDING_SIZE} 0;
+    padding: 16px 0;
 
     @media all and (max-width: ${variables.SCREEN_SIZE.SM}) {
         flex-direction: column;
