@@ -4,7 +4,6 @@ import { DeviceIcon } from './DeviceIcon';
 import { CheckItem } from './CheckItem';
 import { PrerequisitesGuide } from './PrerequisitesGuide';
 import { WelcomeLayout } from './WelcomeLayout';
-import { CardWithHeader } from './CardWithHeader';
 import NotificationCard from './NotificationCard';
 import PinInput from './PinInput';
 import NoRatesTooltip from './NoRatesTooltip';
@@ -68,7 +67,6 @@ export {
     PrerequisitesGuide,
     WelcomeLayout,
     SuiteLayout,
-    CardWithHeader as Card,
     NotificationCard,
     PinInput,
     FiatValue,
