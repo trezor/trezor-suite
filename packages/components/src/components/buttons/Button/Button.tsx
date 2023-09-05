@@ -1,3 +1,4 @@
+import { ButtonHTMLAttributes } from 'react';
 import styled, { useTheme } from 'styled-components';
 import { borders, spacingsPx, typography } from '@trezor/theme';
 import { Icon } from '../../assets/Icon/Icon';
@@ -6,14 +7,13 @@ import { Spinner } from '../../loaders/Spinner/Spinner';
 import {
     ButtonSize,
     ButtonVariant,
-    focusShadowStyle,
     getIconColor,
     getIconSize,
     getPadding,
     getVariantStyle,
     IconAlignment,
 } from '../buttonStyleUtils';
-import { ButtonHTMLAttributes } from 'react';
+import { getFocusShadowStyle } from '../../../utils/utils';
 
 interface ButtonContainerProps {
     variant: ButtonVariant;
@@ -35,10 +35,10 @@ export const ButtonContainer = styled.button<ButtonContainerProps>`
     transition: border-color 0.1s ease-out, box-shadow 0.1s ease-out, background 0.1s ease-out;
     outline: none;
     cursor: pointer;
+    border: 1px solid transparent;
 
-    ${focusShadowStyle}
-
-    ${({ variant, theme }) => getVariantStyle(variant, theme)}
+    ${getFocusShadowStyle()}
+    ${({ variant }) => getVariantStyle(variant)}
 
     :disabled {
         background: ${({ theme }) => theme.BG_GREY};
