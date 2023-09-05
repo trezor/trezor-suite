@@ -45,11 +45,6 @@ const SwitchWrapper = styled.div`
     gap: 4px;
 `;
 
-const SwitchLabel = styled.label`
-    font-size: 14px;
-    font-weight: 500;
-`;
-
 const StyledInput = styled(NumberInput)`
     display: flex;
     flex: 1;
@@ -226,18 +221,14 @@ export const Amount = ({ output, outputId }: AmountProps) => {
                         labelAddon={
                             <SwitchWrapper>
                                 <Switch
-                                    isSmall
                                     isChecked={isSetMaxActive}
-                                    id={maxSwitchId}
                                     dataTest={maxSwitchId}
                                     onChange={() => {
                                         setMax(outputId, isSetMaxActive);
                                         composeTransaction(inputName);
                                     }}
+                                    label={<Translation id="AMOUNT_SEND_MAX" />}
                                 />
-                                <SwitchLabel htmlFor={maxSwitchId}>
-                                    <Translation id="AMOUNT_SEND_MAX" />
-                                </SwitchLabel>
                             </SwitchWrapper>
                         }
                         label={
