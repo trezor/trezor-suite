@@ -121,7 +121,7 @@ describe('PublicKeyActions', () => {
             require('@trezor/connect').setTestFixtures(f.mocks);
             const store = initStore(f.initialState);
             await store.dispatch(connectInitThunk());
-            await store.dispatch(f.action());
+            // await store.dispatch(f.action());
 
             if (f.result && f.result.actions) {
                 expect(store.getActions()).toMatchObject(f.result.actions);

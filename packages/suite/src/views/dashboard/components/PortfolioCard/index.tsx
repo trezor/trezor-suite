@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import styled from 'styled-components';
-import { Dropdown } from '@trezor/components';
-import { Card, QuestionTooltip, Translation } from 'src/components/suite';
+import { Dropdown, Card } from '@trezor/components';
+import { QuestionTooltip, Translation } from 'src/components/suite';
 import { Section } from 'src/components/dashboard';
 import { useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
 import { useFastAccounts, useFiatValue } from 'src/hooks/wallet';
@@ -15,10 +15,6 @@ import { Exception } from './components/Exception';
 import { EmptyWallet } from './components/EmptyWallet';
 import { DashboardGraph } from './components/DashboardGraph';
 import { GraphScaleDropdownItem } from 'src/components/suite/TransactionsGraph/components/GraphScaleDropdownItem';
-
-const StyledCard = styled(Card)`
-    flex-direction: column;
-`;
 
 const Body = styled.div`
     align-items: center;
@@ -136,7 +132,7 @@ const PortfolioCard = React.memo(() => {
                 ) : undefined
             }
         >
-            <StyledCard noPadding>
+            <Card noPadding>
                 <Header
                     showGraphControls={showGraphControls}
                     hideBorder={!body}
@@ -151,7 +147,7 @@ const PortfolioCard = React.memo(() => {
                 />
 
                 {body && <Body>{body}</Body>}
-            </StyledCard>
+            </Card>
         </Section>
     );
 });

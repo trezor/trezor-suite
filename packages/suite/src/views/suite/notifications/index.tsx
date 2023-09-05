@@ -1,7 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
+import { Card } from '@trezor/components';
 
-import { Card, Notifications, Translation } from 'src/components/suite';
+import { Notifications, Translation } from 'src/components/suite';
 import { Section } from 'src/components/dashboard';
 
 const StyledSection = styled(Section)`

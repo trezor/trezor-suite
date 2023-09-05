@@ -1,11 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { P, variables } from '@trezor/components';
+import { Card, P, variables } from '@trezor/components';
 import { HELP_CENTER_XPUB_URL } from '@trezor/urls';
 import { WalletLayout } from 'src/components/wallet';
 import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
-import { Card, Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite';
 import {
     getAccountTypeName,
     getAccountTypeTech,

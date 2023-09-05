@@ -1,8 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import { variables } from '@trezor/components';
+import { Card, variables } from '@trezor/components';
 
-import { Card } from 'src/components/suite';
 import { Fees } from 'src/components/wallet/Fees';
 import { useSendFormContext } from 'src/hooks/wallet';
 

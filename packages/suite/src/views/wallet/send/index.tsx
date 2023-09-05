@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
+import { Card } from '@trezor/components';
 
-import { Card } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
 import { WalletLayout } from 'src/components/wallet';
 import { useSendForm, SendContext, UseSendFormProps } from 'src/hooks/wallet/useSendForm';
