@@ -2,9 +2,9 @@ import { useEffect, useState, useMemo } from 'react';
 import styled, { useTheme } from 'styled-components';
 import Lottie from 'lottie-react';
 
-import { H3, Icon, Progress, variables } from '@trezor/components';
+import { Card, H3, Icon, Progress, variables } from '@trezor/components';
 import { localizeNumber } from '@suite-common/wallet-utils';
-import { Card, Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite';
 import { useAccountLoadingProgress } from './useAccountLoadingProgress';
 import { RotatingFacts } from './RotatingFacts';
 import { useSelector } from 'src/hooks/suite';

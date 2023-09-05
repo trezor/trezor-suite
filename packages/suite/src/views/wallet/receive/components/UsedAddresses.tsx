@@ -2,8 +2,8 @@ import { useState } from 'react';
 import styled from 'styled-components';
 
 import { AccountAddress } from '@trezor/connect';
-import { variables, Button } from '@trezor/components';
-import { Card, Translation, MetadataLabeling, FormattedCryptoAmount } from 'src/components/suite';
+import { Card, variables, Button } from '@trezor/components';
+import { Translation, MetadataLabeling, FormattedCryptoAmount } from 'src/components/suite';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { Network } from 'src/types/wallet';
 import { AppState } from 'src/types/suite';
