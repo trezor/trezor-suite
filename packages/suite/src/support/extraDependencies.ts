@@ -17,13 +17,12 @@ import { StorageLoadAction } from 'src/actions/suite/storageActions';
 import * as metadataActions from 'src/actions/suite/metadataActions';
 import * as cardanoStakingActions from 'src/actions/wallet/cardanoStakingActions';
 import * as walletSettingsActions from 'src/actions/settings/walletSettingsActions';
-import { selectIsPendingTransportEvent } from 'src/reducers/suite/deviceReducer';
+import { DeviceRootState, selectIsPendingTransportEvent } from 'src/reducers/suite/deviceReducer';
 import { fixLoadedCoinjoinAccount } from 'src/utils/wallet/coinjoinUtils';
 
 import * as suiteActions from '../actions/suite/suiteActions';
 import { AppState, ButtonRequest, TrezorDevice } from '../types/suite';
 import { STORAGE, SUITE } from '../actions/suite/constants';
-import { SuiteState } from '../reducers/suite/suiteReducer';
 
 const connectSrc = resolveStaticPath('connect/');
 // 'https://localhost:8088/';
@@ -50,18 +49,18 @@ export const extraDependencies: ExtraDependencies = {
     selectors: {
         selectFeeInfo: (networkSymbol: NetworkSymbol) => (state: AppState) =>
             state.wallet.fees[networkSymbol],
-        selectDevices: (state: AppState) => state.devices,
-        selectCurrentDevice: (state: AppState) => state.suite.device,
+        selectDevices: (state: AppState) => state.device.devices,
+        selectCurrentDevice: (state: AppState) => state.device.selectedDevice,
         selectBitcoinAmountUnit: (state: AppState) => state.wallet.settings.bitcoinAmountUnit,
         selectEnabledNetworks: (state: AppState) => state.wallet.settings.enabledNetworks,
         selectLocalCurrency: (state: AppState) => state.wallet.settings.localCurrency,
         selectIsPendingTransportEvent,
         selectDebugSettings: (state: AppState) => state.suite.settings.debug,
         selectDesktopBinDir: (state: AppState) => state.desktop?.paths?.binDir,
-        selectDevice: (state: AppState) => state.suite.device,
+        selectDevice: (state: AppState) => state.device.selectedDevice,
         selectMetadata: (state: AppState) => state.metadata,
-        selectDiscoveryForDevice: (state: DiscoveryRootState & { suite: SuiteState }) =>
-            selectDiscoveryByDeviceState(state, state.suite.device?.state),
+        selectDiscoveryForDevice: (state: DiscoveryRootState & DeviceRootState) =>
+            selectDiscoveryByDeviceState(state, state.device.selectedDevice?.state),
         selectRouterApp: (state: AppState) => state.router.app,
     },
     actions: {

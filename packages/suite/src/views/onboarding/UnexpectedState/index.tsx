@@ -1,11 +1,13 @@
 import { useMemo } from 'react';
 import styled from 'styled-components';
+
 import { Translation, PrerequisitesGuide } from 'src/components/suite';
 import { PinMatrix } from 'src/components/suite/PinMatrix';
 import { PrerequisiteType } from 'src/types/suite';
 import { useOnboarding, useSelector } from 'src/hooks/suite';
 import { OnboardingStepBox } from 'src/components/onboarding';
 import steps from 'src/config/onboarding/steps';
+import { selectDevice } from 'src/reducers/suite/deviceReducer';
 
 import IsSameDevice from './components/IsSameDevice';
 
@@ -29,7 +31,7 @@ const UnexpectedState = ({
     prerequisite,
     prerequisitesGuidePadded,
 }: UnexpectedStateProps) => {
-    const { device } = useSelector(s => s.suite);
+    const device = useSelector(selectDevice);
     const { prevDevice, activeStepId, showPinMatrix } = useOnboarding();
     const activeStep = steps.find(s => s.id === activeStepId);
     const deviceModelInternal = device?.features?.internal_model;

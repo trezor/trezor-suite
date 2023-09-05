@@ -58,7 +58,7 @@ const getInitialState = (initialRun?: boolean) => ({
     modal: modalReducer(undefined, EMPTY_ACTION),
     wallet: walletReducers(undefined, EMPTY_ACTION),
     messageSystem: messageSystemReducer(undefined, EMPTY_ACTION),
-    devices: deviceReducer(undefined, EMPTY_ACTION),
+    device: deviceReducer(undefined, EMPTY_ACTION),
     metadata: metadataReducer(undefined, EMPTY_ACTION),
 });
 

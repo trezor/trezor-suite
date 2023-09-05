@@ -1,5 +1,6 @@
-import TrezorConnect, { FeeLevel, Params, PROTO, SignTransaction } from '@trezor/connect';
 import BigNumber from 'bignumber.js';
+
+import TrezorConnect, { FeeLevel, Params, PROTO, SignTransaction } from '@trezor/connect';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     formatNetworkAmount,
@@ -16,7 +17,10 @@ import {
     PrecomposedTransaction,
     PrecomposedTransactionFinal,
 } from '@suite-common/wallet-types';
+
 import { Dispatch, GetState } from 'src/types/suite';
+
+import { selectDevice } from '../../../reducers/suite/deviceReducer';
 
 export const composeTransaction =
     (formValues: FormState, formState: ComposeActionContext) =>
@@ -26,7 +30,7 @@ export const composeTransaction =
         const {
             settings: { bitcoinAmountUnit },
         } = getState().wallet;
-        const { device } = getState().suite;
+        const device = selectDevice(getState());
 
         const isSatoshis =
             bitcoinAmountUnit === PROTO.AmountUnit.SATOSHI &&
@@ -213,7 +217,7 @@ export const signTransaction =
             selectedAccount,
             settings: { bitcoinAmountUnit },
         } = state.wallet;
-        const { device } = state.suite;
+        const device = selectDevice(state);
 
         if (
             selectedAccount.status !== 'loaded' ||

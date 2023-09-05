@@ -1,9 +1,9 @@
 import { createContext, useContext, useCallback, useState, useEffect } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
+
 import type { ExchangeTradeQuoteRequest } from 'invity-api';
-import { isChanged } from 'src/utils/suite/comparisonUtils';
-import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
-import invityAPI from 'src/services/suite/invityAPI';
+import useDebounce from 'react-use/lib/useDebounce';
+
 import {
     amountToSatoshi,
     toFiatCurrency,
@@ -11,6 +11,12 @@ import {
     fromFiatCurrency,
     getFeeLevels,
 } from '@suite-common/wallet-utils';
+import { useDidUpdate } from '@trezor/react-utils';
+import { COMPOSE_ERROR_TYPES } from '@suite-common/wallet-constants';
+
+import { isChanged } from 'src/utils/suite/comparisonUtils';
+import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
+import invityAPI from 'src/services/suite/invityAPI';
 import {
     clearQuotes,
     saveQuoteRequest,
@@ -30,17 +36,16 @@ import {
 } from 'src/types/wallet/coinmarketExchangeForm';
 import { getComposeAddressPlaceholder } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { getAmountLimits, splitToQuoteCategories } from 'src/utils/wallet/coinmarket/exchangeUtils';
-import { useFees } from './form/useFees';
-import { useCompose } from './form/useCompose';
 import { useFormDraft } from 'src/hooks/wallet/useFormDraft';
-import useDebounce from 'react-use/lib/useDebounce';
-import { useCoinmarketExchangeFormDefaultValues } from './useCoinmarketExchangeFormDefaultValues';
 import { useCoinmarketNavigation } from 'src/hooks/wallet/useCoinmarketNavigation';
 import type { AppState } from 'src/types/suite';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
-import { useDidUpdate } from '@trezor/react-utils';
 import { CryptoAmountLimits } from 'src/types/wallet/coinmarketCommonTypes';
-import { COMPOSE_ERROR_TYPES } from '@suite-common/wallet-constants';
+import { selectDevice } from 'src/reducers/suite/deviceReducer';
+
+import { useCoinmarketExchangeFormDefaultValues } from './useCoinmarketExchangeFormDefaultValues';
+import { useCompose } from './form/useCompose';
+import { useFees } from './form/useFees';
 
 export const ExchangeFormContext = createContext<ExchangeFormContextValues | null>(null);
 ExchangeFormContext.displayName = 'CoinmarketExchangeContext';
@@ -77,7 +82,7 @@ export const useCoinmarketExchangeForm = ({
         state => state.wallet.coinmarket.exchange,
     );
     const fiat = useSelector(state => state.wallet.fiat);
-    const device = useSelector(state => state.suite.device);
+    const device = useSelector(selectDevice);
     const localCurrency = useSelector(state => state.wallet.settings.localCurrency);
     const fees = useSelector(state => state.wallet.fees);
     const dispatch = useDispatch();

@@ -1,10 +1,11 @@
-import { ROUTER, SUITE } from 'src/actions/suite/constants';
 import { accountsActions } from '@suite-common/wallet-core';
 import { SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { AnonymitySet } from '@trezor/blockchain-link';
+import { DEVICE } from '@trezor/connect';
+
 import { SuiteState } from 'src/reducers/suite/suiteReducer';
 import { AcquiredDevice } from 'src/types/suite';
-import { DEVICE } from '@trezor/connect';
+import { ROUTER, SUITE } from 'src/actions/suite/constants';
 import { COINJOIN } from 'src/actions/wallet/constants';
 import { CoinjoinState } from 'src/reducers/wallet/coinjoinReducer';
 import { CoinjoinAccount, CoinjoinSession } from 'src/types/wallet/coinjoin';
@@ -51,9 +52,11 @@ const COINJOIN_ACCOUNT_B = {
 };
 
 const DEFAULT_STATE = {
-    devices: [DEVICE_A, DEVICE_B],
+    device: {
+        devices: [DEVICE_A, DEVICE_B],
+        selectedDevice: DEVICE_A,
+    },
     suite: {
-        device: DEVICE_A,
         torStatus: 'Enabled',
     } as SuiteState,
     wallet: {

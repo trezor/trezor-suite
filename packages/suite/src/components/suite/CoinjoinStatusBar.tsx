@@ -1,22 +1,29 @@
 import styled from 'styled-components';
-import { useDispatch } from 'src/hooks/suite';
+
 import { Button, variables } from '@trezor/components';
 import { selectAccountByKey } from '@suite-common/wallet-core';
 import { WalletParams } from '@suite-common/wallet-types';
+
+import { useDispatch } from 'src/hooks/suite';
 import { CoinjoinSession } from 'src/types/wallet/coinjoin';
 import { ROUND_PHASE_MESSAGES } from 'src/constants/suite/coinjoin';
 import { selectDevice } from 'src/actions/suite/suiteActions';
 import { goto } from 'src/actions/suite/routerActions';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { selectRouterParams } from 'src/reducers/suite/routerReducer';
-import { CountdownTimer } from './CountdownTimer';
-import { WalletLabeling } from './Labeling';
-import { ProgressPie } from './ProgressPie';
-import { Translation } from './Translation';
 import {
     selectSessionProgressByAccountKey,
     selectRoundsDurationInHours,
 } from 'src/reducers/wallet/coinjoinReducer';
+import {
+    selectDevice as selectDeviceSelector,
+    selectDevices,
+} from 'src/reducers/suite/deviceReducer';
+
+import { CountdownTimer } from './CountdownTimer';
+import { WalletLabeling } from './Labeling';
+import { ProgressPie } from './ProgressPie';
+import { Translation } from './Translation';
 
 const SPACING = 6;
 
@@ -59,9 +66,9 @@ interface CoinjoinStatusBarProps {
 }
 
 export const CoinjoinStatusBar = ({ accountKey, session, isSingle }: CoinjoinStatusBarProps) => {
-    const devices = useSelector(state => state.devices);
+    const devices = useSelector(selectDevices);
     const relatedAccount = useSelector(state => selectAccountByKey(state, accountKey));
-    const selectedDevice = useSelector(state => state.suite.device);
+    const selectedDevice = useSelector(selectDeviceSelector);
     const routerParams = useSelector(selectRouterParams);
     const sessionProgress = useSelector(state =>
         selectSessionProgressByAccountKey(state, accountKey),

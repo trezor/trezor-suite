@@ -1,7 +1,9 @@
 import { useSelector } from 'src/hooks/suite';
 
+import { selectDevice } from '../../reducers/suite/deviceReducer';
+
 export const useLoadingSkeleton = () => {
-    const waitingForDevice = !useSelector(state => state.suite.device)?.state;
+    const waitingForDevice = !useSelector(selectDevice)?.state;
     const modalActive = useSelector(state => state.modal.context) !== '@modal/context-none';
 
     return {

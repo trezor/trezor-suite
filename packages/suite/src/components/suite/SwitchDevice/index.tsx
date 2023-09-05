@@ -1,13 +1,15 @@
 import styled from 'styled-components';
+
 import { Translation } from 'src/components/suite/Translation';
 import { Modal } from 'src/components/suite';
 import * as deviceUtils from 'src/utils/suite/device';
 import { isWebUsb } from 'src/utils/suite/transport';
 import { getBackgroundRoute } from 'src/utils/suite/router';
-import DeviceItem from './components/DeviceItem';
 import { ForegroundAppProps } from 'src/types/suite';
 import { useSelector } from 'src/hooks/suite';
+import { selectDevice, selectDevices } from 'src/reducers/suite/deviceReducer';
 
+import DeviceItem from './components/DeviceItem';
 import { WebUsbButton } from '../WebUsbButton';
 
 const DeviceItemsWrapper = styled.div`
@@ -18,8 +20,8 @@ const DeviceItemsWrapper = styled.div`
 `;
 
 export const SwitchDevice = ({ cancelable, onCancel }: ForegroundAppProps) => {
-    const selectedDevice = useSelector(state => state.suite.device);
-    const devices = useSelector(state => state.devices);
+    const selectedDevice = useSelector(selectDevice);
+    const devices = useSelector(selectDevices);
     const transport = useSelector(state => state.suite.transport);
 
     const isWebUsbTransport = isWebUsb(transport);

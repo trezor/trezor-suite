@@ -3,8 +3,10 @@ import { combineReducers, createReducer } from '@reduxjs/toolkit';
 
 import { configureMockStore, testMocks } from '@suite-common/test-utils';
 import { connectInitThunk } from '@suite-common/connect-init';
+
+import { State as DeviceState } from 'src/reducers/suite/deviceReducer';
+
 import fixtures from '../__fixtures__/publicKeyActions';
-import { SuiteState } from 'src/reducers/suite/suiteReducer';
 
 jest.mock('@trezor/connect', () => {
     let fixture: any;
@@ -68,13 +70,7 @@ const device = testMocks.getSuiteDevice({
 });
 
 const rootReducer = combineReducers({
-    suite: createReducer(
-        {
-            device,
-        },
-        () => ({}),
-    ),
-    devices: createReducer([device], () => {}),
+    device: createReducer({ devices: [device], selectedDevice: device }, () => {}),
     wallet: combineReducers({
         selectedAccount: createReducer(
             {
@@ -99,14 +95,14 @@ const rootReducer = combineReducers({
 });
 
 interface StateOverrides {
-    suite?: Pick<SuiteState, 'device'>;
+    device?: Pick<DeviceState, 'selectedDevice'>;
     networkType?: string;
 }
 
 const initStore = (stateOverrides?: StateOverrides) => {
     const preloadedState = JSON.parse(JSON.stringify(rootReducer(undefined, { type: 'init' })));
-    if (stateOverrides?.suite) {
-        preloadedState.suite = stateOverrides.suite;
+    if (stateOverrides?.device) {
+        preloadedState.device = stateOverrides.device;
     }
     if (stateOverrides?.networkType) {
         preloadedState.wallet.selectedAccount.account.networkType = stateOverrides.networkType;

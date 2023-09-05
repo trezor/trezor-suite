@@ -4,7 +4,7 @@ import { discoveryActions, accountsActions, transactionsActions } from '@suite-c
 import { DiscoveryStatus } from '@suite-common/wallet-constants';
 
 import * as graphActions from 'src/actions/wallet/graphActions';
-import { selectDiscoveryForDevice } from 'src/reducers/suite/suiteReducer';
+import { selectDiscoveryForDevice } from 'src/reducers/suite/deviceReducer';
 import { AppState, Action, Dispatch } from 'src/types/suite';
 
 const graphMiddleware =

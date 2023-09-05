@@ -1,11 +1,14 @@
 import { useCallback } from 'react';
 import { analytics, EventType } from '@trezor/suite-analytics';
-import { Account, Network } from 'src/types/wallet';
 import { UnavailableCapability } from '@trezor/connect';
+
+import { Account, Network } from 'src/types/wallet';
 import { Translation } from 'src/components/suite';
+import { useAccountSearch, useSelector } from 'src/hooks/suite';
+
 import { AddCoinjoinAccountButton } from './AddCoinjoinAccountButton';
 import { AddButton } from './AddButton';
-import { useAccountSearch, useSelector } from 'src/hooks/suite';
+import { selectDevice } from '../../../../../reducers/suite/deviceReducer';
 
 const verifyAvailability = ({
     emptyAccounts,
@@ -60,7 +63,7 @@ const AddDefaultAccountButton = ({
     network,
 }: AddAccountButtonProps) => {
     const account = emptyAccounts[emptyAccounts.length - 1];
-    const device = useSelector(state => state.suite.device);
+    const device = useSelector(selectDevice);
 
     const { setCoinFilter, setSearchString, coinFilter } = useAccountSearch();
 

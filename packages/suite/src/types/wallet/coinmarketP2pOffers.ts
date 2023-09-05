@@ -1,8 +1,10 @@
+import { P2pProviderInfo, P2pQuote, P2pQuotesRequest } from 'invity-api';
+
+import type { Timer } from '@trezor/react-utils';
+
 import type { AppState } from 'src/types/suite';
 import type { Account } from 'src/types/wallet';
-import type { Timer } from '@trezor/react-utils';
 import { WithSelectedAccountLoadedProps } from 'src/components/wallet';
-import { P2pProviderInfo, P2pQuote, P2pQuotesRequest } from 'invity-api';
 
 export type UseOffersProps = WithSelectedAccountLoadedProps;
 
@@ -12,7 +14,7 @@ export enum P2pStep {
 }
 
 export type ContextValues = {
-    device: AppState['suite']['device'];
+    device: AppState['device']['selectedDevice'];
     account: Account;
     providers?: { [name: string]: P2pProviderInfo };
     timer: Timer;

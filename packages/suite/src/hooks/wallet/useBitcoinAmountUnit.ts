@@ -1,16 +1,16 @@
 import { PROTO } from '@trezor/connect';
+
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { useActions } from 'src/hooks/suite/useActions';
 import * as walletSettingsActions from 'src/actions/settings/walletSettingsActions';
-
 import { NETWORKS } from 'src/config/wallet';
 import { NetworkSymbol } from 'src/types/wallet';
 
+import { selectDeviceUnavailableCapabilities } from '../../reducers/suite/deviceReducer';
+
 export const useBitcoinAmountUnit = (symbol?: NetworkSymbol) => {
     const bitcoinAmountUnit = useSelector(state => state.wallet.settings.bitcoinAmountUnit);
-    const unavailableCapabilities = useSelector(
-        state => state.suite.device?.unavailableCapabilities,
-    );
+    const unavailableCapabilities = useSelector(selectDeviceUnavailableCapabilities);
 
     const { toggleBitcoinAmountUnits, setBitcoinAmountUnits } = useActions({
         toggleBitcoinAmountUnits: walletSettingsActions.toggleBitcoinAmountUnits,

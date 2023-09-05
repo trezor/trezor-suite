@@ -1,6 +1,8 @@
 import { combineReducers, createReducer } from '@reduxjs/toolkit';
+
 import { configureMockStore } from '@suite-common/test-utils';
 import { prepareMessageSystemReducer } from '@suite-common/message-system';
+
 import { extraDependencies } from 'src/support/extraDependencies';
 import routerReducer from 'src/reducers/suite/routerReducer';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
@@ -23,7 +25,7 @@ jest.mock('src/services/coinjoin/coinjoinService', () => {
 const messageSystem = prepareMessageSystemReducer(extraDependencies);
 
 const rootReducer = combineReducers({
-    devices: createReducer({}, () => ({})),
+    device: createReducer({}, () => ({})),
     messageSystem,
     router: routerReducer,
     suite: suiteReducer,
@@ -36,11 +38,11 @@ const rootReducer = combineReducers({
 
 type State = ReturnType<typeof rootReducer>;
 
-const initStore = ({ devices, router, suite, wallet }: Partial<State> = {}) => {
+const initStore = ({ device, router, suite, wallet }: Partial<State> = {}) => {
     const preloadedState: State = rootReducer(undefined, { type: 'init' });
 
-    if (devices) {
-        preloadedState.devices = devices;
+    if (device) {
+        preloadedState.device = device;
     }
 
     if (router) {

@@ -25,6 +25,8 @@ import {
 } from 'src/reducers/wallet/coinjoinReducer';
 import { updateLastAnonymityReportTimestamp } from 'src/actions/wallet/coinjoinAccountActions';
 
+import { selectDevices, selectDevicesCount } from '../../reducers/suite/deviceReducer';
+
 /*
     In analytics middleware we may intercept actions we would like to log. For example:
     - trezor model
@@ -82,9 +84,9 @@ const analyticsMiddleware =
                             backup_type: features.backup_type || 'Bip39',
                             pin_protection: features.pin_protection,
                             passphrase_protection: features.passphrase_protection,
-                            totalInstances: state.devices.length,
+                            totalInstances: selectDevicesCount(state),
                             isBitcoinOnly: hasBitcoinOnlyFirmware(action.payload),
-                            totalDevices: getPhysicalDeviceCount(state.devices),
+                            totalDevices: getPhysicalDeviceCount(selectDevices(state)),
                             language: features.language,
                             model: features.internal_model,
                         },

@@ -1,7 +1,9 @@
+import type { ExchangeTrade } from 'invity-api';
+
+import type { Timer } from '@trezor/react-utils';
+
 import type { AppState } from 'src/types/suite';
 import type { Account } from 'src/types/wallet';
-import type { ExchangeTrade } from 'invity-api';
-import type { Timer } from '@trezor/react-utils';
 import type { ExchangeInfo } from 'src/actions/wallet/coinmarketExchangeActions';
 import type { WithSelectedAccountLoadedProps } from 'src/components/wallet';
 
@@ -16,7 +18,7 @@ export type ContextValues = {
     floatQuotes: AppState['wallet']['coinmarket']['exchange']['floatQuotes'];
     dexQuotes: AppState['wallet']['coinmarket']['exchange']['dexQuotes'];
     quotesRequest: AppState['wallet']['coinmarket']['exchange']['quotesRequest'];
-    device: AppState['suite']['device'];
+    device: AppState['device']['selectedDevice'];
     selectedQuote?: ExchangeTrade;
     setSelectedQuote: (quote?: ExchangeTrade) => void;
     suiteReceiveAccounts?: AppState['wallet']['accounts'];

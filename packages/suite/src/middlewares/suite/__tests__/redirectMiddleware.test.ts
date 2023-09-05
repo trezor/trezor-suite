@@ -1,15 +1,14 @@
-import { DEVICE } from '@trezor/connect';
-import { configureStore } from 'src/support/tests/configureStore';
 import { Middleware } from 'redux';
 
+import { DEVICE } from '@trezor/connect';
+
+import { configureStore } from 'src/support/tests/configureStore';
 import * as routerActions from 'src/actions/suite/routerActions';
 import { SUITE } from 'src/actions/suite/constants';
-
 import routerReducer from 'src/reducers/suite/routerReducer';
 import deviceReducer from 'src/reducers/suite/deviceReducer';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
 import modalReducer from 'src/reducers/suite/modalReducer';
-
 import suiteMiddleware from 'src/middlewares/suite/suiteMiddleware';
 import redirectMiddleware from 'src/middlewares/suite/redirectMiddleware';
 import { Action } from 'src/types/suite';
@@ -25,7 +24,7 @@ type ModalState = ReturnType<typeof modalReducer>;
 
 const getInitialState = (
     suite?: Partial<SuiteState>,
-    devices?: DevicesState,
+    device?: Partial<DevicesState>,
     router?: Partial<RouterState>,
     modal?: Partial<ModalState>,
 ) => ({
@@ -33,7 +32,10 @@ const getInitialState = (
         ...suiteReducer(undefined, { type: 'foo' } as any),
         ...suite,
     },
-    devices: devices || [],
+    device: {
+        ...deviceReducer(undefined, { type: 'foo' } as any),
+        ...device,
+    },
     router: {
         ...routerReducer(undefined, { type: 'foo' } as any),
         ...router,
@@ -53,10 +55,10 @@ const initStore = (state: State) => {
     const store = mockStore(state);
     store.subscribe(() => {
         const action = store.getActions().pop();
-        const { suite, router, devices } = store.getState();
+        const { suite, router, device } = store.getState();
         store.getState().suite = suiteReducer(suite, action);
         store.getState().router = routerReducer(router as RouterState, action);
-        store.getState().devices = deviceReducer(devices, action);
+        store.getState().device = deviceReducer(device, action);
 
         // add action back to stack
         store.getActions().push(action);
@@ -94,8 +96,10 @@ describe('redirectMiddleware', () => {
         it('SUITE.SELECT_DEVICE reset wallet params', () => {
             const store = initStore(
                 getInitialState(
+                    undefined,
                     {
-                        device: getSuiteDevice(
+                        devices: [],
+                        selectedDevice: getSuiteDevice(
                             {
                                 path: '2',
                             },
@@ -104,7 +108,6 @@ describe('redirectMiddleware', () => {
                             },
                         ),
                     },
-                    undefined,
                     {
                         app: 'wallet',
                         params: {

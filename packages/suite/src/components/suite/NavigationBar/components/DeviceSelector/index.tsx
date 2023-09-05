@@ -1,7 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
 import styled, { css } from 'styled-components';
+import { transparentize } from 'polished';
 
 import { variables, Image, Icon } from '@trezor/components';
+import type { Timeout } from '@trezor/type-utils';
+
 import { SHAKE } from 'src/support/suite/styles/animations';
 import { WalletLabeling } from 'src/components/suite';
 import { TrezorDevice } from 'src/types/suite';
@@ -9,9 +12,9 @@ import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { acquireDevice } from 'src/actions/suite/suiteActions';
 import * as deviceUtils from 'src/utils/suite/device';
+import { selectDevicesCount, selectDevice } from 'src/reducers/suite/deviceReducer';
+
 import { DeviceStatus } from './DeviceStatus';
-import { transparentize } from 'polished';
-import type { Timeout } from '@trezor/type-utils';
 
 const ArrowDown = styled(Icon)`
     margin-left: 4px;
@@ -106,8 +109,8 @@ const needsRefresh = (device?: TrezorDevice) => {
 };
 
 export const DeviceSelector = () => {
-    const selectedDevice = useSelector(state => state.suite.device);
-    const deviceCount = useSelector(state => state.devices.length);
+    const selectedDevice = useSelector(selectDevice);
+    const deviceCount = useSelector(selectDevicesCount);
     const dispatch = useDispatch();
 
     const [localCount, setLocalCount] = useState<number | null>(null);

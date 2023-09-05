@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import styled from 'styled-components';
+
 import { Image } from '@trezor/components';
 
 import {
@@ -19,6 +20,8 @@ import { goto } from 'src/actions/suite/routerActions';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
 
+import { selectDevice } from '../../../reducers/suite/deviceReducer';
+
 const StyledImage = styled(Image)`
     flex: 1;
 `;
@@ -26,7 +29,7 @@ const StyledImage = styled(Image)`
 export const BackupStep = () => {
     const [showSkipConfirmation, setShowSkipConfirmation] = useState(false);
     const backup = useSelector(state => state.backup);
-    const device = useSelector(state => state.suite.device);
+    const device = useSelector(selectDevice);
     const locks = useSelector(state => state.suite.locks);
     const isActionAbortable = useSelector(selectIsActionAbortable);
     const dispatch = useDispatch();

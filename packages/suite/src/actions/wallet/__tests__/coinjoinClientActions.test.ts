@@ -1,14 +1,18 @@
 import { combineReducers, createReducer } from '@reduxjs/toolkit';
+
 import { configureMockStore, initPreloadedState, testMocks } from '@suite-common/test-utils';
 import { promiseAllSequence } from '@trezor/utils';
+import { prepareMessageSystemReducer } from '@suite-common/message-system';
 
 import { db } from 'src/storage';
 import { accountsReducer } from 'src/reducers/wallet';
 import { coinjoinReducer } from 'src/reducers/wallet/coinjoinReducer';
 import selectedAccountReducer from 'src/reducers/wallet/selectedAccountReducer';
-import { prepareMessageSystemReducer } from '@suite-common/message-system';
 import { extraDependencies } from 'src/support/extraDependencies';
 import modalReducer from 'src/reducers/suite/modalReducer';
+import { coinjoinMiddleware } from 'src/middlewares/wallet/coinjoinMiddleware';
+import { CoinjoinService } from 'src/services/coinjoin/coinjoinService';
+
 import {
     initCoinjoinService,
     onCoinjoinRoundChanged,
@@ -19,8 +23,6 @@ import {
     stopCoinjoinSession,
 } from '../coinjoinClientActions';
 import * as fixtures from '../__fixtures__/coinjoinClientActions';
-import { coinjoinMiddleware } from 'src/middlewares/wallet/coinjoinMiddleware';
-import { CoinjoinService } from 'src/services/coinjoin/coinjoinService';
 
 jest.mock('@trezor/connect', () => global.JestMocks.getTrezorConnect({}));
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -37,14 +39,13 @@ const rootReducer = combineReducers({
     suite: createReducer(
         {
             locks: [],
-            device: fixtures.DEVICE,
             settings: {
                 debug: {},
             },
         },
         () => ({}),
     ),
-    devices: createReducer([fixtures.DEVICE], () => ({})),
+    device: createReducer({ devices: [fixtures.DEVICE], device: fixtures.DEVICE }, () => ({})),
     modal: modalReducer,
     messageSystem: messageSystemReducer,
     wallet: combineReducers({
@@ -56,11 +57,11 @@ const rootReducer = combineReducers({
 
 type State = ReturnType<typeof rootReducer>;
 type Wallet = Partial<State['wallet']> & {
-    devices?: State['devices'];
+    device?: State['device'];
     suite?: State['suite'];
 };
 
-const initStore = ({ accounts, coinjoin, devices, selectedAccount, suite }: Wallet = {}) => {
+const initStore = ({ accounts, coinjoin, device, selectedAccount, suite }: Wallet = {}) => {
     // State != suite AppState, therefore <any>
     const store = configureMockStore<any>({
         reducer: rootReducer,
@@ -68,7 +69,10 @@ const initStore = ({ accounts, coinjoin, devices, selectedAccount, suite }: Wall
             rootReducer,
             partialState: {
                 suite,
-                devices,
+                device: {
+                    device: device?.device,
+                    devices: device?.devices,
+                },
                 wallet: {
                     accounts,
                     coinjoin,
@@ -409,7 +413,9 @@ describe('coinjoinClientActions', () => {
 
     it('stopCoinjoinSession but not cancel authorization', async () => {
         const store = initStore({
-            devices: [fixtures.DEVICE, { ...fixtures.DEVICE, state: 'device-state-2' }],
+            device: {
+                devices: [fixtures.DEVICE, { ...fixtures.DEVICE, state: 'device-state-2' }],
+            },
             accounts: [
                 {
                     key: 'account-A',

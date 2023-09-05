@@ -1,6 +1,7 @@
 import { MODAL } from 'src/actions/suite/constants';
-import { BTC_ACCOUNT, ETH_ACCOUNT, XRP_ACCOUNT } from './accounts';
 import { COINMARKET_BUY, COINMARKET_EXCHANGE } from 'src/actions/wallet/constants';
+
+import { BTC_ACCOUNT, ETH_ACCOUNT, XRP_ACCOUNT } from './accounts';
 
 const { getSuiteDevice } = global.JestMocks;
 const UNAVAILABLE_DEVICE = getSuiteDevice({ available: false });
@@ -10,8 +11,8 @@ export const VERIFY_BUY_ADDRESS_FIXTURES = [
     {
         description: 'verifyAddress, bitcoin account',
         initialState: {
-            suite: {
-                device: AVAILABLE_DEVICE,
+            device: {
+                selectedDevice: AVAILABLE_DEVICE,
             },
         },
         params: {
@@ -33,8 +34,8 @@ export const VERIFY_BUY_ADDRESS_FIXTURES = [
     {
         description: 'verifyAddress, ethereum account',
         initialState: {
-            suite: {
-                device: AVAILABLE_DEVICE,
+            device: {
+                selectedDevice: AVAILABLE_DEVICE,
             },
         },
         params: {
@@ -56,8 +57,8 @@ export const VERIFY_BUY_ADDRESS_FIXTURES = [
     {
         description: 'verifyAddress, ripple account',
         initialState: {
-            suite: {
-                device: AVAILABLE_DEVICE,
+            device: {
+                selectedDevice: AVAILABLE_DEVICE,
             },
         },
         params: {
@@ -79,8 +80,8 @@ export const VERIFY_BUY_ADDRESS_FIXTURES = [
     {
         description: 'verifyAddress, ripple account, unavailable device',
         initialState: {
-            suite: {
-                device: UNAVAILABLE_DEVICE,
+            device: {
+                selectedDevice: UNAVAILABLE_DEVICE,
             },
         },
         params: {
@@ -109,8 +110,8 @@ export const VERIFY_EXCHANGE_ADDRESS_FIXTURES = [
     {
         description: 'verifyAddress, bitcoin account, in exchange',
         initialState: {
-            suite: {
-                device: AVAILABLE_DEVICE,
+            device: {
+                selectedDevice: AVAILABLE_DEVICE,
             },
         },
         params: {

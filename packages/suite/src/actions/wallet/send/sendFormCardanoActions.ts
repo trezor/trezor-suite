@@ -1,3 +1,14 @@
+import TrezorConnect, { PROTO } from '@trezor/connect';
+import { formatNetworkAmount, isTestnet, getDerivationType } from '@suite-common/wallet-utils';
+import { notificationsActions } from '@suite-common/toast-notifications';
+import {
+    FormState,
+    ComposeActionContext,
+    PrecomposedLevelsCardano,
+    PrecomposedTransactionFinalCardano,
+} from '@suite-common/wallet-types';
+
+import { Dispatch, GetState } from 'src/types/suite';
 import {
     getChangeAddressParameters,
     getTtl,
@@ -8,17 +19,8 @@ import {
     formatMaxOutputAmount,
     loadCardanoLib,
 } from 'src/utils/wallet/cardanoUtils';
-import { Dispatch, GetState } from 'src/types/suite';
 
-import TrezorConnect, { PROTO } from '@trezor/connect';
-import { formatNetworkAmount, isTestnet, getDerivationType } from '@suite-common/wallet-utils';
-import { notificationsActions } from '@suite-common/toast-notifications';
-import {
-    FormState,
-    ComposeActionContext,
-    PrecomposedLevelsCardano,
-    PrecomposedTransactionFinalCardano,
-} from '@suite-common/wallet-types';
+import { selectDevice } from '../../../reducers/suite/deviceReducer';
 
 export const composeTransaction =
     (formValues: FormState, formState: ComposeActionContext) =>
@@ -150,7 +152,7 @@ export const signTransaction =
     async (dispatch: Dispatch, getState: GetState) => {
         const { trezorUtils } = await loadCardanoLib();
         const { selectedAccount } = getState().wallet;
-        const { device } = getState().suite;
+        const device = selectDevice(getState());
 
         if (
             selectedAccount.status !== 'loaded' ||

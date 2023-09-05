@@ -4,7 +4,7 @@ import { selectDiscoveryByDeviceState } from '@suite-common/wallet-core';
 import { DiscoveryStatus } from '@suite-common/wallet-constants';
 
 import { DiscoveryStatusType } from 'src/types/wallet';
-import { selectDevice } from 'src/reducers/suite/suiteReducer';
+import { selectDevice } from 'src/reducers/suite/deviceReducer';
 
 import { useSelector } from './useSelector';
 

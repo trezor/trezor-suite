@@ -1,24 +1,26 @@
 import { useState } from 'react';
 import styled from 'styled-components';
+
 import { Button } from '@trezor/components';
+import { accountsActions } from '@suite-common/wallet-core';
+import { arrayPartition } from '@trezor/utils';
+import { FirmwareType } from '@trezor/connect';
+
 import { Translation, Modal } from 'src/components/suite';
 import { NETWORKS } from 'src/config/wallet';
 import { Account, Network } from 'src/types/wallet';
 import { TrezorDevice } from 'src/types/suite';
 import { useSelector, useDispatch } from 'src/hooks/suite';
-import { accountsActions } from '@suite-common/wallet-core';
 import { changeCoinVisibility } from 'src/actions/settings/walletSettingsActions';
 import { goto } from 'src/actions/suite/routerActions';
-import { arrayPartition } from '@trezor/utils';
 import { selectIsPublic } from 'src/reducers/wallet/coinjoinReducer';
+import { useEnabledNetworks } from 'src/hooks/settings/useEnabledNetworks';
+import { selectSupportedNetworks } from 'src/reducers/suite/deviceReducer';
 
 import { AccountTypeSelect } from './components/AccountTypeSelect';
 import { SelectNetwork } from './components/SelectNetwork';
 import { EnableNetwork } from './components/EnableNetwork';
 import { AddAccountButton } from './components/AddAccountButton';
-import { useEnabledNetworks } from 'src/hooks/settings/useEnabledNetworks';
-import { FirmwareType } from '@trezor/connect';
-import { selectSupportedNetworks } from 'src/reducers/suite/suiteReducer';
 
 const StyledModal = styled(Modal)`
     width: 560px;

@@ -1,5 +1,8 @@
 import { useState } from 'react';
 import styled from 'styled-components';
+
+import { ConfirmOnDevice, variables } from '@trezor/components';
+
 import { closeModalApp } from 'src/actions/suite/routerActions';
 import { TrezorDevice } from 'src/types/suite';
 import {
@@ -14,8 +17,9 @@ import { DeviceUnreadable } from 'src/views/suite/device-unreadable';
 import { Translation, Modal } from 'src/components/suite';
 import { OnboardingStepBox } from 'src/components/onboarding';
 import { useDispatch, useFirmware, useSelector } from 'src/hooks/suite';
-import { ConfirmOnDevice, variables } from '@trezor/components';
 import { acquireDevice } from 'src/actions/suite/suiteActions';
+
+import { selectDevice } from '../../reducers/suite/deviceReducer';
 
 const Wrapper = styled.div<{ isWithTopPadding: boolean }>`
     display: flex;
@@ -43,7 +47,7 @@ type FirmwareProps = {
 export const Firmware = ({ shouldSwitchFirmwareType }: FirmwareProps) => {
     const { resetReducer, status, setStatus, error, firmwareUpdate, firmwareHashInvalid } =
         useFirmware();
-    const device = useSelector(state => state.suite.device);
+    const device = useSelector(selectDevice);
     const dispatch = useDispatch();
 
     const deviceModelInternal = device?.features?.internal_model;

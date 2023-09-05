@@ -1,8 +1,14 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react';
+
+import { ExchangeCoinInfo, ExchangeTrade } from 'invity-api';
+
+import { useTimer } from '@trezor/react-utils';
+import { notificationsActions } from '@suite-common/toast-notifications';
+import { networksCompatibility as networks } from '@suite-common/wallet-config';
+import { amountToSatoshi } from '@suite-common/wallet-utils';
+
 import invityAPI from 'src/services/suite/invityAPI';
 import { useActions, useSelector, useDevice } from 'src/hooks/suite';
-import { useTimer } from '@trezor/react-utils';
-import { ExchangeCoinInfo, ExchangeTrade } from 'invity-api';
 import * as coinmarketExchangeActions from 'src/actions/wallet/coinmarketExchangeActions';
 import { Account } from 'src/types/wallet';
 import {
@@ -10,15 +16,14 @@ import {
     ContextValues,
     ExchangeStep,
 } from 'src/types/wallet/coinmarketExchangeOffers';
-import { notificationsActions } from '@suite-common/toast-notifications';
 import { splitToQuoteCategories } from 'src/utils/wallet/coinmarket/exchangeUtils';
-import { networksCompatibility as networks } from '@suite-common/wallet-config';
 import { getUnusedAddressFromAccount } from 'src/utils/wallet/coinmarket/coinmarketUtils';
-import { useCoinmarketRecomposeAndSign } from './useCoinmarketRecomposeAndSign ';
 import { useCoinmarketNavigation } from 'src/hooks/wallet/useCoinmarketNavigation';
 import { InvityAPIReloadQuotesAfterSeconds } from 'src/constants/wallet/coinmarket/metadata';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
-import { amountToSatoshi } from '@suite-common/wallet-utils';
+
+import { useCoinmarketRecomposeAndSign } from './useCoinmarketRecomposeAndSign ';
+import { selectDevice } from '../../reducers/suite/deviceReducer';
 
 const getReceiveAccountSymbol = (
     symbol?: string,
@@ -68,7 +73,7 @@ export const useOffers = ({ selectedAccount }: UseCoinmarketExchangeFormProps) =
         state => state.suite.settings.debug.invityServerEnvironment,
     );
     const accounts = useSelector(state => state.wallet.accounts);
-    const device = useSelector(state => state.suite.device);
+    const device = useSelector(selectDevice);
     const {
         addressVerified,
         dexQuotes,

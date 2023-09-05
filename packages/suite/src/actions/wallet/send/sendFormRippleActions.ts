@@ -1,5 +1,6 @@
-import TrezorConnect, { FeeLevel, RipplePayment } from '@trezor/connect';
 import BigNumber from 'bignumber.js';
+
+import TrezorConnect, { FeeLevel, RipplePayment } from '@trezor/connect';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     calculateTotal,
@@ -17,7 +18,9 @@ import {
     PrecomposedTransactionFinal,
     ExternalOutput,
 } from '@suite-common/wallet-types';
+
 import { Dispatch, GetState } from 'src/types/suite';
+import { selectDevice } from 'src/reducers/suite/deviceReducer';
 
 const calculate = (
     availableBalance: string,
@@ -178,7 +181,7 @@ export const signTransaction =
     (formValues: FormState, transactionInfo: PrecomposedTransactionFinal) =>
     async (dispatch: Dispatch, getState: GetState) => {
         const { selectedAccount } = getState().wallet;
-        const { device } = getState().suite;
+        const device = selectDevice(getState());
         if (
             selectedAccount.status !== 'loaded' ||
             !device ||

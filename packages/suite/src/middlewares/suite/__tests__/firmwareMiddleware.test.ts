@@ -4,9 +4,9 @@ import { configureStore, filterThunkActionTypes } from 'src/support/tests/config
 import { SUITE } from 'src/actions/suite/constants';
 import routerReducer from 'src/reducers/suite/routerReducer';
 import modalReducer from 'src/reducers/suite/modalReducer';
-import suiteReducer from 'src/reducers/suite/suiteReducer';
 import { prepareFirmwareMiddleware } from 'src/middlewares/firmware/firmwareMiddleware';
 import { extraDependencies } from 'src/support/extraDependencies';
+import deviceReducer from 'src/reducers/suite/deviceReducer';
 
 const { getSuiteDevice } = global.JestMocks;
 
@@ -16,14 +16,14 @@ const middlewares = [firmwareMiddleware];
 
 type FirmwareState = ReturnType<typeof firmwareReducer>;
 type RouterState = ReturnType<typeof routerReducer>;
-type SuiteState = ReturnType<typeof suiteReducer>;
+type DeviceState = ReturnType<typeof deviceReducer>;
 
 const firmwareReducer = prepareFirmwareReducer(extraDependencies);
 
 const getInitialState = (
     router?: Partial<RouterState>,
     firmware?: Partial<FirmwareState>,
-    suite?: Partial<SuiteState>,
+    device?: Partial<DeviceState>,
 ) => ({
     firmware: {
         ...firmwareReducer(undefined, {
@@ -36,9 +36,9 @@ const getInitialState = (
         ...routerReducer(undefined, { type: 'foo' } as any),
         ...router,
     },
-    suite: {
-        ...suiteReducer(undefined, { type: 'foo' } as any),
-        ...suite,
+    device: {
+        ...deviceReducer(undefined, { type: 'foo' } as any),
+        ...device,
     },
     modal: modalReducer(undefined, { type: 'foo' } as any),
     analytics: {
@@ -54,9 +54,9 @@ const initStore = (state: State) => {
     const store = mockStore(state);
     store.subscribe(() => {
         const action = store.getActions().pop();
-        const { firmware, suite } = store.getState();
+        const { firmware, device } = store.getState();
         store.getState().firmware = firmwareReducer(firmware, action);
-        store.getState().suite = suiteReducer(suite, action);
+        store.getState().device = deviceReducer(device, action);
 
         store.getActions().push(action);
     });
@@ -188,7 +188,7 @@ describe('firmware middleware', () => {
                     firmwareHash: '345',
                 },
                 {
-                    device: getSuiteDevice(),
+                    selectedDevice: getSuiteDevice(),
                 },
             ),
         );

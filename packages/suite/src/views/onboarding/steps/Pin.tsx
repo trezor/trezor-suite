@@ -11,12 +11,14 @@ import { changePin } from 'src/actions/settings/deviceSettingsActions';
 import { useDispatch, useSelector, useOnboarding } from 'src/hooks/suite';
 import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
 
+import { selectDevice } from '../../../reducers/suite/deviceReducer';
+
 const SetPinStep = () => {
     const [showSkipConfirmation, setShowSkipConfirmation] = useState(false);
     const [status, setStatus] = useState<'initial' | 'enter-pin' | 'repeat-pin' | 'success'>(
         'initial',
     );
-    const device = useSelector(state => state.suite.device);
+    const device = useSelector(selectDevice);
     const modal = useSelector(state => state.modal);
     const isActionAbortable = useSelector(selectIsActionAbortable);
     const dispatch = useDispatch();

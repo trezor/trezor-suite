@@ -32,6 +32,7 @@ import { Account } from 'src/types/wallet';
 import { selectLabelingDataForWallet } from 'src/reducers/suite/metadataReducer';
 
 import { getPhysicalDeviceUniqueIds } from './device';
+import { selectDevices } from '../../reducers/suite/deviceReducer';
 
 export const REDACTED_REPLACEMENT = '[redacted]';
 
@@ -203,15 +204,17 @@ export const getApplicationInfo = (state: AppState, hideSensitiveInfo: boolean) 
     sessionId: hideSensitiveInfo ? REDACTED_REPLACEMENT : state.analytics.sessionId,
     transport: state.suite.transport?.type,
     transportVersion: state.suite.transport?.version,
-    rememberedStandardWallets: state.devices.filter(d => d.remember && d.useEmptyPassphrase).length,
-    rememberedHiddenWallets: state.devices.filter(d => d.remember && !d.useEmptyPassphrase).length,
+    rememberedStandardWallets: selectDevices(state).filter(d => d.remember && d.useEmptyPassphrase)
+        .length,
+    rememberedHiddenWallets: selectDevices(state).filter(d => d.remember && !d.useEmptyPassphrase)
+        .length,
     enabledNetworks: state.wallet.settings.enabledNetworks,
     customBackends: getCustomBackends(state.wallet.blockchain)
         .map(({ coin }) => coin)
         .filter(coin => state.wallet.settings.enabledNetworks.includes(coin)),
-    devices: getPhysicalDeviceUniqueIds(state.devices)
-        .map(id => state.devices.find(device => device.id === id) as TrezorDevice) // filter unique devices
-        .concat(state.devices.filter(device => device.id === null)) // add devices in bootloader mode
+    devices: getPhysicalDeviceUniqueIds(selectDevices(state))
+        .map(id => selectDevices(state).find(device => device.id === id) as TrezorDevice) // filter unique devices
+        .concat(selectDevices(state).filter(device => device.id === null)) // add devices in bootloader mode
         .map(device => ({
             id: hideSensitiveInfo ? REDACTED_REPLACEMENT : device.id,
             label: hideSensitiveInfo ? REDACTED_REPLACEMENT : device.label,
@@ -226,10 +229,10 @@ export const getApplicationInfo = (state: AppState, hideSensitiveInfo: boolean) 
             bootloaderHash: device.features ? getBootloaderHash(device) : '',
             numberOfWallets:
                 device.mode !== 'bootloader'
-                    ? state.devices.filter(d => d.id === device.id).length
+                    ? selectDevices(state).filter(d => d.id === device.id).length
                     : 1,
         })),
-    wallets: state.devices.map(device => ({
+    wallets: selectDevices(state).map(device => ({
         deviceId: hideSensitiveInfo ? REDACTED_REPLACEMENT : device.id,
         deviceLabel: hideSensitiveInfo ? REDACTED_REPLACEMENT : device.label,
         label:

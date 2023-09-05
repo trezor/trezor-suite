@@ -1,18 +1,22 @@
 import { createContext, useCallback, useContext, useEffect, useState } from 'react';
+
+import { P2pQuote } from 'invity-api';
+
+import { useTimer } from '@trezor/react-utils';
+
 import { ContextValues, P2pStep, UseOffersProps } from 'src/types/wallet/coinmarketP2pOffers';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { useTimer } from '@trezor/react-utils';
 import { InvityAPIReloadQuotesAfterSeconds } from 'src/constants/wallet/coinmarket/metadata';
 import { openCoinmarketP2pConfirmModal } from 'src/actions/wallet/coinmarketP2pActions';
 import invityAPI from 'src/services/suite/invityAPI';
-import { P2pQuote } from 'invity-api';
 import { useCoinmarketNavigation } from 'src/hooks/wallet/useCoinmarketNavigation';
 import { submitRequestForm } from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
+import { selectDevice } from 'src/reducers/suite/deviceReducer';
 
 export const useOffers = ({ selectedAccount }: UseOffersProps): ContextValues => {
     const timer = useTimer();
 
-    const device = useSelector(state => state.suite.device);
+    const device = useSelector(selectDevice);
     const providers = useSelector(state => state.wallet.coinmarket.p2p.p2pInfo?.providers);
     const quotesRequest = useSelector(state => state.wallet.coinmarket.p2p.quotesRequest);
     const quotes = useSelector(state => state.wallet.coinmarket.p2p.quotes);

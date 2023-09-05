@@ -19,7 +19,7 @@ import { DiscoveryStatus } from '@suite-common/wallet-constants';
 import * as discoveryActions from '@suite-common/wallet-core';
 
 import { configureStore, filterThunkActionTypes } from 'src/support/tests/configureStore';
-import { selectIsDiscoveryAuthConfirmationRequired } from 'src/reducers/suite/suiteReducer';
+import { selectIsDiscoveryAuthConfirmationRequired } from 'src/reducers/suite/deviceReducer';
 import walletSettingsReducer from 'src/reducers/wallet/settingsReducer';
 import { accountsReducer } from 'src/reducers/wallet';
 import * as walletSettingsActions from 'src/actions/settings/walletSettingsActions';
@@ -180,10 +180,10 @@ jest.mock('@trezor/connect', () => {
 
 const SUITE_DEVICE = getSuiteDevice({ state: 'device-state', connected: true });
 export const getInitialState = (device = SUITE_DEVICE) => ({
-    suite: {
-        device,
+    device: {
+        devices: [device],
+        selectedDevice: device,
     },
-    devices: [device],
     metadata: { enabled: false, providers: [] }, // don't use labeling in unit:tests
     wallet: {
         discovery: discoveryReducer(undefined, { type: 'foo' } as any),
@@ -347,8 +347,8 @@ describe('Discovery Actions', () => {
         it(`Change network: ${f.description}`, () => {
             const state = getInitialState();
             if (f.device) {
-                state.suite.device = f.device;
-                state.devices = [f.device];
+                state.device.selectedDevice = f.device;
+                state.device.devices = [f.device];
             }
             const store = initStore(state);
             store.dispatch(
@@ -368,6 +368,7 @@ describe('Discovery Actions', () => {
     it('Start discovery without device', async () => {
         const state = {
             suite: {},
+            device: {},
             wallet: {
                 accounts: [],
                 discovery: [],
@@ -385,7 +386,7 @@ describe('Discovery Actions', () => {
 
     it('Start discovery with device without auth confirmation', async () => {
         const state = getInitialState();
-        state.suite.device = getSuiteDevice({ authConfirm: true });
+        state.device.selectedDevice = getSuiteDevice({ authConfirm: true });
         const store = initStore(state);
         await store.dispatch(startDiscoveryThunk());
         const action = filterThunkActionTypes(store.getActions()).pop();
@@ -453,6 +454,7 @@ describe('Discovery Actions', () => {
     it('Stop discovery without device (discovery not exists)', async () => {
         const state = {
             suite: {},
+            device: {},
             wallet: {
                 accounts: [],
                 discovery: [],
@@ -573,7 +575,7 @@ describe('Discovery Actions', () => {
             }),
         );
         // "disconnect" device
-        store.getState().suite.device.connected = false;
+        store.getState().device.selectedDevice.connected = false;
         await store.dispatch(startDiscoveryThunk());
         const action = filterThunkActionTypes(store.getActions()).pop();
         expect(action?.type).toEqual(discoveryActions.completeDiscovery.type);
@@ -722,7 +724,7 @@ describe('Discovery Actions', () => {
             connect: { success: true },
         });
         const state = getInitialState();
-        state.suite.device = getSuiteDevice({
+        state.device.selectedDevice = getSuiteDevice({
             state: 'device-state',
             connected: true,
             useEmptyPassphrase: false, // mandatory
@@ -736,7 +738,7 @@ describe('Discovery Actions', () => {
         store.dispatch(
             createDiscoveryThunk({
                 deviceState: 'device-state',
-                device: state.suite.device,
+                device: state.device.selectedDevice,
             }),
         );
         await store.dispatch(startDiscoveryThunk());
@@ -747,7 +749,7 @@ describe('Discovery Actions', () => {
         expect(fn(store.getState())).toEqual(undefined);
 
         // @ts-expect-error remove device from state
-        store.getState().suite.device = undefined;
+        store.getState().device.device = undefined;
         expect(fn(store.getState())).toEqual(undefined);
     });
 });

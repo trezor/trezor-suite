@@ -1,8 +1,11 @@
 import TrezorConnect, { Unsuccessful, Success } from '@trezor/connect';
-import { SIGN_VERIFY } from './constants';
 import { notificationsActions } from '@suite-common/toast-notifications';
+
 import type { Dispatch, GetState, TrezorDevice } from 'src/types/suite';
 import type { Account } from 'src/types/wallet';
+import { selectDevice } from 'src/reducers/suite/deviceReducer';
+
+import { SIGN_VERIFY } from './constants';
 
 export type SignVerifyAction =
     | { type: typeof SIGN_VERIFY.SIGN_SUCCESS; signSignature: string }
@@ -17,11 +20,11 @@ type StateParams = {
 
 const getStateParams = (getState: GetState): Promise<StateParams> => {
     const {
-        suite: { device },
         wallet: {
             selectedAccount: { account },
         },
     } = getState();
+    const device = selectDevice(getState());
 
     return !device || !device.connected || !device.available || !account
         ? Promise.reject(new Error('Device not found'))

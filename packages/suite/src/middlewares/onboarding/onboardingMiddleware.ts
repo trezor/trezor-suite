@@ -6,7 +6,7 @@ import { DeviceModelInternal } from '@trezor/connect';
 import { SUITE } from 'src/actions/suite/constants';
 import * as onboardingActions from 'src/actions/onboarding/onboardingActions';
 import { AppState, Action, Dispatch } from 'src/types/suite';
-import { selectDevice } from 'src/reducers/suite/suiteReducer';
+import { selectDevice } from 'src/reducers/suite/deviceReducer';
 
 const onboardingMiddleware =
     (api: MiddlewareAPI<Dispatch, AppState>) =>

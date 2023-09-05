@@ -22,6 +22,7 @@ import { deviceGraphDataFilterFn } from 'src/utils/wallet/graph';
 import { selectCoinjoinAccountByKey } from 'src/reducers/wallet/coinjoinReducer';
 
 import { STORAGE } from './constants';
+import { selectDevices } from '../../reducers/suite/deviceReducer';
 
 export type StorageAction = NonNullable<PreloadStoreAction>;
 export type StorageLoadAction = Extract<StorageAction, { type: typeof STORAGE.LOAD }>;
@@ -366,7 +367,8 @@ export const saveFirmware = () => async (_dispatch: Dispatch, getState: GetState
 export const removeDatabase = () => async (dispatch: Dispatch, getState: GetState) => {
     if (!(await db.isAccessible())) return;
 
-    const rememberedDevices = getState().devices.filter(d => d.remember);
+    const devices = selectDevices(getState());
+    const rememberedDevices = devices.filter(d => d.remember);
     // forget all remembered devices
     rememberedDevices.forEach(d => {
         dispatch(suiteActions.forgetDevice(d));

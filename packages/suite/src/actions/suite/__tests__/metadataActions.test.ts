@@ -2,17 +2,18 @@
 /* eslint-disable global-require */
 import fs from 'fs';
 import path from 'path';
-import { configureStore } from 'src/support/tests/configureStore';
 
+import { configureStore } from 'src/support/tests/configureStore';
 import metadataReducer from 'src/reducers/suite/metadataReducer';
-import suiteReducer, { SuiteState } from 'src/reducers/suite/suiteReducer';
+import { SuiteState } from 'src/reducers/suite/suiteReducer';
 import deviceReducer from 'src/reducers/suite/deviceReducer';
-import { STORAGE, MODAL } from '../constants';
-import * as metadataActions from '../metadataActions';
-import * as fixtures from '../__fixtures__/metadataActions';
 import DropboxProvider from 'src/services/suite/metadata/DropboxProvider';
 import suiteMiddleware from 'src/middlewares/suite/suiteMiddleware';
 import { accountsReducer } from 'src/reducers/wallet';
+
+import { STORAGE, MODAL } from '../constants';
+import * as metadataActions from '../metadataActions';
+import * as fixtures from '../__fixtures__/metadataActions';
 
 jest.mock('@trezor/connect', () => {
     let fixture: any;
@@ -65,16 +66,16 @@ export const getInitialState = (state?: InitialState) => {
     const settings = suite?.settings || { debug: {} };
     const debug = settings?.debug || {};
     const initAction: any = { type: STORAGE.LOAD, payload: { metadata } };
+
     return {
         metadata: metadataReducer(metadata, initAction),
-        devices: device ? [device] : [], // device is needed for notification/event
+        device: { devices: device ? [device] : [], selectedDevice: device }, // device is needed for notification/event
         suite: {
             ...suite,
             settings: {
                 ...settings,
                 debug, // debug settings are needed for OAuth API
             },
-            device, // device is needed for notification/event
         },
         wallet: {
             accounts,
@@ -108,13 +109,10 @@ const initStore = (state: State) => {
                     action.payload.decision.resolve(true);
             }
         }
-        const { metadata, suite, devices, wallet } = store.getState();
+        const { metadata, device, wallet } = store.getState();
         store.getState().metadata = metadataReducer(metadata, action);
-        // @ts-expect-error
-        store.getState().suite = suiteReducer(suite, action);
         store.getState().wallet.accounts = accountsReducer(wallet.accounts, action);
-        store.getState().devices = deviceReducer(devices, action);
-        // store.
+        store.getState().device = deviceReducer(device, action) as any;
     });
     return store;
 };

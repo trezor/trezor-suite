@@ -1,29 +1,26 @@
 import { ScanAccountProgress, BroadcastedTransactionDetails } from '@trezor/coinjoin';
 import TrezorConnect from '@trezor/connect';
 import { promiseAllSequence } from '@trezor/utils';
-
-import { SUITE } from 'src/actions/suite/constants';
-import * as COINJOIN from './constants/coinjoinConstants';
-import { goto } from '../suite/routerActions';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import * as coinjoinClientActions from './coinjoinClientActions';
-import { CoinjoinService, COORDINATOR_FEE_RATE_MULTIPLIER } from 'src/services/coinjoin';
-import { getAccountProgressHandle, getRegisterAccountParams } from 'src/utils/wallet/coinjoinUtils';
-import { Dispatch, GetState } from 'src/types/suite';
 import { isDevEnv } from '@suite-common/suite-utils';
 import { Network, NetworkSymbol } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
+import {
+    accountsActions,
+    selectAccountByKey,
+    transactionsActions,
+} from '@suite-common/wallet-core';
+import { getAccountTransactions, sortByBIP44AddressIndex } from '@suite-common/wallet-utils';
+
+import { CoinjoinService, COORDINATOR_FEE_RATE_MULTIPLIER } from 'src/services/coinjoin';
+import { getAccountProgressHandle, getRegisterAccountParams } from 'src/utils/wallet/coinjoinUtils';
+import { Dispatch, GetState } from 'src/types/suite';
 import {
     CoinjoinAccount,
     CoinjoinConfig,
     CoinjoinDiscoveryCheckpoint,
     CoinjoinSessionParameters,
 } from 'src/types/wallet/coinjoin';
-import {
-    accountsActions,
-    selectAccountByKey,
-    transactionsActions,
-} from '@suite-common/wallet-core';
 import {
     selectCoinjoinAccounts,
     selectCoinjoinAccountByKey,
@@ -36,8 +33,14 @@ import {
     selectSessionByAccountKey,
     selectWeightedAnonymityByAccountKey,
 } from 'src/reducers/wallet/coinjoinReducer';
-import { getAccountTransactions, sortByBIP44AddressIndex } from '@suite-common/wallet-utils';
+import { SUITE } from 'src/actions/suite/constants';
 import { openModal } from 'src/actions/suite/modalActions';
+
+import * as coinjoinClientActions from './coinjoinClientActions';
+import { goto } from '../suite/routerActions';
+import * as COINJOIN from './constants/coinjoinConstants';
+import { selectDevice, selectDevices } from '../../reducers/suite/deviceReducer';
+import { selectLocks } from '../../reducers/suite/suiteReducer';
 
 export const coinjoinAccountUpdateAnonymity = (accountKey: string, targetAnonymity: number) =>
     ({
@@ -555,7 +558,7 @@ export const createCoinjoinAccount =
 
         dispatch(coinjoinAccountPreloading(true));
 
-        const { device } = getState().suite;
+        const device = selectDevice(getState());
         const unlockPath = await TrezorConnect.unlockPath({
             path: "m/10025'",
             device,
@@ -669,7 +672,7 @@ export const rescanCoinjoinAccount =
 const authorizeCoinjoin =
     (account: Account, coordinator: string, params: CoinjoinSessionParameters) =>
     async (dispatch: Dispatch, getState: GetState) => {
-        const { device } = getState().suite;
+        const device = selectDevice(getState());
 
         // authorize coinjoin session on Trezor
         dispatch(coinjoinAccountAuthorize(account.key));
@@ -745,9 +748,9 @@ export const startCoinjoinSession =
 export const restoreCoinjoinSession =
     (accountKey: string) => async (dispatch: Dispatch, getState: GetState) => {
         // TODO: check if device is connected, passphrase is authorized...
-        const state = getState();
-        const { device, locks } = state.suite;
-        const account = selectAccountByKey(state, accountKey);
+        const locks = selectLocks(getState());
+        const device = selectDevice(getState());
+        const account = selectAccountByKey(getState(), accountKey);
 
         if (!account) {
             return;
@@ -776,7 +779,7 @@ export const restoreCoinjoinSession =
             return errorToast('CoinjoinClient is not enabled');
         }
         // get fresh data from reducer
-        const coinjoinAccount = selectCoinjoinAccountByKey(state, account.key);
+        const coinjoinAccount = selectCoinjoinAccountByKey(getState(), account.key);
         if (!coinjoinAccount || !coinjoinAccount.session) {
             return errorToast('Coinjoin account session is missing');
         }
@@ -867,7 +870,8 @@ export const stopCoinjoinSessionByDeviceId =
     (deviceID: string) => (dispatch: Dispatch, getState: GetState) => {
         const state = getState();
 
-        const disconnectedDevices = state.devices.filter(d => d.id === deviceID && d.remember);
+        const devices = selectDevices(state);
+        const disconnectedDevices = devices.filter(d => d.id === deviceID && d.remember);
         const affectedAccounts = disconnectedDevices.flatMap(d =>
             state.wallet.accounts.filter(
                 a => a.accountType === 'coinjoin' && a.deviceState === d.state,

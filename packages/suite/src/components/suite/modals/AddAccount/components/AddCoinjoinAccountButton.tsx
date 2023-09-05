@@ -1,17 +1,20 @@
 import { useState } from 'react';
 import { createTimeoutPromise } from '@trezor/utils';
+import { UnavailableCapabilities } from '@trezor/connect';
+import { isDesktop } from '@trezor/env-utils';
+import { isDevEnv } from '@suite-common/suite-utils';
+
 import { Translation } from 'src/components/suite';
 import { useSelector, useDispatch } from 'src/hooks/suite';
 import { createCoinjoinAccount } from 'src/actions/wallet/coinjoinAccountActions';
 import { toggleTor } from 'src/actions/suite/suiteActions';
 import { openDeferredModal, openModal } from 'src/actions/suite/modalActions';
 import { Account, Network, NetworkSymbol } from 'src/types/wallet';
-import { UnavailableCapabilities } from '@trezor/connect';
-import { AddButton } from './AddButton';
-import { isDesktop } from '@trezor/env-utils';
-import { isDevEnv } from '@suite-common/suite-utils';
 import { RequestEnableTorResponse } from 'src/components/suite/modals/RequestEnableTor';
 import { selectTorState } from 'src/reducers/suite/suiteReducer';
+
+import { AddButton } from './AddButton';
+import { selectDevice } from '../../../../../reducers/suite/deviceReducer';
 
 interface VerifyAvailabilityProps {
     coinjoinAccounts: Account[];
@@ -48,7 +51,7 @@ export const AddCoinjoinAccountButton = ({ network }: AddCoinjoinAccountProps) =
     const [isLoading, setIsLoading] = useState(false);
 
     const { isTorEnabled } = useSelector(selectTorState);
-    const device = useSelector(state => state.suite.device);
+    const device = useSelector(selectDevice);
     const accounts = useSelector(state => state.wallet.accounts);
     const dispatch = useDispatch();
 

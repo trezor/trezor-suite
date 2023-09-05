@@ -4,14 +4,14 @@ import { SelectedAccountStatus } from '@suite-common/wallet-types';
 import { DiscoveryStatus } from '@suite-common/wallet-constants';
 
 import { ROUTER, SUITE } from 'src/actions/suite/constants';
-import { selectDiscoveryForDevice } from 'src/reducers/suite/suiteReducer';
+import { selectDiscoveryForDevice, selectDevice } from 'src/reducers/suite/deviceReducer';
 import * as metadataActions from 'src/actions/suite/metadataActions';
 import * as comparisonUtils from 'src/utils/suite/comparisonUtils';
 import { getSelectedAccount } from 'src/utils/wallet/accountUtils';
 import { Action, Dispatch, GetState, AppState } from 'src/types/suite';
 
 const getAccountState = (state: AppState): SelectedAccountStatus => {
-    const { device } = state.suite;
+    const device = selectDevice(state);
 
     // waiting for device
     if (!device) {

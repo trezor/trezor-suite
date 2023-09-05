@@ -1,16 +1,26 @@
 import produce from 'immer';
 
 import { Device, DEVICE, Features } from '@trezor/connect';
+import { DiscoveryRootState, selectDiscoveryByDeviceState } from '@suite-common/wallet-core';
+import { DiscoveryStatus } from '@suite-common/wallet-constants';
+import { getFirmwareVersion } from '@trezor/device-utils';
+import { Network, networks } from '@suite-common/wallet-config';
+import { versionUtils } from '@trezor/utils';
 
 import { SUITE, STORAGE, METADATA } from 'src/actions/suite/constants';
 import * as deviceUtils from 'src/utils/suite/device';
 import type { TrezorDevice, AcquiredDevice, Action, ButtonRequest } from 'src/types/suite';
+import { getStatus } from 'src/utils/suite/device';
 
-type State = TrezorDevice[];
-const initialState: State = [];
+export type State = { devices: TrezorDevice[]; selectedDevice?: TrezorDevice };
+
+const initialState: State = { devices: [], selectedDevice: undefined };
 
 export type DeviceRootState = {
-    devices: TrezorDevice[];
+    device: {
+        devices: TrezorDevice[];
+        selectedDevice?: TrezorDevice;
+    };
 };
 
 // Use the negated form as it better fits the call sites.
@@ -57,12 +67,12 @@ const connectDevice = (draft: State, device: Device) => {
     // connected device is unacquired/unreadable
     if (!device.features) {
         // check if device already exists in reducer
-        const unacquiredDevices = draft.filter(d => d.path === device.path);
+        const unacquiredDevices = draft.devices.filter(d => d.path === device.path);
         if (unacquiredDevices.length > 0) {
             // and ignore this action if so
             return;
         }
-        draft.push({
+        draft.devices.push({
             ...device,
             connected: true,
             available: false,
@@ -76,19 +86,23 @@ const connectDevice = (draft: State, device: Device) => {
 
     const { features } = device;
     // find affected devices with current "device_id" (acquired only)
-    const affectedDevices = draft.filter(d => d.features && d.id === device.id) as AcquiredDevice[];
+    const affectedDevices = draft.devices.filter(
+        d => d.features && d.id === device.id,
+    ) as AcquiredDevice[];
     // find unacquired device with current "path" (unacquired device will become acquired)
-    const unacquiredDevices = draft.filter(d => d.path.length > 0 && d.path === device.path);
+    const unacquiredDevices = draft.devices.filter(
+        d => d.path.length > 0 && d.path === device.path,
+    );
     // get not affected devices
     // and exclude unacquired devices with current "device_id" (they will become acquired)
-    const otherDevices: TrezorDevice[] = draft.filter(
+    const otherDevices: TrezorDevice[] = draft.devices.filter(
         d => affectedDevices.indexOf(d as AcquiredDevice) < 0 && unacquiredDevices.indexOf(d) < 0,
     );
 
     // clear draft
-    draft.splice(0, draft.length);
+    draft.devices.splice(0, draft.devices.length);
     // fill draft with not affected devices
-    otherDevices.forEach(d => draft.push(d));
+    otherDevices.forEach(d => draft.devices.push(d));
 
     // prepare new device
     const newDevice: TrezorDevice = {
@@ -99,7 +113,7 @@ const connectDevice = (draft: State, device: Device) => {
         available: true,
         authConfirm: false,
         instance: features.passphrase_protection
-            ? deviceUtils.getNewInstanceNumber(draft, device) || 1
+            ? deviceUtils.getNewInstanceNumber(draft.devices, device) || 1
             : undefined,
         buttonRequests: [],
         metadata: { status: 'disabled' },
@@ -127,10 +141,10 @@ const connectDevice = (draft: State, device: Device) => {
             changedDevices.push(newDevice);
         }
         // fill draft with affectedDevices values
-        changedDevices.forEach(d => draft.push(d));
+        changedDevices.forEach(d => draft.devices.push(d));
     } else {
         // add new device
-        draft.push(newDevice);
+        draft.devices.push(newDevice);
     }
 };
 
@@ -150,7 +164,7 @@ const changeDevice = (
     if (!device.features) return;
 
     // find devices with the same "device_id"
-    const affectedDevices = draft.filter(
+    const affectedDevices = draft.devices.filter(
         d =>
             d.features &&
             ((d.connected &&
@@ -159,11 +173,13 @@ const changeDevice = (
                 (d.mode === 'bootloader' && d.remember && d.id === device.id)),
     ) as AcquiredDevice[];
 
-    const otherDevices = draft.filter(d => affectedDevices.indexOf(d as AcquiredDevice) === -1);
+    const otherDevices = draft.devices.filter(
+        d => affectedDevices.indexOf(d as AcquiredDevice) === -1,
+    );
     // clear draft
-    draft.splice(0, draft.length);
+    draft.devices.splice(0, draft.devices.length);
     // fill draft with not affected devices
-    otherDevices.forEach(d => draft.push(d));
+    otherDevices.forEach(d => draft.devices.push(d));
 
     if (affectedDevices.length > 0) {
         const isDeviceUnlocked = isUnlocked(device.features);
@@ -189,7 +205,7 @@ const changeDevice = (
             return merge(d, { ...device, ...extended });
         });
         // fill draft with affectedDevices values
-        changedDevices.forEach(d => draft.push(d));
+        changedDevices.forEach(d => draft.devices.push(d));
     }
 };
 
@@ -200,7 +216,7 @@ const changeDevice = (
  */
 const disconnectDevice = (draft: State, device: Device) => {
     // find all devices with "path"
-    const affectedDevices = draft.filter(d => d.path === device.path);
+    const affectedDevices = draft.devices.filter(d => d.path === device.path);
     affectedDevices.forEach(d => {
         // do not remove devices with state, they are potential candidates to remember if not remembered already
         const skip = d.features && d.remember;
@@ -209,7 +225,7 @@ const disconnectDevice = (draft: State, device: Device) => {
             d.available = false;
             d.path = '';
         } else {
-            draft.splice(draft.indexOf(d), 1);
+            draft.devices.splice(draft.devices.indexOf(d), 1);
         }
     });
 };
@@ -223,10 +239,10 @@ const disconnectDevice = (draft: State, device: Device) => {
 const updateTimestamp = (draft: State, device?: TrezorDevice) => {
     // only acquired devices
     if (!device || !device.features) return;
-    const index = deviceUtils.findInstanceIndex(draft, device);
-    if (!draft[index]) return;
+    const index = deviceUtils.findInstanceIndex(draft.devices, device);
+    if (!draft.devices[index]) return;
     // update timestamp
-    draft[index].ts = new Date().getTime();
+    draft.devices[index].ts = new Date().getTime();
 };
 
 /**
@@ -245,17 +261,20 @@ const changePassphraseMode = (
 ) => {
     // only acquired devices
     if (!device || !device.features) return;
-    const index = deviceUtils.findInstanceIndex(draft, device);
-    if (!draft[index]) return;
+    const index = deviceUtils.findInstanceIndex(draft.devices, device);
+    if (!draft.devices[index]) return;
     // update fields
-    draft[index].useEmptyPassphrase = !hidden;
-    draft[index].passphraseOnDevice = alwaysOnDevice;
-    draft[index].ts = new Date().getTime();
-    if (hidden && typeof draft[index].walletNumber !== 'number') {
-        draft[index].walletNumber = deviceUtils.getNewWalletNumber(draft, draft[index]);
+    draft.devices[index].useEmptyPassphrase = !hidden;
+    draft.devices[index].passphraseOnDevice = alwaysOnDevice;
+    draft.devices[index].ts = new Date().getTime();
+    if (hidden && typeof draft.devices[index].walletNumber !== 'number') {
+        draft.devices[index].walletNumber = deviceUtils.getNewWalletNumber(
+            draft.devices,
+            draft.devices[index],
+        );
     }
-    if (!hidden && typeof draft[index].walletNumber === 'number') {
-        delete draft[index].walletNumber;
+    if (!hidden && typeof draft.devices[index].walletNumber === 'number') {
+        delete draft.devices[index].walletNumber;
     }
 };
 
@@ -269,11 +288,11 @@ const changePassphraseMode = (
 const authDevice = (draft: State, device: TrezorDevice, state: string) => {
     // only acquired devices
     if (!device || !device.features) return;
-    const index = deviceUtils.findInstanceIndex(draft, device);
-    if (!draft[index]) return;
+    const index = deviceUtils.findInstanceIndex(draft.devices, device);
+    if (!draft.devices[index]) return;
     // update state
-    draft[index].state = state;
-    delete draft[index].authFailed;
+    draft.devices[index].state = state;
+    delete draft.devices[index].authFailed;
 };
 
 /**
@@ -285,9 +304,9 @@ const authDevice = (draft: State, device: TrezorDevice, state: string) => {
 const authFailed = (draft: State, device: TrezorDevice) => {
     // only acquired devices
     if (!device || !device.features) return;
-    const index = deviceUtils.findInstanceIndex(draft, device);
-    if (!draft[index]) return;
-    draft[index].authFailed = true;
+    const index = deviceUtils.findInstanceIndex(draft.devices, device);
+    if (!draft.devices[index]) return;
+    draft.devices[index].authFailed = true;
 };
 
 /**
@@ -300,11 +319,11 @@ const authFailed = (draft: State, device: TrezorDevice) => {
 const authConfirm = (draft: State, device: TrezorDevice, success: boolean) => {
     // only acquired devices
     if (!device || !device.features) return;
-    const index = deviceUtils.findInstanceIndex(draft, device);
-    if (!draft[index]) return;
+    const index = deviceUtils.findInstanceIndex(draft.devices, device);
+    if (!draft.devices[index]) return;
     // update state
-    draft[index].authConfirm = !success;
-    draft[index].available = success;
+    draft.devices[index].authConfirm = !success;
+    draft.devices[index].available = success;
 };
 
 /**
@@ -327,7 +346,7 @@ const createInstance = (draft: State, device: TrezorDevice) => {
         buttonRequests: [],
         metadata: { status: 'disabled' },
     };
-    draft.push(newDevice);
+    draft.devices.push(newDevice);
 };
 
 /**
@@ -340,7 +359,7 @@ const createInstance = (draft: State, device: TrezorDevice) => {
 const remember = (draft: State, device: TrezorDevice, remember: boolean, forceRemember?: true) => {
     // only acquired devices
     if (!device || !device.features) return;
-    draft.forEach(d => {
+    draft.devices.forEach(d => {
         if (deviceUtils.isSelectedInstance(device, d)) {
             d.remember = remember;
             if (forceRemember) d.forceRemember = true;
@@ -359,20 +378,20 @@ const remember = (draft: State, device: TrezorDevice, remember: boolean, forceRe
 const forget = (draft: State, device: TrezorDevice) => {
     // only acquired devices
     if (!device || !device.features) return;
-    const index = deviceUtils.findInstanceIndex(draft, device);
-    if (!draft[index]) return;
-    const others = deviceUtils.getDeviceInstances(device, draft, true);
+    const index = deviceUtils.findInstanceIndex(draft.devices, device);
+    if (!draft.devices[index]) return;
+    const others = deviceUtils.getDeviceInstances(device, draft.devices, true);
     if (device.connected && others.length < 1) {
         // do not forget the last instance, just reset state
-        draft[index].state = undefined;
-        draft[index].walletNumber = undefined;
-        draft[index].useEmptyPassphrase = !device.features.passphrase_protection;
-        draft[index].passphraseOnDevice = false;
+        draft.devices[index].state = undefined;
+        draft.devices[index].walletNumber = undefined;
+        draft.devices[index].useEmptyPassphrase = !device.features.passphrase_protection;
+        draft.devices[index].passphraseOnDevice = false;
         // set remember to false to make it disappear after device is disconnected
-        draft[index].remember = false;
-        draft[index].metadata = { status: 'disabled' };
+        draft.devices[index].remember = false;
+        draft.devices[index].metadata = { status: 'disabled' };
     } else {
-        draft.splice(index, 1);
+        draft.devices.splice(index, 1);
     }
 };
 
@@ -383,19 +402,19 @@ const addButtonRequest = (
 ) => {
     // only acquired devices
     if (!device || !device.features) return;
-    const index = deviceUtils.findInstanceIndex(draft, device);
-    if (!draft[index]) return;
+    const index = deviceUtils.findInstanceIndex(draft.devices, device);
+    if (!draft.devices[index]) return;
     // update state
     if (!buttonRequest) {
-        draft[index].buttonRequests = [];
+        draft.devices[index].buttonRequests = [];
         return;
     }
-    draft[index].buttonRequests.push(buttonRequest);
+    draft.devices[index].buttonRequests.push(buttonRequest);
 };
 
 const setMetadata = (draft: State, state: string, metadata: TrezorDevice['metadata']) => {
-    const index = draft.findIndex(d => d.state === state);
-    const device = draft[index];
+    const index = draft.devices.findIndex(d => d.state === state);
+    const device = draft.devices[index];
     if (!device) return;
     device.metadata = metadata;
 };
@@ -404,7 +423,9 @@ const deviceReducer = (state: State = initialState, action: Action): State =>
     produce(state, draft => {
         switch (action.type) {
             case STORAGE.LOAD:
-                return action.payload.devices;
+                return {
+                    devices: action.payload.devices,
+                };
             case DEVICE.CONNECT:
             case DEVICE.CONNECT_UNACQUIRED:
                 connectDevice(draft, action.payload);
@@ -414,9 +435,6 @@ const deviceReducer = (state: State = initialState, action: Action): State =>
                 break;
             case DEVICE.DISCONNECT:
                 disconnectDevice(draft, action.payload);
-                break;
-            case SUITE.SELECT_DEVICE:
-                updateTimestamp(draft, action.payload);
                 break;
             case SUITE.UPDATE_PASSPHRASE_MODE:
                 changePassphraseMode(draft, action.payload, action.hidden, action.alwaysOnDevice);
@@ -442,6 +460,19 @@ const deviceReducer = (state: State = initialState, action: Action): State =>
             case SUITE.ADD_BUTTON_REQUEST:
                 addButtonRequest(draft, action.payload.device, action.payload.buttonRequest);
                 break;
+            case SUITE.SELECT_DEVICE:
+                updateTimestamp(draft, action.payload);
+                draft.selectedDevice = action.payload;
+                break;
+            case SUITE.UPDATE_SELECTED_DEVICE:
+                draft.selectedDevice = action.payload;
+                break;
+            case SUITE.REQUEST_DEVICE_RECONNECT:
+                if (draft.selectedDevice) {
+                    draft.selectedDevice.reconnectRequested = true;
+                }
+                break;
+
             case METADATA.SET_DEVICE_METADATA:
                 setMetadata(draft, action.payload.deviceState, action.payload.metadata);
                 break;
@@ -449,7 +480,68 @@ const deviceReducer = (state: State = initialState, action: Action): State =>
         }
     });
 
-export const selectDevices = (state: DeviceRootState) => state.devices;
-export const selectIsPendingTransportEvent = (state: DeviceRootState) => state.devices.length < 1;
+export const selectDevices = (state: DeviceRootState) => state.device?.devices;
+export const selectDevicesCount = (state: DeviceRootState) => state.device?.devices?.length;
+export const selectIsPendingTransportEvent = (state: DeviceRootState) =>
+    state.device.devices.length < 1;
+
+export const selectDevice = (state: DeviceRootState) => state.device.selectedDevice;
+
+export const selectDeviceUnavailableCapabilities = (state: DeviceRootState) =>
+    state.device.selectedDevice?.unavailableCapabilities;
+
+export const selectDeviceState = (state: DeviceRootState) => {
+    const device = selectDevice(state);
+    return device && getStatus(device);
+};
+
+export const selectDiscoveryForDevice = (state: DiscoveryRootState & { device: State }) =>
+    selectDiscoveryByDeviceState(state, state.device.selectedDevice?.state);
+
+/**
+ * Helper selector called from components
+ * return `true` if discovery process is running/completed and `authConfirm` is required
+ */
+export const selectIsDiscoveryAuthConfirmationRequired = (
+    state: DiscoveryRootState & DeviceRootState,
+) => {
+    const discovery = selectDiscoveryForDevice(state);
+
+    return (
+        discovery &&
+        discovery.authConfirm &&
+        (discovery.status < DiscoveryStatus.STOPPING ||
+            discovery.status === DiscoveryStatus.COMPLETED)
+    );
+};
+
+export const selectSupportedNetworks = (state: DeviceRootState) => {
+    const device = selectDevice(state);
+    const deviceModelInternal = device?.features?.internal_model;
+    const firmwareVersion = getFirmwareVersion(device);
+
+    return Object.entries(networks)
+        .map(([symbol, network]) => {
+            const support =
+                'support' in network ? (network.support as Network['support']) : undefined;
+
+            const firmwareSupportRestriction =
+                deviceModelInternal && support?.[deviceModelInternal];
+            const isSupportedByApp =
+                !firmwareSupportRestriction ||
+                versionUtils.isNewerOrEqual(firmwareVersion, firmwareSupportRestriction);
+
+            const unavailableReason = isSupportedByApp
+                ? device?.unavailableCapabilities?.[symbol]
+                : 'update-required';
+
+            if (['no-support', 'no-capability'].includes(unavailableReason || '')) {
+                return null;
+            }
+
+            return symbol;
+        })
+        .filter(Boolean) as Network['symbol'][]; // Filter out null values
+};
 
 export default deviceReducer;

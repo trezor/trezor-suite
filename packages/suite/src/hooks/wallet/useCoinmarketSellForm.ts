@@ -1,14 +1,19 @@
 import { createContext, useContext, useCallback, useState, useEffect } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
+
 import type { SellFiatTradeQuoteRequest } from 'invity-api';
-import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
-import invityAPI from 'src/services/suite/invityAPI';
+import useDebounce from 'react-use/lib/useDebounce';
+
 import {
     fromFiatCurrency,
     getFeeLevels,
     amountToSatoshi,
     formatAmount,
 } from '@suite-common/wallet-utils';
+import { useDidUpdate } from '@trezor/react-utils';
+
+import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
+import invityAPI from 'src/services/suite/invityAPI';
 import { isChanged } from 'src/utils/suite/comparisonUtils';
 import {
     clearQuotes,
@@ -33,16 +38,16 @@ import {
     mapTestnetSymbol,
 } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { getAmountLimits, processQuotes } from 'src/utils/wallet/coinmarket/sellUtils';
-import { useFees } from './form/useFees';
-import { useCompose } from './form/useCompose';
-import useDebounce from 'react-use/lib/useDebounce';
 import { useFormDraft } from 'src/hooks/wallet/useFormDraft';
-import { useCoinmarketSellFormDefaultValues } from './useCoinmarketSellFormDefaultValues';
 import { useCoinmarketNavigation } from 'src/hooks/wallet/useCoinmarketNavigation';
 import type { AppState } from 'src/types/suite';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
-import { useDidUpdate } from '@trezor/react-utils';
 import { AmountLimits } from 'src/types/wallet/coinmarketCommonTypes';
+
+import { useCoinmarketSellFormDefaultValues } from './useCoinmarketSellFormDefaultValues';
+import { useCompose } from './form/useCompose';
+import { useFees } from './form/useFees';
+import { selectDevice } from '../../reducers/suite/deviceReducer';
 
 export const SellFormContext = createContext<SellFormContextValues | null>(null);
 SellFormContext.displayName = 'CoinmarketSellContext';
@@ -79,7 +84,7 @@ export const useCoinmarketSellForm = ({
     }, [dispatch]);
 
     const accounts = useSelector(state => state.wallet.accounts);
-    const device = useSelector(state => state.suite.device);
+    const device = useSelector(selectDevice);
     const fiat = useSelector(state => state.wallet.fiat);
     const localCurrency = useSelector(state => state.wallet.settings.localCurrency);
     const fees = useSelector(state => state.wallet.fees);

@@ -23,6 +23,8 @@ import { getSuiteReadyPayload } from 'src/utils/suite/analytics';
 import { addSentryBreadcrumb, setSentryContext, setSentryTag } from 'src/utils/suite/sentry';
 import { AppState, Action, Dispatch } from 'src/types/suite';
 
+import { selectDevice } from '../../reducers/suite/deviceReducer';
+
 const deviceContextName = 'trezor-device';
 
 const breadcrumbActions = [
@@ -93,7 +95,7 @@ const sentryMiddleware =
                     firmware: getFirmwareVersion(action.payload),
                     isBitcoinOnly: hasBitcoinOnlyFirmware(action.payload),
                     bootloader: getBootloaderVersion(action.payload),
-                    model: state.suite.device?.features?.internal_model,
+                    model: selectDevice(state)?.features?.internal_model,
                 });
                 break;
             }

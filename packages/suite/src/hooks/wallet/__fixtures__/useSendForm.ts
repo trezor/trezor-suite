@@ -1,10 +1,11 @@
+import { combineReducers, createReducer } from '@reduxjs/toolkit';
+
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants';
 import { accountsActions } from '@suite-common/wallet-core';
 import { PROTO } from '@trezor/connect';
-
-import { combineReducers, createReducer } from '@reduxjs/toolkit';
 import { testMocks } from '@suite-common/test-utils';
+
 import sendFormReducer from 'src/reducers/wallet/sendFormReducer';
 
 const UTXO = {
@@ -154,11 +155,11 @@ export const getRootReducer = (selectedAccount = BTC_ACCOUNT, fees = DEFAULT_FEE
             {
                 locks: [],
                 online: true,
-                device: DEVICE,
                 settings: { debug: {}, theme: { variant: 'light' } },
             },
             () => ({}),
         ),
+        device: createReducer({ selectedDevice: DEVICE }, () => {}),
         wallet: combineReducers({
             send: sendFormReducer,
             accounts: createReducer(
@@ -291,31 +292,6 @@ const getDraft = (draft?: any) => ({
 });
 
 export const addingOutputs = [
-    // {
-    //     description: 'Add/Remove opreturn',
-    //     initial: {
-    //         outputs: [{ address: '' }],
-    //     },
-    //     actions: [
-    //         {
-    //             type: 'click',
-    //             element: '@send/header-dropdown',
-    //         },
-    //         {
-    //             type: 'click',
-    //             element: '@send/header-dropdown',
-    //         },
-    //         {
-    //             type: 'click',
-    //             element: '@send/header-dropdown/opreturn',
-    //             result: {
-    //                 formValues: {
-    //                     outputs: [{ type: 'opreturn' }],
-    //                 },
-    //             },
-    //         },
-    //     ],
-    // },
     {
         description: 'Add/Remove/Reset outputs without draft',
         initial: {

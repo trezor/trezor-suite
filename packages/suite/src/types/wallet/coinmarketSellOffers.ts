@@ -1,9 +1,12 @@
+import type { BankAccount, SellFiatTrade } from 'invity-api';
+
+import type { Timer } from '@trezor/react-utils';
+
 import type { AppState } from 'src/types/suite';
 import type { Account } from 'src/types/wallet';
-import type { BankAccount, SellFiatTrade } from 'invity-api';
-import type { Timer } from '@trezor/react-utils';
 import type { SellInfo } from 'src/actions/wallet/coinmarketSellActions';
 import type { WithSelectedAccountLoadedProps } from 'src/components/wallet';
+
 import { TradeSell } from './coinmarketCommonTypes';
 
 export type UseOffersProps = WithSelectedAccountLoadedProps;
@@ -16,7 +19,7 @@ export type ContextValues = {
     quotes: AppState['wallet']['coinmarket']['sell']['quotes'];
     alternativeQuotes: AppState['wallet']['coinmarket']['sell']['alternativeQuotes'];
     quotesRequest: AppState['wallet']['coinmarket']['sell']['quotesRequest'];
-    device: AppState['suite']['device'];
+    device: AppState['device']['selectedDevice'];
     selectedQuote?: SellFiatTrade;
     trade?: TradeSell;
     suiteReceiveAccounts?: AppState['wallet']['accounts'];

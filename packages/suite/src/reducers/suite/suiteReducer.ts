@@ -1,27 +1,19 @@
 import produce from 'immer';
 
-import {
-    discoveryActions,
-    selectDiscoveryByDeviceState,
-    DiscoveryRootState,
-} from '@suite-common/wallet-core';
+import { discoveryActions } from '@suite-common/wallet-core';
 import type { InvityServerEnvironment } from '@suite-common/invity';
 import { getNumberFromPixelString, versionUtils } from '@trezor/utils';
 import { isWeb, getWindowWidth } from '@trezor/env-utils';
 import { variables } from '@trezor/components';
 import { SuiteThemeVariant } from '@trezor/suite-desktop-api';
 import { TRANSPORT, TransportInfo, ConnectSettings } from '@trezor/connect';
-import { DiscoveryStatus } from '@suite-common/wallet-constants';
 
 import { getIsTorEnabled, getIsTorLoading } from 'src/utils/suite/tor';
-import { getStatus } from 'src/utils/suite/device';
 import type { OAuthServerEnvironment } from 'src/types/suite/metadata';
 import { ensureLocale } from 'src/utils/suite/l10n';
 import type { Locale } from 'src/config/suite/languages';
 import { SUITE, STORAGE } from 'src/actions/suite/constants';
-import { Action, TrezorDevice, Lock, TorBootstrap, TorStatus } from 'src/types/suite';
-import { getFirmwareVersion } from '@trezor/device-utils';
-import { networks, Network } from '@suite-common/wallet-config';
+import { Action, Lock, TorBootstrap, TorStatus } from 'src/types/suite';
 
 export interface SuiteRootState {
     suite: SuiteState;
@@ -82,7 +74,6 @@ export interface SuiteState {
     torBootstrap: TorBootstrap | null;
     lifecycle: SuiteLifecycle;
     transport?: Partial<TransportInfo>;
-    device?: TrezorDevice;
     locks: Lock[];
     flags: Flags;
     settings: SuiteSettings;
@@ -168,11 +159,6 @@ const suiteReducer = (state: SuiteState = initialState, action: Action): SuiteSt
                 draft.lifecycle = { status: 'error', error: action.error };
                 break;
 
-            case SUITE.SELECT_DEVICE:
-            case SUITE.UPDATE_SELECTED_DEVICE:
-                draft.device = action.payload;
-                break;
-
             case SUITE.SET_LANGUAGE:
                 draft.settings.language = action.locale;
                 break;
@@ -251,12 +237,6 @@ const suiteReducer = (state: SuiteState = initialState, action: Action): SuiteSt
                 changeLock(draft, SUITE.LOCK_TYPE.DEVICE, false);
                 break;
 
-            case SUITE.REQUEST_DEVICE_RECONNECT:
-                if (draft.device) {
-                    draft.device.reconnectRequested = true;
-                }
-                break;
-
             // no default
         }
     });
@@ -274,14 +254,7 @@ export const selectTorState = (state: SuiteRootState) => {
     };
 };
 
-export const selectDeviceState = (state: SuiteRootState) => {
-    const { device } = state.suite;
-    return device && getStatus(device);
-};
-
 export const selectDebug = (state: SuiteRootState) => state.suite.settings.debug;
-
-export const selectDevice = (state: SuiteRootState) => state.suite.device;
 
 export const selectLanguage = (state: SuiteRootState) => state.suite.settings.language;
 
@@ -295,54 +268,5 @@ export const selectIsActionAbortable = (state: SuiteRootState) =>
     state.suite.transport?.type === 'BridgeTransport'
         ? versionUtils.isNewerOrEqual(state.suite.transport?.version as string, '2.0.31')
         : true; // WebUSB
-
-export const selectDiscoveryForDevice = (state: DiscoveryRootState & { suite: SuiteState }) =>
-    selectDiscoveryByDeviceState(state, state.suite.device?.state);
-
-/**
- * Helper selector called from components
- * return `true` if discovery process is running/completed and `authConfirm` is required
- */
-export const selectIsDiscoveryAuthConfirmationRequired = (
-    state: DiscoveryRootState & { suite: SuiteState },
-) => {
-    const discovery = selectDiscoveryForDevice(state);
-
-    return (
-        discovery &&
-        discovery.authConfirm &&
-        (discovery.status < DiscoveryStatus.STOPPING ||
-            discovery.status === DiscoveryStatus.COMPLETED)
-    );
-};
-
-export const selectSupportedNetworks = (state: SuiteRootState) => {
-    const device = selectDevice(state);
-    const deviceModelInternal = device?.features?.internal_model;
-    const firmwareVersion = getFirmwareVersion(device);
-
-    return Object.entries(networks)
-        .map(([symbol, network]) => {
-            const support =
-                'support' in network ? (network.support as Network['support']) : undefined;
-
-            const firmwareSupportRestriction =
-                deviceModelInternal && support?.[deviceModelInternal];
-            const isSupportedByApp =
-                !firmwareSupportRestriction ||
-                versionUtils.isNewerOrEqual(firmwareVersion, firmwareSupportRestriction);
-
-            const unavailableReason = isSupportedByApp
-                ? device?.unavailableCapabilities?.[symbol]
-                : 'update-required';
-
-            if (['no-support', 'no-capability'].includes(unavailableReason || '')) {
-                return null;
-            }
-
-            return symbol;
-        })
-        .filter(Boolean) as Network['symbol'][]; // Filter out null values
-};
 
 export default suiteReducer;
