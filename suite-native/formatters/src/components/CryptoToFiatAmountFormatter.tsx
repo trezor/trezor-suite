@@ -5,7 +5,7 @@ import { useFormatters } from '@suite-common/formatters';
 
 import { FormatterProps } from '../types';
 import { AmountText } from './AmountText';
-import { useFiatValueConvertedFromCrypto } from '../hooks/useFiatValueConvertedFromCrypto';
+import { useFiatFromCryptoValue } from '../hooks/useFiatFromCryptoValue';
 
 type CryptoToFiatAmountFormatterProps = FormatterProps<string | null> &
     TextProps & {
@@ -23,7 +23,7 @@ export const CryptoToFiatAmountFormatter = ({
 }: CryptoToFiatAmountFormatterProps) => {
     const { FiatAmountFormatter } = useFormatters();
 
-    const fiatValue = useFiatValueConvertedFromCrypto({ cryptoValue: value, network, customRates });
+    const fiatValue = useFiatFromCryptoValue({ cryptoValue: value, network, customRates });
 
     const formattedFiatValue = FiatAmountFormatter.format(fiatValue ?? '0');
     return <AmountText value={formattedFiatValue} isDiscreetText={isDiscreetText} {...textProps} />;

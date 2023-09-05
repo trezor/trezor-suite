@@ -10,10 +10,9 @@ import {
     percentageDiff,
     PriceChangeIndicator,
 } from '@suite-native/graph';
-import { FiatAmountFormatter } from '@suite-native/formatters';
+import { FiatBalanceFormatter } from '@suite-native/formatters';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { FiatGraphPointWithCryptoBalance } from '@suite-common/graph';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { AccountDetailCryptoValue } from './AccountDetailCryptoValue';
 
@@ -48,24 +47,10 @@ const CryptoBalance = ({ accountSymbol }: { accountSymbol: NetworkSymbol }) => {
     );
 };
 
-const fiatBalanceStyle = prepareNativeStyle(utils => ({
-    marginBottom: -utils.spacings.small,
-}));
-
-const FiatBalance = ({ accountSymbol }: { accountSymbol: NetworkSymbol }) => {
+const FiatBalance = () => {
     const selectedPoint = useAtomValue(selectedPointAtom);
-    const { applyStyle } = useNativeStyles();
 
-    return (
-        <FiatAmountFormatter
-            style={applyStyle(fiatBalanceStyle)}
-            value={String(selectedPoint.value)}
-            network={accountSymbol}
-            variant="titleLarge"
-            adjustsFontSizeToFit
-            numberOfLines={1}
-        />
-    );
+    return <FiatBalanceFormatter value={String(selectedPoint.value)} />;
 };
 
 export const AccountDetailGraphHeader = ({ accountKey }: AccountBalanceProps) => {
@@ -77,9 +62,9 @@ export const AccountDetailGraphHeader = ({ accountKey }: AccountBalanceProps) =>
     if (!account) return null;
 
     return (
-        <VStack spacing="small" alignItems="center">
+        <VStack spacing="extraSmall" alignItems="center">
             <CryptoBalance accountSymbol={account.symbol} />
-            <FiatBalance accountSymbol={account.symbol} />
+            <FiatBalance />
             <HStack>
                 <GraphDateFormatter
                     firstPointDate={firstPointDate}
