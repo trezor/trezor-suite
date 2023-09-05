@@ -2,7 +2,7 @@ import { memo, useMemo } from 'react';
 import styled from 'styled-components';
 import { Dropdown } from '@trezor/components';
 import { Card, QuestionTooltip, Translation } from 'src/components/suite';
-import { Section } from 'src/components/dashboard';
+import { DashboardSection } from 'src/components/dashboard';
 import { useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
 import { useFastAccounts, useFiatValue } from 'src/hooks/wallet';
 import { SkeletonTransactionsGraph } from 'src/components/suite/TransactionsGraph';
@@ -89,7 +89,7 @@ const PortfolioCard = memo(() => {
     const goToBuy = () => dispatch(goto('wallet-coinmarket-buy'));
 
     return (
-        <Section
+        <DashboardSection
             heading={
                 <QuestionTooltip
                     label="TR_MY_PORTFOLIO"
@@ -152,7 +152,7 @@ const PortfolioCard = memo(() => {
 
                 {body && <Body>{body}</Body>}
             </StyledCard>
-        </Section>
+        </DashboardSection>
     );
 });
 

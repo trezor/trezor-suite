@@ -5,7 +5,7 @@ import { AnimatePresence } from 'framer-motion';
 import { variables, Icon, Button, colors, LoadingContent } from '@trezor/components';
 
 import { NETWORKS } from 'src/config/wallet';
-import { Section } from 'src/components/dashboard';
+import { DashboardSection } from 'src/components/dashboard';
 import { Account, Network } from 'src/types/wallet';
 import { Card, Translation } from 'src/components/suite';
 import { useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
@@ -135,7 +135,7 @@ const AssetsCard = () => {
     const setGrid = () => dispatch(setFlag('dashboardAssetsGridMode', true));
 
     return (
-        <Section
+        <DashboardSection
             heading={
                 <>
                     <LoadingContent isLoading={isDiscoveryRunning}>
@@ -217,7 +217,7 @@ const AssetsCard = () => {
                     )}
                 </StyledCard>
             )}
-        </Section>
+        </DashboardSection>
     );
 };
 
