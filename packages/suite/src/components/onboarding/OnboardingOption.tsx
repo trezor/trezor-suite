@@ -59,7 +59,7 @@ export const OptionsDivider = styled.div`
     flex: 0 0 24px;
 `;
 
-interface OnboardingOptionProps extends React.HTMLAttributes<HTMLDivElement> {
+interface OnboardingOptionProps extends HTMLAttributes<HTMLDivElement> {
     heading: ReactNode;
     description?: ReactNode;
     icon?: IconProps['icon'];

@@ -7,4 +7,7 @@ export { FirmwareInitial } from './FirmwareInitial';
 export { Fingerprint } from './Fingerprint';
 export { FirmwareProgressBar } from './FirmwareProgressBar';
 export { SelectCustomFirmware } from './SelectCustomFirmware';
-export { RetryButton, ContinueButton, InstallButton, CloseButton } from './FirmwareButton';
+export { FirmwareRetryButton } from './Buttons/FirmwareRetryButton';
+export { FirmwareCloseButton } from './Buttons/FirmwareCloseButton';
+export { FirmwareContinueButton } from './Buttons/FirmwareContinueButton';
+export { FirmwareInstallButton } from './Buttons/FirmwareInstallButton';

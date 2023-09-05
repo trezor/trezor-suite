@@ -7,7 +7,7 @@ import { closeModalApp } from 'src/actions/suite/routerActions';
 import { TrezorDevice } from 'src/types/suite';
 import {
     CheckSeedStep,
-    CloseButton,
+    FirmwareCloseButton,
     FirmwareInitial,
     FirmwareInstallation,
 } from 'src/components/firmware';
@@ -99,9 +99,9 @@ export const Firmware = ({ shouldSwitchFirmwareType }: FirmwareProps) => {
                             <Translation id="TOAST_GENERIC_ERROR" values={{ error: error || '' }} />
                         }
                         innerActions={
-                            <CloseButton onClick={onClose}>
+                            <FirmwareCloseButton onClick={onClose}>
                                 <Translation id="TR_BACK" />
-                            </CloseButton>
+                            </FirmwareCloseButton>
                         }
                         nested
                     />
