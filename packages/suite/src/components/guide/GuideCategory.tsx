@@ -1,7 +1,13 @@
 import styled from 'styled-components';
 
 import { variables } from '@trezor/components';
-import { Header, Content, ViewWrapper, GuideNode, GuideCategories } from 'src/components/guide';
+import {
+    GuideHeader,
+    GuideContent,
+    GuideViewWrapper,
+    GuideNode,
+    GuideCategories,
+} from 'src/components/guide';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { Translation } from 'src/components/suite';
 import { setView } from 'src/actions/suite/guideActions';
@@ -48,9 +54,9 @@ export const GuideCategory = () => {
     const goBack = () => dispatch(setView('GUIDE_DEFAULT'));
 
     return (
-        <ViewWrapper>
-            <Header back={goBack} label={title} />
-            <Content>
+        <GuideViewWrapper>
+            <GuideHeader back={goBack} label={title} />
+            <GuideContent>
                 {pages.length ? (
                     <Section>
                         <SectionHeading>
@@ -74,7 +80,7 @@ export const GuideCategory = () => {
                           ) : null,
                       )
                     : null}
-            </Content>
-        </ViewWrapper>
+            </GuideContent>
+        </GuideViewWrapper>
     );
 };

@@ -13,11 +13,11 @@ const Wrapper = styled.div`
 
 export const ContentScrolledContext = createContext<boolean>(false);
 
-type ViewWrapperProps = {
+type GuideViewWrapperProps = {
     children: ReactNode;
 };
 
-export const ViewWrapper = ({ children }: ViewWrapperProps) => {
+export const GuideViewWrapper = ({ children }: GuideViewWrapperProps) => {
     const [isScrolled, setIsScrolled] = useState<boolean>(false);
 
     const onScroll: UIEventHandler<HTMLDivElement> = useCallback(e => {

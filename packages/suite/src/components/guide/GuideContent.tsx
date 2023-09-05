@@ -6,8 +6,8 @@ const Wrapper = styled.div`
     padding: 15px 21px 0;
 `;
 
-type ContentProps = {
+type GuideContentProps = {
     children: ReactNode;
 };
 
-export const Content = ({ children }: ContentProps) => <Wrapper>{children}</Wrapper>;
+export const GuideContent = ({ children }: GuideContentProps) => <Wrapper>{children}</Wrapper>;

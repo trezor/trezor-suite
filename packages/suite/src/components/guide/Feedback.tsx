@@ -7,7 +7,7 @@ import { CharacterCount, Translation } from 'src/components/suite';
 import { Textarea, Select, variables, Button, CollapsibleBox } from '@trezor/components';
 import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 import { sendFeedback, setView } from 'src/actions/suite/guideActions';
-import { ViewWrapper, Header, Content } from 'src/components/guide';
+import { GuideViewWrapper, GuideHeader, GuideContent } from 'src/components/guide';
 import { Rating, FeedbackCategory, FeedbackType, UserData } from '@suite-common/suite-types';
 import {
     getEnvironment,
@@ -221,8 +221,8 @@ export const Feedback = ({ type }: FeedbackProps) => {
     }, [device, dispatch, type, description, category, rating?.id]);
 
     return (
-        <ViewWrapper>
-            <Header
+        <GuideViewWrapper>
+            <GuideHeader
                 back={goBack}
                 label={
                     type === 'BUG' ? (
@@ -232,7 +232,7 @@ export const Feedback = ({ type }: FeedbackProps) => {
                     )
                 }
             />
-            <Content>
+            <GuideContent>
                 {type === 'BUG' && (
                     <>
                         <Headline>
@@ -330,7 +330,7 @@ export const Feedback = ({ type }: FeedbackProps) => {
                         </AnonymousDataItem>
                     </AnonymousDataList>
                 </CollapsibleBox>
-            </Content>
-        </ViewWrapper>
+            </GuideContent>
+        </GuideViewWrapper>
     );
 };

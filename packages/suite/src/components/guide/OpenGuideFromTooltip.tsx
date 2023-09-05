@@ -1,10 +1,11 @@
 import { MouseEvent } from 'react';
+import styled from 'styled-components';
+import { transparentize } from 'polished';
+
 import { Icon } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 import TrezorLink from 'src/components/suite/TrezorLink';
-import { transparentize } from 'polished';
 import { useGuideOpenNode } from 'src/hooks/guide';
-import styled from 'styled-components';
 
 const OpenGuideLink = styled(TrezorLink)`
     display: flex;

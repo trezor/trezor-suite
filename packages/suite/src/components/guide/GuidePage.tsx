@@ -1,5 +1,5 @@
 import { useSelector } from 'src/hooks/suite';
-import { Header, Content, ViewWrapper, GuideMarkdown } from 'src/components/guide';
+import { GuideHeader, GuideContent, GuideViewWrapper, GuideMarkdown } from 'src/components/guide';
 import { Translation } from 'src/components/suite';
 import { useGuideLoadPage } from 'src/hooks/guide';
 
@@ -10,12 +10,12 @@ export const GuidePage = () => {
     const { markdown, hasError } = useGuideLoadPage(currentNode, language);
 
     return (
-        <ViewWrapper>
-            <Header useBreadcrumb />
-            <Content>
+        <GuideViewWrapper>
+            <GuideHeader useBreadcrumb />
+            <GuideContent>
                 <GuideMarkdown markdown={markdown} />
                 {hasError && <Translation id="TR_GENERIC_ERROR_TITLE" />}
-            </Content>
-        </ViewWrapper>
+            </GuideContent>
+        </GuideViewWrapper>
     );
 };
