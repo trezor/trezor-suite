@@ -1,5 +1,5 @@
 import { storage } from '@trezor/connect-common';
-import { Deferred } from '@trezor/utils';
+import { Deferred, versionUtils } from '@trezor/utils';
 import { DataManager } from '../data/DataManager';
 import { ERRORS, NETWORK } from '../constants';
 import {
@@ -13,7 +13,6 @@ import {
     UiPromiseCreator,
     PostMessage,
 } from '../events';
-import { versionCompare } from '../utils/versionUtils';
 import { getHost } from '../utils/urlUtils';
 import type { Device } from '../device/Device';
 import type { FirmwareRange } from '../types';
@@ -265,11 +264,14 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
             return UI.FIRMWARE_NOT_SUPPORTED;
         }
 
-        if (device.firmwareStatus === 'required' || versionCompare(version, range.min) < 0) {
+        if (
+            device.firmwareStatus === 'required' ||
+            !versionUtils.isNewerOrEqual(version.join('.'), range.min)
+        ) {
             return UI.FIRMWARE_OLD;
         }
 
-        if (range.max !== '0' && versionCompare(version, range.max) > 0) {
+        if (range.max !== '0' && versionUtils.isNewer(version.join('.'), range.max)) {
             if (isUsingPopup) {
                 // wait for popup handshake
                 await this.getPopupPromise().promise;

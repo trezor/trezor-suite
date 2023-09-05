@@ -1,7 +1,7 @@
 /* eslint-disable import/no-named-as-default */
 
 import TrezorConnect from '../src';
-import * as versionUtils from '@trezor/utils/src/versionUtils'; // NOTE: only this module is required
+import { versionUtils } from '@trezor/utils';
 import { UI } from '../src/events';
 import { toHardened, getHDPath } from '../src/utils/pathUtils';
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
