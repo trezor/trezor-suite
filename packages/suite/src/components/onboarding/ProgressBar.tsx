@@ -85,6 +85,10 @@ const Divider = styled.div`
     }
 `;
 
+const ConfettiIcon = styled(Icon)`
+    margin-left: 1px;
+`;
+
 interface ProgressBarProps {
     steps: {
         key: string;
@@ -108,8 +112,17 @@ export const ProgressBar = ({ steps, activeStep, className }: ProgressBarProps) 
                                 {stepCompleted ? (
                                     <Icon icon="CHECK" color={theme.TYPE_GREEN} />
                                 ) : (
-                                    // TODO: Proper icon instead of emoji for last step
-                                    <>{index === steps.length - 1 ? <>🎉</> : index + 1}</>
+                                    <>
+                                        {index === steps.length - 1 ? (
+                                            <ConfettiIcon
+                                                icon="CONFETTI_SUCCESS"
+                                                size={20}
+                                                color={stepActive ? theme.TYPE_GREEN : undefined}
+                                            />
+                                        ) : (
+                                            index + 1
+                                        )}
+                                    </>
                                 )}
                             </IconWrapper>
                             <Label>{step.label}</Label>
