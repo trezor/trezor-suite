@@ -1,14 +1,40 @@
-import { DefaultTheme } from 'styled-components';
-import { darken } from 'polished';
+import { css, DefaultTheme } from 'styled-components';
+import { boxShadows } from '@trezor/theme';
+import { MEDIA_QUERY } from '../config/variables';
 
-type Options = {
+type InputColorOptions = {
     checked?: boolean;
     disabled?: boolean;
 };
 
-export const getInputColor = (theme: DefaultTheme, { checked, disabled }: Options) => {
-    if (!checked) {
-        return theme.STROKE_GREY;
-    }
-    return disabled ? darken(theme.DARKEN_20_PERCENT_FILTER, theme.STROKE_GREY) : theme.BG_GREEN;
+type LabelColorOptions = {
+    disabled?: boolean;
+    alert?: boolean;
 };
+
+export const getInputColor = (theme: DefaultTheme, { checked, disabled }: InputColorOptions) => {
+    if (!checked) {
+        return theme.backgroundNeutralDisabled;
+    }
+    return disabled ? theme.backgroundPrimarySubtleOnElevation0 : theme.backgroundPrimaryDefault;
+};
+
+export const getLabelColor = (theme: DefaultTheme, { alert, disabled }: LabelColorOptions) => {
+    if (alert) {
+        return theme.borderAlertRed;
+    }
+    return disabled ? theme.textDisabled : theme.textDefault;
+};
+
+export const getFocusShadowStyle = (selector = ':focus-visible') => css`
+    ${selector} {
+        border: ${({ theme }) => `1px solid ${theme.backgroundAlertBlueBold}`};
+        box-shadow: ${boxShadows.focusedLight};
+    }
+
+    ${MEDIA_QUERY.DARK_THEME} {
+        ${selector} {
+            box-shadow: ${boxShadows.focusedDark};
+        }
+    }
+`;

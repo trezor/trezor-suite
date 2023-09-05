@@ -18,8 +18,26 @@ export const Switch = {
                 isChecked={isChecked}
                 isSmall={args.isSmall}
                 isDisabled={args.isDisabled}
+                label={args.label}
+                labelPosition={args.labelPosition}
+                isAlert={args.isAlert}
             />
         );
     },
-    args: { isSmall: false, isDisabled: false, isChecked: false },
+    args: {
+        isSmall: false,
+        isDisabled: false,
+        isChecked: false,
+        label: 'Headline',
+        labelPosition: 'right',
+        isAlert: false,
+    },
+    argTypes: {
+        labelPosition: {
+            options: ['left', 'right'],
+            control: {
+                type: 'radio',
+            },
+        },
+    },
 };
