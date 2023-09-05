@@ -75,13 +75,13 @@ const StyledIcon = styled(Icon)`
     margin: -8px;
 `;
 
-interface HeaderProps {
+interface GuideHeaderProps {
     back?: () => void;
     label?: string | JSX.Element;
     useBreadcrumb?: boolean;
 }
 
-export const Header = ({ back, label, useBreadcrumb }: HeaderProps) => {
+export const GuideHeader = ({ back, label, useBreadcrumb }: GuideHeaderProps) => {
     const theme = useTheme();
     const dispatch = useDispatch();
     const isScrolled = useContext(ContentScrolledContext);

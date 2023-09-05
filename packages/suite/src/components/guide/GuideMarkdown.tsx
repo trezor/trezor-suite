@@ -1,9 +1,9 @@
 import { useEffect, useRef } from 'react';
+import ReactMarkdown from 'react-markdown';
 import styled from 'styled-components';
 
 import { variables } from '@trezor/components';
 import { TrezorLink } from 'src/components/suite';
-import ReactMarkdown from 'react-markdown';
 import { useGuideOpenNode } from 'src/hooks/guide';
 import { GuideHint } from './GuideHint';
 

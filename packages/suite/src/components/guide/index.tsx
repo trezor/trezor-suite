@@ -1,10 +1,10 @@
-import { Content } from './Content';
+import { GuideContent } from './GuideContent';
 import { GuideButton } from './GuideButton';
 import { GuidePanel } from './GuidePanel';
-import { Header } from './Header';
+import { GuideHeader } from './GuideHeader';
 import { HeaderBreadcrumb } from './HeaderBreadcrumb';
 import { GuideNode } from './GuideNode';
-import { ViewWrapper, ContentScrolledContext } from './ViewWrapper';
+import { GuideViewWrapper, ContentScrolledContext } from './GuideViewWrapper';
 import { GuideCategories } from './GuideCategories';
 import { GuideSearch } from './GuideSearch';
 import { Feedback } from './Feedback';
@@ -16,13 +16,13 @@ import { OpenGuideFromTooltip } from './OpenGuideFromTooltip';
 import { GuideMarkdown } from './GuideMarkdown';
 
 export {
-    Content,
+    GuideContent,
     GuideButton,
     GuidePanel,
-    Header,
+    GuideHeader,
     HeaderBreadcrumb,
     GuideNode,
-    ViewWrapper,
+    GuideViewWrapper,
     GuideCategories,
     GuideSearch,
     ContentScrolledContext,
