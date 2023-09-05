@@ -1,10 +1,9 @@
 import styled from 'styled-components';
+
+import { Button, Checkbox } from '@trezor/components';
 import { useDevice, useFirmware } from 'src/hooks/suite';
 import { Translation } from 'src/components/suite';
 import { OnboardingStepBox } from 'src/components/onboarding';
-import { P } from 'src/components/firmware';
-
-import { Button, Checkbox } from '@trezor/components';
 
 const StyledCheckbox = styled(Checkbox)`
     margin: 16px 0;
@@ -19,6 +18,7 @@ export const CheckSeedStep = ({ onSuccess }: CheckSeedStepProps) => {
     const { hasSeed, toggleHasSeed } = useFirmware();
 
     // unacquired device handled on higher level
+
     if (!device?.features) return null;
 
     // device is not backed up - it is not advisable to do firmware update
@@ -63,7 +63,7 @@ export const CheckSeedStep = ({ onSuccess }: CheckSeedStepProps) => {
                 onClick={toggleHasSeed}
                 data-test="@firmware/confirm-seed-checkbox"
             >
-                <P>{checkbox}</P>
+                {checkbox}
             </StyledCheckbox>
         </OnboardingStepBox>
     );

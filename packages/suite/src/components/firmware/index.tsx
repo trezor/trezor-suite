@@ -1,14 +1,10 @@
-export { CheckSeedStep } from './CheckSeed';
+export { CheckSeedStep } from './CheckSeedStep';
 export { ReconnectDevicePrompt } from './ReconnectDevicePrompt';
 export { FirmwareChangelog } from './FirmwareChangelog';
 export { FirmwareOffer } from './FirmwareOffer';
 export { FirmwareInstallation } from './FirmwareInstallation';
 export { FirmwareInitial } from './FirmwareInitial';
 export { Fingerprint } from './Fingerprint';
-export { ProgressBar } from './ProgressBar';
+export { FirmwareProgressBar } from './FirmwareProgressBar';
 export { SelectCustomFirmware } from './SelectCustomFirmware';
-export { RetryButton, ContinueButton, InstallButton, CloseButton } from './Button';
-
-// todo: this should be unified in @trezor/components.
-//  When done, implementations of this export should be changed to {P, H1, H2} from @trezor/components
-export { P, H1, H2 } from './Typography';
+export { RetryButton, ContinueButton, InstallButton, CloseButton } from './FirmwareButton';

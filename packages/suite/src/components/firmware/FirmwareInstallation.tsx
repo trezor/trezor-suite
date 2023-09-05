@@ -3,7 +3,7 @@ import { Button } from '@trezor/components';
 import { getTextForStatus } from 'src/utils/firmware';
 import { Translation, WebUsbButton } from 'src/components/suite';
 import { useDevice, useFirmware } from 'src/hooks/suite';
-import { FirmwareOffer, ProgressBar, ReconnectDevicePrompt } from 'src/components/firmware';
+import { FirmwareOffer, FirmwareProgressBar, ReconnectDevicePrompt } from 'src/components/firmware';
 import { OnboardingStepBox } from 'src/components/onboarding';
 import { TrezorDevice } from 'src/types/suite';
 import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
@@ -120,7 +120,7 @@ export const FirmwareInstallation = ({
                         // Progress bar shown in 'installing', 'wait-for-reboot', 'unplug', 'reconnect-in-normal', 'partially-done', 'done'
                         // Also in 'started' if the device has no fw (freshly unpacked device). In this case device won't ask for confirmation
                         // and starts installation right away. However it doesn't provide an installation progress till way later (we set status to 'installing' only after receiving UI.FIRMWARE_PROGRESS in firmware reducer)
-                        <ProgressBar
+                        <FirmwareProgressBar
                             key={subsequentInstalling ? 1 : 0} // will reset the progress after an installation of intermediary fw (subsequent fw update will follow)
                             label={statusText}
                             total={100}
