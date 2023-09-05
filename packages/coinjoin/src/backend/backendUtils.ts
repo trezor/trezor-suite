@@ -61,6 +61,8 @@ export const identifyWsError = (error: Error) => {
             return 'ERROR_TIMEOUT';
         case 'Block not found':
             return 'ERROR_BLOCK_NOT_FOUND';
+        case 'Unsupported script filter taproot-noordinals':
+            return 'ERROR_UNSUPPORTED_NOORDINALS';
         default:
             return 'ERROR_OTHER';
     }
