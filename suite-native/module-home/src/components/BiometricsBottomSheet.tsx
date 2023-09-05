@@ -126,7 +126,7 @@ export const BiometricsBottomSheet = () => {
         <BottomSheet isVisible={isVisible} onClose={handleClose} isCloseDisplayed={false}>
             <Box style={applyStyle(cardStyle)}>
                 <Box style={applyStyle(imageWrapperStyle)}>
-                    <Icon name={iconName} color="iconPrimaryDefault" customSize={64} />
+                    <Icon name={iconName} color="iconPrimaryDefault" size={64} />
                 </Box>
                 <Box style={applyStyle(textContentStyle)}>
                     <Text variant="titleSmall" textAlign="center">

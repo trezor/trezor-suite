@@ -13,7 +13,6 @@ import { WalletLayout } from 'src/components/wallet';
 import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 import { ActionButton, ActionColumn, Card, TextColumn, Translation } from 'src/components/suite';
 
-import { CARD_PADDING_SIZE } from 'src/constants/suite/layout';
 import { showXpub } from 'src/actions/wallet/publicKeyActions';
 import { NETWORKS } from 'src/config/wallet';
 import { CoinjoinLogs } from './CoinjoinLogs';
@@ -51,14 +50,12 @@ const AccountTypeLabel = styled.div`
 
 const StyledCard = styled(Card)`
     flex-direction: column;
-    padding-top: ${CARD_PADDING_SIZE};
-    padding-bottom: ${CARD_PADDING_SIZE};
 
-    :first-child {
+    > :first-child {
         padding-top: 0;
     }
 
-    :last-child {
+    > :last-child {
         padding-bottom: 0;
     }
 `;
@@ -112,7 +109,7 @@ const Details = () => {
                     </>
                 )}
 
-                <StyledCard largePadding>
+                <StyledCard withLargePadding>
                     <Row>
                         <TextColumn
                             title={<Translation id="TR_ACCOUNT_DETAILS_TYPE_HEADER" />}
