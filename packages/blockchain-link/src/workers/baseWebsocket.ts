@@ -194,7 +194,7 @@ export abstract class BaseWebsocket<T extends EventMap> extends TypedEmitter<T &
         this.setConnectionTimeout(this.options.connectionTimeout);
 
         // create deferred promise
-        const dfd = createDeferred<void>(-1);
+        const dfd = createDeferred(-1);
         this.connectPromise = dfd.promise;
 
         const ws = this.createWebsocket();

@@ -43,7 +43,7 @@ export class SessionsBackground extends TypedEmitter<{
     private sessions: Sessions = {};
 
     // if lock is set, somebody is doing something with device. we have to wait
-    private locksQueue: Deferred<any>[] = [];
+    private locksQueue: Deferred<void>[] = [];
     private locksTimeoutQueue: ReturnType<typeof setTimeout>[] = [];
 
     private lastSession = 0;
@@ -246,7 +246,7 @@ export class SessionsBackground extends TypedEmitter<{
 
     private startLock() {
         // todo: create a deferred with built-in timeout functionality (util)
-        const dfd = createDeferred<any>();
+        const dfd = createDeferred();
 
         // to ensure that communication with device will not get stuck forever,
         // lock times out:

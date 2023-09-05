@@ -17,7 +17,7 @@ const workerWrapper = (factory: BlockchainSettings['worker']): Worker => {
 
 // initialize worker communication, raise error if worker not found
 const initWorker = (settings: BlockchainSettings) => {
-    const dfd: Deferred<Worker> = createDeferred(-1);
+    const dfd = createDeferred<Worker>(-1);
     const worker = workerWrapper(settings.worker);
 
     if (typeof worker !== 'object' || typeof worker.postMessage !== 'function') {

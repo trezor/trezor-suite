@@ -23,7 +23,7 @@ let requests: any[] = [];
 // responses from bridge
 let responses: Response[] = [];
 
-let releasePromise: Deferred<undefined> | undefined;
+let releasePromise: Deferred<void> | undefined;
 // popup window reference
 let popup: Page;
 let popupClosedPromise: Promise<undefined> | undefined;

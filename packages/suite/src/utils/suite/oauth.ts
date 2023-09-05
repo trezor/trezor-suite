@@ -142,7 +142,7 @@ const getWebHandlerInstance = (
  */
 export const extractCredentialsFromAuthorizationFlow = (url: string) => {
     const originalParams = urlHashParams(url);
-    const dfd: Deferred<Credentials> = createDeferred();
+    const dfd = createDeferred<Credentials>();
 
     if (desktopApi.available) {
         // to make sure that there is always only one listener registered remove all listeners before creating a new one
