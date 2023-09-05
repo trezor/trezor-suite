@@ -64,7 +64,7 @@ export class BridgeTransport extends AbstractTransport {
      * means that /acquire call is in progress. this is used to postpone /listen call so that it can be
      * fired with updated descriptor
      */
-    protected acquirePromise?: Deferred<any>;
+    protected acquirePromise?: Deferred<void>;
 
     public name = 'BridgeTransport' as const;
 

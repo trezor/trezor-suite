@@ -8,7 +8,7 @@ import css from './inlineStyles';
 /* eslint-disable import/no-mutable-exports */
 export let instance: HTMLIFrameElement | null;
 export let origin: string;
-export let initPromise: Deferred<void> = createDeferred();
+export let initPromise = createDeferred();
 export let timeout = 0;
 export let error: ERRORS.TrezorError;
 /* eslint-enable import/no-mutable-exports */
