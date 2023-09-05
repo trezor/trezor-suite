@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { Button, variables } from '@trezor/components';
 
 import { Translation } from 'src/components/suite';
-import { Section } from 'src/components/dashboard';
+import { DashboardSection } from 'src/components/dashboard';
 import { AcquiredDevice } from 'src/types/suite';
 import { useDevice, useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
 import { setDiscreetMode } from 'src/actions/settings/walletSettingsActions';
@@ -173,7 +173,7 @@ const SecurityFeatures = () => {
     const cards: SecurityCardProps[] = [backupData, pinData, hiddenWalletData, discreetModeData];
 
     return (
-        <Section
+        <DashboardSection
             heading={
                 <Translation
                     id="TR_SECURITY_FEATURES_COMPLETED_N"
@@ -215,7 +215,7 @@ const SecurityFeatures = () => {
                         );
                     })}
             </Content>
-        </Section>
+        </DashboardSection>
     );
 };
 

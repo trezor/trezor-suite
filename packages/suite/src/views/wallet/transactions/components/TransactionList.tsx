@@ -4,7 +4,7 @@ import useDebounce from 'react-use/lib/useDebounce';
 
 import { Stack } from 'src/components/suite/Skeleton';
 import { Translation } from 'src/components/suite';
-import { Section } from 'src/components/dashboard';
+import { DashboardSection } from 'src/components/dashboard';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import {
     groupTransactionsByDate,
@@ -26,7 +26,7 @@ import { CoinjoinBatchItem } from 'src/components/wallet/TransactionItem/compone
 import { TransactionCandidates } from './TransactionCandidates';
 import { selectLabelingDataForAccount } from 'src/reducers/suite/metadataReducer';
 
-const StyledSection = styled(Section)`
+const StyledSection = styled(DashboardSection)`
     margin-bottom: 20px;
 `;
 

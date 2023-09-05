@@ -17,23 +17,19 @@ const Title = styled(H3)`
     align-items: center;
 `;
 
-const Actions = styled.div``;
-
-interface SectionProps extends HTMLAttributes<HTMLDivElement> {
+interface DashboardSectionProps extends HTMLAttributes<HTMLDivElement> {
     heading: ReactElement;
     actions?: ReactElement;
 }
 
-const Section = forwardRef(
-    ({ heading, actions, children, ...rest }: SectionProps, ref: Ref<HTMLDivElement>) => (
+export const DashboardSection = forwardRef(
+    ({ heading, actions, children, ...rest }: DashboardSectionProps, ref: Ref<HTMLDivElement>) => (
         <Wrapper {...rest} ref={ref}>
             <Header>
                 {heading && <Title>{heading}</Title>}
-                {actions && <Actions>{actions}</Actions>}
+                {actions && <div>{actions}</div>}
             </Header>
             {children}
         </Wrapper>
     ),
 );
-
-export default Section;
