@@ -210,7 +210,7 @@ const SignVerify = () => {
                             labelRight={
                                 <SwitchWrapper>
                                     <Translation id="TR_HEX_FORMAT" />
-                                    <Switch {...hexField} isSmall />
+                                    <Switch {...hexField} />
                                 </SwitchWrapper>
                             }
                             inputState={getInputState(formErrors.message, formValues.message)}

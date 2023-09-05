@@ -1,64 +1,70 @@
+import { ReactNode } from 'react';
 import styled, { css } from 'styled-components';
+import { borders, boxShadows, spacingsPx, typography } from '@trezor/theme';
+import { getWeakRandomId } from '@trezor/utils';
+import { getInputColor, getLabelColor, getFocusShadowStyle } from '../../../utils/utils';
 
-import { getInputColor } from '../../../utils/utils';
+const Wrapper = styled.div<Pick<SwitchProps, 'labelPosition'>>`
+    display: flex;
+    align-items: center;
+    gap: ${spacingsPx.md};
+    flex-direction: ${({ labelPosition }) => (labelPosition === 'left' ? 'row-reverse' : 'row')};
+`;
 
-const Container = styled.div<Pick<SwitchProps, 'isChecked' | 'isDisabled' | 'isSmall'>>`
+const Container = styled.div<Pick<SwitchProps, 'isChecked' | 'isDisabled' | 'isAlert' | 'isSmall'>>`
     display: flex;
     align-items: center;
     height: ${({ isSmall }) => (isSmall ? '18px' : '24px')};
-    width: ${({ isSmall }) => (isSmall ? '32px' : '42px')};
+    width: ${({ isSmall }) => (isSmall ? '32px' : '44px')};
     flex-shrink: 0;
     margin: 0px;
     padding: 3px;
     position: relative;
     background: ${({ isChecked, isDisabled, theme }) =>
         getInputColor(theme, { checked: isChecked, disabled: isDisabled })};
-    border-radius: 12px;
-    transition: background 0.25s ease 0s;
+    border-radius: ${borders.radii.sm};
+    transition: background 0.2s ease 0s, border-color 0.1s ease-out, box-shadow 0.1s ease-out;
     cursor: ${({ isDisabled }) => !isDisabled && 'pointer'};
     box-sizing: border-box;
+    border: 1px solid ${({ theme, isAlert }) => `${isAlert ? theme.borderAlertRed : 'transparent'}`};
 
-    ${({ isDisabled }) =>
+    button {
+        box-shadow: ${boxShadows.elevation1};
+        opacity: ${({ isDisabled }) => isDisabled && 0.66};
+    }
+
+    ${({ isDisabled, theme, isChecked }) =>
         !isDisabled &&
         css`
-            :hover,
-            :focus-within {
-                button {
-                    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 1);
-                }
+            ${getFocusShadowStyle(':focus-within:has(:focus-visible)')}
+
+            :focus-within:has(:focus-visible) {
+                background: ${isChecked
+                    ? theme.backgroundPrimaryDefault
+                    : theme.backgroundNeutralDisabled};
             }
 
-            :active {
-                button {
-                    box-shadow: none;
-                }
+            :hover {
+                background: ${isChecked
+                    ? theme.backgroundPrimaryPressed
+                    : theme.backgroundNeutralSubdued};
             }
-        `}
+        `};
 `;
 
 const Handle = styled.button<{ disabled?: boolean } & Pick<SwitchProps, 'isChecked' | 'isSmall'>>`
     position: absolute;
     display: inline-block;
-    height: ${({ isSmall }) => (isSmall ? '14px' : '18px')};
-    width: ${({ isSmall }) => (isSmall ? '14px' : '18px')};
+    height: ${({ isSmall }) => (isSmall ? '14px' : '20px')};
+    width: ${({ isSmall }) => (isSmall ? '14px' : '20px')};
     border: none;
-    border-radius: 50%;
+    left: 1px;
+    border-radius: ${borders.radii.full};
     background: ${({ theme }) => theme.TYPE_WHITE};
-    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.5);
     transform: ${({ isChecked, isSmall }) =>
-        isChecked && `translateX(${isSmall ? '12px' : '18px'})`};
-    transition:
-        transform 0.25s ease 0s,
-        box-shadow 0.15s ease 0s;
+        isChecked && `translateX(${isSmall ? '14px' : '20px'})`};
+    transition: transform 0.25s ease 0s;
     cursor: ${({ disabled }) => !disabled && 'pointer'};
-
-    ${({ disabled }) =>
-        !disabled &&
-        css`
-            :active {
-                box-shadow: none;
-            }
-        `}
 `;
 
 const CheckboxInput = styled.input`
@@ -72,52 +78,78 @@ const CheckboxInput = styled.input`
     width: 1px;
 `;
 
+const Label = styled.label<Pick<SwitchProps, 'isDisabled' | 'isAlert' | 'isSmall'>>`
+    color: ${({ isAlert, isDisabled, theme }) =>
+        getLabelColor(theme, { alert: isAlert, disabled: isDisabled })};
+    ${({ isSmall }) => (isSmall ? typography.label : typography.body)}
+`;
+
 export interface SwitchProps {
-    id?: string;
     isChecked: boolean;
+    label?: ReactNode;
     onChange: (isChecked?: boolean) => void;
     isDisabled?: boolean;
-    isSmall?: boolean;
+    isAlert?: boolean;
+    isSmall?: boolean; // TODO: legacy prop
     className?: string;
     dataTest?: string;
+    labelPosition?: 'left' | 'right';
 }
 
 export const Switch = ({
     onChange,
-    id,
     isDisabled,
+    isAlert,
     isSmall,
+    label,
     dataTest,
     isChecked,
     className,
+    labelPosition = 'right',
 }: SwitchProps) => {
+    const id = getWeakRandomId(10);
+
     const handleChange = () => {
         if (isDisabled) return;
         onChange(!isChecked);
     };
 
     return (
-        <Container
-            isChecked={isChecked}
-            isDisabled={isDisabled}
-            isSmall={isSmall}
-            onClick={e => {
-                e.preventDefault();
-                handleChange();
-            }}
-            className={className}
-            data-test={dataTest}
-        >
-            <Handle isSmall={isSmall} isChecked={isChecked} disabled={isDisabled} type="button" />
-            <CheckboxInput
-                id={id}
-                type="checkbox"
-                role="switch"
-                checked={isChecked}
-                disabled={isDisabled}
-                onChange={handleChange}
-                aria-checked={isChecked}
-            />
-        </Container>
+        <Wrapper labelPosition={labelPosition}>
+            <Container
+                isChecked={isChecked}
+                isDisabled={isDisabled}
+                isAlert={isAlert}
+                onClick={e => {
+                    e.preventDefault();
+                    handleChange();
+                }}
+                className={className}
+                data-test={dataTest}
+                isSmall={isSmall}
+            >
+                <Handle
+                    tabIndex={-1}
+                    isChecked={isChecked}
+                    disabled={isDisabled}
+                    type="button"
+                    isSmall={isSmall}
+                />
+                <CheckboxInput
+                    id={id}
+                    type="checkbox"
+                    role="switch"
+                    checked={isChecked}
+                    disabled={isDisabled}
+                    onChange={handleChange}
+                    aria-checked={isChecked}
+                />
+            </Container>
+            {label && (
+                <Label isDisabled={isDisabled} isAlert={isAlert} isSmall={isSmall} htmlFor={id}>
+                    {label}
+                </Label>
+            )}
+        </Wrapper>
     );
 };
