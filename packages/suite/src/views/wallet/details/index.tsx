@@ -6,12 +6,12 @@ import {
     getAccountTypeUrl,
     getAccountTypeDesc,
 } from '@suite-common/wallet-utils';
-import { P, variables } from '@trezor/components';
+import { P, variables, Card } from '@trezor/components';
 import { HELP_CENTER_XPUB_URL } from '@trezor/urls';
 
 import { WalletLayout } from 'src/components/wallet';
 import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
-import { ActionButton, ActionColumn, Card, TextColumn, Translation } from 'src/components/suite';
+import { ActionButton, ActionColumn, TextColumn, Translation } from 'src/components/suite';
 
 import { showXpub } from 'src/actions/wallet/publicKeyActions';
 import { NETWORKS } from 'src/config/wallet';

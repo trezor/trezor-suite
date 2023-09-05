@@ -2,13 +2,13 @@ import styled, { useTheme } from 'styled-components';
 import BigNumber from 'bignumber.js';
 import { AnimatePresence } from 'framer-motion';
 
-import { variables, Icon, Button, colors, LoadingContent } from '@trezor/components';
+import { variables, Icon, Button, colors, LoadingContent, Card } from '@trezor/components';
 import { selectSupportedNetworks } from '@suite-common/wallet-core';
 
 import { NETWORKS } from 'src/config/wallet';
 import { DashboardSection } from 'src/components/dashboard';
 import { Account, Network } from 'src/types/wallet';
-import { Card, Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite';
 import { useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
 import { useAccounts } from 'src/hooks/wallet';
 import { setFlag } from 'src/actions/suite/suiteActions';
