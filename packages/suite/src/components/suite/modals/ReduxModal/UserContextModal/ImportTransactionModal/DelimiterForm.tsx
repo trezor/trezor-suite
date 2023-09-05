@@ -36,7 +36,6 @@ export const DelimiterForm = ({ value, onChange }: DelimiterFormProps) => {
     return (
         <Wrapper>
             <Switch
-                isSmall
                 onChange={() => {
                     if (custom) {
                         // reset delimiter value in parent component
