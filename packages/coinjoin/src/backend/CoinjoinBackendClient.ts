@@ -99,11 +99,31 @@ export class CoinjoinBackendClient {
         );
     }
 
-    fetchMempoolFilters(timestamp?: number, options?: RequestOptions) {
-        return this.getBlockbookApi(api => api.getMempoolFilters(timestamp), {
-            ...options,
-            timeout: FILTERS_REQUEST_TIMEOUT,
-        }).then<MempoolFilterResponse>(({ entries = {}, ...rest }) => ({ entries, ...rest }));
+    async fetchMempoolFilters(timestamp?: number, options?: RequestOptions) {
+        const result = await this.getBlockbookApi(
+            api =>
+                api
+                    .getMempoolFilters(timestamp)
+                    .then(response => ({ fallbackNeeded: false, response } as const))
+                    .catch(error => {
+                        if (identifyWsError(error) === 'ERROR_UNSUPPORTED_NOORDINALS') {
+                            return { fallbackNeeded: true } as const;
+                        }
+                        throw error;
+                    }),
+            { ...options, timeout: FILTERS_REQUEST_TIMEOUT },
+        );
+
+        const { entries = {}, ...rest } = !result.fallbackNeeded
+            ? result.response
+            : // When BB doesn't support 'taproot-noordinals' mempool filters yet,
+              // fall back to previously supported 'taproot' filters
+              await this.getBlockbookApi(
+                  api => api.getMempoolFilters(timestamp, { scriptType: 'taproot' }),
+                  { ...options, timeout: FILTERS_REQUEST_TIMEOUT },
+              );
+
+        return { entries, ...rest } as MempoolFilterResponse;
     }
 
     private reconnect = async () => {
