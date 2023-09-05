@@ -170,7 +170,12 @@ export const All = {
                 <Heading>Switch</Heading>
 
                 <SubHeading>Off</SubHeading>
-                <Switch dataTest="switch-off" onChange={() => {}} isChecked={false} />
+                <Switch
+                    dataTest="switch-off"
+                    onChange={() => {}}
+                    isChecked={false}
+                    label="Headline"
+                />
 
                 <SubHeading>Off disabled</SubHeading>
                 <Switch
@@ -178,16 +183,35 @@ export const All = {
                     isDisabled
                     onChange={() => {}}
                     isChecked={false}
+                    label="Headline"
                 />
 
                 <SubHeading>On</SubHeading>
-                <Switch isChecked onChange={() => {}} isDisabled dataTest="switch-on" />
+                <Switch
+                    isChecked
+                    onChange={() => {}}
+                    isDisabled
+                    dataTest="switch-on"
+                    label="Headline"
+                />
 
                 <SubHeading>On disabled</SubHeading>
-                <Switch dataTest="switch-on-disabled" isDisabled onChange={() => {}} isChecked />
+                <Switch
+                    dataTest="switch-on-disabled"
+                    isDisabled
+                    onChange={() => {}}
+                    isChecked
+                    label="Headline"
+                />
 
                 <SubHeading>Off small</SubHeading>
-                <Switch onChange={() => {}} isChecked={false} isSmall dataTest="switch-off-small" />
+                <Switch
+                    onChange={() => {}}
+                    isChecked={false}
+                    isSmall
+                    dataTest="switch-off-small"
+                    label="Headline"
+                />
 
                 <SubHeading>Off small disabled</SubHeading>
                 <Switch
@@ -196,10 +220,17 @@ export const All = {
                     isChecked={false}
                     isSmall
                     dataTest="switch-off-small-disabled"
+                    label="Headline"
                 />
 
                 <SubHeading>On small</SubHeading>
-                <Switch onChange={() => {}} isChecked isSmall dataTest="switch-on-small" />
+                <Switch
+                    onChange={() => {}}
+                    isChecked
+                    isSmall
+                    dataTest="switch-on-small"
+                    label="Headline"
+                />
 
                 <SubHeading>On small disabled</SubHeading>
                 <Switch
@@ -208,6 +239,45 @@ export const All = {
                     isChecked
                     isSmall
                     dataTest="switch-on-small-disabled"
+                    label="Headline"
+                />
+
+                <SubHeading>Off alert</SubHeading>
+                <Switch
+                    onChange={() => {}}
+                    isChecked={false}
+                    isAlert
+                    dataTest="switch-off-alert"
+                    label="Headline"
+                />
+
+                <SubHeading>Off alert disabled</SubHeading>
+                <Switch
+                    isDisabled
+                    onChange={() => {}}
+                    isChecked={false}
+                    isAlert
+                    dataTest="switch-off-alert-disabled"
+                    label="Headline"
+                />
+
+                <SubHeading>On alert</SubHeading>
+                <Switch
+                    onChange={() => {}}
+                    isChecked
+                    isAlert
+                    dataTest="switch-on-alert"
+                    label="Headline"
+                />
+
+                <SubHeading>On alert disabled</SubHeading>
+                <Switch
+                    isDisabled
+                    onChange={() => {}}
+                    isChecked
+                    isAlert
+                    dataTest="switch-on-alert-disabled"
+                    label="Headline"
                 />
             </StoryColumn>
             <StoryColumn maxWidth={200}>
