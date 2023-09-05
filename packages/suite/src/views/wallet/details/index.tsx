@@ -6,9 +6,9 @@ import {
     getAccountTypeUrl,
     getAccountTypeDesc,
 } from '@suite-common/wallet-utils';
-import { P, variables } from '@trezor/components';
+import { P, Card, variables } from '@trezor/components';
 
-import { ActionButton, ActionColumn, Card, TextColumn, Translation } from 'src/components/suite';
+import { ActionButton, ActionColumn, TextColumn, Translation } from 'src/components/suite';
 
 import { HELP_CENTER_BIP32_URL, HELP_CENTER_XPUB_URL } from '@trezor/urls';
 import { showXpub } from 'src/actions/wallet/publicKeyActions';
