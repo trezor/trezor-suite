@@ -67,9 +67,3 @@ export const identifyWsError = (error: Error) => {
             return 'ERROR_OTHER';
     }
 };
-
-// Randomize identity password to reset TOR circuit for this identity
-export const resetIdentityCircuit = (identity: string) => {
-    const [user] = identity.split(':');
-    return `${user}:${Math.random().toString(36).slice(2)}`;
-};

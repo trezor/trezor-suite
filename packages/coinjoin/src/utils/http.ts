@@ -1,6 +1,6 @@
 import fetch from 'cross-fetch';
 
-import { ScheduleActionParams } from '@trezor/utils';
+import { ScheduleActionParams, getWeakRandomId } from '@trezor/utils';
 
 export interface RequestOptions extends ScheduleActionParams {
     method?: 'POST' | 'GET';
@@ -73,3 +73,9 @@ export const httpPost = (url: string, body?: Record<string, any>, options: Reque
         signal: options.signal,
         headers: createHeaders(options),
     });
+
+// Randomize identity password to reset TOR circuit for this identity
+export const resetIdentityCircuit = (identity: string) => {
+    const [user] = identity.split(':');
+    return `${user}:${getWeakRandomId(16)}`;
+};
