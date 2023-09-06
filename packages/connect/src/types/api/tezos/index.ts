@@ -1,3 +1,5 @@
+import type { DerivationPath } from '../../params';
+
 export interface TezosRevealOperation {
     source: string;
     fee: number;
@@ -34,7 +36,7 @@ export interface TezosOriginationOperation {
     source: string;
     balance: number;
     delegate?: string;
-    script: string | number[];
+    script: DerivationPath;
     fee: number;
     counter: number;
     gas_limit: number;
@@ -58,7 +60,7 @@ export interface TezosOperation {
 }
 
 export interface TezosSignTransaction {
-    path: string | number[];
+    path: DerivationPath;
     branch: string;
     operation: TezosOperation;
 }

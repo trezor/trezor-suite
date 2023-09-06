@@ -1,5 +1,5 @@
 import type { PROTO } from '../../../constants';
-import type { GetPublicKey, PublicKey } from '../../params';
+import type { GetPublicKey, PublicKey, DerivationPath } from '../../params';
 
 // cardanoGetAddress
 
@@ -11,8 +11,8 @@ export interface CardanoCertificatePointer {
 
 export interface CardanoAddressParameters {
     addressType: PROTO.CardanoAddressType;
-    path?: string | number[];
-    stakingPath?: string | number[];
+    path?: DerivationPath;
+    stakingPath?: DerivationPath;
     stakingKeyHash?: string;
     certificatePointer?: CardanoCertificatePointer;
     paymentScriptHash?: string;
@@ -43,7 +43,7 @@ export interface CardanoNativeScript {
     type: PROTO.CardanoNativeScriptType;
     scripts?: CardanoNativeScript[];
     keyHash?: string;
-    keyPath?: string | number[];
+    keyPath?: DerivationPath;
     requiredSignaturesCount?: number;
     invalidBefore?: string;
     invalidHereafter?: string;
@@ -72,7 +72,7 @@ export interface CardanoPublicKey extends PublicKey {
 // cardanoSignTransaction
 
 export interface CardanoInput {
-    path?: string | number[];
+    path?: DerivationPath;
     prev_hash: string;
     prev_index: number;
 }
@@ -105,7 +105,7 @@ export type CardanoOutput = (
 };
 
 export interface CardanoPoolOwner {
-    stakingKeyPath?: string | number[];
+    stakingKeyPath?: DerivationPath;
     stakingKeyHash?: string;
 }
 
@@ -141,7 +141,7 @@ export interface CardanoPoolParameters {
 
 export interface CardanoCertificate {
     type: PROTO.CardanoCertificateType;
-    path?: string | number[];
+    path?: DerivationPath;
     pool?: string;
     poolParameters?: CardanoPoolParameters;
     scriptHash?: string;
@@ -149,7 +149,7 @@ export interface CardanoCertificate {
 }
 
 export interface CardanoWithdrawal {
-    path?: string | number[];
+    path?: DerivationPath;
     amount: string;
     scriptHash?: string;
     keyHash?: string;
@@ -158,13 +158,13 @@ export interface CardanoWithdrawal {
 export type CardanoMint = CardanoAssetGroup[];
 
 export interface CardanoCollateralInput {
-    path?: string | number[];
+    path?: DerivationPath;
     prev_hash: string;
     prev_index: number;
 }
 
 export interface CardanoRequiredSigner {
-    keyPath?: string | number[];
+    keyPath?: DerivationPath;
     keyHash?: string;
 }
 
@@ -180,7 +180,7 @@ export interface CardanoCVoteRegistrationDelegation {
 
 export interface CardanoCVoteRegistrationParameters {
     votePublicKey?: string;
-    stakingPath: string | number[];
+    stakingPath: DerivationPath;
     paymentAddressParameters?: CardanoAddressParameters;
     nonce: string;
     format?: PROTO.CardanoCVoteRegistrationFormat;
@@ -210,7 +210,7 @@ export interface CardanoSignTransaction {
     collateralReturn?: CardanoOutput;
     totalCollateral?: string;
     referenceInputs?: CardanoReferenceInput[];
-    additionalWitnessRequests?: (string | number[])[];
+    additionalWitnessRequests?: DerivationPath[];
     protocolMagic: number;
     networkId: number;
     signingMode: PROTO.CardanoTxSigningMode;

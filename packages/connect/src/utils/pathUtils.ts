@@ -1,7 +1,7 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/utils/pathUtils.js
 
 import { PROTO, ERRORS } from '../constants';
-import type { CoinInfo } from '../types';
+import type { CoinInfo, DerivationPath } from '../types';
 
 export const HD_HARDENED = 0x80000000;
 export const toHardened = (n: number) => (n | HD_HARDENED) >>> 0;
@@ -141,7 +141,7 @@ export const getOutputScriptType = (path?: number[]): PROTO.ChangeOutputScriptTy
     }
 };
 
-export const validatePath = (path: string | number[], length = 0, base = false): number[] => {
+export const validatePath = (path: DerivationPath, length = 0, base = false): number[] => {
     let valid: number[] | undefined;
     if (typeof path === 'string') {
         valid = getHDPath(path);

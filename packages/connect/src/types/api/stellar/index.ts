@@ -2,6 +2,7 @@
 // https://github.com/stellar/js-stellar-base
 
 import type { PROTO } from '../../../constants';
+import type { DerivationPath } from '../../params';
 
 export interface StellarAsset {
     type: PROTO.StellarAssetType;
@@ -169,7 +170,7 @@ export interface StellarTransaction {
 }
 
 export interface StellarSignTransaction {
-    path: string | number[];
+    path: DerivationPath;
     networkPassphrase: string;
     transaction: StellarTransaction;
 }

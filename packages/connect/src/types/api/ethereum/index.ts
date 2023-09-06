@@ -1,7 +1,9 @@
+import type { DerivationPath } from '../../params';
+
 // ethereumSignMessage
 
 export interface EthereumSignMessage {
-    path: string | number[];
+    path: DerivationPath;
     message: string;
     hex?: boolean;
 }
@@ -40,7 +42,7 @@ export interface EthereumTransactionEIP1559 {
 }
 
 export interface EthereumSignTransaction {
-    path: string | number[];
+    path: DerivationPath;
     transaction: EthereumTransaction | EthereumTransactionEIP1559;
 }
 
@@ -76,7 +78,7 @@ export interface EthereumSignTypedDataMessage<T extends EthereumSignTypedDataTyp
 }
 
 export interface EthereumSignTypedData<T extends EthereumSignTypedDataTypes> {
-    path: string | number[];
+    path: DerivationPath;
     data: EthereumSignTypedDataMessage<T>;
     metamask_v4_compat: boolean;
     domain_separator_hash?: undefined;
@@ -90,7 +92,7 @@ export interface EthereumSignTypedData<T extends EthereumSignTypedDataTypes> {
  * Supports both T2T1 and T1B1.
  */
 export interface EthereumSignTypedHash<T extends EthereumSignTypedDataTypes> {
-    path: string | number[];
+    path: DerivationPath;
     data: EthereumSignTypedDataMessage<T>;
     metamask_v4_compat: boolean;
     domain_separator_hash: string;

@@ -39,9 +39,11 @@ export interface Success<T> {
 
 export type Response<T> = Promise<Success<T> | Unsuccessful>;
 
+export type DerivationPath = string | number[];
+
 // Common fields for all *.getAddress methods
 export interface GetAddress {
-    path: string | number[];
+    path: DerivationPath;
     address?: string;
     showOnTrezor?: boolean;
 }
@@ -54,7 +56,7 @@ export interface Address {
 
 // Common fields for all *.getPublicKey methods
 export interface GetPublicKey {
-    path: string | number[];
+    path: DerivationPath;
     showOnTrezor?: boolean;
     suppressBackupWarning?: boolean;
 }

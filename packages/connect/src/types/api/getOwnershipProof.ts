@@ -1,8 +1,8 @@
 import type { PROTO } from '../../constants';
-import type { Params, BundledParams, Response } from '../params';
+import type { Params, BundledParams, Response, DerivationPath } from '../params';
 
 export interface GetOwnershipProof {
-    path: string | number[];
+    path: DerivationPath;
     coin?: string;
     multisig?: PROTO.MultisigRedeemScriptType;
     scriptType?: PROTO.InternalInputScriptType;
