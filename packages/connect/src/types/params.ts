@@ -41,6 +41,21 @@ export type Response<T> = Promise<Success<T> | Unsuccessful>;
 
 export type DerivationPath = string | number[];
 
+// replace type `T` address_n field type `A` with address_n type `R`
+type ProtoWithExtendedAddressN<T, A, R> = Omit<Extract<T, { address_n: A }>, 'address_n'> & {
+    address_n: R;
+};
+type ProtoWithoutAddressN<T, A> = Exclude<T, { address_n: A }>;
+
+// replace address_n: number[] with address_n: DerivationPath
+export type ProtoWithDerivationPath<T> =
+    | ProtoWithoutAddressN<T, number[]>
+    | ProtoWithExtendedAddressN<T, number[], DerivationPath>;
+
+// unwrap original generic PROTO type from the replacement
+export type ProtoWithAddressN<P extends ProtoWithDerivationPath<any>> =
+    P extends ProtoWithDerivationPath<infer T> ? T : unknown;
+
 // Common fields for all *.getAddress methods
 export interface GetAddress {
     path: DerivationPath;

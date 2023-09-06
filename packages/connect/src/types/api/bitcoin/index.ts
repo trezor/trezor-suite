@@ -2,7 +2,7 @@ import type { AccountAddresses } from '@trezor/blockchain-link';
 import type { Transaction as BlockbookTransaction } from '@trezor/blockchain-link-types/lib/blockbook';
 import type { PROTO } from '../../../constants';
 import type { AccountTransaction } from '../../account';
-import type { DerivationPath } from '../../params';
+import type { DerivationPath, ProtoWithDerivationPath } from '../../params';
 
 // signMessage
 
@@ -63,8 +63,8 @@ export interface TransactionOptions {
 }
 
 export interface SignTransaction {
-    inputs: PROTO.TxInputType[];
-    outputs: PROTO.TxOutputType[];
+    inputs: ProtoWithDerivationPath<PROTO.TxInputType>[];
+    outputs: ProtoWithDerivationPath<PROTO.TxOutputType>[];
     paymentRequests?: PROTO.TxAckPaymentRequest[];
     refTxs?: RefTransaction[];
     account?: {

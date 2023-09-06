@@ -6,14 +6,14 @@ import { isValidAddress } from '../../utils/addressUtils';
 import { convertMultisigPubKey } from '../../utils/hdnodeUtils';
 import { validateParams } from '../common/paramsValidator';
 import { PROTO, ERRORS } from '../../constants';
-import type { BitcoinNetworkInfo } from '../../types';
+import type { BitcoinNetworkInfo, ProtoWithDerivationPath } from '../../types';
 import type { ComposeOutput } from '../../types/api/composeTransaction';
 
 /** *****
  * SignTransaction: validation
  ****** */
 export const validateTrezorOutputs = (
-    outputs: PROTO.TxOutputType[],
+    outputs: ProtoWithDerivationPath<PROTO.TxOutputType>[],
     coinInfo: BitcoinNetworkInfo,
 ): PROTO.TxOutputType[] => {
     const trezorOutputs = outputs

@@ -122,7 +122,7 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
 
         this.params = {
             inputs,
-            outputs: payload.outputs,
+            outputs,
             paymentRequests: payload.paymentRequests || [],
             refTxs,
             addresses: payload.account ? payload.account.addresses : undefined,
