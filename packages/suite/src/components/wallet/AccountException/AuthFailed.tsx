@@ -3,7 +3,7 @@ import { useDevice, useDispatch } from 'src/hooks/suite';
 import { Translation } from 'src/components/suite';
 import { AccountExceptionLayout } from 'src/components/wallet';
 
-const AuthFailed = () => {
+export const AuthFailed = () => {
     const dispatch = useDispatch();
     const { isLocked } = useDevice();
 
@@ -26,5 +26,3 @@ const AuthFailed = () => {
         />
     );
 };
-
-export default AuthFailed;

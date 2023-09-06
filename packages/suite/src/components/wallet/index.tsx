@@ -9,7 +9,7 @@ import {
 import { CoinBalance } from './CoinBalance';
 import OnOffSwitcher from './OnOffSwitcher';
 import { InputError } from './InputError';
-import AccountExceptionLayout from './AccountExceptionLayout';
+import { AccountExceptionLayout } from './AccountExceptionLayout';
 
 import CoinmarketLayout from './CoinmarketLayout';
 import {
@@ -37,7 +37,7 @@ import { Pagination } from './Pagination';
 import { TransactionTimestamp } from './TransactionTimestamp';
 import { withCoinmarket, withSelectedAccountLoaded } from './hocs';
 import type { WithCoinmarketProps, WithSelectedAccountLoadedProps } from './hocs';
-import { AccountException } from './AccountException';
+import { AccountException } from './AccountException/AccountException';
 import { AccountTopPanel } from './AccountTopPanel';
 import { CoinjoinExplanation } from './CoinjoinExplanation';
 import { CoinmarketBuyButton } from './CoinmarketBuyButton';

@@ -58,7 +58,7 @@ interface AccountExceptionLayoutProps {
     actionComponent?: JSX.Element;
 }
 
-const AccountExceptionLayout = (props: AccountExceptionLayoutProps) => (
+export const AccountExceptionLayout = (props: AccountExceptionLayoutProps) => (
     <StyledCard>
         {props.image && <StyledImage image={props.image} />}
         {props.imageComponent && props.imageComponent}
@@ -77,5 +77,3 @@ const AccountExceptionLayout = (props: AccountExceptionLayoutProps) => (
         )}
     </StyledCard>
 );
-
-export default AccountExceptionLayout;

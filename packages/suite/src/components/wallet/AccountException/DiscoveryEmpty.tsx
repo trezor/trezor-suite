@@ -7,7 +7,7 @@ import { AccountExceptionLayout } from 'src/components/wallet';
  * Handler for invalid wallet setting, no coins in discovery
  * see: @wallet-actions/selectedAccountActions
  */
-const DiscoveryEmpty = () => {
+export const DiscoveryEmpty = () => {
     const dispatch = useDispatch();
     const { device, isLocked } = useDevice();
 
@@ -34,5 +34,3 @@ const DiscoveryEmpty = () => {
         />
     );
 };
-
-export default DiscoveryEmpty;

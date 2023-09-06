@@ -12,7 +12,7 @@ interface AccountNotEnabledProps {
  * Handler for invalid router params, coin is not enabled in settings
  * see: @wallet-actions/selectedAccountActions
  */
-const AccountNotEnabled = ({ network }: AccountNotEnabledProps) => {
+export const AccountNotEnabled = ({ network }: AccountNotEnabledProps) => {
     const dispatch = useDispatch();
     const { isLocked } = useDevice();
 
@@ -44,5 +44,3 @@ const AccountNotEnabled = ({ network }: AccountNotEnabledProps) => {
         />
     );
 };
-
-export default AccountNotEnabled;
