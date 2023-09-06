@@ -36,7 +36,6 @@ const UnexpectedState = ({
     const device = useSelector(selectDevice);
     const { prevDevice, activeStepId, showPinMatrix } = useOnboarding();
     const activeStep = steps.find(s => s.id === activeStepId);
-    const deviceModelInternal = device?.features?.internal_model;
 
     const isNotSameDevice = useMemo(() => {
         const prevDeviceId = prevDevice?.id;
@@ -89,7 +88,7 @@ const UnexpectedState = ({
         return (
             <OnboardingStepBox
                 heading={<Translation id="TR_ENTER_PIN" />}
-                deviceModelInternal={deviceModelInternal}
+                device={device}
                 isActionAbortable={false}
             >
                 {pinComponent}

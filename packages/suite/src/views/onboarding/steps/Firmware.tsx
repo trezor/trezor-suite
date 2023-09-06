@@ -32,7 +32,6 @@ const FirmwareStep = () => {
         targetType,
     } = useFirmware();
     const [cachedDevice, setCachedDevice] = useState<TrezorDevice | undefined>(device);
-    const deviceModelInternal = device?.features?.internal_model;
 
     // special and hopefully very rare case. this appears when somebody tried to fool user into using a hacked firmware
     if (device?.id && firmwareHashInvalid.includes(device.id)) {
@@ -50,7 +49,7 @@ const FirmwareStep = () => {
             <OnboardingStepBox
                 image="FIRMWARE"
                 heading={<Translation id="TR_CHECK_FINGERPRINT" />}
-                deviceModelInternal={deviceModelInternal}
+                device={device}
                 isActionAbortable={false}
             >
                 <Fingerprint device={device} />
