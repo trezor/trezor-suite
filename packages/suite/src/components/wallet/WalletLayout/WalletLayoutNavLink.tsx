@@ -1,4 +1,3 @@
-import { ReactElement } from 'react';
 import styled from 'styled-components';
 import { variables } from '@trezor/components';
 import { Translation } from 'src/components/suite';
@@ -53,14 +52,14 @@ const Badge = styled.span`
     z-index: -1;
 `;
 
-type WalletLayoutNavLinkProps = {
+export interface WalletLayoutNavLinkProps {
     active: boolean;
     title: ExtendedMessageDescriptor['id'];
     values?: ExtendedMessageDescriptor['values'];
     badge?: ExtendedMessageDescriptor['id'];
     onClick: () => void;
     'data-test'?: string;
-};
+}
 
 export const WalletLayoutNavLink = (props: WalletLayoutNavLinkProps) => {
     const { active, title, onClick, values, badge } = props;
@@ -77,28 +76,3 @@ export const WalletLayoutNavLink = (props: WalletLayoutNavLinkProps) => {
         </NavLink>
     );
 };
-
-const Navigation = styled.div`
-    display: flex;
-    width: 100%;
-    min-height: 57px;
-    padding: 0 25px;
-    overflow-x: auto;
-    scrollbar-width: none; /* Firefox */
-
-    &::-webkit-scrollbar {
-        /* WebKit */
-        width: 0;
-        height: 0;
-    }
-
-    border-bottom: 1px solid ${({ theme }) => theme.STROKE_GREY};
-`;
-
-type WalletLayoutNavigationProps = {
-    children: ReactElement<WalletLayoutNavLinkProps> | ReactElement<WalletLayoutNavLinkProps>[];
-};
-
-export const WalletLayoutNavigation = ({ children }: WalletLayoutNavigationProps) => (
-    <Navigation>{children}</Navigation>
-);

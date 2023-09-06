@@ -1,10 +1,8 @@
 import styled, { css } from 'styled-components';
 
 import { useTheme, Icon, Input, CoinLogo } from '@trezor/components';
-
 import { useSelector, useAccountSearch, useTranslation } from 'src/hooks/suite';
-
-import { selectDevice } from '../../../reducers/suite/deviceReducer';
+import { selectDevice } from 'src/reducers/suite/deviceReducer';
 
 const Wrapper = styled.div`
     background: ${({ theme }) => theme.BG_WHITE};

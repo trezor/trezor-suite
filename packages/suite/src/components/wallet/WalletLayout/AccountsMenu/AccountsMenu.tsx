@@ -3,17 +3,15 @@ import styled, { css } from 'styled-components';
 
 import { H2, variables, useTheme, Icon, LoadingContent } from '@trezor/components';
 import { sortByCoin, getFailedAccounts, accountSearchFn } from '@suite-common/wallet-utils';
-
 import { useDiscovery, useAccountSearch, useSelector } from 'src/hooks/suite';
 import { Translation, AddAccountButton } from 'src/components/suite';
 import { Account } from 'src/types/wallet';
 import { selectAccountLabels } from 'src/reducers/suite/metadataReducer';
-
 import { AccountSearchBox } from './AccountSearchBox';
 import { AccountGroup } from './AccountGroup';
 import { AccountItem } from './AccountItem';
 import { AccountItemSkeleton } from './AccountItemSkeleton';
-import { selectDevice } from '../../../reducers/suite/deviceReducer';
+import { selectDevice } from 'src/reducers/suite/deviceReducer';
 
 const Wrapper = styled.div<{ isInline?: boolean }>`
     display: flex;

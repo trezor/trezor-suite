@@ -2,7 +2,7 @@ import { useDevice, useDispatch } from 'src/hooks/suite';
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';
 import { NotificationCard, Translation } from 'src/components/suite';
 
-const DeviceUnavailable = () => {
+export const DeviceUnavailable = () => {
     const dispatch = useDispatch();
     const { device, isLocked } = useDevice();
 
@@ -23,5 +23,3 @@ const DeviceUnavailable = () => {
         </NotificationCard>
     );
 };
-
-export default DeviceUnavailable;

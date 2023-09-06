@@ -1,12 +1,14 @@
 import { ReactNode } from 'react';
 import styled from 'styled-components';
-import { AccountsMenu, AccountException, AccountTopPanel } from 'src/components/wallet';
+import { CoinjoinAccountDiscovery } from 'src/components/wallet';
 import { MAX_WIDTH_WALLET_CONTENT } from 'src/constants/suite/layout';
 import { AppState, ExtendedMessageDescriptor } from 'src/types/suite';
 import { useTranslation, useLayout } from 'src/hooks/suite';
 import { SkeletonRectangle } from 'src/components/suite/Skeleton';
-import { CoinjoinAccountDiscovery } from './components/CoinjoinAccountDiscovery';
-import { AccountBanners } from './components/AccountBanners';
+import { AccountBanners } from './AccountBanners/AccountBanners';
+import { AccountsMenu } from './AccountsMenu/AccountsMenu';
+import { AccountException } from './AccountException/AccountException';
+import { AccountTopPanel } from './AccountTopPanel/AccountTopPanel';
 
 const Wrapper = styled.div`
     display: flex;
