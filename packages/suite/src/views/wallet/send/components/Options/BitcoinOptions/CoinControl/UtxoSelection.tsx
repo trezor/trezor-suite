@@ -5,7 +5,6 @@ import { darken } from 'polished';
 import { formatNetworkAmount, isSameUtxo } from '@suite-common/wallet-utils';
 import { useTheme, Checkbox, Spinner, Tooltip, variables } from '@trezor/components';
 import type { AccountUtxo } from '@trezor/connect';
-
 import { openModal } from 'src/actions/suite/modalActions';
 import {
     FiatValue,
@@ -15,13 +14,12 @@ import {
 } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { TransactionTimestamp, UtxoAnonymity } from 'src/components/wallet';
-import { UtxoTag } from 'src/components/wallet/CoinControl/UtxoTag';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { useCoinjoinUnavailableUtxos } from 'src/hooks/wallet/form/useCoinjoinUnavailableUtxos';
 import { WalletAccountTransaction } from 'src/types/wallet';
 import { selectLabelingDataForSelectedAccount } from 'src/reducers/suite/metadataReducer';
-
-import { selectDevice } from '../../../reducers/suite/deviceReducer';
+import { selectDevice } from 'src/reducers/suite/deviceReducer';
+import { UtxoTag } from './UtxoTag';
 
 const VisibleOnHover = styled.div<{ alwaysVisible?: boolean }>`
     display: ${({ alwaysVisible }) => (alwaysVisible ? 'contents' : 'none')};
