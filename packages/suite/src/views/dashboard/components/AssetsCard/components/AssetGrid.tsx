@@ -3,14 +3,15 @@ import styled from 'styled-components';
 import { Network } from 'src/types/wallet';
 import { CoinLogo, Icon, variables, useTheme } from '@trezor/components';
 import {
-    FiatValue,
     AmountUnitSwitchWrapper,
+    CoinBalance,
+    FiatValue,
     SkeletonCircle,
     SkeletonRectangle,
     Ticker,
     Translation,
 } from 'src/components/suite';
-import { CoinBalance, CoinmarketBuyButton } from 'src/components/wallet';
+import { CoinmarketBuyButton } from 'src/components/wallet';
 import { isTestnet } from '@suite-common/wallet-utils';
 import { goto } from 'src/actions/suite/routerActions';
 import { useAccountSearch, useDispatch, useLoadingSkeleton } from 'src/hooks/suite';

@@ -3,7 +3,6 @@ import DeviceIcon from './images/DeviceIcon';
 import { CheckItem } from './CheckItem';
 import { PrerequisitesGuide } from './PrerequisitesGuide';
 import { WelcomeLayout } from './WelcomeLayout';
-
 import { CardWithHeader } from './CardWithHeader';
 import NotificationCard from './NotificationCard';
 import PinInput from './PinInput';
@@ -17,7 +16,6 @@ import { WebUsbButton } from './WebUsbButton';
 import { HiddenPlaceholder } from './HiddenPlaceholder';
 import { QuestionTooltip } from './QuestionTooltip';
 import TransactionsGraph from './TransactionsGraph';
-
 import DeviceInvalidModeLayout from './DeviceInvalidModeLayout';
 import { AppNavigationPanel } from './AppNavigationPanel';
 import { AppNavigationTooltip } from './AppNavigationTooltip';
@@ -58,6 +56,7 @@ import { CoinjoinStatusBar } from './CoinjoinStatusBar';
 import { CountdownTimer } from './CountdownTimer';
 import { NumberInput, NumberInputProps } from './NumberInput';
 import { QrCode } from './QrCode';
+import { CoinBalance } from './CoinBalance';
 
 export {
     AccountLabel,
@@ -123,5 +122,6 @@ export {
     NumberInput,
     DeviceButton,
     QrCode,
+    CoinBalance,
 };
 export type { ModalProps, NumberInputProps };

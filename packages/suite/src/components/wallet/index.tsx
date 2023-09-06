@@ -3,7 +3,6 @@ import { WalletLayout } from './WalletLayout/WalletLayout';
 import { WalletLayoutHeader } from './WalletLayout/WalletLayoutHeader';
 import { WalletLayoutNavigation } from './WalletLayout/WalletLayoutNavigation';
 import { WalletLayoutNavLink } from './WalletLayout/WalletLayoutNavLink';
-import { CoinBalance } from './CoinBalance';
 import OnOffSwitcher from './OnOffSwitcher';
 import { InputError } from './InputError';
 import { AccountExceptionLayout } from './AccountExceptionLayout';
@@ -44,7 +43,6 @@ export {
     WalletLayoutHeader,
     WalletLayoutNavigation,
     WalletLayoutNavLink,
-    CoinBalance,
     CoinmarketLayout,
     CoinmarketBuyTopPanel,
     CoinmarketSellTopPanel,
