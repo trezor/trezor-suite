@@ -10,7 +10,7 @@ import { getCoinInfo } from '../data/coinInfo';
 import { PROTO, ERRORS } from '../constants';
 import { UI, createUiMessage } from '../events';
 import { isBackendSupported, initBlockchain } from '../backend/BlockchainLink';
-import type { CoinInfo, AccountInfo, AccountUtxo } from '../types';
+import type { CoinInfo, AccountInfo, AccountUtxo, DerivationPath } from '../types';
 import type { GetAccountInfo as GetAccountInfoParams } from '../types/api/getAccountInfo';
 
 type Request = GetAccountInfoParams & { address_n: number[]; coinInfo: CoinInfo };
@@ -118,7 +118,7 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
             );
         } else {
             const keys: {
-                [coin: string]: { coinInfo: CoinInfo; values: Array<string | number[]> };
+                [coin: string]: { coinInfo: CoinInfo; values: DerivationPath[] };
             } = {};
             this.params.forEach(b => {
                 if (!keys[b.coinInfo.label]) {

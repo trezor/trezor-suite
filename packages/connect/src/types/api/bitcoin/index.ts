@@ -1,13 +1,13 @@
-import type { PROTO } from '../../../constants';
 import type { AccountAddresses } from '@trezor/blockchain-link';
 import type { Transaction as BlockbookTransaction } from '@trezor/blockchain-link-types/lib/blockbook';
-
-import { AccountTransaction } from '../../account';
+import type { PROTO } from '../../../constants';
+import type { AccountTransaction } from '../../account';
+import type { DerivationPath } from '../../params';
 
 // signMessage
 
 export interface SignMessage {
-    path: string | number[];
+    path: DerivationPath;
     coin: string;
     message: string;
     hex?: boolean;

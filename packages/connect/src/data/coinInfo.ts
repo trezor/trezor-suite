@@ -1,5 +1,5 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/data/CoinInfo.js
-
+import { cloneObject } from '@trezor/utils';
 import { getBitcoinFeeLevels, getEthereumFeeLevels, getMiscFeeLevels } from './defaultFeeLevels';
 import { ERRORS } from '../constants';
 import { toHardened, fromHardened } from '../utils/pathUtils';
@@ -8,14 +8,14 @@ import type {
     BitcoinNetworkInfo,
     EthereumNetworkInfo,
     MiscNetworkInfo,
-} from '../types/coinInfo';
-import { cloneObject } from '@trezor/utils';
+    DerivationPath,
+} from '../types';
 
 const bitcoinNetworks: BitcoinNetworkInfo[] = [];
 const ethereumNetworks: EthereumNetworkInfo[] = [];
 const miscNetworks: MiscNetworkInfo[] = [];
 
-export const getBitcoinNetwork = (pathOrName: number[] | string) => {
+export const getBitcoinNetwork = (pathOrName: DerivationPath) => {
     const networks = cloneObject(bitcoinNetworks);
     if (typeof pathOrName === 'string') {
         const name = pathOrName.toLowerCase();
@@ -30,7 +30,7 @@ export const getBitcoinNetwork = (pathOrName: number[] | string) => {
     return networks.find(n => n.slip44 === slip44);
 };
 
-export const getEthereumNetwork = (pathOrName: number[] | string) => {
+export const getEthereumNetwork = (pathOrName: DerivationPath) => {
     const networks = cloneObject(ethereumNetworks);
     if (typeof pathOrName === 'string') {
         const name = pathOrName.toLowerCase();
@@ -42,7 +42,7 @@ export const getEthereumNetwork = (pathOrName: number[] | string) => {
     return networks.find(n => n.slip44 === slip44);
 };
 
-export const getMiscNetwork = (pathOrName: number[] | string) => {
+export const getMiscNetwork = (pathOrName: DerivationPath) => {
     const networks = cloneObject(miscNetworks);
     if (typeof pathOrName === 'string') {
         const name = pathOrName.toLowerCase();
