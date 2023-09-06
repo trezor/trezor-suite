@@ -2,7 +2,7 @@ import { scheduleAction, arrayShuffle, urlToOnion } from '@trezor/utils';
 import { TypedEmitter } from '@trezor/utils/lib/typedEventEmitter';
 import type { BlockbookAPI } from '@trezor/blockchain-link/lib/workers/blockbook/websocket';
 
-import { RequestOptions } from '../utils/http';
+import { RequestOptions, resetIdentityCircuit } from '../utils/http';
 import type {
     BlockbookBlock,
     BlockFilterResponse,
@@ -12,7 +12,7 @@ import type {
 import type { CoinjoinBackendSettings, Logger } from '../types';
 import { FILTERS_REQUEST_TIMEOUT, HTTP_REQUEST_GAP, HTTP_REQUEST_TIMEOUT } from '../constants';
 import { CoinjoinWebsocketController } from './CoinjoinWebsocketController';
-import { identifyWsError, resetIdentityCircuit } from './backendUtils';
+import { identifyWsError } from './backendUtils';
 
 type CoinjoinBackendClientSettings = CoinjoinBackendSettings & {
     timeout?: number;

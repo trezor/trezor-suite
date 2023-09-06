@@ -2,7 +2,13 @@ import { scheduleAction, enumUtils } from '@trezor/utils';
 
 import { HTTP_REQUEST_TIMEOUT } from '../constants';
 import { WabiSabiProtocolErrorCode } from '../enums';
-import { httpPost, httpGet, patchResponse, RequestOptions } from '../utils/http';
+import {
+    httpPost,
+    httpGet,
+    patchResponse,
+    RequestOptions,
+    resetIdentityCircuit,
+} from '../utils/http';
 
 export type { RequestOptions } from '../utils/http';
 
@@ -52,9 +58,7 @@ export const coordinatorRequest = async <R = void>(
 
     const switchIdentity = () => {
         if (options.identity) {
-            // set random password to reset TOR circuit for this identity and then try again
-            const [user] = options.identity.split(':');
-            options.identity = `${user}:${Math.random()}`;
+            options.identity = resetIdentityCircuit(options.identity);
         }
     };
 
