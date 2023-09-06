@@ -221,13 +221,13 @@ describe('Suite Actions', () => {
         it(`observeSelectedDevice: ${f.description}`, () => {
             const state = getInitialState(f.state.suite, f.state.device);
             const store = initStore(state);
-            const changed = store.dispatch(suiteActions.observeSelectedDevice(f.action as any));
+            const changed = store.dispatch(observeSelectedDevice());
             expect(changed).toEqual(f.changed);
             if (!f.result) {
-                expect(store.getActions().length).toEqual(0);
+                expect(filterThunkActionTypes(store.getActions()).length).toEqual(0);
             } else {
-                const action = store.getActions().pop();
-                expect(action.type).toEqual(f.result);
+                const action = filterThunkActionTypes(store.getActions()).pop();
+                expect(action?.type).toEqual(f.result);
             }
         });
     });

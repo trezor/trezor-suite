@@ -7,7 +7,7 @@ import { SUITE, ROUTER } from 'src/actions/suite/constants';
 import * as suiteActions from 'src/actions/suite/suiteActions';
 import { AppState, Action, Dispatch } from 'src/types/suite';
 import { handleProtocolRequest } from 'src/actions/suite/protocolActions';
-import { appChanged } from 'src/actions/suite/suiteActions';
+import { appChanged, isActionDeviceRelated } from 'src/actions/suite/suiteActions';
 import { deviceActions } from 'src/actions/suite/deviceActions';
 
 const suite =
@@ -64,8 +64,10 @@ const suite =
                 break;
         }
 
-        // keep suite reducer synchronized with other reducers (selected device)
-        api.dispatch(suiteActions.observeSelectedDevice(action));
+        if (isActionDeviceRelated(action)) {
+            // keep suite reducer synchronized with other reducers (selected device)
+            api.dispatch(suiteActions.observeSelectedDevice());
+        }
 
         return action;
     };

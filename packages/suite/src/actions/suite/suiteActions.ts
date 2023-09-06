@@ -1,4 +1,4 @@
-import { createAction } from '@reduxjs/toolkit';
+import { AnyAction, createAction, isAnyOf } from '@reduxjs/toolkit';
 
 import * as deviceUtils from '@suite-common/suite-utils';
 import { sortByTimestamp } from '@suite-common/suite-utils';
@@ -7,7 +7,7 @@ import { notificationsActions } from '@suite-common/toast-notifications';
 import { getCustomBackends } from '@suite-common/wallet-utils';
 import { desktopApi, HandshakeElectron } from '@trezor/suite-desktop-api';
 import { analytics, EventType } from '@trezor/suite-analytics';
-import TrezorConnect, { Device, DEVICE } from '@trezor/connect';
+import TrezorConnect, { DEVICE, Device } from '@trezor/connect';
 import { createThunk } from '@suite-common/redux-utils';
 
 import { TorStatus } from 'src/types/suite';
@@ -15,14 +15,7 @@ import * as comparisonUtils from 'src/utils/suite/comparisonUtils';
 import { isOnionUrl } from 'src/utils/suite/tor';
 import * as modalActions from 'src/actions/suite/modalActions';
 import type { Locale } from 'src/config/suite/languages';
-import type {
-    Action,
-    Dispatch,
-    GetState,
-    TrezorDevice,
-    AppState,
-    TorBootstrap,
-} from 'src/types/suite';
+import type { Dispatch, GetState, TrezorDevice, AppState, TorBootstrap } from 'src/types/suite';
 import {
     DebugModeOptions,
     AutodetectSettings,
@@ -497,47 +490,50 @@ export const forgetDisconnectedDevices = createThunk(
     },
 );
 
-/**
- * list of actions which has influence on `device` field inside `suite` reducer
- * all other actions should be ignored
- */
-const actions = [
-    deviceActions.authDevice.type,
-    deviceActions.authFailed.type,
-    deviceActions.selectDevice.type,
-    deviceActions.receiveAuthConfirm.type,
-    deviceActions.updatePassphraseMode.type,
-    deviceActions.addButtonRequest.type,
-    deviceActions.rememberDevice.type,
-    deviceActions.forgetDevice.type,
-    METADATA.SET_DEVICE_METADATA,
-    ...Object.values(DEVICE).filter(v => typeof v === 'string'),
-];
+export const isActionDeviceRelated = (action: AnyAction): boolean => {
+    if (
+        isAnyOf(
+            deviceActions.authDevice,
+            deviceActions.authFailed,
+            deviceActions.selectDevice,
+            deviceActions.receiveAuthConfirm,
+            deviceActions.updatePassphraseMode,
+            deviceActions.addButtonRequest,
+            deviceActions.rememberDevice,
+            deviceActions.forgetDevice,
+        )(action)
+    ) {
+        return true;
+    }
+
+    if (action.type === METADATA.SET_DEVICE_METADATA) return true;
+
+    if (Object.values(DEVICE).includes(action.type)) return true;
+
+    return false;
+};
 
 /**
  * Called from `suiteMiddleware`
  * Keep `suite` reducer synchronized with `devices` reducer
  * @param {Action} action
  */
-export const observeSelectedDevice =
-    (action: Action) => (dispatch: Dispatch, getState: GetState) => {
-        const devices = selectDevices(getState());
-        const selectedDevice = selectDeviceSelector(getState());
-        // ignore not listed actions
-        if (actions.indexOf(action.type) < 0) return false;
+export const observeSelectedDevice = () => (dispatch: any, getState: any) => {
+    const devices = selectDevices(getState());
+    const selectedDevice = selectDeviceSelector(getState());
 
-        if (!selectedDevice) return false;
+    if (!selectedDevice) return false;
 
-        const deviceFromReducer = deviceUtils.getSelectedDevice(selectedDevice, devices);
-        if (!deviceFromReducer) return true;
+    const deviceFromReducer = deviceUtils.getSelectedDevice(selectedDevice, devices);
+    if (!deviceFromReducer) return true;
 
-        const changed = comparisonUtils.isChanged(selectedDevice, deviceFromReducer);
-        if (changed) {
-            dispatch(deviceActions.updateSelectedDevice(deviceFromReducer));
-        }
+    const changed = comparisonUtils.isChanged(selectedDevice, deviceFromReducer);
+    if (changed) {
+        dispatch(deviceActions.updateSelectedDevice(deviceFromReducer));
+    }
 
-        return changed;
-    };
+    return changed;
+};
 
 /**
  * Called from <AcquireDevice /> component
