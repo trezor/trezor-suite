@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
+import { COMPOSE_ERROR_TYPES } from '@suite-common/wallet-constants';
 import { fetchTransactionsThunk } from '@suite-common/wallet-core';
 import { amountToSatoshi, formatNetworkAmount } from '@suite-common/wallet-utils';
 import { FormattedCryptoAmount, Translation } from 'src/components/suite';
@@ -8,11 +9,10 @@ import { SETTINGS } from 'src/config/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { Pagination } from 'src/components/wallet';
 import { useTheme, Checkbox, Icon, Switch, variables } from '@trezor/components';
-import { UtxoSelectionList } from 'src/components/wallet/CoinControl/UtxoSelectionList';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { selectCurrentTargetAnonymity } from 'src/reducers/wallet/coinjoinReducer';
-import { COMPOSE_ERROR_TYPES } from '@suite-common/wallet-constants';
+import { UtxoSelectionList } from './UtxoSelectionList';
 
 const Row = styled.div`
     align-items: center;

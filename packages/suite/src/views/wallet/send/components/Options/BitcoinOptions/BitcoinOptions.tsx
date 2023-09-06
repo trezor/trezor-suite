@@ -8,7 +8,7 @@ import { useSendFormContext } from 'src/hooks/wallet';
 import { isFeatureFlagEnabled } from '@suite-common/suite-utils';
 import { OpenGuideFromTooltip } from 'src/components/guide';
 import { Locktime } from './Locktime';
-import { CoinControl } from './CoinControl';
+import { CoinControl } from './CoinControl/CoinControl';
 
 const Wrapper = styled.div`
     display: flex;
