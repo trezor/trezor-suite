@@ -3,8 +3,12 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         { "path": "../metadata-types" },
+        { "path": "../suite-config" },
         { "path": "../wallet-config" },
+        { "path": "../wallet-types" },
         { "path": "../../packages/connect" },
-        { "path": "../../packages/env-utils" }
+        { "path": "../../packages/env-utils" },
+        { "path": "../../packages/type-utils" },
+        { "path": "../../packages/utils" }
     ]
 }

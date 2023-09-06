@@ -1,9 +1,10 @@
 import { MiddlewareAPI } from 'redux';
+import { AnyAction, isAnyOf } from '@reduxjs/toolkit';
 
 import { DEVICE } from '@trezor/connect';
 import { notificationsActions } from '@suite-common/toast-notifications';
 
-import { SUITE, ROUTER } from 'src/actions/suite/constants';
+import { SUITE, ROUTER, METADATA } from 'src/actions/suite/constants';
 import { AppState, Action, Dispatch } from 'src/types/suite';
 import { handleProtocolRequest } from 'src/actions/suite/protocolActions';
 import { appChanged } from 'src/actions/suite/suiteActions';
@@ -15,9 +16,30 @@ import {
     handleDeviceDisconnect,
     observeSelectedDevice,
     selectDevice,
-    isActionDeviceRelated,
 } from 'src/actions/suite/deviceThunks';
 
+export const isActionDeviceRelated = (action: AnyAction): boolean => {
+    if (
+        isAnyOf(
+            deviceActions.authDevice,
+            deviceActions.authFailed,
+            deviceActions.selectDevice,
+            deviceActions.receiveAuthConfirm,
+            deviceActions.updatePassphraseMode,
+            deviceActions.addButtonRequest,
+            deviceActions.rememberDevice,
+            deviceActions.forgetDevice,
+        )(action)
+    ) {
+        return true;
+    }
+
+    if (action.type === METADATA.SET_DEVICE_METADATA) return true;
+
+    if (Object.values(DEVICE).includes(action.type)) return true;
+
+    return false;
+};
 const suite =
     (api: MiddlewareAPI<Dispatch, AppState>) =>
     (next: Dispatch) =>

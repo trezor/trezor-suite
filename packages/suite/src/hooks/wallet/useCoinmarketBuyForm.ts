@@ -1,7 +1,13 @@
 import { createContext, useContext, useCallback, useState, useEffect } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
-import { isChanged } from 'src/utils/suite/comparisonUtils';
+
 import useDebounce from 'react-use/lib/useDebounce';
+import type { BuyTradeQuoteRequest } from 'invity-api';
+
+import { isChanged } from '@suite-common/suite-utils';
+import { amountToSatoshi, formatAmount } from '@suite-common/wallet-utils';
+import { useDidUpdate } from '@trezor/react-utils';
+
 import {
     clearQuotes,
     saveCachedAccountInfo,
@@ -10,7 +16,6 @@ import {
 } from 'src/actions/wallet/coinmarketBuyActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { loadInvityData } from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
-import type { BuyTradeQuoteRequest } from 'invity-api';
 import invityAPI from 'src/services/suite/invityAPI';
 import { getAmountLimits, processQuotes } from 'src/utils/wallet/coinmarket/buyUtils';
 import type {
@@ -19,13 +24,12 @@ import type {
     BuyFormContextValues,
 } from 'src/types/wallet/coinmarketBuyForm';
 import { useFormDraft } from 'src/hooks/wallet/useFormDraft';
-import { useCoinmarketBuyFormDefaultValues } from './useCoinmarketBuyFormDefaultValues';
 import { useCoinmarketNavigation } from 'src/hooks/wallet/useCoinmarketNavigation';
-import { useBitcoinAmountUnit } from './useBitcoinAmountUnit';
-import { amountToSatoshi, formatAmount } from '@suite-common/wallet-utils';
-import { useDidUpdate } from '@trezor/react-utils';
 import { CRYPTO_INPUT } from 'src/types/wallet/coinmarketSellForm';
 import { AmountLimits } from 'src/types/wallet/coinmarketCommonTypes';
+
+import { useCoinmarketBuyFormDefaultValues } from './useCoinmarketBuyFormDefaultValues';
+import { useBitcoinAmountUnit } from './useBitcoinAmountUnit';
 
 export const BuyFormContext = createContext<BuyFormContextValues | null>(null);
 BuyFormContext.displayName = 'CoinmarketBuyContext';

@@ -13,8 +13,8 @@ import {
 } from '@suite-common/wallet-utils';
 import { useDidUpdate } from '@trezor/react-utils';
 import { COMPOSE_ERROR_TYPES } from '@suite-common/wallet-constants';
+import { isChanged } from '@suite-common/suite-utils';
 
-import { isChanged } from 'src/utils/suite/comparisonUtils';
 import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
 import invityAPI from 'src/services/suite/invityAPI';
 import {

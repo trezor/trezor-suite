@@ -1,5 +1,7 @@
-import routes, { Route, RouterAppWithParams } from 'src/constants/suite/routes';
+import { Route } from '@suite-common/suite-types';
 import { WalletParams as CommonWalletParams } from '@suite-common/wallet-types';
+
+import routes, { RouterAppWithParams } from 'src/constants/suite/routes';
 import history from 'src/support/history';
 import { NETWORKS } from 'src/config/wallet';
 

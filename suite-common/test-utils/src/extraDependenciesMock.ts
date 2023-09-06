@@ -79,6 +79,7 @@ export const extraDependenciesMock: ExtraDependencies = {
             ...testMocks.getSuiteDevice(),
         }),
         selectDiscoveryForDevice: mockSelector('selectDiscoveryForDevice', undefined),
+        selectCheckFirmwareAuthenticity: mockSelector('selectCheckFirmwareAuthenticity', false),
     },
     actions: {
         setAccountAddMetadata: mockAction('setAccountAddMetadata'),
@@ -89,6 +90,8 @@ export const extraDependenciesMock: ExtraDependencies = {
         setSelectedDevice: mockAction('setSelectedDevice'),
         updateSelectedDevice: mockAction('updateSelectedDevice'),
         requestAuthConfirm: mockAction('requestAuthConfirm'),
+        onModalCancel: mockAction('onModalCancel'),
+        openModal: mockAction('openModal'),
     },
     actionTypes: {
         storageLoad: mockActionType('storageLoad'),

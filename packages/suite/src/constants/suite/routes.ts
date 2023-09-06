@@ -1,15 +1,10 @@
-import { ArrayElement, ConstWithOptionalFields } from '@trezor/type-utils';
+import { ArrayElement } from '@trezor/type-utils';
+import { Route } from '@suite-common/suite-types';
+import { routes } from '@suite-common/suite-config';
+
 import { Network } from 'src/types/wallet';
-import routes from 'src/config/suite/routes';
 import { RouteParams } from 'src/utils/suite/router';
 
-type RouteKeys =
-    | keyof ArrayElement<typeof routes>
-    | 'params'
-    | 'exact'
-    | 'isForegroundApp'
-    | 'isFullscreenApp';
-export type Route = ArrayElement<ConstWithOptionalFields<typeof routes, RouteKeys>>;
 export type SettingsBackRoute = {
     name: Route['name'];
     params?: RouteParams;

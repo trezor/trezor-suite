@@ -1,6 +1,8 @@
 /**
  * Use override for react-native (@trezor/suite-native/src/actions)
  */
+import { Route } from '@suite-common/suite-types';
+
 import * as suiteActions from 'src/actions/suite/suiteActions';
 import { SUITE, ROUTER } from 'src/actions/suite/constants';
 import { RouterAppWithParams, SettingsBackRoute } from 'src/constants/suite/routes';
@@ -13,9 +15,8 @@ import {
     findRouteByName,
     RouteParams,
 } from 'src/utils/suite/router';
-import { Dispatch, GetState, Route } from 'src/types/suite';
+import { Dispatch, GetState } from 'src/types/suite';
 import history from 'src/support/history';
-
 import type { AnchorType } from 'src/constants/suite/anchors';
 
 export type RouterAction =

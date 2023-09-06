@@ -1,12 +1,16 @@
 import { useState } from 'react';
+
 import styled from 'styled-components';
+
+import { UserContextPayload } from '@suite-common/suite-types';
+import { parseCSV } from '@suite-common/wallet-utils';
+
 import { Translation, Modal } from 'src/components/suite';
 import type { ExtendedMessageDescriptor } from 'src/types/suite';
 import { DropZone } from 'src/components/suite/DropZone';
-import { UserContextPayload } from 'src/actions/suite/modalActions';
+
 import { DelimiterForm } from './components/DelimiterForm';
 import { ExampleCSV } from './components/ExampleCSV';
-import { parseCSV } from '@suite-common/wallet-utils';
 
 const StyledModal = styled(Modal)`
     width: 600px;

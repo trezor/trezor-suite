@@ -1,8 +1,10 @@
 import { useState } from 'react';
+
 import { createTimeoutPromise } from '@trezor/utils';
 import { UnavailableCapabilities } from '@trezor/connect';
 import { isDesktop } from '@trezor/env-utils';
 import { isDevEnv } from '@suite-common/suite-utils';
+import { RequestEnableTorResponse } from '@suite-common/suite-config';
 
 import { Translation } from 'src/components/suite';
 import { useSelector, useDispatch } from 'src/hooks/suite';
@@ -10,11 +12,10 @@ import { createCoinjoinAccount } from 'src/actions/wallet/coinjoinAccountActions
 import { toggleTor } from 'src/actions/suite/suiteActions';
 import { openDeferredModal, openModal } from 'src/actions/suite/modalActions';
 import { Account, Network, NetworkSymbol } from 'src/types/wallet';
-import { RequestEnableTorResponse } from 'src/components/suite/modals/RequestEnableTor';
 import { selectTorState } from 'src/reducers/suite/suiteReducer';
+import { selectDevice } from 'src/reducers/suite/deviceReducer';
 
 import { AddButton } from './AddButton';
-import { selectDevice } from '../../../../../reducers/suite/deviceReducer';
 
 interface VerifyAvailabilityProps {
     coinjoinAccounts: Account[];

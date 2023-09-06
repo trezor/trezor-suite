@@ -1,8 +1,10 @@
-import { onCancel, openModal, preserve, UserContextPayload } from 'src/actions/suite/modalActions';
+import { UserContextPayload } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import TrezorConnect, { Success, Unsuccessful } from '@trezor/connect';
+
+import { onCancel, openModal, preserve } from 'src/actions/suite/modalActions';
 import { GetState, Dispatch } from 'src/types/suite';
-import { selectDevice } from '../../reducers/suite/deviceReducer';
+import { selectDevice } from 'src/reducers/suite/deviceReducer';
 
 export const openXpubModal =
     (params?: Pick<Extract<UserContextPayload, { type: 'xpub' }>, 'isConfirmed'>) =>

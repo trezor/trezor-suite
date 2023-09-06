@@ -1,23 +1,23 @@
-import { AnyAction, isAnyOf } from '@reduxjs/toolkit';
-
 import { createThunk } from '@suite-common/redux-utils';
-import TrezorConnect, { DEVICE, Device } from '@trezor/connect';
+import TrezorConnect, { Device } from '@trezor/connect';
 import { TrezorDevice } from '@suite-common/suite-types';
-import * as deviceUtils from '@suite-common/suite-utils';
 import { analytics, EventType } from '@trezor/suite-analytics';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { checkFirmwareAuthenticity, selectFirmware } from '@suite-common/wallet-core';
-import { sortByTimestamp } from '@suite-common/suite-utils';
+import {
+    sortByTimestamp,
+    isChanged,
+    getSelectedDevice,
+    getNewInstanceNumber,
+    getDeviceInstances,
+    getFirstDeviceInstance,
+} from '@suite-common/suite-utils';
 
 import {
     selectDevice as selectDeviceSelector,
     selectDevices,
 } from 'src/reducers/suite/deviceReducer';
-import { selectRouter } from 'src/reducers/suite/routerReducer';
-import * as comparisonUtils from 'src/utils/suite/comparisonUtils';
 
-import { METADATA } from './constants';
-import * as modalActions from './modalActions';
 import { deviceActions, MODULE_PREFIX } from './deviceActions';
 
 /**
@@ -36,13 +36,13 @@ export const selectDevice = createThunk(
             const { ts } = device as TrezorDevice;
             if (typeof ts === 'number') {
                 // requested device is a @suite TrezorDevice type. get exact instance from reducer
-                payload = deviceUtils.getSelectedDevice(device as TrezorDevice, devices);
+                payload = getSelectedDevice(device as TrezorDevice, devices);
             } else {
                 // requested device is a @trezor/connect Device type
                 // find all instances and select recently used
                 const instances = devices.filter(d => d.path === device.path);
                 // eslint-disable-next-line prefer-destructuring
-                payload = deviceUtils.sortByTimestamp(instances)[0];
+                payload = sortByTimestamp(instances)[0];
             }
         }
 
@@ -111,7 +111,7 @@ export const createDeviceInstance = createThunk(
             deviceActions.createDeviceInstance({
                 ...device,
                 useEmptyPassphrase,
-                instance: deviceUtils.getNewInstanceNumber(devices, device),
+                instance: getNewInstanceNumber(devices, device),
             }),
         );
     },
@@ -149,9 +149,13 @@ export const handleDeviceConnect = createThunk(
  */
 export const handleDeviceDisconnect = createThunk(
     `${MODULE_PREFIX}/handleDeviceDisconnect`,
-    (device: Device, { dispatch, getState }) => {
+    (device: Device, { dispatch, getState, extra }) => {
+        const {
+            selectors: { selectRouterApp },
+        } = extra;
+
         const selectedDevice = selectDeviceSelector(getState());
-        const router = selectRouter(getState());
+        const routerApp = selectRouterApp(getState());
         const devices = selectDevices(getState());
         if (!selectedDevice) return;
         if (selectedDevice.path !== device.path) return;
@@ -160,15 +164,15 @@ export const handleDeviceDisconnect = createThunk(
          * Under normal circumstances, after device is disconnected we want suite to select another existing device (either remembered or physically connected)
          * This is not the case in firmware update and onboarding; In this case we simply wan't suite.device to be empty until user reconnects a device again
          */
-        if (['onboarding', 'firmware', 'firmware-type'].includes(router.app)) {
+        if (['onboarding', 'firmware', 'firmware-type'].includes(routerApp)) {
             dispatch(selectDevice(undefined));
             return;
         }
 
         // selected device is disconnected, decide what to do next
         // device is still present in reducer (remembered or candidate to remember)
-        const devicePresent = deviceUtils.getSelectedDevice(selectedDevice, devices);
-        const deviceInstances = deviceUtils.getDeviceInstances(selectedDevice, devices);
+        const devicePresent = getSelectedDevice(selectedDevice, devices);
+        const deviceInstances = getDeviceInstances(selectedDevice, devices);
         if (deviceInstances.length > 0) {
             // if selected device is gone from reducer, switch to first instance
             if (!devicePresent) {
@@ -177,7 +181,7 @@ export const handleDeviceDisconnect = createThunk(
             return;
         }
 
-        const available = deviceUtils.getFirstDeviceInstance(devices);
+        const available = getFirstDeviceInstance(devices);
         dispatch(selectDevice(available[0]));
     },
 );
@@ -200,29 +204,6 @@ export const forgetDisconnectedDevices = createThunk(
     },
 );
 
-export const isActionDeviceRelated = (action: AnyAction): boolean => {
-    if (
-        isAnyOf(
-            deviceActions.authDevice,
-            deviceActions.authFailed,
-            deviceActions.selectDevice,
-            deviceActions.receiveAuthConfirm,
-            deviceActions.updatePassphraseMode,
-            deviceActions.addButtonRequest,
-            deviceActions.rememberDevice,
-            deviceActions.forgetDevice,
-        )(action)
-    ) {
-        return true;
-    }
-
-    if (action.type === METADATA.SET_DEVICE_METADATA) return true;
-
-    if (Object.values(DEVICE).includes(action.type)) return true;
-
-    return false;
-};
-
 /**
  * Called from `suiteMiddleware`
  * Keep `suite` reducer synchronized with `devices` reducer
@@ -234,10 +215,10 @@ export const observeSelectedDevice = () => (dispatch: any, getState: any) => {
 
     if (!selectedDevice) return false;
 
-    const deviceFromReducer = deviceUtils.getSelectedDevice(selectedDevice, devices);
+    const deviceFromReducer = getSelectedDevice(selectedDevice, devices);
     if (!deviceFromReducer) return true;
 
-    const changed = comparisonUtils.isChanged(selectedDevice, deviceFromReducer);
+    const changed = isChanged(selectedDevice, deviceFromReducer);
     if (changed) {
         dispatch(deviceActions.updateSelectedDevice(deviceFromReducer));
     }
@@ -280,7 +261,13 @@ export const acquireDevice = createThunk(
  */
 export const authorizeDevice = createThunk(
     `${MODULE_PREFIX}/authorizeDevice`,
-    async (_, { dispatch, getState }): Promise<boolean> => {
+    async (_, { dispatch, getState, extra }): Promise<boolean> => {
+        const {
+            selectors: { selectCheckFirmwareAuthenticity },
+            actions: { openModal },
+        } = extra;
+
+        const selectedCheckFirmwareAuthenticity = selectCheckFirmwareAuthenticity(getState());
         const device = selectDeviceSelector(getState());
         if (!device) return false;
         const isDeviceReady =
@@ -291,7 +278,7 @@ export const authorizeDevice = createThunk(
             device.firmware !== 'required';
         if (!isDeviceReady) return false;
 
-        if (getState().suite.settings.debug.checkFirmwareAuthenticity) {
+        if (selectedCheckFirmwareAuthenticity) {
             await dispatch(checkFirmwareAuthenticity());
         }
 
@@ -313,7 +300,7 @@ export const authorizeDevice = createThunk(
                 d => d.state && d.state.split(':')[0] === s && d.instance !== device.instance,
             );
             // get fresh data from reducer, `useEmptyPassphrase` might be changed after TrezorConnect call
-            const freshDeviceData = deviceUtils.getSelectedDevice(device, devices);
+            const freshDeviceData = getSelectedDevice(device, devices);
             if (duplicate) {
                 if (freshDeviceData!.useEmptyPassphrase) {
                     // if currently selected device uses empty passphrase
@@ -324,9 +311,7 @@ export const authorizeDevice = createThunk(
                     // reset useEmptyPassphrase field for selected device to allow future PassphraseRequests
                     dispatch(deviceActions.updatePassphraseMode({ device, hidden: true }));
                 }
-                dispatch(
-                    modalActions.openModal({ type: 'passphrase-duplicate', device, duplicate }),
-                );
+                dispatch(openModal({ type: 'passphrase-duplicate', device, duplicate }));
                 return false;
             }
 
@@ -394,10 +379,13 @@ export const switchDuplicatedDevice = createThunk(
     `${MODULE_PREFIX}/switchDuplicatedDevice`,
     async (
         { device, duplicate }: { device: TrezorDevice; duplicate: TrezorDevice },
-        { dispatch },
+        { dispatch, extra },
     ) => {
+        const {
+            actions: { onModalCancel },
+        } = extra;
         // close modal
-        dispatch(modalActions.onCancel());
+        dispatch(onModalCancel());
         // release session from authorizeDevice
         await TrezorConnect.getFeatures({
             device,

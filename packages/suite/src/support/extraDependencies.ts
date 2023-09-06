@@ -19,6 +19,7 @@ import * as cardanoStakingActions from 'src/actions/wallet/cardanoStakingActions
 import * as walletSettingsActions from 'src/actions/settings/walletSettingsActions';
 import { DeviceRootState, selectIsPendingTransportEvent } from 'src/reducers/suite/deviceReducer';
 import { fixLoadedCoinjoinAccount } from 'src/utils/wallet/coinjoinUtils';
+import * as modalActions from 'src/actions/suite/modalActions';
 
 import * as suiteActions from '../actions/suite/suiteActions';
 import { AppState, ButtonRequest, TrezorDevice } from '../types/suite';
@@ -63,6 +64,8 @@ export const extraDependencies: ExtraDependencies = {
         selectDiscoveryForDevice: (state: DiscoveryRootState & DeviceRootState) =>
             selectDiscoveryByDeviceState(state, state.device.selectedDevice?.state),
         selectRouterApp: (state: AppState) => state.router.app,
+        selectCheckFirmwareAuthenticity: (state: AppState) =>
+            state.suite.settings.debug.checkFirmwareAuthenticity,
     },
     actions: {
         setAccountAddMetadata: metadataActions.setAccountAdd,
@@ -73,6 +76,8 @@ export const extraDependencies: ExtraDependencies = {
         setSelectedDevice: deviceActions.selectDevice,
         updateSelectedDevice: deviceActions.updateSelectedDevice,
         requestAuthConfirm: suiteActions.requestAuthConfirm,
+        onModalCancel: modalActions.onCancel,
+        openModal: modalActions.openModal,
     },
     actionTypes: {
         storageLoad: STORAGE.LOAD,

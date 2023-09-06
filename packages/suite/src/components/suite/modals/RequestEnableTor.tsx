@@ -1,9 +1,13 @@
 import { useEffect } from 'react';
+
 import styled from 'styled-components';
+
 import { Button, P } from '@trezor/components';
-import { Modal, Translation } from 'src/components/suite';
-import { UserContextPayload } from 'src/actions/suite/modalActions';
+import { UserContextPayload } from '@suite-common/suite-types';
 import { isDevEnv } from '@suite-common/suite-utils';
+import { RequestEnableTorResponse } from '@suite-common/suite-config';
+
+import { Modal, Translation } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
 import { selectTorState } from 'src/reducers/suite/suiteReducer';
 
@@ -24,12 +28,6 @@ type RequestEnableTorProps = {
     decision: Extract<UserContextPayload, { type: 'request-enable-tor' }>['decision'];
     onCancel: () => void;
 };
-
-export enum RequestEnableTorResponse {
-    Continue = 'Continue',
-    Back = 'Back',
-    Skip = 'Skip',
-}
 
 export const RequestEnableTor = ({ onCancel, decision }: RequestEnableTorProps) => {
     const coinjoinAllowNoTor = useSelector(

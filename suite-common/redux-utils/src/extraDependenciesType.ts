@@ -6,7 +6,7 @@ import {
 
 import { Account, Discovery, FeeInfo } from '@suite-common/wallet-types';
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { TrezorDevice } from '@suite-common/suite-types';
+import { TrezorDevice, UserContextPayload } from '@suite-common/suite-types';
 import { BlockchainBlock, ConnectSettings, Manifest, PROTO } from '@trezor/connect';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 
@@ -47,6 +47,7 @@ export type ExtraDependencies = {
         selectRouterApp: SuiteCompatibleSelector<string>;
         selectMetadata: SuiteCompatibleSelector<any>;
         selectDiscoveryForDevice: SuiteCompatibleSelector<Discovery | undefined>;
+        selectCheckFirmwareAuthenticity: SuiteCompatibleSelector<boolean>;
     };
     // You should only use ActionCreatorWithPayload from redux-toolkit!
     // That means you will need to convert actual action creators in packages/suite to use createAction from redux-toolkit,
@@ -72,6 +73,8 @@ export type ExtraDependencies = {
         setSelectedDevice: ActionCreatorWithPayload<TrezorDevice | undefined>;
         updateSelectedDevice: ActionCreatorWithPayload<TrezorDevice | undefined>;
         requestAuthConfirm: ActionCreatorWithoutPayload;
+        onModalCancel: ActionCreatorWithoutPayload;
+        openModal: ActionCreatorWithPayload<UserContextPayload>;
     };
     // Use action types + reducers as last resort if you can't use actions creators. For example for storageLoad it is used because
     // it would be really hard to move all types to @suite-common that are needed to type payload. This comes at cost of
