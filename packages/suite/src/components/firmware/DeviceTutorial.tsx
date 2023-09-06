@@ -128,7 +128,7 @@ export const DeviceTutorial = () => {
                 image={imgName}
                 heading={getHeading()}
                 description={getDescritpion()}
-                deviceModelInternal={status === 'active' ? deviceModelInternal : undefined}
+                device={status === 'active' ? device : undefined}
                 devicePromptTitle={<Translation id="TR_CONTINUE_ON_TREZOR" />}
                 outerActions={isContinueButtonVisible && ContinueButton}
             />

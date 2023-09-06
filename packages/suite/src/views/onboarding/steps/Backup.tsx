@@ -34,12 +34,6 @@ export const BackupStep = () => {
     const isActionAbortable = useSelector(selectIsActionAbortable);
     const dispatch = useDispatch();
 
-    const deviceModelInternal = device?.features?.internal_model;
-
-    if (!deviceModelInternal) {
-        return null;
-    }
-
     return (
         <>
             {showSkipConfirmation && (
@@ -86,7 +80,7 @@ export const BackupStep = () => {
                     image="BACKUP"
                     heading={<Translation id="TR_CREATE_BACKUP" />}
                     description={<Translation id="TR_BACKUP_SUBHEADING_1" />}
-                    deviceModelInternal={deviceModelInternal}
+                    device={device}
                     isActionAbortable={isActionAbortable}
                 />
             )}

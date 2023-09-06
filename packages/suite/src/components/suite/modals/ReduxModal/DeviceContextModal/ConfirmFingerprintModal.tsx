@@ -18,6 +18,7 @@ export const ConfirmFingerprintModal = ({ device, ...rest }: ConfirmFingerprintP
             <ConfirmOnDevice
                 title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
                 deviceModelInternal={device.features?.internal_model}
+                deviceUnitColor={device?.features?.unit_color}
             />
         }
         heading={<Translation id="TR_CHECK_FINGERPRINT" />}

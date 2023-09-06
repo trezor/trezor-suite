@@ -12,7 +12,7 @@ export const AnimationWrapper = styled.div<{ size?: number; shape?: Shape }>`
     ${({ size }) =>
         size &&
         css`
-            width: ${size}px;
+            width: max-content;
             height: ${size}px;
         `}
     ${({ shape }) =>

@@ -170,7 +170,7 @@ export const FinalStep = () => {
     return (
         <OnboardingStepBox
             data-test="@onboarding/final"
-            deviceModelInternal={isWaitingForConfirm ? deviceModelInternal : undefined}
+            device={isWaitingForConfirm ? device : undefined}
             isActionAbortable={isActionAbortable}
         >
             <Wrapper ref={wrapperRef} shouldWrap={width < 650}>

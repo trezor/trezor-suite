@@ -267,6 +267,7 @@ export const ReconnectDevicePrompt = ({
                     <ConfirmOnDevice
                         title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
                         deviceModelInternal={deviceModelInternal}
+                        deviceUnitColor={device?.features?.unit_color}
                         isConfirmed={rebootPhase !== 'wait-for-confirm'}
                     />
                 )

@@ -74,6 +74,7 @@ const DevicePromptModalRenderer = ({
                         <ConfirmOnDevice
                             title={pillTitle || <Translation id="TR_CONFIRM_ON_TREZOR" />}
                             deviceModelInternal={deviceModelInternal}
+                            deviceUnitColor={device?.features?.unit_color}
                             isConfirmed={isConfirmed}
                         />
                     )
