@@ -102,6 +102,7 @@ export const ConfirmValueModal = ({
                     <ConfirmOnDevice
                         title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
                         deviceModelInternal={device.features?.internal_model}
+                        deviceUnitColor={device?.features?.unit_color}
                         isConfirmed={isConfirmed}
                     />
                 ) : undefined

@@ -14,10 +14,10 @@ import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
 import RecoveryStepBox from './RecoveryStepBox';
 
 const InProgressRecoveryStepBox = styled(RecoveryStepBox)<{
-    deviceModelInternal: DeviceModelInternal;
+    $deviceModelInternal: DeviceModelInternal;
 }>`
-    ${({ deviceModelInternal }) =>
-        deviceModelInternal === DeviceModelInternal.T1B1 ? 'min-height: 475px' : ''};
+    ${({ $deviceModelInternal }) =>
+        $deviceModelInternal === DeviceModelInternal.T1B1 ? 'min-height: 475px' : ''};
 `;
 
 export const RecoveryStep = () => {
@@ -119,7 +119,7 @@ export const RecoveryStep = () => {
                     [DeviceModelInternal.T2T1]: <Translation id="TR_RECOVER_SUBHEADING_TOUCH" />,
                     [DeviceModelInternal.T2B1]: <Translation id="TR_RECOVER_SUBHEADING_BUTTONS" />,
                 })}
-                deviceModelInternal={deviceModelInternal}
+                device={device}
                 isActionAbortable={isActionAbortable}
             />
         );
@@ -145,7 +145,8 @@ export const RecoveryStep = () => {
             <InProgressRecoveryStepBox
                 key={status} // to properly rerender in translation mode
                 heading={<Translation id="TR_RECOVER_YOUR_WALLET_FROM" />}
-                deviceModelInternal={deviceModelInternal}
+                $deviceModelInternal={deviceModelInternal}
+                device={device}
                 description={pickByDeviceModel(deviceModelInternal, {
                     default: undefined,
                     [DeviceModelInternal.T1B1]: getModel1Description(),

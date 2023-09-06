@@ -26,8 +26,6 @@ const SetPinStep = () => {
 
     const { goToNextStep, showPinMatrix, updateAnalytics } = useOnboarding();
 
-    const deviceModelInternal = device?.features?.internal_model;
-
     const onTryAgain = () => {
         setStatus('initial');
         dispatch(changePin({}));
@@ -154,7 +152,7 @@ const SetPinStep = () => {
                         </OnboardingButtonSkip>
                     ) : undefined
                 }
-                deviceModelInternal={showConfirmationPrompt ? deviceModelInternal : undefined}
+                device={showConfirmationPrompt ? device : undefined}
                 isActionAbortable={status === 'initial' ? isActionAbortable : true}
             >
                 {/* // device requested showing a pin matrix, show the matrix also on "repeat-pin" status until we get fail or success response from the device */}

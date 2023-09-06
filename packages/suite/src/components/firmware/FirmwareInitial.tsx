@@ -140,7 +140,6 @@ export const FirmwareInitial = ({
 
     // User is following instructions for disconnecting/reconnecting a device in bootloader mode; We'll use cached version of the device
     const device = status === 'waiting-for-bootloader' ? cachedDevice : liveDevice;
-    const deviceModelInternal = device?.features?.internal_model;
 
     let content;
 
@@ -346,9 +345,7 @@ export const FirmwareInitial = ({
                     innerActions={content.innerActions}
                     outerActions={content.outerActions}
                     disableConfirmWrapper={!!standaloneFwUpdate}
-                    deviceModelInternal={
-                        status === 'waiting-for-confirmation' ? deviceModelInternal : undefined
-                    }
+                    device={status === 'waiting-for-confirmation' ? device : undefined}
                     isActionAbortable={false}
                     nested={!!standaloneFwUpdate}
                 >

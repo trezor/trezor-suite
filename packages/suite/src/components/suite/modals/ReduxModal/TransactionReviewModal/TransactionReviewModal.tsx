@@ -115,6 +115,7 @@ export const TransactionReviewModal = ({ decision }: TransactionReviewModalProps
                     steps={outputs.length + 1}
                     activeStep={signedTx ? outputs.length + 2 : buttonRequestsCount}
                     deviceModelInternal={deviceModelInternal}
+                    deviceUnitColor={device?.features?.unit_color}
                     successText={<Translation id="TR_CONFIRMED_TX" />}
                     onCancel={onCancel}
                 />
