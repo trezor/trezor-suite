@@ -11,7 +11,7 @@ import {
     Ticker,
     Translation,
 } from 'src/components/suite';
-import { CoinmarketBuyButton } from 'src/components/wallet';
+import { CoinmarketBuyButton } from 'src/views/dashboard/components/CoinmarketBuyButton';
 import { isTestnet } from '@suite-common/wallet-utils';
 import { goto } from 'src/actions/suite/routerActions';
 import { useAccountSearch, useDispatch, useLoadingSkeleton } from 'src/hooks/suite';

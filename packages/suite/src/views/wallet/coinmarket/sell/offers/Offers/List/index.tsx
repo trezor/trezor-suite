@@ -1,13 +1,14 @@
 import styled from 'styled-components';
-import { CoinLogo, variables, Icon, H2 } from '@trezor/components';
 import { SellFiatTrade } from 'invity-api';
+
+import { CoinLogo, variables, Icon, H2 } from '@trezor/components';
 import { useCoinmarketSellOffersContext } from 'src/hooks/wallet/useCoinmarketSellOffers';
-import Quote from './Quote';
 import { Translation } from 'src/components/suite';
-import { CoinmarketRefreshTime } from 'src/components/wallet';
+import { CoinmarketRefreshTime } from 'src/views/wallet/coinmarket/common';
 import { InvityAPIReloadQuotesAfterSeconds } from 'src/constants/wallet/coinmarket/metadata';
 import { CoinmarketCryptoAmount } from 'src/views/wallet/coinmarket/common/CoinmarketCryptoAmount';
 import { CoinmarketFiatAmount } from 'src/views/wallet/coinmarket/common/CoinmarketFiatAmount';
+import Quote from './Quote';
 
 const Wrapper = styled.div``;
 const Quotes = styled.div``;

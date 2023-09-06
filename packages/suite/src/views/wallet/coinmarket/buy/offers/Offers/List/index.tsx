@@ -4,10 +4,12 @@ import { BuyTrade } from 'invity-api';
 import { useCoinmarketBuyOffersContext } from 'src/hooks/wallet/useCoinmarketBuyOffers';
 import Quote from './Quote';
 import { Translation } from 'src/components/suite';
-import { CoinmarketRefreshTime } from 'src/components/wallet';
+import {
+    CoinmarketCryptoAmount,
+    CoinmarketFiatAmount,
+    CoinmarketRefreshTime,
+} from 'src/views/wallet/coinmarket/common';
 import { InvityAPIReloadQuotesAfterSeconds } from 'src/constants/wallet/coinmarket/metadata';
-import { CoinmarketCryptoAmount } from 'src/views/wallet/coinmarket/common/CoinmarketCryptoAmount';
-import { CoinmarketFiatAmount } from 'src/views/wallet/coinmarket/common/CoinmarketFiatAmount';
 
 const Wrapper = styled.div``;
 const Quotes = styled.div``;

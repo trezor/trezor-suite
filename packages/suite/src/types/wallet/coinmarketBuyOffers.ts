@@ -25,3 +25,7 @@ export type ContextValues = {
     timer: Timer;
     getQuotes: () => Promise<void>;
 };
+
+export type AddressOptionsFormState = {
+    address?: string;
+};

@@ -1,10 +1,10 @@
 import styled from 'styled-components';
+
 import { Translation } from 'src/components/suite';
 import { CoinLogo, H2, Icon, variables } from '@trezor/components';
 import { useCoinmarketP2pOffersContext } from 'src/hooks/wallet/useCoinmarketP2pOffers';
-import { CoinmarketRefreshTime } from 'src/components/wallet';
+import { CoinmarketFiatAmount, CoinmarketRefreshTime } from 'src/views/wallet/coinmarket/common';
 import { InvityAPIReloadQuotesAfterSeconds } from 'src/constants/wallet/coinmarket/metadata';
-import { CoinmarketFiatAmount } from 'src/views/wallet/coinmarket/common/CoinmarketFiatAmount';
 import { P2pQuote } from 'invity-api';
 import { Quote } from './Quote';
 

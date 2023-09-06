@@ -1,16 +1,17 @@
 import styled from 'styled-components';
+
 import { useTheme, Button, variables, Icon, H2 } from '@trezor/components';
 import {
+    CoinmarketCryptoAmount,
+    CoinmarketFiatAmount,
     CoinmarketPaymentType,
     CoinmarketProviderInfo,
     CoinmarketTag,
-} from 'src/components/wallet';
+} from 'src/views/wallet/coinmarket/common';
 import { QuestionTooltip, Translation } from 'src/components/suite';
 import { BuyTrade } from 'invity-api';
 import { useCoinmarketBuyOffersContext } from 'src/hooks/wallet/useCoinmarketBuyOffers';
 import { getTagAndInfoNote } from 'src/utils/wallet/coinmarket/coinmarketUtils';
-import { CoinmarketCryptoAmount } from 'src/views/wallet/coinmarket/common/CoinmarketCryptoAmount';
-import { CoinmarketFiatAmount } from 'src/views/wallet/coinmarket/common/CoinmarketFiatAmount';
 
 const Wrapper = styled.div`
     display: flex;

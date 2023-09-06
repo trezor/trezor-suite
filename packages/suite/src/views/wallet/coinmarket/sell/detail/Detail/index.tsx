@@ -1,14 +1,15 @@
 import styled from 'styled-components';
+
 import { Card, variables } from '@trezor/components';
-import { CoinmarketSellOfferInfo, CoinmarketSellTopPanel } from 'src/components/wallet';
+import { CoinmarketSellTopPanel } from 'src/views/wallet/coinmarket/common';
 import { useCoinmarketSellDetailContext } from 'src/hooks/wallet/useCoinmarketSellDetail';
 import { SellFiatTradeFinalStatuses } from 'src/hooks/wallet/useCoinmarket';
 import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch, useLayout } from 'src/hooks/suite';
-
 import PaymentPending from '../components/PaymentPending';
 import PaymentSuccessful from '../components/PaymentSuccessful';
 import PaymentFailed from '../components/PaymentFailed';
+import { CoinmarketSellOfferInfo } from '../../components/CoinmarketSellOfferInfo';
 
 const Wrapper = styled.div`
     display: flex;

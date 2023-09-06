@@ -10,11 +10,9 @@ import {
 } from 'src/components/suite';
 import { Input, Button, variables, CoinLogo, Image } from '@trezor/components';
 import { useCoinmarketBuyOffersContext } from 'src/hooks/wallet/useCoinmarketBuyOffers';
-import {
-    AddressOptions,
-    AddressOptionsFormState,
-} from 'src/views/wallet/coinmarket/common/AddressOptions';
+import { AddressOptions } from 'src/views/wallet/coinmarket/common';
 import { useAccountAddressDictionary } from 'src/hooks/wallet/useAccounts';
+import { AddressOptionsFormState } from 'src/types/wallet/coinmarketBuyOffers';
 
 const Wrapper = styled.div`
     display: flex;

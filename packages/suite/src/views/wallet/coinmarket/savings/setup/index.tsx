@@ -1,5 +1,6 @@
-import { withCoinmarket, WithSelectedAccountLoadedProps } from 'src/components/wallet';
 import styled from 'styled-components';
+
+import { WithSelectedAccountLoadedProps } from 'src/components/wallet';
 import { Button, variables, Select, Flag } from '@trezor/components';
 import { useSavingsSetup } from 'src/hooks/wallet/useCoinmarketSavingsSetup';
 import { Controller } from 'react-hook-form';
@@ -12,6 +13,7 @@ import Summary from './components/Summary';
 import { NoProviders, StyledSelectBar } from 'src/views/wallet/coinmarket';
 import { getTitleForNetwork } from '@suite-common/wallet-utils';
 import { AllFeesIncluded } from '../AllFeesIncluded';
+import { withCoinmarket } from '../withCoinmarket';
 
 const Header = styled.div`
     font-weight: 500;

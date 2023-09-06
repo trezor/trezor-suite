@@ -1,12 +1,13 @@
 import { useCallback, useEffect } from 'react';
 import styled from 'styled-components';
 import BigNumber from 'bignumber.js';
+
 import { isZero, amountToSatoshi } from '@suite-common/wallet-utils';
 import { useCoinmarketExchangeFormContext } from 'src/hooks/wallet/useCoinmarketExchangeForm';
 import SendCryptoInput from './SendCryptoInput';
 import FiatInput from './FiatInput';
 import ReceiveCryptoSelect from './ReceiveCryptoSelect';
-import { FractionButtons } from 'src/components/wallet/CoinMarketFractionButtons';
+import { CoinmarketFractionButtons } from 'src/views/wallet/coinmarket/common';
 import { CRYPTO_INPUT, FIAT_INPUT } from 'src/types/wallet/coinmarketExchangeForm';
 import { useLayoutSize } from 'src/hooks/suite';
 import { Wrapper, Left, Middle, Right, StyledIcon } from 'src/views/wallet/coinmarket';
@@ -101,7 +102,7 @@ const Inputs = () => {
             </StyledLeft>
             <StyledMiddle responsiveSize="XL">
                 {!isXLargeLayoutSize && (
-                    <FractionButtons
+                    <CoinmarketFractionButtons
                         disabled={isBalanceZero}
                         onFractionClick={setRatioAmount}
                         onAllClick={setAllAmount}
@@ -114,7 +115,7 @@ const Inputs = () => {
                 <ReceiveCryptoSelect />
             </Right>
             {isXLargeLayoutSize && (
-                <FractionButtons
+                <CoinmarketFractionButtons
                     disabled={isBalanceZero}
                     onFractionClick={setRatioAmount}
                     onAllClick={setAllAmount}
