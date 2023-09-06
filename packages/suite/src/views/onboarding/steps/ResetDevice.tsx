@@ -24,8 +24,6 @@ export const ResetDeviceStep = () => {
     const isActionAbortable = useSelector(selectIsActionAbortable);
     const dispatch = useDispatch();
 
-    const deviceModelInternal = device?.features?.internal_model;
-
     // this step expects device
     if (!device || !device.features) {
         return null;
@@ -73,7 +71,7 @@ export const ResetDeviceStep = () => {
             image="KEY"
             heading={<Translation id="TR_ONBOARDING_GENERATE_SEED" />}
             description={<Translation id="TR_ONBOARDING_GENERATE_SEED_DESCRIPTION" />}
-            deviceModelInternal={isWaitingForConfirmation ? deviceModelInternal : undefined}
+            device={isWaitingForConfirmation ? device : undefined}
             isActionAbortable={isActionAbortable}
             outerActions={
                 !isWaitingForConfirmation ? (

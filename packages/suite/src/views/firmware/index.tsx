@@ -163,6 +163,7 @@ export const Firmware = ({ shouldSwitchFirmwareType }: FirmwareProps) => {
                     <ConfirmOnDevice
                         title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
                         deviceModelInternal={deviceModelInternal}
+                        deviceUnitColor={device?.features?.unit_color}
                     />
                 )
             }

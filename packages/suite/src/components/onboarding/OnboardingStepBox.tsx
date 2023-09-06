@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 import styled from 'styled-components';
-import TrezorConnect, { DeviceModelInternal } from '@trezor/connect';
+import TrezorConnect from '@trezor/connect';
 import { ConfirmOnDevice, Backdrop, variables } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 import { useIntl } from 'react-intl';
@@ -9,6 +9,7 @@ import {
     CollapsibleOnboardingCard,
     CollapsibleOnboardingCardProps,
 } from './CollapsibleOnboardingCard';
+import { TrezorDevice } from '@suite-common/suite-types';
 
 const ConfirmWrapper = styled.div`
     margin-bottom: 20px;
@@ -59,7 +60,7 @@ export const OnboardingStepBox = ({
     image,
     innerActions,
     outerActions,
-    deviceModelInternal,
+    device,
     isActionAbortable,
     disableConfirmWrapper,
     nested,
@@ -68,6 +69,8 @@ export const OnboardingStepBox = ({
     ...rest
 }: OnboardingStepBoxProps) => {
     const intl = useIntl();
+
+    const deviceModelInternal = device?.features?.internal_model;
 
     const isBackDropVisible = !!deviceModelInternal && !disableConfirmWrapper;
 
@@ -80,6 +83,7 @@ export const OnboardingStepBox = ({
                         <ConfirmOnDevice
                             title={devicePromptTitle || <Translation id="TR_CONFIRM_ON_TREZOR" />}
                             deviceModelInternal={deviceModelInternal}
+                            deviceUnitColor={device?.features?.unit_color}
                             onCancel={
                                 isActionAbortable
                                     ? () =>

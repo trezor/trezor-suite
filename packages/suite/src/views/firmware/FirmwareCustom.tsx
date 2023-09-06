@@ -178,6 +178,7 @@ export const FirmwareCustom = () => {
                     <ConfirmOnDevice
                         title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
                         deviceModelInternal={liveDeviceModelInternal}
+                        deviceUnitColor={liveDevice?.features?.unit_color}
                     />
                 )
             }
