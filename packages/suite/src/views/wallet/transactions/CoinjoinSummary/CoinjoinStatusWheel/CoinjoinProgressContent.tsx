@@ -71,12 +71,15 @@ const StyledIcon = styled(Icon)`
     ${iconBase};
 `;
 
-interface ProgressContentProps {
+interface CoinjoinProgressContentProps {
     accountKey: string;
     isWheelHovered: boolean;
 }
 
-export const ProgressContent = ({ accountKey, isWheelHovered }: ProgressContentProps) => {
+export const CoinjoinProgressContent = ({
+    accountKey,
+    isWheelHovered,
+}: CoinjoinProgressContentProps) => {
     const {
         isSessionActive,
         isLoading,

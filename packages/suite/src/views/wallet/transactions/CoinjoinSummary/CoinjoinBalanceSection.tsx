@@ -6,8 +6,8 @@ import { Card, useTheme } from '@trezor/components';
 import { useSelector } from 'src/hooks/suite';
 import { selectHasAnonymitySetError } from 'src/reducers/wallet/coinjoinReducer';
 import { BalancePrivacyBreakdown } from './BalancePrivacyBreakdown';
-import { BalanceError, BalanceErrorProps } from './BalanceError';
-import { CoinjoinStatusWheel } from './CoinjoinStatusWheel';
+import { CoinjoinBalanceError, CoinjoinBalanceErrorProps } from './CoinjoinBalanceError';
+import { CoinjoinStatusWheel } from './CoinjoinStatusWheel/CoinjoinStatusWheel';
 
 export const Container = styled.div`
     display: flex;
@@ -24,17 +24,17 @@ const LeftSideContainer = styled(Card)`
     justify-content: center;
 `;
 
-interface BalanceSectionProps {
+interface CoinjoinBalanceSectionProps {
     accountKey: string;
 }
 
-export const BalanceSection = ({ accountKey }: BalanceSectionProps) => {
+export const CoinjoinBalanceSection = ({ accountKey }: CoinjoinBalanceSectionProps) => {
     const hasAnonymitySetError = useSelector(selectHasAnonymitySetError);
     const hasTransactions = useSelector(state => selectHasAccountTransactions(state, accountKey));
 
     const theme = useTheme();
 
-    const errorMessageConfig = useMemo<BalanceErrorProps | undefined>(() => {
+    const errorMessageConfig = useMemo<CoinjoinBalanceErrorProps | undefined>(() => {
         if (hasAnonymitySetError) {
             return {
                 headingId: 'TR_ERROR',
@@ -55,7 +55,7 @@ export const BalanceSection = ({ accountKey }: BalanceSectionProps) => {
         <Container>
             <LeftSideContainer>
                 {errorMessageConfig ? (
-                    <BalanceError {...errorMessageConfig} />
+                    <CoinjoinBalanceError {...errorMessageConfig} />
                 ) : (
                     <BalancePrivacyBreakdown />
                 )}

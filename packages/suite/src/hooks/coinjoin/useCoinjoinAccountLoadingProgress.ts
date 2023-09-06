@@ -63,7 +63,7 @@ const progressInfoReducer = (
     return state;
 };
 
-export const useAccountLoadingProgress = () => {
+export const useCoinjoinAccountLoadingProgress = () => {
     const selectedAccount = useSelector(selectSelectedAccount);
     const [progressInfo, dispatchProgressInfo] = useReducer(progressInfoReducer, {
         progress: 0,

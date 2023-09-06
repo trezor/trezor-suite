@@ -1,18 +1,15 @@
 import { ReactNode } from 'react';
 
-import {
-    WalletLayout,
-    CoinjoinAccountDiscoveryProgress,
-    CoinjoinExplanation,
-} from 'src/components/wallet';
+import { WalletLayout, CoinjoinAccountDiscoveryProgress } from 'src/components/wallet';
 import { useSelector } from 'src/hooks/suite';
 import { AppState } from 'src/types/suite';
-import { CoinjoinSummary } from 'src/components/wallet/CoinjoinSummary';
 import { selectAccountTransactions, selectIsLoadingTransactions } from '@suite-common/wallet-core';
 import { NoTransactions } from './components/NoTransactions';
 import { AccountEmpty } from './components/AccountEmpty';
 import { TransactionList } from './components/TransactionList';
 import { TransactionSummary } from './components/TransactionSummary';
+import { CoinjoinExplanation } from './CoinjoinExplanation/CoinjoinExplanation';
+import { CoinjoinSummary } from './CoinjoinSummary/CoinjoinSummary';
 
 interface LayoutProps {
     selectedAccount: AppState['wallet']['selectedAccount'];

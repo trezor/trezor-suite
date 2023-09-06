@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { variables, Card, Button, useTheme } from '@trezor/components';
-import { ProgressWheel } from './ProgressWheel';
-import { StatusMessage } from './StatusMessage';
+import { CoinjoinProgressWheel } from './CoinjoinProgressWheel';
+import { CoinjoinStatusMessage } from './CoinjoinStatusMessage';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { selectCurrentCoinjoinWheelStates } from 'src/reducers/wallet/coinjoinReducer';
 import { Translation } from 'src/components/suite';
@@ -42,10 +42,10 @@ export const CoinjoinStatusWheel = ({ accountKey }: CoinjoinStatusWheelProps) =>
 
     return (
         <Container isWide={isSessionActive}>
-            <ProgressWheel accountKey={accountKey} />
+            <CoinjoinProgressWheel accountKey={accountKey} />
 
             {isSessionActive && !isResumeBlockedByLastingIssue && (
-                <StatusMessage accountKey={accountKey} />
+                <CoinjoinStatusMessage accountKey={accountKey} />
             )}
 
             {isPaused && !isLoading && (

@@ -32,10 +32,8 @@ import { Pagination } from './Pagination';
 import { TransactionTimestamp } from './TransactionTimestamp';
 import { withCoinmarket, withSelectedAccountLoaded } from './hocs';
 import type { WithCoinmarketProps, WithSelectedAccountLoadedProps } from './hocs';
-import { CoinjoinExplanation } from './CoinjoinExplanation';
 import { CoinmarketBuyButton } from './CoinmarketBuyButton';
-import { CoinjoinAccountDiscovery } from './CoinjoinAccountDiscovery/CoinjoinAccountDiscovery';
-import { CoinjoinAccountDiscoveryProgress } from './CoinjoinAccountDiscovery/CoinjoinAccountDiscoveryProgress';
+import { CoinjoinAccountDiscoveryProgress } from './CoinjoinAccountDiscoveryProgress/CoinjoinAccountDiscoveryProgress';
 
 export {
     Title,
@@ -70,9 +68,7 @@ export {
     UtxoAnonymity,
     Pagination,
     TransactionTimestamp,
-    CoinjoinExplanation,
     CoinmarketBuyButton,
-    CoinjoinAccountDiscovery,
     CoinjoinAccountDiscoveryProgress,
 };
 

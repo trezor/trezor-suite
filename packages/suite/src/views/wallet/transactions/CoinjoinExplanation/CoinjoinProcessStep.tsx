@@ -91,14 +91,19 @@ const Container = styled.div`
     }
 `;
 
-export interface ProcessStepProps {
+export interface CoinjoinProcessStepProps {
     number: number;
     image: ImageType;
     title: ReactNode;
     description: ReactNode;
 }
 
-export const ProcessStep = ({ number, image, title, description }: ProcessStepProps) => (
+export const CoinjoinProcessStep = ({
+    number,
+    image,
+    title,
+    description,
+}: CoinjoinProcessStepProps) => (
     <Container>
         <StyledImage image={image} width={80} />
         <StepNumber>
