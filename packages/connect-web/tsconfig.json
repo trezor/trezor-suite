@@ -11,7 +11,7 @@
         "rootDir": ".."
     },
     "include": [
-        "./connect-web",
+        ".",
         "../connect-iframe/webpack/prod.webpack.config.ts",
         "../connect-iframe/package.json",
         "../connect-popup/webpack/prod.webpack.config.ts",

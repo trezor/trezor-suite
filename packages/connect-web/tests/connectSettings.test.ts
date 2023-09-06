@@ -53,8 +53,10 @@ describe('connect-web parseConnectSettings', () => {
 
         // @ts-expect-error
         global.window = undefined;
+        // @ts-expect-error
         global.__TREZOR_CONNECT_SRC = 'https://connect.trezor.io/beta.5/';
         expect(parseConnectSettings({}).connectSrc).toEqual('https://connect.trezor.io/beta.5/');
+        // @ts-expect-error
         delete global.__TREZOR_CONNECT_SRC; // restore
     });
 });
