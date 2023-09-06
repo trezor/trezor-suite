@@ -121,7 +121,7 @@ export default class GetPublicKey extends AbstractMethod<'getPublicKey', Params[
         // request confirmation view
         this.postMessage(
             createUiMessage(UI.REQUEST_CONFIRMATION, {
-                view: 'get-public-key-no-backup',
+                view: 'no-backup',
             }),
         );
 

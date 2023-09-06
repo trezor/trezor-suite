@@ -12,7 +12,7 @@ export const DeviceConfirmationModal = ({
     switch (windowType) {
         case 'no-backup':
             return <ConfirmNoBackup buttonText="TR_SHOW_ADDRESS_ANYWAY" renderer={renderer} />;
-        case 'get-public-key-no-backup':
+        case 'no-backup':
             return <ConfirmNoBackup buttonText="TR_SHOW_XPUB_ANYWAY" renderer={renderer} />;
         default:
             return null;
