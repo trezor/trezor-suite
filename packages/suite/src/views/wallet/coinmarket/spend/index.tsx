@@ -1,10 +1,7 @@
-import {
-    CoinmarketLayout,
-    withSelectedAccountLoaded,
-    WithSelectedAccountLoadedProps,
-} from 'src/components/wallet';
-import Spend from './components/Spend';
+import { withSelectedAccountLoaded, WithSelectedAccountLoadedProps } from 'src/components/wallet';
 import { useCoinmarketSpend, SpendContext } from 'src/hooks/wallet/useCoinmarketSpend';
+import { CoinmarketLayout } from 'src/views/wallet/coinmarket/common';
+import Spend from './components/Spend';
 
 const CoinmarketSpend = (props: WithSelectedAccountLoadedProps) => {
     const coinmarketSpendContextValues = useCoinmarketSpend(props);

@@ -1,21 +1,22 @@
 import styled from 'styled-components';
 import { Controller } from 'react-hook-form';
+
+import { WithSelectedAccountLoadedProps } from 'src/components/wallet';
 import {
-    withCoinmarket,
-    WithSelectedAccountLoadedProps,
-    KYCInProgress,
-    KYCFailed,
-    KYCError,
-} from 'src/components/wallet';
+    AddressOptions,
+    KycError,
+    KycFailed,
+    KycInProgress,
+} from 'src/views/wallet/coinmarket/common';
 import { Button, SelectBar, variables } from '@trezor/components';
 import { useSavingsSetupContinue } from 'src/hooks/wallet/useCoinmarketSavingsSetupContinue';
 import { Translation } from 'src/components/suite';
-import { AddressOptions } from 'src/views/wallet/coinmarket/common/AddressOptions';
 import FiatAmount from '../components/FiatAmount';
 import Summary from '../components/Summary';
 import { AllFeesIncluded } from '../../AllFeesIncluded';
 import { ProvidedBy } from '../../ProvidedBy';
-import ReauthorizationCard from 'src/components/wallet/CoinmarketReauthorizationCard';
+import { CoinmarketReauthorizationCard } from '../../CoinmarketReauthorizationCard';
+import { withCoinmarket } from '../../withCoinmarket';
 
 const Header = styled.div`
     font-weight: 500;
@@ -98,12 +99,14 @@ const CoinmarketSavingsSetupContinue = (props: WithSelectedAccountLoadedProps) =
 
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
-            {reauthorizationUrl && <ReauthorizationCard reauthorizationUrl={reauthorizationUrl} />}
-            {isWatchingKYCStatus && <KYCInProgress />}
-            {!isWatchingKYCStatus && kycFinalStatus === 'Failed' && (
-                <KYCFailed providerName={selectedProviderName} />
+            {reauthorizationUrl && (
+                <CoinmarketReauthorizationCard reauthorizationUrl={reauthorizationUrl} />
             )}
-            {!isWatchingKYCStatus && kycFinalStatus === 'Error' && <KYCError />}
+            {isWatchingKYCStatus && <KycInProgress />}
+            {!isWatchingKYCStatus && kycFinalStatus === 'Failed' && (
+                <KycFailed providerName={selectedProviderName} />
+            )}
+            {!isWatchingKYCStatus && kycFinalStatus === 'Error' && <KycError />}
             <Header>
                 <Translation id="TR_SAVINGS_SETUP_HEADER" />
             </Header>

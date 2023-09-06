@@ -1,4 +1,6 @@
+import BigNumber from 'bignumber.js';
 import styled from 'styled-components';
+
 import { Button, variables, Icon, useTheme, H2 } from '@trezor/components';
 import { FormattedCryptoAmount, QuestionTooltip, Translation } from 'src/components/suite';
 import { useFormatters } from '@suite-common/formatters';
@@ -8,9 +10,11 @@ import { toFiatCurrency } from '@suite-common/wallet-utils';
 import { getTagAndInfoNote } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { isQuoteError } from 'src/utils/wallet/coinmarket/exchangeUtils';
 import { useCoinmarketExchangeOffersContext } from 'src/hooks/wallet/useCoinmarketExchangeOffers';
-import { CoinmarketProviderInfo, CoinmarketTag } from 'src/components/wallet';
-import { CoinmarketCryptoAmount } from 'src/views/wallet/coinmarket/common/CoinmarketCryptoAmount';
-import BigNumber from 'bignumber.js';
+import {
+    CoinmarketCryptoAmount,
+    CoinmarketProviderInfo,
+    CoinmarketTag,
+} from 'src/views/wallet/coinmarket/common';
 
 const Wrapper = styled.div`
     display: flex;

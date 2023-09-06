@@ -5,7 +5,8 @@ import {
     CoinmarketExchangeTopPanel,
     CoinmarketFooter,
     CoinmarketRefreshTime,
-} from 'src/components/wallet';
+    NoOffers,
+} from 'src/views/wallet/coinmarket/common';
 import { variables, Icon, CoinLogo, H2 } from '@trezor/components';
 import { useLayout } from 'src/hooks/suite';
 import { useCoinmarketExchangeOffersContext } from 'src/hooks/wallet/useCoinmarketExchangeOffers';
@@ -13,7 +14,6 @@ import { useCoinmarketNavigation } from 'src/hooks/wallet/useCoinmarketNavigatio
 import { InvityAPIReloadQuotesAfterSeconds } from 'src/constants/wallet/coinmarket/metadata';
 import List from './List';
 import SelectedOffer from './SelectedOffer';
-import NoOffers from 'src/views/wallet/coinmarket/common/no-offers';
 
 const Wrapper = styled.div`
     padding: 0 32px 32px 32px;

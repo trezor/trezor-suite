@@ -1,12 +1,13 @@
 import styled from 'styled-components';
+import { SellFiatTrade } from 'invity-api';
+
 import { useTheme, Button, variables, Icon, H2 } from '@trezor/components';
 import {
     CoinmarketPaymentType,
     CoinmarketProviderInfo,
     CoinmarketTag,
-} from 'src/components/wallet';
+} from 'src/views/wallet/coinmarket/common';
 import { QuestionTooltip, Translation } from 'src/components/suite';
-import { SellFiatTrade } from 'invity-api';
 import { useCoinmarketSellOffersContext } from 'src/hooks/wallet/useCoinmarketSellOffers';
 import { getTagAndInfoNote } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { CoinmarketCryptoAmount } from 'src/views/wallet/coinmarket/common/CoinmarketCryptoAmount';

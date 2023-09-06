@@ -1,10 +1,10 @@
 import styled from 'styled-components';
 import { Card, variables } from '@trezor/components';
-import { CoinmarketBuyOfferInfo, CoinmarketBuyTopPanel } from 'src/components/wallet';
+import { CoinmarketBuyTopPanel } from 'src/views/wallet/coinmarket/common';
 import { useCoinmarketBuyDetailContext } from 'src/hooks/wallet/useCoinmarketBuyDetail';
 import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch, useLayout } from 'src/hooks/suite';
-
+import { CoinmarketBuyOfferInfo } from '../../components/CoinmarketBuyOfferInfo';
 import PaymentFailed from '../components/PaymentFailed';
 import PaymentProcessing from '../components/PaymentProcessing';
 import PaymentSuccessful from '../components/PaymentSuccessful';

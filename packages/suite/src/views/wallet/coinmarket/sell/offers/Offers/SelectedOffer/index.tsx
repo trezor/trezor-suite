@@ -1,10 +1,11 @@
 import styled from 'styled-components';
+
 import { Card, Icon, variables, colors } from '@trezor/components';
 import { SelectBankAccount } from './components/SelectBankAccount';
 import { SendTransaction } from './components/SendTransaction';
-import { CoinmarketSellOfferInfo } from 'src/components/wallet';
 import { useCoinmarketSellOffersContext } from 'src/hooks/wallet/useCoinmarketSellOffers';
 import { Translation } from 'src/components/suite';
+import { CoinmarketSellOfferInfo } from '../../../components/CoinmarketSellOfferInfo';
 
 const Wrapper = styled.div`
     display: flex;

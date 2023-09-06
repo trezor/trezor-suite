@@ -1,16 +1,11 @@
-import {
-    KYCError,
-    KYCFailed,
-    KYCInProgress,
-    withCoinmarket,
-    WithCoinmarketProps,
-} from 'src/components/wallet';
+import { KycError, KycFailed, KycInProgress } from 'src/views/wallet/coinmarket/common';
 import { useSavingsPaymentInfo } from 'src/hooks/wallet/useCoinmarketSavingsPaymentInfo';
 import { Button } from '@trezor/components';
 import styled from 'styled-components';
 import { Translation } from 'src/components/suite';
 import { useFormatters } from '@suite-common/formatters';
-import ReauthorizationCard from 'src/components/wallet/CoinmarketReauthorizationCard';
+import { CoinmarketReauthorizationCard } from '../CoinmarketReauthorizationCard';
+import { withCoinmarket, WithCoinmarketProps } from '../withCoinmarket';
 
 const Header = styled.div`
     font-size: 24px;
@@ -96,12 +91,14 @@ const PaymentInfo = (props: WithCoinmarketProps) => {
 
     return (
         <>
-            {reauthorizationUrl && <ReauthorizationCard reauthorizationUrl={reauthorizationUrl} />}
-            {isWatchingKYCStatus && <KYCInProgress />}
-            {!isWatchingKYCStatus && kycFinalStatus === 'Failed' && (
-                <KYCFailed providerName={selectedProviderName} />
+            {reauthorizationUrl && (
+                <CoinmarketReauthorizationCard reauthorizationUrl={reauthorizationUrl} />
             )}
-            {!isWatchingKYCStatus && kycFinalStatus === 'Error' && <KYCError />}
+            {isWatchingKYCStatus && <KycInProgress />}
+            {!isWatchingKYCStatus && kycFinalStatus === 'Failed' && (
+                <KycFailed providerName={selectedProviderName} />
+            )}
+            {!isWatchingKYCStatus && kycFinalStatus === 'Error' && <KycError />}
             <Header>
                 <Translation id="TR_SAVINGS_PAYMENT_INFO_HEADER" />
             </Header>

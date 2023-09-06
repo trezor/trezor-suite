@@ -1,10 +1,7 @@
-import {
-    CoinmarketLayout,
-    withSelectedAccountLoaded,
-    WithSelectedAccountLoadedProps,
-} from 'src/components/wallet';
-import SellForm from './components/SellForm';
+import { withSelectedAccountLoaded, WithSelectedAccountLoadedProps } from 'src/components/wallet';
 import { useCoinmarketSellForm, SellFormContext } from 'src/hooks/wallet/useCoinmarketSellForm';
+import { CoinmarketLayout } from 'src/views/wallet/coinmarket/common';
+import SellForm from './components/SellForm';
 
 const CoinmarketSell = (props: WithSelectedAccountLoadedProps) => {
     const coinmarketSellContextValues = useCoinmarketSellForm(props);

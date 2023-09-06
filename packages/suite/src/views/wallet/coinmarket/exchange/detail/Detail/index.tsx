@@ -1,16 +1,17 @@
 import styled from 'styled-components';
+
 import { Card, variables } from '@trezor/components';
-import { CoinmarketExchangeOfferInfo, CoinmarketExchangeTopPanel } from 'src/components/wallet';
+import { CoinmarketExchangeTopPanel } from 'src/views/wallet/coinmarket/common';
 import { useCoinmarketExchangeDetailContext } from 'src/hooks/wallet/useCoinmarketExchangeDetail';
 import { ExchangeTradeFinalStatuses } from 'src/hooks/wallet/useCoinmarket';
 import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch, useLayout } from 'src/hooks/suite';
-
 import PaymentFailed from '../components/PaymentFailed';
 import PaymentSuccessful from '../components/PaymentSuccessful';
 import PaymentKYC from '../components/PaymentKYC';
 import PaymentConverting from '../components/PaymentConverting';
 import PaymentSending from '../components/PaymentSending';
+import { CoinmarketExchangeOfferInfo } from '../../components/ExchangeForm/CoinmarketExchangeOfferInfo';
 
 const Wrapper = styled.div`
     display: flex;

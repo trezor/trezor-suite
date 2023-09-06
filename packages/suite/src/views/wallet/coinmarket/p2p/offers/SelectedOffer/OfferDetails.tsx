@@ -1,10 +1,11 @@
 import styled from 'styled-components';
+import { P2pProviderInfo, P2pQuote, P2pQuotesRequest } from 'invity-api';
+
 import { useFormatters } from '@suite-common/formatters';
 import { AccountLabeling, Translation } from 'src/components/suite';
 import { CoinLogo, variables } from '@trezor/components';
 import { Account } from 'src/types/wallet';
-import { CoinmarketProviderInfo } from 'src/components/wallet';
-import { P2pProviderInfo, P2pQuote, P2pQuotesRequest } from 'invity-api';
+import { CoinmarketProviderInfo } from 'src/views/wallet/coinmarket/common';
 import { Avatar } from '../Avatar';
 
 const Wrapper = styled.div`

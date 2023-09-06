@@ -1,13 +1,15 @@
 import { useEffect, ReactElement } from 'react';
+import { UseFormReturn, Control, Controller } from 'react-hook-form';
+import type { MenuPlacement } from 'react-select';
 import styled from 'styled-components';
+
 import type { AccountAddress } from '@trezor/connect';
 import { Translation, FiatValue, FormattedCryptoAmount } from 'src/components/suite';
 import { variables, Select } from '@trezor/components';
-import { UseFormReturn, Control, Controller } from 'react-hook-form';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import type { Account } from 'src/types/wallet';
 import { useAccountAddressDictionary } from 'src/hooks/wallet/useAccounts';
-import type { MenuPlacement } from 'react-select';
+import { AddressOptionsFormState } from 'src/types/wallet/coinmarketBuyOffers';
 
 const AddressWrapper = styled.div`
     display: flex;
@@ -62,10 +64,6 @@ const buildOptions = (addresses: Account['addresses']) => {
     };
 
     return [unused, used];
-};
-
-export type AddressOptionsFormState = {
-    address?: string;
 };
 
 interface AddressOptionsProps<TFieldValues extends AddressOptionsFormState>

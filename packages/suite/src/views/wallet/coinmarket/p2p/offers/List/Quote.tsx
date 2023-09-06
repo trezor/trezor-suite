@@ -1,13 +1,13 @@
 import { FormattedNumber } from 'react-intl';
 import styled from 'styled-components';
 import BigNumber from 'bignumber.js';
+
 import { useFormatters } from '@suite-common/formatters';
 import { Translation } from 'src/components/suite';
 import { Button, H3, Icon, Tooltip, useTheme, variables } from '@trezor/components';
 import regional from 'src/constants/wallet/coinmarket/regional';
 import { useCoinmarketP2pOffersContext } from 'src/hooks/wallet/useCoinmarketP2pOffers';
-import { CoinmarketProviderInfo } from 'src/components/wallet';
-import { CoinmarketFiatAmount } from 'src/views/wallet/coinmarket/common/CoinmarketFiatAmount';
+import { CoinmarketFiatAmount, CoinmarketProviderInfo } from 'src/views/wallet/coinmarket/common';
 import { P2pQuote, P2pQuotesRequest } from 'invity-api';
 import { Avatar } from '../Avatar';
 

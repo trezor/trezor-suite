@@ -1,8 +1,9 @@
-import { withCoinmarket, WithSelectedAccountLoadedProps } from 'src/components/wallet';
+import { WithSelectedAccountLoadedProps } from 'src/components/wallet';
 import { useCoinmarketSavingsSetupWaiting } from 'src/hooks/wallet/useCoinmarketSavingsSetupWaiting';
 import { Button, Spinner } from '@trezor/components';
 import styled from 'styled-components';
 import { Translation } from 'src/components/suite';
+import { withCoinmarket } from '../../withCoinmarket';
 
 const Wrapper = styled.div`
     display: flex;
