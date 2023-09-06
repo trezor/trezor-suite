@@ -56,7 +56,7 @@ const DisconnectedNotification = ({
     );
 };
 
-const Disconnected = () => {
+export const BackendDisconnected = () => {
     const blockchain = useSelector(state => state.wallet.blockchain);
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
     const online = useSelector(state => state.suite.online);
@@ -74,5 +74,3 @@ const Disconnected = () => {
 
     return <DisconnectedNotification symbol={symbol} resolveTime={chain.reconnection?.time} />;
 };
-
-export default Disconnected;

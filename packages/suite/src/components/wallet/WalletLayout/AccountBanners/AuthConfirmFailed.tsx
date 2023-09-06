@@ -2,7 +2,7 @@ import { NotificationCard, Translation } from 'src/components/suite';
 import { authConfirm } from 'src/actions/suite/suiteActions';
 import { useDevice, useDispatch } from 'src/hooks/suite';
 
-const AuthConfirmFailed = () => {
+export const AuthConfirmFailed = () => {
     const dispatch = useDispatch();
     const { device, isLocked } = useDevice();
 
@@ -25,5 +25,3 @@ const AuthConfirmFailed = () => {
         </NotificationCard>
     );
 };
-
-export default AuthConfirmFailed;

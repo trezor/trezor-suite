@@ -1,7 +1,6 @@
 import { useSelector } from 'src/hooks/suite';
-import { WalletLayoutHeader } from 'src/components/wallet';
+import { WalletLayout, WalletLayoutHeader } from 'src/components/wallet';
 import { CoinjoinConfirmation } from 'src/views/wallet/anonymize/components/CoinjoinConfirmation';
-import { WalletLayout } from 'src/components/wallet/WalletLayout';
 
 const Anonymize = () => {
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);

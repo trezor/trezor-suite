@@ -1,15 +1,14 @@
 import styled from 'styled-components';
 
 import { Account } from 'src/types/wallet';
-
-import AuthConfirmFailed from '../../AccountMode/AuthConfirmFailed';
-import BackendDisconnected from '../../AccountMode/BackendDisconnected';
-import DeviceUnavailable from '../../AccountMode/DeviceUnavailable';
-import { XRPReserve } from '../../AccountAnnouncement/XRPReserve';
-import { AccountImported } from '../../AccountAnnouncement/AccountImported';
-import { AccountOutOfSync } from '../../AccountAnnouncement/AccountOutOfSync';
-import { TorDisconnected } from '../../AccountAnnouncement/TorDisconnected';
-import { CoinjoinContextMessage } from '../../AccountAnnouncement/CoinjoinContextMessage';
+import { AuthConfirmFailed } from './AuthConfirmFailed';
+import { BackendDisconnected } from './BackendDisconnected';
+import { DeviceUnavailable } from './DeviceUnavailable';
+import { XRPReserve } from './XRPReserve';
+import { AccountImported } from './AccountImported';
+import { AccountOutOfSync } from './AccountOutOfSync';
+import { TorDisconnected } from './TorDisconnected';
+import { CoinjoinContextMessage } from './CoinjoinContextMessage';
 
 const BannersWrapper = styled.div`
     display: flex;

@@ -1,16 +1,12 @@
-import { AccountsMenu } from './AccountsMenu';
 import Title from './Title';
-import { WalletLayout } from './WalletLayout';
-import { WalletLayoutHeader } from './WalletLayout/components/WalletLayoutHeader';
-import {
-    WalletLayoutNavigation,
-    WalletLayoutNavLink,
-} from './WalletLayout/components/WalletLayoutNavigation';
+import { WalletLayout } from './WalletLayout/WalletLayout';
+import { WalletLayoutHeader } from './WalletLayout/WalletLayoutHeader';
+import { WalletLayoutNavigation } from './WalletLayout/WalletLayoutNavigation';
+import { WalletLayoutNavLink } from './WalletLayout/WalletLayoutNavLink';
 import { CoinBalance } from './CoinBalance';
 import OnOffSwitcher from './OnOffSwitcher';
 import { InputError } from './InputError';
 import { AccountExceptionLayout } from './AccountExceptionLayout';
-
 import CoinmarketLayout from './CoinmarketLayout';
 import {
     CoinmarketBuyTopPanel,
@@ -37,14 +33,13 @@ import { Pagination } from './Pagination';
 import { TransactionTimestamp } from './TransactionTimestamp';
 import { withCoinmarket, withSelectedAccountLoaded } from './hocs';
 import type { WithCoinmarketProps, WithSelectedAccountLoadedProps } from './hocs';
-import { AccountException } from './AccountException/AccountException';
-import { AccountTopPanel } from './AccountTopPanel';
 import { CoinjoinExplanation } from './CoinjoinExplanation';
 import { CoinmarketBuyButton } from './CoinmarketBuyButton';
+import { CoinjoinAccountDiscovery } from './CoinjoinAccountDiscovery/CoinjoinAccountDiscovery';
+import { CoinjoinAccountDiscoveryProgress } from './CoinjoinAccountDiscovery/CoinjoinAccountDiscoveryProgress';
 
 export {
     Title,
-    AccountsMenu,
     WalletLayout,
     WalletLayoutHeader,
     WalletLayoutNavigation,
@@ -77,10 +72,10 @@ export {
     UtxoAnonymity,
     Pagination,
     TransactionTimestamp,
-    AccountException,
-    AccountTopPanel,
     CoinjoinExplanation,
     CoinmarketBuyButton,
+    CoinjoinAccountDiscovery,
+    CoinjoinAccountDiscoveryProgress,
 };
 
 export type { WithCoinmarketProps, WithSelectedAccountLoadedProps };
