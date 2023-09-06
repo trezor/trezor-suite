@@ -110,6 +110,9 @@ const config: webpack.Configuration = {
                 },
             ],
         }),
+        new webpack.ProvidePlugin({
+            React: 'react',
+        }),
     ],
     optimization: {
         minimize: true,
