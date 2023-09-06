@@ -9822,7 +9822,6 @@ __metadata:
     jest-environment-jsdom: ^29.5.0
     jest-watch-typeahead: 0.6.5
     jws: ^4.0.0
-    lottie-react: ^2.4.0
     pako: ^2.1.0
     pdfmake: ^0.2.7
     polished: ^4.2.2

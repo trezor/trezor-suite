@@ -1,12 +1,12 @@
 import styled from 'styled-components';
 
 import { getPackagingUrl } from '@suite-common/suite-utils';
-import { Warning, variables } from '@trezor/components';
+import { DeviceAnimation, Warning, variables } from '@trezor/components';
 import { TREZOR_RESELLERS_URL, TREZOR_SUPPORT_URL } from '@trezor/urls';
 
-import { DeviceAnimation } from 'src/components/onboarding';
 import { Translation, TrezorLink } from 'src/components/suite';
 import type { TrezorDevice } from 'src/types/suite';
+import { useRef } from 'react';
 
 const Wrapper = styled.div`
     display: flex;
@@ -42,6 +42,7 @@ interface HologramProps {
 
 export const Hologram = ({ device }: HologramProps) => {
     const packagingUrl = getPackagingUrl(device);
+    const hologramRef = useRef<HTMLVideoElement>(null);
 
     return (
         <Wrapper>
@@ -54,7 +55,18 @@ export const Hologram = ({ device }: HologramProps) => {
             </HologramSubHeading>
 
             <AnimationWrapper>
-                <DeviceAnimation type="HOLOGRAM" shape="ROUNDED-SMALL" loop device={device} />
+                <DeviceAnimation
+                    type="HOLOGRAM"
+                    shape="ROUNDED-SMALL"
+                    loop
+                    deviceModelInternal={device?.features?.internal_model}
+                    onVideoMouseOver={() => {
+                        // If the video is placed in tooltip it stops playing after tooltip minimizes and won't start again
+                        // As a quick workaround user can hover a mouse to play it again
+                        hologramRef.current?.play();
+                    }}
+                    ref={hologramRef}
+                />
             </AnimationWrapper>
 
             <StyledWarning>

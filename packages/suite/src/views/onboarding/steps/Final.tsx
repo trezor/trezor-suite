@@ -3,9 +3,17 @@ import styled, { css } from 'styled-components';
 import useMeasure from 'react-use/lib/useMeasure';
 import { analytics, EventType } from '@trezor/suite-analytics';
 
-import { Button, Icon, variables, Dropdown, DropdownRef, Tooltip } from '@trezor/components';
+import {
+    Button,
+    Icon,
+    variables,
+    Dropdown,
+    DropdownRef,
+    Tooltip,
+    DeviceAnimation,
+} from '@trezor/components';
 import { Translation, HomescreenGallery } from 'src/components/suite';
-import { DeviceAnimation, OnboardingStepBox } from 'src/components/onboarding';
+import { OnboardingStepBox } from 'src/components/onboarding';
 import { useDevice, useOnboarding, useSelector } from 'src/hooks/suite';
 import { DEFAULT_LABEL } from 'src/constants/suite/device';
 import { isHomescreenSupportedOnDevice } from 'src/utils/suite/homescreen';
@@ -167,7 +175,11 @@ export const FinalStep = () => {
         >
             <Wrapper ref={wrapperRef} shouldWrap={width < 650}>
                 <DeviceImageWrapper>
-                    <DeviceAnimation type="SUCCESS" size={400} device={device} />
+                    <DeviceAnimation
+                        type="SUCCESS"
+                        size={400}
+                        deviceModelInternal={deviceModelInternal}
+                    />
                 </DeviceImageWrapper>
                 <Content>
                     <Heading>
