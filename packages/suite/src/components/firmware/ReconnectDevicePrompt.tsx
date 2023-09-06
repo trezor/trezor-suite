@@ -3,10 +3,16 @@ import styled, { css } from 'styled-components';
 import * as semver from 'semver';
 import { pickByDeviceModel, getFirmwareVersion } from '@trezor/device-utils';
 
-import { H1, Button, ConfirmOnDevice, variables } from '@trezor/components';
+import {
+    H1,
+    Button,
+    ConfirmOnDevice,
+    variables,
+    DeviceAnimation,
+    AnimationDeviceType,
+} from '@trezor/components';
 import { Modal, Translation, WebUsbButton } from 'src/components/suite';
 import { DeviceConfirmImage } from 'src/components/suite/images/DeviceConfirmImage';
-import { DeviceAnimation } from 'src/components/onboarding';
 import { useDevice, useFirmware } from 'src/hooks/suite';
 import {
     useRebootRequest,
@@ -210,9 +216,29 @@ const RebootDeviceGraphics = ({
         return device ? <StyledConfirmImage device={device} /> : null;
     }
 
-    const type = requestedMode === 'bootloader' ? 'BOOTLOADER' : 'NORMAL';
+    const deviceModelInternal = device?.features?.internal_model;
 
-    return <StyledDeviceAnimation type={type} size={220} shape="ROUNDED" device={device} loop />;
+    // T1B1 bootloader before firmware version 1.8.0 can only be invoked by holding both buttons
+    const deviceFwVersion = device?.features ? getFirmwareVersion(device) : '';
+    let type: AnimationDeviceType = requestedMode === 'bootloader' ? 'BOOTLOADER' : 'NORMAL';
+    if (
+        type === 'BOOTLOADER' &&
+        deviceModelInternal === DeviceModelInternal.T1B1 &&
+        semver.valid(deviceFwVersion) &&
+        semver.satisfies(deviceFwVersion, '<1.8.0')
+    ) {
+        type = 'BOOTLOADER_TWO_BUTTONS';
+    }
+
+    return (
+        <StyledDeviceAnimation
+            type={type}
+            size={220}
+            shape="ROUNDED"
+            deviceModelInternal={deviceModelInternal}
+            loop
+        />
+    );
 };
 
 interface ReconnectDevicePromptProps {

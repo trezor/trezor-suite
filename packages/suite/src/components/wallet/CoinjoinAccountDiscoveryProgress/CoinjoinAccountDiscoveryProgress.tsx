@@ -1,8 +1,7 @@
-import { useEffect, useState, useMemo } from 'react';
+import { useMemo } from 'react';
 import styled, { useTheme } from 'styled-components';
-import Lottie from 'lottie-react';
 
-import { H3, Icon, Progress, variables } from '@trezor/components';
+import { H3, Icon, LottieAnimation, Progress, variables } from '@trezor/components';
 import { localizeNumber } from '@suite-common/wallet-utils';
 import { Card, Translation } from 'src/components/suite';
 import { useCoinjoinAccountLoadingProgress } from 'src/hooks/coinjoin';
@@ -54,9 +53,7 @@ const SparksIcon = styled(Icon)`
     padding-bottom: 2px;
 `;
 
-const BlocksLottie = styled(Lottie)`
-    width: 64px;
-    height: 64px;
+const StyledLottieAnimation = styled(LottieAnimation)`
     margin: -32px -8px -32px -20px;
 
     path {
@@ -65,34 +62,10 @@ const BlocksLottie = styled(Lottie)`
     }
 `;
 
-const useAnimationData = (stage?: 'block' | 'mempool') => {
-    const [animationData, setAnimationData] = useState<unknown>();
-
-    useEffect(() => {
-        let mounted = true;
-        if (!stage) setAnimationData(undefined);
-        else {
-            import(`./lottie/${stage === 'block' ? 'cubes_line' : 'square_stack'}.json`).then(
-                data => {
-                    if (mounted) {
-                        setAnimationData(data);
-                    }
-                },
-            );
-        }
-        return () => {
-            mounted = false;
-        };
-    }, [stage]);
-
-    return animationData;
-};
-
 export const CoinjoinAccountDiscoveryProgress = () => {
     const theme = useTheme();
     const locale = useSelector(selectLanguage);
     const { messageId, outOf, progress, stage } = useCoinjoinAccountLoadingProgress();
-    const animationData = useAnimationData(stage);
     const messageValues = useMemo(
         () =>
             outOf && {
@@ -108,7 +81,11 @@ export const CoinjoinAccountDiscoveryProgress = () => {
                 <Translation id="TR_LOADING_FUNDS" />
             </H3>
             <Subheader>
-                {!!animationData && <BlocksLottie animationData={animationData} loop />}
+                <StyledLottieAnimation
+                    type={stage === 'block' ? 'BLOCK' : 'MEMPOOL'}
+                    size={64}
+                    loop
+                />
                 {messageId && <Translation id={messageId} values={messageValues} />}
             </Subheader>
 

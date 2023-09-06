@@ -1,15 +1,15 @@
 import { ReactNode } from 'react';
 import styled from 'styled-components';
-import { P, variables } from '@trezor/components';
+import { LottieAnimation, P, variables } from '@trezor/components';
 
-import { DeviceAnimation } from 'src/components/onboarding';
 import { useDevice, useSelector } from 'src/hooks/suite';
 import { isWebUsb } from 'src/utils/suite/transport';
 import { WebUsbButton } from 'src/components/suite/WebUsbButton';
 
-const DeviceBadge = styled(DeviceAnimation)`
+const StyledLottieAnimation = styled(LottieAnimation)`
     margin: 8px 16px 8px 0;
     min-width: 64px;
+    background: ${({ theme }) => theme.BG_GREY};
 `;
 
 const Wrapper = styled.div`
@@ -61,7 +61,13 @@ export const DeviceBanner = ({ title, description }: DeviceBannerProps) => {
 
     return (
         <Wrapper data-test="@settings/device/disconnected-device-banner">
-            <DeviceBadge type="CONNECT" shape="CIRCLE" size={64} device={device} />
+            <StyledLottieAnimation
+                type="CONNECT"
+                shape="CIRCLE"
+                size={64}
+                deviceModelInternal={device?.features?.internal_model}
+                loop
+            />
             <Column>
                 <Title weight="bold">
                     {title}{' '}

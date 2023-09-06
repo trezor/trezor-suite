@@ -1,7 +1,13 @@
 import styled from 'styled-components';
 
-import { variables, Icon, Button, useTheme, motionEasing } from '@trezor/components';
-import { DeviceAnimation } from 'src/components/onboarding';
+import {
+    variables,
+    Icon,
+    Button,
+    useTheme,
+    motionEasing,
+    LottieAnimation,
+} from '@trezor/components';
 import { Translation } from 'src/components/suite';
 import { useDevice, useDispatch } from 'src/hooks/suite';
 import { goto } from 'src/actions/suite/routerActions';
@@ -45,6 +51,10 @@ const Text = styled.div`
     button {
         margin-top: 10px;
     }
+`;
+
+const StyledLottieAnimation = styled(LottieAnimation)`
+    background: ${({ theme }) => theme.BG_GREY};
 `;
 
 const getMessageId = ({
@@ -99,9 +109,9 @@ export const ConnectDevicePrompt = ({
             data-test="@connect-device-prompt"
         >
             <ImageWrapper>
-                <DeviceAnimation
+                <StyledLottieAnimation
                     type="CONNECT"
-                    device={device}
+                    deviceModelInternal={device?.features?.internal_model}
                     loop={!connected}
                     shape="CIRCLE"
                     size={100}

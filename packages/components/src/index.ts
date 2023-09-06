@@ -46,6 +46,8 @@ export * from './components/Image/images';
 export * from './components/CollapsibleBox/CollapsibleBox';
 export * from './components/Passphrase/PassphraseTypeCard';
 export * from './components/DataAnalytics';
+export * from './components/animations/DeviceAnimation';
+export * from './components/animations/LottieAnimation';
 export * from './components/Note/Note';
 
 export * from './constants/keyboardEvents';

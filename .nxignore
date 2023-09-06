@@ -174,3 +174,4 @@ _.mobileprovision
 packages/suite-data/files/browser-detection
 packages/suite-data/files/guide
 packages/suite-data/files/translations/master.json
+packages/suite-data/files/videos/lottie/*.json
