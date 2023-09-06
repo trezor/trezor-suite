@@ -5,7 +5,7 @@ import Lottie from 'lottie-react';
 import { H3, Icon, Progress, variables } from '@trezor/components';
 import { localizeNumber } from '@suite-common/wallet-utils';
 import { Card, Translation } from 'src/components/suite';
-import { useAccountLoadingProgress } from './useAccountLoadingProgress';
+import { useCoinjoinAccountLoadingProgress } from 'src/hooks/coinjoin';
 import { RotatingFacts } from './RotatingFacts';
 import { useSelector } from 'src/hooks/suite';
 import { selectLanguage } from 'src/reducers/suite/suiteReducer';
@@ -91,7 +91,7 @@ const useAnimationData = (stage?: 'block' | 'mempool') => {
 export const CoinjoinAccountDiscoveryProgress = () => {
     const theme = useTheme();
     const locale = useSelector(selectLanguage);
-    const { messageId, outOf, progress, stage } = useAccountLoadingProgress();
+    const { messageId, outOf, progress, stage } = useCoinjoinAccountLoadingProgress();
     const animationData = useAnimationData(stage);
     const messageValues = useMemo(
         () =>

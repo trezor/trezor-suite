@@ -5,7 +5,7 @@ import { useSelector, useDevice } from 'src/hooks/suite';
 import { selectCoinjoinAccountByKey } from 'src/reducers/wallet/coinjoinReducer';
 import { PhaseProgress } from './PhaseProgress';
 import { ROUND_PHASE_MESSAGES } from 'src/constants/suite/coinjoin';
-import { useCoinjoinSessionPhase } from 'src/hooks/wallet';
+import { useCoinjoinSessionPhase } from 'src/hooks/coinjoin';
 import { AutoStopButton } from './AutoStopButton';
 
 const StyledModal = styled(Modal)`

@@ -21,13 +21,17 @@ const SubHeading = styled.p`
     font-size: ${variables.FONT_SIZE.H3};
 `;
 
-export interface BalanceErrorProps {
+export interface CoinjoinBalanceErrorProps {
     headingId: TranslationKey;
     messageId: TranslationKey;
     headingColor?: string;
 }
 
-export const BalanceError = ({ headingId, messageId, headingColor }: BalanceErrorProps) => (
+export const CoinjoinBalanceError = ({
+    headingId,
+    messageId,
+    headingColor,
+}: CoinjoinBalanceErrorProps) => (
     <StyledBalanceContainer>
         <Heading color={headingColor}>
             <Translation id={headingId} />

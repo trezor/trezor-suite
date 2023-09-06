@@ -1,6 +1,5 @@
 import { ReactNode } from 'react';
 import styled from 'styled-components';
-import { CoinjoinAccountDiscovery } from 'src/components/wallet';
 import { MAX_WIDTH_WALLET_CONTENT } from 'src/constants/suite/layout';
 import { AppState, ExtendedMessageDescriptor } from 'src/types/suite';
 import { useTranslation, useLayout } from 'src/hooks/suite';
@@ -9,6 +8,7 @@ import { AccountBanners } from './AccountBanners/AccountBanners';
 import { AccountsMenu } from './AccountsMenu/AccountsMenu';
 import { AccountException } from './AccountException/AccountException';
 import { AccountTopPanel } from './AccountTopPanel/AccountTopPanel';
+import { CoinjoinAccountDiscovery } from './CoinjoinAccountDiscovery/CoinjoinAccountDiscovery';
 
 const Wrapper = styled.div`
     display: flex;

@@ -3,7 +3,7 @@ import { SESSION_PHASE_MESSAGES } from 'src/constants/suite/coinjoin';
 import { variables } from '@trezor/components';
 import { Translation } from 'src/components/suite/Translation';
 import { CountdownTimer } from 'src/components/suite';
-import { useCoinjoinSessionPhase } from 'src/hooks/wallet/useCoinjoinSessionPhase';
+import { useCoinjoinSessionPhase } from 'src/hooks/coinjoin';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import {
     selectCurrentCoinjoinWheelStates,
@@ -16,11 +16,11 @@ const Cointainer = styled.div`
     font-size: ${variables.FONT_SIZE.TINY};
 `;
 
-interface StatusMessageProps {
+interface CoinjoinStatusMessageProps {
     accountKey: string;
 }
 
-export const StatusMessage = ({ accountKey }: StatusMessageProps) => {
+export const CoinjoinStatusMessage = ({ accountKey }: CoinjoinStatusMessageProps) => {
     const { isLoading, isPaused } = useSelector(selectCurrentCoinjoinWheelStates);
     const { roundPhase, roundPhaseDeadline } = useSelector(selectCurrentSessionDeadlineInfo);
 

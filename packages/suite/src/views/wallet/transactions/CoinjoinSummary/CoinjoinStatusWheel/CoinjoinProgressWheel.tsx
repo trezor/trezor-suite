@@ -1,7 +1,10 @@
 import { useCallback, useState } from 'react';
 import styled, { css, DefaultTheme } from 'styled-components';
 import { animations, Tooltip } from '@trezor/components';
-import { ProgressContent, Container as ProgressContentContainer } from './ProgressContent';
+import {
+    CoinjoinProgressContent,
+    Container as ProgressContentContainer,
+} from './CoinjoinProgressContent';
 import { lighten, rgba } from 'polished';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import {
@@ -140,11 +143,11 @@ const Wheel = styled.div<{
         `}
 `;
 
-interface ProgressWheelProps {
+interface CoinjoinProgressWheelProps {
     accountKey: string;
 }
 
-export const ProgressWheel = ({ accountKey }: ProgressWheelProps) => {
+export const CoinjoinProgressWheel = ({ accountKey }: CoinjoinProgressWheelProps) => {
     const {
         isSessionActive,
         isPaused,
@@ -253,7 +256,10 @@ export const ProgressWheel = ({ accountKey }: ProgressWheelProps) => {
                     onMouseEnter={() => setIsWheelHovered(true)}
                     onMouseLeave={() => setIsWheelHovered(false)}
                 >
-                    <ProgressContent accountKey={accountKey} isWheelHovered={isWheelHovered} />
+                    <CoinjoinProgressContent
+                        accountKey={accountKey}
+                        isWheelHovered={isWheelHovered}
+                    />
                 </Wheel>
             </>
         </Tooltip>

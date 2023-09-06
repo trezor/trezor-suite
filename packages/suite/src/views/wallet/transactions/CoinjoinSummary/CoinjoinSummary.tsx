@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { H3 } from '@trezor/components';
 import { Translation } from 'src/components/suite/Translation';
 
-import { BalanceSection } from './BalanceSection';
+import { CoinjoinBalanceSection } from './CoinjoinBalanceSection';
 
 const Container = styled.div`
     width: 100%;
@@ -23,6 +23,6 @@ export const CoinjoinSummary = ({ accountKey }: CoinjoinSummaryProps) => (
             <Translation id="TR_MY_COINS" />
         </Heading>
 
-        <BalanceSection accountKey={accountKey} />
+        <CoinjoinBalanceSection accountKey={accountKey} />
     </Container>
 );

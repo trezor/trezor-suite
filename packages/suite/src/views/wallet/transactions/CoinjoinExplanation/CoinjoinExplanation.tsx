@@ -3,7 +3,7 @@ import { darken } from 'polished';
 import { Button, Icon, variables } from '@trezor/components';
 import { HELP_CENTER_COINJOIN_URL } from '@trezor/urls';
 import { Translation, TrezorLink } from 'src/components/suite';
-import { ProcessStep, ProcessStepProps } from './ProcessStep';
+import { CoinjoinProcessStep, CoinjoinProcessStepProps } from './CoinjoinProcessStep';
 
 const Container = styled.div`
     padding: 20px 20px 16px;
@@ -67,7 +67,7 @@ const StyledButton = styled(Button)`
     }
 `;
 
-const STEPS: Array<Omit<ProcessStepProps, 'number'>> = [
+const STEPS: Array<Omit<CoinjoinProcessStepProps, 'number'>> = [
     {
         image: 'COINS',
         title: <Translation id="TR_COINJOIN_STEP_1_TITLE" />,
@@ -94,7 +94,7 @@ export const CoinjoinExplanation = () => (
 
         <Steps>
             {STEPS.map((step, index) => (
-                <ProcessStep number={index + 1} key={step.image} {...step} />
+                <CoinjoinProcessStep number={index + 1} key={step.image} {...step} />
             ))}
         </Steps>
 
