@@ -2,12 +2,12 @@ import styled from 'styled-components';
 import { H2 } from '@trezor/components';
 import { SelectedAccountException } from '@suite-common/wallet-types';
 
-import AuthFailed from './AuthFailed';
-import DiscoveryFailed from './DiscoveryFailed';
-import DiscoveryEmpty from './DiscoveryEmpty';
-import AccountNotEnabled from './AccountNotEnabled';
-import AccountNotLoaded from './AccountNotLoaded';
-import AccountNotExists from './AccountNotExists';
+import { AuthFailed } from './AuthFailed';
+import { DiscoveryFailed } from './DiscoveryFailed';
+import { DiscoveryEmpty } from './DiscoveryEmpty';
+import { AccountNotEnabled } from './AccountNotEnabled';
+import { AccountNotLoaded } from './AccountNotLoaded';
+import { AccountNotExists } from './AccountNotExists';
 
 const Wrapper = styled.div`
     display: flex;

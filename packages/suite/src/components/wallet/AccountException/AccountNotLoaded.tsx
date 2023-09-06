@@ -10,7 +10,7 @@ import { AccountExceptionLayout } from 'src/components/wallet';
  * - Discovery throws bundle-exception with code or runtime error
  * - Other @trezor/connect runtime error
  */
-const AccountNotLoaded = () => {
+export const AccountNotLoaded = () => {
     const dispatch = useDispatch();
     const { isLocked } = useDevice();
 
@@ -33,5 +33,3 @@ const AccountNotLoaded = () => {
         />
     );
 };
-
-export default AccountNotLoaded;

@@ -8,7 +8,7 @@ import { useDiscovery, useDispatch } from 'src/hooks/suite';
  * Handler for discovery "hard" error (other than bundle-error)
  * see: @wallet-actions/selectedAccountActions
  */
-const DiscoveryFailed = () => {
+export const DiscoveryFailed = () => {
     const dispatch = useDispatch();
     const { discovery } = useDiscovery();
 
@@ -30,5 +30,3 @@ const DiscoveryFailed = () => {
         />
     );
 };
-
-export default DiscoveryFailed;
