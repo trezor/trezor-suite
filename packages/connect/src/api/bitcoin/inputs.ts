@@ -6,14 +6,14 @@ import { bufferUtils } from '@trezor/utils';
 import { validatePath, isSegwitPath, getScriptType, fixPath } from '../../utils/pathUtils';
 import { convertMultisigPubKey } from '../../utils/hdnodeUtils';
 import { validateParams } from '../common/paramsValidator';
-import type { BitcoinNetworkInfo } from '../../types';
+import type { BitcoinNetworkInfo, ProtoWithDerivationPath } from '../../types';
 import type { PROTO } from '../../constants';
 
 /** *****
  * SignTx: validation
  ****** */
 export const validateTrezorInputs = (
-    inputs: PROTO.TxInputType[],
+    inputs: ProtoWithDerivationPath<PROTO.TxInputType>[],
     coinInfo: BitcoinNetworkInfo,
 ): PROTO.TxInputType[] =>
     inputs
