@@ -115,8 +115,7 @@ export default class EthereumSignTypedData extends AbstractMethod<'ethereumSignT
     async run() {
         const cmd = this.device.getCommands();
         const { address_n, definitions } = this.params;
-
-        if (this.device.features.model === DeviceModelInternal.T1B1) {
+        if (this.device.features.internal_model === DeviceModelInternal.T1B1) {
             validateParams(this.params, [
                 { name: 'domain_separator_hash', type: 'string', required: true },
                 { name: 'message_hash', type: 'string' },
