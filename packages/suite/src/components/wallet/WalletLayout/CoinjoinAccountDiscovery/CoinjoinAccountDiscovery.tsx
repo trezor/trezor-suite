@@ -1,10 +1,12 @@
 import { useState } from 'react';
+
+import { isDeviceRemembered } from '@suite-common/suite-utils';
+
 import { useDispatch, useDevice } from 'src/hooks/suite';
-import { toggleRememberDevice } from 'src/actions/suite/suiteActions';
+import { toggleRememberDevice } from 'src/actions/suite/deviceThunks';
 import { TrezorDevice } from 'src/types/suite';
 import { CoinjoinAccountDiscoveryProgress } from 'src/components/wallet';
 import { RememberWallet } from './RememberWallet';
-import { isDeviceRemembered } from '@suite-common/suite-utils';
 
 export const CoinjoinAccountDiscovery = () => {
     const [shouldRememberCardPersist, setShouldRememberCardPersist] = useState(false);

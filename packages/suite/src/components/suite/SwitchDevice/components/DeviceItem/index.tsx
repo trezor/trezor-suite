@@ -1,4 +1,5 @@
 import { useState } from 'react';
+
 import { AnimatePresence, motion } from 'framer-motion';
 import styled from 'styled-components';
 
@@ -8,7 +9,7 @@ import { useTheme, variables, Icon, Image, motionAnimation } from '@trezor/compo
 import { Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { goto } from 'src/actions/suite/routerActions';
-import { acquireDevice, createDeviceInstance, selectDevice } from 'src/actions/suite/suiteActions';
+import { acquireDevice, createDeviceInstance, selectDevice } from 'src/actions/suite/deviceThunks';
 import { selectDevice as selectDeviceSelector } from 'src/reducers/suite/deviceReducer';
 import { OpenGuideFromTooltip } from 'src/components/guide';
 import type { TrezorDevice, AcquiredDevice, ForegroundAppProps } from 'src/types/suite';

@@ -4,11 +4,19 @@ import { DEVICE } from '@trezor/connect';
 import { notificationsActions } from '@suite-common/toast-notifications';
 
 import { SUITE, ROUTER } from 'src/actions/suite/constants';
-import * as suiteActions from 'src/actions/suite/suiteActions';
 import { AppState, Action, Dispatch } from 'src/types/suite';
 import { handleProtocolRequest } from 'src/actions/suite/protocolActions';
-import { appChanged, isActionDeviceRelated } from 'src/actions/suite/suiteActions';
+import { appChanged } from 'src/actions/suite/suiteActions';
 import { deviceActions } from 'src/actions/suite/deviceActions';
+import {
+    authConfirm,
+    forgetDisconnectedDevices,
+    handleDeviceConnect,
+    handleDeviceDisconnect,
+    observeSelectedDevice,
+    selectDevice,
+    isActionDeviceRelated,
+} from 'src/actions/suite/deviceThunks';
 
 const suite =
     (api: MiddlewareAPI<Dispatch, AppState>) =>
@@ -22,18 +30,18 @@ const suite =
         // this action needs to be processed before propagation to deviceReducer
         // otherwise device will not be accessible and related data will not be removed (accounts, txs...)
         if (action.type === DEVICE.DISCONNECT) {
-            api.dispatch(suiteActions.forgetDisconnectedDevices(action.payload));
+            api.dispatch(forgetDisconnectedDevices(action.payload));
         }
 
         // pass action to reducers
         next(action);
 
         if (deviceActions.createDeviceInstance.match(action)) {
-            api.dispatch(suiteActions.selectDevice(action.payload));
+            api.dispatch(selectDevice(action.payload));
         }
 
         if (deviceActions.forgetDevice.match(action)) {
-            api.dispatch(suiteActions.handleDeviceDisconnect(action.payload));
+            api.dispatch(handleDeviceDisconnect(action.payload));
         }
 
         switch (action.type) {
@@ -52,13 +60,13 @@ const suite =
                 break;
             case DEVICE.CONNECT:
             case DEVICE.CONNECT_UNACQUIRED:
-                api.dispatch(suiteActions.handleDeviceConnect(action.payload));
+                api.dispatch(handleDeviceConnect(action.payload));
                 break;
             case DEVICE.DISCONNECT:
-                api.dispatch(suiteActions.handleDeviceDisconnect(action.payload));
+                api.dispatch(handleDeviceDisconnect(action.payload));
                 break;
             case SUITE.REQUEST_AUTH_CONFIRM:
-                api.dispatch(suiteActions.authConfirm());
+                api.dispatch(authConfirm());
                 break;
             default:
                 break;
@@ -66,7 +74,7 @@ const suite =
 
         if (isActionDeviceRelated(action)) {
             // keep suite reducer synchronized with other reducers (selected device)
-            api.dispatch(suiteActions.observeSelectedDevice());
+            api.dispatch(observeSelectedDevice());
         }
 
         return action;

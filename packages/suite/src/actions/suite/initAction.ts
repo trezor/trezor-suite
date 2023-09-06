@@ -1,15 +1,15 @@
-import * as suiteActions from 'src/actions/suite/suiteActions';
-import * as routerActions from 'src/actions/suite/routerActions';
-import * as analyticsActions from 'src/actions/suite/analyticsActions';
-import * as metadataActions from 'src/actions/suite/metadataActions';
 import { initMessageSystemThunk } from '@suite-common/message-system';
-import * as languageActions from 'src/actions/settings/languageActions';
-import type { Dispatch, GetState } from 'src/types/suite';
-
 import * as trezorConnectActions from '@suite-common/connect-init';
 import { initBlockchainThunk } from '@suite-common/wallet-core';
 
+import * as routerActions from 'src/actions/suite/routerActions';
+import * as analyticsActions from 'src/actions/suite/analyticsActions';
+import * as metadataActions from 'src/actions/suite/metadataActions';
+import * as languageActions from 'src/actions/settings/languageActions';
+import type { Dispatch, GetState } from 'src/types/suite';
+
 import { SUITE } from './constants';
+import { initDevices } from './deviceThunks';
 
 export const init = () => async (dispatch: Dispatch, getState: GetState) => {
     const {
@@ -23,7 +23,7 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
 
     dispatch({ type: SUITE.INIT });
 
-    dispatch(suiteActions.initDevices());
+    dispatch(initDevices());
 
     // right after storage is loaded, we might start:
 

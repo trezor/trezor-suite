@@ -24,6 +24,18 @@ import { SUITE } from '../constants';
 import * as suiteActions from '../suiteActions';
 import fixtures from '../__fixtures__/suiteActions';
 import { deviceActions } from '../deviceActions';
+import {
+    acquireDevice,
+    authConfirm,
+    authorizeDevice,
+    createDeviceInstance,
+    forgetDisconnectedDevices,
+    handleDeviceConnect,
+    observeSelectedDevice,
+    switchDuplicatedDevice,
+    selectDevice as selectDeviceThunk,
+    handleDeviceDisconnect,
+} from '../deviceThunks';
 
 const { getSuiteDevice } = global.JestMocks;
 
@@ -152,7 +164,7 @@ describe('Suite Actions', () => {
         it(`selectDevice: ${f.description}`, async () => {
             const state = getInitialState({}, f.state.device);
             const store = initStore(state);
-            await store.dispatch(suiteActions.selectDevice(f.device));
+            await store.dispatch(selectDeviceThunk(f.device));
             if (!f.result) {
                 expect(store.getActions().length).toEqual(0);
             } else {
@@ -171,7 +183,7 @@ describe('Suite Actions', () => {
                 f.state.firmware as FirmwareState,
             );
             const store = initStore(state);
-            await store.dispatch(suiteActions.handleDeviceConnect(f.device));
+            await store.dispatch(handleDeviceConnect(f.device));
             if (!f.result) {
                 expect(filterThunkActionTypes(store.getActions()).length).toEqual(0);
             } else {
@@ -189,7 +201,7 @@ describe('Suite Actions', () => {
                 type: DEVICE.DISCONNECT, // TrezorConnect event to affect "deviceReducer"
                 payload: f.device,
             });
-            store.dispatch(suiteActions.handleDeviceDisconnect(f.device));
+            store.dispatch(handleDeviceDisconnect(f.device));
             if (!f.result) {
                 expect(filterThunkActionTypes(store.getActions()).pop()?.type).toEqual(
                     deviceActions.deviceDisconnect.type,
@@ -208,7 +220,7 @@ describe('Suite Actions', () => {
         it(`forgetDisconnectedDevices: ${f.description}`, () => {
             const state = getInitialState(f.state.suite, f.state.device);
             const store = initStore(state);
-            store.dispatch(suiteActions.forgetDisconnectedDevices(f.device));
+            store.dispatch(forgetDisconnectedDevices(f.device));
             const actions = filterThunkActionTypes(store.getActions());
             expect(actions.length).toEqual(f.result.length);
             actions.forEach((a, i) => {
@@ -238,7 +250,7 @@ describe('Suite Actions', () => {
             const state = getInitialState(undefined, f.state.device);
             const store = initStore(state);
             store.dispatch(connectInitThunk()); // trezorConnectActions.connectInitThunk needs to be called in order to wrap "getFeatures" with lockUi action
-            await store.dispatch(suiteActions.acquireDevice(f.requestedDevice));
+            await store.dispatch(acquireDevice(f.requestedDevice));
             // we are not interested in thunk state here
             const expectedActions = filterThunkActionTypes(
                 discardMockedConnectInitActions(store.getActions()),
@@ -260,7 +272,7 @@ describe('Suite Actions', () => {
                 devices: f.devicesState ?? [],
             });
             const store = initStore(state);
-            await store.dispatch(suiteActions.authorizeDevice());
+            await store.dispatch(authorizeDevice());
             if (!f.result) {
                 expect(filterThunkActionTypes(store.getActions()).length).toEqual(0);
             } else {
@@ -284,7 +296,7 @@ describe('Suite Actions', () => {
             require('@trezor/connect').setTestFixtures(f.getDeviceState);
             const state = getInitialState(undefined, f.state);
             const store = initStore(state);
-            await store.dispatch(suiteActions.authConfirm());
+            await store.dispatch(authConfirm());
             if (!f.result) {
                 expect(filterThunkActionTypes(store.getActions()).length).toEqual(0);
             } else {
@@ -299,9 +311,7 @@ describe('Suite Actions', () => {
             require('@trezor/connect').setTestFixtures(f.applySettings);
             const state = getInitialState(undefined, f.state.device);
             const store = initStore(state);
-            await store.dispatch(
-                suiteActions.createDeviceInstance({ device: f.state.device.selectedDevice }),
-            );
+            await store.dispatch(createDeviceInstance({ device: f.state.device.selectedDevice }));
             if (!f.result) {
                 expect(filterThunkActionTypes(store.getActions()).length).toEqual(0);
             } else {
@@ -316,7 +326,7 @@ describe('Suite Actions', () => {
             const state = getInitialState(undefined, f.state.device);
             const store = initStore(state);
             await store.dispatch(
-                suiteActions.switchDuplicatedDevice({ device: f.device, duplicate: f.duplicate }),
+                switchDuplicatedDevice({ device: f.device, duplicate: f.duplicate }),
             );
             const device = selectDevice(store.getState());
             const devicesCount = selectDevicesCount(store.getState());

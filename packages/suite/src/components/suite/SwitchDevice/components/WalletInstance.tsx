@@ -6,7 +6,7 @@ import { Switch, Box, Icon, useTheme, variables } from '@trezor/components';
 import { getAllAccounts, getTotalFiatBalance } from '@suite-common/wallet-utils';
 import { analytics, EventType } from '@trezor/suite-analytics';
 
-import { toggleRememberDevice } from 'src/actions/suite/suiteActions';
+import { toggleRememberDevice } from 'src/actions/suite/deviceThunks';
 import {
     WalletLabeling,
     Translation,

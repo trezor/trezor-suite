@@ -29,8 +29,9 @@ import { init } from 'src/actions/suite/initAction';
 import suiteMiddleware from 'src/middlewares/suite/suiteMiddleware';
 import type { AppState } from 'src/types/suite';
 import { extraDependencies } from 'src/support/extraDependencies';
+import { initDevices } from 'src/actions/suite/deviceThunks';
 
-import { appChanged, initDevices } from '../suiteActions';
+import { appChanged } from '../suiteActions';
 
 const deviceReducer = prepareDeviceReducer(extraDependencies);
 const analyticsReducer = prepareAnalyticsReducer(extraDependencies);

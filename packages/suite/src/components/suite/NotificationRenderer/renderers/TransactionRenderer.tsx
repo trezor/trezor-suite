@@ -19,7 +19,7 @@ import {
     selectDevices,
 } from 'src/reducers/suite/deviceReducer';
 import { AccountLabeling, HiddenPlaceholder } from 'src/components/suite';
-import { selectDevice } from 'src/actions/suite/suiteActions';
+import { selectDevice } from 'src/actions/suite/deviceThunks';
 import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { getTxAnchor } from 'src/utils/suite/anchor';

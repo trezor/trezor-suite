@@ -13,10 +13,10 @@ import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 
 import { SUITE, ROUTER, MODAL } from 'src/actions/suite/constants';
 import * as walletSettingsActions from 'src/actions/settings/walletSettingsActions';
-import * as suiteActions from 'src/actions/suite/suiteActions';
 import { selectDevice, selectDiscoveryForDevice } from 'src/reducers/suite/deviceReducer';
 import { getApp } from 'src/utils/suite/router';
 import { deviceActions } from 'src/actions/suite/deviceActions';
+import { authorizeDevice } from 'src/actions/suite/deviceThunks';
 
 export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
     async (action, { dispatch, next, getState }) => {
@@ -104,7 +104,7 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
 
         // 3. begin auth process
         if (authorizationIntent) {
-            dispatch(suiteActions.authorizeDevice());
+            dispatch(authorizeDevice());
         }
 
         // 4. device state received

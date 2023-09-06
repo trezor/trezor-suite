@@ -1,4 +1,5 @@
 import { useState } from 'react';
+
 import styled from 'styled-components';
 
 import { ConfirmOnDevice, variables } from '@trezor/components';
@@ -17,7 +18,7 @@ import { DeviceUnreadable } from 'src/views/suite/device-unreadable';
 import { Translation, Modal } from 'src/components/suite';
 import { OnboardingStepBox } from 'src/components/onboarding';
 import { useDispatch, useFirmware, useSelector } from 'src/hooks/suite';
-import { acquireDevice } from 'src/actions/suite/suiteActions';
+import { acquireDevice } from 'src/actions/suite/deviceThunks';
 
 import { selectDevice } from '../../reducers/suite/deviceReducer';
 
