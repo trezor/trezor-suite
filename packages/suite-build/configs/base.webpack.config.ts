@@ -113,7 +113,15 @@ const config: webpack.Configuration = {
                     loader: 'babel-loader',
                     options: {
                         cacheDirectory: true,
-                        presets: ['@babel/preset-react', '@babel/preset-typescript'],
+                        presets: [
+                            [
+                                '@babel/preset-react',
+                                {
+                                    runtime: 'automatic',
+                                },
+                            ],
+                            '@babel/preset-typescript',
+                        ],
                         plugins: [
                             '@babel/plugin-proposal-class-properties',
                             [
@@ -174,9 +182,6 @@ const config: webpack.Configuration = {
             'process.env.SENTRY_RELEASE': JSON.stringify(sentryRelease),
             __SENTRY_DEBUG__: isDev,
             __SENTRY_TRACING__: false, // needs to be removed when we introduce performance monitoring in trezor-suite
-        }),
-        new webpack.ProvidePlugin({
-            React: 'react',
         }),
         new webpack.ProvidePlugin({
             Buffer: ['buffer', 'Buffer'],
