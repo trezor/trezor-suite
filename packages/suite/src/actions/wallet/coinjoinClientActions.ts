@@ -624,9 +624,7 @@ const signCoinjoinTx =
                         const signTx = await TrezorConnect.signTransaction({
                             device,
                             useEmptyPassphrase: device?.useEmptyPassphrase,
-                            // @ts-expect-error TODO: tx.inputs/outputs path is a string
                             inputs: tx.inputs,
-                            // @ts-expect-error TODO: tx.inputs/outputs path is a string
                             outputs: tx.outputs,
                             coinjoinRequest: tx.coinjoinRequest,
                             coin: network,

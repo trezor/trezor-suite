@@ -257,12 +257,12 @@ export const prepareCoinjoinTransaction = (
                     prev_index: input.index,
                     amount: input.amount,
                     coinjoin_flags: flags,
-                };
+                } as const;
             }
 
             return {
                 address_n: undefined,
-                script_type: 'EXTERNAL' as const,
+                script_type: 'EXTERNAL',
                 prev_hash: input.hash,
                 prev_index: input.index,
                 amount: input.amount,
@@ -270,21 +270,21 @@ export const prepareCoinjoinTransaction = (
                 ownership_proof: input.ownershipProof,
                 commitment_data: input.commitmentData,
                 coinjoin_flags: flags,
-            };
+            } as const;
         }),
         outputs: transaction.outputs.map(output => {
             if (isInternalOutput(output)) {
                 return {
-                    address_n: output.path! as any,
+                    address_n: output.path!,
                     amount: output.amount,
                     script_type: outputScriptType,
-                };
+                } as const;
             }
             return {
                 address: output.address,
                 amount: output.amount,
-                script_type: 'PAYTOADDRESS' as const,
-            };
+                script_type: 'PAYTOADDRESS',
+            } as const;
         }),
     };
 
