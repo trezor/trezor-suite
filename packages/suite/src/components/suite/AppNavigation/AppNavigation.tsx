@@ -319,10 +319,7 @@ export const AppNavigation = ({ items, primaryContent, maxWidth, inView }: AppNa
                                                     const { id, title } = item;
                                                     return {
                                                         key: id,
-                                                        callback: () => {
-                                                            item.callback();
-                                                            return true;
-                                                        },
+                                                        onClick: () => item.callback(),
                                                         label: title,
                                                     };
                                                 }),
