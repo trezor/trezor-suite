@@ -56,7 +56,7 @@ export const prepareFiatRatesMiddleware = createMiddlewareWithExtraDeps(
                 dispatch(
                     fetchFiatRatesThunk({
                         rateType: 'lastWeek',
-                        localCurrency: selectLocalCurrency(getState()),
+                        localCurrency,
                     }),
                 );
             }
@@ -70,6 +70,14 @@ export const prepareFiatRatesMiddleware = createMiddlewareWithExtraDeps(
                     localCurrency: selectLocalCurrency(getState()),
                 }),
             );
+            if (!isNative()) {
+                dispatch(
+                    fetchFiatRatesThunk({
+                        rateType: 'lastWeek',
+                        localCurrency: selectLocalCurrency(getState()),
+                    }),
+                );
+            }
         }
 
         return next(action);
