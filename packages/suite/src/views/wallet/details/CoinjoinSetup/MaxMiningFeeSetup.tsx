@@ -2,7 +2,7 @@ import { Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useTheme } from '@trezor/components';
 import { coinjoinAccountUpdateMaxMiningFee } from 'src/actions/wallet/coinjoinAccountActions';
-import { SetupSlider } from './SetupSlider';
+import { SetupSlider } from './SetupSlider/SetupSlider';
 import {
     selectDefaultMaxMiningFeeByAccountKey,
     selectFeeRateMedianByAccountKey,
