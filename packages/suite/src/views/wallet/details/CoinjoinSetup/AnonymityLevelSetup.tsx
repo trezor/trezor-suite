@@ -7,7 +7,7 @@ import { AnonymityStatus } from 'src/constants/suite/coinjoin';
 import { useAnonymityStatus, useDispatch } from 'src/hooks/suite';
 import { Icon, Warning, motionEasing, useTheme } from '@trezor/components';
 import { coinjoinAccountUpdateAnonymity } from 'src/actions/wallet/coinjoinAccountActions';
-import { SetupSlider } from './SetupSlider';
+import { SetupSlider } from './SetupSlider/SetupSlider';
 
 const Label = styled.span`
     display: flex;

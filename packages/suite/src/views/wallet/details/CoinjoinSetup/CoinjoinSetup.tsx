@@ -6,8 +6,8 @@ import { Translation } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { Card, RadioButton, motionAnimation, motionEasing, Warning } from '@trezor/components';
 import { coinjoinAccountUpdateSetupOption } from 'src/actions/wallet/coinjoinAccountActions';
-import { AnonymityLevelSetup } from 'src/components/wallet/PrivacyAccount/AnonymityLevelSetup';
-import { MaxMiningFeeSetup } from 'src/components/wallet/PrivacyAccount/MaxMiningFeeSetup';
+import { AnonymityLevelSetup } from './AnonymityLevelSetup';
+import { MaxMiningFeeSetup } from './MaxMiningFeeSetup';
 import { SkipRoundsSetup } from './SkipRoundsSetup';
 import { selectCoinjoinAccountByKey } from 'src/reducers/wallet/coinjoinReducer';
 

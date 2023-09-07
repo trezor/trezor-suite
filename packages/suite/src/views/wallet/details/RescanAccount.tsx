@@ -10,6 +10,7 @@ type RescanAccountProps = {
 
 export const RescanAccount = ({ account }: RescanAccountProps) => {
     const dispatch = useDispatch();
+
     return (
         <Row>
             <TextColumn

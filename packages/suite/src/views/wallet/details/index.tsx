@@ -15,9 +15,9 @@ import { ActionColumn, Row, TextColumn, ActionButton } from 'src/components/suit
 import { CARD_PADDING_SIZE } from 'src/constants/suite/layout';
 import { showXpub } from 'src/actions/wallet/publicKeyActions';
 import { NETWORKS } from 'src/config/wallet';
-import { CoinjoinLogs } from 'src/components/wallet/PrivacyAccount/CoinjoinLogs';
-import { CoinjoinSetup } from 'src/components/wallet/PrivacyAccount/CoinjoinSetup';
-import { RescanAccount } from 'src/components/wallet/PrivacyAccount/RescanAccount';
+import { CoinjoinLogs } from './CoinjoinLogs';
+import { CoinjoinSetup } from './CoinjoinSetup/CoinjoinSetup';
+import { RescanAccount } from './RescanAccount';
 
 const Heading = styled.h3`
     color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
