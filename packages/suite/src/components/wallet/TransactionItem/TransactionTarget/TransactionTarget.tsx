@@ -1,6 +1,5 @@
 import { getIsZeroValuePhishing } from '@suite-common/suite-utils';
-import { FiatValue, Translation, MetadataLabeling, AddressLabeling } from 'src/components/suite';
-import { ArrayElement } from '@trezor/type-utils';
+import { notificationsActions, ToastPayload } from '@suite-common/toast-notifications';
 import {
     getTxOperation,
     getTargetAmount,
@@ -9,15 +8,16 @@ import {
     formatNetworkAmount,
     isNftTokenTransfer,
 } from '@suite-common/wallet-utils';
+import { copyToClipboard } from '@trezor/dom-utils';
+import { ArrayElement } from '@trezor/type-utils';
+import { FiatValue, Translation, MetadataLabeling, AddressLabeling } from 'src/components/suite';
 import { WalletAccountTransaction } from 'src/types/wallet';
-import { notificationsActions, ToastPayload } from '@suite-common/toast-notifications';
 import { useDispatch } from 'src/hooks/suite';
 import { TokenTransferAddressLabel } from './TokenTransferAddressLabel';
 import { TargetAddressLabel } from './TargetAddressLabel';
-import { BaseTargetLayout } from './BaseTargetLayout';
-import { copyToClipboard } from '@trezor/dom-utils';
 import { AccountLabels } from 'src/types/suite/metadata';
-import { StyledFormattedCryptoAmount, StyledFormattedNftAmount } from './CommonComponents';
+import { TransactionTargetLayout } from '../TransactionTargetLayout';
+import { StyledFormattedCryptoAmount, StyledFormattedNftAmount } from '../CommonComponents';
 
 interface BaseTransfer {
     singleRowLayout?: boolean;
@@ -41,7 +41,7 @@ export const TokenTransfer = ({
     const isZeroValuePhishing = getIsZeroValuePhishing(transaction);
 
     return (
-        <BaseTargetLayout
+        <TransactionTargetLayout
             {...baseLayoutProps}
             addressLabel={
                 <TokenTransferAddressLabel
@@ -79,7 +79,7 @@ export const InternalTransfer = ({
     const operation = getTxOperation(transfer.type);
 
     return (
-        <BaseTargetLayout
+        <TransactionTargetLayout
             {...baseLayoutProps}
             addressLabel={<AddressLabeling address={transfer.to} />}
             amount={
@@ -105,7 +105,7 @@ export const InternalTransfer = ({
     );
 };
 
-interface TargetProps extends BaseTransfer {
+interface TransactionTargetProps extends BaseTransfer {
     target: ArrayElement<WalletAccountTransaction['targets']>;
     transaction: WalletAccountTransaction;
     accountKey: string;
@@ -113,14 +113,14 @@ interface TargetProps extends BaseTransfer {
     isActionDisabled?: boolean;
 }
 
-export const Target = ({
+export const TransactionTarget = ({
     target,
     transaction,
     accountMetadata,
     accountKey,
     isActionDisabled,
     ...baseLayoutProps
-}: TargetProps) => {
+}: TransactionTargetProps) => {
     const dispatch = useDispatch();
 
     const targetAmount = getTargetAmount(target, transaction);
@@ -148,7 +148,7 @@ export const Target = ({
     };
 
     return (
-        <BaseTargetLayout
+        <TransactionTargetLayout
             {...baseLayoutProps}
             addressLabel={
                 <MetadataLabeling

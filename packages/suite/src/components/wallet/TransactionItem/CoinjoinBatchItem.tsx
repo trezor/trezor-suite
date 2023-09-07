@@ -17,7 +17,7 @@ import { HiddenPlaceholder, Translation } from 'src/components/suite';
 import { TransactionTimestamp } from 'src/components/wallet/TransactionTimestamp';
 
 import { TransactionTypeIcon } from './TransactionTypeIcon';
-import { BaseTargetLayout } from './BaseTargetLayout';
+import { TransactionTargetLayout } from './TransactionTargetLayout';
 import {
     Content,
     Description,
@@ -65,7 +65,7 @@ const Round = ({ transaction }: { transaction: WalletAccountTransaction }) => {
         <RoundRow onClick={openTransactionDetail}>
             <TransactionTypeIcon type="joint" isPending={false} size={20} />
             <TransactionTimestamp transaction={transaction} />
-            <BaseTargetLayout
+            <TransactionTargetLayout
                 addressLabel={
                     <Translation
                         id="TR_JOINT_TRANSACTION_TARGET"
@@ -189,7 +189,7 @@ export const CoinjoinBatchItem = ({
                                 <TransactionTimestamp transaction={lastTx} />
                             </TimestampWrapper>
                             <TargetsWrapper>
-                                <BaseTargetLayout
+                                <TransactionTargetLayout
                                     addressLabel={
                                         <Translation
                                             id="TR_N_TRANSACTIONS"

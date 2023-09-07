@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import TrezorLink from 'src/components/suite/TrezorLink';
 import { WalletAccountTransaction } from '@suite-common/wallet-types';
-import TransactionItem from 'src/components/wallet/TransactionItem';
+import { TransactionItem } from 'src/components/wallet/TransactionItem/TransactionItem';
 import { Network } from 'src/types/wallet';
 
 const Wrapper = styled.div`

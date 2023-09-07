@@ -2,27 +2,27 @@ import { useMemo, useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import useDebounce from 'react-use/lib/useDebounce';
 
-import { Stack } from 'src/components/suite/Skeleton';
-import { Translation } from 'src/components/suite';
-import { DashboardSection } from 'src/components/dashboard';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { fetchTransactionsThunk } from '@suite-common/wallet-core';
 import {
     groupTransactionsByDate,
     advancedSearchTransactions,
     groupJointTransactions,
     getAccountNetwork,
 } from '@suite-common/wallet-utils';
+import { CoinjoinBatchItem } from 'src/components/wallet/TransactionItem/CoinjoinBatchItem';
+import { Stack } from 'src/components/suite/Skeleton';
+import { Translation } from 'src/components/suite';
+import { DashboardSection } from 'src/components/dashboard';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { SETTINGS } from 'src/config/suite';
 import { WalletAccountTransaction, Account } from 'src/types/wallet';
-import { TransactionListActions } from './TransactionListActions';
-import TransactionItem from 'src/components/wallet/TransactionItem';
+import { TransactionListActions } from './TransactionListActions/TransactionListActions';
+import { TransactionItem } from 'src/components/wallet/TransactionItem/TransactionItem';
 import { Pagination } from 'src/components/wallet';
-import { TransactionsGroup } from './TransactionsGroup';
+import { TransactionsGroup } from './TransactionsGroup/TransactionsGroup';
 import { SkeletonTransactionItem } from './SkeletonTransactionItem';
 import { NoSearchResults } from './NoSearchResults';
 import { findAnchorTransactionPage } from 'src/utils/suite/anchor';
-import { fetchTransactionsThunk } from '@suite-common/wallet-core';
-import { CoinjoinBatchItem } from 'src/components/wallet/TransactionItem/components/CoinjoinBatchItem';
 import { TransactionCandidates } from './TransactionCandidates';
 import { selectLabelingDataForAccount } from 'src/reducers/suite/metadataReducer';
 
