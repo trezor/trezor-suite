@@ -200,7 +200,7 @@ const SignVerify = () => {
                 )}
             </WalletLayoutHeader>
 
-            <Card noPadding>
+            <Card paddingType="none">
                 <Navigation page={page} setPage={setPage} />
 
                 <Form onSubmit={formSubmit(onSubmit)}>
