@@ -37,14 +37,14 @@ export const Dropdown: StoryObj<DropdownProps> = {
                     {
                         key: '1',
                         label: 'item 1',
-                        callback: () => {
+                        onClick: () => {
                             console.log('item 1 clicked');
                         },
                     },
                     {
                         key: '2',
                         label: 'item 2',
-                        callback: () => {
+                        onClick: () => {
                             console.log('item 2 clicked');
                         },
                     },
@@ -57,14 +57,14 @@ export const Dropdown: StoryObj<DropdownProps> = {
                     {
                         key: '1',
                         label: 'item 3 with very long name',
-                        callback: () => {
+                        onClick: () => {
                             console.log('item 1 clicked');
                         },
                     },
                     {
                         key: '2',
                         label: 'disabled item with icon',
-                        callback: () => {
+                        onClick: () => {
                             console.log('item 2 clicked - disabled');
                         },
                         icon: 'LIGHTBULB',
@@ -73,7 +73,7 @@ export const Dropdown: StoryObj<DropdownProps> = {
                     {
                         key: '3',
                         label: 'disabled item with iconRight',
-                        callback: () => {
+                        onClick: () => {
                             console.log('item 3 clicked - disabled');
                         },
                         iconRight: 'ARROW_RIGHT',
@@ -82,14 +82,14 @@ export const Dropdown: StoryObj<DropdownProps> = {
                     {
                         key: '4',
                         label: 'basic item',
-                        callback: () => {
+                        onClick: () => {
                             console.log('item 4 clicked');
                         },
                     },
                     {
                         key: '5',
                         label: 'item with iconRight and separator',
-                        callback: () => {
+                        onClick: () => {
                             console.log('item 5 clicked');
                         },
                         iconRight: 'ARROW_RIGHT',
