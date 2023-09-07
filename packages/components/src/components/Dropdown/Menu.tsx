@@ -6,7 +6,7 @@ import { animations } from '../../config';
 import { Icon, IconProps } from '../assets/Icon/Icon';
 import type { Coords } from './getAdjustedCoords';
 
-const MasterLinkComponent = styled.button`
+const AddonConteiner = styled.button`
     position: absolute;
     top: 16px;
     right: 16px;
@@ -52,7 +52,7 @@ const Container = styled.ul<Pick<MenuProps, 'coords' | 'alignMenu'>>`
             left: ${coords.x}px;
         `}
 
-    :hover ${MasterLinkComponent} {
+    :hover ${AddonConteiner} {
         opacity: 1;
         transform: translateX(0);
     }
@@ -112,28 +112,28 @@ const MenuItemContainer = styled.li<MenuItemsProps>`
         `}
 `;
 
-interface MasterLinkProps {
+interface AddonProps {
     label: React.ReactNode;
     icon: IconProps['icon'];
     setToggled: (toggled: boolean) => void;
-    callback?: () => void;
+    onClick?: () => void;
 }
 
-const MasterLink = ({ label, icon, callback, setToggled }: MasterLinkProps) => {
+const Addon = ({ label, icon, onClick, setToggled }: AddonProps) => {
     const theme = useTheme();
 
+    const handleAddonClick = () => {
+        if (onClick) {
+            onClick();
+            setToggled(false);
+        }
+    };
+
     return (
-        <MasterLinkComponent
-            onClick={() => {
-                if (callback) {
-                    callback();
-                    setToggled(false);
-                }
-            }}
-        >
+        <AddonConteiner onClick={handleAddonClick}>
             <span>{label}</span>
             <Icon icon={icon} size={spacings.sm} color={theme.iconPrimaryDefault} />
-        </MasterLinkComponent>
+        </AddonConteiner>
     );
 };
 
@@ -213,12 +213,12 @@ export interface MenuProps {
     content?: React.ReactNode;
     alignMenu?: MenuAlignment;
     coords?: Coords;
-    masterLink?: Omit<MasterLinkProps, 'setToggled'>;
+    addon?: Omit<AddonProps, 'setToggled'>;
     setToggled: (toggled: boolean) => void;
 }
 
 export const Menu = forwardRef<HTMLUListElement, MenuProps>(
-    ({ items, content, setToggled, alignMenu, coords, masterLink }, ref) => {
+    ({ items, content, setToggled, alignMenu, coords, addon }, ref) => {
         const visibleItems = items?.map(group => ({
             ...group,
             options: group.options.filter(item => !item.isHidden),
@@ -226,7 +226,7 @@ export const Menu = forwardRef<HTMLUListElement, MenuProps>(
 
         return (
             <Container ref={ref} alignMenu={alignMenu} coords={coords}>
-                {masterLink && <MasterLink setToggled={setToggled} {...masterLink} />}
+                {addon && <Addon setToggled={setToggled} {...addon} />}
 
                 {content && content}
 

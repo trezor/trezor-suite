@@ -22,8 +22,8 @@ export const Dropdown: StoryObj<DropdownProps> = {
         </Center>
     ),
     args: {
-        masterLink: {
-            callback: () => {
+        addon: {
+            onClick: () => {
                 console.log('navigate somewhere');
             },
             label: 'some link',
@@ -100,7 +100,7 @@ export const Dropdown: StoryObj<DropdownProps> = {
         ],
     },
     argTypes: {
-        masterLink: { control: { disable: true } },
+        addon: { control: { disable: true } },
         items: { control: { disable: true } },
         content: { control: { disable: true } },
         className: { control: { disable: true } },
