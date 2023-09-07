@@ -137,7 +137,7 @@ const PortfolioCard = memo(() => {
                 ) : undefined
             }
         >
-            <Card noPadding>
+            <Card paddingType="none">
                 {discoveryStatus && discoveryStatus.status === 'exception' ? null : (
                     <Header
                         showGraphControls={showGraphControls}
