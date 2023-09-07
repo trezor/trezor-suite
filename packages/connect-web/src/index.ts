@@ -143,7 +143,9 @@ const init = async (settings: Partial<ConnectSettings> = {}): Promise<void> => {
     }
 
     _settings = parseConnectSettings({ ..._settings, ...settings });
-    if (_settings.connectSrc) {
+    if (_settings.connectSrc && window.location.origin === _settings.connectSrc) {
+        // When connect-web is running in a web extension environment or in third-party service
+        // shared logger is in different domain so it cannot be loaded from the same origin as connectSrc (iframe).
         initSharedLogger(`${_settings.connectSrc}workers/shared-logger-worker.js`);
     }
 
