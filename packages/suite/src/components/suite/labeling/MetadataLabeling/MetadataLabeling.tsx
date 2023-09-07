@@ -1,12 +1,12 @@
 import { useEffect, useState, useMemo, useRef } from 'react';
 import styled from 'styled-components';
 
-import { Button, Icon, useTheme } from '@trezor/components';
+import { Button, DropdownMenuItemProps, Icon, useTheme } from '@trezor/components';
 import { useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
 import { addMetadata, init, setEditing } from 'src/actions/suite/metadataActions';
 import { MetadataAddPayload } from 'src/types/suite/metadata';
 import { Translation } from 'src/components/suite';
-import { Props, ExtendedProps, DropdownMenuItem } from './definitions';
+import { Props, ExtendedProps } from './definitions';
 import { withEditable } from './withEditable';
 import { withDropdown } from './withDropdown';
 import {
@@ -258,9 +258,9 @@ export const MetadataLabeling = (props: Props) => {
         dispatch(setEditing(props.payload.defaultValue));
     };
 
-    let dropdownItems: DropdownMenuItem[] = [
+    let dropdownItems: DropdownMenuItemProps[] = [
         {
-            callback: () => activateEdit(),
+            onClick: () => activateEdit(),
             label: l10nLabelling.edit,
             'data-test': '@metadata/edit-button',
             key: 'edit-label',

@@ -162,7 +162,7 @@ export const TransactionTarget = ({
                     }
                     dropdownOptions={[
                         {
-                            callback: copyAddress,
+                            onClick: copyAddress,
                             label: <Translation id="TR_ADDRESS_MODAL_CLIPBOARD" />,
                             key: 'copy-address',
                         },

@@ -120,7 +120,6 @@ export const NavBackends = ({ customBackends }: NavBackendsProps) => {
                                         <Translation id="TR_OTHER_COINS_USE_DEFAULT_BACKEND" />
                                     </DefaultBackendsLabel>
                                 ),
-                                noHoverEffect: true,
                                 isDisabled: true,
                                 separatorBefore: true,
                             },
