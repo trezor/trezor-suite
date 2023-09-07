@@ -1,0 +1,10 @@
+{
+    "extends": "../../tsconfig.json",
+    "compilerOptions": { "outDir": "libDev" },
+    "references": [
+        { "path": "../redux-utils" },
+        { "path": "../suite-types" },
+        { "path": "../toast-notifications" },
+        { "path": "../../packages/connect" }
+    ]
+}
