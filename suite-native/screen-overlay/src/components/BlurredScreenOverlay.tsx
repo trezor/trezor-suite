@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Dimensions, View, StyleSheet, StatusBar } from 'react-native';
 
 import { BackdropBlur, Canvas, Fill, Image } from '@shopify/react-native-skia';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { useScreenshot } from '../hooks/useScreenshot';
+import { ScreenshotContext } from './ScreenshotProvider';
 
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 const SCREEN_WIDTH = Dimensions.get('window').width;
@@ -29,7 +29,7 @@ export const BlurredScreenOverlay = ({
         utils: { colors },
     } = useNativeStyles();
 
-    const screenshot = useScreenshot();
+    const { screenshot } = useContext(ScreenshotContext);
 
     if (!screenshot) return null;
 

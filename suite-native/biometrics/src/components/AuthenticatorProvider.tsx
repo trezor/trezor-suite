@@ -2,7 +2,7 @@ import { ReactNode } from 'react';
 
 import { useBiometrics } from '../useBiometrics';
 import { useIsBiometricsOverlayVisible } from '../biometricsAtoms';
-import { BiometricsOverlay } from './BiometricsOverlay';
+import { BiometricOverlay } from './BiometricOverlay';
 
 type AuthenticatorProviderProps = {
     children: ReactNode;
@@ -15,7 +15,7 @@ export const AuthenticatorProvider = ({ children }: AuthenticatorProviderProps) 
     return (
         <>
             {children}
-            <BiometricsOverlay isDisplayed={isBiometricsOverlayVisible} />
+            <BiometricOverlay isDisplayed={isBiometricsOverlayVisible} />
         </>
     );
 };

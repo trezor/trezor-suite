@@ -101,8 +101,11 @@ export const useBiometrics = () => {
         isUserAuthenticated,
     ]);
 
-    /* Android does not recognizes the `inactive` app state. So to make the biometrics overlay visible when 
-       the app is out of focus on Android, we need to listen to the `blur` and `focus` Android specific events. */
+    /* 
+        The AppState `change` event is on Android emitted to late to rerender the UI, so the content 
+        of the screen would be visible when the app is in the background. To make the biometrics
+        overlay visible, the Android specific `blur` and `focus` listeners are needed.
+    */
     useEffect(() => {
         let blurSubscription: NativeEventSubscription | undefined;
         let focusSubscription: NativeEventSubscription | undefined;

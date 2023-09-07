@@ -1,4 +1,3 @@
-import React from 'react';
 import { StyleSheet } from 'react-native';
 
 import { Box } from '@suite-native/atoms';
@@ -27,7 +26,7 @@ type BiometricsOverlayProps = {
     isDisplayed: boolean;
 };
 
-export const BiometricsOverlay = ({ isDisplayed }: BiometricsOverlayProps) => {
+export const BiometricOverlay = ({ isDisplayed }: BiometricsOverlayProps) => {
     const { applyStyle } = useNativeStyles();
 
     return (

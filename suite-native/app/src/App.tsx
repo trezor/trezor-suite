@@ -17,7 +17,7 @@ import { AlertRenderer } from '@suite-native/alerts';
 import { NavigationContainerWithAnalytics } from '@suite-native/navigation';
 import { AuthenticatorProvider } from '@suite-native/biometrics';
 import { MessageSystemRenderer } from '@suite-native/message-system';
-import { ScreenshotProvider } from '@suite-native/screen-overlay';
+import { ScreenshotProvider, ScreenshotCapturer } from '@suite-native/screen-overlay';
 
 import { RootStackNavigator } from './navigation/RootStackNavigator';
 import { StylesProvider } from './StylesProvider';
@@ -66,7 +66,9 @@ const AppComponent = () => {
                         {/* More here: https://github.com/trezor/trezor-suite/issues/7721  */}
                         {/* <NotificationRenderer> */}
                         <ToastRenderer>
-                            <RootStackNavigator />
+                            <ScreenshotCapturer>
+                                <RootStackNavigator />
+                            </ScreenshotCapturer>
                         </ToastRenderer>
                         {/* </NotificationRenderer> */}
                     </AlertRenderer>

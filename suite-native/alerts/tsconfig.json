@@ -4,6 +4,7 @@
     "references": [
         { "path": "../../suite-common/icons" },
         { "path": "../atoms" },
+        { "path": "../screen-overlay" },
         { "path": "../../packages/styles" }
     ]
 }
