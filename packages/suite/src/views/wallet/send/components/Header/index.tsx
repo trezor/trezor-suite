@@ -1,4 +1,4 @@
-import { Dropdown } from '@trezor/components';
+import { Dropdown, DropdownMenuItemProps } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 import { useDispatch } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
@@ -16,29 +16,27 @@ export const Header = () => {
     } = useSendFormContext();
 
     const opreturnOutput = (outputs || []).find(o => o.type === 'opreturn');
-    const options = [
+    const options: Array<DropdownMenuItemProps> = [
         {
             key: 'opreturn',
             'data-test': '@send/header-dropdown/opreturn',
-            callback: addOpReturn,
+            onClick: addOpReturn,
             label: <Translation id="OP_RETURN_ADD" />,
             isDisabled: !!opreturnOutput,
             isHidden: networkType !== 'bitcoin',
         },
         {
             key: 'import',
-            callback: () => {
+            onClick: () => {
                 loadTransaction();
-                return true;
             },
             label: <Translation id="IMPORT_CSV" />,
             isHidden: networkType !== 'bitcoin',
         },
         {
             key: 'raw',
-            callback: () => {
+            onClick: () => {
                 dispatch(sendRaw(true));
-                return true;
             },
             label: <Translation id="SEND_RAW" />,
         },
