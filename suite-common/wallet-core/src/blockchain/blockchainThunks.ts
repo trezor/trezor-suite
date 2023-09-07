@@ -207,32 +207,7 @@ export const initBlockchainThunk = createThunk(
 // or after BLOCKCHAIN.CONNECT event (blockchainActions.onConnect)
 export const subscribeBlockchainThunk = createThunk(
     `${blockchainActionsPrefix}/subscribeBlockchainThunk`,
-    async (
-        { symbol, fiatRates = false }: { symbol: NetworkSymbol; fiatRates?: boolean },
-        { getState },
-    ) => {
-        const network = getNetwork(symbol);
-        // fiat rates should be subscribed only once, after onConnect event
-        if (fiatRates && network?.networkType !== 'cardano') {
-            // Note:
-            // Because Blockfrost worker for cardano doesn't provide fiat rates,
-            // calling blockchainSubscribeFiatRates will return res.success set to false.
-            // That will cause skipping account subscription (because of return statement) which is called few lines below.
-            // That is not expected as the original idea was to catch problem with subscribing and prevent
-            // another call when we already know that something is not working (it used to cause spawning multiple websocket connections).
-
-            // Skipping account subscription has a problem (besides that you actually don't subscribe to all addresses),
-            // due to lack of subscriptions for the network, blockchain-link will close the connection
-            // after 50s thinking it is not needed anymore. https://github.com/trezor/trezor-suite/blob/6253be3f9f657a9a14f21941c76ae1db36e2193c/packages/blockchain-link/src/workers/blockfrost/websocket.ts#L104
-            // However if you do full discovery then everything seems to be normal. It is because
-            // subscribe func will be called, without fiatRates param, every time new account is added (from walletMiddleware), but if you have the device remembered
-            // subscribe function is called only once, after bl connects to a backend, with param fiatRates set to true,
-            // thus it will not subscribe the accounts addresses.
-            const { success } = await TrezorConnect.blockchainSubscribeFiatRates({ coin: symbol });
-            // if first subscription fails, do not run the second one
-            if (!success) return;
-        }
-
+    ({ symbol }: { symbol: NetworkSymbol; fiatRates?: boolean }, { getState }) => {
         // do NOT subscribe if there are no accounts
         // it leads to websocket disconnection
         const accountsToSubscribe = findAccountsByNetwork(
