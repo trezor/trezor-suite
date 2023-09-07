@@ -1651,6 +1651,17 @@ export type FirmwareHash = {
     hash: string;
 };
 
+// AuthenticateDevice
+export type AuthenticateDevice = {
+    challenge: string;
+};
+
+// AuthenticityProof
+export type AuthenticityProof = {
+    certificates: string[];
+    signature: string;
+};
+
 // WipeDevice
 export type WipeDevice = {};
 
@@ -1761,6 +1772,9 @@ export type UnlockedPathRequest = {
 
 // ShowDeviceTutorial
 export type ShowDeviceTutorial = {};
+
+// UnlockBootloader
+export type UnlockBootloader = {};
 
 export enum MoneroNetworkType {
     MAINNET = 0,
@@ -1908,6 +1922,12 @@ export type NEMDecryptMessage = {
 export type NEMDecryptedMessage = {
     payload: string;
 };
+
+// experimental_message
+export type experimental_message = {};
+
+// experimental_field
+export type experimental_field = {};
 
 // RippleGetAddress
 export type RippleGetAddress = {
@@ -2250,12 +2270,6 @@ export type TezosSignedTx = {
     operation_hash: string;
 };
 
-// experimental_message
-export type experimental_message = {};
-
-// experimental_field
-export type experimental_field = {};
-
 // custom connect definitions
 export type MessageType = {
     BinanceGetAddress: BinanceGetAddress;
@@ -2440,6 +2454,8 @@ export type MessageType = {
     Entropy: Entropy;
     GetFirmwareHash: GetFirmwareHash;
     FirmwareHash: FirmwareHash;
+    AuthenticateDevice: AuthenticateDevice;
+    AuthenticityProof: AuthenticityProof;
     WipeDevice: WipeDevice;
     ResetDevice: ResetDevice;
     BackupDevice: BackupDevice;
@@ -2460,6 +2476,7 @@ export type MessageType = {
     UnlockPath: UnlockPath;
     UnlockedPathRequest: UnlockedPathRequest;
     ShowDeviceTutorial: ShowDeviceTutorial;
+    UnlockBootloader: UnlockBootloader;
     NEMGetAddress: NEMGetAddress;
     NEMAddress: NEMAddress;
     NEMTransactionCommon: NEMTransactionCommon;
@@ -2476,6 +2493,8 @@ export type MessageType = {
     NEMSignedTx: NEMSignedTx;
     NEMDecryptMessage: NEMDecryptMessage;
     NEMDecryptedMessage: NEMDecryptedMessage;
+    experimental_message: experimental_message;
+    experimental_field: experimental_field;
     RippleGetAddress: RippleGetAddress;
     RippleAddress: RippleAddress;
     RipplePayment: RipplePayment;
@@ -2515,8 +2534,6 @@ export type MessageType = {
     TezosBallotOp: TezosBallotOp;
     TezosSignTx: TezosSignTx;
     TezosSignedTx: TezosSignedTx;
-    experimental_message: experimental_message;
-    experimental_field: experimental_field;
 };
 
 export type MessageKey = keyof MessageType;
