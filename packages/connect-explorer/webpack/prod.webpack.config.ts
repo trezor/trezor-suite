@@ -2,6 +2,9 @@ import webpack from 'webpack';
 import path from 'path';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import TerserPlugin from 'terser-webpack-plugin';
+import CopyPlugin from 'copy-webpack-plugin';
+
+const DIST = path.resolve(__dirname, '../build');
 
 const config: webpack.Configuration = {
     mode: 'production',
@@ -11,7 +14,7 @@ const config: webpack.Configuration = {
     output: {
         filename: '[name].[hash].js',
         publicPath: './',
-        path: path.resolve(__dirname, '../build'),
+        path: DIST,
     },
     module: {
         rules: [
@@ -71,6 +74,14 @@ const config: webpack.Configuration = {
         new webpack.DefinePlugin({
             // eslint-disable-next-line no-underscore-dangle
             'process.env.__TREZOR_CONNECT_SRC': JSON.stringify(process.env.__TREZOR_CONNECT_SRC),
+        }),
+        new CopyPlugin({
+            patterns: [
+                {
+                    from: path.resolve(__dirname, '../src/images'),
+                    to: path.resolve(DIST, 'images'),
+                },
+            ],
         }),
     ],
     optimization: {
