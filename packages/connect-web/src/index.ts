@@ -133,7 +133,7 @@ const handleMessage = (messageEvent: PostMessageEvent) => {
             break;
 
         default:
-            _log.log('Undefined message', message.event, messageEvent);
+            _log.log('Undefined message', message.event, messageEvent.data);
     }
 };
 
