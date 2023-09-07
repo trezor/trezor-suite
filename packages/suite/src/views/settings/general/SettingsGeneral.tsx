@@ -21,16 +21,14 @@ import { VersionWithUpdate } from './VersionWithUpdate';
 import { EarlyAccess } from './EarlyAccess';
 import { BitcoinAmountUnit } from './BitcoinAmountUnit';
 import { DesktopSuiteBanner } from './DesktopSuiteBanner';
-import {
-    selectIsLabelingInitPossible,
-    selectSelectedProviderForLabels,
-} from 'src/reducers/suite/metadataReducer';
+import { selectSelectedProviderForLabels } from 'src/reducers/suite/metadataReducer';
 
 export const SettingsGeneral = () => {
     const isPromoHidden = useSelector(state => state.suite.settings.isDesktopSuitePromoHidden);
     const { isTorEnabled } = useSelector(selectTorState);
     const enabledNetworks = useSelector(selectEnabledNetworks);
     const desktopUpdate = useSelector(state => state.desktopUpdate);
+    const metadata = useSelector(state => state.metadata);
 
     const { isMobileLayout } = useLayoutSize();
 
@@ -39,7 +37,7 @@ export const SettingsGeneral = () => {
             enabledNetworks.includes(symbol) && features?.includes('amount-unit'),
     );
 
-    const isLabelingInitPossible = useSelector(selectIsLabelingInitPossible);
+    const isMetadataEnabled = metadata.enabled && !metadata.initiating;
     const isProviderConnected = useSelector(selectSelectedProviderForLabels);
 
     return (
@@ -54,8 +52,8 @@ export const SettingsGeneral = () => {
 
             <SettingsSection title={<Translation id="TR_LABELING" />} icon="TAG_MINIMAL">
                 <Labeling />
-                {isLabelingInitPossible &&
-                    (isProviderConnected ? (
+                {isMetadataEnabled &&
+                    (isProviderConnected && metadata.enabled ? (
                         <DisconnectLabelingProvider />
                     ) : (
                         <ConnectLabelingProvider />
