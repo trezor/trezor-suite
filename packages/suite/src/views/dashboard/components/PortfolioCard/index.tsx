@@ -107,10 +107,9 @@ const PortfolioCard = memo(() => {
                                 label: 'Graph View',
                                 options: [
                                     {
-                                        noHoverEffect: true,
                                         key: 'graphView',
                                         label: <GraphScaleDropdownItem />,
-                                        callback: () => false,
+                                        shouldCloseOnClick: false,
                                     },
                                     {
                                         key: 'hide',
@@ -120,15 +119,14 @@ const PortfolioCard = memo(() => {
                                         ) : (
                                             <Translation id="TR_HIDE_GRAPH" />
                                         ),
-                                        callback: () => {
+                                        shouldCloseOnClick: false,
+                                        onClick: () =>
                                             dispatch(
                                                 setFlag(
                                                     'dashboardGraphHidden',
                                                     !dashboardGraphHidden,
                                                 ),
-                                            );
-                                            return true;
-                                        },
+                                            ),
                                     },
                                 ],
                             },
