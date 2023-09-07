@@ -60,7 +60,7 @@ export const SettingsSection = ({
                 )}
             </Header>
 
-            <Card noPadding>{children}</Card>
+            <Card paddingType="none">{children}</Card>
         </Wrapper>
     );
 };
