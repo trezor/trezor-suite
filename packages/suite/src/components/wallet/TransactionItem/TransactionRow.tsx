@@ -6,7 +6,7 @@ import {
     formatNetworkAmount,
 } from '@suite-common/wallet-utils';
 import { WalletAccountTransaction } from 'src/types/wallet';
-import { BaseTargetLayout } from './BaseTargetLayout';
+import { TransactionTargetLayout } from './TransactionTargetLayout';
 import { ExtendedMessageDescriptor } from 'src/types/suite';
 import { SignOperator } from '@suite-common/suite-types';
 import { StyledFormattedCryptoAmount } from './CommonComponents';
@@ -28,7 +28,7 @@ export const CustomRow = ({
     isLast?: boolean;
     className?: string;
 }) => (
-    <BaseTargetLayout
+    <TransactionTargetLayout
         {...baseLayoutProps}
         addressLabel={<Translation id={title} />}
         amount={
@@ -123,7 +123,7 @@ export const CoinjoinRow = ({
     transaction: WalletAccountTransaction;
     useFiatValues?: boolean;
 }) => (
-    <BaseTargetLayout
+    <TransactionTargetLayout
         fiatAmount={
             useFiatValues ? (
                 <FiatValue

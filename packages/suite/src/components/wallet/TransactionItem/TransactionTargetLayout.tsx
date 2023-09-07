@@ -92,7 +92,7 @@ const TimelineLine = styled.div<{ show: boolean; top?: boolean }>`
               `}
 `;
 
-interface BaseTargetLayoutProps {
+interface TransactionTargetLayoutProps {
     addressLabel: ReactNode;
     amount?: ReactNode;
     fiatAmount?: ReactNode;
@@ -103,7 +103,7 @@ interface BaseTargetLayoutProps {
     className?: string;
 }
 
-export const BaseTargetLayout = ({
+export const TransactionTargetLayout = ({
     addressLabel,
     amount,
     fiatAmount,
@@ -112,7 +112,7 @@ export const BaseTargetLayout = ({
     isFirst,
     isLast,
     ...rest
-}: BaseTargetLayoutProps) => {
+}: TransactionTargetLayoutProps) => {
     const animation = useAnimation ? motionAnimation.expand : {};
 
     return (

@@ -9,7 +9,7 @@ import {
     getFeeUnits,
     getFeeRate,
 } from '@suite-common/wallet-utils';
-import { TransactionHeader } from 'src/components/wallet/TransactionItem/components/TransactionHeader';
+import { TransactionHeader } from 'src/components/wallet/TransactionItem/TransactionHeader';
 import { fromWei } from 'web3-utils';
 import { IOAddress } from './IOAddress';
 

@@ -6,7 +6,7 @@ import { AppState } from 'src/types/suite';
 import { selectAccountTransactions, selectIsLoadingTransactions } from '@suite-common/wallet-core';
 import { NoTransactions } from './components/NoTransactions';
 import { AccountEmpty } from './components/AccountEmpty';
-import { TransactionList } from './components/TransactionList';
+import { TransactionList } from './TransactionList/TransactionList';
 import { TransactionSummary } from './components/TransactionSummary';
 import { CoinjoinExplanation } from './CoinjoinExplanation/CoinjoinExplanation';
 import { CoinjoinSummary } from './CoinjoinSummary/CoinjoinSummary';

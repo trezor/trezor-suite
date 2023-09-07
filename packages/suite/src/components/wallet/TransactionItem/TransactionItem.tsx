@@ -10,10 +10,14 @@ import { openModal } from 'src/actions/suite/modalActions';
 import { formatNetworkAmount, isTestnet, isTxFeePaid } from '@suite-common/wallet-utils';
 import { AccountLabels } from 'src/types/suite/metadata';
 import { Network, WalletAccountTransaction } from 'src/types/wallet';
-import { TransactionTypeIcon } from './components/TransactionTypeIcon';
-import { TransactionHeading } from './components/TransactionHeading';
-import { Target, TokenTransfer, InternalTransfer } from './components/Target';
-import { FeeRow, WithdrawalRow, DepositRow, CoinjoinRow } from './components/Row';
+import { TransactionTypeIcon } from './TransactionTypeIcon';
+import { TransactionHeading } from './TransactionHeading';
+import {
+    TransactionTarget,
+    TokenTransfer,
+    InternalTransfer,
+} from './TransactionTarget/TransactionTarget';
+import { FeeRow, WithdrawalRow, DepositRow, CoinjoinRow } from './TransactionRow';
 import {
     Content,
     Description,
@@ -21,7 +25,7 @@ import {
     TargetsWrapper,
     TimestampWrapper,
     TxTypeIconWrapper,
-} from './components/CommonComponents';
+} from './CommonComponents';
 import { useAnchor } from 'src/hooks/suite/useAnchor';
 import { AccountTransactionBaseAnchor } from 'src/constants/suite/anchors';
 import { SECONDARY_PANEL_HEIGHT } from 'src/components/suite/AppNavigation';
@@ -88,7 +92,7 @@ interface TransactionItemProps {
     index: number;
 }
 
-const TransactionItem = memo(
+export const TransactionItem = memo(
     ({
         transaction,
         accountKey,
@@ -204,7 +208,7 @@ const TransactionItem = memo(
                                         {previewTargets.map((t, i) => (
                                             <Fragment key={i}>
                                                 {t.type === 'target' && (
-                                                    <Target
+                                                    <TransactionTarget
                                                         // render first n targets, n = DEFAULT_LIMIT
                                                         target={t.payload}
                                                         transaction={transaction}
@@ -255,7 +259,7 @@ const TransactionItem = memo(
                                                     .map((t, i) => (
                                                         <Fragment key={i}>
                                                             {t.type === 'target' && (
-                                                                <Target
+                                                                <TransactionTarget
                                                                     target={t.payload}
                                                                     transaction={transaction}
                                                                     useAnimation
@@ -386,5 +390,3 @@ const TransactionItem = memo(
         );
     },
 );
-
-export default TransactionItem;
