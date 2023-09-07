@@ -1,6 +1,6 @@
 import styled, { keyframes, css } from 'styled-components';
 
-import { Ref, forwardRef, SVGAttributes } from 'react';
+import { Ref, forwardRef, SVGAttributes, KeyboardEvent } from 'react';
 import { ReactSVG } from 'react-svg';
 import { IconType } from '../../../support/types';
 import { useTheme } from '../../../utils';
@@ -110,22 +110,29 @@ export const Icon = forwardRef(
             onClick,
             onMouseEnter,
             onMouseLeave,
-            onFocus,
             'data-test': dataTest,
         }: IconProps,
         ref?: Ref<HTMLDivElement>,
     ) => {
         const theme = useTheme();
         const defaultColor = color ?? theme.TYPE_LIGHT_GREY;
+
+        const handleOnKeyDown = (e: KeyboardEvent) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                onClick?.(e as any);
+            }
+        };
+
         return (
             <SvgWrapper
+                tabIndex={onClick ? 0 : undefined}
                 className={className}
                 $canAnimate={canAnimate}
                 $hoverColor={hoverColor}
                 onClick={onClick}
                 onMouseEnter={onMouseEnter}
                 onMouseLeave={onMouseLeave}
-                onFocus={onFocus}
+                onKeyDown={handleOnKeyDown}
                 $isActive={isActive}
                 $size={size}
                 ref={ref}
