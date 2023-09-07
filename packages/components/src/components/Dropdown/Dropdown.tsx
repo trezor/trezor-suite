@@ -78,7 +78,7 @@ export const Dropdown = forwardRef(
             content,
             isDisabled,
             renderOnClickPosition,
-            masterLink,
+            addon,
             alignMenu = 'left',
             onToggle,
             className,
@@ -179,7 +179,7 @@ export const Dropdown = forwardRef(
                 coords={coords}
                 setToggled={setToggled}
                 alignMenu={alignMenu}
-                masterLink={masterLink}
+                addon={addon}
             />,
             document.body,
         );
