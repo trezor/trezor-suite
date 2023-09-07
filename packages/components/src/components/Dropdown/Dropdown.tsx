@@ -24,7 +24,8 @@ const MoreIcon = styled(Icon)<{ $isDisabled?: boolean }>`
     border-radius: ${borders.radii.xs};
     cursor: ${({ $isDisabled }) => $isDisabled && 'default'};
 
-    :hover {
+    :hover,
+    :focus-visible {
         background: ${({ $isDisabled, theme }) => !$isDisabled && theme.backgroundNeutralSubdued};
     }
 `;
