@@ -1,4 +1,4 @@
-import { Fees } from 'src/components/wallet/Fees';
+import { Fees } from 'src/components/wallet/Fees/Fees';
 import { useRbfContext } from 'src/hooks/wallet/useRbfForm';
 
 // wrapper for shareable Fees component

@@ -26,7 +26,7 @@ interface OnOffSwitcherProps {
     hasEqualSign?: boolean;
 }
 
-const OnOffSwitcher = ({ isOn = true, hasEqualSign = true }: OnOffSwitcherProps) => (
+export const OnOffSwitcher = ({ isOn = true, hasEqualSign = true }: OnOffSwitcherProps) => (
     <Wrapper>
         {hasEqualSign && <EqualSign> = </EqualSign>}
         {isOn ? (
@@ -40,5 +40,3 @@ const OnOffSwitcher = ({ isOn = true, hasEqualSign = true }: OnOffSwitcherProps)
         )}
     </Wrapper>
 );
-
-export default OnOffSwitcher;

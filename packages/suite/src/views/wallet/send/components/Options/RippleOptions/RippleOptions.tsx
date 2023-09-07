@@ -1,9 +1,10 @@
 import styled from 'styled-components';
+
+import { Button, Tooltip } from '@trezor/components';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { Translation } from 'src/components/suite';
-import { OnOffSwitcher } from 'src/components/wallet';
-import { Button, Tooltip } from '@trezor/components';
 import { DestinationTag } from './DestinationTag';
+import { OnOffSwitcher } from '../OnOffSwitcher';
 
 const Wrapper = styled.div`
     display: flex;

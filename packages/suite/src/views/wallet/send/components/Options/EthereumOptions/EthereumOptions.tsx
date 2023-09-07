@@ -1,10 +1,11 @@
 import styled from 'styled-components';
+
+import { FormOptions } from '@suite-common/wallet-types';
 import { Button, Tooltip } from '@trezor/components';
 import { Translation } from 'src/components/suite';
-import { OnOffSwitcher } from 'src/components/wallet';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { Data } from './Data';
-import { FormOptions } from '@suite-common/wallet-types';
+import { OnOffSwitcher } from '../OnOffSwitcher';
 
 const Wrapper = styled.div`
     display: flex;

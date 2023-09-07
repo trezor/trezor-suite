@@ -8,7 +8,7 @@ import { useSendForm, SendContext, UseSendFormProps } from 'src/hooks/wallet/use
 import { Header } from './components/Header';
 import Outputs from './components/Outputs';
 import { Options } from './components/Options/Options';
-import { SendFees } from './components/Fees';
+import { SendFees } from './components/SendFees';
 import { TotalSent } from './components/TotalSent';
 import { ReviewButton } from './components/ReviewButton';
 import Raw from './components/Raw';
