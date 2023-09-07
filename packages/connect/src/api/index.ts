@@ -1,5 +1,6 @@
 export { default as applyFlags } from './applyFlags';
 export { default as applySettings } from './applySettings';
+export { default as authenticateDevice } from './authenticateDevice';
 export { default as authorizeCoinjoin } from './authorizeCoinjoin';
 export { default as cancelCoinjoinAuthorization } from './cancelCoinjoinAuthorization';
 export { default as showDeviceTutorial } from './showDeviceTutorial';

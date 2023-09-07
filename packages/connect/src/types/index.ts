@@ -20,6 +20,7 @@ export * from './api/tezos';
 // types used in @trezor/suite. if you need a type, reexport it from ./api/<method>
 export type { ComposeOutput, PrecomposedTransaction } from './api/composeTransaction';
 export type { RecoveryDevice } from './api/recoveryDevice';
+export type { AuthenticateDeviceResult } from './api/authenticateDevice';
 export type {
     TokenInfo,
     TokenTransfer,
