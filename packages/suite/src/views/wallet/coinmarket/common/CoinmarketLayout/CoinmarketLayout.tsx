@@ -43,7 +43,7 @@ export const CoinmarketLayout = ({
             )}
         </WalletLayoutHeader>
 
-        <Card noPadding>
+        <Card paddingType="none">
             <CoinmarketLayoutNavigation />
             <Content>{children}</Content>
         </Card>
