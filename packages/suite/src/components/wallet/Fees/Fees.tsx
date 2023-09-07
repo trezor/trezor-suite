@@ -20,8 +20,8 @@ import {
     PrecomposedLevelsCardano,
     PrecomposedTransactionFinal,
 } from 'src/types/wallet/sendForm';
-import { CustomFee } from './components/CustomFee';
-import FeeDetails from './components/FeeDetails';
+import { CustomFee } from './CustomFee';
+import { FeeDetails } from './FeeDetails';
 import { FormState } from '@suite-common/wallet-types';
 
 const FeeSetupWrapper = styled.div`

@@ -1,14 +1,14 @@
 import { useWatch } from 'react-hook-form';
 import styled from 'styled-components';
 
-import { Translation } from 'src/components/suite';
-import { OnOffSwitcher } from 'src/components/wallet';
-import { Button, Tooltip } from '@trezor/components';
-import { useSendFormContext } from 'src/hooks/wallet';
 import { isFeatureFlagEnabled } from '@suite-common/suite-utils';
+import { Button, Tooltip } from '@trezor/components';
+import { Translation } from 'src/components/suite';
+import { useSendFormContext } from 'src/hooks/wallet';
 import { OpenGuideFromTooltip } from 'src/components/guide';
 import { Locktime } from './Locktime';
 import { CoinControl } from './CoinControl/CoinControl';
+import { OnOffSwitcher } from '../OnOffSwitcher';
 
 const Wrapper = styled.div`
     display: flex;

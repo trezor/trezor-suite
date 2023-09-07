@@ -18,7 +18,7 @@ import { FeeInfo } from 'src/types/wallet/sendForm';
 import { FormState } from '@suite-common/wallet-types';
 import { NetworkType } from '@suite-common/wallet-config';
 import { useTranslation } from 'src/hooks/suite';
-import { InputError } from '../../InputError';
+import { InputError } from '../InputError';
 import { validateDecimals } from 'src/utils/suite/validation';
 
 const Wrapper = styled.div`
