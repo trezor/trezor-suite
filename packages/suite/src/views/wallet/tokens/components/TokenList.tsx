@@ -82,7 +82,7 @@ export const TokenList = ({ tokens, explorerUrl, isTestnet, networkType }: Token
     if (!tokens || tokens.length === 0) return null;
 
     return (
-        <Wrapper isTestnet={isTestnet} noPadding>
+        <Wrapper isTestnet={isTestnet} paddingType="none">
             {sortedTokens.map(t => {
                 // In Cardano token name is optional and in there is no symbol.
                 // However, if Cardano token doesn't have a name on blockchain, its TokenInfo has both name
