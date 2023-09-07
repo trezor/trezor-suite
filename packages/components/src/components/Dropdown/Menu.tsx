@@ -69,10 +69,9 @@ const GroupLabel = styled.li`
     }
 `;
 
-type MenuItemsProps = Pick<
-    DropdownMenuItemProps,
-    'isDisabled' | 'noHoverEffect' | 'separatorBefore'
->;
+type MenuItemsProps = Pick<DropdownMenuItemProps, 'isDisabled' | 'separatorBefore'> & {
+    noHoverEffect: boolean;
+};
 
 const MenuItemContainer = styled.li<MenuItemsProps>`
     position: relative;
@@ -138,15 +137,15 @@ const MasterLink = ({ label, icon, callback, setToggled }: MasterLinkProps) => {
     );
 };
 
-interface DropdownMenuItemProps {
+export interface DropdownMenuItemProps {
     key: string;
     label: React.ReactNode;
-    callback?: () => any | Promise<any>;
+    onClick?: () => any | Promise<any>;
+    shouldCloseOnClick?: boolean;
     icon?: IconProps['icon'];
     iconRight?: IconProps['icon'];
     isDisabled?: boolean;
     isHidden?: boolean;
-    noHoverEffect?: boolean;
     separatorBefore?: boolean;
     'data-test'?: string;
 }
@@ -156,30 +155,30 @@ const MenuItem = ({
     iconRight,
     label,
     isDisabled,
-    callback,
+    onClick,
+    shouldCloseOnClick = true,
     setToggled,
     ...rest
 }: DropdownMenuItemProps & { setToggled: (toggled: boolean) => void }) => {
     const onMenuItemClick = (e: React.MouseEvent) => {
         e.stopPropagation();
+        if (isDisabled) {
+            return;
+        }
 
-        // Close the menu if item is not disabled and if
-        // a) callback func is not defined
-        // b) callback is defined and returns true/void
-        if (!isDisabled) {
-            if (callback) {
-                const shouldCloseMenu = callback();
-                if (shouldCloseMenu === true || shouldCloseMenu === undefined) {
-                    setToggled(false);
-                }
-            } else {
-                setToggled(false);
-            }
+        onClick?.();
+        if (shouldCloseOnClick) {
+            setToggled(false);
         }
     };
 
     return (
-        <MenuItemContainer onClick={onMenuItemClick} isDisabled={isDisabled} {...rest}>
+        <MenuItemContainer
+            onClick={onMenuItemClick}
+            isDisabled={isDisabled}
+            noHoverEffect={!onClick}
+            {...rest}
+        >
             {icon && <Icon icon={icon} size={spacings.md} />}
             <span>{label}</span>
             {iconRight && <Icon icon={iconRight} size={spacings.md} />}

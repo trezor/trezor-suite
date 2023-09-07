@@ -16,7 +16,7 @@ import { borders } from '@trezor/theme';
 import { useOnClickOutside } from '@trezor/react-utils';
 import { useTheme } from '../../utils/hooks';
 import { Icon } from '../assets/Icon/Icon';
-import { Menu, MenuProps } from './Menu';
+import { Menu, MenuProps, DropdownMenuItemProps } from './Menu';
 import { Coords, getAdjustedCoords } from './getAdjustedCoords';
 
 const MoreIcon = styled(Icon)<{ $isDisabled?: boolean }>`
@@ -68,6 +68,8 @@ export interface DropdownRef {
     close: () => void;
     open: () => void;
 }
+
+export type { DropdownMenuItemProps };
 
 export const Dropdown = forwardRef(
     (
