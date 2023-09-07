@@ -10,7 +10,7 @@ const StyledSection = styled(DashboardSection)`
 
 const NotificationsView = () => (
     <StyledSection heading={<Translation id="NOTIFICATIONS_TITLE" />}>
-        <Card noPadding>
+        <Card paddingType="none">
             <Notifications />
         </Card>
     </StyledSection>

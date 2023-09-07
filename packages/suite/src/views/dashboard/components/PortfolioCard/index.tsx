@@ -132,7 +132,7 @@ const PortfolioCard = memo(() => {
                 ) : undefined
             }
         >
-            <Card noPadding>
+            <Card paddingType="none">
                 <Header
                     showGraphControls={showGraphControls}
                     hideBorder={!body}

@@ -1,13 +1,14 @@
+import { spacingsPx } from '@trezor/theme';
 import { ReactNode } from 'react';
 import styled from 'styled-components';
 
 const Container = styled.div`
     display: flex;
     flex: 1;
-    padding-bottom: 16px;
+    padding-bottom: ${spacingsPx.md};
 
     :not(:first-child) {
-        padding-top: 16px;
+        padding-top: ${spacingsPx.md};
         border-top: 1px solid ${({ theme }) => theme.STROKE_GREY};
     }
 `;

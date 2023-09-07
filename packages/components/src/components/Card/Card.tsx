@@ -11,18 +11,24 @@ const Wrapper = styled.div<{ $elevation: Elevation; $paddingSize: number }>`
     box-shadow: ${({ $elevation }) => $elevation && boxShadows[`elevation${$elevation}`]};
 `;
 
-const getPaddingSize = (withLargePadding?: boolean, noPadding?: boolean) => {
-    if (noPadding) return 0;
-    if (withLargePadding) return spacings.lg;
-    return spacings.sm;
+const getPaddingSize = (paddingType?: PaddingType) => {
+    switch (paddingType) {
+        case 'none':
+            return 0;
+        case 'large':
+            return spacings.lg;
+        case 'normal':
+        default:
+            return spacings.sm;
+    }
 };
 
 type Elevation = 0 | 1 | 3;
+type PaddingType = 'none' | 'normal' | 'large';
 
 export interface CardProps {
     elevation?: Elevation;
-    withLargePadding?: boolean;
-    noPadding?: boolean;
+    paddingType?: PaddingType;
     onMouseEnter?: () => void;
     onMouseLeave?: () => void;
     children?: ReactNode;
@@ -30,11 +36,11 @@ export interface CardProps {
 }
 
 export const Card = forwardRef<HTMLDivElement, CardProps>(
-    ({ elevation = 1, withLargePadding, noPadding, children, ...rest }, ref) => (
+    ({ elevation = 1, paddingType = 'normal', children, ...rest }, ref) => (
         <Wrapper
             ref={ref}
             $elevation={elevation}
-            $paddingSize={getPaddingSize(withLargePadding, noPadding)}
+            $paddingSize={getPaddingSize(paddingType)}
             {...rest}
         >
             {children}

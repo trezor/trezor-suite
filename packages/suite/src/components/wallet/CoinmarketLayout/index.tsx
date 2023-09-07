@@ -41,7 +41,7 @@ const CoinmarketLayout = ({
             )}
         </WalletLayoutHeader>
 
-        <Card noPadding>
+        <Card paddingType="none">
             <Navigation />
             <Content>{children}</Content>
         </Card>
