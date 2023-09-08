@@ -13,7 +13,6 @@ import {
 import TrezorConnect, { AccountInfo } from '@trezor/connect';
 import { TokenAddress } from '@suite-common/wallet-types';
 
-import { AccountImportHeader } from '../components/AccountImportHeader';
 import { AccountImportLoader } from '../components/AccountImportLoader';
 import { useShowImportError } from '../useShowImportError';
 
@@ -118,7 +117,7 @@ export const AccountImportLoadingScreen = ({
     }, [xpubAddress, networkSymbol, dispatch, safelyShowImportError, fiatCurrency]);
 
     return (
-        <Screen header={<AccountImportHeader activeStep={3} />}>
+        <Screen>
             <AccountImportLoader />
         </Screen>
     );

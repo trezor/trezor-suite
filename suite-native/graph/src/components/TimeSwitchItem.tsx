@@ -23,7 +23,7 @@ const textStyle = prepareNativeStyle<ItemStyleProps>((utils, { isSelected }) => 
 const switchItemStyle = prepareNativeStyle<ItemStyleProps>((utils, { isSelected }) => ({
     flex: 1,
     alignItems: 'center',
-    paddingVertical: utils.spacings.small,
+    paddingVertical: 6,
     extend: {
         condition: isSelected,
         style: {

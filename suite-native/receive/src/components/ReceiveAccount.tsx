@@ -27,6 +27,7 @@ import { ReceiveTextHint } from './ReceiveTextHint';
 type AccountReceiveProps = {
     accountKey: AccountKey;
     tokenContract?: TokenAddress;
+    isAccountChangeAllowed?: boolean;
 };
 
 const receiveAddressCardStyle = prepareNativeStyle(utils => ({
@@ -36,7 +37,11 @@ const receiveAddressCardStyle = prepareNativeStyle(utils => ({
     padding: utils.spacings.extraLarge,
 }));
 
-export const ReceiveAccount = ({ accountKey, tokenContract }: AccountReceiveProps) => {
+export const ReceiveAccount = ({
+    accountKey,
+    tokenContract,
+    isAccountChangeAllowed = true,
+}: AccountReceiveProps) => {
     const [isAddressVisible, setIsAddressVisible] = useState(false);
     const { applyStyle } = useNativeStyles();
     const navigation = useNavigation();
@@ -70,7 +75,7 @@ export const ReceiveAccount = ({ accountKey, tokenContract }: AccountReceiveProp
             <HeaderedCard
                 title="Receive To"
                 buttonIcon="discover"
-                buttonTitle="Change"
+                buttonTitle={isAccountChangeAllowed ? 'Change' : ''}
                 onButtonPress={handleGoBack}
             >
                 {tokenContract ? (

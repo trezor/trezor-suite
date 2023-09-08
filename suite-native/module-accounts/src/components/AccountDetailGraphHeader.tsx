@@ -65,7 +65,7 @@ export const AccountDetailGraphHeader = ({ accountKey }: AccountBalanceProps) =>
         <VStack spacing="extraSmall" alignItems="center">
             <CryptoBalance accountSymbol={account.symbol} />
             <FiatBalance />
-            <HStack>
+            <HStack alignItems="center">
                 <GraphDateFormatter
                     firstPointDate={firstPointDate}
                     selectedPointAtom={selectedPointAtom}

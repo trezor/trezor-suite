@@ -7,10 +7,11 @@ export const ReceiveTextHint = () => (
                 variant="yellow"
                 icon="warningTriangleLight"
                 title={
-                    <VStack alignItems="center">
+                    <Text>
                         <TrezorSuiteLiteHeader />
+                        {'\n'}
                         <Text variant="titleSmall">receive address</Text>
-                    </VStack>
+                    </Text>
                 }
                 subtitle="For an extra layer of security, use Trezor Suite with your Trezor hardware
                     wallet to verify the receive address."

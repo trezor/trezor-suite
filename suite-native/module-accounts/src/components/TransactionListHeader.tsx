@@ -20,7 +20,6 @@ import {
 } from '@suite-native/navigation';
 
 import { AccountDetailGraph } from './AccountDetailGraph';
-import { AccountDetailGraphHeader } from './AccountDetailGraphHeader';
 import { AccountDetailCryptoValue } from './AccountDetailCryptoValue';
 import { AccountDetailTokenHeader } from './AccountDetailTokenHeader';
 import { IncludeTokensToggle } from './IncludeTokensToggle';
@@ -67,12 +66,7 @@ const TransactionListHeaderContent = ({
     const isGraphDisplayed = accountHasTransactions && !isTestnetAccount && !isTokenAccount;
 
     if (isGraphDisplayed) {
-        return (
-            <VStack spacing="large">
-                <AccountDetailGraphHeader accountKey={accountKey} />
-                <AccountDetailGraph accountKey={accountKey} />
-            </VStack>
-        );
+        return <AccountDetailGraph accountKey={accountKey} />;
     }
     if (isTokenAccount) {
         return <AccountDetailTokenHeader accountKey={accountKey} tokenContract={tokenContract} />;

@@ -93,6 +93,8 @@ export const CoinPriceCard = ({ accountKey }: CoinPriceCardProps) => {
                             value={`${currentValue}`}
                             variant="titleSmall"
                             isDiscreetText={false}
+                            numberOfLines={1}
+                            adjustsFontSizeToFit
                         />
                     )}
                 </Box>

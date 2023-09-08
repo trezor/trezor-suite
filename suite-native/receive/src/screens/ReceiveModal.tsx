@@ -25,11 +25,12 @@ export const ReceiveModal = () => {
     };
 
     return (
-        <Screen header={<ScreenHeader />}>
+        <Screen header={<ScreenHeader content="Receive address" />}>
             {route.params?.accountKey ? (
                 <ReceiveAccount
                     accountKey={route.params.accountKey}
                     tokenContract={route.params?.tokenContract}
+                    isAccountChangeAllowed={false}
                 />
             ) : (
                 <AccountsList onSelectAccount={handleSelectAccount} />

@@ -54,7 +54,7 @@ export const WelcomeScreen = () => {
                     <Box alignItems="center" flex={1}>
                         <Box alignItems="center">
                             <Box marginBottom="large">
-                                <Icon size="large" name="trezor" color="backgroundPrimaryDefault" />
+                                <Icon size="extraLarge" name="trezor" color="iconDefault" />
                             </Box>
                             <Text variant="titleMedium" style={applyStyle(titleStyle)}>
                                 Welcome to <TrezorSuiteLiteHeader textVariant="titleMedium" />
