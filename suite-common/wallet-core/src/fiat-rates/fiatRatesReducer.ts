@@ -46,7 +46,10 @@ export const prepareFiatRatesReducer = createReducerWithExtraDeps(
                 const currentRate = state[rateType]?.[fiatRateKey];
 
                 // To prevent race condition someone will remove rate from state while fetching for example (during currency change etc.)
-                if (!currentRate) return;
+                if (!currentRate) {
+                    state[rateType][fiatRateKey].isLoading = false;
+                    return;
+                }
 
                 state[rateType][fiatRateKey] = {
                     ...currentRate,
@@ -62,7 +65,10 @@ export const prepareFiatRatesReducer = createReducerWithExtraDeps(
                 const currentRate = state[rateType]?.[fiatRateKey];
 
                 // To prevent race condition someone will remove rate from state while fetching for example (during currency change etc.)
-                if (!currentRate) return;
+                if (!currentRate) {
+                    state[rateType][fiatRateKey].isLoading = false;
+                    return;
+                }
 
                 state[rateType][fiatRateKey] = {
                     ...currentRate,
