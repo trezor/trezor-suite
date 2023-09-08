@@ -1,14 +1,13 @@
 /* eslint-disable global-require */
 
 import { connectInitThunk } from '@suite-common/connect-init';
+import { prepareDeviceReducer } from '@suite-common/wallet-core';
 
 import { configureStore } from 'src/support/tests/configureStore';
 import receiveReducer from 'src/reducers/wallet/receiveReducer';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
 import modalReducer from 'src/reducers/suite/modalReducer';
 import * as receiveActions from 'src/actions/wallet/receiveActions';
-
-import { prepareDeviceReducer } from 'src/reducers/suite/deviceReducer';
 import { extraDependencies } from 'src/support/extraDependencies';
 
 import fixtures from '../__fixtures__/receiveActions';

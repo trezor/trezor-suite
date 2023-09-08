@@ -5,6 +5,7 @@ import type { BankAccount, SellFiatTrade } from 'invity-api';
 import { useTimer } from '@trezor/react-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { amountToSatoshi } from '@suite-common/wallet-utils';
+import { selectDevice } from '@suite-common/wallet-core';
 
 import invityAPI from 'src/services/suite/invityAPI';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -28,7 +29,6 @@ import type { TradeSell } from 'src/types/wallet/coinmarketCommonTypes';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 
 import { useCoinmarketRecomposeAndSign } from './useCoinmarketRecomposeAndSign ';
-import { selectDevice } from '../../reducers/suite/deviceReducer';
 
 export const useOffers = ({ selectedAccount }: UseOffersProps) => {
     const timer = useTimer();

@@ -1,6 +1,12 @@
 import produce from 'immer';
 
-import { selectAccountByKey } from '@suite-common/wallet-core';
+import {
+    selectAccountByKey,
+    DeviceRootState,
+    selectDevice,
+    selectDevices,
+    State,
+} from '@suite-common/wallet-core';
 
 import { STORAGE, METADATA } from 'src/actions/suite/constants';
 import { Action } from 'src/types/suite';
@@ -10,8 +16,6 @@ import {
     DEFAULT_ACCOUNT_METADATA,
     DEFAULT_WALLET_METADATA,
 } from 'src/actions/suite/constants/metadataConstants';
-
-import { DeviceRootState, selectDevice, selectDevices, State } from './deviceReducer';
 
 export const initialState: MetadataState = {
     // is Suite trying to load metadata (get master key -> sync cloud)?

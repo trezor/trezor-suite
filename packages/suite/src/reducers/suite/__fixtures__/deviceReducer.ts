@@ -1,6 +1,5 @@
+import { deviceActions } from '@suite-common/wallet-core';
 import { DEVICE } from '@trezor/connect';
-
-import { deviceActions } from 'src/actions/suite/deviceActions';
 
 const { getConnectDevice, getSuiteDevice } = global.JestMocks;
 

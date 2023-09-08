@@ -1,5 +1,6 @@
 import { MiddlewareAPI } from 'redux';
 
+import { deviceActions, selectDevice } from '@suite-common/wallet-core';
 import { TRANSPORT, DEVICE } from '@trezor/connect';
 import {
     messageSystemActions,
@@ -11,8 +12,6 @@ import { SUITE } from 'src/actions/suite/constants';
 import * as walletSettingsActions from 'src/actions/settings/walletSettingsActions';
 import { getIsTorEnabled } from 'src/utils/suite/tor';
 import type { AppState, Action, Dispatch } from 'src/types/suite';
-import { deviceActions } from 'src/actions/suite/deviceActions';
-import { selectDevice } from 'src/reducers/suite/deviceReducer';
 
 // actions which can affect message system messages
 const actions = [

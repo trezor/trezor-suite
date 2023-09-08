@@ -11,7 +11,7 @@ import {
 } from '@trezor/coinjoin';
 import { arrayDistinct, arrayToDictionary, promiseAllSequence } from '@trezor/utils';
 import { getOsName } from '@trezor/env-utils';
-import { selectAccountByKey } from '@suite-common/wallet-core';
+import { selectAccountByKey, selectDevices } from '@suite-common/wallet-core';
 import { getUtxoOutpoint } from '@suite-common/wallet-utils';
 import { Account } from '@suite-common/wallet-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -33,7 +33,6 @@ import {
     selectRoundsDurationInHours,
     selectCoinjoinAccounts,
 } from 'src/reducers/wallet/coinjoinReducer';
-import { selectDevices } from 'src/reducers/suite/deviceReducer';
 
 import * as COINJOIN from './constants/coinjoinConstants';
 

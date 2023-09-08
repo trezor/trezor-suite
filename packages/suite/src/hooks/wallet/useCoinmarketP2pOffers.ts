@@ -3,6 +3,7 @@ import { createContext, useCallback, useContext, useEffect, useState } from 'rea
 import { P2pQuote } from 'invity-api';
 
 import { useTimer } from '@trezor/react-utils';
+import { selectDevice } from '@suite-common/wallet-core';
 
 import { ContextValues, P2pStep, UseOffersProps } from 'src/types/wallet/coinmarketP2pOffers';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -11,7 +12,6 @@ import { openCoinmarketP2pConfirmModal } from 'src/actions/wallet/coinmarketP2pA
 import invityAPI from 'src/services/suite/invityAPI';
 import { useCoinmarketNavigation } from 'src/hooks/wallet/useCoinmarketNavigation';
 import { submitRequestForm } from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
-import { selectDevice } from 'src/reducers/suite/deviceReducer';
 
 export const useOffers = ({ selectedAccount }: UseOffersProps): ContextValues => {
     const timer = useTimer();

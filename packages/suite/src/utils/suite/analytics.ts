@@ -13,12 +13,12 @@ import {
 import { getCustomBackends } from '@suite-common/wallet-utils';
 import { UNIT_ABBREVIATIONS } from '@suite-common/suite-constants';
 import type { UpdateInfo } from '@trezor/suite-desktop-api';
+import { selectDevices } from '@suite-common/wallet-core';
 
 import { AccountTransactionBaseAnchor } from 'src/constants/suite/anchors';
 import { AppState } from 'src/types/suite';
 
 import { getIsTorEnabled } from './tor';
-import { selectDevices } from '../../reducers/suite/deviceReducer';
 
 // redact transaction id from account transaction anchor
 export const redactTransactionIdFromAnchor = (anchor?: string) => {

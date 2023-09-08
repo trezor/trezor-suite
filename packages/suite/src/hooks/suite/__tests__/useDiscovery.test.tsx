@@ -1,13 +1,12 @@
 import { act } from '@testing-library/react';
 import { combineReducers } from 'redux';
 
-import { prepareDiscoveryReducer } from '@suite-common/wallet-core';
+import { prepareDiscoveryReducer, prepareDeviceReducer } from '@suite-common/wallet-core';
 import { configureMockStore } from '@suite-common/test-utils';
 
 import { renderWithProviders } from 'src/support/tests/hooksHelper';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
 import { extraDependencies } from 'src/support/extraDependencies';
-import { prepareDeviceReducer } from 'src/reducers/suite/deviceReducer';
 
 import { useDiscovery } from '../useDiscovery';
 import { actions } from '../__fixtures__/useDiscovery';

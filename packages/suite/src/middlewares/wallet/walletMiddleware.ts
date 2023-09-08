@@ -8,6 +8,7 @@ import {
     subscribeBlockchainThunk,
     transactionsActions,
     unsubscribeBlockchainThunk,
+    deviceActions,
 } from '@suite-common/wallet-core';
 import { settingsCommonConfig } from '@suite-common/suite-config';
 
@@ -21,8 +22,6 @@ import * as cardanoStakingActions from 'src/actions/wallet/cardanoStakingActions
 import * as coinmarketCommonActions from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
 import * as coinmarketBuyActions from 'src/actions/wallet/coinmarketBuyActions';
 import type { AppState, Action, Dispatch } from 'src/types/suite';
-
-import { deviceActions } from '../../actions/suite/deviceActions';
 
 const walletMiddleware =
     (api: MiddlewareAPI<Dispatch, AppState>) =>

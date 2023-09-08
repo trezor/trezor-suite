@@ -1,9 +1,10 @@
 import { useCallback } from 'react';
 
+import { selectDevice } from '@suite-common/wallet-core';
+
 import { SUITE } from 'src/actions/suite/constants';
 
 import { useSelector } from './useSelector';
-import { selectDevice } from '../../reducers/suite/deviceReducer';
 
 export const useDevice = () => {
     const device = useSelector(selectDevice);

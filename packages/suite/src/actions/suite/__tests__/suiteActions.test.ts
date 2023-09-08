@@ -3,28 +3,13 @@
 // unit test for suite actions
 // data provided by TrezorConnect are mocked
 
-import { prepareFirmwareReducer } from '@suite-common/wallet-core';
-import { connectInitThunk } from '@suite-common/connect-init';
-import { DEVICE } from '@trezor/connect';
-
-import { configureStore, filterThunkActionTypes } from 'src/support/tests/configureStore';
-import suiteReducer from 'src/reducers/suite/suiteReducer';
 import {
     prepareDeviceReducer,
     selectDevice,
     selectDevices,
     selectDevicesCount,
-} from 'src/reducers/suite/deviceReducer';
-import routerReducer from 'src/reducers/suite/routerReducer';
-import modalReducer from 'src/reducers/suite/modalReducer';
-import { discardMockedConnectInitActions } from 'src/utils/suite/storage';
-import { extraDependencies } from 'src/support/extraDependencies';
-
-import { SUITE } from '../constants';
-import * as suiteActions from '../suiteActions';
-import fixtures from '../__fixtures__/suiteActions';
-import { deviceActions } from '../deviceActions';
-import {
+    prepareFirmwareReducer,
+    deviceActions,
     acquireDevice,
     authConfirm,
     authorizeDevice,
@@ -33,9 +18,22 @@ import {
     handleDeviceConnect,
     observeSelectedDevice,
     switchDuplicatedDevice,
-    selectDevice as selectDeviceThunk,
+    selectDeviceThunk,
     handleDeviceDisconnect,
-} from '../deviceThunks';
+} from '@suite-common/wallet-core';
+import { connectInitThunk } from '@suite-common/connect-init';
+import { DEVICE } from '@trezor/connect';
+
+import { configureStore, filterThunkActionTypes } from 'src/support/tests/configureStore';
+import suiteReducer from 'src/reducers/suite/suiteReducer';
+import routerReducer from 'src/reducers/suite/routerReducer';
+import modalReducer from 'src/reducers/suite/modalReducer';
+import { discardMockedConnectInitActions } from 'src/utils/suite/storage';
+import { extraDependencies } from 'src/support/extraDependencies';
+
+import { SUITE } from '../constants';
+import * as suiteActions from '../suiteActions';
+import fixtures from '../__fixtures__/suiteActions';
 
 const { getSuiteDevice } = global.JestMocks;
 

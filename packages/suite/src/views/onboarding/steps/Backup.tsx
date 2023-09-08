@@ -1,7 +1,9 @@
 import { useState } from 'react';
+
 import styled from 'styled-components';
 
 import { Image } from '@trezor/components';
+import { selectDevice } from '@suite-common/wallet-core';
 
 import {
     OnboardingButtonCta,
@@ -19,8 +21,6 @@ import { backupDevice } from 'src/actions/backup/backupActions';
 import { goto } from 'src/actions/suite/routerActions';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
-
-import { selectDevice } from '../../../reducers/suite/deviceReducer';
 
 const StyledImage = styled(Image)`
     flex: 1;

@@ -5,6 +5,7 @@ import TrezorConnect from '@trezor/connect';
 import { analytics, EventType } from '@trezor/suite-analytics';
 import { createDeferred, cloneObject } from '@trezor/utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
+import { selectDevices, selectDevice } from '@suite-common/wallet-core';
 
 import { METADATA } from 'src/actions/suite/constants';
 import { Dispatch, GetState, TrezorDevice } from 'src/types/suite';
@@ -30,7 +31,6 @@ import DropboxProvider from 'src/services/suite/metadata/DropboxProvider';
 import GoogleProvider from 'src/services/suite/metadata/GoogleProvider';
 import FileSystemProvider from 'src/services/suite/metadata/FileSystemProvider';
 import { selectSelectedProviderForLabels } from 'src/reducers/suite/metadataReducer';
-import { selectDevices, selectDevice } from 'src/reducers/suite/deviceReducer';
 
 export const setAccountAdd = createAction(METADATA.ACCOUNT_ADD, (payload: Account) => ({
     payload,

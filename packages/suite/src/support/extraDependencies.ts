@@ -1,15 +1,18 @@
 import { saveAs } from 'file-saver';
 import { PayloadAction } from '@reduxjs/toolkit';
 
-import { resolveStaticPath } from '@suite-common/suite-utils';
-import { getAccountKey } from '@suite-common/wallet-utils';
-import type { FiatRatesState } from '@suite-common/wallet-core';
 import {
+    DeviceRootState,
+    selectIsPendingTransportEvent,
     TransactionsState,
     BlockchainState,
     DiscoveryRootState,
     selectDiscoveryByDeviceState,
+    deviceActions,
 } from '@suite-common/wallet-core';
+import { resolveStaticPath } from '@suite-common/suite-utils';
+import { getAccountKey } from '@suite-common/wallet-utils';
+import type { FiatRatesState } from '@suite-common/wallet-core';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { ExtraDependencies } from '@suite-common/redux-utils';
 
@@ -17,14 +20,12 @@ import { StorageLoadAction } from 'src/actions/suite/storageActions';
 import * as metadataActions from 'src/actions/suite/metadataActions';
 import * as cardanoStakingActions from 'src/actions/wallet/cardanoStakingActions';
 import * as walletSettingsActions from 'src/actions/settings/walletSettingsActions';
-import { DeviceRootState, selectIsPendingTransportEvent } from 'src/reducers/suite/deviceReducer';
 import { fixLoadedCoinjoinAccount } from 'src/utils/wallet/coinjoinUtils';
 import * as modalActions from 'src/actions/suite/modalActions';
 
 import * as suiteActions from '../actions/suite/suiteActions';
 import { AppState, ButtonRequest, TrezorDevice } from '../types/suite';
 import { METADATA, STORAGE } from '../actions/suite/constants';
-import { deviceActions } from '../actions/suite/deviceActions';
 
 const connectSrc = resolveStaticPath('connect/');
 // 'https://localhost:8088/';

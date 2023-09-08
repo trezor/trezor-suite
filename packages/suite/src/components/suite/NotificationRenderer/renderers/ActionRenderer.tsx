@@ -1,7 +1,7 @@
+import { acquireDevice, selectDeviceThunk } from '@suite-common/wallet-core';
 import { DEVICE } from '@trezor/connect';
 
 import { useDispatch } from 'src/hooks/suite';
-import { acquireDevice, selectDevice } from 'src/actions/suite/deviceThunks';
 
 import type { NotificationViewProps, NotificationRendererProps } from '../types';
 
@@ -17,7 +17,7 @@ const ActionRenderer = ({ render: View, ...props }: ActionRendererProps) => {
         case DEVICE.CONNECT:
             action = {
                 label: 'TR_SELECT_DEVICE',
-                onClick: () => dispatch(selectDevice(device)),
+                onClick: () => dispatch(selectDeviceThunk(device)),
             };
             break;
         case DEVICE.CONNECT_UNACQUIRED:

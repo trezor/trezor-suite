@@ -7,6 +7,7 @@ import {
     addFakePendingTxThunk,
     replaceTransactionThunk,
     syncAccountsWithBlockchainThunk,
+    selectDevice,
 } from '@suite-common/wallet-core';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
@@ -33,7 +34,6 @@ import { isCardanoTx } from 'src/utils/wallet/cardanoUtils';
 import { Dispatch, GetState } from 'src/types/suite';
 import { Account } from 'src/types/wallet';
 import { MetadataAddPayload } from 'src/types/suite/metadata';
-import { selectDevice } from 'src/reducers/suite/deviceReducer';
 
 import * as sendFormBitcoinActions from './send/sendFormBitcoinActions';
 import * as sendFormEthereumActions from './send/sendFormEthereumActions';

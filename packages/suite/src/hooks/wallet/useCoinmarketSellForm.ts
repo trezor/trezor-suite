@@ -12,6 +12,7 @@ import {
 } from '@suite-common/wallet-utils';
 import { useDidUpdate } from '@trezor/react-utils';
 import { isChanged } from '@suite-common/suite-utils';
+import { selectDevice } from '@suite-common/wallet-core';
 
 import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
 import invityAPI from 'src/services/suite/invityAPI';
@@ -47,7 +48,6 @@ import { AmountLimits } from 'src/types/wallet/coinmarketCommonTypes';
 import { useCoinmarketSellFormDefaultValues } from './useCoinmarketSellFormDefaultValues';
 import { useCompose } from './form/useCompose';
 import { useFees } from './form/useFees';
-import { selectDevice } from '../../reducers/suite/deviceReducer';
 
 export const SellFormContext = createContext<SellFormContextValues | null>(null);
 SellFormContext.displayName = 'CoinmarketSellContext';

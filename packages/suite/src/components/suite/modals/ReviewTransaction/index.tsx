@@ -5,13 +5,13 @@ import styled from 'styled-components';
 import { ConfirmOnDevice, variables } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/connect';
 import { UserContextPayload } from '@suite-common/suite-types';
+import { selectDevice } from '@suite-common/wallet-core';
 
 import { Translation, Modal } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { cancelSignTx } from 'src/actions/wallet/sendFormActions';
 import { isCardanoTx } from 'src/utils/wallet/cardanoUtils';
 import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
-import { selectDevice } from 'src/reducers/suite/deviceReducer';
 
 import Summary from './components/Summary';
 import OutputList from './components/OutputList';

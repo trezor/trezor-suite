@@ -1,6 +1,6 @@
-import { useSelector } from 'src/hooks/suite';
+import { selectDevice } from '@suite-common/wallet-core';
 
-import { selectDevice } from '../../reducers/suite/deviceReducer';
+import { useSelector } from 'src/hooks/suite';
 
 export const useLoadingSkeleton = () => {
     const waitingForDevice = !useSelector(selectDevice)?.state;

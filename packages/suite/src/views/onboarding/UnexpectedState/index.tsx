@@ -1,5 +1,8 @@
 import { useMemo } from 'react';
+
 import styled from 'styled-components';
+
+import { selectDevice } from '@suite-common/wallet-core';
 
 import { Translation, PrerequisitesGuide } from 'src/components/suite';
 import { PinMatrix } from 'src/components/suite/PinMatrix';
@@ -7,7 +10,6 @@ import { PrerequisiteType } from 'src/types/suite';
 import { useOnboarding, useSelector } from 'src/hooks/suite';
 import { OnboardingStepBox } from 'src/components/onboarding';
 import steps from 'src/config/onboarding/steps';
-import { selectDevice } from 'src/reducers/suite/deviceReducer';
 
 import IsSameDevice from './components/IsSameDevice';
 

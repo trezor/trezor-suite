@@ -1,6 +1,14 @@
 import styled from 'styled-components';
 
 import {
+    selectDevice as selectDeviceSelector,
+    selectDevices,
+    selectAccounts,
+    selectBlockchainState,
+    selectTransactions,
+    selectDeviceThunk,
+} from '@suite-common/wallet-core';
+import {
     findAccountsByNetwork,
     findAccountsByDescriptor,
     findAccountDevice,
@@ -8,18 +16,8 @@ import {
     findTransaction,
     getConfirmations,
 } from '@suite-common/wallet-utils';
-import {
-    selectAccounts,
-    selectBlockchainState,
-    selectTransactions,
-} from '@suite-common/wallet-core';
 
-import {
-    selectDevice as selectDeviceSelector,
-    selectDevices,
-} from 'src/reducers/suite/deviceReducer';
 import { AccountLabeling, HiddenPlaceholder } from 'src/components/suite';
-import { selectDevice } from 'src/actions/suite/deviceThunks';
 import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { getTxAnchor } from 'src/utils/suite/anchor';
@@ -66,7 +64,7 @@ const TransactionRenderer = ({ render: View, ...props }: TransactionRendererProp
                 onClick: () => {
                     const deviceToSelect = accountDevice || device;
                     if (deviceToSelect?.id !== currentDevice?.id) {
-                        dispatch(selectDevice(deviceToSelect));
+                        dispatch(selectDeviceThunk(deviceToSelect));
                     }
                     const txAnchor = getTxAnchor(tx?.txid);
                     dispatch(

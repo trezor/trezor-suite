@@ -1,3 +1,4 @@
+import { selectDevices, selectDevice, deviceActions } from '@suite-common/wallet-core';
 import * as deviceUtils from '@suite-common/suite-utils';
 import TrezorConnect from '@trezor/connect';
 import { analytics, EventType } from '@trezor/suite-analytics';
@@ -7,9 +8,6 @@ import * as modalActions from 'src/actions/suite/modalActions';
 import * as routerActions from 'src/actions/suite/routerActions';
 import { Dispatch, GetState } from 'src/types/suite';
 import * as DEVICE from 'src/constants/suite/device';
-import { selectDevices, selectDevice } from 'src/reducers/suite/deviceReducer';
-
-import { deviceActions } from '../suite/deviceActions';
 
 export const applySettings =
     (params: Parameters<typeof TrezorConnect.applySettings>[0]) =>

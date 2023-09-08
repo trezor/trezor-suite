@@ -1,13 +1,17 @@
 import styled from 'styled-components';
 
+import {
+    selectDevice,
+    selectDevices,
+    selectAccountByKey,
+    selectDeviceThunk,
+} from '@suite-common/wallet-core';
 import { Button, variables } from '@trezor/components';
-import { selectAccountByKey } from '@suite-common/wallet-core';
 import { WalletParams } from '@suite-common/wallet-types';
 
 import { useDispatch } from 'src/hooks/suite';
 import { CoinjoinSession } from 'src/types/wallet/coinjoin';
 import { ROUND_PHASE_MESSAGES } from 'src/constants/suite/coinjoin';
-import { selectDevice } from 'src/actions/suite/deviceThunks';
 import { goto } from 'src/actions/suite/routerActions';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { selectRouterParams } from 'src/reducers/suite/routerReducer';
@@ -15,10 +19,6 @@ import {
     selectSessionProgressByAccountKey,
     selectRoundsDurationInHours,
 } from 'src/reducers/wallet/coinjoinReducer';
-import {
-    selectDevice as selectDeviceSelector,
-    selectDevices,
-} from 'src/reducers/suite/deviceReducer';
 
 import { CountdownTimer } from './CountdownTimer';
 import { WalletLabeling } from './Labeling';
@@ -68,7 +68,7 @@ interface CoinjoinStatusBarProps {
 export const CoinjoinStatusBar = ({ accountKey, session, isSingle }: CoinjoinStatusBarProps) => {
     const devices = useSelector(selectDevices);
     const relatedAccount = useSelector(state => selectAccountByKey(state, accountKey));
-    const selectedDevice = useSelector(selectDeviceSelector);
+    const selectedDevice = useSelector(selectDevice);
     const routerParams = useSelector(selectRouterParams);
     const sessionProgress = useSelector(state =>
         selectSessionProgressByAccountKey(state, accountKey),
@@ -92,7 +92,7 @@ export const CoinjoinStatusBar = ({ accountKey, session, isSingle }: CoinjoinSta
 
     const handleViewAccount = () => {
         if (!isOnSelectedDevice) {
-            dispatch(selectDevice(relatedDevice));
+            dispatch(selectDeviceThunk(relatedDevice));
         }
 
         dispatch(

@@ -7,14 +7,13 @@ import { resolveStaticPath, isDevEnv } from '@suite-common/suite-utils';
 import { Icon, Link, variables } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
 import { getFirmwareVersion } from '@trezor/device-utils';
+import { selectDevice } from '@suite-common/wallet-core';
 
 import { Translation } from 'src/components/suite';
 import { setView } from 'src/actions/suite/guideActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { GuideViewWrapper, GuideHeader, GuideContent } from 'src/components/guide';
 import { UpdateState } from 'src/reducers/suite/desktopUpdateReducer';
-
-import { selectDevice } from '../../reducers/suite/deviceReducer';
 
 const Section = styled.div`
     & + & {

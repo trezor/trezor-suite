@@ -3,14 +3,18 @@ import { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import styled from 'styled-components';
 
+import {
+    selectDevice,
+    acquireDevice,
+    createDeviceInstance,
+    selectDeviceThunk,
+} from '@suite-common/wallet-core';
 import * as deviceUtils from '@suite-common/suite-utils';
 import { useTheme, variables, Icon, Image, motionAnimation } from '@trezor/components';
 
 import { Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { goto } from 'src/actions/suite/routerActions';
-import { acquireDevice, createDeviceInstance, selectDevice } from 'src/actions/suite/deviceThunks';
-import { selectDevice as selectDeviceSelector } from 'src/reducers/suite/deviceReducer';
 import { OpenGuideFromTooltip } from 'src/components/guide';
 import type { TrezorDevice, AcquiredDevice, ForegroundAppProps } from 'src/types/suite';
 import type { getBackgroundRoute } from 'src/utils/suite/router';
@@ -130,7 +134,7 @@ interface DeviceItemProps {
 }
 
 const DeviceItem = ({ device, instances, onCancel, backgroundRoute }: DeviceItemProps) => {
-    const selectedDevice = useSelector(selectDeviceSelector);
+    const selectedDevice = useSelector(selectDevice);
     const dispatch = useDispatch();
 
     const theme = useTheme();
@@ -165,7 +169,7 @@ const DeviceItem = ({ device, instances, onCancel, backgroundRoute }: DeviceItem
     };
 
     const selectDeviceInstance = (instance: DeviceItemProps['device']) => {
-        dispatch(selectDevice(instance));
+        dispatch(selectDeviceThunk(instance));
         handleRedirection();
     };
 
@@ -190,7 +194,7 @@ const DeviceItem = ({ device, instances, onCancel, backgroundRoute }: DeviceItem
         // await needed otherwise it just selects first account (???)
         await dispatch(goto('settings-device'));
         if (!isSelected) {
-            dispatch(selectDevice(device));
+            dispatch(selectDeviceThunk(device));
         }
     };
 

@@ -1,7 +1,5 @@
-import { firmwareUpdate, firmwareActions } from '@suite-common/wallet-core';
+import { firmwareUpdate, firmwareActions, deviceActions } from '@suite-common/wallet-core';
 import { UI, DeviceModelInternal, FirmwareType } from '@trezor/connect';
-
-import { deviceActions } from '../../suite/deviceActions';
 
 const { getSuiteDevice, getDeviceFeatures, getFirmwareRelease } = global.JestMocks;
 

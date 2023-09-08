@@ -1,9 +1,11 @@
 import { memo, useState, useEffect, useCallback } from 'react';
+
 import { getUnixTime } from 'date-fns';
 import styled from 'styled-components';
 
 import { variables, Button } from '@trezor/components';
 import { calcTicks, calcTicksFromData } from '@suite-common/suite-utils';
+import { selectDevice } from '@suite-common/wallet-core';
 
 import { CARD_PADDING_SIZE } from 'src/constants/suite/layout';
 import GraphWorker from 'src/support/workers/graph';
@@ -13,8 +15,6 @@ import { Account } from 'src/types/wallet';
 import { TransactionsGraph, Translation, HiddenPlaceholder } from 'src/components/suite';
 import { AggregatedDashboardHistory } from 'src/types/wallet/graph';
 import { getMinMaxValueFromData } from 'src/utils/wallet/graph';
-
-import { selectDevice } from '../../../../../reducers/suite/deviceReducer';
 
 const Wrapper = styled.div`
     display: flex;

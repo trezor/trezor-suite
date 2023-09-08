@@ -1,6 +1,7 @@
 import { useIntl } from 'react-intl';
 
 import TrezorConnect, { UI } from '@trezor/connect';
+import { selectDevice } from '@suite-common/wallet-core';
 
 import messages from 'src/support/messages';
 import { MODAL } from 'src/actions/suite/constants';
@@ -19,8 +20,8 @@ import {
     ConfirmAddress,
     ConfirmXpub,
 } from 'src/components/suite/modals';
+
 import type { ReduxModalProps } from './types';
-import { selectDevice } from '../../../reducers/suite/deviceReducer';
 
 /** Modals requested by Device from `trezor-connect` */
 export const DeviceContextModal = ({

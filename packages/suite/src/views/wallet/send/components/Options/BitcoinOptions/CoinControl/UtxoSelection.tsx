@@ -1,10 +1,13 @@
 import { MouseEventHandler } from 'react';
+
 import styled, { css } from 'styled-components';
 import { darken } from 'polished';
 
 import { formatNetworkAmount, isSameUtxo } from '@suite-common/wallet-utils';
 import { useTheme, Checkbox, Spinner, Tooltip, variables } from '@trezor/components';
 import type { AccountUtxo } from '@trezor/connect';
+import { selectDevice } from '@suite-common/wallet-core';
+
 import { openModal } from 'src/actions/suite/modalActions';
 import {
     FiatValue,
@@ -18,7 +21,6 @@ import { useSendFormContext } from 'src/hooks/wallet';
 import { useCoinjoinUnavailableUtxos } from 'src/hooks/wallet/form/useCoinjoinUnavailableUtxos';
 import { WalletAccountTransaction } from 'src/types/wallet';
 import { selectLabelingDataForSelectedAccount } from 'src/reducers/suite/metadataReducer';
-import { selectDevice } from 'src/reducers/suite/deviceReducer';
 import { UtxoTag } from './UtxoTag';
 
 const VisibleOnHover = styled.div<{ alwaysVisible?: boolean }>`

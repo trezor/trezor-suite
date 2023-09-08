@@ -1,9 +1,9 @@
 // TODO: remove whole file, replaced by @suite-components/PrerequisitesGuide/components/DeviceAcquire
 
+import { acquireDevice } from '@suite-common/wallet-core';
 import { Button } from '@trezor/components';
 
 import { useDevice, useDispatch } from 'src/hooks/suite';
-import { acquireDevice } from 'src/actions/suite/deviceThunks';
 import { Translation, DeviceInvalidModeLayout } from 'src/components/suite';
 
 export const DeviceAcquire = () => {

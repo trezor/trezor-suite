@@ -1,10 +1,9 @@
 import { useCallback } from 'react';
 
-import { selectDiscoveryByDeviceState } from '@suite-common/wallet-core';
+import { selectDiscoveryByDeviceState, selectDevice } from '@suite-common/wallet-core';
 import { DiscoveryStatus } from '@suite-common/wallet-constants';
 
 import { DiscoveryStatusType } from 'src/types/wallet';
-import { selectDevice } from 'src/reducers/suite/deviceReducer';
 
 import { useSelector } from './useSelector';
 

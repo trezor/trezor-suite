@@ -4,12 +4,12 @@ import { prepareAnalyticsReducer } from '@suite-common/analytics';
 import { prepareMessageSystemReducer } from '@suite-common/message-system';
 import { notificationsReducer } from '@suite-common/toast-notifications';
 import { logsSlice } from '@suite-common/logger';
+import { prepareDeviceReducer } from '@suite-common/wallet-core';
 
 import { extraDependencies } from 'src/support/extraDependencies';
 
 import router from './routerReducer';
 import suite from './suiteReducer';
-import { prepareDeviceReducer } from './deviceReducer';
 import modal from './modalReducer';
 import resize from './resizeReducer';
 import metadata from './metadataReducer';

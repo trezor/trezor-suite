@@ -3,10 +3,11 @@
 import fs from 'fs';
 import path from 'path';
 
+import { prepareDeviceReducer } from '@suite-common/wallet-core';
+
 import { configureStore } from 'src/support/tests/configureStore';
 import metadataReducer from 'src/reducers/suite/metadataReducer';
 import { SuiteState } from 'src/reducers/suite/suiteReducer';
-import { prepareDeviceReducer } from 'src/reducers/suite/deviceReducer';
 import DropboxProvider from 'src/services/suite/metadata/DropboxProvider';
 import suiteMiddleware from 'src/middlewares/suite/suiteMiddleware';
 import { accountsReducer } from 'src/reducers/wallet';

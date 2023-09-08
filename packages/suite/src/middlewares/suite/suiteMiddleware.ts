@@ -1,6 +1,15 @@
 import { MiddlewareAPI } from 'redux';
 import { AnyAction, isAnyOf } from '@reduxjs/toolkit';
 
+import {
+    authConfirm,
+    forgetDisconnectedDevices,
+    handleDeviceConnect,
+    handleDeviceDisconnect,
+    observeSelectedDevice,
+    deviceActions,
+    selectDeviceThunk,
+} from '@suite-common/wallet-core';
 import { DEVICE } from '@trezor/connect';
 import { notificationsActions } from '@suite-common/toast-notifications';
 
@@ -8,15 +17,6 @@ import { SUITE, ROUTER, METADATA } from 'src/actions/suite/constants';
 import { AppState, Action, Dispatch } from 'src/types/suite';
 import { handleProtocolRequest } from 'src/actions/suite/protocolActions';
 import { appChanged } from 'src/actions/suite/suiteActions';
-import { deviceActions } from 'src/actions/suite/deviceActions';
-import {
-    authConfirm,
-    forgetDisconnectedDevices,
-    handleDeviceConnect,
-    handleDeviceDisconnect,
-    observeSelectedDevice,
-    selectDevice,
-} from 'src/actions/suite/deviceThunks';
 
 export const isActionDeviceRelated = (action: AnyAction): boolean => {
     if (
@@ -59,7 +59,7 @@ const suite =
         next(action);
 
         if (deviceActions.createDeviceInstance.match(action)) {
-            api.dispatch(selectDevice(action.payload));
+            api.dispatch(selectDeviceThunk(action.payload));
         }
 
         if (deviceActions.forgetDevice.match(action)) {

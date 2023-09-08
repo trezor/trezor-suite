@@ -4,7 +4,13 @@ import BigNumber from 'bignumber.js';
 import { getInputSize, getOutputSize, RoundPhase } from '@trezor/coinjoin';
 import { PartialRecord } from '@trezor/type-utils';
 import { Account, AccountKey } from '@suite-common/wallet-types';
-import { accountsActions, AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
+import {
+    accountsActions,
+    AccountsRootState,
+    selectAccountByKey,
+    DeviceRootState,
+    selectDeviceState,
+} from '@suite-common/wallet-core';
 import {
     Feature,
     MessageSystemRootState,
@@ -53,7 +59,6 @@ import {
 } from 'src/services/coinjoin';
 
 import { SelectedAccountRootState, selectSelectedAccount } from './selectedAccountReducer';
-import { DeviceRootState, selectDeviceState } from '../suite/deviceReducer';
 
 export interface CoinjoinState {
     accounts: CoinjoinAccount[];

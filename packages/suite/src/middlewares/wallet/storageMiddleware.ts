@@ -1,8 +1,9 @@
 import { MiddlewareAPI } from 'redux';
 import { isAnyOf } from '@reduxjs/toolkit';
 
-import { isDeviceRemembered } from '@suite-common/suite-utils';
 import {
+    selectDevices,
+    selectDevice,
     firmwareActions,
     discoveryActions,
     selectDiscoveryByDeviceState,
@@ -11,7 +12,9 @@ import {
     transactionsActions,
     fiatRatesActions,
     selectAccountByKey,
+    deviceActions,
 } from '@suite-common/wallet-core';
+import { isDeviceRemembered } from '@suite-common/suite-utils';
 import { messageSystemActions } from '@suite-common/message-system';
 import { findAccountDevice } from '@suite-common/wallet-utils';
 import { analyticsActions } from '@suite-common/analytics';
@@ -27,9 +30,6 @@ import * as metadataActions from 'src/actions/suite/metadataActions';
 import { serializeDiscovery } from 'src/utils/suite/storage';
 import type { AppState, Action as SuiteAction, Dispatch } from 'src/types/suite';
 import type { WalletAction } from 'src/types/wallet';
-import { selectDevices, selectDevice } from 'src/reducers/suite/deviceReducer';
-
-import { deviceActions } from '../../actions/suite/deviceActions';
 
 const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
     db.onBlocking = () => api.dispatch({ type: STORAGE.ERROR, payload: 'blocking' });

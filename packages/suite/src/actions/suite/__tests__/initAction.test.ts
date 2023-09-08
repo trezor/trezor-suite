@@ -11,6 +11,8 @@ import {
 } from '@suite-common/message-system/src/__fixtures__/messageSystemActions';
 import { connectInitThunk } from '@suite-common/connect-init';
 import {
+    prepareDeviceReducer,
+    initDevices,
     blockchainActions,
     initBlockchainThunk,
     preloadFeeInfoThunk,
@@ -22,14 +24,12 @@ import { SUITE, ROUTER } from 'src/actions/suite/constants';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
 import modalReducer from 'src/reducers/suite/modalReducer';
 import routerReducer from 'src/reducers/suite/routerReducer';
-import { prepareDeviceReducer } from 'src/reducers/suite/deviceReducer';
 import metadataReducer from 'src/reducers/suite/metadataReducer';
 import walletReducers from 'src/reducers/wallet';
 import { init } from 'src/actions/suite/initAction';
 import suiteMiddleware from 'src/middlewares/suite/suiteMiddleware';
 import type { AppState } from 'src/types/suite';
 import { extraDependencies } from 'src/support/extraDependencies';
-import { initDevices } from 'src/actions/suite/deviceThunks';
 
 import { appChanged } from '../suiteActions';
 
