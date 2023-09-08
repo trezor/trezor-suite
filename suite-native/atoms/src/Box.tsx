@@ -16,6 +16,7 @@ const layoutStylePropsKeys = [
     'alignContent',
     'alignSelf',
     'flexWrap',
+    'flexShrink',
 ] as const;
 
 const spacingStylePropsKeys = [
