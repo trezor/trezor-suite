@@ -3,7 +3,8 @@ import { Modal, Pressable } from 'react-native';
 import Animated from 'react-native-reanimated';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Button, Card, VStack, useBottomSheetAnimation, Pictogram } from '@suite-native/atoms';
+import { Button, Card, VStack, useBottomSheetAnimation, Pictogram, Box } from '@suite-native/atoms';
+import { BlurredScreenOverlay } from '@suite-native/screen-overlay';
 
 import { useShakeAnimation } from '../useShakeAnimation';
 import { Alert } from '../alertsAtoms';
@@ -43,12 +44,8 @@ export const AlertSheet = ({ alert }: AlertSheetProps) => {
     const { applyStyle } = useNativeStyles();
     const { runShakeAnimation, shakeAnimatedStyle } = useShakeAnimation();
 
-    const {
-        animatedSheetWithOverlayStyle,
-        animatedSheetWrapperStyle,
-        closeSheetAnimated,
-        openSheetAnimated,
-    } = useBottomSheetAnimation({ onClose: hideAlert, isVisible: true });
+    const { animatedSheetWrapperStyle, closeSheetAnimated, openSheetAnimated } =
+        useBottomSheetAnimation({ onClose: hideAlert, isVisible: true });
 
     useEffect(() => {
         openSheetAnimated();
@@ -78,7 +75,8 @@ export const AlertSheet = ({ alert }: AlertSheetProps) => {
 
     return (
         <Modal transparent visible={!!alert}>
-            <Animated.View style={[animatedSheetWithOverlayStyle, applyStyle(sheetOverlayStyle)]}>
+            <BlurredScreenOverlay />
+            <Box style={applyStyle(sheetOverlayStyle)}>
                 <Pressable onPress={runShakeAnimation} style={applyStyle(shakeTriggerStyle)}>
                     <Animated.View
                         style={[animatedSheetWrapperStyle, shakeAnimatedStyle]}
@@ -115,7 +113,7 @@ export const AlertSheet = ({ alert }: AlertSheetProps) => {
                         </Card>
                     </Animated.View>
                 </Pressable>
-            </Animated.View>
+            </Box>
         </Modal>
     );
 };

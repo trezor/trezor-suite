@@ -9,6 +9,7 @@
         {
             "path": "../../suite-common/wallet-types"
         },
+        { "path": "../screen-overlay" },
         { "path": "../storage" },
         { "path": "../../packages/env-utils" },
         { "path": "../../packages/styles" },
