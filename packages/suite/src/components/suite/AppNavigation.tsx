@@ -1,6 +1,14 @@
 import { useRef, useLayoutEffect, useState, ReactNode } from 'react';
 import styled, { css } from 'styled-components';
-import { variables, IconProps, useTheme, Button, Icon, Dropdown } from '@trezor/components';
+import {
+    variables,
+    IconProps,
+    useTheme,
+    Button,
+    Icon,
+    Dropdown,
+    DropdownMenuItemProps,
+} from '@trezor/components';
 import { AccountFormCloseButton, AppNavigationTooltip } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
 import { Route } from 'src/types/suite';
@@ -361,17 +369,20 @@ export const AppNavigation = ({ items, primaryContent, maxWidth, inView }: AppNa
                                             items={[
                                                 {
                                                     key: 'extra',
-                                                    options: itemsSecondaryWithExtra.map(item => {
-                                                        const { id, title } = item;
-                                                        return {
-                                                            key: id,
-                                                            callback: isAccountLoading
-                                                                ? undefined
-                                                                : item.callback,
-                                                            label: title,
-                                                            'data-test': item['data-test'],
-                                                        };
-                                                    }),
+                                                    options:
+                                                        itemsSecondaryWithExtra.map<DropdownMenuItemProps>(
+                                                            item => {
+                                                                const { id, title } = item;
+                                                                return {
+                                                                    key: id,
+                                                                    onClick: isAccountLoading
+                                                                        ? undefined
+                                                                        : item.callback,
+                                                                    label: title,
+                                                                    'data-test': item['data-test'],
+                                                                };
+                                                            },
+                                                        ),
                                                 },
                                             ]}
                                         />
