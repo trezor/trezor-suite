@@ -5,10 +5,10 @@ import {
     forwardRef,
     useImperativeHandle,
     cloneElement,
-    Ref,
-    MouseEvent,
     RefObject,
     ReactElement,
+    MouseEvent,
+    useEffect,
 } from 'react';
 import { createPortal } from 'react-dom';
 import styled from 'styled-components';
@@ -19,15 +19,23 @@ import { Icon } from '../assets/Icon/Icon';
 import { Menu, MenuProps, DropdownMenuItemProps } from './Menu';
 import { Coords, getAdjustedCoords } from './getAdjustedCoords';
 
-const MoreIcon = styled(Icon)<{ $isDisabled?: boolean }>`
-    transition: background 0.2s;
+const MoreIcon = styled(Icon)<{ $isDisabled?: boolean; isToggled: boolean }>`
+    background: ${({ $isDisabled, isToggled, theme }) =>
+        !$isDisabled && isToggled && theme.backgroundNeutralSubdued};
     border-radius: ${borders.radii.xs};
-    cursor: ${({ $isDisabled }) => $isDisabled && 'default'};
+    transition: background 0.2s;
 
-    :hover,
-    :focus-visible {
+    :hover {
         background: ${({ $isDisabled, theme }) => !$isDisabled && theme.backgroundNeutralSubdued};
     }
+`;
+
+const Container = styled.button<{ disabled?: boolean }>`
+    all: unset;
+    width: fit-content;
+    height: fit-content;
+
+    cursor: ${({ disabled }) => (disabled ? 'default' : 'pointer')};
 `;
 
 const getPlacementData = (
@@ -88,13 +96,13 @@ export const Dropdown = forwardRef(
         }: DropdownProps,
         ref,
     ) => {
-        const [toggled, setToggledState] = useState(false);
+        const [isToggled, setIsToggledState] = useState(false);
         const [coords, setCoords] = useState<Coords>();
         const [clickPos, setclickPos] = useState<Coords>();
 
         const theme = useTheme();
         const menuRef = useRef<HTMLUListElement>(null);
-        const toggleRef = useRef<HTMLElement>(null);
+        const toggleRef = useRef<HTMLButtonElement>(null);
 
         // when toggled, calculate the position of the menu
         // takes into account the toggle position, size and the menu alignment
@@ -119,11 +127,22 @@ export const Dropdown = forwardRef(
             );
 
             setCoords(adjustedCoords);
-        }, [toggled, clickPos, alignMenu]);
+        }, [isToggled, clickPos, alignMenu]);
+
+        useEffect(() => {
+            if (!isToggled) {
+                toggleRef.current?.blur();
+            }
+
+            // focus the menu when it's toggled and there is content, not items
+            if (isToggled && content) {
+                menuRef.current?.focus();
+            }
+        }, [isToggled, content]);
 
         const setToggled = (isToggled: boolean) => {
             if (onToggle) onToggle(isToggled);
-            setToggledState(isToggled);
+            setIsToggledState(isToggled);
         };
 
         useImperativeHandle(ref, () => ({
@@ -133,7 +152,7 @@ export const Dropdown = forwardRef(
         }));
 
         useOnClickOutside([menuRef, toggleRef], () => {
-            if (toggled) {
+            if (isToggled) {
                 setToggled(false);
             }
         });
@@ -143,7 +162,13 @@ export const Dropdown = forwardRef(
                 return;
             }
 
-            setToggled(!toggled);
+            // do not loose focus when clicking within the menu
+            if (!content && document.activeElement === menuRef.current) {
+                toggleRef.current?.focus();
+                return;
+            }
+
+            setToggled(!isToggled);
             if (renderOnClickPosition) {
                 setclickPos({ x: e.pageX, y: e.pageY });
             }
@@ -151,23 +176,20 @@ export const Dropdown = forwardRef(
 
         const ToggleComponent = children ? (
             cloneElement(children, {
-                ref: toggleRef,
                 isDisabled,
-                onClick: (e: MouseEvent): void => {
-                    e.stopPropagation();
+                onClick: (e: MouseEvent) => {
                     e.preventDefault();
-                    children.props.onClick?.(e);
-                    onToggleClick(e);
+                    e.stopPropagation();
+                    children?.props.onClick?.(e);
                 },
             })
         ) : (
             <MoreIcon
-                ref={toggleRef as Ref<HTMLDivElement>}
+                isToggled={isToggled}
                 size={24}
                 icon="MORE"
                 color={!isDisabled ? theme.TYPE_DARK_GREY : theme.TYPE_LIGHT_GREY}
                 $isDisabled={isDisabled}
-                onClick={onToggleClick}
                 {...rest}
             />
         );
@@ -186,10 +208,19 @@ export const Dropdown = forwardRef(
         );
 
         return (
-            <div className={className}>
+            <Container
+                ref={toggleRef}
+                className={className}
+                type="button"
+                tabIndex={renderOnClickPosition ? -1 : 0}
+                disabled={isDisabled}
+                onClick={onToggleClick}
+                onFocus={() => !isDisabled && !renderOnClickPosition && setToggled(true)}
+                onBlur={e => !menuRef.current?.contains(e.relatedTarget) && setToggled(false)}
+            >
                 {ToggleComponent}
-                {toggled && PortalMenu}
-            </div>
+                {isToggled && PortalMenu}
+            </Container>
         );
     },
 );
