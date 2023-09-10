@@ -1,7 +1,7 @@
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import styled from 'styled-components';
 
-import { Dropdown, DropdownRef, CoinLogo, variables } from '@trezor/components';
+import { Dropdown, CoinLogo, variables } from '@trezor/components';
 import { Translation, StatusLight } from 'src/components/suite';
 import { ActionItem } from './ActionItem';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -77,7 +77,6 @@ type NavBackendsProps = {
 
 export const NavBackends = ({ customBackends }: NavBackendsProps) => {
     const [open, setOpen] = useState(false);
-    const dropdownRef = useRef<DropdownRef>();
     const blockchain = useSelector(state => state.wallet.blockchain);
     const dispatch = useDispatch();
 
@@ -87,7 +86,6 @@ export const NavBackends = ({ customBackends }: NavBackendsProps) => {
         <Wrapper>
             <Dropdown
                 onToggle={() => setOpen(!open)}
-                ref={dropdownRef}
                 alignMenu="right"
                 addon={{
                     onClick: goToCoinsSettings,
