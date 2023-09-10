@@ -1,32 +1,43 @@
-import React, { forwardRef } from 'react';
-import styled, { css, useTheme } from 'styled-components';
+import React, { forwardRef, useEffect, useState } from 'react';
+import styled, { css, keyframes, useTheme } from 'styled-components';
 import { borders, boxShadows, spacings, spacingsPx, typography } from '@trezor/theme';
 import { Z_INDEX } from '../../config/variables';
 import { animations } from '../../config';
 import { Icon, IconProps } from '../assets/Icon/Icon';
 import type { Coords } from './getAdjustedCoords';
 
-const AddonConteiner = styled.button`
+const addonAnimation = keyframes`
+    from {
+        transform: translateX(-10px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+`;
+
+const AddonContainer = styled.div<{ isFocused?: boolean }>`
     position: absolute;
     top: 16px;
     right: 16px;
     display: flex;
     align-items: center;
     gap: ${spacingsPx.xxs};
-    background: none;
+    padding: ${spacingsPx.xxxs} ${spacingsPx.xs};
+    background: ${({ theme, isFocused }) =>
+        isFocused ? theme.backgroundSurfaceElevation0 : 'none'};
     letter-spacing: 0.4px;
     color: ${({ theme }) => theme.textPrimaryDefault};
     text-transform: uppercase;
     border: 0;
-    opacity: 0;
+    opacity: ${({ isFocused }) => isFocused && 0.6} !important;
     cursor: pointer;
     transform: translateX(-10px);
-    transition: transform 0.2s ease, opacity 0.2s ease;
+    transition: transform 0.2s, opacity 0.2s, background 0.2s;
+    animation: ${addonAnimation} 0.2s both;
     ${typography.label};
-
-    :hover {
-        opacity: 0.6 !important;
-    }
 `;
 
 const Container = styled.ul<Pick<MenuProps, 'coords' | 'alignMenu'>>`
@@ -51,11 +62,6 @@ const Container = styled.ul<Pick<MenuProps, 'coords' | 'alignMenu'>>`
             top: ${coords.y}px;
             left: ${coords.x}px;
         `}
-
-    :hover ${AddonConteiner} {
-        opacity: 1;
-        transform: translateX(0);
-    }
 `;
 
 const GroupLabel = styled.li`
@@ -71,6 +77,7 @@ const GroupLabel = styled.li`
 
 type MenuItemsProps = Pick<DropdownMenuItemProps, 'isDisabled' | 'separatorBefore'> & {
     noHoverEffect: boolean;
+    isFocused: boolean;
 };
 
 const MenuItemContainer = styled.li<MenuItemsProps>`
@@ -81,6 +88,8 @@ const MenuItemContainer = styled.li<MenuItemsProps>`
     gap: ${spacingsPx.sm};
     padding: ${spacingsPx.xs} ${spacingsPx.sm};
     border-radius: ${borders.radii.xs};
+    background: ${({ isFocused, noHoverEffect, theme }) =>
+        isFocused && !noHoverEffect && theme.backgroundSurfaceElevation0};
     color: ${({ isDisabled, theme }) => (!isDisabled ? theme.textDefault : theme.textDisabled)};
     white-space: nowrap;
     transition: background 0.2s ease;
@@ -89,11 +98,6 @@ const MenuItemContainer = styled.li<MenuItemsProps>`
 
     > span {
         margin-right: auto;
-    }
-
-    :hover {
-        background: ${({ theme, noHoverEffect }) =>
-            !noHoverEffect && theme.backgroundSurfaceElevation0};
     }
 
     ${({ separatorBefore, theme }) =>
@@ -115,25 +119,22 @@ const MenuItemContainer = styled.li<MenuItemsProps>`
 interface AddonProps {
     label: React.ReactNode;
     icon: IconProps['icon'];
-    setToggled: (toggled: boolean) => void;
     onClick?: () => void;
 }
 
-const Addon = ({ label, icon, onClick, setToggled }: AddonProps) => {
+interface AddonComponentProps extends AddonProps {
+    isKeyboardSelected: boolean;
+    onMouseOver: () => void;
+}
+
+const Addon = ({ label, icon, onClick, isKeyboardSelected, onMouseOver }: AddonComponentProps) => {
     const theme = useTheme();
 
-    const handleAddonClick = () => {
-        if (onClick) {
-            onClick();
-            setToggled(false);
-        }
-    };
-
     return (
-        <AddonConteiner onClick={handleAddonClick}>
+        <AddonContainer onClick={onClick} isFocused={isKeyboardSelected} onMouseOver={onMouseOver}>
             <span>{label}</span>
             <Icon icon={icon} size={spacings.sm} color={theme.iconPrimaryDefault} />
-        </AddonConteiner>
+        </AddonContainer>
     );
 };
 
@@ -150,6 +151,12 @@ export interface DropdownMenuItemProps {
     'data-test'?: string;
 }
 
+interface MenuItemComponentProps extends DropdownMenuItemProps {
+    isKeyboardSelected: boolean;
+    setToggled: (toggled: boolean) => void;
+    onMouseOver: () => void;
+}
+
 const MenuItem = ({
     icon,
     iconRight,
@@ -158,10 +165,11 @@ const MenuItem = ({
     onClick,
     shouldCloseOnClick = true,
     setToggled,
+    isKeyboardSelected,
+    onMouseOver,
     ...rest
-}: DropdownMenuItemProps & { setToggled: (toggled: boolean) => void }) => {
-    const onMenuItemClick = (e: React.MouseEvent) => {
-        e.stopPropagation();
+}: MenuItemComponentProps) => {
+    const onMenuItemClick = () => {
         if (isDisabled) {
             return;
         }
@@ -177,6 +185,8 @@ const MenuItem = ({
             onClick={onMenuItemClick}
             isDisabled={isDisabled}
             noHoverEffect={!onClick}
+            isFocused={isKeyboardSelected}
+            onMouseOver={onMouseOver}
             {...rest}
         >
             {icon && <Icon icon={icon} size={spacings.md} />}
@@ -192,19 +202,103 @@ export interface GroupedMenuItems {
     label?: React.ReactNode;
 }
 
+interface GroupComponentProps extends GroupedMenuItems {
+    index: number;
+    keyboardFocusedItemId: string | undefined;
+    setToggled: (toggled: boolean) => void;
+    handleItemHover: (itemId: string) => void;
+}
+
 const Group = ({
-    label,
     options,
+    index,
+    keyboardFocusedItemId,
+    label,
     setToggled,
-}: GroupedMenuItems & { setToggled: (toggled: boolean) => void }) => (
+    handleItemHover,
+}: GroupComponentProps) => (
     <>
         {label && <GroupLabel>{label}</GroupLabel>}
 
-        {options.map(item => (
-            <MenuItem setToggled={setToggled} {...item} />
-        ))}
+        {options.map((item, itemIndex) => {
+            const itemId = `${index}.${itemIndex}`;
+
+            return (
+                <MenuItem
+                    setToggled={setToggled}
+                    isKeyboardSelected={itemId === keyboardFocusedItemId}
+                    onMouseOver={() => !item.isDisabled && handleItemHover(itemId)}
+                    {...item}
+                />
+            );
+        })}
     </>
 );
+
+const getNextIndex =
+    (keyboardKey: string, flatGroupItems: Array<{ id: string; isDisabled?: boolean }>) =>
+    (currentIndex: number | null) => {
+        if (currentIndex === null) {
+            return null;
+        }
+
+        let nextIndex = currentIndex;
+        const lastIndex = flatGroupItems.length - 1;
+
+        if (keyboardKey === 'ArrowUp') {
+            const getPrevIndex = (current: number) => (current > 0 ? current - 1 : lastIndex);
+            nextIndex = getPrevIndex(nextIndex);
+            // skip disabled items
+            while (flatGroupItems[nextIndex].isDisabled) {
+                nextIndex = getPrevIndex(nextIndex);
+            }
+        } else if (keyboardKey === 'ArrowDown') {
+            const getNextIndex = (current: number) => (current < lastIndex ? current + 1 : 0);
+            nextIndex = getNextIndex(nextIndex);
+            // skip disabled items
+            while (flatGroupItems[nextIndex].isDisabled) {
+                nextIndex = getNextIndex(nextIndex);
+            }
+        }
+
+        return nextIndex;
+    };
+
+type FlatGroupItems = Array<{
+    id: string;
+    shouldCloseOnClick?: boolean;
+    onClick?: () => void;
+    isDisabled?: boolean;
+}>;
+
+const flattenVisibleItems = (visibleItems: MenuProps['items'], addon: MenuProps['addon']) => {
+    const flatGroupItems = visibleItems?.reduce((ids, group, groupIndex) => {
+        const groupIds = group.options.map(
+            ({ shouldCloseOnClick, onClick, isDisabled }, index) => ({
+                id: `${groupIndex}.${index}`,
+                onClick,
+                shouldCloseOnClick,
+                isDisabled,
+            }),
+        );
+
+        return [...ids, ...groupIds];
+    }, [] as FlatGroupItems);
+
+    if (addon) {
+        flatGroupItems?.unshift({ id: 'addon' });
+    }
+
+    return flatGroupItems;
+};
+
+const getDefaultFocusItemIndex = (items: MenuProps['items'], addon: MenuProps['addon']) => {
+    if (items?.length && items.length > 1) {
+        return addon ? 1 : 0;
+    }
+
+    return null;
+};
 
 export type MenuAlignment = 'left' | 'right' | 'top-left' | 'top-right';
 
@@ -219,19 +313,116 @@ export interface MenuProps {
 
 export const Menu = forwardRef<HTMLUListElement, MenuProps>(
     ({ items, content, setToggled, alignMenu, coords, addon }, ref) => {
+        const [focusedItemIndex, setFocusedItemIndex] = useState(
+            getDefaultFocusItemIndex(items, addon),
+        );
+
         const visibleItems = items?.map(group => ({
             ...group,
             options: group.options.filter(item => !item.isHidden),
         }));
 
+        const flatGroupItems = flattenVisibleItems(visibleItems, addon);
+
+        // handle selecting an item
+        useEffect(() => {
+            const handleKeyDown = (e: KeyboardEvent) => {
+                if (!flatGroupItems || !flatGroupItems.length || focusedItemIndex === null) {
+                    return;
+                }
+
+                if (e.key === ' ' || e.key === 'Enter') {
+                    e.preventDefault();
+
+                    const focusedItem = flatGroupItems[focusedItemIndex];
+                    if (focusedItem.id === 'addon') {
+                        addon?.onClick?.();
+                    } else {
+                        focusedItem?.onClick?.();
+                    }
+
+                    if (focusedItem.shouldCloseOnClick !== false) {
+                        setToggled(false);
+                    }
+                }
+            };
+
+            if (focusedItemIndex !== null && flatGroupItems?.length) {
+                document.addEventListener('keydown', handleKeyDown);
+
+                return () => {
+                    document.removeEventListener('keydown', handleKeyDown);
+                };
+            }
+        }, [focusedItemIndex, flatGroupItems, setToggled, addon]);
+
+        // handle keyboard navigation
+        useEffect(() => {
+            const handleKeyDown = (e: KeyboardEvent) => {
+                if (
+                    (e.key === 'ArrowUp' || e.key === 'ArrowDown') &&
+                    flatGroupItems &&
+                    flatGroupItems.length > 0 &&
+                    focusedItemIndex !== null
+                ) {
+                    e.preventDefault();
+                    setFocusedItemIndex(getNextIndex(e.key, flatGroupItems));
+                }
+            };
+
+            if (focusedItemIndex !== null && flatGroupItems?.length) {
+                document.addEventListener('keydown', handleKeyDown);
+
+                return () => {
+                    document.removeEventListener('keydown', handleKeyDown);
+                };
+            }
+        }, [flatGroupItems, focusedItemIndex]);
+
+        const handleItemHover = (itemId: string) => {
+            const itemIndex = flatGroupItems?.findIndex(({ id }) => id === itemId);
+
+            setFocusedItemIndex(itemIndex ?? null);
+        };
+
+        const handleAddonClick = () => {
+            if (addon?.onClick) {
+                addon?.onClick();
+                setToggled(false);
+            }
+        };
+
+        const keyboardFocusedItemId =
+            focusedItemIndex !== null ? flatGroupItems?.[focusedItemIndex]?.id : undefined;
+
         return (
-            <Container ref={ref} alignMenu={alignMenu} coords={coords}>
-                {addon && <Addon setToggled={setToggled} {...addon} />}
+            <Container
+                ref={ref}
+                alignMenu={alignMenu}
+                coords={coords}
+                tabIndex={content ? 0 : 1} // do not affect tab order when there is no content
+                onClick={e => e.stopPropagation()} // prevent closing the menu when clicking on the menu itself or within the menu
+            >
+                {addon && (
+                    <Addon
+                        onMouseOver={() => handleItemHover('addon')}
+                        isKeyboardSelected={keyboardFocusedItemId === 'addon'}
+                        {...addon}
+                        onClick={handleAddonClick}
+                    />
+                )}
 
-                {content && content}
+                {content}
 
-                {visibleItems &&
-                    visibleItems.map(group => <Group setToggled={setToggled} {...group} />)}
+                {visibleItems?.map((group, index) => (
+                    <Group
+                        setToggled={setToggled}
+                        index={index}
+                        keyboardFocusedItemId={keyboardFocusedItemId}
+                        handleItemHover={handleItemHover}
+                        {...group}
+                    />
+                ))}
             </Container>
         );
     },
