@@ -20,6 +20,19 @@ const canvasStyle = prepareNativeStyle(_ => ({
     flex: 1,
 }));
 
+const overlayWrapperStyle = prepareNativeStyle(utils => ({
+    ...StyleSheet.absoluteFillObject,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: utils.colors.backgroundTertiaryDefaultOnElevation0,
+}));
+
+const BlankScreenPlaceholder = () => {
+    const { applyStyle } = useNativeStyles();
+
+    return <View style={applyStyle(overlayWrapperStyle)} />;
+};
+
 export const BlurredScreenOverlay = ({
     isDimmed = true,
     blurValue = 4,
@@ -31,7 +44,9 @@ export const BlurredScreenOverlay = ({
 
     const { screenshot } = useContext(ScreenshotContext);
 
-    if (!screenshot) return null;
+    /* If the screenshot is not ready yet (typically right after starting the app), display
+     a blank screen to prevent unauthorized user from seeing the content of the screen. */
+    if (!screenshot) return <BlankScreenPlaceholder />;
 
     const overlayHeight = SCREEN_HEIGHT - STATUS_BAR_HEIGHT;
 
