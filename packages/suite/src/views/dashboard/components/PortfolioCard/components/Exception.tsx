@@ -53,7 +53,7 @@ interface CTA {
 
 interface ContainerProps {
     title: ComponentProps<typeof Translation>['id'];
-    description: ComponentProps<typeof Translation>['id'] | JSX.Element;
+    description?: ComponentProps<typeof Translation>['id'] | JSX.Element;
     cta: CTA | CTA[];
     dataTestBase: string;
 }
@@ -68,9 +68,15 @@ const Container = ({ title, description, cta, dataTestBase }: ContainerProps) =>
             <Title>
                 <Translation id={title} />
             </Title>
-            <Description>
-                {typeof description === 'string' ? <Translation id={description} /> : description}
-            </Description>
+            {description && (
+                <Description>
+                    {typeof description === 'string' ? (
+                        <Translation id={description} />
+                    ) : (
+                        description
+                    )}
+                </Description>
+            )}
             <Actions>
                 {actions.map(a => (
                     <Button
@@ -129,7 +135,6 @@ export const Exception = ({ exception, discovery }: ExceptionProps) => {
             return (
                 <Container
                     title="TR_AUTH_CONFIRM_FAILED_TITLE"
-                    description="TR_AUTH_CONFIRM_FAILED_DESC"
                     cta={{ action: () => dispatch(authConfirm()) }}
                     dataTestBase={exception.type}
                 />
