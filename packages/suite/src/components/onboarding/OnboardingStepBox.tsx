@@ -46,7 +46,7 @@ const StyledCollapsibleCard = styled(CollapsibleOnboardingCard)<{ $isBackDropVis
 export interface OnboardingStepBoxProps extends CollapsibleOnboardingCardProps {
     innerActions?: ReactNode;
     outerActions?: ReactNode;
-    deviceModelInternal?: DeviceModelInternal;
+    device?: TrezorDevice;
     disableConfirmWrapper?: boolean;
     nested?: boolean;
     devicePromptTitle?: ReactNode;
