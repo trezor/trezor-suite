@@ -15,4 +15,7 @@ npm init -y
 npm install @trezor/connect
 npm install @trezor/connect-web
 
+echo "import TrezorConnect from '@trezor/connect'" > ./index.js
+node index.js
+
 cat package.json
