@@ -47,6 +47,9 @@ const PortfolioCard = memo(() => {
     const dispatch = useDispatch();
 
     const isDeviceEmpty = useMemo(() => accounts.every(a => a.empty), [accounts]);
+    const isMissingFiatRates = coins
+        .filter(c => !c.tokenAddress)
+        .some(c => !c.current?.rates?.[localCurrency]);
     const portfolioValue = accountUtils
         .getTotalFiatBalance(accounts, localCurrency, coins)
         .toString();
@@ -146,6 +149,7 @@ const PortfolioCard = memo(() => {
                     isWalletLoading={isWalletLoading}
                     isWalletError={isWalletError}
                     isDiscoveryRunning={isDiscoveryRunning}
+                    isMissingFiatRate={isMissingFiatRates}
                     receiveClickHandler={goToReceive}
                     buyClickHandler={goToBuy}
                 />
