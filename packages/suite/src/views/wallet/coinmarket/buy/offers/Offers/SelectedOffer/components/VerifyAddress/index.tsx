@@ -8,10 +8,11 @@ import {
     AccountLabeling,
     FormattedCryptoAmount,
 } from 'src/components/suite';
-import { Input, Button, variables, CoinLogo, Image } from '@trezor/components';
+import { Input, Button, variables, CoinLogo } from '@trezor/components';
 import { useCoinmarketBuyOffersContext } from 'src/hooks/wallet/useCoinmarketBuyOffers';
 import { AddressOptions } from 'src/views/wallet/coinmarket/common';
 import { useAccountAddressDictionary } from 'src/hooks/wallet/useAccounts';
+import { ConfirmedOnTrezor } from 'src/views/wallet/coinmarket/common/ConfirmedOnTrezor';
 import { AddressOptionsFormState } from 'src/types/wallet/coinmarketBuyOffers';
 
 const Wrapper = styled.div`
@@ -62,11 +63,6 @@ const CustomLabel = styled(Label)`
 
 const LabelText = styled.div``;
 
-const StyledImage = styled(Image)`
-    height: 25px;
-    padding: 0 10px 0 0;
-`;
-
 const Amount = styled.div`
     display: flex;
     font-size: ${variables.FONT_SIZE.TINY};
@@ -99,17 +95,6 @@ const ButtonWrapper = styled.div`
     margin: 20px 0;
 `;
 
-const Confirmed = styled.div`
-    display: flex;
-    height: 60px;
-    font-size: ${variables.FONT_SIZE.BIG};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    background: ${({ theme }) => theme.BG_GREY};
-    align-items: center;
-    justify-content: center;
-    margin-top: 27px;
-`;
-
 const VerifyAddressComponent = () => {
     const {
         account,
@@ -122,7 +107,6 @@ const VerifyAddressComponent = () => {
     } = useCoinmarketBuyOffersContext();
     const { symbol, formattedBalance } = account;
     const { path, address: unusedAddress } = getUnusedAddressFromAccount(account);
-    const deviceModelInternal = device?.features?.internal_model;
 
     const { watch, setValue, control } = useForm<AddressOptionsFormState>({
         mode: 'onChange',
@@ -191,11 +175,8 @@ const VerifyAddressComponent = () => {
                         readOnly
                     />
                 )}
-                {addressVerified && addressVerified === address && deviceModelInternal && (
-                    <Confirmed>
-                        <StyledImage alt="Trezor" image={`TREZOR_${deviceModelInternal}`} />
-                        <Translation id="TR_BUY_CONFIRMED_ON_TREZOR" />
-                    </Confirmed>
+                {addressVerified && addressVerified === address && (
+                    <ConfirmedOnTrezor device={device} />
                 )}
             </CardContent>
             <ButtonWrapper>

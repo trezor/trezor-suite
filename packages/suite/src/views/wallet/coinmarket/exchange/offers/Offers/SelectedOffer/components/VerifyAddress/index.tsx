@@ -4,13 +4,14 @@ import { useForm } from 'react-hook-form';
 import addressValidator from 'trezor-address-validator';
 
 import { QuestionTooltip, Translation } from 'src/components/suite';
-import { Input, variables, Image, Button } from '@trezor/components';
+import { Input, variables, Button } from '@trezor/components';
 import { useCoinmarketExchangeOffersContext } from 'src/hooks/wallet/useCoinmarketExchangeOffers';
 import { isHexValid, isInteger } from '@suite-common/wallet-utils';
 import { AddressOptions } from 'src/views/wallet/coinmarket/common';
 import { useAccountAddressDictionary } from 'src/hooks/wallet/useAccounts';
 import { ReceiveOptions, AccountSelectOption } from './ReceiveOptions';
 import { useTranslation } from 'src/hooks/suite/useTranslation';
+import { ConfirmedOnTrezor } from 'src/views/wallet/coinmarket/common/ConfirmedOnTrezor';
 
 const Wrapper = styled.div`
     display: flex;
@@ -45,11 +46,6 @@ const CustomLabel = styled(Label)`
     padding: 12px 0;
 `;
 
-const StyledImage = styled(Image)`
-    height: 25px;
-    padding: 0 10px 0 0;
-`;
-
 const ButtonWrapper = styled.div`
     display: flex;
     align-items: center;
@@ -57,17 +53,6 @@ const ButtonWrapper = styled.div`
     padding-top: 20px;
     border-top: 1px solid ${({ theme }) => theme.STROKE_GREY};
     margin: 20px 0;
-`;
-
-const Confirmed = styled.div`
-    display: flex;
-    height: 60px;
-    font-size: ${variables.FONT_SIZE.BIG};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    background: ${({ theme }) => theme.BG_GREY};
-    align-items: center;
-    justify-content: center;
-    margin-top: 27px;
 `;
 
 const Row = styled.div`
@@ -116,7 +101,6 @@ const VerifyAddressComponent = () => {
 
     const { translationString } = useTranslation();
 
-    const deviceModelInternal = device?.features?.internal_model;
     const addressDictionary = useAccountAddressDictionary(selectedAccountOption?.account);
     const { address, extraField } = watch();
     const accountAddress = address && addressDictionary[address];
@@ -220,11 +204,8 @@ const VerifyAddressComponent = () => {
                         />
                     )}
 
-                    {addressVerified && addressVerified === address && deviceModelInternal && (
-                        <Confirmed>
-                            <StyledImage alt="Trezor" image={`TREZOR_${deviceModelInternal}`} />
-                            <Translation id="TR_EXCHANGE_CONFIRMED_ON_TREZOR" />
-                        </Confirmed>
+                    {addressVerified && addressVerified === address && (
+                        <ConfirmedOnTrezor device={device} />
                     )}
                 </Row>
                 {selectedQuote?.extraFieldDescription && (
