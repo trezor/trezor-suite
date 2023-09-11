@@ -1,7 +1,7 @@
 import { TouchableOpacity } from 'react-native';
 import { useSelector } from 'react-redux';
 
-import { Card } from '@suite-native/atoms';
+import { Box } from '@suite-native/atoms';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import { selectIsEthereumAccountWithTokensWithFiatRates } from '@suite-native/ethereum-tokens';
 import { SettingsSliceRootState } from '@suite-native/module-settings';
@@ -23,7 +23,7 @@ export const AccountListItemInteractive = ({
     );
 
     return (
-        <Card>
+        <Box padding="medium">
             <TouchableOpacity onPress={() => onSelectAccount(account.key)}>
                 <AccountListItem
                     key={account.key}
@@ -34,6 +34,6 @@ export const AccountListItemInteractive = ({
             {areTokensDisplayed && (
                 <TokenList accountKey={account.key} onSelectAccount={onSelectAccount} />
             )}
-        </Card>
+        </Box>
     );
 };

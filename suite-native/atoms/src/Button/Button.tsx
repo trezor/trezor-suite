@@ -202,7 +202,7 @@ export const Button = ({
                     style,
                 ]}
             >
-                <HStack>
+                <HStack alignItems="center">
                     {iconLeft && icon}
                     <Text
                         align="center"

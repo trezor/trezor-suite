@@ -6,7 +6,7 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { PortfolioGraph } from '../components/PortfolioGraph';
 import { DashboardNavigationButtons } from '../components/DashboardNavigationButtons';
 
-const HOME_SCREEN_MARGIN_TOP = 88;
+const HOME_SCREEN_MARGIN_TOP = 72;
 
 const homeScreenContentStyle = prepareNativeStyle(_ => ({
     marginTop: HOME_SCREEN_MARGIN_TOP,

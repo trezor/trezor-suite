@@ -4,7 +4,7 @@ import { CommonActions, useNavigation } from '@react-navigation/core';
 
 import { networks, NetworkSymbol } from '@suite-common/wallet-config';
 import { AccountsRootState, selectAccountsByNetworkAndDevice } from '@suite-common/wallet-core';
-import { Button, Divider } from '@suite-native/atoms';
+import { Box, Button, Divider, VStack } from '@suite-native/atoms';
 import { useAccountLabelForm, AccountFormValues } from '@suite-native/accounts';
 import { Form } from '@suite-native/forms';
 import { HIDDEN_DEVICE_STATE } from '@suite-native/module-devices';
@@ -108,23 +108,27 @@ export const AccountImportSummaryForm = ({
     );
     return (
         <Form form={form}>
-            <AccountImportOverview
-                balance={accountInfo.availableBalance}
-                networkSymbol={networkSymbol}
-            />
-            {areTokensDisplayed && (
-                <AccountImportEthereumTokens tokens={accountInfo.tokens ?? []} />
-            )}
-            <Divider marginBottom="small" />
-            <Button
-                data-testID="@account-import/coin-synced/confirm-button"
-                onPress={handleImportAccount}
-                size="large"
-                style={applyStyle(confirmButtonStyle)}
-                isDisabled={!!errors.accountLabel}
-            >
-                Confirm
-            </Button>
+            <VStack spacing="large">
+                <AccountImportOverview
+                    balance={accountInfo.availableBalance}
+                    networkSymbol={networkSymbol}
+                />
+                {areTokensDisplayed && (
+                    <AccountImportEthereumTokens tokens={accountInfo.tokens ?? []} />
+                )}
+                <Divider marginHorizontal="extraLarge" />
+                <Box marginHorizontal="medium">
+                    <Button
+                        data-testID="@account-import/coin-synced/confirm-button"
+                        onPress={handleImportAccount}
+                        size="large"
+                        style={applyStyle(confirmButtonStyle)}
+                        isDisabled={!!errors.accountLabel}
+                    >
+                        Confirm
+                    </Button>
+                </Box>
+            </VStack>
         </Form>
     );
 };

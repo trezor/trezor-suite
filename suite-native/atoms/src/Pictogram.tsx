@@ -101,9 +101,11 @@ export const Pictogram = ({
             </Box>
             {title && (
                 <VStack alignItems="center">
-                    <Text variant={titleVariant} align="center">
-                        {title}
-                    </Text>
+                    <Box>
+                        <Text variant={titleVariant} align="center">
+                            {title}
+                        </Text>
+                    </Box>
                     <Text color="textSubdued" align="center">
                         {subtitle}
                     </Text>

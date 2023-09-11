@@ -47,7 +47,7 @@ export const PortfolioGraphHeader = () => {
                 <Box justifyContent="center" alignItems="center">
                     <Balance />
                 </Box>
-                <HStack>
+                <HStack alignItems="center">
                     <GraphDateFormatter
                         firstPointDate={firstPointDate}
                         selectedPointAtom={selectedPointAtom}

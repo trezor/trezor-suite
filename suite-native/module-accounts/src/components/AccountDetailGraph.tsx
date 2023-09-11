@@ -5,11 +5,15 @@ import { A } from '@mobily/ts-belt';
 import { useSetAtom } from 'jotai';
 
 import { useGraphForSingleAccount, Graph, TimeSwitch } from '@suite-native/graph';
-import { Box } from '@suite-native/atoms';
+import { VStack } from '@suite-native/atoms';
 import { selectFiatCurrency } from '@suite-native/module-settings';
 import { FiatGraphPointWithCryptoBalance } from '@suite-common/graph';
 
-import { referencePointAtom, selectedPointAtom } from './AccountDetailGraphHeader';
+import {
+    AccountDetailGraphHeader,
+    referencePointAtom,
+    selectedPointAtom,
+} from './AccountDetailGraphHeader';
 
 type AccountDetailGraphProps = {
     accountKey: string;
@@ -38,7 +42,8 @@ export const AccountDetailGraph = ({ accountKey }: AccountDetailGraphProps) => {
     useEffect(setInitialSelectedPoints, [setInitialSelectedPoints]);
 
     return (
-        <Box>
+        <VStack spacing="large">
+            <AccountDetailGraphHeader accountKey={accountKey} />
             <Graph<FiatGraphPointWithCryptoBalance>
                 onPointSelected={setSelectedPoint}
                 onGestureEnd={setInitialSelectedPoints}
@@ -49,6 +54,6 @@ export const AccountDetailGraph = ({ accountKey }: AccountDetailGraphProps) => {
                 events={graphEvents}
             />
             <TimeSwitch selectedTimeFrame={timeframe} onSelectTimeFrame={onSelectTimeFrame} />
-        </Box>
+        </VStack>
     );
 };

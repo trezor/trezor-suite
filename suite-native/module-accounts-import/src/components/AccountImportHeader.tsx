@@ -17,10 +17,10 @@ import {
 import { selectUserHasAccounts } from '@suite-common/wallet-core';
 
 type AccountImportHeaderProps = {
-    activeStep: 1 | 2 | 3 | 4;
+    activeStep: 1 | 2 | 3;
 };
 
-const NUMBER_OF_STEPS = 4;
+const NUMBER_OF_STEPS = 3;
 
 const closeButtonStyle = prepareNativeStyle(_ => ({
     position: 'absolute',
