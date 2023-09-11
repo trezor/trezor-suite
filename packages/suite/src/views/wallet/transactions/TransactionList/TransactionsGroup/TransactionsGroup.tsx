@@ -38,6 +38,7 @@ export const TransactionsGroup = ({
     const [isHovered, setIsHovered] = useState(false);
     const totalAmountPerDay = sumTransactions(transactions);
     const totalFiatAmountPerDay = sumTransactionsFiat(transactions, localCurrency);
+    const isMissingFiatRates = transactions.some(tx => !tx.rates?.[localCurrency]);
     return (
         <TransactionsGroupWrapper
             key={dateKey}
@@ -54,6 +55,7 @@ export const TransactionsGroup = ({
                 totalFiatAmountPerDay={totalFiatAmountPerDay}
                 txsCount={transactions.length}
                 localCurrency={localCurrency}
+                isMissingFiatRates={isMissingFiatRates}
             />
             {children}
         </TransactionsGroupWrapper>

@@ -58,6 +58,7 @@ interface DayHeaderProps {
     totalFiatAmountPerDay: BigNumber;
     localCurrency: string;
     txsCount?: number;
+    isMissingFiatRates?: boolean;
     isHovered?: boolean;
 }
 
@@ -69,6 +70,7 @@ export const DayHeader = ({
     totalFiatAmountPerDay,
     localCurrency,
     txsCount,
+    isMissingFiatRates,
     isHovered,
 }: DayHeaderProps) => {
     const { FiatAmountFormatter } = useFormatters();
@@ -97,7 +99,7 @@ export const DayHeader = ({
                         {totalAmount.gte(0) && <span>+</span>}
                         <FormattedCryptoAmount value={totalAmount.toFixed()} symbol={symbol} />
                     </ColAmount>
-                    {showFiatValue && (
+                    {showFiatValue && !isMissingFiatRates && (
                         <ColFiat>
                             <HiddenPlaceholder>
                                 {totalFiatAmountPerDay.gte(0) && <span>+</span>}
