@@ -2,6 +2,14 @@ import { useState } from 'react';
 
 import { AnimatePresence, motion } from 'framer-motion';
 import styled from 'styled-components';
+import {
+    useTheme,
+    variables,
+    Icon,
+    Image,
+    motionAnimation,
+    DeviceAnimation,
+} from '@trezor/components';
 
 import {
     selectDevice,
@@ -9,20 +17,20 @@ import {
     createDeviceInstance,
     selectDeviceThunk,
 } from '@suite-common/wallet-core';
-import * as deviceUtils from '@suite-common/suite-utils';
-import { useTheme, variables, Icon, Image, motionAnimation } from '@trezor/components';
-
 import { Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { goto } from 'src/actions/suite/routerActions';
 import { OpenGuideFromTooltip } from 'src/components/guide';
-import type { TrezorDevice, AcquiredDevice, ForegroundAppProps } from 'src/types/suite';
-import type { getBackgroundRoute } from 'src/utils/suite/router';
 
 import { WalletInstance } from '../WalletInstance';
 import ColHeader from './components/ColHeader';
 import AddWalletButton from './components/AddWalletButton';
 import DeviceHeaderButton from './components/DeviceHeaderButton';
+
+import type { TrezorDevice, AcquiredDevice, ForegroundAppProps } from 'src/types/suite';
+import type { getBackgroundRoute } from 'src/utils/suite/router';
+import { DeviceModelInternal } from '@trezor/connect';
+import * as deviceUtils from '@suite-common/suite-utils';
 
 const DeviceWrapper = styled.div`
     display: flex;
@@ -204,7 +212,17 @@ const DeviceItem = ({ device, instances, onCancel, backgroundRoute }: DeviceItem
                 <DeviceHeader>
                     {deviceModelInternal && (
                         <DeviceImageWrapper>
-                            <StyledImage alt="Trezor" image={`TREZOR_${deviceModelInternal}`} />
+                            {deviceModelInternal === DeviceModelInternal.T2B1 && (
+                                <DeviceAnimation
+                                    type="ROTATE"
+                                    size={36}
+                                    deviceModelInternal={deviceModelInternal}
+                                    deviceUnitColor={device?.features?.unit_color}
+                                />
+                            )}
+                            {deviceModelInternal !== DeviceModelInternal.T2B1 && (
+                                <StyledImage alt="Trezor" image={`TREZOR_${deviceModelInternal}`} />
+                            )}
                         </DeviceImageWrapper>
                     )}
                     <Col grow={1}>

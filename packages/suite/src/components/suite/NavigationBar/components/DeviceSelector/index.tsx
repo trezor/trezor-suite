@@ -1,13 +1,11 @@
 import { useState, useEffect, useRef } from 'react';
 
 import styled, { css } from 'styled-components';
-import { transparentize } from 'polished';
 
+import { variables, Image, Icon, DeviceAnimation } from '@trezor/components';
 import { selectDevicesCount, selectDevice, acquireDevice } from '@suite-common/wallet-core';
 import * as deviceUtils from '@suite-common/suite-utils';
-import { variables, Image, Icon } from '@trezor/components';
 import type { Timeout } from '@trezor/type-utils';
-
 import { SHAKE } from 'src/support/suite/styles/animations';
 import { WalletLabeling } from 'src/components/suite';
 import { TrezorDevice } from 'src/types/suite';
@@ -15,6 +13,8 @@ import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
 import { DeviceStatus } from './DeviceStatus';
+import { transparentize } from 'polished';
+import { DeviceModelInternal } from '@trezor/connect';
 
 const ArrowDown = styled(Icon)`
     margin-left: 4px;
@@ -70,11 +70,13 @@ const DeviceLabel = styled.div`
     }
 `;
 
-const StyledImage = styled(Image)<{ isLowerOpacity: boolean }>`
-    height: 34px;
+const DeviceWrapper = styled.div<{ isLowerOpacity: boolean }>`
     margin-right: 14px;
-    flex: 0;
     opacity: ${({ isLowerOpacity }) => isLowerOpacity && 0.4};
+`;
+
+const StyledImage = styled(Image)`
+    height: 34px;
 `;
 
 const WalletNameWrapper = styled.div`
@@ -183,11 +185,22 @@ export const DeviceSelector = () => {
         >
             {selectedDevice && selectedDeviceModelInternal && (
                 <>
-                    <StyledImage
-                        alt="Trezor"
-                        image={`TREZOR_${selectedDeviceModelInternal}`}
-                        isLowerOpacity={deviceNeedsRefresh}
-                    />
+                    <DeviceWrapper isLowerOpacity={deviceNeedsRefresh}>
+                        {selectedDeviceModelInternal === DeviceModelInternal.T2B1 && (
+                            <DeviceAnimation
+                                type="ROTATE"
+                                size={34}
+                                deviceModelInternal={selectedDeviceModelInternal}
+                                deviceUnitColor={selectedDevice?.features?.unit_color}
+                            />
+                        )}
+                        {selectedDeviceModelInternal !== DeviceModelInternal.T2B1 && (
+                            <StyledImage
+                                alt="Trezor"
+                                image={`TREZOR_${selectedDeviceModelInternal}`}
+                            />
+                        )}
+                    </DeviceWrapper>
                     <DeviceDetail>
                         <DeviceLabel>
                             <span>{selectedDevice.label}</span>
