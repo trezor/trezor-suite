@@ -26,9 +26,6 @@ jobs:
           if git status --porcelain | grep -q "^UU"; then
             echo "Rebase conflicts detected"
             echo "STATUS=conflicts" >> $GITHUB_OUTPUT
-          elif [ $? -ne 0 ]; then
-            echo "unknown error during rebase"
-            echo "STATUS=error" >> $GITHUB_OUTPUT
           else
             echo 'Rebase successful'
           fi
