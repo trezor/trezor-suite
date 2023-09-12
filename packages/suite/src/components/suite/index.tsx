@@ -46,7 +46,6 @@ import { DeviceButton } from './DeviceButton';
 import { Coin } from './Coin';
 import { CoinsGroup } from './CoinsGroup/CoinsGroup';
 import { CoinsList } from './CoinsGroup/CoinsList';
-import CharacterCount from './CharacterCount';
 import { CloseButton } from './CloseButton';
 import TooltipSymbol from './TooltipSymbol';
 import StatusLight from './StatusLight';
@@ -113,7 +112,6 @@ export {
     Coin,
     CoinsGroup,
     CoinsList,
-    CharacterCount,
     CloseButton,
     TooltipSymbol,
     StatusLight,

@@ -1,9 +1,9 @@
-import { useState, useCallback, useEffect, ReactNode, ChangeEvent } from 'react';
+import { useState, useCallback, ReactNode, ChangeEvent } from 'react';
 import styled, { css } from 'styled-components';
 import { analytics, EventType } from '@trezor/suite-analytics';
 import { getFirmwareVersion } from '@trezor/device-utils';
 
-import { CharacterCount, Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite';
 import { Textarea, Select, variables, Button, CollapsibleBox } from '@trezor/components';
 import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 import { sendFeedback, setView } from 'src/actions/suite/guideActions';
@@ -168,12 +168,6 @@ export const Feedback = ({ type }: FeedbackProps) => {
         label: feedbackCategories[category],
     });
 
-    useEffect(() => {
-        if (description.length >= MESSAGE_CHARACTER_LIMIT) {
-            setDescription(description.slice(0, MESSAGE_CHARACTER_LIMIT));
-        }
-    }, [description]);
-
     const goBack = () => dispatch(setView('SUPPORT_FEEDBACK_SELECTION'));
     const onSubmit = useCallback(() => {
         const userData: UserData = {
@@ -293,10 +287,10 @@ export const Feedback = ({ type }: FeedbackProps) => {
                         setDescription(e.target.value)
                     }
                     noTopLabel
+                    characterCount
                     data-test="@guide/feedback/suggestion-form"
-                >
-                    <CharacterCount current={description.length} max={MESSAGE_CHARACTER_LIMIT} />
-                </Textarea>
+                    maxLength={MESSAGE_CHARACTER_LIMIT}
+                />
 
                 <Submit
                     onClick={onSubmit}
