@@ -13,7 +13,7 @@ import {
 } from '@trezor/components';
 
 import { WalletLayout, WalletLayoutHeader } from 'src/components/wallet';
-import { CharacterCount, Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite';
 import { useDevice, useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
 import { sign, verify } from 'src/actions/wallet/signVerifyActions';
 import { goto } from 'src/actions/suite/routerActions';
@@ -214,18 +214,17 @@ const SignVerify = () => {
                                 </SwitchWrapper>
                             }
                             inputState={getInputState(formErrors.message, formValues.message)}
+                            characterCount={{
+                                current: formValues.message?.length,
+                                max: MAX_LENGTH_MESSAGE,
+                            }}
                             bottomText={messageError}
                             rows={4}
                             maxRows={4}
                             data-test="@sign-verify/message"
                             innerRef={messageRef}
                             {...messageField}
-                        >
-                            <CharacterCount
-                                current={formValues.message?.length || 0}
-                                max={MAX_LENGTH_MESSAGE}
-                            />
-                        </Textarea>
+                        />
                     </Row>
 
                     <Row>
@@ -297,15 +296,14 @@ const SignVerify = () => {
                         ) : (
                             <Textarea
                                 maxLength={MAX_LENGTH_SIGNATURE}
+                                characterCount={{
+                                    current: formValues.signature.length,
+                                    max: MAX_LENGTH_SIGNATURE,
+                                }}
                                 rows={4}
                                 maxRows={4}
                                 {...signatureProps}
-                            >
-                                <CharacterCount
-                                    current={formValues.signature?.length || 0}
-                                    max={MAX_LENGTH_SIGNATURE}
-                                />
-                            </Textarea>
+                            />
                         )}
                     </Row>
 
