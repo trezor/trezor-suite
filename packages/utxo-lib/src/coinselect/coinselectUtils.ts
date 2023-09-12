@@ -156,33 +156,36 @@ export function sumOrNaN(range: { value?: string }[], forgiving = false) {
 // DOGE fee policy https://github.com/dogecoin/dogecoin/issues/1650#issuecomment-722229742
 // 1 DOGE base fee + 1 DOGE per every started kb + 1 DOGE for every output below 1 DOGE (dust limit)
 export function getFee(
-    feeRate: number,
-    bytes: number,
-    options: Partial<CoinSelectOptions>,
+    inputs: CoinSelectInput[],
     outputs: CoinSelectOutput[],
+    feeRate: number,
+    { baseFee = 0, floorBaseFee, dustOutputFee, dustThreshold }: Partial<CoinSelectOptions> = {},
 ) {
+    const bytes = transactionBytes(inputs, outputs);
     const defaultFee = getFeeForBytes(feeRate, bytes);
-    let baseFee = options.baseFee || 0;
-    if (baseFee && bytes) {
-        if (options.floorBaseFee) {
+    let fee = baseFee || 0;
+    if (fee && bytes) {
+        if (floorBaseFee) {
             // increase baseFee for every started kb
-            baseFee *= Math.floor((baseFee + defaultFee) / baseFee);
+            fee *= Math.floor((fee + defaultFee) / fee);
         } else {
             // simple increase baseFee
-            baseFee += defaultFee;
+            fee += defaultFee;
         }
     }
-    if (options.dustOutputFee && options.dustThreshold) {
+
+    if (dustOutputFee && dustThreshold) {
         // find all outputs below dust limit
         for (let i = 0; i < outputs.length; i++) {
             const { value } = outputs[i];
-            if (value && new BN(value).sub(new BN(options.dustThreshold)).isNeg()) {
+            if (value && new BN(value).sub(new BN(dustThreshold)).isNeg()) {
                 // increase for every output below dustThreshold
-                baseFee += options.dustOutputFee;
+                fee += dustOutputFee;
             }
         }
     }
-    return baseFee || defaultFee;
+
+    return fee || defaultFee;
 }
 
 export function finalize(
@@ -191,12 +194,9 @@ export function finalize(
     feeRate: number,
     options: CoinSelectOptions,
 ) {
-    const bytesAccum = transactionBytes(inputs, outputs);
-    const blankOutputBytes = outputBytes({
-        script: { length: OUTPUT_SCRIPT_LENGTH[options.txType] },
-    });
-    const fee = getFee(feeRate, bytesAccum, options, outputs);
-    const feeAfterExtraOutput = getFee(feeRate, bytesAccum + blankOutputBytes, options, outputs);
+    const blankOutput = { script: { length: OUTPUT_SCRIPT_LENGTH[options.txType] } };
+    const fee = getFee(inputs, outputs, feeRate, options);
+    const feeAfterExtraOutput = getFee(inputs, [...outputs, blankOutput], feeRate, options);
     const sumInputs = sumOrNaN(inputs);
     const sumOutputs = sumOrNaN(outputs);
     // if sum inputs/outputs is NaN

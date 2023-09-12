@@ -2,7 +2,6 @@ import * as BN from 'bn.js';
 import {
     bignumberOrNaN,
     sumOrNaN,
-    transactionBytes,
     filterCoinbase,
     getDustAmount,
     getFee,
@@ -26,8 +25,7 @@ export function split(
     const coinbase = options.coinbase || 100;
     const utxos = filterCoinbase(utxosOrig, coinbase);
 
-    const bytesAccum = transactionBytes(utxos, outputs);
-    const fee = getFee(feeRate, bytesAccum, options, outputs);
+    const fee = getFee(utxos, outputs, feeRate, options);
     if (outputs.length === 0) return { fee };
 
     const inAccum = sumOrNaN(utxos);
