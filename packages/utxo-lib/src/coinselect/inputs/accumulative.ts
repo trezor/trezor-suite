@@ -3,7 +3,6 @@ import {
     bignumberOrNaN,
     sumOrNaN,
     inputBytes,
-    transactionBytes,
     getFee,
     getFeeForBytes,
     finalize,
@@ -24,7 +23,6 @@ export function accumulative(
     feeRate: number,
     options: CoinSelectOptions,
 ): CoinSelectResult {
-    let bytesAccum = transactionBytes([], outputs);
     let inAccum = ZERO;
     const inputs: CoinSelectInput[] = [];
     const outAccum = sumOrNaN(outputs);
@@ -35,9 +33,7 @@ export function accumulative(
     utxos0.forEach(u => {
         if (u.required) {
             requiredUtxos.push(u);
-            const utxoBytes = inputBytes(u);
             const utxoValue = bignumberOrNaN(u.value, true); // use forgiving (0)
-            bytesAccum += utxoBytes;
             inAccum = inAccum.add(utxoValue);
             inputs.push(u);
         } else {
@@ -63,15 +59,14 @@ export function accumulative(
         // skip detrimental input
         if (!utxoValue || utxoValue.lt(new BN(utxoFee))) {
             if (i === utxos.length - 1) {
-                const fee = getFee(feeRate, bytesAccum + utxoBytes, options, outputs);
+                const fee = getFee([...inputs, utxo], outputs, feeRate, options);
                 return { fee };
             }
         } else {
-            bytesAccum += utxoBytes;
             inAccum = inAccum.add(utxoValue);
             inputs.push(utxo);
 
-            const fee = getFee(feeRate, bytesAccum, options, outputs);
+            const fee = getFee(inputs, outputs, feeRate, options);
             const outAccumWithFee = outAccum ? outAccum.add(new BN(fee)) : ZERO;
 
             // go again?
@@ -81,6 +76,6 @@ export function accumulative(
         }
     }
 
-    const fee = getFee(feeRate, bytesAccum, options, outputs);
+    const fee = getFee(inputs, outputs, feeRate, options);
     return { fee };
 }

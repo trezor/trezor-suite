@@ -27,43 +27,44 @@ describe('coinselectUtils', () => {
     });
 
     it('getBaseFee', () => {
-        expect(getFee(1.33, 56, {}, [])).toEqual(75);
-        expect(getFee(1, 100, {}, [])).toEqual(100);
-        expect(getFee(1, 200, {}, [])).toEqual(200);
+        expect(getFee([], [{ script: { length: 37 } }], 1.33)).toEqual(75);
+        expect(getFee([], [{ script: { length: 81 } }], 1)).toEqual(100);
+        expect(getFee([], [{ script: { length: 181 } }], 1)).toEqual(200);
         // without floor
-        expect(getFee(1, 200, { baseFee: 1000 }, [])).toEqual(1200);
+        expect(getFee([], [{ script: { length: 181 } }], 1, { baseFee: 1000 })).toEqual(1200);
         expect(
             getFee(
+                [],
+                [
+                    { value: '8', script: { length: 49 } },
+                    { value: '7', script: { length: 50 } },
+                ],
                 2,
-                127,
                 {
                     baseFee: 1000,
                     dustOutputFee: 1000,
                     dustThreshold: 9,
                 },
-                [
-                    { value: '8', script: { length: 0 } },
-                    { value: '7', script: { length: 0 } },
-                ],
             ),
         ).toEqual(3254);
-
         // with floor
-        expect(getFee(1, 200, { baseFee: 1000, floorBaseFee: true }, [])).toEqual(1000);
+        expect(
+            getFee([], [{ script: { length: 181 } }], 1, { baseFee: 1000, floorBaseFee: true }),
+        ).toEqual(1000);
         expect(
             getFee(
+                [],
+                [
+                    { value: '8', script: { length: 500 } },
+                    { value: '7', script: { length: 472 } },
+                ],
                 2,
-                1000,
                 {
                     baseFee: 1000,
                     dustOutputFee: 1000,
                     dustThreshold: 9,
                     floorBaseFee: true,
                 },
-                [
-                    { value: '8', script: { length: 0 } },
-                    { value: '7', script: { length: 0 } },
-                ],
             ),
         ).toEqual(5000);
     });
