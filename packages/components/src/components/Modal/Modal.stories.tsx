@@ -1,87 +1,85 @@
-import styled from 'styled-components';
 import { StoryObj } from '@storybook/react';
-import { Modal, ModalProps, Button } from '../../index';
+import { Modal as ModalComponent, Button, ModalProps, Icon } from '../../index';
 
-const StyledButton = styled(Button)<{ flex: boolean }>`
-    ${({ flex }) => flex && 'flex: 1;'}
-`;
-
-interface ButtonsProps {
-    count: number;
-    isFullWidth: boolean;
-    flex: boolean;
-    prefix: string;
-}
-
-const Buttons = ({ count, isFullWidth, flex, prefix }: ButtonsProps) => (
+const Buttons = () => (
     <>
-        {new Array(count).fill(undefined).map((_a, i) => (
-            // eslint-disable-next-line react/no-array-index-key
-            <StyledButton key={i} isFullWidth={isFullWidth} flex={flex} variant="primary">
-                {prefix} {i}
-            </StyledButton>
-        ))}
+        <Button variant="primary" size="small">
+            Button
+        </Button>
+
+        <Button variant="secondary" size="small">
+            Button
+        </Button>
     </>
 );
 
 export default {
-    title: 'Misc/Modals/Default',
-    component: Modal,
+    title: 'Misc/Modal',
+    component: ModalComponent,
 };
 
-export const Default: StoryObj<ModalProps & ButtonsProps> = {
-    render: args => (
-        <Modal
-            heading={args.heading}
-            description={args.description}
-            isCancelable={args.isCancelable}
-            bottomBar={
-                args.count ? (
-                    <Buttons
-                        prefix={args.prefix}
-                        count={args.count}
-                        isFullWidth={args.isFullWidth}
-                        flex={args.flex}
-                    />
-                ) : undefined
-            }
-            totalProgressBarSteps={args.totalProgressBarSteps}
-            currentProgressBarStep={args.currentProgressBarStep}
-        >
-            {args.children}
-        </Modal>
-    ),
+export const Modal: StoryObj<ModalProps> = {
     args: {
-        heading: 'This is a heading',
-        description: 'This is a description',
-        children:
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, nisl eget aliquam aliquam, diam nisl aliquam nisl, vitae aliquam nisl nisl nec nisl.',
-        isCancelable: true,
-        count: 0,
-        prefix: 'Button',
-        isFullWidth: false,
-        flex: false,
-        totalProgressBarSteps: 0,
-        currentProgressBarStep: 0,
+        heading: 'Modal heading',
+        description: 'Modal description',
+        children: 'Modal content',
+        bottomBar: <Buttons />,
+        onCancel: () => console.log('close'),
     },
     argTypes: {
-        isCancelable: {
-            type: 'boolean',
+        heading: {
+            control: 'text',
         },
-        count: {
-            type: 'number',
+        preheading: {
+            control: 'text',
         },
-        isFullWidth: {
-            type: 'boolean',
+        subheading: {
+            control: 'text',
         },
-        flex: {
-            type: 'boolean',
+        description: {
+            control: 'text',
         },
-        totalProgressBarSteps: {
-            type: 'number',
+        onBackClick: {
+            options: ['none', 'withCallback'],
+            mapping: { none: undefined, withCallback: () => null },
+            control: {
+                type: 'select',
+                labels: {
+                    none: 'none',
+                    withCallback: 'with callback',
+                },
+            },
         },
-        currentProgressBarStep: {
-            type: 'number',
+        headerComponent: {
+            options: ['none', 'withComponent'],
+            mapping: { none: undefined, withComponent: <Icon icon="APP" /> },
+            control: {
+                type: 'select',
+                labels: {
+                    none: 'none',
+                    withComponent: 'with component',
+                },
+            },
+        },
+        bottomBar: {
+            options: ['none', 'bottomBar'],
+            mapping: {
+                none: undefined,
+                bottomBar: <Buttons />,
+            },
+            control: {
+                type: 'select',
+                labels: {
+                    none: 'none',
+                    bottomBar: 'with bottom bar components',
+                },
+            },
+        },
+        className: {
+            control: 'none',
+        },
+        'data-test': {
+            control: 'none',
         },
     },
 };
