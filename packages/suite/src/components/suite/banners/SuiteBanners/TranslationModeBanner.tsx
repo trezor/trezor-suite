@@ -1,7 +1,7 @@
-import { Banner } from './Banner';
+import { Banner } from '../Banner';
 import { setTranslationMode } from 'src/utils/suite/l10n';
 
-const TranslationMode = () => (
+export const TranslationMode = () => (
     <Banner
         variant="warning"
         body="TRANSLATION MODE IS ON, ALL TEXTS MAY BE INCORRECT"
@@ -12,5 +12,3 @@ const TranslationMode = () => (
         }}
     />
 );
-
-export default TranslationMode;

@@ -2,7 +2,7 @@ import { useState, ReactNode } from 'react';
 import styled from 'styled-components';
 
 import { variables } from '@trezor/components';
-import SuiteBanners from 'src/components/suite/Banners';
+import { SuiteBanners } from 'src/components/suite/banners';
 import MenuSecondary from 'src/components/suite/MenuSecondary';
 import { Metadata } from 'src/components/suite';
 import { GuidePanel, GuideButton } from 'src/components/guide';

@@ -10,7 +10,7 @@ import { MAX_WIDTH } from 'src/constants/suite/layout';
 import steps from 'src/config/onboarding/steps';
 import { GuideButton, GuidePanel } from 'src/components/guide';
 import { selectBannerMessage } from '@suite-common/message-system';
-import MessageSystemBanner from 'src/components/suite/Banners/MessageSystemBanner';
+import { MessageSystemBanner } from 'src/components/suite/banners';
 import { ModalContextProvider } from 'src/support/suite/ModalContext';
 
 const Wrapper = styled.div`

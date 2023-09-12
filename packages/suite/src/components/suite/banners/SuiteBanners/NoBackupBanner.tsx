@@ -1,9 +1,9 @@
 import { Translation } from 'src/components/suite';
 import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch } from 'src/hooks/suite';
-import { Banner } from './Banner';
+import { Banner } from '../Banner';
 
-const NoBackup = () => {
+export const NoBackup = () => {
     const dispatch = useDispatch();
 
     const action = {
@@ -25,5 +25,3 @@ const NoBackup = () => {
         />
     );
 };
-
-export default NoBackup;

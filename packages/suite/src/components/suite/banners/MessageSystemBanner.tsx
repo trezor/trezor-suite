@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
-
 import styled from 'styled-components';
+
 import { variables } from '@trezor/components';
 import { goto } from 'src/actions/suite/routerActions';
 import { messageSystemActions } from '@suite-common/message-system';
@@ -20,7 +20,7 @@ type MessageSystemBannerProps = {
     message: Message;
 };
 
-const MessageSystemBanner = ({ message }: MessageSystemBannerProps) => {
+export const MessageSystemBanner = ({ message }: MessageSystemBannerProps) => {
     const { cta, variant, id, content, dismissible } = message;
 
     const { isTorEnabled } = useSelector(selectTorState);
@@ -71,5 +71,3 @@ const MessageSystemBanner = ({ message }: MessageSystemBannerProps) => {
         />
     );
 };
-
-export default MessageSystemBanner;

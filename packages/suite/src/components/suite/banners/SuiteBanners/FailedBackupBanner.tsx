@@ -1,10 +1,10 @@
 import { Translation } from 'src/components/suite';
 import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch } from 'src/hooks/suite';
-import { Banner } from './Banner';
+import { Banner } from '../Banner';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 
-const FailedBackup = () => {
+export const FailedBackup = () => {
     const dispatch = useDispatch();
 
     const action = {
@@ -17,5 +17,3 @@ const FailedBackup = () => {
         <Banner variant="critical" body={<Translation id="TR_FAILED_BACKUP" />} action={action} />
     );
 };
-
-export default FailedBackup;
