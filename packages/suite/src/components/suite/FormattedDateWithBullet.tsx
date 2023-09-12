@@ -1,6 +1,6 @@
-import { ComponentProps } from 'react';
-import { FormattedDate as IntlFormattedDate } from 'react-intl';
 import styled from 'styled-components';
+
+import { FormattedDate, FormattedDateProps } from './FormattedDate';
 
 const Bullet = styled.span`
     margin-left: 0.5ch;
@@ -17,32 +17,7 @@ const Timestamp = styled.span`
     white-space: nowrap;
 `;
 
-interface Props extends ComponentProps<typeof IntlFormattedDate> {
-    date?: boolean;
-    time?: boolean;
-}
-
-const defaultDateFormat = {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-} as const;
-
-const defaultTimeFormat = {
-    hour: 'numeric',
-    minute: 'numeric',
-    hourCycle: 'h23',
-} as const;
-
-const FormattedDate = (props: Props) => (
-    <IntlFormattedDate
-        {...(props.date ? defaultDateFormat : {})}
-        {...(props.time ? defaultTimeFormat : {})}
-        {...props}
-    />
-);
-
-interface BulletProps extends Pick<Props, 'value'> {
+interface BulletProps extends Pick<FormattedDateProps, 'value'> {
     timeLightColor?: boolean;
     className?: string;
 }
@@ -56,5 +31,3 @@ export const FormattedDateWithBullet = ({ className, ...props }: BulletProps) =>
         </HourWrapper>
     </Timestamp>
 );
-
-export default FormattedDate;
