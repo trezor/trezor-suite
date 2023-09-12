@@ -13,6 +13,7 @@ import { applySettings } from 'src/actions/settings/deviceSettingsActions';
 import { authConfirm, authorizeDevice } from 'src/actions/suite/deviceThunks';
 import { goto } from 'src/actions/suite/routerActions';
 import { DiscoveryStatusType } from 'src/types/wallet';
+import { TranslationKey } from 'src/components/suite/Translation';
 
 const Wrapper = styled.div`
     display: flex;
@@ -45,15 +46,15 @@ const Actions = styled.div`
 `;
 
 interface CTA {
-    label?: ComponentProps<typeof Translation>['id'];
+    label?: TranslationKey;
     variant?: ComponentProps<typeof Button>['variant'];
     action: () => void;
     icon?: IconProps['icon'];
 }
 
 interface ContainerProps {
-    title: ComponentProps<typeof Translation>['id'];
-    description: ComponentProps<typeof Translation>['id'] | JSX.Element;
+    title: TranslationKey;
+    description?: TranslationKey | JSX.Element;
     cta: CTA | CTA[];
     dataTestBase: string;
 }
@@ -68,9 +69,15 @@ const Container = ({ title, description, cta, dataTestBase }: ContainerProps) =>
             <Title>
                 <Translation id={title} />
             </Title>
-            <Description>
-                {typeof description === 'string' ? <Translation id={description} /> : description}
-            </Description>
+            {description && (
+                <Description>
+                    {typeof description === 'string' ? (
+                        <Translation id={description} />
+                    ) : (
+                        description
+                    )}
+                </Description>
+            )}
             <Actions>
                 {actions.map(a => (
                     <Button
@@ -129,7 +136,6 @@ export const Exception = ({ exception, discovery }: ExceptionProps) => {
             return (
                 <Container
                     title="TR_AUTH_CONFIRM_FAILED_TITLE"
-                    description="TR_AUTH_CONFIRM_FAILED_DESC"
                     cta={{ action: () => dispatch(authConfirm()) }}
                     dataTestBase={exception.type}
                 />

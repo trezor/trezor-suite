@@ -1988,10 +1988,6 @@ export default defineMessages({
         defaultMessage: 'Wrong passphrase',
         id: 'TR_AUTH_CONFIRM_FAILED_TITLE',
     },
-    TR_AUTH_CONFIRM_FAILED_DESC: {
-        defaultMessage: 'Invalid passphrase confirmation.',
-        id: 'TR_AUTH_CONFIRM_FAILED_DESC',
-    },
     TR_BACK: {
         defaultMessage: 'Back',
         description: 'Back button',
