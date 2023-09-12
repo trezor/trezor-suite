@@ -4,17 +4,17 @@ import { Color } from '@trezor/theme';
 
 import { Text } from './Text';
 import { HStack } from './Stack';
+import { SurfaceElevation } from './types';
 
 export type BadgeVariant = 'neutral' | 'green' | 'red' | 'bold';
 export type BadgeSize = 'small' | 'medium';
-export type BadgeElevation = '0' | '1';
 type BadgeProps = {
     label: string;
     variant?: BadgeVariant;
     size?: BadgeSize;
     icon?: IconName | CryptoIconName;
     iconSize?: IconSize;
-    elevation?: BadgeElevation;
+    elevation?: SurfaceElevation;
     isDisabled?: boolean;
 };
 

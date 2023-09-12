@@ -41,6 +41,7 @@ export const AccountImportOverview = ({ balance, networkSymbol }: AssetsOverview
                     data-testID="@account-import/coin-synced/label-input"
                     name="accountLabel"
                     label="Coin label"
+                    elevation="1"
                 />
             </VStack>
         </AccountImportOverviewCard>
