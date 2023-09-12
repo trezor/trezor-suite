@@ -4,20 +4,8 @@ permissions:
   id-token: write # for fetching the OIDC token
   contents: read # for actions/checkout
 
-# run only if there are changes in suite or related libs paths
 on:
-  pull_request:
-    branches:
-      - develop
-    # paths:
-    #   - "packages/blockchain-link"
-    #   - "packages/connect*/**"
-    #   - "packages/transport"
-    #   - "packages/utxo-lib"
-    #   - "packages/utils"
-    #   - "docker"
-    #   - "submodules/trezor-common"
-
+  push
 
 jobs:
   build-web:
