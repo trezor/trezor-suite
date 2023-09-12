@@ -1,32 +1,31 @@
-import { ChangeEvent } from 'react';
 import { useArgs } from '@storybook/client-api';
-
+import { ChangeEventHandler } from 'react';
 import { Textarea as TextareaComponent } from './Textarea';
 
 export default {
     title: 'Form/Textarea',
+    component: TextareaComponent,
+};
+
+const Component = ({ ...args }) => {
+    const [{ value }, updateArgs] = useArgs();
+
+    const handleChange: ChangeEventHandler<HTMLTextAreaElement> = e =>
+        updateArgs({ value: e.target.value });
+
+    return <TextareaComponent value={value} onChange={handleChange} {...args} />;
+};
+
+export const Textarea = {
+    render: Component,
     args: {
-        value: 'Textarea',
+        defaultValue: 'Textarea',
         label: 'Label',
-        bottomText: '',
-        placeholder: '',
-        disabled: false,
-        isMonospace: false,
-        state: null,
         rows: 5,
+        maxLength: 500,
+        characterCount: true,
     },
     argTypes: {
-        state: {
-            control: {
-                options: {
-                    'None (default)': null,
-                    Success: 'success',
-                    Warning: 'warning',
-                    Error: 'error',
-                },
-                type: 'radio',
-            },
-        },
         rows: {
             control: {
                 min: 1,
@@ -35,29 +34,26 @@ export default {
                 type: 'range',
             },
         },
-    },
-};
-
-export const Textarea = {
-    render: ({ ...args }) => {
-        // eslint-disable-next-line
-        const [{ value }, updateArgs] = useArgs();
-        const handleValue = (e: ChangeEvent<HTMLTextAreaElement>) => {
-            updateArgs({ value: e.target.value });
-        };
-
-        return (
-            <TextareaComponent
-                disabled={args.disabled}
-                inputState={args.state}
-                label={args.label}
-                bottomText={args.bottomText}
-                placeholder={args.placeholder}
-                isMonospace={args.isMonospace}
-                rows={args.rows}
-                value={value}
-                onChange={handleValue}
-            />
-        );
+        labelAddon: {
+            control: false,
+        },
+        labelRight: {
+            control: false,
+        },
+        innerRef: {
+            control: false,
+        },
+        wrapperProps: {
+            control: false,
+        },
+        bottomText: {
+            control: 'text',
+        },
+        value: {
+            control: false,
+        },
+        characterCount: {
+            control: 'boolean',
+        },
     },
 };
