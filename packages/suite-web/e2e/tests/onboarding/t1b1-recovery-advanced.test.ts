@@ -1,4 +1,4 @@
-// @group:bounty
+// @group_bounty
 // @retry=2
 
 describe('Onboarding - recover wallet T1B1', () => {

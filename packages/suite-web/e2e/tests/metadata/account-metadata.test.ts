@@ -1,4 +1,4 @@
-// @group:metadata
+// @group_metadata
 // @retry=2
 
 import { rerouteMetadataToMockProvider, stubOpen } from '../../stubs/metadata';

@@ -1,4 +1,4 @@
-// @group:device-management
+// @group_device-management
 // @retry=2
 
 // todo: this started to fail mysteriously after merging new base image. Skipping it for now and will investigate.

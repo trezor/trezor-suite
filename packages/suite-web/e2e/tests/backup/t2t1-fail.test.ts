@@ -1,7 +1,7 @@
 import { EventType } from '@trezor/suite-analytics';
 import { ExtractByEventType, Requests } from '../../support/types';
 
-// @group:device-management
+// @group_device-management
 // @retry=2
 
 let requests: Requests;

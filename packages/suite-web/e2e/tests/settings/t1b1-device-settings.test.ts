@@ -1,4 +1,4 @@
-// @group:settings
+// @group_settings
 // @retry=2
 
 // TODO: t1 tests are flaky in CI. I suspect it is something in bridge/udp layer. So next step is implementing

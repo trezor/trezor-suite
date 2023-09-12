@@ -1,4 +1,4 @@
-// @group:coinmarket
+// @group_coinmarket
 
 describe.skip('Coinmarket exchange', () => {
     beforeEach(() => {

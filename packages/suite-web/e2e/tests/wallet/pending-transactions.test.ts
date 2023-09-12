@@ -1,4 +1,4 @@
-// @group:wallet
+// @group_wallet
 // @retry=2
 
 describe('Use regtest to test pending transactions', () => {

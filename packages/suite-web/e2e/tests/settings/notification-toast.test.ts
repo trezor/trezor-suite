@@ -1,4 +1,4 @@
-// @group:suite
+// @group_suite
 // @retry=2
 
 describe('Check notification toast', () => {
