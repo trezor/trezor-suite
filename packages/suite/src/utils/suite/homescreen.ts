@@ -1,6 +1,7 @@
 /* eslint-disable no-bitwise */
 import { TrezorDevice } from 'src/types/suite/index';
 import { DeviceModelInternal } from '@trezor/connect';
+import { deflateRaw } from 'pako';
 
 export const deviceModelInformation = {
     [DeviceModelInternal.T1B1]: { width: 128, height: 64, supports: ['png', 'jpeg'] },
@@ -65,7 +66,7 @@ const imageToCanvas = (image: HTMLImageElement, deviceModelInternal: DeviceModel
     return { canvas, ctx };
 };
 
-const toig = (imageData: ImageData, deviceModelInternal: DeviceModelInternal) => {
+const bitmap = (imageData: ImageData, deviceModelInternal: DeviceModelInternal) => {
     const { width, height } = deviceModelInformation[deviceModelInternal];
 
     const homescreen = range(height)
@@ -89,6 +90,78 @@ const toig = (imageData: ImageData, deviceModelInternal: DeviceModelInternal) =>
         .map(chr => (chr.length < 2 ? `0${chr}` : chr))
         .join('');
     return hex;
+};
+
+const byteArrayToHexString = (byteArray: Uint8Array) =>
+    Array.from(byteArray, byte => `0${(byte & 0xff).toString(16)}`.slice(-2)).join('');
+
+const rightPad = (len: number, val: string) => {
+    while (val.length < len) {
+        val = `${val}0`;
+    }
+    return val;
+};
+
+const evenPad = (val: string) => {
+    if (val.length % 2 === 0) return val;
+    return `0${val}`;
+};
+
+const chunkString = (size: number, str: string) => {
+    const re = new RegExp(`.{1,${size}}`, 'g');
+    const result = str.match(re);
+    if (!result) return [];
+    return result;
+};
+
+// Convert RGB to grayscale using the formula grayscale = 0.299 * R + 0.587 * G + 0.114 * B
+const toGrayscale = (red: number, green: number, blue: number): number =>
+    Math.round(0.299 * red + 0.587 * green + 0.114 * blue);
+
+// TOIG
+const toig = (imageData: ImageData, deviceModelInternal: DeviceModelInternal) => {
+    const { width, height } = deviceModelInformation[deviceModelInternal];
+
+    const pixels = range(height)
+        .map(row =>
+            range(width).map(col => {
+                const i = row * width + col;
+                const r = imageData.data[4 * i];
+                const g = imageData.data[4 * i + 1];
+                const b = imageData.data[4 * i + 2];
+                return toGrayscale(r, g, b);
+            }),
+        )
+        .flat();
+
+    // Pack two grayscale pixels into one byte (each pixel is 4 bits)
+    const bytes = [];
+    for (let i = 0; i < pixels.length; i += 2) {
+        const even = pixels[i];
+        const odd = pixels[i + 1];
+
+        // Use the even pixel for the higher 4 bits and odd pixel for the lower 4 bits.
+        const packedByte = ((even & 0xf0) >> 4) | (odd & 0xf0);
+        bytes.push(packedByte);
+    }
+
+    const packed = deflateRaw(Uint8Array.from(bytes), {
+        level: 9,
+        windowBits: 10,
+    });
+
+    // https://github.com/trezor/trezor-firmware/blob/master/docs/misc/toif.md
+    let header = '544f4947'; // 'TOIG' (indicating grayscale mode)
+    header += rightPad(4, width.toString(16));
+    header += rightPad(4, height.toString(16));
+    let length = Number(packed.length).toString(16);
+    if (length.length % 2 > 0) {
+        length = evenPad(length);
+    }
+    length = chunkString(2, length).reverse().join('');
+    header += rightPad(8, length);
+
+    return header + byteArrayToHexString(packed);
 };
 
 export const imageToImageData = (
@@ -229,7 +302,6 @@ export const imagePathToHex = async (
     }
 
     /* 
-    - Image has to be modified by 'toig' method
     - However, this method accepts the Canvas format which changes the quality of image
     */
     const blob = await response.blob();
@@ -239,7 +311,12 @@ export const imagePathToHex = async (
     const { canvas, ctx } = imageToCanvas(element, deviceModelInternal);
     const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
 
-    return toig(imageData, deviceModelInternal);
+    if (deviceModelInternal === DeviceModelInternal.T2B1) {
+        return toig(imageData, deviceModelInternal);
+    }
+
+    // DeviceModelInternal.T1B1
+    return bitmap(imageData, deviceModelInternal);
 };
 
 export const isHomescreenSupportedOnDevice = (device: TrezorDevice) => {
