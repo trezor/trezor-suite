@@ -7,7 +7,7 @@ import { useOnce } from '@trezor/react-utils';
 import { Translation } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
 import { selectBannerMessage } from '@suite-common/message-system';
-import MessageSystemBanner from 'src/components/suite/Banners/MessageSystemBanner';
+import { MessageSystemBanner } from 'src/components/suite/banners';
 import TrezorLink from 'src/components/suite/TrezorLink';
 import { isWeb } from '@trezor/env-utils';
 import { TREZOR_URL, SUITE_URL } from '@trezor/urls';

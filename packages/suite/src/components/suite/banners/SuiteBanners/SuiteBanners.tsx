@@ -9,21 +9,21 @@ import { selectDevice } from '@suite-common/wallet-core';
 import { isTranslationMode } from 'src/utils/suite/l10n';
 import { useSelector } from 'src/hooks/suite';
 
-import OnlineStatus from './OnlineStatus';
-import UpdateBridge from './UpdateBridge';
-import UpdateFirmware from './UpdateFirmware';
-import NoBackup from './NoBackup';
-import FailedBackup from './FailedBackup';
-import MessageSystemBanner from './MessageSystemBanner';
-import SafetyChecksBanner from './SafetyChecks';
-import TranslationMode from './TranslationMode';
-import FirmwareHashMismatch from './FirmwareHashMismatch';
+import { MessageSystemBanner } from '../MessageSystemBanner';
+import { OnlineStatus } from './OnlineStatusBanner';
+import { UpdateBridge } from './UpdateBridgeBanner';
+import { UpdateFirmware } from './UpdateFirmwareBanner';
+import { NoBackup } from './NoBackupBanner';
+import { FailedBackup } from './FailedBackupBanner';
+import { SafetyChecksBanner } from './SafetyChecksBanner';
+import { TranslationMode } from './TranslationModeBanner';
+import { FirmwareHashMismatch } from './FirmwareHashMismatchBanner';
 
 const Wrapper = styled.div`
     background: ${({ theme }) => theme.BG_WHITE};
 `;
 
-const Banners = () => {
+export const SuiteBanners = () => {
     const transport = useSelector(state => state.suite.transport);
     const device = useSelector(selectDevice);
     const online = useSelector(state => state.suite.online);
@@ -97,5 +97,3 @@ const Banners = () => {
         </Wrapper>
     );
 };
-
-export default Banners;

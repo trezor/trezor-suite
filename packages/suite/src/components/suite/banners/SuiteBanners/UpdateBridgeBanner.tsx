@@ -1,9 +1,9 @@
 import { Translation } from 'src/components/suite';
 import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch } from 'src/hooks/suite';
-import { Banner } from './Banner';
+import { Banner } from '../Banner';
 
-const UpdateBridge = () => {
+export const UpdateBridge = () => {
     const dispatch = useDispatch();
 
     const action = {
@@ -20,5 +20,3 @@ const UpdateBridge = () => {
         />
     );
 };
-
-export default UpdateBridge;

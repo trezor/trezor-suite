@@ -1,14 +1,14 @@
 import { Translation } from 'src/components/suite';
 import { useDispatch } from 'src/hooks/suite';
 import { goto } from 'src/actions/suite/routerActions';
-import { Banner } from './Banner';
+import { Banner } from '../Banner';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 
 interface SafetyChecksBannerProps {
     onDismiss?: () => void;
 }
 
-const SafetyChecksBanner = ({ onDismiss }: SafetyChecksBannerProps) => {
+export const SafetyChecksBanner = ({ onDismiss }: SafetyChecksBannerProps) => {
     const dispatch = useDispatch();
 
     const action = {
@@ -39,5 +39,3 @@ const SafetyChecksBanner = ({ onDismiss }: SafetyChecksBannerProps) => {
         />
     );
 };
-
-export default SafetyChecksBanner;
