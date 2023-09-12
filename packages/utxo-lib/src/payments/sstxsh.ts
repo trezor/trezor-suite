@@ -34,7 +34,7 @@ export function sstxsh(a: Payment, opts?: PaymentOpts): Payment {
         return bs58check.encodeAddress(o.hash, network.scriptHash, network);
     });
     lazy.prop(o, 'hash', () => {
-        if (a.output) return a.output.subarray(3, 23);
+        if (a.output) return a.output.slice(3, 23);
         if (a.address) return _address().hash;
     });
     lazy.prop(o, 'output', () => {
@@ -66,7 +66,7 @@ export function sstxsh(a: Payment, opts?: PaymentOpts): Payment {
             )
                 throw new TypeError('sstxsh output is invalid');
 
-            const hash2 = a.output.subarray(3, 23);
+            const hash2 = a.output.slice(3, 23);
             if (hash.length > 0 && !hash.equals(hash2)) throw new TypeError('Hash mismatch');
         }
     }

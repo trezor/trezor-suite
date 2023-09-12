@@ -58,7 +58,7 @@ function toBuffer<S>(
     bufferWriter.writeUInt32(tx.locktime);
 
     // avoid slicing unless necessary
-    if (initialOffset !== undefined) return buffer.subarray(initialOffset, bufferWriter.offset);
+    if (initialOffset !== undefined) return buffer.slice(initialOffset, bufferWriter.offset);
     return buffer;
 }
 

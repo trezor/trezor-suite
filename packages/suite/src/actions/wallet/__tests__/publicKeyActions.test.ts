@@ -111,6 +111,7 @@ const initStore = (stateOverrides?: StateOverrides) => {
 };
 
 describe('PublicKeyActions', () => {
+    // fixtures.slice(3, 4).forEach(f => {
     fixtures.forEach(f => {
         it(f.description, async () => {
             // eslint-disable-next-line @typescript-eslint/no-var-requires

@@ -73,7 +73,7 @@ const FUTURE_SEGWIT_MIN_VERSION = 1;
 const FUTURE_SEGWIT_VERSION_DIFF = 0x50;
 
 function toFutureSegwitAddress(output: Buffer, network = BITCOIN_NETWORK) {
-    const data = output.subarray(2);
+    const data = output.slice(2);
 
     if (data.length < FUTURE_SEGWIT_MIN_SIZE || data.length > FUTURE_SEGWIT_MAX_SIZE)
         throw new TypeError('Invalid program length for segwit address');

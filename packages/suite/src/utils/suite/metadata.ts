@@ -30,13 +30,13 @@ export const deriveAesKey = (metadataKey: string) => {
             )}`,
         );
     }
-    const secondHalf = hash.subarray(32, 64);
+    const secondHalf = hash.slice(32, 64);
     return secondHalf.toString('hex');
 };
 
 export const deriveFilename = (metadataKey: string) => {
     const hash = deriveHmac(metadataKey);
-    const firstHalf = hash.subarray(0, 32);
+    const firstHalf = hash.slice(0, 32);
     return firstHalf.toString('hex');
 };
 
@@ -92,10 +92,10 @@ export const decrypt = (input: Buffer, key: string | Buffer) => {
         key = Buffer.from(key, 'hex');
     }
 
-    const iv = input.subarray(0, CIPHER_IVSIZE);
+    const iv = input.slice(0, CIPHER_IVSIZE);
     // tag is always 128-bits
-    const authTag = input.subarray(CIPHER_IVSIZE, CIPHER_IVSIZE + AUTH_SIZE);
-    const cText = input.subarray(CIPHER_IVSIZE + AUTH_SIZE);
+    const authTag = input.slice(CIPHER_IVSIZE, CIPHER_IVSIZE + AUTH_SIZE);
+    const cText = input.slice(CIPHER_IVSIZE + AUTH_SIZE);
     const decipher = crypto.createDecipheriv(CIPHER_TYPE, key, iv);
     const start = decipher.update(cText);
 

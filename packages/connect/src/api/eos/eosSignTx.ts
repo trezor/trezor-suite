@@ -134,10 +134,11 @@ const parseAuth = (a: $EosAuthorization): PROTO.EosAuthorization => {
     const keyToBuffer = (pk: string) => {
         const len = pk.indexOf('EOS') === 0 ? 3 : 7;
         const key = Buffer.from(bs58.decode(pk.substring(len)));
+        // key.slice(0, key.length - 4);
 
         return {
             type: 0,
-            key: key.subarray(0, key.length - 4).toString('hex'),
+            key: key.slice(0, key.length - 4).toString('hex'),
         };
     };
     return {

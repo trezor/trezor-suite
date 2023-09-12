@@ -13,6 +13,7 @@ describe('blockbook/utils', () => {
     });
 
     describe('transformTransaction', () => {
+        // fixtures.transformTransaction = fixtures.transformTransaction.slice(3, 6);
         fixtures.transformTransaction.forEach(f => {
             it(f.description, () => {
                 // @ts-expect-error incorrect params
