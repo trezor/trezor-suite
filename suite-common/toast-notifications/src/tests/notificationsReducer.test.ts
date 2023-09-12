@@ -12,11 +12,6 @@ interface InitStoreArgs {
 
 const initStore = ({ preloadedState }: InitStoreArgs = {}) => {
     const store = configureMockStore({
-        extra: {
-            selectors: {
-                selectCurrentDevice: () => undefined,
-            },
-        },
         reducer: { notifications: notificationsReducer },
         preloadedState,
     });

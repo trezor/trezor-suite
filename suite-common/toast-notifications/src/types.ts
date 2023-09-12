@@ -137,11 +137,9 @@ export type ToastPayload = (
 
 export type NotificationEventPayload = (
     | {
-          // only temporary, must be same as AUTH_DEVICE value in packages/suite/src/actions/suite/constants/suiteConstants.ts
-          // once that will be migrated to @suite-common, this should be replaced directly by suiteActions.authDevice.type
-          // this should not break type safety, if someone will change value of AUTH_DEVICE, it will throw error in place
-          // where action is used and you will need to change it also here
+          // only temporary, this must conform to deviceActions.authDevice.type (not imported due to cyclic dependency)
           type: '@suite/device/authDevice';
+          device: TrezorDevice;
       }
     | ReceivedTransactionNotification
     | {

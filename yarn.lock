@@ -7846,7 +7846,6 @@ __metadata:
     "@suite-native/ethereum-tokens": "workspace:*"
     "@suite-native/fiat-rates": "workspace:*"
     "@suite-native/formatters": "workspace:*"
-    "@suite-native/module-devices": "workspace:*"
     "@suite-native/module-settings": "workspace:*"
     "@suite-native/navigation": "workspace:*"
     "@trezor/styles": "workspace:*"
@@ -8113,7 +8112,6 @@ __metadata:
     "@suite-native/fiat-rates": "workspace:*"
     "@suite-native/formatters": "workspace:*"
     "@suite-native/forms": "workspace:*"
-    "@suite-native/module-devices": "workspace:*"
     "@suite-native/module-settings": "workspace:*"
     "@suite-native/navigation": "workspace:*"
     "@suite-native/qr-code": "workspace:*"
@@ -8199,19 +8197,6 @@ __metadata:
     react: 18.2.0
     react-native: 0.71.8
     react-redux: 8.0.7
-    typescript: 4.9.5
-  languageName: unknown
-  linkType: soft
-
-"@suite-native/module-devices@workspace:*, @suite-native/module-devices@workspace:suite-native/module-devices":
-  version: 0.0.0-use.local
-  resolution: "@suite-native/module-devices@workspace:suite-native/module-devices"
-  dependencies:
-    "@reduxjs/toolkit": 1.9.5
-    "@suite-common/suite-types": "workspace:*"
-    "@trezor/connect": "workspace:*"
-    jest: ^26.6.3
-    react: 18.2.0
     typescript: 4.9.5
   languageName: unknown
   linkType: soft
@@ -8470,7 +8455,6 @@ __metadata:
     "@suite-native/graph": "workspace:*"
     "@suite-native/logger": "workspace:*"
     "@suite-native/message-system": "workspace:*"
-    "@suite-native/module-devices": "workspace:*"
     "@suite-native/module-settings": "workspace:*"
     "@suite-native/storage": "workspace:*"
     "@suite-native/toasts": "workspace:*"

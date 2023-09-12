@@ -3,11 +3,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import { CommonActions, useNavigation } from '@react-navigation/core';
 
 import { networks, NetworkSymbol } from '@suite-common/wallet-config';
-import { AccountsRootState, selectAccountsByNetworkAndDevice } from '@suite-common/wallet-core';
 import { Box, Button, Divider, VStack } from '@suite-native/atoms';
+import {
+    AccountsRootState,
+    selectAccountsByNetworkAndDevice,
+    HIDDEN_DEVICE_STATE,
+} from '@suite-common/wallet-core';
 import { useAccountLabelForm, AccountFormValues } from '@suite-native/accounts';
 import { Form } from '@suite-native/forms';
-import { HIDDEN_DEVICE_STATE } from '@suite-native/module-devices';
 import {
     AccountsImportStackParamList,
     AccountsImportStackRoutes,

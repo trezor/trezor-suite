@@ -1,4 +1,7 @@
 import { logsMiddleware } from '@suite-common/logger';
+import { prepareDeviceMiddleware } from '@suite-common/wallet-core';
+
+import { extraDependencies } from 'src/support/extraDependencies';
 
 import log from './logsMiddleware';
 import suite from './suiteMiddleware';
@@ -12,11 +15,14 @@ import protocol from './protocolMiddleware';
 import router from './routerMiddleware';
 import sentry from './sentryMiddleware';
 
+const device = prepareDeviceMiddleware(extraDependencies);
+
 export default [
     log,
     logsMiddleware, // Common logs shared between desktop and mobile app
     redirect,
     suite,
+    device,
     analytics,
     buttonRequest,
     events,

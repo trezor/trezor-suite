@@ -27,10 +27,9 @@ const remove = createAction(
 
 export const addToast = createActionWithExtraDeps(
     `${ACTION_PREFIX}/addToast`,
-    (payload: ToastPayload, { getState, extra }): NotificationEntry => ({
+    (payload: ToastPayload): NotificationEntry => ({
         context: 'toast',
         id: new Date().getTime(),
-        device: extra.selectors.selectCurrentDevice(getState()),
         seen: true,
         ...payload,
     }),
@@ -50,10 +49,9 @@ export const addToastOnce = createActionWithExtraDeps(
 
 export const addEvent = createActionWithExtraDeps(
     `${ACTION_PREFIX}/addEvent`,
-    (payload: NotificationEventPayload, { getState, extra }): NotificationEntry => ({
+    (payload: NotificationEventPayload): NotificationEntry => ({
         context: 'event',
         id: new Date().getTime(),
-        device: extra.selectors.selectCurrentDevice(getState()),
         ...payload,
     }),
 );

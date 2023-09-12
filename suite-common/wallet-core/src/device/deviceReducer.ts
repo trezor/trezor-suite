@@ -467,7 +467,10 @@ export const prepareDeviceReducer = createReducerWithExtraDeps(initialState, (bu
             state.selectedDevice = payload;
         })
         .addCase(extra.actionTypes.setDeviceMetadata, extra.reducers.setDeviceMetadataReducer)
-        .addCase(extra.actionTypes.storageLoad, extra.reducers.storageLoadDevices);
+        .addCase(extra.actionTypes.storageLoad, extra.reducers.storageLoadDevices)
+        .addCase(deviceActions.createImportedDevice, (state, { payload }) => {
+            state.devices.push(payload);
+        });
 });
 
 export const selectDevices = (state: DeviceRootState) => state.device?.devices;
@@ -533,3 +536,6 @@ export const selectSupportedNetworks = (state: DeviceRootState) => {
         })
         .filter(Boolean) as Network['symbol'][]; // Filter out null values
 };
+
+export const selectDeviceById = (state: DeviceRootState, deviceId: string) =>
+    state.device.devices.find(device => device.id === deviceId);

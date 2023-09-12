@@ -30,7 +30,6 @@
         { "path": "../fiat-rates" },
         { "path": "../formatters" },
         { "path": "../forms" },
-        { "path": "../module-devices" },
         { "path": "../module-settings" },
         { "path": "../navigation" },
         { "path": "../qr-code" },

@@ -33,8 +33,6 @@ export type ExtraDependencies = {
     };
     selectors: {
         selectFeeInfo: (networkSymbol: NetworkSymbol) => SuiteCompatibleSelector<FeeInfo>;
-        selectDevices: SuiteCompatibleSelector<TrezorDevice[]>;
-        selectCurrentDevice: SuiteCompatibleSelector<TrezorDevice | undefined>;
         selectBitcoinAmountUnit: SuiteCompatibleSelector<PROTO.AmountUnit>;
         selectEnabledNetworks: SuiteCompatibleSelector<NetworkSymbol[]>;
         selectLocalCurrency: SuiteCompatibleSelector<FiatCurrencyCode>;

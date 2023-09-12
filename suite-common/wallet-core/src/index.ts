@@ -21,3 +21,5 @@ export * from './firmware/firmwareReducer';
 export * from './device/deviceActions';
 export * from './device/deviceThunks';
 export * from './device/deviceReducer';
+export * from './device/deviceConstants';
+export * from './device/deviceMiddleware';

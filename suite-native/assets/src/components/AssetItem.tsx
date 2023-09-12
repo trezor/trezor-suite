@@ -12,6 +12,7 @@ import {
     AccountsRootState,
     selectAccountsAmountPerSymbol,
     selectAccountsByNetworkAndDevice,
+    HIDDEN_DEVICE_STATE,
 } from '@suite-common/wallet-core';
 import { CryptoAmountFormatter, FiatAmountFormatter } from '@suite-native/formatters';
 import {
@@ -21,7 +22,6 @@ import {
     RootStackRoutes,
     TabToStackCompositeNavigationProp,
 } from '@suite-native/navigation';
-import { HIDDEN_DEVICE_STATE } from '@suite-native/module-devices';
 
 type AssetItemProps = {
     cryptoCurrencySymbol: NetworkSymbol;

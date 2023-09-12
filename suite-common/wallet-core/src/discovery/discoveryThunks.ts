@@ -22,6 +22,7 @@ import {
 import { selectDiscoveryByDeviceState, selectDiscovery } from './discoveryReducer';
 import { selectAccounts } from '../accounts/accountsReducer';
 import { accountsActions } from '../accounts/accountsActions';
+import { selectDevices } from '../device/deviceReducer';
 
 type ProgressEvent = BundleProgress<AccountInfo | null>['payload'];
 
@@ -611,7 +612,7 @@ export const updateNetworkSettingsThunk = createThunk(
     `${DISCOVERY_MODULE_PREFIX}/updateNetworkSettings`,
     (_, { dispatch, getState, extra }) => {
         const {
-            selectors: { selectEnabledNetworks, selectDevices },
+            selectors: { selectEnabledNetworks },
         } = extra;
         const enabledNetworks = selectEnabledNetworks(getState());
         const discovery = selectDiscovery(getState());

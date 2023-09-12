@@ -22,6 +22,7 @@ import { accountsActions } from './accountsActions';
 import { selectAccounts } from './accountsReducer';
 import { actionPrefix } from './constants';
 import { selectBlockchainHeightBySymbol } from '../blockchain/blockchainReducer';
+import { selectDevices } from '../device/deviceReducer';
 
 export const disableAccountsThunk = createThunk(
     `${actionPrefix}/disableAccountsThunk`,
@@ -77,7 +78,7 @@ export const fetchAndUpdateAccountThunk = createThunk(
     `${actionPrefix}/fetchAndUpdateAccountThunk`,
     async (account: Account, { dispatch, extra, getState }) => {
         const {
-            selectors: { selectDevices, selectBitcoinAmountUnit },
+            selectors: { selectBitcoinAmountUnit },
         } = extra;
 
         if (!isTrezorConnectBackendType(account.backendType)) return; // skip unsupported backend type

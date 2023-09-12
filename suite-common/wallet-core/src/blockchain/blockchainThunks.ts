@@ -27,6 +27,7 @@ import { selectAccounts } from '../accounts/accountsReducer';
 import { fetchAndUpdateAccountThunk } from '../accounts/accountsThunks';
 import { actionsPrefix, blockchainActions } from './blockchainActions';
 import { selectBlockchainState, selectNetworkBlockchainInfo } from './blockchainReducer';
+import { selectDevices } from '../device/deviceReducer';
 
 const ACCOUNTS_SYNC_INTERVAL = 60 * 1000;
 
@@ -334,7 +335,7 @@ export const onBlockchainNotificationThunk = createThunk(
     `${actionsPrefix}/onNotificationThunk`,
     (payload: BlockchainNotification, { dispatch, getState, extra }) => {
         const {
-            selectors: { selectBitcoinAmountUnit, selectDevices },
+            selectors: { selectBitcoinAmountUnit },
         } = extra;
         const { descriptor, tx } = payload.notification;
         const symbol = payload.coin.shortcut.toLowerCase();
