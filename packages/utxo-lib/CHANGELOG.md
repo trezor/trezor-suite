@@ -1,3 +1,9 @@
+# 1.0.11
+
+-   chore: replace deprecated String.subst with Sting.substing (57f45d4cd)
+-   chore: replace deprecated Buffer.slice with Buffer.subarray (814caeaa9)
+-   chore: use `getChunkSize` from @trezor/utils package (a6fb8ea98)
+
 # 1.0.10
 
 -   fix(utxo-lib): `coinselect` bnb algorithm (c3c9ccd15)
