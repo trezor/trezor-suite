@@ -1,4 +1,4 @@
-// @group:passphrase
+// @group_passphrase
 // @retry=2
 
 const testedVersions = ['2-latest', '1-latest'];

@@ -1,4 +1,4 @@
-// @group:wallet
+// @group_wallet
 // @retry=2
 
 describe('Send form for bitcoin', () => {
@@ -62,6 +62,7 @@ describe('Send form for bitcoin', () => {
     });
 
     it('switch display units to satoshis, fill a form in satoshis and send', () => {
+        cy.discoveryMightAppearAndShouldFinish();
         cy.getTestElement('amount-unit-switch/regtest').click();
 
         // test adding and removing outputs

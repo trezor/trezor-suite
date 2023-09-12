@@ -1,4 +1,4 @@
-// @group:migrations
+// @group_migrations
 // @retry=2
 
 const from = '/release/22.7/web';

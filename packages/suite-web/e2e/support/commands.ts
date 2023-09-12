@@ -5,6 +5,7 @@ import {
     onboardingShouldLoad,
     dashboardShouldLoad,
     discoveryShouldFinish,
+    discoveryMightAppearAndShouldFinish,
 } from './utils/assertions';
 import { getTestElement, getConfirmActionOnDeviceModal, hoverTestElement } from './utils/selectors';
 import { resetDb } from './utils/test-env';
@@ -107,6 +108,7 @@ declare global {
             onboardingShouldLoad: () => Chainable<Subject>;
             dashboardShouldLoad: () => Chainable<Subject>;
             discoveryShouldFinish: () => Chainable<Subject>;
+            discoveryMightAppearAndShouldFinish: () => Chainable<Subject>;
             toggleDeviceMenu: () => Chainable<Subject>;
             enableDebugMode: () => Chainable<Subject>;
             toggleDebugModeInSettings: () => Chainable<Subject>;
@@ -153,6 +155,8 @@ Cypress.Commands.add('resetDb', { prevSubject: false }, resetDb);
 Cypress.Commands.add('onboardingShouldLoad', onboardingShouldLoad);
 Cypress.Commands.add('dashboardShouldLoad', dashboardShouldLoad);
 Cypress.Commands.add('discoveryShouldFinish', discoveryShouldFinish);
+Cypress.Commands.add('discoveryMightAppearAndShouldFinish', discoveryMightAppearAndShouldFinish);
+
 // selector helpers
 Cypress.Commands.add('getTestElement', getTestElement);
 Cypress.Commands.add('getConfirmActionOnDeviceModal', getConfirmActionOnDeviceModal);

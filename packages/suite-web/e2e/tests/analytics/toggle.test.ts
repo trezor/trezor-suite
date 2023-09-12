@@ -1,4 +1,4 @@
-// @group:other
+// @group_other
 // @retry=2
 
 import { EventType } from '@trezor/suite-analytics';

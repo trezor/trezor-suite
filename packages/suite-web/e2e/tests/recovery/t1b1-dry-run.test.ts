@@ -1,4 +1,4 @@
-// @group:device-management
+// @group_device-management
 
 describe.skip('Recovery - dry run', () => {
     beforeEach(() => {

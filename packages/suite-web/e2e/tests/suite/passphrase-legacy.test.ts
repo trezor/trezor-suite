@@ -1,4 +1,4 @@
-// @group:passphrase
+// @group_passphrase
 // @retry=2
 
 // todo: this test is skipped because it does not work and it can't be debugged on MacArm

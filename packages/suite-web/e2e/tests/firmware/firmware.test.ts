@@ -1,4 +1,4 @@
-// @group:device-management
+// @group_device-management
 // @retry=2
 
 describe('Firmware', () => {

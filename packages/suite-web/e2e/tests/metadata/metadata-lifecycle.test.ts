@@ -1,4 +1,4 @@
-// @group:metadata
+// @group_metadata
 // @retry=2
 
 const mnemonic = 'all all all all all all all all all all all all';

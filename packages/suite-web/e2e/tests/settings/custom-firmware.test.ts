@@ -1,4 +1,4 @@
-// @group:settings
+// @group_settings
 // @retry=2
 describe('Install custom firmware', () => {
     beforeEach(() => {

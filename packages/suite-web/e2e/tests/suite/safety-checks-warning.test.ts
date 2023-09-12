@@ -1,4 +1,5 @@
-// @group:suite
+// group:ghatest
+
 // @retry=2
 
 // TODO: enable this test once https://github.com/trezor/trezor-user-env/issues/54

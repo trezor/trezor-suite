@@ -1,4 +1,4 @@
-// @group:firmware-update
+// @group_firmware-update
 // @retry=2
 
 import har from '../../fixtures/fw-update-on-bl-2.0.3-to-fw-2.5.1';

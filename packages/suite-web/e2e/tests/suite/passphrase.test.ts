@@ -1,4 +1,4 @@
-// @group:passphrase
+// @group_passphrase
 // @retry=2
 import { EventType } from '@trezor/suite-analytics';
 import { ExtractByEventType, Requests } from '../../support/types';
