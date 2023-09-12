@@ -9,7 +9,7 @@ interface DeviceIconProps {
     onClick?: any;
 }
 
-const DeviceIcon = ({
+export const DeviceIcon = ({
     device,
     size = 32,
     color,
@@ -35,5 +35,3 @@ const DeviceIcon = ({
         />
     );
 };
-
-export default DeviceIcon;

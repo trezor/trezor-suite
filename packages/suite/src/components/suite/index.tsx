@@ -1,5 +1,6 @@
 import { AccountLabel } from './AccountLabel';
-import DeviceIcon from './images/DeviceIcon';
+import { DeviceConfirmImage } from './DeviceConfirmImage';
+import { DeviceIcon } from './DeviceIcon';
 import { CheckItem } from './CheckItem';
 import { PrerequisitesGuide } from './PrerequisitesGuide';
 import { WelcomeLayout } from './WelcomeLayout';
@@ -61,6 +62,7 @@ import { CoinBalance } from './CoinBalance';
 
 export {
     AccountLabel,
+    DeviceConfirmImage,
     DeviceIcon,
     CheckItem,
     DeviceInvalidModeLayout,

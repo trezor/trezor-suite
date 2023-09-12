@@ -1,7 +1,6 @@
 import { ReactNode } from 'react';
 import styled, { css } from 'styled-components';
 import * as semver from 'semver';
-import { pickByDeviceModel, getFirmwareVersion } from '@trezor/device-utils';
 
 import {
     H1,
@@ -12,7 +11,7 @@ import {
     AnimationDeviceType,
 } from '@trezor/components';
 import { Modal, Translation, WebUsbButton } from 'src/components/suite';
-import { DeviceConfirmImage } from 'src/components/suite/images/DeviceConfirmImage';
+import { DeviceConfirmImage } from 'src/components/suite/DeviceConfirmImage';
 import { useDevice, useFirmware } from 'src/hooks/suite';
 import {
     useRebootRequest,
@@ -20,10 +19,10 @@ import {
     RebootPhase,
     RebootMethod,
 } from 'src/hooks/firmware/useRebootRequest';
-
 import type { TrezorDevice } from 'src/types/suite';
 import { AbortButton } from 'src/components/suite/Modal/DevicePromptModal';
 import { DeviceModelInternal } from '@trezor/connect';
+import { pickByDeviceModel, getFirmwareVersion } from '@trezor/device-utils';
 
 const StyledModal = styled(Modal)`
     width: 580px;

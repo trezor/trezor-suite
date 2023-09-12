@@ -1,8 +1,8 @@
 import styled from 'styled-components';
-import { Translation } from 'src/components/suite/Translation';
-import { Modal, ModalProps } from 'src/components/suite';
+
 import { P } from '@trezor/components';
-import { DeviceConfirmImage } from 'src/components/suite/images/DeviceConfirmImage';
+import { Translation } from 'src/components/suite/Translation';
+import { DeviceConfirmImage, Modal, ModalProps } from 'src/components/suite';
 import { TrezorDevice } from 'src/types/suite';
 
 const Divider = styled.div`
