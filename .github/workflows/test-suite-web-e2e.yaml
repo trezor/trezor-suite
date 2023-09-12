@@ -73,12 +73,31 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version-file: ".nvmrc"
-#       - name: Run e2e tests
-#         env:
-#           ASSET_PREFIX: /suite-web/${{ steps.extract_branch.outputs.branch }}/web
-#           CI_COMMIT_REF_NAME: ${{ steps.extract_branch.outputs.branch }}
-#           DEV_SERVER_URL: "https://dev.suite.sldev.cz"
-#           STAGING_SUITE_SERVER_URL: "https://staging-suite.trezor.io"
-#           DESKTOP_APP_NAME: "Trezor-Suite"
-#  everything else to run test
+      - name: Run e2e tests
+        env:
+          # ASSET_PREFIX: /suite-web/${{ steps.extract_branch.outputs.branch }}/web
+          # CI_COMMIT_REF_NAME: ${{ steps.extract_branch.outputs.branch }}
+          DEV_SERVER_URL: "https://dev.suite.sldev.cz"
+          # STAGING_SUITE_SERVER_URL: "https://staging-suite.trezor.io"
+          # DESKTOP_APP_NAME: "Trezor-Suite"
 
+          ASSET_PREFIX: /suite-web/develop/web
+          COMPOSE_PROJECT_NAME: $CI_JOB_ID
+          COMPOSE_FILE: ./docker/docker-compose.suite-ci.yml
+          ## Tells Cypress where is the index of application
+          CYPRESS_ASSET_PREFIX: /web
+          CYPRESS_baseUrl: ${DEV_SERVER_URL}/suite-web/
+          ## should tests do snapshot testing
+          # cypress open todo. temporarily turned off (messaging system)
+          CYPRESS_SNAPSHOT: 0
+          ## reporter url
+          ## when debugging or developing tests it does not make sense to have retries,
+          ## in other cases retries are useful to avoid occasional failures due to flaky tests
+          ALLOW_RETRY: 1
+          CYPRESS_TEST_URLS: https://dev.suite.sldev.cz
+        run: |
+            docker-compose -f ./docker/docker-compose.suite-ci.yml up --build --abort-on-container-exit --force-recreate
+
+
+
+# https://dev.suite.sldev.cz/suite-web/develop/web/
