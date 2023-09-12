@@ -6,7 +6,7 @@ const fs = require('fs');
 const path = require('path');
 
 const readdir = promisify(fs.readdir);
-const { checkPackageDependencies } = require('./npm-dependencies-helper');
+const { checkPackageDependencies } = require('./helpers');
 
 const rootPath = path.join(__dirname, '..', '..');
 const packagesPath = path.join(rootPath, 'packages');

@@ -47,6 +47,8 @@ Version 9 is available as `@trezor/connect` and `@trezor/connect-web` npm packag
 
 New major version is released when there are breaking changes on API level. Previous major version will be maintained for 12 months and after this period it can be taken down without notice.
 
+Current major version 9 is being developed on top of `develop` branch. When there is a new major version a new branch should be created (`v-<major-version>`) and mantained separately.
+
 ### Minor version
 
 Minor versions are released when there are:

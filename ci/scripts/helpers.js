@@ -90,4 +90,27 @@ const checkPackageDependencies = packageName => {
     };
 };
 
-module.exports = { checkPackageDependencies };
+const exec = (cmd, params) => {
+    console.log(cmd, ...params);
+
+    const res = child_process.spawnSync(cmd, params, {
+        encoding: 'utf-8',
+        cwd: ROOT,
+    });
+    if (res.status !== 0) {
+        console.log(cmd, ...params);
+        console.log(res);
+    }
+    return res;
+};
+
+const commit = ({ path, message }) => {
+    exec('git', ['add', path]);
+    exec('git', ['commit', '-m', `${message}`]);
+};
+
+const comment = ({ prNumber, body }) => {
+    exec('gh', ['pr', 'comment', `${prNumber}`, '--body', body]);
+};
+
+module.exports = { checkPackageDependencies, exec, commit, comment };
