@@ -1,5 +1,7 @@
-import * as utils from 'src/utils/suite/device';
+import * as utils from '@suite-common/suite-utils';
+
 import { AcquiredDevice } from 'src/types/suite';
+
 import fixtures from '../__fixtures__/device';
 
 describe('getStatus', () => {

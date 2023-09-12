@@ -11,10 +11,10 @@ import {
     formatAmount,
 } from '@suite-common/wallet-utils';
 import { useDidUpdate } from '@trezor/react-utils';
+import { isChanged } from '@suite-common/suite-utils';
 
 import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
 import invityAPI from 'src/services/suite/invityAPI';
-import { isChanged } from 'src/utils/suite/comparisonUtils';
 import {
     clearQuotes,
     saveQuoteRequest,

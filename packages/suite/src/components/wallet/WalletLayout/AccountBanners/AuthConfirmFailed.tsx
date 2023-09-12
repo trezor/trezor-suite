@@ -1,5 +1,5 @@
 import { NotificationCard, Translation } from 'src/components/suite';
-import { authConfirm } from 'src/actions/suite/suiteActions';
+import { authConfirm } from 'src/actions/suite/deviceThunks';
 import { useDevice, useDispatch } from 'src/hooks/suite';
 
 export const AuthConfirmFailed = () => {

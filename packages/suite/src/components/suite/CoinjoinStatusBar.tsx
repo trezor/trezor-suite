@@ -7,7 +7,7 @@ import { WalletParams } from '@suite-common/wallet-types';
 import { useDispatch } from 'src/hooks/suite';
 import { CoinjoinSession } from 'src/types/wallet/coinjoin';
 import { ROUND_PHASE_MESSAGES } from 'src/constants/suite/coinjoin';
-import { selectDevice } from 'src/actions/suite/suiteActions';
+import { selectDevice } from 'src/actions/suite/deviceThunks';
 import { goto } from 'src/actions/suite/routerActions';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { selectRouterParams } from 'src/reducers/suite/routerReducer';

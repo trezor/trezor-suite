@@ -7,12 +7,13 @@ import { configureMockStore } from '@suite-common/test-utils';
 import { renderWithProviders } from 'src/support/tests/hooksHelper';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
 import { extraDependencies } from 'src/support/extraDependencies';
+import { prepareDeviceReducer } from 'src/reducers/suite/deviceReducer';
 
 import { useDiscovery } from '../useDiscovery';
 import { actions } from '../__fixtures__/useDiscovery';
-import deviceReducer from '../../../reducers/suite/deviceReducer';
 
 const discoveryReducer = prepareDiscoveryReducer(extraDependencies);
+const deviceReducer = prepareDeviceReducer(extraDependencies);
 
 export const getInitialState = (action: any = { type: 'initial' }) => ({
     wallet: {

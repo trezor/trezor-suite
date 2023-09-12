@@ -10,11 +10,14 @@ import {
 import { getAccountTransactions, getAccountIdentifier } from '@suite-common/wallet-utils';
 
 import * as walletSettingsActions from 'src/actions/settings/walletSettingsActions';
-import * as SUITE from 'src/actions/suite/constants/suiteConstants';
 import { accountsReducer, fiatRatesReducer, transactionsReducer } from 'src/reducers/wallet';
 import walletSettingsReducer from 'src/reducers/wallet/settingsReducer';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
-import deviceReducer, { selectDevices, selectDevicesCount } from 'src/reducers/suite/deviceReducer';
+import {
+    prepareDeviceReducer,
+    selectDevices,
+    selectDevicesCount,
+} from 'src/reducers/suite/deviceReducer';
 import sendFormReducer from 'src/reducers/wallet/sendFormReducer';
 import graphReducer from 'src/reducers/wallet/graphReducer';
 import storageMiddleware from 'src/middlewares/wallet/storageMiddleware';
@@ -27,10 +30,12 @@ import { extraDependencies } from 'src/support/extraDependencies';
 
 import * as suiteActions from '../suiteActions';
 import * as storageActions from '../storageActions';
+import { deviceActions } from '../deviceActions';
 
 const { getSuiteDevice, getWalletAccount, getWalletTransaction } = global.JestMocks;
 
 const discoveryReducer = prepareDiscoveryReducer(extraDependencies);
+const deviceReducer = prepareDeviceReducer(extraDependencies);
 
 // TODO: add method in suite-storage for deleting all stored data (done as a static method on SuiteDB), call it after each test
 // TODO: test deleting device instances on parent device forget
@@ -417,13 +422,12 @@ describe('Storage actions', () => {
         await store.dispatch(storageActions.rememberDevice(dev1, true));
 
         // Change device label inside a reducer
-        await store.dispatch({
-            type: SUITE.UPDATE_SELECTED_DEVICE,
-            payload: {
+        await store.dispatch(
+            deviceActions.updateSelectedDevice({
                 ...dev1Connected,
                 label: 'New Label',
-            },
-        });
+            }),
+        );
 
         store.dispatch(await preloadStore());
         expect(selectDevices(store.getState())[0].label).toBe('New Label');

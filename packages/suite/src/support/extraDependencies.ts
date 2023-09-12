@@ -19,10 +19,12 @@ import * as cardanoStakingActions from 'src/actions/wallet/cardanoStakingActions
 import * as walletSettingsActions from 'src/actions/settings/walletSettingsActions';
 import { DeviceRootState, selectIsPendingTransportEvent } from 'src/reducers/suite/deviceReducer';
 import { fixLoadedCoinjoinAccount } from 'src/utils/wallet/coinjoinUtils';
+import * as modalActions from 'src/actions/suite/modalActions';
 
 import * as suiteActions from '../actions/suite/suiteActions';
 import { AppState, ButtonRequest, TrezorDevice } from '../types/suite';
-import { STORAGE, SUITE } from '../actions/suite/constants';
+import { METADATA, STORAGE } from '../actions/suite/constants';
+import { deviceActions } from '../actions/suite/deviceActions';
 
 const connectSrc = resolveStaticPath('connect/');
 // 'https://localhost:8088/';
@@ -62,6 +64,8 @@ export const extraDependencies: ExtraDependencies = {
         selectDiscoveryForDevice: (state: DiscoveryRootState & DeviceRootState) =>
             selectDiscoveryByDeviceState(state, state.device.selectedDevice?.state),
         selectRouterApp: (state: AppState) => state.router.app,
+        selectCheckFirmwareAuthenticity: (state: AppState) =>
+            state.suite.settings.debug.checkFirmwareAuthenticity,
     },
     actions: {
         setAccountAddMetadata: metadataActions.setAccountAdd,
@@ -69,13 +73,16 @@ export const extraDependencies: ExtraDependencies = {
         changeWalletSettingsNetworks: walletSettingsActions.changeNetworks,
         lockDevice: suiteActions.lockDevice,
         appChanged: suiteActions.appChanged,
-        setSelectedDevice: suiteActions.setSelectedDevice,
-        updateSelectedDevice: suiteActions.updateSelectedDevice,
+        setSelectedDevice: deviceActions.selectDevice,
+        updateSelectedDevice: deviceActions.updateSelectedDevice,
         requestAuthConfirm: suiteActions.requestAuthConfirm,
+        onModalCancel: modalActions.onCancel,
+        openModal: modalActions.openModal,
     },
     actionTypes: {
         storageLoad: STORAGE.LOAD,
-        addButtonRequest: SUITE.ADD_BUTTON_REQUEST,
+        addButtonRequest: deviceActions.addButtonRequest.type,
+        setDeviceMetadata: METADATA.SET_DEVICE_METADATA,
     },
     reducers: {
         storageLoadBlockchain: (state: BlockchainState, { payload }: StorageLoadAction) => {
@@ -121,6 +128,19 @@ export const extraDependencies: ExtraDependencies = {
             if (payload.buttonRequest?.code === 'ButtonRequest_FirmwareUpdate') {
                 state.status = 'waiting-for-confirmation';
             }
+        },
+        setDeviceMetadataReducer: (
+            state,
+            { payload }: PayloadAction<{ deviceState: string; metadata: TrezorDevice['metadata'] }>,
+        ) => {
+            const { deviceState, metadata } = payload;
+            const index = state.devices.findIndex((d: TrezorDevice) => d.state === deviceState);
+            const device = state.devices[index];
+            if (!device) return;
+            device.metadata = metadata;
+        },
+        storageLoadDevices: (state, { payload }: StorageLoadAction) => {
+            state.devices = payload.devices;
         },
     },
     utils: {

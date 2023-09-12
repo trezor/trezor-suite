@@ -1,10 +1,12 @@
 import { DEVICE } from '@trezor/connect';
-import { SUITE } from 'src/actions/suite/constants';
+
+import type { ExtendedMessageDescriptor } from 'src/types/suite';
+
 import ActionRenderer from './renderers/ActionRenderer';
 import TransactionRenderer from './renderers/TransactionRenderer';
 import { CoinProtocolRenderer } from './renderers/UriSchemeRenderers';
 import type { NotificationViewProps, NotificationRendererProps } from './types';
-import type { ExtendedMessageDescriptor } from 'src/types/suite';
+import { deviceActions } from '../../../actions/suite/deviceActions';
 
 export type { NotificationViewProps };
 
@@ -196,7 +198,7 @@ const NotificationRenderer = ({ notification, render }: NotificationRendererProp
         case 'coinjoin-interrupted':
             return error(render, notification, 'TR_COINJOIN_INTERRUPTED_ERROR');
         // Events:
-        case SUITE.AUTH_DEVICE:
+        case deviceActions.authDevice.type:
             return info(render, notification, 'EVENT_WALLET_CREATED');
         case DEVICE.CONNECT:
             return (

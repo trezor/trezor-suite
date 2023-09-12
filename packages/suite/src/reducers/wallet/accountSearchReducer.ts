@@ -1,9 +1,10 @@
 import produce from 'immer';
-import { SUITE } from 'src/actions/suite/constants';
+
 import { ACCOUNT_SEARCH } from 'src/actions/wallet/constants';
 import * as walletSettingsActions from 'src/actions/settings/walletSettingsActions';
 import { Action } from 'src/types/suite';
 import { Account as AccountType } from 'src/types/wallet';
+import { deviceActions } from 'src/actions/suite/deviceActions';
 
 export interface State {
     coinFilter: AccountType['symbol'] | undefined;
@@ -35,7 +36,7 @@ const accountSearchReducer = (state: State = initialState, action: Action): Stat
                 }
                 break;
             }
-            case SUITE.SELECT_DEVICE:
+            case deviceActions.selectDevice.type:
                 draft.coinFilter = undefined;
                 draft.searchString = undefined;
                 break;

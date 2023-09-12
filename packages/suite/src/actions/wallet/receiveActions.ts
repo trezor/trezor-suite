@@ -1,6 +1,7 @@
 import { notificationsActions } from '@suite-common/toast-notifications';
 import TrezorConnect from '@trezor/connect';
 import { getDerivationType } from '@suite-common/wallet-utils';
+import { UserContextPayload } from '@suite-common/suite-types';
 
 import { RECEIVE } from 'src/actions/wallet/constants';
 import * as modalActions from 'src/actions/suite/modalActions';
@@ -11,8 +12,7 @@ import {
     getNetworkId,
     getAddressType,
 } from 'src/utils/wallet/cardanoUtils';
-
-import { selectDevice } from '../../reducers/suite/deviceReducer';
+import { selectDevice } from 'src/reducers/suite/deviceReducer';
 
 export type ReceiveAction =
     | { type: typeof RECEIVE.DISPOSE }
@@ -26,7 +26,7 @@ export const dispose = (): ReceiveAction => ({
 export const openAddressModal =
     (
         params: Pick<
-            Extract<modalActions.UserContextPayload, { type: 'address' }>,
+            Extract<UserContextPayload, { type: 'address' }>,
             'addressPath' | 'value' | 'isConfirmed'
         >,
     ) =>

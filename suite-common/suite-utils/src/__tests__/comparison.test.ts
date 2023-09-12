@@ -1,5 +1,5 @@
-import * as fixtures from '../__fixtures__/comparisonUtils';
-import * as comparisonUtils from '../comparisonUtils';
+import * as fixtures from '../__fixtures__/comparison';
+import * as comparisonUtils from '../comparison';
 
 describe('reducer utils', () => {
     fixtures.isChanged.forEach(f => {

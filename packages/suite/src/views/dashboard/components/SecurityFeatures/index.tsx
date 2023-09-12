@@ -7,13 +7,14 @@ import { DashboardSection } from 'src/components/dashboard';
 import { AcquiredDevice } from 'src/types/suite';
 import { useDevice, useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
 import { setDiscreetMode } from 'src/actions/settings/walletSettingsActions';
-import { createDeviceInstance, setFlag } from 'src/actions/suite/suiteActions';
+import { setFlag } from 'src/actions/suite/suiteActions';
 import { applySettings, changePin } from 'src/actions/settings/deviceSettingsActions';
 import { goto } from 'src/actions/suite/routerActions';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
+import { selectDevice } from 'src/reducers/suite/deviceReducer';
+import { createDeviceInstance } from 'src/actions/suite/deviceThunks';
 
 import { SecurityCard, SecurityCardProps } from '../SecurityCard';
-import { selectDevice } from '../../../../reducers/suite/deviceReducer';
 
 const Content = styled.div`
     display: grid;
@@ -137,7 +138,8 @@ const SecurityFeatures = () => {
               heading: <Translation id="TR_PASSPHRASE_PROTECTION_ENABLED" />,
               cta: {
                   label: <Translation id="TR_CREATE_HIDDEN_WALLET" />,
-                  action: () => dispatch(createDeviceInstance(device as AcquiredDevice)),
+                  action: () =>
+                      dispatch(createDeviceInstance({ device: device as AcquiredDevice })),
                   dataTest: 'create-hidden-wallet',
                   isDisabled: isDeviceLocked,
               },

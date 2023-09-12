@@ -1,9 +1,10 @@
 import { useState } from 'react';
-import { useDispatch, useDevice } from 'src/hooks/suite';
 
-import { toggleRememberDevice } from 'src/actions/suite/suiteActions';
+import { isDeviceRemembered } from '@suite-common/suite-utils';
+
+import { useDispatch, useDevice } from 'src/hooks/suite';
+import { toggleRememberDevice } from 'src/actions/suite/deviceThunks';
 import { TrezorDevice } from 'src/types/suite';
-import { isDeviceRemembered } from 'src/utils/suite/device';
 import { CoinjoinAccountDiscoveryProgress } from 'src/components/wallet';
 import { RememberWallet } from './RememberWallet';
 
@@ -18,7 +19,7 @@ export const CoinjoinAccountDiscovery = () => {
     const isRememberVisible = device && (!deviceRemembered || shouldRememberCardPersist);
 
     const toggleRemember = (device: TrezorDevice) => {
-        dispatch(toggleRememberDevice(device));
+        dispatch(toggleRememberDevice({ device }));
         setShouldRememberCardPersist(true);
     };
 

@@ -1,10 +1,12 @@
 import { lazy, Suspense, useState } from 'react';
+
 import styled from 'styled-components';
 
-import { TrezorLink, Translation, Modal, BundleLoader } from 'src/components/suite';
 import { HELP_CENTER_QR_CODE_URL } from '@trezor/urls';
 import { Icon, colors, P, Button, Textarea, SelectBar } from '@trezor/components';
-import { UserContextPayload } from 'src/actions/suite/modalActions';
+import { UserContextPayload } from '@suite-common/suite-types';
+
+import { TrezorLink, Translation, Modal, BundleLoader } from 'src/components/suite';
 import { useTranslation } from 'src/hooks/suite';
 
 const QrReader = lazy(() => import(/* webpackChunkName: "react-qr-reader" */ 'react-qr-reader'));

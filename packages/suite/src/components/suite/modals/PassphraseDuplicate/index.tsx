@@ -1,7 +1,9 @@
 import styled from 'styled-components';
+
 import { Button, Image } from '@trezor/components';
+
 import { Translation, Modal } from 'src/components/suite';
-import { authorizeDevice, switchDuplicatedDevice } from 'src/actions/suite/suiteActions';
+import { authorizeDevice, switchDuplicatedDevice } from 'src/actions/suite/deviceThunks';
 import { useDevice, useDispatch } from 'src/hooks/suite';
 import { TrezorDevice } from 'src/types/suite';
 
@@ -33,7 +35,7 @@ export const PassphraseDuplicate = ({ device, duplicate }: PassphraseDuplicatePr
 
     const isDeviceLocked = isLocked();
 
-    const handleSwitchDevice = () => dispatch(switchDuplicatedDevice(device, duplicate));
+    const handleSwitchDevice = () => dispatch(switchDuplicatedDevice({ device, duplicate }));
     const handleAuthorizeDevice = () => dispatch(authorizeDevice());
 
     return (

@@ -16,7 +16,6 @@ import * as modalActions from 'src/actions/suite/modalActions';
 import { getUnusedAddressFromAccount } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { Account } from 'src/types/wallet';
 import { ComposedTransactionInfo } from 'src/reducers/wallet/coinmarketReducer';
-import * as suiteActions from 'src/actions/suite/suiteActions';
 import {
     getStakingPath,
     getProtocolMagic,
@@ -33,6 +32,7 @@ import {
     COINMARKET_COMMON,
 } from '../constants';
 import { selectDevice } from '../../../reducers/suite/deviceReducer';
+import { toggleRememberDevice } from '../../suite/deviceThunks';
 
 export type CoinmarketCommonAction =
     | {
@@ -162,7 +162,7 @@ export const submitRequestForm =
     (dispatch: Dispatch, getState: GetState) => {
         const device = selectDevice(getState());
         if (device && !device.remember && !isDesktop()) {
-            dispatch(suiteActions.toggleRememberDevice(device, true));
+            dispatch(toggleRememberDevice({ device, forceRemember: true }));
         }
         if (form) {
             envSubmitRequestForm(

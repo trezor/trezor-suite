@@ -1,6 +1,13 @@
 import { useState } from 'react';
+import { useIntl } from 'react-intl';
+
 import styled from 'styled-components';
+
+import { getCheckBackupUrl } from '@suite-common/suite-utils';
 import { Button, H2, P, Image, variables } from '@trezor/components';
+import { pickByDeviceModel } from '@trezor/device-utils';
+import TrezorConnect, { DeviceModelInternal } from '@trezor/connect';
+
 import { SelectWordCount, SelectRecoveryType } from 'src/components/recovery';
 import { Loading, Translation, CheckItem, TrezorLink, Modal } from 'src/components/suite';
 import { ReduxModal } from 'src/components/suite/ModalSwitcher/ReduxModal';
@@ -14,10 +21,6 @@ import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 import type { ForegroundAppProps } from 'src/types/suite';
 import type { WordCount } from 'src/types/recovery';
 import { InstructionStep } from 'src/components/suite/InstructionStep';
-import { getCheckBackupUrl } from 'src/utils/suite/device';
-import { pickByDeviceModel } from '@trezor/device-utils';
-import TrezorConnect, { DeviceModelInternal } from '@trezor/connect';
-import { useIntl } from 'react-intl';
 import messages from 'src/support/messages';
 
 const StyledModal = styled(Modal)`

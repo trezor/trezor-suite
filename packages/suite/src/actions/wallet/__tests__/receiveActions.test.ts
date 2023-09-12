@@ -8,10 +8,14 @@ import suiteReducer from 'src/reducers/suite/suiteReducer';
 import modalReducer from 'src/reducers/suite/modalReducer';
 import * as receiveActions from 'src/actions/wallet/receiveActions';
 
+import { prepareDeviceReducer } from 'src/reducers/suite/deviceReducer';
+import { extraDependencies } from 'src/support/extraDependencies';
+
 import fixtures from '../__fixtures__/receiveActions';
-import deviceReducer from '../../../reducers/suite/deviceReducer';
 
 const { getSuiteDevice } = global.JestMocks;
+
+const deviceReducer = prepareDeviceReducer(extraDependencies);
 
 jest.mock('@trezor/connect', () => {
     let fixture: any;
@@ -62,7 +66,11 @@ jest.mock('@trezor/connect', () => {
         UI_EVENT: 'UI_EVENT',
         TRANSPORT_EVENT: 'TRANSPORT_EVENT',
         BLOCKCHAIN_EVENT: 'BLOCKCHAIN_EVENT',
-        DEVICE: {},
+        DEVICE: {
+            DISCONNECT: 'device-disconnect',
+            CONNECT_UNACQUIRED: 'device-connect-unacquired',
+            CHANGED: 'device-changed',
+        },
         TRANSPORT: {},
         BLOCKCHAIN: {},
         UI: {

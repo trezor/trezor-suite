@@ -1,7 +1,9 @@
 import styled from 'styled-components';
+
 import { Button, P } from '@trezor/components';
+import { UserContextPayload } from '@suite-common/suite-types';
+
 import { Modal, Translation } from 'src/components/suite';
-import { UserContextPayload } from 'src/actions/suite/modalActions';
 
 const SmallModal = styled(Modal)`
     width: 560px;

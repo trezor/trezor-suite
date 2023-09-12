@@ -1,15 +1,19 @@
 import { useState } from 'react';
+
 import styled from 'styled-components';
+
 import { Button, H3, P, CoinLogo, variables } from '@trezor/components';
+import { getTitleForNetwork } from '@suite-common/wallet-utils';
+import { UserContextPayload } from '@suite-common/suite-types';
+import { blockchainActions } from '@suite-common/wallet-core';
+
 import { Modal, Translation } from 'src/components/suite';
 import { useDispatch } from 'src/hooks/suite';
 import { isOnionUrl } from 'src/utils/suite/tor';
 import { useCustomBackends } from 'src/hooks/settings/backends';
-import { getTitleForNetwork } from '@suite-common/wallet-utils';
-import { AdvancedCoinSettings } from './AdvancedCoinSettings';
 import type { Network } from 'src/types/wallet';
-import type { UserContextPayload } from 'src/actions/suite/modalActions';
-import { blockchainActions } from '@suite-common/wallet-core';
+
+import { AdvancedCoinSettings } from './AdvancedCoinSettings';
 
 const BackendRowWrapper = styled.div`
     display: flex;

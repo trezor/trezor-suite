@@ -1,10 +1,11 @@
 import { MouseEventHandler } from 'react';
+
 import { Button } from '@trezor/components';
+import { isDesktop } from '@trezor/env-utils';
 
 import { Translation, TroubleshootingTips } from 'src/components/suite';
 import { useDevice, useDispatch } from 'src/hooks/suite';
-import { acquireDevice } from 'src/actions/suite/suiteActions';
-import { isDesktop } from '@trezor/env-utils';
+import { acquireDevice } from 'src/actions/suite/deviceThunks';
 
 export const DeviceAcquire = () => {
     const { isLocked } = useDevice();

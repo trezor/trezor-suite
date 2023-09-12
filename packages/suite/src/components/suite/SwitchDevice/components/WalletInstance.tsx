@@ -6,7 +6,7 @@ import { Switch, Box, Icon, useTheme, variables } from '@trezor/components';
 import { getAllAccounts, getTotalFiatBalance } from '@suite-common/wallet-utils';
 import { analytics, EventType } from '@trezor/suite-analytics';
 
-import { forgetDevice, toggleRememberDevice } from 'src/actions/suite/suiteActions';
+import { toggleRememberDevice } from 'src/actions/suite/deviceThunks';
 import {
     WalletLabeling,
     Translation,
@@ -16,6 +16,7 @@ import {
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { TrezorDevice, AcquiredDevice } from 'src/types/suite';
 import { selectLabelingDataForWallet } from 'src/reducers/suite/metadataReducer';
+import { deviceActions } from 'src/actions/suite/deviceActions';
 
 const InstanceType = styled.div`
     display: flex;
@@ -124,9 +125,9 @@ export const WalletInstance = ({
     );
     const dataTestBase = `@switch-device/wallet-on-index/${index}`;
 
-    const handleRememberChange = () => dispatch(toggleRememberDevice(instance));
+    const handleRememberChange = () => dispatch(toggleRememberDevice({ device: instance }));
     const handleEject = () => {
-        dispatch(forgetDevice(instance));
+        dispatch(deviceActions.forgetDevice(instance));
         analytics.report({
             type: EventType.SwitchDeviceEject,
         });

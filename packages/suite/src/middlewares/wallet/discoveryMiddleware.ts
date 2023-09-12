@@ -13,9 +13,10 @@ import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 
 import { SUITE, ROUTER, MODAL } from 'src/actions/suite/constants';
 import * as walletSettingsActions from 'src/actions/settings/walletSettingsActions';
-import * as suiteActions from 'src/actions/suite/suiteActions';
 import { selectDevice, selectDiscoveryForDevice } from 'src/reducers/suite/deviceReducer';
 import { getApp } from 'src/utils/suite/router';
+import { deviceActions } from 'src/actions/suite/deviceActions';
+import { authorizeDevice } from 'src/actions/suite/deviceThunks';
 
 export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
     async (action, { dispatch, next, getState }) => {
@@ -26,7 +27,7 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
             prevDiscovery.status > DiscoveryStatus.IDLE &&
             prevDiscovery.status < DiscoveryStatus.STOPPING;
 
-        if (action.type === SUITE.FORGET_DEVICE && action.payload.state) {
+        if (deviceActions.forgetDevice.match(action) && action.payload.state) {
             dispatch(discoveryActions.removeDiscovery(action.payload.state));
         }
 
@@ -39,7 +40,7 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
         }
 
         // consider if discovery should be interrupted
-        let interruptionIntent = action.type === SUITE.SELECT_DEVICE;
+        let interruptionIntent = action.type === deviceActions.selectDevice.type;
         if (action.type === ROUTER.LOCATION_CHANGE) {
             interruptionIntent =
                 getApp(action.payload.url) !== 'wallet' &&
@@ -75,14 +76,14 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
             device.features &&
             !device.state &&
             !locks.includes(SUITE.LOCK_TYPE.DEVICE) &&
-            (action.type === SUITE.SELECT_DEVICE || action.type === SUITE.APP_CHANGED)
+            (deviceActions.selectDevice.match(action) || action.type === SUITE.APP_CHANGED)
         ) {
             authorizationIntent = true;
         }
 
         // 2. selected device becomes acquired from unacquired or connected from disconnected
         let becomesConnected = false;
-        if (action.type === SUITE.UPDATE_SELECTED_DEVICE) {
+        if (deviceActions.updateSelectedDevice.match(action)) {
             const prevDevice = prevState.suite.device;
             const becomesAcquired = !!(
                 prevDevice &&
@@ -103,28 +104,28 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
 
         // 3. begin auth process
         if (authorizationIntent) {
-            dispatch(suiteActions.authorizeDevice());
+            dispatch(authorizeDevice());
         }
 
         // 4. device state received
-        if (action.type === SUITE.AUTH_DEVICE) {
+        if (deviceActions.authDevice.match(action)) {
             // `device` is always present here
             // to avoid typescript conditioning use device from action as a fallback (never used)
             dispatch(
                 createDiscoveryThunk({
-                    deviceState: action.state,
-                    device: device || action.payload,
+                    deviceState: action.payload.state,
+                    device: device || action.payload.device,
                 }),
             );
         }
 
         // 5. device state confirmation received
-        if (action.type === SUITE.RECEIVE_AUTH_CONFIRM && action.payload.state) {
+        if (deviceActions.receiveAuthConfirm.match(action) && action.payload.device.state) {
             // from discovery point of view it's irrelevant if authConfirm fails
             // it's a device matter now
             dispatch(
                 discoveryActions.updateDiscovery({
-                    deviceState: action.payload.state,
+                    deviceState: action.payload.device.state,
                     authConfirm: false,
                 }),
             );
@@ -134,8 +135,8 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
         if (
             becomesConnected ||
             action.type === SUITE.APP_CHANGED ||
-            action.type === SUITE.SELECT_DEVICE ||
-            action.type === SUITE.AUTH_DEVICE ||
+            deviceActions.selectDevice.match(action) ||
+            deviceActions.authDevice.match(action) ||
             walletSettingsActions.changeNetworks.match(action) ||
             accountsActions.changeAccountVisibility.match(action)
         ) {

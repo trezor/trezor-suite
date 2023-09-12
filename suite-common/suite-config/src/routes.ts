@@ -6,7 +6,8 @@
 
 const walletParams = ['symbol', 'accountIndex', 'accountType'] as const;
 const modalAppParams = ['cancelable', 'variant'] as const;
-const routes = [
+
+export const routes = [
     {
         name: 'suite-start',
         pattern: '/start',
@@ -299,5 +300,3 @@ const routes = [
         app: 'notifications',
     },
 ] as const;
-
-export default routes;

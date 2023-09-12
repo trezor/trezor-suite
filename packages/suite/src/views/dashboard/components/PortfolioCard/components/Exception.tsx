@@ -10,7 +10,7 @@ import { Discovery } from '@suite-common/wallet-types';
 import { Translation } from 'src/components/suite';
 import { useDevice, useDispatch } from 'src/hooks/suite';
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';
-import { authConfirm, authorizeDevice } from 'src/actions/suite/suiteActions';
+import { authConfirm, authorizeDevice } from 'src/actions/suite/deviceThunks';
 import { goto } from 'src/actions/suite/routerActions';
 import { DiscoveryStatusType } from 'src/types/wallet';
 

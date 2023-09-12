@@ -1,6 +1,7 @@
 import { MiddlewareAPI } from 'redux';
 import BigNumber from 'bignumber.js';
 
+import { getPhysicalDeviceCount } from '@suite-common/suite-utils';
 import { discoveryActions } from '@suite-common/wallet-core';
 import { analytics, EventType } from '@trezor/suite-analytics';
 import { TRANSPORT, DEVICE } from '@trezor/connect';
@@ -16,7 +17,6 @@ import { analyticsActions } from '@suite-common/analytics';
 
 import { SUITE, ROUTER } from 'src/actions/suite/constants';
 import { COINJOIN } from 'src/actions/wallet/constants';
-import { getPhysicalDeviceCount } from 'src/utils/suite/device';
 import { getSuiteReadyPayload, redactTransactionIdFromAnchor } from 'src/utils/suite/analytics';
 import type { AppState, Action, Dispatch } from 'src/types/suite';
 import {
@@ -26,6 +26,8 @@ import {
 import { updateLastAnonymityReportTimestamp } from 'src/actions/wallet/coinjoinAccountActions';
 
 import { selectDevices, selectDevicesCount } from '../../reducers/suite/deviceReducer';
+
+import { deviceActions } from '../../actions/suite/deviceActions';
 
 /*
     In analytics middleware we may intercept actions we would like to log. For example:
@@ -41,6 +43,13 @@ const analyticsMiddleware =
         next(action);
 
         const state = api.getState();
+
+        if (deviceActions.authDevice.match(action)) {
+            analytics.report({
+                type: EventType.SelectWalletType,
+                payload: { type: action.payload.device.walletNumber ? 'hidden' : 'standard' },
+            });
+        }
 
         switch (action.type) {
             case SUITE.READY:
@@ -180,12 +189,6 @@ const analyticsMiddleware =
                         },
                     });
                 }
-                break;
-            case SUITE.AUTH_DEVICE:
-                analytics.report({
-                    type: EventType.SelectWalletType,
-                    payload: { type: action.payload.walletNumber ? 'hidden' : 'standard' },
-                });
                 break;
             case COINJOIN.SESSION_COMPLETED:
             case COINJOIN.SESSION_PAUSE:

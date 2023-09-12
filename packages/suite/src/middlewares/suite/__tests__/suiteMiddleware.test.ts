@@ -9,13 +9,13 @@ import suiteMiddleware from 'src/middlewares/suite/suiteMiddleware';
 import type { Action } from 'src/types/suite';
 import { extraDependencies } from 'src/support/extraDependencies';
 import { appChanged } from 'src/actions/suite/suiteActions';
-
-import deviceReducer from '../../../reducers/suite/deviceReducer';
+import { prepareDeviceReducer } from 'src/reducers/suite/deviceReducer';
 
 type SuiteState = ReturnType<typeof suiteReducer>;
 type RouterState = ReturnType<typeof routerReducer>;
 
 const analyticsReducer = prepareAnalyticsReducer(extraDependencies);
+const deviceReducer = prepareDeviceReducer(extraDependencies);
 
 const getInitialState = (router?: RouterState, suite?: Partial<SuiteState>) => ({
     router: {

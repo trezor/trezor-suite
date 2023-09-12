@@ -1,5 +1,10 @@
 import { useMemo } from 'react';
+
 import styled from 'styled-components';
+
+import { isDesktop } from '@trezor/env-utils';
+import { variables } from '@trezor/components';
+import type { Route } from '@suite-common/suite-types';
 
 import { setDiscreetMode } from 'src/actions/settings/walletSettingsActions';
 import { goto } from 'src/actions/suite/routerActions';
@@ -7,19 +12,16 @@ import { Translation } from 'src/components/suite';
 import { findRouteByName } from 'src/utils/suite/router';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useCustomBackends } from 'src/hooks/settings/backends';
+import { useGuide } from 'src/hooks/guide/useGuide';
+import { SettingsAnchor } from 'src/constants/suite/anchors';
+import { selectTorState } from 'src/reducers/suite/suiteReducer';
+
 import { ActionItem } from './components/ActionItem';
-import { isDesktop } from '@trezor/env-utils';
 import { NavTor } from './components/NavTor';
 import { NavEarlyAccess } from './components/NavEarlyAccess';
 import { NavNotifications } from './components/NavNotifications';
 import { NavSettings } from './components/NavSettings';
-import { variables } from '@trezor/components';
 import { NavBackends } from './components/NavBackends';
-import { useGuide } from 'src/hooks/guide/useGuide';
-import { SettingsAnchor } from 'src/constants/suite/anchors';
-
-import type { Route } from 'src/types/suite';
-import { selectTorState } from 'src/reducers/suite/suiteReducer';
 
 const Wrapper = styled.div`
     display: flex;

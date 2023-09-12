@@ -1,10 +1,11 @@
+import { getCheckBackupUrl } from '@suite-common/suite-utils';
+
 import { Translation } from 'src/components/suite';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from 'src/components/suite/Settings';
 import { useDevice, useDispatch } from 'src/hooks/suite';
 import { goto } from 'src/actions/suite/routerActions';
 import { useAnchor } from 'src/hooks/suite/useAnchor';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
-import { getCheckBackupUrl } from 'src/utils/suite/device';
 
 interface CheckRecoverySeedProps {
     isDeviceLocked: boolean;

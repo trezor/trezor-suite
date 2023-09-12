@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect, useCallback, Dispatch, SetStateAction } from 'react';
 import { FieldPath, UseFormReturn } from 'react-hook-form';
+
 import {
     FormState,
     UseSendFormState,
@@ -11,13 +12,14 @@ import {
     PrecomposedLevelsCardano,
 } from '@suite-common/wallet-types';
 import { useAsyncDebounce } from '@trezor/react-utils';
-import { useDispatch, useTranslation } from 'src/hooks/suite';
-import { isChanged } from 'src/utils/suite/comparisonUtils';
-import { composeTransaction } from 'src/actions/wallet/sendFormActions';
+import { isChanged } from '@suite-common/suite-utils';
 import { findComposeErrors } from '@suite-common/wallet-utils';
 import { FeeLevel } from '@trezor/connect';
-import { TranslationKey } from 'src/components/suite/Translation';
 import { COMPOSE_ERROR_TYPES } from '@suite-common/wallet-constants';
+
+import { TranslationKey } from 'src/components/suite/Translation';
+import { composeTransaction } from 'src/actions/wallet/sendFormActions';
+import { useDispatch, useTranslation } from 'src/hooks/suite';
 
 type Props = UseFormReturn<FormState> & {
     state: UseSendFormState;

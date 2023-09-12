@@ -1,6 +1,9 @@
 import { useState, useMemo, useCallback } from 'react';
+
 import styled from 'styled-components';
+
 import { ConfirmOnDevice } from '@trezor/components';
+
 import { useDevice, useDispatch, useFirmware } from 'src/hooks/suite';
 import { Translation, Modal } from 'src/components/suite';
 import { DeviceAcquire } from 'src/views/suite/device-acquire';
@@ -17,7 +20,7 @@ import {
     ReconnectDevicePrompt,
     SelectCustomFirmware,
 } from 'src/components/firmware';
-import { acquireDevice } from 'src/actions/suite/suiteActions';
+import { acquireDevice } from 'src/actions/suite/deviceThunks';
 
 const StyledModal = styled(Modal)<{ isNarrow: boolean }>`
     width: ${({ isNarrow }) => (isNarrow ? '450px' : '620px')};

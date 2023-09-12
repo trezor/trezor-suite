@@ -6,7 +6,6 @@ import { getFormDraftKey } from '@suite-common/wallet-utils';
 import { FormDraftPrefixKeyValues } from '@suite-common/wallet-constants';
 
 import { db } from 'src/storage';
-import * as suiteActions from 'src/actions/suite/suiteActions';
 import {
     serializeDiscovery,
     serializeDevice,
@@ -23,6 +22,7 @@ import { selectCoinjoinAccountByKey } from 'src/reducers/wallet/coinjoinReducer'
 
 import { STORAGE } from './constants';
 import { selectDevices } from '../../reducers/suite/deviceReducer';
+import { deviceActions } from './deviceActions';
 
 export type StorageAction = NonNullable<PreloadStoreAction>;
 export type StorageLoadAction = Extract<StorageAction, { type: typeof STORAGE.LOAD }>;
@@ -371,7 +371,7 @@ export const removeDatabase = () => async (dispatch: Dispatch, getState: GetStat
     const rememberedDevices = devices.filter(d => d.remember);
     // forget all remembered devices
     rememberedDevices.forEach(d => {
-        dispatch(suiteActions.forgetDevice(d));
+        dispatch(deviceActions.forgetDevice(d));
     });
     await db.removeDatabase();
     dispatch(

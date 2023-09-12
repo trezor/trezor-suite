@@ -1,14 +1,15 @@
 import { useState } from 'react';
+
 import { AnimatePresence, motion } from 'framer-motion';
 import styled from 'styled-components';
 
+import * as deviceUtils from '@suite-common/suite-utils';
 import { useTheme, variables, Icon, Image, motionAnimation } from '@trezor/components';
 
 import { Translation } from 'src/components/suite';
-import * as deviceUtils from 'src/utils/suite/device';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { goto } from 'src/actions/suite/routerActions';
-import { acquireDevice, createDeviceInstance, selectDevice } from 'src/actions/suite/suiteActions';
+import { acquireDevice, createDeviceInstance, selectDevice } from 'src/actions/suite/deviceThunks';
 import { selectDevice as selectDeviceSelector } from 'src/reducers/suite/deviceReducer';
 import { OpenGuideFromTooltip } from 'src/components/guide';
 import type { TrezorDevice, AcquiredDevice, ForegroundAppProps } from 'src/types/suite';
@@ -169,7 +170,7 @@ const DeviceItem = ({ device, instances, onCancel, backgroundRoute }: DeviceItem
     };
 
     const addDeviceInstance = async (instance: DeviceItemProps['device']) => {
-        await dispatch(createDeviceInstance(instance));
+        await dispatch(createDeviceInstance({ device: instance }));
         handleRedirection();
     };
 

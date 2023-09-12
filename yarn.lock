@@ -7590,9 +7590,13 @@ __metadata:
   dependencies:
     "@reduxjs/toolkit": 1.9.5
     "@suite-common/metadata-types": "workspace:*"
+    "@suite-common/suite-config": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
+    "@suite-common/wallet-types": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/env-utils": "workspace:*"
+    "@trezor/type-utils": "workspace:*"
+    "@trezor/utils": "workspace:*"
     bignumber.js: ^9.1.1
     jest: ^26.6.3
     typescript: 4.9.5
@@ -7604,9 +7608,12 @@ __metadata:
   resolution: "@suite-common/suite-utils@workspace:suite-common/suite-utils"
   dependencies:
     "@suite-common/suite-config": "workspace:*"
+    "@suite-common/suite-types": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@trezor/blockchain-link": "workspace:*"
+    "@trezor/connect": "workspace:*"
+    "@trezor/urls": "workspace:*"
     "@trezor/utils": "workspace:*"
     bignumber.js: ^9.1.1
     date-fns: ^2.30.0

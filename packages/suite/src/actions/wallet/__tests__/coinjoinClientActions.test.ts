@@ -45,7 +45,10 @@ const rootReducer = combineReducers({
         },
         () => ({}),
     ),
-    device: createReducer({ devices: [fixtures.DEVICE], device: fixtures.DEVICE }, () => ({})),
+    device: createReducer(
+        { devices: [fixtures.DEVICE], selectedDevice: fixtures.DEVICE },
+        () => ({}),
+    ),
     modal: modalReducer,
     messageSystem: messageSystemReducer,
     wallet: combineReducers({
@@ -69,10 +72,7 @@ const initStore = ({ accounts, coinjoin, device, selectedAccount, suite }: Walle
             rootReducer,
             partialState: {
                 suite,
-                device: {
-                    device: device?.device,
-                    devices: device?.devices,
-                },
+                device,
                 wallet: {
                     accounts,
                     coinjoin,

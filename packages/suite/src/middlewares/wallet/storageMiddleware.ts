@@ -1,6 +1,7 @@
 import { MiddlewareAPI } from 'redux';
 import { isAnyOf } from '@reduxjs/toolkit';
 
+import { isDeviceRemembered } from '@suite-common/suite-utils';
 import {
     firmwareActions,
     discoveryActions,
@@ -23,11 +24,12 @@ import * as COINJOIN from 'src/actions/wallet/constants/coinjoinConstants';
 import * as storageActions from 'src/actions/suite/storageActions';
 import { SUITE, METADATA, STORAGE } from 'src/actions/suite/constants';
 import * as metadataActions from 'src/actions/suite/metadataActions';
-import { isDeviceRemembered } from 'src/utils/suite/device';
 import { serializeDiscovery } from 'src/utils/suite/storage';
 import type { AppState, Action as SuiteAction, Dispatch } from 'src/types/suite';
 import type { WalletAction } from 'src/types/wallet';
 import { selectDevices, selectDevice } from 'src/reducers/suite/deviceReducer';
+
+import { deviceActions } from '../../actions/suite/deviceActions';
 
 const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
     db.onBlocking = () => api.dispatch({ type: STORAGE.ERROR, payload: 'blocking' });
@@ -145,27 +147,27 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 api.dispatch(storageActions.saveAnalytics());
             }
 
+            if (deviceActions.rememberDevice.match(action)) {
+                api.dispatch(
+                    storageActions.rememberDevice(
+                        action.payload.device,
+                        action.payload.remember,
+                        action.payload.forceRemember,
+                    ),
+                );
+            }
+
+            if (deviceActions.forgetDevice.match(action)) {
+                api.dispatch(storageActions.forgetDevice(action.payload));
+            }
+
+            if (deviceActions.updateSelectedDevice.match(action)) {
+                if (isDeviceRemembered(action.payload) && action.payload?.mode === 'normal') {
+                    storageActions.saveDevice(action.payload);
+                }
+            }
+
             switch (action.type) {
-                case SUITE.REMEMBER_DEVICE:
-                    api.dispatch(
-                        storageActions.rememberDevice(
-                            action.payload,
-                            action.remember,
-                            action.forceRemember,
-                        ),
-                    );
-                    break;
-
-                case SUITE.FORGET_DEVICE:
-                    api.dispatch(storageActions.forgetDevice(action.payload));
-                    break;
-
-                case SUITE.UPDATE_SELECTED_DEVICE:
-                    if (isDeviceRemembered(action.payload) && action.payload.mode === 'normal') {
-                        storageActions.saveDevice(action.payload);
-                    }
-                    break;
-
                 case WALLET_SETTINGS.SET_HIDE_BALANCE:
                 case walletSettingsActions.setLocalCurrency.type:
                 case WALLET_SETTINGS.SET_BITCOIN_AMOUNT_UNITS:

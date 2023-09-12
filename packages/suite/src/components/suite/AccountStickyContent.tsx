@@ -1,13 +1,15 @@
 import styled from 'styled-components';
+
+import { CoinLogo, variables } from '@trezor/components';
+import { Route } from '@suite-common/suite-types';
+
 import {
     FiatValue,
     FormattedCryptoAmount,
     AccountLabeling,
     Translation,
 } from 'src/components/suite';
-import { CoinLogo, variables } from '@trezor/components';
 import { Account } from 'src/types/wallet';
-import { Route } from 'src/constants/suite/routes';
 
 const Main = styled.div`
     align-items: center;

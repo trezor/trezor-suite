@@ -1,7 +1,7 @@
 import { firmwareUpdate, firmwareActions } from '@suite-common/wallet-core';
 import { UI, DeviceModelInternal, FirmwareType } from '@trezor/connect';
 
-import { SUITE } from 'src/actions/suite/constants';
+import { deviceActions } from '../../suite/deviceActions';
 
 const { getSuiteDevice, getDeviceFeatures, getFirmwareRelease } = global.JestMocks;
 
@@ -300,7 +300,7 @@ export const reducerActions = [
         description: 'SUITE.ADD_BUTTON_REQUEST, type=ButtonRequest_FirmwareUpdate',
         initialState: {},
         action: {
-            type: SUITE.ADD_BUTTON_REQUEST,
+            type: deviceActions.addButtonRequest.type,
             payload: { buttonRequest: { code: 'ButtonRequest_FirmwareUpdate' } },
         },
         result: {

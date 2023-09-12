@@ -6,6 +6,7 @@ import { SUITE, MODAL } from 'src/actions/suite/constants';
 import { TorStatus } from 'src/types/suite';
 
 import * as suiteActions from '../suiteActions';
+import { deviceActions } from '../deviceActions';
 
 const { getSuiteDevice, getConnectDevice } = global.JestMocks;
 
@@ -352,7 +353,7 @@ const handleDeviceConnect = [
             suite: {},
         },
         device: CONNECT_DEVICE,
-        result: SUITE.SELECT_DEVICE,
+        result: deviceActions.selectDevice.type,
     },
     {
         description: `ignore`,
@@ -372,7 +373,7 @@ const handleDeviceConnect = [
             firmware: { status: 'waiting-for-bootloader' },
         },
         device: getConnectDevice({ path: '3', mode: 'bootloader' }),
-        result: SUITE.SELECT_DEVICE,
+        result: deviceActions.selectDevice.type,
     },
 ];
 
@@ -448,7 +449,7 @@ const handleDeviceDisconnect = [
         },
         device: CONNECT_DEVICE,
         result: {
-            type: SUITE.SELECT_DEVICE,
+            type: deviceActions.selectDevice.type,
             payload: getSuiteDevice({
                 state: 'abc',
                 instance: 1,
@@ -710,7 +711,7 @@ const observeSelectedDevice = [
                 ],
             },
         },
-        result: SUITE.UPDATE_SELECTED_DEVICE,
+        result: deviceActions.updateSelectedDevice.type,
         changed: true,
     },
     {
@@ -828,7 +829,7 @@ const authorizeDevice = [
                 connected: true,
             }),
         },
-        result: SUITE.AUTH_DEVICE,
+        result: deviceActions.authDevice.type,
     },
     {
         description: `duplicate detected`,
@@ -946,8 +947,10 @@ const authConfirm = [
             },
         },
         result: {
-            type: SUITE.RECEIVE_AUTH_CONFIRM,
-            success: false,
+            type: deviceActions.receiveAuthConfirm.type,
+            payload: {
+                success: false,
+            },
         },
     },
     {
@@ -962,7 +965,7 @@ const authConfirm = [
             },
         },
         result: {
-            type: SUITE.FORGET_DEVICE,
+            type: deviceActions.forgetDevice.type,
         },
     },
     {
@@ -971,8 +974,10 @@ const authConfirm = [
             selectedDevice: getSuiteDevice({ state: 'ABCD' }),
         },
         result: {
-            type: SUITE.RECEIVE_AUTH_CONFIRM,
-            success: false,
+            type: deviceActions.receiveAuthConfirm.type,
+            payload: {
+                success: false,
+            },
         },
     },
     {
@@ -981,8 +986,10 @@ const authConfirm = [
             selectedDevice: getSuiteDevice({ instance: 1, state: 'state@device-id:1' }),
         },
         result: {
-            type: SUITE.RECEIVE_AUTH_CONFIRM,
-            success: true,
+            type: deviceActions.receiveAuthConfirm.type,
+            payload: {
+                success: true,
+            },
         },
     },
 ];
@@ -1009,7 +1016,7 @@ const createDeviceInstance = [
                 }),
             },
         },
-        result: SUITE.CREATE_DEVICE_INSTANCE,
+        result: deviceActions.createDeviceInstance.type,
     },
     {
         description: `without passphrase_protection and @trezor/connect error`,
@@ -1048,7 +1055,7 @@ const createDeviceInstance = [
                 error: 'applySettings error',
             },
         },
-        result: SUITE.CREATE_DEVICE_INSTANCE,
+        result: deviceActions.createDeviceInstance.type,
     },
 ];
 

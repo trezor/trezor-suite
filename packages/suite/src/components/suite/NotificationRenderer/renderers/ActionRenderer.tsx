@@ -1,6 +1,8 @@
 import { DEVICE } from '@trezor/connect';
+
 import { useDispatch } from 'src/hooks/suite';
-import { acquireDevice, selectDevice } from 'src/actions/suite/suiteActions';
+import { acquireDevice, selectDevice } from 'src/actions/suite/deviceThunks';
+
 import type { NotificationViewProps, NotificationRendererProps } from '../types';
 
 type ActionRendererProps = NotificationViewProps & NotificationRendererProps;

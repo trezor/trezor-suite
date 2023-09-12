@@ -1,12 +1,13 @@
 import { useState } from 'react';
+
 import styled from 'styled-components';
 
 import { ConfirmOnDevice, variables } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/connect';
+import { UserContextPayload } from '@suite-common/suite-types';
 
 import { Translation, Modal } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { UserContextPayload } from 'src/actions/suite/modalActions';
 import { cancelSignTx } from 'src/actions/wallet/sendFormActions';
 import { isCardanoTx } from 'src/utils/wallet/cardanoUtils';
 import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';

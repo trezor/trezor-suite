@@ -7,6 +7,7 @@ import type { ObjectValues } from '@trezor/type-utils';
 import type { UiEvent, DeviceEvent, TransportEvent, BlockchainEvent } from '@trezor/connect';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { messageSystemActions } from '@suite-common/message-system';
+import type { Route } from '@suite-common/suite-types';
 
 import type { RouterAction } from 'src/actions/suite/routerActions';
 import type { AppState } from 'src/reducers/store';
@@ -24,7 +25,7 @@ import type { BackupAction } from 'src/actions/backup/backupActions';
 import type { RecoveryAction } from 'src/actions/recovery/recoveryActions';
 import type { SUITE } from 'src/actions/suite/constants';
 import type { GuideAction } from 'src/actions/suite/guideActions';
-import type { Route } from 'src/constants/suite/routes';
+import { deviceActions } from 'src/actions/suite/deviceActions';
 
 // reexport
 export type { ExtendedMessageDescriptor } from 'src/components/suite/Translation/components/BaseTranslation';
@@ -54,7 +55,7 @@ export type MessageSystemAction = ReturnType<
 >;
 type AnalyticsAction = ReturnType<(typeof analyticsActions)[keyof typeof analyticsActions]>;
 type FirmwareAction = ReturnType<(typeof firmwareActions)[keyof typeof firmwareActions]>;
-
+type DeviceAction = ReturnType<(typeof deviceActions)[keyof typeof deviceActions]>;
 type DiscoveryAction = ReturnType<(typeof discoveryActions)[keyof typeof discoveryActions]>;
 
 // all actions from all apps used to properly type Dispatch.
@@ -79,7 +80,8 @@ export type Action =
     | MessageSystemAction
     | GuideAction
     | ProtocolAction
-    | DiscoveryAction;
+    | DiscoveryAction
+    | DeviceAction;
 
 export type ThunkAction = TAction<any, AppState, any, Action>;
 

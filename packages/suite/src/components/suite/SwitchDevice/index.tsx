@@ -1,8 +1,9 @@
 import styled from 'styled-components';
 
+import * as deviceUtils from '@suite-common/suite-utils';
+
 import { Translation } from 'src/components/suite/Translation';
 import { Modal } from 'src/components/suite';
-import * as deviceUtils from 'src/utils/suite/device';
 import { isWebUsb } from 'src/utils/suite/transport';
 import { getBackgroundRoute } from 'src/utils/suite/router';
 import { ForegroundAppProps } from 'src/types/suite';

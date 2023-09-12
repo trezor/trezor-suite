@@ -2,13 +2,15 @@ import { accountsActions, blockchainActions, discoveryActions } from '@suite-com
 import { getAccountNetwork } from '@suite-common/wallet-utils';
 import { SelectedAccountStatus } from '@suite-common/wallet-types';
 import { DiscoveryStatus } from '@suite-common/wallet-constants';
+import * as comparisonUtils from '@suite-common/suite-utils';
 
-import { ROUTER, SUITE } from 'src/actions/suite/constants';
+import { ROUTER } from 'src/actions/suite/constants';
 import { selectDiscoveryForDevice, selectDevice } from 'src/reducers/suite/deviceReducer';
 import * as metadataActions from 'src/actions/suite/metadataActions';
-import * as comparisonUtils from 'src/utils/suite/comparisonUtils';
 import { getSelectedAccount } from 'src/utils/wallet/accountUtils';
 import { Action, Dispatch, GetState, AppState } from 'src/types/suite';
+
+import { deviceActions } from '../suite/deviceActions';
 
 const getAccountState = (state: AppState): SelectedAccountStatus => {
     const device = selectDevice(state);
@@ -154,8 +156,8 @@ const getAccountState = (state: AppState): SelectedAccountStatus => {
 // other actions will be ignored
 const actions = [
     ROUTER.LOCATION_CHANGE,
-    SUITE.SELECT_DEVICE,
-    SUITE.UPDATE_SELECTED_DEVICE,
+    deviceActions.selectDevice.type,
+    deviceActions.updateSelectedDevice.type,
     metadataActions.setAccountAdd.type,
     accountsActions.createAccount.type,
     accountsActions.removeAccount.type,

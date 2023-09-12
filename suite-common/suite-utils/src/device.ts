@@ -4,7 +4,7 @@ import {
     FirmwareRelease,
     DeviceModelInternal,
 } from '@trezor/connect';
-import { TrezorDevice, AcquiredDevice } from 'src/types/suite';
+import { TrezorDevice, AcquiredDevice } from '@suite-common/suite-types';
 import * as URLS from '@trezor/urls';
 
 /**
