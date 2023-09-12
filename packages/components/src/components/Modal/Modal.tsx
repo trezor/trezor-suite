@@ -1,39 +1,56 @@
-/* stylelint-disable indentation */
-import { useCallback, useEffect, useState, ReactNode, MouseEvent } from 'react';
+import { useCallback, useState, ReactNode, useEffect } from 'react';
 
-import styled, { css } from 'styled-components';
+import styled, { css, useTheme } from 'styled-components';
+import { useEvent } from 'react-use';
+import { boxShadows, spacings, spacingsPx, typography } from '@trezor/theme';
 
-import { useKeyPress } from '@trezor/react-utils';
-import { useTheme } from '../../utils/hooks';
 import { Icon } from '../assets/Icon/Icon';
-import { H1 } from '../typography/Heading/Heading';
-import { variables } from '../../config';
 import { IconType } from '../../support/types';
 import { ProgressBar } from '../loaders/ProgressBar/ProgressBar';
 
-const CLOSE_ICON_SIDE = 26;
-const CLOSE_ICON_PADDING = 16;
+const CLOSE_ICON_SIZE = spacings.xxl;
+const CLOSE_ICON_MARGIN = 16;
 const MODAL_CONTENT_ID = 'modal-content';
 
 const ModalPromptContainer = styled.div`
     margin-bottom: 25px;
 `;
 
+const Container = styled.div`
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    border-radius: 16px;
+    transition: background 0.3s; // when theme changes from light to dark
+    max-width: 95%;
+    min-width: 305px;
+    max-height: 90vh;
+    width: 680px;
+    background: ${({ theme }) => theme.backgroundSurfaceElevation1};
+    box-shadow: ${boxShadows.elevation3};
+`;
+
 export interface HeaderProps {
     isBottomBorderShown: boolean;
-    hasText?: boolean;
 }
 
 const Header = styled.div<HeaderProps>`
     display: flex;
     align-items: center;
-    justify-content: center;
     word-break: break-word;
-    height: ${({ hasText }) => hasText && '80px'};
-    padding: 0 32px;
-    padding-bottom: ${({ hasText }) => !hasText && 0};
-    border-bottom: ${({ isBottomBorderShown, theme }) =>
-        isBottomBorderShown ? `1px solid ${theme.STROKE_GREY}` : 'none'};
+    min-height: 52px;
+    padding: ${spacingsPx.xs} ${spacingsPx.md};
+    border-bottom: 1px solid
+        ${({ isBottomBorderShown, theme }) =>
+            isBottomBorderShown ? theme.borderOnElevation1 : 'transparent'};
+`;
+
+const BACK_ICON_WIDTH = spacingsPx.xxxl;
+const BackIcon = styled(Icon)`
+    position: relative;
+    width: ${BACK_ICON_WIDTH};
+    padding-right: ${spacingsPx.lg};
+    margin-left: auto;
 `;
 
 interface HeadingContainerProps {
@@ -53,45 +70,44 @@ const HeadingContainer = styled.div<HeadingContainerProps>`
         css`
             flex-grow: 1;
             margin-right: -${componentsWidth}px;
-            margin-left: ${isWithBackButton && '-40px'};
-            padding: 0 28px;
+            margin-left: ${isWithBackButton && `-${BACK_ICON_WIDTH}`};
+            padding: 0 ${spacingsPx.md};
             align-items: center;
             text-align: center;
         `}
 `;
 
-const StyledH1 = styled(H1)<{ isWithIcon?: boolean }>`
+const Heading = styled.h1<{ isWithIcon?: boolean }>`
     display: flex;
     align-items: baseline;
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    line-height: 32px;
+    ${typography.titleSmall}
 
     ${({ isWithIcon }) =>
         isWithIcon &&
         css`
-            padding-right: 14px;
+            padding-right: 16px;
 
             > :first-child {
-                margin-right: 8px;
+                margin-right: ${spacingsPx.xs};
             }
         `}
 `;
 
-const Subheading = styled.span`
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
-    font-size: ${variables.FONT_SIZE.SMALL};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+const Subheading = styled.span<{ isWithMargin: boolean }>`
+    margin-left: ${({ isWithMargin }) => isWithMargin && spacingsPx.xl};
+    ${typography.hint}
+    color: ${({ theme }) => theme.textSubdued};
 `;
 
 const HeaderComponentsContainer = styled.div`
     display: flex;
     align-items: center;
     height: 100%;
-    padding-left: ${CLOSE_ICON_PADDING}px;
+    padding-left: ${CLOSE_ICON_MARGIN}px;
     margin-left: auto;
 
     > * + * {
-        margin-left: ${CLOSE_ICON_SIDE}px;
+        margin-left: ${CLOSE_ICON_MARGIN}px;
     }
 `;
 
@@ -100,31 +116,25 @@ const Body = styled.div`
     flex-direction: column;
     flex: 1;
     height: 100%;
-    margin-bottom: 32px;
-    padding: 32px 32px 0;
+    margin-bottom: ${spacingsPx.md};
+    padding: ${spacingsPx.md} ${spacingsPx.md} 0;
     overflow-y: auto;
 
     ::-webkit-scrollbar {
         display: none;
     }
-
-    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
-        padding: 16px 16px 0;
-        margin-bottom: 16px;
-    }
 `;
 
 const Description = styled.div`
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
-    font-size: ${variables.FONT_SIZE.SMALL};
-    margin: 0 auto 18px auto;
+    margin-bottom: ${spacingsPx.md};
     max-width: fit-content; /* makes sure the description does not widen the modal beyond content width when the modal's width is "unset" */
+    color: ${({ theme }) => theme.textSubdued};
+    ${typography.hint}
     text-align: left;
 `;
 
 const Content = styled.div`
     display: flex;
-    color: ${({ theme }) => theme.TYPE_DARK_GREY};
     flex-direction: column;
     width: 100%;
     height: 100%;
@@ -133,47 +143,27 @@ const Content = styled.div`
 const BottomBar = styled.div`
     display: flex;
     flex-wrap: wrap;
-    justify-content: center;
-    padding: 0 32px 32px;
-    gap: 16px;
-`;
-
-const ModalWindow = styled.div`
-    display: flex;
-    flex-direction: column;
-    position: relative;
-    border-radius: 16px;
-    text-align: center;
-    transition:
-        background 0.3s,
-        box-shadow 0.3s;
-    max-width: 95%;
-    min-width: 305px;
-    max-height: 90vh;
-    width: 680px;
-
-    ${({ theme }) => css`
-        background: ${theme.BG_WHITE};
-        box-shadow: 0 10px 80px 0 ${theme.BOX_SHADOW_MODAL};
-    `}
+    gap: ${spacingsPx.xs};
+    padding: ${spacingsPx.md};
+    border-top: 1px solid ${({ theme }) => theme.borderOnElevation1};
 `;
 
 const CloseIcon = styled(Icon)`
-    width: ${CLOSE_ICON_SIDE}px;
-    height: ${CLOSE_ICON_SIDE}px;
-`;
+    width: ${CLOSE_ICON_SIZE}px;
+    height: ${CLOSE_ICON_SIZE}px;
+    background: ${({ theme }) => theme.backgroundTertiaryDefaultOnElevation1};
+    border-radius: 50%;
+    transition: opacity 0.2s;
 
-const BackIcon = styled(Icon)`
-    position: relative;
-    width: 40px;
-    height: 27px;
-    padding-right: 20px;
-    margin-left: auto;
+    :hover {
+        opacity: 0.7;
+    }
 `;
 
 interface ModalProps {
     children?: ReactNode;
     heading?: ReactNode;
+    preheading?: ReactNode;
     subheading?: ReactNode;
     modalPrompt?: ReactNode;
     headerIcon?: IconType;
@@ -183,7 +173,6 @@ interface ModalProps {
     isCancelable?: boolean;
     onBackClick?: () => void;
     onCancel?: () => void;
-    onClick?: (e: MouseEvent<HTMLDivElement>) => void;
     totalProgressBarSteps?: number;
     currentProgressBarStep?: number;
     headerComponent?: ReactNode;
@@ -194,14 +183,14 @@ interface ModalProps {
 const Modal = ({
     children,
     heading,
+    preheading,
     subheading,
     modalPrompt,
     headerIcon,
     isHeadingCentered,
-    description,
+    description, // LEGACY PROP
     bottomBar,
     isCancelable,
-    onClick,
     onBackClick,
     onCancel,
     totalProgressBarSteps,
@@ -211,51 +200,44 @@ const Modal = ({
     'data-test': dataTest = '@modal',
 }: ModalProps) => {
     const [componentsWidth, setComponentsWidth] = useState<number>();
-    const escPressed = useKeyPress('Escape');
     const theme = useTheme();
 
-    const measureComponentsRef = useCallback((element: HTMLDivElement | null) => {
-        if (element) {
-            setComponentsWidth(element?.offsetWidth);
+    const showHeaderActions = !!headerComponent || isCancelable;
+
+    useEffect(() => {
+        if (!showHeaderActions) {
+            setComponentsWidth(undefined);
         }
-    }, []);
+    }, [showHeaderActions]);
+
+    useEvent('keydown', (e: KeyboardEvent) => {
+        if (onCancel && e.key === 'Escape') {
+            onCancel?.();
+        }
+    });
+
+    const measureComponentsRef = useCallback(
+        (element: HTMLDivElement | null) => setComponentsWidth(element?.offsetWidth),
+        [],
+    );
 
     // check if progress bar placeholder should be rendered
     const showProgressBar =
         totalProgressBarSteps !== undefined && currentProgressBarStep !== undefined;
 
-    const showHeaderActions = !!headerComponent || isCancelable;
-
-    if (isCancelable && escPressed) {
-        onCancel?.();
-    }
-
-    useEffect(() => {
-        if (isCancelable && escPressed) {
-            onCancel?.();
-        }
-    }, [isCancelable, onCancel, escPressed]);
-
     return (
         <>
             {modalPrompt && <ModalPromptContainer>{modalPrompt}</ModalPromptContainer>}
 
-            <ModalWindow
-                data-test={dataTest}
-                className={className}
-                onClick={e => {
-                    onClick?.(e);
-                    e.stopPropagation();
-                }}
-            >
+            <Container data-test={dataTest} className={className}>
                 {(!!onBackClick || !!heading || showHeaderActions) && (
-                    <Header isBottomBorderShown={!showProgressBar && !!heading} hasText={!!heading}>
+                    <Header isBottomBorderShown={!showProgressBar && !!heading}>
                         {onBackClick && (
                             <BackIcon
                                 icon="ARROW_LEFT"
                                 size={24}
-                                color={theme.TYPE_LIGHT_GREY}
-                                hoverColor={theme.TYPE_LIGHTER_GREY}
+                                color={theme.iconSubdued}
+                                hoverColor={theme.iconOnTertiary}
                                 onClick={onBackClick}
                             />
                         )}
@@ -266,18 +248,28 @@ const Modal = ({
                                 isHeadingCentered={isHeadingCentered}
                                 isWithBackButton={!!onBackClick}
                             >
-                                <StyledH1 noMargin isWithIcon={!!headerIcon}>
+                                {preheading && (
+                                    <Subheading isWithMargin={!!headerIcon}>
+                                        {preheading}
+                                    </Subheading>
+                                )}
+
+                                <Heading isWithIcon={!!headerIcon}>
                                     {headerIcon && (
                                         <Icon
                                             icon={headerIcon}
-                                            size={20}
-                                            color={theme.TYPE_DARK_GREY}
+                                            size={16}
+                                            color={theme.iconDefault}
                                         />
                                     )}
                                     {heading}
-                                </StyledH1>
+                                </Heading>
 
-                                {subheading && <Subheading>{subheading}</Subheading>}
+                                {subheading && (
+                                    <Subheading isWithMargin={!!headerIcon}>
+                                        {subheading}
+                                    </Subheading>
+                                )}
                             </HeadingContainer>
                         )}
 
@@ -287,9 +279,8 @@ const Modal = ({
 
                                 {isCancelable && (
                                     <CloseIcon
-                                        size={20}
-                                        color={theme.TYPE_LIGHT_GREY}
-                                        hoverColor={theme.TYPE_LIGHTER_GREY}
+                                        size={14}
+                                        color={theme.iconOnTertiary}
                                         icon="CROSS"
                                         data-test="@modal/close-button"
                                         onClick={onCancel}
@@ -310,7 +301,7 @@ const Modal = ({
                 </Body>
 
                 {bottomBar && <BottomBar>{bottomBar}</BottomBar>}
-            </ModalWindow>
+            </Container>
         </>
     );
 };
@@ -320,7 +311,7 @@ Modal.Body = Body;
 Modal.Description = Description;
 Modal.Content = Content;
 Modal.BottomBar = BottomBar;
-Modal.closeIconWidth = CLOSE_ICON_SIDE + CLOSE_ICON_PADDING;
+Modal.closeIconWidth = CLOSE_ICON_SIZE + CLOSE_ICON_MARGIN; // TODO: remove after
 
 export { Modal, MODAL_CONTENT_ID };
 export type { ModalProps };

@@ -6,7 +6,7 @@ const Wrapper = styled.div`
     display: flex;
     height: 100%;
     flex-wrap: wrap;
-    background: ${({ theme }) => theme.backgroundSurfaceElevation1};
+    background: ${({ theme }) => theme.backgroundSurfaceElevation0};
     color: ${({ theme }) => theme.textDefault};
 `;
 
