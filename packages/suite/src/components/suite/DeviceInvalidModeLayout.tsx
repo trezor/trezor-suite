@@ -9,7 +9,7 @@ import { Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { goto } from 'src/actions/suite/routerActions';
 
-import { Modal } from '../Modal';
+import { Modal } from './Modal';
 
 const StyledImage = styled(Image)<{ image: ImageType }>`
     flex: 1;
@@ -47,7 +47,7 @@ type DeviceInvalidModeLayoutProps = {
     ['data-test']?: string;
 };
 
-const DeviceInvalidModeLayout = ({
+export const DeviceInvalidModeLayout = ({
     title,
     text,
     image = 'UNI_WARNING',
@@ -81,5 +81,3 @@ const DeviceInvalidModeLayout = ({
         </StyledModal>
     );
 };
-
-export default DeviceInvalidModeLayout;

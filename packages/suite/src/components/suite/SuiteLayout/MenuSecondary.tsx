@@ -21,10 +21,8 @@ interface MenuSecondaryProps {
     children: ReactNode;
 }
 
-const MenuSecondary = ({ children }: MenuSecondaryProps) => (
+export const MenuSecondary = ({ children }: MenuSecondaryProps) => (
     <AbsoluteWrapper>
         <Wrapper>{children}</Wrapper>
     </AbsoluteWrapper>
 );
-
-export default MenuSecondary;

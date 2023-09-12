@@ -13,10 +13,8 @@ const LoaderWrapper = styled.div`
     animation: ${FADE_IN} 0.2s 0.5s;
 `;
 
-const BundleLoader = () => (
+export const BundleLoader = () => (
     <LoaderWrapper data-test="@suite/bundle-loader">
         <Image width={64} height={64} image="SPINNER" />
     </LoaderWrapper>
 );
-
-export default BundleLoader;
