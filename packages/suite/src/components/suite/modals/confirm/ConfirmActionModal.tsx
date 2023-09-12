@@ -1,7 +1,8 @@
 import styled from 'styled-components';
+
 import { H1, variables } from '@trezor/components';
 import { Translation } from 'src/components/suite/Translation';
-import { DeviceConfirmImage } from 'src/components/suite/images/DeviceConfirmImage';
+import { DeviceConfirmImage } from 'src/components/suite';
 import { TrezorDevice } from 'src/types/suite';
 import {
     DevicePromptModal,
