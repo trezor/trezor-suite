@@ -110,7 +110,7 @@ connect v9 rollback production:
   stage: deploy to production
   only:
     refs:
-      - release/connect-v9
+      - /^release\/connect\//
   when: manual
   before_script: []
   needs:
@@ -151,5 +151,3 @@ connect v9 deploy production:
   when: manual
   script:
     - ./ci/scripts/connect-release-production.sh 9
-# todo: copy from old-production to production
-# connect v9 revert production
