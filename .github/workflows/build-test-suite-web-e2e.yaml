@@ -1,0 +1,87 @@
+name: "[Build/Test] suite-web"
+
+permissions:
+  id-token: write # for fetching the OIDC token
+  contents: read # for actions/checkout
+
+# run only if there are changes in suite or related libs paths
+on:
+  pull_request:
+    branches:
+      - develop
+    paths-ignore:
+      - "suite-native/**"
+    # paths:
+    #   - "packages/blockchain-link"
+    #   - "packages/connect*/**"
+    #   - "packages/transport"
+    #   - "packages/utxo-lib"
+    #   - "packages/utils"
+    #   - "docker"
+    #   - "submodules/trezor-common"
+
+
+jobs:
+  build-web:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          lfs: true
+      - name: Configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v1-node16
+        with:
+          role-to-assume: arn:aws:iam::538326561891:role/gh_actions_trezor_suite_dev_deploy
+          aws-region: eu-central-1
+
+      - name: Extract branch name
+        run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
+        id: extract_branch
+
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: ".nvmrc"
+      - name: Build suite-web
+        env:
+          ASSET_PREFIX: /suite-web/${{ steps.extract_branch.outputs.branch }}/web
+          CI_COMMIT_REF_NAME: ${{ steps.extract_branch.outputs.branch }}
+          DEV_SERVER_URL: "https://dev.suite.sldev.cz"
+          STAGING_SUITE_SERVER_URL: "https://staging-suite.trezor.io"
+          DESKTOP_APP_NAME: "Trezor-Suite"
+        run: |
+          yarn install
+          yarn build:libs
+          yarn message-system-sign-config
+          yarn workspace @trezor/suite-web build
+      # this step should upload build result to s3 bucket dev.suite.sldev.cz using awscli
+      - name: Upload suite-web to dev.suite.sldev.cz
+        env:
+          DEPLOY_PATH: s3://dev.suite.sldev.cz/suite-web/${{ steps.extract_branch.outputs.branch }}
+        run: |
+          aws s3 sync --delete ./packages/suite-web/build ${DEPLOY_PATH}/web
+
+  e2e-test-suite-web:
+    runs-on: ubuntu-latest
+    needs:
+      - build-web
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          lfs: true
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: ".nvmrc"
+      - name: Run e2e tests
+        env:
+          ASSET_PREFIX: /suite-web/${{ steps.extract_branch.outputs.branch }}/web
+          CI_COMMIT_REF_NAME: ${{ steps.extract_branch.outputs.branch }}
+          DEV_SERVER_URL: "https://dev.suite.sldev.cz"
+          STAGING_SUITE_SERVER_URL: "https://staging-suite.trezor.io"
+          DESKTOP_APP_NAME: "Trezor-Suite"
+        run: |
+          echo "Running e2e tests"
+
