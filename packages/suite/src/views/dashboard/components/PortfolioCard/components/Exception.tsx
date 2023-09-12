@@ -13,6 +13,7 @@ import { applySettings } from 'src/actions/settings/deviceSettingsActions';
 import { authConfirm, authorizeDevice } from 'src/actions/suite/suiteActions';
 import { goto } from 'src/actions/suite/routerActions';
 import { DiscoveryStatusType } from 'src/types/wallet';
+import { TranslationKey } from 'src/components/suite/Translation';
 
 const Wrapper = styled.div`
     display: flex;
@@ -45,15 +46,15 @@ const Actions = styled.div`
 `;
 
 interface CTA {
-    label?: ComponentProps<typeof Translation>['id'];
+    label?: TranslationKey;
     variant?: ComponentProps<typeof Button>['variant'];
     action: () => void;
     icon?: IconProps['icon'];
 }
 
 interface ContainerProps {
-    title: ComponentProps<typeof Translation>['id'];
-    description?: ComponentProps<typeof Translation>['id'] | JSX.Element;
+    title: TranslationKey;
+    description?: TranslationKey | JSX.Element;
     cta: CTA | CTA[];
     dataTestBase: string;
 }

@@ -1,7 +1,7 @@
-import { ComponentProps } from 'react';
 import { Translation, TooltipSymbol } from 'src/components/suite';
 import styled from 'styled-components';
 import { Tooltip, variables } from '@trezor/components';
+import { TranslationKey } from '../Translation';
 
 const NoRatesMessage = styled.div`
     display: flex;
@@ -13,8 +13,8 @@ const NoRatesMessage = styled.div`
 `;
 
 interface NoRatesTooltipProps extends Partial<typeof Tooltip> {
-    customText?: ComponentProps<typeof Translation>['id'];
-    customTooltip?: ComponentProps<typeof Translation>['id'];
+    customText?: TranslationKey;
+    customTooltip?: TranslationKey;
     iconOnly?: boolean;
     className?: string;
 }
