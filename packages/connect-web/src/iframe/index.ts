@@ -1,8 +1,9 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/iframe/builder.js
 
 import { createDeferred, Deferred } from '@trezor/utils';
-import { IFRAME, ERRORS, ConnectSettings } from '@trezor/connect/lib/exports';
+import { IFRAME, UI_EVENT, ERRORS, ConnectSettings } from '@trezor/connect/lib/exports';
 import { getOrigin } from '@trezor/connect/lib/utils/urlUtils';
+import { setLogWriter, LogMessage, LogWriter } from '@trezor/connect/lib/utils/debug';
 import css from './inlineStyles';
 
 /* eslint-disable import/no-mutable-exports */
@@ -191,4 +192,17 @@ export const postMessage = (message: any, usePromise = true) => {
 
 export const clearTimeout = () => {
     window.clearTimeout(timeout);
+};
+
+export const initIframeLogger = () => {
+    const logWriterFactory = (): LogWriter => ({
+        add: (message: LogMessage) => {
+            postMessage({
+                event: UI_EVENT,
+                type: IFRAME.LOG,
+                payload: message,
+            });
+        },
+    });
+    setLogWriter(logWriterFactory);
 };

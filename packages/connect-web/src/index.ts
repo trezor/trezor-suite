@@ -23,7 +23,7 @@ import {
     CallMethod,
 } from '@trezor/connect/lib/exports';
 import { factory } from '@trezor/connect/lib/factory';
-import { initLog, initSharedLogger } from '@trezor/connect/lib/utils/debug';
+import { initLog } from '@trezor/connect/lib/utils/debug';
 import { config } from '@trezor/connect/lib/data/config';
 
 import * as iframe from './iframe';
@@ -143,11 +143,6 @@ const init = async (settings: Partial<ConnectSettings> = {}): Promise<void> => {
     }
 
     _settings = parseConnectSettings({ ..._settings, ...settings });
-    if (_settings.connectSrc && window.location.origin === _settings.connectSrc) {
-        // When connect-web is running in a web extension environment or in third-party service
-        // shared logger is in different domain so it cannot be loaded from the same origin as connectSrc (iframe).
-        initSharedLogger(`${_settings.connectSrc}workers/shared-logger-worker.js`);
-    }
 
     if (!_settings.manifest) {
         throw ERRORS.TypedError('Init_ManifestMissing');
@@ -168,6 +163,8 @@ const init = async (settings: Partial<ConnectSettings> = {}): Promise<void> => {
         _popupManager = initPopupManager();
     }
 
+    // connect-web is running in third-party domain so we use iframe to pass logs to shared worker.
+    iframe.initIframeLogger();
     _log.enabled = !!_settings.debug;
 
     window.addEventListener('message', handleMessage);
