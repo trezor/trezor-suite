@@ -10,9 +10,8 @@ This is an automatically created PR.
 -   [ ] Confirm that this release does not introduce any breaking changes @mroz22
 -   [ ] Contact 3rd parties if needed @Hannsek
 -   [ ] Merge this PR into develop
--   [ ] Checkout develop and create a new tag `git tag -a connect-v9.x.y`
--   [ ] Merge develop the newly created tag into release/connect-v9
--   [ ] Tested and approved by @trezor/qa. Typically using [this build](https://suite.corp.sldev.cz/connect/release/connect-v9/). Changelog [here](https://github.com/trezor/trezor-suite/blob/release/connect-v9/packages/connect/CHANGELOG.md).
+-   [ ] Run `release` job in github actions. This will create a new branch `release/connect/<version>` and trigger [Gitlab pipeline](https://gitlab.com/satoshilabs/trezor/trezor-suite/-/pipelines?page=1&scope=branches&ref=release%2Fconnect-v9). that prepares builds.
+-   [ ] Tested and approved by @trezor/qa. Typically using [this build](https://staging-connect.trezor.io/).
+-   [ ] Click `connect v9 deploy production` job in Gitlab. In case something went wrong there is `connect v9 rollback production` job which reverts current deploy. @mroz22
 -   [ ] Release npm packages for `@trezor/connect` and `@trezor/connect-web` [from gitlab](https://gitlab.com/satoshilabs/trezor/trezor-suite/-/pipelines) @mroz22
--   [ ] Click manual deploy job to connect.trezor.io/9 in [gitlab](https://gitlab.com/satoshilabs/trezor/trezor-suite/-/pipelines?page=1&scope=branches&ref=release%2Fconnect-v9) @mroz22
 -   [ ] Post a release bulletin into Slack @Hannsek

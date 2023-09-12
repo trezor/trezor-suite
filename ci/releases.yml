@@ -138,7 +138,7 @@ connect v9 rollback production:
     - connect_deploy
   only:
     refs:
-      - release/connect-v9
+      - /^release\/connect\//
 
 connect v9 deploy staging:
   extends: .connect v9 deploy

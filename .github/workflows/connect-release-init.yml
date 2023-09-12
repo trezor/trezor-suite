@@ -27,12 +27,30 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version-file: ".nvmrc"
-      - name: Run @trezor/connect create release branch
+      - name: Run @trezor/connect create npm release branch
         run: |
           npm install -g yarn && yarn install
           git config --global user.name "trezor-ci"
           git config --global user.email "${{ secrets.TREZOR_BOT_EMAIL }}"
           gh config set prompt disabled
-          node ./ci/scripts/connect-release-init.js ${{ github.event.inputs.semver }}
+          node ./ci/scripts/connect-release-init-npm.js ${{ github.event.inputs.semver }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.TREZOR_BOT_TOKEN }}
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: ".nvmrc"
+      - name: Run @trezor/connect create v9 release branch
+        run: |
+          npm install -g yarn && yarn install
+          git config --global user.name "trezor-ci"
+          git config --global user.email "${{ secrets.TREZOR_BOT_EMAIL }}"
+          gh config set prompt disabled
+          node ./ci/scripts/connect-release-init-v9.js
         env:
           GITHUB_TOKEN: ${{ secrets.TREZOR_BOT_TOKEN }}
