@@ -13,7 +13,7 @@ const StyledModal = styled(Modal)`
     width: 360px;
 `;
 
-const DiscoveryLoader = () => (
+export const DiscoveryLoader = () => (
     <StyledModal
         heading={<Translation id="TR_COIN_DISCOVERY_IN_PROGRESS" />}
         description={<Translation id="TR_TO_FIND_YOUR_ACCOUNTS_AND" />}
@@ -24,5 +24,3 @@ const DiscoveryLoader = () => (
         </Expand>
     </StyledModal>
 );
-
-export default DiscoveryLoader;

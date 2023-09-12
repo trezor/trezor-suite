@@ -15,11 +15,9 @@ const StyledButton = styled(Button)`
     }
 `;
 
-const CloseButton = (props: ButtonProps) => {
+export const CloseButton = (props: ButtonProps) => {
     const theme = useTheme();
     return (
         <StyledButton icon="CROSS" variant="secondary" color={theme.TYPE_LIGHT_GREY} {...props} />
     );
 };
-
-export default CloseButton;

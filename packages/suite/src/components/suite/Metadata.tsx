@@ -9,7 +9,11 @@ type MetadataProps = {
     url?: string;
 };
 
-const Metadata = ({ title = 'Trezor Suite', description, url = SUITE_URL }: MetadataProps) => {
+export const Metadata = ({
+    title = 'Trezor Suite',
+    description,
+    url = SUITE_URL,
+}: MetadataProps) => {
     const intl = useIntl();
     description = description || intl.formatMessage(messages.TR_SUITE_META_DESCRIPTION);
     return (
@@ -34,5 +38,3 @@ const Metadata = ({ title = 'Trezor Suite', description, url = SUITE_URL }: Meta
         </Helmet>
     );
 };
-
-export default Metadata;

@@ -1,6 +1,7 @@
 import styled from 'styled-components';
+
 import { P } from '@trezor/components';
-import Loading from 'src/components/suite/Loading';
+import { Loading } from 'src/components/suite';
 import { ThemeProvider } from '../ThemeProvider';
 
 const Wrapper = styled.div`

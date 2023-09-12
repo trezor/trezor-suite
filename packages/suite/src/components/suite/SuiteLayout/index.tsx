@@ -3,7 +3,6 @@ import styled from 'styled-components';
 
 import { variables } from '@trezor/components';
 import { SuiteBanners } from 'src/components/suite/banners';
-import MenuSecondary from 'src/components/suite/MenuSecondary';
 import { Metadata } from 'src/components/suite';
 import { GuidePanel, GuideButton } from 'src/components/guide';
 import {
@@ -20,6 +19,7 @@ import { ModalSwitcher } from '../ModalSwitcher/ModalSwitcher';
 import { LayoutContext, LayoutContextPayload } from './LayoutContext';
 import { useResetScroll } from './useResetScroll';
 import { useAnchorRemoving } from './useAnchorRemoving';
+import { MenuSecondary } from './MenuSecondary';
 
 const Wrapper = styled.div`
     display: flex;

@@ -23,7 +23,7 @@ interface AddAccountButtonProps extends ButtonProps {
     isDisabled?: boolean;
 }
 
-const AddAccountButton = ({
+export const AddAccountButton = ({
     device,
     isDisabled,
     noButtonLabel,
@@ -82,5 +82,3 @@ const AddAccountButton = ({
     }
     return ButtonComponent;
 };
-
-export default AddAccountButton;

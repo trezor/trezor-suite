@@ -72,7 +72,7 @@ interface DeviceMatrixExplanationProps {
     items: Item[];
 }
 
-const DeviceMatrixExplanation = ({ items }: DeviceMatrixExplanationProps) => {
+export const DeviceMatrixExplanation = ({ items }: DeviceMatrixExplanationProps) => {
     const { isGuideOpen } = useGuide();
 
     return (
@@ -101,5 +101,3 @@ const DeviceMatrixExplanation = ({ items }: DeviceMatrixExplanationProps) => {
         </Wrapper>
     );
 };
-
-export default DeviceMatrixExplanation;
