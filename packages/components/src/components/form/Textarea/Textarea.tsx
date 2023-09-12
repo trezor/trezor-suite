@@ -30,6 +30,14 @@ const StyledTextarea = styled.textarea<Pick<TextareaProps, 'inputState' | 'width
     white-space: pre-wrap;
 `;
 
+const CharacterCount = styled.div`
+    position: absolute;
+    bottom: 35px;
+    right: 15px;
+    font-size: ${FONT_SIZE.TINY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+`;
+
 const BottomText = styled.span<Pick<TextareaProps, 'inputState'>>`
     padding: 6px 10px 0 10px;
     min-height: 27px;
@@ -51,10 +59,13 @@ export interface TextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElemen
     wrapperProps?: HTMLAttributes<HTMLDivElement> & { 'data-test'?: string };
     noTopLabel?: boolean;
     noError?: boolean;
+    value?: string;
+    characterCount?: boolean | { current: number; max: number };
 }
 
 export const Textarea = ({
     className,
+    value,
     maxLength,
     labelAddon,
     isDisabled,
@@ -68,11 +79,25 @@ export const Textarea = ({
     isMonospace,
     noTopLabel,
     labelRight,
+    characterCount,
     noError,
     children,
     ...rest
 }: TextareaProps) => {
     const [isHovered, setIsHovered] = useState(false);
+
+    const getCharacterCount = () => {
+        // controlled component
+        if (characterCount === true && value !== undefined && maxLength !== undefined) {
+            return `${value.length} / ${maxLength}`;
+        }
+        // uncontrolled component
+        if (typeof characterCount === 'object') {
+            return `${characterCount.current} / ${characterCount.max}`;
+        }
+    };
+
+    const formattedCharacterCount = getCharacterCount();
 
     return (
         <Wrapper
@@ -104,6 +129,8 @@ export const Textarea = ({
                 isMonospace={isMonospace}
                 {...rest}
             />
+
+            {formattedCharacterCount && <CharacterCount>{formattedCharacterCount}</CharacterCount>}
 
             {children}
 
