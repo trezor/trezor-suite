@@ -8,7 +8,7 @@ import {
     actionSequence,
     findByTestId,
 } from 'src/support/tests/hooksHelper';
-import { ChangeFee } from 'src/components/suite/modals/TransactionDetail/components/ChangeFee';
+import { ChangeFee } from 'src/components/suite/modals/ReduxModal/UserContextModal/TxDetailModal/ChangeFee/ChangeFee';
 import { useRbfContext } from '../useRbfForm';
 
 jest.mock('src/actions/suite/routerActions', () => ({

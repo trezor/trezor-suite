@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { OnboardingLayout } from 'src/components/onboarding';
 import { WelcomeLayout } from 'src/components/suite';
-import { ReduxModal } from 'src/components/suite/ModalSwitcher/ReduxModal';
+import { ReduxModal } from 'src/components/suite/modals/ReduxModal/ReduxModal';
 import WelcomeStep from 'src/views/onboarding/steps/Welcome';
 import CreateOrRecover from 'src/views/onboarding/steps/CreateOrRecover';
 import FirmwareStep from 'src/views/onboarding/steps/Firmware';

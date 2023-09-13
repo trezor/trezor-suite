@@ -15,7 +15,7 @@ import { NavigationBar } from '../NavigationBar';
 import { useLayoutSize, useSelector, useDevice } from 'src/hooks/suite';
 import { useGuide } from 'src/hooks/guide';
 import { ModalContextProvider } from 'src/support/suite/ModalContext';
-import { ModalSwitcher } from '../ModalSwitcher/ModalSwitcher';
+import { ModalSwitcher } from '../modals/ModalSwitcher/ModalSwitcher';
 import { LayoutContext, LayoutContextPayload } from './LayoutContext';
 import { useResetScroll } from './useResetScroll';
 import { useAnchorRemoving } from './useAnchorRemoving';

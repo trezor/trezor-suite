@@ -301,7 +301,7 @@ export const signTransaction =
 
         const response = await TrezorConnect.signTransaction(signPayload);
         if (!response.success) {
-            // catch manual error from ReviewTransaction modal
+            // catch manual error from TransactionReviewModal
             if (response.payload.error === 'tx-cancelled') return;
             dispatch(
                 notificationsActions.addToast({

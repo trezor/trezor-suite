@@ -185,7 +185,7 @@ export const signTransaction =
         });
 
         if (!res.success) {
-            // catch manual error from ReviewTransaction modal
+            // catch manual error from TransactionReviewModal
             if (res.payload.error === 'tx-cancelled') return;
             dispatch(
                 notificationsActions.addToast({
