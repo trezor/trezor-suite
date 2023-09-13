@@ -21,6 +21,7 @@ import type { Alice } from '../Alice';
 import type { CoinjoinRound, CoinjoinRoundOptions } from '../CoinjoinRound';
 import { CoinjoinTransactionData } from '../../types';
 import { SessionPhase, WabiSabiProtocolErrorCode } from '../../enums';
+import { TX_SIGNING_DELAY } from '../../constants';
 
 const getTransactionData = (
     round: CoinjoinRound,
@@ -121,15 +122,27 @@ const updateRawLiquidityClue = async (
 
 const sendTxSignature = async (
     round: CoinjoinRound,
+    resolvedTime: number,
     input: Alice,
-    { signal, coordinatorUrl }: CoinjoinRoundOptions,
+    { signal, coordinatorUrl, logger }: CoinjoinRoundOptions,
 ) => {
+    // if DelayTransactionSigning is set then start sending signatures **after** 50 seconds reduced by time spent on actual signing on the device.
+    // time span for sending signatures is also 50 seconds.
+    const roundSigningDelay = round.roundParameters.DelayTransactionSigning ? TX_SIGNING_DELAY : 0;
+    const minimumDelay = roundSigningDelay - resolvedTime;
+    const maximumDelay = minimumDelay + TX_SIGNING_DELAY;
+    const delay = scheduleDelay(round.phaseDeadline - Date.now(), minimumDelay, maximumDelay);
+
+    logger.info(
+        `Sending signature of ~~${input.outpoint}~~ with delay ${delay}ms. Round signing delay: ${round.roundParameters.DelayTransactionSigning}`,
+    );
+
     await coordinator
         .transactionSignature(round.id, input.witnessIndex!, input.witness!, {
             signal,
             baseUrl: coordinatorUrl,
             identity: input.outpoint, // NOTE: recycle input identity
-            delay: scheduleDelay(round.phaseDeadline - Date.now()),
+            delay,
             deadline: round.phaseDeadline,
         })
         .catch(error => {
@@ -178,6 +191,12 @@ export const transactionSigning = async (
     }
 
     const sendProcessStart = Date.now();
+    const resolvedTime = Math.max(
+        ...round.inputs.map(i => {
+            const res = i.getResolvedRequest('signature');
+            return res?.timestamp || 0;
+        }),
+    );
 
     try {
         const inputsWithoutWitness = round.inputs.filter(input => !input.witness);
@@ -196,9 +215,10 @@ export const transactionSigning = async (
         }
 
         round.setSessionPhase(SessionPhase.SendingSignature);
-
         await Promise.all(
-            arrayShuffle(round.inputs).map(input => sendTxSignature(round, input, options)),
+            arrayShuffle(round.inputs).map(input =>
+                sendTxSignature(round, resolvedTime, input, options),
+            ),
         );
 
         round.signedSuccessfully();
@@ -207,12 +227,6 @@ export const transactionSigning = async (
     } catch (error) {
         // NOTE: if anything goes wrong in this process this Round will be corrupted for all the users
         // registered inputs will probably be banned
-        const resolvedTime = Math.max(
-            ...round.inputs.map(i => {
-                const res = i.getResolvedRequest('signature');
-                return res?.timestamp || 0;
-            }),
-        );
 
         const sendTime = Date.now() - sendProcessStart;
 

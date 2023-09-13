@@ -69,14 +69,26 @@ export const readTimeSpan = (ts: string) => {
     return date.getTime() - now;
 };
 
+const clamp = (value: number, min = Number.NEGATIVE_INFINITY, max = Number.POSITIVE_INFINITY) =>
+    Math.min(Math.max(value, min), max);
+
 export const scheduleDelay = (
     deadline: number,
     minimumDelay = 0,
     maximumDelay = ROUND_MAXIMUM_REQUEST_DELAY,
-) =>
-    deadline > minimumDelay && deadline > maximumDelay
-        ? getRandomNumberInRange(minimumDelay, maximumDelay)
-        : minimumDelay;
+) => {
+    // reduce deadline to have absolute minimum time to make the actual request (10 seconds),
+    // but it must be at least 1 sec
+    const deadlineOffset = clamp(deadline - ROUND_MAXIMUM_REQUEST_DELAY, 1000);
+    // clamp the given maximum delay so it's at least 1 sec (so there's always room for randomness)
+    // and at most the calculated offset (so we meet the deadline)
+    const max = clamp(maximumDelay, 1000, deadlineOffset);
+    // clamp the given minimum delay so it's at least immediate (no negative delays)
+    // and at most 1 sec before the calculated max (so there's room for randomness)
+    const min = clamp(minimumDelay, 0, max - 1000);
+
+    return getRandomNumberInRange(min, max);
+};
 
 // NOTE: deadlines are not accurate. phase may change earlier
 // accept CoinjoinRound or modified coordinator Round (see estimatePhaseDeadline below)
