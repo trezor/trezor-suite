@@ -1,6 +1,6 @@
 import { ParsedTransactionWithMeta } from '@solana/web3.js';
 
-import { extractAccountBalanceDiff, getTransactionEffects } from '../solana';
+import { extractAccountBalanceDiff, getTransactionEffects, getTxType } from '../solana';
 import { fixtures } from './fixtures/solana';
 
 describe('solana/utils', () => {
@@ -21,6 +21,19 @@ describe('solana/utils', () => {
             it(description, () => {
                 const result = getTransactionEffects(
                     input.transaction as ParsedTransactionWithMeta,
+                );
+                expect(result).toEqual(expectedOutput);
+            });
+        });
+    });
+
+    describe('getTxType', () => {
+        fixtures.getTxType.forEach(({ description, input, expectedOutput }) => {
+            it(description, () => {
+                const result = getTxType(
+                    input.transaction as ParsedTransactionWithMeta,
+                    input.effects,
+                    input.accountAddress,
                 );
                 expect(result).toEqual(expectedOutput);
             });
