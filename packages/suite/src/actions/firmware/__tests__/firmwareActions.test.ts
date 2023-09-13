@@ -1,13 +1,12 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 /* eslint-disable global-require */
 
-import { prepareFirmwareReducer } from '@suite-common/wallet-core';
+import { prepareFirmwareReducer, State as DeviceState } from '@suite-common/wallet-core';
 import { ArrayElement } from '@trezor/type-utils';
 import { DeviceModelInternal } from '@trezor/connect';
 
 import { configureStore, filterThunkActionTypes } from 'src/support/tests/configureStore';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
-import { State as DeviceState } from 'src/reducers/suite/deviceReducer';
 import { extraDependencies } from 'src/support/extraDependencies';
 
 import { actions, reducerActions } from '../__fixtures__/firmwareActions';

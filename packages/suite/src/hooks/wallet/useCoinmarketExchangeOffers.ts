@@ -6,6 +6,7 @@ import { useTimer } from '@trezor/react-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { networksCompatibility as networks } from '@suite-common/wallet-config';
 import { amountToSatoshi } from '@suite-common/wallet-utils';
+import { selectDevice } from '@suite-common/wallet-core';
 
 import invityAPI from 'src/services/suite/invityAPI';
 import { useActions, useSelector, useDevice } from 'src/hooks/suite';
@@ -23,7 +24,6 @@ import { InvityAPIReloadQuotesAfterSeconds } from 'src/constants/wallet/coinmark
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 
 import { useCoinmarketRecomposeAndSign } from './useCoinmarketRecomposeAndSign ';
-import { selectDevice } from '../../reducers/suite/deviceReducer';
 
 const getReceiveAccountSymbol = (
     symbol?: string,

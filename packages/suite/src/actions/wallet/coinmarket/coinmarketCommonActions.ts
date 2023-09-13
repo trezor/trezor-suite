@@ -10,6 +10,7 @@ import {
     getDerivationType,
 } from '@suite-common/wallet-utils';
 import { Output } from '@suite-common/wallet-types/src';
+import { selectDevice, toggleRememberDevice } from '@suite-common/wallet-core';
 
 import { GetState, Dispatch } from 'src/types/suite';
 import * as modalActions from 'src/actions/suite/modalActions';
@@ -31,8 +32,6 @@ import {
     COINMARKET_SAVINGS,
     COINMARKET_COMMON,
 } from '../constants';
-import { selectDevice } from '../../../reducers/suite/deviceReducer';
-import { toggleRememberDevice } from '../../suite/deviceThunks';
 
 export type CoinmarketCommonAction =
     | {

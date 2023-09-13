@@ -1,7 +1,5 @@
-import { discoveryActions } from '@suite-common/wallet-core';
+import { deviceActions, discoveryActions } from '@suite-common/wallet-core';
 import { DiscoveryStatus } from '@suite-common/wallet-constants';
-
-import { deviceActions } from 'src/actions/suite/deviceActions';
 
 const { getSuiteDevice } = global.JestMocks;
 const DEV = getSuiteDevice();

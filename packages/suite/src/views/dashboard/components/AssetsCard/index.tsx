@@ -3,6 +3,7 @@ import BigNumber from 'bignumber.js';
 import { AnimatePresence } from 'framer-motion';
 
 import { variables, Icon, Button, colors, LoadingContent } from '@trezor/components';
+import { selectSupportedNetworks } from '@suite-common/wallet-core';
 
 import { NETWORKS } from 'src/config/wallet';
 import { DashboardSection } from 'src/components/dashboard';
@@ -13,7 +14,6 @@ import { useAccounts } from 'src/hooks/wallet';
 import { setFlag } from 'src/actions/suite/suiteActions';
 import { goto } from 'src/actions/suite/routerActions';
 import { useEnabledNetworks } from 'src/hooks/settings/useEnabledNetworks';
-import { selectSupportedNetworks } from 'src/reducers/suite/deviceReducer';
 
 import { AssetGrid, AssetGridSkeleton } from './components/AssetGrid';
 import { AssetTable, AssetTableSkeleton } from './components/AssetTable';

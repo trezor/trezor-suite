@@ -3,12 +3,10 @@ import { createAction } from '@reduxjs/toolkit';
 import TrezorConnect, { UI } from '@trezor/connect';
 import { createDeferred, DeferredResponse } from '@trezor/utils';
 import { UserContextPayload } from '@suite-common/suite-types';
+import { deviceActions, selectDevice } from '@suite-common/wallet-core';
 
 import { MODAL } from 'src/actions/suite/constants';
 import { Dispatch, GetState } from 'src/types/suite';
-import { selectDevice } from 'src/reducers/suite/deviceReducer';
-
-import { deviceActions } from './deviceActions';
 
 export type ModalAction =
     | { type: typeof MODAL.CLOSE }

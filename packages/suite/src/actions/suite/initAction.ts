@@ -1,6 +1,6 @@
 import { initMessageSystemThunk } from '@suite-common/message-system';
 import * as trezorConnectActions from '@suite-common/connect-init';
-import { initBlockchainThunk } from '@suite-common/wallet-core';
+import { initBlockchainThunk, initDevices } from '@suite-common/wallet-core';
 
 import * as routerActions from 'src/actions/suite/routerActions';
 import * as analyticsActions from 'src/actions/suite/analyticsActions';
@@ -9,7 +9,6 @@ import * as languageActions from 'src/actions/settings/languageActions';
 import type { Dispatch, GetState } from 'src/types/suite';
 
 import { SUITE } from './constants';
-import { initDevices } from './deviceThunks';
 
 export const init = () => async (dispatch: Dispatch, getState: GetState) => {
     const {

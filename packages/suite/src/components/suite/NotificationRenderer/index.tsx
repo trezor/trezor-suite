@@ -1,4 +1,5 @@
 import { DEVICE } from '@trezor/connect';
+import { deviceActions } from '@suite-common/wallet-core';
 
 import type { ExtendedMessageDescriptor } from 'src/types/suite';
 
@@ -6,7 +7,6 @@ import ActionRenderer from './renderers/ActionRenderer';
 import TransactionRenderer from './renderers/TransactionRenderer';
 import { CoinProtocolRenderer } from './renderers/UriSchemeRenderers';
 import type { NotificationViewProps, NotificationRendererProps } from './types';
-import { deviceActions } from '../../../actions/suite/deviceActions';
 
 export type { NotificationViewProps };
 

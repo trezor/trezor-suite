@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 
 import { hasBitcoinOnlyFirmware, isBitcoinOnlyDevice } from '@trezor/device-utils';
+import { selectSupportedNetworks } from '@suite-common/wallet-core';
 
 import { SettingsLayout } from 'src/components/settings';
 import { CoinsGroup, TooltipSymbol, Translation } from 'src/components/suite';
@@ -9,7 +10,6 @@ import { useEnabledNetworks } from 'src/hooks/settings/useEnabledNetworks';
 import { useAnchor } from 'src/hooks/suite/useAnchor';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDevice, useSelector } from 'src/hooks/suite';
-import { selectSupportedNetworks } from 'src/reducers/suite/deviceReducer';
 
 import { FirmwareTypeSuggestion } from './FirmwareTypeSuggestion';
 

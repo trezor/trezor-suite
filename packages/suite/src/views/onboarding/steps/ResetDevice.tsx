@@ -1,4 +1,7 @@
 import { useState } from 'react';
+
+import { selectDevice } from '@suite-common/wallet-core';
+
 import * as STEP from 'src/constants/onboarding/steps';
 import {
     OnboardingButtonBack,
@@ -11,8 +14,6 @@ import { Translation } from 'src/components/suite';
 import { useDispatch, useSelector, useOnboarding } from 'src/hooks/suite';
 import { resetDevice } from 'src/actions/settings/deviceSettingsActions';
 import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
-
-import { selectDevice } from '../../../reducers/suite/deviceReducer';
 
 export const ResetDeviceStep = () => {
     const [submitted, setSubmitted] = useState(false);

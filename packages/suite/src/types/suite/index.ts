@@ -1,7 +1,12 @@
 import type { ThunkDispatch, ThunkAction as TAction } from 'redux-thunk';
 import type { Store as ReduxStore } from 'redux';
 
-import { firmwareActions, discoveryActions, transactionsActions } from '@suite-common/wallet-core';
+import {
+    deviceActions,
+    firmwareActions,
+    discoveryActions,
+    transactionsActions,
+} from '@suite-common/wallet-core';
 import { analyticsActions } from '@suite-common/analytics';
 import type { ObjectValues } from '@trezor/type-utils';
 import type { UiEvent, DeviceEvent, TransportEvent, BlockchainEvent } from '@trezor/connect';
@@ -25,7 +30,6 @@ import type { BackupAction } from 'src/actions/backup/backupActions';
 import type { RecoveryAction } from 'src/actions/recovery/recoveryActions';
 import type { SUITE } from 'src/actions/suite/constants';
 import type { GuideAction } from 'src/actions/suite/guideActions';
-import { deviceActions } from 'src/actions/suite/deviceActions';
 
 // reexport
 export type { ExtendedMessageDescriptor } from 'src/components/suite/Translation/components/BaseTranslation';

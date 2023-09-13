@@ -1,10 +1,10 @@
-import { OnboardingButtonCta } from 'src/components/onboarding';
-
 import styled from 'styled-components';
 
 import { pickByDeviceModel } from '@trezor/device-utils';
 import { DeviceModelInternal } from '@trezor/connect';
+import { selectDevice } from '@suite-common/wallet-core';
 
+import { OnboardingButtonCta } from 'src/components/onboarding';
 import { SelectWordCount, SelectRecoveryType, SelectRecoveryWord } from 'src/components/recovery';
 import { Translation } from 'src/components/suite';
 import { goToNextStep, updateAnalytics } from 'src/actions/onboarding/onboardingActions';
@@ -12,7 +12,6 @@ import { useDispatch, useRecovery, useSelector } from 'src/hooks/suite';
 import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
 
 import RecoveryStepBox from './RecoveryStepBox';
-import { selectDevice } from 'src/reducers/suite/deviceReducer';
 
 const InProgressRecoveryStepBox = styled(RecoveryStepBox)<{
     deviceModelInternal: DeviceModelInternal;

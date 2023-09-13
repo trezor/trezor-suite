@@ -17,10 +17,9 @@ import {
     PrecomposedTransaction,
     PrecomposedTransactionFinal,
 } from '@suite-common/wallet-types';
+import { selectDevice } from '@suite-common/wallet-core';
 
 import { Dispatch, GetState } from 'src/types/suite';
-
-import { selectDevice } from '../../../reducers/suite/deviceReducer';
 
 export const composeTransaction =
     (formValues: FormState, formState: ComposeActionContext) =>

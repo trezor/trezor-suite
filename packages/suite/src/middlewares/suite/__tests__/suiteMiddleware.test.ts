@@ -1,4 +1,5 @@
 import { analyticsActions, prepareAnalyticsReducer } from '@suite-common/analytics';
+import { prepareDeviceReducer } from '@suite-common/wallet-core';
 
 import { configureStore } from 'src/support/tests/configureStore';
 import { ROUTER } from 'src/actions/suite/constants';
@@ -9,7 +10,6 @@ import suiteMiddleware from 'src/middlewares/suite/suiteMiddleware';
 import type { Action } from 'src/types/suite';
 import { extraDependencies } from 'src/support/extraDependencies';
 import { appChanged } from 'src/actions/suite/suiteActions';
-import { prepareDeviceReducer } from 'src/reducers/suite/deviceReducer';
 
 type SuiteState = ReturnType<typeof suiteReducer>;
 type RouterState = ReturnType<typeof routerReducer>;

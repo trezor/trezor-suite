@@ -1,6 +1,7 @@
 /* eslint-disable global-require */
 /* eslint-disable @typescript-eslint/no-var-requires */
 
+import { deviceActions } from '@suite-common/wallet-core';
 import { connectInitThunk } from '@suite-common/connect-init';
 import { UI_EVENT, UI } from '@trezor/connect';
 
@@ -12,7 +13,6 @@ import * as deviceSettingsActions from 'src/actions/settings/deviceSettingsActio
 import suiteMiddleware from 'src/middlewares/suite/suiteMiddleware';
 import buttonRequestMiddleware from 'src/middlewares/suite/buttonRequestMiddleware';
 import { Action } from 'src/types/suite';
-import { deviceActions } from 'src/actions/suite/deviceActions';
 
 const { getSuiteDevice } = global.JestMocks;
 

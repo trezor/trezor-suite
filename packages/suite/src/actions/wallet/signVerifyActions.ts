@@ -1,9 +1,9 @@
 import TrezorConnect, { Unsuccessful, Success } from '@trezor/connect';
 import { notificationsActions } from '@suite-common/toast-notifications';
+import { selectDevice } from '@suite-common/wallet-core';
 
 import type { Dispatch, GetState, TrezorDevice } from 'src/types/suite';
 import type { Account } from 'src/types/wallet';
-import { selectDevice } from 'src/reducers/suite/deviceReducer';
 
 import { SIGN_VERIFY } from './constants';
 

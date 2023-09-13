@@ -1,9 +1,10 @@
 import { forwardRef } from 'react';
+
 import { formatNetworkAmount, isTestnet } from '@suite-common/wallet-utils';
+import { selectDevice } from '@suite-common/wallet-core';
 
 import { Translation } from 'src/components/suite/Translation';
 import { useSelector } from 'src/hooks/suite/useSelector';
-import { selectDevice } from 'src/reducers/suite/deviceReducer';
 
 import Indicator from './Indicator';
 import OutputElement, { OutputElementLine } from './OutputElement';

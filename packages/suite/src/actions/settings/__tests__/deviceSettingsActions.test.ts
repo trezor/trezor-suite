@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 /* eslint-disable global-require */
 
+import { prepareDeviceReducer, deviceActions } from '@suite-common/wallet-core';
+
 import { configureStore } from 'src/support/tests/configureStore';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
-import { prepareDeviceReducer } from 'src/reducers/suite/deviceReducer';
 import { extraDependencies } from 'src/support/extraDependencies';
 
 import fixtures from '../__fixtures__/deviceSettings';
-import { deviceActions } from '../../suite/deviceActions';
 
 const { getSuiteDevice } = global.JestMocks;
 

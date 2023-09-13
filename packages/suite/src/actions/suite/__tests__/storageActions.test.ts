@@ -1,23 +1,22 @@
 import { Middleware } from 'redux';
 
-import * as discoveryActions from '@suite-common/wallet-core';
 import {
+    prepareDeviceReducer,
+    selectDevices,
+    selectDevicesCount,
     prepareDiscoveryReducer,
     disableAccountsThunk,
     transactionsActions,
     createDiscoveryThunk,
+    deviceActions,
 } from '@suite-common/wallet-core';
+import * as discoveryActions from '@suite-common/wallet-core';
 import { getAccountTransactions, getAccountIdentifier } from '@suite-common/wallet-utils';
 
 import * as walletSettingsActions from 'src/actions/settings/walletSettingsActions';
 import { accountsReducer, fiatRatesReducer, transactionsReducer } from 'src/reducers/wallet';
 import walletSettingsReducer from 'src/reducers/wallet/settingsReducer';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
-import {
-    prepareDeviceReducer,
-    selectDevices,
-    selectDevicesCount,
-} from 'src/reducers/suite/deviceReducer';
 import sendFormReducer from 'src/reducers/wallet/sendFormReducer';
 import graphReducer from 'src/reducers/wallet/graphReducer';
 import storageMiddleware from 'src/middlewares/wallet/storageMiddleware';
@@ -30,7 +29,6 @@ import { extraDependencies } from 'src/support/extraDependencies';
 
 import * as suiteActions from '../suiteActions';
 import * as storageActions from '../storageActions';
-import { deviceActions } from '../deviceActions';
 
 const { getSuiteDevice, getWalletAccount, getWalletTransaction } = global.JestMocks;
 

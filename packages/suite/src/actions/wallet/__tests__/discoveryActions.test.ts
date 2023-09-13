@@ -11,6 +11,7 @@ import {
     startDiscoveryThunk,
     stopDiscoveryThunk,
     updateNetworkSettingsThunk,
+    selectIsDiscoveryAuthConfirmationRequired,
 } from '@suite-common/wallet-core';
 import { ArrayElement } from '@trezor/type-utils';
 import { NetworkSymbol } from '@suite-common/wallet-config';
@@ -19,7 +20,6 @@ import { DiscoveryStatus } from '@suite-common/wallet-constants';
 import * as discoveryActions from '@suite-common/wallet-core';
 
 import { configureStore, filterThunkActionTypes } from 'src/support/tests/configureStore';
-import { selectIsDiscoveryAuthConfirmationRequired } from 'src/reducers/suite/deviceReducer';
 import walletSettingsReducer from 'src/reducers/wallet/settingsReducer';
 import { accountsReducer } from 'src/reducers/wallet';
 import * as walletSettingsActions from 'src/actions/settings/walletSettingsActions';

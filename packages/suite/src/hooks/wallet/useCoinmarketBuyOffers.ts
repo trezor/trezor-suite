@@ -5,6 +5,7 @@ import { BuyTrade } from 'invity-api';
 import { useTimer } from '@trezor/react-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { isDesktop } from '@trezor/env-utils';
+import { selectDevice } from '@suite-common/wallet-core';
 
 import invityAPI from 'src/services/suite/invityAPI';
 import { useActions, useSelector, useDevice } from 'src/hooks/suite';
@@ -15,7 +16,6 @@ import * as routerActions from 'src/actions/suite/routerActions';
 import { UseOffersProps, ContextValues } from 'src/types/wallet/coinmarketBuyOffers';
 import { useCoinmarketNavigation } from 'src/hooks/wallet/useCoinmarketNavigation';
 import { InvityAPIReloadQuotesAfterSeconds } from 'src/constants/wallet/coinmarket/metadata';
-import { selectDevice } from 'src/reducers/suite/deviceReducer';
 
 export const useOffers = ({ selectedAccount }: UseOffersProps) => {
     const timer = useTimer();

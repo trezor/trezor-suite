@@ -9,6 +9,8 @@ import {
     accountsActions,
     selectAccountByKey,
     transactionsActions,
+    selectDevice,
+    selectDevices,
 } from '@suite-common/wallet-core';
 import { getAccountTransactions, sortByBIP44AddressIndex } from '@suite-common/wallet-utils';
 
@@ -39,7 +41,6 @@ import { openModal } from 'src/actions/suite/modalActions';
 import * as coinjoinClientActions from './coinjoinClientActions';
 import { goto } from '../suite/routerActions';
 import * as COINJOIN from './constants/coinjoinConstants';
-import { selectDevice, selectDevices } from '../../reducers/suite/deviceReducer';
 import { selectLocks } from '../../reducers/suite/suiteReducer';
 
 export const coinjoinAccountUpdateAnonymity = (accountKey: string, targetAnonymity: number) =>

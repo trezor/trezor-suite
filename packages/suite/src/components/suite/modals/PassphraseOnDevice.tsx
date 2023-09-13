@@ -1,10 +1,10 @@
 import styled from 'styled-components';
 
 import { H1, variables } from '@trezor/components';
+import { selectIsDiscoveryAuthConfirmationRequired } from '@suite-common/wallet-core';
 
 import { Translation } from 'src/components/suite/Translation';
 import { useSelector } from 'src/hooks/suite';
-import { selectIsDiscoveryAuthConfirmationRequired } from 'src/reducers/suite/deviceReducer';
 import { DeviceConfirmImage } from 'src/components/suite/images/DeviceConfirmImage';
 import type { TrezorDevice } from 'src/types/suite';
 import { DevicePromptModal } from 'src/components/suite/Modal/DevicePromptModal';

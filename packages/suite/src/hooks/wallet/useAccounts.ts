@@ -2,10 +2,10 @@ import { useState, useEffect, useMemo } from 'react';
 
 import type { AccountAddress } from '@trezor/connect';
 import * as accountUtils from '@suite-common/wallet-utils';
+import { selectDevice } from '@suite-common/wallet-core';
 
 import { useSelector } from 'src/hooks/suite';
 import type { Account, Discovery } from 'src/types/wallet';
-import { selectDevice } from 'src/reducers/suite/deviceReducer';
 
 export const useAccounts = (discovery?: Discovery) => {
     const [accounts, setAccounts] = useState<Account[]>([]);

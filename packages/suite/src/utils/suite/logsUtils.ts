@@ -1,4 +1,9 @@
-import { discoveryActions, accountsActions } from '@suite-common/wallet-core';
+import {
+    deviceActions,
+    discoveryActions,
+    accountsActions,
+    selectDevices,
+} from '@suite-common/wallet-core';
 import {
     getEnvironment,
     getBrowserName,
@@ -30,9 +35,6 @@ import { getIsTorEnabled } from 'src/utils/suite/tor';
 import { AppState, TrezorDevice } from 'src/types/suite';
 import { Account } from 'src/types/wallet';
 import { selectLabelingDataForWallet } from 'src/reducers/suite/metadataReducer';
-import { deviceActions } from 'src/actions/suite/deviceActions';
-
-import { selectDevices } from '../../reducers/suite/deviceReducer';
 
 export const REDACTED_REPLACEMENT = '[redacted]';
 

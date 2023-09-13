@@ -1,7 +1,7 @@
 import { notificationsActions } from '@suite-common/toast-notifications';
+import { deviceActions } from '@suite-common/wallet-core';
 
 import * as deviceSettingsActions from '../deviceSettingsActions';
-import { deviceActions } from '../../suite/deviceActions';
 
 const { getSuiteDevice } = global.JestMocks;
 

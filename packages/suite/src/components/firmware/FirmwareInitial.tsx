@@ -11,6 +11,7 @@ import {
     isBitcoinOnlyDevice,
 } from '@trezor/device-utils';
 import { FirmwareType } from '@trezor/connect';
+import { selectDevices } from '@suite-common/wallet-core';
 
 import {
     ConnectDevicePromptManager,
@@ -24,8 +25,6 @@ import {
     FirmwareInstallButton,
     FirmwareOffer,
 } from 'src/components/firmware';
-
-import { selectDevices } from '../../reducers/suite/deviceReducer';
 
 const Description = styled.div`
     align-items: center;
