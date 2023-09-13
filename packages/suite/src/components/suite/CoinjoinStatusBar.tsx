@@ -21,7 +21,7 @@ import {
 } from 'src/reducers/wallet/coinjoinReducer';
 
 import { CountdownTimer } from './CountdownTimer';
-import { WalletLabeling } from './Labeling';
+import { WalletLabeling } from './labeling';
 import { ProgressPie } from './ProgressPie';
 import { Translation } from './Translation';
 
