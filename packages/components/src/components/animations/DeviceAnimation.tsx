@@ -1,6 +1,5 @@
 import styled, { useTheme } from 'styled-components';
 import { MouseEventHandler, forwardRef } from 'react';
-
 import { DeviceModelInternal } from '@trezor/connect';
 import { AnimationWrapper, Shape } from './AnimationPrimitives';
 import { resolveStaticPath } from '../../utils/resolveStaticPath';
@@ -15,7 +14,8 @@ export type AnimationDeviceType =
     | 'BOOTLOADER_TWO_BUTTONS' // Only available for T1B1 with old FW
     | 'NORMAL' // Only available for T1B1
     | 'SUCCESS'
-    | 'HOLOGRAM';
+    | 'HOLOGRAM'
+    | 'ROTATE';
 
 type DeviceAnimationProps = {
     size?: number;
@@ -23,7 +23,7 @@ type DeviceAnimationProps = {
     loop?: boolean;
     shape?: Shape;
     deviceModelInternal?: DeviceModelInternal;
-    deviceColor?: string;
+    deviceUnitColor?: number;
     className?: string;
     onVideoMouseOver?: MouseEventHandler<HTMLVideoElement>;
 };
@@ -37,7 +37,7 @@ export const DeviceAnimation = forwardRef<HTMLVideoElement, DeviceAnimationProps
             shape,
             // if no Trezor available, show flagship model
             deviceModelInternal = DeviceModelInternal.T2T1,
-            deviceColor,
+            deviceUnitColor,
             onVideoMouseOver,
             ...props
         },
@@ -98,6 +98,27 @@ export const DeviceAnimation = forwardRef<HTMLVideoElement, DeviceAnimationProps
                         <source
                             src={resolveStaticPath(
                                 `videos/device/trezor_${deviceModelInternal.toLowerCase()}_hologram.webm`,
+                            )}
+                            type="video/webm"
+                        />
+                    </StyledVideo>
+                )}
+                {type === 'ROTATE' && (
+                    <StyledVideo
+                        loop={loop}
+                        autoPlay
+                        muted
+                        width={size}
+                        height={size}
+                        ref={videoRef}
+                        onMouseOver={onVideoMouseOver}
+                    >
+                        <source
+                            src={resolveStaticPath(
+                                `videos/device/trezor_${DeviceModelInternal.T2B1.toLowerCase()}_rotate_color_${
+                                    // if device unit color is not set, use first color available
+                                    deviceUnitColor ?? 1
+                                }.webm`,
                             )}
                             type="video/webm"
                         />

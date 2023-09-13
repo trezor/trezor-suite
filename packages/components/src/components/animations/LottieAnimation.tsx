@@ -19,7 +19,6 @@ type LottieAnimationProps = {
     loop?: boolean;
     shape?: Shape;
     deviceModelInternal?: DeviceModelInternal;
-    deviceColor?: string;
 };
 
 export const LottieAnimation = ({
