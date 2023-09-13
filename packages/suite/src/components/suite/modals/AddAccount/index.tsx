@@ -1,8 +1,9 @@
 import { useState } from 'react';
+
 import styled from 'styled-components';
 
 import { Button } from '@trezor/components';
-import { accountsActions } from '@suite-common/wallet-core';
+import { accountsActions, selectSupportedNetworks } from '@suite-common/wallet-core';
 import { arrayPartition } from '@trezor/utils';
 import { FirmwareType } from '@trezor/connect';
 
@@ -15,7 +16,6 @@ import { changeCoinVisibility } from 'src/actions/settings/walletSettingsActions
 import { goto } from 'src/actions/suite/routerActions';
 import { selectIsPublic } from 'src/reducers/wallet/coinjoinReducer';
 import { useEnabledNetworks } from 'src/hooks/settings/useEnabledNetworks';
-import { selectSupportedNetworks } from 'src/reducers/suite/deviceReducer';
 
 import { AccountTypeSelect } from './components/AccountTypeSelect';
 import { SelectNetwork } from './components/SelectNetwork';

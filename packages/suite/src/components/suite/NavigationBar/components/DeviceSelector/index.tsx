@@ -3,6 +3,7 @@ import { useState, useEffect, useRef } from 'react';
 import styled, { css } from 'styled-components';
 import { transparentize } from 'polished';
 
+import { selectDevicesCount, selectDevice, acquireDevice } from '@suite-common/wallet-core';
 import * as deviceUtils from '@suite-common/suite-utils';
 import { variables, Image, Icon } from '@trezor/components';
 import type { Timeout } from '@trezor/type-utils';
@@ -12,8 +13,6 @@ import { WalletLabeling } from 'src/components/suite';
 import { TrezorDevice } from 'src/types/suite';
 import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { acquireDevice } from 'src/actions/suite/deviceThunks';
-import { selectDevicesCount, selectDevice } from 'src/reducers/suite/deviceReducer';
 
 import { DeviceStatus } from './DeviceStatus';
 

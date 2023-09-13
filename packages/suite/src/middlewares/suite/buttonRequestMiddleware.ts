@@ -1,14 +1,12 @@
 import { MiddlewareAPI } from 'redux';
 
+import { selectDevice, deviceActions } from '@suite-common/wallet-core';
 import TrezorConnect, { UI } from '@trezor/connect';
 
 import { SUITE } from 'src/actions/suite/constants';
 import { AppState, Action, Dispatch } from 'src/types/suite';
 import { removeButtonRequests } from 'src/actions/suite/suiteActions';
 import { ONBOARDING } from 'src/actions/onboarding/constants';
-
-import { selectDevice } from 'src/reducers/suite/deviceReducer';
-import { deviceActions } from 'src/actions/suite/deviceActions';
 
 const buttonRequest =
     (api: MiddlewareAPI<Dispatch, AppState>) =>

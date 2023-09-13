@@ -5,6 +5,7 @@ import { UnavailableCapabilities } from '@trezor/connect';
 import { isDesktop } from '@trezor/env-utils';
 import { isDevEnv } from '@suite-common/suite-utils';
 import { RequestEnableTorResponse } from '@suite-common/suite-config';
+import { selectDevice } from '@suite-common/wallet-core';
 
 import { Translation } from 'src/components/suite';
 import { useSelector, useDispatch } from 'src/hooks/suite';
@@ -13,7 +14,6 @@ import { toggleTor } from 'src/actions/suite/suiteActions';
 import { openDeferredModal, openModal } from 'src/actions/suite/modalActions';
 import { Account, Network, NetworkSymbol } from 'src/types/wallet';
 import { selectTorState } from 'src/reducers/suite/suiteReducer';
-import { selectDevice } from 'src/reducers/suite/deviceReducer';
 
 import { AddButton } from './AddButton';
 

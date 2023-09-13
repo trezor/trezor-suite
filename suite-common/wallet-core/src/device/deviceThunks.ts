@@ -3,7 +3,6 @@ import TrezorConnect, { Device } from '@trezor/connect';
 import { TrezorDevice } from '@suite-common/suite-types';
 import { analytics, EventType } from '@trezor/suite-analytics';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { checkFirmwareAuthenticity, selectFirmware } from '@suite-common/wallet-core';
 import {
     sortByTimestamp,
     isChanged,
@@ -13,12 +12,10 @@ import {
     getFirstDeviceInstance,
 } from '@suite-common/suite-utils';
 
-import {
-    selectDevice as selectDeviceSelector,
-    selectDevices,
-} from 'src/reducers/suite/deviceReducer';
-
+import { selectDevice as selectDeviceSelector, selectDevices } from './deviceReducer';
 import { deviceActions, MODULE_PREFIX } from './deviceActions';
+import { selectFirmware } from '../firmware/firmwareReducer';
+import { checkFirmwareAuthenticity } from '../firmware/firmwareThunks';
 
 /**
  * Called from:
@@ -26,7 +23,7 @@ import { deviceActions, MODULE_PREFIX } from './deviceActions';
  * - from user action in `@suite-components/DeviceMenu`
  * @param {(Device | TrezorDevice | undefined)} device
  */
-export const selectDevice = createThunk(
+export const selectDeviceThunk = createThunk(
     `${MODULE_PREFIX}/selectDevice`,
     (device: Device | TrezorDevice | undefined, { dispatch, getState }) => {
         let payload: TrezorDevice | typeof undefined;
@@ -133,10 +130,10 @@ export const handleDeviceConnect = createThunk(
             device.mode === 'bootloader' &&
             ['reconnect-in-normal', 'waiting-for-bootloader'].includes(firmware.status)
         ) {
-            dispatch(selectDevice(device));
+            dispatch(selectDeviceThunk(device));
         }
         if (!selectedDevice) {
-            dispatch(selectDevice(device));
+            dispatch(selectDeviceThunk(device));
         } else {
             // TODO: show some nice notification/tooltip in DeviceMenu
         }
@@ -165,7 +162,7 @@ export const handleDeviceDisconnect = createThunk(
          * This is not the case in firmware update and onboarding; In this case we simply wan't suite.device to be empty until user reconnects a device again
          */
         if (['onboarding', 'firmware', 'firmware-type'].includes(routerApp)) {
-            dispatch(selectDevice(undefined));
+            dispatch(selectDeviceThunk(undefined));
             return;
         }
 
@@ -176,13 +173,13 @@ export const handleDeviceDisconnect = createThunk(
         if (deviceInstances.length > 0) {
             // if selected device is gone from reducer, switch to first instance
             if (!devicePresent) {
-                dispatch(selectDevice(deviceInstances[0]));
+                dispatch(selectDeviceThunk(deviceInstances[0]));
             }
             return;
         }
 
         const available = getFirstDeviceInstance(devices);
-        dispatch(selectDevice(available[0]));
+        dispatch(selectDeviceThunk(available[0]));
     },
 );
 
@@ -395,7 +392,7 @@ export const switchDuplicatedDevice = createThunk(
         // switch to existing wallet
         // NOTE: await is important. otherwise `forgetDevice` action will be resolved first leading to race condition:
         // forgetDevice > suiteMiddleware > handleDeviceDisconnect > selectDevice (first available)
-        await dispatch(selectDevice(duplicate));
+        await dispatch(selectDeviceThunk(duplicate));
         // remove stateless instance
         dispatch(deviceActions.forgetDevice(device));
     },
@@ -414,7 +411,7 @@ export const initDevices = createThunk(
                 dispatch(toggleRememberDevice({ device: d }));
             });
             dispatch(
-                selectDevice(
+                selectDeviceThunk(
                     forcedDevices.length ? forcedDevices[0] : sortByTimestamp([...devices])[0],
                 ),
             );

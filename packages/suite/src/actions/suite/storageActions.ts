@@ -4,6 +4,7 @@ import { Discovery, FormDraftKeyPrefix } from '@suite-common/wallet-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { getFormDraftKey } from '@suite-common/wallet-utils';
 import { FormDraftPrefixKeyValues } from '@suite-common/wallet-constants';
+import { selectDevices, deviceActions } from '@suite-common/wallet-core';
 
 import { db } from 'src/storage';
 import {
@@ -21,8 +22,6 @@ import { deviceGraphDataFilterFn } from 'src/utils/wallet/graph';
 import { selectCoinjoinAccountByKey } from 'src/reducers/wallet/coinjoinReducer';
 
 import { STORAGE } from './constants';
-import { selectDevices } from '../../reducers/suite/deviceReducer';
-import { deviceActions } from './deviceActions';
 
 export type StorageAction = NonNullable<PreloadStoreAction>;
 export type StorageLoadAction = Extract<StorageAction, { type: typeof STORAGE.LOAD }>;

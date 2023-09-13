@@ -1,5 +1,6 @@
 import { OnboardingAnalytics } from '@trezor/suite-analytics';
 import TrezorConnect from '@trezor/connect';
+import { selectDevice } from '@suite-common/wallet-core';
 
 import { ONBOARDING } from 'src/actions/onboarding/constants';
 import * as STEP from 'src/constants/onboarding/steps';
@@ -7,7 +8,6 @@ import { AnyStepId, AnyPath } from 'src/types/onboarding';
 import steps from 'src/config/onboarding/steps';
 import { findNextStep, findPrevStep, isStepInPath } from 'src/utils/onboarding/steps';
 import { GetState, Dispatch } from 'src/types/suite';
-import { selectDevice } from 'src/reducers/suite/deviceReducer';
 import { DeviceTutorialStatus } from 'src/reducers/onboarding/onboardingReducer';
 
 export type OnboardingAction =

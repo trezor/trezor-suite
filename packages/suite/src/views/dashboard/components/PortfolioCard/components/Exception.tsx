@@ -2,7 +2,11 @@ import { ComponentProps } from 'react';
 
 import styled from 'styled-components';
 
-import { restartDiscoveryThunk as restartDiscovery } from '@suite-common/wallet-core';
+import {
+    authConfirm,
+    authorizeDevice,
+    restartDiscoveryThunk as restartDiscovery,
+} from '@suite-common/wallet-core';
 import * as accountUtils from '@suite-common/wallet-utils';
 import { variables, Button, IconProps, H3, Image } from '@trezor/components';
 import { Discovery } from '@suite-common/wallet-types';
@@ -10,7 +14,6 @@ import { Discovery } from '@suite-common/wallet-types';
 import { Translation } from 'src/components/suite';
 import { useDevice, useDispatch } from 'src/hooks/suite';
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';
-import { authConfirm, authorizeDevice } from 'src/actions/suite/deviceThunks';
 import { goto } from 'src/actions/suite/routerActions';
 import { DiscoveryStatusType } from 'src/types/wallet';
 import { TranslationKey } from 'src/components/suite/Translation';

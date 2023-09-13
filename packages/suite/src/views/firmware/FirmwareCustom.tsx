@@ -2,6 +2,7 @@ import { useState, useMemo, useCallback } from 'react';
 
 import styled from 'styled-components';
 
+import { acquireDevice } from '@suite-common/wallet-core';
 import { ConfirmOnDevice } from '@trezor/components';
 
 import { useDevice, useDispatch, useFirmware } from 'src/hooks/suite';
@@ -20,7 +21,6 @@ import {
     ReconnectDevicePrompt,
     SelectCustomFirmware,
 } from 'src/components/firmware';
-import { acquireDevice } from 'src/actions/suite/deviceThunks';
 
 const StyledModal = styled(Modal)<{ isNarrow: boolean }>`
     width: ${({ isNarrow }) => (isNarrow ? '450px' : '620px')};

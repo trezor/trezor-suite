@@ -2,10 +2,10 @@
 /* eslint-disable global-require */
 import { DEVICE_EVENT, UI_EVENT, TRANSPORT_EVENT, BLOCKCHAIN_EVENT } from '@trezor/connect';
 import { connectInitThunk } from '@suite-common/connect-init';
+import { prepareDeviceReducer } from '@suite-common/wallet-core';
 
 import { configureStore } from 'src/support/tests/configureStore';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
-import { prepareDeviceReducer } from 'src/reducers/suite/deviceReducer';
 import { SUITE } from 'src/actions/suite/constants';
 import { extraDependencies } from 'src/support/extraDependencies';
 

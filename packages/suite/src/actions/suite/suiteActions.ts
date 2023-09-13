@@ -4,6 +4,7 @@ import { notificationsActions } from '@suite-common/toast-notifications';
 import { getCustomBackends } from '@suite-common/wallet-utils';
 import { desktopApi, HandshakeElectron } from '@trezor/suite-desktop-api';
 import { analytics, EventType } from '@trezor/suite-analytics';
+import { deviceActions } from '@suite-common/wallet-core';
 
 import { TorStatus } from 'src/types/suite';
 import { isOnionUrl } from 'src/utils/suite/tor';
@@ -18,7 +19,6 @@ import {
 import type { TranslationKey } from 'src/components/suite/Translation/components/BaseTranslation';
 
 import { SUITE } from './constants';
-import { deviceActions } from './deviceActions';
 
 export type SuiteAction =
     | { type: typeof SUITE.INIT }

@@ -1,3 +1,6 @@
+import { isDesktop, isWeb } from '@trezor/env-utils';
+import { selectDevice } from '@suite-common/wallet-core';
+
 import { SettingsLayout } from 'src/components/settings';
 import { SettingsSection } from 'src/components/suite/Settings';
 import { Translation } from 'src/components/suite';
@@ -5,7 +8,6 @@ import { useLayoutSize, useSelector } from 'src/hooks/suite';
 import { selectTorState } from 'src/reducers/suite/suiteReducer';
 import { selectEnabledNetworks } from 'src/reducers/wallet/settingsReducer';
 import { NETWORKS } from 'src/config/wallet';
-import { isDesktop, isWeb } from '@trezor/env-utils';
 
 import { Language } from './Language';
 import { Fiat } from './Fiat';
@@ -22,7 +24,6 @@ import { VersionWithUpdate } from './VersionWithUpdate';
 import { EarlyAccess } from './EarlyAccess';
 import { BitcoinAmountUnit } from './BitcoinAmountUnit';
 import { DesktopSuiteBanner } from './DesktopSuiteBanner';
-import { selectDevice } from '../../../reducers/suite/deviceReducer';
 
 export const SettingsGeneral = () => {
     const isPromoHidden = useSelector(state => state.suite.settings.isDesktopSuitePromoHidden);

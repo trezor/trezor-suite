@@ -1,7 +1,6 @@
 import * as deviceUtils from '@suite-common/suite-utils';
 import { getStatus } from '@suite-common/suite-utils';
 import { Device, Features } from '@trezor/connect';
-import { DiscoveryRootState, selectDiscoveryByDeviceState } from '@suite-common/wallet-core';
 import { DiscoveryStatus } from '@suite-common/wallet-constants';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { Network, networks } from '@suite-common/wallet-config';
@@ -9,7 +8,8 @@ import { versionUtils } from '@trezor/utils';
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 import { TrezorDevice, AcquiredDevice, ButtonRequest } from '@suite-common/suite-types';
 
-import { deviceActions } from 'src/actions/suite/deviceActions';
+import { deviceActions } from './deviceActions';
+import { DiscoveryRootState, selectDiscoveryByDeviceState } from '../discovery/discoveryReducer';
 
 export type State = { devices: TrezorDevice[]; selectedDevice?: TrezorDevice };
 
@@ -355,12 +355,17 @@ const createInstance = (draft: State, device: TrezorDevice) => {
  * @param {TrezorDevice} device
  * @param {boolean} remember
  */
-const remember = (draft: State, device: TrezorDevice, remember: boolean, forceRemember?: true) => {
+const remember = (
+    draft: State,
+    device: TrezorDevice,
+    shouldRemember: boolean,
+    forceRemember?: true,
+) => {
     // only acquired devices
     if (!device || !device.features) return;
     draft.devices.forEach(d => {
         if (deviceUtils.isSelectedInstance(device, d)) {
-            d.remember = remember;
+            d.remember = shouldRemember;
             if (forceRemember) d.forceRemember = true;
             else delete d.forceRemember;
         }

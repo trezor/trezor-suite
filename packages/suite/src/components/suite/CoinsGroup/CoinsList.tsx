@@ -2,13 +2,13 @@ import styled from 'styled-components';
 
 import { getCoinUnavailabilityMessage } from '@suite-common/suite-utils';
 import { Tooltip } from '@trezor/components';
+import { getFirmwareVersion, isDeviceInBootloaderMode } from '@trezor/device-utils';
+import { versionUtils } from '@trezor/utils';
+import { selectSupportedNetworks } from '@suite-common/wallet-core';
+
 import { Coin, Translation } from 'src/components/suite';
 import { useDevice, useSelector } from 'src/hooks/suite';
 import type { Network } from 'src/types/wallet';
-import { getFirmwareVersion, isDeviceInBootloaderMode } from '@trezor/device-utils';
-import { versionUtils } from '@trezor/utils';
-
-import { selectSupportedNetworks } from 'src/reducers/suite/deviceReducer';
 
 const Wrapper = styled.div`
     width: 100%;

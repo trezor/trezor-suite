@@ -1,6 +1,7 @@
 import { useState } from 'react';
 
 import { getFirmwareVersion } from '@trezor/device-utils';
+import { selectDevice } from '@suite-common/wallet-core';
 
 import { OnboardingButtonBack, OnboardingStepBox } from 'src/components/onboarding';
 import { Translation } from 'src/components/suite';
@@ -16,7 +17,6 @@ import { TrezorDevice } from 'src/types/suite';
 import { DeviceTutorial } from 'src/components/firmware/DeviceTutorial';
 import { selectOnboardingTutorialStatus } from 'src/reducers/onboarding/onboardingReducer';
 import { getSuiteFirmwareTypeString } from 'src/utils/firmware';
-import { selectDevice } from 'src/reducers/suite/deviceReducer';
 
 const FirmwareStep = () => {
     const device = useSelector(selectDevice);

@@ -1,11 +1,10 @@
 import TrezorConnect, { CommonParams } from '@trezor/connect';
 import { analytics, EventType } from '@trezor/suite-analytics';
 import { notificationsActions } from '@suite-common/toast-notifications';
+import { selectDevice } from '@suite-common/wallet-core';
 
 import { BACKUP } from 'src/actions/backup/constants';
 import type { Dispatch, GetState } from 'src/types/suite';
-
-import { selectDevice } from '../../reducers/suite/deviceReducer';
 
 export type ConfirmKey =
     | 'has-enough-time'

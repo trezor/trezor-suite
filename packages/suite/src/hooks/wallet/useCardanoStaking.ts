@@ -3,7 +3,7 @@ import { useState, useCallback, useMemo } from 'react';
 import { isTestnet, getDerivationType } from '@suite-common/wallet-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import trezorConnect, { PROTO } from '@trezor/connect';
-import { addFakePendingCardanoTxThunk } from '@suite-common/wallet-core';
+import { addFakePendingCardanoTxThunk, selectDevice } from '@suite-common/wallet-core';
 
 import { ActionAvailability, CardanoStaking } from 'src/types/wallet/cardanoStaking';
 import { SUITE } from 'src/actions/suite/constants';
@@ -22,8 +22,6 @@ import {
     loadCardanoLib,
 } from 'src/utils/wallet/cardanoUtils';
 import { AppState } from 'src/types/suite';
-
-import { selectDevice } from '../../reducers/suite/deviceReducer';
 
 const getDeviceAvailability = (
     device: AppState['device']['selectedDevice'],

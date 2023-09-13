@@ -1,6 +1,6 @@
-import { METADATA } from 'src/actions/suite/constants';
+import { deviceActions } from '@suite-common/wallet-core';
 
-import { deviceActions } from '../deviceActions';
+import { METADATA } from 'src/actions/suite/constants';
 
 const setDeviceMetadataKey = [
     {

@@ -1,4 +1,5 @@
-import { authorizeDevice } from 'src/actions/suite/deviceThunks';
+import { authorizeDevice } from '@suite-common/wallet-core';
+
 import { useDevice, useDispatch } from 'src/hooks/suite';
 import { Translation } from 'src/components/suite';
 import { AccountExceptionLayout } from 'src/components/wallet';

@@ -2,6 +2,7 @@ import styled from 'styled-components';
 
 import { P, Button, Image } from '@trezor/components';
 import { HELP_CENTER_FAILED_BACKUP_URL } from '@trezor/urls';
+import { selectDevice } from '@suite-common/wallet-core';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { backupDevice } from 'src/actions/backup/backupActions';
@@ -13,7 +14,6 @@ import { selectLocks } from 'src/reducers/suite/suiteReducer';
 import type { ForegroundAppProps } from 'src/types/suite';
 import type { BackupStatus } from 'src/actions/backup/backupActions';
 import { selectBackup } from 'src/reducers/backup/backupReducer';
-import { selectDevice } from 'src/reducers/suite/deviceReducer';
 
 const StyledButton = styled(Button)`
     width: 224px;

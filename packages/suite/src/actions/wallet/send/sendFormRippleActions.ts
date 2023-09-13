@@ -18,9 +18,9 @@ import {
     PrecomposedTransactionFinal,
     ExternalOutput,
 } from '@suite-common/wallet-types';
+import { selectDevice } from '@suite-common/wallet-core';
 
 import { Dispatch, GetState } from 'src/types/suite';
-import { selectDevice } from 'src/reducers/suite/deviceReducer';
 
 const calculate = (
     availableBalance: string,

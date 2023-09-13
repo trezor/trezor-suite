@@ -1,6 +1,8 @@
 import { useCallback } from 'react';
+
 import { analytics, EventType } from '@trezor/suite-analytics';
 import { UnavailableCapability } from '@trezor/connect';
+import { selectDevice } from '@suite-common/wallet-core';
 
 import { Account, Network } from 'src/types/wallet';
 import { Translation } from 'src/components/suite';
@@ -8,7 +10,6 @@ import { useAccountSearch, useSelector } from 'src/hooks/suite';
 
 import { AddCoinjoinAccountButton } from './AddCoinjoinAccountButton';
 import { AddButton } from './AddButton';
-import { selectDevice } from '../../../../../reducers/suite/deviceReducer';
 
 const verifyAvailability = ({
     emptyAccounts,

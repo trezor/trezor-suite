@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 
+import { selectDevice, createDeviceInstance } from '@suite-common/wallet-core';
 import { Button, variables } from '@trezor/components';
 
 import { Translation } from 'src/components/suite';
@@ -11,8 +12,6 @@ import { setFlag } from 'src/actions/suite/suiteActions';
 import { applySettings, changePin } from 'src/actions/settings/deviceSettingsActions';
 import { goto } from 'src/actions/suite/routerActions';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
-import { selectDevice } from 'src/reducers/suite/deviceReducer';
-import { createDeviceInstance } from 'src/actions/suite/deviceThunks';
 
 import { SecurityCard, SecurityCardProps } from '../SecurityCard';
 

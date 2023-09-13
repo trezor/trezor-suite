@@ -1,12 +1,10 @@
 import { MiddlewareAPI } from 'redux';
 
-import { accountsActions } from '@suite-common/wallet-core';
+import { accountsActions, deviceActions } from '@suite-common/wallet-core';
 
 import * as metadataActions from 'src/actions/suite/metadataActions';
 import { AppState, Action, Dispatch } from 'src/types/suite';
 import { ROUTER } from 'src/actions/suite/constants';
-
-import { deviceActions } from '../../actions/suite/deviceActions';
 
 const metadata =
     (api: MiddlewareAPI<Dispatch, AppState>) =>

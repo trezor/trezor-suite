@@ -1,7 +1,7 @@
+import { selectDevice, selectPendingAccountAddresses } from '@suite-common/wallet-core';
+
 import { WalletLayout, WalletLayoutHeader } from 'src/components/wallet';
 import { useDevice, useSelector } from 'src/hooks/suite';
-import { selectDevice } from 'src/reducers/suite/deviceReducer';
-import { selectPendingAccountAddresses } from '@suite-common/wallet-core';
 
 import { FreshAddress } from './components/FreshAddress';
 import { UsedAddresses } from './components/UsedAddresses';

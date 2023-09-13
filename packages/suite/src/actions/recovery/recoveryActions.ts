@@ -1,3 +1,4 @@
+import { deviceActions, selectDevice } from '@suite-common/wallet-core';
 import TrezorConnect, { UI, RecoveryDevice, DeviceModelInternal } from '@trezor/connect';
 import { analytics, EventType } from '@trezor/suite-analytics';
 
@@ -7,8 +8,6 @@ import * as routerActions from 'src/actions/suite/routerActions';
 import { Dispatch, GetState } from 'src/types/suite';
 import { WordCount } from 'src/types/recovery';
 import { DEFAULT_PASSPHRASE_PROTECTION } from 'src/constants/suite/device';
-import { deviceActions } from 'src/actions/suite/deviceActions';
-import { selectDevice } from 'src/reducers/suite/deviceReducer';
 
 export type SeedInputStatus =
     | 'initial'

@@ -1,10 +1,11 @@
 import produce from 'immer';
 
+import { deviceActions } from '@suite-common/wallet-core';
+
 import { ACCOUNT_SEARCH } from 'src/actions/wallet/constants';
 import * as walletSettingsActions from 'src/actions/settings/walletSettingsActions';
 import { Action } from 'src/types/suite';
 import { Account as AccountType } from 'src/types/wallet';
-import { deviceActions } from 'src/actions/suite/deviceActions';
 
 export interface State {
     coinFilter: AccountType['symbol'] | undefined;
