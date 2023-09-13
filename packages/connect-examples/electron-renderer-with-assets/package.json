@@ -61,7 +61,7 @@
         "babel-loader": "^9.1.2",
         "concurrently": "^8.2.0",
         "copy-webpack-plugin": "^11.0.0",
-        "electron": "24.5.1",
+        "electron": "26.1.0",
         "electron-builder": "23.6.0",
         "html-webpack-plugin": "^5.5.3",
         "terser-webpack-plugin": "^5.3.9",
