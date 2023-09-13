@@ -343,15 +343,6 @@ const recoverDevice = [
             {
                 selector: '.follow-device >> visible=true',
                 screenshot: {
-                    name: 'follow-device-confirm-select-number-of-words',
-                },
-                nextEmu: {
-                    type: 'emulator-press-yes',
-                },
-            },
-            {
-                selector: '.follow-device >> visible=true',
-                screenshot: {
                     name: 'follow-device-select-number-of-words',
                 },
                 nextEmu: {
