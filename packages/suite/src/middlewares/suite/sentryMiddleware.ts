@@ -14,6 +14,7 @@ import {
 } from '@trezor/device-utils';
 import { DEVICE, TRANSPORT } from '@trezor/connect';
 import { analyticsActions } from '@suite-common/analytics';
+import { deviceAuthenticityActions } from '@suite-common/device-authenticity';
 
 import { WALLET_SETTINGS } from 'src/actions/settings/constants';
 import * as walletSettingsActions from 'src/actions/settings/walletSettingsActions';
@@ -122,6 +123,10 @@ const sentryMiddleware =
                 });
                 break;
             }
+            case deviceAuthenticityActions.result.type:
+                if (action.payload.result.valid) return;
+                setSentryContext('device-authenticity', action.payload.result);
+                break;
             default:
                 break;
         }
