@@ -23,7 +23,7 @@ import { AppNavigationTooltip } from './AppNavigationTooltip';
 import { AppNavigation } from './AppNavigation';
 import Ticker from './Ticker';
 import { Translation } from './Translation';
-import { AccountLabeling, AddressLabeling, WalletLabeling, MetadataLabeling } from './Labeling';
+import { AccountLabeling, AddressLabeling, WalletLabeling, MetadataLabeling } from './labeling';
 import { FormattedCryptoAmount } from './FormattedCryptoAmount';
 import { FormattedNftAmount } from './FormattedNftAmount';
 import { Sign } from './Sign';
