@@ -46,7 +46,8 @@ export type ToastPayload = (
               | 'backup-failed'
               | 'sign-message-success'
               | 'verify-message-success'
-              | 'firmware-check-authenticity-success';
+              | 'firmware-check-authenticity-success'
+              | 'device-authenticity-success';
       }
     | SentTransactionNotification
     | {
@@ -78,7 +79,8 @@ export type ToastPayload = (
               | 'sign-tx-error'
               | 'metadata-auth-error'
               | 'metadata-not-found-error'
-              | 'metadata-unexpected-error';
+              | 'metadata-unexpected-error'
+              | 'device-authenticity-error';
           error: string;
       }
     | {
