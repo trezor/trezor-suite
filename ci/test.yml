@@ -365,6 +365,10 @@ connect model R:
       - schedules
   parallel:
     matrix:
+      - TESTS_ENVIRONMENT: ["node", "web"]
+        TESTS_PATTERN: "authenticateDevice"
+        TESTS_FIRMWARE: ["2-latest"]
+        TESTS_FIRMWARE_MODEL: "R"
       - TESTS_ENVIRONMENT: ["node"]
         TESTS_PATTERN: "methods"
         TESTS_FIRMWARE: ["2-latest"]
