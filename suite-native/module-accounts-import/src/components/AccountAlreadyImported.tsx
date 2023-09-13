@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/core';
 
-import { Box, Button, Divider } from '@suite-native/atoms';
+import { Box, Button, Card, Divider } from '@suite-native/atoms';
 import { AccountListItem } from '@suite-native/accounts';
 import { Account } from '@suite-common/wallet-types';
 import {
@@ -52,9 +52,9 @@ export const AccountAlreadyImported = ({ account }: AccountImportImportedAccount
 
     return (
         <Box flex={1} justifyContent="flex-end">
-            <Box style={applyStyle(contentWrapperStyle)}>
+            <Card style={applyStyle(contentWrapperStyle)}>
                 {account && <AccountListItem account={account} />}
-            </Box>
+            </Card>
             <Box>
                 <Box marginBottom="large" marginTop="large">
                     <Divider />

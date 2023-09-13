@@ -5,3 +5,5 @@ export type TestProps = {
     ['data-testId']?: never;
     ['data-testID']?: string;
 };
+
+export type SurfaceElevation = '0' | '1';

@@ -20,6 +20,7 @@ import { nativeSpacings } from '@trezor/theme';
 
 import { Box } from '../Box';
 import { ACCESSIBILITY_FONTSIZE_MULTIPLIER } from '../Text';
+import { SurfaceElevation } from '../types';
 
 export type InputProps = TextInputProps & {
     value: string;
@@ -27,6 +28,7 @@ export type InputProps = TextInputProps & {
     hasError?: boolean;
     hasWarning?: boolean;
     leftIcon?: ReactNode;
+    elevation?: SurfaceElevation;
 };
 
 const INPUT_LABEL_TOP_PADDING = 35;
@@ -43,6 +45,7 @@ type InputWrapperStyleProps = {
     hasError: boolean;
     isLabelMinimized: boolean;
     isFocused: boolean;
+    elevation: SurfaceElevation;
 };
 
 type InputLabelStyleProps = {
@@ -55,8 +58,10 @@ type InputStyleProps = {
 };
 
 const inputWrapperStyle = prepareNativeStyle<InputWrapperStyleProps>(
-    (utils, { hasError, hasWarning, isFocused }) => ({
+    (utils, { hasError, hasWarning, isFocused, elevation }) => ({
         backgroundColor: utils.colors.backgroundNeutralSubtleOnElevation0,
+        borderColor: utils.colors.backgroundNeutralSubtleOnElevation1,
+        borderWidth: utils.borders.widths.small,
         borderRadius: 1.5 * utils.borders.radii.small,
         paddingHorizontal: INPUT_WRAPPER_PADDING_HORIZONTAL,
         paddingBottom: INPUT_WRAPPER_PADDING_VERTICAL_MINIMIZED,
@@ -67,7 +72,6 @@ const inputWrapperStyle = prepareNativeStyle<InputWrapperStyleProps>(
                 condition: isFocused,
                 style: {
                     borderColor: utils.colors.borderFocus,
-                    borderWidth: utils.borders.widths.small,
                 },
             },
             {
@@ -82,6 +86,13 @@ const inputWrapperStyle = prepareNativeStyle<InputWrapperStyleProps>(
                 style: {
                     borderColor: utils.colors.borderAlertRed,
                     backgroundColor: utils.colors.backgroundAlertRedSubtleOnElevation1,
+                },
+            },
+            {
+                condition: elevation === '1',
+                style: {
+                    borderColor: utils.colors.backgroundNeutralSubtleOnElevation1,
+                    backgroundColor: utils.colors.backgroundNeutralSubtleOnElevation1,
                 },
             },
         ],
@@ -183,6 +194,7 @@ export const Input = forwardRef<TextInput, InputProps>(
             leftIcon,
             hasError = false,
             hasWarning = false,
+            elevation = '0',
             ...props
         }: InputProps,
         ref,
@@ -214,6 +226,7 @@ export const Input = forwardRef<TextInput, InputProps>(
                         hasWarning,
                         isLabelMinimized,
                         isFocused,
+                        elevation,
                     })}
                 >
                     {leftIcon && <Box style={applyStyle(leftIconStyle)}>{leftIcon}</Box>}

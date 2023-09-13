@@ -31,21 +31,14 @@ export const FiatBalanceFormatter = ({ value }: BalanceFormatterProps) => {
 
     return (
         <Box flexDirection="row" alignItems="flex-end" flexShrink={1}>
-            <Text variant="titleSmall" color="textSubdued">
-                {currencySymbol}
-            </Text>
+            <Text variant="titleSmall">{currencySymbol}</Text>
             <AmountText
                 value={wholeNumber}
                 variant="titleLarge"
                 isDiscreetText
                 style={applyStyle(wholeNumberStyle)}
             />
-            <AmountText
-                value={decimalNumber}
-                variant="titleSmall"
-                color="textSubdued"
-                isDiscreetText
-            />
+            <AmountText value={decimalNumber} variant="titleSmall" isDiscreetText />
         </Box>
     );
 };
