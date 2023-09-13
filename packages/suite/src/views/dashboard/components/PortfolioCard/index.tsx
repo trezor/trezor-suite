@@ -8,7 +8,7 @@ import { useFastAccounts, useFiatValue } from 'src/hooks/wallet';
 import { SkeletonTransactionsGraph } from 'src/components/suite/TransactionsGraph';
 import { goto } from 'src/actions/suite/routerActions';
 import { setFlag } from 'src/actions/suite/suiteActions';
-import * as accountUtils from '@suite-common/wallet-utils';
+import { getTotalFiatBalance, isTestnet } from '@suite-common/wallet-utils';
 
 import { Header } from './components/Header';
 import { Exception } from './components/Exception';
@@ -48,11 +48,9 @@ const PortfolioCard = memo(() => {
 
     const isDeviceEmpty = useMemo(() => accounts.every(a => a.empty), [accounts]);
     const isMissingFiatRates = coins
-        .filter(c => !c.tokenAddress)
+        .filter(c => !c.tokenAddress && !isTestnet(c.symbol))
         .some(c => !c.current?.rates?.[localCurrency]);
-    const portfolioValue = accountUtils
-        .getTotalFiatBalance(accounts, localCurrency, coins)
-        .toString();
+    const portfolioValue = getTotalFiatBalance(accounts, localCurrency, coins).toString();
 
     const discoveryStatus = getDiscoveryStatus();
 
