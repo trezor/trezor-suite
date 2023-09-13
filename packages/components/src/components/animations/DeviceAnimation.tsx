@@ -62,12 +62,13 @@ export const DeviceAnimation = forwardRef<HTMLVideoElement, DeviceAnimationProps
                     >
                         <source
                             src={resolveStaticPath(
-                                `videos/device/trezor_${deviceModelInternal}_${type.toLowerCase()}${theme}.webm`,
+                                `videos/device/trezor_${deviceModelInternal.toLowerCase()}_${type.toLowerCase()}${theme}.webm`,
                             )}
                             type="video/webm"
                         />
                     </StyledVideo>
                 )}
+                {/* Images available only for T1B1 */}
                 {['BOOTLOADER_TWO_BUTTONS', 'NORMAL'].includes(type) && (
                     <StyledVideo
                         loop={loop}
@@ -80,9 +81,7 @@ export const DeviceAnimation = forwardRef<HTMLVideoElement, DeviceAnimationProps
                     >
                         <source
                             src={resolveStaticPath(
-                                `videos/device/trezor_${
-                                    DeviceModelInternal.T1B1
-                                }_${type.toLowerCase()}${theme}.webm`,
+                                `videos/device/trezor_${DeviceModelInternal.T1B1.toLowerCase()}_${type.toLowerCase()}${theme}.webm`,
                             )}
                             type="video/webm"
                         />
@@ -98,7 +97,7 @@ export const DeviceAnimation = forwardRef<HTMLVideoElement, DeviceAnimationProps
                     >
                         <source
                             src={resolveStaticPath(
-                                `videos/device/trezor_${deviceModelInternal}_hologram.webm`,
+                                `videos/device/trezor_${deviceModelInternal.toLowerCase()}_hologram.webm`,
                             )}
                             type="video/webm"
                         />
