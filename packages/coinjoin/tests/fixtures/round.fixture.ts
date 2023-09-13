@@ -37,6 +37,7 @@ export const ROUND_CREATION_EVENT = {
         MaxVsizeAllocationPerAlice: 255,
         MaxTransactionSize: 100000,
         MinRelayTxFee: 1000,
+        DelayTransactionSigning: true,
     },
 };
 

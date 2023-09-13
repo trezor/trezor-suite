@@ -1,4 +1,5 @@
 import { networks } from '@trezor/utxo-lib';
+import { getRandomNumberInRange } from '@trezor/utils';
 
 import { transactionSigning } from '../../src/client/round/transactionSigning';
 import { createServer } from '../mocks/server';
@@ -11,7 +12,7 @@ jest.mock('@trezor/utils', () => {
     return {
         __esModule: true,
         ...originalModule,
-        getRandomNumberInRange: () => 0,
+        getRandomNumberInRange: jest.fn(() => 0),
     };
 });
 
@@ -474,5 +475,119 @@ describe('transactionSigning', () => {
         });
 
         expect(response.isSignedSuccessfully()).toBe(false);
+    });
+});
+
+describe('transactionSigning signature delay', () => {
+    let server: Awaited<ReturnType<typeof createServer>>;
+    let round: ReturnType<typeof createCoinjoinRound>;
+
+    beforeAll(async () => {
+        jest.spyOn(Date, 'now').mockImplementation(() => 0);
+        server = await createServer();
+        round = createCoinjoinRound([], {
+            ...server?.requestOptions,
+            round: {
+                phase: 3,
+                phaseDeadline: 60000 * 4, // 4 minutes
+                affiliateRequest: Buffer.from('0'.repeat(97 * 2 + 4), 'hex').toString('base64'),
+            },
+        });
+    });
+
+    beforeEach(() => {
+        server?.removeAllListeners('test-request');
+    });
+
+    afterAll(() => {
+        server?.close();
+        jest.clearAllMocks();
+    });
+
+    it('DelayTransactionSigning enabled, singing resolved after 33 sec.', async () => {
+        round.inputs = [
+            createInput(
+                'account-A',
+                'a00000000000000000000000000000000000000000000000000000000000000001000000',
+                {
+                    witness: 'aa',
+                    witnessIndex: 0,
+                    resolved: [
+                        {
+                            type: 'signature',
+                            timestamp: 33000,
+                        },
+                    ],
+                },
+            ),
+        ];
+        const response = await transactionSigning(
+            round,
+            [], // Account is not relevant for this test
+            server?.requestOptions,
+        );
+
+        // signature is sent in range 17-67 sec. (resolve time is less than 50 sec TX_SIGNING_DELAY)
+        expect(getRandomNumberInRange).toHaveBeenLastCalledWith(17000, 67000);
+        expect(response.isSignedSuccessfully()).toBe(true);
+    });
+
+    it('DelayTransactionSigning enabled, singing resolved after 53.79 sec.', async () => {
+        round.inputs = [
+            createInput(
+                'account-A',
+                'a00000000000000000000000000000000000000000000000000000000000000001000000',
+                {
+                    witness: 'aa',
+                    witnessIndex: 0,
+                    resolved: [
+                        {
+                            type: 'signature',
+                            timestamp: 53790,
+                        },
+                    ],
+                },
+            ),
+        ];
+
+        const response = await transactionSigning(
+            round,
+            [], // Account is not relevant for this test
+            server?.requestOptions,
+        );
+
+        // signature is sent in range 0-46.21 sec. (resolve time is greater than 50 sec of TX_SIGNING_DELAY)
+        expect(getRandomNumberInRange).toHaveBeenLastCalledWith(0, 46210);
+        expect(response.isSignedSuccessfully()).toBe(true);
+    });
+
+    it('DelayTransactionSigning disabled', async () => {
+        round.inputs = [
+            createInput(
+                'account-A',
+                'a00000000000000000000000000000000000000000000000000000000000000001000000',
+                {
+                    witness: 'aa',
+                    witnessIndex: 0,
+                    resolved: [
+                        {
+                            type: 'signature',
+                            timestamp: 51000,
+                        },
+                    ],
+                },
+            ),
+        ];
+        round.roundParameters.DelayTransactionSigning = false;
+
+        const response = await transactionSigning(
+            round,
+            [], // Account is not relevant for this test
+            server?.requestOptions,
+        );
+
+        // signature is sent in default range 0-1 sec.
+        expect(getRandomNumberInRange).toHaveBeenLastCalledWith(0, 1000);
+        expect(response.isSignedSuccessfully()).toBe(true);
     });
 });

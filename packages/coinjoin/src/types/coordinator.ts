@@ -97,6 +97,7 @@ export interface CoinjoinRoundParameters {
     MaxVsizeAllocationPerAlice: number;
     MaxTransactionSize: number;
     MinRelayTxFee: number;
+    DelayTransactionSigning: boolean;
 }
 
 export interface CoinjoinRoundCreatedEvent {
