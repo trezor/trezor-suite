@@ -9638,6 +9638,7 @@ __metadata:
     babel-jest: ^26.6.3
     babel-plugin-transform-remove-console: ^6.9.4
     basil-ws-flipper: ^0.2.8
+    buffer: ^6.0.3
     expo: 48.0.1
     expo-barcode-scanner: ^12.3.1
     expo-brightness: ^11.2.1
