@@ -47,7 +47,6 @@ export const prepareFiatRatesReducer = createReducerWithExtraDeps(
 
                 // To prevent race condition someone will remove rate from state while fetching for example (during currency change etc.)
                 if (!currentRate) {
-                    state[rateType][fiatRateKey].isLoading = false;
                     return;
                 }
 
@@ -66,7 +65,6 @@ export const prepareFiatRatesReducer = createReducerWithExtraDeps(
 
                 // To prevent race condition someone will remove rate from state while fetching for example (during currency change etc.)
                 if (!currentRate) {
-                    state[rateType][fiatRateKey].isLoading = false;
                     return;
                 }
 
