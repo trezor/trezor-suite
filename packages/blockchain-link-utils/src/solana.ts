@@ -1,6 +1,6 @@
 import { ParsedTransactionWithMeta } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
-import { Transaction } from 'packages/blockchain-link-types/lib';
+import { Target, Transaction } from '@trezor/blockchain-link-types/lib';
 
 export function extractAccountBalanceDiff(
     transaction: ParsedTransactionWithMeta,
@@ -22,6 +22,7 @@ export function extractAccountBalanceDiff(
         postBalance: new BigNumber(transaction.meta?.postBalances[pubKeyIndex] ?? 0),
     };
 }
+
 type TransactionEffect = {
     address: string;
     amount: BigNumber;
@@ -43,6 +44,36 @@ export function getTransactionEffects(transaction: ParsedTransactionWithMeta): T
         })
         .filter((effect): effect is TransactionEffect => !!effect)
         .filter(({ amount }) => !amount.isZero()); // filter out zero effects
+}
+
+export function getTargets(
+    effects: TransactionEffect[],
+    txType: Transaction['type'],
+    accountAddress: string,
+): Transaction['targets'] {
+    return effects
+        .filter(effect => {
+            // for 'self` transaction there is only one effect
+            if (txType === 'self') {
+                return true;
+            }
+            // ignore all targets for unknown transactions
+            if (txType === 'unknown') {
+                return false;
+            }
+            // count in only positive effects, for `sent` tx they gonna be represented as negative, for `recv` as positive
+            return effect.amount.isGreaterThan(0);
+        })
+        .map((effect, i) => {
+            const target: Target = {
+                n: i,
+                addresses: [effect.address],
+                isAddress: true,
+                amount: effect.amount.abs().toString(),
+                isAccountTarget: effect.address === accountAddress && txType !== 'sent',
+            };
+            return target;
+        });
 }
 
 export const getTxType = (
