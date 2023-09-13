@@ -107,3 +107,16 @@ export const getTxType = (
 
     return 'unknown';
 };
+
+export function getAmount(
+    accountEffect: TransactionEffect | undefined,
+    txType: Transaction['type'],
+) {
+    if (!accountEffect) {
+        return '0';
+    }
+    if (txType === 'self') {
+        return accountEffect.amount?.abs().toString();
+    }
+    return accountEffect.amount.toString();
+}

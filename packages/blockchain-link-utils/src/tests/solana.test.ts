@@ -2,7 +2,13 @@ import { ParsedTransactionWithMeta } from '@solana/web3.js';
 
 import { Transaction } from '@trezor/blockchain-link-types';
 
-import { extractAccountBalanceDiff, getTargets, getTransactionEffects, getTxType } from '../solana';
+import {
+    extractAccountBalanceDiff,
+    getAmount,
+    getTargets,
+    getTransactionEffects,
+    getTxType,
+} from '../solana';
 import { fixtures } from './fixtures/solana';
 
 describe('solana/utils', () => {
@@ -50,6 +56,15 @@ describe('solana/utils', () => {
                     input.txType as Transaction['type'],
                     input.accountAddress,
                 );
+                expect(result).toEqual(expectedOutput);
+            });
+        });
+    });
+
+    describe('getAmount', () => {
+        fixtures.getAmount.forEach(({ description, input, expectedOutput }) => {
+            it(description, () => {
+                const result = getAmount(input.accountEffect, input.txType as Transaction['type']);
                 expect(result).toEqual(expectedOutput);
             });
         });
