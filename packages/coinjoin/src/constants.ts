@@ -25,6 +25,8 @@ export const ROUND_REGISTRATION_END_OFFSET = 2000;
 // This is a maximum cap the delay can be zero if the remaining time is less.
 export const ROUND_MAXIMUM_REQUEST_DELAY = 10000;
 
+export const TX_SIGNING_DELAY = 50000;
+
 // do not register into Round if round.inputRegistrationEnd is below offset
 export const ROUND_SELECTION_REGISTRATION_OFFSET = 30000;
 
