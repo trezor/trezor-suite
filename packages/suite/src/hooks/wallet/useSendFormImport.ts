@@ -18,7 +18,7 @@ export const useSendFormImport = ({ network, tokens, localCurrencyOption, fiatRa
     const dispatch = useDispatch();
 
     const importTransaction = async () => {
-        // open ImportTransaction modal and get parsed csv
+        // open ImportTransactionModal and get parsed csv
         const result = await dispatch(importRequest());
         if (!result) return; // cancelled
 

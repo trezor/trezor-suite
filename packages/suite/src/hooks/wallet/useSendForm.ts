@@ -233,7 +233,7 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
         }
     };
 
-    // get response from ReviewTransaction modal
+    // get response from TransactionReviewModal
     const sign = useCallback(async () => {
         const values = getValues();
         const composedTx = composedLevels

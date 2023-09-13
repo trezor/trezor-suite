@@ -284,7 +284,7 @@ export const signTransaction =
         });
 
         if (!signedTx.success) {
-            // catch manual error from ReviewTransaction modal
+            // catch manual error from TransactionReviewModal
             if (signedTx.payload.error === 'tx-cancelled') return;
             dispatch(
                 notificationsActions.addToast({

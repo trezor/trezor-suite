@@ -186,7 +186,7 @@ export const scanQrRequest = () => (dispatch: Dispatch) =>
 export const importRequest = () => (dispatch: Dispatch) =>
     dispatch(modalActions.openDeferredModal({ type: 'import-transaction' }));
 
-// this could be called at any time during signTransaction or pushTransaction process (from ReviewTransaction modal)
+// this could be called at any time during signTransaction or pushTransaction process (from TransactionReviewModal)
 export const cancelSignTx = () => (dispatch: Dispatch, getState: GetState) => {
     const { signedTx } = getState().wallet.send;
     dispatch({ type: SEND.REQUEST_SIGN_TRANSACTION });
@@ -379,7 +379,7 @@ export const signTransaction =
             formValues.rbfParams && typeof formValues.setMaxOutputId === 'number';
         // in case where native RBF is NOT available fallback to "legacy" way of signing (regular signing):
         // - do not enhance inputs/outputs in signFormBitcoinActions
-        // - do not display "rbf mode" in ReviewTransaction modal
+        // - do not display "rbf mode" in TransactionReviewModal
         const useNativeRbf =
             (!hasDecreasedOutput && nativeRbfAvailable) ||
             (hasDecreasedOutput && decreaseOutputAvailable);
@@ -398,7 +398,7 @@ export const signTransaction =
             enhancedTxInfo.useDecreaseOutput = hasDecreasedOutput;
         }
 
-        // store formValues and transactionInfo in send reducer to be used by ReviewTransaction modal
+        // store formValues and transactionInfo in send reducer to be used by TransactionReviewModal
         dispatch({
             type: SEND.REQUEST_SIGN_TRANSACTION,
             payload: {
@@ -407,7 +407,7 @@ export const signTransaction =
             },
         });
 
-        // ReviewTransaction modal has 2 steps: signing and pushing
+        // TransactionReviewModal has 2 steps: signing and pushing
         // TrezorConnect emits UI.CLOSE_UI.WINDOW after the signing process
         // this action is blocked by modalActions.preserve()
         dispatch(modalActions.preserve());
@@ -446,7 +446,7 @@ export const signTransaction =
             return;
         }
 
-        // store serializedTx in reducer (TrezorConnect.pushTransaction params) to be used in ReviewTransaction modal and pushTransaction method
+        // store serializedTx in reducer (TrezorConnect.pushTransaction params) to be used in TransactionReviewModal and pushTransaction method
         dispatch({
             type: SEND.REQUEST_PUSH_TRANSACTION,
             payload: {

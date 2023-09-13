@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useIntl } from 'react-intl';
-
 import styled from 'styled-components';
 
 import { getCheckBackupUrl } from '@suite-common/suite-utils';
@@ -10,7 +9,7 @@ import TrezorConnect, { DeviceModelInternal } from '@trezor/connect';
 
 import { SelectWordCount, SelectRecoveryType } from 'src/components/recovery';
 import { Loading, Translation, CheckItem, TrezorLink, Modal } from 'src/components/suite';
-import { ReduxModal } from 'src/components/suite/ModalSwitcher/ReduxModal';
+import { ReduxModal } from 'src/components/suite/modals/ReduxModal/ReduxModal';
 import {
     checkSeed,
     setAdvancedRecovery,

@@ -22,7 +22,7 @@ Called from `useSendForm` hook. A set of operations with `@trezor/connect` and p
 
 ## @wallet-reducers/sendFormReducer
 
-Storing transaction drafts and temporary data used in ReviewTransaction modal
+Storing transaction drafts and temporary data used in TransactionReviewModal
 
 # Transaction compose process
 

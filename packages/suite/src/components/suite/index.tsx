@@ -31,7 +31,7 @@ import { AddAccountButton } from './AddAccountButton';
 import { ToastContainer } from './ToastContainer';
 import TrezorLink from './TrezorLink';
 import { ReadMoreLink } from './ReadMoreLink';
-import { Modal, ModalProps } from './Modal';
+import { Modal, ModalProps } from './modals/Modal/Modal';
 import { SkeletonRectangle, SkeletonCircle } from './Skeleton';
 import Notifications from './Notifications';
 import { FormattedDate } from './FormattedDate';
