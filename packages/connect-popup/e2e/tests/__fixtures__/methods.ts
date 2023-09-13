@@ -217,7 +217,7 @@ const ethereumSignTransaction = [
     {
         device: initializedDevice,
         url: 'ethereumSignTransaction',
-        views: [followDevice, followDevice, followDevice, followDevice],
+        views: [followDevice, followDevice, followDevice],
     },
 ];
 
