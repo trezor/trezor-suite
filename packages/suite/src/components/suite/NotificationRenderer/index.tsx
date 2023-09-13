@@ -104,6 +104,10 @@ const NotificationRenderer = ({ notification, render }: NotificationRendererProp
             return success(render, notification, 'TR_STORAGE_CLEARED');
         case 'firmware-check-authenticity-success':
             return success(render, notification, 'TR_FIRMWARE_CHECK_AUTHENTICITY_SUCCESS');
+        case 'device-authenticity-success':
+            return success(render, notification, 'TR_DEVICE_AUTHENTICITY_SUCCESS');
+        case 'device-authenticity-error':
+            return error(render, notification, 'TR_DEVICE_AUTHENTICITY_ERROR');
         case 'bridge-dev-restart':
             return info(
                 render,

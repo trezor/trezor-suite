@@ -7142,6 +7142,14 @@ export default defineMessages({
         id: 'TR_FIRMWARE_CHECK_AUTHENTICITY_SUCCESS',
         defaultMessage: 'Firmware authentic',
     },
+    TR_DEVICE_AUTHENTICITY_SUCCESS: {
+        id: 'TR_DEVICE_AUTHENTICITY_SUCCESS',
+        defaultMessage: 'Device authentic',
+    },
+    TR_DEVICE_AUTHENTICITY_ERROR: {
+        id: 'TR_DEVICE_AUTHENTICITY_ERROR',
+        defaultMessage: 'Device is not authentic',
+    },
     TR_FEE_ROUNDING_WARNING: {
         id: 'TR_FEE_ROUNDING_WARNING',
         defaultMessage: 'Your Trezor may display a different rate caused by fee rounding.',
