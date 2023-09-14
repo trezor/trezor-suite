@@ -5,21 +5,28 @@ const parsedTransactions = {
         transaction: {
             meta: {
                 computeUnitsConsumed: 100,
+                preBalances: [200, 100],
+                postBalances: [180, 110],
+                fee: 10,
             },
             transaction: {
                 signatures: ['txid1'],
+                message: {
+                    accountKeys: [
+                        { pubkey: { toString: () => 'address1' } },
+                        { pubkey: { toString: () => 'address2' } },
+                    ],
+                },
             },
             version: 'legacy',
+            blockTime: 1631753600,
         },
     },
     withoutMeta: {
         transaction: {
             transaction: {
                 message: {
-                    accountKeys: [
-                        { pubkey: { toString: () => 'address1' } },
-                        { pubkey: { toString: () => 'address2' } },
-                    ],
+                    accountKeys: [{ pubkey: { toString: () => 'address1' } }],
                 },
             },
         },
@@ -322,6 +329,105 @@ export const fixtures = {
                         addresses: [effects.positive.address],
                     },
                 ],
+            },
+        },
+    ],
+    transformTransaction: [
+        {
+            description: 'should return null when tx is null',
+            input: {
+                transaction: null,
+                accountAddress: 'myAddress',
+            },
+            expectedOutput: null,
+        },
+        {
+            description: 'should return null when tx.meta is null',
+            input: {
+                transaction: {
+                    transaction: {
+                        signatures: ['txid1'],
+                    },
+                    blockTime: 1631753600,
+                },
+                accountAddress: 'myAddress',
+            },
+            expectedOutput: null,
+        },
+        {
+            description: 'should return null when tx.transaction is null',
+            input: {
+                transaction: {
+                    meta: {},
+                    blockTime: 1631753600,
+                },
+                accountAddress: 'myAddress',
+            },
+            expectedOutput: null,
+        },
+        {
+            description: 'should return null when tx.blockTime is null',
+            input: {
+                transaction: {
+                    meta: {},
+                    transaction: {
+                        signatures: ['txid2'],
+                    },
+                },
+                accountAddress: 'myAddress',
+            },
+            expectedOutput: null,
+        },
+        {
+            description: 'should return a valid Transaction object when all inputs are valid',
+            input: {
+                transaction: parsedTransactions.basic.transaction,
+                accountAddress: effects.negative.address,
+            },
+            expectedOutput: {
+                type: 'sent',
+                txid: 'txid1',
+                blockTime: 1631753600,
+                amount: '-20',
+                fee: '10',
+                targets: [
+                    {
+                        addresses: ['address2'],
+                        amount: '10',
+                        isAccountTarget: false,
+                        isAddress: true,
+                        n: 0,
+                    },
+                ],
+                tokens: [],
+                internalTransfers: [],
+                details: {
+                    size: 100,
+                    totalInput: '20',
+                    totalOutput: '10',
+                    vin: [
+                        {
+                            txid: 'txid1',
+                            version: 'legacy',
+                            isAddress: true,
+                            isAccountOwned: true,
+                            n: 0,
+                            value: effects.negative.amount.abs().toString(),
+                            addresses: [effects.negative.address],
+                        },
+                    ],
+                    vout: [
+                        {
+                            txid: 'txid1',
+                            version: 'legacy',
+                            isAddress: true,
+                            isAccountOwned: false,
+                            n: 0,
+                            value: effects.positive.amount.abs().toString(),
+                            addresses: [effects.positive.address],
+                        },
+                    ],
+                },
             },
         },
     ],
