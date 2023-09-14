@@ -49,7 +49,7 @@ export default {
             legacyResults: [
                 // https://github.com/trezor/trezor-firmware/commit/c3f6e8f19fd647c73b414322e287ba23cf8a0c7c
                 {
-                    rules: ['<2.6.2'],
+                    rules: ['<2.6.1'],
                     payload: {
                         signature:
                             'SIG_K1_JveDuew7oyKjgLmApra3NmKArx3QH6HVmatgkLYeUYWv7aGaoQPFyjBwAdcxuo2Skq9wRgsizos92h9iq9i5JbeHh7zNuo',
@@ -99,7 +99,7 @@ export default {
             legacyResults: [
                 // https://github.com/trezor/trezor-firmware/commit/c3f6e8f19fd647c73b414322e287ba23cf8a0c7c
                 {
-                    rules: ['<2.6.2'],
+                    rules: ['<2.6.1'],
                     payload: {
                         signature:
                             'SIG_K1_Juju8Wjzyn38nuvgS1KT3koKQLHxMMfqVHrp5jMjv4QLU2pUG6EbiJD7D1EHE6xP8DRuwFLVUNR38nTyUKC1Eiz33WocUE',
@@ -148,7 +148,7 @@ export default {
             legacyResults: [
                 // https://github.com/trezor/trezor-firmware/commit/c3f6e8f19fd647c73b414322e287ba23cf8a0c7c
                 {
-                    rules: ['<2.6.2'],
+                    rules: ['<2.6.1'],
                     payload: {
                         signature:
                             'SIG_K1_K3XXUzCUkT2HEdrJTz1CdDDKZbLMShmyEjknQozGhy4F21yUetr1nEe2vUgmGebk2nyYe49R5nkA155J5yFBBaLsTcSdBL',
@@ -196,7 +196,7 @@ export default {
             legacyResults: [
                 // https://github.com/trezor/trezor-firmware/commit/c3f6e8f19fd647c73b414322e287ba23cf8a0c7c
                 {
-                    rules: ['<2.6.2'],
+                    rules: ['<2.6.1'],
                     payload: {
                         signature:
                             'SIG_K1_K4gU5S9g7rS6MojaPwWppEBCBbPrJm1pyJtVR9mts1sBq5xyN7nJv3FGnrBR7ByjanboCtK4ogY35sNPFX1F5qoZW7BkF9',
@@ -244,7 +244,7 @@ export default {
             legacyResults: [
                 // https://github.com/trezor/trezor-firmware/commit/c3f6e8f19fd647c73b414322e287ba23cf8a0c7c
                 {
-                    rules: ['<2.6.2'],
+                    rules: ['<2.6.1'],
                     payload: {
                         signature:
                             'SIG_K1_K618wK9f27YxHoPG9hoUCsazZXzxumBj3V9MqcTUh9yCocvP1uFZQAmGmZLhsAtuC2TRR4gtqbeQj57FniYd5i4faQCb6t',
@@ -291,7 +291,7 @@ export default {
             legacyResults: [
                 // https://github.com/trezor/trezor-firmware/commit/c3f6e8f19fd647c73b414322e287ba23cf8a0c7c
                 {
-                    rules: ['<2.6.2'],
+                    rules: ['<2.6.1'],
                     payload: {
                         signature:
                             'SIG_K1_JusrCS7H5DR53qke7edoWvJuLiQS2VQ84CsN5NWmWYVa7wmJVjh3Hcg5hH42zF8KjAmmvHtaJZ3wkortTW9eds1eoiKsrj',
@@ -508,7 +508,7 @@ export default {
             legacyResults: [
                 // https://github.com/trezor/trezor-firmware/commit/c3f6e8f19fd647c73b414322e287ba23cf8a0c7c
                 {
-                    rules: ['<2.6.2'],
+                    rules: ['<2.6.1'],
                     payload: {
                         signature:
                             'SIG_K1_KjPTp8jCtgBKQWqsndhrH4pdCGiks76Q1qBt9e8MtexW6FQg3FzfVFKDU4SvyVDyFs3worn6RyW6WYavw76ACNqcqkCYjf',
@@ -557,7 +557,7 @@ export default {
             legacyResults: [
                 // https://github.com/trezor/trezor-firmware/commit/c3f6e8f19fd647c73b414322e287ba23cf8a0c7c
                 {
-                    rules: ['<2.6.2'],
+                    rules: ['<2.6.1'],
                     payload: {
                         signature:
                             'SIG_K1_Kgs3JdLNqTyGz7uyNiuYLK8sy5qhVQWozrBY7bJWKsjrWAxNyDQUKqHsHmTom5rGY21vYdXmCpi4msU6XeMgWvi4bsBxTx',
@@ -686,7 +686,7 @@ export default {
             legacyResults: [
                 // https://github.com/trezor/trezor-firmware/commit/c3f6e8f19fd647c73b414322e287ba23cf8a0c7c
                 {
-                    rules: ['<2.6.2'],
+                    rules: ['<2.6.1'],
                     payload: {
                         signature:
                             'SIG_K1_KhjdS1gKUHR4jKbN3YSdNbPbEqnUVM1Nt6ybdzEAwsUtfbCRJDwpQwPRuEau48CyvhYC5fKo5BiWMPQJbQPrg5ErHThieU',
@@ -731,7 +731,7 @@ export default {
             legacyResults: [
                 // https://github.com/trezor/trezor-firmware/commit/c3f6e8f19fd647c73b414322e287ba23cf8a0c7c
                 {
-                    rules: ['<2.6.2'],
+                    rules: ['<2.6.1'],
                     payload: {
                         signature:
                             'SIG_K1_KiG8c8t2SQkSfrEbD9BwJoYT133BPFLx3gu8sAzJadXyFk1EXKYAsgx4tkjt79G6ofuaQzJPAfDqy1FSpgLRbhbeFH9omd',
