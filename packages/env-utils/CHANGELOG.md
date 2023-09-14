@@ -1,3 +1,7 @@
+# 1.0.6
+
+-   chore(env-utils): build:lib (044490ef5)
+
 # 1.0.5
 
 -   chore: remove some unecessary build:lib (0a5d8267c)
