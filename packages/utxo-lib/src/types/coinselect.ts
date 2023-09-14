@@ -10,7 +10,7 @@ export interface CoinSelectOptions {
     baseFee?: number;
     floorBaseFee?: boolean;
     skipPermutation?: boolean;
-    feePolicy?: 'bitcoin' | 'doge';
+    feePolicy?: 'bitcoin' | 'doge' | 'zcash';
 }
 
 export interface CoinSelectInput {
