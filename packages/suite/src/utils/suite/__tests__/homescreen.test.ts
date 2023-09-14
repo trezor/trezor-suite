@@ -45,11 +45,11 @@ describe('homescreen', () => {
     describe('dataUrlToImage', () => {
         const originalCreateElement = document.createElement;
         beforeAll(() => {
-            document.createElement = (create =>
+            (document.createElement as any) = ((create: typeof originalCreateElement) =>
                 function () {
                     // @ts-expect-error
                     // eslint-disable-next-line prefer-rest-params
-                    const element: HTMLElement = create.apply(this, arguments);
+                    const element: HTMLElement = create.apply(this, arguments as any);
 
                     if (element.tagName === 'IMG') {
                         setTimeout(() => {
@@ -58,7 +58,7 @@ describe('homescreen', () => {
                         }, 100);
                     }
                     return element;
-                })(document.createElement);
+                })(originalCreateElement);
         });
 
         afterAll(() => {
