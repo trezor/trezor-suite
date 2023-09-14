@@ -31,18 +31,18 @@
         "chalk": "^4.1.2",
         "electron-localshortcut": "^3.2.1",
         "electron-store": "^8.1.0",
-        "electron-updater": "6.1.1",
-        "openpgp": "^5.9.0",
-        "systeminformation": "^5.18.3"
+        "electron-updater": "6.1.4",
+        "openpgp": "^5.10.1",
+        "systeminformation": "^5.21.4"
     },
     "devDependencies": {
-        "@electron/notarize": "1.2.4",
+        "@electron/notarize": "2.1.0",
         "@playwright/test": "^1.35.1",
         "@trezor/trezor-user-env-link": "workspace:*",
         "@types/electron-localshortcut": "^3.1.0",
         "cross-fetch": "^3.1.6",
         "electron": "26.2.1",
-        "esbuild": "^0.18.6",
+        "esbuild": "^0.19.3",
         "glob": "^10.2.7",
         "jest": "^26.6.3",
         "rimraf": "^5.0.1",
