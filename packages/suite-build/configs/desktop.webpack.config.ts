@@ -17,7 +17,7 @@ const baseDirUI = getPathForProject('desktop-ui');
 const baseDir = getPathForProject('desktop');
 
 const config: webpack.Configuration = {
-    target: 'browserslist:Chrome >= 111', // Electron 24 is running on chromium 112 (browserlist doesn't know 112 yet)
+    target: 'browserslist:Chrome >= 115', // Electron 26 is running on chromium 116 (browserlist doesn't know 116 yet)
     entry: [path.join(baseDirUI, 'src', 'index.tsx')],
     output: {
         path: path.join(baseDir, 'build'),
