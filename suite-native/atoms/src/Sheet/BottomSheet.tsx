@@ -4,7 +4,6 @@ import Animated from 'react-native-reanimated';
 import { ScrollView, PanGestureHandler } from 'react-native-gesture-handler';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { BlurredScreenOverlay } from '@suite-native/screen-overlay';
 
 import { Box } from '../Box';
 import { BottomSheetContainer } from './BottomSheetContainer';
@@ -49,6 +48,7 @@ export const BottomSheet = ({
     const insets = useSafeAreaInsets();
     const [isCloseScrollEnabled, setIsCloseScrollEnabled] = useState(true);
     const {
+        animatedSheetWithOverlayStyle,
         animatedSheetWrapperStyle,
         closeSheetAnimated,
         openSheetAnimated,
@@ -79,8 +79,9 @@ export const BottomSheet = ({
 
     return (
         <BottomSheetContainer isVisible={isVisible} onClose={handleCloseSheet}>
-            <BlurredScreenOverlay />
-            <Box style={applyStyle(sheetWithOverlayStyle)}>
+            <Animated.View
+                style={[animatedSheetWithOverlayStyle, applyStyle(sheetWithOverlayStyle)]}
+            >
                 <PanGestureHandler
                     enabled={isCloseScrollEnabled}
                     ref={panGestureRef.current}
@@ -115,7 +116,7 @@ export const BottomSheet = ({
                         </ScrollView>
                     </Animated.View>
                 </PanGestureHandler>
-            </Box>
+            </Animated.View>
         </BottomSheetContainer>
     );
 };
