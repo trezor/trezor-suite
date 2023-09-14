@@ -87,7 +87,7 @@
         "webpack": "^5.87.0",
         "css-loader": "^6.8.1",
         "html-webpack-plugin": "^5.5.3",
-        "@types/node": "18.16.18",
+        "@types/node": "18.17.15",
         "@sentry/types": "7.56.0"
     },
     "devDependencies": {
@@ -102,7 +102,7 @@
         "@babel/runtime": "^7.22.5",
         "@suite-common/wallet-types": "workspace:*",
         "@types/jest": "^26.0.24",
-        "@types/node": "18.16.18",
+        "@types/node": "18.17.15",
         "@types/prettier": "^2.7.3",
         "@types/semver": "^7.5.0",
         "@typescript-eslint/eslint-plugin": "^5.60.0",

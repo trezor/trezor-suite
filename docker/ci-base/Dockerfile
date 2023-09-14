@@ -97,7 +97,7 @@ ENV LC_ALL C.UTF-8
 ENV LANG C.UTF-8
 
 # Install and use correct version of node - should match witch Nix and .nvmrc
-ENV NODE_VERSION 18.14.0
+ENV NODE_VERSION 18.17.1
 
 # Out of the blue, we started to run into CI failures. All of them had one thing in common.
 # Some of our dependencies postinstall scripts tried to execute a binary in ./node_modules/.bin/
