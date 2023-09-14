@@ -1,6 +1,7 @@
 import { UI_EVENT } from './ui-request';
 import type { ConnectSettings, SystemInfo } from '../types';
 import type { MessageFactoryFn } from '../types/utils';
+import { LogMessage } from '../utils/debug';
 
 export const IFRAME = {
     // Message called from iframe.html inline script before "window.onload" event. This is first message from iframe to window.opener.
@@ -13,6 +14,8 @@ export const IFRAME = {
     ERROR: 'iframe-error',
     // Message from window.opener to iframe. Call method
     CALL: 'iframe-call',
+    // Message from third party window to iframe to add log to shared worker logger.
+    LOG: 'iframe-log',
 } as const;
 
 export interface IFrameError {
@@ -39,10 +42,16 @@ export interface IFrameInit {
     };
 }
 
+export interface IFrameLogRequest {
+    type: typeof IFRAME.LOG;
+    payload: LogMessage;
+}
+
 export type IFrameEvent =
     | { type: typeof IFRAME.BOOTSTRAP; payload?: typeof undefined }
     | IFrameLoaded
     | IFrameInit
+    | IFrameLogRequest
     | IFrameError;
 
 export type IFrameEventMessage = IFrameEvent & { event: typeof UI_EVENT };
