@@ -108,6 +108,36 @@ export const getTxType = (
     return 'unknown';
 };
 
+export function getDetails(
+    transaction: ParsedTransactionWithMeta,
+    effects: TransactionEffect[],
+    accountAddress: string,
+): Transaction['details'] {
+    const senders = effects.filter(({ amount }) => amount.isNegative());
+    const receivers = effects.filter(({ amount }) => amount.isPositive());
+
+    const getVin = (effect: TransactionEffect, i: number) => ({
+        txid: transaction.transaction.signatures[0].toString(),
+        version: transaction.version,
+        isAddress: true,
+        isAccountOwned: effect.address === accountAddress,
+        n: i,
+        value: effect.amount.abs().toString(),
+        addresses: [effect.address],
+    });
+    return {
+        size: transaction.meta?.computeUnitsConsumed || 0,
+        totalInput: senders
+            .reduce((acc, curr) => acc.plus(curr.amount.abs()), new BigNumber(0))
+            .toString(),
+        totalOutput: receivers
+            .reduce((acc, curr) => acc.plus(curr.amount.abs()), new BigNumber(0))
+            .toString(),
+        vin: senders.map((sender, i) => getVin(sender, i)),
+        vout: receivers.map((receiver, i) => getVin(receiver, i)),
+    };
+}
+
 export function getAmount(
     accountEffect: TransactionEffect | undefined,
     txType: Transaction['type'],
