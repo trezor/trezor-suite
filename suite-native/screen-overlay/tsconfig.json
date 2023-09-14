@@ -1,7 +1,0 @@
-{
-    "extends": "../../tsconfig.json",
-    "compilerOptions": { "outDir": "libDev" },
-    "references": [
-        { "path": "../../packages/styles" }
-    ]
-}
