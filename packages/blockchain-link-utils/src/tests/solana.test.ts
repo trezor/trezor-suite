@@ -91,6 +91,7 @@ describe('solana/utils', () => {
                 const result = transformTransaction(
                     input.transaction as ParsedTransactionWithMeta,
                     input.accountAddress,
+                    input.slotToBlockHeightMapping as Record<number, number>,
                 );
                 expect(result).toEqual(expectedOutput);
             });
