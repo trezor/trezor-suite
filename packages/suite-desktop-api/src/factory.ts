@@ -1,3 +1,4 @@
+import type { IpcRendererEvent } from 'electron';
 import { DesktopApi, RendererChannels } from './api';
 import { StrictIpcRenderer } from './ipc';
 import * as validation from './validation';
@@ -26,7 +27,9 @@ const omitElectronEvent = <
     if (validation.isValidChannel(channel)) on(channel, (_, ...args) => listener(...args)); // call listener without event
 };
 
-export const factory = <R extends StrictIpcRenderer<any>>(ipcRenderer?: R): DesktopApi => {
+export const factory = <R extends StrictIpcRenderer<any, IpcRendererEvent>>(
+    ipcRenderer?: R,
+): DesktopApi => {
     if (!ipcRenderer) return factory(ipcRendererFallback);
     return {
         available: ipcRenderer !== ipcRendererFallback,

@@ -1,7 +1,7 @@
 import { MainChannels, RendererChannels, InvokeChannels } from './api';
 import { SendMethod, ListenerMethod, InvokeMethod, HandleMethod, StrictChannel } from './methods';
 
-type StrictIpcModule<Module, Channel extends StrictChannel, Evt = Event> = Omit<
+type StrictIpcModule<Module, Channel extends StrictChannel, Evt> = Omit<
     Module,
     'on' | 'once' | 'removeListener' | 'removeAllListeners'
 > & {
@@ -13,7 +13,7 @@ type StrictIpcModule<Module, Channel extends StrictChannel, Evt = Event> = Omit<
 
 // Module = Omit<Electron.IpcMain, 'handle' | 'handleOnce' | 'removeHandler'>
 // Evt = Electron.IpcMainInvokeEvent
-export type StrictIpcMain<Module, Evt = Event> = StrictIpcModule<Module, MainChannels> & {
+export type StrictIpcMain<Module, Evt> = StrictIpcModule<Module, MainChannels, Evt> & {
     handle: HandleMethod<InvokeChannels, Evt>;
     handleOnce: HandleMethod<InvokeChannels, Evt>;
     removeHandler: HandleMethod<InvokeChannels, Evt>;
@@ -21,7 +21,7 @@ export type StrictIpcMain<Module, Evt = Event> = StrictIpcModule<Module, MainCha
 
 // Module = Omit<Electron.IpcRenderer, 'invoke' | 'send'>
 // Evt = Electron.Event
-export type StrictIpcRenderer<Module, Evt = Event> = StrictIpcModule<Module, RendererChannels> & {
+export type StrictIpcRenderer<Module, Evt> = StrictIpcModule<Module, RendererChannels, Evt> & {
     send: SendMethod<MainChannels, Evt>;
     invoke: InvokeMethod<InvokeChannels, Evt>;
 };

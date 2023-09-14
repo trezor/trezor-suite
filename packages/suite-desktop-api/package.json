@@ -18,6 +18,9 @@
         "test:unit": "jest --verbose -c jest.config.js",
         "type-check": "tsc --build tsconfig.json"
     },
+    "dependencies": {
+        "electron": "26.2.1"
+    },
     "devDependencies": {
         "jest": "^26.6.3",
         "rimraf": "^5.0.1",
