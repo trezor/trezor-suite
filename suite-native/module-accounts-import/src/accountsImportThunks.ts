@@ -35,7 +35,7 @@ const getAccountTypeFromDescriptor = (
 export const importAccountThunk = createThunk(
     `${actionPrefix}/importAccountThunk`,
     ({ accountInfo, accountLabel, coin }: ImportAssetThunkPayload, { dispatch, getState }) => {
-        const device = selectDeviceById(HIDDEN_DEVICE_ID)(getState());
+        const device = selectDeviceById(getState(), HIDDEN_DEVICE_ID);
         const deviceState = HIDDEN_DEVICE_STATE;
 
         if (!device) {
