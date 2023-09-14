@@ -66,7 +66,7 @@ build({
     entryPoints: ['app.ts', 'preload.ts', ...threads].map(f => path.join(source, f)),
     platform: 'node',
     bundle: true,
-    target: 'node18.14.0', // Electron 24
+    target: 'node18.16.1', // Electron 26
     external: electronExternalDependencies,
     tsconfig: path.join(source, 'tsconfig.json'),
     sourcemap: isDev,
