@@ -1,3 +1,7 @@
+# 9.1.3
+
+-   fix(connect): correct import of internal connect dependency (https://github.com/trezor/trezor-suite/issues/9389)
+
 # 9.1.2
 
 -   feat(connect): analytics method name and method param names (23df6d8)
