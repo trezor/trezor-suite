@@ -1,5 +1,3 @@
-import { PayloadAction } from '@reduxjs/toolkit';
-
 import { createDeferred } from '@trezor/utils';
 import { Discovery, PartialDiscovery } from '@suite-common/wallet-types';
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
@@ -38,59 +36,38 @@ export const prepareDiscoveryReducer = createReducerWithExtraDeps(
     initialState,
     (builder, extra) => {
         builder
-            .addCase(
-                discoveryActions.createDiscovery,
-                (state, { payload }: PayloadAction<Discovery>) => {
-                    const index = state.findIndex(d => d.deviceState === payload.deviceState);
-                    if (index < 0) {
-                        state.push(payload);
-                    }
-                },
-            )
-            .addCase(
-                discoveryActions.startDiscovery,
-                (state, { payload }: PayloadAction<Discovery>) => {
-                    const index = state.findIndex(f => f.deviceState === payload.deviceState);
-                    if (index >= 0) {
-                        state[index] = {
-                            ...state[index],
-                            ...payload,
-                            running: createDeferred(),
-                        };
-                    }
-                },
-            )
-            .addCase(
-                discoveryActions.removeDiscovery,
-                (state, { payload }: PayloadAction<string>) => {
-                    const index = state.findIndex(f => f.deviceState === payload);
-                    state.splice(index, 1);
-                },
-            )
-            .addCase(
-                discoveryActions.updateDiscovery,
-                (state, { payload }: PayloadAction<PartialDiscovery>) => {
-                    update(state, payload);
-                },
-            )
-            .addCase(
-                discoveryActions.interruptDiscovery,
-                (state, { payload }: PayloadAction<PartialDiscovery>) => {
-                    update(state, payload);
-                },
-            )
-            .addCase(
-                discoveryActions.completeDiscovery,
-                (state, { payload }: PayloadAction<PartialDiscovery>) => {
-                    update(state, payload, true);
-                },
-            )
-            .addCase(
-                discoveryActions.stopDiscovery,
-                (state, { payload }: PayloadAction<PartialDiscovery>) => {
-                    update(state, payload, true);
-                },
-            )
+            .addCase(discoveryActions.createDiscovery, (state, { payload }) => {
+                const index = state.findIndex(d => d.deviceState === payload.deviceState);
+                if (index < 0) {
+                    state.push(payload);
+                }
+            })
+            .addCase(discoveryActions.startDiscovery, (state, { payload }) => {
+                const index = state.findIndex(f => f.deviceState === payload.deviceState);
+                if (index >= 0) {
+                    state[index] = {
+                        ...state[index],
+                        ...payload,
+                        running: createDeferred(),
+                    };
+                }
+            })
+            .addCase(discoveryActions.removeDiscovery, (state, { payload }) => {
+                const index = state.findIndex(f => f.deviceState === payload);
+                state.splice(index, 1);
+            })
+            .addCase(discoveryActions.updateDiscovery, (state, { payload }) => {
+                update(state, payload);
+            })
+            .addCase(discoveryActions.interruptDiscovery, (state, { payload }) => {
+                update(state, payload);
+            })
+            .addCase(discoveryActions.completeDiscovery, (state, { payload }) => {
+                update(state, payload, true);
+            })
+            .addCase(discoveryActions.stopDiscovery, (state, { payload }) => {
+                update(state, payload, true);
+            })
             .addMatcher(
                 action => action.type === extra.actionTypes.storageLoad,
                 extra.reducers.storageLoadDiscovery,

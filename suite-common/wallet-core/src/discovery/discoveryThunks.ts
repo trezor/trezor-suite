@@ -364,13 +364,12 @@ export const startDiscoveryThunk = createThunk(
                 await dispatch(initMetadata(false));
             }
 
-            dispatch({
-                type: startDiscovery.type,
-                payload: {
+            dispatch(
+                startDiscovery({
                     ...discovery,
                     status: DiscoveryStatus.RUNNING,
-                },
-            });
+                }),
+            );
         }
 
         let { availableCardanoDerivations } = discovery;

@@ -4,10 +4,12 @@ import { enabledNetworks } from '@suite-native/config';
 import { selectFiatCurrencyCode, setFiatCurrency } from '@suite-native/module-settings';
 import { PROTO } from '@trezor/connect';
 import { mergeDeepObject } from '@trezor/utils';
+import { selectDevice } from '@suite-common/wallet-core';
 
 export const extraDependencies: ExtraDependencies = mergeDeepObject(extraDependenciesMock, {
     selectors: {
         selectEnabledNetworks: () => enabledNetworks,
+        selectDevice,
         selectBitcoinAmountUnit: () => PROTO.AmountUnit.BITCOIN,
         selectLocalCurrency: selectFiatCurrencyCode,
     } as Partial<ExtraDependencies['selectors']>,

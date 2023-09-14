@@ -139,7 +139,6 @@ export type NotificationEventPayload = (
     | {
           // only temporary, this must conform to deviceActions.authDevice.type (not imported due to cyclic dependency)
           type: '@suite/device/authDevice';
-          device: TrezorDevice;
       }
     | ReceivedTransactionNotification
     | {

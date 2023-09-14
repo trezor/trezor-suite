@@ -104,13 +104,7 @@ const eventsMiddleware =
         }
 
         if (deviceActions.authDevice.match(action)) {
-            api.dispatch(
-                notificationsActions.addEvent({
-                    type: action.type,
-                    seen: true,
-                    device: action.payload.device,
-                }),
-            );
+            api.dispatch(notificationsActions.addEvent({ type: action.type, seen: true }));
         }
 
         return action;
