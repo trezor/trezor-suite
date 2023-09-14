@@ -63,6 +63,23 @@ describe('coinselectUtils', () => {
         ).toEqual(5000);
     });
 
+    it('getZcashFee', () => {
+        const IN = {
+            type: 'p2pkh',
+            i: 0,
+            value: '0',
+            confirmations: 0,
+            script: { length: 108 },
+        } as const;
+        const OUT = { script: { length: 25 } };
+
+        expect(getFee([], [], 10, { feePolicy: 'zcash' })).toBe(10000);
+        expect(getFee([IN], [OUT], 10, { feePolicy: 'zcash' })).toBe(10000);
+        expect(getFee([IN, IN], [OUT], 10, { feePolicy: 'zcash' })).toBe(10000);
+        expect(getFee([IN], [OUT, OUT, OUT], 10, { feePolicy: 'zcash' })).toBe(15000);
+        expect(getFee([IN], [OUT], 60, { feePolicy: 'zcash' })).toBe(11520); // fee per byte is higher
+    });
+
     it('getDustAmount', () => {
         // NOTE: p2wsh case in intentionally not tested as INPUT_SCRIPT_LENGTH.p2wsh is not quite accurate and waits for the implementation of multisig
 
