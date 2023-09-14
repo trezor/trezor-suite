@@ -1,14 +1,15 @@
 import { createThunk } from '@suite-common/redux-utils';
-import { accountsActions, selectAccountsByNetworkAndDevice } from '@suite-common/wallet-core';
-import { AccountInfo } from '@trezor/connect';
-import { networks, NetworkSymbol, AccountType } from '@suite-common/wallet-config';
 import {
-    createDevice,
+    accountsActions,
+    deviceActions,
     hiddenDevice,
     HIDDEN_DEVICE_ID,
     HIDDEN_DEVICE_STATE,
+    selectAccountsByNetworkAndDevice,
     selectDeviceById,
-} from '@suite-native/module-devices';
+} from '@suite-common/wallet-core';
+import { AccountInfo } from '@trezor/connect';
+import { networks, NetworkSymbol, AccountType } from '@suite-common/wallet-config';
 import { getXpubOrDescriptorInfo } from '@trezor/utxo-lib';
 
 import { paymentTypeToAccountType } from './constants';
@@ -38,7 +39,7 @@ export const importAccountThunk = createThunk(
         const deviceState = HIDDEN_DEVICE_STATE;
 
         if (!device) {
-            dispatch(createDevice(hiddenDevice));
+            dispatch(deviceActions.createDeviceInstance(hiddenDevice));
         }
 
         const deviceNetworkAccounts = selectAccountsByNetworkAndDevice(

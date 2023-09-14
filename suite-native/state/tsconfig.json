@@ -26,7 +26,6 @@
         { "path": "../graph" },
         { "path": "../logger" },
         { "path": "../message-system" },
-        { "path": "../module-devices" },
         { "path": "../module-settings" },
         { "path": "../storage" },
         { "path": "../toasts" },

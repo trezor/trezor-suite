@@ -34,7 +34,6 @@
         "@suite-native/fiat-rates": "workspace:*",
         "@suite-native/formatters": "workspace:*",
         "@suite-native/forms": "workspace:*",
-        "@suite-native/module-devices": "workspace:*",
         "@suite-native/module-settings": "workspace:*",
         "@suite-native/navigation": "workspace:*",
         "@suite-native/qr-code": "workspace:*",
