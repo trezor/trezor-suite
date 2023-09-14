@@ -156,6 +156,7 @@ export function sumOrNaN(range: { value?: string }[], forgiving = false) {
 
 export function getFeePolicy(network?: Network) {
     if (isNetworkType('doge', network)) return 'doge';
+    if (isNetworkType('zcash', network)) return 'zcash';
     return 'bitcoin';
 }
 
@@ -192,6 +193,33 @@ function getDogeFee(
     return fee + dustOutputsCount * dustThreshold;
 }
 
+const MARGINAL_FEE_ZAT_PER_ACTION = 5000;
+const GRACE_ACTIONS = 2;
+const P2PKH_STANDARD_INPUT_SIZE = 150;
+const P2PKH_STANDARD_OUTPUT_SIZE = 34;
+
+// ZCASH fee policy https://github.com/zcash/zips/blob/c6086941577b711ada286b7c82466a92105ad066/zip-0317.rst
+// 5000 zat per every input or output (whichever there's more of, but at least 2), Orchard/Sapling currently ignored
+function getZcashFee(
+    inputs: CoinSelectInput[],
+    outputs: CoinSelectOutput[],
+    feeRate: number,
+    options: Partial<CoinSelectOptions>,
+) {
+    const fee = getBitcoinFee(inputs, outputs, feeRate, options);
+
+    const txInTotalBytes = inputs.reduce((sum, i) => sum + inputBytes(i), 0);
+    const txOutTotalBytes = outputs.reduce((sum, o) => sum + outputBytes(o), 0);
+    const actions = Math.max(
+        GRACE_ACTIONS,
+        Math.ceil(txInTotalBytes / P2PKH_STANDARD_INPUT_SIZE),
+        Math.ceil(txOutTotalBytes / P2PKH_STANDARD_OUTPUT_SIZE),
+    );
+
+    // Use the greater from standard fee and zip-317 calculated fee
+    return Math.max(actions * MARGINAL_FEE_ZAT_PER_ACTION, fee);
+}
+
 export function getFee(
     inputs: CoinSelectInput[],
     outputs: CoinSelectOutput[],
@@ -201,6 +229,8 @@ export function getFee(
     switch (feePolicy) {
         case 'doge':
             return getDogeFee(inputs, outputs, feeRate, options);
+        case 'zcash':
+            return getZcashFee(inputs, outputs, feeRate, options);
         default:
             return getBitcoinFee(inputs, outputs, feeRate, options);
     }
