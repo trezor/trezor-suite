@@ -37,6 +37,11 @@ export const config = {
             label: 'MetaMask',
             icon: '',
         },
+        {
+            origin: 'nkbihfbeogaeaoehlefnkodbefgpgknn',
+            label: 'MetaMask',
+            icon: '',
+        },
         { origin: 'file://', label: ' ', icon: '' },
     ],
     onionDomains: {
