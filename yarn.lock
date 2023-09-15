@@ -7911,6 +7911,17 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite-native/device@workspace:*, @suite-native/device@workspace:suite-native/device":
+  version: 0.0.0-use.local
+  resolution: "@suite-native/device@workspace:suite-native/device"
+  dependencies:
+    "@reduxjs/toolkit": 1.9.5
+    "@suite-common/redux-utils": "workspace:*"
+    "@suite-common/wallet-core": "workspace:*"
+    "@trezor/connect": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
 "@suite-native/ethereum-tokens@workspace:*, @suite-native/ethereum-tokens@workspace:suite-native/ethereum-tokens":
   version: 0.0.0-use.local
   resolution: "@suite-native/ethereum-tokens@workspace:suite-native/ethereum-tokens"
@@ -8436,6 +8447,7 @@ __metadata:
     "@suite-common/toast-notifications": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-native/config": "workspace:*"
+    "@suite-native/device": "workspace:*"
     "@suite-native/fiat-rates": "workspace:*"
     "@suite-native/graph": "workspace:*"
     "@suite-native/logger": "workspace:*"
