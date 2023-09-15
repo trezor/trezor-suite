@@ -3,22 +3,22 @@ import { AnyAction, isAnyOf } from '@reduxjs/toolkit';
 
 import {
     authConfirm,
+    deviceActions,
     forgetDisconnectedDevices,
     handleDeviceConnect,
     handleDeviceDisconnect,
     observeSelectedDevice,
-    deviceActions,
     selectDeviceThunk,
 } from '@suite-common/wallet-core';
-import { DEVICE } from '@trezor/connect';
 import { notificationsActions } from '@suite-common/toast-notifications';
+import { DEVICE } from '@trezor/connect';
 
 import { SUITE, ROUTER, METADATA } from 'src/actions/suite/constants';
 import { AppState, Action, Dispatch } from 'src/types/suite';
 import { handleProtocolRequest } from 'src/actions/suite/protocolActions';
 import { appChanged } from 'src/actions/suite/suiteActions';
 
-export const isActionDeviceRelated = (action: AnyAction): boolean => {
+const isActionDeviceRelated = (action: AnyAction): boolean => {
     if (
         isAnyOf(
             deviceActions.authDevice,
