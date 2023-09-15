@@ -163,17 +163,6 @@ export class TransactionComposer {
         const changeId = getHDPath(changeAddress.path).slice(-1)[0]; // get address id from the path
         // const inputAmounts = coinInfo.segwit || coinInfo.forkid !== null || coinInfo.network.consensusBranchId !== null;
 
-        const enhancement = {
-            baseFee,
-            floorBaseFee: false,
-            dustOutputFee: 0,
-        };
-
-        // DOGE changed fee policy and requires:
-        if (coinInfo.shortcut === 'DOGE') {
-            enhancement.dustOutputFee = 1000000; // 0.01 DOGE for every output lower than dust (dust = 0.01 DOGE)
-        }
-
         return composeTx({
             txType: account.type,
             utxos: this.utxos,
@@ -187,7 +176,7 @@ export class TransactionComposer {
             changeId,
             changeAddress: changeAddress.address,
             dustThreshold: coinInfo.dustLimit,
-            ...enhancement,
+            baseFee,
         });
     }
 
