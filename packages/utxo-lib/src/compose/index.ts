@@ -19,7 +19,6 @@ export function composeTx({
     dustThreshold,
     baseFee,
     floorBaseFee,
-    dustOutputFee,
     skipPermutation,
 }: ComposeRequest): ComposeResult {
     if (outputs.length === 0) {
@@ -71,7 +70,6 @@ export function composeTx({
             network,
             baseFee,
             floorBaseFee,
-            dustOutputFee,
             skipPermutation,
         );
     } catch (e) {

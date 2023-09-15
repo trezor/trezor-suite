@@ -9,8 +9,8 @@ export interface CoinSelectOptions {
     coinbase?: number;
     baseFee?: number;
     floorBaseFee?: boolean;
-    dustOutputFee?: number;
     skipPermutation?: boolean;
+    feePolicy?: 'bitcoin' | 'doge';
 }
 
 export interface CoinSelectInput {
