@@ -12,10 +12,11 @@ node --version
 mkdir connect-implementation
 cd connect-implementation
 npm init -y
-npm install @trezor/connect
-npm install @trezor/connect-web
-
-echo "import TrezorConnect from '@trezor/connect'" > ./index.js
-node index.js
+npm install @trezor/connect --save
+npm install @trezor/connect-web --save
 
 cat package.json
+
+echo "const TrezorConnect = require('@trezor/connect')" > ./index.js
+node index.js
+
