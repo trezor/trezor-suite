@@ -1,3 +1,5 @@
+/* eslint-disable no-underscore-dangle */
+
 import { AbstractMetadataProvider, OAuthServerEnvironment, Tokens } from 'src/types/suite/metadata';
 import GoogleClient from 'src/services/google';
 
@@ -38,7 +40,7 @@ class GoogleProvider extends AbstractMetadataProvider {
         }
     }
 
-    async getFileContent(file: string) {
+    private async _getFileContent(file: string) {
         try {
             const id = await GoogleClient.getIdByName(file);
             if (!id) {
@@ -66,7 +68,11 @@ class GoogleProvider extends AbstractMetadataProvider {
         }
     }
 
-    async setFileContent(file: string, content: Buffer) {
+    getFileContent(file: string) {
+        return this.scheduleApiRequest(() => this._getFileContent(file));
+    }
+
+    private async _setFileContent(file: string, content: Buffer) {
         try {
             // search for file by name with forceReload=true parameter to make sure that we do not save
             // two files with the same name but different ids
@@ -98,6 +104,10 @@ class GoogleProvider extends AbstractMetadataProvider {
         } catch (err) {
             return this.handleProviderError(err);
         }
+    }
+
+    setFileContent(file: string, content: Buffer) {
+        return this.scheduleApiRequest(() => this._setFileContent(file, content));
     }
 
     async getFilesList() {

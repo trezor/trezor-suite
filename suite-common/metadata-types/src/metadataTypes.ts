@@ -147,6 +147,32 @@ export abstract class AbstractMetadataProvider {
             error: reason,
         } as const;
     }
+
+    scheduleApiRequest<T extends () => ReturnType<R>, R extends (...args: any) => Result<any>>(
+        fn: T,
+        options: { retries: number; delay: number } = { retries: 3, delay: 1000 },
+    ) {
+        let retried = 0;
+        return new Promise<Awaited<ReturnType<R>>>(resolve => {
+            const { retries, delay } = options;
+            const run = async () => {
+                const res = await fn();
+
+                if (res.success) {
+                    return resolve(res);
+                }
+
+                if (retries > 0 && retried < retries) {
+                    retried++;
+                    setTimeout(run, delay);
+                } else {
+                    // reached retries limit, return error
+                    resolve(res);
+                }
+            };
+            run();
+        });
+    }
 }
 
 export interface AccountLabels {

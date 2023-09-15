@@ -1,3 +1,5 @@
+/* eslint-disable no-underscore-dangle */
+
 import { Dropbox, DropboxAuth } from 'dropbox';
 import type { users } from 'dropbox';
 import { AbstractMetadataProvider } from 'src/types/suite/metadata';
@@ -105,7 +107,7 @@ class DropboxProvider extends AbstractMetadataProvider {
         }
     }
 
-    async getFileContent(file: string) {
+    private async _getFileContent(file: string) {
         try {
             const { result } = await this.client.filesSearchV2({
                 query: file,
@@ -156,7 +158,11 @@ class DropboxProvider extends AbstractMetadataProvider {
         }
     }
 
-    async setFileContent(file: string, content: Buffer) {
+    getFileContent(file: string) {
+        return this.scheduleApiRequest(() => this._getFileContent(file));
+    }
+
+    private async _setFileContent(file: string, content: Buffer) {
         try {
             const blob = new Blob([content], { type: 'text/plain;charset=UTF-8' });
             await this.client.filesUpload({
@@ -170,6 +176,10 @@ class DropboxProvider extends AbstractMetadataProvider {
         } catch (err) {
             return this.handleProviderError(err);
         }
+    }
+
+    setFileContent(file: string, content: Buffer) {
+        return this.scheduleApiRequest(() => this._setFileContent(file, content));
     }
 
     async getFilesList() {
