@@ -38,9 +38,10 @@ export const selectIsTickerLoading = (
     state: FiatRatesRootState,
     ticker: TickerId,
     fiatCurrency: FiatCurrencyCode,
+    rateType: RateType = 'current',
 ) => {
     const fiatRateKey = getFiatRateKeyFromTicker(ticker, fiatCurrency);
-    return selectIsFiatRateLoading(state, fiatRateKey);
+    return selectIsFiatRateLoading(state, fiatRateKey, rateType);
 };
 
 export const selectShouldUpdateFiatRate = (
@@ -97,7 +98,7 @@ export const selectTickersToBeUpdated = memoizeWithArgs(
             const fiatRateKey = getFiatRateKeyFromTicker(ticker, fiatCurrency);
             return (
                 selectShouldUpdateFiatRate(state, fiatRateKey, rateType) &&
-                !selectIsTickerLoading(state, ticker, fiatCurrency)
+                !selectIsTickerLoading(state, ticker, fiatCurrency, rateType)
             );
         });
     },
