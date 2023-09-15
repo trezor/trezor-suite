@@ -15,6 +15,7 @@ import { TransactionDetailScreen } from '@suite-native/transactions';
 import { OnboardingStackNavigator } from '@suite-native/module-onboarding';
 import { selectUserHasAccounts } from '@suite-common/wallet-core';
 import { ReceiveModal } from '@suite-native/receive';
+import { ConnectDeviceStackNavigator } from '@suite-native/module-connect-device';
 
 import { AppTabNavigator } from './AppTabNavigator';
 
@@ -47,6 +48,10 @@ export const RootStackNavigator = () => {
             <RootStack.Screen
                 name={RootStackRoutes.AccountsImport}
                 component={AccountsImportStackNavigator}
+            />
+            <RootStack.Screen
+                name={RootStackRoutes.ConnectDevice}
+                component={ConnectDeviceStackNavigator}
             />
             <RootStack.Screen
                 options={{ title: RootStackRoutes.AccountSettings }}

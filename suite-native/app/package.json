@@ -56,6 +56,7 @@
         "@suite-native/message-system": "workspace:*",
         "@suite-native/module-accounts": "workspace:*",
         "@suite-native/module-accounts-import": "workspace:*",
+        "@suite-native/module-connect-device": "workspace:*",
         "@suite-native/module-dev-utils": "workspace:*",
         "@suite-native/module-home": "workspace:*",
         "@suite-native/module-onboarding": "workspace:*",

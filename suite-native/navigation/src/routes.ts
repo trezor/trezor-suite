@@ -2,6 +2,7 @@ export enum RootStackRoutes {
     AppTabs = 'AppTabs',
     Onboarding = 'Onboarding',
     AccountsImport = 'AccountsImport',
+    ConnectDevice = 'ConnectDevice',
     AccountDetail = 'AccountDetail',
     DevUtilsStack = 'DevUtilsStack',
     AccountSettings = 'AccountSettings',
@@ -30,6 +31,10 @@ export enum AccountsImportStackRoutes {
     XpubScanModal = 'XpubScanModal',
     AccountImportLoading = 'AccountImportLoading',
     AccountImportSummary = 'AccountImportSummary',
+}
+
+export enum ConnectDeviceStackRoutes {
+    ConnectDevice = 'ConnectDevice',
 }
 
 export enum DevUtilsStackRoutes {

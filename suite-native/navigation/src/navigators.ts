@@ -14,6 +14,7 @@ import {
     AccountsStackRoutes,
     DevUtilsStackRoutes,
     OnboardingStackRoutes,
+    ConnectDeviceStackRoutes,
 } from './routes';
 
 type ReceiveAccountsParams = {
@@ -85,9 +86,14 @@ export type AccountsImportStackParamList = {
     };
 };
 
+export type ConnectDeviceStackParamList = {
+    [ConnectDeviceStackRoutes.ConnectDevice]: undefined;
+};
+
 export type RootStackParamList = {
     [RootStackRoutes.AppTabs]: NavigatorScreenParams<AppTabsParamList>;
     [RootStackRoutes.Onboarding]: NavigatorScreenParams<AppTabsParamList>;
+    [RootStackRoutes.ConnectDevice]: NavigatorScreenParams<ConnectDeviceStackParamList>;
     [RootStackRoutes.AccountsImport]: NavigatorScreenParams<AccountsImportStackParamList>;
     [RootStackRoutes.ReceiveModal]: ReceiveAccountsParams;
     [RootStackRoutes.AccountSettings]: { accountKey: AccountKey };

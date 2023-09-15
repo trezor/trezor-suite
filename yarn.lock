@@ -8182,6 +8182,16 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite-native/module-connect-device@workspace:*, @suite-native/module-connect-device@workspace:suite-native/module-connect-device":
+  version: 0.0.0-use.local
+  resolution: "@suite-native/module-connect-device@workspace:suite-native/module-connect-device"
+  dependencies:
+    "@react-navigation/native-stack": ^6.9.11
+    "@suite-native/atoms": "workspace:*"
+    "@suite-native/navigation": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
 "@suite-native/module-dev-utils@workspace:*, @suite-native/module-dev-utils@workspace:suite-native/module-dev-utils":
   version: 0.0.0-use.local
   resolution: "@suite-native/module-dev-utils@workspace:suite-native/module-dev-utils"
@@ -9598,6 +9608,7 @@ __metadata:
     "@suite-native/message-system": "workspace:*"
     "@suite-native/module-accounts": "workspace:*"
     "@suite-native/module-accounts-import": "workspace:*"
+    "@suite-native/module-connect-device": "workspace:*"
     "@suite-native/module-dev-utils": "workspace:*"
     "@suite-native/module-home": "workspace:*"
     "@suite-native/module-onboarding": "workspace:*"
