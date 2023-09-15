@@ -12,7 +12,7 @@ import {
 } from '@suite-common/wallet-utils';
 import { useDidUpdate } from '@trezor/react-utils';
 import { isChanged } from '@suite-common/suite-utils';
-import { selectDevice } from '@suite-common/wallet-core';
+import { selectDevice, selectCoinsLegacy } from '@suite-common/wallet-core';
 
 import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
 import invityAPI from 'src/services/suite/invityAPI';
@@ -44,7 +44,6 @@ import { useCoinmarketNavigation } from 'src/hooks/wallet/useCoinmarketNavigatio
 import type { AppState } from 'src/types/suite';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { AmountLimits } from 'src/types/wallet/coinmarketCommonTypes';
-import { selectCoinsLegacy } from '@suite-common/wallet-core';
 
 import { useCoinmarketSellFormDefaultValues } from './useCoinmarketSellFormDefaultValues';
 import { useCompose } from './form/useCompose';
