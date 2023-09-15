@@ -16,6 +16,7 @@ import { clearStorage } from '@suite-native/storage';
 import { BuildInfo } from '../components/BuildInfo';
 import { RenderingUtils } from '../components/RenderingUtils';
 import { CopyLogsButton } from '../components/CopyLogsButton';
+import { FeatureFlags } from '../components/FeatureFlags';
 
 export const DevUtilsScreen = ({
     navigation,
@@ -30,6 +31,7 @@ export const DevUtilsScreen = ({
                     </Button>
                 )}
                 {!isProduction() && <RenderingUtils />}
+                {isDebugEnv() && <FeatureFlags />}
                 <Button
                     onPress={() => {
                         const errorMessage = `Sentry test error - ${Date.now()}`;

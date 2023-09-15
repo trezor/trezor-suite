@@ -9,6 +9,7 @@
         },
         { "path": "../atoms" },
         { "path": "../config" },
+        { "path": "../feature-flags" },
         { "path": "../helpers" },
         { "path": "../module-settings" },
         { "path": "../navigation" },

@@ -13,7 +13,7 @@ export const ConnectDeviceStack = createNativeStackNavigator<ConnectDeviceStackP
 export const ConnectDeviceStackNavigator = () => (
     <ConnectDeviceStack.Navigator screenOptions={stackNavigationOptionsConfig}>
         <ConnectDeviceStack.Screen
-            name={ConnectDeviceStackRoutes.ConnectDevice}
+            name={ConnectDeviceStackRoutes.ConnectDeviceCrossroads}
             component={ConnectDeviceScreen}
         />
     </ConnectDeviceStack.Navigator>

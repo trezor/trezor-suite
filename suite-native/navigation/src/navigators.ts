@@ -87,7 +87,7 @@ export type AccountsImportStackParamList = {
 };
 
 export type ConnectDeviceStackParamList = {
-    [ConnectDeviceStackRoutes.ConnectDevice]: undefined;
+    [ConnectDeviceStackRoutes.ConnectDeviceCrossroads]: undefined;
 };
 
 export type RootStackParamList = {

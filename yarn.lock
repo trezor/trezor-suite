@@ -7940,6 +7940,15 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite-native/feature-flags@workspace:*, @suite-native/feature-flags@workspace:suite-native/feature-flags":
+  version: 0.0.0-use.local
+  resolution: "@suite-native/feature-flags@workspace:suite-native/feature-flags"
+  dependencies:
+    "@suite-native/storage": "workspace:*"
+    jotai: 1.9.1
+  languageName: unknown
+  linkType: soft
+
 "@suite-native/fiat-rates@workspace:*, @suite-native/fiat-rates@workspace:suite-native/fiat-rates":
   version: 0.0.0-use.local
   resolution: "@suite-native/fiat-rates@workspace:suite-native/fiat-rates"
@@ -8204,6 +8213,7 @@ __metadata:
     "@suite-common/wallet-types": "workspace:*"
     "@suite-native/atoms": "workspace:*"
     "@suite-native/config": "workspace:*"
+    "@suite-native/feature-flags": "workspace:*"
     "@suite-native/helpers": "workspace:*"
     "@suite-native/module-settings": "workspace:*"
     "@suite-native/navigation": "workspace:*"
@@ -8256,6 +8266,7 @@ __metadata:
     "@suite-common/icons": "workspace:*"
     "@suite-native/analytics": "workspace:*"
     "@suite-native/atoms": "workspace:*"
+    "@suite-native/feature-flags": "workspace:*"
     "@suite-native/link": "workspace:*"
     "@suite-native/module-settings": "workspace:*"
     "@suite-native/navigation": "workspace:*"
