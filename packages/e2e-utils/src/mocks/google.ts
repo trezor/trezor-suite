@@ -36,7 +36,7 @@ class File {
  */
 export class GoogleMock {
     files: Record<string, any> = {};
-    nextResponse: null | Record<string, any> = null;
+    nextResponse: Record<string, any>[] = [];
     // store requests for assertions in tests
     requests: string[] = [];
     app?: Express;
@@ -52,13 +52,13 @@ export class GoogleMock {
         app.use((req, res, next) => {
             this.requests.push(req.url);
 
-            if (this.nextResponse) {
-                console.log('[mockGoogleDrive]', this.nextResponse);
+            if (this.nextResponse.length) {
+                const response = this.nextResponse.shift();
+                console.log('[mockGoogleDrive]', response);
                 //    @ts-expect-error
-                res.writeHeader(this.nextResponse.status, this.nextResponse.headers);
-                res.write(JSON.stringify(this.nextResponse.body));
+                res.writeHeader(response.status, response.headers);
+                res.write(JSON.stringify(response!.body));
                 res.end();
-                this.nextResponse = null;
                 return;
             }
             next();
@@ -197,7 +197,7 @@ export class GoogleMock {
             kind: 'drive#user',
             displayName: 'Kryptonit',
         };
-        this.nextResponse = null;
+        this.nextResponse = [];
         this.requests = [];
     }
 

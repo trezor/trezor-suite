@@ -9,7 +9,7 @@ const port = 30002;
  */
 export class DropboxMock {
     files: Record<string, any> = {};
-    nextResponse: null | Record<string, any> = null;
+    nextResponse: Record<string, any>[] = [];
     // store requests for assertions in tests
     requests: string[] = [];
     app?: Express;
@@ -24,13 +24,13 @@ export class DropboxMock {
         app.use((req, res, next) => {
             this.requests.push(req.url);
 
-            if (this.nextResponse) {
-                console.log('[dropboxMock]', this.nextResponse);
+            if (this.nextResponse.length) {
+                const response = this.nextResponse.shift();
+                console.log('[dropboxMock]', response);
                 // @ts-expect-error
-                res.writeHeader(this.nextResponse.status, this.nextResponse.headers);
-                res.write(JSON.stringify(this.nextResponse.body));
+                res.writeHeader(response.status, response.headers);
+                res.write(JSON.stringify(response!.body));
                 res.end();
-                this.nextResponse = null;
                 return;
             }
             next();
@@ -208,7 +208,7 @@ export class DropboxMock {
     reset() {
         console.log('[mockDropbox]: reset');
         this.files = {};
-        this.nextResponse = null;
+        this.nextResponse = [];
         this.requests = [];
     }
 }
