@@ -1,28 +1,43 @@
 import { createAction } from '@reduxjs/toolkit';
 
-import { PartialDiscovery } from '@suite-common/wallet-types';
+import { Discovery, PartialDiscovery } from '@suite-common/wallet-types';
 
 export const DISCOVERY_MODULE_PREFIX = '@common/wallet-core/discovery';
 
-export const createDiscovery = createAction(`${DISCOVERY_MODULE_PREFIX}/create`, payload => ({
-    payload,
-}));
+export const createDiscovery = createAction(
+    `${DISCOVERY_MODULE_PREFIX}/create`,
+    (payload: Discovery) => ({
+        payload,
+    }),
+);
 
-export const startDiscovery = createAction(`${DISCOVERY_MODULE_PREFIX}/start`, payload => ({
-    payload,
-}));
+export const startDiscovery = createAction(
+    `${DISCOVERY_MODULE_PREFIX}/start`,
+    (payload: Discovery) => ({
+        payload,
+    }),
+);
 
-export const interruptDiscovery = createAction(`${DISCOVERY_MODULE_PREFIX}/interrupt`, payload => ({
-    payload,
-}));
+export const interruptDiscovery = createAction(
+    `${DISCOVERY_MODULE_PREFIX}/interrupt`,
+    (payload: PartialDiscovery) => ({
+        payload,
+    }),
+);
 
-export const completeDiscovery = createAction(`${DISCOVERY_MODULE_PREFIX}/complete`, payload => ({
-    payload,
-}));
+export const completeDiscovery = createAction(
+    `${DISCOVERY_MODULE_PREFIX}/complete`,
+    (payload: PartialDiscovery) => ({
+        payload,
+    }),
+);
 
-export const stopDiscovery = createAction(`${DISCOVERY_MODULE_PREFIX}/stop`, payload => ({
-    payload,
-}));
+export const stopDiscovery = createAction(
+    `${DISCOVERY_MODULE_PREFIX}/stop`,
+    (payload: PartialDiscovery) => ({
+        payload,
+    }),
+);
 
 export const removeDiscovery = createAction(
     `${DISCOVERY_MODULE_PREFIX}/remove`,
