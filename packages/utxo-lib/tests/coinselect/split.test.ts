@@ -14,7 +14,7 @@ describe('coinselect split', () => {
                 dustThreshold: f.dustThreshold,
                 baseFee: f.baseFee,
                 floorBaseFee: f.floorBaseFee,
-                dustOutputFee: f.dustOutputFee,
+                feePolicy: f.feePolicy,
             } as CoinSelectOptions;
 
             const actual = split(inputs, outputs, f.feeRate, options);

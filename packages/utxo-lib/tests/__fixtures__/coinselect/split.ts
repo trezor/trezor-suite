@@ -306,7 +306,7 @@ export default [
         feeRate: 100000,
         baseFee: 100000000,
         floorBaseFee: true,
-        dustOutputFee: 100000000,
+        feePolicy: 'doge',
         inputs: ['200000011'],
         outputs: [{}],
         expected: {
@@ -330,7 +330,7 @@ export default [
         feeRate: 100000,
         baseFee: 100000000,
         floorBaseFee: true,
-        dustOutputFee: 100000000,
+        feePolicy: 'doge',
         inputs: ['400000000'],
         outputs: [{}, {}, {}],
         expected: {
@@ -360,7 +360,7 @@ export default [
         feeRate: 100000,
         baseFee: 100000000,
         floorBaseFee: true,
-        dustOutputFee: 100000000,
+        feePolicy: 'doge',
         inputs: [
             {
                 i: 0,
@@ -395,7 +395,7 @@ export default [
         feeRate: 150000,
         baseFee: 100000000,
         floorBaseFee: true,
-        dustOutputFee: 100000000,
+        feePolicy: 'doge',
         inputs: [
             {
                 i: 0,
@@ -430,7 +430,7 @@ export default [
         feeRate: 100000,
         baseFee: 100000000,
         floorBaseFee: true,
-        dustOutputFee: 100000000,
+        feePolicy: 'doge',
         inputs: [
             {
                 i: 0,
@@ -462,7 +462,7 @@ export default [
         feeRate: 700000,
         baseFee: 100000000,
         floorBaseFee: true,
-        dustOutputFee: 100000000,
+        feePolicy: 'doge',
         inputs: [
             {
                 i: 0,
@@ -480,7 +480,7 @@ export default [
         feeRate: 100000,
         baseFee: 100000000,
         floorBaseFee: true,
-        dustOutputFee: 100000000,
+        feePolicy: 'doge',
         inputs: [
             {
                 i: 0,
@@ -498,7 +498,7 @@ export default [
         feeRate: 100000,
         baseFee: 100000000,
         floorBaseFee: true,
-        dustOutputFee: 100000000,
+        feePolicy: 'doge',
         inputs: [
             {
                 i: 0,
