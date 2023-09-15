@@ -1,3 +1,8 @@
+# 1.0.7
+
+-   fix(analytics): adding missing fields package.json (8f1626c49)
+-   fix(analytics): re-adding missing tsconfig.lib (d3bc367b2)
+
 # 1.0.6
 
 -   chore(analytics): report also analytics event type to sentry to see what we miss (27563c630)
