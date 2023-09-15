@@ -32,29 +32,33 @@ describe('Google api errors', () => {
 
         cy.passThroughInitMetadata(provider);
 
-        // imitate response after sending request with malformed access token
-        cy.task('metadataSetNextResponse', {
-            provider,
-            status: 401,
-            body: {
-                error: {
-                    errors: [
-                        {
-                            domain: 'global',
-                            reason: 'authError',
-                            message: 'Invalid Credentials',
-                            locationType: 'header',
-                            location: 'Authorization',
-                        },
-                    ],
-                    code: 401,
-                    message: 'Invalid Credentials',
+        // there are 3 retries in metadata provider. this test simulates that no retry has succeeded
+        for (let i = 0; i < 4; i++) {
+            // imitate response after sending request with malformed access token
+
+            cy.task('metadataSetNextResponse', {
+                provider,
+                status: 401,
+                body: {
+                    error: {
+                        errors: [
+                            {
+                                domain: 'global',
+                                reason: 'authError',
+                                message: 'Invalid Credentials',
+                                locationType: 'header',
+                                location: 'Authorization',
+                            },
+                        ],
+                        code: 401,
+                        message: 'Invalid Credentials',
+                    },
                 },
-            },
-            headers: {
-                'Content-Type': 'application/json; charset=UTF-8',
-            },
-        });
+                headers: {
+                    'Content-Type': 'application/json; charset=UTF-8',
+                },
+            });
+        }
 
         cy.getTestElement('@toast/error').should(
             'contain',

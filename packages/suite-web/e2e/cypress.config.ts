@@ -121,10 +121,10 @@ export default defineConfig({
                 metadataSetNextResponse: ({ provider, status, body }) => {
                     switch (provider) {
                         case 'dropbox':
-                            mocked.dropbox.nextResponse = { status, body };
+                            mocked.dropbox.nextResponse.push({ status, body });
                             break;
                         case 'google':
-                            mocked.google.nextResponse = { status, body };
+                            mocked.google.nextResponse.push({ status, body });
                             break;
                         default:
                             throw new Error('not a valid case');
