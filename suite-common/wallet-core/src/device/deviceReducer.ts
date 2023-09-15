@@ -533,3 +533,6 @@ export const selectSupportedNetworks = (state: DeviceRootState) => {
         })
         .filter(Boolean) as Network['symbol'][]; // Filter out null values
 };
+
+export const selectDeviceById = (state: DeviceRootState, deviceId: string) =>
+    state.device.devices.find(device => device.id === deviceId);

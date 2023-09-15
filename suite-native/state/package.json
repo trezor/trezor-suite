@@ -23,7 +23,6 @@
         "@suite-native/graph": "workspace:*",
         "@suite-native/logger": "workspace:*",
         "@suite-native/message-system": "workspace:*",
-        "@suite-native/module-devices": "workspace:*",
         "@suite-native/module-settings": "workspace:*",
         "@suite-native/storage": "workspace:*",
         "@suite-native/toasts": "workspace:*",

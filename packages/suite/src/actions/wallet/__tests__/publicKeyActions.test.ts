@@ -59,6 +59,9 @@ jest.mock('@trezor/connect', () => {
             REQUEST_BUTTON: 'ui-button',
         },
         PROTO,
+        DeviceModelInternal: {
+            T2T1: 'T2T1',
+        },
     };
 });
 

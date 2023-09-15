@@ -47,6 +47,9 @@ jest.mock('@trezor/connect', () => {
         TRANSPORT: {},
         UI: {},
         PROTO,
+        DeviceModelInternal: {
+            T2T1: 'T2T1',
+        },
     };
 });
 

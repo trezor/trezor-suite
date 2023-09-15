@@ -20,6 +20,9 @@ jest.mock('@trezor/connect', () => ({
             Bitcoin: 'BTC',
         },
     },
+    DeviceModelInternal: {
+        T2T1: 'T2T1',
+    },
 }));
 
 describe('Modal Actions', () => {

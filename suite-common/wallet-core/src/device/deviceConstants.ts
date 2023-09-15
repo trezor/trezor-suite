@@ -1,12 +1,11 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-
 import { TrezorDevice } from '@suite-common/suite-types';
 import { DeviceModelInternal } from '@trezor/connect';
+
+// These hidden device constants are used in mobile app to hold all imported accounts.
 
 export const HIDDEN_DEVICE_ID = 'hiddenDeviceWithImportedAccounts';
 export const HIDDEN_DEVICE_STATE = `state@${HIDDEN_DEVICE_ID}:1`;
 
-// This is temporary solution for MVP purposes. We have one hidden device and all imported accounts belongs to it.
 export const hiddenDevice: TrezorDevice = {
     type: 'acquired',
     id: HIDDEN_DEVICE_ID,
@@ -67,31 +66,3 @@ export const hiddenDevice: TrezorDevice = {
     },
     unavailableCapabilities: {},
 };
-
-export const actionPrefix = '@devices';
-
-export type DevicesState = TrezorDevice[];
-
-const initialState: DevicesState = [];
-
-export type DevicesRootState = {
-    devices: DevicesState;
-};
-
-const devicesSlice = createSlice({
-    name: actionPrefix,
-    initialState,
-    reducers: {
-        createDevice: (state, action: PayloadAction<TrezorDevice>) => {
-            state.push(action.payload);
-        },
-    },
-});
-
-export const selectDeviceById = (deviceId: string) => (state: DevicesRootState) =>
-    state.devices.find(device => device.id === deviceId);
-
-export const selectDevices = (state: DevicesRootState) => state.devices;
-
-export const { createDevice } = devicesSlice.actions;
-export const devicesReducer = devicesSlice.reducer;

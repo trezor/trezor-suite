@@ -3,10 +3,10 @@ import { combineReducers } from '@reduxjs/toolkit';
 import {
     prepareAccountsReducer,
     prepareBlockchainReducer,
+    prepareDeviceReducer,
     prepareTransactionsReducer,
 } from '@suite-common/wallet-core';
 import { prepareFiatRatesReducer } from '@suite-native/fiat-rates';
-import { devicesReducer } from '@suite-native/module-devices';
 import { appSettingsReducer, appSettingsPersistWhitelist } from '@suite-native/module-settings';
 import { logsSlice } from '@suite-common/logger';
 import { migrateAccountLabel, preparePersistReducer } from '@suite-native/storage';
@@ -24,6 +24,7 @@ const fiatRatesReducer = prepareFiatRatesReducer(extraDependencies);
 const blockchainReducer = prepareBlockchainReducer(extraDependencies);
 const analyticsReducer = prepareAnalyticsReducer(extraDependencies);
 const messageSystem = prepareMessageSystemReducer(extraDependencies);
+const deviceReducer = prepareDeviceReducer(extraDependencies);
 
 export const prepareRootReducers = async () => {
     const appSettingsPersistedReducer = await preparePersistReducer({
@@ -75,7 +76,7 @@ export const prepareRootReducers = async () => {
         appSettings: appSettingsPersistedReducer,
         wallet: walletPersistedReducer,
         graph: graphPersistedReducer,
-        devices: devicesReducer,
+        device: deviceReducer,
         logs: logsSlice.reducer,
         notifications: notificationsReducer,
         messageSystem,
