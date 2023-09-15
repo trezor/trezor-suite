@@ -1,5 +1,7 @@
 import { differenceInMilliseconds } from 'date-fns';
 
+import { scheduleAction } from '@trezor/utils';
+
 export class RateLimiter {
     // Poor man's rate limiter
     // Slows down requests so there is `delayMs` gap between them
@@ -29,7 +31,7 @@ export class RateLimiter {
         }
 
         this.lastFetchTimestamp = new Date().getTime();
-        const results = await fn();
+        const results = await scheduleAction(_signal => fn(), { timeout: 15000 });
         this.queued -= 1;
         if (this.queued === 0) {
             // if all queued requests were fired, we need to reset totalDelay to properly delay next batch of requests
