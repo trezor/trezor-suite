@@ -4,7 +4,7 @@ import { atomWithUnecryptedStorage } from '@suite-native/storage';
 
 const isDeviceConnectEnabledAtom = atomWithUnecryptedStorage<boolean>(
     'isDeviceConnectEnabledAtom',
-    false,
+    true,
 );
 
 export const useIsDeviceConnectEnabled = () => {

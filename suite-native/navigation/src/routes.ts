@@ -35,6 +35,7 @@ export enum AccountsImportStackRoutes {
 
 export enum ConnectDeviceStackRoutes {
     ConnectDeviceCrossroads = 'ConnectDeviceCrossroads',
+    ConnectAndUnlockDevice = 'ConnectAndUnlockDevice',
 }
 
 export enum DevUtilsStackRoutes {
