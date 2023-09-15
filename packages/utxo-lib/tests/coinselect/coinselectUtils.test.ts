@@ -32,6 +32,13 @@ describe('coinselectUtils', () => {
         expect(getFee([], [{ script: { length: 181 } }], 1)).toEqual(200);
         // without floor
         expect(getFee([], [{ script: { length: 181 } }], 1, { baseFee: 1000 })).toEqual(1200);
+        // with floor
+        expect(
+            getFee([], [{ script: { length: 181 } }], 1, { baseFee: 1000, floorBaseFee: true }),
+        ).toEqual(1000);
+    });
+
+    it('getDogeFee', () => {
         expect(
             getFee(
                 [],
@@ -40,17 +47,9 @@ describe('coinselectUtils', () => {
                     { value: '7', script: { length: 50 } },
                 ],
                 2,
-                {
-                    baseFee: 1000,
-                    dustOutputFee: 1000,
-                    dustThreshold: 9,
-                },
+                { feePolicy: 'doge', baseFee: 1000, dustThreshold: 1000 },
             ),
         ).toEqual(3254);
-        // with floor
-        expect(
-            getFee([], [{ script: { length: 181 } }], 1, { baseFee: 1000, floorBaseFee: true }),
-        ).toEqual(1000);
         expect(
             getFee(
                 [],
@@ -59,12 +58,7 @@ describe('coinselectUtils', () => {
                     { value: '7', script: { length: 472 } },
                 ],
                 2,
-                {
-                    baseFee: 1000,
-                    dustOutputFee: 1000,
-                    dustThreshold: 9,
-                    floorBaseFee: true,
-                },
+                { feePolicy: 'doge', baseFee: 1000, dustThreshold: 1000, floorBaseFee: true },
             ),
         ).toEqual(5000);
     });

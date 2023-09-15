@@ -14,7 +14,7 @@ describe('coinselect: accumulative', () => {
                 dustThreshold: f.dustThreshold,
                 baseFee: f.baseFee,
                 floorBaseFee: f.floorBaseFee,
-                dustOutputFee: f.dustOutputFee,
+                feePolicy: f.feePolicy,
             } as CoinSelectOptions;
 
             const actual = accumulative(inputs, outputs, f.feeRate, options);
