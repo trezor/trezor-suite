@@ -85,3 +85,5 @@ deploy npm connect:
   <<: *packages_matrix_connect
   script:
     - nix-shell --run "cd ./packages/${PACKAGE} && yarn npm publish --access public"
+    - ./packages/connect/e2e/test-npm-install.sh
+    - ./packages/connect/e2e/test-yarn-install.sh
