@@ -7,6 +7,7 @@ import {
     CoinSelectOutput,
     CoinSelectOutputFinal,
 } from '../types';
+import { Network, isNetworkType } from '../networks';
 
 export const ZERO = new BN(0);
 
@@ -153,39 +154,56 @@ export function sumOrNaN(range: { value?: string }[], forgiving = false) {
     }, ZERO);
 }
 
-// DOGE fee policy https://github.com/dogecoin/dogecoin/issues/1650#issuecomment-722229742
-// 1 DOGE base fee + 1 DOGE per every started kb + 1 DOGE for every output below 1 DOGE (dust limit)
+export function getFeePolicy(network?: Network) {
+    if (isNetworkType('doge', network)) return 'doge';
+    return 'bitcoin';
+}
+
+function getBitcoinFee(
+    inputs: CoinSelectInput[],
+    outputs: CoinSelectOutput[],
+    feeRate: number,
+    { baseFee = 0, floorBaseFee }: Partial<CoinSelectOptions>,
+) {
+    const bytes = transactionBytes(inputs, outputs);
+    const defaultFee = getFeeForBytes(feeRate, bytes);
+    return baseFee && floorBaseFee
+        ? // increase baseFee for every started kb
+          baseFee * (1 + Math.floor(defaultFee / baseFee))
+        : // simple increase baseFee
+          baseFee + defaultFee;
+}
+
+// DOGE fee policy https://github.com/dogecoin/dogecoin/blob/3a29ba6d497cd1d0a32ecb039da0d35ea43c9c85/doc/fee-recommendation.md
+// 0.01 DOGE per every started kb + 0.01 DOGE for every output below 0.01 DOGE (dust limit)
+function getDogeFee(
+    inputs: CoinSelectInput[],
+    outputs: CoinSelectOutput[],
+    feeRate: number,
+    { dustThreshold = 0, ...options }: Partial<CoinSelectOptions>,
+) {
+    const fee = getBitcoinFee(inputs, outputs, feeRate, options);
+
+    // find all outputs below dust limit
+    const limit = new BN(dustThreshold);
+    const dustOutputsCount = outputs.filter(({ value }) => value && new BN(value).lt(limit)).length;
+
+    // increase for every output below dustThreshold
+    return fee + dustOutputsCount * dustThreshold;
+}
+
 export function getFee(
     inputs: CoinSelectInput[],
     outputs: CoinSelectOutput[],
     feeRate: number,
-    { baseFee = 0, floorBaseFee, dustOutputFee, dustThreshold }: Partial<CoinSelectOptions> = {},
+    { feePolicy, ...options }: Partial<CoinSelectOptions> = {},
 ) {
-    const bytes = transactionBytes(inputs, outputs);
-    const defaultFee = getFeeForBytes(feeRate, bytes);
-    let fee = baseFee || 0;
-    if (fee && bytes) {
-        if (floorBaseFee) {
-            // increase baseFee for every started kb
-            fee *= Math.floor((fee + defaultFee) / fee);
-        } else {
-            // simple increase baseFee
-            fee += defaultFee;
-        }
+    switch (feePolicy) {
+        case 'doge':
+            return getDogeFee(inputs, outputs, feeRate, options);
+        default:
+            return getBitcoinFee(inputs, outputs, feeRate, options);
     }
-
-    if (dustOutputFee && dustThreshold) {
-        // find all outputs below dust limit
-        for (let i = 0; i < outputs.length; i++) {
-            const { value } = outputs[i];
-            if (value && new BN(value).sub(new BN(dustThreshold)).isNeg()) {
-                // increase for every output below dustThreshold
-                fee += dustOutputFee;
-            }
-        }
-    }
-
-    return fee || defaultFee;
 }
 
 export function finalize(
