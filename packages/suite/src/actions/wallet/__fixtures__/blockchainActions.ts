@@ -355,7 +355,6 @@ export const init = [
             blockchain: seedBackends([]),
         },
         actions: [{ type: blockchainActions.updateFee.type }],
-        blockchainUnsubscribeFiatRates: 0,
         blockchainSetCustomBackend: 0,
     },
     {
@@ -365,7 +364,6 @@ export const init = [
             blockchain: seedBackends(['btc']),
         },
         actions: [{ type: blockchainActions.updateFee.type }],
-        blockchainUnsubscribeFiatRates: 1,
         blockchainSetCustomBackend: 1,
     },
     {
@@ -381,7 +379,6 @@ export const init = [
             blockchain: seedBackends(['btc', 'ltc', 'eth']),
         },
         actions: [{ type: blockchainActions.updateFee.type }],
-        blockchainUnsubscribeFiatRates: 3,
         blockchainSetCustomBackend: 3,
     },
 ];
@@ -392,7 +389,6 @@ export const onConnect = [
         symbol: 'btc-invalid',
         actions: [],
         blockchainEstimateFee: 0,
-        blockchainSubscribeFiatRates: 0,
         blockchainSubscribe: 0,
     },
     {
@@ -404,7 +400,6 @@ export const onConnect = [
             { type: blockchainActions.connected.type },
         ],
         blockchainEstimateFee: 1,
-        blockchainSubscribeFiatRates: 1,
         blockchainSubscribe: 0,
     },
     {
@@ -419,7 +414,6 @@ export const onConnect = [
             { type: blockchainActions.connected.type },
         ],
         blockchainEstimateFee: 1,
-        blockchainSubscribeFiatRates: 1,
         blockchainSubscribe: 0,
     },
     {
@@ -439,17 +433,15 @@ export const onConnect = [
             { type: blockchainActions.connected.type },
         ],
         blockchainEstimateFee: 1,
-        blockchainSubscribeFiatRates: 1,
         blockchainSubscribe: 1,
     },
     {
-        description: 'successful, subscribeFiatRates failed, fee levels sorted',
+        description: 'successful, fee levels sorted',
         initialState: {
             accounts: [{ symbol: 'btc', history: {} }],
         },
-        // order: subscribeFiatRates > estimateFee
+        // order: estimateFee
         connect: [
-            { success: false },
             { payload: { levels: [{ label: 'normal' }, { label: 'high' }, { label: 'low' }] } },
         ],
         symbol: 'btc',
@@ -459,23 +451,21 @@ export const onConnect = [
             { type: blockchainActions.connected.type },
         ],
         blockchainEstimateFee: 1,
-        blockchainSubscribeFiatRates: 1,
-        blockchainSubscribe: 0,
+        blockchainSubscribe: 1,
     },
     {
         description: 'successful, blockchainEstimateFee failed',
         initialState: {
             accounts: [{ symbol: 'eth', history: {} }],
         },
-        // order: subscribeFiatRates > subscribe > estimateFee
-        connect: [undefined, undefined, { success: false }],
+        // order: subscribe > estimateFee
+        connect: [undefined, { success: false }],
         symbol: 'eth',
         actions: [
             { type: blockchainActions.synced.type },
             { type: blockchainActions.connected.type },
         ],
         blockchainEstimateFee: 1,
-        blockchainSubscribeFiatRates: 1,
         blockchainSubscribe: 1,
     },
 ];
