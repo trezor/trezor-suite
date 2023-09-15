@@ -85,7 +85,7 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
         // 2. selected device becomes acquired from unacquired or connected from disconnected
         let becomesConnected = false;
         if (deviceActions.updateSelectedDevice.match(action)) {
-            const prevDevice = prevState.suite.device;
+            const prevDevice = prevState.device.selectedDevice;
             const becomesAcquired = !!(
                 prevDevice &&
                 !prevDevice.features &&
