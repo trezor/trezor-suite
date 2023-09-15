@@ -9152,7 +9152,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/connect@workspace:*, @trezor/connect@workspace:^, @trezor/connect@workspace:packages/connect":
+"@trezor/connect@workspace:*, @trezor/connect@workspace:packages/connect":
   version: 0.0.0-use.local
   resolution: "@trezor/connect@workspace:packages/connect"
   dependencies:
