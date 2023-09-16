@@ -19,10 +19,6 @@ const cardStyle = prepareNativeStyle<{ flex: 1 | 2 }>((utils, { flex }) => ({
     paddingBottom: utils.spacings.extraLarge,
 }));
 
-const textStyle = prepareNativeStyle(_ => ({
-    textAlign: 'center',
-}));
-
 type NavigationProps = StackToStackCompositeNavigationProps<
     ConnectDeviceStackParamList,
     ConnectDeviceStackRoutes.ConnectDeviceCrossroads,
@@ -49,29 +45,35 @@ export const ConnectDeviceCrossroadsScreen = () => {
         <Screen>
             <VStack spacing="medium" flex={1}>
                 <Card style={applyStyle(cardStyle, { flex: 2 })}>
-                    <VStack spacing="large">
+                    <VStack spacing="large" justifyContent="center" alignItems="center">
                         <Pictogram
                             icon="trezor"
                             variant="green"
-                            title={"I've got my Trezor"}
+                            title="I've got my Trezor"
                             subtitle="Connect to manage your assets"
                             size="large"
                         />
-                        <Button onPress={handleConnectDevice}>Connect Trezor</Button>
+                        <Button onPress={handleConnectDevice} size="large">
+                            Connect Trezor
+                        </Button>
                     </VStack>
                 </Card>
                 <Card style={applyStyle(cardStyle, { flex: 1 })}>
                     <VStack spacing="large" justifyContent="center" alignItems="center">
                         <VStack spacing="small" alignItems="center">
-                            <Text variant="titleSmall" style={applyStyle(textStyle)}>
+                            <Text variant="titleSmall" textAlign="center">
                                 Sync coins without your Trezor
                             </Text>
-                            <Text color="textSubdued" style={applyStyle(textStyle)}>
+                            <Text color="textSubdued" textAlign="center">
                                 Track your favorite coins anytime, anywhere, even when your Trezor
                                 isn't connected.
                             </Text>
                         </VStack>
-                        <Button onPress={handleSyncMyCoins} colorScheme="tertiaryElevation0">
+                        <Button
+                            onPress={handleSyncMyCoins}
+                            colorScheme="tertiaryElevation1"
+                            size="large"
+                        >
                             Sync my coins
                         </Button>
                     </VStack>

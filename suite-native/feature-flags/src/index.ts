@@ -1,1 +1,1 @@
-export * from './useIsDeviceConnectEnabled';
+export * from './useIsUsbDeviceConnectFeatureEnabled';

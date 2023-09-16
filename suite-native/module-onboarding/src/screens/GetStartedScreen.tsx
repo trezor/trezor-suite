@@ -14,7 +14,7 @@ import {
 import { AlertBox, Box, Image, VStack } from '@suite-native/atoms';
 import { useActiveColorScheme } from '@suite-native/theme';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { useIsDeviceConnectEnabled } from '@suite-native/feature-flags';
+import { useIsUsbDeviceConnectFeatureEnabled } from '@suite-native/feature-flags';
 
 import { OnboardingFooter } from '../components/OnboardingFooter';
 import { OnboardingScreen } from '../components/OnboardingScreen';
@@ -34,10 +34,10 @@ export const GetStartedScreen = () => {
     const { applyStyle } = useNativeStyles();
     const navigation = useNavigation<NavigationProps>();
     const colorScheme = useActiveColorScheme();
-    const { isDeviceConnectEnabled } = useIsDeviceConnectEnabled();
+    const { isUsbDeviceConnectFeatureEnabled } = useIsUsbDeviceConnectFeatureEnabled();
 
     const handleRedirect = () => {
-        if (isDeviceConnectEnabled) {
+        if (isUsbDeviceConnectFeatureEnabled) {
             navigation.navigate(RootStackRoutes.ConnectDevice, {
                 screen: ConnectDeviceStackRoutes.ConnectDeviceCrossroads,
             });

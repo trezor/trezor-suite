@@ -15,6 +15,7 @@
         "@react-navigation/native-stack": "^6.9.11",
         "@suite-native/atoms": "workspace:*",
         "@suite-native/navigation": "workspace:*",
-        "@trezor/styles": "workspace:*"
+        "@trezor/styles": "workspace:*",
+        "react-native": "0.71.8"
     }
 }

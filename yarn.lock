@@ -7944,6 +7944,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/feature-flags@workspace:suite-native/feature-flags"
   dependencies:
+    "@suite-native/config": "workspace:*"
     "@suite-native/storage": "workspace:*"
     jotai: 1.9.1
   languageName: unknown
@@ -8200,6 +8201,7 @@ __metadata:
     "@suite-native/atoms": "workspace:*"
     "@suite-native/navigation": "workspace:*"
     "@trezor/styles": "workspace:*"
+    react-native: 0.71.8
   languageName: unknown
   linkType: soft
 
@@ -9617,6 +9619,7 @@ __metadata:
     "@suite-native/atoms": "workspace:*"
     "@suite-native/biometrics": "workspace:*"
     "@suite-native/config": "workspace:*"
+    "@suite-native/feature-flags": "workspace:*"
     "@suite-native/fiat-rates": "workspace:*"
     "@suite-native/message-system": "workspace:*"
     "@suite-native/module-accounts": "workspace:*"

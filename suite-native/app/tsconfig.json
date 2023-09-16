@@ -29,6 +29,7 @@
         { "path": "../atoms" },
         { "path": "../biometrics" },
         { "path": "../config" },
+        { "path": "../feature-flags" },
         { "path": "../fiat-rates" },
         { "path": "../message-system" },
         { "path": "../module-accounts" },
