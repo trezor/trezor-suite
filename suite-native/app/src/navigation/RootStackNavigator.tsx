@@ -28,15 +28,14 @@ export const RootStackNavigator = () => {
     const { isDeviceConnectEnabled } = useIsDeviceConnectEnabled();
 
     const getInitialRouteName = () => {
-        if (isOnboardingFinished && userHasAccounts) {
-            return RootStackRoutes.AppTabs;
+        if (isOnboardingFinished) {
+            if (userHasAccounts) return RootStackRoutes.AppTabs;
+
+            return isDeviceConnectEnabled
+                ? RootStackRoutes.ConnectDevice
+                : RootStackRoutes.AccountsImport;
         }
-        if (isOnboardingFinished && !userHasAccounts) {
-            if (isDeviceConnectEnabled) {
-                return RootStackRoutes.ConnectDevice;
-            }
-            return RootStackRoutes.AccountsImport;
-        }
+
         return RootStackRoutes.Onboarding;
     };
 

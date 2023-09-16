@@ -37,7 +37,6 @@ export const GetStartedScreen = () => {
     const { isDeviceConnectEnabled } = useIsDeviceConnectEnabled();
 
     const handleRedirect = () => {
-        console.log(isDeviceConnectEnabled);
         if (isDeviceConnectEnabled) {
             navigation.navigate(RootStackRoutes.ConnectDevice, {
                 screen: ConnectDeviceStackRoutes.ConnectDeviceCrossroads,
