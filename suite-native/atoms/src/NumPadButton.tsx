@@ -11,18 +11,19 @@ export interface NumPadButtonProps {
     style?: NativeStyleObject;
 }
 
-const BUTTON_SIZE = 48;
-
 export const numPadButtonStyle = prepareNativeStyle(utils => ({
+    backgroundColor: utils.colors.backgroundTertiaryDefaultOnElevation0,
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    width: BUTTON_SIZE,
-    height: BUTTON_SIZE,
+    width: 72,
+    height: 56,
     borderRadius: utils.borders.radii.round,
 }));
 
 export const numPadButtonTextStyle = prepareNativeStyle(utils => ({
+    justifyContent: 'center',
+    alignItems: 'center',
     ...utils.typography.titleMedium,
     color: utils.colors.textSubdued,
     textAlign: 'center',
@@ -31,7 +32,7 @@ export const numPadButtonTextStyle = prepareNativeStyle(utils => ({
         {
             condition: Platform.OS === 'android',
             style: {
-                lineHeight: BUTTON_SIZE,
+                lineHeight: 56,
                 textAlignVertical: 'center',
             },
         },
@@ -39,7 +40,8 @@ export const numPadButtonTextStyle = prepareNativeStyle(utils => ({
             condition: Platform.OS === 'ios',
             style: {
                 // sadly there is no better way how to center it on iOS
-                height: 27,
+                height: 56,
+                textAlignVertical: 'center',
             },
         },
     ],
@@ -57,7 +59,7 @@ export const NumPadButton = ({ value, onPress, style, ...props }: NumPadButtonPr
             underlayColor={utils.colors.backgroundTertiaryPressedOnElevation0}
             {...props}
         >
-            <Text style={applyStyle(numPadButtonTextStyle)}>{value}</Text>
+            <Text style={applyStyle(numPadButtonTextStyle)} />
         </TouchableHighlight>
     );
 };

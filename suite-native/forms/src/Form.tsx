@@ -6,8 +6,10 @@ export interface FormProps<TFieldValues extends FieldValues> {
     form: UseFormReturn<TFieldValues>;
 }
 
-interface FormContextValue<TFieldValues extends FieldValues> {
+export interface FormContextValue<TFieldValues extends FieldValues> {
     control: Control<TFieldValues>;
+    setValue: UseFormReturn<TFieldValues>['setValue'];
+    getValues: UseFormReturn<TFieldValues>['getValues'];
 }
 
 export const FormContext = createContext<FormContextValue<FieldValues>>(
@@ -20,6 +22,8 @@ export const Form = <TFieldValues extends FieldValues>({
 }: FormProps<TFieldValues>) => {
     const formContextValue = {
         control: form.control,
+        setValue: form.setValue,
+        getValues: form.getValues,
     };
 
     return (

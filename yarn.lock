@@ -8387,6 +8387,7 @@ __metadata:
     "@suite-native/atoms": "workspace:*"
     "@suite-native/navigation": "workspace:*"
     "@trezor/styles": "workspace:*"
+    "@trezor/validation": "workspace:*"
     react-native: 0.71.8
   languageName: unknown
   linkType: soft

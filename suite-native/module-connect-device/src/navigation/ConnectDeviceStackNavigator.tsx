@@ -8,11 +8,15 @@ import {
 
 import { ConnectDeviceCrossroadsScreen } from '../screens/ConnectDeviceCrossroadsScreen';
 import { ConnectAndUnlockDeviceScreen } from '../screens/ConnectAndUnlockDeviceScreen';
+import { PinMatrixScreen } from '../screens/PinMatrixScreen';
 
 export const ConnectDeviceStack = createNativeStackNavigator<ConnectDeviceStackParamList>();
 
 export const ConnectDeviceStackNavigator = () => (
-    <ConnectDeviceStack.Navigator screenOptions={stackNavigationOptionsConfig}>
+    <ConnectDeviceStack.Navigator
+        screenOptions={stackNavigationOptionsConfig}
+        initialRouteName={ConnectDeviceStackRoutes.PinMatrix}
+    >
         <ConnectDeviceStack.Screen
             name={ConnectDeviceStackRoutes.ConnectDeviceCrossroads}
             component={ConnectDeviceCrossroadsScreen}
@@ -20,6 +24,10 @@ export const ConnectDeviceStackNavigator = () => (
         <ConnectDeviceStack.Screen
             name={ConnectDeviceStackRoutes.ConnectAndUnlockDevice}
             component={ConnectAndUnlockDeviceScreen}
+        />
+        <ConnectDeviceStack.Screen
+            name={ConnectDeviceStackRoutes.PinMatrix}
+            component={PinMatrixScreen}
         />
     </ConnectDeviceStack.Navigator>
 );
