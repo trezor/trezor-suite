@@ -358,7 +358,7 @@ connect manual:
       - schedules
   when: manual
 
-connect model R:
+connect T2B1:
   extends: .connect
   only:
     refs:
