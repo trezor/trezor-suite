@@ -30,7 +30,7 @@ export const Ready = ({ hideWindow, isCancelable }: ReadyProps) => {
 
     const install = () => dispatch(installUpdate());
     const installOnQuit = () => {
-        install();
+        dispatch(installUpdate(true));
         hideWindow();
     };
 
