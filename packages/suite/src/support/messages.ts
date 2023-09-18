@@ -2146,10 +2146,6 @@ export default defineMessages({
         description: 'Prompt to user to reconnect his device.',
         id: 'TR_RECONNECT_YOUR_DEVICE',
     },
-    TR_CONNECT_YOUR_TREZOR_TO_CHECK: {
-        defaultMessage: 'Connect your Trezor to verify this address',
-        id: 'TR_CONNECT_YOUR_TREZOR_TO_CHECK',
-    },
     TR_WARNING: {
         defaultMessage: 'Warning',
         description: 'Device status',
@@ -3276,10 +3272,6 @@ export default defineMessages({
         defaultMessage: 'Show details in Block Explorer',
         id: 'TR_SHOW_DETAILS_IN_BLOCK_EXPLORER',
     },
-    TR_SHOW_ON_TREZOR: {
-        defaultMessage: 'Show on Trezor',
-        id: 'TR_SHOW_ON_TREZOR',
-    },
     TR_SHOW_UNVERIFIED_ADDRESS: {
         defaultMessage: 'Show unverified address',
         id: 'TR_SHOW_UNVERIFIED_ADDRESS',
@@ -3486,14 +3478,6 @@ export default defineMessages({
         defaultMessage: 'Unrecognized device',
         description: 'Device status',
         id: 'TR_UNACQUIRED',
-    },
-    TR_UNVERIFIED_ADDRESS_COMMA_CONNECT: {
-        defaultMessage: 'Unverified address, connect your Trezor to verify it',
-        id: 'TR_UNVERIFIED_ADDRESS_COMMA_CONNECT',
-    },
-    TR_UNVERIFIED_ADDRESS_COMMA_SHOW: {
-        defaultMessage: 'Unverified address, show on Trezor.',
-        id: 'TR_UNVERIFIED_ADDRESS_COMMA_SHOW',
     },
     TR_VALUES: {
         defaultMessage: 'Balance',
@@ -6273,10 +6257,6 @@ export default defineMessages({
     TR_CURRENT_FEE: {
         id: 'TR_CURRENT_FEE',
         defaultMessage: 'Current',
-    },
-    TR_SENT_SUCCESSFULLY: {
-        id: 'TR_SENT_SUCCESSFULLY',
-        defaultMessage: 'Sent successfully',
     },
     TR_NEW_FEE: {
         id: 'TR_NEW_FEE',
