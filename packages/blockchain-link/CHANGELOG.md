@@ -1,3 +1,8 @@
+# 2.1.17
+
+-   feat(blockchain-link): add block filter methods (66606afc6)
+-   chore: adjust/unify createDeferred usage (4d724a451)
+
 # 2.1.16
 
 -   feat(blockchain-link): ipv6 electrum support (1d4b5471c)
