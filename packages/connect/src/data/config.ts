@@ -21,12 +21,6 @@ export const config = {
             icon: '',
         },
         { origin: 'niebkpllfhmpfbffbfifagfgoamhpflf', label: 'Trezor Password Manager', icon: '' },
-        { origin: 'trezor-connect@trezor.io', label: 'Trezor Connect FF Extension', icon: '' },
-        {
-            origin: 'efbfhenfhihgdcmnfdkhaphjdnopihlf',
-            label: 'Trezor Connect Chrome Extension',
-            icon: '',
-        },
         {
             origin: 'mnpfhpndmjholfdlhpkjfmjkgppmodaf',
             label: 'MetaMask',
