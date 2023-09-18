@@ -1,3 +1,8 @@
+# 1.0.6
+
+-   feat(blockchain-link-types): add block filters (78dd71d4c)
+-   chore: replace deprecated String.subst with Sting.substing (57f45d4cd)
+
 # 1.0.5
 
 -   feat(blockchain-link): return tx hex in blockbook transactions (6aba6f094)
