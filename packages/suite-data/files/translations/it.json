@@ -431,7 +431,7 @@
   "TR_CHECK_RECOVERY_SEED": "Verifica il seed di recupero",
   "TR_CHECK_RECOVERY_SEED_DESCRIPTION": "Il seed di recupero è un elenco di parole in un ordine specifico che memorizza tutte le informazioni necessarie.",
   "TR_CHECK_RECOVERY_SEED_DESC_T1B1": "Inserisci le parole dal tuo seed di ripristino nell'ordine visualizzato sul tuo dispositivo. Potrebbe esserti chiesto di digitare alcune parole che non fanno parte del tuo seed di recupero, come una misura di sicurezza aggiuntiva.",
-  "TR_CHECK_RECOVERY_SEED_DESC_T2B1": "Il tuo seed di recupero (backup del portafoglio) è inserito utiliizzando i pulsanti di Trezor Model R. Ciò evita l'esposiizione di qualsiasi informazione sensibile a un computer o browser web potenzialmente non sicuri.",
+  "TR_CHECK_RECOVERY_SEED_DESC_T2B1": "Il tuo seed di recupero (backup del portafoglio) è inserito utiliizzando i pulsanti di Trezor Trezor Safe 3. Ciò evita l'esposiizione di qualsiasi informazione sensibile a un computer o browser web potenzialmente non sicuri.",
   "TR_CHECK_RECOVERY_SEED_DESC_T2T1": "Il tuo seed di recupero (backup del portafoglio) è inserito utiliizzando i pulsanti di Trezor Model T. Ciò evita l'esposiizione di qualsiasi informazione sensibile a un computer o browser web potenzialmente non sicuri.",
   "TR_CHECK_SEED": "Controlla il seed",
   "TR_CHECK_SEED_IN_SETTINGS": "Controlla il seed nelle Impostazioni",

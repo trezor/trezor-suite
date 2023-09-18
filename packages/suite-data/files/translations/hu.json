@@ -432,7 +432,7 @@
   "TR_CHECK_RECOVERY_SEED": "Biztonsági mentés ellenőrzése",
   "TR_CHECK_RECOVERY_SEED_DESCRIPTION": "Az eszköz szimulált helyreállítása a biztonsági mentés (helyreállító seed) ellenőrzése érdekében.",
   "TR_CHECK_RECOVERY_SEED_DESC_T1B1": "Írd be a helyreállító seeded szavait az eszközödön látható sorrendben. A biztonság fokozása érdekében olyan szavakat is be kell majd írnod, amelyek a seed-ednek nem részei.",
-  "TR_CHECK_RECOVERY_SEED_DESC_T2B1": "A helyreálló seed (tárca biztonsági másolat) a Trezor Model R gombjain keresztül kerül bevitelre. Így elkerülhető, hogy egy nem biztonságos számítógép vagy webböngésző hozzáférhessen ezekhez az érzékeny adatokhoz.",
+  "TR_CHECK_RECOVERY_SEED_DESC_T2B1": "A helyreálló seed (tárca biztonsági másolat) a Trezor Safe 3 gombjain keresztül kerül bevitelre. Így elkerülhető, hogy egy nem biztonságos számítógép vagy webböngésző hozzáférhessen ezekhez az érzékeny adatokhoz.",
   "TR_CHECK_RECOVERY_SEED_DESC_T2T1": "A helyreálló seed (tárca biztonsági másolat) a Trezor Model T érintőképernyőjén keresztül kerül bevitelre. Így elkerülhető, hogy egy nem biztonságos számítógép vagy webböngésző hozzáférhessen ezekhez az érzékeny adatokhoz.",
   "TR_CHECK_SEED": "Biztonsági mentés ellenőrzése",
   "TR_CHECK_SEED_IN_SETTINGS": "Ellenőrizd a seed-et a Beállításokban",
