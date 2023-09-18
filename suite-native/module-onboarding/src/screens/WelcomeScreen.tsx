@@ -60,7 +60,7 @@ export const WelcomeScreen = () => {
                                 Welcome to <TrezorSuiteLiteHeader textVariant="titleMedium" />
                             </Text>
                         </Box>
-                        <Text color="textSubdued" align="center">
+                        <Text color="textSubdued" textAlign="center">
                             Simple and secure portfolio tracker
                         </Text>
                     </Box>

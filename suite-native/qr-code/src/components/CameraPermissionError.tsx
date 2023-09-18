@@ -18,8 +18,8 @@ export const CameraPermissionError = ({ onPermissionRequest }: CameraPermissionE
 
     return (
         <Box style={applyStyle(permissionTextContainerStyle)}>
-            <Text align="center">Camera access denied.</Text>
-            <Text align="center">Please allow camera access in your device settings.</Text>
+            <Text textAlign="center">Camera access denied.</Text>
+            <Text textAlign="center">Please allow camera access in your device settings.</Text>
 
             <Button onPress={onPermissionRequest} style={applyStyle(grantPermissionButtonStyle)}>
                 Grant permission

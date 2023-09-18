@@ -21,10 +21,6 @@ const textWidthStyle = prepareNativeStyle(_ => ({
     flex: 1,
 }));
 
-const titleStyle = prepareNativeStyle<{ isIconVisible: boolean }>((_, { isIconVisible }) => ({
-    textAlign: isIconVisible ? 'left' : 'center',
-}));
-
 export const AlertBox = ({ title, isIconVisible = true }: AlertBoxProps) => {
     const { applyStyle } = useNativeStyles();
 
@@ -41,7 +37,7 @@ export const AlertBox = ({ title, isIconVisible = true }: AlertBoxProps) => {
                 </Box>
             )}
             <Box style={applyStyle(textWidthStyle)}>
-                <Text color="textAlertBlue" style={applyStyle(titleStyle, { isIconVisible })}>
+                <Text color="textAlertBlue" textAlign={isIconVisible ? 'left' : 'center'}>
                     {title}
                 </Text>
             </Box>
