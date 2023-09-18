@@ -68,7 +68,6 @@ jobs:
           DEV_SERVER_URL: "https://dev.suite.sldev.cz"
           # STAGING_SUITE_SERVER_URL: "https://staging-suite.trezor.io"
           # DESKTOP_APP_NAME: "Trezor-Suite"
-
           ASSET_PREFIX: /suite-web/develop/web
           COMPOSE_PROJECT_NAME: $CI_JOB_ID
           COMPOSE_FILE: ./docker/docker-compose.suite-ci.yml
