@@ -94,7 +94,7 @@ const initConnectRelease = () => {
 
     exec('yarn', ['workspace', '@trezor/connect', `version:${semver}`]);
 
-    const rawPackageJSON = fs.readFileSync(PACKAGE_JSON_PATH);
+    const rawPackageJSON = fs.readFileSync(CONNECT_PACKAGE_JSON_PATH);
     const packageJSON = JSON.parse(rawPackageJSON);
     const { version } = packageJSON;
 
