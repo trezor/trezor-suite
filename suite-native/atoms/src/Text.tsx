@@ -8,14 +8,14 @@ import { TestProps } from './types';
 export interface TextProps extends Omit<RNTextProps, 'style'>, TestProps {
     variant?: TypographyStyle;
     color?: Color;
-    align?: TextStyle['textAlign'];
+    textAlign?: TextStyle['textAlign'];
     style?: NativeStyleObject;
 }
 
 type TextStyleProps = {
     variant: TypographyStyle;
     color: Color;
-    align: TextStyle['textAlign'];
+    textAlign: TextStyle['textAlign'];
 };
 
 export const TITLE_MAX_FONT_MULTIPLIER = 1.5;
@@ -46,16 +46,16 @@ const variantToMaxFontSizeMultiplier = {
     label: TEXT_MAX_FONT_MULTIPLIER,
 } as const satisfies Record<TypographyStyle, number>;
 
-const textStyle = prepareNativeStyle<TextStyleProps>((utils, { variant, color, align }) => ({
+const textStyle = prepareNativeStyle<TextStyleProps>((utils, { variant, color, textAlign }) => ({
     ...utils.typography[variant],
     color: utils.colors[color],
-    textAlign: align,
+    textAlign,
 }));
 
 export const Text = ({
     variant = 'body',
     color = 'textDefault',
-    align = 'left',
+    textAlign = 'left',
     style,
     children,
     ...otherProps
@@ -64,7 +64,7 @@ export const Text = ({
     const maxFontSizeMultiplier = variantToMaxFontSizeMultiplier[variant];
     return (
         <RNText
-            style={[applyStyle(textStyle, { variant, color, align }), style]}
+            style={[applyStyle(textStyle, { variant, color, textAlign }), style]}
             maxFontSizeMultiplier={maxFontSizeMultiplier}
             {...otherProps}
         >

@@ -76,7 +76,7 @@ export const XpubHintBottomSheet = ({
             <Box paddingTop="small" justifyContent="space-between">
                 <Video name={video} aspectRatio={1} />
                 <VStack spacing="large" paddingTop="large">
-                    <Text color="textSubdued" align="center" variant="hint">
+                    <Text color="textSubdued" textAlign="center" variant="hint">
                         {text}
                     </Text>
                 </VStack>

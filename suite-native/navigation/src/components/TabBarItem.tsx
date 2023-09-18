@@ -55,7 +55,7 @@ export const TabBarItem = ({ isFocused, onPress, iconName, title }: TabBarItemPr
                     <Text
                         maxFontSizeMultiplier={TITLE_MAX_FONT_MULTIPLIER}
                         variant="label"
-                        align="center"
+                        textAlign="center"
                         color={isFocused ? 'textPrimaryDefault' : 'textDisabled'}
                     >
                         {title}

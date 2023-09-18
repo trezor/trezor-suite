@@ -205,7 +205,7 @@ export const Button = ({
                 <HStack alignItems="center">
                     {iconLeft && icon}
                     <Text
-                        align="center"
+                        textAlign="center"
                         variant={buttonToTextSizeMap[size]}
                         color={isDisabled ? disabledTextColor : textColor}
                     >

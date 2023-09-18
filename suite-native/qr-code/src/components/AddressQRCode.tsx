@@ -40,7 +40,7 @@ export const AddressQRCode = ({ address, backgroundElevation = '0' }: AddressQRC
         <VStack spacing="large">
             <QRCode data={address} />
             <Box alignItems="center" justifyContent="center">
-                <Text variant="titleSmall" align="center">
+                <Text variant="titleSmall" textAlign="center">
                     {formattedAddress}
                 </Text>
             </Box>

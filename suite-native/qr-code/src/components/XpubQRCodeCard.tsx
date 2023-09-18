@@ -28,7 +28,7 @@ export const XpubQRCodeCard = ({
                 <>
                     <QRCode data={qrCodeData} />
                     <Box margin="small" alignItems="center" justifyContent="center">
-                        <Text align="center">{qrCodeData}</Text>
+                        <Text textAlign="center">{qrCodeData}</Text>
                     </Box>
                 </>
             ) : (

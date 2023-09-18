@@ -48,7 +48,7 @@ export const OnboardingFooter = ({ redirectTarget, isLastStep = false }: Onboard
     return (
         <Stack spacing="large" style={applyStyle(wrapperStyle)}>
             <Box flexDirection="row" alignItems="center" justifyContent="center">
-                <Text variant="hint" align="center">
+                <Text variant="hint" textAlign="center">
                     Don’t have a Trezor? <Link href="https://trezor.io/" label="Get one here." />
                 </Text>
             </Box>

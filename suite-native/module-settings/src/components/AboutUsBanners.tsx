@@ -30,7 +30,7 @@ export const AboutUsBanners = () => {
                 <VStack spacing="large" style={applyStyle(stackStyle)}>
                     <Icon color="iconOnPrimary" name="trezor" />
                     <Text
-                        align="center"
+                        textAlign="center"
                         color="textOnPrimary"
                         variant="titleSmall"
                         style={applyStyle(trezorDescriptionTextStyle)}
