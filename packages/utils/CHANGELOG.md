@@ -1,3 +1,10 @@
+# 9.0.13
+
+-   test(utils): mock timer in createCooldown (99c6394f5)
+-   fix(utils): versionUtils.isVersionArray strict validation (b61d52c1d)
+-   fix(utils): createDeferred arg and return type (7ca2fd07c)
+-   chore(utils): add `getChunkSize` to bufferUtils (2d6341005)
+
 # 9.0.12
 
 -   feat(utils): add parseElectrumUrl util (61dce520d)
