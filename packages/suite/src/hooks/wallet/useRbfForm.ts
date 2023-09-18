@@ -190,8 +190,8 @@ export const useRbf = (props: UseRbfProps) => {
     const [showDecreasedOutputs, setShowDecreasedOutputs] = useState(false);
 
     // react-hook-form
-    const useFormMethods = useForm<FormState>({ mode: 'onChange' });
-    const { reset, register, control, setValue, getValues, formState } = useFormMethods;
+    const useFormMethods = useForm<FormState>({ mode: 'onChange', defaultValues: formValues });
+    const { register, control, setValue, getValues, formState } = useFormMethods;
 
     // react-hook-form auto register custom form fields (without HTMLElement)
     useEffect(() => {
@@ -199,11 +199,6 @@ export const useRbf = (props: UseRbfProps) => {
         register('setMaxOutputId');
         register('options');
     }, [register]);
-
-    // react-hook-form reset, set default values
-    useEffect(() => {
-        reset(formValues);
-    }, [formValues, reset]);
 
     // sub-hook
     const { isLoading, composeRequest, composedLevels, onFeeLevelChange, signTransaction } =
