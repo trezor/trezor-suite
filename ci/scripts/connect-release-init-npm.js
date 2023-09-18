@@ -85,10 +85,10 @@ const initConnectRelease = () => {
         });
     }
 
-    const PACKAGE_PATH = path.join(ROOT, 'packages', 'connect');
-    const PACKAGE_JSON_PATH = path.join(PACKAGE_PATH, 'package.json');
+    const CONNECT_PACKAGE_PATH = path.join(ROOT, 'packages', 'connect');
+    const CONNECT_PACKAGE_JSON_PATH = path.join(CONNECT_PACKAGE_PATH, 'package.json');
 
-    const preBumpRawPackageJSON = fs.readFileSync(PACKAGE_JSON_PATH);
+    const preBumpRawPackageJSON = fs.readFileSync(CONNECT_PACKAGE_JSON_PATH);
     const preBumpPackageJSON = JSON.parse(preBumpRawPackageJSON);
     const { version: preBumpVersion } = preBumpPackageJSON;
 
@@ -100,6 +100,13 @@ const initConnectRelease = () => {
 
     const commitMessage = `npm-release: @trezor/connect ${version}`;
     const branchName = `npm-release/connect-${version}`;
+
+    // Check if branch exists and if so, delete it.
+    const branchExists = exec('git', ['branch', '--list', branchName]).toString().trim();
+    if (branchExists) {
+        console.log(`Deleting branch ${branchName} to create a fresh one.`);
+        exec('git', ['branch', '-D', branchName]);
+    }
 
     exec('git', ['checkout', '-b', branchName]);
 
