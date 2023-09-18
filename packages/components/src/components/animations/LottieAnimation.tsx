@@ -52,7 +52,7 @@ export const LottieAnimation = ({
         };
 
         if (type === 'CONNECT') {
-            loadAnimation(`trezor_${deviceModelInternal}_connect`);
+            loadAnimation(`trezor_${deviceModelInternal.toLowerCase()}_connect`);
         } else if (type === 'BLOCK') {
             loadAnimation('cubes_line');
         } else if (type === 'MEMPOOL') {
