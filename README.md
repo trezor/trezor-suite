@@ -21,7 +21,6 @@
 | [@trezor/connect-popup](./packages/connect-popup)                     | UI for 3rd party implementations             |
 | [@trezor/connect-web](./packages/connect-web)                         | 3rd party interface entrypoint for browser   |
 | [@trezor/device-utils](./packages/device-utils)                       | shared device utility functions              |
-| [@trezor/integration-tests](./packages/integration-tests)             | cross-packages e2e tests                     |
 | [@suite-common/message-system](./suite-common/message-system)         | message system config and sign logic         |
 | [@trezor/request-manager](./packages/request-manager)                 | improved communication with Tor              |
 | [@trezor/styles](./packages/styles)                                   | custom styling library for native app        |
