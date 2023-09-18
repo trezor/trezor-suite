@@ -1,3 +1,8 @@
+# 1.1.16
+
+-   feat(transport): udp support (65e617195)
+-   chore: adjust/unify createDeferred usage (4d724a451)
+
 # 1.1.15
 
 -   chore(transport): merge lowlevel folder with utils (1d8d76637)
