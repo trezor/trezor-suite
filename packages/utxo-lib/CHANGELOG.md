@@ -1,3 +1,14 @@
+# 1.0.11
+
+-   test(utxo-lib): zip-317 (140018dde)
+-   feat(utxo-lib): zip-317 (93ef15656)
+-   test(utxo-lib): add fee policies (725c2c32f)
+-   chore(utxo-lib): add fee policies (1e4435098)
+-   refactor(utxo-lib): reworked getFee params (65cb7f6ce)
+-   chore: replace deprecated String.subst with Sting.substing (57f45d4cd)
+-   chore: replace deprecated Buffer.slice with Buffer.subarray (814caeaa9)
+-   chore: use `getChunkSize` from @trezor/utils package (a6fb8ea98)
+
 # 1.0.10
 
 -   fix(utxo-lib): `coinselect` bnb algorithm (c3c9ccd15)
