@@ -12,9 +12,10 @@ const init = () => {
     const PACKAGE_PATH = path.join(ROOT, 'packages', 'connect');
     const PACKAGE_JSON_PATH = path.join(PACKAGE_PATH, 'package.json');
     const rawPackageJSON = fs.readFileSync(PACKAGE_JSON_PATH);
-    const packageJSON = JSON.parse(preBumpRawPackageJSON);
+    const packageJSON = JSON.parse(rawPackageJSON);
     const { version } = packageJSON;
 
+    // Version should have been bumped by now thanks to ./ci/scripts/connect-release-init-npm.js
     const branchName = `release/connect/${version}`;
 
     exec('git', ['checkout', '-b', branchName]);
