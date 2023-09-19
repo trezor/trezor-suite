@@ -1,3 +1,22 @@
+# 9.1.4
+
+-   feat(connect-popup): add metamask extension id to known third party (f137b3e4d6)
+-   test(connect): composeTransaction fix doge fee (69a92483c6)
+-   refactor(connect): remove doge fee branch (c79f3f25d8)
+-   feat(transport): udp support for transport methods (65e617195c)
+-   fix(connect): accept signTransaction inputs/outputs with `address_n: string` (82910e0766)
+-   fix(connect-explorer, connect-popup): add favicon (cafb574ada, c6071123f3)
+-   feat(connect-popup): use trezor icons with display off from suite-data (1c806519a7)
+-   feat(connect): trezor color in device object (31535e2b0f)
+-   feat(connect): trezor name in device object (a0ecb66390)
+-   feat(connect-common): copy models.json from submodules (6d80197523)
+-   fix(connect-iframe): device event not propagating to host (d35e37863a)
+-   feat(connect, suite): unify no backup warning button text (375f3fa1a1)
+-   feat(connect): add suppressBackupWarning param to getPublicKey and getAccountInfo (2c2698d8af)
+-   fix(type-check): connect-web includes connect-iframe package.json (f9f576ab66)
+-   fix(connect-iframe): method.initAsync method superfluous call (37ace99a5d)
+-   fix(connect-iframe): define plugin in build to support analytics (c793ce358c)
+
 # 9.1.3
 
 -   fix(connect): correct import of internal connect dependency (https://github.com/trezor/trezor-suite/issues/9389)
