@@ -1,5 +1,5 @@
 {
-    "name": "@suite-native/module-accounts-import",
+    "name": "@suite-native/module-accounts-management-import",
     "version": "1.0.0",
     "private": true,
     "license": "See LICENSE.md in repo root",
