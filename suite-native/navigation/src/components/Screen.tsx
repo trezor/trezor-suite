@@ -25,13 +25,14 @@ type ScreenProps = {
     customVerticalPadding?: number;
     customHorizontalPadding?: number;
     extraKeyboardAvoidingViewHeight?: number;
+    hasBottomInset?: boolean;
 };
 
 const screenContainerStyle = prepareNativeStyle<{
     backgroundColor: Color;
     insets: EdgeInsets;
     customVerticalPadding: number;
-    isTabBarVisible: boolean;
+    hasPaddingBottom: boolean;
     isMessageBannerDisplayed: boolean;
 }>(
     (
@@ -40,7 +41,7 @@ const screenContainerStyle = prepareNativeStyle<{
             backgroundColor,
             customVerticalPadding,
             insets,
-            isTabBarVisible,
+            hasPaddingBottom,
             isMessageBannerDisplayed,
         },
     ) => ({
@@ -49,7 +50,7 @@ const screenContainerStyle = prepareNativeStyle<{
         paddingTop: Math.max(insets.top, customVerticalPadding),
         extend: [
             {
-                condition: !isTabBarVisible,
+                condition: hasPaddingBottom,
                 style: {
                     paddingBottom: Math.max(insets.bottom, customVerticalPadding),
                 },
@@ -87,13 +88,14 @@ export const Screen = ({
     customVerticalPadding = nativeSpacings.small,
     customHorizontalPadding = nativeSpacings.small,
     extraKeyboardAvoidingViewHeight = 0,
+    hasBottomInset = true,
 }: ScreenProps) => {
     const {
         applyStyle,
         utils: { colors, isDarkColor },
     } = useNativeStyles();
 
-    const isTabBarVisible = !!useContext(BottomTabBarHeightContext);
+    const hasPaddingBottom = !useContext(BottomTabBarHeightContext) && hasBottomInset;
     const insets = useSafeAreaInsets();
     const backgroundCSSColor = colors[backgroundColor];
     const barStyle = isDarkColor(backgroundCSSColor) ? 'light-content' : 'dark-content';
@@ -116,7 +118,7 @@ export const Screen = ({
                 backgroundColor,
                 customVerticalPadding,
                 insets,
-                isTabBarVisible,
+                hasPaddingBottom,
                 isMessageBannerDisplayed,
             })}
         >

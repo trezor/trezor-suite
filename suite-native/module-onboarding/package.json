@@ -17,6 +17,7 @@
         "@suite-common/icons": "workspace:*",
         "@suite-native/analytics": "workspace:*",
         "@suite-native/atoms": "workspace:*",
+        "@suite-native/feature-flags": "workspace:*",
         "@suite-native/link": "workspace:*",
         "@suite-native/module-settings": "workspace:*",
         "@suite-native/navigation": "workspace:*",
