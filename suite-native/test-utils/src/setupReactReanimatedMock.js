@@ -3,7 +3,6 @@
 import 'react-native-gesture-handler/jestSetup';
 
 jest.mock('react-native-reanimated', () => {
-    // eslint-disable-next-line global-require
     const Reanimated = require('react-native-reanimated/mock');
 
     // The mock for `call` immediately calls the callback which is incorrect

@@ -9,7 +9,6 @@ export const ConnectAndUnlockDeviceScreen = () => (
                 Connect & unlock your Trezor
             </Text>
             <Image
-                // eslint-disable-next-line global-require
                 source={require('../assets/connectedTrezor.png')}
                 accessibilityLabel="Connected Trezor"
             />

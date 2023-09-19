@@ -18,7 +18,6 @@ export const ConnectDeviceBackground = ({ children }: ConnectDeviceScreenProps) 
     return (
         <Screen customHorizontalPadding={0} customVerticalPadding={0} hasBottomInset={false}>
             <ImageBackground
-                // eslint-disable-next-line global-require
                 source={require('../assets/connectDeviceScreenBackground.png')}
                 resizeMode="stretch"
                 style={applyStyle(contentStyle)}

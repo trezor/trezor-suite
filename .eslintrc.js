@@ -246,7 +246,6 @@ module.exports = {
                 'no-console': 'off',
             },
         },
-
         {
             // we are using explicit blacklist because this will enforce new rules in newly created packages
             files: [
@@ -285,6 +284,13 @@ module.exports = {
                 'no-catch-shadow': 'off',
                 '@typescript-eslint/no-restricted-imports': 'off',
                 'no-restricted-syntax': airbnbRules['no-restricted-syntax'],
+            },
+        },
+        {
+            files: ['suite-native/**/*'],
+            rules: {
+                '@typescript-eslint/no-var-requires': 'off',
+                'global-require': 'off',
             },
         },
     ],
