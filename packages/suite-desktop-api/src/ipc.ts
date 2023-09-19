@@ -1,6 +1,8 @@
 import { MainChannels, RendererChannels, InvokeChannels } from './api';
 import { SendMethod, ListenerMethod, InvokeMethod, HandleMethod, StrictChannel } from './methods';
 
+// Using Evt to avoid global Event
+
 type StrictIpcModule<Module, Channel extends StrictChannel, Evt> = Omit<
     Module,
     'on' | 'once' | 'removeListener' | 'removeAllListeners'
@@ -20,7 +22,7 @@ export type StrictIpcMain<Module, Evt> = StrictIpcModule<Module, MainChannels, E
 };
 
 // Module = Omit<Electron.IpcRenderer, 'invoke' | 'send'>
-// Evt = Electron.Event
+// Evt = Electron.IpcRendererEvent
 export type StrictIpcRenderer<Module, Evt> = StrictIpcModule<Module, RendererChannels, Evt> & {
     send: SendMethod<MainChannels, Evt>;
     invoke: InvokeMethod<InvokeChannels, Evt>;
