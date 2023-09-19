@@ -52,7 +52,11 @@ const handleMessage = (
         | (Omit<MethodResponseMessage, 'payload'> & { payload?: { error: string; code?: string } })
     >,
 ) => {
+    console.log('handleMessage in connect-popup');
+    console.log('event', event);
     const { data } = event;
+    console.log('data', data);
+    console.log('data.type', data.type);
     if (!data) return;
     // This is message from the window.opener
     if (data.type === POPUP.INIT) {
@@ -221,6 +225,7 @@ const handleMessage = (
 const init = async (payload: PopupInit['payload']) => {
     log.debug('popup init');
 
+    console.log('init in connect-popup');
     if (!payload) return;
 
     if (!payload.systemInfo) {
@@ -263,6 +268,7 @@ const handshake = (handshake: PopupHandshake) => {
 };
 
 const onLoad = () => {
+    console.log('onLoad in connect-popup');
     postMessageToParent(createPopupMessage(POPUP.LOADED));
 
     handshakeTimeout = setTimeout(

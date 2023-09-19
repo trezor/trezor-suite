@@ -280,6 +280,8 @@ const initDevice = async (method: AbstractMethod) => {
  * @memberof Core
  */
 export const onCall = async (message: CoreMessage) => {
+    console.log('onCall in connect core index.ts');
+    console.log('message', message);
     if (!message.id || !message.payload || message.type !== IFRAME.CALL) {
         throw ERRORS.TypedError(
             'Method_InvalidParameter',
@@ -300,20 +302,26 @@ export const onCall = async (message: CoreMessage) => {
     let messageResponse: CoreMessage;
     try {
         method = getMethod(message);
+        console.log('method in core index', method);
         // bind callbacks
         method.postMessage = postMessage;
         method.getPopupPromise = getPopupPromise;
         method.createUiPromise = createUiPromise;
         // start validation process
+        console.log('start validation process');
         method.init();
 
+        console.log('pushing method to _');
         _callMethods.push(method);
 
         if (method.initAsync) {
+            console.log('in if for method.initAsync');
             method.initAsyncPromise = method.initAsync();
+            console.log('awaiting method.initAsyncPromise');
             await method.initAsyncPromise;
         }
     } catch (error) {
+        console.log('error in onCall connect core', error);
         postMessage(createPopupMessage(POPUP.CANCEL_POPUP_REQUEST));
         postMessage(createResponseMessage(responseID, false, { error }));
         return Promise.resolve();
@@ -321,6 +329,7 @@ export const onCall = async (message: CoreMessage) => {
 
     // this method is not using the device, there is no need to acquire
     if (!method.useDevice) {
+        console.log('in method.useDevice in connect core');
         try {
             if (method.useUi) {
                 // wait for popup handshake
@@ -334,6 +343,7 @@ export const onCall = async (message: CoreMessage) => {
         } catch (error) {
             messageResponse = createResponseMessage(method.responseID, false, { error });
         }
+        console.log('messageResponse to postMessage', messageResponse);
         postMessage(messageResponse);
         return Promise.resolve();
     }

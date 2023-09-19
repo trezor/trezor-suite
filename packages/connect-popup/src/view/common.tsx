@@ -73,6 +73,8 @@ export const showView = (component: string) => {
 };
 
 export const getIframeElement = () => {
+    console.log('getIframeElement in connect-popup view/common.tsx');
+    console.log('window.opener', window.opener);
     // try find iframe in opener window
     if (!window.opener) return;
     const { frames } = window.opener;
@@ -96,17 +98,20 @@ export const initMessageChannel = async (
     payload: PopupInit['payload'],
     handler: (e: MessageEvent) => void,
 ) => {
+    console.log('initMessageChannel in connect-popup view/common.tsx');
     // settings received from window.opener (POPUP.INIT) are not considered as safe (they could be injected/modified)
     // settings will be set later on, after POPUP.HANDSHAKE event from iframe
     const { settings, systemInfo, useBroadcastChannel } = payload;
 
     const handshakeMessage = createUiResponse(POPUP.HANDSHAKE);
+    console.log('handshakeMessage', handshakeMessage);
 
     const broadcastId =
         useBroadcastChannel && typeof BroadcastChannel !== 'undefined'
             ? `${settings.env}-${settings.timestamp}`
             : undefined;
 
+    console.log('broadcastId', broadcastId);
     // wait for POPUP.HANDSHAKE message from the iframe or timeout
     const handshakeLoader = (api: Pick<MessagePort, 'addEventListener' | 'removeEventListener'>) =>
         Promise.race([

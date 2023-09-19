@@ -19,6 +19,9 @@ type Param = {
 const invalidParameter = (message: string) => ERRORS.TypedError('Method_InvalidParameter', message);
 
 export function validateParams<P extends Record<string, any>>(params: P, schema: Param[]): P {
+    console.log('validateParams');
+    console.log('params', params);
+    console.log('schema', schema);
     schema.forEach(field => {
         const value = params[field.name];
         if (field.required && value == null) {

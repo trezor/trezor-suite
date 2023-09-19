@@ -58,10 +58,14 @@ export const onResponse = (response: any) => ({
 });
 
 export const onSubmit = () => async (dispatch: Dispatch, getState: GetState) => {
+    console.log('onSubmit in connect-explorer/src/actions/methodActions.ts');
+    console.log('getState', getState);
     const { method } = getState();
+    console.log('method from getState', method);
     if (!method?.name) throw new Error('method name not specified');
 
     const connectMethod = TrezorConnect[method.name];
+    console.log('connectMethod', connectMethod);
     if (typeof connectMethod !== 'function') {
         dispatch(
             onResponse({
@@ -74,6 +78,7 @@ export const onSubmit = () => async (dispatch: Dispatch, getState: GetState) => 
     const response = await connectMethod({
         ...method.params,
     });
+    console.log('response', response);
 
     dispatch(onResponse(response));
 };

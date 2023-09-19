@@ -50,6 +50,7 @@ let _popupMessagePort: (MessagePort | BroadcastChannel) | undefined;
 // we need to listen to events from Core and convert it to simple objects possible to send over window.postMessage
 
 const handleMessage = (event: PostMessageEvent) => {
+    console.log('event in handleMessage connect-iframe', event);
     // ignore messages from myself (chrome bug?)
     if (event.source === window || !event.data) return;
     const { data } = event;
@@ -84,6 +85,9 @@ const handleMessage = (event: PostMessageEvent) => {
     }
 
     // popup handshake initialization process, get reference to message channel
+    console.log('data.type === POPUP.HANDSHAKE', data.type === POPUP.HANDSHAKE);
+    console.log('window.location.origin', window.location.origin);
+    console.log('event.origin === window.location.origin', event.origin === window.location.origin);
     if (data.type === POPUP.HANDSHAKE && event.origin === window.location.origin) {
         // check if message was received via BroadcastChannel (persistent default channel. see "init")
         // or reassign _popupMessagePort to current MessagePort (dynamic channel. created by popup. see @trezor/connect-popup initMessageChannel)
@@ -103,6 +107,11 @@ const handleMessage = (event: PostMessageEvent) => {
         }
 
         const method = _core.getCurrentMethod()[0];
+        console.log(
+            'method in handleMessage in connect-iframe from _core.getCurrentMethod()[0]',
+            method,
+        );
+        console.log('method.initAsyncPromise', method.initAsyncPromise);
         (method.initAsyncPromise ? method.initAsyncPromise : Promise.resolve()).finally(() => {
             const transport = _core!.getTransportInfo();
             const settings = DataManager.getSettings();
@@ -193,6 +202,7 @@ const handleMessage = (event: PostMessageEvent) => {
 
     // pass data to Core
     if (_core) {
+        console.log('passing to Core message', message);
         _core.handleMessage(message);
     }
 };

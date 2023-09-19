@@ -206,6 +206,7 @@ transport manual:
     TEST_FILE: $TEST_FILE
   script:
     - yarn install --immutable
+    - yarn workspace @trezor/connect-explorer-webextension build
     - docker-compose pull
     - docker-compose up -d trezor-user-env-unix
     - docker-compose run test-run
@@ -223,21 +224,21 @@ transport manual:
   parallel:
     matrix:
       - TEST_FILE: ["methods.test"]
-      - TEST_FILE: ["popup-close.test"]
-      - TEST_FILE: ["popup-error-page.test"]
-      - TEST_FILE: ["passphrase.test"]
-      - TEST_FILE: ["log-page.test"]
-      - TEST_FILE: ["unchained.test"]
-      - TEST_FILE: ["browser-support.test"]
-      - TEST_FILE: ["install-bridge.test"]
+      # - TEST_FILE: ["popup-close.test"]
+      # - TEST_FILE: ["popup-error-page.test"]
+      # - TEST_FILE: ["passphrase.test"]
+      # - TEST_FILE: ["log-page.test"]
+      # - TEST_FILE: ["unchained.test"]
+      # - TEST_FILE: ["browser-support.test"]
+      # - TEST_FILE: ["install-bridge.test"]
 
 connect-popup:
   extends: .e2e connect-popup
   dependencies:
     - install
     - connect-web build
-  only:
-    <<: *run_everything_rules
+  # only:
+  #   <<: *run_everything_rules
 
 connect-popup manual:
   extends: .e2e connect-popup

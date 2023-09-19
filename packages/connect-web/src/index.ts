@@ -174,6 +174,8 @@ const init = async (settings: Partial<ConnectSettings> = {}): Promise<void> => {
 };
 
 const call: CallMethod = async params => {
+    console.log('call in connect-web');
+    console.log('params in call connect-web', params);
     if (!iframe.instance && !iframe.timeout) {
         // init popup with lazy loading before iframe initialization
         _settings = parseConnectSettings(_settings);
@@ -219,6 +221,7 @@ const call: CallMethod = async params => {
 
     // post message to iframe
     try {
+        console.log('post message to iframe from connect-web');
         const response = await iframe.postMessage({ type: IFRAME.CALL, payload: params });
         if (response) {
             if (
@@ -256,6 +259,12 @@ const renderWebUSBButton = (className?: string) => {
 };
 
 const requestLogin = async (params: any) => {
+    console.log('requestLogin');
+    console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+    console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+    console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+    console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+    console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
     if (typeof params.callback === 'function') {
         const { callback } = params;
 

@@ -43,11 +43,14 @@ type Params = {
 
 export default class SignTransaction extends AbstractMethod<'signTransaction', Params> {
     init() {
+        console.log('init SignTransaction');
         this.requiredPermissions = ['read', 'write'];
 
         const { payload } = this;
+        console.log('payload', payload);
 
         // validate incoming parameters
+        console.log('validate incoming parameters');
         validateParams(payload, [
             { name: 'coin', type: 'string', required: true },
             { name: 'inputs', type: 'array', required: true },
