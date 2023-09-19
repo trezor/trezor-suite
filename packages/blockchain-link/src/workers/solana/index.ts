@@ -11,26 +11,37 @@ export type SolanaAPI = Connection;
 type Context = ContextType<SolanaAPI>;
 type Request<T> = T & Context;
 
-const fetchTransactionPage = async (
-    request: Request<MessageTypes.GetAccountInfo>,
-): Promise<ParsedTransactionWithMeta[]> => {
-    const { payload } = request;
-    const api = await request.connect();
+const getAllSignatures = async (
+    api: SolanaAPI,
+    descriptor: MessageTypes.GetAccountInfo['payload']['descriptor'],
+) => {
     let lastSignature: string | undefined;
+    let keepFetching = true;
+    let allSignatures: string[] = [];
 
-    const signatures = (
-        await api.getSignaturesForAddress(new PublicKey(payload.descriptor), {
-            before: lastSignature,
-            limit: payload.pageSize || 25,
-        })
-    ).map(info => info.signature);
+    const limit = 100;
+    while (keepFetching) {
+        const signaturesInfos = // eslint-disable-next-line no-await-in-loop
+            await api.getSignaturesForAddress(new PublicKey(descriptor), {
+                before: lastSignature,
+                limit,
+            });
 
-    // deduplicate
-    const confirmedSignatures = Array.from(new Set(signatures));
+        const signatures = signaturesInfos.map(info => info.signature);
+        lastSignature = signatures[signatures.length - 1];
+        keepFetching = signatures.length === limit;
+        allSignatures = [...allSignatures, ...signatures];
+    }
+    return allSignatures;
+};
 
+const fetchTransactionPage = async (
+    api: SolanaAPI,
+    signatures: string[],
+): Promise<ParsedTransactionWithMeta[]> => {
     // avoid requests that are too big by querying max N signatures at once
     const perChunk = 50; // items per chunk
-    const confirmedSignatureChunks = confirmedSignatures.reduce((resultArray, item, index) => {
+    const confirmedSignatureChunks = signatures.reduce((resultArray, item, index) => {
         const chunkIndex = Math.floor(index / perChunk);
         if (!resultArray[chunkIndex]) {
             resultArray[chunkIndex] = []; // start a new chunk
@@ -76,7 +87,18 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
         } as const);
     }
 
-    const transactionsPage = await fetchTransactionPage(request);
+    // for the first page of txs, payload.page is undefined, for the second page is 2
+    const page = payload.page ? payload.page - 1 : 0;
+    const pageSize = payload.pageSize || 10; // TODO(vl): change to 25
+
+    const allSignatures = Array.from(new Set(await getAllSignatures(api, payload.descriptor)));
+    const pageStartIndex = page * pageSize;
+    const pageEndIndex = Math.min(pageStartIndex + pageSize, allSignatures.length);
+
+    const transactionsPage = await fetchTransactionPage(
+        api,
+        allSignatures.slice(pageStartIndex, pageEndIndex),
+    );
 
     const uniqueTransactionSlots = Array.from(new Set(transactionsPage.map(tx => tx.slot)));
 
@@ -106,10 +128,15 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
         availableBalance: accountInfo.lamports.toString(), // TODO(vl): revisit to make sure that what getAccountInfo returns is actually available balance
         empty: !!transactions.length,
         history: {
-            total: transactions.length,
+            total: allSignatures.length,
             unconfirmed: 0,
             transactions,
             txids: transactions.map(({ txid }) => txid),
+        },
+        page: {
+            total: allSignatures.length,
+            index: page,
+            size: transactions.length,
         },
     };
 
