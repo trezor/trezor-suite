@@ -32,8 +32,10 @@
         { "path": "../feature-flags" },
         { "path": "../fiat-rates" },
         { "path": "../message-system" },
-        { "path": "../module-accounts" },
         { "path": "../module-accounts-import" },
+        {
+            "path": "../module-accounts-management"
+        },
         { "path": "../module-connect-device" },
         { "path": "../module-dev-utils" },
         { "path": "../module-home" },

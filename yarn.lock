@@ -8150,9 +8150,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@suite-native/module-accounts@workspace:*, @suite-native/module-accounts@workspace:suite-native/module-accounts":
+"@suite-native/module-accounts-management@workspace:*, @suite-native/module-accounts-management@workspace:suite-native/module-accounts-management":
   version: 0.0.0-use.local
-  resolution: "@suite-native/module-accounts@workspace:suite-native/module-accounts"
+  resolution: "@suite-native/module-accounts-management@workspace:suite-native/module-accounts-management"
   dependencies:
     "@mobily/ts-belt": ^3.13.1
     "@react-navigation/native": ^6.1.3
@@ -8246,7 +8246,7 @@ __metadata:
     "@suite-native/atoms": "workspace:*"
     "@suite-native/formatters": "workspace:*"
     "@suite-native/graph": "workspace:*"
-    "@suite-native/module-accounts": "workspace:*"
+    "@suite-native/module-accounts-management": "workspace:*"
     "@suite-native/module-settings": "workspace:*"
     "@suite-native/navigation": "workspace:*"
     "@suite-native/receive": "workspace:*"
@@ -9622,8 +9622,8 @@ __metadata:
     "@suite-native/feature-flags": "workspace:*"
     "@suite-native/fiat-rates": "workspace:*"
     "@suite-native/message-system": "workspace:*"
-    "@suite-native/module-accounts": "workspace:*"
     "@suite-native/module-accounts-import": "workspace:*"
+    "@suite-native/module-accounts-management": "workspace:*"
     "@suite-native/module-connect-device": "workspace:*"
     "@suite-native/module-dev-utils": "workspace:*"
     "@suite-native/module-home": "workspace:*"
