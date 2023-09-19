@@ -8,11 +8,11 @@ export const ConnectAndUnlockDeviceScreen = () => (
             <Text variant="titleMedium" textAlign="center">
                 Connect & unlock your Trezor
             </Text>
-          <Image
-            // eslint-disable-next-line global-require
-            source={require('../assets/connectedTrezor.png')}
-            accessibilityLabel="Connected Trezor"
-          />
+            <Image
+                // eslint-disable-next-line global-require
+                source={require('../assets/connectedTrezor.png')}
+                accessibilityLabel="Connected Trezor"
+            />
         </VStack>
     </ConnectDeviceScreen>
 );

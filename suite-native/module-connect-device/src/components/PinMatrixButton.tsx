@@ -1,23 +1,27 @@
 import { useFormContext } from '@suite-native/forms';
 import { NumPadButton } from '@suite-native/atoms';
 
+import { PIN_FORM_MAX_LENGTH } from '../constants/pinFormConstants';
+
 type PinItemProps = {
-    value: number; // or string?
+    value: number;
 };
 
 export const PinMatrixButton = ({ value }: PinItemProps) => {
-    const { setValue, getValues } = useFormContext();
+    const { setValue, watch, getValues } = useFormContext();
+
+    const pinLength = watch('pin').length;
 
     const handlePress = () => {
         const pin = getValues('pin');
-
-        if (pin.length === 50) {
-            // TODO we need to display some error message / set form error
-            return;
-        }
-
         setValue('pin', pin.concat(value));
     };
 
-    return <NumPadButton onPress={handlePress} value={value} />;
+    return (
+        <NumPadButton
+            disabled={pinLength === PIN_FORM_MAX_LENGTH}
+            onPress={handlePress}
+            value={value}
+        />
+    );
 };

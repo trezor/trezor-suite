@@ -16,12 +16,7 @@ export const ConnectDeviceScreen = ({ children }: ConnectDeviceScreenProps) => {
     const { applyStyle } = useNativeStyles();
 
     return (
-        <Screen
-            customHorizontalPadding={0}
-            customVerticalPadding={0}
-            hasBottomInset={false}
-            isScrollable={false}
-        >
+        <Screen customHorizontalPadding={0} customVerticalPadding={0} hasBottomInset={false}>
             <ImageBackground
                 // eslint-disable-next-line global-require
                 source={require('../assets/bg.png')}

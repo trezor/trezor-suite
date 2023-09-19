@@ -1,72 +1,63 @@
 import { Form, useForm } from '@suite-native/forms';
-import { Button, Card, HStack, IconButton, VStack, Box } from '@suite-native/atoms';
+import { Card, HStack, VStack, Box, Text } from '@suite-native/atoms';
 import { yup } from '@trezor/validation';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { PinMatrixButton } from './PinMatrixButton';
-import { PinProgress } from './PinProgress';
+import { PinFormProgress } from './PinFormProgress';
+import { PIN_FORM_MAX_LENGTH, PIN_FORM_MIN_LENGTH } from '../constants/pinFormConstants';
+import { PinFormControlButtons } from './PinFromControlButtons';
+
+const pinMatrix = [
+    [7, 8, 9],
+    [4, 5, 6],
+    [1, 2, 3],
+];
 
 const pinFormSchema = yup.object({
-    pin: yup
-        .string()
-        .required('Empty pin.')
-        .matches(/^\d{1,50}$/, 'The number should have up to 50 digits.'),
+    pin: yup.string().required('Empty pin.').max(PIN_FORM_MAX_LENGTH).min(PIN_FORM_MIN_LENGTH),
 });
 
 type PinFormValues = yup.InferType<typeof pinFormSchema>;
 
+const cardStyle = prepareNativeStyle(utils => ({
+    marginBottom: utils.spacings.small,
+    padding: 40,
+}));
+
+const pinProgressWrapperStyle = prepareNativeStyle(utils => ({
+    height: utils.spacings.extraLarge,
+    justifyContent: 'center',
+}));
+
 export const PinForm = () => {
+    const { applyStyle } = useNativeStyles();
     const form = useForm<PinFormValues>({
         validation: pinFormSchema,
+
         defaultValues: {
             pin: '',
         },
     });
 
-    const { handleSubmit, watch, setValue, getValues } = form;
-
-    const onSubmit = handleSubmit(values => console.log(values, 'submit'));
-
-    const handleDelete = () => {
-        const pin = getValues('pin');
-        setValue('pin', pin.slice(0, -1));
-    };
-
-    const pinLength = watch('pin').length;
-
     return (
         <Form form={form}>
-            <Box style={{ height: 32 }}>
-                <PinProgress pinLength={pinLength} />
-            </Box>
-            <Card style={{ justifyContent: 'center' }}>
-                <VStack justifyContent="center">
-                    <HStack spacing="medium">
-                        <PinMatrixButton value={7} />
-                        <PinMatrixButton value={8} />
-                        <PinMatrixButton value={9} />
-                    </HStack>
-                    <HStack spacing="medium">
-                        <PinMatrixButton value={4} />
-                        <PinMatrixButton value={5} />
-                        <PinMatrixButton value={6} />
-                    </HStack>
-                    <HStack spacing="medium">
-                        <PinMatrixButton value={1} />
-                        <PinMatrixButton value={2} />
-                        <PinMatrixButton value={3} />
-                    </HStack>
-                    <HStack spacing="medium">
-                        {!!pinLength && (
-                            <IconButton
-                                onPress={handleDelete}
-                                iconName="backspace"
-                                colorScheme="tertiaryElevation0"
-                            />
-                        )}
-                        <Box flex={1}>
-                            <Button onPress={onSubmit}>Enter pin</Button>
-                        </Box>
-                    </HStack>
+            <VStack spacing="small" alignItems="center">
+                <Text color="textSubdued">The keypad is displayed on your Trezor</Text>
+                <Box style={applyStyle(pinProgressWrapperStyle)}>
+                    <PinFormProgress />
+                </Box>
+            </VStack>
+            <Card style={applyStyle(cardStyle)}>
+                <VStack justifyContent="center" alignItems="center" spacing="large">
+                    {pinMatrix.map(pinRow => (
+                        <HStack key={pinRow.join('')} spacing="medium">
+                            {pinRow.map(value => (
+                                <PinMatrixButton key={value} value={value} />
+                            ))}
+                        </HStack>
+                    ))}
+                    <PinFormControlButtons />
                 </VStack>
             </Card>
         </Form>

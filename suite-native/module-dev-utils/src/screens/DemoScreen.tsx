@@ -4,7 +4,6 @@ import { TextInput, View } from 'react-native';
 import {
     Text,
     Box,
-    NumPadButton,
     Hint,
     SearchInput,
     Radio,
@@ -301,13 +300,6 @@ export const DemoScreen = () => {
                             />
                         </Box>
                     </Box>
-
-                    <NumPadButton
-                        value={5}
-                        onPress={value =>
-                            console.warn('Press num pad button. No implementation yet.', value)
-                        }
-                    />
                     <Box marginVertical="medium">
                         <ListItem
                             iconName="warningCircle"

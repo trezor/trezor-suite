@@ -13,10 +13,7 @@ import { PinMatrixScreen } from '../screens/PinMatrixScreen';
 export const ConnectDeviceStack = createNativeStackNavigator<ConnectDeviceStackParamList>();
 
 export const ConnectDeviceStackNavigator = () => (
-    <ConnectDeviceStack.Navigator
-        screenOptions={stackNavigationOptionsConfig}
-        initialRouteName={ConnectDeviceStackRoutes.PinMatrix}
-    >
+    <ConnectDeviceStack.Navigator screenOptions={stackNavigationOptionsConfig}>
         <ConnectDeviceStack.Screen
             name={ConnectDeviceStackRoutes.ConnectDeviceCrossroads}
             component={ConnectDeviceCrossroadsScreen}
