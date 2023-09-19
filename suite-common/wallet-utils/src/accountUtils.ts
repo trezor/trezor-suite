@@ -169,6 +169,18 @@ export const getTitleForNetwork = (symbol: NetworkSymbol) => {
     }
 };
 
+export const getAccountTypePrefix = (path: string) => {
+    if (typeof path !== 'string') return null;
+    const coinType = path.split('/')[2];
+    switch (coinType) {
+        case `501'`: {
+            return 'TR_ACCOUNT_TYPE_SOLANA_BIP44_CHANGE';
+        }
+        default:
+            return null;
+    }
+};
+
 export const getBip43Type = (path: string) => {
     if (typeof path !== 'string') return 'unknown';
     // https://github.com/bitcoin/bips/blob/master/bip-0043.mediawiki
@@ -192,6 +204,8 @@ export const getBip43Type = (path: string) => {
 };
 
 export const getAccountTypeName = (path: string) => {
+    const accountTypePrefix = getAccountTypePrefix(path);
+    if (accountTypePrefix) return `${accountTypePrefix}_NAME` as const;
     const bip43 = getBip43Type(path);
     if (bip43 === 'bip86') return 'TR_ACCOUNT_TYPE_BIP86_NAME';
     if (bip43 === 'bip84') return 'TR_ACCOUNT_TYPE_BIP84_NAME';
@@ -202,6 +216,8 @@ export const getAccountTypeName = (path: string) => {
 };
 
 export const getAccountTypeTech = (path: string) => {
+    const accountTypePrefix = getAccountTypePrefix(path);
+    if (accountTypePrefix) return `${accountTypePrefix}_TECH` as const;
     const bip43 = getBip43Type(path);
     if (bip43 === 'bip86') return 'TR_ACCOUNT_TYPE_BIP86_TECH';
     if (bip43 === 'bip84') return 'TR_ACCOUNT_TYPE_BIP84_TECH';
@@ -212,6 +228,8 @@ export const getAccountTypeTech = (path: string) => {
 };
 
 export const getAccountTypeDesc = (path: string) => {
+    const accountTypePrefix = getAccountTypePrefix(path);
+    if (accountTypePrefix) return `${accountTypePrefix}_DESC` as const;
     const bip43 = getBip43Type(path);
     if (bip43 === 'bip86') return 'TR_ACCOUNT_TYPE_BIP86_DESC';
     if (bip43 === 'bip84') return 'TR_ACCOUNT_TYPE_BIP84_DESC';
