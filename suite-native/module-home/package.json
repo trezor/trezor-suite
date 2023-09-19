@@ -20,7 +20,7 @@
         "@suite-native/atoms": "workspace:*",
         "@suite-native/formatters": "workspace:*",
         "@suite-native/graph": "workspace:*",
-        "@suite-native/module-accounts": "workspace:*",
+        "@suite-native/module-accounts-management": "workspace:*",
         "@suite-native/module-settings": "workspace:*",
         "@suite-native/navigation": "workspace:*",
         "@suite-native/receive": "workspace:*",

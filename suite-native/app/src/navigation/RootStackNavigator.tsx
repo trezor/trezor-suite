@@ -2,7 +2,10 @@ import { useSelector } from 'react-redux';
 
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import { AccountDetailScreen, AccountSettingsScreen } from '@suite-native/module-accounts';
+import {
+    AccountDetailScreen,
+    AccountSettingsScreen,
+} from '@suite-native/module-accounts-management';
 import { AccountsImportStackNavigator } from '@suite-native/module-accounts-import';
 import {
     RootStackParamList,
