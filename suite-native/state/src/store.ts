@@ -6,7 +6,7 @@ import { logsMiddleware } from '@suite-common/logger';
 import { logsMiddleware as nativeLogsMiddleware } from '@suite-native/logger';
 import { messageSystemMiddleware } from '@suite-native/message-system';
 import { prepareBlockchainMiddleware } from '@suite-common/wallet-core';
-import { prepareDeviceMiddleware } from '@suite-native/device';
+import { prepareButtonRequestMiddleware, prepareDeviceMiddleware } from '@suite-native/device';
 
 import { extraDependencies } from './extraDependencies';
 import { prepareRootReducers } from './reducers';
@@ -18,6 +18,7 @@ const middlewares: Middleware[] = [
     prepareFiatRatesMiddleware(extraDependencies),
     logsMiddleware,
     prepareDeviceMiddleware(extraDependencies),
+    prepareButtonRequestMiddleware(extraDependencies),
 ];
 
 if (__DEV__) {
