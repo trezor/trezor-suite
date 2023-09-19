@@ -10,6 +10,46 @@ export type SolanaAPI = Connection;
 type Context = ContextType<SolanaAPI>;
 type Request<T> = T & Context;
 
+const fetchTransactionPage = async (
+    request: Request<MessageTypes.GetAccountInfo>,
+): Promise<ParsedTransactionWithMeta[]> => {
+    const { payload } = request;
+    const api = await request.connect();
+    let lastSignature: string | undefined;
+
+    const signatures = (
+        await api.getSignaturesForAddress(new PublicKey(payload.descriptor), {
+            before: lastSignature,
+            limit: payload.pageSize || 25,
+        })
+    ).map(info => info.signature);
+
+    // deduplicate
+    const confirmedSignatures = Array.from(new Set(signatures));
+
+    // avoid requests that are too big by querying max N signatures at once
+    const perChunk = 50; // items per chunk
+    const confirmedSignatureChunks = confirmedSignatures.reduce((resultArray, item, index) => {
+        const chunkIndex = Math.floor(index / perChunk);
+        if (!resultArray[chunkIndex]) {
+            resultArray[chunkIndex] = []; // start a new chunk
+        }
+        resultArray[chunkIndex].push(item);
+        return resultArray;
+    }, [] as string[][]);
+
+    const confirmedTxsChunks = await Promise.all(
+        confirmedSignatureChunks.map(signatureChunk =>
+            api.getParsedTransactions(signatureChunk, {
+                maxSupportedTransactionVersion: 0,
+                commitment: 'confirmed',
+            }),
+        ),
+    );
+
+    return confirmedTxsChunks.flat().filter((tx): tx is ParsedTransactionWithMeta => !!tx);
+};
+
 const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => {
     const { payload } = request;
     const api = await request.connect();
@@ -34,6 +74,10 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
             payload: account,
         } as const);
     }
+
+    const transactionsPage = await fetchTransactionPage(request);
+
+    // TODO(vl): parse transaction page
 
     const account: AccountInfo = {
         descriptor: payload.descriptor,
