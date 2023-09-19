@@ -101,7 +101,7 @@
         "redux": "^4.2.1",
         "redux-logger": "^3.0.6",
         "redux-thunk": "^2.4.2",
-        "semver": "^7.5.3",
+        "semver": "^7.5.4",
         "styled-components": "^5.3.10",
         "trezor-address-validator": "^0.4.3",
         "uuid": "^9.0.0",
@@ -126,7 +126,7 @@
         "@types/react-window": "^1.8.5",
         "@types/redux-logger": "^3.0.9",
         "@types/redux-mock-store": "^1.0.3",
-        "@types/semver": "^7.5.0",
+        "@types/semver": "^7.5.2",
         "@types/styled-components": "^5.1.26",
         "@types/ua-parser-js": "^0.7.36",
         "@types/uuid": "^9.0.2",
@@ -142,7 +142,7 @@
         "stylelint": "14.16.1",
         "stylelint-config-recommended": "^9.0.0",
         "stylelint-config-styled-components": "^0.1.1",
-        "tsx": "^3.12.7",
+        "tsx": "^3.12.10",
         "typescript": "4.9.5",
         "typescript-styled-plugin": "^0.18.3"
     }
