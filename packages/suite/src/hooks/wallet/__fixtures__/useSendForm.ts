@@ -116,7 +116,7 @@ export const SOL_ACCOUNT = {
         networkType: 'solana',
         descriptor: 'ETxHeBBcuw9Yu4dGuP3oXrD12V5RECvmi8ogQ9PkjyVF',
         deviceState: 'deviceState',
-        key: '0xdB09b793984B862C430b64B9ed53AcF867cC041F-eth-deviceState',
+        key: 'ETxHeBBcuw9Yu4dGuP3oXrD12V5RECvmi8ogQ9PkjyVF-sol-deviceState',
         balance: '10000000000', // 10 SOL
         availableBalance: '10000000000', // 10 SOL
         misc: {},
@@ -159,7 +159,9 @@ export const DEFAULT_STORE = {
             btc: {},
             eth: {},
             xrp: {},
-            sol: {},
+            sol: {
+                blockHash: '2UgYB4mQEWtxpUaYgkLotCHoq8gPbQkRPWRZxYuBSct4',
+            },
         },
         fees: {
             btc: {
@@ -274,6 +276,17 @@ const getDraft = (draft?: any) => ({
             {
                 ...DEFAULT_PAYMENT,
                 address: 'rAPERVgXZavGgiGv6xBgtiZurirW2yAmY',
+                amount: '1',
+            },
+        ],
+        ...draft,
+    },
+    'ETxHeBBcuw9Yu4dGuP3oXrD12V5RECvmi8ogQ9PkjyVF-sol-deviceState': {
+        ...DEFAULT_DRAFT,
+        outputs: [
+            {
+                ...DEFAULT_PAYMENT,
+                address: 'ETxHeBBcuw9Yu4dGuP3oXrD12V5RECvmi8ogQ9PkjyVF',
                 amount: '1',
             },
         ],
@@ -1128,6 +1141,7 @@ export const setMax = [
     {
         description: 'SOL',
         store: {
+            ...DEFAULT_STORE,
             send: {
                 drafts: getDraft({
                     setMaxOutputId: 0,
