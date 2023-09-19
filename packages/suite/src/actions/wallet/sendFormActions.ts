@@ -435,6 +435,11 @@ export const signTransaction =
                     sendFormRippleActions.signTransaction(formValues, enhancedTxInfo),
                 );
             }
+            if (account.networkType === 'solana') {
+                serializedTx = await dispatch(
+                    sendFormSolanaActions.signTransaction(formValues, enhancedTxInfo),
+                );
+            }
         }
 
         if (!serializedTx) {
