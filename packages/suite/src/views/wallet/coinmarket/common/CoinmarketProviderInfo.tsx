@@ -26,7 +26,7 @@ const Icon = styled.img`
 
 const Text = styled.div`
     display: flex;
-    padding-left: 5px;
+    padding-left: 9px;
     align-items: center;
     font-size: ${variables.FONT_SIZE.NORMAL};
     color: ${({ theme }) => theme.TYPE_DARK_GREY};
