@@ -11,10 +11,10 @@
         "type-check": "tsc --build"
     },
     "dependencies": {
-        "@hookform/resolvers": "3.1.0",
+        "@hookform/resolvers": "3.3.1",
         "@suite-native/atoms": "workspace:*",
         "react": "18.2.0",
-        "react-hook-form": "7.44.3",
+        "react-hook-form": "7.46.1",
         "yup": "^0.32.11"
     }
 }
