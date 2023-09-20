@@ -11,7 +11,6 @@ export default {
         bottomText: '',
         placeholder: '',
         isDisabled: false,
-        isMonospace: false,
         inputState: null,
         variant: null,
     },
@@ -44,18 +43,6 @@ export const Input = {
             updateArgs({ value: e.target.value });
         };
 
-        return (
-            <InputComponent
-                isDisabled={args.isDisabled}
-                inputState={args.state}
-                variant={args.variant}
-                label={args.label}
-                bottomText={args.bottomText}
-                placeholder={args.placeholder}
-                isMonospace={args.isMonospace}
-                value={value}
-                onChange={handleValue}
-            />
-        );
+        return <InputComponent value={value} onChange={handleValue} {...args} />;
     },
 };

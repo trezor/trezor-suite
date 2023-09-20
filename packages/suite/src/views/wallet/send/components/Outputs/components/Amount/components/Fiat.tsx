@@ -214,7 +214,6 @@ export const Fiat = ({ output, outputId }: FiatProps) => {
             <NumberInput
                 control={control}
                 inputState={inputState}
-                isMonospace
                 onChange={handleChange}
                 name={fiatInputName}
                 data-test={fiatInputName}

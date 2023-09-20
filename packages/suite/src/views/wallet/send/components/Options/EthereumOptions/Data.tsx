@@ -99,7 +99,6 @@ export const Data = ({ close }: DataProps) => {
         <Wrapper>
             <Textarea
                 inputState={getInputState(asciiError, asciiValue)}
-                isMonospace
                 data-test={inputAsciiName}
                 defaultValue={asciiValue}
                 maxLength={formInputsMaxLength.ethData}
@@ -111,7 +110,6 @@ export const Data = ({ close }: DataProps) => {
             <Space> = </Space>
             <Textarea
                 inputState={getInputState(hexError, hexValue)}
-                isMonospace
                 data-test={inputHexName}
                 defaultValue={hexValue}
                 maxLength={formInputsMaxLength.ethData}
