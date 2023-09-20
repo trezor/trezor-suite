@@ -24,7 +24,7 @@ const InputPin = ({ value, onDeleteClick }: InputPinProps) => {
 
     return (
         <StyledInput
-            disabled
+            isDisabled
             noTopLabel
             noError
             value={value.replace(/[0-9]/g, '●')}

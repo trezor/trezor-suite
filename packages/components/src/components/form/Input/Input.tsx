@@ -1,7 +1,7 @@
 import { useCallback, useState, Ref, ReactNode, ReactElement, InputHTMLAttributes } from 'react';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 
-import { FONT_SIZE, Z_INDEX } from '../../../config/variables';
+import { FONT_SIZE } from '../../../config/variables';
 import { InputState, InputVariant } from '../../../support/types';
 import { useTheme } from '../../../utils';
 import { Icon } from '../../assets/Icon/Icon';
@@ -54,43 +54,17 @@ const InputAddon = styled.div<{ align: AddonAlignment; variant: InputVariant }>`
     align-items: center;
 `;
 
-const BottomText = styled.div<Pick<InputProps, 'errorPosition' | 'inputState'>>`
+const BottomText = styled.div<Pick<InputProps, 'inputState'>>`
     display: flex;
+    padding: 6px 10px 0 10px;
+    min-height: 22px;
     font-size: ${FONT_SIZE.TINY};
     color: ${({ inputState, theme }) => getInputStateTextColor(inputState, theme)};
-
-    ${({ errorPosition }) =>
-        errorPosition === 'right' &&
-        css`
-            align-items: flex-end;
-            margin-bottom: 4px;
-            margin-left: 12px;
-        `}
-
-    ${({ errorPosition }) =>
-        errorPosition === 'bottom' &&
-        css`
-            padding: 6px 10px 0 10px;
-            min-height: 22px;
-        `}
 `;
 
-const Overlay = styled.div`
-    bottom: 1px;
-    top: 1px;
-    left: 1px;
-    right: 1px;
-    border: 1px solid transparent;
-    border-radius: 3px;
-    position: absolute;
-    background-image: linear-gradient(to right, rgba(0, 0, 0, 0) 0%, rgba(255, 255, 255, 1) 220px);
-    z-index: ${Z_INDEX.BASE};
-`;
-
-const Row = styled.div<Pick<InputProps, 'errorPosition'>>`
+const Row = styled.div`
     display: flex;
     flex-direction: column;
-    flex-direction: ${({ errorPosition }) => errorPosition === 'right' && 'row'};
 `;
 
 type AddonAlignment = 'left' | 'right';
@@ -102,21 +76,14 @@ export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
     labelAddon?: ReactElement;
     labelRight?: ReactElement;
     innerAddon?: ReactElement;
-    topLabelRight?: ReactNode;
     bottomText?: ReactNode;
     isDisabled?: boolean;
     variant?: InputVariant;
     className?: string;
-    autoComplete?: string;
-    autoCorrect?: string;
-    autoCapitalize?: string;
     spellCheck?: boolean;
     dataTest?: string;
-    isPartiallyHidden?: boolean;
-    wrapperProps?: Record<string, any>;
     inputState?: InputState;
     addonAlign?: AddonAlignment;
-    errorPosition?: 'bottom' | 'right';
     noError?: boolean;
     noTopLabel?: boolean;
     labelAddonIsVisible?: boolean;
@@ -134,21 +101,15 @@ const Input = ({
     labelAddon,
     labelRight,
     innerAddon,
-    topLabelRight,
     bottomText,
     variant = 'large',
     isDisabled,
     className,
-    autoComplete = 'off',
-    autoCorrect = 'off',
-    autoCapitalize = 'off',
     labelAddonIsVisible,
     dataTest,
-    isPartiallyHidden,
     clearButton,
     onClear,
     addonAlign = 'right',
-    errorPosition = 'bottom',
     noError = false,
     noTopLabel = false,
     ...rest
@@ -195,7 +156,7 @@ const Input = ({
                 </Label>
             )}
 
-            <Row errorPosition={errorPosition}>
+            <Row>
                 <InputWrapper>
                     {innerAddon && addonAlign === 'left' && (
                         <InputAddon align="left" ref={measureLeftAddon} variant={variant}>
@@ -219,14 +180,12 @@ const Input = ({
                         </InputAddon>
                     )}
 
-                    {isPartiallyHidden && <Overlay />}
-
                     <StyledInput
                         className={className}
                         value={value}
-                        autoComplete={autoComplete}
-                        autoCorrect={autoCorrect}
-                        autoCapitalize={autoCapitalize}
+                        autoComplete="off"
+                        autoCorrect="off"
+                        autoCapitalize="off"
                         spellCheck={false}
                         inputState={inputState}
                         disabled={isDisabled}
@@ -239,11 +198,7 @@ const Input = ({
                     />
                 </InputWrapper>
 
-                {!noError && (
-                    <BottomText errorPosition={errorPosition} inputState={inputState}>
-                        {bottomText}
-                    </BottomText>
-                )}
+                {!noError && <BottomText inputState={inputState}>{bottomText}</BottomText>}
             </Row>
         </Wrapper>
     );
