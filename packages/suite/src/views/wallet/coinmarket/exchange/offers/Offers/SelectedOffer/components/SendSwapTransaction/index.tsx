@@ -291,7 +291,6 @@ const SendSwapTransactionComponent = () => {
                         {slippage === 'CUSTOM' && (
                             <RightColumn>
                                 <StyledInput
-                                    isMonospace
                                     noTopLabel
                                     value={customSlippage}
                                     variant="small"

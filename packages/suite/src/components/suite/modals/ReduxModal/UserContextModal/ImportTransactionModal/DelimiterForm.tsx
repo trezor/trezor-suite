@@ -59,7 +59,6 @@ export const DelimiterForm = ({ value, onChange }: DelimiterFormProps) => {
                     noTopLabel
                     noError
                     variant="small"
-                    isMonospace
                     width={120}
                     onChange={({ target }) => onChange(target.value)}
                     defaultValue={value}
