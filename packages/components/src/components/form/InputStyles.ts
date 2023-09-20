@@ -51,7 +51,6 @@ export const getInputStateBgColor = (state: InputState | undefined, theme: Suite
 
 export interface BaseInputProps {
     inputState?: InputState;
-    isMonospace?: boolean;
     disabled?: boolean;
 }
 
@@ -65,7 +64,7 @@ export const baseInputStyle = css<BaseInputProps>`
     font-weight: ${FONT_WEIGHT.MEDIUM};
     transition: border-color 0.1s ease-in-out;
     outline: none;
-    font-variant-numeric: ${({ isMonospace }) => isMonospace && 'slashed-zero tabular-nums'};
+    font-variant-numeric: slashed-zero tabular-nums;
 
     ::placeholder {
         color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
