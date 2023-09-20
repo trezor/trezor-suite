@@ -65,7 +65,7 @@ export const All = {
                     value="Input with success"
                     dataTest="input-default-success"
                 />
-                <Input disabled value="Disabled input" dataTest="input-default-disabled" />
+                <Input isDisabled value="Disabled input" dataTest="input-default-disabled" />
                 <SubHeading>Monospace with button</SubHeading>
                 <Input
                     value="0x3Ebf31732F5A987b4f130Eb359B0975EBcbd68c8"
@@ -75,7 +75,6 @@ export const All = {
                 <Input
                     value="0x3Ebf31732F5A987b4f130Eb359B0975EBcbd68c8"
                     dataTest="input-block-monospace-hidden"
-                    isPartiallyHidden
                 />
                 <SubHeading>With label &amp; bottom text</SubHeading>
                 <Input value="Input label" dataTest="input-label" bottomText="bottom text" />
@@ -123,7 +122,7 @@ export const All = {
                     }
                 />
                 <Input
-                    disabled
+                    isDisabled
                     value="Disabled input label"
                     dataTest="input-disabled-label"
                     label={<Label>label</Label>}
