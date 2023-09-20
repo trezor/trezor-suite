@@ -177,13 +177,18 @@ const changeDevice = (
                     : !!device.features.passphrase_protection;
                 return merge(d, { ...device, ...extended, available });
             }
-            if (!d.state && !isUnlocked(d.features) && isDeviceUnlocked) {
-                // if is not authorized (no state) and becomes unlocked update useEmptyPassphrase field (hidden/standard wallet)
+            if (
+                !d.state &&
+                !device.features.passphrase_protection &&
+                !isUnlocked(d.features) &&
+                isDeviceUnlocked
+            ) {
+                // if device with passhprase disabled is not authorized (no state) and becomes unlocked update useEmptyPassphrase field (hidden/standard wallet)
                 return merge(d, {
                     ...device,
                     ...extended,
                     available: true,
-                    useEmptyPassphrase: !device.features.passphrase_protection,
+                    useEmptyPassphrase: true,
                 });
             }
             return merge(d, { ...device, ...extended });
