@@ -493,6 +493,25 @@ export const selectDeviceState = (state: DeviceRootState) => {
 export const selectDiscoveryForDevice = (state: DiscoveryRootState & { device: State }) =>
     selectDiscoveryByDeviceState(state, state.device.selectedDevice?.state);
 
+export const selectIsDeviceDiscoveryActive = (state: DiscoveryRootState & DeviceRootState) => {
+    const discovery = selectDiscoveryForDevice(state);
+
+    if (!discovery) return false;
+
+    return (
+        discovery.status === DiscoveryStatus.RUNNING ||
+        discovery.status === DiscoveryStatus.STOPPING
+    );
+};
+
+export const selectIsDeviceReadyForDiscovery = (state: DiscoveryRootState & DeviceRootState) => {
+    const device = selectDevice(state);
+
+    if (!device) return false;
+
+    return device.connected && !device.authFailed && !device.authConfirm;
+};
+
 /**
  * Helper selector called from components
  * return `true` if discovery process is running/completed and `authConfirm` is required

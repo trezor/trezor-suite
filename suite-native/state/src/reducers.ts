@@ -4,6 +4,7 @@ import {
     prepareAccountsReducer,
     prepareBlockchainReducer,
     prepareDeviceReducer,
+    prepareDiscoveryReducer,
     prepareTransactionsReducer,
 } from '@suite-common/wallet-core';
 import { prepareFiatRatesReducer } from '@suite-native/fiat-rates';
@@ -25,6 +26,7 @@ const blockchainReducer = prepareBlockchainReducer(extraDependencies);
 const analyticsReducer = prepareAnalyticsReducer(extraDependencies);
 const messageSystem = prepareMessageSystemReducer(extraDependencies);
 const deviceReducer = prepareDeviceReducer(extraDependencies);
+const discoveryReducer = prepareDiscoveryReducer(extraDependencies);
 
 export const prepareRootReducers = async () => {
     const appSettingsPersistedReducer = await preparePersistReducer({
@@ -39,6 +41,7 @@ export const prepareRootReducers = async () => {
         blockchain: blockchainReducer,
         fiat: fiatRatesReducer,
         transactions: transactionsReducer,
+        discovery: discoveryReducer,
     });
 
     const walletPersistedReducer = await preparePersistReducer({

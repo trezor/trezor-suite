@@ -3,6 +3,7 @@ import { AnyAction, isAnyOf } from '@reduxjs/toolkit';
 import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 import { DEVICE } from '@trezor/connect';
 import {
+    authorizeDevice,
     deviceActions,
     forgetDisconnectedDevices,
     handleDeviceConnect,
@@ -38,11 +39,20 @@ export const prepareDeviceMiddleware = createMiddlewareWithExtraDeps(
             dispatch(forgetDisconnectedDevices(action.payload));
         }
 
-        // propagate action to reducers
+        /* The `next` function has to be executed here, because the further dispatched actions of this middleware
+         expect that the state was already changed by the action stored in the `action` variable. */
         next(action);
 
         if (deviceActions.createDeviceInstance.match(action)) {
             dispatch(selectDeviceThunk(action.payload));
+        }
+
+        // Request authorization of a newly acquired device.
+        if (
+            deviceActions.selectDevice.match(action) ||
+            deviceActions.updateSelectedDevice.match(action)
+        ) {
+            dispatch(authorizeDevice());
         }
 
         if (deviceActions.forgetDevice.match(action)) {

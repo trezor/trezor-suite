@@ -22,6 +22,7 @@ import {
 import { selectDiscoveryByDeviceState, selectDiscovery } from './discoveryReducer';
 import { selectAccounts } from '../accounts/accountsReducer';
 import { accountsActions } from '../accounts/accountsActions';
+import { selectDevice, selectDevices, selectDiscoveryForDevice } from '../device/deviceReducer';
 
 type ProgressEvent = BundleProgress<AccountInfo | null>['payload'];
 
@@ -145,10 +146,7 @@ const handleProgressThunk = createThunk(
 
 export const stopDiscoveryThunk = createThunk(
     `${DISCOVERY_MODULE_PREFIX}/stop`,
-    (_, { dispatch, getState, extra }) => {
-        const {
-            selectors: { selectDiscoveryForDevice },
-        } = extra;
+    (_, { dispatch, getState }) => {
         const discovery = selectDiscoveryForDevice(getState());
         if (discovery && discovery.running) {
             dispatch(
@@ -311,7 +309,7 @@ export const startDiscoveryThunk = createThunk(
     `${DISCOVERY_MODULE_PREFIX}/start`,
     async (_, { dispatch, getState, extra }): Promise<void> => {
         const {
-            selectors: { selectMetadata, selectDevice, selectDiscoveryForDevice },
+            selectors: { selectMetadata },
             thunks: { initMetadata, fetchAndSaveMetadata },
             actions: { requestAuthConfirm },
         } = extra;
@@ -611,7 +609,7 @@ export const updateNetworkSettingsThunk = createThunk(
     `${DISCOVERY_MODULE_PREFIX}/updateNetworkSettings`,
     (_, { dispatch, getState, extra }) => {
         const {
-            selectors: { selectEnabledNetworks, selectDevices },
+            selectors: { selectEnabledNetworks },
         } = extra;
         const enabledNetworks = selectEnabledNetworks(getState());
         const discovery = selectDiscovery(getState());
@@ -641,10 +639,7 @@ export const updateNetworkSettingsThunk = createThunk(
 
 export const restartDiscoveryThunk = createThunk(
     `${DISCOVERY_MODULE_PREFIX}/restart`,
-    async (_, { dispatch, getState, extra }) => {
-        const {
-            selectors: { selectDiscoveryForDevice },
-        } = extra;
+    async (_, { dispatch, getState }) => {
         const discovery = selectDiscoveryForDevice(getState());
         if (!discovery) return;
         const progress = dispatch(
