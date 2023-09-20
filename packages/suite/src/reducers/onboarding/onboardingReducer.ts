@@ -15,7 +15,7 @@ export interface OnboardingRootState {
 export type DeviceTutorialStatus = 'active' | 'completed' | 'cancelled' | null;
 
 export interface OnboardingState {
-    reducerEnabled: boolean;
+    isActive: boolean;
     prevDevice: Device | null;
     activeStepId: AnyStepId;
     activeSubStep: string | null;
@@ -25,7 +25,7 @@ export interface OnboardingState {
 }
 
 const initialState: OnboardingState = {
-    reducerEnabled: false,
+    isActive: false,
     // todo: prevDevice is now used to solve two different things and it cant work
     // would be better to implement field "isMatchingPrevDevice" along with prevDevice
     // prevDevice is used only in firmwareUpdate so maybe move it to firmwareUpdate
@@ -51,7 +51,7 @@ const removePath = (paths: AnyPath[], state: OnboardingState) =>
 
 const onboarding = (state: OnboardingState = initialState, action: Action) => {
     if (
-        !state.reducerEnabled &&
+        !state.isActive &&
         ![ONBOARDING.RESET_ONBOARDING, ONBOARDING.ENABLE_ONBOARDING_REDUCER].includes(action.type)
     ) {
         return state;
@@ -60,7 +60,7 @@ const onboarding = (state: OnboardingState = initialState, action: Action) => {
     return produce(state, draft => {
         switch (action.type) {
             case ONBOARDING.ENABLE_ONBOARDING_REDUCER:
-                draft.reducerEnabled = action.payload;
+                draft.isActive = action.payload;
                 break;
             case ONBOARDING.SET_STEP_ACTIVE:
                 draft.activeStepId = action.stepId;
