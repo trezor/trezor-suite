@@ -24,7 +24,7 @@ export const PinFormControlButtons = () => {
                 <IconButton
                     onPress={handleDelete}
                     iconName="backspace"
-                    colorScheme="tertiaryElevation0"
+                    colorScheme="tertiaryElevation1"
                 />
             )}
             <Box flex={1}>
