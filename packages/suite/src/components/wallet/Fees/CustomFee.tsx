@@ -182,7 +182,6 @@ export const CustomFee = <TFieldValues extends FormState>({
                         <StyledNumberInput
                             control={control}
                             label={<Translation id="TR_GAS_LIMIT" />}
-                            isMonospace
                             variant="small"
                             inputState={getInputState(feeLimitError, feeLimitValue)}
                             name={FEE_LIMIT}
@@ -205,7 +204,6 @@ export const CustomFee = <TFieldValues extends FormState>({
                         control={control}
                         noTopLabel={!useFeeLimit}
                         label={useFeeLimit ? <Translation id="TR_GAS_PRICE" /> : undefined}
-                        isMonospace
                         variant="small"
                         inputState={getInputState(feePerUnitError, feePerUnitValue)}
                         innerAddon={<Units>{feeUnits}</Units>}
