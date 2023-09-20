@@ -36,6 +36,7 @@ export enum AccountsImportStackRoutes {
 export enum ConnectDeviceStackRoutes {
     ConnectDeviceCrossroads = 'ConnectDeviceCrossroads',
     ConnectAndUnlockDevice = 'ConnectAndUnlockDevice',
+    PinMatrix = 'PinMatrix',
 }
 
 export enum DevUtilsStackRoutes {

@@ -4,7 +4,6 @@ import { TextInput, View } from 'react-native';
 import {
     Text,
     Box,
-    NumPadButton,
     Hint,
     SearchInput,
     Radio,
@@ -24,6 +23,7 @@ import {
     HStack,
     ButtonSize,
     TextButton,
+    NumPadButton,
 } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Screen, ScreenHeader } from '@suite-native/navigation';
@@ -301,13 +301,7 @@ export const DemoScreen = () => {
                             />
                         </Box>
                     </Box>
-
-                    <NumPadButton
-                        value={5}
-                        onPress={value =>
-                            console.warn('Press num pad button. No implementation yet.', value)
-                        }
-                    />
+                    <NumPadButton value={2} onPress={() => null} />
                     <Box marginVertical="medium">
                         <ListItem
                             iconName="warningCircle"
