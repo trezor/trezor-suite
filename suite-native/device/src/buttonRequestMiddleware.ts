@@ -11,7 +11,7 @@ export const prepareButtonRequestMiddleware = createMiddlewareWithExtraDeps(
                 deviceActions.addButtonRequest({
                     device: selectDevice(getState()),
                     buttonRequest: {
-                        code: action.payload.type ? action.payload.type : action.type,
+                        code: action.payload.type,
                     },
                 }),
             );
