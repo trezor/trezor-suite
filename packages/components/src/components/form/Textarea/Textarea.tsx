@@ -21,7 +21,7 @@ const Wrapper = styled.div`
     justify-content: flex-start;
 `;
 
-const StyledTextarea = styled.textarea<Pick<TextareaProps, 'inputState' | 'width' | 'isMonospace'>>`
+const StyledTextarea = styled.textarea<Pick<TextareaProps, 'inputState' | 'width'>>`
     ${baseInputStyle}
 
     width: ${({ width }) => (width ? `${width}px` : '100%')};
@@ -54,7 +54,6 @@ export interface TextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElemen
     bottomText?: ReactNode;
     width?: number;
     inputState?: InputState;
-    isMonospace?: boolean;
     maxRows?: number;
     wrapperProps?: HTMLAttributes<HTMLDivElement> & { 'data-test'?: string };
     noTopLabel?: boolean;
@@ -76,7 +75,6 @@ export const Textarea = ({
     wrapperProps,
     width,
     rows = 5,
-    isMonospace,
     noTopLabel,
     labelRight,
     characterCount,
@@ -126,7 +124,6 @@ export const Textarea = ({
                 inputState={inputState}
                 rows={rows}
                 ref={innerRef}
-                isMonospace={isMonospace}
                 {...rest}
             />
 

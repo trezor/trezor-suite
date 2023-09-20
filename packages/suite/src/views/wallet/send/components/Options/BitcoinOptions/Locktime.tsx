@@ -111,7 +111,6 @@ export const Locktime = ({ close }: LocktimeProps) => {
         <Wrapper>
             <Input
                 inputState={getInputState(error, inputValue)}
-                isMonospace
                 defaultValue={inputValue}
                 maxLength={formInputsMaxLength.btcLocktime}
                 label={

@@ -104,7 +104,6 @@ export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
     innerAddon?: ReactElement;
     topLabelRight?: ReactNode;
     bottomText?: ReactNode;
-    isMonospace?: boolean;
     isDisabled?: boolean;
     variant?: InputVariant;
     className?: string;
@@ -143,7 +142,6 @@ const Input = ({
     autoComplete = 'off',
     autoCorrect = 'off',
     autoCapitalize = 'off',
-    isMonospace,
     labelAddonIsVisible,
     dataTest,
     isPartiallyHidden,
@@ -233,7 +231,6 @@ const Input = ({
                         inputState={inputState}
                         disabled={isDisabled}
                         variant={variant}
-                        isMonospace={isMonospace}
                         ref={innerRef}
                         data-lpignore="true"
                         leftAddonWidth={leftAddonWidth}
