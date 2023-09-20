@@ -23,7 +23,12 @@ const onboardingMiddleware =
         }
 
         // initiate on-device tutorial after firmware installation
-        if (action.type === firmwareActions.setStatus.type && action.payload === 'done') {
+        const isOnboardingPage = api.getState().onboarding.reducerEnabled;
+        if (
+            action.type === firmwareActions.setStatus.type &&
+            action.payload === 'done' &&
+            isOnboardingPage
+        ) {
             const device = selectDevice(api.getState());
 
             if (device?.features?.internal_model === DeviceModelInternal.T2B1) {
