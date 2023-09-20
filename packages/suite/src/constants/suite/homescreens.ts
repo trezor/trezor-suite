@@ -2,7 +2,7 @@ import { DeviceModelInternal } from '@trezor/connect';
 
 export const homescreens = {
     [DeviceModelInternal.T1B1]: [
-        'original', // note - has to be first
+        'original_t1b1', // note - has to be first
         'blank',
         'circleweb',
         'circuit',
@@ -43,7 +43,15 @@ export const homescreens = {
         'polis',
         'carlos',
     ],
-    [DeviceModelInternal.T2B1]: ['blank', 'circleweb', 'circuit', 'jupiter', 'saturn', 'starweb'],
+    [DeviceModelInternal.T2B1]: [
+        'original_t2b1', // note - has to be first
+        'blank',
+        'circleweb',
+        'circuit',
+        'jupiter',
+        'saturn',
+        'starweb',
+    ],
     [DeviceModelInternal.T2T1]: [
         'stain-1',
         'stain-2',
