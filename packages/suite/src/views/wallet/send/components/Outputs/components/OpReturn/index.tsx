@@ -76,7 +76,6 @@ const OpReturn = ({ outputId }: { outputId: number }) => {
         <Wrapper>
             <Textarea
                 inputState={getInputState(asciiError, asciiValue)}
-                isMonospace
                 data-test={inputAsciiName}
                 defaultValue={asciiValue}
                 maxLength={MAX_LENGTH.OP_RETURN}
@@ -103,7 +102,6 @@ const OpReturn = ({ outputId }: { outputId: number }) => {
             <Space> = </Space>
             <Textarea
                 inputState={getInputState(hexError, hexValue)}
-                isMonospace
                 data-test={inputHexName}
                 defaultValue={hexValue}
                 maxLength={MAX_LENGTH.OP_RETURN}

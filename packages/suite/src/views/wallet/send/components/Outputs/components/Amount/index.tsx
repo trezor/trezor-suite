@@ -216,7 +216,6 @@ export const Amount = ({ output, outputId }: AmountProps) => {
                 <Left>
                     <StyledInput
                         inputState={inputState}
-                        isMonospace
                         labelAddonIsVisible={isSetMaxVisible}
                         labelAddon={
                             <SwitchWrapper>

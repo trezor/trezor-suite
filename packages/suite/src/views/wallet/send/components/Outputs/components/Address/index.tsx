@@ -203,7 +203,6 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
     return (
         <Input
             inputState={inputState}
-            isMonospace
             innerAddon={
                 metadataEnabled && broadcastEnabled ? (
                     <MetadataLabeling
