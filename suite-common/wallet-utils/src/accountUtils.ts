@@ -758,11 +758,10 @@ export const getUtxoFromSignedTransaction = ({
     const findUtxo = (
         // this little func is needed in order to slightly change type inputs array to stop ts complaining
         // not sure how to do this in more elegant way
-        inputs:
-            | (
-                  | PrecomposedTransactionFinalCardano['transaction']['inputs'][number]
-                  | PrecomposedTransactionFinal['transaction']['inputs'][number]
-              )[],
+        inputs: (
+            | PrecomposedTransactionFinalCardano['transaction']['inputs'][number]
+            | PrecomposedTransactionFinal['transaction']['inputs'][number]
+        )[],
     ) =>
         account.utxo?.filter(
             u =>

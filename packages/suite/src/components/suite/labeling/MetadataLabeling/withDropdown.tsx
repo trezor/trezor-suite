@@ -24,25 +24,24 @@ type Props = RequiredKey<ExtendedProps, 'dropdownOptions'>;
 /**
  * Returns component wrapped into Dropdown.
  */
-export const withDropdown = (WrappedComponent: FC<Props>) => (props: Props) =>
-    (
-        <StyledDropdown
-            isDisabled={props.editActive}
-            alignMenu="left"
-            items={[
-                {
-                    key: 'key',
-                    options: props.dropdownOptions.map(it => ({
-                        ...it,
-                        'data-test': `${props['data-test']}/dropdown/${it.key}`,
-                    })),
-                },
-            ]}
-            absolutePosition
-            appendTo={document.body}
-        >
-            <StyledInner>
-                <WrappedComponent {...props} />
-            </StyledInner>
-        </StyledDropdown>
-    );
+export const withDropdown = (WrappedComponent: FC<Props>) => (props: Props) => (
+    <StyledDropdown
+        isDisabled={props.editActive}
+        alignMenu="left"
+        items={[
+            {
+                key: 'key',
+                options: props.dropdownOptions.map(it => ({
+                    ...it,
+                    'data-test': `${props['data-test']}/dropdown/${it.key}`,
+                })),
+            },
+        ]}
+        absolutePosition
+        appendTo={document.body}
+    >
+        <StyledInner>
+            <WrappedComponent {...props} />
+        </StyledInner>
+    </StyledDropdown>
+);

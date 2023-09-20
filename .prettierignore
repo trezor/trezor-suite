@@ -159,3 +159,6 @@ packages/suite-data/files/translations/master.json
 
 # lottie animations
 packages/suite-data/files/videos/lottie/*.json
+
+# js files which look like ts files
+packages/protobuf/scripts/**

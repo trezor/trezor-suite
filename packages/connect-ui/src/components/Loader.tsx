@@ -62,7 +62,9 @@ const Route = styled.circle`
 const Path = styled.circle`
     stroke-dasharray: 1, 200;
     stroke-dashoffset: 0;
-    animation: ${dashAnimation} 1.5s ease-in-out infinite, color 6s ease-in-out infinite;
+    animation:
+        ${dashAnimation} 1.5s ease-in-out infinite,
+        color 6s ease-in-out infinite;
     animation-delay: 200ms;
     transition-delay: 200ms;
     stroke-linecap: round;

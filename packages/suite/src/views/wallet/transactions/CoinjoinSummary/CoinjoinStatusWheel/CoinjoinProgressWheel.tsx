@@ -62,7 +62,9 @@ const Wheel = styled.div<{
             theme.STROKE_GREY,
             0.6,
         )} 0)`};
-    transition: background 0.1s, opacity 0.05s;
+    transition:
+        background 0.1s,
+        opacity 0.05s;
     user-select: none;
 
     ${({ isHoverDisabled }) =>

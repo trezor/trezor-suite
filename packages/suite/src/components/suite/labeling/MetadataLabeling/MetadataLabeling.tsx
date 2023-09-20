@@ -22,7 +22,9 @@ const LabelDefaultValue = styled(LabelValue)`
     flex-shrink: 0;
     max-width: 0;
     /* transition max-width because it does not work with auto value */
-    transition: max-width 0.25s, opacity 0.25s;
+    transition:
+        max-width 0.25s,
+        opacity 0.25s;
     transition-timing-function: ease-out;
     opacity: 0;
 

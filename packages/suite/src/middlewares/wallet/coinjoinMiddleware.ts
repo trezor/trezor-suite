@@ -285,8 +285,8 @@ export const coinjoinMiddleware =
             const { accountKeys } = action.payload;
             const isAlreadyPaused = api
                 .getState()
-                .wallet.coinjoin.accounts.find(({ key }) => key === accountKeys[0])
-                ?.session?.paused;
+                .wallet.coinjoin.accounts.find(({ key }) => key === accountKeys[0])?.session
+                ?.paused;
 
             if (action.payload.phase === SessionPhase.CriticalError && !isAlreadyPaused) {
                 action.payload.accountKeys.forEach(key =>

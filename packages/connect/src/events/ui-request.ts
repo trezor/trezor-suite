@@ -287,4 +287,4 @@ export const createUiMessage: MessageFactoryFn<typeof UI_EVENT, UiEvent> = (type
         event: UI_EVENT,
         type,
         payload,
-    } as any);
+    }) as any;

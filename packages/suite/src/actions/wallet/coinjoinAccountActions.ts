@@ -50,7 +50,7 @@ export const coinjoinAccountUpdateAnonymity = (accountKey: string, targetAnonymi
             accountKey,
             targetAnonymity,
         },
-    } as const);
+    }) as const;
 
 export const coinjoinAccountUpdateMaxMiningFee = (accountKey: string, maxFeePerVbyte: number) =>
     ({
@@ -59,7 +59,7 @@ export const coinjoinAccountUpdateMaxMiningFee = (accountKey: string, maxFeePerV
             accountKey,
             maxFeePerVbyte,
         },
-    } as const);
+    }) as const;
 
 export const coinjoinAccountToggleSkipRounds = (accountKey: string) =>
     ({
@@ -67,7 +67,7 @@ export const coinjoinAccountToggleSkipRounds = (accountKey: string) =>
         payload: {
             accountKey,
         },
-    } as const);
+    }) as const;
 
 export const coinjoinAccountUpdateSetupOption = (accountKey: string, isRecommended: boolean) =>
     ({
@@ -76,7 +76,7 @@ export const coinjoinAccountUpdateSetupOption = (accountKey: string, isRecommend
             accountKey,
             isRecommended,
         },
-    } as const);
+    }) as const;
 
 export const coinjoinAccountSetLiquidityClue = (
     accountKey: string,
@@ -88,7 +88,7 @@ export const coinjoinAccountSetLiquidityClue = (
             accountKey,
             rawLiquidityClue,
         },
-    } as const);
+    }) as const;
 
 const coinjoinAccountAuthorize = (accountKey: string) =>
     ({
@@ -96,7 +96,7 @@ const coinjoinAccountAuthorize = (accountKey: string) =>
         payload: {
             accountKey,
         },
-    } as const);
+    }) as const;
 
 const coinjoinAccountAuthorizeSuccess = (accountKey: string, params: CoinjoinSessionParameters) =>
     ({
@@ -105,7 +105,7 @@ const coinjoinAccountAuthorizeSuccess = (accountKey: string, params: CoinjoinSes
             accountKey,
             params,
         },
-    } as const);
+    }) as const;
 
 const coinjoinAccountAuthorizeFailed = (accountKey: string, error: string) =>
     ({
@@ -114,7 +114,7 @@ const coinjoinAccountAuthorizeFailed = (accountKey: string, error: string) =>
             accountKey,
             error,
         },
-    } as const);
+    }) as const;
 
 const coinjoinAccountUnregister = (accountKey: string) =>
     ({
@@ -122,7 +122,7 @@ const coinjoinAccountUnregister = (accountKey: string) =>
         payload: {
             accountKey,
         },
-    } as const);
+    }) as const;
 
 const coinjoinAccountPreloading = (isPreloading: boolean) =>
     ({
@@ -130,7 +130,7 @@ const coinjoinAccountPreloading = (isPreloading: boolean) =>
         payload: {
             isPreloading,
         },
-    } as const);
+    }) as const;
 
 const coinjoinSessionRestore = (accountKey: string) =>
     ({
@@ -138,7 +138,7 @@ const coinjoinSessionRestore = (accountKey: string) =>
         payload: {
             accountKey,
         },
-    } as const);
+    }) as const;
 
 const coinjoinAccountDiscoveryReset = (
     accountKey: string,
@@ -150,7 +150,7 @@ const coinjoinAccountDiscoveryReset = (
             accountKey,
             checkpoint,
         },
-    } as const);
+    }) as const;
 
 const coinjoinAccountDiscoveryProgress = (accountKey: string, progress: ScanAccountProgress) =>
     ({
@@ -159,7 +159,7 @@ const coinjoinAccountDiscoveryProgress = (accountKey: string, progress: ScanAcco
             accountKey,
             progress,
         },
-    } as const);
+    }) as const;
 
 const coinjoinSessionStarting = (accountKey: string, isStarting: boolean) =>
     ({
@@ -168,7 +168,7 @@ const coinjoinSessionStarting = (accountKey: string, isStarting: boolean) =>
             accountKey,
             isStarting,
         },
-    } as const);
+    }) as const;
 
 export const coinjoinSessionAutostop = (accountKey: string, isAutostopped: boolean) =>
     ({
@@ -177,7 +177,7 @@ export const coinjoinSessionAutostop = (accountKey: string, isAutostopped: boole
             accountKey,
             isAutostopped,
         },
-    } as const);
+    }) as const;
 
 const coinjoinAccountUpdateAnonymityLevels = (accountKey: string, level: number) =>
     ({
@@ -186,19 +186,19 @@ const coinjoinAccountUpdateAnonymityLevels = (accountKey: string, level: number)
             accountKey,
             level,
         },
-    } as const);
+    }) as const;
 
 export const updateLastAnonymityReportTimestamp = (accountKey: string) =>
     ({
         type: COINJOIN.ACCOUNT_UPDATE_LAST_REPORT_TIMESTAMP,
         payload: { accountKey },
-    } as const);
+    }) as const;
 
 export const updateCoinjoinConfig = (payload: Partial<CoinjoinConfig>) =>
     ({
         type: COINJOIN.UPDATE_CONFIG,
         payload,
-    } as const);
+    }) as const;
 
 export type CoinjoinAccountAction =
     | ReturnType<typeof coinjoinAccountUpdateAnonymity>

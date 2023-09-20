@@ -263,16 +263,21 @@ export const findChainedTransactions = (
             deep.forEach(dt => result.push(dt));
         });
         // merge result by key
-        return result.reduce((res, item) => {
-            const index = res.findIndex(t => t.key === item.key);
-            if (index >= 0) {
-                // remove duplicates
-                const unique = item.txs.filter(t => !res[index].txs.find(tt => tt.txid === t.txid));
-                res[index].txs = res[index].txs.concat(unique);
-                return res;
-            }
-            return res.concat(item);
-        }, [] as typeof result);
+        return result.reduce(
+            (res, item) => {
+                const index = res.findIndex(t => t.key === item.key);
+                if (index >= 0) {
+                    // remove duplicates
+                    const unique = item.txs.filter(
+                        t => !res[index].txs.find(tt => tt.txid === t.txid),
+                    );
+                    res[index].txs = res[index].txs.concat(unique);
+                    return res;
+                }
+                return res.concat(item);
+            },
+            [] as typeof result,
+        );
     });
 
 export const getConfirmations = (

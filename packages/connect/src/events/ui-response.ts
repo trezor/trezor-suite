@@ -123,4 +123,4 @@ export const createUiResponse: MessageFactoryFn<typeof UI_EVENT, UiResponseEvent
         event: UI_EVENT,
         type,
         payload,
-    } as any);
+    }) as any;

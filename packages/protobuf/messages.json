@@ -4665,29 +4665,6 @@
                 }
             }
         },
-        "AuthenticateDevice": {
-            "fields": {
-                "challenge": {
-                    "rule": "required",
-                    "type": "bytes",
-                    "id": 1
-                }
-            }
-        },
-        "AuthenticityProof": {
-            "fields": {
-                "certificates": {
-                    "rule": "repeated",
-                    "type": "bytes",
-                    "id": 1
-                },
-                "signature": {
-                    "rule": "required",
-                    "type": "bytes",
-                    "id": 2
-                }
-            }
-        },
         "WipeDevice": {
             "fields": {}
         },
@@ -6321,1119 +6298,6 @@
                 }
             }
         },
-        "wire_in": {
-            "type": "bool",
-            "id": 50002,
-            "extend": "google.protobuf.EnumValueOptions"
-        },
-        "wire_out": {
-            "type": "bool",
-            "id": 50003,
-            "extend": "google.protobuf.EnumValueOptions"
-        },
-        "wire_debug_in": {
-            "type": "bool",
-            "id": 50004,
-            "extend": "google.protobuf.EnumValueOptions"
-        },
-        "wire_debug_out": {
-            "type": "bool",
-            "id": 50005,
-            "extend": "google.protobuf.EnumValueOptions"
-        },
-        "wire_tiny": {
-            "type": "bool",
-            "id": 50006,
-            "extend": "google.protobuf.EnumValueOptions"
-        },
-        "wire_bootloader": {
-            "type": "bool",
-            "id": 50007,
-            "extend": "google.protobuf.EnumValueOptions"
-        },
-        "wire_no_fsm": {
-            "type": "bool",
-            "id": 50008,
-            "extend": "google.protobuf.EnumValueOptions"
-        },
-        "bitcoin_only": {
-            "type": "bool",
-            "id": 60000,
-            "extend": "google.protobuf.EnumValueOptions"
-        },
-        "has_bitcoin_only_values": {
-            "type": "bool",
-            "id": 51001,
-            "extend": "google.protobuf.EnumOptions"
-        },
-        "experimental_message": {
-            "type": "bool",
-            "id": 52001,
-            "extend": "google.protobuf.MessageOptions"
-        },
-        "wire_type": {
-            "type": "uint32",
-            "id": 52002,
-            "extend": "google.protobuf.MessageOptions"
-        },
-        "experimental_field": {
-            "type": "bool",
-            "id": 53001,
-            "extend": "google.protobuf.FieldOptions"
-        },
-        "include_in_bitcoin_only": {
-            "type": "bool",
-            "id": 60000,
-            "extend": "google.protobuf.FileOptions"
-        },
-        "MessageType": {
-            "options": {
-                "(has_bitcoin_only_values)": true
-            },
-            "valuesOptions": {
-                "MessageType_Initialize": {
-                    "(bitcoin_only)": true,
-                    "(wire_in)": true,
-                    "(wire_tiny)": true
-                },
-                "MessageType_Ping": {
-                    "(bitcoin_only)": true,
-                    "(wire_in)": true
-                },
-                "MessageType_Success": {
-                    "(bitcoin_only)": true,
-                    "(wire_out)": true,
-                    "(wire_debug_out)": true
-                },
-                "MessageType_Failure": {
-                    "(bitcoin_only)": true,
-                    "(wire_out)": true,
-                    "(wire_debug_out)": true
-                },
-                "MessageType_ChangePin": {
-                    "(bitcoin_only)": true,
-                    "(wire_in)": true
-                },
-                "MessageType_WipeDevice": {
-                    "(bitcoin_only)": true,
-                    "(wire_in)": true
-                },
-                "MessageType_GetEntropy": {
-                    "(bitcoin_only)": true,
-                    "(wire_in)": true
-                },
-                "MessageType_Entropy": {
-                    "(bitcoin_only)": true,
-                    "(wire_out)": true
-                },
-                "MessageType_LoadDevice": {
-                    "(bitcoin_only)": true,
-                    "(wire_in)": true
-                },
-                "MessageType_ResetDevice": {
-                    "(bitcoin_only)": true,
-                    "(wire_in)": true
-                },
-                "MessageType_SetBusy": {
-                    "(bitcoin_only)": true,
-                    "(wire_in)": true
-                },
-                "MessageType_Features": {
-                    "(bitcoin_only)": true,
-                    "(wire_out)": true
-                },
-                "MessageType_PinMatrixRequest": {
-                    "(bitcoin_only)": true,
-                    "(wire_out)": true
-                },
-                "MessageType_PinMatrixAck": {
-                    "(bitcoin_only)": true,
-                    "(wire_in)": true,
-                    "(wire_tiny)": true,
-                    "(wire_no_fsm)": true
-                },
-                "MessageType_Cancel": {
-                    "(bitcoin_only)": true,
-                    "(wire_in)": true,
-                    "(wire_tiny)": true
-                },
-                "MessageType_LockDevice": {
-                    "(bitcoin_only)": true,
-                    "(wire_in)": true
-                },
-                "MessageType_ApplySettings": {
-                    "(bitcoin_only)": true,
-                    "(wire_in)": true
-                },
-                "MessageType_ButtonRequest": {
-                    "(bitcoin_only)": true,
-                    "(wire_out)": true
-                },
-                "MessageType_ButtonAck": {
-                    "(bitcoin_only)": true,
-                    "(wire_in)": true,
-                    "(wire_tiny)": true,
-                    "(wire_no_fsm)": true
-                },
-                "MessageType_ApplyFlags": {
-                    "(bitcoin_only)": true,
-                    "(wire_in)": true
-                },
-                "MessageType_GetNonce": {
-                    "(bitcoin_only)": true,
-                    "(wire_in)": true
-                },
-                "MessageType_Nonce": {
-                    "(bitcoin_only)": true,
-                    "(wire_out)": true
-                },
-                "MessageType_BackupDevice": {
-                    "(bitcoin_only)": true,
-                    "(wire_in)": true
-                },
-                "MessageType_EntropyRequest": {
-                    "(bitcoin_only)": true,
-                    "(wire_out)": true
-                },
-                "MessageType_EntropyAck": {
-                    "(bitcoin_only)": true,
-                    "(wire_in)": true
-                },
-                "MessageType_PassphraseRequest": {
-                    "(bitcoin_only)": true,
-                    "(wire_out)": true
-                },
-                "MessageType_PassphraseAck": {
-                    "(bitcoin_only)": true,
-                    "(wire_in)": true,
-                    "(wire_tiny)": true,
-                    "(wire_no_fsm)": true
-                },
-                "MessageType_RecoveryDevice": {
-                    "(bitcoin_only)": true,
-                    "(wire_in)": true
-                },
-                "MessageType_WordRequest": {
-                    "(bitcoin_only)": true,
-                    "(wire_out)": true
-                },
-                "MessageType_WordAck": {
-                    "(bitcoin_only)": true,
-                    "(wire_in)": true
-                },
-                "MessageType_GetFeatures": {
-                    "(bitcoin_only)": true,
-                    "(wire_in)": true
-                },
-                "MessageType_SdProtect": {
-                    "(bitcoin_only)": true,
-                    "(wire_in)": true
-                },
-                "MessageType_ChangeWipeCode": {
-                    "(bitcoin_only)": true,
-                    "(wire_in)": true
-                },
-                "MessageType_EndSession": {
-                    "(bitcoin_only)": true,
-                    "(wire_in)": true
-                },
-                "MessageType_DoPreauthorized": {
-                    "(bitcoin_only)": true,
-                    "(wire_in)": true
-                },
-                "MessageType_PreauthorizedRequest": {
-                    "(bitcoin_only)": true,
-                    "(wire_out)": true
-                },
-                "MessageType_CancelAuthorization": {
-                    "(bitcoin_only)": true,
-                    "(wire_in)": true
-                },
-                "MessageType_RebootToBootloader": {
-                    "(bitcoin_only)": true,
-                    "(wire_in)": true
-                },
-                "MessageType_GetFirmwareHash": {
-                    "(bitcoin_only)": true,
-                    "(wire_in)": true
-                },
-                "MessageType_FirmwareHash": {
-                    "(bitcoin_only)": true,
-                    "(wire_out)": true
-                },
-                "MessageType_UnlockPath": {
-                    "(bitcoin_only)": true,
-                    "(wire_in)": true
-                },
-                "MessageType_UnlockedPathRequest": {
-                    "(bitcoin_only)": true,
-                    "(wire_out)": true
-                },
-                "MessageType_ShowDeviceTutorial": {
-                    "(bitcoin_only)": true,
-                    "(wire_in)": true
-                },
-                "MessageType_UnlockBootloader": {
-                    "(bitcoin_only)": true,
-                    "(wire_in)": true
-                },
-                "MessageType_AuthenticateDevice": {
-                    "(bitcoin_only)": true,
-                    "(wire_out)": true
-                },
-                "MessageType_AuthenticityProof": {
-                    "(bitcoin_only)": true,
-                    "(wire_in)": true
-                },
-                "MessageType_SetU2FCounter": {
-                    "(wire_in)": true
-                },
-                "MessageType_GetNextU2FCounter": {
-                    "(wire_in)": true
-                },
-                "MessageType_NextU2FCounter": {
-                    "(wire_out)": true
-                },
-                "MessageType_Deprecated_PassphraseStateRequest": {
-                    "deprecated": true
-                },
-                "MessageType_Deprecated_PassphraseStateAck": {
-                    "deprecated": true
-                },
-                "MessageType_FirmwareErase": {
-                    "(bitcoin_only)": true,
-                    "(wire_in)": true,
-                    "(wire_bootloader)": true
-                },
-                "MessageType_FirmwareUpload": {
-                    "(bitcoin_only)": true,
-                    "(wire_in)": true,
-                    "(wire_bootloader)": true
-                },
-                "MessageType_FirmwareRequest": {
-                    "(bitcoin_only)": true,
-                    "(wire_out)": true,
-                    "(wire_bootloader)": true
-                },
-                "MessageType_SelfTest": {
-                    "(bitcoin_only)": true,
-                    "(wire_in)": true,
-                    "(wire_bootloader)": true
-                },
-                "MessageType_GetPublicKey": {
-                    "(bitcoin_only)": true,
-                    "(wire_in)": true
-                },
-                "MessageType_PublicKey": {
-                    "(bitcoin_only)": true,
-                    "(wire_out)": true
-                },
-                "MessageType_SignTx": {
-                    "(bitcoin_only)": true,
-                    "(wire_in)": true
-                },
-                "MessageType_TxRequest": {
-                    "(bitcoin_only)": true,
-                    "(wire_out)": true
-                },
-                "MessageType_TxAck": {
-                    "(bitcoin_only)": true,
-                    "(wire_in)": true
-                },
-                "MessageType_GetAddress": {
-                    "(bitcoin_only)": true,
-                    "(wire_in)": true
-                },
-                "MessageType_Address": {
-                    "(bitcoin_only)": true,
-                    "(wire_out)": true
-                },
-                "MessageType_TxAckPaymentRequest": {
-                    "(wire_in)": true
-                },
-                "MessageType_SignMessage": {
-                    "(bitcoin_only)": true,
-                    "(wire_in)": true
-                },
-                "MessageType_VerifyMessage": {
-                    "(bitcoin_only)": true,
-                    "(wire_in)": true
-                },
-                "MessageType_MessageSignature": {
-                    "(bitcoin_only)": true,
-                    "(wire_out)": true
-                },
-                "MessageType_GetOwnershipId": {
-                    "(bitcoin_only)": true,
-                    "(wire_in)": true
-                },
-                "MessageType_OwnershipId": {
-                    "(bitcoin_only)": true,
-                    "(wire_out)": true
-                },
-                "MessageType_GetOwnershipProof": {
-                    "(bitcoin_only)": true,
-                    "(wire_in)": true
-                },
-                "MessageType_OwnershipProof": {
-                    "(bitcoin_only)": true,
-                    "(wire_out)": true
-                },
-                "MessageType_AuthorizeCoinJoin": {
-                    "(bitcoin_only)": true,
-                    "(wire_in)": true
-                },
-                "MessageType_CipherKeyValue": {
-                    "(bitcoin_only)": true,
-                    "(wire_in)": true
-                },
-                "MessageType_CipheredKeyValue": {
-                    "(bitcoin_only)": true,
-                    "(wire_out)": true
-                },
-                "MessageType_SignIdentity": {
-                    "(bitcoin_only)": true,
-                    "(wire_in)": true
-                },
-                "MessageType_SignedIdentity": {
-                    "(bitcoin_only)": true,
-                    "(wire_out)": true
-                },
-                "MessageType_GetECDHSessionKey": {
-                    "(bitcoin_only)": true,
-                    "(wire_in)": true
-                },
-                "MessageType_ECDHSessionKey": {
-                    "(bitcoin_only)": true,
-                    "(wire_out)": true
-                },
-                "MessageType_CosiCommit": {
-                    "(bitcoin_only)": true,
-                    "(wire_in)": true
-                },
-                "MessageType_CosiCommitment": {
-                    "(bitcoin_only)": true,
-                    "(wire_out)": true
-                },
-                "MessageType_CosiSign": {
-                    "(bitcoin_only)": true,
-                    "(wire_in)": true
-                },
-                "MessageType_CosiSignature": {
-                    "(bitcoin_only)": true,
-                    "(wire_out)": true
-                },
-                "MessageType_DebugLinkDecision": {
-                    "(bitcoin_only)": true,
-                    "(wire_debug_in)": true,
-                    "(wire_tiny)": true,
-                    "(wire_no_fsm)": true
-                },
-                "MessageType_DebugLinkGetState": {
-                    "(bitcoin_only)": true,
-                    "(wire_debug_in)": true,
-                    "(wire_tiny)": true
-                },
-                "MessageType_DebugLinkState": {
-                    "(bitcoin_only)": true,
-                    "(wire_debug_out)": true
-                },
-                "MessageType_DebugLinkStop": {
-                    "(bitcoin_only)": true,
-                    "(wire_debug_in)": true
-                },
-                "MessageType_DebugLinkLog": {
-                    "(bitcoin_only)": true,
-                    "(wire_debug_out)": true
-                },
-                "MessageType_DebugLinkMemoryRead": {
-                    "(bitcoin_only)": true,
-                    "(wire_debug_in)": true
-                },
-                "MessageType_DebugLinkMemory": {
-                    "(bitcoin_only)": true,
-                    "(wire_debug_out)": true
-                },
-                "MessageType_DebugLinkMemoryWrite": {
-                    "(bitcoin_only)": true,
-                    "(wire_debug_in)": true
-                },
-                "MessageType_DebugLinkFlashErase": {
-                    "(bitcoin_only)": true,
-                    "(wire_debug_in)": true
-                },
-                "MessageType_DebugLinkLayout": {
-                    "(bitcoin_only)": true,
-                    "(wire_debug_out)": true
-                },
-                "MessageType_DebugLinkReseedRandom": {
-                    "(bitcoin_only)": true,
-                    "(wire_debug_in)": true
-                },
-                "MessageType_DebugLinkRecordScreen": {
-                    "(bitcoin_only)": true,
-                    "(wire_debug_in)": true
-                },
-                "MessageType_DebugLinkEraseSdCard": {
-                    "(bitcoin_only)": true,
-                    "(wire_debug_in)": true
-                },
-                "MessageType_DebugLinkWatchLayout": {
-                    "(bitcoin_only)": true,
-                    "(wire_debug_in)": true
-                },
-                "MessageType_DebugLinkResetDebugEvents": {
-                    "(bitcoin_only)": true,
-                    "(wire_debug_in)": true
-                },
-                "MessageType_EthereumGetPublicKey": {
-                    "(wire_in)": true
-                },
-                "MessageType_EthereumPublicKey": {
-                    "(wire_out)": true
-                },
-                "MessageType_EthereumGetAddress": {
-                    "(wire_in)": true
-                },
-                "MessageType_EthereumAddress": {
-                    "(wire_out)": true
-                },
-                "MessageType_EthereumSignTx": {
-                    "(wire_in)": true
-                },
-                "MessageType_EthereumSignTxEIP1559": {
-                    "(wire_in)": true
-                },
-                "MessageType_EthereumTxRequest": {
-                    "(wire_out)": true
-                },
-                "MessageType_EthereumTxAck": {
-                    "(wire_in)": true
-                },
-                "MessageType_EthereumSignMessage": {
-                    "(wire_in)": true
-                },
-                "MessageType_EthereumVerifyMessage": {
-                    "(wire_in)": true
-                },
-                "MessageType_EthereumMessageSignature": {
-                    "(wire_out)": true
-                },
-                "MessageType_EthereumSignTypedData": {
-                    "(wire_in)": true
-                },
-                "MessageType_EthereumTypedDataStructRequest": {
-                    "(wire_out)": true
-                },
-                "MessageType_EthereumTypedDataStructAck": {
-                    "(wire_in)": true
-                },
-                "MessageType_EthereumTypedDataValueRequest": {
-                    "(wire_out)": true
-                },
-                "MessageType_EthereumTypedDataValueAck": {
-                    "(wire_in)": true
-                },
-                "MessageType_EthereumTypedDataSignature": {
-                    "(wire_out)": true
-                },
-                "MessageType_EthereumSignTypedHash": {
-                    "(wire_in)": true
-                },
-                "MessageType_NEMGetAddress": {
-                    "(wire_in)": true
-                },
-                "MessageType_NEMAddress": {
-                    "(wire_out)": true
-                },
-                "MessageType_NEMSignTx": {
-                    "(wire_in)": true
-                },
-                "MessageType_NEMSignedTx": {
-                    "(wire_out)": true
-                },
-                "MessageType_NEMDecryptMessage": {
-                    "(wire_in)": true
-                },
-                "MessageType_NEMDecryptedMessage": {
-                    "(wire_out)": true
-                },
-                "MessageType_TezosGetAddress": {
-                    "(wire_in)": true
-                },
-                "MessageType_TezosAddress": {
-                    "(wire_out)": true
-                },
-                "MessageType_TezosSignTx": {
-                    "(wire_in)": true
-                },
-                "MessageType_TezosSignedTx": {
-                    "(wire_out)": true
-                },
-                "MessageType_TezosGetPublicKey": {
-                    "(wire_in)": true
-                },
-                "MessageType_TezosPublicKey": {
-                    "(wire_out)": true
-                },
-                "MessageType_StellarSignTx": {
-                    "(wire_in)": true
-                },
-                "MessageType_StellarTxOpRequest": {
-                    "(wire_out)": true
-                },
-                "MessageType_StellarGetAddress": {
-                    "(wire_in)": true
-                },
-                "MessageType_StellarAddress": {
-                    "(wire_out)": true
-                },
-                "MessageType_StellarCreateAccountOp": {
-                    "(wire_in)": true
-                },
-                "MessageType_StellarPaymentOp": {
-                    "(wire_in)": true
-                },
-                "MessageType_StellarPathPaymentStrictReceiveOp": {
-                    "(wire_in)": true
-                },
-                "MessageType_StellarManageSellOfferOp": {
-                    "(wire_in)": true
-                },
-                "MessageType_StellarCreatePassiveSellOfferOp": {
-                    "(wire_in)": true
-                },
-                "MessageType_StellarSetOptionsOp": {
-                    "(wire_in)": true
-                },
-                "MessageType_StellarChangeTrustOp": {
-                    "(wire_in)": true
-                },
-                "MessageType_StellarAllowTrustOp": {
-                    "(wire_in)": true
-                },
-                "MessageType_StellarAccountMergeOp": {
-                    "(wire_in)": true
-                },
-                "MessageType_StellarManageDataOp": {
-                    "(wire_in)": true
-                },
-                "MessageType_StellarBumpSequenceOp": {
-                    "(wire_in)": true
-                },
-                "MessageType_StellarManageBuyOfferOp": {
-                    "(wire_in)": true
-                },
-                "MessageType_StellarPathPaymentStrictSendOp": {
-                    "(wire_in)": true
-                },
-                "MessageType_StellarSignedTx": {
-                    "(wire_out)": true
-                },
-                "MessageType_CardanoGetPublicKey": {
-                    "(wire_in)": true
-                },
-                "MessageType_CardanoPublicKey": {
-                    "(wire_out)": true
-                },
-                "MessageType_CardanoGetAddress": {
-                    "(wire_in)": true
-                },
-                "MessageType_CardanoAddress": {
-                    "(wire_out)": true
-                },
-                "MessageType_CardanoTxItemAck": {
-                    "(wire_out)": true
-                },
-                "MessageType_CardanoTxAuxiliaryDataSupplement": {
-                    "(wire_out)": true
-                },
-                "MessageType_CardanoTxWitnessRequest": {
-                    "(wire_in)": true
-                },
-                "MessageType_CardanoTxWitnessResponse": {
-                    "(wire_out)": true
-                },
-                "MessageType_CardanoTxHostAck": {
-                    "(wire_in)": true
-                },
-                "MessageType_CardanoTxBodyHash": {
-                    "(wire_out)": true
-                },
-                "MessageType_CardanoSignTxFinished": {
-                    "(wire_out)": true
-                },
-                "MessageType_CardanoSignTxInit": {
-                    "(wire_in)": true
-                },
-                "MessageType_CardanoTxInput": {
-                    "(wire_in)": true
-                },
-                "MessageType_CardanoTxOutput": {
-                    "(wire_in)": true
-                },
-                "MessageType_CardanoAssetGroup": {
-                    "(wire_in)": true
-                },
-                "MessageType_CardanoToken": {
-                    "(wire_in)": true
-                },
-                "MessageType_CardanoTxCertificate": {
-                    "(wire_in)": true
-                },
-                "MessageType_CardanoTxWithdrawal": {
-                    "(wire_in)": true
-                },
-                "MessageType_CardanoTxAuxiliaryData": {
-                    "(wire_in)": true
-                },
-                "MessageType_CardanoPoolOwner": {
-                    "(wire_in)": true
-                },
-                "MessageType_CardanoPoolRelayParameters": {
-                    "(wire_in)": true
-                },
-                "MessageType_CardanoGetNativeScriptHash": {
-                    "(wire_in)": true
-                },
-                "MessageType_CardanoNativeScriptHash": {
-                    "(wire_out)": true
-                },
-                "MessageType_CardanoTxMint": {
-                    "(wire_in)": true
-                },
-                "MessageType_CardanoTxCollateralInput": {
-                    "(wire_in)": true
-                },
-                "MessageType_CardanoTxRequiredSigner": {
-                    "(wire_in)": true
-                },
-                "MessageType_CardanoTxInlineDatumChunk": {
-                    "(wire_in)": true
-                },
-                "MessageType_CardanoTxReferenceScriptChunk": {
-                    "(wire_in)": true
-                },
-                "MessageType_CardanoTxReferenceInput": {
-                    "(wire_in)": true
-                },
-                "MessageType_RippleGetAddress": {
-                    "(wire_in)": true
-                },
-                "MessageType_RippleAddress": {
-                    "(wire_out)": true
-                },
-                "MessageType_RippleSignTx": {
-                    "(wire_in)": true
-                },
-                "MessageType_RippleSignedTx": {
-                    "(wire_in)": true
-                },
-                "MessageType_MoneroTransactionInitRequest": {
-                    "(wire_out)": true
-                },
-                "MessageType_MoneroTransactionInitAck": {
-                    "(wire_out)": true
-                },
-                "MessageType_MoneroTransactionSetInputRequest": {
-                    "(wire_out)": true
-                },
-                "MessageType_MoneroTransactionSetInputAck": {
-                    "(wire_out)": true
-                },
-                "MessageType_MoneroTransactionInputViniRequest": {
-                    "(wire_out)": true
-                },
-                "MessageType_MoneroTransactionInputViniAck": {
-                    "(wire_out)": true
-                },
-                "MessageType_MoneroTransactionAllInputsSetRequest": {
-                    "(wire_out)": true
-                },
-                "MessageType_MoneroTransactionAllInputsSetAck": {
-                    "(wire_out)": true
-                },
-                "MessageType_MoneroTransactionSetOutputRequest": {
-                    "(wire_out)": true
-                },
-                "MessageType_MoneroTransactionSetOutputAck": {
-                    "(wire_out)": true
-                },
-                "MessageType_MoneroTransactionAllOutSetRequest": {
-                    "(wire_out)": true
-                },
-                "MessageType_MoneroTransactionAllOutSetAck": {
-                    "(wire_out)": true
-                },
-                "MessageType_MoneroTransactionSignInputRequest": {
-                    "(wire_out)": true
-                },
-                "MessageType_MoneroTransactionSignInputAck": {
-                    "(wire_out)": true
-                },
-                "MessageType_MoneroTransactionFinalRequest": {
-                    "(wire_out)": true
-                },
-                "MessageType_MoneroTransactionFinalAck": {
-                    "(wire_out)": true
-                },
-                "MessageType_MoneroKeyImageExportInitRequest": {
-                    "(wire_out)": true
-                },
-                "MessageType_MoneroKeyImageExportInitAck": {
-                    "(wire_out)": true
-                },
-                "MessageType_MoneroKeyImageSyncStepRequest": {
-                    "(wire_out)": true
-                },
-                "MessageType_MoneroKeyImageSyncStepAck": {
-                    "(wire_out)": true
-                },
-                "MessageType_MoneroKeyImageSyncFinalRequest": {
-                    "(wire_out)": true
-                },
-                "MessageType_MoneroKeyImageSyncFinalAck": {
-                    "(wire_out)": true
-                },
-                "MessageType_MoneroGetAddress": {
-                    "(wire_in)": true
-                },
-                "MessageType_MoneroAddress": {
-                    "(wire_out)": true
-                },
-                "MessageType_MoneroGetWatchKey": {
-                    "(wire_in)": true
-                },
-                "MessageType_MoneroWatchKey": {
-                    "(wire_out)": true
-                },
-                "MessageType_DebugMoneroDiagRequest": {
-                    "(wire_in)": true
-                },
-                "MessageType_DebugMoneroDiagAck": {
-                    "(wire_out)": true
-                },
-                "MessageType_MoneroGetTxKeyRequest": {
-                    "(wire_in)": true
-                },
-                "MessageType_MoneroGetTxKeyAck": {
-                    "(wire_out)": true
-                },
-                "MessageType_MoneroLiveRefreshStartRequest": {
-                    "(wire_in)": true
-                },
-                "MessageType_MoneroLiveRefreshStartAck": {
-                    "(wire_out)": true
-                },
-                "MessageType_MoneroLiveRefreshStepRequest": {
-                    "(wire_in)": true
-                },
-                "MessageType_MoneroLiveRefreshStepAck": {
-                    "(wire_out)": true
-                },
-                "MessageType_MoneroLiveRefreshFinalRequest": {
-                    "(wire_in)": true
-                },
-                "MessageType_MoneroLiveRefreshFinalAck": {
-                    "(wire_out)": true
-                },
-                "MessageType_EosGetPublicKey": {
-                    "(wire_in)": true
-                },
-                "MessageType_EosPublicKey": {
-                    "(wire_out)": true
-                },
-                "MessageType_EosSignTx": {
-                    "(wire_in)": true
-                },
-                "MessageType_EosTxActionRequest": {
-                    "(wire_out)": true
-                },
-                "MessageType_EosTxActionAck": {
-                    "(wire_in)": true
-                },
-                "MessageType_EosSignedTx": {
-                    "(wire_out)": true
-                },
-                "MessageType_BinanceGetAddress": {
-                    "(wire_in)": true
-                },
-                "MessageType_BinanceAddress": {
-                    "(wire_out)": true
-                },
-                "MessageType_BinanceGetPublicKey": {
-                    "(wire_in)": true
-                },
-                "MessageType_BinancePublicKey": {
-                    "(wire_out)": true
-                },
-                "MessageType_BinanceSignTx": {
-                    "(wire_in)": true
-                },
-                "MessageType_BinanceTxRequest": {
-                    "(wire_out)": true
-                },
-                "MessageType_BinanceTransferMsg": {
-                    "(wire_in)": true
-                },
-                "MessageType_BinanceOrderMsg": {
-                    "(wire_in)": true
-                },
-                "MessageType_BinanceCancelMsg": {
-                    "(wire_in)": true
-                },
-                "MessageType_BinanceSignedTx": {
-                    "(wire_out)": true
-                },
-                "MessageType_WebAuthnListResidentCredentials": {
-                    "(wire_in)": true
-                },
-                "MessageType_WebAuthnCredentials": {
-                    "(wire_out)": true
-                },
-                "MessageType_WebAuthnAddResidentCredential": {
-                    "(wire_in)": true
-                },
-                "MessageType_WebAuthnRemoveResidentCredential": {
-                    "(wire_in)": true
-                }
-            },
-            "values": {
-                "MessageType_Initialize": 0,
-                "MessageType_Ping": 1,
-                "MessageType_Success": 2,
-                "MessageType_Failure": 3,
-                "MessageType_ChangePin": 4,
-                "MessageType_WipeDevice": 5,
-                "MessageType_GetEntropy": 9,
-                "MessageType_Entropy": 10,
-                "MessageType_LoadDevice": 13,
-                "MessageType_ResetDevice": 14,
-                "MessageType_SetBusy": 16,
-                "MessageType_Features": 17,
-                "MessageType_PinMatrixRequest": 18,
-                "MessageType_PinMatrixAck": 19,
-                "MessageType_Cancel": 20,
-                "MessageType_LockDevice": 24,
-                "MessageType_ApplySettings": 25,
-                "MessageType_ButtonRequest": 26,
-                "MessageType_ButtonAck": 27,
-                "MessageType_ApplyFlags": 28,
-                "MessageType_GetNonce": 31,
-                "MessageType_Nonce": 33,
-                "MessageType_BackupDevice": 34,
-                "MessageType_EntropyRequest": 35,
-                "MessageType_EntropyAck": 36,
-                "MessageType_PassphraseRequest": 41,
-                "MessageType_PassphraseAck": 42,
-                "MessageType_RecoveryDevice": 45,
-                "MessageType_WordRequest": 46,
-                "MessageType_WordAck": 47,
-                "MessageType_GetFeatures": 55,
-                "MessageType_SdProtect": 79,
-                "MessageType_ChangeWipeCode": 82,
-                "MessageType_EndSession": 83,
-                "MessageType_DoPreauthorized": 84,
-                "MessageType_PreauthorizedRequest": 85,
-                "MessageType_CancelAuthorization": 86,
-                "MessageType_RebootToBootloader": 87,
-                "MessageType_GetFirmwareHash": 88,
-                "MessageType_FirmwareHash": 89,
-                "MessageType_UnlockPath": 93,
-                "MessageType_UnlockedPathRequest": 94,
-                "MessageType_ShowDeviceTutorial": 95,
-                "MessageType_UnlockBootloader": 96,
-                "MessageType_AuthenticateDevice": 97,
-                "MessageType_AuthenticityProof": 98,
-                "MessageType_SetU2FCounter": 63,
-                "MessageType_GetNextU2FCounter": 80,
-                "MessageType_NextU2FCounter": 81,
-                "MessageType_Deprecated_PassphraseStateRequest": 77,
-                "MessageType_Deprecated_PassphraseStateAck": 78,
-                "MessageType_FirmwareErase": 6,
-                "MessageType_FirmwareUpload": 7,
-                "MessageType_FirmwareRequest": 8,
-                "MessageType_SelfTest": 32,
-                "MessageType_GetPublicKey": 11,
-                "MessageType_PublicKey": 12,
-                "MessageType_SignTx": 15,
-                "MessageType_TxRequest": 21,
-                "MessageType_TxAck": 22,
-                "MessageType_GetAddress": 29,
-                "MessageType_Address": 30,
-                "MessageType_TxAckPaymentRequest": 37,
-                "MessageType_SignMessage": 38,
-                "MessageType_VerifyMessage": 39,
-                "MessageType_MessageSignature": 40,
-                "MessageType_GetOwnershipId": 43,
-                "MessageType_OwnershipId": 44,
-                "MessageType_GetOwnershipProof": 49,
-                "MessageType_OwnershipProof": 50,
-                "MessageType_AuthorizeCoinJoin": 51,
-                "MessageType_CipherKeyValue": 23,
-                "MessageType_CipheredKeyValue": 48,
-                "MessageType_SignIdentity": 53,
-                "MessageType_SignedIdentity": 54,
-                "MessageType_GetECDHSessionKey": 61,
-                "MessageType_ECDHSessionKey": 62,
-                "MessageType_CosiCommit": 71,
-                "MessageType_CosiCommitment": 72,
-                "MessageType_CosiSign": 73,
-                "MessageType_CosiSignature": 74,
-                "MessageType_DebugLinkDecision": 100,
-                "MessageType_DebugLinkGetState": 101,
-                "MessageType_DebugLinkState": 102,
-                "MessageType_DebugLinkStop": 103,
-                "MessageType_DebugLinkLog": 104,
-                "MessageType_DebugLinkMemoryRead": 110,
-                "MessageType_DebugLinkMemory": 111,
-                "MessageType_DebugLinkMemoryWrite": 112,
-                "MessageType_DebugLinkFlashErase": 113,
-                "MessageType_DebugLinkLayout": 9001,
-                "MessageType_DebugLinkReseedRandom": 9002,
-                "MessageType_DebugLinkRecordScreen": 9003,
-                "MessageType_DebugLinkEraseSdCard": 9005,
-                "MessageType_DebugLinkWatchLayout": 9006,
-                "MessageType_DebugLinkResetDebugEvents": 9007,
-                "MessageType_EthereumGetPublicKey": 450,
-                "MessageType_EthereumPublicKey": 451,
-                "MessageType_EthereumGetAddress": 56,
-                "MessageType_EthereumAddress": 57,
-                "MessageType_EthereumSignTx": 58,
-                "MessageType_EthereumSignTxEIP1559": 452,
-                "MessageType_EthereumTxRequest": 59,
-                "MessageType_EthereumTxAck": 60,
-                "MessageType_EthereumSignMessage": 64,
-                "MessageType_EthereumVerifyMessage": 65,
-                "MessageType_EthereumMessageSignature": 66,
-                "MessageType_EthereumSignTypedData": 464,
-                "MessageType_EthereumTypedDataStructRequest": 465,
-                "MessageType_EthereumTypedDataStructAck": 466,
-                "MessageType_EthereumTypedDataValueRequest": 467,
-                "MessageType_EthereumTypedDataValueAck": 468,
-                "MessageType_EthereumTypedDataSignature": 469,
-                "MessageType_EthereumSignTypedHash": 470,
-                "MessageType_NEMGetAddress": 67,
-                "MessageType_NEMAddress": 68,
-                "MessageType_NEMSignTx": 69,
-                "MessageType_NEMSignedTx": 70,
-                "MessageType_NEMDecryptMessage": 75,
-                "MessageType_NEMDecryptedMessage": 76,
-                "MessageType_TezosGetAddress": 150,
-                "MessageType_TezosAddress": 151,
-                "MessageType_TezosSignTx": 152,
-                "MessageType_TezosSignedTx": 153,
-                "MessageType_TezosGetPublicKey": 154,
-                "MessageType_TezosPublicKey": 155,
-                "MessageType_StellarSignTx": 202,
-                "MessageType_StellarTxOpRequest": 203,
-                "MessageType_StellarGetAddress": 207,
-                "MessageType_StellarAddress": 208,
-                "MessageType_StellarCreateAccountOp": 210,
-                "MessageType_StellarPaymentOp": 211,
-                "MessageType_StellarPathPaymentStrictReceiveOp": 212,
-                "MessageType_StellarManageSellOfferOp": 213,
-                "MessageType_StellarCreatePassiveSellOfferOp": 214,
-                "MessageType_StellarSetOptionsOp": 215,
-                "MessageType_StellarChangeTrustOp": 216,
-                "MessageType_StellarAllowTrustOp": 217,
-                "MessageType_StellarAccountMergeOp": 218,
-                "MessageType_StellarManageDataOp": 220,
-                "MessageType_StellarBumpSequenceOp": 221,
-                "MessageType_StellarManageBuyOfferOp": 222,
-                "MessageType_StellarPathPaymentStrictSendOp": 223,
-                "MessageType_StellarSignedTx": 230,
-                "MessageType_CardanoGetPublicKey": 305,
-                "MessageType_CardanoPublicKey": 306,
-                "MessageType_CardanoGetAddress": 307,
-                "MessageType_CardanoAddress": 308,
-                "MessageType_CardanoTxItemAck": 313,
-                "MessageType_CardanoTxAuxiliaryDataSupplement": 314,
-                "MessageType_CardanoTxWitnessRequest": 315,
-                "MessageType_CardanoTxWitnessResponse": 316,
-                "MessageType_CardanoTxHostAck": 317,
-                "MessageType_CardanoTxBodyHash": 318,
-                "MessageType_CardanoSignTxFinished": 319,
-                "MessageType_CardanoSignTxInit": 320,
-                "MessageType_CardanoTxInput": 321,
-                "MessageType_CardanoTxOutput": 322,
-                "MessageType_CardanoAssetGroup": 323,
-                "MessageType_CardanoToken": 324,
-                "MessageType_CardanoTxCertificate": 325,
-                "MessageType_CardanoTxWithdrawal": 326,
-                "MessageType_CardanoTxAuxiliaryData": 327,
-                "MessageType_CardanoPoolOwner": 328,
-                "MessageType_CardanoPoolRelayParameters": 329,
-                "MessageType_CardanoGetNativeScriptHash": 330,
-                "MessageType_CardanoNativeScriptHash": 331,
-                "MessageType_CardanoTxMint": 332,
-                "MessageType_CardanoTxCollateralInput": 333,
-                "MessageType_CardanoTxRequiredSigner": 334,
-                "MessageType_CardanoTxInlineDatumChunk": 335,
-                "MessageType_CardanoTxReferenceScriptChunk": 336,
-                "MessageType_CardanoTxReferenceInput": 337,
-                "MessageType_RippleGetAddress": 400,
-                "MessageType_RippleAddress": 401,
-                "MessageType_RippleSignTx": 402,
-                "MessageType_RippleSignedTx": 403,
-                "MessageType_MoneroTransactionInitRequest": 501,
-                "MessageType_MoneroTransactionInitAck": 502,
-                "MessageType_MoneroTransactionSetInputRequest": 503,
-                "MessageType_MoneroTransactionSetInputAck": 504,
-                "MessageType_MoneroTransactionInputViniRequest": 507,
-                "MessageType_MoneroTransactionInputViniAck": 508,
-                "MessageType_MoneroTransactionAllInputsSetRequest": 509,
-                "MessageType_MoneroTransactionAllInputsSetAck": 510,
-                "MessageType_MoneroTransactionSetOutputRequest": 511,
-                "MessageType_MoneroTransactionSetOutputAck": 512,
-                "MessageType_MoneroTransactionAllOutSetRequest": 513,
-                "MessageType_MoneroTransactionAllOutSetAck": 514,
-                "MessageType_MoneroTransactionSignInputRequest": 515,
-                "MessageType_MoneroTransactionSignInputAck": 516,
-                "MessageType_MoneroTransactionFinalRequest": 517,
-                "MessageType_MoneroTransactionFinalAck": 518,
-                "MessageType_MoneroKeyImageExportInitRequest": 530,
-                "MessageType_MoneroKeyImageExportInitAck": 531,
-                "MessageType_MoneroKeyImageSyncStepRequest": 532,
-                "MessageType_MoneroKeyImageSyncStepAck": 533,
-                "MessageType_MoneroKeyImageSyncFinalRequest": 534,
-                "MessageType_MoneroKeyImageSyncFinalAck": 535,
-                "MessageType_MoneroGetAddress": 540,
-                "MessageType_MoneroAddress": 541,
-                "MessageType_MoneroGetWatchKey": 542,
-                "MessageType_MoneroWatchKey": 543,
-                "MessageType_DebugMoneroDiagRequest": 546,
-                "MessageType_DebugMoneroDiagAck": 547,
-                "MessageType_MoneroGetTxKeyRequest": 550,
-                "MessageType_MoneroGetTxKeyAck": 551,
-                "MessageType_MoneroLiveRefreshStartRequest": 552,
-                "MessageType_MoneroLiveRefreshStartAck": 553,
-                "MessageType_MoneroLiveRefreshStepRequest": 554,
-                "MessageType_MoneroLiveRefreshStepAck": 555,
-                "MessageType_MoneroLiveRefreshFinalRequest": 556,
-                "MessageType_MoneroLiveRefreshFinalAck": 557,
-                "MessageType_EosGetPublicKey": 600,
-                "MessageType_EosPublicKey": 601,
-                "MessageType_EosSignTx": 602,
-                "MessageType_EosTxActionRequest": 603,
-                "MessageType_EosTxActionAck": 604,
-                "MessageType_EosSignedTx": 605,
-                "MessageType_BinanceGetAddress": 700,
-                "MessageType_BinanceAddress": 701,
-                "MessageType_BinanceGetPublicKey": 702,
-                "MessageType_BinancePublicKey": 703,
-                "MessageType_BinanceSignTx": 704,
-                "MessageType_BinanceTxRequest": 705,
-                "MessageType_BinanceTransferMsg": 706,
-                "MessageType_BinanceOrderMsg": 707,
-                "MessageType_BinanceCancelMsg": 708,
-                "MessageType_BinanceSignedTx": 709,
-                "MessageType_WebAuthnListResidentCredentials": 800,
-                "MessageType_WebAuthnCredentials": 801,
-                "MessageType_WebAuthnAddResidentCredential": 802,
-                "MessageType_WebAuthnRemoveResidentCredential": 803
-            }
-        },
         "RippleGetAddress": {
             "fields": {
                 "address_n": {
@@ -8517,6 +7381,1109 @@
                         }
                     }
                 }
+            }
+        },
+        "wire_in": {
+            "type": "bool",
+            "id": 50002,
+            "extend": "google.protobuf.EnumValueOptions"
+        },
+        "wire_out": {
+            "type": "bool",
+            "id": 50003,
+            "extend": "google.protobuf.EnumValueOptions"
+        },
+        "wire_debug_in": {
+            "type": "bool",
+            "id": 50004,
+            "extend": "google.protobuf.EnumValueOptions"
+        },
+        "wire_debug_out": {
+            "type": "bool",
+            "id": 50005,
+            "extend": "google.protobuf.EnumValueOptions"
+        },
+        "wire_tiny": {
+            "type": "bool",
+            "id": 50006,
+            "extend": "google.protobuf.EnumValueOptions"
+        },
+        "wire_bootloader": {
+            "type": "bool",
+            "id": 50007,
+            "extend": "google.protobuf.EnumValueOptions"
+        },
+        "wire_no_fsm": {
+            "type": "bool",
+            "id": 50008,
+            "extend": "google.protobuf.EnumValueOptions"
+        },
+        "bitcoin_only": {
+            "type": "bool",
+            "id": 60000,
+            "extend": "google.protobuf.EnumValueOptions"
+        },
+        "has_bitcoin_only_values": {
+            "type": "bool",
+            "id": 51001,
+            "extend": "google.protobuf.EnumOptions"
+        },
+        "experimental_message": {
+            "type": "bool",
+            "id": 52001,
+            "extend": "google.protobuf.MessageOptions"
+        },
+        "wire_type": {
+            "type": "uint32",
+            "id": 52002,
+            "extend": "google.protobuf.MessageOptions"
+        },
+        "experimental_field": {
+            "type": "bool",
+            "id": 53001,
+            "extend": "google.protobuf.FieldOptions"
+        },
+        "include_in_bitcoin_only": {
+            "type": "bool",
+            "id": 60000,
+            "extend": "google.protobuf.FileOptions"
+        },
+        "MessageType": {
+            "options": {
+                "(has_bitcoin_only_values)": true
+            },
+            "valuesOptions": {
+                "MessageType_Initialize": {
+                    "(bitcoin_only)": true,
+                    "(wire_in)": true,
+                    "(wire_tiny)": true
+                },
+                "MessageType_Ping": {
+                    "(bitcoin_only)": true,
+                    "(wire_in)": true
+                },
+                "MessageType_Success": {
+                    "(bitcoin_only)": true,
+                    "(wire_out)": true,
+                    "(wire_debug_out)": true
+                },
+                "MessageType_Failure": {
+                    "(bitcoin_only)": true,
+                    "(wire_out)": true,
+                    "(wire_debug_out)": true
+                },
+                "MessageType_ChangePin": {
+                    "(bitcoin_only)": true,
+                    "(wire_in)": true
+                },
+                "MessageType_WipeDevice": {
+                    "(bitcoin_only)": true,
+                    "(wire_in)": true
+                },
+                "MessageType_GetEntropy": {
+                    "(bitcoin_only)": true,
+                    "(wire_in)": true
+                },
+                "MessageType_Entropy": {
+                    "(bitcoin_only)": true,
+                    "(wire_out)": true
+                },
+                "MessageType_LoadDevice": {
+                    "(bitcoin_only)": true,
+                    "(wire_in)": true
+                },
+                "MessageType_ResetDevice": {
+                    "(bitcoin_only)": true,
+                    "(wire_in)": true
+                },
+                "MessageType_SetBusy": {
+                    "(bitcoin_only)": true,
+                    "(wire_in)": true
+                },
+                "MessageType_Features": {
+                    "(bitcoin_only)": true,
+                    "(wire_out)": true
+                },
+                "MessageType_PinMatrixRequest": {
+                    "(bitcoin_only)": true,
+                    "(wire_out)": true
+                },
+                "MessageType_PinMatrixAck": {
+                    "(bitcoin_only)": true,
+                    "(wire_in)": true,
+                    "(wire_tiny)": true,
+                    "(wire_no_fsm)": true
+                },
+                "MessageType_Cancel": {
+                    "(bitcoin_only)": true,
+                    "(wire_in)": true,
+                    "(wire_tiny)": true
+                },
+                "MessageType_LockDevice": {
+                    "(bitcoin_only)": true,
+                    "(wire_in)": true
+                },
+                "MessageType_ApplySettings": {
+                    "(bitcoin_only)": true,
+                    "(wire_in)": true
+                },
+                "MessageType_ButtonRequest": {
+                    "(bitcoin_only)": true,
+                    "(wire_out)": true
+                },
+                "MessageType_ButtonAck": {
+                    "(bitcoin_only)": true,
+                    "(wire_in)": true,
+                    "(wire_tiny)": true,
+                    "(wire_no_fsm)": true
+                },
+                "MessageType_ApplyFlags": {
+                    "(bitcoin_only)": true,
+                    "(wire_in)": true
+                },
+                "MessageType_GetNonce": {
+                    "(bitcoin_only)": true,
+                    "(wire_in)": true
+                },
+                "MessageType_Nonce": {
+                    "(bitcoin_only)": true,
+                    "(wire_out)": true
+                },
+                "MessageType_BackupDevice": {
+                    "(bitcoin_only)": true,
+                    "(wire_in)": true
+                },
+                "MessageType_EntropyRequest": {
+                    "(bitcoin_only)": true,
+                    "(wire_out)": true
+                },
+                "MessageType_EntropyAck": {
+                    "(bitcoin_only)": true,
+                    "(wire_in)": true
+                },
+                "MessageType_PassphraseRequest": {
+                    "(bitcoin_only)": true,
+                    "(wire_out)": true
+                },
+                "MessageType_PassphraseAck": {
+                    "(bitcoin_only)": true,
+                    "(wire_in)": true,
+                    "(wire_tiny)": true,
+                    "(wire_no_fsm)": true
+                },
+                "MessageType_RecoveryDevice": {
+                    "(bitcoin_only)": true,
+                    "(wire_in)": true
+                },
+                "MessageType_WordRequest": {
+                    "(bitcoin_only)": true,
+                    "(wire_out)": true
+                },
+                "MessageType_WordAck": {
+                    "(bitcoin_only)": true,
+                    "(wire_in)": true
+                },
+                "MessageType_GetFeatures": {
+                    "(bitcoin_only)": true,
+                    "(wire_in)": true
+                },
+                "MessageType_SdProtect": {
+                    "(bitcoin_only)": true,
+                    "(wire_in)": true
+                },
+                "MessageType_ChangeWipeCode": {
+                    "(bitcoin_only)": true,
+                    "(wire_in)": true
+                },
+                "MessageType_EndSession": {
+                    "(bitcoin_only)": true,
+                    "(wire_in)": true
+                },
+                "MessageType_DoPreauthorized": {
+                    "(bitcoin_only)": true,
+                    "(wire_in)": true
+                },
+                "MessageType_PreauthorizedRequest": {
+                    "(bitcoin_only)": true,
+                    "(wire_out)": true
+                },
+                "MessageType_CancelAuthorization": {
+                    "(bitcoin_only)": true,
+                    "(wire_in)": true
+                },
+                "MessageType_RebootToBootloader": {
+                    "(bitcoin_only)": true,
+                    "(wire_in)": true
+                },
+                "MessageType_GetFirmwareHash": {
+                    "(bitcoin_only)": true,
+                    "(wire_in)": true
+                },
+                "MessageType_FirmwareHash": {
+                    "(bitcoin_only)": true,
+                    "(wire_out)": true
+                },
+                "MessageType_UnlockPath": {
+                    "(bitcoin_only)": true,
+                    "(wire_in)": true
+                },
+                "MessageType_UnlockedPathRequest": {
+                    "(bitcoin_only)": true,
+                    "(wire_out)": true
+                },
+                "MessageType_ShowDeviceTutorial": {
+                    "(bitcoin_only)": true,
+                    "(wire_in)": true
+                },
+                "MessageType_UnlockBootloader": {
+                    "(bitcoin_only)": true,
+                    "(wire_in)": true
+                },
+                "MessageType_SetU2FCounter": {
+                    "(wire_in)": true
+                },
+                "MessageType_GetNextU2FCounter": {
+                    "(wire_in)": true
+                },
+                "MessageType_NextU2FCounter": {
+                    "(wire_out)": true
+                },
+                "MessageType_Deprecated_PassphraseStateRequest": {
+                    "deprecated": true
+                },
+                "MessageType_Deprecated_PassphraseStateAck": {
+                    "deprecated": true
+                },
+                "MessageType_FirmwareErase": {
+                    "(bitcoin_only)": true,
+                    "(wire_in)": true,
+                    "(wire_bootloader)": true
+                },
+                "MessageType_FirmwareUpload": {
+                    "(bitcoin_only)": true,
+                    "(wire_in)": true,
+                    "(wire_bootloader)": true
+                },
+                "MessageType_FirmwareRequest": {
+                    "(bitcoin_only)": true,
+                    "(wire_out)": true,
+                    "(wire_bootloader)": true
+                },
+                "MessageType_SelfTest": {
+                    "(bitcoin_only)": true,
+                    "(wire_in)": true,
+                    "(wire_bootloader)": true
+                },
+                "MessageType_GetPublicKey": {
+                    "(bitcoin_only)": true,
+                    "(wire_in)": true
+                },
+                "MessageType_PublicKey": {
+                    "(bitcoin_only)": true,
+                    "(wire_out)": true
+                },
+                "MessageType_SignTx": {
+                    "(bitcoin_only)": true,
+                    "(wire_in)": true
+                },
+                "MessageType_TxRequest": {
+                    "(bitcoin_only)": true,
+                    "(wire_out)": true
+                },
+                "MessageType_TxAck": {
+                    "(bitcoin_only)": true,
+                    "(wire_in)": true
+                },
+                "MessageType_GetAddress": {
+                    "(bitcoin_only)": true,
+                    "(wire_in)": true
+                },
+                "MessageType_Address": {
+                    "(bitcoin_only)": true,
+                    "(wire_out)": true
+                },
+                "MessageType_TxAckPaymentRequest": {
+                    "(wire_in)": true
+                },
+                "MessageType_SignMessage": {
+                    "(bitcoin_only)": true,
+                    "(wire_in)": true
+                },
+                "MessageType_VerifyMessage": {
+                    "(bitcoin_only)": true,
+                    "(wire_in)": true
+                },
+                "MessageType_MessageSignature": {
+                    "(bitcoin_only)": true,
+                    "(wire_out)": true
+                },
+                "MessageType_GetOwnershipId": {
+                    "(bitcoin_only)": true,
+                    "(wire_in)": true
+                },
+                "MessageType_OwnershipId": {
+                    "(bitcoin_only)": true,
+                    "(wire_out)": true
+                },
+                "MessageType_GetOwnershipProof": {
+                    "(bitcoin_only)": true,
+                    "(wire_in)": true
+                },
+                "MessageType_OwnershipProof": {
+                    "(bitcoin_only)": true,
+                    "(wire_out)": true
+                },
+                "MessageType_AuthorizeCoinJoin": {
+                    "(bitcoin_only)": true,
+                    "(wire_in)": true
+                },
+                "MessageType_CipherKeyValue": {
+                    "(bitcoin_only)": true,
+                    "(wire_in)": true
+                },
+                "MessageType_CipheredKeyValue": {
+                    "(bitcoin_only)": true,
+                    "(wire_out)": true
+                },
+                "MessageType_SignIdentity": {
+                    "(bitcoin_only)": true,
+                    "(wire_in)": true
+                },
+                "MessageType_SignedIdentity": {
+                    "(bitcoin_only)": true,
+                    "(wire_out)": true
+                },
+                "MessageType_GetECDHSessionKey": {
+                    "(bitcoin_only)": true,
+                    "(wire_in)": true
+                },
+                "MessageType_ECDHSessionKey": {
+                    "(bitcoin_only)": true,
+                    "(wire_out)": true
+                },
+                "MessageType_CosiCommit": {
+                    "(bitcoin_only)": true,
+                    "(wire_in)": true
+                },
+                "MessageType_CosiCommitment": {
+                    "(bitcoin_only)": true,
+                    "(wire_out)": true
+                },
+                "MessageType_CosiSign": {
+                    "(bitcoin_only)": true,
+                    "(wire_in)": true
+                },
+                "MessageType_CosiSignature": {
+                    "(bitcoin_only)": true,
+                    "(wire_out)": true
+                },
+                "MessageType_DebugLinkDecision": {
+                    "(bitcoin_only)": true,
+                    "(wire_debug_in)": true,
+                    "(wire_tiny)": true,
+                    "(wire_no_fsm)": true
+                },
+                "MessageType_DebugLinkGetState": {
+                    "(bitcoin_only)": true,
+                    "(wire_debug_in)": true,
+                    "(wire_tiny)": true
+                },
+                "MessageType_DebugLinkState": {
+                    "(bitcoin_only)": true,
+                    "(wire_debug_out)": true
+                },
+                "MessageType_DebugLinkStop": {
+                    "(bitcoin_only)": true,
+                    "(wire_debug_in)": true
+                },
+                "MessageType_DebugLinkLog": {
+                    "(bitcoin_only)": true,
+                    "(wire_debug_out)": true
+                },
+                "MessageType_DebugLinkMemoryRead": {
+                    "(bitcoin_only)": true,
+                    "(wire_debug_in)": true
+                },
+                "MessageType_DebugLinkMemory": {
+                    "(bitcoin_only)": true,
+                    "(wire_debug_out)": true
+                },
+                "MessageType_DebugLinkMemoryWrite": {
+                    "(bitcoin_only)": true,
+                    "(wire_debug_in)": true
+                },
+                "MessageType_DebugLinkFlashErase": {
+                    "(bitcoin_only)": true,
+                    "(wire_debug_in)": true
+                },
+                "MessageType_DebugLinkLayout": {
+                    "(bitcoin_only)": true,
+                    "(wire_debug_out)": true
+                },
+                "MessageType_DebugLinkReseedRandom": {
+                    "(bitcoin_only)": true,
+                    "(wire_debug_in)": true
+                },
+                "MessageType_DebugLinkRecordScreen": {
+                    "(bitcoin_only)": true,
+                    "(wire_debug_in)": true
+                },
+                "MessageType_DebugLinkEraseSdCard": {
+                    "(bitcoin_only)": true,
+                    "(wire_debug_in)": true
+                },
+                "MessageType_DebugLinkWatchLayout": {
+                    "(bitcoin_only)": true,
+                    "(wire_debug_in)": true
+                },
+                "MessageType_DebugLinkResetDebugEvents": {
+                    "(bitcoin_only)": true,
+                    "(wire_debug_in)": true
+                },
+                "MessageType_EthereumGetPublicKey": {
+                    "(wire_in)": true
+                },
+                "MessageType_EthereumPublicKey": {
+                    "(wire_out)": true
+                },
+                "MessageType_EthereumGetAddress": {
+                    "(wire_in)": true
+                },
+                "MessageType_EthereumAddress": {
+                    "(wire_out)": true
+                },
+                "MessageType_EthereumSignTx": {
+                    "(wire_in)": true
+                },
+                "MessageType_EthereumSignTxEIP1559": {
+                    "(wire_in)": true
+                },
+                "MessageType_EthereumTxRequest": {
+                    "(wire_out)": true
+                },
+                "MessageType_EthereumTxAck": {
+                    "(wire_in)": true
+                },
+                "MessageType_EthereumSignMessage": {
+                    "(wire_in)": true
+                },
+                "MessageType_EthereumVerifyMessage": {
+                    "(wire_in)": true
+                },
+                "MessageType_EthereumMessageSignature": {
+                    "(wire_out)": true
+                },
+                "MessageType_EthereumSignTypedData": {
+                    "(wire_in)": true
+                },
+                "MessageType_EthereumTypedDataStructRequest": {
+                    "(wire_out)": true
+                },
+                "MessageType_EthereumTypedDataStructAck": {
+                    "(wire_in)": true
+                },
+                "MessageType_EthereumTypedDataValueRequest": {
+                    "(wire_out)": true
+                },
+                "MessageType_EthereumTypedDataValueAck": {
+                    "(wire_in)": true
+                },
+                "MessageType_EthereumTypedDataSignature": {
+                    "(wire_out)": true
+                },
+                "MessageType_EthereumSignTypedHash": {
+                    "(wire_in)": true
+                },
+                "MessageType_NEMGetAddress": {
+                    "(wire_in)": true
+                },
+                "MessageType_NEMAddress": {
+                    "(wire_out)": true
+                },
+                "MessageType_NEMSignTx": {
+                    "(wire_in)": true
+                },
+                "MessageType_NEMSignedTx": {
+                    "(wire_out)": true
+                },
+                "MessageType_NEMDecryptMessage": {
+                    "(wire_in)": true
+                },
+                "MessageType_NEMDecryptedMessage": {
+                    "(wire_out)": true
+                },
+                "MessageType_TezosGetAddress": {
+                    "(wire_in)": true
+                },
+                "MessageType_TezosAddress": {
+                    "(wire_out)": true
+                },
+                "MessageType_TezosSignTx": {
+                    "(wire_in)": true
+                },
+                "MessageType_TezosSignedTx": {
+                    "(wire_out)": true
+                },
+                "MessageType_TezosGetPublicKey": {
+                    "(wire_in)": true
+                },
+                "MessageType_TezosPublicKey": {
+                    "(wire_out)": true
+                },
+                "MessageType_StellarSignTx": {
+                    "(wire_in)": true
+                },
+                "MessageType_StellarTxOpRequest": {
+                    "(wire_out)": true
+                },
+                "MessageType_StellarGetAddress": {
+                    "(wire_in)": true
+                },
+                "MessageType_StellarAddress": {
+                    "(wire_out)": true
+                },
+                "MessageType_StellarCreateAccountOp": {
+                    "(wire_in)": true
+                },
+                "MessageType_StellarPaymentOp": {
+                    "(wire_in)": true
+                },
+                "MessageType_StellarPathPaymentStrictReceiveOp": {
+                    "(wire_in)": true
+                },
+                "MessageType_StellarManageSellOfferOp": {
+                    "(wire_in)": true
+                },
+                "MessageType_StellarCreatePassiveSellOfferOp": {
+                    "(wire_in)": true
+                },
+                "MessageType_StellarSetOptionsOp": {
+                    "(wire_in)": true
+                },
+                "MessageType_StellarChangeTrustOp": {
+                    "(wire_in)": true
+                },
+                "MessageType_StellarAllowTrustOp": {
+                    "(wire_in)": true
+                },
+                "MessageType_StellarAccountMergeOp": {
+                    "(wire_in)": true
+                },
+                "MessageType_StellarManageDataOp": {
+                    "(wire_in)": true
+                },
+                "MessageType_StellarBumpSequenceOp": {
+                    "(wire_in)": true
+                },
+                "MessageType_StellarManageBuyOfferOp": {
+                    "(wire_in)": true
+                },
+                "MessageType_StellarPathPaymentStrictSendOp": {
+                    "(wire_in)": true
+                },
+                "MessageType_StellarSignedTx": {
+                    "(wire_out)": true
+                },
+                "MessageType_CardanoGetPublicKey": {
+                    "(wire_in)": true
+                },
+                "MessageType_CardanoPublicKey": {
+                    "(wire_out)": true
+                },
+                "MessageType_CardanoGetAddress": {
+                    "(wire_in)": true
+                },
+                "MessageType_CardanoAddress": {
+                    "(wire_out)": true
+                },
+                "MessageType_CardanoTxItemAck": {
+                    "(wire_out)": true
+                },
+                "MessageType_CardanoTxAuxiliaryDataSupplement": {
+                    "(wire_out)": true
+                },
+                "MessageType_CardanoTxWitnessRequest": {
+                    "(wire_in)": true
+                },
+                "MessageType_CardanoTxWitnessResponse": {
+                    "(wire_out)": true
+                },
+                "MessageType_CardanoTxHostAck": {
+                    "(wire_in)": true
+                },
+                "MessageType_CardanoTxBodyHash": {
+                    "(wire_out)": true
+                },
+                "MessageType_CardanoSignTxFinished": {
+                    "(wire_out)": true
+                },
+                "MessageType_CardanoSignTxInit": {
+                    "(wire_in)": true
+                },
+                "MessageType_CardanoTxInput": {
+                    "(wire_in)": true
+                },
+                "MessageType_CardanoTxOutput": {
+                    "(wire_in)": true
+                },
+                "MessageType_CardanoAssetGroup": {
+                    "(wire_in)": true
+                },
+                "MessageType_CardanoToken": {
+                    "(wire_in)": true
+                },
+                "MessageType_CardanoTxCertificate": {
+                    "(wire_in)": true
+                },
+                "MessageType_CardanoTxWithdrawal": {
+                    "(wire_in)": true
+                },
+                "MessageType_CardanoTxAuxiliaryData": {
+                    "(wire_in)": true
+                },
+                "MessageType_CardanoPoolOwner": {
+                    "(wire_in)": true
+                },
+                "MessageType_CardanoPoolRelayParameters": {
+                    "(wire_in)": true
+                },
+                "MessageType_CardanoGetNativeScriptHash": {
+                    "(wire_in)": true
+                },
+                "MessageType_CardanoNativeScriptHash": {
+                    "(wire_out)": true
+                },
+                "MessageType_CardanoTxMint": {
+                    "(wire_in)": true
+                },
+                "MessageType_CardanoTxCollateralInput": {
+                    "(wire_in)": true
+                },
+                "MessageType_CardanoTxRequiredSigner": {
+                    "(wire_in)": true
+                },
+                "MessageType_CardanoTxInlineDatumChunk": {
+                    "(wire_in)": true
+                },
+                "MessageType_CardanoTxReferenceScriptChunk": {
+                    "(wire_in)": true
+                },
+                "MessageType_CardanoTxReferenceInput": {
+                    "(wire_in)": true
+                },
+                "MessageType_RippleGetAddress": {
+                    "(wire_in)": true
+                },
+                "MessageType_RippleAddress": {
+                    "(wire_out)": true
+                },
+                "MessageType_RippleSignTx": {
+                    "(wire_in)": true
+                },
+                "MessageType_RippleSignedTx": {
+                    "(wire_in)": true
+                },
+                "MessageType_MoneroTransactionInitRequest": {
+                    "(wire_out)": true
+                },
+                "MessageType_MoneroTransactionInitAck": {
+                    "(wire_out)": true
+                },
+                "MessageType_MoneroTransactionSetInputRequest": {
+                    "(wire_out)": true
+                },
+                "MessageType_MoneroTransactionSetInputAck": {
+                    "(wire_out)": true
+                },
+                "MessageType_MoneroTransactionInputViniRequest": {
+                    "(wire_out)": true
+                },
+                "MessageType_MoneroTransactionInputViniAck": {
+                    "(wire_out)": true
+                },
+                "MessageType_MoneroTransactionAllInputsSetRequest": {
+                    "(wire_out)": true
+                },
+                "MessageType_MoneroTransactionAllInputsSetAck": {
+                    "(wire_out)": true
+                },
+                "MessageType_MoneroTransactionSetOutputRequest": {
+                    "(wire_out)": true
+                },
+                "MessageType_MoneroTransactionSetOutputAck": {
+                    "(wire_out)": true
+                },
+                "MessageType_MoneroTransactionAllOutSetRequest": {
+                    "(wire_out)": true
+                },
+                "MessageType_MoneroTransactionAllOutSetAck": {
+                    "(wire_out)": true
+                },
+                "MessageType_MoneroTransactionSignInputRequest": {
+                    "(wire_out)": true
+                },
+                "MessageType_MoneroTransactionSignInputAck": {
+                    "(wire_out)": true
+                },
+                "MessageType_MoneroTransactionFinalRequest": {
+                    "(wire_out)": true
+                },
+                "MessageType_MoneroTransactionFinalAck": {
+                    "(wire_out)": true
+                },
+                "MessageType_MoneroKeyImageExportInitRequest": {
+                    "(wire_out)": true
+                },
+                "MessageType_MoneroKeyImageExportInitAck": {
+                    "(wire_out)": true
+                },
+                "MessageType_MoneroKeyImageSyncStepRequest": {
+                    "(wire_out)": true
+                },
+                "MessageType_MoneroKeyImageSyncStepAck": {
+                    "(wire_out)": true
+                },
+                "MessageType_MoneroKeyImageSyncFinalRequest": {
+                    "(wire_out)": true
+                },
+                "MessageType_MoneroKeyImageSyncFinalAck": {
+                    "(wire_out)": true
+                },
+                "MessageType_MoneroGetAddress": {
+                    "(wire_in)": true
+                },
+                "MessageType_MoneroAddress": {
+                    "(wire_out)": true
+                },
+                "MessageType_MoneroGetWatchKey": {
+                    "(wire_in)": true
+                },
+                "MessageType_MoneroWatchKey": {
+                    "(wire_out)": true
+                },
+                "MessageType_DebugMoneroDiagRequest": {
+                    "(wire_in)": true
+                },
+                "MessageType_DebugMoneroDiagAck": {
+                    "(wire_out)": true
+                },
+                "MessageType_MoneroGetTxKeyRequest": {
+                    "(wire_in)": true
+                },
+                "MessageType_MoneroGetTxKeyAck": {
+                    "(wire_out)": true
+                },
+                "MessageType_MoneroLiveRefreshStartRequest": {
+                    "(wire_in)": true
+                },
+                "MessageType_MoneroLiveRefreshStartAck": {
+                    "(wire_out)": true
+                },
+                "MessageType_MoneroLiveRefreshStepRequest": {
+                    "(wire_in)": true
+                },
+                "MessageType_MoneroLiveRefreshStepAck": {
+                    "(wire_out)": true
+                },
+                "MessageType_MoneroLiveRefreshFinalRequest": {
+                    "(wire_in)": true
+                },
+                "MessageType_MoneroLiveRefreshFinalAck": {
+                    "(wire_out)": true
+                },
+                "MessageType_EosGetPublicKey": {
+                    "(wire_in)": true
+                },
+                "MessageType_EosPublicKey": {
+                    "(wire_out)": true
+                },
+                "MessageType_EosSignTx": {
+                    "(wire_in)": true
+                },
+                "MessageType_EosTxActionRequest": {
+                    "(wire_out)": true
+                },
+                "MessageType_EosTxActionAck": {
+                    "(wire_in)": true
+                },
+                "MessageType_EosSignedTx": {
+                    "(wire_out)": true
+                },
+                "MessageType_BinanceGetAddress": {
+                    "(wire_in)": true
+                },
+                "MessageType_BinanceAddress": {
+                    "(wire_out)": true
+                },
+                "MessageType_BinanceGetPublicKey": {
+                    "(wire_in)": true
+                },
+                "MessageType_BinancePublicKey": {
+                    "(wire_out)": true
+                },
+                "MessageType_BinanceSignTx": {
+                    "(wire_in)": true
+                },
+                "MessageType_BinanceTxRequest": {
+                    "(wire_out)": true
+                },
+                "MessageType_BinanceTransferMsg": {
+                    "(wire_in)": true
+                },
+                "MessageType_BinanceOrderMsg": {
+                    "(wire_in)": true
+                },
+                "MessageType_BinanceCancelMsg": {
+                    "(wire_in)": true
+                },
+                "MessageType_BinanceSignedTx": {
+                    "(wire_out)": true
+                },
+                "MessageType_WebAuthnListResidentCredentials": {
+                    "(wire_in)": true
+                },
+                "MessageType_WebAuthnCredentials": {
+                    "(wire_out)": true
+                },
+                "MessageType_WebAuthnAddResidentCredential": {
+                    "(wire_in)": true
+                },
+                "MessageType_WebAuthnRemoveResidentCredential": {
+                    "(wire_in)": true
+                }
+            },
+            "values": {
+                "MessageType_Initialize": 0,
+                "MessageType_Ping": 1,
+                "MessageType_Success": 2,
+                "MessageType_Failure": 3,
+                "MessageType_ChangePin": 4,
+                "MessageType_WipeDevice": 5,
+                "MessageType_GetEntropy": 9,
+                "MessageType_Entropy": 10,
+                "MessageType_LoadDevice": 13,
+                "MessageType_ResetDevice": 14,
+                "MessageType_SetBusy": 16,
+                "MessageType_Features": 17,
+                "MessageType_PinMatrixRequest": 18,
+                "MessageType_PinMatrixAck": 19,
+                "MessageType_Cancel": 20,
+                "MessageType_LockDevice": 24,
+                "MessageType_ApplySettings": 25,
+                "MessageType_ButtonRequest": 26,
+                "MessageType_ButtonAck": 27,
+                "MessageType_ApplyFlags": 28,
+                "MessageType_GetNonce": 31,
+                "MessageType_Nonce": 33,
+                "MessageType_BackupDevice": 34,
+                "MessageType_EntropyRequest": 35,
+                "MessageType_EntropyAck": 36,
+                "MessageType_PassphraseRequest": 41,
+                "MessageType_PassphraseAck": 42,
+                "MessageType_RecoveryDevice": 45,
+                "MessageType_WordRequest": 46,
+                "MessageType_WordAck": 47,
+                "MessageType_GetFeatures": 55,
+                "MessageType_SdProtect": 79,
+                "MessageType_ChangeWipeCode": 82,
+                "MessageType_EndSession": 83,
+                "MessageType_DoPreauthorized": 84,
+                "MessageType_PreauthorizedRequest": 85,
+                "MessageType_CancelAuthorization": 86,
+                "MessageType_RebootToBootloader": 87,
+                "MessageType_GetFirmwareHash": 88,
+                "MessageType_FirmwareHash": 89,
+                "MessageType_UnlockPath": 93,
+                "MessageType_UnlockedPathRequest": 94,
+                "MessageType_ShowDeviceTutorial": 95,
+                "MessageType_UnlockBootloader": 96,
+                "MessageType_SetU2FCounter": 63,
+                "MessageType_GetNextU2FCounter": 80,
+                "MessageType_NextU2FCounter": 81,
+                "MessageType_Deprecated_PassphraseStateRequest": 77,
+                "MessageType_Deprecated_PassphraseStateAck": 78,
+                "MessageType_FirmwareErase": 6,
+                "MessageType_FirmwareUpload": 7,
+                "MessageType_FirmwareRequest": 8,
+                "MessageType_SelfTest": 32,
+                "MessageType_GetPublicKey": 11,
+                "MessageType_PublicKey": 12,
+                "MessageType_SignTx": 15,
+                "MessageType_TxRequest": 21,
+                "MessageType_TxAck": 22,
+                "MessageType_GetAddress": 29,
+                "MessageType_Address": 30,
+                "MessageType_TxAckPaymentRequest": 37,
+                "MessageType_SignMessage": 38,
+                "MessageType_VerifyMessage": 39,
+                "MessageType_MessageSignature": 40,
+                "MessageType_GetOwnershipId": 43,
+                "MessageType_OwnershipId": 44,
+                "MessageType_GetOwnershipProof": 49,
+                "MessageType_OwnershipProof": 50,
+                "MessageType_AuthorizeCoinJoin": 51,
+                "MessageType_CipherKeyValue": 23,
+                "MessageType_CipheredKeyValue": 48,
+                "MessageType_SignIdentity": 53,
+                "MessageType_SignedIdentity": 54,
+                "MessageType_GetECDHSessionKey": 61,
+                "MessageType_ECDHSessionKey": 62,
+                "MessageType_CosiCommit": 71,
+                "MessageType_CosiCommitment": 72,
+                "MessageType_CosiSign": 73,
+                "MessageType_CosiSignature": 74,
+                "MessageType_DebugLinkDecision": 100,
+                "MessageType_DebugLinkGetState": 101,
+                "MessageType_DebugLinkState": 102,
+                "MessageType_DebugLinkStop": 103,
+                "MessageType_DebugLinkLog": 104,
+                "MessageType_DebugLinkMemoryRead": 110,
+                "MessageType_DebugLinkMemory": 111,
+                "MessageType_DebugLinkMemoryWrite": 112,
+                "MessageType_DebugLinkFlashErase": 113,
+                "MessageType_DebugLinkLayout": 9001,
+                "MessageType_DebugLinkReseedRandom": 9002,
+                "MessageType_DebugLinkRecordScreen": 9003,
+                "MessageType_DebugLinkEraseSdCard": 9005,
+                "MessageType_DebugLinkWatchLayout": 9006,
+                "MessageType_DebugLinkResetDebugEvents": 9007,
+                "MessageType_EthereumGetPublicKey": 450,
+                "MessageType_EthereumPublicKey": 451,
+                "MessageType_EthereumGetAddress": 56,
+                "MessageType_EthereumAddress": 57,
+                "MessageType_EthereumSignTx": 58,
+                "MessageType_EthereumSignTxEIP1559": 452,
+                "MessageType_EthereumTxRequest": 59,
+                "MessageType_EthereumTxAck": 60,
+                "MessageType_EthereumSignMessage": 64,
+                "MessageType_EthereumVerifyMessage": 65,
+                "MessageType_EthereumMessageSignature": 66,
+                "MessageType_EthereumSignTypedData": 464,
+                "MessageType_EthereumTypedDataStructRequest": 465,
+                "MessageType_EthereumTypedDataStructAck": 466,
+                "MessageType_EthereumTypedDataValueRequest": 467,
+                "MessageType_EthereumTypedDataValueAck": 468,
+                "MessageType_EthereumTypedDataSignature": 469,
+                "MessageType_EthereumSignTypedHash": 470,
+                "MessageType_NEMGetAddress": 67,
+                "MessageType_NEMAddress": 68,
+                "MessageType_NEMSignTx": 69,
+                "MessageType_NEMSignedTx": 70,
+                "MessageType_NEMDecryptMessage": 75,
+                "MessageType_NEMDecryptedMessage": 76,
+                "MessageType_TezosGetAddress": 150,
+                "MessageType_TezosAddress": 151,
+                "MessageType_TezosSignTx": 152,
+                "MessageType_TezosSignedTx": 153,
+                "MessageType_TezosGetPublicKey": 154,
+                "MessageType_TezosPublicKey": 155,
+                "MessageType_StellarSignTx": 202,
+                "MessageType_StellarTxOpRequest": 203,
+                "MessageType_StellarGetAddress": 207,
+                "MessageType_StellarAddress": 208,
+                "MessageType_StellarCreateAccountOp": 210,
+                "MessageType_StellarPaymentOp": 211,
+                "MessageType_StellarPathPaymentStrictReceiveOp": 212,
+                "MessageType_StellarManageSellOfferOp": 213,
+                "MessageType_StellarCreatePassiveSellOfferOp": 214,
+                "MessageType_StellarSetOptionsOp": 215,
+                "MessageType_StellarChangeTrustOp": 216,
+                "MessageType_StellarAllowTrustOp": 217,
+                "MessageType_StellarAccountMergeOp": 218,
+                "MessageType_StellarManageDataOp": 220,
+                "MessageType_StellarBumpSequenceOp": 221,
+                "MessageType_StellarManageBuyOfferOp": 222,
+                "MessageType_StellarPathPaymentStrictSendOp": 223,
+                "MessageType_StellarSignedTx": 230,
+                "MessageType_CardanoGetPublicKey": 305,
+                "MessageType_CardanoPublicKey": 306,
+                "MessageType_CardanoGetAddress": 307,
+                "MessageType_CardanoAddress": 308,
+                "MessageType_CardanoTxItemAck": 313,
+                "MessageType_CardanoTxAuxiliaryDataSupplement": 314,
+                "MessageType_CardanoTxWitnessRequest": 315,
+                "MessageType_CardanoTxWitnessResponse": 316,
+                "MessageType_CardanoTxHostAck": 317,
+                "MessageType_CardanoTxBodyHash": 318,
+                "MessageType_CardanoSignTxFinished": 319,
+                "MessageType_CardanoSignTxInit": 320,
+                "MessageType_CardanoTxInput": 321,
+                "MessageType_CardanoTxOutput": 322,
+                "MessageType_CardanoAssetGroup": 323,
+                "MessageType_CardanoToken": 324,
+                "MessageType_CardanoTxCertificate": 325,
+                "MessageType_CardanoTxWithdrawal": 326,
+                "MessageType_CardanoTxAuxiliaryData": 327,
+                "MessageType_CardanoPoolOwner": 328,
+                "MessageType_CardanoPoolRelayParameters": 329,
+                "MessageType_CardanoGetNativeScriptHash": 330,
+                "MessageType_CardanoNativeScriptHash": 331,
+                "MessageType_CardanoTxMint": 332,
+                "MessageType_CardanoTxCollateralInput": 333,
+                "MessageType_CardanoTxRequiredSigner": 334,
+                "MessageType_CardanoTxInlineDatumChunk": 335,
+                "MessageType_CardanoTxReferenceScriptChunk": 336,
+                "MessageType_CardanoTxReferenceInput": 337,
+                "MessageType_RippleGetAddress": 400,
+                "MessageType_RippleAddress": 401,
+                "MessageType_RippleSignTx": 402,
+                "MessageType_RippleSignedTx": 403,
+                "MessageType_MoneroTransactionInitRequest": 501,
+                "MessageType_MoneroTransactionInitAck": 502,
+                "MessageType_MoneroTransactionSetInputRequest": 503,
+                "MessageType_MoneroTransactionSetInputAck": 504,
+                "MessageType_MoneroTransactionInputViniRequest": 507,
+                "MessageType_MoneroTransactionInputViniAck": 508,
+                "MessageType_MoneroTransactionAllInputsSetRequest": 509,
+                "MessageType_MoneroTransactionAllInputsSetAck": 510,
+                "MessageType_MoneroTransactionSetOutputRequest": 511,
+                "MessageType_MoneroTransactionSetOutputAck": 512,
+                "MessageType_MoneroTransactionAllOutSetRequest": 513,
+                "MessageType_MoneroTransactionAllOutSetAck": 514,
+                "MessageType_MoneroTransactionSignInputRequest": 515,
+                "MessageType_MoneroTransactionSignInputAck": 516,
+                "MessageType_MoneroTransactionFinalRequest": 517,
+                "MessageType_MoneroTransactionFinalAck": 518,
+                "MessageType_MoneroKeyImageExportInitRequest": 530,
+                "MessageType_MoneroKeyImageExportInitAck": 531,
+                "MessageType_MoneroKeyImageSyncStepRequest": 532,
+                "MessageType_MoneroKeyImageSyncStepAck": 533,
+                "MessageType_MoneroKeyImageSyncFinalRequest": 534,
+                "MessageType_MoneroKeyImageSyncFinalAck": 535,
+                "MessageType_MoneroGetAddress": 540,
+                "MessageType_MoneroAddress": 541,
+                "MessageType_MoneroGetWatchKey": 542,
+                "MessageType_MoneroWatchKey": 543,
+                "MessageType_DebugMoneroDiagRequest": 546,
+                "MessageType_DebugMoneroDiagAck": 547,
+                "MessageType_MoneroGetTxKeyRequest": 550,
+                "MessageType_MoneroGetTxKeyAck": 551,
+                "MessageType_MoneroLiveRefreshStartRequest": 552,
+                "MessageType_MoneroLiveRefreshStartAck": 553,
+                "MessageType_MoneroLiveRefreshStepRequest": 554,
+                "MessageType_MoneroLiveRefreshStepAck": 555,
+                "MessageType_MoneroLiveRefreshFinalRequest": 556,
+                "MessageType_MoneroLiveRefreshFinalAck": 557,
+                "MessageType_EosGetPublicKey": 600,
+                "MessageType_EosPublicKey": 601,
+                "MessageType_EosSignTx": 602,
+                "MessageType_EosTxActionRequest": 603,
+                "MessageType_EosTxActionAck": 604,
+                "MessageType_EosSignedTx": 605,
+                "MessageType_BinanceGetAddress": 700,
+                "MessageType_BinanceAddress": 701,
+                "MessageType_BinanceGetPublicKey": 702,
+                "MessageType_BinancePublicKey": 703,
+                "MessageType_BinanceSignTx": 704,
+                "MessageType_BinanceTxRequest": 705,
+                "MessageType_BinanceTransferMsg": 706,
+                "MessageType_BinanceOrderMsg": 707,
+                "MessageType_BinanceCancelMsg": 708,
+                "MessageType_BinanceSignedTx": 709,
+                "MessageType_WebAuthnListResidentCredentials": 800,
+                "MessageType_WebAuthnCredentials": 801,
+                "MessageType_WebAuthnAddResidentCredential": 802,
+                "MessageType_WebAuthnRemoveResidentCredential": 803
             }
         },
         "google": {

@@ -250,8 +250,8 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
             );
 
             if (bitcoinTx.hasWitnesses()) {
-                response.witnesses = bitcoinTx.ins.map((_, i) =>
-                    bitcoinTx?.getWitness(i)?.toString('hex'),
+                response.witnesses = bitcoinTx.ins.map(
+                    (_, i) => bitcoinTx?.getWitness(i)?.toString('hex'),
                 );
             }
         }

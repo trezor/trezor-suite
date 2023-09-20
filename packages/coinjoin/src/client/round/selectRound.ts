@@ -224,15 +224,18 @@ export const getAccountCandidates = ({
     });
 
     if (skippedAccounts.length) {
-        const eventGroups = skippedAccounts.reduce((groups, { key, reason }) => {
-            if (!groups[reason]) {
-                groups[reason] = { phase: reason, accountKeys: [key] };
-            } else {
-                groups[reason].accountKeys.push(key);
-            }
+        const eventGroups = skippedAccounts.reduce(
+            (groups, { key, reason }) => {
+                if (!groups[reason]) {
+                    groups[reason] = { phase: reason, accountKeys: [key] };
+                } else {
+                    groups[reason].accountKeys.push(key);
+                }
 
-            return groups;
-        }, {} as Record<SessionPhase, Parameters<typeof setSessionPhase>[0]>);
+                return groups;
+            },
+            {} as Record<SessionPhase, Parameters<typeof setSessionPhase>[0]>,
+        );
 
         Object.values(eventGroups).forEach(group => setSessionPhase(group));
     }

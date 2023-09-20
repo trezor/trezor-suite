@@ -72,7 +72,8 @@ const Menu = styled.ul<MenuProps>`
     position: absolute;
     flex: 1;
     min-width: ${props => props.minWidth}px;
-    box-shadow: 0 2px 7px 0 ${({ theme }) => theme.BOX_SHADOW_BLACK_15},
+    box-shadow:
+        0 2px 7px 0 ${({ theme }) => theme.BOX_SHADOW_BLACK_15},
         0 2px 3px 0 ${({ theme }) => theme.BOX_SHADOW_BLACK_5};
     padding: ${props => props.topPadding}px ${props => props.horizontalPadding}px
         ${props => props.bottomPadding}px;
