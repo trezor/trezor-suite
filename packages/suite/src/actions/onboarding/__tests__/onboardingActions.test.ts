@@ -58,7 +58,7 @@ export const getInitialState = (custom?: any) => {
     return {
         onboarding: {
             ...onboardingReducer(undefined, {} as Action),
-            reducerEnabled: true,
+            isActive: true,
             ...onboarding,
             recovery: {
                 ...recoveryReducer(undefined, { type: 'foo' } as any),
