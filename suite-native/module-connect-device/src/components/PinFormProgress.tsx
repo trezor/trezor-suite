@@ -38,12 +38,11 @@ export const PinFormProgress = () => {
     // Create array of digits indexes, so we map them for dots to be displayed.
     const progress = Array.from({ length: pinLength }, (_, index) => index);
 
-    const getMapKey = (index: number) => `pin-progress-${index}`;
-
     return (
         <HStack justifyContent="center">
             {progress.map((_, index) => (
-                <Box style={applyStyle(dotStyle)} key={getMapKey(index)} />
+                // eslint-disable-next-line react/no-array-index-key
+                <Box style={applyStyle(dotStyle)} key={index} />
             ))}
         </HStack>
     );

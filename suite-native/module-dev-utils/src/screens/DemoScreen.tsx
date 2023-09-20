@@ -23,6 +23,7 @@ import {
     HStack,
     ButtonSize,
     TextButton,
+    NumPadButton,
 } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Screen, ScreenHeader } from '@suite-native/navigation';
@@ -300,6 +301,7 @@ export const DemoScreen = () => {
                             />
                         </Box>
                     </Box>
+                    <NumPadButton value={2} onPress={() => null} />
                     <Box marginVertical="medium">
                         <ListItem
                             iconName="warningCircle"

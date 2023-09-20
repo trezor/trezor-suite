@@ -1,9 +1,9 @@
 import { Text, Image, VStack } from '@suite-native/atoms';
 
-import { ConnectDeviceScreen } from '../components/ConnectDeviceScreen';
+import { ConnectDeviceBackground } from '../components/ConnectDeviceBackground';
 
 export const ConnectAndUnlockDeviceScreen = () => (
-    <ConnectDeviceScreen>
+    <ConnectDeviceBackground>
         <VStack flex={1} justifyContent="flex-end">
             <Text variant="titleMedium" textAlign="center">
                 Connect & unlock your Trezor
@@ -14,5 +14,5 @@ export const ConnectAndUnlockDeviceScreen = () => (
                 accessibilityLabel="Connected Trezor"
             />
         </VStack>
-    </ConnectDeviceScreen>
+    </ConnectDeviceBackground>
 );

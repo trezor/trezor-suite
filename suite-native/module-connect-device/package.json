@@ -14,9 +14,11 @@
         "@react-navigation/native": "^6.1.3",
         "@react-navigation/native-stack": "^6.9.11",
         "@suite-native/atoms": "workspace:*",
+        "@suite-native/forms": "workspace:*",
         "@suite-native/navigation": "workspace:*",
         "@trezor/styles": "workspace:*",
         "@trezor/validation": "workspace:*",
+        "react": "18.2.0",
         "react-native": "0.71.8"
     }
 }

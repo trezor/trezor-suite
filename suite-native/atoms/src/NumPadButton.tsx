@@ -3,8 +3,6 @@ import { TouchableHighlight, TouchableHighlightProps } from 'react-native';
 
 import { useNativeStyles, NativeStyleObject, prepareNativeStyle } from '@trezor/styles';
 
-import { Text } from './Text';
-
 export type NumPadButtonProps = {
     value: number;
     onPress: (value: number) => void;
@@ -33,7 +31,7 @@ export const NumPadButton = ({ value, onPress, style, ...props }: NumPadButtonPr
             underlayColor={utils.colors.backgroundTertiaryPressedOnElevation0}
             {...props}
         >
-            <Text />
+            <></>
         </TouchableHighlight>
     );
 };

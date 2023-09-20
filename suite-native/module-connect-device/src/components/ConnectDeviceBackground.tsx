@@ -12,14 +12,14 @@ const contentStyle = prepareNativeStyle(_ => ({
     flex: 1,
 }));
 
-export const ConnectDeviceScreen = ({ children }: ConnectDeviceScreenProps) => {
+export const ConnectDeviceBackground = ({ children }: ConnectDeviceScreenProps) => {
     const { applyStyle } = useNativeStyles();
 
     return (
         <Screen customHorizontalPadding={0} customVerticalPadding={0} hasBottomInset={false}>
             <ImageBackground
                 // eslint-disable-next-line global-require
-                source={require('../assets/bg.png')}
+                source={require('../assets/connectDeviceScreenBackground.png')}
                 resizeMode="stretch"
                 style={applyStyle(contentStyle)}
             >
