@@ -83,7 +83,6 @@ const Raw = ({ network }: RawProps) => {
             <StyledCard>
                 <Textarea
                     inputState={inputState}
-                    isMonospace
                     data-test={inputName}
                     defaultValue={inputValue}
                     bottomText={error?.message}
