@@ -183,7 +183,7 @@ export const AddAccountModal = ({ device, onCancel, symbol, noRedirect }: AddAcc
                 selectedNetwork && !networkPinned ? () => setSelectedNetwork(undefined) : undefined
             }
             heading={<Translation id="MODAL_ADD_ACCOUNT_TITLE" />}
-            bottomBar={
+            bottomBarComponents={
                 selectedNetwork &&
                 (selectedNetworkEnabled ? (
                     <AddAccountButton
