@@ -47,7 +47,7 @@ export const EarlyAccessDisable = ({ hideWindow }: EarlyAccessDisableProps) => {
 
     return enabled ? (
         <StyledModal
-            bottomBar={
+            bottomBarComponents={
                 <>
                     <Button onClick={hideWindow} variant="secondary">
                         <Translation id="TR_EARLY_ACCESS_STAY_IN" />
@@ -70,7 +70,7 @@ export const EarlyAccessDisable = ({ hideWindow }: EarlyAccessDisableProps) => {
         </StyledModal>
     ) : (
         <StyledModal
-            bottomBar={
+            bottomBarComponents={
                 <>
                     <Button onClick={hideWindow} variant="secondary">
                         <Translation id="TR_EARLY_ACCESS_SKIP_REINSTALL" />

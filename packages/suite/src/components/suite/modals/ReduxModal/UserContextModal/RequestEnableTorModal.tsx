@@ -64,7 +64,7 @@ export const RequestEnableTorModal = ({ onCancel, decision }: RequestEnableTorMo
             onBackClick={onBackClick}
             isHeadingCentered
             heading={<Translation id="TR_TOR_ENABLE" />}
-            bottomBar={
+            bottomBarComponents={
                 <>
                     {(isDevEnv || coinjoinAllowNoTor) && (
                         <Button

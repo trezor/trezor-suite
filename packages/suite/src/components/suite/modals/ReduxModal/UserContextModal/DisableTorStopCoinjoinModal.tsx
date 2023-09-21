@@ -44,7 +44,7 @@ export const DisableTorStopCoinjoinModal = ({
                 onCancel={onKeepRunningTor}
                 isHeadingCentered
                 heading={<Translation id="TR_TOR_DISABLE" />}
-                bottomBar={
+                bottomBarComponents={
                     <>
                         <Button variant="secondary" onClick={onStopRunningTor}>
                             <Translation id="TR_TOR_STOP" />
