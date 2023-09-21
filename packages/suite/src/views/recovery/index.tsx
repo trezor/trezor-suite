@@ -258,8 +258,8 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
     return (
         <StyledModal
             heading={<Translation id="TR_CHECK_RECOVERY_SEED" />}
-            totalProgressBarSteps={statesInProgressBar.length}
-            currentProgressBarStep={statesInProgressBar.findIndex(s => s === recovery.status) + 1}
+            totalProgressSteps={statesInProgressBar.length}
+            currentProgressStep={statesInProgressBar.findIndex(s => s === recovery.status) + 1}
             bottomBar={actionButtons}
             isCancelable
             onCancel={() => {
