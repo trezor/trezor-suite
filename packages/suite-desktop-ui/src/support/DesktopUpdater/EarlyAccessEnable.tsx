@@ -59,7 +59,7 @@ export const EarlyAccessEnable = ({ hideWindow }: EarlyAccessEnableProps) => {
 
     return enabled ? (
         <StyledModal
-            bottomBar={
+            bottomBarComponents={
                 <>
                     <Button onClick={hideWindow} variant="secondary">
                         <Translation id="TR_EARLY_ACCESS_SKIP_CHECK" />
@@ -85,7 +85,7 @@ export const EarlyAccessEnable = ({ hideWindow }: EarlyAccessEnableProps) => {
             heading={<Translation id="TR_EARLY_ACCESS" />}
             isCancelable
             onCancel={hideWindow}
-            bottomBar={
+            bottomBarComponents={
                 <Tooltip
                     maxWidth={285}
                     content={

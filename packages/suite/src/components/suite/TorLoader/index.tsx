@@ -84,7 +84,7 @@ export const TorLoader = ({ callback, ModalWrapper }: TorLoadingScreenProps) => 
 
     return (
         <ModalWrapper
-            bottomBar={
+            bottomBarComponents={
                 isTorError && (
                     <StyledButton
                         data-test="@tor-loading-screen/try-again-button"
