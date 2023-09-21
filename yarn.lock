@@ -8190,6 +8190,18 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite-native/discovery@workspace:*, @suite-native/discovery@workspace:suite-native/discovery":
+  version: 0.0.0-use.local
+  resolution: "@suite-native/discovery@workspace:suite-native/discovery"
+  dependencies:
+    "@reduxjs/toolkit": 1.9.5
+    "@suite-common/redux-utils": "workspace:*"
+    "@suite-common/suite-types": "workspace:*"
+    "@suite-common/wallet-constants": "workspace:*"
+    "@suite-common/wallet-core": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
 "@suite-native/ethereum-tokens@workspace:*, @suite-native/ethereum-tokens@workspace:suite-native/ethereum-tokens":
   version: 0.0.0-use.local
   resolution: "@suite-native/ethereum-tokens@workspace:suite-native/ethereum-tokens"
@@ -8755,6 +8767,7 @@ __metadata:
     "@suite-common/wallet-core": "workspace:*"
     "@suite-native/config": "workspace:*"
     "@suite-native/device": "workspace:*"
+    "@suite-native/discovery": "workspace:*"
     "@suite-native/fiat-rates": "workspace:*"
     "@suite-native/graph": "workspace:*"
     "@suite-native/logger": "workspace:*"

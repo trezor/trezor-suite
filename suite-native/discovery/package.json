@@ -1,0 +1,19 @@
+{
+    "name": "@suite-native/discovery",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "main": "src/index",
+    "scripts": {
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "type-check": "tsc --build"
+    },
+    "dependencies": {
+        "@reduxjs/toolkit": "1.9.5",
+        "@suite-common/redux-utils": "workspace:*",
+        "@suite-common/suite-types": "workspace:*",
+        "@suite-common/wallet-constants": "workspace:*",
+        "@suite-common/wallet-core": "workspace:*"
+    }
+}

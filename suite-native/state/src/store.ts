@@ -7,6 +7,7 @@ import { logsMiddleware as nativeLogsMiddleware } from '@suite-native/logger';
 import { messageSystemMiddleware } from '@suite-native/message-system';
 import { prepareBlockchainMiddleware } from '@suite-common/wallet-core';
 import { prepareButtonRequestMiddleware, prepareDeviceMiddleware } from '@suite-native/device';
+import { prepareDiscoveryMiddleware } from '@suite-native/discovery';
 
 import { extraDependencies } from './extraDependencies';
 import { prepareRootReducers } from './reducers';
@@ -19,6 +20,7 @@ const middlewares: Middleware[] = [
     logsMiddleware,
     prepareDeviceMiddleware(extraDependencies),
     prepareButtonRequestMiddleware(extraDependencies),
+    prepareDiscoveryMiddleware(extraDependencies),
 ];
 
 if (__DEV__) {
