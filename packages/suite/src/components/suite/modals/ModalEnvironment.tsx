@@ -9,13 +9,6 @@ type ModalEnvironmentProps = {
 
 export const ModalEnvironment = ({ onClickBackdrop, children }: ModalEnvironmentProps) => (
     <FocusLock autoFocus={false}>
-        <Backdrop
-            onClick={() => {
-                console.log('first');
-                onClickBackdrop?.();
-            }}
-        >
-            {children}
-        </Backdrop>
+        <Backdrop onClick={onClickBackdrop}>{children}</Backdrop>
     </FocusLock>
 );
