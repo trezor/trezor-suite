@@ -120,7 +120,7 @@ export const Backup = ({ cancelable, onCancel }: ForegroundAppProps) => {
                 isCancelable
                 onCancel={onCancel}
                 heading={getEdgeCaseModalHeading(device.features.unfinished_backup)}
-                bottomBar={<CloseButton onClick={onCancel} variant="TR_CLOSE" />}
+                bottomBarComponents={<CloseButton onClick={onCancel} variant="TR_CLOSE" />}
             >
                 {device.features.unfinished_backup ? (
                     <VerticalCenter>
@@ -152,7 +152,7 @@ export const Backup = ({ cancelable, onCancel }: ForegroundAppProps) => {
             heading={getModalHeading(backup.status)}
             totalProgressBarSteps={nonErrorBackupStatuses.length}
             currentProgressBarStep={currentProgressBarStep}
-            bottomBar={
+            bottomBarComponents={
                 <>
                     {backup.status === 'initial' && (
                         <>

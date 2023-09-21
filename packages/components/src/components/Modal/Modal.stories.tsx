@@ -23,7 +23,7 @@ export const Modal: StoryObj<ModalProps> = {
         heading: 'Modal heading',
         description: 'Modal description',
         children: 'Modal content',
-        bottomBar: <Buttons />,
+        bottomBarComponents: <Buttons />,
         onCancel: () => console.log('close'),
     },
     argTypes: {
@@ -61,17 +61,17 @@ export const Modal: StoryObj<ModalProps> = {
                 },
             },
         },
-        bottomBar: {
-            options: ['none', 'bottomBar'],
+        bottomBarComponents: {
+            options: ['none', 'bottomBarComponents'],
             mapping: {
                 none: undefined,
-                bottomBar: <Buttons />,
+                bottomBarComponents: <Buttons />,
             },
             control: {
                 type: 'select',
                 labels: {
                     none: 'none',
-                    bottomBar: 'with bottom bar components',
+                    bottomBarComponents: 'with bottom bar components',
                 },
             },
         },
