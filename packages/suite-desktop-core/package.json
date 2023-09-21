@@ -33,7 +33,7 @@
         "electron-store": "^8.1.0",
         "electron-updater": "6.1.4",
         "openpgp": "^5.10.1",
-        "systeminformation": "^5.21.4"
+        "systeminformation": "^5.21.7"
     },
     "devDependencies": {
         "@electron/notarize": "2.1.0",

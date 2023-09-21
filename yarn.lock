@@ -9829,7 +9829,7 @@ __metadata:
     jest: ^26.6.3
     openpgp: ^5.10.1
     rimraf: ^5.0.1
-    systeminformation: ^5.21.4
+    systeminformation: ^5.21.7
     tsx: ^3.12.7
     typescript: 4.9.5
     xvfb-maybe: ^0.2.1
@@ -34449,12 +34449,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"systeminformation@npm:^5.21.4":
-  version: 5.21.4
-  resolution: "systeminformation@npm:5.21.4"
+"systeminformation@npm:^5.21.7":
+  version: 5.21.8
+  resolution: "systeminformation@npm:5.21.8"
   bin:
     systeminformation: lib/cli.js
-  checksum: 2324456d1fee85efd3f5408d989afc29f4c8e1cc071f9c1082fc500cc3a4acb7d3be4e5706e706acf1558a4637bd8db028cafd5dcb3ccfd11514177ff0b870aa
+  checksum: 302b8b430a5b0a7009be95c086b1bc43db3ecfd6ecab6cf654ae3312240f616823505f15a080a70f2335a9e5aab45d789aaba018843c9a9f8f18117aa32dce8a
   conditions: (os=darwin | os=linux | os=win32 | os=freebsd | os=openbsd | os=netbsd | os=sunos | os=android)
   languageName: node
   linkType: hard
