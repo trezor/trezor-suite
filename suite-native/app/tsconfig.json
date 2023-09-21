@@ -31,6 +31,7 @@
         { "path": "../config" },
         { "path": "../feature-flags" },
         { "path": "../fiat-rates" },
+        { "path": "../intl" },
         { "path": "../message-system" },
         { "path": "../module-accounts-import" },
         {
@@ -52,7 +53,6 @@
         { "path": "../transactions" },
         { "path": "../../packages/connect" },
         { "path": "../../packages/styles" },
-        { "path": "../../packages/suite-data" },
         { "path": "../../packages/theme" }
     ],
     "include": [".", "**.json"]
