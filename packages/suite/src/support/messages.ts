@@ -2199,7 +2199,7 @@ export default defineMessages({
     },
     TR_DEVICE: {
         defaultMessage: 'Device',
-        description: 'Category in Settings',
+        description: 'Category in Settings, step in Onboarding',
         id: 'TR_DEVICE',
     },
     TR_DEVICE_DISCONNECTED_DURING_ACTION_DESCRIPTION: {
@@ -6615,21 +6615,9 @@ export default defineMessages({
         id: 'TR_GUIDE_FEEDBACK_ERROR',
         defaultMessage: 'A server error has occurred. Please try again later.',
     },
-    TR_ONBOARDING_STEP_FIRMWARE: {
-        id: 'TR_ONBOARDING_STEP_FIRMWARE',
-        defaultMessage: 'Firmware',
-    },
     TR_ONBOARDING_STEP_WALLET: {
         id: 'TR_ONBOARDING_STEP_WALLET',
         defaultMessage: 'Wallet',
-    },
-    TR_ONBOARDING_STEP_PIN: {
-        id: 'TR_ONBOARDING_STEP_PIN',
-        defaultMessage: 'PIN',
-    },
-    TR_ONBOARDING_STEP_COINS: {
-        id: 'TR_ONBOARDING_STEP_COINS',
-        defaultMessage: 'Coins',
     },
     TR_ONBOARDING_CURRENT_VERSION: {
         id: 'TR_ONBOARDING_CURRENT_VERSION',

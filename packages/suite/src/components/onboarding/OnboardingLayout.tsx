@@ -106,8 +106,8 @@ const Content = styled.div`
 
 const progressBarSteps = [
     {
-        key: 'fw',
-        label: <Translation id="TR_ONBOARDING_STEP_FIRMWARE" />,
+        key: 'device',
+        label: <Translation id="TR_DEVICE" />,
     },
     {
         key: 'wallet',
@@ -115,11 +115,11 @@ const progressBarSteps = [
     },
     {
         key: 'pin',
-        label: <Translation id="TR_ONBOARDING_STEP_PIN" />,
+        label: <Translation id="TR_PIN" />,
     },
     {
         key: 'coins',
-        label: <Translation id="TR_ONBOARDING_STEP_COINS" />,
+        label: <Translation id="TR_COINS" />,
     },
     {
         key: 'final',
