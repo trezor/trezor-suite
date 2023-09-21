@@ -563,9 +563,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
             const deviceUnitColor = feat.unit_color.toString();
 
             if (deviceUnitColor in deviceInfo.colors) {
-                this.color = (deviceInfo.colors as Record<string, string>)[
-                    deviceUnitColor
-                ].toLowerCase();
+                this.color = (deviceInfo.colors as Record<string, string>)[deviceUnitColor];
             }
         }
     }
