@@ -181,7 +181,7 @@ export const QrScannerModal = ({ onCancel, decision, allowPaste }: QrScannerModa
                     )}
                 </DescriptionWrapper>
             }
-            bottomBar={
+            bottomBarComponents={
                 isPasteMode ? (
                     <ActionButton isDisabled={!text} onClick={() => handleScan(text)}>
                         <Translation id="TR_CONFIRM" />

@@ -66,7 +66,7 @@ export const DeviceInvalidModeLayout = ({
             heading={title}
             description={text}
             data-test={dataTest}
-            bottomBar={
+            bottomBarComponents={
                 <>
                     {resolveButton && resolveButton}
                     {allowSwitchDevice && devicesCount > 1 && (

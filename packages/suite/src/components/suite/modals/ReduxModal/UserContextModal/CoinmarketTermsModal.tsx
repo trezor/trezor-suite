@@ -97,7 +97,7 @@ export const CoinmarketTermsModal = ({
                     }}
                 />
             }
-            bottomBar={
+            bottomBarComponents={
                 <FooterContent>
                     <Button
                         data-test={`@coinmarket/${lowercaseType}/offers/buy-terms-confirm-button`}
