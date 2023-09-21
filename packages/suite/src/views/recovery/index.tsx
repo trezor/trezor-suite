@@ -260,7 +260,7 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
             heading={<Translation id="TR_CHECK_RECOVERY_SEED" />}
             totalProgressBarSteps={statesInProgressBar.length}
             currentProgressBarStep={statesInProgressBar.findIndex(s => s === recovery.status) + 1}
-            bottomBar={actionButtons}
+            bottomBarComponents={actionButtons}
             isCancelable
             onCancel={() => {
                 if (['in-progress', 'waiting-for-confirmation'].includes(recovery.status)) {
