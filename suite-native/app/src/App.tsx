@@ -2,13 +2,10 @@ import { useEffect } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { useDispatch, useSelector } from 'react-redux';
-import { IntlProvider } from 'react-intl';
 
 import * as SplashScreen from 'expo-splash-screen';
 import * as Sentry from '@sentry/react-native';
 
-// FIXME this is only temporary until Intl refactor will be finished
-import enMessages from '@trezor/suite-data/files/translations/en.json';
 import { selectIsAppReady, selectIsConnectInitialized, StoreProvider } from '@suite-native/state';
 // import { NotificationRenderer } from '@suite-native/notifications';
 import { ToastRenderer } from '@suite-native/toasts';
@@ -17,6 +14,7 @@ import { AlertRenderer } from '@suite-native/alerts';
 import { NavigationContainerWithAnalytics } from '@suite-native/navigation';
 import { AuthenticatorProvider } from '@suite-native/biometrics';
 import { MessageSystemRenderer } from '@suite-native/message-system';
+import { IntlProvider } from '@suite-native/intl';
 
 import { RootStackNavigator } from './navigation/RootStackNavigator';
 import { StylesProvider } from './StylesProvider';
@@ -75,7 +73,7 @@ const AppComponent = () => {
 
 const PureApp = () => (
     <GestureHandlerRootView style={{ flex: 1 }}>
-        <IntlProvider locale="en" defaultLocale="en" messages={enMessages}>
+        <IntlProvider>
             <StoreProvider>
                 <SentryProvider>
                     <SafeAreaProvider>

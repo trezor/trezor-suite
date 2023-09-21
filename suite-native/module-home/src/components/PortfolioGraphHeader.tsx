@@ -9,6 +9,7 @@ import {
     PriceChangeIndicator,
 } from '@suite-native/graph';
 import { FiatGraphPoint } from '@suite-common/graph';
+import { Translation } from '@suite-native/intl';
 
 // use atomic jotai structure for absolute minimum re-renders and maximum performance
 // otherwise graph will be freezing on slower device while point swipe gesture
@@ -42,7 +43,7 @@ export const PortfolioGraphHeader = () => {
         <Box>
             <VStack spacing="extraSmall" alignItems="center">
                 <Text color="textSubdued" variant="hint">
-                    My portfolio balance
+                    <Translation id="moduleHome.graph.title" />
                 </Text>
                 <Box justifyContent="center" alignItems="center">
                     <Balance />

@@ -11,6 +11,7 @@
         { "path": "../atoms" },
         { "path": "../formatters" },
         { "path": "../graph" },
+        { "path": "../intl" },
         {
             "path": "../module-accounts-management"
         },
