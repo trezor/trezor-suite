@@ -1,43 +1,27 @@
-import { P } from '../../../index';
-import { storiesOf } from '@storybook/react';
-import { select, text } from '@storybook/addon-knobs';
+import { StoryObj } from '@storybook/react';
+import { P, PProps } from '../../../index';
 
-storiesOf('Typography/Paragraph', module).add('Paragraph', () => {
-    const value = text('Value', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.');
-    const textAlign: any = select(
-        'Align',
-        {
-            Left: 'left',
-            Right: 'right',
-            Center: 'center',
-        },
-        'left',
-    );
-    const size: any = select(
-        'Size',
-        {
-            Normal: 'normal',
-            Small: 'small',
-            Tiny: 'tiny',
-        },
-        'normal',
-    );
-    const weight: any = select(
-        'Weight',
-        {
-            Normal: 'normal',
-            Bold: 'bold',
-        },
-        'normal',
-    );
+export default {
+    title: 'Typography/Paragraph',
+    component: P,
+};
 
-    return (
-        <P
-            {...(textAlign !== 'left' ? { textAlign } : {})}
-            {...(size !== 'normal' ? { size } : {})}
-            {...(weight !== 'normal' ? { weight } : {})}
-        >
-            {value}
-        </P>
-    );
-});
+export const Paragraph: StoryObj<PProps> = {
+    args: {
+        children: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+    },
+    argTypes: {
+        textAlign: {
+            control: 'radio',
+            options: ['left', 'center', 'right'],
+        },
+        size: {
+            control: 'radio',
+            options: ['normal', 'small', 'tiny'],
+        },
+        weight: {
+            control: 'radio',
+            options: ['normal', 'bold'],
+        },
+    },
+};
