@@ -88,7 +88,7 @@ export const Backup = ({ cancelable, onCancel }: ForegroundAppProps) => {
 
     const nonErrorBackupStatuses = ['initial', 'in-progress', 'finished'] as const;
     const isDeviceUnavailable = !device || !device.features || !device.connected;
-    const currentProgressBarStep = nonErrorBackupStatuses.some(status => status === backup.status)
+    const currentProgressStep = nonErrorBackupStatuses.some(status => status === backup.status)
         ? nonErrorBackupStatuses.findIndex(s => s === backup.status) + 1
         : undefined;
 
@@ -150,8 +150,8 @@ export const Backup = ({ cancelable, onCancel }: ForegroundAppProps) => {
             onCancel={onCancel}
             data-test="@backup"
             heading={getModalHeading(backup.status)}
-            totalProgressBarSteps={nonErrorBackupStatuses.length}
-            currentProgressBarStep={currentProgressBarStep}
+            totalProgressSteps={nonErrorBackupStatuses.length}
+            currentProgressStep={currentProgressStep}
             bottomBar={
                 <>
                     {backup.status === 'initial' && (

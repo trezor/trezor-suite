@@ -23,8 +23,8 @@ export const WordModal = (props: ModalProps) => {
             }
             onCancel={() => TrezorConnect.cancel(intl.formatMessage(messages.TR_CANCELLED))}
             isCancelable
-            totalProgressBarSteps={5}
-            currentProgressBarStep={4}
+            totalProgressSteps={5}
+            currentProgressStep={4}
             {...props}
         >
             <WordInput />
