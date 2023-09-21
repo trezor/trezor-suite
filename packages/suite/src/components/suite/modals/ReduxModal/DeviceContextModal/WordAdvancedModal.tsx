@@ -35,8 +35,8 @@ export const WordAdvancedModal = ({ count, ...rest }: WordAdvancedModalProps) =>
             description={<Translation id="TR_ADVANCED_RECOVERY_TEXT" />}
             onCancel={() => TrezorConnect.cancel(intl.formatMessage(messages.TR_CANCELLED))}
             isCancelable
-            totalProgressBarSteps={5}
-            currentProgressBarStep={4}
+            totalProgressSteps={5}
+            currentProgressStep={4}
             {...rest}
         >
             <ContentWrapper>
