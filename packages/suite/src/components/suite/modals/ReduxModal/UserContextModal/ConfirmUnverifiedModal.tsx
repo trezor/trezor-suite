@@ -78,7 +78,7 @@ export const ConfirmUnverifiedModal = ({
                     values={{ claim: <Translation id={description} /> }}
                 />
             }
-            bottomBar={
+            bottomBarComponents={
                 <>
                     <Button variant="secondary" onClick={continueUnverified}>
                         <Translation id={showUnverifiedButtonText} />

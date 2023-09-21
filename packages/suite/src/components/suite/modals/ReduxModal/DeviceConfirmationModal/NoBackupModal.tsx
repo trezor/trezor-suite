@@ -31,7 +31,7 @@ export const NoBackupModal = () => {
             onCancel={close}
             heading={<Translation id="TR_YOUR_TREZOR_IS_NOT_BACKED_UP" />}
             description={<Translation id="TR_IF_YOUR_DEVICE_IS_EVER_LOST" />}
-            bottomBar={
+            bottomBarComponents={
                 <>
                     <Button
                         variant="secondary"

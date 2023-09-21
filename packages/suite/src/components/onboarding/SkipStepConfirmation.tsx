@@ -51,7 +51,7 @@ export const SkipStepConfirmation = ({ onCancel }: SkipStepConfirmationProps) =>
             isCancelable
             heading={text}
             onCancel={onCancel}
-            bottomBar={
+            bottomBarComponents={
                 <>
                     <Button
                         variant="destructive"

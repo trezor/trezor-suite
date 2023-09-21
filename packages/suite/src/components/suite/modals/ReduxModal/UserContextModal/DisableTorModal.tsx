@@ -113,7 +113,7 @@ export const DisableTorModal = ({ onCancel, decision }: DisableTorModalProps) =>
                         <Translation id="TR_TOR_DISABLE_ONIONS_ONLY_RESOLVED" />
                     )
                 }
-                bottomBar={
+                bottomBarComponents={
                     <Button
                         variant={onionBackends.length ? 'secondary' : 'primary'}
                         onClick={onDisableTor}

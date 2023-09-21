@@ -86,7 +86,7 @@ export const MetadataProviderModal = ({ onCancel, decision }: MetadataProviderMo
             onCancel={onModalCancel}
             heading={<Translation id="METADATA_MODAL_HEADING" />}
             data-test="@modal/metadata-provider"
-            bottomBar={
+            bottomBarComponents={
                 <>
                     <StyledButton
                         variant="tertiary"
