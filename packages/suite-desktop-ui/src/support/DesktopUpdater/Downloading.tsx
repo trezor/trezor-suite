@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 import { UpdateProgress } from '@trezor/suite-desktop-api';
 import { bytesToHumanReadable } from '@trezor/utils';
-import { Button, H2, variables } from '@trezor/components';
+import { Button, H2, ProgressBar, variables } from '@trezor/components';
 
 import { Translation, Modal } from 'src/components/suite';
 
@@ -33,8 +33,8 @@ const Text = styled(H2)`
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
-const StyledButton = styled(Button)`
-    margin: 21px 0;
+const StyledProgressBar = styled(ProgressBar)`
+    margin-top: 16px;
 `;
 
 interface DownloadingProps {
@@ -55,17 +55,16 @@ export const Downloading = ({ hideWindow, progress }: DownloadingProps) => {
     return (
         <Modal
             headerComponent={
-                <StyledButton
-                    variant="secondary"
+                <Button
+                    size="small"
+                    variant="tertiary"
                     icon="CROSS"
                     iconAlignment="right"
                     onClick={hideWindow}
                 >
                     <Translation id="TR_BACKGROUND_DOWNLOAD" />
-                </StyledButton>
+                </Button>
             }
-            currentProgressBarStep={progress?.percent || 0}
-            totalProgressBarSteps={100}
             onCancel={hideWindow}
         >
             <DownloadWrapper>
@@ -88,6 +87,8 @@ export const Downloading = ({ hideWindow, progress }: DownloadingProps) => {
                     </>
                 )}
             </DownloadWrapper>
+
+            <StyledProgressBar value={progress?.percent || 0} />
         </Modal>
     );
 };

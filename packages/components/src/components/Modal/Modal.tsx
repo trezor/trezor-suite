@@ -6,7 +6,7 @@ import { boxShadows, spacings, spacingsPx, typography } from '@trezor/theme';
 
 import { Icon } from '../assets/Icon/Icon';
 import { IconType } from '../../support/types';
-import { ProgressBar } from '../loaders/ProgressBar/ProgressBar';
+import { Stepper } from '../loaders/Stepper/Stepper';
 
 const CLOSE_ICON_SIZE = spacings.xxl;
 const CLOSE_ICON_MARGIN = 16;
@@ -34,12 +34,13 @@ export interface HeaderProps {
     isBottomBorderShown: boolean;
 }
 
-const Header = styled.div<HeaderProps>`
+const Header = styled.header<HeaderProps>`
     display: flex;
     align-items: center;
     word-break: break-word;
     min-height: 52px;
     padding: ${spacingsPx.xs} ${spacingsPx.md};
+    padding-bottom: ${({ isBottomBorderShown }) => (isBottomBorderShown ? spacingsPx.md : 0)};
     border-bottom: 1px solid
         ${({ isBottomBorderShown, theme }) =>
             isBottomBorderShown ? theme.borderOnElevation1 : 'transparent'};
@@ -140,12 +141,19 @@ const Content = styled.div`
     height: 100%;
 `;
 
-const BottomBar = styled.div`
+const BottomBar = styled.footer`
     display: flex;
+    justify-content: space-between;
     flex-wrap: wrap;
     gap: ${spacingsPx.xs};
     padding: ${spacingsPx.md};
     border-top: 1px solid ${({ theme }) => theme.borderOnElevation1};
+`;
+
+const BottomBarComponents = styled.div`
+    display: flex;
+    align-items: center;
+    gap: ${spacingsPx.xs};
 `;
 
 const CloseIcon = styled(Icon)`
@@ -221,17 +229,20 @@ const Modal = ({
         [],
     );
 
-    // check if progress bar placeholder should be rendered
-    const showProgressBar =
+    const areStepsShown =
         totalProgressBarSteps !== undefined && currentProgressBarStep !== undefined;
 
     return (
         <>
             {modalPrompt && <ModalPromptContainer>{modalPrompt}</ModalPromptContainer>}
 
-            <Container data-test={dataTest} className={className}>
+            <Container
+                onClick={e => e.stopPropagation()} // needed because of the Backdrop implementation
+                data-test={dataTest}
+                className={className}
+            >
                 {(!!onBackClick || !!heading || showHeaderActions) && (
-                    <Header isBottomBorderShown={!showProgressBar && !!heading}>
+                    <Header isBottomBorderShown={!!heading}>
                         {onBackClick && (
                             <BackIcon
                                 icon="ARROW_LEFT"
@@ -291,16 +302,20 @@ const Modal = ({
                     </Header>
                 )}
 
-                {showProgressBar && (
-                    <ProgressBar value={currentProgressBarStep} max={totalProgressBarSteps} />
-                )}
-
                 <Body>
                     {description && <Description>{description}</Description>}
                     <Content id="modal-content">{children}</Content>
                 </Body>
 
-                {bottomBar && <BottomBar>{bottomBar}</BottomBar>}
+                {(bottomBar || areStepsShown) && (
+                    <BottomBar>
+                        {areStepsShown && (
+                            <Stepper step={currentProgressBarStep} total={totalProgressBarSteps} />
+                        )}
+
+                        <BottomBarComponents>{bottomBar}</BottomBarComponents>
+                    </BottomBar>
+                )}
             </Container>
         </>
     );
