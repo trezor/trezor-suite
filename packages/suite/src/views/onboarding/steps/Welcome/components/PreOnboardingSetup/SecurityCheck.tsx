@@ -25,7 +25,6 @@ const Item = styled.div`
 `;
 
 const Underline = styled.span`
-    /* text-decoration: dashed; */
     text-decoration: underline;
     text-decoration-style: dashed;
 `;
@@ -79,22 +78,20 @@ const OuterActions = styled.div`
     justify-content: center;
 `;
 
-const SecurityCheck = () => {
+export const SecurityCheck = () => {
     const { goToNextStep, goToSuite, rerun, updateAnalytics } = useOnboarding();
-    const { recovery } = useSelector(s => ({
-        recovery: s.recovery,
-    }));
+    const recovery = useSelector(state => state.recovery);
     const device = useSelector(selectDevice);
+    const theme = useTheme();
 
     const deviceStatus = getConnectedDeviceStatus(device);
     const initialized = deviceStatus === 'initialized';
-    const firmwareNotInstalled = device?.firmware === 'none';
-    const theme = useTheme();
+    const firmwareInstalled = device?.firmware !== 'none';
 
     const items = [
         {
             key: 1,
-            show: firmwareNotInstalled,
+            show: !firmwareInstalled,
             icon: 'HOLOGRAM',
             content: (
                 <Translation
@@ -115,24 +112,26 @@ const SecurityCheck = () => {
         },
         {
             key: 2,
-            show: firmwareNotInstalled,
+            show: !firmwareInstalled,
             icon: 'VERIFIED',
             content: <Translation id="TR_ONBOARDING_DEVICE_CHECK_2" />,
         },
         {
             key: 3,
-            show: firmwareNotInstalled,
+            show: !firmwareInstalled,
             icon: 'PACKAGE',
             content: <Translation id="TR_ONBOARDING_DEVICE_CHECK_3" />,
         },
         {
             // Device was used, shows only when fw installed
             key: 4,
-            show: !firmwareNotInstalled,
+            show: firmwareInstalled,
             icon: 'PACKAGE',
             content: <Translation id="TR_ONBOARDING_DEVICE_CHECK_4" />,
         },
     ] as const;
+
+    const visibleItems = items.filter(item => item.show);
 
     return (
         <>
@@ -142,14 +141,12 @@ const SecurityCheck = () => {
                 heading={<Translation id="TR_ONBOARDING_DEVICE_CHECK" />}
             >
                 <Items>
-                    {items
-                        .filter(item => item.show)
-                        .map(item => (
-                            <Item key={item.key}>
-                                <Icon size={24} icon={item.icon} color={theme.TYPE_DARK_GREY} />
-                                <Text>{item.content}</Text>
-                            </Item>
-                        ))}
+                    {visibleItems.map(item => (
+                        <Item key={item.key}>
+                            <Icon size={24} icon={item.icon} color={theme.TYPE_DARK_GREY} />
+                            <Text>{item.content}</Text>
+                        </Item>
+                    ))}
                 </Items>
 
                 <Buttons>
@@ -197,5 +194,3 @@ const SecurityCheck = () => {
         </>
     );
 };
-
-export default SecurityCheck;
