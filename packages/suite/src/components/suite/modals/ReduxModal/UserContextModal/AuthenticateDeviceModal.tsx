@@ -34,7 +34,7 @@ export const AuthenticateDeviceModal = () => {
             isCancelable
             onCancel={handleClose}
             heading={<Translation id="TR_LETS_CHECK_YOUR_DEVICE" />}
-            bottomBar={
+            bottomBarComponents={
                 <Button onClick={handleClick} isDisabled={isLoading} isLoading={isLoading}>
                     <Translation id="TR_START_CHECK" />
                 </Button>

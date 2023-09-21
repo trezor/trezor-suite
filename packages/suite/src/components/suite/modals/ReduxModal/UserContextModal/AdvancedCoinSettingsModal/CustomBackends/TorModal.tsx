@@ -25,7 +25,7 @@ export const TorModal = ({ onResult }: TorModalProps) => {
     return (
         <StyledModal
             heading={<Translation id="TR_TOR_ENABLE" />}
-            bottomBar={
+            bottomBarComponents={
                 <>
                     <Button variant="secondary" onClick={() => onResult('use-defaults')}>
                         <Translation id="TR_USE_DEFAULT_BACKENDS" />

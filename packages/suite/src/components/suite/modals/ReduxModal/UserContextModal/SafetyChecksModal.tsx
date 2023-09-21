@@ -47,7 +47,7 @@ export const SafetyChecksModal = ({ onCancel }: ModalProps) => {
             isCancelable
             onCancel={onCancel}
             heading={<Translation id="TR_SAFETY_CHECKS_MODAL_TITLE" />}
-            bottomBar={
+            bottomBarComponents={
                 <StyledButton
                     onClick={confirm}
                     // Only allow confirming when the value will be changed.
