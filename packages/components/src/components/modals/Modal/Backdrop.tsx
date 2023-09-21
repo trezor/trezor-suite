@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 import styled from 'styled-components';
-import { variables } from '../../config';
+import { variables } from '../../../config';
 
 const Wrapper = styled.div`
     position: absolute;

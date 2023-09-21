@@ -27,8 +27,8 @@ import {
     getInputStateTextColor,
     getInputStateBorderColor,
 } from '../InputStyles';
-import { MODAL_CONTENT_ID } from '../../Modal/Modal';
 import { BottomText } from '../BottomText';
+import { MODAL_CONTENT_ID } from '../../modals/Modal/Modal';
 
 const reactSelectClassNamePrefix = 'react-select';
 
