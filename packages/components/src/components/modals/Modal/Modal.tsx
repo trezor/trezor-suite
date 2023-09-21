@@ -2,11 +2,11 @@ import { useCallback, useState, ReactNode, useEffect } from 'react';
 
 import styled, { css, useTheme } from 'styled-components';
 import { useEvent } from 'react-use';
-import { boxShadows, spacings, spacingsPx, typography } from '@trezor/theme';
+import { borders, boxShadows, spacings, spacingsPx, typography } from '@trezor/theme';
 
-import { Icon } from '../assets/Icon/Icon';
-import { IconType } from '../../support/types';
-import { Stepper } from '../loaders/Stepper/Stepper';
+import { Icon } from '../../assets/Icon/Icon';
+import { IconType } from '../../../support/types';
+import { Stepper } from '../../loaders/Stepper/Stepper';
 
 const CLOSE_ICON_SIZE = spacings.xxl;
 const CLOSE_ICON_MARGIN = 16;
@@ -40,7 +40,6 @@ const Header = styled.header<HeaderProps>`
     word-break: break-word;
     min-height: 52px;
     padding: ${spacingsPx.xs} ${spacingsPx.md};
-    padding-bottom: ${({ isBottomBorderShown }) => (isBottomBorderShown ? spacingsPx.md : 0)};
     border-bottom: 1px solid
         ${({ isBottomBorderShown, theme }) =>
             isBottomBorderShown ? theme.borderOnElevation1 : 'transparent'};
@@ -86,7 +85,7 @@ const Heading = styled.h1<{ isWithIcon?: boolean }>`
     ${({ isWithIcon }) =>
         isWithIcon &&
         css`
-            padding-right: 16px;
+            padding-right: ${spacingsPx.md};
 
             > :first-child {
                 margin-right: ${spacingsPx.xs};
@@ -112,13 +111,14 @@ const HeaderComponentsContainer = styled.div`
     }
 `;
 
-const Body = styled.div`
+const Body = styled.div<{ isWithoutTopPadding: boolean }>`
     display: flex;
     flex-direction: column;
     flex: 1;
     height: 100%;
-    margin-bottom: ${spacingsPx.md};
-    padding: ${spacingsPx.md} ${spacingsPx.md} 0;
+    margin-bottom: ${spacingsPx.xl};
+    padding: ${spacingsPx.xl} ${spacingsPx.md} 0;
+    padding-top: ${({ isWithoutTopPadding }) => isWithoutTopPadding && 0};
     overflow-y: auto;
 
     ::-webkit-scrollbar {
@@ -160,7 +160,7 @@ const CloseIcon = styled(Icon)`
     width: ${CLOSE_ICON_SIZE}px;
     height: ${CLOSE_ICON_SIZE}px;
     background: ${({ theme }) => theme.backgroundTertiaryDefaultOnElevation1};
-    border-radius: 50%;
+    border-radius: ${borders.radii.full};
     transition: opacity 0.2s;
 
     :hover {
@@ -302,7 +302,7 @@ const Modal = ({
                     </Header>
                 )}
 
-                <Body>
+                <Body isWithoutTopPadding={!heading && !!isCancelable}>
                     {description && <Description>{description}</Description>}
                     <Content id="modal-content">{children}</Content>
                 </Body>
