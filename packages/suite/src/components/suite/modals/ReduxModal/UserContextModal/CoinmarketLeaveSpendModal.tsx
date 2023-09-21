@@ -34,7 +34,7 @@ export const CoinmarketLeaveSpendModal = ({ onCancel }: CoinmarketLeaveSpendModa
         <Modal
             isCancelable
             onCancel={onCancel}
-            bottomBar={
+            bottomBarComponents={
                 <>
                     <Button onClick={leave}>
                         <Translation id="TR_SPEND_LEAVE" />

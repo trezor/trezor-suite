@@ -41,7 +41,7 @@ export const CancelCoinjoinModal = ({ onClose }: CancelCoinjoinModalProps) => {
             isCancelable
             onCancel={onClose}
             heading={<Translation id="TR_CANCEL_COINJOIN" />}
-            bottomBar={
+            bottomBarComponents={
                 <>
                     <CancelButton variant="secondary" onClick={onClose}>
                         <Translation id="TR_CANCEL_COINJOIN_NO" />

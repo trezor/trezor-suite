@@ -54,7 +54,7 @@ export const WipeDeviceModal = ({ onCancel }: WipeDeviceModalProps) => {
             onCancel={onCancel}
             heading={<Translation id="TR_WIPE_DEVICE_HEADING" />}
             description={<Translation id="TR_WIPE_DEVICE_TEXT" />}
-            bottomBar={
+            bottomBarComponents={
                 <Button
                     variant="destructive"
                     onClick={handleWipeDevice}

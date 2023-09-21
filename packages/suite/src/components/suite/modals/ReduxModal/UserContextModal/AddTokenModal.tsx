@@ -120,7 +120,7 @@ export const AddTokenModal = ({ onCancel }: AddTokenModalProps) => {
             isCancelable
             onCancel={onCancel}
             heading={<Translation id="TR_ADD_TOKEN_TITLE" />}
-            bottomBar={
+            bottomBarComponents={
                 <Button
                     onClick={handleAddTokenButtonClick}
                     isDisabled={!tokenInfo || !!error}

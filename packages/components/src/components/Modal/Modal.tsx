@@ -177,7 +177,7 @@ interface ModalProps {
     headerIcon?: IconType;
     isHeadingCentered?: boolean;
     description?: ReactNode;
-    bottomBar?: ReactNode;
+    bottomBarComponents?: ReactNode;
     isCancelable?: boolean;
     onBackClick?: () => void;
     onCancel?: () => void;
@@ -197,7 +197,7 @@ const Modal = ({
     headerIcon,
     isHeadingCentered,
     description, // LEGACY PROP
-    bottomBar,
+    bottomBarComponents,
     isCancelable,
     onBackClick,
     onCancel,
@@ -307,13 +307,13 @@ const Modal = ({
                     <Content id="modal-content">{children}</Content>
                 </Body>
 
-                {(bottomBar || areStepsShown) && (
+                {(bottomBarComponents || areStepsShown) && (
                     <BottomBar>
                         {areStepsShown && (
                             <Stepper step={currentProgressBarStep} total={totalProgressBarSteps} />
                         )}
 
-                        <BottomBarComponents>{bottomBar}</BottomBarComponents>
+                        <BottomBarComponents>{bottomBarComponents}</BottomBarComponents>
                     </BottomBar>
                 )}
             </Container>
@@ -326,7 +326,7 @@ Modal.Body = Body;
 Modal.Description = Description;
 Modal.Content = Content;
 Modal.BottomBar = BottomBar;
-Modal.closeIconWidth = CLOSE_ICON_SIZE + CLOSE_ICON_MARGIN; // TODO: remove after
+Modal.closeIconWidth = CLOSE_ICON_SIZE + CLOSE_ICON_MARGIN; // TODO: find a way to get rid of
 
 export { Modal, MODAL_CONTENT_ID };
 export type { ModalProps };
