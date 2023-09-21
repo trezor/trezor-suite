@@ -38,7 +38,10 @@ let _settings = parseConnectSettings();
 let _popupManager: popup.PopupManager | undefined;
 
 const initPopupManager = () => {
-    const pm = new popup.PopupManager(_settings);
+    const pm = new popup.PopupManager({
+        settings: _settings,
+        iframeInitPromise: iframe.initPromise,
+    });
     pm.on(POPUP.CLOSED, (error?: string) => {
         iframe.postMessage(
             {
@@ -121,7 +124,8 @@ const handleMessage = (messageEvent: PostMessageEvent) => {
                 break;
             }
             if (message.type === IFRAME.LOADED) {
-                iframe.initPromise.resolve();
+                iframe.initPromise.resolve(message.payload);
+                _popupManager?.iframeInitPromise.resolve(message.payload);
             }
             if (message.type === IFRAME.ERROR) {
                 iframe.initPromise.reject(message.payload.error as any);

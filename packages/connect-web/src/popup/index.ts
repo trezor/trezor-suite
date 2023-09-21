@@ -4,7 +4,6 @@ import EventEmitter from 'events';
 import { createDeferred, Deferred } from '@trezor/utils';
 import {
     POPUP,
-    IFRAME,
     UI,
     ConnectSettings,
     CoreMessage,
@@ -33,7 +32,7 @@ export class PopupManager extends EventEmitter {
 
     closeInterval = 0;
 
-    iframeHandshake: Deferred<IFrameLoaded['payload']>;
+    iframeInitPromise: Deferred<IFrameLoaded['payload']>;
 
     popupPromise: Deferred<void> | undefined;
 
@@ -47,12 +46,18 @@ export class PopupManager extends EventEmitter {
 
     extensionTabId = 0;
 
-    constructor(settings: ConnectSettings) {
+    constructor({
+        settings,
+        iframeInitPromise,
+    }: {
+        settings: ConnectSettings;
+        iframeInitPromise: Deferred<IFrameLoaded['payload']>;
+    }) {
         super();
         this.settings = settings;
         this.origin = getOrigin(settings.popupSrc);
         this.handleMessage = this.handleMessage.bind(this);
-        this.iframeHandshake = createDeferred(IFRAME.LOADED);
+        this.iframeInitPromise = iframeInitPromise;
 
         if (this.settings.env === 'webextension') {
             this.handleExtensionConnect = this.handleExtensionConnect.bind(this);
@@ -215,7 +220,7 @@ export class PopupManager extends EventEmitter {
             if (this.popupPromise) {
                 this.popupPromise.resolve();
             }
-            this.iframeHandshake.promise.then(payload => {
+            this.iframeInitPromise.promise.then(payload => {
                 port.postMessage({
                     type: POPUP.INIT,
                     payload: {
@@ -253,9 +258,7 @@ export class PopupManager extends EventEmitter {
         const { data } = message;
         if (getOrigin(message.origin) !== this.origin || !data || typeof data !== 'object') return;
 
-        if (data.type === IFRAME.LOADED) {
-            this.iframeHandshake.resolve(data.payload);
-        } else if (data.type === POPUP.BOOTSTRAP) {
+        if (data.type === POPUP.BOOTSTRAP) {
             // popup is opened properly, now wait for POPUP.LOADED message
             if (this.openTimeout) clearTimeout(this.openTimeout);
         } else if (data.type === POPUP.ERROR && this.popupWindow) {
@@ -268,9 +271,9 @@ export class PopupManager extends EventEmitter {
                 this.popupPromise.resolve();
             }
             // popup is successfully loaded
-            this.iframeHandshake.promise.then(payload => {
+            this.iframeInitPromise.promise.then(payload => {
                 // send ConnectSettings to popup
-                // note this settings and iframe.ConnectSettings could be different (especially: origin, popup, webusb, debug)
+                // note this settings and iframeInitPromise.ConnectSettings could be different (especially: origin, popup, webusb, debug)
                 // now popup is able to load assets
                 this.popupWindow.postMessage(
                     {
