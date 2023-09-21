@@ -1,5 +1,5 @@
 import { StoryObj } from '@storybook/react';
-import { Modal as ModalComponent, Button, ModalProps, Icon } from '../../index';
+import { Modal as ModalComponent, Button, ModalProps, Icon } from '../../../index';
 
 const Buttons = () => (
     <>
@@ -14,7 +14,7 @@ const Buttons = () => (
 );
 
 export default {
-    title: 'Misc/Modal',
+    title: 'Modals/Modal',
     component: ModalComponent,
 };
 

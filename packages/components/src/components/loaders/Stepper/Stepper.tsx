@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components';
 import { borders, spacingsPx } from '@trezor/theme';
 
