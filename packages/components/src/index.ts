@@ -41,6 +41,7 @@ export * from './components/loaders/Spinner/Spinner';
 export * from './components/loaders/ProgressBar/ProgressBar';
 export * from './components/loaders/ProgressPie/ProgressPie';
 export * from './components/loaders/LoadingContent/LoadingContent';
+export * from './components/loaders/Stepper/Stepper';
 export * from './components/Tooltip/Tooltip';
 export * from './components/Timerange/Timerange';
 export * from './components/Truncate/Truncate';
