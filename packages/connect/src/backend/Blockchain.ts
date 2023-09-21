@@ -136,14 +136,17 @@ export class Blockchain {
         }
     }
 
+    // not used for solana, only btc specific it seems
     getTransactions(txs: string[]) {
         return Promise.all(txs.map(id => this.link.getTransaction(id)));
     }
 
+    // not used for solana
     getCurrentFiatRates(params: { currencies?: string[]; token?: string }) {
         return this.link.getCurrentFiatRates(params);
     }
 
+    // not used for solana
     getFiatRatesForTimestamps(params: {
         currencies?: string[];
         timestamps: number[];
@@ -152,22 +155,27 @@ export class Blockchain {
         return this.link.getFiatRatesForTimestamps(params);
     }
 
+    // TODO(vl)
     getAccountBalanceHistory(params: BlockchainLinkParams<'getAccountBalanceHistory'>) {
         return this.link.getAccountBalanceHistory(params);
     }
 
+    // DONE
     getNetworkInfo() {
         return this.link.getInfo();
     }
 
+    // DONE
     getAccountInfo(request: BlockchainLinkParams<'getAccountInfo'>) {
         return this.link.getAccountInfo(request);
     }
 
+    // not used for solana
     getAccountUtxo(descriptor: string) {
         return this.link.getAccountUtxo(descriptor);
     }
 
+    // DONE
     async estimateFee(request: Parameters<typeof this.link.estimateFee>[0]) {
         const { blocks } = request;
         // cache should be used if there is no specific data (ethereum case) and requested blocks are already cached/downloaded
@@ -197,6 +205,7 @@ export class Blockchain {
         return this.link.estimateFee(request);
     }
 
+    // TODO(vl): accounts
     async subscribe(accounts?: SubscriptionAccountInfo[]) {
         // set block listener if it wasn't set before
         if (this.link.listenerCount('block') === 0) {
@@ -233,6 +242,7 @@ export class Blockchain {
         });
     }
 
+    // not used for solana
     subscribeFiatRates(_currency?: string) {
         // set block listener if it wasn't set before
         if (this.link.listenerCount('fiatRates') === 0) {
@@ -251,6 +261,7 @@ export class Blockchain {
         });
     }
 
+    // TODO(vl): accounts
     async unsubscribe(accounts?: SubscriptionAccountInfo[]) {
         if (!accounts) {
             this.link.removeAllListeners('block');
@@ -265,15 +276,18 @@ export class Blockchain {
         return this.link.unsubscribe({ type: 'accounts', accounts });
     }
 
+    // not used for solana
     unsubscribeFiatRates() {
         this.link.removeAllListeners('fiatRates');
         return this.link.unsubscribe({ type: 'fiatRates' });
     }
 
+    // DONE
     pushTransaction(tx: string) {
         return this.link.pushTransaction(tx);
     }
 
+    // DONE
     disconnect() {
         this.link.removeAllListeners();
         this.link.disconnect();
