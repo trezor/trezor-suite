@@ -44,6 +44,7 @@ export const icons = {
     hiddenWallet: require('../assets/icons/hiddenWallet.svg'),
     home: require('../assets/icons/home.svg'),
     info: require('../assets/icons/info.svg'),
+    infoLight: require('../assets/icons/infoLight.svg'),
     label: require('../assets/icons/label.svg'),
     lifebuoy: require('../assets/icons/lifebuoy.svg'),
     lock: require('../assets/icons/lock.svg'),

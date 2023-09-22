@@ -1,9 +1,11 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useSelector } from 'react-redux';
 
 import { roundToNearestMinutes, subHours } from 'date-fns';
 import { A } from '@mobily/ts-belt';
 
 import { FiatCurrencyCode } from '@suite-common/suite-config';
+import { selectIsDeviceDiscoveryActive } from '@suite-common/wallet-core';
 
 import { getMultipleAccountBalanceHistoryWithFiat } from './graphDataFetching';
 import {
@@ -83,6 +85,7 @@ export function useGraphForAccounts(params: useGraphForAccountsParams): {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [refetchToken, setRefetchToken] = useState(0);
+    const isDiscoveryActive = useSelector(selectIsDeviceDiscoveryActive);
 
     const refetch = useCallback(() => {
         // this is used to trigger to force re-run of useEffect lower
@@ -90,57 +93,57 @@ export function useGraphForAccounts(params: useGraphForAccountsParams): {
     }, []);
 
     useEffect(() => {
-        // if there are no accounts, that means that user has only testnets imported.
-        if (A.isEmpty(accounts)) {
-            setIsLoading(false);
-            setError('Graph is not available for testnet coins.');
-        }
-
         let shouldSetValues = true;
 
-        const getGraphValues = async () => {
-            if (accounts.length === 0) return;
-
+        if (isPortfolioGraph && isDiscoveryActive) {
+            // The graph waits until the discovery is finished, before starting to fetch values.
             setIsLoading(true);
-
-            try {
-                const points = await getMultipleAccountBalanceHistoryWithFiat({
-                    accounts,
-                    fiatCurrency,
-                    startOfTimeFrameDate,
-                    endOfTimeFrameDate,
-                });
-
-                let events;
-
-                // Process transaction events only for the single account detail graph.
-                if (!isPortfolioGraph) {
-                    events = await getAccountMovementEvents({
-                        account: accounts[0],
+            setError(null);
+        } else if (A.isEmpty(accounts)) {
+            setIsLoading(false);
+            setError('Graph is not available for testnet coins.');
+        } else {
+            const getGraphValues = async () => {
+                setIsLoading(true);
+                try {
+                    const points = await getMultipleAccountBalanceHistoryWithFiat({
+                        accounts,
+                        fiatCurrency,
                         startOfTimeFrameDate,
                         endOfTimeFrameDate,
                     });
 
-                    normalizeExtremeGraphEvents(
-                        events,
-                        startOfTimeFrameDate ?? points[0].date,
-                        endOfTimeFrameDate,
-                    );
+                    let events;
+
+                    // Process transaction events only for the single account detail graph.
+                    if (!isPortfolioGraph) {
+                        events = await getAccountMovementEvents({
+                            account: accounts[0],
+                            startOfTimeFrameDate,
+                            endOfTimeFrameDate,
+                        });
+
+                        normalizeExtremeGraphEvents(
+                            events,
+                            startOfTimeFrameDate ?? points[0].date,
+                            endOfTimeFrameDate,
+                        );
+                    }
+
+                    if (shouldSetValues) {
+                        setGraphPoints(points);
+                        setGraphEvents(events);
+                        setError(null);
+                    }
+                } catch (err) {
+                    setError(err?.message);
                 }
 
-                if (shouldSetValues) {
-                    setGraphPoints(points);
-                    setGraphEvents(events);
-                    setError(null);
-                }
-            } catch (err) {
-                setError(err?.message);
-            }
+                setIsLoading(false);
+            };
 
-            setIsLoading(false);
-        };
-
-        getGraphValues();
+            getGraphValues();
+        }
 
         return () => {
             shouldSetValues = false;
@@ -152,6 +155,7 @@ export function useGraphForAccounts(params: useGraphForAccountsParams): {
         endOfTimeFrameDate,
         startOfTimeFrameDate,
         isPortfolioGraph,
+        isDiscoveryActive,
     ]);
 
     return { graphPoints, graphEvents, isLoading, error, refetch };

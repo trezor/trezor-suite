@@ -7,8 +7,12 @@
         },
         { "path": "../../suite-common/graph" },
         { "path": "../../suite-common/icons" },
+        {
+            "path": "../../suite-common/wallet-core"
+        },
         { "path": "../assets" },
         { "path": "../atoms" },
+        { "path": "../feature-flags" },
         { "path": "../formatters" },
         { "path": "../graph" },
         { "path": "../intl" },

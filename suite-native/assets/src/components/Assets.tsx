@@ -3,8 +3,9 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { Card, VStack } from '@suite-native/atoms';
+import { Card, VStack, TextButton } from '@suite-native/atoms';
 import {
+    AccountsStackRoutes,
     AppTabsParamList,
     AppTabsRoutes,
     RootStackParamList,
@@ -13,22 +14,31 @@ import {
 } from '@suite-native/navigation';
 import { networks, NetworkSymbol } from '@suite-common/wallet-config';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
+import { selectIsDeviceDiscoveryActive } from '@suite-common/wallet-core';
+import { useTranslate } from '@suite-native/intl';
 
-import { AssetItem } from './AssetItem';
-import { selectAssetsWithBalances } from '../assetsSelectors';
+import { DiscoveryAssetsLoader } from './DiscoveryAssetsLoader';
+import { selectAssetsWithBalances, selectIsPortfolioEmpty } from '../assetsSelectors';
 import { calculateAssetsPercentage } from '../utils';
 import { NetworkAssetsBottomSheet } from './NetworkAssetsBottomSheet';
+import { AssetItem } from './AssetItem';
 
-export const Assets = () => {
-    const navigation =
-        useNavigation<
-            TabToStackCompositeNavigationProp<
-                AppTabsParamList,
-                AppTabsRoutes.HomeStack,
-                RootStackParamList
-            >
-        >();
+type NavigationProp = TabToStackCompositeNavigationProp<
+    AppTabsParamList,
+    AppTabsRoutes.HomeStack,
+    RootStackParamList
+>;
+
+type AssetsProps = {
+    maximumAssetsVisible: number;
+};
+
+export const Assets = ({ maximumAssetsVisible }: AssetsProps) => {
+    const navigation = useNavigation<NavigationProp>();
+    const { translate } = useTranslate();
     const assetsData = useSelector(selectAssetsWithBalances);
+    const isPortfolioEmpty = useSelector(selectIsPortfolioEmpty);
+    const isDiscoveryActive = useSelector(selectIsDeviceDiscoveryActive);
     const [selectedAssetSymbol, setSelectedAssetSymbol] = useState<NetworkSymbol | null>(null);
 
     const assetsDataWithPercentage = useMemo(
@@ -51,11 +61,17 @@ export const Assets = () => {
         setSelectedAssetSymbol(null);
     }, []);
 
+    const navigateToAssets = () => {
+        navigation.navigate(AppTabsRoutes.AccountsStack, { screen: AccountsStackRoutes.Accounts });
+    };
+
+    const isViewMoreButtonVisible = assetsDataWithPercentage.length > 3;
+
     return (
         <>
             <Card>
                 <VStack spacing={19}>
-                    {assetsDataWithPercentage.map(asset => (
+                    {assetsDataWithPercentage.slice(0, maximumAssetsVisible).map(asset => (
                         <AssetItem
                             key={asset.symbol}
                             iconName={asset.symbol}
@@ -68,6 +84,17 @@ export const Assets = () => {
                             onPress={setSelectedAssetSymbol}
                         />
                     ))}
+                    {isDiscoveryActive && (
+                        <DiscoveryAssetsLoader
+                            isListEmpty={isPortfolioEmpty}
+                            emptyListSkeletonCount={maximumAssetsVisible}
+                        />
+                    )}
+                    {isViewMoreButtonVisible && (
+                        <TextButton variant="tertiary" isUnderlined onPress={navigateToAssets}>
+                            {translate('assets.dashboard.viewAllAssets')}
+                        </TextButton>
+                    )}
                 </VStack>
             </Card>
             <NetworkAssetsBottomSheet

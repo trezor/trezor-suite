@@ -80,3 +80,9 @@ export const selectAssetsWithBalances = memoize((state: AssetsRootState) => {
         })
         .filter(data => data !== undefined) as AssetType[];
 });
+
+export const selectIsPortfolioEmpty = (state: AssetsRootState) => {
+    const accounts = selectAccounts(state);
+
+    return accounts.length === 0;
+};

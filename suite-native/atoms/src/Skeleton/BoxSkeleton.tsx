@@ -19,6 +19,9 @@ type BoxSkeletonProps = {
     borderRadius?: number;
 };
 
+const GRADIENT_OFFSET_DIVISOR = 8;
+const ANIMATION_DURATION = 1200;
+
 export const BoxSkeleton = ({
     height,
     width,
@@ -27,14 +30,18 @@ export const BoxSkeleton = ({
     const {
         utils: { colors },
     } = useNativeStyles();
-    const gradientValue = useTiming(
-        { from: 0, to: width, loop: true, yoyo: true },
-        { easing: Easing.inOut(Easing.linear) },
+
+    // Offsetting the gradient center horizontally behind the rounded rect edges make the animations look smoother.
+    const gradientHorizontalOffset = width / GRADIENT_OFFSET_DIVISOR;
+
+    const gradientCenterHorizontalValue = useTiming(
+        { from: -gradientHorizontalOffset, to: width + gradientHorizontalOffset, loop: true },
+        { duration: ANIMATION_DURATION, easing: Easing.inOut(Easing.linear) },
     );
 
     const animatedGradientCenter = useComputedValue(
-        () => vec(gradientValue.current, height / 2),
-        [gradientValue],
+        () => vec(gradientCenterHorizontalValue.current, height / 2),
+        [gradientCenterHorizontalValue],
     );
 
     return (
