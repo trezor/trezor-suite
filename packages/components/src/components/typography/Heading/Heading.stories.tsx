@@ -1,32 +1,40 @@
-import { H1, H2 } from '../../../index';
-import { storiesOf } from '@storybook/react';
-import { select, text } from '@storybook/addon-knobs';
+import styled from 'styled-components';
+import { StoryObj } from '@storybook/react';
+import { H1, H2, H3, HeadingProps } from '../../../index';
 
-H1.displayName = 'H1';
-H2.displayName = 'H2';
+const Wrapper = styled.div`
+    display: flex;
+    flex-direction: column;
+`;
 
-storiesOf('Typography/Heading', module).add('Heading', () => {
-    const value = text('Value', 'Heading');
-    const size: any = select(
-        'Size',
-        {
-            H1: 'H1',
-            H2: 'H2',
+export default {
+    title: 'Typography/Heading',
+};
+
+export const Heading: StoryObj<HeadingProps> = {
+    render: args => (
+        <Wrapper>
+            <H1 textAlign={args.textAlign} noMargin={args.noMargin} fontWeight={args.fontWeight}>
+                This is heading 1
+            </H1>
+            <H2 textAlign={args.textAlign} noMargin={args.noMargin} fontWeight={args.fontWeight}>
+                This is heading 2
+            </H2>
+            <H3 textAlign={args.textAlign} noMargin={args.noMargin} fontWeight={args.fontWeight}>
+                This is heading 3
+            </H3>
+        </Wrapper>
+    ),
+    argTypes: {
+        textAlign: {
+            control: 'radio',
+            options: ['left', 'center', 'right'],
         },
-        'H1',
-    );
-    const textAlign: any = select(
-        'Align',
-        {
-            Left: 'left',
-            Right: 'right',
-            Center: 'center',
+        noMargin: {
+            type: 'boolean',
         },
-        'left',
-    );
-
-    if (size === 'H1') {
-        return <H1 {...(textAlign !== 'left' ? { textAlign } : {})}>{value}</H1>;
-    }
-    return <H2 {...(textAlign !== 'left' ? { textAlign } : {})}>{value}</H2>;
-});
+        fontWeight: {
+            type: 'number',
+        },
+    },
+};
