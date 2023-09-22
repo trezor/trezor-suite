@@ -1,25 +1,20 @@
-import { Link } from '../../../index';
-import { storiesOf } from '@storybook/react';
-import { select, text } from '@storybook/addon-knobs';
+import { StoryObj } from '@storybook/react';
+import { Link as LinkComponent, LinkProps } from '../../../index';
 
-storiesOf('Typography/Link', module).add('Link', () => {
-    const target = select(
-        'Target',
-        {
-            None: null,
-            Blank: '_blank',
-            Self: '_self',
-            Parent: '_parent',
-            Top: '_top',
+export default {
+    title: 'Typography/Link',
+    component: LinkComponent,
+};
+
+export const Link: StoryObj<LinkProps> = {
+    args: {
+        children: 'This is a link.',
+        href: 'https://trezor.io',
+    },
+    argTypes: {
+        target: {
+            control: 'radio',
+            options: [null, '_blank', '_self', '_parent', '_top'],
         },
-        null,
-    );
-    const href = text('URL', 'https://trezor.io');
-    const linkText = text('Text', 'This is a link.');
-
-    return (
-        <Link href={href} {...(target ? { target } : {})}>
-            {linkText}
-        </Link>
-    );
-});
+    },
+};
