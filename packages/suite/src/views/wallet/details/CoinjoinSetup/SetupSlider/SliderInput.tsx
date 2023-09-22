@@ -120,7 +120,6 @@ export const SliderInput = forwardRef<
     return (
         <LevelContainer className={className}>
             <Level
-                noError
                 noTopLabel
                 value={String(inputValue)}
                 onChange={handleChange}

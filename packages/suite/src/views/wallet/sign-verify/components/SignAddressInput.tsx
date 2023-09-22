@@ -71,7 +71,6 @@ export const SignAddressInput = ({
             value={getValue(value)}
             options={groupedOptions}
             onChange={handleChange}
-            noError={false}
             isSearchable
             placeholder=""
             components={{

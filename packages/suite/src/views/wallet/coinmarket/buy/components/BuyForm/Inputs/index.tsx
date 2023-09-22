@@ -122,7 +122,7 @@ const Inputs = () => {
                     inputState={getInputState(errors.fiatInput, fiatInputValue)}
                     name={fiatInput}
                     maxLength={MAX_LENGTH.AMOUNT}
-                    bottomText={errors[fiatInput]?.message}
+                    bottomText={errors[fiatInput]?.message || null}
                     innerAddon={
                         <Controller
                             control={control}
@@ -166,7 +166,7 @@ const Inputs = () => {
                     noTopLabel
                     maxLength={MAX_LENGTH.AMOUNT}
                     rules={cryptoInputRules}
-                    bottomText={errors[cryptoInput]?.message}
+                    bottomText={errors[cryptoInput]?.message || null}
                     innerAddon={
                         <Controller
                             control={control}

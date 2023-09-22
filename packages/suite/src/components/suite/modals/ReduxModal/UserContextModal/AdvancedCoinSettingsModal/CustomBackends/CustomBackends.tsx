@@ -159,7 +159,7 @@ export const CustomBackends = ({ network, onCancel }: CustomBackendsProps) => {
                         data-test={`@settings/advance/${name}`}
                         placeholder={placeholder}
                         inputState={error ? 'error' : undefined}
-                        bottomText={error?.message}
+                        bottomText={error?.message || null}
                         innerRef={inputRef}
                         {...inputField}
                     />
