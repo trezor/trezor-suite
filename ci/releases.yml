@@ -80,6 +80,8 @@ release commit messages:
     refs:
       - /^release\//
       - codesign
+    except:
+      - /^release\/connect\//
   variables:
     GIT_DEPTH: 300
   script:
