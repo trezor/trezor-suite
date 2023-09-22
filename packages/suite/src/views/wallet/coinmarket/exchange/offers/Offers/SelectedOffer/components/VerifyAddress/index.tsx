@@ -198,7 +198,7 @@ const VerifyAddressComponent = () => {
                             size="small"
                             readOnly={selectedAccountOption?.type !== 'NON_SUITE'}
                             inputState={errors.address ? 'error' : undefined}
-                            bottomText={errors.address?.message}
+                            bottomText={errors.address?.message || null}
                             innerRef={networkRef}
                             {...networkField}
                         />
@@ -229,7 +229,7 @@ const VerifyAddressComponent = () => {
                                 </Label>
                             }
                             inputState={errors.extraField ? 'error' : undefined}
-                            bottomText={errors.extraField?.message}
+                            bottomText={errors.extraField?.message || null}
                             innerRef={descriptionRef}
                             {...descriptionField}
                         />

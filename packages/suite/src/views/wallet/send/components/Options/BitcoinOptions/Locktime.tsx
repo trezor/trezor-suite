@@ -122,7 +122,7 @@ export const Locktime = ({ close }: LocktimeProps) => {
                     </Label>
                 }
                 labelRight={<Icon size={18} icon="CROSS" onClick={close} />}
-                bottomText={error?.message}
+                bottomText={error?.message || null}
                 data-test="locktime-input"
                 innerRef={inputRef}
                 {...inputField}
