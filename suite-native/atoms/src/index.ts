@@ -37,5 +37,7 @@ export * from './Toggle';
 export * from './Pictogram';
 export * from './RoundedIcon';
 export * from './TrezorSuiteLiteHeader';
+export * from './Skeleton/BoxSkeleton';
+export * from './Skeleton/ListItemSkeleton';
 
 export { useDebugView } from './DebugView';

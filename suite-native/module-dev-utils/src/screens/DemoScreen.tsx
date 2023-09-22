@@ -25,6 +25,8 @@ import {
     TextButton,
     NumPadButton,
     TextButtonVariant,
+    Card,
+    ListItemSkeleton,
 } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Screen, ScreenHeader } from '@suite-native/navigation';
@@ -377,6 +379,12 @@ export const DemoScreen = () => {
                             ))}
                         </HStack>
                     </Box>
+                    <VStack marginTop="medium">
+                        <Text variant="titleMedium">Skeleton</Text>
+                        <Card>
+                            <ListItemSkeleton />
+                        </Card>
+                    </VStack>
                     <CoinsSettings />
                 </Box>
             </VStack>
