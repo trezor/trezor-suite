@@ -16,7 +16,7 @@ import { getFiatRateKeyFromTicker } from '@suite-common/wallet-utils';
 
 import { AccountsRootState, selectAccountByKey, selectAccounts } from '../accounts/accountsReducer';
 import { TransactionsRootState, selectTransactions } from '../transactions/transactionsReducer';
-import { MAX_AGE, ONE_WEEK_IN_MS } from './constants';
+import { MAX_AGE, ONE_WEEK_IN_MS } from './fiatRatesConstants';
 import { FiatRatesRootState } from './fiatRatesTypes';
 
 export const selectFiatRatesByFiatRateKey = (
