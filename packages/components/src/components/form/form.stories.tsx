@@ -53,7 +53,7 @@ export const All = {
                         />
                     }
                 />
-                <Input variant="small" value="Small input" dataTest="input-default-small" />
+                <Input size="small" value="Small input" dataTest="input-default-small" />
                 <Input inputState="error" value="Input with error" dataTest="input-default-error" />
                 <Input
                     inputState="warning"
@@ -79,7 +79,7 @@ export const All = {
                 <SubHeading>With label &amp; bottom text</SubHeading>
                 <Input value="Input label" dataTest="input-label" bottomText="bottom text" />
                 <Input
-                    variant="small"
+                    size="small"
                     value="Small input label"
                     dataTest="input-small-label"
                     bottomText="bottom text"
@@ -331,7 +331,7 @@ export const All = {
                     wrapperProps={{
                         'data-test': 'select-small',
                     }}
-                    variant="small"
+                    size="small"
                 />
 
                 <Select

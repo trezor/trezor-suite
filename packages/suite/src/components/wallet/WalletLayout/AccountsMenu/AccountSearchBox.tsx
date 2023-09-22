@@ -103,7 +103,7 @@ export const AccountSearchBox = (props: AccountSearchBoxProps) => {
                         </SearchIconWrapper>
                     }
                     addonAlign="left"
-                    variant="small"
+                    size="small"
                     placeholder={translationString('TR_SEARCH')}
                     noTopLabel
                     noError
