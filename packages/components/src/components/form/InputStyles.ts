@@ -1,9 +1,9 @@
 import { darken } from 'polished';
 import styled, { css } from 'styled-components';
 import { FONT_WEIGHT, NEUE_FONT_SIZE } from '../../config/variables';
-import { InputState, InputVariant, SuiteThemeColors } from '../../support/types';
+import { InputState, InputSize, SuiteThemeColors } from '../../support/types';
 
-export const INPUT_HEIGHTS: Record<InputVariant, number> = {
+export const INPUT_HEIGHTS: Record<InputSize, number> = {
     small: 32,
     large: 48,
 };

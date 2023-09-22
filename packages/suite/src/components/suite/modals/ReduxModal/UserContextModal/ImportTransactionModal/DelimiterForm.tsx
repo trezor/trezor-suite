@@ -58,7 +58,7 @@ export const DelimiterForm = ({ value, onChange }: DelimiterFormProps) => {
                 <Input
                     noTopLabel
                     noError
-                    variant="small"
+                    size="small"
                     width={120}
                     onChange={({ target }) => onChange(target.value)}
                     defaultValue={value}
