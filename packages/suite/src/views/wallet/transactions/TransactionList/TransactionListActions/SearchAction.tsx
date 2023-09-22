@@ -163,7 +163,7 @@ export const SearchAction = ({
                 <StyledInput
                     expanded={expanded}
                     data-test="@wallet/accounts/search-icon"
-                    variant="small"
+                    size="small"
                     innerRef={inputRef}
                     innerAddon={<Icon icon="SEARCH" size={16} color={theme.TYPE_DARK_GREY} />}
                     placeholder={expanded ? translationString('TR_SEARCH_TRANSACTIONS') : undefined}
