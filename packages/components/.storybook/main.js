@@ -6,7 +6,6 @@ module.exports = {
     addons: [
         getAbsolutePath('@storybook/addon-links'),
         getAbsolutePath('@storybook/addon-controls'),
-        getAbsolutePath('@storybook/addon-knobs'),
         getAbsolutePath('@storybook/addon-viewport'),
     ],
     staticDirs: ['../public'],

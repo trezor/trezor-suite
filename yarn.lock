@@ -6147,38 +6147,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@storybook/addon-knobs@npm:^7.0.2":
-  version: 7.0.2
-  resolution: "@storybook/addon-knobs@npm:7.0.2"
-  dependencies:
-    copy-to-clipboard: "npm:^3.3.3"
-    core-js: "npm:^3.29.0"
-    escape-html: "npm:^1.0.3"
-    fast-deep-equal: "npm:^3.1.3"
-    global: "npm:^4.4.0"
-    lodash: "npm:^4.17.21"
-    prop-types: "npm:^15.8.1"
-    qs: "npm:^6.11.1"
-    react-colorful: "npm:^5.6.1"
-    react-lifecycles-compat: "npm:^3.0.4"
-    react-select: "npm:^5.7.0"
-  peerDependencies:
-    "@storybook/addons": ^7.0.0
-    "@storybook/api": ^7.0.0
-    "@storybook/components": ^7.0.0
-    "@storybook/core-events": ^7.0.0
-    "@storybook/theming": ^7.0.0
-    react: ^16.8.0 || ^17.0.0 || ^18.0.0
-    react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
-  peerDependenciesMeta:
-    react:
-      optional: true
-    react-dom:
-      optional: true
-  checksum: a5e79417ed666cfa19f1bef3977cf071811f261e1ff32987dd45505f34d784d53f7450271df3f824e6781b335fb6e5bc575a342070c83cae2e931a9f4d16f94a
-  languageName: node
-  linkType: hard
-
 "@storybook/addon-links@npm:^7.5.3":
   version: 7.5.3
   resolution: "@storybook/addon-links@npm:7.5.3"
@@ -8655,7 +8623,6 @@ __metadata:
   dependencies:
     "@storybook/addon-actions": "npm:^7.5.3"
     "@storybook/addon-controls": "npm:^7.5.3"
-    "@storybook/addon-knobs": "npm:^7.0.2"
     "@storybook/addon-links": "npm:^7.5.3"
     "@storybook/addon-viewport": "npm:^7.5.3"
     "@storybook/addons": "npm:^7.5.3"
@@ -15117,7 +15084,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"copy-to-clipboard@npm:^3.3.1, copy-to-clipboard@npm:^3.3.3":
+"copy-to-clipboard@npm:^3.3.1":
   version: 3.3.3
   resolution: "copy-to-clipboard@npm:3.3.3"
   dependencies:
@@ -15158,7 +15125,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"core-js@npm:^3.29.0, core-js@npm:^3.30.2":
+"core-js@npm:^3.30.2":
   version: 3.32.0
   resolution: "core-js@npm:3.32.0"
   checksum: 8839b9a5cfff4999cf5e3277072c7c581b29618c6dbc2f9d0170c529a701310ec78843bd97bede0742cf6899b526bdb062bb1d148c6e9a40f3d19173b7ee8e88
@@ -16596,13 +16563,6 @@ __metadata:
     domhandler: "npm:^5.0.2"
     entities: "npm:^4.2.0"
   checksum: d5ae2b7110ca3746b3643d3ef60ef823f5f078667baf530cec096433f1627ec4b6fa8c072f09d079d7cda915fd2c7bc1b7b935681e9b09e591e1e15f4040b8e2
-  languageName: node
-  linkType: hard
-
-"dom-walk@npm:^0.1.0":
-  version: 0.1.2
-  resolution: "dom-walk@npm:0.1.2"
-  checksum: 4d2ad9062a9423d890f8577aa202b597a6b85f9489bdde656b9443901b8b322b289655c3affefc58ec2e41931e0828dfee0a1d2db6829a607d76def5901fc5a9
   languageName: node
   linkType: hard
 
@@ -20219,16 +20179,6 @@ __metadata:
     kind-of: "npm:^6.0.2"
     which: "npm:^1.3.1"
   checksum: 510f489fb68d1cc7060f276541709a0ee6d41356ef852de48f7906c648ac223082a1cc8fce86725ca6c0e032bcdc1189ae77b4744a624b29c34a9d0ece498269
-  languageName: node
-  linkType: hard
-
-"global@npm:^4.4.0":
-  version: 4.4.0
-  resolution: "global@npm:4.4.0"
-  dependencies:
-    min-document: "npm:^2.19.0"
-    process: "npm:^0.11.10"
-  checksum: 4a467aec6602c00a7c5685f310574ab04e289ad7f894f0f01c9c5763562b82f4b92d1e381ce6c5bbb12173e2a9f759c1b63dda6370cfb199970267e14d90aa91
   languageName: node
   linkType: hard
 
@@ -26025,15 +25975,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"min-document@npm:^2.19.0":
-  version: 2.19.0
-  resolution: "min-document@npm:2.19.0"
-  dependencies:
-    dom-walk: "npm:^0.1.0"
-  checksum: 783724da716fc73a51c171865d7b29bf2b855518573f82ef61c40d214f6898d7b91b5c5419e4d22693cdb78d4615873ebc3b37d7639d3dd00ca283e5a07c7af9
-  languageName: node
-  linkType: hard
-
 "min-indent@npm:^1.0.0, min-indent@npm:^1.0.1":
   version: 1.0.1
   resolution: "min-indent@npm:1.0.1"
@@ -28855,7 +28796,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"qs@npm:^6.10.0, qs@npm:^6.11.1":
+"qs@npm:^6.10.0":
   version: 6.11.2
   resolution: "qs@npm:6.11.2"
   dependencies:
@@ -29015,7 +28956,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-colorful@npm:^5.1.2, react-colorful@npm:^5.6.1":
+"react-colorful@npm:^5.1.2":
   version: 5.6.1
   resolution: "react-colorful@npm:5.6.1"
   peerDependencies:
@@ -29715,7 +29656,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-select@npm:^5.7.0, react-select@npm:^5.8.0":
+"react-select@npm:^5.8.0":
   version: 5.8.0
   resolution: "react-select@npm:5.8.0"
   dependencies:
