@@ -176,7 +176,7 @@ export const SearchAction = ({
                     maxLength={512}
                     noError
                     noTopLabel
-                    clearButton="always"
+                    showClearButton="always"
                     onClear={() => {
                         setSearch('');
                     }}
