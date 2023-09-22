@@ -97,7 +97,7 @@ export const ChangeDeviceLabel = ({
                 width={!isMobileLayout ? 170 : undefined}
                 isVertical={isVertical}
                 noTopLabel
-                bottomText={error}
+                bottomText={error || null}
                 value={label}
                 placeholder={placeholder}
                 inputState={error ? 'error' : undefined}

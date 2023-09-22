@@ -89,7 +89,6 @@ export const GuideSearch = ({ pageRoot, setSearchActive }: GuideSearchProps) => 
             <StyledInput
                 noTopLabel
                 placeholder={translationString('TR_SEARCH')}
-                noError
                 value={query}
                 onChange={e => setQuery(e.currentTarget.value)}
                 addonAlign="left"

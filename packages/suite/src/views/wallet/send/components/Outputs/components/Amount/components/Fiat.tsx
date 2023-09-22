@@ -215,7 +215,7 @@ export const Fiat = ({ output, outputId }: FiatProps) => {
                 defaultValue={fiatValue}
                 maxLength={MAX_LENGTH.FIAT}
                 rules={rules}
-                bottomText={bottomText}
+                bottomText={bottomText || null}
                 innerAddon={
                     <Controller
                         control={control}
