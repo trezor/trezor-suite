@@ -12,7 +12,7 @@ import { isTestnet } from '@suite-common/wallet-utils';
 import TrezorConnect, { AccountTransaction } from '@trezor/connect';
 import { networks } from '@suite-common/wallet-config';
 
-import { fiatRatesActionsPrefix, REFETCH_INTERVAL } from './constants';
+import { fiatRatesActionsPrefix, REFETCH_INTERVAL } from './fiatRatesConstants';
 import { selectTickersToBeUpdated, selectTransactionsWithMissingRates } from './fiatRatesSelectors';
 import { transactionsActions } from '../transactions/transactionsActions';
 
