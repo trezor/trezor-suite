@@ -78,7 +78,7 @@ const OpReturn = ({ outputId }: { outputId: number }) => {
                 data-test={inputAsciiName}
                 defaultValue={asciiValue}
                 maxLength={formInputsMaxLength.opReturn}
-                bottomText={asciiError?.message}
+                bottomText={asciiError?.message || null}
                 label={
                     <Label>
                         <Tooltip
@@ -104,7 +104,7 @@ const OpReturn = ({ outputId }: { outputId: number }) => {
                 data-test={inputHexName}
                 defaultValue={hexValue}
                 maxLength={formInputsMaxLength.opReturn}
-                bottomText={hexError?.message}
+                bottomText={hexError?.message || null}
                 labelRight={
                     <Icon size={20} icon="CROSS" onClick={() => removeOpReturn(outputId)} />
                 }

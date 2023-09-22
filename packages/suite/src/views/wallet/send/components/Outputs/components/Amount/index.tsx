@@ -245,7 +245,7 @@ export const Amount = ({ output, outputId }: AmountProps) => {
                                 )}
                             </Label>
                         }
-                        bottomText={bottomText}
+                        bottomText={bottomText || null}
                         onChange={handleInputChange}
                         name={inputName}
                         data-test={inputName}

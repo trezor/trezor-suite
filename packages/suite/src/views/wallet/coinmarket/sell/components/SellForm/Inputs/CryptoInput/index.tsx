@@ -97,7 +97,7 @@ const CryptoInput = () => {
             noTopLabel
             maxLength={formInputsMaxLength.amount}
             rules={cryptoInputRules}
-            bottomText={errors[CRYPTO_INPUT]?.message}
+            bottomText={errors[CRYPTO_INPUT]?.message || null}
             innerAddon={
                 <Controller
                     control={control}
