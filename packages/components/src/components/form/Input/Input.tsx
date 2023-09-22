@@ -89,7 +89,7 @@ export interface InputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 
     noError?: boolean;
     noTopLabel?: boolean;
     labelAddonIsVisible?: boolean;
-    clearButton?: 'hover' | 'always';
+    showClearButton?: 'hover' | 'always';
     width?: number;
     onClear?: () => void;
 }
@@ -109,7 +109,7 @@ const Input = ({
     className,
     labelAddonIsVisible,
     dataTest,
-    clearButton,
+    showClearButton,
     onClear,
     addonAlign = 'right',
     noError = false,
@@ -122,8 +122,8 @@ const Input = ({
 
     const theme = useTheme();
 
-    const hasClearButton =
-        (clearButton === 'always' || (clearButton === 'hover' && isHovered)) &&
+    const hasShowClearButton =
+        (showClearButton === 'always' || (showClearButton === 'hover' && isHovered)) &&
         value &&
         value?.length > 0;
 
@@ -166,11 +166,11 @@ const Input = ({
                         </InputAddon>
                     )}
 
-                    {((innerAddon && addonAlign === 'right') || hasClearButton) && (
+                    {((innerAddon && addonAlign === 'right') || hasShowClearButton) && (
                         <InputAddon align="right" ref={measureRightAddon} size={size}>
-                            {addonAlign === 'right' && !hasClearButton && innerAddon}
+                            {addonAlign === 'right' && !hasShowClearButton && innerAddon}
 
-                            {hasClearButton && (
+                            {hasShowClearButton && (
                                 <Icon
                                     icon="CANCEL"
                                     size={12}
