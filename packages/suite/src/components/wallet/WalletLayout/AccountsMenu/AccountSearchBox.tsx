@@ -109,7 +109,7 @@ export const AccountSearchBox = (props: AccountSearchBoxProps) => {
                     placeholder={translationString('TR_SEARCH')}
                     noTopLabel
                     noError
-                    clearButton="always"
+                    showClearButton="always"
                     onClear={onClear}
                     data-test="@account-menu/search-input"
                 />
