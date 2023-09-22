@@ -22,7 +22,6 @@ export const BackendInput = ({ url, active, onRemove }: BackendInputProps) => {
             value={url}
             noTopLabel
             isDisabled
-            noError
             showClearButton={showClearButton}
             onClear={onRemove}
             innerAddon={innerAddon}

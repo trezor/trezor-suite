@@ -57,7 +57,7 @@ const FiatInput = () => {
             noTopLabel
             maxLength={formInputsMaxLength.amount}
             rules={fiatInputRules}
-            bottomText={fiatError?.message}
+            bottomText={fiatError?.message || null}
             innerAddon={<FiatSelect />}
             data-test="@coinmarket/exchange/fiat-input"
         />
