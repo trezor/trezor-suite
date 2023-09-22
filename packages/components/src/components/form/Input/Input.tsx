@@ -17,10 +17,14 @@ import {
     BaseInputProps,
 } from '../InputStyles';
 
-const Wrapper = styled.div<Pick<InputProps, 'width'>>`
+const BOTTOM_TEXT_MIN_HEIGHT = 22;
+
+const Wrapper = styled.div<Pick<InputProps, 'width'> & { withBottomPadding: boolean }>`
     display: inline-flex;
     flex-direction: column;
     width: ${({ width }) => (width ? `${width}px` : '100%')};
+    padding-bottom: ${({ withBottomPadding }) =>
+        withBottomPadding ? `${BOTTOM_TEXT_MIN_HEIGHT}px` : '0'};
 `;
 
 interface StyledInputProps extends BaseInputProps {
@@ -59,7 +63,7 @@ const InputAddon = styled.div<{ align: AddonAlignment; size: InputSize }>`
 const BottomText = styled.div<Pick<InputProps, 'inputState'>>`
     display: flex;
     padding: 6px 10px 0 10px;
-    min-height: 22px;
+    min-height: ${BOTTOM_TEXT_MIN_HEIGHT}px;
     font-size: ${FONT_SIZE.TINY};
     color: ${({ inputState, theme }) => getInputStateTextColor(inputState, theme)};
 `;
@@ -78,15 +82,16 @@ export interface InputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 
     labelAddon?: ReactElement;
     labelRight?: ReactElement;
     innerAddon?: ReactElement;
+    /**
+     * @description pass `null` if bottom text can be `undefine`
+     */
     bottomText?: ReactNode;
     isDisabled?: boolean;
     size?: InputSize;
     className?: string;
-    spellCheck?: boolean;
     dataTest?: string;
     inputState?: InputState;
     addonAlign?: AddonAlignment;
-    noError?: boolean;
     noTopLabel?: boolean;
     labelAddonIsVisible?: boolean;
     showClearButton?: 'hover' | 'always';
@@ -112,7 +117,6 @@ const Input = ({
     showClearButton,
     onClear,
     addonAlign = 'right',
-    noError = false,
     noTopLabel = false,
     ...rest
 }: InputProps) => {
@@ -142,9 +146,10 @@ const Input = ({
     return (
         <Wrapper
             width={width}
-            data-test={dataTest}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
+            withBottomPadding={bottomText === null}
+            data-test={dataTest}
         >
             {!noTopLabel && (
                 <Label>
@@ -200,7 +205,7 @@ const Input = ({
                     />
                 </InputWrapper>
 
-                {!noError && <BottomText inputState={inputState}>{bottomText}</BottomText>}
+                {bottomText && <BottomText inputState={inputState}>{bottomText}</BottomText>}
             </Row>
         </Wrapper>
     );
