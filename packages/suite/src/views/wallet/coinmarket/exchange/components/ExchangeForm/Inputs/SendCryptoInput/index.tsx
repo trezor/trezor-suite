@@ -95,7 +95,7 @@ const SendCryptoInput = () => {
             maxLength={formInputsMaxLength.amount}
             isToken={!!tokenData}
             rules={cryptoInputRules}
-            bottomText={amountError?.message}
+            bottomText={amountError?.message || null}
             innerAddon={<SendCryptoSelect />}
         />
     );

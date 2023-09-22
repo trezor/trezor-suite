@@ -174,7 +174,6 @@ export const SearchAction = ({
                     value={search}
                     addonAlign="left"
                     maxLength={512}
-                    noError
                     noTopLabel
                     showClearButton="always"
                     onClear={() => {

@@ -46,7 +46,7 @@ export const DestinationTag = ({ close }: DestinationTagProps) => {
             maxLength={formInputsMaxLength.xrpDestinationTag}
             label={<QuestionTooltip label="DESTINATION_TAG" tooltip="DESTINATION_TAG_EXPLAINED" />}
             labelRight={<Icon size={20} icon="CROSS" useCursorPointer onClick={close} />}
-            bottomText={error?.message}
+            bottomText={error?.message || null}
             innerRef={inputRef}
             {...inputField}
         />

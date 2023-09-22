@@ -65,7 +65,7 @@ const FiatInput = () => {
             inputState={getInputState(errors.fiatInput, fiatInputValue)}
             name={FIAT_INPUT}
             maxLength={formInputsMaxLength.amount}
-            bottomText={errors[FIAT_INPUT]?.message}
+            bottomText={errors[FIAT_INPUT]?.message || null}
             innerAddon={
                 <Controller
                     control={control}

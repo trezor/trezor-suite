@@ -102,7 +102,7 @@ export const Data = ({ close }: DataProps) => {
                 data-test={inputAsciiName}
                 defaultValue={asciiValue}
                 maxLength={formInputsMaxLength.ethData}
-                bottomText={asciiError?.message}
+                bottomText={asciiError?.message || null}
                 label={<QuestionTooltip label="DATA_ETH" tooltip="DATA_ETH_TOOLTIP" />}
                 innerRef={asciiRef}
                 {...asciiField}
@@ -113,7 +113,7 @@ export const Data = ({ close }: DataProps) => {
                 data-test={inputHexName}
                 defaultValue={hexValue}
                 maxLength={formInputsMaxLength.ethData}
-                bottomText={hexError?.message}
+                bottomText={hexError?.message || null}
                 labelRight={
                     <Icon
                         size={20}
