@@ -6279,38 +6279,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@storybook/addon-knobs@npm:^7.0.2":
-  version: 7.0.2
-  resolution: "@storybook/addon-knobs@npm:7.0.2"
-  dependencies:
-    copy-to-clipboard: ^3.3.3
-    core-js: ^3.29.0
-    escape-html: ^1.0.3
-    fast-deep-equal: ^3.1.3
-    global: ^4.4.0
-    lodash: ^4.17.21
-    prop-types: ^15.8.1
-    qs: ^6.11.1
-    react-colorful: ^5.6.1
-    react-lifecycles-compat: ^3.0.4
-    react-select: ^5.7.0
-  peerDependencies:
-    "@storybook/addons": ^7.0.0
-    "@storybook/api": ^7.0.0
-    "@storybook/components": ^7.0.0
-    "@storybook/core-events": ^7.0.0
-    "@storybook/theming": ^7.0.0
-    react: ^16.8.0 || ^17.0.0 || ^18.0.0
-    react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
-  peerDependenciesMeta:
-    react:
-      optional: true
-    react-dom:
-      optional: true
-  checksum: a28a61bb18d4c07edd3b031abbc9c81b48cf1c2b7d0707177f383c70f01b1e91d6f364969e42cdb34a7b761bc68e7603b53136c01887e56e24b408eb843d36fe
-  languageName: node
-  linkType: hard
-
 "@storybook/addon-links@npm:^7.2.3":
   version: 7.2.3
   resolution: "@storybook/addon-links@npm:7.2.3"
@@ -9409,7 +9377,6 @@ __metadata:
   dependencies:
     "@storybook/addon-actions": ^7.2.3
     "@storybook/addon-controls": ^7.2.3
-    "@storybook/addon-knobs": ^7.0.2
     "@storybook/addon-links": ^7.2.3
     "@storybook/addon-viewport": ^7.2.3
     "@storybook/addons": ^7.2.3
@@ -16119,7 +16086,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"copy-to-clipboard@npm:^3.3.1, copy-to-clipboard@npm:^3.3.3":
+"copy-to-clipboard@npm:^3.3.1":
   version: 3.3.3
   resolution: "copy-to-clipboard@npm:3.3.3"
   dependencies:
@@ -16160,7 +16127,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"core-js@npm:^3.0.4, core-js@npm:^3.29.0, core-js@npm:^3.30.2, core-js@npm:^3.6.5, core-js@npm:^3.8.2":
+"core-js@npm:^3.0.4, core-js@npm:^3.30.2, core-js@npm:^3.6.5, core-js@npm:^3.8.2":
   version: 3.32.0
   resolution: "core-js@npm:3.32.0"
   checksum: 52921395028550e4c9d21d47b9836439bb5b6b9eefc34d45a3948a68d81fdd093acc0fadf69f9cf632b82f01f95f22f484408a93dd9e940b19119ac204cd2925
@@ -30811,7 +30778,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"qs@npm:^6.10.0, qs@npm:^6.11.1":
+"qs@npm:^6.10.0":
   version: 6.11.2
   resolution: "qs@npm:6.11.2"
   dependencies:
@@ -30994,7 +30961,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-colorful@npm:^5.1.2, react-colorful@npm:^5.6.1":
+"react-colorful@npm:^5.1.2":
   version: 5.6.1
   resolution: "react-colorful@npm:5.6.1"
   peerDependencies:
@@ -31698,7 +31665,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-select@npm:^5.7.0, react-select@npm:^5.7.3":
+"react-select@npm:^5.7.3":
   version: 5.7.4
   resolution: "react-select@npm:5.7.4"
   dependencies:
