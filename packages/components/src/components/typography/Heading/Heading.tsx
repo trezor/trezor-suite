@@ -2,18 +2,18 @@ import styled, { css } from 'styled-components';
 
 import { NEUE_FONT_SIZE, FONT_WEIGHT, FONT_SIZE } from '../../../config/variables';
 
-export interface Props {
+export interface HeadingProps {
     textAlign?: 'left' | 'center' | 'right' | 'justify';
     noMargin?: boolean;
     fontWeight?: (typeof FONT_WEIGHT)[keyof typeof FONT_WEIGHT];
 }
 
 const textAlignStyle = css`
-    text-align: ${(props: Props) => props.textAlign};
+    text-align: ${(props: HeadingProps) => props.textAlign};
 `;
 
 const fontWeightStyle = css`
-    font-weight: ${(props: Props) => props.fontWeight};
+    font-weight: ${(props: HeadingProps) => props.fontWeight};
 `;
 
 const baseStyles = css`
@@ -21,12 +21,12 @@ const baseStyles = css`
     text-rendering: optimizeLegibility;
     margin: 0;
     padding: 0;
-    ${(props: Props) => props.textAlign && textAlignStyle}
+    ${(props: HeadingProps) => props.textAlign && textAlignStyle}
     font-stretch: normal;
     font-style: normal;
     line-height: normal;
     letter-spacing: normal;
-    ${(props: Props) => props.fontWeight && fontWeightStyle}
+    ${(props: HeadingProps) => props.fontWeight && fontWeightStyle}
     color: ${({ theme }) => theme.TYPE_DARK_GREY};
 
     ${props =>
@@ -36,26 +36,26 @@ const baseStyles = css`
         `};
 `;
 
-const H1 = styled.h1<Props>`
+const H1 = styled.h1<HeadingProps>`
     ${baseStyles};
     font-size: ${NEUE_FONT_SIZE.H1};
     line-height: 34px;
     font-weight: normal;
 `;
 
-const H2 = styled.h2<Props>`
+const H2 = styled.h2<HeadingProps>`
     ${baseStyles};
     font-size: ${FONT_SIZE.H2};
     line-height: 32px;
-    font-weight: ${(props: Props) => props.fontWeight || 500};
+    font-weight: ${(props: HeadingProps) => props.fontWeight || 500};
     margin: 0;
 `;
 
-const H3 = styled.h3<Props>`
+const H3 = styled.h3<HeadingProps>`
     ${baseStyles};
     font-size: ${FONT_SIZE.H3};
     line-height: 28px;
-    font-weight: ${(props: Props) => props.fontWeight || 500};
+    font-weight: ${(props: HeadingProps) => props.fontWeight || 500};
     margin: 0;
 `;
 
