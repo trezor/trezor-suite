@@ -73,7 +73,7 @@ export const UdevDownload = () => {
                             isSearchable={false}
                             isClearable={false}
                             value={target}
-                            variant="small"
+                            size="small"
                             onChange={setSelectedTarget}
                             options={installers}
                         />

@@ -116,7 +116,7 @@ const FiatAmount = ({
                         control={control}
                         name="customFiatAmount"
                         noTopLabel
-                        variant="small"
+                        size="small"
                         noError
                         autoFocus
                         inputState={customFiatAmountError ? 'error' : 'success'}
