@@ -32,6 +32,12 @@ export const Timerange: StoryObj<TimerangeProps> = {
         ctaCancel: 'Cancel',
     },
     argTypes: {
+        ctaSubmit: {
+            type: 'string',
+        },
+        ctaCancel: {
+            type: 'string',
+        },
         startDate: {
             control: 'date',
         },
