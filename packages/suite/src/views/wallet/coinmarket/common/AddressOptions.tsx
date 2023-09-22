@@ -10,6 +10,8 @@ import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import type { Account } from 'src/types/wallet';
 import { useAccountAddressDictionary } from 'src/hooks/wallet/useAccounts';
 import { AddressOptionsFormState } from 'src/types/wallet/coinmarketBuyOffers';
+import { selectLabelingDataForAccount } from 'src/reducers/suite/metadataReducer';
+import { useSelector } from 'src/hooks/suite';
 
 const AddressWrapper = styled.div`
     display: flex;
@@ -87,6 +89,9 @@ export const AddressOptions = <TFieldValues extends AddressOptionsFormState>({
     const addresses = account?.addresses;
     const addressDictionary = useAccountAddressDictionary(account);
     const value = address ? addressDictionary[address] : undefined;
+    const accountMetadata = useSelector(
+        state => account && selectLabelingDataForAccount(state, account.key),
+    );
 
     useEffect(() => {
         if (!address && addresses) {
@@ -115,7 +120,10 @@ export const AddressOptions = <TFieldValues extends AddressOptionsFormState>({
                         return (
                             <Option>
                                 <AddressWrapper>
-                                    <Address>{accountAddress.address}</Address>
+                                    <Address>
+                                        {accountMetadata?.addressLabels[accountAddress.address] ||
+                                            accountAddress.address}
+                                    </Address>
                                     <Amount>
                                         <CryptoWrapper>
                                             <FormattedCryptoAmount
