@@ -1,23 +1,28 @@
-import { TrezorLogo } from '../../../index';
-import { storiesOf } from '@storybook/react';
-import { number, select } from '@storybook/addon-knobs';
+import { StoryObj } from '@storybook/react';
+import { TrezorLogo as TrezorLogoComponent, TrezorLogoProps } from '../../../index';
 
-storiesOf('Assets/TrezorLogos', module).add('TrezorLogo', () => {
-    type LogoType = 'horizontal' | 'vertical';
+export default {
+    title: 'Assets/TrezorLogo',
+    component: TrezorLogoComponent,
+};
 
-    const width = number('width', 100);
-    const height = number('height', NaN);
-    const type = select(
-        'type',
-        {
-            suite: 'suite',
-            suiteCompact: 'suite_compact',
-            horizontal: 'horizontal',
-            vertical: 'vertical',
-            symbol: 'symbol',
+export const TrezorLogo: StoryObj<TrezorLogoProps> = {
+    args: {
+        type: 'horizontal',
+        width: 100,
+    },
+    argTypes: {
+        type: {
+            options: ['horizontal', 'suite_compact', 'suite', 'vertical', 'symbol'],
+            control: {
+                type: 'radio',
+            },
         },
-        'horizontal',
-    ) as LogoType;
-
-    return <TrezorLogo type={type} {...(width ? { width } : {})} {...(height ? { height } : {})} />;
-});
+        width: {
+            type: 'number',
+        },
+        height: {
+            control: 'number',
+        },
+    },
+};
