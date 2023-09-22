@@ -1,7 +1,5 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/blockchain/BlockchainGetFiatRatesForTimestamps.js
 
-import { scheduleAction } from '@trezor/utils';
-
 import { Payload, AbstractMethod } from '../core/AbstractMethod';
 import { validateParams } from './common/paramsValidator';
 import { ERRORS } from '../constants';
@@ -51,14 +49,10 @@ export default class BlockchainGetFiatRatesForTimestamps extends AbstractMethod<
 
     async run() {
         const backend = await initBlockchain(this.params.coinInfo, this.postMessage);
-        return scheduleAction(
-            _signal =>
-                backend.getFiatRatesForTimestamps({
-                    currencies: this.params.currencies,
-                    timestamps: this.params.timestamps,
-                    token: this.params.token,
-                }),
-            { timeout: 15000 },
-        );
+        return backend.getFiatRatesForTimestamps({
+            currencies: this.params.currencies,
+            timestamps: this.params.timestamps,
+            token: this.params.token,
+        });
     }
 }

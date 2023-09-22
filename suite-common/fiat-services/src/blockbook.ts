@@ -21,11 +21,11 @@ const getQuery = (query?: { currency?: string; timestamp?: number | string }) =>
 
 const getApiUrl = (ticker: Ticker) => `https://${randomEndpoint(ticker)}.trezor.io/api/v2`;
 
-const limiter = new RateLimiter(500);
+const limiter = new RateLimiter(500, 15_000);
 
 const request = <T>(url: string): Promise<T | null> =>
     limiter
-        .limit(() => fetchUrl(url))
+        .limit(signal => fetchUrl(url, { signal }))
         .then(res =>
             res.ok
                 ? res.json()

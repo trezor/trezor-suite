@@ -11,11 +11,11 @@ interface HistoricalResponse extends LastWeekRates {
     symbol: string;
 }
 
-const rateLimiter = new RateLimiter(1000);
+const rateLimiter = new RateLimiter(1_000, 15_000);
 
 const fetchCoinGecko = async (url: string) => {
     try {
-        const res = await rateLimiter.limit(() => fetchUrl(url));
+        const res = await rateLimiter.limit(signal => fetchUrl(url, { signal }));
         if (!res.ok) {
             console.warn(`Coingecko: Fiat rates failed to fetch: ${res.status}`);
             return;

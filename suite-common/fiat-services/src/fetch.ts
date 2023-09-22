@@ -1,1 +1,1 @@
-export const fetchUrl = (url: string) => fetch(url);
+export const fetchUrl = (url: string, init?: RequestInit) => fetch(url, init);
