@@ -8,7 +8,7 @@ export type TextAlign = 'left' | 'center' | 'right';
 
 export type InputState = 'success' | 'warning' | 'error';
 
-export type InputVariant = 'small' | 'large';
+export type InputSize = 'small' | 'large';
 
 export interface InputButton {
     icon?: IconType;

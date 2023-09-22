@@ -293,7 +293,7 @@ const SendSwapTransactionComponent = () => {
                                 <StyledInput
                                     noTopLabel
                                     value={customSlippage}
-                                    variant="small"
+                                    size="small"
                                     inputState={customSlippageError ? 'error' : 'success'}
                                     name="CustomSlippage"
                                     data-test="CustomSlippage"

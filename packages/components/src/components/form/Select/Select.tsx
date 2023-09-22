@@ -17,7 +17,7 @@ import { darken } from 'polished';
 import { NEUE_FONT_SIZE, FONT_WEIGHT, FONT_SIZE, Z_INDEX } from '../../../config/variables';
 import { animations } from '../../../config';
 import { useTheme } from '../../../utils';
-import { InputVariant, InputState, SuiteThemeColors } from '../../../support/types';
+import { InputSize, InputState, SuiteThemeColors } from '../../../support/types';
 import {
     Label,
     LabelLeft,
@@ -33,7 +33,7 @@ const reactSelectClassNamePrefix = 'react-select';
 const selectStyle = (
     isSearchable: boolean,
     withDropdownIndicator = true,
-    variant: InputVariant,
+    variant: InputSize,
     hideTextCursor: boolean,
     isClean: boolean,
     minWidth: string,
@@ -232,7 +232,7 @@ interface CommonProps extends Omit<ReactSelectProps<Option>, 'onChange'> {
     isClean?: boolean;
     label?: ReactNode;
     wrapperProps?: Record<string, any>;
-    variant?: InputVariant;
+    size?: InputSize;
     noError?: boolean;
     bottomText?: ReactNode;
     hideTextCursor?: boolean; // this prop hides blinking text cursor
@@ -257,7 +257,7 @@ export const Select = ({
     wrapperProps,
     isClean = false,
     label,
-    variant = 'large',
+    size = 'large',
     noError = true,
     bottomText,
     useKeyPressScroll,
@@ -458,7 +458,7 @@ export const Select = ({
                 styles={selectStyle(
                     isSearchable,
                     withDropdownIndicator,
-                    variant,
+                    size,
                     hideTextCursor,
                     isClean,
                     minWidth,
