@@ -139,7 +139,7 @@ export const AddTokenModal = ({ onCancel }: AddTokenModalProps) => {
                     }
                     placeholder={translationString('TR_ADD_TOKEN_PLACEHOLDER')}
                     value={contractAddress}
-                    bottomText={error}
+                    bottomText={error || null}
                     inputState={getInputState()}
                     onChange={onChange}
                 />

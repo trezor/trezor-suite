@@ -78,7 +78,6 @@ export const Textarea = ({
     noTopLabel,
     labelRight,
     characterCount,
-    noError,
     children,
     ...rest
 }: TextareaProps) => {
@@ -131,7 +130,7 @@ export const Textarea = ({
 
             {children}
 
-            {!noError && <BottomText inputState={inputState}>{bottomText}</BottomText>}
+            {bottomText && <BottomText inputState={inputState}>{bottomText}</BottomText>}
         </Wrapper>
     );
 };

@@ -218,7 +218,7 @@ const SignVerify = () => {
                                 current: formValues.message?.length,
                                 max: MAX_LENGTH_MESSAGE,
                             }}
-                            bottomText={messageError}
+                            bottomText={messageError || null}
                             rows={4}
                             maxRows={4}
                             data-test="@sign-verify/message"
@@ -235,7 +235,7 @@ const SignVerify = () => {
                                 account={selectedAccount.account}
                                 revealedAddresses={revealedAddresses}
                                 inputState={getInputState(formErrors.path, formValues.path)}
-                                bottomText={pathError}
+                                bottomText={pathError || null}
                                 data-test="@sign-verify/sign-address"
                                 {...pathField}
                             />
@@ -245,7 +245,7 @@ const SignVerify = () => {
                                 label={<Translation id="TR_ADDRESS" />}
                                 type="text"
                                 inputState={getInputState(formErrors.address, formValues.address)}
-                                bottomText={addressError}
+                                bottomText={addressError || null}
                                 data-test="@sign-verify/select-address"
                                 {...addressField}
                             />
