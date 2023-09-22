@@ -2,7 +2,7 @@ import { useCallback, useState, Ref, ReactNode, ReactElement, InputHTMLAttribute
 import styled from 'styled-components';
 
 import { FONT_SIZE } from '../../../config/variables';
-import { InputState, InputVariant } from '../../../support/types';
+import { InputState, InputSize } from '../../../support/types';
 import { useTheme } from '../../../utils';
 import { Icon } from '../../assets/Icon/Icon';
 import {
@@ -14,6 +14,7 @@ import {
     INPUT_HEIGHTS,
     getInputStateTextColor,
     LabelAddon,
+    BaseInputProps,
 } from '../InputStyles';
 
 const Wrapper = styled.div<Pick<InputProps, 'width'>>`
@@ -22,7 +23,8 @@ const Wrapper = styled.div<Pick<InputProps, 'width'>>`
     width: ${({ width }) => (width ? `${width}px` : '100%')};
 `;
 
-interface StyledInputProps extends InputProps {
+interface StyledInputProps extends BaseInputProps {
+    $size: InputSize;
     leftAddonWidth?: number;
     rightAddonWidth?: number;
 }
@@ -31,7 +33,7 @@ const StyledInput = styled.input<StyledInputProps>`
     ${baseInputStyle}
 
     width: 100%;
-    height: ${({ variant }) => `${INPUT_HEIGHTS[variant as InputVariant]}px`};
+    height: ${({ $size }) => `${INPUT_HEIGHTS[$size as InputSize]}px`};
     padding: 1px 16px 0 16px;
     padding-left: ${({ leftAddonWidth }) =>
         leftAddonWidth ? `${leftAddonWidth + 19}px` : undefined};
@@ -44,12 +46,12 @@ const InputWrapper = styled.div`
     position: relative;
 `;
 
-const InputAddon = styled.div<{ align: AddonAlignment; variant: InputVariant }>`
+const InputAddon = styled.div<{ align: AddonAlignment; size: InputSize }>`
     position: absolute;
     top: 1px;
     bottom: 1px;
-    right: ${({ align, variant }) => align === 'right' && (variant === 'small' ? '10px' : '16px')};
-    left: ${({ align, variant }) => align === 'left' && (variant === 'small' ? '10px' : '16px')};
+    right: ${({ align, size }) => align === 'right' && (size === 'small' ? '10px' : '16px')};
+    left: ${({ align, size }) => align === 'left' && (size === 'small' ? '10px' : '16px')};
     display: flex;
     align-items: center;
 `;
@@ -69,7 +71,7 @@ const Row = styled.div`
 
 type AddonAlignment = 'left' | 'right';
 
-export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
+export interface InputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'size'> {
     value?: string;
     innerRef?: Ref<HTMLInputElement>;
     label?: ReactElement | string;
@@ -78,7 +80,7 @@ export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
     innerAddon?: ReactElement;
     bottomText?: ReactNode;
     isDisabled?: boolean;
-    variant?: InputVariant;
+    size?: InputSize;
     className?: string;
     spellCheck?: boolean;
     dataTest?: string;
@@ -102,7 +104,7 @@ const Input = ({
     labelRight,
     innerAddon,
     bottomText,
-    variant = 'large',
+    size = 'large',
     isDisabled,
     className,
     labelAddonIsVisible,
@@ -159,13 +161,13 @@ const Input = ({
             <Row>
                 <InputWrapper>
                     {innerAddon && addonAlign === 'left' && (
-                        <InputAddon align="left" ref={measureLeftAddon} variant={variant}>
+                        <InputAddon align="left" ref={measureLeftAddon} size={size}>
                             {innerAddon}
                         </InputAddon>
                     )}
 
                     {((innerAddon && addonAlign === 'right') || hasClearButton) && (
-                        <InputAddon align="right" ref={measureRightAddon} variant={variant}>
+                        <InputAddon align="right" ref={measureRightAddon} size={size}>
                             {addonAlign === 'right' && !hasClearButton && innerAddon}
 
                             {hasClearButton && (
@@ -189,7 +191,7 @@ const Input = ({
                         spellCheck={false}
                         inputState={inputState}
                         disabled={isDisabled}
-                        variant={variant}
+                        $size={size}
                         ref={innerRef}
                         data-lpignore="true"
                         leftAddonWidth={leftAddonWidth}
