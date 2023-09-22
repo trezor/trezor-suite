@@ -211,7 +211,7 @@ const VerifyAddressComponent = () => {
                                     />
                                 </Label>
                             }
-                            variant="small"
+                            size="small"
                             readOnly={selectedAccountOption?.type !== 'NON_SUITE'}
                             inputState={errors.address ? 'error' : undefined}
                             bottomText={errors.address?.message}
@@ -230,7 +230,7 @@ const VerifyAddressComponent = () => {
                 {selectedQuote?.extraFieldDescription && (
                     <Row>
                         <Input
-                            variant="small"
+                            size="small"
                             label={
                                 <Label>
                                     <Translation

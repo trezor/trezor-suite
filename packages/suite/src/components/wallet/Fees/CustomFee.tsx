@@ -162,7 +162,7 @@ export const CustomFee = <TFieldValues extends FormState>({
                         <StyledNumberInput
                             control={control}
                             label={<Translation id="TR_GAS_LIMIT" />}
-                            variant="small"
+                            size="small"
                             inputState={getInputState(feeLimitError, feeLimitValue)}
                             name={FEE_LIMIT}
                             data-test={FEE_LIMIT}
@@ -184,7 +184,7 @@ export const CustomFee = <TFieldValues extends FormState>({
                         control={control}
                         noTopLabel={!useFeeLimit}
                         label={useFeeLimit ? <Translation id="TR_GAS_PRICE" /> : undefined}
-                        variant="small"
+                        size="small"
                         inputState={getInputState(feePerUnitError, feePerUnitValue)}
                         innerAddon={<Units>{getFeeUnits(networkType)}</Units>}
                         name={FEE_PER_UNIT}
