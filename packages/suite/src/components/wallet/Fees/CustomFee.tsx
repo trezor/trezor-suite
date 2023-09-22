@@ -190,7 +190,7 @@ export const CustomFee = <TFieldValues extends FormState>({
                         name={FEE_PER_UNIT}
                         data-test={FEE_PER_UNIT}
                         rules={feeRules}
-                        bottomText={feePerUnitError?.message}
+                        bottomText={feePerUnitError?.message || null}
                     />
                 </Col>
             </Wrapper>

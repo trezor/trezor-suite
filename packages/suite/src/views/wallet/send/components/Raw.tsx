@@ -84,7 +84,7 @@ const Raw = ({ network }: RawProps) => {
                     inputState={inputState}
                     data-test={inputName}
                     defaultValue={inputValue}
-                    bottomText={error?.message}
+                    bottomText={error?.message || null}
                     label={
                         <Tooltip
                             addon={instance => (
