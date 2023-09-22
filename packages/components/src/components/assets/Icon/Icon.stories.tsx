@@ -1,19 +1,21 @@
-import { Icon, variables, colors } from '../../../index';
-import { storiesOf } from '@storybook/react';
-import { number, select, color } from '@storybook/addon-knobs';
+import { Icon as IconComponent, IconProps, variables } from '../../../index';
+import { StoryObj } from '@storybook/react';
 
-storiesOf('Assets/Icons', module).add('Icon', () => {
-    const size = number('Size', 24);
-    const iconColor = color('Color', colors.TYPE_LIGHT_GREY);
+export default {
+    title: 'Assets/Icons',
+    component: IconComponent,
+};
 
-    const iconOptions: any = {
-        None: null,
-    };
-    variables.ICONS.forEach((icon: string) => {
-        iconOptions[icon] = icon;
-    });
-
-    const icon = select('Icon', iconOptions, 'ARROW_DOWN');
-
-    return <Icon icon={icon} size={size} color={iconColor} />;
-});
+export const Icon: StoryObj<IconProps> = {
+    args: {
+        icon: 'ARROW_DOWN',
+    },
+    argTypes: {
+        icon: {
+            options: variables.ICONS,
+            control: {
+                type: 'select',
+            },
+        },
+    },
+};
