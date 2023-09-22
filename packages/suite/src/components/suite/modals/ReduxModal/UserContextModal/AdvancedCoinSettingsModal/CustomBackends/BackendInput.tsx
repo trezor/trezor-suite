@@ -15,7 +15,7 @@ type BackendInputProps = {
 
 export const BackendInput = ({ url, active, onRemove }: BackendInputProps) => {
     const innerAddon = active ? InputAddon : undefined;
-    const clearButton = onRemove ? 'hover' : undefined;
+    const showClearButton = onRemove ? 'hover' : undefined;
 
     return (
         <Input
@@ -23,7 +23,7 @@ export const BackendInput = ({ url, active, onRemove }: BackendInputProps) => {
             noTopLabel
             isDisabled
             noError
-            clearButton={clearButton}
+            showClearButton={showClearButton}
             onClear={onRemove}
             innerAddon={innerAddon}
         />
