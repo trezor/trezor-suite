@@ -15,6 +15,11 @@ const Label = styled.span`
     color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    white-space: nowrap;
+`;
+
+const StyledInput = styled(Input)`
+    width: 120px;
 `;
 
 interface DelimiterFormProps {
@@ -55,10 +60,9 @@ export const DelimiterForm = ({ value, onChange }: DelimiterFormProps) => {
                 />
             </Label>
             {custom && (
-                <Input
+                <StyledInput
                     noTopLabel
                     size="small"
-                    width={120}
                     onChange={({ target }) => onChange(target.value)}
                     defaultValue={value}
                     innerRef={inputRef}
