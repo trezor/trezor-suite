@@ -35,13 +35,15 @@ const Wrapper = styled.div<{ expanded: boolean }>`
 `;
 
 const StyledInput = styled(Input)<{ expanded: boolean }>`
-    border: none;
-    ${({ expanded }) =>
-        !expanded &&
-        css`
-            cursor: pointer;
-            padding: 0 16px;
-        `}
+    input {
+        border: none;
+        ${({ expanded }) =>
+            !expanded &&
+            css`
+                cursor: pointer;
+                padding: 0 16px;
+            `}
+    }
 `;
 export interface SearchProps {
     account: Account;

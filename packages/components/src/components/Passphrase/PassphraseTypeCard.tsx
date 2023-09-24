@@ -104,8 +104,10 @@ const Spacer = styled.div`
 `;
 
 const PassphraseInput = styled(Input)`
-    color: ${({ theme }) => theme.TYPE_DARK_GREY};
-    font-size: ${variables.FONT_SIZE.SMALL};
+    input {
+        color: ${({ theme }) => theme.TYPE_DARK_GREY};
+        font-size: ${variables.FONT_SIZE.SMALL};
+    }
 `;
 
 const Row = styled.div`

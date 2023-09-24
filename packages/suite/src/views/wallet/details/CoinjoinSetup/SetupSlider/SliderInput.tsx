@@ -15,16 +15,18 @@ const LevelContainer = styled.div`
 `;
 
 const Level = styled(Input)`
-    background: none;
-    height: 42px;
-    padding: ${({ innerAddon }) => !innerAddon && '1px 12px 0 12px'};
-    border: 1.5px solid ${({ theme }) => theme.STROKE_GREY};
-    color: ${({ theme }) => theme.TYPE_GREEN};
-    font-size: ${variables.FONT_SIZE.H3};
-    text-align: center;
+    input {
+        background: none;
+        height: 42px;
+        padding: ${({ innerAddon }) => !innerAddon && '1px 12px 0 12px'};
+        border: 1.5px solid ${({ theme }) => theme.STROKE_GREY};
+        color: ${({ theme }) => theme.TYPE_GREEN};
+        font-size: ${variables.FONT_SIZE.H3};
+        text-align: center;
 
-    :disabled {
-        color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+        :disabled {
+            color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+        }
     }
 `;
 
