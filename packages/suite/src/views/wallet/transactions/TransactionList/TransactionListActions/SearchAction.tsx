@@ -18,6 +18,7 @@ import { Account } from 'src/types/wallet';
 import { Translation } from 'src/components/suite';
 import { isFeatureFlagEnabled } from '@suite-common/suite-utils';
 import { fetchTransactionsThunk } from '@suite-common/wallet-core';
+import { spacingsPx } from '@trezor/theme';
 
 const Wrapper = styled.div<{ expanded: boolean }>`
     margin-right: 20px;
@@ -35,13 +36,15 @@ const Wrapper = styled.div<{ expanded: boolean }>`
 `;
 
 const StyledInput = styled(Input)<{ expanded: boolean }>`
-    border: none;
-    ${({ expanded }) =>
-        !expanded &&
-        css`
-            cursor: pointer;
-            padding: 0 16px;
-        `}
+    input {
+        border: none;
+        ${({ expanded }) =>
+            !expanded &&
+            css`
+                cursor: pointer;
+                padding: 0 ${spacingsPx.md};
+            `}
+    }
 `;
 export interface SearchProps {
     account: Account;

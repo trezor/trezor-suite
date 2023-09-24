@@ -68,11 +68,6 @@ const BottomText = styled.div<Pick<InputProps, 'inputState'>>`
     color: ${({ inputState, theme }) => getInputStateTextColor(inputState, theme)};
 `;
 
-const Row = styled.div`
-    display: flex;
-    flex-direction: column;
-`;
-
 type AddonAlignment = 'left' | 'right';
 
 export interface InputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'size'> {
@@ -95,7 +90,6 @@ export interface InputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 
     noTopLabel?: boolean;
     labelAddonIsVisible?: boolean;
     showClearButton?: 'hover' | 'always';
-    width?: number;
     onClear?: () => void;
 }
 
@@ -103,7 +97,6 @@ const Input = ({
     value,
     innerRef,
     inputState,
-    width,
     label,
     labelAddon,
     labelRight,
@@ -145,7 +138,6 @@ const Input = ({
 
     return (
         <Wrapper
-            width={width}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
             withBottomPadding={bottomText === null}
@@ -163,7 +155,7 @@ const Input = ({
                 </Label>
             )}
 
-            <Row>
+            <div>
                 <InputWrapper>
                     {innerAddon && addonAlign === 'left' && (
                         <InputAddon align="left" ref={measureLeftAddon} size={size}>
@@ -188,7 +180,6 @@ const Input = ({
                     )}
 
                     <StyledInput
-                        className={className}
                         value={value}
                         autoComplete="off"
                         autoCorrect="off"
@@ -206,7 +197,7 @@ const Input = ({
                 </InputWrapper>
 
                 {bottomText && <BottomText inputState={inputState}>{bottomText}</BottomText>}
-            </Row>
+            </div>
         </Wrapper>
     );
 };
