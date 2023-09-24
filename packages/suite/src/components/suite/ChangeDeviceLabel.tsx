@@ -10,12 +10,16 @@ import { MAX_LABEL_LENGTH } from 'src/constants/suite/device';
 import { isAscii } from '@trezor/utils';
 import { SCREEN_SIZE } from '@trezor/components/src/config/variables';
 
-const StyledInput = styled(Input)<{ isVertical?: boolean }>`
+const StyledInput = styled(Input)<{ isVertical?: boolean; $width?: number }>`
+    width: ${({ $width }) => $width && `${$width}px`};
+
     ${props =>
         props.isVertical &&
         css`
-            &:not(:first-child) {
-                margin-left: 8px;
+            input {
+                :not(:first-child) {
+                    margin-left: 8px;
+                }
             }
         `};
 `;
@@ -93,7 +97,7 @@ export const ChangeDeviceLabel = ({
     return (
         <>
             <StyledInput
-                width={!isMobileLayout ? 170 : undefined}
+                $width={!isMobileLayout ? 170 : undefined}
                 isVertical={isVertical}
                 noTopLabel
                 bottomText={error || null}
