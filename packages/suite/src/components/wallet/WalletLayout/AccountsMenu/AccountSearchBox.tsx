@@ -46,7 +46,7 @@ const InputWrapper = styled.div<{ showCoinFilter: boolean }>`
 `;
 
 const StyledInput = styled(Input)`
-    && {
+    input {
         background-color: ${({ theme }) => theme.BG_GREY_ALT};
         border-color: ${({ theme }) => theme.BG_GREY_ALT};
         transition: border-color 0.2s;
