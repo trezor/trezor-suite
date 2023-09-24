@@ -105,9 +105,11 @@ const SlippageSettingsButton = styled.button`
 `;
 
 const StyledInput = styled(Input)`
-    display: flex;
-    flex: 1;
-    max-width: 70px;
+    input {
+        display: flex;
+        flex: 1;
+        max-width: 70px;
+    }
 `;
 
 const slippageOptions = [
