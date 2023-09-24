@@ -40,7 +40,7 @@ const PreviewContent = styled.div`
 `;
 
 const StyledInput = styled(Input)`
-    && {
+    input {
         background-color: ${({ theme }) => theme.BG_GREY_ALT};
         border-radius: 8px;
         height: 40px;
