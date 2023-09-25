@@ -8,6 +8,7 @@ export const enum SettingsAnchor {
     Tor = '@general-settings/tor',
     TorOnionLinks = '@general-settings/tor-onion-links',
     Theme = '@general-settings/theme',
+    AddressDisplay = '@general-settings/address-display',
     Analytics = '@general-settings/analytics',
     ShowLog = '@general-settings/show-log',
     ClearStorage = '@general-settings/clear-storage',
