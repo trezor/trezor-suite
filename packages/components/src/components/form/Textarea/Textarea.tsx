@@ -56,7 +56,6 @@ export interface TextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElemen
     inputState?: InputState;
     maxRows?: number;
     wrapperProps?: HTMLAttributes<HTMLDivElement> & { 'data-test'?: string };
-    noTopLabel?: boolean;
     noError?: boolean;
     value?: string;
     characterCount?: boolean | { current: number | undefined; max: number };
@@ -75,7 +74,6 @@ export const Textarea = ({
     wrapperProps,
     width,
     rows = 5,
-    noTopLabel,
     labelRight,
     characterCount,
     children,
@@ -95,6 +93,7 @@ export const Textarea = ({
     };
 
     const formattedCharacterCount = getCharacterCount();
+    const isWithLabel = label || labelAddon || labelRight;
 
     return (
         <Wrapper
@@ -103,11 +102,11 @@ export const Textarea = ({
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
         >
-            {!noTopLabel && (
+            {isWithLabel && (
                 <Label>
                     <LabelLeft>{label}</LabelLeft>
                     <LabelRight>
-                        <LabelAddon isVisible={isHovered}>{labelAddon}</LabelAddon>
+                        {labelAddon && <LabelAddon isVisible={isHovered}>{labelAddon}</LabelAddon>}
                         {labelRight && <RightLabel>{labelRight}</RightLabel>}
                     </LabelRight>
                 </Label>

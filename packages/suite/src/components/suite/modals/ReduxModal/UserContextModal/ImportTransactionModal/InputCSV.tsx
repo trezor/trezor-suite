@@ -21,7 +21,7 @@ export const InputCSV = ({ onSubmit }: InputCSVProps) => {
 
     return (
         <Wrapper>
-            <Textarea noTopLabel noError rows={9} innerRef={textAreaRef} />
+            <Textarea noError rows={9} innerRef={textAreaRef} />
             <Button
                 variant="primary"
                 isFullWidth
