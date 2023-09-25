@@ -20,7 +20,6 @@ export const BackendInput = ({ url, active, onRemove }: BackendInputProps) => {
     return (
         <Input
             value={url}
-            noTopLabel
             isDisabled
             showClearButton={showClearButton}
             onClear={onRemove}

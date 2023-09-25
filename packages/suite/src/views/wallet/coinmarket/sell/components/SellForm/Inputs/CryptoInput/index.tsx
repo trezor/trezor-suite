@@ -94,7 +94,6 @@ const CryptoInput = () => {
             defaultValue=""
             inputState={getInputState(errors.cryptoInput, cryptoInputValue)}
             name={CRYPTO_INPUT}
-            noTopLabel
             maxLength={MAX_LENGTH.AMOUNT}
             rules={cryptoInputRules}
             bottomText={errors[CRYPTO_INPUT]?.message || null}
