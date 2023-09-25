@@ -54,7 +54,6 @@ const FiatInput = () => {
             }}
             inputState={getInputState(fiatError || amountError, fiat)}
             name={FIAT_INPUT}
-            noTopLabel
             maxLength={MAX_LENGTH.AMOUNT}
             rules={fiatInputRules}
             bottomText={fiatError?.message || null}
