@@ -1,3 +1,6 @@
+import { useEffect } from 'react';
+import { useSelector } from 'react-redux';
+
 import { useNavigation } from '@react-navigation/native';
 
 import {
@@ -11,6 +14,7 @@ import {
 } from '@suite-native/navigation';
 import { VStack, Card, Button, Text, Pictogram } from '@suite-native/atoms';
 import { useNativeStyles, prepareNativeStyle } from '@trezor/styles';
+import { selectDevice } from '@suite-common/wallet-core';
 
 const cardStyle = prepareNativeStyle<{ flex: 1 | 2 }>((utils, { flex }) => ({
     flex,
@@ -28,6 +32,16 @@ type NavigationProps = StackToStackCompositeNavigationProps<
 export const ConnectDeviceCrossroadsScreen = () => {
     const navigation = useNavigation<NavigationProps>();
     const { applyStyle } = useNativeStyles();
+    const device = useSelector(selectDevice);
+
+    useEffect(() => {
+        console.log(device);
+        if (device?.state) {
+            navigation.navigate(RootStackRoutes.ConnectDevice, {
+                screen: ConnectDeviceStackRoutes.Connecting,
+            });
+        }
+    }, [device, navigation]);
 
     const handleSyncMyCoins = () => {
         navigation.navigate(RootStackRoutes.AccountsImport, {
