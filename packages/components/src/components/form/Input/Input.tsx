@@ -1,9 +1,9 @@
-import { useCallback, useState, Ref, ReactNode, ReactElement, InputHTMLAttributes } from 'react';
-import styled from 'styled-components';
+import { useState, Ref, ReactNode, ReactElement, InputHTMLAttributes } from 'react';
+import styled, { useTheme } from 'styled-components';
+import { useMeasure } from 'react-use';
+import { spacingsPx, spacings, typography } from '@trezor/theme';
 
-import { FONT_SIZE } from '../../../config/variables';
 import { InputState, InputSize } from '../../../support/types';
-import { useTheme } from '../../../utils';
 import { Icon } from '../../assets/Icon/Icon';
 import {
     Label,
@@ -17,7 +17,7 @@ import {
     BaseInputProps,
 } from '../InputStyles';
 
-const BOTTOM_TEXT_MIN_HEIGHT = 22;
+const BOTTOM_TEXT_MIN_HEIGHT = 26; // 1 line of text + top padding
 
 const Wrapper = styled.div<Pick<InputProps, 'width'> & { withBottomPadding: boolean }>`
     display: inline-flex;
@@ -33,16 +33,20 @@ interface StyledInputProps extends BaseInputProps {
     rightAddonWidth?: number;
 }
 
+const getExtraAddonPadding = (size: InputSize) =>
+    (size === 'small' ? spacings.sm : spacings.md) + spacings.xs;
+
 const StyledInput = styled.input<StyledInputProps>`
     ${baseInputStyle}
 
     width: 100%;
     height: ${({ $size }) => `${INPUT_HEIGHTS[$size as InputSize]}px`};
-    padding: 1px 16px 0 16px;
-    padding-left: ${({ leftAddonWidth }) =>
-        leftAddonWidth ? `${leftAddonWidth + 19}px` : undefined};
-    padding-right: ${({ rightAddonWidth }) =>
-        rightAddonWidth ? `${rightAddonWidth + 19}px` : undefined};
+    padding: 0 ${spacingsPx.md};
+    padding-left: ${({ leftAddonWidth, $size }) =>
+        leftAddonWidth ? `${leftAddonWidth + getExtraAddonPadding($size)}px` : undefined};
+    padding-right: ${({ rightAddonWidth, $size }) =>
+        rightAddonWidth ? `${rightAddonWidth + getExtraAddonPadding($size)}px` : undefined};
+    ${({ $size }) => $size === 'small' && typography.hint};
 `;
 
 const InputWrapper = styled.div`
@@ -51,22 +55,25 @@ const InputWrapper = styled.div`
     width: 100%;
 `;
 
+const getInputAddonPadding = (size: InputSize) =>
+    size === 'small' ? spacingsPx.sm : spacingsPx.md;
+
 const InputAddon = styled.div<{ align: innerAddonAlignment; size: InputSize }>`
     position: absolute;
-    top: 1px;
-    bottom: 1px;
-    right: ${({ align, size }) => align === 'right' && (size === 'small' ? '10px' : '16px')};
-    left: ${({ align, size }) => align === 'left' && (size === 'small' ? '10px' : '16px')};
+    top: 0;
+    bottom: 0;
+    right: ${({ align, size }) => align === 'right' && getInputAddonPadding(size)};
+    left: ${({ align, size }) => align === 'left' && getInputAddonPadding(size)};
     display: flex;
     align-items: center;
 `;
 
 const BottomText = styled.div<Pick<InputProps, 'inputState'>>`
     display: flex;
-    padding: 6px 10px 0 10px;
+    padding: ${spacingsPx.xs} ${spacingsPx.sm} 0 ${spacingsPx.sm};
     min-height: ${BOTTOM_TEXT_MIN_HEIGHT}px;
-    font-size: ${FONT_SIZE.TINY};
     color: ${({ inputState, theme }) => getInputStateTextColor(inputState, theme)};
+    ${typography.label}
 `;
 
 type innerAddonAlignment = 'left' | 'right';
@@ -114,8 +121,6 @@ const Input = ({
     ...rest
 }: InputProps) => {
     const [isHovered, setIsHovered] = useState(false);
-    const [leftAddonWidth, setLeftAddonWidth] = useState(0);
-    const [rightAddonWidth, setRightAddonWidth] = useState(0);
 
     const theme = useTheme();
 
@@ -124,17 +129,8 @@ const Input = ({
         value &&
         value?.length > 0;
 
-    const measureLeftAddon = useCallback((element: HTMLDivElement) => {
-        const elementWidth = element?.getBoundingClientRect().width ?? 0;
-
-        setLeftAddonWidth(elementWidth);
-    }, []);
-
-    const measureRightAddon = useCallback((element: HTMLDivElement) => {
-        const elementWidth = element?.getBoundingClientRect().width ?? 0;
-
-        setRightAddonWidth(elementWidth);
-    }, []);
+    const [measureLeftAddon, { width: leftAddonWidth }] = useMeasure<HTMLDivElement>();
+    const [measureRightAddon, { width: rightAddonWidth }] = useMeasure<HTMLDivElement>();
 
     const isWithLabel = label || labelHoverAddon || labelRight;
 
