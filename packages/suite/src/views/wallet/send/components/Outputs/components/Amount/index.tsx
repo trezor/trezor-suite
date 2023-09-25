@@ -216,19 +216,35 @@ export const Amount = ({ output, outputId }: AmountProps) => {
                 <Left>
                     <StyledInput
                         inputState={inputState}
-                        labelAddonIsVisible={isSetMaxVisible}
-                        labelAddon={
-                            <SwitchWrapper>
-                                <Switch
-                                    isChecked={isSetMaxActive}
-                                    dataTest={maxSwitchId}
-                                    onChange={() => {
-                                        setMax(outputId, isSetMaxActive);
-                                        composeTransaction(inputName);
-                                    }}
-                                    label={<Translation id="AMOUNT_SEND_MAX" />}
-                                />
-                            </SwitchWrapper>
+                        labelHoverAddon={
+                            !isSetMaxVisible ? (
+                                <SwitchWrapper>
+                                    <Switch
+                                        isChecked={isSetMaxActive}
+                                        dataTest={maxSwitchId}
+                                        onChange={() => {
+                                            setMax(outputId, isSetMaxActive);
+                                            composeTransaction(inputName);
+                                        }}
+                                        label={<Translation id="AMOUNT_SEND_MAX" />}
+                                    />
+                                </SwitchWrapper>
+                            ) : undefined
+                        }
+                        labelRight={
+                            isSetMaxVisible ? (
+                                <SwitchWrapper>
+                                    <Switch
+                                        isChecked={isSetMaxActive}
+                                        dataTest={maxSwitchId}
+                                        onChange={() => {
+                                            setMax(outputId, isSetMaxActive);
+                                            composeTransaction(inputName);
+                                        }}
+                                        label={<Translation id="AMOUNT_SEND_MAX" />}
+                                    />
+                                </SwitchWrapper>
+                            ) : undefined
                         }
                         label={
                             <Label>
