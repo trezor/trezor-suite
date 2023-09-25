@@ -20,7 +20,7 @@ const Right = styled.div`
     display: flex;
     flex: 1;
     align-items: center;
-    margin-bottom: 22px;
+    padding-bottom: 22px;
 `;
 
 const TextLabel = styled.div`
@@ -59,7 +59,6 @@ export const Inputs = () => {
             <Left>
                 <NumberInput
                     control={control}
-                    noTopLabel
                     rules={fiatInputRules}
                     inputState={getInputState(errors.fiatInput, fiatInputValue)}
                     name={fiatInput}

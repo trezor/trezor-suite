@@ -87,7 +87,6 @@ export const GuideSearch = ({ pageRoot, setSearchActive }: GuideSearchProps) => 
     return (
         <Wrapper>
             <StyledInput
-                noTopLabel
                 placeholder={translationString('TR_SEARCH')}
                 value={query}
                 onChange={e => setQuery(e.currentTarget.value)}
