@@ -38,7 +38,7 @@ const InnerAddon = styled.div`
 
 const MAX_ALLOWED_INTEGER = 1000000;
 
-export interface SliderInputProps extends Pick<InputProps, 'isDisabled' | 'addonAlign'> {
+export interface SliderInputProps extends Pick<InputProps, 'isDisabled' | 'innerAddonAlign'> {
     value: number | '';
     onChange: (number: number) => void;
     min: number;
