@@ -37,7 +37,7 @@ export const save = (getNewState: GetNewStateCallback, temporary = false) => {
 };
 
 export const load = (temporary = false): Store => {
-    if (temporary || !global.window) {
+    if (temporary || !global?.window?.localStorage) {
         return memoryStorage;
     }
 
