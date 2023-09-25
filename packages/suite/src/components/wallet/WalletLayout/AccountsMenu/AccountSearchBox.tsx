@@ -107,7 +107,6 @@ export const AccountSearchBox = (props: AccountSearchBoxProps) => {
                     addonAlign="left"
                     size="small"
                     placeholder={translationString('TR_SEARCH')}
-                    noTopLabel
                     showClearButton="always"
                     onClear={onClear}
                     data-test="@account-menu/search-input"

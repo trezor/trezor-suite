@@ -91,7 +91,6 @@ const SendCryptoInput = () => {
             }}
             inputState={getInputState(amountError || fiatError, amount)}
             name={CRYPTO_INPUT}
-            noTopLabel
             maxLength={formInputsMaxLength.amount}
             isToken={!!tokenData}
             rules={cryptoInputRules}

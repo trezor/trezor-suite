@@ -100,7 +100,6 @@ export const ChangeDeviceLabel = ({
             <StyledInput
                 $width={!isMobileLayout ? 170 : undefined}
                 isVertical={isVertical}
-                noTopLabel
                 bottomText={error || null}
                 value={label}
                 placeholder={placeholder}
