@@ -1,9 +1,10 @@
 import { ReactNode, HTMLAttributes } from 'react';
 import styled, { css } from 'styled-components';
-import { getInputStateTextColor } from '../form/InputStyles';
+import { InputState } from '../../support/types';
+import { getInputStateBorderColor } from '../form/InputStyles';
 
 export interface BoxProps extends HTMLAttributes<HTMLDivElement> {
-    state?: 'success' | 'error' | 'warning';
+    state?: InputState;
     children: ReactNode;
 }
 
@@ -17,7 +18,7 @@ const Wrapper = styled.div<{ state: BoxProps['state'] }>`
     ${({ state, theme }) =>
         state &&
         css`
-            border-left: 6px solid ${getInputStateTextColor(state, theme)};
+            border-left: 6px solid ${getInputStateBorderColor(state, theme)};
         `}
     ${({ state }) =>
         !state &&
