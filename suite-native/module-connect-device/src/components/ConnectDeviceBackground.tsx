@@ -3,16 +3,18 @@ import { ImageBackground } from 'react-native';
 
 import { Screen } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { NativeStyleObject } from '@trezor/styles/libDev/src';
 
 type ConnectDeviceScreenProps = {
     children: ReactNode;
+    style?: NativeStyleObject;
 };
 
 const contentStyle = prepareNativeStyle(_ => ({
     flex: 1,
 }));
 
-export const ConnectDeviceBackground = ({ children }: ConnectDeviceScreenProps) => {
+export const ConnectDeviceBackground = ({ children, style }: ConnectDeviceScreenProps) => {
     const { applyStyle } = useNativeStyles();
 
     return (
@@ -20,7 +22,7 @@ export const ConnectDeviceBackground = ({ children }: ConnectDeviceScreenProps) 
             <ImageBackground
                 source={require('../assets/connectDeviceScreenBackground.png')}
                 resizeMode="stretch"
-                style={applyStyle(contentStyle)}
+                style={[applyStyle(contentStyle), style]}
             >
                 {children}
             </ImageBackground>
