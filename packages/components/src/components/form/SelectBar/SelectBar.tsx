@@ -1,7 +1,8 @@
 import { useState, useEffect, ReactNode, useCallback } from 'react';
 import styled, { css } from 'styled-components';
+import { borders } from '@trezor/theme';
 import { SCREEN_SIZE, FONT_SIZE, FONT_WEIGHT } from '../../../config/variables';
-import { INPUT_BORDER_RADIUS, Label, LabelLeft } from '../InputStyles';
+import { Label, LabelLeft } from '../InputStyles';
 
 const Wrapper = styled.div<{ isInLine: boolean }>`
     display: flex;
@@ -27,7 +28,7 @@ const Options = styled.div<{ isInLine: boolean }>`
     display: flex;
     flex: ${({ isInLine }) => isInLine && '1'};
     padding: 0 4px;
-    border-radius: ${INPUT_BORDER_RADIUS}px;
+    border-radius: ${borders.radii.sm};
     background: ${({ theme }) => theme.BG_GREY};
 
     @media (max-width: ${SCREEN_SIZE.SM}) {
