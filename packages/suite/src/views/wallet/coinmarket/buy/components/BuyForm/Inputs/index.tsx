@@ -113,7 +113,6 @@ const Inputs = () => {
             <Left>
                 <NumberInput
                     control={control}
-                    noTopLabel
                     rules={fiatInputRules}
                     onChange={() => {
                         setValue(cryptoInput, '');
@@ -163,7 +162,6 @@ const Inputs = () => {
                     }}
                     inputState={getInputState(errors.cryptoInput, cryptoInputValue)}
                     name={cryptoInput}
-                    noTopLabel
                     maxLength={MAX_LENGTH.AMOUNT}
                     rules={cryptoInputRules}
                     bottomText={errors[cryptoInput]?.message || null}

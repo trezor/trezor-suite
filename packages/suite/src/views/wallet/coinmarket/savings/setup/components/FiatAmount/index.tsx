@@ -115,7 +115,6 @@ const FiatAmount = ({
                     <StyledInput
                         control={control}
                         name="customFiatAmount"
-                        noTopLabel
                         size="small"
                         autoFocus
                         inputState={customFiatAmountError ? 'error' : 'success'}

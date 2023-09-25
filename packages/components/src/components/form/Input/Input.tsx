@@ -48,6 +48,7 @@ const StyledInput = styled.input<StyledInputProps>`
 const InputWrapper = styled.div`
     display: flex;
     position: relative;
+    width: 100%;
 `;
 
 const InputAddon = styled.div<{ align: AddonAlignment; size: InputSize }>`
@@ -87,7 +88,6 @@ export interface InputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 
     dataTest?: string;
     inputState?: InputState;
     addonAlign?: AddonAlignment;
-    noTopLabel?: boolean;
     labelAddonIsVisible?: boolean;
     showClearButton?: 'hover' | 'always';
     onClear?: () => void;
@@ -110,7 +110,6 @@ const Input = ({
     showClearButton,
     onClear,
     addonAlign = 'right',
-    noTopLabel = false,
     ...rest
 }: InputProps) => {
     const [isHovered, setIsHovered] = useState(false);
@@ -136,6 +135,8 @@ const Input = ({
         setRightAddonWidth(elementWidth);
     }, []);
 
+    const isWithLabel = label || labelAddon || labelRight;
+
     return (
         <Wrapper
             onMouseEnter={() => setIsHovered(true)}
@@ -143,7 +144,7 @@ const Input = ({
             withBottomPadding={bottomText === null}
             data-test={dataTest}
         >
-            {!noTopLabel && (
+            {isWithLabel && (
                 <Label>
                     <LabelLeft>{label}</LabelLeft>
                     <LabelRight>
@@ -155,49 +156,47 @@ const Input = ({
                 </Label>
             )}
 
-            <div>
-                <InputWrapper>
-                    {innerAddon && addonAlign === 'left' && (
-                        <InputAddon align="left" ref={measureLeftAddon} size={size}>
-                            {innerAddon}
-                        </InputAddon>
-                    )}
+            <InputWrapper>
+                {innerAddon && addonAlign === 'left' && (
+                    <InputAddon align="left" ref={measureLeftAddon} size={size}>
+                        {innerAddon}
+                    </InputAddon>
+                )}
 
-                    {((innerAddon && addonAlign === 'right') || hasShowClearButton) && (
-                        <InputAddon align="right" ref={measureRightAddon} size={size}>
-                            {addonAlign === 'right' && !hasShowClearButton && innerAddon}
+                {((innerAddon && addonAlign === 'right') || hasShowClearButton) && (
+                    <InputAddon align="right" ref={measureRightAddon} size={size}>
+                        {addonAlign === 'right' && !hasShowClearButton && innerAddon}
 
-                            {hasShowClearButton && (
-                                <Icon
-                                    icon="CANCEL"
-                                    size={12}
-                                    onClick={onClear}
-                                    color={theme.TYPE_DARK_GREY}
-                                    useCursorPointer
-                                />
-                            )}
-                        </InputAddon>
-                    )}
+                        {hasShowClearButton && (
+                            <Icon
+                                icon="CANCEL"
+                                size={12}
+                                onClick={onClear}
+                                color={theme.TYPE_DARK_GREY}
+                                useCursorPointer
+                            />
+                        )}
+                    </InputAddon>
+                )}
 
-                    <StyledInput
-                        value={value}
-                        autoComplete="off"
-                        autoCorrect="off"
-                        autoCapitalize="off"
-                        spellCheck={false}
-                        inputState={inputState}
-                        disabled={isDisabled}
-                        $size={size}
-                        ref={innerRef}
-                        data-lpignore="true"
-                        leftAddonWidth={leftAddonWidth}
-                        rightAddonWidth={rightAddonWidth}
-                        {...rest}
-                    />
-                </InputWrapper>
+                <StyledInput
+                    value={value}
+                    autoComplete="off"
+                    autoCorrect="off"
+                    autoCapitalize="off"
+                    spellCheck={false}
+                    inputState={inputState}
+                    disabled={isDisabled}
+                    $size={size}
+                    ref={innerRef}
+                    data-lpignore="true"
+                    leftAddonWidth={leftAddonWidth}
+                    rightAddonWidth={rightAddonWidth}
+                    {...rest}
+                />
+            </InputWrapper>
 
-                {bottomText && <BottomText inputState={inputState}>{bottomText}</BottomText>}
-            </div>
+            {bottomText && <BottomText inputState={inputState}>{bottomText}</BottomText>}
         </Wrapper>
     );
 };
