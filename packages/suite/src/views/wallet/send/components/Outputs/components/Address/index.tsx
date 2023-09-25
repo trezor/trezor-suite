@@ -242,7 +242,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                     )}
                 </Text>
             }
-            labelAddon={
+            labelHoverAddon={
                 <Button variant="tertiary" icon="QR" onClick={handleQrClick}>
                     <Translation id="RECIPIENT_SCAN" />
                 </Button>

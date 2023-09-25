@@ -34,7 +34,7 @@ export const Textarea = {
                 type: 'range',
             },
         },
-        labelAddon: {
+        labelHoverAddon: {
             control: false,
         },
         labelRight: {

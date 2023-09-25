@@ -95,7 +95,7 @@ export const All = {
                     value="Input label with warning"
                     dataTest="input-warning-label"
                     bottomText="bottom text"
-                    labelAddon={
+                    labelHoverAddon={
                         <Button variant="tertiary" icon="QR" onClick={() => {}}>
                             Scan QR code
                         </Button>
@@ -106,10 +106,9 @@ export const All = {
                     value="Input label with success"
                     dataTest="input-success-label"
                     bottomText="bottom text"
-                    labelAddonIsVisible
                     label={<Label>Label left</Label>}
                     labelRight={<Label>Label right</Label>}
-                    labelAddon={
+                    labelHoverAddon={
                         <Button
                             variant="tertiary"
                             icon="QR"

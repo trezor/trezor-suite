@@ -104,7 +104,7 @@ export const AccountSearchBox = (props: AccountSearchBoxProps) => {
                             <Icon icon="SEARCH" size={16} color={theme.TYPE_DARK_GREY} />
                         </SearchIconWrapper>
                     }
-                    addonAlign="left"
+                    innerAddonAlign="left"
                     size="small"
                     placeholder={translationString('TR_SEARCH')}
                     showClearButton="always"
