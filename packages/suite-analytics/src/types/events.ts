@@ -308,6 +308,12 @@ export type SuiteAnalyticsEvent =
           };
       }
     | {
+          type: EventType.SettingsGeneralAddressDisplay;
+          payload: {
+              addressDisplay: 'original' | 'chunked';
+          };
+      }
+    | {
           type: EventType.SettingsGeneralChangeFiat;
           payload: {
               fiat: string;

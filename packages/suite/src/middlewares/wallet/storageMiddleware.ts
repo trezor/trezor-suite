@@ -182,6 +182,7 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 case SUITE.SET_DEBUG_MODE:
                 case SUITE.ONION_LINKS:
                 case SUITE.SET_THEME:
+                case SUITE.SET_ADDRESS_DISPLAY:
                 case SUITE.SET_AUTODETECT:
                 case SUITE.DESKTOP_SUITE_PROMO:
                 case SUITE.DEVICE_AUTHENTICITY_OPT_OUT:

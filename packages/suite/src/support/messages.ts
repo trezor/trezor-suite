@@ -1976,6 +1976,23 @@ export default defineMessages({
             'All data is kept strictly anonymous; we only use it to improve the Trezor ecosystem.',
         id: 'TR_ALLOW_ANALYTICS_DESCRIPTION',
     },
+    TR_ADDRESS_DISPLAY: {
+        defaultMessage: 'Address display',
+        id: 'TR_ADDRESS_DISPLAY',
+    },
+    TR_ADDRESS_DISPLAY_DESCRIPTION: {
+        defaultMessage:
+            'Show address in list: bc1wetes...v54d8d or chunks: bc1w etes ... v54d 8d. Right now compatible only with Trezor Safe 3.',
+        id: 'TR_ADDRESS_DISPLAY_DESCRIPTION',
+    },
+    TR_ORIGINAL_ADDRESS: {
+        defaultMessage: 'Continuous',
+        id: 'TR_ORIGINAL_ADDRESS',
+    },
+    TR_CHUNKED_ADDRESS: {
+        defaultMessage: 'Spaced',
+        id: 'TR_CHUNKED_ADDRESS',
+    },
     TR_ASSETS: {
         defaultMessage: 'Coin',
         id: 'TR_ASSETS',

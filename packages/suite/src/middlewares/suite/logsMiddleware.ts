@@ -51,6 +51,7 @@ const log =
         switch (action.type) {
             case SUITE.SET_LANGUAGE:
             case SUITE.SET_THEME:
+            case SUITE.SET_ADDRESS_DISPLAY:
             case SUITE.SET_AUTODETECT:
             case walletSettingsActions.setLocalCurrency.type:
             case WALLET_SETTINGS.SET_HIDE_BALANCE:
