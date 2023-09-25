@@ -49,7 +49,10 @@ export const HomescreenGallery = ({ onConfirm }: HomescreenGalleryProps) => {
     const setHomescreen = async (imagePath: string, image: AnyImageName) => {
         if (isLocked()) return;
 
-        const hex = await imagePathToHex(imagePath, deviceModelInternal);
+        // original image is the default image already available in device, set it by empty string
+        const isOriginalImage = image === `original_${deviceModelInternal.toLowerCase()}`;
+
+        const hex = isOriginalImage ? '' : await imagePathToHex(imagePath, deviceModelInternal);
 
         dispatch(applySettings({ homescreen: hex }));
 
