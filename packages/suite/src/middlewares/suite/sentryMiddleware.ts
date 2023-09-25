@@ -41,6 +41,7 @@ const deviceContextName = 'trezor-device';
 const breadcrumbActions = [
     SUITE.SET_LANGUAGE,
     SUITE.SET_THEME,
+    SUITE.SET_ADDRESS_DISPLAY,
     SUITE.SET_AUTODETECT,
     walletSettingsActions.setLocalCurrency.type,
     WALLET_SETTINGS.SET_HIDE_BALANCE,
