@@ -55,6 +55,7 @@ const Header = styled.div`
     max-width: ${MAX_WIDTH};
     background: ${({ theme }) => theme.BG_LIGHT_GREY};
     box-shadow: 0px 14px 10px 4px ${({ theme }) => theme.BG_LIGHT_GREY};
+    margin-bottom: 14px;
     z-index: ${variables.Z_INDEX.BASE};
 
     ${variables.SCREEN_QUERY.BELOW_LAPTOP} {

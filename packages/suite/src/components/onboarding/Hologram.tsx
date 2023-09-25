@@ -1,12 +1,13 @@
 import styled from 'styled-components';
 
+import { selectDevice } from '@suite-common/wallet-core';
 import { getPackagingUrl } from '@suite-common/suite-utils';
 import { DeviceAnimation, Warning, variables } from '@trezor/components';
 import { TREZOR_RESELLERS_URL, TREZOR_SUPPORT_URL } from '@trezor/urls';
 
 import { Translation, TrezorLink } from 'src/components/suite';
-import type { TrezorDevice } from 'src/types/suite';
 import { useRef } from 'react';
+import { useSelector } from 'src/hooks/suite';
 
 const Wrapper = styled.div`
     display: flex;
@@ -36,11 +37,9 @@ const StyledWarning = styled(Warning)`
     font-size: ${variables.FONT_SIZE.TINY};
 `;
 
-interface HologramProps {
-    device?: TrezorDevice;
-}
+export const Hologram = () => {
+    const device = useSelector(selectDevice);
 
-export const Hologram = ({ device }: HologramProps) => {
     const packagingUrl = getPackagingUrl(device);
     const hologramRef = useRef<HTMLVideoElement>(null);
 
