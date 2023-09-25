@@ -6,7 +6,7 @@ import { THEME } from '../../config/colors';
 
 export type TextAlign = 'left' | 'center' | 'right';
 
-export type InputState = 'success' | 'warning' | 'error';
+export type InputState = 'success' | 'warning' | 'error'; // TODO: remove success
 
 export type InputSize = 'small' | 'large';
 
