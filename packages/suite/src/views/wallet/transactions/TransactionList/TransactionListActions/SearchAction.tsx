@@ -170,7 +170,7 @@ export const SearchAction = ({ account, search, setSearch, setSelectedPage }: Se
                     onBlur={onBlur}
                     onKeyDown={onKeyDown}
                     value={search}
-                    addonAlign="left"
+                    innerAddonAlign="left"
                     maxLength={512}
                     showClearButton="always"
                     onClear={() => {
