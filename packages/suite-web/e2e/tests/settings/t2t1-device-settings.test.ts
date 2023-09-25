@@ -100,7 +100,7 @@ describe('T2T1 - Device settings', () => {
         cy.getTestElement('@settings/device/homescreen').scrollIntoView();
 
         cy.getTestElement('@settings/device/homescreen-gallery').click();
-        cy.get('#trezor').should('exist');
+        cy.get('#original_t2t1').should('exist');
 
         //
     });
