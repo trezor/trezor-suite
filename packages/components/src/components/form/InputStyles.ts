@@ -116,7 +116,7 @@ export const LabelLeft = styled.label`
     color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
 `;
 
-export const LabelAddon = styled.div<{ isVisible?: boolean }>`
+export const LabelHoverAddon = styled.div<{ isVisible?: boolean }>`
     visibility: ${({ isVisible }) => !isVisible && 'hidden'};
 `;
 
