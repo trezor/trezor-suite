@@ -27,7 +27,6 @@ const InputPin = ({ value, onDeleteClick }: InputPinProps) => {
     return (
         <StyledInput
             isDisabled
-            noTopLabel
             value={value.replace(/[0-9]/g, '●')}
             innerAddon={
                 <Icon

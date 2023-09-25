@@ -188,7 +188,6 @@ export const QrScannerModal = ({ onCancel, decision, allowPaste }: QrScannerModa
             {isPasteMode && (
                 <ContentWrapper show>
                     <StyledTextarea
-                        noTopLabel
                         placeholder={`${translationString('TR_PASTE_URI')}…`}
                         onChange={e => {
                             setText(e.target.value);

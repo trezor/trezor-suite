@@ -155,7 +155,6 @@ export const CustomBackends = ({ network, onCancel }: CustomBackendsProps) => {
 
                 {editable && (
                     <Input
-                        noTopLabel
                         data-test={`@settings/advance/${name}`}
                         placeholder={placeholder}
                         inputState={error ? 'error' : undefined}
