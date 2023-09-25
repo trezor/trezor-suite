@@ -11,20 +11,21 @@ import ReactSelect, {
     SelectInstance,
     GroupHeadingProps,
 } from 'react-select';
-import styled, { css } from 'styled-components';
+import styled, { css, DefaultTheme } from 'styled-components';
 import { darken } from 'polished';
+import { borders } from '@trezor/theme';
 
 import { NEUE_FONT_SIZE, FONT_WEIGHT, FONT_SIZE, Z_INDEX } from '../../../config/variables';
 import { animations } from '../../../config';
 import { useTheme } from '../../../utils';
-import { InputSize, InputState, SuiteThemeColors } from '../../../support/types';
+import { InputSize, InputState } from '../../../support/types';
 import {
     Label,
     LabelLeft,
     INPUT_HEIGHTS,
-    INPUT_BORDER_RADIUS,
     INPUT_BORDER_WIDTH,
     getInputStateTextColor,
+    getInputStateBorderColor,
 } from '../InputStyles';
 import { MODAL_CONTENT_ID } from '../../Modal/Modal';
 
@@ -37,7 +38,7 @@ const selectStyle = (
     hideTextCursor: boolean,
     isClean: boolean,
     minWidth: string,
-    theme: SuiteThemeColors,
+    theme: DefaultTheme,
     inputState?: InputState,
 ): StylesConfig<Option, boolean> => ({
     singleValue: base => ({
@@ -62,7 +63,7 @@ const selectStyle = (
     control: (base, { isDisabled, menuIsOpen }) => {
         const borderColorBase = menuIsOpen ? theme.TYPE_LIGHT_GREY : theme.STROKE_GREY;
         const borderColor = inputState
-            ? getInputStateTextColor(inputState, theme)
+            ? getInputStateBorderColor(inputState, theme)
             : borderColorBase;
 
         return {
@@ -71,7 +72,7 @@ const selectStyle = (
             alignItems: 'center',
             fontSize: FONT_SIZE.SMALL,
             height: isClean ? 22 : INPUT_HEIGHTS[variant],
-            borderRadius: INPUT_BORDER_RADIUS,
+            borderRadius: borders.radii.sm,
             borderWidth: INPUT_BORDER_WIDTH,
             borderColor,
             borderStyle: isClean ? 'none' : 'solid',
