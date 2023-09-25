@@ -13,7 +13,7 @@ import {
     baseInputStyle,
     INPUT_HEIGHTS,
     getInputStateTextColor,
-    LabelAddon,
+    LabelHoverAddon,
     BaseInputProps,
 } from '../InputStyles';
 
@@ -51,7 +51,7 @@ const InputWrapper = styled.div`
     width: 100%;
 `;
 
-const InputAddon = styled.div<{ align: AddonAlignment; size: InputSize }>`
+const InputAddon = styled.div<{ align: innerAddonAlignment; size: InputSize }>`
     position: absolute;
     top: 1px;
     bottom: 1px;
@@ -69,13 +69,13 @@ const BottomText = styled.div<Pick<InputProps, 'inputState'>>`
     color: ${({ inputState, theme }) => getInputStateTextColor(inputState, theme)};
 `;
 
-type AddonAlignment = 'left' | 'right';
+type innerAddonAlignment = 'left' | 'right';
 
 export interface InputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'size'> {
     value?: string;
     innerRef?: Ref<HTMLInputElement>;
     label?: ReactElement | string;
-    labelAddon?: ReactElement;
+    labelHoverAddon?: ReactElement;
     labelRight?: ReactElement;
     innerAddon?: ReactElement;
     /**
@@ -87,8 +87,10 @@ export interface InputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 
     className?: string;
     dataTest?: string;
     inputState?: InputState;
-    addonAlign?: AddonAlignment;
-    labelAddonIsVisible?: boolean;
+    innerAddonAlign?: innerAddonAlignment;
+    /**
+     * @description the clear button replaces the addon on the right side
+     */
     showClearButton?: 'hover' | 'always';
     onClear?: () => void;
 }
@@ -98,18 +100,17 @@ const Input = ({
     innerRef,
     inputState,
     label,
-    labelAddon,
+    labelHoverAddon,
     labelRight,
     innerAddon,
+    innerAddonAlign = 'right',
     bottomText,
     size = 'large',
     isDisabled,
     className,
-    labelAddonIsVisible,
     dataTest,
     showClearButton,
     onClear,
-    addonAlign = 'right',
     ...rest
 }: InputProps) => {
     const [isHovered, setIsHovered] = useState(false);
@@ -135,7 +136,7 @@ const Input = ({
         setRightAddonWidth(elementWidth);
     }, []);
 
-    const isWithLabel = label || labelAddon || labelRight;
+    const isWithLabel = label || labelHoverAddon || labelRight;
 
     return (
         <Wrapper
@@ -148,24 +149,22 @@ const Input = ({
                 <Label>
                     <LabelLeft>{label}</LabelLeft>
                     <LabelRight>
-                        <LabelAddon isVisible={labelAddonIsVisible || isHovered}>
-                            {labelAddon}
-                        </LabelAddon>
+                        <LabelHoverAddon isVisible={isHovered}>{labelHoverAddon}</LabelHoverAddon>
                         {labelRight && <RightLabel>{labelRight}</RightLabel>}
                     </LabelRight>
                 </Label>
             )}
 
             <InputWrapper>
-                {innerAddon && addonAlign === 'left' && (
+                {innerAddon && innerAddonAlign === 'left' && (
                     <InputAddon align="left" ref={measureLeftAddon} size={size}>
                         {innerAddon}
                     </InputAddon>
                 )}
 
-                {((innerAddon && addonAlign === 'right') || hasShowClearButton) && (
+                {((innerAddon && innerAddonAlign === 'right') || hasShowClearButton) && (
                     <InputAddon align="right" ref={measureRightAddon} size={size}>
-                        {addonAlign === 'right' && !hasShowClearButton && innerAddon}
+                        {!hasShowClearButton && innerAddon}
 
                         {hasShowClearButton && (
                             <Icon
