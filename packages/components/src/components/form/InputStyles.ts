@@ -1,51 +1,46 @@
-import { darken } from 'polished';
-import styled, { css } from 'styled-components';
+import styled, { css, DefaultTheme } from 'styled-components';
+import { borders, typography } from '@trezor/theme';
+
 import { FONT_WEIGHT, NEUE_FONT_SIZE } from '../../config/variables';
-import { InputState, InputSize, SuiteThemeColors } from '../../support/types';
+import { InputState, InputSize } from '../../support/types';
 
 export const INPUT_HEIGHTS: Record<InputSize, number> = {
-    small: 32,
-    large: 48,
+    small: 36,
+    large: 56,
 };
 
-export const INPUT_BORDER_RADIUS = 8;
-export const INPUT_BORDER_WIDTH = 1;
+export const INPUT_BORDER_WIDTH = 2;
 
-export const getInputStateTextColor = (state: InputState | undefined, theme: SuiteThemeColors) => {
+export const getInputStateTextColor = (state: InputState | undefined, theme: DefaultTheme) => {
     switch (state) {
         case 'warning':
-            return theme.TYPE_ORANGE;
+            return theme.textAlertYellow;
         case 'error':
-            return theme.TYPE_RED;
+            return theme.textAlertRed;
         default:
-            return theme.TYPE_DARK_GREY;
+            return theme.textSubdued;
     }
 };
 
-export const getInputStateBorderColor = (
-    state: InputState | undefined,
-    theme: SuiteThemeColors,
-) => {
+export const getInputStateBorderColor = (state: InputState | undefined, theme: DefaultTheme) => {
     switch (state) {
-        case 'success':
-            return theme.TYPE_LIGHT_GREY;
         case 'warning':
-            return theme.TYPE_ORANGE;
+            return theme.textAlertYellow;
         case 'error':
-            return theme.TYPE_RED;
+            return theme.borderAlertRed;
         default:
-            return theme.STROKE_GREY;
+            return 'transparent';
     }
 };
 
-export const getInputStateBgColor = (state: InputState | undefined, theme: SuiteThemeColors) => {
+export const getInputStateBgColor = (state: InputState | undefined, theme: DefaultTheme) => {
     switch (state) {
         case 'warning':
-            return theme.TYPE_LIGHT_ORANGE;
+            return theme.backgroundAlertYellowSubtleOnElevation1;
         case 'error':
-            return theme.BG_LIGHT_RED;
+            return theme.backgroundAlertRedSubtleOnElevation1;
         default:
-            return theme.BG_WHITE;
+            return theme.backgroundNeutralSubtleOnElevation0;
     }
 };
 
@@ -56,47 +51,38 @@ export interface BaseInputProps {
 
 export const baseInputStyle = css<BaseInputProps>`
     background-color: ${({ theme, inputState }) => getInputStateBgColor(inputState, theme)};
-    border-radius: ${INPUT_BORDER_RADIUS}px;
+    border-radius: ${borders.radii.sm};
     border: solid ${INPUT_BORDER_WIDTH}px;
     border-color: ${({ inputState, theme }) => getInputStateBorderColor(inputState, theme)};
-    color: ${({ inputState, theme }) => getInputStateTextColor(inputState, theme)};
-    font-size: ${NEUE_FONT_SIZE.SMALL};
-    font-weight: ${FONT_WEIGHT.MEDIUM};
-    transition: border-color 0.1s ease-in-out;
+    color: ${({ theme }) => theme.textDefault};
+    ${typography.body}
+    transition: border-color 0.1s;
     outline: none;
     font-variant-numeric: slashed-zero tabular-nums;
 
     ::placeholder {
-        color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+        color: ${({ theme }) => theme.textSubdued};
     }
 
     :read-only:not(:disabled) {
-        background: ${({ theme }) => theme.BG_GREY};
-        color: ${({ theme }) => theme.TYPE_DARK_GREY};
+        background: ${({ theme }) => theme.backgroundNeutralDisabled};
+        color: ${({ theme }) => theme.textDisabled};
     }
 
     :hover {
-        border-color: ${({ inputState, theme }) =>
-            darken(
-                theme.HOVER_DARKEN_FILTER,
-                inputState ? getInputStateTextColor(inputState, theme) : theme.STROKE_GREY,
-            )};
+        border-color: ${({ theme }) => theme.borderOnElevation0};
     }
 
     :focus {
-        border-color: ${({ inputState, theme }) =>
-            darken(
-                theme.HOVER_DARKEN_FILTER,
-                inputState ? getInputStateTextColor(inputState, theme) : theme.TYPE_LIGHT_GREY,
-            )};
+        border-color: ${({ theme }) => theme.borderOnElevation0};
     }
 
     ${({ disabled }) =>
         disabled &&
         css`
-            background: ${({ theme }) => theme.BG_GREY};
             box-shadow: none;
-            color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+            background: ${({ theme }) => theme.backgroundNeutralDisabled};
+            color: ${({ theme }) => theme.textDisabled};
             pointer-events: none;
             cursor: default;
         `}
@@ -127,5 +113,7 @@ export const LabelRight = styled.div`
 `;
 
 export const RightLabel = styled.div`
+    display: flex;
+    align-items: center;
     padding-left: 5px;
 `;
