@@ -182,7 +182,6 @@ export const CustomFee = <TFieldValues extends FormState>({
                 <Col singleCol={!useFeeLimit}>
                     <StyledNumberInput
                         control={control}
-                        noTopLabel={!useFeeLimit}
                         label={useFeeLimit ? <Translation id="TR_GAS_PRICE" /> : undefined}
                         size="small"
                         inputState={getInputState(feePerUnitError, feePerUnitValue)}

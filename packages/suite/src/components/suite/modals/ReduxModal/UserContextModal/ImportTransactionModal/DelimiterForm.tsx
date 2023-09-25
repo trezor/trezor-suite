@@ -61,7 +61,6 @@ export const DelimiterForm = ({ value, onChange }: DelimiterFormProps) => {
             </Label>
             {custom && (
                 <StyledInput
-                    noTopLabel
                     size="small"
                     onChange={({ target }) => onChange(target.value)}
                     defaultValue={value}

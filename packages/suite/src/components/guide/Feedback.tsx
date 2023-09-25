@@ -286,7 +286,6 @@ export const Feedback = ({ type }: FeedbackProps) => {
                     onChange={(e: ChangeEvent<HTMLTextAreaElement>) =>
                         setDescription(e.target.value)
                     }
-                    noTopLabel
                     characterCount
                     data-test="@guide/feedback/suggestion-form"
                     maxLength={MESSAGE_CHARACTER_LIMIT}

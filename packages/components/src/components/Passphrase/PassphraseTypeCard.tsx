@@ -346,7 +346,6 @@ export const PassphraseTypeCard = (props: PassphraseTypeCardProps) => {
                                     ) : null
                                 }
                                 inputState={isTooLong ? 'error' : undefined}
-                                noTopLabel
                                 autoFocus={!isAndroid()}
                                 innerAddon={
                                     <Icon

@@ -173,7 +173,6 @@ export const SearchAction = ({ account, search, setSearch, setSelectedPage }: Se
                     value={search}
                     addonAlign="left"
                     maxLength={512}
-                    noTopLabel
                     showClearButton="always"
                     onClear={() => {
                         setSearch('');
