@@ -10,7 +10,7 @@ import {
     RightLabel,
     baseInputStyle,
     getInputStateTextColor,
-    LabelAddon,
+    LabelHoverAddon,
 } from '../InputStyles';
 
 const Wrapper = styled.div`
@@ -48,7 +48,7 @@ const BottomText = styled.span<Pick<TextareaProps, 'inputState'>>`
 export interface TextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
     isDisabled?: boolean;
     label?: ReactNode;
-    labelAddon?: ReactNode;
+    labelHoverAddon?: ReactNode;
     labelRight?: ReactNode;
     innerRef?: Ref<HTMLTextAreaElement>;
     bottomText?: ReactNode;
@@ -65,7 +65,7 @@ export const Textarea = ({
     className,
     value,
     maxLength,
-    labelAddon,
+    labelHoverAddon,
     isDisabled,
     innerRef,
     label,
@@ -93,7 +93,7 @@ export const Textarea = ({
     };
 
     const formattedCharacterCount = getCharacterCount();
-    const isWithLabel = label || labelAddon || labelRight;
+    const isWithLabel = label || labelHoverAddon || labelRight;
 
     return (
         <Wrapper
@@ -106,7 +106,11 @@ export const Textarea = ({
                 <Label>
                     <LabelLeft>{label}</LabelLeft>
                     <LabelRight>
-                        {labelAddon && <LabelAddon isVisible={isHovered}>{labelAddon}</LabelAddon>}
+                        {labelHoverAddon && (
+                            <LabelHoverAddon isVisible={isHovered}>
+                                {labelHoverAddon}
+                            </LabelHoverAddon>
+                        )}
                         {labelRight && <RightLabel>{labelRight}</RightLabel>}
                     </LabelRight>
                 </Label>
