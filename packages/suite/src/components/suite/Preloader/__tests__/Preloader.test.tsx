@@ -81,6 +81,7 @@ export const getInitialState = ({ suite, router, device }: any = {}) => ({
         ...router,
     },
     recovery: {},
+    analytics: {},
 });
 
 type State = ReturnType<typeof getInitialState>;

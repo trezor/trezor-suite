@@ -2170,19 +2170,22 @@ export default defineMessages({
         description: 'Button to click to contact support',
         id: 'TR_CONTACT_SUPPORT',
     },
-    TR_SECURITY_CHECK_CONTACT_SUPPORT: {
-        defaultMessage: 'If something seems off, contact support.',
-        description: 'Button to click to contact support',
-        id: 'TR_SECURITY_CHECK_CONTACT_SUPPORT',
-    },
     TR_CONTINUE: {
         defaultMessage: 'Continue',
         description: 'Generic continue button',
         id: 'TR_CONTINUE',
     },
-    TR_ONBOARDING_START_CTA: {
-        defaultMessage: 'Setup Trezor',
-        id: 'TR_ONBOARDING_START_CTA',
+    TR_YES_CONTINUE: {
+        defaultMessage: 'Yes, continue',
+        id: 'TR_YES_CONTINUE',
+    },
+    TR_SETUP_MY_TREZOR: {
+        defaultMessage: 'Setup my Trezor',
+        id: 'TR_SETUP_MY_TREZOR',
+    },
+    TR_YES_SETUP_MY_TREZOR: {
+        defaultMessage: 'Yes, setup my Trezor',
+        id: 'TR_YES_SETUP_MY_TREZOR',
     },
     TR_COPY_TO_CLIPBOARD: {
         defaultMessage: 'Copy',
@@ -6060,7 +6063,7 @@ export default defineMessages({
     },
     TR_TAKES_N_MINUTES: {
         id: 'TR_TAKES_N_MINUTES',
-        defaultMessage: 'Takes ~{n} mins',
+        defaultMessage: 'Usually takes <{n} mins',
     },
     TR_INPUTS_OUTPUTS: {
         id: 'TR_INPUTS_OUTPUTS',
@@ -6667,11 +6670,23 @@ export default defineMessages({
         id: 'TR_WIPE_OR_UPDATE_DESCRIPTION',
         defaultMessage: 'Go to device settings',
     },
+    TR_YOU_HAVE_CONNECTED: {
+        id: 'TR_YOU_HAVE_CONNECTED',
+        defaultMessage: 'You have connected a',
+    },
+    TR_CONNECTED_DIFFERENT_DEVICE: {
+        id: 'TR_CONNECTED_DIFFERENT_DEVICE',
+        defaultMessage: 'Connected a different device?',
+    },
     TR_ONBOARDING_DEVICE_CHECK: {
         id: 'TR_ONBOARDING_DEVICE_CHECK',
-        defaultMessage: 'Security check',
+        defaultMessage: 'Device security check',
         description:
             'Heading for an onboarding step where we ask the user to verify authenticity of his device',
+    },
+    TR_USED_TREZOR_BEFORE: {
+        id: 'TR_USED_TREZOR_BEFORE',
+        defaultMessage: 'Have you used this Trezor before?',
     },
     TR_ONBOARDING_DEVICE_CHECK_1: {
         id: 'TR_ONBOARDING_DEVICE_CHECK_1',
@@ -6690,6 +6705,40 @@ export default defineMessages({
         description: 'Shown only if device has firmware already installed',
         defaultMessage:
             'Firmware is already installed on the connected Trezor. Only continue with setup if you have used this Trezor before.',
+    },
+    TR_I_HAVE_NOT_USED_IT: {
+        id: 'TR_I_HAVE_NOT_USED_IT',
+        defaultMessage: 'No, I have not used it',
+    },
+    TR_I_HAVE_DOUBTS: {
+        id: 'TR_I_HAVE_DOUBTS',
+        defaultMessage: 'I have doubts',
+    },
+    TR_DEVICE_COMPROMISED_HEADING: {
+        id: 'TR_DEVICE_COMPROMISED_HEADING',
+        defaultMessage: 'Your device may have been compromised',
+    },
+    TR_DEVICE_COMPROMISED_TEXT: {
+        id: 'TR_DEVICE_COMPROMISED_TEXT',
+        defaultMessage:
+            "It's better to play it safe. Just reach out to Trezor Support, and they'll help you figure out what's going on with your device.",
+    },
+    TR_DISCONNECT_DEVICE: {
+        id: 'TR_DISCONNECT_DEVICE',
+        defaultMessage: 'Disconnect your device from your laptop or computer.',
+    },
+    TR_AVOID_USING_DEVICE: {
+        id: 'TR_AVOID_USING_DEVICE',
+        defaultMessage: 'Avoid using the device or sending any funds to it.',
+    },
+    TR_USE_CHAT: {
+        id: 'TR_USE_CHAT',
+        defaultMessage:
+            'Use the <b>Chat</b> option on the top right of the page or click below to get help.',
+    },
+    TR_CONTACT_TREZOR_SUPPORT: {
+        id: 'TR_CONTACT_TREZOR_SUPPORT',
+        defaultMessage: 'Contact Trezor Support',
     },
     TR_ONBOARDING_COINS_STEP: {
         id: 'TR_ONBOARDING_COINS_STEP',
