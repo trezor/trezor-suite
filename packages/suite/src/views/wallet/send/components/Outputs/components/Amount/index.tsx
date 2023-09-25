@@ -89,7 +89,7 @@ const TransferIconWrapper = styled.div`
 const Right = styled.div`
     display: flex;
     flex: 1;
-    align-items: flex-start;
+    align-items: end;
 `;
 
 const Symbol = styled.span`
