@@ -4,7 +4,7 @@ import { DOCS_ANALYTICS_URL, DATA_TOS_URL } from '@trezor/urls';
 import { DataAnalytics } from '@trezor/components';
 
 import { useOnboarding, useSelector } from 'src/hooks/suite';
-import { SecurityCheck } from './SecurityCheck';
+import { SecurityCheck } from '../../../SecurityCheck/SecurityCheck';
 import TrezorLink from 'src/components/suite/TrezorLink';
 import styled from 'styled-components';
 
