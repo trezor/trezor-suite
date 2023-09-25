@@ -57,7 +57,6 @@ const FiatInput = () => {
     return (
         <NumberInput
             control={control}
-            noTopLabel
             defaultValue=""
             rules={fiatInputRules}
             onChange={onFiatAmountChange}
