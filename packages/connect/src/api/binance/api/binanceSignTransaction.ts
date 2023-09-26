@@ -1,12 +1,12 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/BinanceSignTransaction.js
 
-import { AbstractMethod } from '../core/AbstractMethod';
-import { validateParams, getFirmwareRange } from './common/paramsValidator';
-import { getMiscNetwork } from '../data/coinInfo';
-import { validatePath } from '../utils/pathUtils';
-import * as helper from './binance/binanceSignTx';
+import { AbstractMethod } from '../../../core/AbstractMethod';
+import { validateParams, getFirmwareRange } from '../../common/paramsValidator';
+import { getMiscNetwork } from '../../../data/coinInfo';
+import { validatePath } from '../../../utils/pathUtils';
+import * as helper from '../binanceSignTx';
 
-import type { BinancePreparedTransaction } from '../types/api/binance';
+import type { BinancePreparedTransaction } from '../../../types/api/binance';
 
 type Params = {
     path: number[];
