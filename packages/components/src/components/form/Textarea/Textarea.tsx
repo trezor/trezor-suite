@@ -9,9 +9,9 @@ import {
     LabelRight,
     RightLabel,
     baseInputStyle,
-    getInputStateTextColor,
     LabelHoverAddon,
 } from '../InputStyles';
+import { BottomText } from '../BottomText';
 
 const Wrapper = styled.div`
     width: 100%;
@@ -36,13 +36,6 @@ const CharacterCount = styled.div`
     right: 15px;
     font-size: ${FONT_SIZE.TINY};
     color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
-`;
-
-const BottomText = styled.span<Pick<TextareaProps, 'inputState'>>`
-    padding: 6px 10px 0 10px;
-    min-height: 27px;
-    font-size: ${FONT_SIZE.TINY};
-    color: ${({ inputState, theme }) => getInputStateTextColor(inputState, theme)};
 `;
 
 export interface TextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
