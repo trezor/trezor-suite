@@ -8,7 +8,7 @@ import type * as ResponseTypes from '@trezor/blockchain-link-types/lib/responses
 import type * as MessageTypes from '@trezor/blockchain-link-types/lib/messages';
 import type { Events } from '@trezor/blockchain-link-types/lib/events';
 
-const workerWrapper = (factory: BlockchainSettings['worker']): Worker => {
+const workerWrapper = (factory: BlockchainSettings['worker']): Worker | Promise<Worker> => {
     if (typeof factory === 'function') return factory();
     if (typeof factory === 'string' && typeof Worker !== 'undefined') return new Worker(factory);
     // use custom worker
@@ -16,9 +16,9 @@ const workerWrapper = (factory: BlockchainSettings['worker']): Worker => {
 };
 
 // initialize worker communication, raise error if worker not found
-const initWorker = (settings: BlockchainSettings) => {
+const initWorker = async (settings: BlockchainSettings) => {
     const dfd = createDeferred<Worker>(-1);
-    const worker = workerWrapper(settings.worker);
+    const worker = await workerWrapper(settings.worker);
 
     if (typeof worker !== 'object' || typeof worker.postMessage !== 'function') {
         throw new CustomError('worker_invalid');
