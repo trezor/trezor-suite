@@ -28,6 +28,7 @@ import {
     getInputStateBorderColor,
 } from '../InputStyles';
 import { MODAL_CONTENT_ID } from '../../Modal/Modal';
+import { BottomText } from '../BottomText';
 
 const reactSelectClassNamePrefix = 'react-select';
 
@@ -208,14 +209,6 @@ const Wrapper = styled.div<Pick<SelectProps, 'isClean'>>`
             flex-direction: column;
             justify-content: flex-start;
         `}
-`;
-
-const BottomText = styled.div<Pick<SelectProps, 'inputState'>>`
-    display: flex;
-    font-size: ${FONT_SIZE.TINY};
-    color: ${({ inputState, theme }) => getInputStateTextColor(inputState, theme)};
-    padding: 6px 10px 0 10px;
-    min-height: 27px;
 `;
 
 // Prevent closing the menu when scrolling through options.
