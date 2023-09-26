@@ -68,6 +68,7 @@ export const getInitialState = (custom?: any) => {
             ...suiteReducer(undefined, {} as Action),
             ...suite,
         },
+        device: {},
     };
 };
 
