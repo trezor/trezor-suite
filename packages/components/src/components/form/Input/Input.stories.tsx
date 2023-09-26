@@ -1,7 +1,8 @@
 import { ChangeEvent } from 'react';
 import { useArgs } from '@storybook/client-api';
 
-import { Input as InputComponent } from './Input';
+import { Input as InputComponent, InputProps } from './Input';
+import { StoryObj } from '@storybook/react';
 
 export default {
     title: 'Form/Input',
@@ -35,7 +36,7 @@ export default {
     },
 };
 
-export const Input = {
+export const Input: StoryObj<InputProps> = {
     render: ({ ...args }) => {
         // eslint-disable-next-line
         const [{ value }, updateArgs] = useArgs();
