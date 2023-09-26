@@ -1,11 +1,11 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/StellarGetAddress.js
 
-import { AbstractMethod, MethodReturnType } from '../core/AbstractMethod';
-import { validateParams, getFirmwareRange } from './common/paramsValidator';
-import { getMiscNetwork } from '../data/coinInfo';
-import { validatePath, fromHardened, getSerializedPath } from '../utils/pathUtils';
-import { PROTO, ERRORS } from '../constants';
-import { UI, createUiMessage } from '../events';
+import { AbstractMethod, MethodReturnType } from '../../../core/AbstractMethod';
+import { validateParams, getFirmwareRange } from '../../common/paramsValidator';
+import { getMiscNetwork } from '../../../data/coinInfo';
+import { validatePath, fromHardened, getSerializedPath } from '../../../utils/pathUtils';
+import { PROTO, ERRORS } from '../../../constants';
+import { UI, createUiMessage } from '../../../events';
 
 type Params = PROTO.StellarGetAddress & {
     address?: string;

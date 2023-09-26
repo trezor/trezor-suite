@@ -1,12 +1,12 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/StellarSignTransaction.js
 
-import { AbstractMethod } from '../core/AbstractMethod';
-import { validateParams, getFirmwareRange } from './common/paramsValidator';
-import { getMiscNetwork } from '../data/coinInfo';
-import { validatePath } from '../utils/pathUtils';
-import * as helper from './stellar/stellarSignTx';
-import { ERRORS } from '../constants';
-import { StellarTransaction } from '../types/api/stellar';
+import { AbstractMethod } from '../../../core/AbstractMethod';
+import { validateParams, getFirmwareRange } from '../../common/paramsValidator';
+import { getMiscNetwork } from '../../../data/coinInfo';
+import { validatePath } from '../../../utils/pathUtils';
+import * as helper from '../stellarSignTx';
+import { ERRORS } from '../../../constants';
+import { StellarTransaction } from '../../../types/api/stellar';
 
 type Params = {
     path: number[];
