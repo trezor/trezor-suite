@@ -6,7 +6,7 @@ import { ONBOARDING } from 'src/actions/onboarding/constants';
 import * as STEP from 'src/constants/onboarding/steps';
 import { AnyStepId, AnyPath } from 'src/types/onboarding';
 import steps from 'src/config/onboarding/steps';
-import { findNextStep, findPrevStep, isStepInPath } from 'src/utils/onboarding/steps';
+import { findNextStep, findPrevStep, isStepUsed } from 'src/utils/onboarding/steps';
 import { GetState, Dispatch } from 'src/types/suite';
 import { DeviceTutorialStatus } from 'src/reducers/onboarding/onboardingReducer';
 
@@ -67,8 +67,10 @@ const goToNextStep = (stepId?: AnyStepId) => (dispatch: Dispatch, getState: GetS
     if (stepId) {
         return dispatch(goToStep(stepId));
     }
-    const { activeStepId, path } = getState().onboarding;
-    const stepsInPath = steps.filter(step => isStepInPath(step, path));
+    const state = getState();
+    const { activeStepId, path } = state.onboarding;
+    const deviceModelInternal = selectDevice(state)?.features?.internal_model;
+    const stepsInPath = steps.filter(step => isStepUsed(step, path, deviceModelInternal));
     const nextStep = findNextStep(activeStepId, stepsInPath);
     dispatch(goToStep(nextStep.id));
 };
@@ -77,8 +79,10 @@ const goToPreviousStep = (stepId?: AnyStepId) => (dispatch: Dispatch, getState: 
     if (stepId) {
         return dispatch(goToStep(stepId));
     }
-    const { activeStepId, path } = getState().onboarding;
-    const stepsInPath = steps.filter(step => isStepInPath(step, path));
+    const state = getState();
+    const { activeStepId, path } = state.onboarding;
+    const deviceModelInternal = selectDevice(state)?.features?.internal_model;
+    const stepsInPath = steps.filter(step => isStepUsed(step, path, deviceModelInternal));
     const prevStep = findPrevStep(activeStepId, stepsInPath);
     // steps listed in case statements contain path decisions, so we need
     // to remove saved paths from reducers to let user change it again.

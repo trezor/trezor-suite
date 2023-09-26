@@ -1,6 +1,8 @@
+import { DeviceModelInternal } from '@trezor/connect';
+
 import * as STEP from 'src/constants/onboarding/steps';
 import { Step } from 'src/types/onboarding';
-import { findNextStep, findPrevStep, isStepInPath } from '../steps';
+import { findNextStep, findPrevStep, isStepUsed } from '../steps';
 
 const welcomeStep: Step = {
     id: STEP.ID_WELCOME_STEP,
@@ -12,6 +14,7 @@ const backupStep: Step = {
     id: STEP.ID_BACKUP_STEP,
     path: [],
     stepGroup: 1,
+    unsupportedModels: [DeviceModelInternal.T1B1],
 };
 
 const stepsMock = [welcomeStep, backupStep];
@@ -37,21 +40,26 @@ describe('steps', () => {
         });
     });
 
-    describe('isStepInPath', () => {
+    describe('isStepUsed', () => {
         it('empty path means no restriction', () => {
-            expect(isStepInPath(welcomeStep, [])).toEqual(true);
+            expect(isStepUsed(welcomeStep, [])).toEqual(true);
         });
 
         it('should return false for no overlap', () => {
             const step = welcomeStep;
             welcomeStep.path = ['create'];
-            expect(isStepInPath(step, ['recovery'])).toEqual(false);
+            expect(isStepUsed(step, ['recovery'])).toEqual(false);
         });
 
         it('should return true for full overlap', () => {
             const step = welcomeStep;
             welcomeStep.path = ['create'];
-            expect(isStepInPath(step, ['create'])).toEqual(true);
+            expect(isStepUsed(step, ['create'])).toEqual(true);
+        });
+
+        it('should exclude steps not supported by device', () => {
+            expect(isStepUsed(backupStep, [], DeviceModelInternal.T2B1)).toEqual(true);
+            expect(isStepUsed(backupStep, [], DeviceModelInternal.T1B1)).toEqual(false);
         });
     });
 });
