@@ -33,6 +33,7 @@ import {
     selectCoinjoinAccountByKey,
 } from 'src/reducers/wallet/coinjoinReducer';
 import { updateLastAnonymityReportTimestamp } from 'src/actions/wallet/coinjoinAccountActions';
+import { Account } from '@suite-common/wallet-types';
 
 /*
     In analytics middleware we may intercept actions we would like to log. For example:
@@ -121,13 +122,21 @@ const analyticsMiddleware =
                 analytics.report({ type: EventType.DeviceDisconnect });
                 break;
             case discoveryActions.completeDiscovery.type: {
+                const accumulateAccountCountBySymbolAndType = (
+                    acc: { [key: string]: number },
+                    { symbol, accountType }: Account,
+                ) => {
+                    // change coinjoin accounts to taproot for analytics
+                    const accType = accountType === 'coinjoin' ? 'taproot' : accountType;
+
+                    const id = `${symbol}_${accType}`;
+                    acc[id] = (acc[id] || 0) + 1;
+                    return acc;
+                };
+
                 const accountsWithTransactions = state.wallet.accounts
                     .filter(account => account.history.total + (account.history.unconfirmed || 0))
-                    .reduce((acc: { [key: string]: number }, obj) => {
-                        const id = `${obj.symbol}_${obj.accountType}`;
-                        acc[id] = (acc[id] || 0) + 1;
-                        return acc;
-                    }, {});
+                    .reduce(accumulateAccountCountBySymbolAndType, {});
 
                 const accountsWithNonZeroBalance = state.wallet.accounts
                     .filter(
@@ -139,16 +148,12 @@ const analyticsMiddleware =
                                 ).length,
                             ).gt(0),
                     )
-                    .reduce((acc: { [key: string]: number }, obj) => {
-                        const id = `${obj.symbol}_${obj.accountType}`;
-                        acc[id] = (acc[id] || 0) + 1;
-                        return acc;
-                    }, {});
+                    .reduce(accumulateAccountCountBySymbolAndType, {});
 
                 const accountsWithTokens = state.wallet.accounts
                     .filter(account => new BigNumber((account.tokens || []).length).gt(0))
-                    .reduce((acc: { [key: string]: number }, obj) => {
-                        acc[obj.symbol] = (acc[obj.symbol] || 0) + 1;
+                    .reduce((acc: { [key: string]: number }, { symbol }: Account) => {
+                        acc[symbol] = (acc[symbol] || 0) + 1;
                         return acc;
                     }, {});
 
