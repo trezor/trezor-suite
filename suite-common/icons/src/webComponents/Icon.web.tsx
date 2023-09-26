@@ -2,6 +2,8 @@ import { ReactSVG } from 'react-svg';
 
 import styled, { css, useTheme } from 'styled-components';
 
+import { CSSColor, Color, isCSSColor } from '@trezor/theme';
+
 import { icons } from '../icons';
 import { IconProps, getIconSize } from '../config';
 
@@ -31,7 +33,8 @@ const SVG = styled(ReactSVG)`
         `}
 `;
 
-type WebIconProps = IconProps & {
+type WebIconProps = Omit<IconProps, 'color'> & {
+    color?: CSSColor | Color;
     onClick?: () => void;
     className?: string;
 };
@@ -54,7 +57,9 @@ export const Icon = ({
     };
 
     const handleInjection = (svg: SVGSVGElement) => {
-        svg.querySelectorAll('path')?.forEach(path => path.setAttribute('stroke', theme[color]));
+        const strokeColor = isCSSColor(color) ? color : theme[color];
+
+        svg.querySelectorAll('path')?.forEach(path => path.setAttribute('stroke', strokeColor));
         svg.setAttribute('width', `${iconSize}px`);
         svg.setAttribute('height', `${iconSize}px`);
     };
