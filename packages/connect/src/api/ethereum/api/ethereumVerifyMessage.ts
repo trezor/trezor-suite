@@ -1,9 +1,9 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/EthereumVerifyMessage.js
 
-import { AbstractMethod } from '../core/AbstractMethod';
-import { validateParams, getFirmwareRange } from './common/paramsValidator';
-import { stripHexPrefix, messageToHex } from '../utils/formatUtils';
-import type { PROTO } from '../constants';
+import { AbstractMethod } from '../../../core/AbstractMethod';
+import { validateParams, getFirmwareRange } from '../../common/paramsValidator';
+import { stripHexPrefix, messageToHex } from '../../../utils/formatUtils';
+import type { PROTO } from '../../../constants';
 
 export default class EthereumVerifyMessage extends AbstractMethod<
     'ethereumVerifyMessage',

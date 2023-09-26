@@ -1,14 +1,14 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/EthereumSignMessage.js
 
-import { AbstractMethod } from '../core/AbstractMethod';
-import { validateParams, getFirmwareRange } from './common/paramsValidator';
-import { getSlip44ByPath, validatePath } from '../utils/pathUtils';
-import { getEthereumNetwork } from '../data/coinInfo';
-import { getNetworkLabel } from '../utils/ethereumUtils';
-import { messageToHex } from '../utils/formatUtils';
-import type { PROTO } from '../constants';
-import { getEthereumDefinitions } from './ethereum/ethereumDefinitions';
-import type { EthereumNetworkInfo } from '../types';
+import { AbstractMethod } from '../../../core/AbstractMethod';
+import { validateParams, getFirmwareRange } from '../../common/paramsValidator';
+import { getSlip44ByPath, validatePath } from '../../../utils/pathUtils';
+import { getEthereumNetwork } from '../../../data/coinInfo';
+import { getNetworkLabel } from '../../../utils/ethereumUtils';
+import { messageToHex } from '../../../utils/formatUtils';
+import type { PROTO } from '../../../constants';
+import { getEthereumDefinitions } from '../ethereumDefinitions';
+import type { EthereumNetworkInfo } from '../../../types';
 import type { EthereumDefinitions } from '@trezor/protobuf/lib/messages';
 
 type Params = PROTO.EthereumSignMessage & {
