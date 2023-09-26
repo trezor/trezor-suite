@@ -39,10 +39,8 @@ export const WelcomeScreen = () => {
 
     const getImageSource = () => {
         if (colorScheme === 'dark') {
-            // eslint-disable-next-line global-require
             return require('../assets/darkRectangles.png');
         }
-        // eslint-disable-next-line global-require
         return require('../assets/rectangles.png');
     };
 

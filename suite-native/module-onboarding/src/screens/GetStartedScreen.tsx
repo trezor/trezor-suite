@@ -51,10 +51,8 @@ export const GetStartedScreen = () => {
 
     const getImageSource = () => {
         if (colorScheme === 'dark') {
-            // eslint-disable-next-line global-require
             return require('../assets/darkDashboard.png');
         }
-        // eslint-disable-next-line global-require
         return require('../assets/dashboard.png');
     };
 
