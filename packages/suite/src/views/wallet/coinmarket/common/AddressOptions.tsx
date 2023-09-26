@@ -89,8 +89,8 @@ export const AddressOptions = <TFieldValues extends AddressOptionsFormState>({
     const addresses = account?.addresses;
     const addressDictionary = useAccountAddressDictionary(account);
     const value = address ? addressDictionary[address] : undefined;
-    const accountMetadata = useSelector(
-        state => account && selectLabelingDataForAccount(state, account.key),
+    const accountMetadata = useSelector(state =>
+        selectLabelingDataForAccount(state, account?.key || ''),
     );
 
     useEffect(() => {
@@ -121,7 +121,7 @@ export const AddressOptions = <TFieldValues extends AddressOptionsFormState>({
                             <Option>
                                 <AddressWrapper>
                                     <Address>
-                                        {accountMetadata?.addressLabels[accountAddress.address] ||
+                                        {accountMetadata.addressLabels[accountAddress.address] ||
                                             accountAddress.address}
                                     </Address>
                                     <Amount>
