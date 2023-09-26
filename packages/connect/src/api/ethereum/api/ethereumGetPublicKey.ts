@@ -1,13 +1,13 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/EthereumGetPublicKey.js
 
-import { AbstractMethod, MethodReturnType } from '../core/AbstractMethod';
-import { validateParams, getFirmwareRange } from './common/paramsValidator';
-import { validatePath } from '../utils/pathUtils';
-import { getNetworkLabel } from '../utils/ethereumUtils';
-import { getEthereumNetwork, getUniqueNetworks } from '../data/coinInfo';
-import { UI, createUiMessage } from '../events';
-import type { PROTO } from '../constants';
-import type { EthereumNetworkInfo } from '../types';
+import { AbstractMethod, MethodReturnType } from '../../../core/AbstractMethod';
+import { validateParams, getFirmwareRange } from '../../common/paramsValidator';
+import { validatePath } from '../../../utils/pathUtils';
+import { getNetworkLabel } from '../../../utils/ethereumUtils';
+import { getEthereumNetwork, getUniqueNetworks } from '../../../data/coinInfo';
+import { UI, createUiMessage } from '../../../events';
+import type { PROTO } from '../../../constants';
+import type { EthereumNetworkInfo } from '../../../types';
 
 type Params = PROTO.EthereumGetPublicKey & {
     network?: EthereumNetworkInfo;

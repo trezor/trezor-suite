@@ -1,19 +1,19 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/EthereumGetAddress.js
 
-import { AbstractMethod, MethodReturnType } from '../core/AbstractMethod';
-import { validateParams, getFirmwareRange } from './common/paramsValidator';
-import { validatePath, getSerializedPath, getSlip44ByPath } from '../utils/pathUtils';
-import { getNetworkLabel } from '../utils/ethereumUtils';
-import { getEthereumNetwork, getUniqueNetworks } from '../data/coinInfo';
-import { stripHexPrefix } from '../utils/formatUtils';
-import { PROTO, ERRORS } from '../constants';
-import { UI, createUiMessage } from '../events';
-import type { EthereumNetworkInfo } from '../types';
+import { AbstractMethod, MethodReturnType } from '../../../core/AbstractMethod';
+import { validateParams, getFirmwareRange } from '../../common/paramsValidator';
+import { validatePath, getSerializedPath, getSlip44ByPath } from '../../../utils/pathUtils';
+import { getNetworkLabel } from '../../../utils/ethereumUtils';
+import { getEthereumNetwork, getUniqueNetworks } from '../../../data/coinInfo';
+import { stripHexPrefix } from '../../../utils/formatUtils';
+import { PROTO, ERRORS } from '../../../constants';
+import { UI, createUiMessage } from '../../../events';
+import type { EthereumNetworkInfo } from '../../../types';
 import {
     getEthereumDefinitions,
     decodeEthereumDefinition,
     ethereumNetworkInfoFromDefinition,
-} from './ethereum/ethereumDefinitions';
+} from '../ethereumDefinitions';
 
 type Params = PROTO.EthereumGetAddress & {
     address?: string;

@@ -2,23 +2,23 @@
 
 /* eslint-disable no-restricted-syntax */
 
-import { AbstractMethod } from '../core/AbstractMethod';
-import { validateParams, getFirmwareRange } from './common/paramsValidator';
-import { getSlip44ByPath, validatePath } from '../utils/pathUtils';
-import { getEthereumNetwork } from '../data/coinInfo';
-import { getNetworkLabel } from '../utils/ethereumUtils';
-import { PROTO, ERRORS } from '../constants';
+import { AbstractMethod } from '../../../core/AbstractMethod';
+import { validateParams, getFirmwareRange } from '../../common/paramsValidator';
+import { getSlip44ByPath, validatePath } from '../../../utils/pathUtils';
+import { getEthereumNetwork } from '../../../data/coinInfo';
+import { getNetworkLabel } from '../../../utils/ethereumUtils';
+import { PROTO, ERRORS } from '../../../constants';
 import type {
     EthereumSignTypedDataTypes,
     EthereumSignTypedData as EthereumSignTypedDataParams,
     EthereumSignTypedHash as EthereumSignTypedHashParams,
-} from '../types/api/ethereum';
-import { getFieldType, parseArrayType, encodeData } from './ethereum/ethereumSignTypedData';
-import { messageToHex } from '../utils/formatUtils';
-import { getEthereumDefinitions } from './ethereum/ethereumDefinitions';
-import type { EthereumNetworkInfo } from '../types';
+} from '../../../types/api/ethereum';
+import { getFieldType, parseArrayType, encodeData } from '../ethereumSignTypedData';
+import { messageToHex } from '../../../utils/formatUtils';
+import { getEthereumDefinitions } from '../ethereumDefinitions';
+import type { EthereumNetworkInfo } from '../../../types';
 import type { EthereumDefinitions } from '@trezor/protobuf/lib/messages';
-import { DeviceModelInternal } from '../types';
+import { DeviceModelInternal } from '../../../types';
 
 type Params = (
     | Omit<EthereumSignTypedDataParams<EthereumSignTypedDataTypes>, 'path'>

@@ -1,19 +1,19 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/EthereumSignTransaction.js
 
-import { AbstractMethod } from '../core/AbstractMethod';
-import { validateParams, getFirmwareRange } from './common/paramsValidator';
-import { getSlip44ByPath, validatePath } from '../utils/pathUtils';
-import { getEthereumNetwork } from '../data/coinInfo';
-import { getNetworkLabel } from '../utils/ethereumUtils';
-import { stripHexPrefix } from '../utils/formatUtils';
-import * as helper from './ethereum/ethereumSignTx';
+import { AbstractMethod } from '../../../core/AbstractMethod';
+import { validateParams, getFirmwareRange } from '../../common/paramsValidator';
+import { getSlip44ByPath, validatePath } from '../../../utils/pathUtils';
+import { getEthereumNetwork } from '../../../data/coinInfo';
+import { getNetworkLabel } from '../../../utils/ethereumUtils';
+import { stripHexPrefix } from '../../../utils/formatUtils';
+import * as helper from '../ethereumSignTx';
 import {
     getEthereumDefinitions,
     decodeEthereumDefinition,
     ethereumNetworkInfoFromDefinition,
-} from './ethereum/ethereumDefinitions';
-import type { EthereumTransaction, EthereumTransactionEIP1559 } from '../types/api/ethereum';
-import type { EthereumNetworkInfo } from '../types';
+} from '../ethereumDefinitions';
+import type { EthereumTransaction, EthereumTransactionEIP1559 } from '../../../types/api/ethereum';
+import type { EthereumNetworkInfo } from '../../../types';
 import type { EthereumDefinitions } from '@trezor/protobuf/lib/messages';
 
 type Params = {
