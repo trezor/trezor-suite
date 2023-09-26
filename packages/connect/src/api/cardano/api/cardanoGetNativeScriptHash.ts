@@ -1,11 +1,11 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/CardanoGetNativeScriptHash.js
 
-import { PROTO } from '../constants';
-import { AbstractMethod } from '../core/AbstractMethod';
-import { getFirmwareRange, validateParams } from './common/paramsValidator';
-import { getMiscNetwork } from '../data/coinInfo';
-import { validatePath } from '../utils/pathUtils';
-import type { CardanoNativeScript } from '../types/api/cardano';
+import { PROTO } from '../../../constants';
+import { AbstractMethod } from '../../../core/AbstractMethod';
+import { getFirmwareRange, validateParams } from '../../common/paramsValidator';
+import { getMiscNetwork } from '../../../data/coinInfo';
+import { validatePath } from '../../../utils/pathUtils';
+import type { CardanoNativeScript } from '../../../types/api/cardano';
 
 export default class CardanoGetNativeScriptHash extends AbstractMethod<
     'cardanoGetNativeScriptHash',

@@ -1,11 +1,11 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/CardanoGetPublicKey.js
 
-import { PROTO } from '../constants';
-import { AbstractMethod, MethodReturnType } from '../core/AbstractMethod';
-import { validateParams, getFirmwareRange } from './common/paramsValidator';
-import { getMiscNetwork } from '../data/coinInfo';
-import { validatePath, fromHardened, getSerializedPath } from '../utils/pathUtils';
-import { UI, createUiMessage } from '../events';
+import { PROTO } from '../../../constants';
+import { AbstractMethod, MethodReturnType } from '../../../core/AbstractMethod';
+import { validateParams, getFirmwareRange } from '../../common/paramsValidator';
+import { getMiscNetwork } from '../../../data/coinInfo';
+import { validatePath, fromHardened, getSerializedPath } from '../../../utils/pathUtils';
+import { UI, createUiMessage } from '../../../events';
 
 interface Params extends PROTO.CardanoGetPublicKey {
     suppressBackupWarning?: boolean;

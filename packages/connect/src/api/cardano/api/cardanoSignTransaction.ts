@@ -3,16 +3,16 @@
 // allow for...of statements
 /* eslint-disable no-restricted-syntax */
 
-import { AbstractMethod } from '../core/AbstractMethod';
-import { validateParams, getFirmwareRange } from './common/paramsValidator';
-import { getMiscNetwork } from '../data/coinInfo';
-import { validatePath } from '../utils/pathUtils';
+import { AbstractMethod } from '../../../core/AbstractMethod';
+import { validateParams, getFirmwareRange } from '../../common/paramsValidator';
+import { getMiscNetwork } from '../../../data/coinInfo';
+import { validatePath } from '../../../utils/pathUtils';
 import {
     modifyAuxiliaryDataForBackwardsCompatibility,
     transformAuxiliaryData,
-} from './cardano/cardanoAuxiliaryData';
-import { transformCertificate } from './cardano/cardanoCertificate';
-import type { CertificateWithPoolOwnersAndRelays } from './cardano/cardanoCertificate';
+} from '../cardanoAuxiliaryData';
+import { transformCertificate } from '../cardanoCertificate';
+import type { CertificateWithPoolOwnersAndRelays } from '../cardanoCertificate';
 import {
     Path,
     InputWithPath,
@@ -20,18 +20,18 @@ import {
     transformReferenceInput,
     transformInput,
     transformCollateralInput,
-} from './cardano/cardanoInputs';
-import { sendOutput, transformOutput } from './cardano/cardanoOutputs';
-import type { OutputWithData } from './cardano/cardanoOutputs';
-import { PROTO, ERRORS } from '../constants';
+} from '../cardanoInputs';
+import { sendOutput, transformOutput } from '../cardanoOutputs';
+import type { OutputWithData } from '../cardanoOutputs';
+import { PROTO, ERRORS } from '../../../constants';
 import type {
     CardanoAuxiliaryDataSupplement,
     CardanoSignedTxData,
     CardanoSignedTxWitness,
-} from '../types/api/cardano';
-import { gatherWitnessPaths } from './cardano/cardanoWitnesses';
-import type { AssetGroupWithTokens } from './cardano/cardanoTokenBundle';
-import { tokenBundleToProto } from './cardano/cardanoTokenBundle';
+} from '../../../types/api/cardano';
+import { gatherWitnessPaths } from '../cardanoWitnesses';
+import type { AssetGroupWithTokens } from '../cardanoTokenBundle';
+import { tokenBundleToProto } from '../cardanoTokenBundle';
 
 // todo: remove when listed firmwares become mandatory for cardanoSignTransaction
 const CardanoSignTransactionFeatures = Object.freeze({
