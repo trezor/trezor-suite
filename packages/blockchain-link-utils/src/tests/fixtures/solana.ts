@@ -501,6 +501,17 @@ export const fixtures = {
                 symbol: 'AQo...',
             },
         },
+        {
+            description: 'parses whitelisted token data from mint',
+            input: {
+                mint: 'So11111111111111111111111111111111111111112',
+                map: sampleMintToDetailMap,
+            },
+            expectedOutput: {
+                name: 'Wrapped SOL',
+                symbol: 'WSOL',
+            },
+        },
     ],
     transformTokenInfo: [
         {
