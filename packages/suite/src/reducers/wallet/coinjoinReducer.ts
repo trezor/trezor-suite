@@ -9,7 +9,7 @@ import {
     AccountsRootState,
     selectAccountByKey,
     DeviceRootState,
-    selectDeviceState,
+    selectDeviceStatus,
 } from '@suite-common/wallet-core';
 import {
     Feature,
@@ -925,7 +925,7 @@ export const selectCoinjoinSessionBlockerByAccountKey = (
     if (selectIsCoinjoinBlockedByTor(state)) {
         return 'TOR_DISABLED';
     }
-    if (!['connected', 'firmware-recommended'].includes(selectDeviceState(state) ?? '')) {
+    if (!['connected', 'firmware-recommended'].includes(selectDeviceStatus(state) ?? '')) {
         return 'DEVICE_DISCONNECTED';
     }
     const account = selectAccountByKey(state, accountKey);

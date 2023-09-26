@@ -1,9 +1,11 @@
 import { Box, Button, HStack, IconButton } from '@suite-native/atoms';
 import { useFormContext } from '@suite-native/forms';
+import { useTranslate } from '@suite-native/intl';
 
 import { PIN_FORM_MIN_LENGTH } from '../constants/pinFormConstants';
 
 export const PinFormControlButtons = () => {
+    const { translate } = useTranslate();
     const { handleSubmit, getValues, watch, setValue } = useFormContext();
 
     const onSubmit = handleSubmit(
@@ -29,7 +31,7 @@ export const PinFormControlButtons = () => {
             )}
             <Box flex={1}>
                 <Button isDisabled={pinLength < PIN_FORM_MIN_LENGTH} onPress={onSubmit}>
-                    Enter pin
+                    {translate('moduleConnectDevice.pinScreen.enterPin')}
                 </Button>
             </Box>
         </HStack>

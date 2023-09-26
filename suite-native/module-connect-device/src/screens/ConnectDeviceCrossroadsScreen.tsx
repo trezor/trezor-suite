@@ -14,7 +14,8 @@ import {
 } from '@suite-native/navigation';
 import { VStack, Card, Button, Text, Pictogram } from '@suite-native/atoms';
 import { useNativeStyles, prepareNativeStyle } from '@trezor/styles';
-import { selectDevice } from '@suite-common/wallet-core';
+import { selectDeviceState } from '@suite-common/wallet-core';
+import { useTranslate } from '@suite-native/intl';
 
 const cardStyle = prepareNativeStyle<{ flex: 1 | 2 }>((utils, { flex }) => ({
     flex,
@@ -32,16 +33,17 @@ type NavigationProps = StackToStackCompositeNavigationProps<
 export const ConnectDeviceCrossroadsScreen = () => {
     const navigation = useNavigation<NavigationProps>();
     const { applyStyle } = useNativeStyles();
-    const device = useSelector(selectDevice);
+    const { translate } = useTranslate();
+    const deviceState = useSelector(selectDeviceState);
 
     useEffect(() => {
-        console.log(device);
-        if (device?.state) {
+        // When we have device state hash, we are sure that device is connected and authorized
+        if (deviceState) {
             navigation.navigate(RootStackRoutes.ConnectDevice, {
-                screen: ConnectDeviceStackRoutes.Connecting,
+                screen: ConnectDeviceStackRoutes.ConnectingDevice,
             });
         }
-    }, [device, navigation]);
+    }, [deviceState, navigation]);
 
     const handleSyncMyCoins = () => {
         navigation.navigate(RootStackRoutes.AccountsImport, {
@@ -63,12 +65,18 @@ export const ConnectDeviceCrossroadsScreen = () => {
                         <Pictogram
                             icon="trezor"
                             variant="green"
-                            title="I've got my Trezor"
-                            subtitle="Connect to manage your assets"
+                            title={translate(
+                                'moduleConnectDevice.connectCrossroads.gotMyTrezor.title',
+                            )}
+                            subtitle={translate(
+                                'moduleConnectDevice.connectCrossroads.gotMyTrezor.description',
+                            )}
                             size="large"
                         />
                         <Button onPress={handleConnectDevice} size="large">
-                            Connect Trezor
+                            {translate(
+                                'moduleConnectDevice.connectCrossroads.gotMyTrezor.connectButton',
+                            )}
                         </Button>
                     </VStack>
                 </Card>
@@ -76,11 +84,12 @@ export const ConnectDeviceCrossroadsScreen = () => {
                     <VStack spacing="large" justifyContent="center" alignItems="center">
                         <VStack spacing="small" alignItems="center">
                             <Text variant="titleSmall" textAlign="center">
-                                Sync coins without your Trezor
+                                {translate('moduleConnectDevice.connectCrossroads.syncCoins.title')}
                             </Text>
                             <Text color="textSubdued" textAlign="center">
-                                Track your favorite coins anytime, anywhere, even when your Trezor
-                                isn't connected.
+                                {translate(
+                                    'moduleConnectDevice.connectCrossroads.syncCoins.description',
+                                )}
                             </Text>
                         </VStack>
                         <Button
@@ -88,7 +97,9 @@ export const ConnectDeviceCrossroadsScreen = () => {
                             colorScheme="tertiaryElevation1"
                             size="large"
                         >
-                            Sync my coins
+                            {translate(
+                                'moduleConnectDevice.connectCrossroads.syncCoins.syncButton',
+                            )}
                         </Button>
                     </VStack>
                 </Card>

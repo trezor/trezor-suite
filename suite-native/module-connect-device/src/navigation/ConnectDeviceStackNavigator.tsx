@@ -28,7 +28,7 @@ export const ConnectDeviceStackNavigator = () => (
             component={PinMatrixScreen}
         />
         <ConnectDeviceStack.Screen
-            name={ConnectDeviceStackRoutes.Connecting}
+            name={ConnectDeviceStackRoutes.ConnectingDevice}
             component={ConnectingDeviceScreen}
         />
     </ConnectDeviceStack.Navigator>

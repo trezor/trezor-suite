@@ -2,8 +2,7 @@ import { ReactNode } from 'react';
 import { ImageBackground } from 'react-native';
 
 import { Screen } from '@suite-native/navigation';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { NativeStyleObject } from '@trezor/styles/libDev/src';
+import { prepareNativeStyle, useNativeStyles, NativeStyleObject } from '@trezor/styles';
 
 type ConnectDeviceScreenProps = {
     children: ReactNode;

@@ -37,7 +37,7 @@ export enum ConnectDeviceStackRoutes {
     ConnectDeviceCrossroads = 'ConnectDeviceCrossroads',
     ConnectAndUnlockDevice = 'ConnectAndUnlockDevice',
     PinMatrix = 'PinMatrix',
-    Connecting = 'Connecting',
+    ConnectingDevice = 'ConnectingDevice',
 }
 
 export enum DevUtilsStackRoutes {
