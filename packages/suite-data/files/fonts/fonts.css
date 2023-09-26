@@ -32,3 +32,17 @@
     font-weight: 500;
     font-style: normal;
 }
+
+@font-face {
+    font-family: 'PixelOperatorMono8';
+    src: url('./PixelOperatorMono8.woff2') format('woff2');
+    font-weight: 500;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'RobotoMono';
+    src: url('./RobotoMono-Medium.woff2') format('woff2');
+    font-weight: 500;
+    font-style: normal;
+}
