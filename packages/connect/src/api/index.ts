@@ -59,8 +59,6 @@ export { default as setBusy } from './setBusy';
 export { default as setProxy } from './setProxy';
 export { default as signMessage } from './signMessage';
 export { default as signTransaction } from './signTransaction';
-export { default as stellarGetAddress } from './stellarGetAddress';
-export { default as stellarSignTransaction } from './stellarSignTransaction';
 export { default as unlockPath } from './unlockPath';
 // export { default as uiResponse } from './uiResponse';
 export { default as verifyMessage } from './verifyMessage';
