@@ -1,17 +1,17 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/CardanoGetAddress.js
 
-import { AbstractMethod, MethodReturnType } from '../core/AbstractMethod';
-import { validateParams, getFirmwareRange } from './common/paramsValidator';
-import { getMiscNetwork } from '../data/coinInfo';
-import { fromHardened, getSerializedPath } from '../utils/pathUtils';
+import { AbstractMethod, MethodReturnType } from '../../../core/AbstractMethod';
+import { validateParams, getFirmwareRange } from '../../common/paramsValidator';
+import { getMiscNetwork } from '../../../data/coinInfo';
+import { fromHardened, getSerializedPath } from '../../../utils/pathUtils';
 import {
     addressParametersFromProto,
     addressParametersToProto,
     modifyAddressParametersForBackwardsCompatibility,
     validateAddressParameters,
-} from './cardano/cardanoAddressParameters';
-import { PROTO, ERRORS } from '../constants';
-import { UI, createUiMessage } from '../events';
+} from '../cardanoAddressParameters';
+import { PROTO, ERRORS } from '../../../constants';
+import { UI, createUiMessage } from '../../../events';
 
 type Params = PROTO.CardanoGetAddress & {
     address?: string;

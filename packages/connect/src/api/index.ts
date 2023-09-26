@@ -17,10 +17,6 @@ export { default as blockchainSubscribeFiatRates } from './blockchainSubscribeFi
 export { default as blockchainUnsubscribe } from './blockchainUnsubscribe';
 export { default as blockchainUnsubscribeFiatRates } from './blockchainUnsubscribeFiatRates';
 // export { default as cancel } from './cancel';
-export { default as cardanoGetAddress } from './cardanoGetAddress';
-export { default as cardanoGetNativeScriptHash } from './cardanoGetNativeScriptHash';
-export { default as cardanoGetPublicKey } from './cardanoGetPublicKey';
-export { default as cardanoSignTransaction } from './cardanoSignTransaction';
 export { default as changePin } from './changePin';
 export { default as cipherKeyValue } from './cipherKeyValue';
 export { default as composeTransaction } from './composeTransaction';
