@@ -1,11 +1,11 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/EosSignTransaction.js
 
-import { AbstractMethod } from '../core/AbstractMethod';
-import { validateParams, getFirmwareRange } from './common/paramsValidator';
-import { getMiscNetwork } from '../data/coinInfo';
-import { validatePath } from '../utils/pathUtils';
-import * as helper from './eos/eosSignTx';
-import type { PROTO } from '../constants';
+import { AbstractMethod } from '../../../core/AbstractMethod';
+import { validateParams, getFirmwareRange } from '../../common/paramsValidator';
+import { getMiscNetwork } from '../../../data/coinInfo';
+import { validatePath } from '../../../utils/pathUtils';
+import * as helper from '../eosSignTx';
+import type { PROTO } from '../../../constants';
 
 type Params = {
     path: number[];
