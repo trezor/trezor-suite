@@ -18,7 +18,7 @@ import { DeviceTutorial } from 'src/components/firmware/DeviceTutorial';
 import { selectOnboardingTutorialStatus } from 'src/reducers/onboarding/onboardingReducer';
 import { getSuiteFirmwareTypeString } from 'src/utils/firmware';
 
-const FirmwareStep = () => {
+export const FirmwareStep = () => {
     const device = useSelector(selectDevice);
     const isTutorialOffered = useSelector(selectOnboardingTutorialStatus);
     const { goToNextStep, updateAnalytics } = useOnboarding();
@@ -138,5 +138,3 @@ const FirmwareStep = () => {
             throw new Error(`state "${status}" is not handled here`);
     }
 };
-
-export default FirmwareStep;
