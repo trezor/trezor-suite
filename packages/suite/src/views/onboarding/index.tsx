@@ -4,7 +4,7 @@ import { WelcomeLayout } from 'src/components/suite';
 import { ReduxModal } from 'src/components/suite/ModalSwitcher/ReduxModal';
 import WelcomeStep from 'src/views/onboarding/steps/Welcome';
 import CreateOrRecover from 'src/views/onboarding/steps/CreateOrRecover';
-import FirmwareStep from 'src/views/onboarding/steps/Firmware';
+import { FirmwareStep } from 'src/views/onboarding/steps/FirmwareStep';
 import { ResetDeviceStep } from 'src/views/onboarding/steps/ResetDevice';
 import { RecoveryStep } from 'src/views/onboarding/steps/Recovery';
 import { BackupStep } from 'src/views/onboarding/steps/Backup';
