@@ -60,7 +60,11 @@ console.log(`[Electron Build] Using mocks: ${useMocks}`);
 const dependencies = Object.keys(pkg.dependencies);
 const devDependencies = Object.keys(pkg.devDependencies);
 
-const electronExternalDependencies = [...dependencies, ...devDependencies];
+const electronExternalDependencies = [
+    ...dependencies,
+    ...devDependencies,
+    '*/connect/trezor-connect',
+];
 
 build({
     entryPoints: ['app.ts', 'preload.ts', ...threads].map(f => path.join(source, f)),
@@ -84,6 +88,9 @@ build({
     },
     inject: [path.join(__dirname, 'build-inject.ts')],
     plugins: useMocks ? [mockPlugin] : [],
+    alias: {
+        '@trezor/connect': './connect/trezor-connect',
+    },
 })
     .then(() => {
         const hrend = process.hrtime(hrstart);
