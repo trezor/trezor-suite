@@ -1,6 +1,7 @@
 import { useArgs } from '@storybook/client-api';
+import { StoryObj } from '@storybook/react';
 import { ChangeEventHandler } from 'react';
-import { Textarea as TextareaComponent } from './Textarea';
+import { Textarea as TextareaComponent, TextareaProps } from './Textarea';
 
 export default {
     title: 'Form/Textarea',
@@ -16,7 +17,7 @@ const Component = ({ ...args }) => {
     return <TextareaComponent value={value} onChange={handleChange} {...args} />;
 };
 
-export const Textarea = {
+export const Textarea: StoryObj<TextareaProps> = {
     render: Component,
     args: {
         defaultValue: 'Textarea',
