@@ -1,7 +1,15 @@
+import { DeviceModelInternal } from '@trezor/connect';
 import { AnyStepId, AnyPath, Step } from 'src/types/onboarding';
 // types types types
 
-export const isStepInPath = (step: Step, path: AnyPath[]) => {
+export const isStepUsed = (
+    step: Step,
+    path: AnyPath[],
+    deviceModelInternal?: DeviceModelInternal,
+) => {
+    if (deviceModelInternal && step.unsupportedModels?.includes(deviceModelInternal)) {
+        return false;
+    }
     if (!step.path) {
         return true;
     }
@@ -9,8 +17,7 @@ export const isStepInPath = (step: Step, path: AnyPath[]) => {
         return true;
     }
     return path.every((pathMember: AnyPath) =>
-        // @ts-expect-error
-        step.path.some((stepPathMember: AnyPath) => stepPathMember === pathMember),
+        step.path?.some((stepPathMember: AnyPath) => stepPathMember === pathMember),
     );
 };
 
