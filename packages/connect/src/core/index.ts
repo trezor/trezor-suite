@@ -35,7 +35,7 @@ import { InteractionTimeout } from '../utils/interactionTimeout';
 import type { DeviceEvents, Device } from '../device/Device';
 import type { ConnectSettings, CommonParams, Device as DeviceTyped } from '../types';
 
-type AbstractMethod = ReturnType<typeof getMethod>;
+type AbstractMethod = Awaited<ReturnType<typeof getMethod>>;
 
 // Public variables
 let _core: Core; // Class with event emitter
@@ -301,7 +301,7 @@ export const onCall = async (message: CoreMessage) => {
     let method: AbstractMethod;
     let messageResponse: CoreMessage;
     try {
-        method = getMethod(message);
+        method = await getMethod(message);
         // bind callbacks
         method.postMessage = postMessage;
         method.getPopupPromise = getPopupPromise;
