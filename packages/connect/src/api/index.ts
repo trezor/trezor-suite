@@ -26,8 +26,6 @@ export { default as cipherKeyValue } from './cipherKeyValue';
 export { default as composeTransaction } from './composeTransaction';
 // export { default as disableWebUSB } from './disableWebUSB';
 // export { default as dispose } from './dispose';
-export { default as eosGetPublicKey } from './eosGetPublicKey';
-export { default as eosSignTransaction } from './eosSignTransaction';
 export { default as ethereumGetAddress } from './ethereumGetAddress';
 export { default as ethereumGetPublicKey } from './ethereumGetPublicKey';
 export { default as ethereumSignMessage } from './ethereumSignMessage';

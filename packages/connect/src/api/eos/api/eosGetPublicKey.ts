@@ -1,11 +1,11 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/EosGetPublicKey.js
 
-import { AbstractMethod, MethodReturnType } from '../core/AbstractMethod';
-import { validateParams, getFirmwareRange } from './common/paramsValidator';
-import { getMiscNetwork } from '../data/coinInfo';
-import { validatePath, fromHardened, getSerializedPath } from '../utils/pathUtils';
-import { UI, createUiMessage } from '../events';
-import type { PROTO } from '../constants';
+import { AbstractMethod, MethodReturnType } from '../../../core/AbstractMethod';
+import { validateParams, getFirmwareRange } from '../../common/paramsValidator';
+import { getMiscNetwork } from '../../../data/coinInfo';
+import { validatePath, fromHardened, getSerializedPath } from '../../../utils/pathUtils';
+import { UI, createUiMessage } from '../../../events';
+import type { PROTO } from '../../../constants';
 
 export default class EosGetPublicKey extends AbstractMethod<
     'eosGetPublicKey',
