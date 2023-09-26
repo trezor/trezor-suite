@@ -12,12 +12,10 @@ import {
     RightLabel,
     baseInputStyle,
     INPUT_HEIGHTS,
-    getInputStateTextColor,
     LabelHoverAddon,
     BaseInputProps,
 } from '../InputStyles';
-
-const BOTTOM_TEXT_MIN_HEIGHT = 26; // 1 line of text + top padding
+import { BOTTOM_TEXT_MIN_HEIGHT, BottomText } from '../BottomText';
 
 const Wrapper = styled.div<Pick<InputProps, 'width'> & { withBottomPadding: boolean }>`
     display: inline-flex;
@@ -66,14 +64,6 @@ const InputAddon = styled.div<{ align: innerAddonAlignment; size: InputSize }>`
     left: ${({ align, size }) => align === 'left' && getInputAddonPadding(size)};
     display: flex;
     align-items: center;
-`;
-
-const BottomText = styled.div<Pick<InputProps, 'inputState'>>`
-    display: flex;
-    padding: ${spacingsPx.xs} ${spacingsPx.sm} 0 ${spacingsPx.sm};
-    min-height: ${BOTTOM_TEXT_MIN_HEIGHT}px;
-    color: ${({ inputState, theme }) => getInputStateTextColor(inputState, theme)};
-    ${typography.label}
 `;
 
 type innerAddonAlignment = 'left' | 'right';
