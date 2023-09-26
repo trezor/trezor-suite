@@ -1,11 +1,11 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/NEMSignTransaction.js
 
-import { AbstractMethod } from '../core/AbstractMethod';
-import { validateParams, getFirmwareRange } from './common/paramsValidator';
-import { getMiscNetwork } from '../data/coinInfo';
-import { validatePath } from '../utils/pathUtils';
-import * as helper from './nem/nemSignTx';
-import type { PROTO } from '../constants';
+import { AbstractMethod } from '../../../core/AbstractMethod';
+import { validateParams, getFirmwareRange } from '../../common/paramsValidator';
+import { getMiscNetwork } from '../../../data/coinInfo';
+import { validatePath } from '../../../utils/pathUtils';
+import * as helper from '../nemSignTx';
+import type { PROTO } from '../../../constants';
 
 export default class NEMSignTransaction extends AbstractMethod<
     'nemSignTransaction',

@@ -46,8 +46,6 @@ export { default as getPublicKey } from './getPublicKey';
 export { default as getSettings } from './getSettings';
 // export { default as init } from './init';
 // export { default as manifest } from './manifest';
-export { default as nemGetAddress } from './nemGetAddress';
-export { default as nemSignTransaction } from './nemSignTransaction';
 // export { default as off } from './off';
 // export { default as on } from './on';
 export { default as pushTransaction } from './pushTransaction';

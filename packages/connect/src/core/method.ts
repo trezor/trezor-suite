@@ -2,7 +2,7 @@ import * as Methods from '../api';
 import { TypedError } from '../constants/errors';
 import type { IFrameCallMessage } from '../events';
 
-const MODULES = ['binance', 'eos', 'ripple', 'tezos'] as const;
+const MODULES = ['binance', 'eos', 'nem', 'ripple', 'tezos'] as const;
 
 const getMethodModule = (method: IFrameCallMessage['payload']['method']) =>
     MODULES.find(module => method.startsWith(module));
