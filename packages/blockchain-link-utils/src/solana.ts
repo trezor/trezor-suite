@@ -1,10 +1,53 @@
+import BigNumber from 'bignumber.js';
+import { A, F, pipe } from '@mobily/ts-belt';
+import type { AccountInfo, ParsedAccountData, PublicKey } from '@solana/web3.js';
+
+import { Target, Transaction } from '@trezor/blockchain-link-types/lib';
 import type {
     ParsedInstruction,
     ParsedTransactionWithMeta,
+    SolanaValidParsedTxWithMeta,
+    TokenDetailByMint,
 } from '@trezor/blockchain-link-types/lib/solana';
-import BigNumber from 'bignumber.js';
-import { Target, Transaction } from '@trezor/blockchain-link-types/lib';
-import { SolanaValidParsedTxWithMeta } from '@trezor/blockchain-link-types/lib/solana';
+import type { TokenInfo } from '@trezor/blockchain-link-types/lib';
+
+type TokenAccount = { account: AccountInfo<ParsedAccountData>; pubkey: PublicKey };
+
+export const getTokenNameAndSymbol = (mint: string, tokenDetailByMint: TokenDetailByMint) => {
+    const tokenDetail = tokenDetailByMint[mint];
+
+    return tokenDetail
+        ? { name: tokenDetail.name, symbol: tokenDetail.symbol }
+        : {
+              name: mint,
+              symbol: `${mint.slice(0, 3)}...`,
+          };
+};
+
+export const transformTokenInfo = (
+    tokenAccounts: TokenAccount[],
+    tokenDetailByMint: TokenDetailByMint,
+) => {
+    const tokens: TokenInfo[] = F.toMutable(
+        pipe(
+            tokenAccounts,
+            A.map((tokenAccount: TokenAccount): TokenInfo => {
+                const { info } = tokenAccount.account.data.parsed;
+
+                return {
+                    type: 'SPL', // Designation for Solana tokens
+                    contract: info.mint,
+                    balance: info.tokenAmount.amount,
+                    decimals: info.tokenAmount.decimals,
+                    ...getTokenNameAndSymbol(info.mint, tokenDetailByMint),
+                };
+            }),
+            A.uniqBy(token => token.contract),
+        ),
+    );
+
+    return tokens;
+};
 
 // First step in parsing a tx, is getting Solana effects on accounts that were in the transaction, from this effects we later parse the other tx properties.
 export const extractAccountBalanceDiff = (
