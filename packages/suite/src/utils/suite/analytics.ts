@@ -29,6 +29,9 @@ export const redactTransactionIdFromAnchor = (anchor?: string) => {
     return anchor.startsWith(AccountTransactionBaseAnchor) ? AccountTransactionBaseAnchor : anchor;
 };
 
+// 1. replace coinjoin by taproot
+export const redactRouterUrl = (url: string) => url.replace(/coinjoin/g, 'taproot');
+
 export const getSuiteReadyPayload = (state: AppState) => ({
     language: state.suite.settings.language,
     enabledNetworks: state.wallet.settings.enabledNetworks,

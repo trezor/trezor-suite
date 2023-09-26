@@ -22,7 +22,11 @@ import { analyticsActions } from '@suite-common/analytics';
 
 import { SUITE, ROUTER } from 'src/actions/suite/constants';
 import { COINJOIN } from 'src/actions/wallet/constants';
-import { getSuiteReadyPayload, redactTransactionIdFromAnchor } from 'src/utils/suite/analytics';
+import {
+    getSuiteReadyPayload,
+    redactRouterUrl,
+    redactTransactionIdFromAnchor,
+} from 'src/utils/suite/analytics';
 import type { AppState, Action, Dispatch } from 'src/types/suite';
 import {
     selectAnonymityGainToReportByAccountKey,
@@ -172,8 +176,8 @@ const analyticsMiddleware =
                     analytics.report({
                         type: EventType.RouterLocationChange,
                         payload: {
-                            prevRouterUrl,
-                            nextRouterUrl: action.payload.url,
+                            prevRouterUrl: redactRouterUrl(prevRouterUrl),
+                            nextRouterUrl: redactRouterUrl(action.payload.url),
                             anchor: redactTransactionIdFromAnchor(action.payload.anchor),
                         },
                     });
@@ -184,8 +188,8 @@ const analyticsMiddleware =
                     analytics.report({
                         type: EventType.RouterLocationChange,
                         payload: {
-                            prevRouterUrl,
-                            nextRouterUrl: prevRouterUrl,
+                            prevRouterUrl: redactRouterUrl(prevRouterUrl),
+                            nextRouterUrl: redactRouterUrl(prevRouterUrl),
                             anchor: redactTransactionIdFromAnchor(action.payload),
                         },
                     });
