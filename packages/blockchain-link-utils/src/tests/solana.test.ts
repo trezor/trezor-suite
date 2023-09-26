@@ -9,10 +9,20 @@ import {
     getTransactionEffects,
     getTxType,
     transformTransaction,
+    getTokenNameAndSymbol,
 } from '../solana';
 import { fixtures } from './fixtures/solana';
 
 describe('solana/utils', () => {
+    // Token Utils
+    describe('getTokenNameAndSymbol', () => {
+        fixtures.getTokenNameAndSymbol.forEach(({ description, input, expectedOutput }) => {
+            it(description, () => {
+                expect(getTokenNameAndSymbol(input.mint, input.map)).toEqual(expectedOutput);
+            });
+        });
+    });
+
     describe('extractAccountBalanceDiff', () => {
         fixtures.extractAccountBalanceDiff.forEach(({ description, input, expectedOutput }) => {
             it(description, () => {

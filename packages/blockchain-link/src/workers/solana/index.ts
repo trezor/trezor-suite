@@ -3,6 +3,7 @@ import type {
     AccountInfo,
     Transaction,
     SubscriptionAccountInfo,
+    TokenInfo,
 } from '@trezor/blockchain-link-types';
 import type {
     SolanaValidParsedTxWithMeta,
@@ -12,13 +13,17 @@ import type * as MessageTypes from '@trezor/blockchain-link-types/lib/messages';
 import { CustomError } from '@trezor/blockchain-link-types/lib/constants/errors';
 import { BaseWorker, ContextType, CONTEXT } from '../baseWorker';
 import { MESSAGES, RESPONSES } from '@trezor/blockchain-link-types/lib/constants';
-import { solanaUtils } from '@trezor/blockchain-link-utils';
 import { Connection, Message, PublicKey } from '@solana/web3.js';
+import { transformTokenInfo } from '@trezor/blockchain-link-utils/lib/solana';
+import { solanaUtils } from '@trezor/blockchain-link-utils';
+import { getTokenMetadata } from './tokenUtils';
 
 export type SolanaAPI = Connection;
 
 type Context = ContextType<SolanaAPI>;
 type Request<T> = T & Context;
+
+const TOKEN_PROGRAM_PUBLIC_KEY = new PublicKey('TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA');
 
 const getAllSignatures = async (
     api: SolanaAPI,
@@ -89,7 +94,9 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
     const { details = 'basic' } = payload;
     const api = await request.connect();
 
-    const accountInfo = await api.getAccountInfo(new PublicKey(payload.descriptor));
+    const publicKey = new PublicKey(payload.descriptor);
+
+    const accountInfo = await api.getAccountInfo(publicKey);
 
     if (!accountInfo) {
         // return empty account
@@ -151,6 +158,18 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
 
     const transactionPage = details === 'txs' ? await getTransactionPage(txIdPage) : undefined;
 
+    const tokenInfo = await api.getParsedTokenAccountsByOwner(publicKey, {
+        programId: TOKEN_PROGRAM_PUBLIC_KEY,
+    });
+
+    // Fetch token info only if the account owns tokens
+    let tokens: TokenInfo[] = [];
+    if (tokenInfo.value.length > 0) {
+        const tokenMetadata = await getTokenMetadata();
+
+        tokens = transformTokenInfo(tokenInfo.value, tokenMetadata);
+    }
+
     const account: AccountInfo = {
         descriptor: payload.descriptor,
         balance: accountInfo.lamports.toString(), // TODO(vl): check if this should also include staking balances
@@ -169,12 +188,12 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
                   size: transactionPage.length,
               }
             : undefined,
+        tokens,
     };
-
-    return Promise.resolve({
+    return {
         type: RESPONSES.GET_ACCOUNT_INFO,
         payload: account,
-    } as const);
+    } as const;
 };
 
 const getInfo = async (request: Request<MessageTypes.GetInfo>) => {
