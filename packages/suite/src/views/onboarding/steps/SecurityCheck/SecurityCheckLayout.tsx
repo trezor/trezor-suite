@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { Image } from '@trezor/components';
+import { Image, variables } from '@trezor/components';
 import { selectDevice } from '@suite-common/wallet-core';
 
 import { useSelector } from 'src/hooks/suite';
@@ -24,6 +24,14 @@ const ImageWrapper = styled.div`
     padding: 32px;
 `;
 
+const StyledImage = styled(Image)`
+    max-height: 300px;
+`;
+
+const Content = styled.div`
+    flex-grow: 1;
+`;
+
 interface SecurityCheckLayoutProps {
     children: React.ReactNode;
 }
@@ -37,10 +45,10 @@ export const SecurityCheckLayout = ({ children }: SecurityCheckLayoutProps) => {
         <Wrapper>
             {deviceModelInternal && (
                 <ImageWrapper>
-                    <Image image={`TREZOR_${deviceModelInternal}_2x`} />
+                    <StyledImage image={`TREZOR_${deviceModelInternal}_2x`} />
                 </ImageWrapper>
             )}
-            <div>{children}</div>
+            <Content>{children}</Content>
         </Wrapper>
     );
 };
