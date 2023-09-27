@@ -63,7 +63,6 @@ export const THEME = {
         BOX_SHADOW_BLACK_20: 'rgba(0, 0, 0, 0.2)',
         BOX_SHADOW_MODAL: 'rgba(77, 77, 77, 0.2)',
         BOX_SHADOW_OPTION_CARD: 'rgba(77, 77, 77, 0.12)',
-        BOX_SHADOW_RANGE: 'rgba(0, 0, 0, 0.3)',
 
         HOVER_PRIMER_COLOR: '#000',
         HOVER_TRANSPARENTIZE_FILTER: 0.96,
@@ -131,7 +130,6 @@ export const THEME = {
         BOX_SHADOW_BLACK_20: 'rgba(0, 0, 0, 0.2)', // shadow around dropdown
         BOX_SHADOW_MODAL: 'rgba(0, 0, 0, 0.5)', // shadow around modal
         BOX_SHADOW_OPTION_CARD: 'rgba(0, 0, 0, 0.2)', // shadow around Options card in onboarding,
-        BOX_SHADOW_RANGE: 'rgba(255, 255, 255, 0.3)',
         IMAGE_FILTER: 'brightness(0.8) contrast(1.2) saturate(1.2)',
 
         HOVER_PRIMER_COLOR: '#fff',
@@ -200,7 +198,6 @@ export const THEME = {
         BOX_SHADOW_BLACK_20: 'rgba(255, 255, 255, 0.1)', // shadow around dropdown
         BOX_SHADOW_MODAL: 'rgba(0, 0, 0, 0.5)', // shadow around modal
         BOX_SHADOW_OPTION_CARD: 'rgba(0, 0, 0, 0.2)', // shadow around Options card in onboarding,
-        BOX_SHADOW_RANGE: 'rgba(255, 255, 255, 0.3)',
         IMAGE_FILTER: 'brightness(0.8) contrast(1.2) saturate(1.2)',
 
         HOVER_PRIMER_COLOR: '#fff',
