@@ -20,7 +20,7 @@ export * from './components/Dropdown/Dropdown';
 export * from './components/form/Input/Input';
 export * from './components/form/Textarea/Textarea';
 export * from './components/form/Select/Select';
-export * from './components/form/Checkbox/Checkbox';
+export { Checkbox, type CheckboxProps } from './components/form/Checkbox/Checkbox';
 export * from './components/form/RadioButton/RadioButton';
 export * from './components/form/Range/Range';
 export * from './components/form/Switch/Switch';

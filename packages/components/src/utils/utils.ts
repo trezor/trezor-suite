@@ -30,7 +30,7 @@ export const focusStyleTransition = 'box-shadow 0.1s ease-out, border-color 0.1s
 
 export const getFocusShadowStyle = (selector = ':focus-visible') => css`
     ${selector} {
-        border: ${({ theme }) => `1px solid ${theme.backgroundAlertBlueBold}`};
+        border-color: ${({ theme }) => theme.backgroundAlertBlueBold};
         box-shadow: ${boxShadows.focusedLight};
     }
 
