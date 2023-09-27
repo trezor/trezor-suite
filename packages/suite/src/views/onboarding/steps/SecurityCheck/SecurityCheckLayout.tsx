@@ -45,7 +45,7 @@ export const SecurityCheckLayout = ({ children }: SecurityCheckLayoutProps) => {
         <Wrapper>
             {deviceModelInternal && (
                 <ImageWrapper>
-                    <StyledImage image={`TREZOR_${deviceModelInternal}_2x`} />
+                    <StyledImage image={`TREZOR_${deviceModelInternal}_LARGE`} />
                 </ImageWrapper>
             )}
             <Content>{children}</Content>

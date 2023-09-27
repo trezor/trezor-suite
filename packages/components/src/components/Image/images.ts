@@ -77,4 +77,10 @@ export const PNG_IMAGES = {
     TREZOR_T2T1_2x: 'trezor-t2t1@2x.png',
     TREZOR_T2B1: 'trezor-t2b1.png',
     TREZOR_T2B1_2x: 'trezor-t2b1@2x.png',
+    TREZOR_T1B1_LARGE: 'trezor-t1b1-large.png',
+    TREZOR_T1B1_LARGE_2x: 'trezor-t1b1-large@2x.png',
+    TREZOR_T2T1_LARGE: 'trezor-t2t1-large.png',
+    TREZOR_T2T1_LARGE_2x: 'trezor-t2t1-large@2x.png',
+    TREZOR_T2B1_LARGE: 'trezor-t2b1-large.png',
+    TREZOR_T2B1_LARGE_2x: 'trezor-t2b1-large@2x.png',
 } as const;
