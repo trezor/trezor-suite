@@ -22,6 +22,8 @@ export const ICONS = {
     CHAT: require('../../../images/icons/chat.svg'),
     CHECK_ACTIVE: require('../../../images/icons/check_active.svg'),
     CHECK: require('../../../images/icons/check.svg'),
+    CHECKLIST: require('../../../images/icons/checklist.svg'),
+    CHIP: require('../../../images/icons/chip.svg'),
     CLOCK_ACTIVE: require('../../../images/icons/clock_active.svg'),
     CLOCK: require('../../../images/icons/clock.svg'),
     COIN_CONTROL: require('../../../images/icons/coin_control.svg'),
