@@ -1,5 +1,5 @@
 import { useWatch } from 'react-hook-form';
-import styled, { useTheme } from 'styled-components';
+import styled from 'styled-components';
 
 import { Checkbox, TooltipButton, Warning, variables } from '@trezor/components';
 import { useDevice } from 'src/hooks/suite';
@@ -77,8 +77,6 @@ export const ReviewButton = () => {
         control,
     });
 
-    const theme = useTheme();
-
     const values = getValues();
     const broadcastEnabled = options.includes('broadcast');
     const coinControlOpen = options.includes('utxoSelection');
@@ -148,7 +146,7 @@ export const ReviewButton = () => {
             {showCoinControlWarning && (
                 <StyledWarning variant="critical">
                     <Checkbox
-                        color={theme.BG_RED}
+                        variant="alert-red"
                         isChecked={anonymityWarningChecked}
                         onClick={toggleAnonymityWarning}
                     >
