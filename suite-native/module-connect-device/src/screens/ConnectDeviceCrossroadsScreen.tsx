@@ -38,6 +38,7 @@ export const ConnectDeviceCrossroadsScreen = () => {
 
     useEffect(() => {
         // When we have device state hash, we are sure that device is connected and authorized
+        // TODO make this part of selector
         if (deviceState) {
             navigation.navigate(RootStackRoutes.ConnectDevice, {
                 screen: ConnectDeviceStackRoutes.ConnectingDevice,
@@ -66,16 +67,16 @@ export const ConnectDeviceCrossroadsScreen = () => {
                             icon="trezor"
                             variant="green"
                             title={translate(
-                                'moduleConnectDevice.connectCrossroads.gotMyTrezor.title',
+                                'moduleConnectDevice.connectCrossroadsScreen.gotMyTrezor.title',
                             )}
                             subtitle={translate(
-                                'moduleConnectDevice.connectCrossroads.gotMyTrezor.description',
+                                'moduleConnectDevice.connectCrossroadsScreen.gotMyTrezor.description',
                             )}
                             size="large"
                         />
                         <Button onPress={handleConnectDevice} size="large">
                             {translate(
-                                'moduleConnectDevice.connectCrossroads.gotMyTrezor.connectButton',
+                                'moduleConnectDevice.connectCrossroadsScreen.gotMyTrezor.connectButton',
                             )}
                         </Button>
                     </VStack>
@@ -84,11 +85,13 @@ export const ConnectDeviceCrossroadsScreen = () => {
                     <VStack spacing="large" justifyContent="center" alignItems="center">
                         <VStack spacing="small" alignItems="center">
                             <Text variant="titleSmall" textAlign="center">
-                                {translate('moduleConnectDevice.connectCrossroads.syncCoins.title')}
+                                {translate(
+                                    'moduleConnectDevice.connectCrossroadsScreen.syncCoins.title',
+                                )}
                             </Text>
                             <Text color="textSubdued" textAlign="center">
                                 {translate(
-                                    'moduleConnectDevice.connectCrossroads.syncCoins.description',
+                                    'moduleConnectDevice.connectCrossroadsScreen.syncCoins.description',
                                 )}
                             </Text>
                         </VStack>
@@ -98,7 +101,7 @@ export const ConnectDeviceCrossroadsScreen = () => {
                             size="large"
                         >
                             {translate(
-                                'moduleConnectDevice.connectCrossroads.syncCoins.syncButton',
+                                'moduleConnectDevice.connectCrossroadsScreen.syncCoins.syncButton',
                             )}
                         </Button>
                     </VStack>

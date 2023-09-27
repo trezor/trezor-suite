@@ -1,9 +1,10 @@
 import { useEffect } from 'react';
 
 import { useNavigation } from '@react-navigation/native';
+import { CommonActions } from '@react-navigation/core';
 
 import { Text, VStack } from '@suite-native/atoms';
-import { RootStackRoutes, AppTabsRoutes } from '@suite-native/navigation';
+import { RootStackRoutes, HomeStackRoutes } from '@suite-native/navigation';
 import { Icon } from '@suite-common/icons';
 import { useNativeStyles, prepareNativeStyle } from '@trezor/styles';
 import { useTranslate } from '@suite-native/intl';
@@ -23,11 +24,23 @@ export const ConnectingDeviceScreen = () => {
     const navigation = useNavigation();
 
     useEffect(() => {
-        setTimeout(() => {
-            navigation.navigate(RootStackRoutes.AppTabs, {
-                screen: AppTabsRoutes.HomeStack,
-            });
+        const timerId = setTimeout(() => {
+            navigation.dispatch(
+                CommonActions.reset({
+                    index: 0,
+                    routes: [
+                        {
+                            name: RootStackRoutes.AppTabs,
+                            params: {
+                                screen: HomeStackRoutes.Home,
+                            },
+                        },
+                    ],
+                }),
+            );
         }, LOADING_TIMEOUT);
+
+        return () => clearTimeout(timerId);
     }, [navigation]);
 
     return (
@@ -36,11 +49,11 @@ export const ConnectingDeviceScreen = () => {
                 <VStack spacing="extraLarge" alignItems="center">
                     <Icon name="trezor" size="extraLarge" />
                     <Text variant="titleMedium">
-                        {translate('moduleConnectDevice.connectingDevice.title')}
+                        {translate('moduleConnectDevice.connectingDeviceScreen.title')}
                     </Text>
                 </VStack>
                 <Text variant="highlight" color="textSubdued">
-                    {translate('moduleConnectDevice.connectingDevice.hodlOn')}
+                    {translate('moduleConnectDevice.connectingDeviceScreen.hodlOn')}
                 </Text>
             </VStack>
         </ConnectDeviceBackground>

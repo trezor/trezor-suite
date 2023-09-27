@@ -10,7 +10,7 @@ export const en = {
         },
     },
     moduleConnectDevice: {
-        connectCrossroads: {
+        connectCrossroadsScreen: {
             gotMyTrezor: {
                 title: "I've got my Trezor",
                 description: 'Connect to manage your assets',
@@ -23,7 +23,7 @@ export const en = {
                 syncButton: 'Sync my coins',
             },
         },
-        connectAndUnlock: {
+        connectAndUnlockScreen: {
             title: 'Connect & unlock your Trezor',
         },
         pinScreen: {
@@ -33,7 +33,7 @@ export const en = {
             keypadInfo: 'The keypad is displayed on your Trezor',
             enterPin: 'Enter pin',
         },
-        connectingDevice: {
+        connectingDeviceScreen: {
             title: 'Connecting',
             hodlOn: 'Hodl on tight',
         },
