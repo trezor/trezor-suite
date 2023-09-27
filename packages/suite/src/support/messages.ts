@@ -4768,7 +4768,7 @@ export default defineMessages({
     },
     TR_LABEL_ERROR_LENGTH: {
         id: 'TR_LABEL_ERROR_LENGTH',
-        defaultMessage: 'Must be {{length}} characters or less',
+        defaultMessage: 'Must be {length} characters or less',
     },
     TR_LABEL_ERROR_CHARACTERS: {
         id: 'TR_LABEL_ERROR_CHARACTERS',

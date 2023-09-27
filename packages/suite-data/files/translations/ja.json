@@ -987,7 +987,7 @@
   "TR_LABELING_REMOVE_OUTPUT": "ラベルを削除",
   "TR_LABELING_REMOVE_WALLET": "ラベルを削除",
   "TR_LABEL_ERROR_CHARACTERS": "サポートされていない文字です",
-  "TR_LABEL_ERROR_LENGTH": "{{length}} 文字以下でなければなりません",
+  "TR_LABEL_ERROR_LENGTH": "{length} 文字以下でなければなりません",
   "TR_LABEL_REQUIREMENTS": "名前は英語のアルファベットのみで、 {length} 文字まで使用できます。",
   "TR_LANGUAGE": "言語",
   "TR_LANGUAGE_CREDITS": "クレジットを参照",

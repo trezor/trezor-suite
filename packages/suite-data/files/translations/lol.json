@@ -987,7 +987,7 @@
   "TR_LABELING_REMOVE_OUTPUT": "crwdns23949:0crwdne23949:0",
   "TR_LABELING_REMOVE_WALLET": "crwdns23951:0crwdne23951:0",
   "TR_LABEL_ERROR_CHARACTERS": "crwdns33293:0crwdne33293:0",
-  "TR_LABEL_ERROR_LENGTH": "crwdns33295:0{{length}}crwdne33295:0",
+  "TR_LABEL_ERROR_LENGTH": "crwdns33295:0{length}crwdne33295:0",
   "TR_LABEL_REQUIREMENTS": "crwdns33297:0{length}crwdne33297:0",
   "TR_LANGUAGE": "crwdns23971:0crwdne23971:0",
   "TR_LANGUAGE_CREDITS": "crwdns33299:0crwdne33299:0",
