@@ -1,5 +1,5 @@
 import styled, { ThemeProvider } from 'styled-components';
-import { P, intermediaryTheme } from '../index';
+import { intermediaryTheme } from '../index';
 
 const Wrapper = styled.div`
     padding: 20px;
@@ -12,12 +12,10 @@ const Wrapper = styled.div`
 
 const StoryWrapper = (story: any) => (
     <>
-        <P size="normal">Light theme</P>
         <ThemeProvider theme={intermediaryTheme.light}>
             <Wrapper>{story.children}</Wrapper>
         </ThemeProvider>
 
-        <P size="normal">Dark theme</P>
         <ThemeProvider theme={intermediaryTheme.dark}>
             <Wrapper>{story.children}</Wrapper>
         </ThemeProvider>
