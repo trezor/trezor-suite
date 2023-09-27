@@ -9,6 +9,8 @@ const Wrapper = styled.div<{ $elevation: Elevation; $paddingSize: number }>`
     background: ${({ theme }) => theme.backgroundSurfaceElevation1};
     border-radius: ${borders.radii.md};
     box-shadow: ${({ $elevation }) => $elevation && boxShadows[`elevation${$elevation}`]};
+    /* when theme changes from light to dark */
+    transition: background 0.3s;
 `;
 
 const getPaddingSize = (paddingType?: PaddingType) => {
