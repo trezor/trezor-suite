@@ -21,7 +21,8 @@ const Container = styled.div`
     flex-direction: column;
     position: relative;
     border-radius: 16px;
-    transition: background 0.3s; // when theme changes from light to dark
+    /* when theme changes from light to dark */
+    transition: background 0.3s;
     max-width: 95%;
     min-width: 305px;
     max-height: 90vh;
