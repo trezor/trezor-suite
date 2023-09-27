@@ -1,6 +1,6 @@
 import { css, DefaultTheme } from 'styled-components';
 import { boxShadows } from '@trezor/theme';
-import { MEDIA_QUERY } from '../config/variables';
+import { mediaQueries } from '@trezor/styles';
 
 type InputColorOptions = {
     checked?: boolean;
@@ -34,7 +34,7 @@ export const getFocusShadowStyle = (selector = ':focus-visible') => css`
         box-shadow: ${boxShadows.focusedLight};
     }
 
-    ${MEDIA_QUERY.DARK_THEME} {
+    ${mediaQueries.dark_theme} {
         ${selector} {
             box-shadow: ${boxShadows.focusedDark};
         }
