@@ -5,6 +5,7 @@ import { ReduxModal } from 'src/components/suite/ModalSwitcher/ReduxModal';
 import WelcomeStep from 'src/views/onboarding/steps/Welcome';
 import CreateOrRecover from 'src/views/onboarding/steps/CreateOrRecover';
 import { FirmwareStep } from 'src/views/onboarding/steps/FirmwareStep';
+import { DeviceAuthenticity } from './steps/SecurityCheck/DeviceAuthenticity';
 import { ResetDeviceStep } from 'src/views/onboarding/steps/ResetDevice';
 import { RecoveryStep } from 'src/views/onboarding/steps/Recovery';
 import { BackupStep } from 'src/views/onboarding/steps/Backup';
@@ -33,6 +34,9 @@ export const Onboarding = ({ prerequisite }: OnboardingProps) => {
             case STEP.ID_FIRMWARE_STEP:
                 // Firmware installation
                 return [FirmwareStep, OnboardingLayout];
+            case STEP.ID_AUTHENTICATE_DEVICE_STEP:
+                // Device authenticity check
+                return [DeviceAuthenticity, OnboardingLayout];
             case STEP.ID_CREATE_OR_RECOVER:
                 // Selection between a new seed or seed recovery
                 return [CreateOrRecover, OnboardingLayout];

@@ -14,6 +14,8 @@ import { SecurityChecklist } from './SecurityChecklist';
 import { useState } from 'react';
 import { SecurityCheckFail } from './SecurityCheckFail';
 import { SecurityCheckButton } from './SecurityCheckButton';
+import { DeviceAuthenticity } from './DeviceAuthenticity';
+import { DeviceModelInternal } from '@trezor/connect';
 
 const StyledCard = styled(CollapsibleOnboardingCard)`
     max-width: ${MAX_WIDTH};
@@ -151,8 +153,10 @@ export const SecurityCheck = () => {
     const { goToNextStep, goToSuite, rerun, updateAnalytics } = useOnboarding();
     const recovery = useSelector(state => state.recovery);
     const device = useSelector(selectDevice);
+    const initialRun = useSelector(state => state.suite.flags.initialRun);
     const theme = useTheme();
     const [isFailed, setIsFailed] = useState(false);
+    const [isDeviceAuthenticityCheck, setIsDeviceAuthenticityCheck] = useState(false);
 
     const deviceStatus = getConnectedDeviceStatus(device);
     const initialized = deviceStatus === 'initialized';
@@ -167,6 +171,25 @@ export const SecurityCheck = () => {
     const checklistItems = isFirmwareInstalled ? firmwareInstalledChecklist : noFirmwareChecklist;
 
     const toggleView = () => setIsFailed(current => !current);
+    const goToDeviceAuthentication = () => setIsDeviceAuthenticityCheck(true);
+    const handleContinueButtonClick = () =>
+        initialRun && device?.features?.internal_model === DeviceModelInternal.T2B1
+            ? goToDeviceAuthentication()
+            : goToSuite();
+    const handleSetupButtonClick = () => {
+        if (recovery.status === 'in-progress') {
+            rerun();
+        } else {
+            goToNextStep();
+        }
+        updateAnalytics({
+            startTime: Date.now(),
+        });
+    };
+
+    if (isDeviceAuthenticityCheck) {
+        return <DeviceAuthenticity />;
+    }
 
     return (
         <StyledCard>
@@ -197,22 +220,13 @@ export const SecurityCheck = () => {
                             {initialized ? (
                                 <StyledSecurityCheckButton
                                     data-test="@onboarding/exit-app-button"
-                                    onClick={() => goToSuite()}
+                                    onClick={handleContinueButtonClick}
                                 >
                                     <Translation id="TR_YES_CONTINUE" />
                                 </StyledSecurityCheckButton>
                             ) : (
                                 <SecurityCheckButtonWithSecondLine
-                                    onClick={() => {
-                                        if (recovery.status === 'in-progress') {
-                                            rerun();
-                                        } else {
-                                            goToNextStep();
-                                        }
-                                        updateAnalytics({
-                                            startTime: Date.now(),
-                                        });
-                                    }}
+                                    onClick={handleSetupButtonClick}
                                     data-test="@analytics/continue-button"
                                 >
                                     <Translation id={primaryButtonTopText} />

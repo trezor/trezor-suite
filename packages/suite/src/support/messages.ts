@@ -6740,6 +6740,46 @@ export default defineMessages({
         id: 'TR_CONTACT_TREZOR_SUPPORT',
         defaultMessage: 'Contact Trezor Support',
     },
+    TR_LETS_CHECK_YOUR_DEVICE: {
+        id: 'TR_LETS_CHECK_YOUR_DEVICE',
+        defaultMessage: 'Let’s check your device',
+    },
+    TR_CHECKING_YOUR_DEVICE: {
+        id: 'TR_CHECKING_YOUR_DEVICE',
+        defaultMessage: 'Checking your device',
+    },
+    TR_AUTHENTICATE_DEVICE_DESCRIPTION: {
+        id: 'TR_AUTHENTICATE_DEVICE_DESCRIPTION',
+        defaultMessage: 'We just want to make sure there’s no funny business with your Trezor.',
+    },
+    TR_DEVICE_AUTHENTICITY_ITEM_1: {
+        id: 'TR_DEVICE_AUTHENTICITY_ITEM_1',
+        defaultMessage:
+            "We'll check the integrity of your Trezor device and make sure it's safe to use.",
+    },
+    TR_DEVICE_AUTHENTICITY_ITEM_2: {
+        id: 'TR_DEVICE_AUTHENTICITY_ITEM_2',
+        defaultMessage:
+            'This also confirms that the chip inside your hardware wallet was produced by Trezor.',
+    },
+    TR_DEVICE_AUTHENTICITY_ITEM_3: {
+        id: 'TR_DEVICE_AUTHENTICITY_ITEM_3',
+        defaultMessage:
+            "Once your device has been given a clean bill of health, you're all set to Trezor full steam ahead.",
+    },
+    TR_START_CHECK: {
+        id: 'TR_START_CHECK',
+        defaultMessage: 'Start check',
+    },
+    TR_CONGRATS: {
+        id: 'TR_CONGRATS',
+        defaultMessage: 'Congrats!',
+    },
+    TR_DEVICE_AUTHENTICITY_SUCCESS_DESCRIPTION: {
+        id: 'TR_DEVICE_AUTHENTICITY_SUCCESS_DESCRIPTION',
+        defaultMessage:
+            'Your {deviceName} is ready to rock!{br}Learn how to use your device like a pro.',
+    },
     TR_ONBOARDING_COINS_STEP: {
         id: 'TR_ONBOARDING_COINS_STEP',
         defaultMessage: 'Activate coins',
