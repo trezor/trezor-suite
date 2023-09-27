@@ -987,7 +987,7 @@
   "TR_LABELING_REMOVE_OUTPUT": "Remove label",
   "TR_LABELING_REMOVE_WALLET": "Remove label",
   "TR_LABEL_ERROR_CHARACTERS": "Unsupported characters",
-  "TR_LABEL_ERROR_LENGTH": "Must be {{length}} characters or less",
+  "TR_LABEL_ERROR_LENGTH": "Must be {length} characters or less",
   "TR_LABEL_REQUIREMENTS": "Names can have a maximum length of {length} characters and can only include characters from the English alphabet.",
   "TR_LANGUAGE": "Language",
   "TR_LANGUAGE_CREDITS": "See credits",
