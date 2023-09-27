@@ -6,7 +6,7 @@ import { ACTION_PREFIX, deviceAuthenticityActions } from './deviceAuthenticityAc
 
 export const checkDeviceAuthenticityThunk = createThunk<{ allowDebugKeys: boolean }>(
     `${ACTION_PREFIX}/checkDeviceAuthenticity`,
-    async ({ allowDebugKeys }, { dispatch, getState, extra }) => {
+    async ({ allowDebugKeys }, { dispatch, getState, extra, rejectWithValue }) => {
         const {
             selectors: { selectDevice },
         } = extra;
@@ -49,6 +49,7 @@ export const checkDeviceAuthenticityThunk = createThunk<{ allowDebugKeys: boolea
                     error: `Unable to validate device: ${result.payload.error}`,
                 }),
             );
+            return rejectWithValue(result.payload.error);
         }
     },
 );
