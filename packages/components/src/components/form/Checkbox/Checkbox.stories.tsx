@@ -4,7 +4,7 @@ import { Checkbox as CheckboxComponent } from './Checkbox';
 
 export default {
     title: 'Form/Checkbox',
-    args: { label: 'Checkbox', isChecked: false, isDisabled: false },
+    component: CheckboxComponent,
 };
 
 export const Checkbox = {
@@ -15,12 +15,14 @@ export const Checkbox = {
 
         return (
             <CheckboxComponent
+                variant="primary"
                 isChecked={isChecked}
-                isDisabled={args.isDisabled}
                 onClick={handleIsChecked}
+                {...args}
             >
                 {args.label}
             </CheckboxComponent>
         );
     },
+    args: { label: 'Checkbox' },
 };
