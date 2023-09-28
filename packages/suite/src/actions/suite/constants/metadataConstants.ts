@@ -7,8 +7,6 @@ import { TrezorConnect } from '@trezor/connect';
 
 export const ENABLE = '@metadata/enable';
 export const DISABLE = '@metadata/disable';
-export const SET_READY = '@metadata/set-ready';
-export const CANCELLED = '@metadata/cancelled';
 export const SET_DEVICE_METADATA = '@metadata/set-device-metadata';
 export const ADD_PROVIDER = '@metadata/add-provider';
 export const REMOVE_PROVIDER = '@metadata/remove-provider';

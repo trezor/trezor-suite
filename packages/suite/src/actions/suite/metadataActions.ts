@@ -331,7 +331,7 @@ export const getLabelableEntities =
 
 type LabelableEntity = ReturnType<ReturnType<typeof getLabelableEntities>>[number];
 
-export const fetchMetadata =
+const fetchMetadata =
     ({
         provider,
         entity,
