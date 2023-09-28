@@ -100,7 +100,7 @@ export class DropboxMock {
         app.post('/2/files/search_v2', express.raw(), (req, res) => {
             const { query } = req.body;
 
-            const file = this.files[`/apps/trezor/${query}`];
+            const file = this.files[`/${query}`];
 
             // @ts-expect-error
             res.writeHeader(200, { 'Content-Type': 'application/json' });
@@ -144,9 +144,9 @@ export class DropboxMock {
             // @ts-expect-error
             const dropboxApiArgs = JSON.parse(req.headers['dropbox-api-arg']);
             const { path } = dropboxApiArgs;
-            const name = path.replace('/apps/trezor/', '');
+            const name = path.replace('/apps/trezor', '');
 
-            const file = this.files[path];
+            const file = this.files[name];
 
             if (file) {
                 // @ts-expect-error

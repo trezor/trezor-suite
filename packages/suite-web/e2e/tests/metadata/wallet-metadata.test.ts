@@ -110,6 +110,31 @@ describe('Metadata - wallet labeling', () => {
                     );
                     return expect(errors).to.be.empty;
                 });
+
+            // remember wallet, reload app, and observe that labels were loaded
+            // https://github.com/trezor/trezor-suite/pull/9560
+            cy.getTestElement('@switch-device/wallet-on-index/0/toggle-remember-switch').click({
+                force: true,
+            });
+            cy.getTestElement('@switch-device/wallet-on-index/1/toggle-remember-switch').click({
+                force: true,
+            });
+            cy.wait(200); // wait for data to save to persistent storage. currently this is not reflected in UI
+            cy.prefixedVisit('/', {
+                onBeforeLoad: (win: Window) => {
+                    cy.stub(win, 'open').callsFake(stubOpen(win));
+                    cy.stub(win, 'fetch').callsFake(rerouteMetadataToMockProvider);
+                },
+            });
+            cy.getTestElement('@menu/switch-device').click();
+            cy.getTestElement(`@metadata/walletLabel/${standardWalletState}`).should(
+                'contain',
+                'wallet for drugs',
+            );
+            cy.getTestElement(`@metadata/walletLabel/${firstHiddenWalletState}`).should(
+                'contain',
+                'wallet not for drugs',
+            );
         });
     });
 });
