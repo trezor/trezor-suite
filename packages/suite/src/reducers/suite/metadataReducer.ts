@@ -46,7 +46,9 @@ const metadataReducer = (state = initialState, action: Action): MetadataState =>
                 draft.providers.push(action.payload);
                 break;
             case METADATA.REMOVE_PROVIDER:
-                draft.providers = draft.providers.filter(p => p.type !== action.payload.type);
+                draft.providers = draft.providers.filter(
+                    p => p.clientId !== action.payload.clientId,
+                );
                 break;
             case METADATA.SET_SELECTED_PROVIDER:
                 draft.selectedProvider[action.payload.dataType] = action.payload.clientId;
