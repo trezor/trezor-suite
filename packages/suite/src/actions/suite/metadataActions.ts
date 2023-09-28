@@ -30,7 +30,10 @@ import * as modalActions from 'src/actions/suite/modalActions';
 import DropboxProvider from 'src/services/suite/metadata/DropboxProvider';
 import GoogleProvider from 'src/services/suite/metadata/GoogleProvider';
 import FileSystemProvider from 'src/services/suite/metadata/FileSystemProvider';
-import { selectSelectedProviderForLabels } from 'src/reducers/suite/metadataReducer';
+import {
+    selectLabelableEntities,
+    selectSelectedProviderForLabels,
+} from 'src/reducers/suite/metadataReducer';
 
 export const setAccountAdd = createAction(METADATA.ACCOUNT_ADD, (payload: Account) => ({
     payload,
@@ -307,27 +310,8 @@ const setMetadata =
     };
 
 export const getLabelableEntities =
-    (deviceState: string) => (_dispatch: Dispatch, getState: GetState) => {
-        const { accounts } = getState().wallet;
-        const devices = selectDevices(getState());
-
-        return [
-            ...accounts
-                .filter(a => a.deviceState === deviceState)
-                .map(account => ({
-                    ...account.metadata,
-                    key: account.key,
-                    type: 'account' as const,
-                })),
-            ...devices
-                .filter((device: TrezorDevice) => device.state === deviceState)
-                .map((device: TrezorDevice) => ({
-                    ...device.metadata,
-                    state: device.state,
-                    type: 'device' as const,
-                })),
-        ];
-    };
+    (deviceState: string) => (_dispatch: Dispatch, getState: GetState) =>
+        selectLabelableEntities(getState(), deviceState);
 
 type LabelableEntity = ReturnType<ReturnType<typeof getLabelableEntities>>[number];
 
