@@ -160,6 +160,65 @@ const tokenAccountInfo = [
     },
 ];
 
+const tokenAccountInfoWithDuplicateTokenAccount = [
+    {
+        account: {
+            data: {
+                parsed: {
+                    info: {
+                        isNative: false,
+                        mint: '4k3Dyjzvzp8eMZWUXbBCjEvwSkkk59S5iCNLY3QrkX6R',
+                        owner: 'ETxHeBBcuw9Yu4dGuP3oXrD12V5RECvmi8ogQ9PkjyVF',
+                        state: 'initialized',
+                        tokenAmount: {
+                            amount: '2000000',
+                            decimals: 6,
+                            uiAmount: 2,
+                            uiAmountString: '2',
+                        },
+                    },
+                    type: 'account',
+                },
+                program: 'spl-token',
+                space: 165,
+            },
+            executable: false,
+            lamports: 2039280,
+            owner: new PublicKey('TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'),
+            rentEpoch: 0,
+        },
+        pubkey: new PublicKey('ETxHeBBcuw9Yu4dGuP3oXrD12V5RECvmi8ogQ9PkjyVF'),
+    },
+    {
+        account: {
+            data: {
+                parsed: {
+                    info: {
+                        isNative: false,
+                        mint: '4k3Dyjzvzp8eMZWUXbBCjEvwSkkk59S5iCNLY3QrkX6R',
+                        owner: 'ETxHeBBcuw9Yu4dGuP3oXrD12V5RECvmi8ogQ9PkjyVF',
+                        state: 'initialized',
+                        tokenAmount: {
+                            amount: '1000000',
+                            decimals: 6,
+                            uiAmount: 2,
+                            uiAmountString: '1',
+                        },
+                    },
+                    type: 'account',
+                },
+                program: 'spl-token',
+                space: 165,
+            },
+            executable: false,
+            lamports: 2039280,
+            owner: new PublicKey('TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'),
+            rentEpoch: 0,
+        },
+        pubkey: new PublicKey('ETxHeBBcuw9Yu4dGuP3oXrD12V5RECvmi8ogQ9PkjyVF'),
+    },
+];
+
 export const fixtures = {
     extractAccountBalanceDiff: [
         {
@@ -525,6 +584,24 @@ export const fixtures = {
                     type: 'SPL',
                     contract: '4k3Dyjzvzp8eMZWUXbBCjEvwSkkk59S5iCNLY3QrkX6R',
                     balance: '2000000',
+                    decimals: 6,
+                    name: 'Raydium',
+                    symbol: 'RAY',
+                },
+            ],
+        },
+        {
+            description:
+                'parses token info for multiple token accounts with the same token from api response',
+            input: {
+                accountInfo: tokenAccountInfoWithDuplicateTokenAccount,
+                map: sampleMintToDetailMap,
+            },
+            expectedOutput: [
+                {
+                    type: 'SPL',
+                    contract: '4k3Dyjzvzp8eMZWUXbBCjEvwSkkk59S5iCNLY3QrkX6R',
+                    balance: '3000000',
                     decimals: 6,
                     name: 'Raydium',
                     symbol: 'RAY',
