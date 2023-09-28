@@ -1,6 +1,6 @@
-import BigNumber from 'bignumber.js';
-import { A, F, pipe } from '@mobily/ts-belt';
+import { A, D, F, pipe } from '@mobily/ts-belt';
 import type { AccountInfo, ParsedAccountData, PublicKey } from '@solana/web3.js';
+import BigNumber from 'bignumber.js';
 
 import { Target, Transaction } from '@trezor/blockchain-link-types/lib';
 import type {
@@ -42,7 +42,18 @@ export const transformTokenInfo = (
                     ...getTokenNameAndSymbol(info.mint, tokenDetailByMint),
                 };
             }),
-            A.uniqBy(token => token.contract),
+            A.reduce({}, (acc: { [mint: string]: TokenInfo }, token: TokenInfo) => {
+                if (acc[token.contract] != null) {
+                    acc[token.contract].balance = new BigNumber(acc[token.contract].balance || '0')
+                        .plus(token.balance || '0')
+                        .toString();
+                } else {
+                    acc[token.contract] = token;
+                }
+
+                return acc;
+            }),
+            D.values,
         ),
     );
 
