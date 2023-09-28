@@ -606,7 +606,7 @@ export const addDeviceMetadata =
     (payload: Extract<MetadataAddPayload, { type: 'walletLabel' }>) =>
     (dispatch: Dispatch, getState: GetState) => {
         const devices = selectDevices(getState());
-        const device = devices.find(d => d.state === payload.deviceState);
+        const device = devices.find(d => d.state === payload.entityKey);
         const provider = selectSelectedProviderForLabels(getState());
 
         if (!device || device.metadata.status !== 'enabled') return Promise.resolve(false);
@@ -658,8 +658,8 @@ export const addDeviceMetadata =
  */
 export const addAccountMetadata =
     (payload: Exclude<MetadataAddPayload, { type: 'walletLabel' }>, save = true) =>
-    async (dispatch: Dispatch, getState: GetState) => {
-        const account = getState().wallet.accounts.find(a => a.key === payload.accountKey);
+    (dispatch: Dispatch, getState: GetState) => {
+        const account = getState().wallet.accounts.find(a => a.key === payload.entityKey);
         const provider = selectSelectedProviderForLabels(getState());
 
         if (!account || !provider) return false;

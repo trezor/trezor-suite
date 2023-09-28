@@ -166,6 +166,21 @@ export const selectLabelingDataForWallet = (
 };
 
 // is everything ready (more or less) to add label?
+const selectLabelableEntityByKey = (
+    state: MetadataRootState,
+    deviceState: string,
+    entityKey: string,
+) =>
+    selectLabelableEntities(state, deviceState).find(e => {
+        if ('key' in e) {
+            return e.key === entityKey;
+        }
+        if ('state' in e) {
+            return e.state === entityKey;
+        }
+        return false;
+    });
+
 export const selectIsLabelingAvailable = (state: MetadataRootState) => {
     const { enabled } = selectMetadata(state);
     const provider = selectSelectedProviderForLabels(state);

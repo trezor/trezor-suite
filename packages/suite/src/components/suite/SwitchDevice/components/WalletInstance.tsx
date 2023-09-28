@@ -153,7 +153,7 @@ export const WalletInstance = ({
                                 defaultVisibleValue={<WalletLabeling device={instance} />}
                                 payload={{
                                     type: 'walletLabel',
-                                    deviceState: instance.state,
+                                    entityKey: instance.state,
                                     defaultValue: instance.state,
                                     value:
                                         instance?.metadata.status === 'enabled' ? walletLabel : '',

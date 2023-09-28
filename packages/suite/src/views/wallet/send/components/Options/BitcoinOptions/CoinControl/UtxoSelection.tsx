@@ -249,7 +249,7 @@ export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
                                 visible
                                 payload={{
                                     type: 'outputLabel',
-                                    accountKey: account.key,
+                                    entityKey: account.key,
                                     txid: utxo.txid,
                                     outputIndex: utxo.vout,
                                     defaultValue: `${utxo.txid}-${utxo.vout}`,

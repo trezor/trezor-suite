@@ -80,7 +80,7 @@ export const AccountTopPanel = () => {
                     defaultVisibleValue={<AccountLabeling account={account} />}
                     payload={{
                         type: 'accountLabel',
-                        accountKey: account.key,
+                        entityKey: account.key,
                         defaultValue: account.path,
                         value: selectedAccountLabels.accountLabel,
                     }}

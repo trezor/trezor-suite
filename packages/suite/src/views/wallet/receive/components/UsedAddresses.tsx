@@ -248,7 +248,7 @@ export const UsedAddresses = ({
                         locked={locked}
                         metadataPayload={{
                             type: 'addressLabel',
-                            accountKey: account.key,
+                            entityKey: account.key,
                             defaultValue: addr.address,
                             value: addressLabels[addr.address],
                         }}
