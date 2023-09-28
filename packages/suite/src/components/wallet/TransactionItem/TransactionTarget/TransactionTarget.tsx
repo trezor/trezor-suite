@@ -169,7 +169,7 @@ export const TransactionTarget = ({
                     ]}
                     payload={{
                         type: 'outputLabel',
-                        accountKey,
+                        entityKey: accountKey,
                         txid: transaction.txid,
                         outputIndex: target.n,
                         defaultValue: `${transaction.txid}-${target.n}`,

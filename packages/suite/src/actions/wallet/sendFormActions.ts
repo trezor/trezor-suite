@@ -323,7 +323,7 @@ const pushTransaction =
                         const outputIndex = outputsPermutation.findIndex(p => p === index);
                         const metadata: Extract<MetadataAddPayload, { type: 'outputLabel' }> = {
                             type: 'outputLabel',
-                            accountKey: account.key,
+                            entityKey: account.key,
                             txid, // txid becomes available, use it
                             outputIndex,
                             value: label,

@@ -18,7 +18,7 @@ export type LabelableEntityKeysByVersion = DeviceEntityKeys | AccountEntityKeys;
 export type MetadataAddPayload =
     | {
           type: 'outputLabel';
-          accountKey: string;
+          entityKey: string;
           txid: string;
           outputIndex: number;
           defaultValue: string;
@@ -26,19 +26,19 @@ export type MetadataAddPayload =
       }
     | {
           type: 'addressLabel';
-          accountKey: string;
+          entityKey: string;
           defaultValue: string;
           value?: string;
       }
     | {
           type: 'accountLabel';
-          accountKey: string;
+          entityKey: string;
           defaultValue: string;
           value?: string;
       }
     | {
           type: 'walletLabel';
-          deviceState: string;
+          entityKey: string;
           defaultValue: string;
           value?: string;
       };
