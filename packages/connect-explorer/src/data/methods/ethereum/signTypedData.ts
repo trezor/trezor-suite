@@ -31,7 +31,7 @@ export default [
             {
                 name: 'data',
                 type: 'json',
-                value: JSON.stringify(eip712Data),
+                value: eip712Data,
             },
             {
                 name: 'domain_separator_hash',

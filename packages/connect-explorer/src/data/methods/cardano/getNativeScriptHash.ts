@@ -16,7 +16,10 @@ export default [
             {
                 name: 'script',
                 type: 'json',
-                value: `{'type': ${CardanoNativeScriptType.PUB_KEY}, 'keyHash': "c4b9265645fde9536c0795adbcc5291767a0c61fd62448341d7e0386" }`,
+                value: {
+                    type: CardanoNativeScriptType.PUB_KEY,
+                    keyHash: 'c4b9265645fde9536c0795adbcc5291767a0c61fd62448341d7e0386',
+                },
             },
             cardanoNativeScriptHashDisplayFormat,
             cardanoDerivationType,

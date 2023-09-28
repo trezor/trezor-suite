@@ -16,10 +16,6 @@ const emuScreenshots: Record<string, string> = {};
 let device = {};
 let context: any = null;
 
-const log = (...val: string[]) => {
-    console.log(`[===]`, ...val);
-};
-
 const screenshotEmu = async (path: string) => {
     const { response } = await TrezorUserEnvLink.send({
         type: 'emulator-get-screenshot',

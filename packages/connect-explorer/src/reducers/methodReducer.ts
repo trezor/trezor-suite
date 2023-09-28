@@ -43,6 +43,8 @@ const initialState: MethodState = {
 const getParam = (field: Field<any>, $params: Record<string, any> = {}) => {
     console.log('getParam');
     const params = $params;
+    console.log('params', params);
+    console.log('field', field);
     if (field.omit) {
         return params;
     }
@@ -56,13 +58,22 @@ const getParam = (field: Field<any>, $params: Record<string, any> = {}) => {
     } else if (field.type === 'json') {
         console.log('It is json');
         try {
-            params[field.name] = field.value.length > 0 ? eval(`(${field.value});`) : '';
+            console.log('before field.value: ', field.value);
+            if (typeof field.value === 'string' && field.value.length > 0) {
+                params[field.name] = JSON.parse(field.value);
+            } else {
+                params[field.name] = field.value;
+            }
+            console.log('output of eval params[field.name]: ', params[field.name]);
         } catch (error) {
             params[field.name] = `Invalid json, ${error.toString()}`;
         }
     } else if (field.type === 'function') {
         try {
-            params[field.name] = field.value.length > 0 ? eval(`(${field.value});`) : '';
+            if (typeof field.value !== 'function') {
+                throw new Error('Invalid function');
+            }
+            params[field.name] = field.value;
         } catch (error) {
             params[field.name] = `Invalid function, ${error.toString()}`;
         }
@@ -73,6 +84,7 @@ const getParam = (field: Field<any>, $params: Record<string, any> = {}) => {
     } else {
         params[field.name] = field.value;
     }
+    console.log('params right before return getParam', params);
     return params;
 };
 
