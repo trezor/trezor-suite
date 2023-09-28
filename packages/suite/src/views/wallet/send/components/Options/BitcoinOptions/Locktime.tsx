@@ -18,7 +18,6 @@ const Label = styled.div`
 `;
 
 const Text = styled.div`
-    height: 18px;
     margin-left: 8px;
     font-size: ${variables.FONT_SIZE.NORMAL};
 `;

@@ -10,12 +10,17 @@ export default {
         value: 'Input',
         label: 'Label',
         bottomText: '',
-        placeholder: '',
         isDisabled: false,
         inputState: null,
         variant: null,
     },
     argTypes: {
+        labelRight: {
+            type: 'string',
+        },
+        placeholder: {
+            type: 'string',
+        },
         state: {
             control: {
                 options: {
