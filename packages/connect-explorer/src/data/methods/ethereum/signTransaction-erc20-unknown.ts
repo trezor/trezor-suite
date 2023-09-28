@@ -1,7 +1,7 @@
 const name = 'ethereumSignTransaction';
 const docs = 'methods/ethereumSignTransaction.md';
 
-const tx = `{
+const tx = {
     nonce: '0x0',
     gasPrice: '0x14',
     gasLimit: '0x14',
@@ -9,7 +9,7 @@ const tx = `{
     chainId: 1,
     value: '0x0',
     data: '0xa9059cbb000000000000000000000000D6971aabeDC7f2A8113679199FE374aE1B1Aea96000000000000000000000000000000000000000000000000000000000097f6b2',
-}`;
+};
 
 // sending erc-20 unknown token (unknown to firmware)
 // https://etherscan.io/token/0x26fb86579e371c7aedc461b2ddef0a8628c93d3b

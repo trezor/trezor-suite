@@ -54,7 +54,11 @@ const getParam = (field: Field<any>, $params: Record<string, any> = {}) => {
         }
     } else if (field.type === 'json') {
         try {
-            params[field.name] = field.value.length > 0 ? eval(`(${field.value});`) : '';
+            if (typeof field.value === 'string' && field.value.length > 0) {
+                params[field.name] = JSON.parse(field.value);
+            } else {
+                params[field.name] = field.value;
+            }
         } catch (error) {
             params[field.name] = `Invalid json, ${error.toString()}`;
         }
