@@ -15,7 +15,7 @@ const fixtures = [
     {
         provider: 'dropbox',
         desc: 'does watch files over time',
-        file: '/apps/trezor/f7acc942eeb83921892a95085e409b3e6b5325db6400ae5d8de523a305291dca.mtdt',
+        file: '/f7acc942eeb83921892a95085e409b3e6b5325db6400ae5d8de523a305291dca.mtdt',
         content: 'label from another window',
     },
 ] as const;

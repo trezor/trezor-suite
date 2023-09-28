@@ -492,6 +492,13 @@ export const setAccountMetadataKey =
         ) {
             return account;
         }
+export const fetchAndSaveMetadataForAllDevices = () => (dispatch: Dispatch, getState: GetState) => {
+    const devices = selectDevices(getState());
+    devices.forEach(device => {
+        if (!device.state) return;
+        dispatch(fetchAndSaveMetadata(device.state));
+    });
+};
 
         const deviceMetaKey = device.metadata[encryptionVersion]?.key;
 

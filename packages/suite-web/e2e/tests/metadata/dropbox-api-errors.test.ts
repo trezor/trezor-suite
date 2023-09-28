@@ -18,7 +18,7 @@ describe('Dropbox api errors', () => {
         // prepare some initial files
         cy.task('metadataSetFileContent', {
             provider: 'dropbox',
-            file: '/apps/trezor/f7acc942eeb83921892a95085e409b3e6b5325db6400ae5d8de523a305291dca.mtdt',
+            file: '/f7acc942eeb83921892a95085e409b3e6b5325db6400ae5d8de523a305291dca.mtdt',
             content: {
                 version: '1.0.0',
                 accountLabel: 'already existing label',
@@ -80,7 +80,7 @@ describe('Dropbox api errors', () => {
         // prepare some initial files
         cy.task('metadataSetFileContent', {
             provider: 'dropbox',
-            file: '/apps/trezor/f7acc942eeb83921892a95085e409b3e6b5325db6400ae5d8de523a305291dca.mtdt',
+            file: '/f7acc942eeb83921892a95085e409b3e6b5325db6400ae5d8de523a305291dca.mtdt',
             content: {
                 version: '1.0.0',
                 accountLabel: 'already existing label',

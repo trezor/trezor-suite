@@ -60,7 +60,7 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
     // 8. fetch metadata. metadata is not saved together with other data in storage.
     // historically it was saved in indexedDB together with devices and accounts and we did not need to load them
     // immediately after suite start.
-    dispatch(metadataActions.fetchAndSaveMetadata());
+    dispatch(metadataActions.fetchAndSaveMetadataForAllDevices());
 
     // 9. backend connected, suite is ready to use
     dispatch({ type: SUITE.READY });
