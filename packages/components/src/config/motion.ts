@@ -17,9 +17,20 @@ export const motionAnimation = {
     },
 };
 
+// TODO: move to theme package
 export const motionEasing = {
     transition: [0.65, 0, 0.35, 1],
     enter: [0.33, 1, 0.68, 1],
     //  exit easy is not used anywhere?
     exit: [0.32, 0, 0.67, 0],
 };
+
+type EaringType = keyof typeof motionEasing;
+
+export const motionEasingStrings = Object.entries(motionEasing).reduce(
+    (acc: Record<EaringType, string>, [key, value]) => {
+        acc[key as EaringType] = `cubic-bezier(${value.join(',')})`;
+        return acc;
+    },
+    {} as Record<EaringType, string>,
+);
