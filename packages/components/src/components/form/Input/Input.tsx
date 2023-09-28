@@ -4,16 +4,16 @@ import { useMeasure } from 'react-use';
 import { spacingsPx, spacings, typography } from '@trezor/theme';
 
 import { InputState, InputSize } from '../../../support/types';
+import { motionEasingStrings } from '../../../config/motion';
 import { Icon } from '../../assets/Icon/Icon';
 import {
-    Label,
-    LabelLeft,
-    LabelRight,
+    Label as TopLabel,
     RightLabel,
     baseInputStyle,
     INPUT_HEIGHTS,
     LabelHoverAddon,
     BaseInputProps,
+    INPUT_BORDER_WIDTH,
 } from '../InputStyles';
 import { BOTTOM_TEXT_MIN_HEIGHT, BottomText } from '../BottomText';
 
@@ -34,12 +34,13 @@ interface StyledInputProps extends BaseInputProps {
 const getExtraAddonPadding = (size: InputSize) =>
     (size === 'small' ? spacings.sm : spacings.md) + spacings.xs;
 
-const StyledInput = styled.input<StyledInputProps>`
+const StyledInput = styled.input<StyledInputProps & { isWithLabel: boolean }>`
     ${baseInputStyle}
 
     width: 100%;
     height: ${({ $size }) => `${INPUT_HEIGHTS[$size as InputSize]}px`};
     padding: 0 ${spacingsPx.md};
+    padding-top: ${({ isWithLabel }) => isWithLabel && '18px'};
     padding-left: ${({ leftAddonWidth, $size }) =>
         leftAddonWidth ? `${leftAddonWidth + getExtraAddonPadding($size)}px` : undefined};
     padding-right: ${({ rightAddonWidth, $size }) =>
@@ -64,6 +65,26 @@ const InputAddon = styled.div<{ align: innerAddonAlignment; size: InputSize }>`
     left: ${({ align, size }) => align === 'left' && getInputAddonPadding(size)};
     display: flex;
     align-items: center;
+`;
+
+const Label = styled.label<{ $size: InputSize; isDisabled?: boolean }>`
+    position: absolute;
+    left: calc(${spacingsPx.md} + ${INPUT_BORDER_WIDTH}px);
+    color: ${({ theme, isDisabled }) => (isDisabled ? theme.textDisabled : theme.textSubdued)};
+    ${typography.body};
+    line-height: ${({ $size }) => `${INPUT_HEIGHTS[$size as InputSize]}px`};
+    transition: transform 0.12s ${motionEasingStrings.enter},
+        font-size 0.12s ${motionEasingStrings.enter};
+    transform-origin: 0;
+    pointer-events: none;
+
+    /* move up when input is focused OR has a placeholder OR has value  */
+    ${StyledInput}:focus + &, 
+    /*Linting error because of a complex interpolation*/
+    ${/* sc-selector */ StyledInput}:not(:placeholder-shown) + &, 
+    ${/* sc-selector */ StyledInput}:not([placeholder=""]):placeholder-shown + & {
+        transform: translate(0px, -10px) scale(0.75);
+    }
 `;
 
 type innerAddonAlignment = 'left' | 'right';
@@ -107,6 +128,7 @@ const Input = ({
     className,
     dataTest,
     showClearButton,
+    placeholder,
     onClear,
     ...rest
 }: InputProps) => {
@@ -122,7 +144,7 @@ const Input = ({
     const [measureLeftAddon, { width: leftAddonWidth }] = useMeasure<HTMLDivElement>();
     const [measureRightAddon, { width: rightAddonWidth }] = useMeasure<HTMLDivElement>();
 
-    const isWithLabel = label || labelHoverAddon || labelRight;
+    const isWithTopLabel = labelHoverAddon || labelRight;
 
     return (
         <Wrapper
@@ -131,14 +153,11 @@ const Input = ({
             withBottomPadding={bottomText === null}
             data-test={dataTest}
         >
-            {isWithLabel && (
-                <Label>
-                    <LabelLeft>{label}</LabelLeft>
-                    <LabelRight>
-                        <LabelHoverAddon isVisible={isHovered}>{labelHoverAddon}</LabelHoverAddon>
-                        {labelRight && <RightLabel>{labelRight}</RightLabel>}
-                    </LabelRight>
-                </Label>
+            {isWithTopLabel && (
+                <TopLabel>
+                    <LabelHoverAddon isVisible={isHovered}>{labelHoverAddon}</LabelHoverAddon>
+                    {labelRight && <RightLabel>{labelRight}</RightLabel>}
+                </TopLabel>
             )}
 
             <InputWrapper>
@@ -177,8 +196,16 @@ const Input = ({
                     data-lpignore="true"
                     leftAddonWidth={leftAddonWidth}
                     rightAddonWidth={rightAddonWidth}
+                    isWithLabel={!!label}
+                    placeholder={placeholder || ''} // needed for uncontrolled inputs
                     {...rest}
                 />
+
+                {label && (
+                    <Label $size={size} isDisabled={isDisabled}>
+                        {label}
+                    </Label>
+                )}
             </InputWrapper>
 
             {bottomText && <BottomText inputState={inputState}>{bottomText}</BottomText>}

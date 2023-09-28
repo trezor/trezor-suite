@@ -69,10 +69,6 @@ export const baseInputStyle = css<BaseInputProps>`
         color: ${({ theme }) => theme.textDisabled};
     }
 
-    :hover {
-        border-color: ${({ theme }) => theme.borderOnElevation0};
-    }
-
     :focus {
         border-color: ${({ theme }) => theme.borderOnElevation0};
     }
@@ -90,9 +86,10 @@ export const baseInputStyle = css<BaseInputProps>`
 
 export const Label = styled.div`
     display: flex;
-    justify-content: space-between;
+    justify-content: end;
     align-items: flex-end;
     min-height: 30px;
+    padding-bottom: 6px;
 `;
 
 export const LabelLeft = styled.label`
@@ -109,7 +106,6 @@ export const LabelHoverAddon = styled.div<{ isVisible?: boolean }>`
 export const LabelRight = styled.div`
     display: flex;
     align-items: center;
-    margin-bottom: 6px;
 `;
 
 export const RightLabel = styled.div`
