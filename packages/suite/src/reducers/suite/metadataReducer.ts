@@ -165,7 +165,28 @@ export const selectLabelingDataForWallet = (
     return DEFAULT_WALLET_METADATA;
 };
 
-// is everything ready (more or less) to add label?
+export const selectLabelableEntities = (state: MetadataRootState, deviceState: string) => {
+    const { wallet, device } = state;
+    const { devices } = device;
+    const { accounts } = wallet;
+    return [
+        ...accounts
+            .filter(a => a.deviceState === deviceState)
+            .map(account => ({
+                ...account.metadata,
+                key: account.key,
+                type: 'account' as const,
+            })),
+        ...devices
+            .filter((device: TrezorDevice) => device.state === deviceState)
+            .map((device: TrezorDevice) => ({
+                ...device.metadata,
+                state: device.state,
+                type: 'device' as const,
+            })),
+    ];
+};
+
 const selectLabelableEntityByKey = (
     state: MetadataRootState,
     deviceState: string,
