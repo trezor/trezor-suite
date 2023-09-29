@@ -23,6 +23,7 @@ import { DisplayRotation } from './DisplayRotation';
 import { AutoLock } from './AutoLock';
 import { WipeDevice } from './WipeDevice';
 import { CustomFirmware } from './CustomFirmware';
+import { AuthenticateDevice } from './AuthenticateDevice';
 
 const deviceSettingsUnavailable = (device?: TrezorDevice, transport?: Partial<TransportInfo>) => {
     const noTransportAvailable = transport && !transport.type;
@@ -45,6 +46,8 @@ export const SettingsDevice = () => {
     const deviceRemembered = isDeviceRemembered(device) && !device?.connected;
     const deviceModelInternal = device?.features?.internal_model;
     const bitcoinOnlyDevice = isBitcoinOnlyDevice(device);
+    const supportsDeviceAuthentication = deviceModelInternal === DeviceModelInternal.T2B1;
+    const supportsDisplayRotation = deviceModelInternal === DeviceModelInternal.T2T1;
 
     if (deviceSettingsUnavailable(device, transport)) {
         return (
@@ -129,12 +132,13 @@ export const SettingsDevice = () => {
                         {pinProtection && <ChangePin isDeviceLocked={isDeviceLocked} />}
                         <Passphrase isDeviceLocked={isDeviceLocked} />
                         {safetyChecks && <SafetyChecks isDeviceLocked={isDeviceLocked} />}
+                        {supportsDeviceAuthentication && <AuthenticateDevice />}
                     </SettingsSection>
 
                     <SettingsSection title={<Translation id="TR_PERSONALIZATION" />} icon="PALETTE">
                         <DeviceLabel isDeviceLocked={isDeviceLocked} />
                         <Homescreen isDeviceLocked={isDeviceLocked} />
-                        {deviceModelInternal === DeviceModelInternal.T2T1 && (
+                        {supportsDisplayRotation && (
                             <DisplayRotation isDeviceLocked={isDeviceLocked} />
                         )}
                         {pinProtection && <AutoLock isDeviceLocked={isDeviceLocked} />}

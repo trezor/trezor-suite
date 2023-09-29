@@ -6768,6 +6768,19 @@ export default defineMessages({
         defaultMessage:
             'Your {deviceName} is ready to rock!{br}Learn how to use your device like a pro.',
     },
+    TR_CHECK_DEVICE_ORIGIN_TITLE: {
+        id: 'TR_CHECK_DEVICE_ORIGIN_TITLE',
+        defaultMessage: "Check device's origin",
+    },
+    TR_CHECK_DEVICE_ORIGIN_DESCRIPTION: {
+        id: 'TR_CHECK_DEVICE_ORIGIN_DESCRIPTION',
+        defaultMessage:
+            "This will tell you whether it's been originally manufacture by Trezor. Still might be fucked.",
+    },
+    TR_CHECK_ORIGIN: {
+        id: 'TR_CHECK_ORIGIN',
+        defaultMessage: 'Check origin',
+    },
     TR_ONBOARDING_COINS_STEP: {
         id: 'TR_ONBOARDING_COINS_STEP',
         defaultMessage: 'Activate coins',
