@@ -14,13 +14,10 @@ import {
 } from 'src/components/firmware';
 import { useSelector, useFirmware, useOnboarding } from 'src/hooks/suite';
 import { TrezorDevice } from 'src/types/suite';
-import { DeviceTutorial } from 'src/components/firmware/DeviceTutorial';
-import { selectOnboardingTutorialStatus } from 'src/reducers/onboarding/onboardingReducer';
 import { getSuiteFirmwareTypeString } from 'src/utils/firmware';
 
 export const FirmwareStep = () => {
     const device = useSelector(selectDevice);
-    const isTutorialOffered = useSelector(selectOnboardingTutorialStatus);
     const { goToNextStep, updateAnalytics } = useOnboarding();
     const {
         status,
@@ -130,7 +127,6 @@ export const FirmwareStep = () => {
             return (
                 <>
                     <FirmwareInstallation cachedDevice={cachedDevice} onSuccess={goToNextStep} />
-                    {!!isTutorialOffered && <DeviceTutorial />}
                 </>
             );
         default:

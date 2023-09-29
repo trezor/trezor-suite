@@ -124,7 +124,7 @@ const setDeviceTutorialStatus = (status: DeviceTutorialStatus): OnboardingAction
     payload: status,
 });
 
-const beginOnbordingTutorial = () => async (dispatch: Dispatch, getState: GetState) => {
+const beginOnboardingTutorial = () => async (dispatch: Dispatch, getState: GetState) => {
     const device = selectDevice(getState());
     if (!device) return;
 
@@ -150,5 +150,5 @@ export {
     resetOnboarding,
     updateAnalytics,
     setDeviceTutorialStatus,
-    beginOnbordingTutorial,
+    beginOnboardingTutorial,
 };

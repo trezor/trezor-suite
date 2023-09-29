@@ -45,6 +45,12 @@ const steps: Step[] = [
         prerequisites: [...commonPrerequisites, 'device-recovery-mode', 'device-different'],
     },
     {
+        id: STEP.ID_TUTORIAL_STEP,
+        stepGroup: 0,
+        unsupportedModels: [DeviceModelInternal.T1B1, DeviceModelInternal.T2T1],
+        prerequisites: [...commonPrerequisites, 'device-recovery-mode', 'device-different'],
+    },
+    {
         id: STEP.ID_CREATE_OR_RECOVER,
         stepGroup: 1,
         path: [STEP.PATH_RECOVERY, STEP.PATH_CREATE],
