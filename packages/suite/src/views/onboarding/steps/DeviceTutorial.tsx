@@ -1,32 +1,22 @@
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import { useIntl } from 'react-intl';
 import styled from 'styled-components';
+
+import { selectDevice } from '@suite-common/wallet-core';
 import TrezorConnect from '@trezor/connect';
-import { Button, variables } from '@trezor/components';
+import { Button } from '@trezor/components';
+
 import {
-    beginOnbordingTutorial,
+    beginOnboardingTutorial,
     goToNextStep,
     setDeviceTutorialStatus,
 } from 'src/actions/onboarding/onboardingActions';
-import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
+import { OnboardingStepBox } from 'src/components/onboarding';
+import { Translation } from 'src/components/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
 import { selectOnboardingTutorialStatus } from 'src/reducers/onboarding/onboardingReducer';
 import messages from 'src/support/messages';
-import { OnboardingStepBox } from '../onboarding';
-import { Translation } from '../suite';
-import { StyledBackdrop } from '../onboarding/OnboardingStepBox';
-
-const BoxContainer = styled.div`
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-top: -60px;
-
-    ${StyledBackdrop} {
-        z-index: ${variables.Z_INDEX.ONNBOARDING_FOREGROUND};
-    }
-`;
 
 const StyledOnboardingStepBox = styled(OnboardingStepBox)`
     padding: 40px 20px 0px 20px;
@@ -48,22 +38,26 @@ const ActionButton = styled.p`
 export const DeviceTutorial = () => {
     const isActionAbortable = useSelector(selectIsActionAbortable);
     const status = useSelector(selectOnboardingTutorialStatus);
-
-    const { device } = useDevice();
-    const deviceModelInternal = device?.features?.internal_model;
+    const device = useSelector(selectDevice);
     const dispatch = useDispatch();
     const intl = useIntl();
-    const sectionRef = useRef<HTMLDivElement>(null);
+
+    const deviceModelInternal = device?.features?.internal_model;
+    const isContinueButtonVisible = status && ['cancelled', 'completed'].includes(status);
+    const imgName =
+        deviceModelInternal && (`DEVICE_CONFIRM_TREZOR_${deviceModelInternal}` as const);
+    const showDevicePrompt = status === 'active';
+
+    const handleContinue = () => {
+        dispatch(goToNextStep());
+        dispatch(setDeviceTutorialStatus(null));
+    };
 
     useEffect(() => {
-        if (sectionRef.current) {
-            sectionRef.current.scrollIntoView({ behavior: 'smooth' });
+        if (!status) {
+            dispatch(beginOnboardingTutorial());
         }
-    }, [status]);
-
-    if (!status) {
-        return null;
-    }
+    }, [dispatch, status]);
 
     const getHeading = () => {
         switch (status) {
@@ -76,8 +70,7 @@ export const DeviceTutorial = () => {
             // no default
         }
     };
-
-    const getDescritpion = () => {
+    const getDescription = () => {
         switch (status) {
             case 'active':
                 return (
@@ -97,7 +90,7 @@ export const DeviceTutorial = () => {
             case 'completed':
             case 'cancelled':
                 return (
-                    <ActionButton onClick={() => dispatch(beginOnbordingTutorial())}>
+                    <ActionButton onClick={() => dispatch(beginOnboardingTutorial())}>
                         <Translation id="TR_RESTART_TREZOR_DEVICE_TUTORIAL" />
                     </ActionButton>
                 );
@@ -105,33 +98,21 @@ export const DeviceTutorial = () => {
         }
     };
 
-    const ContinueButton = (
-        <Button
-            variant="primary"
-            onClick={() => {
-                dispatch(goToNextStep());
-                dispatch(setDeviceTutorialStatus(null));
-            }}
-            data-test="@firmware/continue-after-tutorial-button"
-        >
-            <Translation id="TR_CONTINUE" />
-        </Button>
-    );
-
-    const isContinueButtonVisible = ['cancelled', 'completed'].includes(status);
-    const imgName =
-        deviceModelInternal && (`DEVICE_CONFIRM_TREZOR_${deviceModelInternal}` as const);
-
     return (
-        <BoxContainer ref={sectionRef}>
-            <StyledOnboardingStepBox
-                image={imgName}
-                heading={getHeading()}
-                description={getDescritpion()}
-                device={status === 'active' ? device : undefined}
-                devicePromptTitle={<Translation id="TR_CONTINUE_ON_TREZOR" />}
-                outerActions={isContinueButtonVisible && ContinueButton}
-            />
-        </BoxContainer>
+        <StyledOnboardingStepBox
+            image={imgName}
+            heading={getHeading()}
+            description={getDescription()}
+            device={device}
+            disableConfirmWrapper={!showDevicePrompt}
+            devicePromptTitle={<Translation id="TR_CONTINUE_ON_TREZOR" />}
+            outerActions={
+                isContinueButtonVisible && (
+                    <Button variant="primary" onClick={handleContinue}>
+                        <Translation id="TR_CONTINUE" />
+                    </Button>
+                )
+            }
+        />
     );
 };
