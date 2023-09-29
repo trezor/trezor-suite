@@ -1,7 +1,7 @@
 export const TREZOR_URL = 'https://trezor.io';
 export const TREZOR_FORUM_URL = 'https://forum.trezor.io/';
 export const TREZOR_START_URL = 'https://trezor.io/start';
-export const TREZOR_SUPPORT_URL = 'https://trezor.io/support/';
+export const TREZOR_SUPPORT_URL = 'https://trezor.io/support';
 export const TREZOR_RESELLERS_URL = 'https://trezor.io/resellers/';
 
 export const DATA_URL = 'https://data.trezor.io/';

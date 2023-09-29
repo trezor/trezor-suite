@@ -56,6 +56,8 @@ const checklistItems = [
     },
 ] as const;
 
+const supportChatUrl = `${TREZOR_SUPPORT_URL}#open-chat`;
+
 interface SecurityCheckFailProps {
     goBack?: () => void;
 }
@@ -77,7 +79,7 @@ export const SecurityCheckFail = ({ goBack }: SecurityCheckFailProps) => (
                     <Translation id="TR_BACK" />
                 </SecurityCheckButton>
             )}
-            <StyledTrezorLink variant="nostyle" href={TREZOR_SUPPORT_URL}>
+            <StyledTrezorLink variant="nostyle" href={supportChatUrl}>
                 <StyledSecurityCheckButton>
                     <Translation id="TR_CONTACT_TREZOR_SUPPORT" />
                 </StyledSecurityCheckButton>
