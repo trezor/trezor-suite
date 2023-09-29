@@ -18,6 +18,7 @@ const Wrapper = styled.div`
 const ImageWrapper = styled.div`
     display: flex;
     align-items: center;
+    justify-content: center;
     flex-shrink: 0;
     background: ${({ theme }) => theme.BG_GREY};
     border-radius: 12px;
