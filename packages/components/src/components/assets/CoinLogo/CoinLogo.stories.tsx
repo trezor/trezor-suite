@@ -15,6 +15,11 @@ export default {
 };
 
 export const CoinLogo: StoryObj<CoinLogoProps> = {
+    render: ({ symbol, size }) => (
+        <Center>
+            <CoinLogoComponent symbol={symbol} size={size} />
+        </Center>
+    ),
     args: {
         symbol: 'ada',
     },
