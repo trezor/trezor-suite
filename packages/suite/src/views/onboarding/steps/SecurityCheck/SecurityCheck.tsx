@@ -84,11 +84,12 @@ const IconWrapper = styled.div`
 
 const Buttons = styled.div`
     display: flex;
-    width: 100%;
-    justify-content: space-between;
+    flex-wrap: wrap;
     gap: 24px;
+    justify-content: space-between;
     padding-top: 24px;
     border-top: 2px solid ${({ theme }) => theme.STROKE_GREY};
+    width: 100%;
 `;
 
 const StyledSecurityCheckButton = styled(SecurityCheckButton)`
