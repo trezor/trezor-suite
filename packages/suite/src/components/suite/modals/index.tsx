@@ -35,3 +35,5 @@ export { CancelCoinjoin } from './CancelCoinjoin';
 export { CriticalCoinjoinPhase } from './CriticalCoinjoinPhase';
 export { CoinjoinSuccess } from './CoinjoinSuccess';
 export { MoreRoundsNeeded } from './MoreRoundsNeeded';
+export { AuthenticateDeviceModal } from './AuthenticateDeviceModal';
+export { AuthenticateDeviceFailModal } from './AuthenticateDeviceFailModal';

@@ -23,25 +23,28 @@ export const checkDeviceAuthenticityThunk = createThunk<{ allowDebugKeys: boolea
         });
 
         if (result.success) {
+            dispatch(deviceAuthenticityActions.result({ device, result: result.payload }));
             if (result.payload.valid) {
                 dispatch(notificationsActions.addToast({ type: 'device-authenticity-success' }));
-            } else if (
-                result.payload.configExpired &&
-                result.payload.error === 'CA_PUBKEY_NOT_FOUND'
-            ) {
-                // sanity check result: CA_PUBKEY_NOT_FOUND with configExpired is temporary allowed
-                // it will be logged to sentry nevertheless (see sentryMiddleware)
-                // TODO: try fetch new config
-                // if (result.payload.configOutdated) {}
             } else {
-                dispatch(
-                    notificationsActions.addToast({
-                        type: 'device-authenticity-error',
-                        error: `Device is not authentic: ${result.payload.error}`,
-                    }),
-                );
+                if (
+                    result.payload.configExpired &&
+                    result.payload.error === 'CA_PUBKEY_NOT_FOUND'
+                ) {
+                    // sanity check result: CA_PUBKEY_NOT_FOUND with configExpired is temporary allowed
+                    // it will be logged to sentry nevertheless (see sentryMiddleware)
+                    // TODO: try fetch new config
+                    // if (result.payload.configOutdated) {}
+                } else {
+                    dispatch(
+                        notificationsActions.addToast({
+                            type: 'device-authenticity-error',
+                            error: `Device is not authentic: ${result.payload.error}`,
+                        }),
+                    );
+                }
+                return rejectWithValue(result.payload.error);
             }
-            dispatch(deviceAuthenticityActions.result({ device, result: result.payload }));
         } else {
             dispatch(
                 notificationsActions.addToast({

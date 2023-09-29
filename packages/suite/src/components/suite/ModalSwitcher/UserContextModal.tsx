@@ -29,6 +29,8 @@ import {
     MoreRoundsNeeded,
     ConfirmUnverified,
     ConfirmUnverifiedAddress,
+    AuthenticateDeviceModal,
+    AuthenticateDeviceFailModal,
 } from 'src/components/suite/modals';
 import { DisableTorStopCoinjoin } from 'src/components/suite/modals/DisableTorStopCoinjoin';
 import { UnecoCoinjoinWarning } from 'src/components/suite/modals/UnecoCoinjoinWarning';
@@ -191,7 +193,10 @@ export const UserContextModal = ({
             return <MoreRoundsNeeded />;
         case 'uneco-coinjoin-warning':
             return <UnecoCoinjoinWarning />;
-
+        case 'authenticate-device':
+            return <AuthenticateDeviceModal />;
+        case 'authenticate-device-fail':
+            return <AuthenticateDeviceFailModal />;
         default:
             return null;
     }
