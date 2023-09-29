@@ -1,8 +1,9 @@
 import { useArgs } from '@storybook/client-api';
 import styled from 'styled-components';
 
-import { RadioButton as RadioButtonComponent } from './RadioButton';
+import { RadioButton as RadioButtonComponent, RadioProps } from './RadioButton';
 import { H2 } from '../../typography/Heading/Heading';
+import { StoryObj } from '@storybook/react';
 
 const Wrapper = styled.div`
     display: flex;
@@ -14,9 +15,25 @@ const Wrapper = styled.div`
 
 export default {
     title: 'Form/RadioButton',
+    component: RadioButtonComponent,
 };
 
-export const RadioButton = {
+export const RadioButton: StoryObj<RadioProps> = {
+    render: ({ ...args }) => {
+        // eslint-disable-next-line
+        const [{ isChecked }, updateArgs] = useArgs();
+        const handleIsChecked = () => updateArgs({ isChecked: !isChecked });
+
+        return (
+            <RadioButtonComponent {...args} onClick={handleIsChecked} isChecked={isChecked}>
+                {args.children}
+            </RadioButtonComponent>
+        );
+    },
+    args: { children: 'RadioButton' },
+};
+
+export const RadioButtonGroup: StoryObj = {
     render: () => {
         // eslint-disable-next-line
         const [{ option }, updateArgs] = useArgs();
