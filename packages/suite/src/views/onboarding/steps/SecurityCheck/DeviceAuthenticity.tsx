@@ -120,24 +120,26 @@ export const DeviceAuthenticity = () => {
     }
 
     return (
-        <OnboardingStepBox
-            image="CHECK_SHIELD"
-            heading={<Translation id={getHeadingText()} />}
-            description={getDescription()}
-            innerActions={getInnerActions()}
-            device={device}
-            disableConfirmWrapper={!isWaitingForConfirmation}
-            isActionAbortable
-        >
-            <Items>
-                {!isCheckSuccessful &&
-                    items.map(({ icon, text }) => (
-                        <Item key={icon}>
-                            <Icon icon={icon} size={32} />
-                            <Translation id={text} />
-                        </Item>
-                    ))}
-            </Items>
-        </OnboardingStepBox>
+        <>
+            <OnboardingStepBox
+                image="CHECK_SHIELD"
+                heading={<Translation id={getHeadingText()} />}
+                description={getDescription()}
+                innerActions={getInnerActions()}
+                device={device}
+                disableConfirmWrapper={!isWaitingForConfirmation}
+                isActionAbortable
+            >
+                <Items>
+                    {!isCheckSuccessful &&
+                        items.map(({ icon, text }) => (
+                            <Item key={icon}>
+                                <Icon icon={icon} size={32} />
+                                <Translation id={text} />
+                            </Item>
+                        ))}
+                </Items>
+            </OnboardingStepBox>
+        </>
     );
 };

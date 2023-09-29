@@ -1,8 +1,5 @@
 import { MiddlewareAPI } from 'redux';
 
-import { firmwareActions, selectDevice } from '@suite-common/wallet-core';
-import { DeviceModelInternal } from '@trezor/connect';
-
 import { SUITE } from 'src/actions/suite/constants';
 import * as onboardingActions from 'src/actions/onboarding/onboardingActions';
 import { AppState, Action, Dispatch } from 'src/types/suite';
@@ -19,20 +16,6 @@ const onboardingMiddleware =
             //  1. make reducer to accept actions (enableReducer) and apply changes
             if (action.payload === 'onboarding') {
                 api.dispatch(onboardingActions.enableOnboardingReducer(true));
-            }
-        }
-
-        // initiate on-device tutorial after firmware installation
-        const isOnboardingPage = api.getState().onboarding.isActive;
-        if (
-            action.type === firmwareActions.setStatus.type &&
-            action.payload === 'done' &&
-            isOnboardingPage
-        ) {
-            const device = selectDevice(api.getState());
-
-            if (device?.features?.internal_model === DeviceModelInternal.T2B1) {
-                api.dispatch(onboardingActions.beginOnbordingTutorial());
             }
         }
 
