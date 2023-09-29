@@ -1,8 +1,10 @@
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 import { getConnectedDeviceStatus } from '@suite-common/suite-utils';
-import { Icon, Tooltip, variables, useTheme, H1 } from '@trezor/components';
 import { selectDevice } from '@suite-common/wallet-core';
+import { Icon, Tooltip, variables, useTheme, H1 } from '@trezor/components';
+import { DeviceModelInternal } from '@trezor/connect';
 
 import { useOnboarding, useSelector } from 'src/hooks/suite';
 import { Translation } from 'src/components/suite';
@@ -11,11 +13,9 @@ import { CollapsibleOnboardingCard } from 'src/components/onboarding/Collapsible
 import { MAX_WIDTH } from 'src/constants/suite/layout';
 import { SecurityCheckLayout } from './SecurityCheckLayout';
 import { SecurityChecklist } from './SecurityChecklist';
-import { useState } from 'react';
 import { SecurityCheckFail } from './SecurityCheckFail';
 import { SecurityCheckButton } from './SecurityCheckButton';
 import { DeviceAuthenticity } from './DeviceAuthenticity';
-import { DeviceModelInternal } from '@trezor/connect';
 
 const StyledCard = styled(CollapsibleOnboardingCard)`
     max-width: ${MAX_WIDTH};
@@ -161,6 +161,7 @@ export const SecurityCheck = () => {
 
     const deviceStatus = getConnectedDeviceStatus(device);
     const initialized = deviceStatus === 'initialized';
+    const isRecoveryInProgress = recovery.status === 'in-progress';
     const isFirmwareInstalled = device?.firmware !== 'none';
     const secondaryButtonText = isFirmwareInstalled ? 'TR_I_HAVE_NOT_USED_IT' : 'TR_I_HAVE_DOUBTS';
     const primaryButtonTopText = isFirmwareInstalled
@@ -177,16 +178,16 @@ export const SecurityCheck = () => {
         initialRun && device?.features?.internal_model === DeviceModelInternal.T2B1
             ? goToDeviceAuthentication()
             : goToSuite();
-    const handleSetupButtonClick = () => {
-        if (recovery.status === 'in-progress') {
-            rerun();
-        } else {
-            goToNextStep();
+    const handleSetupButtonClick = () => (isRecoveryInProgress ? rerun() : goToNextStep());
+
+    // Start measuring onboarding duration. In case of an ongoing recovery, the timer is started in middleware.
+    useEffect(() => {
+        if (!initialized && !isRecoveryInProgress) {
+            updateAnalytics({
+                startTime: Date.now(),
+            });
         }
-        updateAnalytics({
-            startTime: Date.now(),
-        });
-    };
+    }, [initialized, isRecoveryInProgress, updateAnalytics]);
 
     if (isDeviceAuthenticityCheck) {
         return <DeviceAuthenticity />;
