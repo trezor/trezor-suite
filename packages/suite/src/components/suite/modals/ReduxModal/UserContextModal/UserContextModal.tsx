@@ -31,6 +31,8 @@ import {
     ConfirmUnverifiedModal,
     ConfirmUnverifiedAddressModal,
     UnecoCoinjoinModal,
+    AuthenticateDeviceModal,
+    AuthenticateDeviceFailModal,
 } from 'src/components/suite/modals';
 import type { AcquiredDevice } from 'src/types/suite';
 import { openXpubModal, showXpub } from 'src/actions/wallet/publicKeyActions';
@@ -193,7 +195,10 @@ export const UserContextModal = ({
             return <MoreRoundsNeededModal />;
         case 'uneco-coinjoin-warning':
             return <UnecoCoinjoinModal />;
-
+        case 'authenticate-device':
+            return <AuthenticateDeviceModal />;
+        case 'authenticate-device-fail':
+            return <AuthenticateDeviceFailModal />;
         default:
             return null;
     }

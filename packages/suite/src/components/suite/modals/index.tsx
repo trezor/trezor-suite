@@ -37,3 +37,5 @@ export { CriticalCoinjoinPhaseModal } from './ReduxModal/UserContextModal/Critic
 export { CoinjoinSuccessModal } from './ReduxModal/UserContextModal/CoinjoinSuccessModal';
 export { MoreRoundsNeededModal } from './ReduxModal/UserContextModal/MoreRoundsNeededModal';
 export { UnecoCoinjoinModal } from './ReduxModal/UserContextModal/UnecoCoinjoinModal';
+export { AuthenticateDeviceModal } from './ReduxModal/UserContextModal/AuthenticateDeviceModal';
+export { AuthenticateDeviceFailModal } from './ReduxModal/UserContextModal/AuthenticateDeviceFailModal';

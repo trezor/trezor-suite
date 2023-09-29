@@ -3,12 +3,12 @@ import styled from 'styled-components';
 
 import { checkDeviceAuthenticityThunk } from '@suite-common/device-authenticity';
 import { selectDevice } from '@suite-common/wallet-core';
-import { Icon, variables } from '@trezor/components';
+import { variables } from '@trezor/components';
 import { ERROR_CODES } from '@trezor/connect/lib/constants/errors';
 
 import { OnboardingButtonCta, OnboardingStepBox } from 'src/components/onboarding';
 import { CollapsibleOnboardingCard } from 'src/components/onboarding/CollapsibleOnboardingCard';
-import { Translation } from 'src/components/suite';
+import { DeviceAuthenticationExplainer, Translation } from 'src/components/suite';
 import { useDispatch, useOnboarding, useSelector } from 'src/hooks/suite';
 import { SecurityCheckLayout } from './SecurityCheckLayout';
 import { SecurityCheckFail } from './SecurityCheckFail';
@@ -17,31 +17,11 @@ const StyledCard = styled(CollapsibleOnboardingCard)`
     padding: 16px;
 `;
 
-const Items = styled.div`
-    display: grid;
-    gap: 40px;
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
-    font-size: ${variables.FONT_SIZE.NORMAL};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-
+const StyledExplainer = styled(DeviceAuthenticationExplainer)`
     @media only screen and (min-width: ${variables.SCREEN_SIZE.SM}) {
         grid-template-columns: repeat(3, 1fr);
     }
 `;
-
-const Item = styled.div`
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-    gap: 24px;
-    text-align: center;
-`;
-
-const items = [
-    { icon: 'SHIELD_CHECK', text: 'TR_DEVICE_AUTHENTICITY_ITEM_1' },
-    { icon: 'CHIP', text: 'TR_DEVICE_AUTHENTICITY_ITEM_2' },
-    { icon: 'CHECKLIST', text: 'TR_DEVICE_AUTHENTICITY_ITEM_3' },
-] as const;
 
 export const DeviceAuthenticity = () => {
     const device = useSelector(selectDevice);
@@ -123,26 +103,16 @@ export const DeviceAuthenticity = () => {
     }
 
     return (
-        <>
-            <OnboardingStepBox
-                image="CHECK_SHIELD"
-                heading={<Translation id={getHeadingText()} />}
-                description={getDescription()}
-                innerActions={getInnerActions()}
-                device={device}
-                disableConfirmWrapper={!isWaitingForConfirmation}
-                isActionAbortable
-            >
-                <Items>
-                    {!isCheckSuccessful &&
-                        items.map(({ icon, text }) => (
-                            <Item key={icon}>
-                                <Icon icon={icon} size={32} />
-                                <Translation id={text} />
-                            </Item>
-                        ))}
-                </Items>
-            </OnboardingStepBox>
-        </>
+        <OnboardingStepBox
+            image="CHECK_SHIELD"
+            heading={<Translation id={getHeadingText()} />}
+            description={getDescription()}
+            innerActions={getInnerActions()}
+            device={device}
+            disableConfirmWrapper={!isWaitingForConfirmation}
+            isActionAbortable
+        >
+            {!isCheckSuccessful && <StyledExplainer horizontal />}
+        </OnboardingStepBox>
     );
 };
