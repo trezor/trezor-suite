@@ -18,6 +18,7 @@ import { useOnboarding, useFilteredModal } from 'src/hooks/suite';
 import { MODAL } from 'src/actions/suite/constants';
 import * as STEP from 'src/constants/onboarding/steps';
 import type { PrerequisiteType } from 'src/types/suite';
+import { DeviceTutorial } from './steps/DeviceTutorial';
 
 type OnboardingProps = {
     prerequisite?: PrerequisiteType;
@@ -37,6 +38,9 @@ export const Onboarding = ({ prerequisite }: OnboardingProps) => {
             case STEP.ID_AUTHENTICATE_DEVICE_STEP:
                 // Device authenticity check
                 return [DeviceAuthenticity, OnboardingLayout];
+            case STEP.ID_TUTORIAL_STEP:
+                // Device tutorial
+                return [DeviceTutorial, OnboardingLayout];
             case STEP.ID_CREATE_OR_RECOVER:
                 // Selection between a new seed or seed recovery
                 return [CreateOrRecover, OnboardingLayout];
