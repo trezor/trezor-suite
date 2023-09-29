@@ -28,6 +28,7 @@ const Text = styled.div`
 
 const Buttons = styled.div`
     display: flex;
+    flex-wrap: wrap;
     gap: 24px;
     width: 100%;
 `;
