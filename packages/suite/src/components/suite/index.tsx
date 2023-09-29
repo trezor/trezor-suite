@@ -58,6 +58,7 @@ import { CountdownTimer } from './CountdownTimer';
 import { NumberInput, NumberInputProps } from './NumberInput';
 import { QrCode } from './QrCode';
 import { CoinBalance } from './CoinBalance';
+import { DeviceAuthenticationExplainer } from './DeviceAuthenticationExplainer';
 
 export {
     AccountLabel,
@@ -124,5 +125,6 @@ export {
     DeviceButton,
     QrCode,
     CoinBalance,
+    DeviceAuthenticationExplainer,
 };
 export type { ModalProps, NumberInputProps };
