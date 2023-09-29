@@ -1,93 +1,141 @@
-import { HTMLAttributes, KeyboardEvent, MouseEvent } from 'react';
+import { EventHandler, KeyboardEvent, ReactNode, SyntheticEvent } from 'react';
 import styled from 'styled-components';
-import { FONT_SIZE, FONT_WEIGHT } from '../../../config/variables';
+import { Color, borders } from '@trezor/theme';
+
 import { KEYBOARD_CODE } from '../../../constants/keyboardEvents';
-import { getInputColor } from '../../../utils/utils';
+import { getFocusShadowStyle } from '../../../utils/utils';
+import {
+    CheckboxVariant,
+    Label,
+    LabelAlignment,
+    variantStyles,
+    Container,
+    HiddenInput,
+    CheckContainer,
+} from '../Checkbox/Checkbox';
 
-const Wrapper = styled.div<Pick<RadioButtonProps, 'disabled'>>`
-    display: flex;
-    cursor: ${({ disabled }) => (disabled ? 'default' : 'pointer')};
-    align-items: flex-start;
+interface VariantStyles {
+    borderChecked: Color;
+    dotDisabledChecked: Color;
+    borderDisabledChecked: Color;
+}
 
-    :hover,
-    :focus {
-        outline: none;
-    }
-`;
+const radioVariantStyles: Record<CheckboxVariant, VariantStyles> = {
+    primary: {
+        borderChecked: 'backgroundSecondaryDefault',
+        dotDisabledChecked: 'backgroundPrimarySubtleOnElevation0',
+        borderDisabledChecked: 'backgroundPrimarySubtleOnElevation1',
+    },
+    'alert-red': {
+        borderChecked: 'backgroundAlertRedSubtleOnElevation0',
+        dotDisabledChecked: 'backgroundAlertRedSubtleOnElevation0',
+        borderDisabledChecked: 'backgroundAlertRedSubtleOnElevation1',
+    },
+    'alert-yellow': {
+        borderChecked: 'backgroundAlertYellowSubtleOnElevation0',
+        dotDisabledChecked: 'backgroundAlertYellowSubtleOnElevation0',
+        borderDisabledChecked: 'backgroundAlertYellowSubtleOnElevation1',
+    },
+};
 
-const RadioIcon = styled.div<Pick<RadioButtonProps, 'isChecked' | 'disabled'>>`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 26px;
-    height: 26px;
-    max-width: 26px;
-    min-width: 26px;
-    border-radius: 50%;
+const RadioIcon = styled(CheckContainer)`
     position: relative;
-    border: 2px solid
-        ${({ disabled, isChecked, theme }) =>
-            getInputColor(theme, { checked: isChecked, disabled })};
+    border-radius: ${borders.radii.full};
 
     :after {
-        display: ${({ isChecked }) => (isChecked ? 'block' : 'none')};
         content: '';
         position: absolute;
-        top: 4px;
-        left: 4px;
+        top: 3px;
+        left: 3px;
         width: 14px;
         height: 14px;
         border-radius: 50%;
-        background: ${({ disabled, isChecked, theme }) =>
-            getInputColor(theme, { checked: isChecked, disabled })};
+        background: ${({ theme, variant }) => theme[variantStyles[variant].background]};
+        transition: background 0.1s;
+    }
+
+    input:checked + && {
+        background: ${({ theme }) => theme.backgroundSurfaceElevation0};
+        border-color: ${({ theme, variant }) => theme[radioVariantStyles[variant].borderChecked]};
+
+        :after {
+            background: ${({ theme, variant }) => theme[variantStyles[variant].backgroundChecked]};
+        }
+    }
+
+    input:disabled:not(:checked) + && {
+        background: ${({ theme }) => theme.backgroundSurfaceElevation0};
+        border-color: ${({ theme, variant }) => theme[variantStyles[variant].borderDisabled]};
+
+        :after {
+            background: transparent;
+        }
+    }
+
+    input:disabled:checked + && {
+        background: transparent;
+        border-color: ${({ theme, variant }) =>
+            theme[radioVariantStyles[variant].borderDisabledChecked]};
+
+        :after {
+            background: ${({ theme, variant }) =>
+                theme[radioVariantStyles[variant].dotDisabledChecked]};
+        }
+    }
+
+    ${/* sc-selector */ Container}:hover input:not(:disabled):not(:checked) + && {
+        :after {
+            background: ${({ theme, variant }) => theme[variantStyles[variant].backgroundHover]};
+        }
+    }
+
+    &&& {
+        ${getFocusShadowStyle()}
     }
 `;
 
-const Label = styled.div`
-    display: flex;
-    padding-left: 12px;
-    padding-top: 2px;
-    justify-content: left;
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
-    font-weight: ${FONT_WEIGHT.MEDIUM};
-    font-size: ${FONT_SIZE.SMALL};
-    line-height: 22px;
-`;
-
-interface RadioButtonProps extends HTMLAttributes<HTMLDivElement> {
-    onClick: (event: KeyboardEvent<HTMLElement> | MouseEvent<HTMLElement> | null) => any;
+export interface RadioProps {
+    variant?: CheckboxVariant;
     isChecked?: boolean;
-    disabled?: boolean;
+    isDisabled?: boolean;
+    labelAlignment?: LabelAlignment;
+    onClick: EventHandler<SyntheticEvent>;
+    children?: ReactNode;
 }
 
 export const RadioButton = ({
+    variant = 'primary',
     isChecked,
-    children,
-    disabled,
+    labelAlignment,
+    isDisabled,
     onClick,
-    ...rest
-}: RadioButtonProps) => {
-    const handleClick: RadioButtonProps['onClick'] = event => {
-        if (disabled) return;
-        onClick(event);
-    };
+    children,
+}: RadioProps) => {
     const handleKeyUp = (event: KeyboardEvent<HTMLElement>) => {
-        if (event.code === KEYBOARD_CODE.SPACE) {
-            handleClick(event);
+        if (event.code === KEYBOARD_CODE.SPACE || event.code === KEYBOARD_CODE.ENTER) {
+            onClick(event);
         }
     };
 
     return (
-        <Wrapper
-            onClick={handleClick}
+        <Container
+            onClick={onClick}
             onKeyUp={handleKeyUp}
-            tabIndex={0}
-            disabled={disabled}
+            isDisabled={isDisabled}
+            labelAlignment={labelAlignment}
             data-checked={isChecked}
-            {...rest}
         >
-            <RadioIcon isChecked={isChecked} disabled={disabled} />
-            {children && <Label>{children}</Label>}
-        </Wrapper>
+            <HiddenInput
+                type="radio"
+                checked={isChecked}
+                disabled={isDisabled}
+                readOnly
+                tabIndex={-1}
+            />
+
+            <RadioIcon variant={variant} tabIndex={0} />
+
+            {children && <Label isRed={variant === 'alert-red'}>{children}</Label>}
+        </Container>
     );
 };
