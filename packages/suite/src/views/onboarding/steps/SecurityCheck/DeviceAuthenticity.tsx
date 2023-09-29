@@ -20,10 +20,13 @@ const StyledCard = styled(CollapsibleOnboardingCard)`
 const Items = styled.div`
     display: grid;
     gap: 40px;
-    grid-template-columns: repeat(3, 1fr);
     color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     font-size: ${variables.FONT_SIZE.NORMAL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+
+    @media only screen and (min-width: ${variables.SCREEN_SIZE.SM}) {
+        grid-template-columns: repeat(3, 1fr);
+    }
 `;
 
 const Item = styled.div`
