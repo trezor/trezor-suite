@@ -11,6 +11,8 @@ const mnemonic = 'all all all all all all all all all all all all';
 const standardWalletState = 'mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q@355C817510C0EABF2F147145:0';
 // state corresponding to "wallet for drugs"
 const firstHiddenWalletState = 'myBrmyzvN5Wa4oeYrL7t8EYU1Ch5Q6vp47@355C817510C0EABF2F147145:1';
+// state corresponding to "C"
+const secondHiddenWalletState = 'mkx2Uqi3fmLHh8AHpQvAErTM3MZpzrmFr2@355C817510C0EABF2F147145:2';
 
 describe('Metadata - wallet labeling', () => {
     beforeEach(() => {
@@ -100,17 +102,6 @@ describe('Metadata - wallet labeling', () => {
                 'wallet not for drugs',
             );
 
-            cy.window()
-                .its('store')
-                .invoke('getState')
-                .then(state => {
-                    console.log(state);
-                    const errors = state.notifications.filter(
-                        (n: { type: string }) => n.type === 'error',
-                    );
-                    return expect(errors).to.be.empty;
-                });
-
             // remember wallet, reload app, and observe that labels were loaded
             // https://github.com/trezor/trezor-suite/pull/9560
             cy.getTestElement('@switch-device/wallet-on-index/0/toggle-remember-switch').click({
@@ -135,6 +126,51 @@ describe('Metadata - wallet labeling', () => {
                 'contain',
                 'wallet not for drugs',
             );
+
+            // add another passphrase wallet C, have selected passphrase wallet A, try to enable
+            // labeling for wallet C
+            cy.getTestElement('@switch-device/add-hidden-wallet-button').click();
+            cy.getTestElement('@passphrase/input').type('C');
+            cy.getTestElement('@passphrase/hidden/submit-button').click();
+            cy.getTestElement('@passphrase/input').should('not.exist');
+            cy.getConfirmActionOnDeviceModal();
+            cy.task('pressYes');
+            cy.getConfirmActionOnDeviceModal();
+            cy.task('pressYes');
+            cy.getTestElement('@passphrase/input', { timeout: 30000 }).type('C');
+            cy.getTestElement('@passphrase/confirm-checkbox').click();
+            cy.getTestElement('@passphrase/hidden/submit-button').click();
+            cy.getTestElement('@modal').should('not.exist');
+            cy.getConfirmActionOnDeviceModal();
+            cy.task('pressYes');
+            cy.getConfirmActionOnDeviceModal();
+            cy.task('pressYes');
+            cy.getTestElement('@menu/switch-device').click();
+            cy.getConfirmActionOnDeviceModal();
+            cy.task('pressNo'); // labeling was not enabled at this moment
+            // select previous wallet
+            cy.getTestElement('@switch-device/wallet-on-index/1').click();
+            cy.getTestElement('@menu/switch-device').click();
+            cy.hoverTestElement(`@metadata/walletLabel/${secondHiddenWalletState}/hover-container`);
+            cy.getTestElement(
+                `@metadata/walletLabel/${secondHiddenWalletState}/add-label-button`,
+            ).click();
+            cy.getConfirmActionOnDeviceModal();
+            cy.task('pressYes'); // only now labeling was enabled
+            cy.getTestElement('@metadata/input').type(
+                'still works, metadata enabled for currently not selected device{enter}',
+            );
+
+            cy.window()
+                .its('store')
+                .invoke('getState')
+                .then(state => {
+                    console.log(state);
+                    const errors = state.notifications.filter(
+                        (n: { type: string }) => n.type === 'error',
+                    );
+                    return expect(errors).to.be.empty;
+                });
         });
     });
 });
