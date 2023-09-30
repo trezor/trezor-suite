@@ -189,7 +189,7 @@ const getSuiteDevice = (dev?: Partial<TrezorDevice>, feat?: Partial<Features>): 
             instance: undefined,
             ts: 0,
             buttonRequests: [],
-            metadata: { status: 'disabled' },
+            metadata: {},
             ...dev,
             ...device,
         } as TrezorDevice;

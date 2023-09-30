@@ -187,13 +187,7 @@ export interface WalletLabels {
 
 export type Labels = AccountLabels | WalletLabels;
 
-export type DeviceMetadata =
-    | {
-          status: 'disabled' | 'cancelled'; // user rejects "Enable labeling" on device
-      }
-    | ({
-          status: 'enabled';
-      } & DeviceEntityKeys);
+export type DeviceMetadata = DeviceEntityKeys;
 
 type Data = Record<
     LabelableEntityKeys['fileName'], // unique "id" for mapping with labelable entitties
