@@ -585,14 +585,18 @@ export const addDeviceMetadata =
         const device = devices.find(d => d.state === payload.entityKey);
         const provider = selectSelectedProviderForLabels(getState());
 
-        if (!device || device.metadata.status !== 'enabled') return Promise.resolve(false);
+        if (!provider)
+            return Promise.resolve({
+                success: false,
+                error: 'provider missing',
+            });
 
-        if (!provider) return Promise.resolve(false);
-
-        const { fileName, aesKey } = device.metadata[METADATA.ENCRYPTION_VERSION] || {};
+        const { fileName, aesKey } = device?.metadata[METADATA.ENCRYPTION_VERSION] || {};
         if (!fileName || !aesKey) {
-            console.error('fileName or aesKey is missing for device', device.state);
-            return Promise.resolve(false);
+            return Promise.resolve({
+                success: false,
+                error: `fileName or aesKey is missing for device ${device?.state}`,
+            });
         }
 
         // todo: not danger overwrite empty?
@@ -638,15 +642,17 @@ export const addAccountMetadata =
         const account = getState().wallet.accounts.find(a => a.key === payload.entityKey);
         const provider = selectSelectedProviderForLabels(getState());
 
-        if (!account || !provider) return false;
+        if (!account || !provider)
+            return Promise.resolve({ success: false, error: 'account or provider missing' });
 
         // todo: not danger overwrite empty?
         const { fileName, aesKey } = account.metadata?.[METADATA.ENCRYPTION_VERSION] || {};
 
         if (!fileName || !aesKey) {
-            throw new Error(
-                `filename of version ${METADATA.ENCRYPTION_VERSION} does not exist for account ${account.path}`,
-            );
+            return Promise.resolve({
+                success: false,
+                error: `filename of version ${METADATA.ENCRYPTION_VERSION} does not exist for account ${account.path}`,
+            });
         }
         const data = provider.data[fileName];
 
@@ -656,7 +662,8 @@ export const addAccountMetadata =
 
         if (payload.type === 'outputLabel') {
             if (typeof payload.value !== 'string' || payload.value.length === 0) {
-                if (!nextMetadata.outputLabels[payload.txid]) return false;
+                if (!nextMetadata.outputLabels[payload.txid])
+                    return Promise.resolve({ success: false });
                 delete nextMetadata.outputLabels[payload.txid][payload.outputIndex];
                 if (Object.keys(nextMetadata.outputLabels[payload.txid]).length === 0) {
                     delete nextMetadata.outputLabels[payload.txid];
@@ -701,9 +708,9 @@ export const addAccountMetadata =
         );
 
         // we might intentionally skip saving metadata content to persistent storage.
-        if (!save) return true;
+        if (!save) return Promise.resolve({ success: true });
 
-        await dispatch(
+        return dispatch(
             encryptAndSaveMetadata({
                 data: {
                     accountLabel: nextMetadata.accountLabel,
@@ -715,8 +722,6 @@ export const addAccountMetadata =
                 provider,
             }),
         );
-
-        return true;
     };
 
 const encryptAndSaveMetadata =
@@ -736,40 +741,18 @@ const encryptAndSaveMetadata =
 
         if (!providerInstance) {
             // provider should always be set here
-            return false;
+            return Promise.resolve({ success: false, error: 'no provider instance' });
         }
 
-        try {
-            const encrypted = await metadataUtils.encrypt(
-                {
-                    version: METADATA.FORMAT_VERSION,
-                    ...data,
-                },
-                aesKey,
-            );
+        const encrypted = await metadataUtils.encrypt(
+            {
+                version: METADATA.FORMAT_VERSION,
+                ...data,
+            },
+            aesKey,
+        );
 
-            const result = await providerInstance.setFileContent(fileName, encrypted);
-            if (!result.success) {
-                dispatch(
-                    handleProviderError({
-                        error: result,
-                        action: ProviderErrorAction.SAVE,
-                        clientId: provider.clientId,
-                    }),
-                );
-                return false;
-            }
-        } catch (err) {
-            const error = providerInstance.error('OTHER_ERROR', err.message);
-            dispatch(
-                handleProviderError({
-                    error,
-                    action: ProviderErrorAction.SAVE,
-                    clientId: provider.clientId,
-                }),
-            );
-            return false;
-        }
+        return providerInstance.setFileContent(fileName, encrypted);
     };
 
 /**
@@ -817,15 +800,50 @@ export const setDeviceMetadataKey =
                 },
             });
 
+            return { success: true };
         }
+
+        return { success: false };
     };
 
-export const addMetadata = (payload: MetadataAddPayload) => (dispatch: Dispatch) => {
-    if (payload.type === 'walletLabel') {
-        return dispatch(addDeviceMetadata(payload));
-    }
-    return dispatch(addAccountMetadata(payload));
-};
+export const addMetadata =
+    (payload: MetadataAddPayload) => (dispatch: Dispatch, getState: GetState) =>
+        (payload.type === 'walletLabel'
+            ? dispatch(addDeviceMetadata(payload))
+            : dispatch(addAccountMetadata(payload))
+        ).then(result => {
+            if (!result.success) {
+                if ('code' in result) {
+                    dispatch(
+                        handleProviderError({
+                            error: result,
+                            action: ProviderErrorAction.SAVE,
+                            clientId: getState().metadata.providers[0]?.clientId,
+                        }),
+                    );
+                } else {
+                    const providerInstance = dispatch(
+                        getProviderInstance({
+                            clientId: getState().metadata.providers[0].clientId,
+                        }),
+                    );
+                    if (providerInstance) {
+                        dispatch(
+                            handleProviderError({
+                                error: providerInstance.error(
+                                    'OTHER_ERROR',
+                                    'error' in result ? result.error : '',
+                                ),
+                                action: ProviderErrorAction.SAVE,
+                                clientId: getState().metadata.providers[0]?.clientId,
+                            }),
+                        );
+                    }
+                }
+            }
+
+            return result.success;
+        });
 
 /**
  * init - prepare everything needed to load + decrypt and upload + decrypt metadata. Note that this method
