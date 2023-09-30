@@ -564,6 +564,9 @@ export const selectIsDeviceConnectedAndAuthorized = (state: DeviceRootState) => 
     return !!deviceState && !!deviceFeatures;
 };
 
+export const selectDeviceByState = (state: DeviceRootState, deviceState: string) =>
+    selectDevices(state).find(d => d.state === deviceState);
+
 export const selectDeviceUnavailableCapabilities = (state: DeviceRootState) =>
     state.device.selectedDevice?.unavailableCapabilities;
 
