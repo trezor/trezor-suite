@@ -1,5 +1,4 @@
 import { isDesktop, isWeb } from '@trezor/env-utils';
-import { selectDevice } from '@suite-common/wallet-core';
 
 import { SettingsLayout } from 'src/components/settings';
 import { SettingsSection } from 'src/components/suite/Settings';
@@ -8,6 +7,7 @@ import { useLayoutSize, useSelector } from 'src/hooks/suite';
 import { selectTorState } from 'src/reducers/suite/suiteReducer';
 import { selectEnabledNetworks } from 'src/reducers/wallet/settingsReducer';
 import { NETWORKS } from 'src/config/wallet';
+import { selectSelectedProviderForLabels } from 'src/reducers/suite/metadataReducer';
 
 import { Language } from './Language';
 import { Fiat } from './Fiat';
@@ -31,7 +31,6 @@ export const SettingsGeneral = () => {
     const enabledNetworks = useSelector(selectEnabledNetworks);
     const desktopUpdate = useSelector(state => state.desktopUpdate);
     const metadata = useSelector(state => state.metadata);
-    const device = useSelector(selectDevice);
 
     const { isMobileLayout } = useLayoutSize();
 
@@ -41,8 +40,7 @@ export const SettingsGeneral = () => {
     );
 
     const isMetadataEnabled = metadata.enabled && !metadata.initiating;
-    const isProviderConnected =
-        metadata.enabled && device?.metadata.status === 'enabled' && !!metadata.providers.length;
+    const isProviderConnected = useSelector(selectSelectedProviderForLabels);
 
     return (
         <SettingsLayout data-test="@settings/index">
