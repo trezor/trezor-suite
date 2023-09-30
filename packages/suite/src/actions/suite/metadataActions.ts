@@ -383,12 +383,11 @@ export const fetchAndSaveMetadata =
         const provider = selectSelectedProviderForLabels(getState());
         if (!provider) return;
 
-        const selectedDeviceState = selectDevice(getState())?.state;
-        const deviceState = deviceStateArg || selectedDeviceState;
+        let device = deviceStateArg
+            ? selectDeviceByState(getState(), deviceStateArg)
+            : selectDevice(getState());
 
-        if (!deviceState) {
-            return;
-        }
+        if (!device?.state || !device?.metadata?.[METADATA.ENCRYPTION_VERSION]) return;
 
         const providerInstance = dispatch(
             getProviderInstance({
@@ -399,13 +398,15 @@ export const fetchAndSaveMetadata =
             return;
         }
 
-        const devices = selectDevices(getState());
-        const device = devices.find(d => d.state === deviceState);
-
         try {
             // this triggers renewal of access token if needed. Otherwise multiple requests
             // to renew access token are issued by every provider.getFileContent
             const response = await providerInstance.getProviderDetails();
+
+            device = deviceStateArg
+                ? selectDeviceByState(getState(), deviceStateArg)
+                : selectDevice(getState());
+            if (!device?.state || !device?.metadata?.[METADATA.ENCRYPTION_VERSION]) return;
 
             if (!response.success) {
                 dispatch(
@@ -428,8 +429,7 @@ export const fetchAndSaveMetadata =
                 return;
             }
 
-            const labelableEntities = dispatch(getLabelableEntities(deviceState));
-
+            const labelableEntities = dispatch(getLabelableEntities(device.state));
             const promises = labelableEntities.map(entity =>
                 dispatch(fetchMetadata({ provider, entity })).then(result => {
                     if (result) {
@@ -444,7 +444,7 @@ export const fetchAndSaveMetadata =
             // it expires, we want them to silently disconnect provider, keep metadata in place.
             // So that users will not notice that token expired until they will try to add or edit
             // already existing label
-            if (fetchIntervals[deviceState]) {
+            if (device?.state && fetchIntervals[device.state]) {
                 return dispatch(
                     disconnectProvider({ removeMetadata: false, clientId: provider.clientId }),
                 );
@@ -461,18 +461,6 @@ export const fetchAndSaveMetadata =
         }
     };
 
-export const setAccountMetadataKey =
-    (account: Account, encryptionVersion = METADATA.ENCRYPTION_VERSION) =>
-    (dispatch: Dispatch, getState: GetState) => {
-        const devices = selectDevices(getState());
-        const device = devices.find(d => d.state === account.deviceState);
-        if (
-            !device ||
-            device.metadata.status !== 'enabled' ||
-            !device.metadata[METADATA.ENCRYPTION_VERSION]?.key
-        ) {
-            return account;
-        }
 export const fetchAndSaveMetadataForAllDevices = () => (dispatch: Dispatch, getState: GetState) => {
     const devices = selectDevices(getState());
     devices.forEach(device => {
@@ -481,7 +469,11 @@ export const fetchAndSaveMetadataForAllDevices = () => (dispatch: Dispatch, getS
     });
 };
 
-        const deviceMetaKey = device.metadata[encryptionVersion]?.key;
+export const setAccountMetadataKey =
+    (account: Account, encryptionVersion = METADATA.ENCRYPTION_VERSION) =>
+    (dispatch: Dispatch, getState: GetState) => {
+        const device = selectDeviceByState(getState(), account.deviceState);
+        const deviceMetaKey = device?.metadata[encryptionVersion]?.key;
 
         if (!deviceMetaKey) {
             throw new Error('device meta key is missing');
@@ -508,14 +500,17 @@ export const fetchAndSaveMetadataForAllDevices = () => (dispatch: Dispatch, getS
  * Fill any record in reducer that may have metadata with metadata keys (not values).
  */
 const syncMetadataKeys =
-    (encryptionVersion = METADATA.ENCRYPTION_VERSION) =>
+    (device: TrezorDevice, encryptionVersion = METADATA.ENCRYPTION_VERSION) =>
     (dispatch: Dispatch, getState: GetState) => {
-        const accountsWithoutKeys = getState().wallet.accounts.filter(
-            acc => !acc.metadata[encryptionVersion]?.fileName,
+        if (!device.metadata[METADATA.ENCRYPTION_VERSION]) {
+            return;
+        }
+        const targetAccounts = getState().wallet.accounts.filter(
+            acc => !acc.metadata[encryptionVersion]?.fileName && acc.deviceState === device.state,
         );
 
-        accountsWithoutKeys.forEach(account => {
-            const accountWithMetadata = dispatch(setAccountMetadataKey(account));
+        targetAccounts.forEach(account => {
+            const accountWithMetadata = dispatch(setAccountMetadataKey(account, encryptionVersion));
             dispatch(setAccountAdd(accountWithMetadata));
         });
         // note that devices are intentionally omitted here - device receives metadata
@@ -781,12 +776,9 @@ const encryptAndSaveMetadata =
  * Generate device master-key
  * */
 export const setDeviceMetadataKey =
-    (encryptionVersion = METADATA.ENCRYPTION_VERSION) =>
+    (device: TrezorDevice, encryptionVersion = METADATA.ENCRYPTION_VERSION) =>
     async (dispatch: Dispatch, getState: GetState) => {
-        const device = selectDevice(getState());
-        if (!device || !device.state || !device.connected) return;
-
-        if (device.metadata.status === 'enabled') return;
+        if (!device.state || !device.connected) return;
 
         const result = await TrezorConnect.cipherKeyValue({
             device: {
@@ -845,14 +837,10 @@ export const addMetadata = (payload: MetadataAddPayload) => (dispatch: Dispatch)
  * tries to add new label.
  */
 export const init =
-    (force = false) =>
-    async (dispatch: Dispatch, getState: GetState) => {
-        const device = selectDevice(getState());
-
-        // 1. set metadata enabled globally
-        if (!getState().metadata.enabled) {
-            dispatch(enableMetadata());
-        }
+    (force: boolean, deviceState?: string) => async (dispatch: Dispatch, getState: GetState) => {
+        let device = deviceState
+            ? selectDeviceByState(getState(), deviceState)
+            : selectDevice(getState());
 
         if (!device?.state) {
             return false;
