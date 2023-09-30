@@ -23,7 +23,7 @@ const metadata =
                 api.getState().metadata.enabled &&
                 !action.payload.device.metadata[METADATA.ENCRYPTION_VERSION]
             ) {
-                api.dispatch(metadataActions.init());
+                api.dispatch(metadataActions.init(false));
             }
         }
 

@@ -9,7 +9,10 @@ import { Translation } from 'src/components/suite';
 import { Props, ExtendedProps, DropdownMenuItem } from './definitions';
 import { withEditable } from './withEditable';
 import { withDropdown } from './withDropdown';
-import { selectIsLabelingAvailable } from 'src/reducers/suite/metadataReducer';
+import {
+    selectIsLabelingAvailableForEntity,
+    selectIsLabelingInitPossible,
+} from 'src/reducers/suite/metadataReducer';
 import type { Timeout } from '@trezor/type-utils';
 
 const LabelValue = styled.div`
@@ -207,7 +210,7 @@ const getLocalizedActions = (type: MetadataAddPayload['type']) => {
 export const MetadataLabeling = (props: Props) => {
     const metadata = useSelector(state => state.metadata);
     const dispatch = useDispatch();
-    const { isDiscoveryRunning, device } = useDiscovery();
+    const { isDiscoveryRunning } = useDiscovery();
     const [showSuccess, setShowSuccess] = useState(false);
     const [pending, setPending] = useState(false);
     const theme = useTheme();
@@ -226,12 +229,11 @@ export const MetadataLabeling = (props: Props) => {
         };
     }, [props.payload.defaultValue, timeout]);
 
-    const isLabelingAvailable = useSelector(selectIsLabelingAvailable);
-
-    // labeling is possible (it is possible to make it available) when we may obtain keys from device. If enabled, we already have them
-    // (and only need to connect provider), or if device is connected, we may initiate TrezorConnect.CipherKeyValue call and get them
-    const labelingPossible =
-        !props.isDisabled && (device?.metadata.status === 'enabled' || device?.connected);
+    const isLabelingInitPossible = useSelector(selectIsLabelingInitPossible);
+    const deviceState = props.payload.type === 'walletLabel' ? props.payload.entityKey : undefined;
+    const isLabelingAvailable = useSelector(state =>
+        selectIsLabelingAvailableForEntity(state, props.payload.entityKey, deviceState),
+    );
 
     // is this concrete instance being edited?
     const editActive = metadata.editing === props.payload.defaultValue;
@@ -244,8 +246,14 @@ export const MetadataLabeling = (props: Props) => {
             // is there something that needs to be initiated?
             !isLabelingAvailable
         ) {
-            // provide force=true argument (user wants to enable metadata)
-            dispatch(init(true));
+            dispatch(
+                init(
+                    // provide force=true argument (user wants to enable metadata)
+                    true,
+                    // if this is wallet(device) label, provide unique identifier entityKey which equals to device.state
+                    deviceState,
+                ),
+            );
         }
         dispatch(setEditing(props.payload.defaultValue));
     };
@@ -263,7 +271,12 @@ export const MetadataLabeling = (props: Props) => {
         dropdownItems = [...dropdownItems, ...props.dropdownOptions];
     }
 
-    const handleBlur = () => dispatch(setEditing(undefined));
+    const handleBlur = () => {
+        if (!metadata.initiating) {
+            dispatch(setEditing(undefined));
+        }
+    };
+
     const onSubmit = async (value: string | undefined) => {
         isSubscribedToSubmitResult.current = props.payload.defaultValue;
         setPending(true);
@@ -296,7 +309,11 @@ export const MetadataLabeling = (props: Props) => {
     const labelContainerDatatest = `${dataTestBase}/hover-container`;
 
     // should "add label"/"edit label" button be visible
-    const showActionButton = labelingPossible && !showSuccess && !editActive;
+    const showActionButton =
+        !props.isDisabled &&
+        (isLabelingAvailable || isLabelingInitPossible) &&
+        !showSuccess &&
+        !editActive;
     const isVisible = pending || props.visible;
 
     // metadata is still initiating, on hover, show only disabled button with spinner
