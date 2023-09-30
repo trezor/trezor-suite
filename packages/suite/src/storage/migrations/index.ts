@@ -101,6 +101,7 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
 
         await updateAll(transaction, 'devices', device => {
             device.metadata = {
+                // @ts-expect-error
                 status: 'disabled',
             };
             return device;
@@ -618,6 +619,7 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
 
         await updateAll(transaction, 'devices', device => {
             if (
+                // @ts-expect-error
                 device.metadata.status === 'enabled' &&
                 // @ts-expect-error
                 device.metadata.fileName &&
@@ -625,6 +627,7 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
                 device.metadata.aesKey
             ) {
                 device.metadata = {
+                    // @ts-expect-error
                     status: device.metadata.status,
                     1: {
                         // @ts-expect-error

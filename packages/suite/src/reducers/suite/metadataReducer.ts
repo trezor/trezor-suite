@@ -156,7 +156,7 @@ export const selectLabelingDataForWallet = (
     const provider = selectSelectedProviderForLabels(state);
     const devices = selectDevices(state);
     const device = devices.find(d => d.state === deviceState);
-    if (device?.metadata.status !== 'enabled') {
+    if (!device?.metadata[METADATA.ENCRYPTION_VERSION]) {
         return DEFAULT_WALLET_METADATA;
     }
     const metadataKeys = device?.metadata[METADATA.ENCRYPTION_VERSION];

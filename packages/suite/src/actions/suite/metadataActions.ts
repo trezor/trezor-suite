@@ -133,7 +133,7 @@ export const disposeMetadata = (keys?: boolean) => (dispatch: Dispatch, getState
                     type: METADATA.SET_DEVICE_METADATA,
                     payload: {
                         deviceState: device.state,
-                        metadata: { status: 'disabled' },
+                        metadata: {},
                     },
                 });
             }
@@ -336,10 +336,6 @@ const fetchMetadata =
             throw new Error('no provider instance');
         }
 
-        if (entity.type === 'device' && entity.status !== 'enabled') {
-            throw new Error('metadata not enabled'); // because of ts
-        }
-
         const entityMetadata = entity[encryptionVersion];
         if (!entityMetadata) {
             throw new Error('trying to fetch entity without metadata');
@@ -423,11 +419,12 @@ export const fetchAndSaveMetadata =
             }
 
             // device is disconnected or something is wrong with it
-            if (device?.metadata?.status !== 'enabled') {
-                if (fetchIntervals[deviceState]) {
-                    clearInterval(fetchIntervals[deviceState]);
-                    delete fetchIntervals[deviceState];
+            if (!device?.metadata?.[METADATA.ENCRYPTION_VERSION]) {
+                if (fetchIntervals[device.state]) {
+                    clearInterval(fetchIntervals[device.state]);
+                    delete fetchIntervals[device.state];
                 }
+
                 return;
             }
 
@@ -479,7 +476,7 @@ export const setAccountMetadataKey =
 export const fetchAndSaveMetadataForAllDevices = () => (dispatch: Dispatch, getState: GetState) => {
     const devices = selectDevices(getState());
     devices.forEach(device => {
-        if (!device.state) return;
+        if (!device.state || !device.metadata[METADATA.ENCRYPTION_VERSION]) return;
         dispatch(fetchAndSaveMetadata(device.state));
     });
 };
@@ -819,7 +816,6 @@ export const setDeviceMetadataKey =
                     deviceState: device.state,
                     metadata: {
                         ...device.metadata,
-                        status: 'enabled',
                         [encryptionVersion]: {
                             fileName,
                             aesKey,
@@ -828,31 +824,7 @@ export const setDeviceMetadataKey =
                     },
                 },
             });
-        } else {
-            // TODO: After metadata migration is implemented, I am not sure that 'cancelled' state makes sense
-            // anymore. With version 2 encryption user does not even have the option to cancel metadata on device
-            // user only has option to cancel labeling during migration. How should we handle this?
-            dispatch({
-                type: METADATA.SET_DEVICE_METADATA,
-                payload: {
-                    deviceState: device.state,
-                    metadata: {
-                        status: 'cancelled',
-                    },
-                },
-            });
 
-            // in effort to resolve https://github.com/trezor/trezor-suite/issues/2315
-            // also turn of global metadata.enabled setting
-            // pros:
-            // - user without saved device is not bothered with labeling when reloading page
-            // cons:
-            // - it makes concept device.metadata.status "cancelled" useless
-            // - new device will not be prompted with metadata when connected so even when there is
-            //   existing metadata for this device, user will not see it until he clicks "add label" button
-            dispatch({
-                type: METADATA.DISABLE,
-            });
         }
     };
 
