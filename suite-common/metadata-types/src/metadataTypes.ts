@@ -228,6 +228,12 @@ export interface MetadataState {
     // field shall hold default value for which user may add metadata (address, txId, etc...);
     editing?: string;
     initiating?: boolean;
+    /**
+     * error, typical reasons:
+     * - user clicked cancel button on device when "Enable labeling" was shown.
+     * - device disconnected
+     */
+    error?: { [deviceState: string]: boolean };
 }
 
 export type OAuthServerEnvironment = 'production' | 'staging' | 'localhost';
