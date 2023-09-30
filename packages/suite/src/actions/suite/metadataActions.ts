@@ -5,7 +5,7 @@ import TrezorConnect from '@trezor/connect';
 import { analytics, EventType } from '@trezor/suite-analytics';
 import { createDeferred, cloneObject } from '@trezor/utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { selectDevices, selectDevice } from '@suite-common/wallet-core';
+import { selectDevices, selectDevice, selectDeviceByState } from '@suite-common/wallet-core';
 
 import { METADATA } from 'src/actions/suite/constants';
 import { Dispatch, GetState, TrezorDevice } from 'src/types/suite';
@@ -69,6 +69,10 @@ export type MetadataAction =
               dataType: DataType;
               clientId: string;
           };
+      }
+    | {
+          type: typeof METADATA.SET_ERROR_FOR_DEVICE;
+          payload: { deviceState: string; failed: boolean };
       }
     | ReturnType<typeof setAccountAdd>;
 
@@ -408,6 +412,8 @@ export const fetchAndSaveMetadata =
                 : selectDevice(getState());
             if (!device?.state || !device?.metadata?.[METADATA.ENCRYPTION_VERSION]) return;
 
+            dispatch(syncMetadataKeys(device));
+
             if (!response.success) {
                 dispatch(
                     handleProviderError({
@@ -416,6 +422,7 @@ export const fetchAndSaveMetadata =
                         clientId: provider.clientId,
                     }),
                 );
+
                 return;
             }
 
@@ -476,7 +483,8 @@ export const setAccountMetadataKey =
         const deviceMetaKey = device?.metadata[encryptionVersion]?.key;
 
         if (!deviceMetaKey) {
-            throw new Error('device meta key is missing');
+            // account keys can't be set without device keys
+            return account;
         }
         try {
             const metaKey = metadataUtils.deriveMetadataKey(deviceMetaKey, account.metadata.key);
@@ -864,60 +872,84 @@ export const init =
             return false;
         }
 
-        // 2. set device metadata key (master key). Sometimes, if state is not present
-        if (
-            device.metadata.status === 'disabled' ||
-            (device.metadata.status === 'cancelled' && force && device?.connected)
-        ) {
-            dispatch({ type: METADATA.SET_INITIATING, payload: true });
-            await dispatch(setDeviceMetadataKey());
-        }
-
-        // did user confirm labeling on device? or maybe device was not connected
-        // so suite does not have keys and needs to stop here
-        if (getState().device.selectedDevice?.metadata.status !== 'enabled') {
-            // if no, end here
-            dispatch({ type: METADATA.SET_INITIATING, payload: false });
-            dispatch({ type: METADATA.SET_EDITING, payload: undefined });
-
+        if (!force && getState().metadata.error?.[device.state]) {
             return false;
         }
 
-        // if yes, add metadata keys to accounts
-        if (getState().metadata.initiating) {
-            dispatch(syncMetadataKeys());
+        dispatch({ type: METADATA.SET_INITIATING, payload: true });
+        if (getState().metadata.error?.[device.state]) {
+            // remove error note about failed migration potentially set in a previous run
+            dispatch({
+                type: METADATA.SET_ERROR_FOR_DEVICE,
+                payload: {
+                    deviceState: device.state,
+                    failed: false,
+                },
+            });
         }
 
-        // 3. connect to provider
-        if (
-            getState().device.selectedDevice?.metadata.status === 'enabled' &&
-            !getState().metadata.providers?.length
-        ) {
-            if (!getState().metadata.initiating) {
-                dispatch({ type: METADATA.SET_INITIATING, payload: true });
-            }
+        // 1. set metadata enabled globally
+        if (!getState().metadata.enabled) {
+            dispatch(enableMetadata());
+        }
 
+        if (!device.metadata?.[METADATA.ENCRYPTION_VERSION]) {
+            const result = await dispatch(
+                setDeviceMetadataKey(device, METADATA.ENCRYPTION_VERSION),
+            );
+            if (!result?.success) {
+                dispatch({ type: METADATA.SET_INITIATING, payload: false });
+                dispatch({ type: METADATA.SET_EDITING, payload: undefined });
+                dispatch({
+                    type: METADATA.SET_ERROR_FOR_DEVICE,
+                    payload: {
+                        deviceState: device.state!,
+                        failed: true,
+                    },
+                });
+                return false;
+            }
+        }
+
+        // 3. we have master key. use it to derive account keys
+        dispatch(syncMetadataKeys(device, METADATA.ENCRYPTION_VERSION));
+
+        device = deviceState
+            ? selectDeviceByState(getState(), deviceState)
+            : selectDevice(getState());
+
+        if (!device) return false;
+
+        // 4. connect to provider
+        if (!selectSelectedProviderForLabels(getState())) {
             const providerResult = await dispatch(initProvider());
             if (!providerResult) {
                 dispatch({ type: METADATA.SET_INITIATING, payload: false });
                 dispatch({ type: METADATA.SET_EDITING, payload: undefined });
-
                 return false;
             }
         }
+
+        // todo: 5. migration
+
+        // 6. fetch metadata
         await dispatch(fetchAndSaveMetadata(device.state));
-        dispatch({ type: METADATA.SET_INITIATING, payload: false });
+
+        // now we may allow user to edit labels. everything is ready, local data is synced with provider
+        if (getState().metadata.initiating) {
+            dispatch({ type: METADATA.SET_INITIATING, payload: false });
+        }
 
         // 7. if interval for watching provider is not set, create it
         if (device.state && !fetchIntervals[device.state]) {
             // todo: possible race condition that has been around since always
             // user is editing label and at that very moment update arrives. updates to specific entities should be probably discarded in such case?
             fetchIntervals[device.state] = setInterval(() => {
-                const selectedDevice = selectDevice(getState());
-                if (!getState().suite.online || !selectedDevice?.state) {
+                const device = selectDevice(getState());
+                if (!getState().suite.online || !device?.state) {
                     return;
                 }
-                dispatch(fetchAndSaveMetadata(selectedDevice.state));
+                dispatch(fetchAndSaveMetadata(device.state));
             }, METADATA.FETCH_INTERVAL);
         }
 

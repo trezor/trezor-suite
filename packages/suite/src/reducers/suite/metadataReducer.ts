@@ -25,6 +25,7 @@ export const initialState: MetadataState = {
     selectedProvider: {
         labels: '',
     },
+    error: {},
 };
 
 type MetadataRootState = {
@@ -76,6 +77,14 @@ const metadataReducer = (state = initialState, action: Action): MetadataState =>
 
                 break;
             }
+            case METADATA.SET_ERROR_FOR_DEVICE:
+                if (action.payload.failed) {
+                    if (!draft.error) draft.error = {};
+                    draft.error[action.payload.deviceState] = action.payload.failed;
+                } else {
+                    delete draft.error?.[action.payload.deviceState];
+                }
+                break;
             // no default
         }
     });
