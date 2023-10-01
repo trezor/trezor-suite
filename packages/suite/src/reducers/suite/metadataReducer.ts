@@ -1,21 +1,25 @@
 import produce from 'immer';
 
 import {
+    AccountsRootState,
     selectAccountByKey,
     DeviceRootState,
     selectDevice,
     selectDevices,
     State,
+    selectDeviceByState,
 } from '@suite-common/wallet-core';
 
 import { STORAGE, METADATA } from 'src/actions/suite/constants';
-import { Action } from 'src/types/suite';
+import { Action, TrezorDevice } from 'src/types/suite';
 import { MetadataState, WalletLabels, AccountLabels } from 'src/types/suite/metadata';
 import { Account } from 'src/types/wallet';
 import {
     DEFAULT_ACCOUNT_METADATA,
     DEFAULT_WALLET_METADATA,
 } from 'src/actions/suite/constants/metadataConstants';
+
+import { SuiteRootState } from './suiteReducer';
 
 export const initialState: MetadataState = {
     // is Suite trying to load metadata (get master key -> sync cloud)?
@@ -30,7 +34,9 @@ export const initialState: MetadataState = {
 
 type MetadataRootState = {
     metadata: MetadataState;
-} & DeviceRootState;
+} & DeviceRootState &
+    SuiteRootState &
+    AccountsRootState;
 
 const metadataReducer = (state = initialState, action: Action): MetadataState =>
     produce(state, draft => {
@@ -213,12 +219,50 @@ const selectLabelableEntityByKey = (
         return false;
     });
 
+/**
+ * Is everything ready to add label?
+ */
 export const selectIsLabelingAvailable = (state: MetadataRootState) => {
-    const { enabled } = selectMetadata(state);
+    const { enabled, error } = selectMetadata(state);
     const provider = selectSelectedProviderForLabels(state);
     const device = selectDevice(state);
 
-    return !!(enabled && device?.metadata?.status === 'enabled' && provider);
+    return (
+        enabled &&
+        device?.metadata?.[METADATA.ENCRYPTION_VERSION] &&
+        !!provider &&
+        device.state &&
+        !error?.[device.state]
+    );
+};
+
+/**
+ it is possible to initiate metadata 
+ */
+export const selectIsLabelingInitPossible = (state: MetadataRootState) => {
+    const device = selectDevice(state);
+
+    return (
+        // device already has keys or it is at least connected and authorized
+        (device?.metadata?.[METADATA.ENCRYPTION_VERSION] || (device?.connected && device.state)) &&
+        // storage provider is connected or we are at least able to connect to it
+        (selectSelectedProviderForLabels(state) || state.suite.online)
+    );
+};
+
+export const selectIsLabelingAvailableForEntity = (
+    state: MetadataRootState,
+    entityKey: string,
+    deviceState?: string,
+) => {
+    const device = deviceState ? selectDeviceByState(state, deviceState) : selectDevice(state);
+    if (!device?.state) return false;
+    const entity = selectLabelableEntityByKey(state, device.state, entityKey);
+    return (
+        selectIsLabelingAvailable(state) &&
+        entity &&
+        entity?.[METADATA.ENCRYPTION_VERSION]?.fileName
+    );
 };
 
 export default metadataReducer;
