@@ -965,6 +965,10 @@ export default defineMessages({
             "Please allow them a moment to generate the address where you'll send your crypto.",
         id: 'TR_SELL_DETAIL_WAITING_FOR_SEND_CRYPTO_INFO',
     },
+    TR_SELL_EXTRA_FIELD: {
+        defaultMessage: '{extraFieldName}',
+        id: 'TR_SELL_EXTRA_FIELD',
+    },
     TR_SELL_DETAIL_PENDING_SUPPORT: {
         defaultMessage: "Open partner's support site",
         id: 'TR_SELL_DETAIL_PENDING_SUPPORT',

@@ -115,7 +115,7 @@
         "@testing-library/react": "14.0.0",
         "@testing-library/user-event": "14.4.3",
         "@types/file-saver": "^2.0.5",
-        "@types/invity-api": "^1.0.13",
+        "@types/invity-api": "^1.0.15",
         "@types/jws": "^3.2.5",
         "@types/pako": "^2.0.0",
         "@types/pdfmake": "^0.2.2",

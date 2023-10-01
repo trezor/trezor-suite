@@ -10143,7 +10143,7 @@ __metadata:
     "@trezor/utils": "workspace:*"
     "@trezor/validation": "workspace:*"
     "@types/file-saver": ^2.0.5
-    "@types/invity-api": ^1.0.13
+    "@types/invity-api": ^1.0.15
     "@types/jws": ^3.2.5
     "@types/pako": ^2.0.0
     "@types/pdfmake": ^0.2.2
@@ -10977,10 +10977,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/invity-api@npm:^1.0.13":
-  version: 1.0.13
-  resolution: "@types/invity-api@npm:1.0.13"
-  checksum: bc30850cdc5f3faf8180427e3314e5b18661ae293a98f127ef491a44ea51da0de15075319370ce70df467ea5c594f633736438777bbeaca3eff0d1600080a17a
+"@types/invity-api@npm:^1.0.15":
+  version: 1.0.15
+  resolution: "@types/invity-api@npm:1.0.15"
+  checksum: e237da75d835eb0da6558b9dfe82a7ba40bdae5dcd41e7ea7437cf2770ace96e9997a100acc37ad498ba4db554790988578ed026f4ef813865c784a3eb23045d
   languageName: node
   linkType: hard
 
