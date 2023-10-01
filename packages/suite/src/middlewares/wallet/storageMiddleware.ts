@@ -13,6 +13,7 @@ import {
     fiatRatesActions,
     selectAccountByKey,
     deviceActions,
+    selectDeviceByState,
 } from '@suite-common/wallet-core';
 import { isDeviceRemembered } from '@suite-common/suite-utils';
 import { messageSystemActions } from '@suite-common/message-system';
@@ -159,6 +160,7 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
 
             if (deviceActions.forgetDevice.match(action)) {
                 api.dispatch(storageActions.forgetDevice(action.payload));
+                api.dispatch(storageActions.forgetDeviceMetadataError(action.payload));
             }
 
             if (deviceActions.updateSelectedDevice.match(action)) {
@@ -228,9 +230,15 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 case METADATA.DISABLE:
                 case METADATA.ADD_PROVIDER:
                 case METADATA.REMOVE_PROVIDER:
-                    api.dispatch(storageActions.saveMetadata());
+                    api.dispatch(storageActions.saveMetadataSettings());
                     break;
-
+                case METADATA.SET_ERROR_FOR_DEVICE: {
+                    const device = selectDeviceByState(api.getState(), action.payload.deviceState);
+                    if (isDeviceRemembered(device) && device) {
+                        api.dispatch(storageActions.saveDeviceMetadataError(device));
+                    }
+                    break;
+                }
                 case FORM_DRAFT.STORE_DRAFT: {
                     const device = selectDevice(api.getState());
                     // save drafts for remembered device
