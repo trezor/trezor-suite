@@ -8,6 +8,7 @@ import {
     selectDevices,
     State,
     selectDeviceByState,
+    deviceActions,
 } from '@suite-common/wallet-core';
 
 import { STORAGE, METADATA } from 'src/actions/suite/constants';
@@ -91,6 +92,11 @@ const metadataReducer = (state = initialState, action: Action): MetadataState =>
                     delete draft.error?.[action.payload.deviceState];
                 }
                 break;
+            case deviceActions.forgetDevice.type:
+                if (action.payload.state) {
+                    delete draft.error?.[action.payload.state];
+                }
+
             // no default
         }
     });
