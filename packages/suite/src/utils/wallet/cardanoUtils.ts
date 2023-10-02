@@ -1,4 +1,4 @@
-import type { types } from '@fivebinaries/coin-selection';
+import { coinSelection, types } from '@fivebinaries/coin-selection';
 import BigNumber from 'bignumber.js';
 
 import {
@@ -37,23 +37,22 @@ export const getAddressType = (_accountType: Account['accountType']) =>
 
 export const getStakingPath = (account: Account) => `m/1852'/1815'/${account.index}'/2/0`;
 
-export const getChangeAddressParameters = (account: Account) => {
-    if (!account.addresses || account.networkType !== 'cardano') return;
-    const stakingPath = getStakingPath(account);
+export const getUnusedChangeAddress = (account: Pick<Account, 'addresses'>) => {
+    if (!account.addresses) return;
+
     // Find first unused change address or fallback to the last address if all are used (should not happen)
     const changeAddress =
         account.addresses.change.find(a => !a.transfers) ||
         account.addresses.change[account.addresses.change.length - 1];
 
-    return {
-        address: changeAddress.address,
-        addressParameters: {
-            path: changeAddress.path,
-            addressType: getAddressType(account.accountType),
-            stakingPath,
-        },
-    };
+    return changeAddress;
 };
+
+export const getAddressParameters = (account: Account, path: string) => ({
+    path,
+    addressType: getAddressType(account.accountType),
+    stakingPath: getStakingPath(account),
+});
 
 export const transformUserOutputs = (
     outputs: Output[],
@@ -189,35 +188,28 @@ export const getTtl = (testnet: boolean) => {
     return currentSlot + CARDANO_DEFAULT_TTL_OFFSET;
 };
 
-export const composeTxPlan = async (
+export const composeTxPlan = (
     descriptor: string,
     utxo: Account['utxo'],
+    outputs: types.UserOutput[],
     certificates: CardanoCertificate[],
-    withdrawals: { amount: string; path: string; stakeAddress: string }[],
-    changeAddress: {
-        address: string;
-        addressParameters: {
-            path: string;
-            addressType: PROTO.CardanoAddressType;
-            stakingPath: string;
-        };
-    },
-    ttl?: number,
-) => {
-    const { coinSelection } = await loadCardanoLib();
-
-    const txPlan = coinSelection({
-        utxos: transformUtxos(utxo),
-        outputs: [],
-        changeAddress: changeAddress.address,
-        certificates: prepareCertificates(certificates),
-        withdrawals,
-        accountPubKey: descriptor,
-        ttl,
-    });
-
-    return { txPlan, certificates, withdrawals, changeAddress };
-};
+    withdrawals: types.Withdrawal[],
+    changeAddress: string,
+    isTestnet: boolean,
+    options?: types.Options,
+) =>
+    coinSelection(
+        {
+            utxos: transformUtxos(utxo),
+            outputs,
+            changeAddress,
+            certificates: prepareCertificates(certificates),
+            withdrawals,
+            accountPubKey: descriptor,
+            ttl: getTtl(isTestnet),
+        },
+        options,
+    );
 
 export const isPoolOverSaturated = (pool: StakePool, additionalStake?: string) =>
     new BigNumber(pool.live_stake)
@@ -249,7 +241,7 @@ export const formatMaxOutputAmount = (
     account: Account,
 ) => {
     // Converts 'max' amount returned from coinselection in lovelaces (or token equivalent) to ADA (or token unit)
-    if (!maxOutput || !maxAmount) return;
+    if (!maxOutput || !maxAmount) return maxAmount;
     if (maxOutput.assets.length === 0) {
         // output without asset, convert lovelaces to ADA
         return formatNetworkAmount(maxAmount, account.symbol);

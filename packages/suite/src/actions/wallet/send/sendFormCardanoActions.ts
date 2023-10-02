@@ -1,5 +1,5 @@
 import TrezorConnect, { PROTO } from '@trezor/connect';
-import { formatNetworkAmount, isTestnet, getDerivationType } from '@suite-common/wallet-utils';
+import { isTestnet, getDerivationType } from '@suite-common/wallet-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     FormState,
@@ -11,24 +11,24 @@ import { selectDevice } from '@suite-common/wallet-core';
 
 import { Dispatch, GetState } from 'src/types/suite';
 import {
-    getChangeAddressParameters,
-    getTtl,
+    getUnusedChangeAddress,
+    getAddressParameters,
     getNetworkId,
     getProtocolMagic,
     transformUserOutputs,
-    transformUtxos,
     formatMaxOutputAmount,
     loadCardanoLib,
+    composeTxPlan,
 } from 'src/utils/wallet/cardanoUtils';
 
 export const composeTransaction =
     (formValues: FormState, formState: ComposeActionContext) =>
     async (dispatch: Dispatch): Promise<PrecomposedLevelsCardano | undefined> => {
         const { account, feeInfo } = formState;
-        const changeAddress = getChangeAddressParameters(account);
+        const changeAddress = getUnusedChangeAddress(account);
         if (!changeAddress || !account.utxo) return;
 
-        const { coinSelection, trezorUtils, CoinSelectionError } = await loadCardanoLib();
+        const { trezorUtils, CoinSelectionError } = await loadCardanoLib();
 
         const predefinedLevels = feeInfo.levels.filter(l => l.label !== 'custom');
         if (formValues.selectedFee === 'custom') {
@@ -39,7 +39,6 @@ export const composeTransaction =
             });
         }
 
-        const utxos = transformUtxos(account.utxo);
         const outputs = transformUserOutputs(
             formValues.outputs,
             account.tokens,
@@ -49,23 +48,16 @@ export const composeTransaction =
 
         const wrappedResponse: PrecomposedLevelsCardano = {};
         predefinedLevels.forEach(level => {
-            const options = {
-                ...(level.label === 'custom' ? { feeParams: { a: formValues.feePerUnit } } : {}),
-                // debug: true, // prints debug information
-            };
-
             try {
-                const txPlan = coinSelection(
-                    {
-                        utxos,
-                        outputs,
-                        changeAddress: changeAddress.address,
-                        certificates: [],
-                        withdrawals: [],
-                        accountPubKey: account.descriptor,
-                        ttl: getTtl(isTestnet(account.symbol)),
-                    },
-                    options,
+                const txPlan = composeTxPlan(
+                    account.descriptor,
+                    account.utxo,
+                    outputs,
+                    [],
+                    [],
+                    changeAddress.address,
+                    isTestnet(account.symbol),
+                    { feeParams: { a: level.feePerUnit } },
                 );
 
                 const tx =
@@ -88,7 +80,7 @@ export const composeTransaction =
                               ),
                               outputs: trezorUtils.transformToTrezorOutputs(
                                   txPlan.outputs,
-                                  changeAddress.addressParameters,
+                                  getAddressParameters(account, changeAddress.path),
                               ),
                               unsignedTx: txPlan.tx,
                           }
@@ -98,10 +90,11 @@ export const composeTransaction =
                               feePerByte: level.feePerUnit,
                               bytes: 0,
                               totalSpent: txPlan.totalSpent,
-                              max:
-                                  txPlan.max && outputs.find(o => o.setMax && o.assets.length === 0)
-                                      ? formatNetworkAmount(txPlan.max, account.symbol)
-                                      : txPlan.max, // convert lovelace to ADA (for ADA outputs only)
+                              max: formatMaxOutputAmount(
+                                  txPlan.max,
+                                  outputs.find(o => o.setMax && o.assets.length === 0),
+                                  account,
+                              ),
                           };
 
                 wrappedResponse[level.label] = tx;
