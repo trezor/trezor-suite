@@ -126,3 +126,13 @@ export const findAnalyticsEventByType = <T extends SuiteAnalyticsEvent>(
 
         return event;
     });
+
+export const enterPinOnBlindMatrix = (pinEntryNumber: string) => {
+    cy.task('getDebugState').then(state => {
+        // TODO: export and take types from @trezor/user-env-link
+        // @ts-expect-error
+        const index = state.matrix.indexOf(pinEntryNumber) + 1;
+        cy.getTestElement(`@pin/input/${index}`).click();
+        cy.getTestElement('@pin/submit-button').click();
+    });
+};

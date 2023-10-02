@@ -20,6 +20,7 @@ import {
     createAccountFromMyAccounts,
     interceptDataTrezorIo,
     findAnalyticsEventByType,
+    enterPinOnBlindMatrix,
 } from './utils/shortcuts';
 import { interceptInvityApi } from './utils/intercept-invity-api';
 import { SuiteAnalyticsEvent } from '@trezor/suite-analytics';
@@ -115,6 +116,7 @@ declare global {
                 requests: Requests,
                 eventType: T['type'],
             ) => Cypress.Chainable<NonNullable<EventPayload<T>>>;
+            enterPinOnBlindMatrix: (entryPinNumber: string) => Cypress.Chainable<null>;
         }
     }
 }
@@ -158,3 +160,4 @@ Cypress.Commands.add('interceptInvityApi', interceptInvityApi);
 Cypress.Commands.add('interceptDataTrezorIo', interceptDataTrezorIo);
 
 Cypress.Commands.add('findAnalyticsEventByType', findAnalyticsEventByType);
+Cypress.Commands.add('enterPinOnBlindMatrix', enterPinOnBlindMatrix);
