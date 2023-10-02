@@ -13,13 +13,13 @@ import {
     getStakingPath,
     getProtocolMagic,
     getNetworkId,
-    getChangeAddressParameters,
+    getUnusedChangeAddress,
     getDelegationCertificates,
     composeTxPlan,
     isPoolOverSaturated,
     getStakePoolForDelegation,
-    getTtl,
     loadCardanoLib,
+    getAddressParameters,
 } from 'src/utils/wallet/cardanoUtils';
 import { AppState } from 'src/types/suite';
 
@@ -100,7 +100,7 @@ export const useCardanoStaking = (): CardanoStaking => {
             : null;
     const isStakingOnTrezorPool = !isFetchLoading && !isFetchError ? !!currentPool : true; // fallback to true to prevent flickering in UI while we fetch the data
     const isCurrentPoolOversaturated = currentPool ? isPoolOverSaturated(currentPool) : false;
-    const changeAddress = useMemo(() => getChangeAddressParameters(account), [account]);
+    const changeAddress = useMemo(() => getUnusedChangeAddress(account), [account]);
     const prepareTxPlan = useCallback(
         (action: 'delegate' | 'withdrawal') => {
             if (!changeAddress) return null;
@@ -124,14 +124,17 @@ export const useCardanoStaking = (): CardanoStaking => {
                       ]
                     : [];
 
-            return composeTxPlan(
+            const txPlan = composeTxPlan(
                 account.descriptor,
                 account.utxo,
+                [],
                 certificates,
                 withdrawals,
-                changeAddress,
-                getTtl(isTestnet(account.symbol)),
+                changeAddress.address,
+                isTestnet(account.symbol),
             );
+
+            return { txPlan, certificates, withdrawals, changeAddress };
         },
         [
             changeAddress,
@@ -152,7 +155,7 @@ export const useCardanoStaking = (): CardanoStaking => {
             setLoading(true);
             const { CoinSelectionError } = await loadCardanoLib();
             try {
-                const composeRes = await prepareTxPlan(action);
+                const composeRes = prepareTxPlan(action);
                 if (composeRes) {
                     setFee(composeRes.txPlan.fee);
                     setDeposit(composeRes.txPlan.deposit);
@@ -187,7 +190,7 @@ export const useCardanoStaking = (): CardanoStaking => {
 
     const signAndPushTransaction = useCallback(
         async (action: 'delegate' | 'withdrawal') => {
-            const composeRes = await prepareTxPlan(action);
+            const composeRes = prepareTxPlan(action);
             if (!composeRes) return;
 
             const { trezorUtils } = await loadCardanoLib();
@@ -202,7 +205,7 @@ export const useCardanoStaking = (): CardanoStaking => {
                 inputs: trezorUtils.transformToTrezorInputs(txPlan.inputs, account.utxo ?? []),
                 outputs: trezorUtils.transformToTrezorOutputs(
                     txPlan.outputs,
-                    changeAddress.addressParameters,
+                    getAddressParameters(account, changeAddress.path),
                 ),
                 fee: txPlan.fee,
                 protocolMagic: getProtocolMagic(account.symbol),

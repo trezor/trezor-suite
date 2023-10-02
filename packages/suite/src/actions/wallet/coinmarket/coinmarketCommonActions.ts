@@ -18,10 +18,9 @@ import { getUnusedAddressFromAccount } from 'src/utils/wallet/coinmarket/coinmar
 import { Account } from 'src/types/wallet';
 import { ComposedTransactionInfo } from 'src/reducers/wallet/coinmarketReducer';
 import {
-    getStakingPath,
     getProtocolMagic,
     getNetworkId,
-    getAddressType,
+    getAddressParameters,
 } from 'src/utils/wallet/cardanoUtils';
 import { submitRequestForm as envSubmitRequestForm } from 'src/utils/suite/env';
 import * as formDraftActions from 'src/actions/wallet/formDraftActions';
@@ -100,11 +99,7 @@ export const verifyAddress =
                 response = await TrezorConnect.cardanoGetAddress({
                     device,
                     useEmptyPassphrase: device.useEmptyPassphrase,
-                    addressParameters: {
-                        stakingPath: getStakingPath(account),
-                        addressType: getAddressType(account.accountType),
-                        path,
-                    },
+                    addressParameters: getAddressParameters(account, path),
                     protocolMagic: getProtocolMagic(account.symbol),
                     networkId: getNetworkId(account.symbol),
                     derivationType: getDerivationType(account.accountType),

@@ -8,10 +8,9 @@ import { RECEIVE } from 'src/actions/wallet/constants';
 import * as modalActions from 'src/actions/suite/modalActions';
 import { GetState, Dispatch } from 'src/types/suite';
 import {
-    getStakingPath,
     getProtocolMagic,
     getNetworkId,
-    getAddressType,
+    getAddressParameters,
 } from 'src/utils/wallet/cardanoUtils';
 
 export type ReceiveAction =
@@ -85,11 +84,7 @@ export const showAddress =
                 response = await TrezorConnect.cardanoGetAddress({
                     device,
                     useEmptyPassphrase: device.useEmptyPassphrase,
-                    addressParameters: {
-                        stakingPath: getStakingPath(account),
-                        addressType: getAddressType(account.accountType),
-                        path,
-                    },
+                    addressParameters: getAddressParameters(account, path),
                     protocolMagic: getProtocolMagic(account.symbol),
                     networkId: getNetworkId(account.symbol),
                     derivationType: getDerivationType(account.accountType),
