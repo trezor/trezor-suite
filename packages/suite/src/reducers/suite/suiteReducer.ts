@@ -254,7 +254,9 @@ export const selectTorState = (state: SuiteRootState) => {
     };
 };
 
-export const selectDebug = (state: SuiteRootState) => state.suite.settings.debug;
+// TODO: use this selector in all places where we need to check if debug mode is active
+export const selectIsDebugModeActive = (state: SuiteRootState) =>
+    state.suite.settings.debug.showDebugMenu;
 
 export const selectLanguage = (state: SuiteRootState) => state.suite.settings.language;
 

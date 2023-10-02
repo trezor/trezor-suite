@@ -6,17 +6,19 @@ import { ERROR_CODES } from '@trezor/connect/lib/constants/errors';
 
 import { onCancel, openModal } from 'src/actions/suite/modalActions';
 import { DeviceAuthenticationExplainer, Modal, Translation } from 'src/components/suite';
-import { useDispatch } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
+import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
 
 export const AuthenticateDeviceModal = () => {
     const [isLoading, setIsLoading] = useState(false);
     const dispatch = useDispatch();
+    const isDebugModeActive = useSelector(selectIsDebugModeActive);
 
     const handleClick = async () => {
         setIsLoading(true);
         const result = await dispatch(
             checkDeviceAuthenticityThunk({
-                allowDebugKeys: true,
+                allowDebugKeys: isDebugModeActive,
             }),
         );
 
