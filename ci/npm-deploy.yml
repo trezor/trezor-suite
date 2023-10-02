@@ -72,7 +72,7 @@ beta deploy npm connect:
   extends: .deploy npm base
   only:
     refs:
-      - release/connect-v9
+      - /^release\/connect\//
   <<: *packages_matrix_connect
   script:
     - nix-shell --run "yarn && cd ./packages/$PACKAGE && yarn npm publish --tag beta --access public"
@@ -81,7 +81,7 @@ deploy npm connect:
   extends: .deploy npm base
   only:
     refs:
-      - release/connect-v9
+      - /^release\/connect\//
   <<: *packages_matrix_connect
   script:
     - nix-shell --run "cd ./packages/${PACKAGE} && yarn npm publish --access public"
