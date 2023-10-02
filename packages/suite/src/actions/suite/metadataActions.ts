@@ -379,6 +379,19 @@ export const fetchMetadata =
             aesKey,
         );
 
+        // validation of fetched data structure. in theory, user may save any data in metadata file (although it is very unlikely)
+        // so we should make sure that it at least matches AccountLabels types
+        if (entity.type === 'account') {
+            if (!decryptedData.addressLabels) {
+                console.error('fetchMetadata: addressLabels missing in metadata file');
+                decryptedData.addressLabels = {};
+            }
+            if (!decryptedData.outputLabels) {
+                console.error('fetchMetadata: outputLabels missing in metadata file');
+                decryptedData.outputLabels = {};
+            }
+        }
+
         return {
             fileName,
             data: decryptedData,
