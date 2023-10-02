@@ -565,7 +565,8 @@ export const onCall = async (message: CoreMessage) => {
             } catch (error) {
                 // catch wrong pin error
                 // PinMatrixAck returns { code: "Failure_PinInvalid", message: "PIN invalid"}
-                if (error.message === 'PIN invalid' && PIN_TRIES < MAX_PIN_TRIES) {
+                // model 1 with DEBUG_LINK env set returns "protect.c:213:PIN invalid"
+                if (error.message.includes('PIN invalid') && PIN_TRIES < MAX_PIN_TRIES) {
                     PIN_TRIES++;
                     postMessage(
                         createUiMessage(UI.INVALID_PIN, { device: device.toMessageObject() }),
