@@ -18,8 +18,12 @@ export const deviceAuthenticityConfig: DeviceAuthenticityConfig = {
     version: 1,
     timestamp: '2023-09-07T14:00:00+00:00',
     T2B1: {
-        rootPubKeys: [],
-        caPubKeys: [],
+        rootPubKeys: [
+            '04ca97480ac0d7b1e6efafe518cd433cec2bf8ab9822d76eafd34363b55d63e60380bff20acc75cde03cffcb50ab6f8ce70c878e37ebc58ff7cca0a83b16b15fa5',
+        ],
+        caPubKeys: [
+            '04b12efa295ad825a534b7c0bf276e93ad116434426763fa87bfa8a2f12e726906dcf566813f62eba8f8795f94dba0391c53682809cbbd7e4ba01d960b4f1c68f1',
+        ],
         debug: {
             // debug keys are used **only** to validate emulator or dev. firmware
             // use `allowDebugKeys: true` parameter in `authenticateDevice` method
