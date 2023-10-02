@@ -375,6 +375,7 @@ export const networks = {
         },
         support: {
             [DeviceModelInternal.T2T1]: '2.4.3',
+            [DeviceModelInternal.T2B1]: '2.6.1',
         },
         customBackends: ['blockfrost'],
         accountTypes: {
@@ -404,6 +405,7 @@ export const networks = {
         },
         support: {
             [DeviceModelInternal.T2T1]: '2.4.3',
+            [DeviceModelInternal.T2B1]: '2.6.1',
         },
         customBackends: ['blockfrost'],
         accountTypes: {
