@@ -1,7 +1,6 @@
 // @group:settings
 // @retry=2
 
-// this test is only a proof of concept of how to run T2B1 tests in suite and also how to run tests using url in general.
 // TODOS:
 // - focus this test on testing what is different from T2T1: (background image, display rotation)
 // - implement these differences in suite in the first place. both suite and T2B1 will happily accept
@@ -10,7 +9,7 @@
 
 describe('T2B1 - Device settings', () => {
     const startEmuOpts = {
-        url: 'https://gitlab.com/satoshilabs/trezor/trezor-firmware/-/jobs/3104755066/artifacts/raw/core/build/unix/trezor-emu-core',
+        version: '2-master',
         model: 'R', // TODO: T2B1 DeviceModelInternal
         wipe: true,
     };
@@ -39,7 +38,7 @@ describe('T2B1 - Device settings', () => {
         const newDeviceName = 'TREVOR!';
         const editNameBtn = '@settings/device/label-submit';
 
-        cy.task('startEmuFromUrl', startEmuOpts);
+        cy.task('startEmu', startEmuOpts);
         cy.task('setupEmu');
         // navigate to device settings page
         cy.prefixedVisit('/settings/device');
@@ -82,19 +81,18 @@ describe('T2B1 - Device settings', () => {
 
         // change background
         cy.log('change background');
-        cy.getTestElement('@settings/device/homescreen-gallery')
-            .click()
-            .getTestElement(`@modal/gallery/bw_64x128/invader`);
+        cy.getTestElement('@settings/device/homescreen-gallery').click();
+        cy.getTestElement(`@modal/gallery/bw_64x128/circleweb`);
 
-        /* TODO It wants T2T1 images not T1B1 images in this version
-        .click()
-            .getConfirmActionOnDeviceModal();
-        cy.task('pressYes');
-        cy.getConfirmActionOnDeviceModal().should('not.exist'); */
+        // todo: for some reason, this does not work in tests
+        // .click();
+        // cy.getConfirmActionOnDeviceModal();
+        // cy.task('pressYes');
+        // cy.getConfirmActionOnDeviceModal().should('not.exist');
     });
 
     it('backup in settings', () => {
-        cy.task('startEmuFromUrl', startEmuOpts);
+        cy.task('startEmu', startEmuOpts);
         cy.task('setupEmu', { needs_backup: true });
 
         // navigate to device settings page
@@ -108,7 +106,7 @@ describe('T2B1 - Device settings', () => {
     });
 
     it('wipe device', () => {
-        cy.task('startEmuFromUrl', startEmuOpts);
+        cy.task('startEmu', startEmuOpts);
         cy.task('setupEmu');
 
         // navigate to device settings page
