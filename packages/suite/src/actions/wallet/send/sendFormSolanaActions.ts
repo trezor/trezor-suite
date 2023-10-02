@@ -172,7 +172,7 @@ export const signTransaction =
             return;
 
         const { account, network } = selectedAccount;
-        if (account.networkType !== 'solana' || !network.chainId) return;
+        if (account.networkType !== 'solana') return;
 
         const blockhash = getState().wallet.blockchain.sol.blockHash;
 
