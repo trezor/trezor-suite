@@ -10,6 +10,7 @@ import { OnboardingButtonCta, OnboardingStepBox } from 'src/components/onboardin
 import { CollapsibleOnboardingCard } from 'src/components/onboarding/CollapsibleOnboardingCard';
 import { DeviceAuthenticationExplainer, Translation } from 'src/components/suite';
 import { useDispatch, useOnboarding, useSelector } from 'src/hooks/suite';
+import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
 import { SecurityCheckLayout } from './SecurityCheckLayout';
 import { SecurityCheckFail } from './SecurityCheckFail';
 
@@ -26,6 +27,7 @@ const StyledExplainer = styled(DeviceAuthenticationExplainer)`
 export const DeviceAuthenticity = () => {
     const device = useSelector(selectDevice);
     const deviceAuthenticity = useSelector(state => state.device.deviceAuthenticity);
+    const isDebugModeActive = useSelector(selectIsDebugModeActive);
     const { activeStepId, goToNextStep, goToSuite } = useOnboarding();
     const dispatch = useDispatch();
     // Tracking confirmation state with useState because button request is not removed from the array
@@ -72,7 +74,7 @@ export const DeviceAuthenticity = () => {
             setIsSubmitted(false);
             const result = await dispatch(
                 checkDeviceAuthenticityThunk({
-                    allowDebugKeys: true,
+                    allowDebugKeys: isDebugModeActive,
                 }),
             );
             if (result.payload === ERROR_CODES.Method_Cancel) {
