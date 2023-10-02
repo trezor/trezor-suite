@@ -167,6 +167,11 @@ export const api = (controller: any) => ({
         await controller.send({ type: 'emulator-select-num-of-words', num });
         return null;
     },
+    getDebugState: async () => {
+        const { response } = await controller.send({ type: 'emulator-get-debug-state' });
+        return response;
+    },
+
     logTestDetails: async (text: string) => {
         await controller.send({ type: 'log', text });
         return null;
