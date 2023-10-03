@@ -1,6 +1,6 @@
 const name = 'binanceSignTransaction';
 const docs = 'methods/binanceSignTransaction.md';
-const transfer = `{
+const transfer = {
     chain_id: 'Binance-Chain-Nile',
     account_number: 34,
     memo: 'test',
@@ -10,23 +10,19 @@ const transfer = `{
         inputs: [
             {
                 address: 'tbnb1hgm0p7khfk85zpz5v0j8wnej3a90w709zzlffd',
-                coins: [
-                    { amount: 1000000000, denom: 'BNB' },
-                ],
+                coins: [{ amount: 1000000000, denom: 'BNB' }],
             },
         ],
         outputs: [
             {
                 address: 'tbnb1ss57e8sa7xnwq030k2ctr775uac9gjzglqhvpy',
-                coins: [
-                    { amount: 1000000000, denom: 'BNB' },
-                ],
+                coins: [{ amount: 1000000000, denom: 'BNB' }],
             },
         ],
     },
-}`;
+};
 
-const placeOrder = `{
+const placeOrder = {
     chain_id: 'Binance-Chain-Nile',
     account_number: 34,
     memo: '',
@@ -42,9 +38,9 @@ const placeOrder = `{
         symbol: 'ADA.B-B63_BNB',
         timeinforce: 1,
     },
-}`;
+};
 
-const cancelOrder = `{
+const cancelOrder = {
     chain_id: 'Binance-Chain-Nile',
     account_number: 34,
     memo: '',
@@ -55,7 +51,7 @@ const cancelOrder = `{
         sender: 'tbnb1hgm0p7khfk85zpz5v0j8wnej3a90w709zzlffd',
         symbol: 'BCHSV.B-10F_BNB',
     },
-}`;
+};
 
 export default [
     {

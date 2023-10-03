@@ -29,17 +29,17 @@ export default [
             {
                 name: 'callback',
                 type: 'function',
-                value: `function() {
-    return new Promise(function(resolve) {
-        // wait 3 sec. and resolve
-        setTimeout(function() {
-            resolve({
-                challengeHidden: '0123456789abcdef',
-                challengeVisual: 'Login to',
-            })
-        }, 3000)
-    });
-}`,
+                value() {
+                    return new Promise(resolve => {
+                        // wait 3 sec. and resolve
+                        setTimeout(() => {
+                            resolve({
+                                challengeHidden: '0123456789abcdef',
+                                challengeVisual: 'Login to',
+                            });
+                        }, 3000);
+                    });
+                },
             },
         ],
     },
