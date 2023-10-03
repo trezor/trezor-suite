@@ -206,6 +206,7 @@ transport manual:
     TEST_FILE: $TEST_FILE
   script:
     - yarn install --immutable
+    - yarn workspace @trezor/connect-explorer-webextension build
     - docker-compose pull
     - docker-compose up -d trezor-user-env-unix
     - docker-compose run test-run
@@ -265,6 +266,27 @@ connect-popup legacy:
     matrix:
       - CONNECT_VERSION: "9.0.11"
         TEST_FILE: ["methods.test", "browser-support.test", "popup-close-legacy.test"]
+  except:
+    <<: *run_everything_rules
+  when: manual
+
+connect-popup-webextension:
+  extends: .e2e connect-popup
+  variables:
+    IS_WEBEXTENSION: "true"
+  dependencies:
+    - install
+    - connect-web build
+  only:
+    <<: *run_everything_rules
+
+connect-popup-webextension manual:
+  extends: .e2e connect-popup
+  variables:
+    IS_WEBEXTENSION: "true"
+  needs:
+    - install
+    - connect-web build
   except:
     <<: *run_everything_rules
   when: manual
