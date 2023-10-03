@@ -6672,7 +6672,7 @@ export default defineMessages({
     },
     TR_YOU_HAVE_CONNECTED: {
         id: 'TR_YOU_HAVE_CONNECTED',
-        defaultMessage: 'You have connected a',
+        defaultMessage: "You've connected a",
     },
     TR_CONNECTED_DIFFERENT_DEVICE: {
         id: 'TR_CONNECTED_DIFFERENT_DEVICE',
@@ -6690,15 +6690,15 @@ export default defineMessages({
     },
     TR_ONBOARDING_DEVICE_CHECK_1: {
         id: 'TR_ONBOARDING_DEVICE_CHECK_1',
-        defaultMessage: 'My <strong>hologram</strong> was intact and untampered with.',
+        defaultMessage: 'The device <strong>security seal</strong> was complete and undamaged.',
     },
     TR_ONBOARDING_DEVICE_CHECK_2: {
         id: 'TR_ONBOARDING_DEVICE_CHECK_2',
-        defaultMessage: 'I bought from the official shop or a trusted reseller.',
+        defaultMessage: 'My device was bought from the official Trezor Shop or a trusted reseller.',
     },
     TR_ONBOARDING_DEVICE_CHECK_3: {
         id: 'TR_ONBOARDING_DEVICE_CHECK_3',
-        defaultMessage: 'Package wasn’t tampered with.',
+        defaultMessage: 'The device package was intact and untampered with.',
     },
     TR_ONBOARDING_DEVICE_CHECK_4: {
         id: 'TR_ONBOARDING_DEVICE_CHECK_4',
@@ -6708,7 +6708,7 @@ export default defineMessages({
     },
     TR_I_HAVE_NOT_USED_IT: {
         id: 'TR_I_HAVE_NOT_USED_IT',
-        defaultMessage: 'No, I have not used it',
+        defaultMessage: "No, I haven't",
     },
     TR_I_HAVE_DOUBTS: {
         id: 'TR_I_HAVE_DOUBTS',
@@ -6721,7 +6721,7 @@ export default defineMessages({
     TR_DEVICE_COMPROMISED_TEXT: {
         id: 'TR_DEVICE_COMPROMISED_TEXT',
         defaultMessage:
-            "It's better to play it safe. Just reach out to Trezor Support, and they'll help you figure out what's going on with your device.",
+            "Contact Trezor Support to figure out what's going on with your device and what to do next.",
     },
     TR_DISCONNECT_DEVICE: {
         id: 'TR_DISCONNECT_DEVICE',
@@ -6729,12 +6729,11 @@ export default defineMessages({
     },
     TR_AVOID_USING_DEVICE: {
         id: 'TR_AVOID_USING_DEVICE',
-        defaultMessage: 'Avoid using the device or sending any funds to it.',
+        defaultMessage: 'Avoid using this device or sending any funds to it.',
     },
     TR_USE_CHAT: {
         id: 'TR_USE_CHAT',
-        defaultMessage:
-            'Use the <b>Chat</b> option on the top right of the page or click below to get help.',
+        defaultMessage: 'Click below and use the <b>Chat</b> option on the next page.',
     },
     TR_CONTACT_TREZOR_SUPPORT: {
         id: 'TR_CONTACT_TREZOR_SUPPORT',
@@ -6750,26 +6749,26 @@ export default defineMessages({
     },
     TR_AUTHENTICATE_DEVICE_DESCRIPTION: {
         id: 'TR_AUTHENTICATE_DEVICE_DESCRIPTION',
-        defaultMessage: 'We just want to make sure there’s no funny business with your Trezor.',
+        defaultMessage: 'We just want to make sure that your Trezor is legit.',
     },
     TR_DEVICE_AUTHENTICITY_ITEM_1: {
         id: 'TR_DEVICE_AUTHENTICITY_ITEM_1',
         defaultMessage:
-            "We'll check the integrity of your Trezor device and make sure it's safe to use.",
+            "This check is a must-do step to ensure your device's reliability, integrity, and secure use.",
     },
     TR_DEVICE_AUTHENTICITY_ITEM_2: {
         id: 'TR_DEVICE_AUTHENTICITY_ITEM_2',
         defaultMessage:
-            'This also confirms that the chip inside your hardware wallet was produced by Trezor.',
+            'This confirms that the chip inside your hardware wallet is genuine and from Trezor.',
     },
     TR_DEVICE_AUTHENTICITY_ITEM_3: {
         id: 'TR_DEVICE_AUTHENTICITY_ITEM_3',
         defaultMessage:
-            "Once your device has been given a clean bill of health, you're all set to Trezor full steam ahead.",
+            'Once your device has been given a clean bill of health, you’re all set to Trezor with confidence.',
     },
     TR_START_CHECK: {
         id: 'TR_START_CHECK',
-        defaultMessage: 'Start check',
+        defaultMessage: 'Start',
     },
     TR_CONGRATS: {
         id: 'TR_CONGRATS',
@@ -6777,21 +6776,20 @@ export default defineMessages({
     },
     TR_DEVICE_AUTHENTICITY_SUCCESS_DESCRIPTION: {
         id: 'TR_DEVICE_AUTHENTICITY_SUCCESS_DESCRIPTION',
-        defaultMessage:
-            'Your {deviceName} is ready to rock!{br}Learn how to use your device like a pro.',
+        defaultMessage: 'Your {deviceName} is ready to go!',
     },
     TR_CHECK_DEVICE_ORIGIN_TITLE: {
         id: 'TR_CHECK_DEVICE_ORIGIN_TITLE',
-        defaultMessage: "Check device's origin",
+        defaultMessage: 'Check device',
     },
     TR_CHECK_DEVICE_ORIGIN_DESCRIPTION: {
         id: 'TR_CHECK_DEVICE_ORIGIN_DESCRIPTION',
         defaultMessage:
-            "This will tell you whether it's been originally manufacture by Trezor. Still might be fucked.",
+            "We'll verify the integrity of your Trezor device, ensuring its safety and confirming the authenticity of the chip.",
     },
     TR_CHECK_ORIGIN: {
         id: 'TR_CHECK_ORIGIN',
-        defaultMessage: 'Check origin',
+        defaultMessage: 'Check device',
     },
     TR_ONBOARDING_COINS_STEP: {
         id: 'TR_ONBOARDING_COINS_STEP',
