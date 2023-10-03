@@ -10201,8 +10201,10 @@ __metadata:
     "@trezor/device-utils": "workspace:*"
     "@trezor/e2e-utils": "workspace:*"
     "@trezor/env-utils": "workspace:*"
+    "@trezor/protobuf": "workspace:*"
     "@trezor/suite": "workspace:*"
     "@trezor/suite-analytics": "workspace:*"
+    "@trezor/transport": "workspace:*"
     "@trezor/trezor-user-env-link": "workspace:*"
     "@trezor/utils": "workspace:*"
     "@types/chrome-remote-interface": ^0.31.10
