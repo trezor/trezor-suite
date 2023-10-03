@@ -8,6 +8,7 @@ import {
     parseCapabilities,
     parseRevision,
 } from '../deviceFeaturesUtils';
+import { DeviceModelInternal } from '../../types';
 
 describe('utils/deviceFeaturesUtils', () => {
     beforeEach(() => {
@@ -101,7 +102,9 @@ describe('utils/deviceFeaturesUtils', () => {
             minor_version: 3,
             patch_version: 3,
             capabilities: undefined,
+            internal_model: DeviceModelInternal.T2T1,
         };
+
         // @ts-expect-error incomplete features
         featT2T1.capabilities = parseCapabilities(featT2T1);
 
@@ -110,6 +113,7 @@ describe('utils/deviceFeaturesUtils', () => {
             minor_version: 8,
             patch_version: 3,
             capabilities: undefined,
+            internal_model: DeviceModelInternal.T1B1,
         };
         // @ts-expect-error incomplete features
         featT1B1.capabilities = parseCapabilities(featT1B1);
