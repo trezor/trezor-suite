@@ -13,6 +13,10 @@
                 "show_display": {
                     "type": "bool",
                     "id": 2
+                },
+                "chunkify": {
+                    "type": "bool",
+                    "id": 3
                 }
             }
         },
@@ -87,6 +91,10 @@
                     "rule": "required",
                     "type": "sint64",
                     "id": 7
+                },
+                "chunkify": {
+                    "type": "bool",
+                    "id": 8
                 }
             }
         },
@@ -104,6 +112,10 @@
                     "rule": "repeated",
                     "type": "BinanceInputOutput",
                     "id": 2
+                },
+                "chunkify": {
+                    "type": "bool",
+                    "id": 3
                 }
             },
             "nested": {
@@ -410,6 +422,10 @@
                 "ignore_xpub_magic": {
                     "type": "bool",
                     "id": 6
+                },
+                "chunkify": {
+                    "type": "bool",
+                    "id": 7
                 }
             }
         },
@@ -620,6 +636,10 @@
                 "coinjoin_request": {
                     "type": "CoinJoinRequest",
                     "id": 14
+                },
+                "chunkify": {
+                    "type": "bool",
+                    "id": 15
                 }
             },
             "nested": {
@@ -1810,6 +1830,10 @@
                     "rule": "required",
                     "type": "CardanoDerivationType",
                     "id": 6
+                },
+                "chunkify": {
+                    "type": "bool",
+                    "id": 7
                 }
             }
         },
@@ -1965,6 +1989,10 @@
                     "options": {
                         "default": 0
                     }
+                },
+                "chunkify": {
+                    "type": "bool",
+                    "id": 22
                 }
             }
         },
@@ -3119,6 +3147,10 @@
                 "show_display": {
                     "type": "bool",
                     "id": 2
+                },
+                "chunkify": {
+                    "type": "bool",
+                    "id": 3
                 }
             }
         },
@@ -3160,6 +3192,10 @@
                     "rule": "required",
                     "type": "uint32",
                     "id": 4
+                },
+                "chunkify": {
+                    "type": "bool",
+                    "id": 5
                 }
             },
             "nested": {
@@ -3921,6 +3957,10 @@
                 "encoded_network": {
                     "type": "bytes",
                     "id": 3
+                },
+                "chunkify": {
+                    "type": "bool",
+                    "id": 4
                 }
             }
         },
@@ -4006,6 +4046,10 @@
                 "definitions": {
                     "type": "EthereumDefinitions",
                     "id": 12
+                },
+                "chunkify": {
+                    "type": "bool",
+                    "id": 13
                 }
             }
         },
@@ -4076,6 +4120,10 @@
                 "definitions": {
                     "type": "EthereumDefinitions",
                     "id": 12
+                },
+                "chunkify": {
+                    "type": "bool",
+                    "id": 13
                 }
             },
             "nested": {
@@ -4455,6 +4503,10 @@
                 "homescreen_height": {
                     "type": "uint32",
                     "id": 48
+                },
+                "bootloader_locked": {
+                    "type": "bool",
+                    "id": 49
                 }
             },
             "nested": {
@@ -5170,6 +5222,10 @@
                 "payment_id": {
                     "type": "bytes",
                     "id": 6
+                },
+                "chunkify": {
+                    "type": "bool",
+                    "id": 7
                 }
             }
         },
@@ -5309,6 +5365,10 @@
                         "monero_version": {
                             "type": "bytes",
                             "id": 15
+                        },
+                        "chunkify": {
+                            "type": "bool",
+                            "id": 16
                         }
                     }
                 }
@@ -5919,6 +5979,10 @@
                 "show_display": {
                     "type": "bool",
                     "id": 3
+                },
+                "chunkify": {
+                    "type": "bool",
+                    "id": 4
                 }
             }
         },
@@ -5969,6 +6033,10 @@
                 "importance_transfer": {
                     "type": "NEMImportanceTransfer",
                     "id": 9
+                },
+                "chunkify": {
+                    "type": "bool",
+                    "id": 10
                 }
             },
             "nested": {
@@ -6318,6 +6386,1115 @@
                     "rule": "required",
                     "type": "bytes",
                     "id": 1
+                }
+            }
+        },
+        "RippleGetAddress": {
+            "fields": {
+                "address_n": {
+                    "rule": "repeated",
+                    "type": "uint32",
+                    "id": 1,
+                    "options": {
+                        "packed": false
+                    }
+                },
+                "show_display": {
+                    "type": "bool",
+                    "id": 2
+                },
+                "chunkify": {
+                    "type": "bool",
+                    "id": 3
+                }
+            }
+        },
+        "RippleAddress": {
+            "fields": {
+                "address": {
+                    "rule": "required",
+                    "type": "string",
+                    "id": 1
+                }
+            }
+        },
+        "RippleSignTx": {
+            "fields": {
+                "address_n": {
+                    "rule": "repeated",
+                    "type": "uint32",
+                    "id": 1,
+                    "options": {
+                        "packed": false
+                    }
+                },
+                "fee": {
+                    "rule": "required",
+                    "type": "uint64",
+                    "id": 2
+                },
+                "flags": {
+                    "type": "uint32",
+                    "id": 3,
+                    "options": {
+                        "default": 0
+                    }
+                },
+                "sequence": {
+                    "rule": "required",
+                    "type": "uint32",
+                    "id": 4
+                },
+                "last_ledger_sequence": {
+                    "type": "uint32",
+                    "id": 5
+                },
+                "payment": {
+                    "rule": "required",
+                    "type": "RipplePayment",
+                    "id": 6
+                },
+                "chunkify": {
+                    "type": "bool",
+                    "id": 7
+                }
+            },
+            "nested": {
+                "RipplePayment": {
+                    "fields": {
+                        "amount": {
+                            "rule": "required",
+                            "type": "uint64",
+                            "id": 1
+                        },
+                        "destination": {
+                            "rule": "required",
+                            "type": "string",
+                            "id": 2
+                        },
+                        "destination_tag": {
+                            "type": "uint32",
+                            "id": 3
+                        }
+                    }
+                }
+            }
+        },
+        "RippleSignedTx": {
+            "fields": {
+                "signature": {
+                    "rule": "required",
+                    "type": "bytes",
+                    "id": 1
+                },
+                "serialized_tx": {
+                    "rule": "required",
+                    "type": "bytes",
+                    "id": 2
+                }
+            }
+        },
+        "StellarAssetType": {
+            "values": {
+                "NATIVE": 0,
+                "ALPHANUM4": 1,
+                "ALPHANUM12": 2
+            }
+        },
+        "StellarAsset": {
+            "fields": {
+                "type": {
+                    "rule": "required",
+                    "type": "StellarAssetType",
+                    "id": 1
+                },
+                "code": {
+                    "type": "string",
+                    "id": 2
+                },
+                "issuer": {
+                    "type": "string",
+                    "id": 3
+                }
+            }
+        },
+        "StellarGetAddress": {
+            "fields": {
+                "address_n": {
+                    "rule": "repeated",
+                    "type": "uint32",
+                    "id": 1,
+                    "options": {
+                        "packed": false
+                    }
+                },
+                "show_display": {
+                    "type": "bool",
+                    "id": 2
+                },
+                "chunkify": {
+                    "type": "bool",
+                    "id": 3
+                }
+            }
+        },
+        "StellarAddress": {
+            "fields": {
+                "address": {
+                    "rule": "required",
+                    "type": "string",
+                    "id": 1
+                }
+            }
+        },
+        "StellarSignTx": {
+            "fields": {
+                "address_n": {
+                    "rule": "repeated",
+                    "type": "uint32",
+                    "id": 2,
+                    "options": {
+                        "packed": false
+                    }
+                },
+                "network_passphrase": {
+                    "rule": "required",
+                    "type": "string",
+                    "id": 3
+                },
+                "source_account": {
+                    "rule": "required",
+                    "type": "string",
+                    "id": 4
+                },
+                "fee": {
+                    "rule": "required",
+                    "type": "uint32",
+                    "id": 5
+                },
+                "sequence_number": {
+                    "rule": "required",
+                    "type": "uint64",
+                    "id": 6
+                },
+                "timebounds_start": {
+                    "rule": "required",
+                    "type": "uint32",
+                    "id": 8
+                },
+                "timebounds_end": {
+                    "rule": "required",
+                    "type": "uint32",
+                    "id": 9
+                },
+                "memo_type": {
+                    "rule": "required",
+                    "type": "StellarMemoType",
+                    "id": 10
+                },
+                "memo_text": {
+                    "type": "string",
+                    "id": 11
+                },
+                "memo_id": {
+                    "type": "uint64",
+                    "id": 12
+                },
+                "memo_hash": {
+                    "type": "bytes",
+                    "id": 13
+                },
+                "num_operations": {
+                    "rule": "required",
+                    "type": "uint32",
+                    "id": 14
+                }
+            },
+            "nested": {
+                "StellarMemoType": {
+                    "values": {
+                        "NONE": 0,
+                        "TEXT": 1,
+                        "ID": 2,
+                        "HASH": 3,
+                        "RETURN": 4
+                    }
+                }
+            }
+        },
+        "StellarTxOpRequest": {
+            "fields": {}
+        },
+        "StellarPaymentOp": {
+            "fields": {
+                "source_account": {
+                    "type": "string",
+                    "id": 1
+                },
+                "destination_account": {
+                    "rule": "required",
+                    "type": "string",
+                    "id": 2
+                },
+                "asset": {
+                    "rule": "required",
+                    "type": "StellarAsset",
+                    "id": 3
+                },
+                "amount": {
+                    "rule": "required",
+                    "type": "sint64",
+                    "id": 4
+                }
+            }
+        },
+        "StellarCreateAccountOp": {
+            "fields": {
+                "source_account": {
+                    "type": "string",
+                    "id": 1
+                },
+                "new_account": {
+                    "rule": "required",
+                    "type": "string",
+                    "id": 2
+                },
+                "starting_balance": {
+                    "rule": "required",
+                    "type": "sint64",
+                    "id": 3
+                }
+            }
+        },
+        "StellarPathPaymentStrictReceiveOp": {
+            "fields": {
+                "source_account": {
+                    "type": "string",
+                    "id": 1
+                },
+                "send_asset": {
+                    "rule": "required",
+                    "type": "StellarAsset",
+                    "id": 2
+                },
+                "send_max": {
+                    "rule": "required",
+                    "type": "sint64",
+                    "id": 3
+                },
+                "destination_account": {
+                    "rule": "required",
+                    "type": "string",
+                    "id": 4
+                },
+                "destination_asset": {
+                    "rule": "required",
+                    "type": "StellarAsset",
+                    "id": 5
+                },
+                "destination_amount": {
+                    "rule": "required",
+                    "type": "sint64",
+                    "id": 6
+                },
+                "paths": {
+                    "rule": "repeated",
+                    "type": "StellarAsset",
+                    "id": 7
+                }
+            }
+        },
+        "StellarPathPaymentStrictSendOp": {
+            "fields": {
+                "source_account": {
+                    "type": "string",
+                    "id": 1
+                },
+                "send_asset": {
+                    "rule": "required",
+                    "type": "StellarAsset",
+                    "id": 2
+                },
+                "send_amount": {
+                    "rule": "required",
+                    "type": "sint64",
+                    "id": 3
+                },
+                "destination_account": {
+                    "rule": "required",
+                    "type": "string",
+                    "id": 4
+                },
+                "destination_asset": {
+                    "rule": "required",
+                    "type": "StellarAsset",
+                    "id": 5
+                },
+                "destination_min": {
+                    "rule": "required",
+                    "type": "sint64",
+                    "id": 6
+                },
+                "paths": {
+                    "rule": "repeated",
+                    "type": "StellarAsset",
+                    "id": 7
+                }
+            }
+        },
+        "StellarManageSellOfferOp": {
+            "fields": {
+                "source_account": {
+                    "type": "string",
+                    "id": 1
+                },
+                "selling_asset": {
+                    "rule": "required",
+                    "type": "StellarAsset",
+                    "id": 2
+                },
+                "buying_asset": {
+                    "rule": "required",
+                    "type": "StellarAsset",
+                    "id": 3
+                },
+                "amount": {
+                    "rule": "required",
+                    "type": "sint64",
+                    "id": 4
+                },
+                "price_n": {
+                    "rule": "required",
+                    "type": "uint32",
+                    "id": 5
+                },
+                "price_d": {
+                    "rule": "required",
+                    "type": "uint32",
+                    "id": 6
+                },
+                "offer_id": {
+                    "rule": "required",
+                    "type": "uint64",
+                    "id": 7
+                }
+            }
+        },
+        "StellarManageBuyOfferOp": {
+            "fields": {
+                "source_account": {
+                    "type": "string",
+                    "id": 1
+                },
+                "selling_asset": {
+                    "rule": "required",
+                    "type": "StellarAsset",
+                    "id": 2
+                },
+                "buying_asset": {
+                    "rule": "required",
+                    "type": "StellarAsset",
+                    "id": 3
+                },
+                "amount": {
+                    "rule": "required",
+                    "type": "sint64",
+                    "id": 4
+                },
+                "price_n": {
+                    "rule": "required",
+                    "type": "uint32",
+                    "id": 5
+                },
+                "price_d": {
+                    "rule": "required",
+                    "type": "uint32",
+                    "id": 6
+                },
+                "offer_id": {
+                    "rule": "required",
+                    "type": "uint64",
+                    "id": 7
+                }
+            }
+        },
+        "StellarCreatePassiveSellOfferOp": {
+            "fields": {
+                "source_account": {
+                    "type": "string",
+                    "id": 1
+                },
+                "selling_asset": {
+                    "rule": "required",
+                    "type": "StellarAsset",
+                    "id": 2
+                },
+                "buying_asset": {
+                    "rule": "required",
+                    "type": "StellarAsset",
+                    "id": 3
+                },
+                "amount": {
+                    "rule": "required",
+                    "type": "sint64",
+                    "id": 4
+                },
+                "price_n": {
+                    "rule": "required",
+                    "type": "uint32",
+                    "id": 5
+                },
+                "price_d": {
+                    "rule": "required",
+                    "type": "uint32",
+                    "id": 6
+                }
+            }
+        },
+        "StellarSetOptionsOp": {
+            "fields": {
+                "source_account": {
+                    "type": "string",
+                    "id": 1
+                },
+                "inflation_destination_account": {
+                    "type": "string",
+                    "id": 2
+                },
+                "clear_flags": {
+                    "type": "uint32",
+                    "id": 3
+                },
+                "set_flags": {
+                    "type": "uint32",
+                    "id": 4
+                },
+                "master_weight": {
+                    "type": "uint32",
+                    "id": 5
+                },
+                "low_threshold": {
+                    "type": "uint32",
+                    "id": 6
+                },
+                "medium_threshold": {
+                    "type": "uint32",
+                    "id": 7
+                },
+                "high_threshold": {
+                    "type": "uint32",
+                    "id": 8
+                },
+                "home_domain": {
+                    "type": "string",
+                    "id": 9
+                },
+                "signer_type": {
+                    "type": "StellarSignerType",
+                    "id": 10
+                },
+                "signer_key": {
+                    "type": "bytes",
+                    "id": 11
+                },
+                "signer_weight": {
+                    "type": "uint32",
+                    "id": 12
+                }
+            },
+            "nested": {
+                "StellarSignerType": {
+                    "values": {
+                        "ACCOUNT": 0,
+                        "PRE_AUTH": 1,
+                        "HASH": 2
+                    }
+                }
+            }
+        },
+        "StellarChangeTrustOp": {
+            "fields": {
+                "source_account": {
+                    "type": "string",
+                    "id": 1
+                },
+                "asset": {
+                    "rule": "required",
+                    "type": "StellarAsset",
+                    "id": 2
+                },
+                "limit": {
+                    "rule": "required",
+                    "type": "uint64",
+                    "id": 3
+                }
+            }
+        },
+        "StellarAllowTrustOp": {
+            "fields": {
+                "source_account": {
+                    "type": "string",
+                    "id": 1
+                },
+                "trusted_account": {
+                    "rule": "required",
+                    "type": "string",
+                    "id": 2
+                },
+                "asset_type": {
+                    "rule": "required",
+                    "type": "StellarAssetType",
+                    "id": 3
+                },
+                "asset_code": {
+                    "type": "string",
+                    "id": 4
+                },
+                "is_authorized": {
+                    "rule": "required",
+                    "type": "bool",
+                    "id": 5
+                }
+            }
+        },
+        "StellarAccountMergeOp": {
+            "fields": {
+                "source_account": {
+                    "type": "string",
+                    "id": 1
+                },
+                "destination_account": {
+                    "rule": "required",
+                    "type": "string",
+                    "id": 2
+                }
+            }
+        },
+        "StellarManageDataOp": {
+            "fields": {
+                "source_account": {
+                    "type": "string",
+                    "id": 1
+                },
+                "key": {
+                    "rule": "required",
+                    "type": "string",
+                    "id": 2
+                },
+                "value": {
+                    "type": "bytes",
+                    "id": 3
+                }
+            }
+        },
+        "StellarBumpSequenceOp": {
+            "fields": {
+                "source_account": {
+                    "type": "string",
+                    "id": 1
+                },
+                "bump_to": {
+                    "rule": "required",
+                    "type": "uint64",
+                    "id": 2
+                }
+            }
+        },
+        "StellarSignedTx": {
+            "fields": {
+                "public_key": {
+                    "rule": "required",
+                    "type": "bytes",
+                    "id": 1
+                },
+                "signature": {
+                    "rule": "required",
+                    "type": "bytes",
+                    "id": 2
+                }
+            }
+        },
+        "TezosGetAddress": {
+            "fields": {
+                "address_n": {
+                    "rule": "repeated",
+                    "type": "uint32",
+                    "id": 1,
+                    "options": {
+                        "packed": false
+                    }
+                },
+                "show_display": {
+                    "type": "bool",
+                    "id": 2
+                },
+                "chunkify": {
+                    "type": "bool",
+                    "id": 3
+                }
+            }
+        },
+        "TezosAddress": {
+            "fields": {
+                "address": {
+                    "rule": "required",
+                    "type": "string",
+                    "id": 1
+                }
+            }
+        },
+        "TezosGetPublicKey": {
+            "fields": {
+                "address_n": {
+                    "rule": "repeated",
+                    "type": "uint32",
+                    "id": 1,
+                    "options": {
+                        "packed": false
+                    }
+                },
+                "show_display": {
+                    "type": "bool",
+                    "id": 2
+                },
+                "chunkify": {
+                    "type": "bool",
+                    "id": 3
+                }
+            }
+        },
+        "TezosPublicKey": {
+            "fields": {
+                "public_key": {
+                    "rule": "required",
+                    "type": "string",
+                    "id": 1
+                }
+            }
+        },
+        "TezosSignTx": {
+            "fields": {
+                "address_n": {
+                    "rule": "repeated",
+                    "type": "uint32",
+                    "id": 1,
+                    "options": {
+                        "packed": false
+                    }
+                },
+                "branch": {
+                    "rule": "required",
+                    "type": "bytes",
+                    "id": 2
+                },
+                "reveal": {
+                    "type": "TezosRevealOp",
+                    "id": 3
+                },
+                "transaction": {
+                    "type": "TezosTransactionOp",
+                    "id": 4
+                },
+                "origination": {
+                    "type": "TezosOriginationOp",
+                    "id": 5
+                },
+                "delegation": {
+                    "type": "TezosDelegationOp",
+                    "id": 6
+                },
+                "proposal": {
+                    "type": "TezosProposalOp",
+                    "id": 7
+                },
+                "ballot": {
+                    "type": "TezosBallotOp",
+                    "id": 8
+                },
+                "chunkify": {
+                    "type": "bool",
+                    "id": 9
+                }
+            },
+            "nested": {
+                "TezosContractID": {
+                    "fields": {
+                        "tag": {
+                            "rule": "required",
+                            "type": "TezosContractType",
+                            "id": 1
+                        },
+                        "hash": {
+                            "rule": "required",
+                            "type": "bytes",
+                            "id": 2
+                        }
+                    },
+                    "nested": {
+                        "TezosContractType": {
+                            "values": {
+                                "Implicit": 0,
+                                "Originated": 1
+                            }
+                        }
+                    }
+                },
+                "TezosRevealOp": {
+                    "fields": {
+                        "source": {
+                            "rule": "required",
+                            "type": "bytes",
+                            "id": 7
+                        },
+                        "fee": {
+                            "rule": "required",
+                            "type": "uint64",
+                            "id": 2
+                        },
+                        "counter": {
+                            "rule": "required",
+                            "type": "uint64",
+                            "id": 3
+                        },
+                        "gas_limit": {
+                            "rule": "required",
+                            "type": "uint64",
+                            "id": 4
+                        },
+                        "storage_limit": {
+                            "rule": "required",
+                            "type": "uint64",
+                            "id": 5
+                        },
+                        "public_key": {
+                            "rule": "required",
+                            "type": "bytes",
+                            "id": 6
+                        }
+                    }
+                },
+                "TezosTransactionOp": {
+                    "fields": {
+                        "source": {
+                            "rule": "required",
+                            "type": "bytes",
+                            "id": 9
+                        },
+                        "fee": {
+                            "rule": "required",
+                            "type": "uint64",
+                            "id": 2
+                        },
+                        "counter": {
+                            "rule": "required",
+                            "type": "uint64",
+                            "id": 3
+                        },
+                        "gas_limit": {
+                            "rule": "required",
+                            "type": "uint64",
+                            "id": 4
+                        },
+                        "storage_limit": {
+                            "rule": "required",
+                            "type": "uint64",
+                            "id": 5
+                        },
+                        "amount": {
+                            "rule": "required",
+                            "type": "uint64",
+                            "id": 6
+                        },
+                        "destination": {
+                            "rule": "required",
+                            "type": "TezosContractID",
+                            "id": 7
+                        },
+                        "parameters": {
+                            "type": "bytes",
+                            "id": 8
+                        },
+                        "parameters_manager": {
+                            "type": "TezosParametersManager",
+                            "id": 10
+                        }
+                    },
+                    "nested": {
+                        "TezosParametersManager": {
+                            "fields": {
+                                "set_delegate": {
+                                    "type": "bytes",
+                                    "id": 1
+                                },
+                                "cancel_delegate": {
+                                    "type": "bool",
+                                    "id": 2
+                                },
+                                "transfer": {
+                                    "type": "TezosManagerTransfer",
+                                    "id": 3
+                                }
+                            },
+                            "nested": {
+                                "TezosManagerTransfer": {
+                                    "fields": {
+                                        "destination": {
+                                            "rule": "required",
+                                            "type": "TezosContractID",
+                                            "id": 1
+                                        },
+                                        "amount": {
+                                            "rule": "required",
+                                            "type": "uint64",
+                                            "id": 2
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "TezosOriginationOp": {
+                    "fields": {
+                        "source": {
+                            "rule": "required",
+                            "type": "bytes",
+                            "id": 12
+                        },
+                        "fee": {
+                            "rule": "required",
+                            "type": "uint64",
+                            "id": 2
+                        },
+                        "counter": {
+                            "rule": "required",
+                            "type": "uint64",
+                            "id": 3
+                        },
+                        "gas_limit": {
+                            "rule": "required",
+                            "type": "uint64",
+                            "id": 4
+                        },
+                        "storage_limit": {
+                            "rule": "required",
+                            "type": "uint64",
+                            "id": 5
+                        },
+                        "manager_pubkey": {
+                            "type": "bytes",
+                            "id": 6
+                        },
+                        "balance": {
+                            "rule": "required",
+                            "type": "uint64",
+                            "id": 7
+                        },
+                        "spendable": {
+                            "type": "bool",
+                            "id": 8
+                        },
+                        "delegatable": {
+                            "type": "bool",
+                            "id": 9
+                        },
+                        "delegate": {
+                            "type": "bytes",
+                            "id": 10
+                        },
+                        "script": {
+                            "rule": "required",
+                            "type": "bytes",
+                            "id": 11
+                        }
+                    }
+                },
+                "TezosDelegationOp": {
+                    "fields": {
+                        "source": {
+                            "rule": "required",
+                            "type": "bytes",
+                            "id": 7
+                        },
+                        "fee": {
+                            "rule": "required",
+                            "type": "uint64",
+                            "id": 2
+                        },
+                        "counter": {
+                            "rule": "required",
+                            "type": "uint64",
+                            "id": 3
+                        },
+                        "gas_limit": {
+                            "rule": "required",
+                            "type": "uint64",
+                            "id": 4
+                        },
+                        "storage_limit": {
+                            "rule": "required",
+                            "type": "uint64",
+                            "id": 5
+                        },
+                        "delegate": {
+                            "rule": "required",
+                            "type": "bytes",
+                            "id": 6
+                        }
+                    }
+                },
+                "TezosProposalOp": {
+                    "fields": {
+                        "source": {
+                            "rule": "required",
+                            "type": "bytes",
+                            "id": 1
+                        },
+                        "period": {
+                            "rule": "required",
+                            "type": "uint64",
+                            "id": 2
+                        },
+                        "proposals": {
+                            "rule": "repeated",
+                            "type": "bytes",
+                            "id": 4
+                        }
+                    }
+                },
+                "TezosBallotOp": {
+                    "fields": {
+                        "source": {
+                            "rule": "required",
+                            "type": "bytes",
+                            "id": 1
+                        },
+                        "period": {
+                            "rule": "required",
+                            "type": "uint64",
+                            "id": 2
+                        },
+                        "proposal": {
+                            "rule": "required",
+                            "type": "bytes",
+                            "id": 3
+                        },
+                        "ballot": {
+                            "rule": "required",
+                            "type": "TezosBallotType",
+                            "id": 4
+                        }
+                    },
+                    "nested": {
+                        "TezosBallotType": {
+                            "values": {
+                                "Yay": 0,
+                                "Nay": 1,
+                                "Pass": 2
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "TezosSignedTx": {
+            "fields": {
+                "signature": {
+                    "rule": "required",
+                    "type": "string",
+                    "id": 1
+                },
+                "sig_op_contents": {
+                    "rule": "required",
+                    "type": "bytes",
+                    "id": 2
+                },
+                "operation_hash": {
+                    "rule": "required",
+                    "type": "string",
+                    "id": 3
+                }
+            }
+        },
+        "WebAuthnListResidentCredentials": {
+            "fields": {}
+        },
+        "WebAuthnAddResidentCredential": {
+            "fields": {
+                "credential_id": {
+                    "type": "bytes",
+                    "id": 1
+                }
+            }
+        },
+        "WebAuthnRemoveResidentCredential": {
+            "fields": {
+                "index": {
+                    "type": "uint32",
+                    "id": 1
+                }
+            }
+        },
+        "WebAuthnCredentials": {
+            "fields": {
+                "credentials": {
+                    "rule": "repeated",
+                    "type": "WebAuthnCredential",
+                    "id": 1
+                }
+            },
+            "nested": {
+                "WebAuthnCredential": {
+                    "fields": {
+                        "index": {
+                            "type": "uint32",
+                            "id": 1
+                        },
+                        "id": {
+                            "type": "bytes",
+                            "id": 2
+                        },
+                        "rp_id": {
+                            "type": "string",
+                            "id": 3
+                        },
+                        "rp_name": {
+                            "type": "string",
+                            "id": 4
+                        },
+                        "user_id": {
+                            "type": "bytes",
+                            "id": 5
+                        },
+                        "user_name": {
+                            "type": "string",
+                            "id": 6
+                        },
+                        "user_display_name": {
+                            "type": "string",
+                            "id": 7
+                        },
+                        "creation_time": {
+                            "type": "uint32",
+                            "id": 8
+                        },
+                        "hmac_secret": {
+                            "type": "bool",
+                            "id": 9
+                        },
+                        "use_sign_count": {
+                            "type": "bool",
+                            "id": 10
+                        },
+                        "algorithm": {
+                            "type": "sint32",
+                            "id": 11
+                        },
+                        "curve": {
+                            "type": "sint32",
+                            "id": 12
+                        }
+                    }
                 }
             }
         },
@@ -7432,1091 +8609,6 @@
                 "MessageType_WebAuthnCredentials": 801,
                 "MessageType_WebAuthnAddResidentCredential": 802,
                 "MessageType_WebAuthnRemoveResidentCredential": 803
-            }
-        },
-        "RippleGetAddress": {
-            "fields": {
-                "address_n": {
-                    "rule": "repeated",
-                    "type": "uint32",
-                    "id": 1,
-                    "options": {
-                        "packed": false
-                    }
-                },
-                "show_display": {
-                    "type": "bool",
-                    "id": 2
-                }
-            }
-        },
-        "RippleAddress": {
-            "fields": {
-                "address": {
-                    "rule": "required",
-                    "type": "string",
-                    "id": 1
-                }
-            }
-        },
-        "RippleSignTx": {
-            "fields": {
-                "address_n": {
-                    "rule": "repeated",
-                    "type": "uint32",
-                    "id": 1,
-                    "options": {
-                        "packed": false
-                    }
-                },
-                "fee": {
-                    "rule": "required",
-                    "type": "uint64",
-                    "id": 2
-                },
-                "flags": {
-                    "type": "uint32",
-                    "id": 3,
-                    "options": {
-                        "default": 0
-                    }
-                },
-                "sequence": {
-                    "rule": "required",
-                    "type": "uint32",
-                    "id": 4
-                },
-                "last_ledger_sequence": {
-                    "type": "uint32",
-                    "id": 5
-                },
-                "payment": {
-                    "rule": "required",
-                    "type": "RipplePayment",
-                    "id": 6
-                }
-            },
-            "nested": {
-                "RipplePayment": {
-                    "fields": {
-                        "amount": {
-                            "rule": "required",
-                            "type": "uint64",
-                            "id": 1
-                        },
-                        "destination": {
-                            "rule": "required",
-                            "type": "string",
-                            "id": 2
-                        },
-                        "destination_tag": {
-                            "type": "uint32",
-                            "id": 3
-                        }
-                    }
-                }
-            }
-        },
-        "RippleSignedTx": {
-            "fields": {
-                "signature": {
-                    "rule": "required",
-                    "type": "bytes",
-                    "id": 1
-                },
-                "serialized_tx": {
-                    "rule": "required",
-                    "type": "bytes",
-                    "id": 2
-                }
-            }
-        },
-        "StellarAssetType": {
-            "values": {
-                "NATIVE": 0,
-                "ALPHANUM4": 1,
-                "ALPHANUM12": 2
-            }
-        },
-        "StellarAsset": {
-            "fields": {
-                "type": {
-                    "rule": "required",
-                    "type": "StellarAssetType",
-                    "id": 1
-                },
-                "code": {
-                    "type": "string",
-                    "id": 2
-                },
-                "issuer": {
-                    "type": "string",
-                    "id": 3
-                }
-            }
-        },
-        "StellarGetAddress": {
-            "fields": {
-                "address_n": {
-                    "rule": "repeated",
-                    "type": "uint32",
-                    "id": 1,
-                    "options": {
-                        "packed": false
-                    }
-                },
-                "show_display": {
-                    "type": "bool",
-                    "id": 2
-                }
-            }
-        },
-        "StellarAddress": {
-            "fields": {
-                "address": {
-                    "rule": "required",
-                    "type": "string",
-                    "id": 1
-                }
-            }
-        },
-        "StellarSignTx": {
-            "fields": {
-                "address_n": {
-                    "rule": "repeated",
-                    "type": "uint32",
-                    "id": 2,
-                    "options": {
-                        "packed": false
-                    }
-                },
-                "network_passphrase": {
-                    "rule": "required",
-                    "type": "string",
-                    "id": 3
-                },
-                "source_account": {
-                    "rule": "required",
-                    "type": "string",
-                    "id": 4
-                },
-                "fee": {
-                    "rule": "required",
-                    "type": "uint32",
-                    "id": 5
-                },
-                "sequence_number": {
-                    "rule": "required",
-                    "type": "uint64",
-                    "id": 6
-                },
-                "timebounds_start": {
-                    "rule": "required",
-                    "type": "uint32",
-                    "id": 8
-                },
-                "timebounds_end": {
-                    "rule": "required",
-                    "type": "uint32",
-                    "id": 9
-                },
-                "memo_type": {
-                    "rule": "required",
-                    "type": "StellarMemoType",
-                    "id": 10
-                },
-                "memo_text": {
-                    "type": "string",
-                    "id": 11
-                },
-                "memo_id": {
-                    "type": "uint64",
-                    "id": 12
-                },
-                "memo_hash": {
-                    "type": "bytes",
-                    "id": 13
-                },
-                "num_operations": {
-                    "rule": "required",
-                    "type": "uint32",
-                    "id": 14
-                }
-            },
-            "nested": {
-                "StellarMemoType": {
-                    "values": {
-                        "NONE": 0,
-                        "TEXT": 1,
-                        "ID": 2,
-                        "HASH": 3,
-                        "RETURN": 4
-                    }
-                }
-            }
-        },
-        "StellarTxOpRequest": {
-            "fields": {}
-        },
-        "StellarPaymentOp": {
-            "fields": {
-                "source_account": {
-                    "type": "string",
-                    "id": 1
-                },
-                "destination_account": {
-                    "rule": "required",
-                    "type": "string",
-                    "id": 2
-                },
-                "asset": {
-                    "rule": "required",
-                    "type": "StellarAsset",
-                    "id": 3
-                },
-                "amount": {
-                    "rule": "required",
-                    "type": "sint64",
-                    "id": 4
-                }
-            }
-        },
-        "StellarCreateAccountOp": {
-            "fields": {
-                "source_account": {
-                    "type": "string",
-                    "id": 1
-                },
-                "new_account": {
-                    "rule": "required",
-                    "type": "string",
-                    "id": 2
-                },
-                "starting_balance": {
-                    "rule": "required",
-                    "type": "sint64",
-                    "id": 3
-                }
-            }
-        },
-        "StellarPathPaymentStrictReceiveOp": {
-            "fields": {
-                "source_account": {
-                    "type": "string",
-                    "id": 1
-                },
-                "send_asset": {
-                    "rule": "required",
-                    "type": "StellarAsset",
-                    "id": 2
-                },
-                "send_max": {
-                    "rule": "required",
-                    "type": "sint64",
-                    "id": 3
-                },
-                "destination_account": {
-                    "rule": "required",
-                    "type": "string",
-                    "id": 4
-                },
-                "destination_asset": {
-                    "rule": "required",
-                    "type": "StellarAsset",
-                    "id": 5
-                },
-                "destination_amount": {
-                    "rule": "required",
-                    "type": "sint64",
-                    "id": 6
-                },
-                "paths": {
-                    "rule": "repeated",
-                    "type": "StellarAsset",
-                    "id": 7
-                }
-            }
-        },
-        "StellarPathPaymentStrictSendOp": {
-            "fields": {
-                "source_account": {
-                    "type": "string",
-                    "id": 1
-                },
-                "send_asset": {
-                    "rule": "required",
-                    "type": "StellarAsset",
-                    "id": 2
-                },
-                "send_amount": {
-                    "rule": "required",
-                    "type": "sint64",
-                    "id": 3
-                },
-                "destination_account": {
-                    "rule": "required",
-                    "type": "string",
-                    "id": 4
-                },
-                "destination_asset": {
-                    "rule": "required",
-                    "type": "StellarAsset",
-                    "id": 5
-                },
-                "destination_min": {
-                    "rule": "required",
-                    "type": "sint64",
-                    "id": 6
-                },
-                "paths": {
-                    "rule": "repeated",
-                    "type": "StellarAsset",
-                    "id": 7
-                }
-            }
-        },
-        "StellarManageSellOfferOp": {
-            "fields": {
-                "source_account": {
-                    "type": "string",
-                    "id": 1
-                },
-                "selling_asset": {
-                    "rule": "required",
-                    "type": "StellarAsset",
-                    "id": 2
-                },
-                "buying_asset": {
-                    "rule": "required",
-                    "type": "StellarAsset",
-                    "id": 3
-                },
-                "amount": {
-                    "rule": "required",
-                    "type": "sint64",
-                    "id": 4
-                },
-                "price_n": {
-                    "rule": "required",
-                    "type": "uint32",
-                    "id": 5
-                },
-                "price_d": {
-                    "rule": "required",
-                    "type": "uint32",
-                    "id": 6
-                },
-                "offer_id": {
-                    "rule": "required",
-                    "type": "uint64",
-                    "id": 7
-                }
-            }
-        },
-        "StellarManageBuyOfferOp": {
-            "fields": {
-                "source_account": {
-                    "type": "string",
-                    "id": 1
-                },
-                "selling_asset": {
-                    "rule": "required",
-                    "type": "StellarAsset",
-                    "id": 2
-                },
-                "buying_asset": {
-                    "rule": "required",
-                    "type": "StellarAsset",
-                    "id": 3
-                },
-                "amount": {
-                    "rule": "required",
-                    "type": "sint64",
-                    "id": 4
-                },
-                "price_n": {
-                    "rule": "required",
-                    "type": "uint32",
-                    "id": 5
-                },
-                "price_d": {
-                    "rule": "required",
-                    "type": "uint32",
-                    "id": 6
-                },
-                "offer_id": {
-                    "rule": "required",
-                    "type": "uint64",
-                    "id": 7
-                }
-            }
-        },
-        "StellarCreatePassiveSellOfferOp": {
-            "fields": {
-                "source_account": {
-                    "type": "string",
-                    "id": 1
-                },
-                "selling_asset": {
-                    "rule": "required",
-                    "type": "StellarAsset",
-                    "id": 2
-                },
-                "buying_asset": {
-                    "rule": "required",
-                    "type": "StellarAsset",
-                    "id": 3
-                },
-                "amount": {
-                    "rule": "required",
-                    "type": "sint64",
-                    "id": 4
-                },
-                "price_n": {
-                    "rule": "required",
-                    "type": "uint32",
-                    "id": 5
-                },
-                "price_d": {
-                    "rule": "required",
-                    "type": "uint32",
-                    "id": 6
-                }
-            }
-        },
-        "StellarSetOptionsOp": {
-            "fields": {
-                "source_account": {
-                    "type": "string",
-                    "id": 1
-                },
-                "inflation_destination_account": {
-                    "type": "string",
-                    "id": 2
-                },
-                "clear_flags": {
-                    "type": "uint32",
-                    "id": 3
-                },
-                "set_flags": {
-                    "type": "uint32",
-                    "id": 4
-                },
-                "master_weight": {
-                    "type": "uint32",
-                    "id": 5
-                },
-                "low_threshold": {
-                    "type": "uint32",
-                    "id": 6
-                },
-                "medium_threshold": {
-                    "type": "uint32",
-                    "id": 7
-                },
-                "high_threshold": {
-                    "type": "uint32",
-                    "id": 8
-                },
-                "home_domain": {
-                    "type": "string",
-                    "id": 9
-                },
-                "signer_type": {
-                    "type": "StellarSignerType",
-                    "id": 10
-                },
-                "signer_key": {
-                    "type": "bytes",
-                    "id": 11
-                },
-                "signer_weight": {
-                    "type": "uint32",
-                    "id": 12
-                }
-            },
-            "nested": {
-                "StellarSignerType": {
-                    "values": {
-                        "ACCOUNT": 0,
-                        "PRE_AUTH": 1,
-                        "HASH": 2
-                    }
-                }
-            }
-        },
-        "StellarChangeTrustOp": {
-            "fields": {
-                "source_account": {
-                    "type": "string",
-                    "id": 1
-                },
-                "asset": {
-                    "rule": "required",
-                    "type": "StellarAsset",
-                    "id": 2
-                },
-                "limit": {
-                    "rule": "required",
-                    "type": "uint64",
-                    "id": 3
-                }
-            }
-        },
-        "StellarAllowTrustOp": {
-            "fields": {
-                "source_account": {
-                    "type": "string",
-                    "id": 1
-                },
-                "trusted_account": {
-                    "rule": "required",
-                    "type": "string",
-                    "id": 2
-                },
-                "asset_type": {
-                    "rule": "required",
-                    "type": "StellarAssetType",
-                    "id": 3
-                },
-                "asset_code": {
-                    "type": "string",
-                    "id": 4
-                },
-                "is_authorized": {
-                    "rule": "required",
-                    "type": "bool",
-                    "id": 5
-                }
-            }
-        },
-        "StellarAccountMergeOp": {
-            "fields": {
-                "source_account": {
-                    "type": "string",
-                    "id": 1
-                },
-                "destination_account": {
-                    "rule": "required",
-                    "type": "string",
-                    "id": 2
-                }
-            }
-        },
-        "StellarManageDataOp": {
-            "fields": {
-                "source_account": {
-                    "type": "string",
-                    "id": 1
-                },
-                "key": {
-                    "rule": "required",
-                    "type": "string",
-                    "id": 2
-                },
-                "value": {
-                    "type": "bytes",
-                    "id": 3
-                }
-            }
-        },
-        "StellarBumpSequenceOp": {
-            "fields": {
-                "source_account": {
-                    "type": "string",
-                    "id": 1
-                },
-                "bump_to": {
-                    "rule": "required",
-                    "type": "uint64",
-                    "id": 2
-                }
-            }
-        },
-        "StellarSignedTx": {
-            "fields": {
-                "public_key": {
-                    "rule": "required",
-                    "type": "bytes",
-                    "id": 1
-                },
-                "signature": {
-                    "rule": "required",
-                    "type": "bytes",
-                    "id": 2
-                }
-            }
-        },
-        "TezosGetAddress": {
-            "fields": {
-                "address_n": {
-                    "rule": "repeated",
-                    "type": "uint32",
-                    "id": 1,
-                    "options": {
-                        "packed": false
-                    }
-                },
-                "show_display": {
-                    "type": "bool",
-                    "id": 2
-                }
-            }
-        },
-        "TezosAddress": {
-            "fields": {
-                "address": {
-                    "rule": "required",
-                    "type": "string",
-                    "id": 1
-                }
-            }
-        },
-        "TezosGetPublicKey": {
-            "fields": {
-                "address_n": {
-                    "rule": "repeated",
-                    "type": "uint32",
-                    "id": 1,
-                    "options": {
-                        "packed": false
-                    }
-                },
-                "show_display": {
-                    "type": "bool",
-                    "id": 2
-                }
-            }
-        },
-        "TezosPublicKey": {
-            "fields": {
-                "public_key": {
-                    "rule": "required",
-                    "type": "string",
-                    "id": 1
-                }
-            }
-        },
-        "TezosSignTx": {
-            "fields": {
-                "address_n": {
-                    "rule": "repeated",
-                    "type": "uint32",
-                    "id": 1,
-                    "options": {
-                        "packed": false
-                    }
-                },
-                "branch": {
-                    "rule": "required",
-                    "type": "bytes",
-                    "id": 2
-                },
-                "reveal": {
-                    "type": "TezosRevealOp",
-                    "id": 3
-                },
-                "transaction": {
-                    "type": "TezosTransactionOp",
-                    "id": 4
-                },
-                "origination": {
-                    "type": "TezosOriginationOp",
-                    "id": 5
-                },
-                "delegation": {
-                    "type": "TezosDelegationOp",
-                    "id": 6
-                },
-                "proposal": {
-                    "type": "TezosProposalOp",
-                    "id": 7
-                },
-                "ballot": {
-                    "type": "TezosBallotOp",
-                    "id": 8
-                }
-            },
-            "nested": {
-                "TezosContractID": {
-                    "fields": {
-                        "tag": {
-                            "rule": "required",
-                            "type": "TezosContractType",
-                            "id": 1
-                        },
-                        "hash": {
-                            "rule": "required",
-                            "type": "bytes",
-                            "id": 2
-                        }
-                    },
-                    "nested": {
-                        "TezosContractType": {
-                            "values": {
-                                "Implicit": 0,
-                                "Originated": 1
-                            }
-                        }
-                    }
-                },
-                "TezosRevealOp": {
-                    "fields": {
-                        "source": {
-                            "rule": "required",
-                            "type": "bytes",
-                            "id": 7
-                        },
-                        "fee": {
-                            "rule": "required",
-                            "type": "uint64",
-                            "id": 2
-                        },
-                        "counter": {
-                            "rule": "required",
-                            "type": "uint64",
-                            "id": 3
-                        },
-                        "gas_limit": {
-                            "rule": "required",
-                            "type": "uint64",
-                            "id": 4
-                        },
-                        "storage_limit": {
-                            "rule": "required",
-                            "type": "uint64",
-                            "id": 5
-                        },
-                        "public_key": {
-                            "rule": "required",
-                            "type": "bytes",
-                            "id": 6
-                        }
-                    }
-                },
-                "TezosTransactionOp": {
-                    "fields": {
-                        "source": {
-                            "rule": "required",
-                            "type": "bytes",
-                            "id": 9
-                        },
-                        "fee": {
-                            "rule": "required",
-                            "type": "uint64",
-                            "id": 2
-                        },
-                        "counter": {
-                            "rule": "required",
-                            "type": "uint64",
-                            "id": 3
-                        },
-                        "gas_limit": {
-                            "rule": "required",
-                            "type": "uint64",
-                            "id": 4
-                        },
-                        "storage_limit": {
-                            "rule": "required",
-                            "type": "uint64",
-                            "id": 5
-                        },
-                        "amount": {
-                            "rule": "required",
-                            "type": "uint64",
-                            "id": 6
-                        },
-                        "destination": {
-                            "rule": "required",
-                            "type": "TezosContractID",
-                            "id": 7
-                        },
-                        "parameters": {
-                            "type": "bytes",
-                            "id": 8
-                        },
-                        "parameters_manager": {
-                            "type": "TezosParametersManager",
-                            "id": 10
-                        }
-                    },
-                    "nested": {
-                        "TezosParametersManager": {
-                            "fields": {
-                                "set_delegate": {
-                                    "type": "bytes",
-                                    "id": 1
-                                },
-                                "cancel_delegate": {
-                                    "type": "bool",
-                                    "id": 2
-                                },
-                                "transfer": {
-                                    "type": "TezosManagerTransfer",
-                                    "id": 3
-                                }
-                            },
-                            "nested": {
-                                "TezosManagerTransfer": {
-                                    "fields": {
-                                        "destination": {
-                                            "rule": "required",
-                                            "type": "TezosContractID",
-                                            "id": 1
-                                        },
-                                        "amount": {
-                                            "rule": "required",
-                                            "type": "uint64",
-                                            "id": 2
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                "TezosOriginationOp": {
-                    "fields": {
-                        "source": {
-                            "rule": "required",
-                            "type": "bytes",
-                            "id": 12
-                        },
-                        "fee": {
-                            "rule": "required",
-                            "type": "uint64",
-                            "id": 2
-                        },
-                        "counter": {
-                            "rule": "required",
-                            "type": "uint64",
-                            "id": 3
-                        },
-                        "gas_limit": {
-                            "rule": "required",
-                            "type": "uint64",
-                            "id": 4
-                        },
-                        "storage_limit": {
-                            "rule": "required",
-                            "type": "uint64",
-                            "id": 5
-                        },
-                        "manager_pubkey": {
-                            "type": "bytes",
-                            "id": 6
-                        },
-                        "balance": {
-                            "rule": "required",
-                            "type": "uint64",
-                            "id": 7
-                        },
-                        "spendable": {
-                            "type": "bool",
-                            "id": 8
-                        },
-                        "delegatable": {
-                            "type": "bool",
-                            "id": 9
-                        },
-                        "delegate": {
-                            "type": "bytes",
-                            "id": 10
-                        },
-                        "script": {
-                            "rule": "required",
-                            "type": "bytes",
-                            "id": 11
-                        }
-                    }
-                },
-                "TezosDelegationOp": {
-                    "fields": {
-                        "source": {
-                            "rule": "required",
-                            "type": "bytes",
-                            "id": 7
-                        },
-                        "fee": {
-                            "rule": "required",
-                            "type": "uint64",
-                            "id": 2
-                        },
-                        "counter": {
-                            "rule": "required",
-                            "type": "uint64",
-                            "id": 3
-                        },
-                        "gas_limit": {
-                            "rule": "required",
-                            "type": "uint64",
-                            "id": 4
-                        },
-                        "storage_limit": {
-                            "rule": "required",
-                            "type": "uint64",
-                            "id": 5
-                        },
-                        "delegate": {
-                            "rule": "required",
-                            "type": "bytes",
-                            "id": 6
-                        }
-                    }
-                },
-                "TezosProposalOp": {
-                    "fields": {
-                        "source": {
-                            "rule": "required",
-                            "type": "bytes",
-                            "id": 1
-                        },
-                        "period": {
-                            "rule": "required",
-                            "type": "uint64",
-                            "id": 2
-                        },
-                        "proposals": {
-                            "rule": "repeated",
-                            "type": "bytes",
-                            "id": 4
-                        }
-                    }
-                },
-                "TezosBallotOp": {
-                    "fields": {
-                        "source": {
-                            "rule": "required",
-                            "type": "bytes",
-                            "id": 1
-                        },
-                        "period": {
-                            "rule": "required",
-                            "type": "uint64",
-                            "id": 2
-                        },
-                        "proposal": {
-                            "rule": "required",
-                            "type": "bytes",
-                            "id": 3
-                        },
-                        "ballot": {
-                            "rule": "required",
-                            "type": "TezosBallotType",
-                            "id": 4
-                        }
-                    },
-                    "nested": {
-                        "TezosBallotType": {
-                            "values": {
-                                "Yay": 0,
-                                "Nay": 1,
-                                "Pass": 2
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "TezosSignedTx": {
-            "fields": {
-                "signature": {
-                    "rule": "required",
-                    "type": "string",
-                    "id": 1
-                },
-                "sig_op_contents": {
-                    "rule": "required",
-                    "type": "bytes",
-                    "id": 2
-                },
-                "operation_hash": {
-                    "rule": "required",
-                    "type": "string",
-                    "id": 3
-                }
-            }
-        },
-        "WebAuthnListResidentCredentials": {
-            "fields": {}
-        },
-        "WebAuthnAddResidentCredential": {
-            "fields": {
-                "credential_id": {
-                    "type": "bytes",
-                    "id": 1
-                }
-            }
-        },
-        "WebAuthnRemoveResidentCredential": {
-            "fields": {
-                "index": {
-                    "type": "uint32",
-                    "id": 1
-                }
-            }
-        },
-        "WebAuthnCredentials": {
-            "fields": {
-                "credentials": {
-                    "rule": "repeated",
-                    "type": "WebAuthnCredential",
-                    "id": 1
-                }
-            },
-            "nested": {
-                "WebAuthnCredential": {
-                    "fields": {
-                        "index": {
-                            "type": "uint32",
-                            "id": 1
-                        },
-                        "id": {
-                            "type": "bytes",
-                            "id": 2
-                        },
-                        "rp_id": {
-                            "type": "string",
-                            "id": 3
-                        },
-                        "rp_name": {
-                            "type": "string",
-                            "id": 4
-                        },
-                        "user_id": {
-                            "type": "bytes",
-                            "id": 5
-                        },
-                        "user_name": {
-                            "type": "string",
-                            "id": 6
-                        },
-                        "user_display_name": {
-                            "type": "string",
-                            "id": 7
-                        },
-                        "creation_time": {
-                            "type": "uint32",
-                            "id": 8
-                        },
-                        "hmac_secret": {
-                            "type": "bool",
-                            "id": 9
-                        },
-                        "use_sign_count": {
-                            "type": "bool",
-                            "id": 10
-                        },
-                        "algorithm": {
-                            "type": "sint32",
-                            "id": 11
-                        },
-                        "curve": {
-                            "type": "sint32",
-                            "id": 12
-                        }
-                    }
-                }
             }
         },
         "google": {
