@@ -280,6 +280,8 @@ const initDevice = async (method: AbstractMethod) => {
  * @memberof Core
  */
 export const onCall = async (message: CoreMessage) => {
+    console.log(message.id, 'core: onCall', message);
+
     if (!message.id || !message.payload || message.type !== IFRAME.CALL) {
         throw ERRORS.TypedError(
             'Method_InvalidParameter',
@@ -381,6 +383,7 @@ export const onCall = async (message: CoreMessage) => {
     const previousCall = _callMethods.filter(
         call => call && call !== method && call.devicePath === method.devicePath,
     );
+    console.log(message.id, 'core: previousCall.length', previousCall.length);
     if (previousCall.length > 0 && method.overridePreviousCall) {
         // set flag for each pending method
         previousCall.forEach(call => {
@@ -391,6 +394,7 @@ export const onCall = async (message: CoreMessage) => {
         const overrideError = ERRORS.TypedError('Method_Override');
         _overridePromise = device.override(overrideError);
         await _overridePromise;
+
         // if current method was overridden while waiting for device.override result
         // return response with status false
         if (method.overridden) {
@@ -402,7 +406,9 @@ export const onCall = async (message: CoreMessage) => {
             // corner case
             // device didn't finish loading for the first time. @see DeviceList._createAndSaveDevice
             // wait for self-release and then carry on
+            console.log(message.id, 'core: device.waitForFirstRun()');
             await device.waitForFirstRun();
+            console.log(message.id, 'core: device.waitForFirstRun() done');
         } else {
             // cancel popup request
             // postMessage(UiMessage(POPUP.CANCEL_POPUP_REQUEST));
@@ -427,7 +433,9 @@ export const onCall = async (message: CoreMessage) => {
     device.on(DEVICE.BUTTON, (d, code) => {
         onDeviceButtonHandler(d, code, method);
     });
+    console.log(message.id, 'core: registering pin handler');
     device.on(DEVICE.PIN, onDevicePinHandler);
+    console.log(message.id, 'core: device listener count', device.listenerCount(DEVICE.PIN));
     device.on(DEVICE.WORD, onDeviceWordHandler);
     device.on(
         DEVICE.PASSPHRASE,
@@ -444,6 +452,7 @@ export const onCall = async (message: CoreMessage) => {
         const MAX_PIN_TRIES = 3;
         // This function will run inside Device.run() after device will be acquired and initialized
         const inner = async (): Promise<any> => {
+            console.log(message.id, 'core: inner start');
             const firmwareException = await method.checkFirmwareRange(isUsingPopup!);
             if (firmwareException) {
                 if (isUsingPopup) {
@@ -532,6 +541,7 @@ export const onCall = async (message: CoreMessage) => {
             // Make sure that device will display pin/passphrase
             const isDeviceUnlocked = device.features.unlocked;
             try {
+                console.log(message.id, 'core: inner: device.validateState()');
                 const invalidDeviceState = method.useDeviceState
                     ? await device.validateState(method.network, method.preauthorized)
                     : undefined;
@@ -609,12 +619,14 @@ export const onCall = async (message: CoreMessage) => {
         if (_overridePromise) {
             await _overridePromise;
         }
+        console.log(message.id, 'core: device.run(inner)');
         await device.run(inner, {
             keepSession: method.keepSession,
             useEmptyPassphrase: method.useEmptyPassphrase,
             skipFinalReload: method.skipFinalReload,
             useCardanoDerivation: method.useCardanoDerivation,
         });
+        console.log(message.id, 'core: device.run(inner) done');
     } catch (error) {
         // corner case: Device was disconnected during authorization
         // this device_id needs to be stored and penalized with delay on future connection
@@ -634,6 +646,8 @@ export const onCall = async (message: CoreMessage) => {
             messageResponse = createResponseMessage(method.responseID, false, { error });
         }
     } finally {
+        console.log(message.id, 'core: finally');
+
         if (_overridePromise) {
             await _overridePromise;
         }
@@ -653,7 +667,9 @@ export const onCall = async (message: CoreMessage) => {
                 await device.run(() => Promise.resolve(), { skipFinalReload: true });
             }
 
+            console.log(message.id, 'core: finally  await devie.cleanup()');
             await device.cleanup();
+            console.log(message.id, 'core: finally  devie.cleanup done');
 
             closePopup();
             cleanup();
@@ -667,6 +683,7 @@ export const onCall = async (message: CoreMessage) => {
                     _deviceList.removeAuthPenalty(device);
                 }
             }
+            console.log(message.id, 'core: finally: postMessage reposne', response);
             postMessage(response);
         }
     }

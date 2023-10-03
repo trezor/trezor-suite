@@ -222,6 +222,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
     }
 
     async cleanup() {
+        console.log('device.celanup() => remove all listeners!');
         this.removeAllListeners();
         // make sure that Device_CallInProgress will not be thrown
         delete this.runPromise;
@@ -362,7 +363,9 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
         // call inner function
         if (fn) {
+            console.log('device._runInner() => call fn()');
             await fn();
+            console.log('device._runInner() => call fn() done');
         }
 
         // reload features
@@ -668,6 +671,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
     }
 
     dispose() {
+        console.log('device dispose() => remove all listeners!');
         this.removeAllListeners();
         if (this.isUsedHere() && this.activitySessionID) {
             try {
