@@ -21,7 +21,9 @@
         },
         { "path": "../e2e-utils" },
         { "path": "../env-utils" },
+        { "path": "../protobuf" },
         { "path": "../suite-analytics" },
+        { "path": "../transport" },
         { "path": "../trezor-user-env-link" },
         { "path": "../utils" }
     ]

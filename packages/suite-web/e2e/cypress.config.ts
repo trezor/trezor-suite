@@ -4,6 +4,8 @@ import CDP from 'chrome-remote-interface';
 import fs from 'fs';
 import path from 'path';
 import { addMatchImageSnapshotPlugin } from 'cypress-image-snapshot/plugin';
+import { BridgeTransport } from '@trezor/transport';
+import * as messages from '@trezor/protobuf/src/messages';
 
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 import * as metadataUtils from '@trezor/suite/src/utils/suite/metadata';
@@ -147,6 +149,15 @@ export default defineConfig({
                 },
                 stopMockedBridge: async () => {
                     await mocked.bridge.stop();
+                    return null;
+                },
+                stealBridgeSession: async () => {
+                    const bridge = new BridgeTransport({ messages });
+                    await bridge.init().promise;
+                    const enumerateRes = await bridge.enumerate().promise;
+                    if (!enumerateRes.success) return null;
+                    await bridge.acquire({ input: { path: enumerateRes.payload[0].path } }).promise;
+
                     return null;
                 },
 
