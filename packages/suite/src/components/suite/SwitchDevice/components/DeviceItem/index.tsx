@@ -132,6 +132,9 @@ const ColEjectHeader = styled(ColHeader)`
 
 const StyledImage = styled(Image)`
     height: 36px;
+
+    /* do not apply the darkening filter in dark mode on device images */
+    filter: none;
 `;
 
 interface DeviceItemProps {
