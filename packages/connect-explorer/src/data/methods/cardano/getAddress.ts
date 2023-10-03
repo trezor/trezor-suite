@@ -9,7 +9,11 @@ const batch = [
     {
         name: 'addressParameters',
         type: 'json',
-        value: `{'path': "m/1852'/1815'/0'/0/0", 'stakingPath': "m/1852'/1815'/0'/2/0", 'addressType': ${CardanoAddressType.BASE} }`,
+        value: {
+            path: "m/1852'/1815'/0'/0/0",
+            stakingPath: "m/1852'/1815'/0'/2/0",
+            addressType: CardanoAddressType.BASE,
+        },
     },
     {
         name: 'networkId',
