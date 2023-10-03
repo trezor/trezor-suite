@@ -1,7 +1,7 @@
 {
     "version": 1,
-    "timestamp": "2023-09-05T14:00:00+00:00",
-    "sequence": 42,
+    "timestamp": "2023-10-11T00:00:00+00:00",
+    "sequence": 43,
     "actions": [
         {
             "conditions": [
@@ -574,6 +574,71 @@
                         "cs": "Aktualizovat Firmware",
                         "ru": "Обновить прошивку",
                         "ja": "ファームウェアのアップデート"
+                    }
+                }
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "environment": {
+                        "desktop": "<23.10.1",
+                        "mobile": "!",
+                        "web": "<23.10.1"
+                    },
+                    "devices": [
+                        {
+                            "model": "",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "T2B1",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "Safe 3",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        }
+                    ]
+                }
+            ],
+            "message": {
+                "id": "e95a586f-f2d7-4c7b-8dd9-d8e56d9c905d",
+                "priority": 99,
+                "dismissible": false,
+                "variant": "critical",
+                "category": "banner",
+                "content": {
+                    "en-GB": "Update required! This version of Trezor Suite isn’t compatible with your device. Update to continue.",
+                    "en": "Update required! This version of Trezor Suite isn’t compatible with your device. Update to continue.",
+                    "es": "¡Actualización necesaria! Esta versión de Trezor Suite no es compatible con tu dispositivo. Actualiza para continuar.",
+                    "cs": "Nutná aktualizace! Tato verze Trezor Suite není kompatibilní s vaším zařízením. Chcete-li pokračovat, proveďte aktualizaci.",
+                    "ru": "Требуется обновление! Данная версия Trezor Suite несовместима с вашим устройством. Обновите программу, чтобы продолжить.",
+                    "ja": "アップデートが必要です！このバージョンのTrezor Suiteは、お使いのデバイスと互換性がありません。続行するには、アップデートしてください。"
+                },
+                "cta": {
+                    "action": "internal-link",
+                    "link": "settings-index",
+                    "anchor": "@general-settings/version-with-update",
+                    "label": {
+                        "en-GB": "Update Suite",
+                        "en": "Update Suite",
+                        "es": "Actualizar Suite",
+                        "cs": "Aktualizovat Suite",
+                        "ru": "Обновить Suite",
+                        "ja": "Suiteのアップデート"
                     }
                 }
             }
