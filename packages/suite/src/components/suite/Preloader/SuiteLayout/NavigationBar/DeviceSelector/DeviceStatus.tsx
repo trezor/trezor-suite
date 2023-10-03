@@ -126,6 +126,7 @@ export const DeviceStatus = ({
                 icon="REFRESH"
                 size={12}
                 color={getStatusColor(status, theme)}
+                data-test="@menu/switch-device/refresh-button"
             />
         );
     }
