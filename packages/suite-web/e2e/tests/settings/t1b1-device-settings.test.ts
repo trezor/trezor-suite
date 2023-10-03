@@ -20,20 +20,11 @@ describe('T1B1 - Device settings', () => {
         cy.getTestElement('@suite/modal/confirm-action-on-device');
         cy.task('pressYes');
 
-        // todo: this should be converted to a custom cypress command, something like "enterPinOnBlindMatrix(number)"
-        cy.task('getDebugState').then(state => {
-            const index = state.matrix.indexOf('1') + 1;
-            cy.getTestElement(`@pin/input/${index}`).click();
-            cy.getTestElement('@pin/submit-button').click();
-        });
+        cy.enterPinOnBlindMatrix('1');
 
         cy.getTestElement('@pin/input/1');
 
-        cy.task('getDebugState').then(state => {
-            const index = state.matrix.indexOf('1') + 1;
-            cy.getTestElement(`@pin/input/${index}`).click();
-            cy.getTestElement('@pin/submit-button').click();
-        });
+        cy.enterPinOnBlindMatrix('1');
 
         cy.getTestElement('@toast/pin-changed');
     });
