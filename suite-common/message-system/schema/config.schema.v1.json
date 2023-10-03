@@ -170,7 +170,15 @@
                                             "model": {
                                                 "title": "Model",
                                                 "type": "string",
-                                                "enum": ["1", "T", "T1B1", "T2T1", "T2B1"]
+                                                "enum": [
+                                                    "1",
+                                                    "T",
+                                                    "T1B1",
+                                                    "T2T1",
+                                                    "T2B1",
+                                                    "Safe 3",
+                                                    ""
+                                                ]
                                             },
                                             "firmwareRevision": {
                                                 "title": "Firmware Revision",
