@@ -27,6 +27,9 @@ const ImageWrapper = styled.div`
 
 const StyledImage = styled(Image)`
     max-height: 300px;
+
+    /* do not apply the darkening filter in dark mode on device images */
+    filter: none;
 `;
 
 const Content = styled.div`
