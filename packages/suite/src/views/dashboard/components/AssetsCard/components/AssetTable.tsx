@@ -161,7 +161,10 @@ export const AssetTable = memo(({ network, failed, cryptoValue, isLastRow }: Ass
             </CoinNameWrapper>
 
             {!failed ? (
-                <CryptoBalanceWrapper isLastRow={isLastRow}>
+                <CryptoBalanceWrapper
+                    isLastRow={isLastRow}
+                    data-test={`@asset-card/${symbol}/balance`}
+                >
                     <AmountUnitSwitchWrapper symbol={symbol}>
                         <CoinBalance value={cryptoValue} symbol={symbol} />
 
