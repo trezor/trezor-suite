@@ -1,12 +1,18 @@
-import TrezorConnect from '@trezor/connect';
+import TrezorConnect, { AuthenticateDeviceResult } from '@trezor/connect';
 import { createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 
 import { ACTION_PREFIX, deviceAuthenticityActions } from './deviceAuthenticityActions';
 
-export const checkDeviceAuthenticityThunk = createThunk<{ allowDebugKeys: boolean }>(
+export const checkDeviceAuthenticityThunk = createThunk<
+    { allowDebugKeys: boolean },
+    string | AuthenticateDeviceResult
+>(
     `${ACTION_PREFIX}/checkDeviceAuthenticity`,
-    async ({ allowDebugKeys }, { dispatch, getState, extra, rejectWithValue }) => {
+    async (
+        { allowDebugKeys },
+        { dispatch, getState, extra, rejectWithValue, fulfillWithValue },
+    ) => {
         const {
             selectors: { selectDevice },
         } = extra;
@@ -22,30 +28,7 @@ export const checkDeviceAuthenticityThunk = createThunk<{ allowDebugKeys: boolea
             allowDebugKeys,
         });
 
-        if (result.success) {
-            dispatch(deviceAuthenticityActions.result({ device, result: result.payload }));
-            if (result.payload.valid) {
-                dispatch(notificationsActions.addToast({ type: 'device-authenticity-success' }));
-            } else {
-                if (
-                    result.payload.configExpired &&
-                    result.payload.error === 'CA_PUBKEY_NOT_FOUND'
-                ) {
-                    // sanity check result: CA_PUBKEY_NOT_FOUND with configExpired is temporary allowed
-                    // it will be logged to sentry nevertheless (see sentryMiddleware)
-                    // TODO: try fetch new config
-                    // if (result.payload.configOutdated) {}
-                } else {
-                    dispatch(
-                        notificationsActions.addToast({
-                            type: 'device-authenticity-error',
-                            error: `Device is not authentic: ${result.payload.error}`,
-                        }),
-                    );
-                }
-                return rejectWithValue(result.payload.error);
-            }
-        } else {
+        if (!result.success) {
             dispatch(
                 notificationsActions.addToast({
                     type: 'error',
@@ -54,5 +37,25 @@ export const checkDeviceAuthenticityThunk = createThunk<{ allowDebugKeys: boolea
             );
             return rejectWithValue(result.payload.error);
         }
+
+        dispatch(deviceAuthenticityActions.result({ device, result: result.payload }));
+
+        // CA_PUBKEY_NOT_FOUND with configExpired is temporary allowed and just logged to Sentry
+        const caPubKeyNotFoundInExpiredConfig =
+            result.payload.error === 'CA_PUBKEY_NOT_FOUND' && result.payload.configExpired;
+
+        if (!result.payload.valid && !caPubKeyNotFoundInExpiredConfig) {
+            dispatch(
+                notificationsActions.addToast({
+                    type: 'device-authenticity-error',
+                    error: `Device is not authentic: ${result.payload.error}`,
+                }),
+            );
+            console.warn(result.payload.error);
+        } else {
+            dispatch(notificationsActions.addToast({ type: 'device-authenticity-success' }));
+        }
+
+        return fulfillWithValue(result.payload);
     },
 );
