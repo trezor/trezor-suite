@@ -176,6 +176,44 @@
             "conditions": [
                 {
                     "environment": {
+                        "desktop": "<22.12.1",
+                        "mobile": "!",
+                        "web": "<22.12.1"
+                    }
+                }
+            ],
+            "message": {
+                "id": "640577d2-a82d-477e-9590-d5da3a10c80c",
+                "priority": 98,
+                "dismissible": false,
+                "variant": "critical",
+                "category": "banner",
+                "content": {
+                    "en-GB": "Update required! Install the latest version of Trezor Suite for enhanced security and an improved user experience.",
+                    "en": "Update required! Install the latest version of Trezor Suite for enhanced security and an improved user experience.",
+                    "es": "¡Actualización necesaria! Instala la última versión de Trezor Suite para una seguridad y experiencia de usuario mejorada.",
+                    "cs": "Nutná aktualizace! Nainstalujte si nejnovější verzi Trezor Suite a získejte lepší zabezpečení a komfortnější používání.",
+                    "ru": "Требуется обновление! Установите последнюю версию Trezor Suite для улучшения безопасности и удобства использования.",
+                    "ja": "アップデートが必要です！Trezor Suiteの最新バージョンをインストールして、セキュリティと使いやすさを向上させましょう。"
+                },
+                "cta": {
+                    "action": "external-link",
+                    "link": "https://trezor.io/trezor-suite",
+                    "label": {
+                        "en-GB": "Go to trezor.io/trezor-suite",
+                        "en": "Go to trezor.io/trezor-suite",
+                        "es": "Ir a trezor.io/trezor-suite",
+                        "cs": "Přejít na trezor.io/trezor-suite",
+                        "ru": "Перейти на trezor.io/trezor-suite",
+                        "ja": "trezor.io/trezor-suite に移動"
+                    }
+                }
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "environment": {
                         "desktop": "<23.7.2",
                         "mobile": "!",
                         "web": "!"
