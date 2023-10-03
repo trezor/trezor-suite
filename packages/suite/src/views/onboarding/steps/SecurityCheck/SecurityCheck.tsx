@@ -155,6 +155,7 @@ export const SecurityCheck = () => {
     const recovery = useSelector(state => state.recovery);
     const device = useSelector(selectDevice);
     const initialRun = useSelector(state => state.suite.flags.initialRun);
+    const { isUnlockedBootloaderAllowed } = useSelector(state => state.suite.settings.debug);
     const theme = useTheme();
     const [isFailed, setIsFailed] = useState(false);
     const [isDeviceAuthenticityCheck, setIsDeviceAuthenticityCheck] = useState(false);
@@ -174,10 +175,13 @@ export const SecurityCheck = () => {
 
     const toggleView = () => setIsFailed(current => !current);
     const goToDeviceAuthentication = () => setIsDeviceAuthenticityCheck(true);
+
+    const isDeviceAuthenticationNeeded =
+        device?.features?.internal_model === DeviceModelInternal.T2B1 &&
+        initialRun &&
+        (!isUnlockedBootloaderAllowed || device.features?.bootloader_locked !== false);
     const handleContinueButtonClick = () =>
-        initialRun && device?.features?.internal_model === DeviceModelInternal.T2B1
-            ? goToDeviceAuthentication()
-            : goToSuite();
+        isDeviceAuthenticationNeeded ? goToDeviceAuthentication() : goToSuite();
     const handleSetupButtonClick = () => (isRecoveryInProgress ? rerun() : goToNextStep());
 
     // Start measuring onboarding duration. In case of an ongoing recovery, the timer is started in middleware.
