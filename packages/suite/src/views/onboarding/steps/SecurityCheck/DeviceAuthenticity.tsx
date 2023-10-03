@@ -1,15 +1,16 @@
 import { useState } from 'react';
+// useDispatch used directly from react-redux instead of src/hooks/suite because we need unwrap() method
+import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
 
 import { checkDeviceAuthenticityThunk } from '@suite-common/device-authenticity';
-import { selectDevice } from '@suite-common/wallet-core';
+import { selectDevice, selectIsDeviceAuthenticityFulfilled } from '@suite-common/wallet-core';
 import { variables } from '@trezor/components';
-import { ERROR_CODES } from '@trezor/connect/lib/constants/errors';
 
 import { OnboardingButtonCta, OnboardingStepBox } from 'src/components/onboarding';
 import { CollapsibleOnboardingCard } from 'src/components/onboarding/CollapsibleOnboardingCard';
 import { DeviceAuthenticationExplainer, Translation } from 'src/components/suite';
-import { useDispatch, useOnboarding, useSelector } from 'src/hooks/suite';
+import { useOnboarding, useSelector } from 'src/hooks/suite';
 import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
 import { SecurityCheckLayout } from './SecurityCheckLayout';
 import { SecurityCheckFail } from './SecurityCheckFail';
@@ -26,7 +27,9 @@ const StyledExplainer = styled(DeviceAuthenticationExplainer)`
 
 export const DeviceAuthenticity = () => {
     const device = useSelector(selectDevice);
-    const deviceAuthenticity = useSelector(state => state.device.deviceAuthenticity);
+    const isDeviceAuthenticityFulfilled = useSelector(state =>
+        selectIsDeviceAuthenticityFulfilled(state, device?.id),
+    );
     const isDebugModeActive = useSelector(selectIsDebugModeActive);
     const { activeStepId, goToNextStep, goToSuite } = useOnboarding();
     const dispatch = useDispatch();
@@ -39,12 +42,9 @@ export const DeviceAuthenticity = () => {
     const isWaitingForConfirmation =
         !!device?.buttonRequests.some(request => request.code === 'ButtonRequest_Other') &&
         !isSubmitted;
-    const isCheckSuccessful = !!(device?.id && deviceAuthenticity?.[device.id]?.valid);
+    const isCheckSuccessful = !!(device && isDeviceAuthenticityFulfilled);
     const isCheckFailed =
-        isSubmitted &&
-        !isAborted &&
-        !!device?.id &&
-        (deviceAuthenticity?.[device.id]?.valid === false || !deviceAuthenticity?.[device.id]);
+        isSubmitted && !isAborted && !!device?.id && !isDeviceAuthenticityFulfilled;
 
     const getHeadingText = () => {
         if (isCheckSuccessful) {
@@ -72,13 +72,22 @@ export const DeviceAuthenticity = () => {
 
         const authenticateDevice = async () => {
             setIsSubmitted(false);
-            const result = await dispatch(
-                checkDeviceAuthenticityThunk({
-                    allowDebugKeys: isDebugModeActive,
-                }),
-            );
-            if (result.payload === ERROR_CODES.Method_Cancel) {
-                setIsAborted(true);
+            try {
+                const result = await dispatch(
+                    checkDeviceAuthenticityThunk({
+                        allowDebugKeys: isDebugModeActive,
+                    }),
+                ).unwrap();
+
+                if (typeof result === 'string' || result.valid === undefined) {
+                    setIsAborted(true);
+                }
+            } catch (error) {
+                // go to failded state if bootloader is unlocked but stay in initial state for other errors
+                if (!error.includes('bootloader is unlocked')) {
+                    setIsAborted(true);
+                }
+                console.warn(error);
             }
             setIsSubmitted(true);
         };

@@ -1,12 +1,13 @@
 import { useState } from 'react';
+// useDispatch used directly from react-redux instead of src/hooks/suite because we need unwrap() method
+import { useDispatch } from 'react-redux';
 
 import { checkDeviceAuthenticityThunk } from '@suite-common/device-authenticity';
 import { Button } from '@trezor/components';
-import { ERROR_CODES } from '@trezor/connect/lib/constants/errors';
 
 import { onCancel, openModal } from 'src/actions/suite/modalActions';
 import { DeviceAuthenticationExplainer, Modal, Translation } from 'src/components/suite';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
 
 export const AuthenticateDeviceModal = () => {
@@ -16,17 +17,28 @@ export const AuthenticateDeviceModal = () => {
 
     const handleClick = async () => {
         setIsLoading(true);
-        const result = await dispatch(
-            checkDeviceAuthenticityThunk({
-                allowDebugKeys: isDebugModeActive,
-            }),
-        );
 
-        setIsLoading(false);
-        if (result && result.payload !== ERROR_CODES.Method_Cancel) {
-            dispatch(openModal({ type: 'authenticate-device-fail' }));
+        try {
+            const result = await dispatch(
+                checkDeviceAuthenticityThunk({
+                    allowDebugKeys: isDebugModeActive,
+                }),
+            ).unwrap();
+
+            setIsLoading(false);
+
+            if (
+                typeof result !== 'string' &&
+                result.valid === false &&
+                (result.error !== 'CA_PUBKEY_NOT_FOUND' || !result.configExpired)
+            ) {
+                dispatch(openModal({ type: 'authenticate-device-fail' }));
+            }
+        } catch (error) {
+            console.warn(error);
         }
     };
+
     const handleClose = () => dispatch(onCancel());
 
     return (
