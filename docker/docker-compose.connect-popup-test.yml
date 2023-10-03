@@ -32,6 +32,7 @@ services:
       # useful for debugging tests
       - PWDEBUG=console
       - TEST_FILE=$TEST_FILE
+      - IS_WEBEXTENSION=$IS_WEBEXTENSION
     working_dir: /trezor-suite
     command: bash -c "npx playwright install && docker/wait-for-200.sh http://localhost:8088/index.html && yarn workspace @trezor/connect-popup test:e2e $TEST_FILE"
     volumes:
