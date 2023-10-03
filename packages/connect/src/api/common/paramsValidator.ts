@@ -107,13 +107,19 @@ export const getFirmwareRange = (
     if (coinInfo) {
         if (!coinInfo.support || typeof coinInfo.support.trezor1 !== 'string') {
             current['1'].min = '0';
-        } else if (versionUtils.isNewer(coinInfo.support.trezor1, current['1'].min)) {
+        } else if (
+            current['1'].min !== '0' &&
+            versionUtils.isNewer(coinInfo.support.trezor1, current['1'].min)
+        ) {
             current['1'].min = coinInfo.support.trezor1;
         }
 
         if (!coinInfo.support || typeof coinInfo.support.trezor2 !== 'string') {
             current['2'].min = '0';
-        } else if (versionUtils.isNewer(coinInfo.support.trezor2, current['2'].min)) {
+        } else if (
+            current['2'].min !== '0' &&
+            versionUtils.isNewer(coinInfo.support.trezor2, current['2'].min)
+        ) {
             current['2'].min = coinInfo.support.trezor2;
         }
     }
