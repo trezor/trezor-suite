@@ -5229,6 +5229,14 @@ export default defineMessages({
         id: 'TR_CONFIRM_ON_TREZOR',
         defaultMessage: 'Confirm on Trezor',
     },
+    TR_CONFIRM_BEFORE_COPY: {
+        id: 'TR_CONFIRM_BEFORE_COPY',
+        defaultMessage: 'Confirm on Trezor before copying',
+    },
+    TR_QR_RECEIVE_ADDRESS_CONFIRM: {
+        id: 'TR_QR_RECEIVE_ADDRESS_CONFIRM',
+        defaultMessage: 'Confirm on device before scanning',
+    },
     TR_MY_ASSETS: {
         id: 'TR_MY_ASSETS',
         defaultMessage: 'Assets',
