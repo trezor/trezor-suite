@@ -2,7 +2,7 @@ import { useEffect, ReactNode } from 'react';
 import styled from 'styled-components';
 
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { Button, ConfirmOnDevice, ModalProps, variables } from '@trezor/components';
+import { Button, ConfirmOnDevice, ModalProps, useTheme, variables } from '@trezor/components';
 import { copyToClipboard } from '@trezor/dom-utils';
 import { selectDevice } from '@suite-common/wallet-core';
 import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
@@ -15,9 +15,13 @@ import { DeviceDisconnected } from './DeviceDisconnected';
 
 const Wrapper = styled.div`
     display: flex;
+`;
+
+const Right = styled.div`
+    display: flex;
     flex-direction: column;
-    align-self: center;
-    gap: 20px;
+    justify-content: space-between;
+    height: 100%;
 `;
 
 const Value = styled.div`
@@ -34,8 +38,17 @@ const Value = styled.div`
     max-width: calc(${QRCODE_SIZE}px + ${QRCODE_PADDING * 2}px);
 `;
 
+const StyledQrCode = styled(QrCode)`
+    border-radius: 12px;
+    background: ${({ theme }) => theme.BG_GREY};
+    padding: 32px;
+    max-height: 100%;
+    margin-right: 21px;
+    width: 300px;
+`;
+
 const StyledButton = styled(Button)`
-    align-self: center;
+    width: 100%;
 `;
 
 const StyledModal = styled(Modal)`
@@ -74,10 +87,11 @@ export const ConfirmValueModal = ({
     const modalContext = useSelector(state => state.modal.context);
     const isActionAbortable = useSelector(selectIsActionAbortable);
     const dispatch = useDispatch();
+    const theme = useTheme();
 
     const canConfirmOnDevice = !!(device?.connected && device?.available);
-    const showCopyButton = isConfirmed || !canConfirmOnDevice;
-    const isCancelable = isActionAbortable || showCopyButton;
+    const addressConfirmed = isConfirmed || !canConfirmOnDevice;
+    const isCancelable = isActionAbortable || addressConfirmed;
 
     const copy = () => {
         const result = copyToClipboard(value);
@@ -111,13 +125,21 @@ export const ConfirmValueModal = ({
         >
             <Wrapper>
                 {device && !device?.connected && <StyledDeviceDisconnected label={device.label} />}
-                <QrCode value={value} />
-                <Value data-test={valueDataTest}>{value}</Value>
-                {showCopyButton && (
-                    <StyledButton variant="tertiary" onClick={copy} data-test={copyButtonDataTest}>
-                        {copyButtonText}
-                    </StyledButton>
-                )}
+                <StyledQrCode
+                    value={value}
+                    bgColor="transparent"
+                    fgColor={addressConfirmed ? theme.TYPE_DARK_GREY : theme.TYPE_LIGHT_GREY}
+                    showMessage={!addressConfirmed}
+                />
+                <Right>
+                    <Value data-test={valueDataTest}>{value}</Value>
+
+                    {addressConfirmed && (
+                        <StyledButton onClick={copy} data-test={copyButtonDataTest}>
+                            {copyButtonText}
+                        </StyledButton>
+                    )}
+                </Right>
             </Wrapper>
         </StyledModal>
     );
