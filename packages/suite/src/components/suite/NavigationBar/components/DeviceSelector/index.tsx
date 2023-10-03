@@ -77,6 +77,9 @@ const DeviceWrapper = styled.div<{ isLowerOpacity: boolean }>`
 
 const StyledImage = styled(Image)`
     height: 34px;
+
+    /* do not apply the darkening filter in dark mode on device images */
+    filter: none;
 `;
 
 const WalletNameWrapper = styled.div`
