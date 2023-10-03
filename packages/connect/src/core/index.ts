@@ -408,6 +408,7 @@ export const onCall = async (message: CoreMessage) => {
             // wait for self-release and then carry on
             console.log(message.id, 'core: device.waitForFirstRun()');
             await device.waitForFirstRun();
+            device.removeAllListeners();
             console.log(message.id, 'core: device.waitForFirstRun() done');
         } else {
             // cancel popup request
