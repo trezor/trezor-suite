@@ -67,11 +67,10 @@ const goToNextStep = (stepId?: AnyStepId) => (dispatch: Dispatch, getState: GetS
     if (stepId) {
         return dispatch(goToStep(stepId));
     }
-    const state = getState();
-    const { activeStepId, path } = state.onboarding;
-    const deviceModelInternal = selectDevice(state)?.features?.internal_model;
-    const stepsInPath = steps.filter(step => isStepUsed(step, path, deviceModelInternal));
-    const nextStep = findNextStep(activeStepId, stepsInPath);
+
+    const stepsInPath = steps.filter(step => isStepUsed(step, getState));
+
+    const nextStep = findNextStep(getState().onboarding.activeStepId, stepsInPath);
     dispatch(goToStep(nextStep.id));
 };
 
@@ -79,11 +78,10 @@ const goToPreviousStep = (stepId?: AnyStepId) => (dispatch: Dispatch, getState: 
     if (stepId) {
         return dispatch(goToStep(stepId));
     }
-    const state = getState();
-    const { activeStepId, path } = state.onboarding;
-    const deviceModelInternal = selectDevice(state)?.features?.internal_model;
-    const stepsInPath = steps.filter(step => isStepUsed(step, path, deviceModelInternal));
-    const prevStep = findPrevStep(activeStepId, stepsInPath);
+
+    const stepsInPath = steps.filter(step => isStepUsed(step, getState));
+
+    const prevStep = findPrevStep(getState().onboarding.activeStepId, stepsInPath);
     // steps listed in case statements contain path decisions, so we need
     // to remove saved paths from reducers to let user change it again.
     switch (prevStep.id) {

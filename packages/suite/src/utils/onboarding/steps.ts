@@ -1,14 +1,24 @@
-import { DeviceModelInternal } from '@trezor/connect';
-import { AnyStepId, AnyPath, Step } from 'src/types/onboarding';
-// types types types
+import { selectDevice } from '@suite-common/wallet-core';
 
-export const isStepUsed = (
-    step: Step,
-    path: AnyPath[],
-    deviceModelInternal?: DeviceModelInternal,
-) => {
+import { AnyStepId, AnyPath, Step } from 'src/types/onboarding';
+import { GetState } from 'src/types/suite';
+import { ID_AUTHENTICATE_DEVICE_STEP } from 'src/constants/onboarding/steps';
+
+export const isStepUsed = (step: Step, getState: GetState) => {
+    const state = getState();
+    const device = selectDevice(state);
+
+    const { path } = state.onboarding;
+    const deviceModelInternal = device?.features?.internal_model;
+
+    // The order of IF conditions matters!
     if (deviceModelInternal && step.unsupportedModels?.includes(deviceModelInternal)) {
         return false;
+    }
+    if (step.id === ID_AUTHENTICATE_DEVICE_STEP) {
+        const { isUnlockedBootloaderAllowed } = state.suite.settings.debug;
+        const isBootloaderUnlocked = device?.features?.bootloader_locked === false;
+        return !isUnlockedBootloaderAllowed || !isBootloaderUnlocked;
     }
     if (!step.path) {
         return true;
