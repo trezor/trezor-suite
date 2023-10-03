@@ -13,6 +13,7 @@ export enum DeviceModelInternal {
 export type BinanceGetAddress = {
     address_n: number[];
     show_display?: boolean;
+    chunkify?: boolean;
 };
 
 // BinanceAddress
@@ -40,6 +41,7 @@ export type BinanceSignTx = {
     memo?: string;
     sequence: number;
     source: number;
+    chunkify?: boolean;
 };
 
 // BinanceTxRequest
@@ -59,6 +61,7 @@ export type BinanceInputOutput = {
 export type BinanceTransferMsg = {
     inputs: BinanceInputOutput[];
     outputs: BinanceInputOutput[];
+    chunkify?: boolean;
 };
 
 export enum BinanceOrderType {
@@ -190,6 +193,7 @@ export type GetAddress = {
     multisig?: MultisigRedeemScriptType;
     script_type?: InputScriptType;
     ignore_xpub_magic?: boolean;
+    chunkify?: boolean;
 };
 
 // Address
@@ -258,6 +262,7 @@ export type SignTx = {
     decred_staking_ticket?: boolean;
     serialize?: boolean;
     coinjoin_request?: CoinJoinRequest;
+    chunkify?: boolean;
 };
 
 export enum Enum_RequestType {
@@ -701,6 +706,7 @@ export type CardanoGetAddress = {
     network_id: number;
     address_parameters: CardanoAddressParametersType;
     derivation_type: CardanoDerivationType;
+    chunkify?: boolean;
 };
 
 // CardanoAddress
@@ -744,6 +750,7 @@ export type CardanoSignTxInit = {
     has_collateral_return?: boolean;
     total_collateral?: UintType;
     reference_inputs_count?: number;
+    chunkify?: boolean;
 };
 
 // CardanoTxInput
@@ -1097,6 +1104,7 @@ export type DebugLinkResetDebugEvents = {};
 export type EosGetPublicKey = {
     address_n: number[];
     show_display?: boolean;
+    chunkify?: boolean;
 };
 
 // EosPublicKey
@@ -1120,6 +1128,7 @@ export type EosSignTx = {
     chain_id: string;
     header: EosTxHeader;
     num_actions: number;
+    chunkify?: boolean;
 };
 
 // EosTxActionRequest
@@ -1373,6 +1382,7 @@ export type EthereumGetAddress = {
     address_n: number[];
     show_display?: boolean;
     encoded_network?: ArrayBuffer;
+    chunkify?: boolean;
 };
 
 // EthereumAddress
@@ -1394,6 +1404,7 @@ export type EthereumSignTx = {
     chain_id: number;
     tx_type?: number;
     definitions?: EthereumDefinitions;
+    chunkify?: boolean;
 };
 
 export type EthereumAccessList = {
@@ -1415,6 +1426,7 @@ export type EthereumSignTxEIP1559 = {
     chain_id: number;
     access_list: EthereumAccessList[];
     definitions?: EthereumDefinitions;
+    chunkify?: boolean;
 };
 
 // EthereumTxRequest
@@ -1568,6 +1580,7 @@ export type Features = {
     unit_btconly?: boolean;
     homescreen_width?: number;
     homescreen_height?: number;
+    bootloader_locked?: boolean;
 };
 
 // LockDevice
@@ -1788,6 +1801,7 @@ export type NEMGetAddress = {
     address_n: number[];
     network?: number;
     show_display?: boolean;
+    chunkify?: boolean;
 };
 
 // NEMAddress
@@ -1902,6 +1916,7 @@ export type NEMSignTx = {
     supply_change?: NEMMosaicSupplyChange;
     aggregate_modification?: NEMAggregateModification;
     importance_transfer?: NEMImportanceTransfer;
+    chunkify?: boolean;
 };
 
 // NEMSignedTx
@@ -1923,16 +1938,11 @@ export type NEMDecryptedMessage = {
     payload: string;
 };
 
-// experimental_message
-export type experimental_message = {};
-
-// experimental_field
-export type experimental_field = {};
-
 // RippleGetAddress
 export type RippleGetAddress = {
     address_n: number[];
     show_display?: boolean;
+    chunkify?: boolean;
 };
 
 // RippleAddress
@@ -1954,6 +1964,7 @@ export type RippleSignTx = {
     sequence: number;
     last_ledger_sequence?: number;
     payment: RipplePayment;
+    chunkify?: boolean;
 };
 
 // RippleSignedTx
@@ -1979,6 +1990,7 @@ export type StellarAsset = {
 export type StellarGetAddress = {
     address_n: number[];
     show_display?: boolean;
+    chunkify?: boolean;
 };
 
 // StellarAddress
@@ -2149,6 +2161,7 @@ export type StellarSignedTx = {
 export type TezosGetAddress = {
     address_n: number[];
     show_display?: boolean;
+    chunkify?: boolean;
 };
 
 // TezosAddress
@@ -2160,6 +2173,7 @@ export type TezosAddress = {
 export type TezosGetPublicKey = {
     address_n: number[];
     show_display?: boolean;
+    chunkify?: boolean;
 };
 
 // TezosPublicKey
@@ -2261,6 +2275,7 @@ export type TezosSignTx = {
     delegation?: TezosDelegationOp;
     proposal?: TezosProposalOp;
     ballot?: TezosBallotOp;
+    chunkify?: boolean;
 };
 
 // TezosSignedTx
@@ -2269,6 +2284,12 @@ export type TezosSignedTx = {
     sig_op_contents: string;
     operation_hash: string;
 };
+
+// experimental_message
+export type experimental_message = {};
+
+// experimental_field
+export type experimental_field = {};
 
 // custom connect definitions
 export type MessageType = {
@@ -2493,8 +2514,6 @@ export type MessageType = {
     NEMSignedTx: NEMSignedTx;
     NEMDecryptMessage: NEMDecryptMessage;
     NEMDecryptedMessage: NEMDecryptedMessage;
-    experimental_message: experimental_message;
-    experimental_field: experimental_field;
     RippleGetAddress: RippleGetAddress;
     RippleAddress: RippleAddress;
     RipplePayment: RipplePayment;
@@ -2534,6 +2553,8 @@ export type MessageType = {
     TezosBallotOp: TezosBallotOp;
     TezosSignTx: TezosSignTx;
     TezosSignedTx: TezosSignedTx;
+    experimental_message: experimental_message;
+    experimental_field: experimental_field;
 };
 
 export type MessageKey = keyof MessageType;
