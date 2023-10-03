@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback } from 'react';
 
 import { isTestnet, getDerivationType } from '@suite-common/wallet-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -15,13 +15,13 @@ import {
     getNetworkId,
     getUnusedChangeAddress,
     getDelegationCertificates,
-    composeTxPlan,
     isPoolOverSaturated,
     getStakePoolForDelegation,
-    loadCardanoLib,
     getAddressParameters,
 } from 'src/utils/wallet/cardanoUtils';
 import { AppState } from 'src/types/suite';
+import { cardanoSignTransaction } from 'src/utils/wallet/cardanoSignTransaction';
+import { cardanoComposeTransaction } from 'src/utils/wallet/cardanoComposeTransaction';
 
 const getDeviceAvailability = (
     device: AppState['device']['selectedDevice'],
@@ -100,10 +100,12 @@ export const useCardanoStaking = (): CardanoStaking => {
             : null;
     const isStakingOnTrezorPool = !isFetchLoading && !isFetchError ? !!currentPool : true; // fallback to true to prevent flickering in UI while we fetch the data
     const isCurrentPoolOversaturated = currentPool ? isPoolOverSaturated(currentPool) : false;
-    const changeAddress = useMemo(() => getUnusedChangeAddress(account), [account]);
     const prepareTxPlan = useCallback(
-        (action: 'delegate' | 'withdrawal') => {
-            if (!changeAddress) return null;
+        async (action: 'delegate' | 'withdrawal') => {
+            const changeAddress = getUnusedChangeAddress(account);
+            if (!changeAddress || !account.utxo || !account.addresses) return null;
+
+            const addressParameters = getAddressParameters(account, changeAddress.path);
 
             const pool = trezorPools
                 ? getStakePoolForDelegation(trezorPools, account.balance).hex
@@ -124,39 +126,35 @@ export const useCardanoStaking = (): CardanoStaking => {
                       ]
                     : [];
 
-            const txPlan = composeTxPlan(
-                account.descriptor,
-                account.utxo,
-                [],
+            const response = await cardanoComposeTransaction({
+                account: {
+                    addresses: account.addresses,
+                    descriptor: account.descriptor,
+                    utxo: account.utxo,
+                },
                 certificates,
                 withdrawals,
-                changeAddress.address,
-                isTestnet(account.symbol),
-            );
+                changeAddress,
+                addressParameters,
+                testnet: isTestnet(account.symbol),
+            });
 
-            return { txPlan, certificates, withdrawals, changeAddress };
+            if (!response.success) throw new Error(response.payload.error);
+
+            return { txPlan: response.payload[0], certificates, withdrawals };
         },
-        [
-            changeAddress,
-            account.balance,
-            account.descriptor,
-            account.utxo,
-            account.symbol,
-            stakingPath,
-            isStakingActive,
-            rewardsAmount,
-            stakeAddress,
-            trezorPools,
-        ],
+        [account, stakingPath, isStakingActive, rewardsAmount, stakeAddress, trezorPools],
     );
 
     const calculateFeeAndDeposit = useCallback(
         async (action: 'delegate' | 'withdrawal') => {
             setLoading(true);
-            const { CoinSelectionError } = await loadCardanoLib();
             try {
-                const composeRes = prepareTxPlan(action);
+                const composeRes = await prepareTxPlan(action);
                 if (composeRes) {
+                    if (composeRes.txPlan.type === 'error') {
+                        throw new Error(composeRes.txPlan.error);
+                    }
                     setFee(composeRes.txPlan.fee);
                     setDeposit(composeRes.txPlan.deposit);
                     const actionAvailability: ActionAvailability =
@@ -177,7 +175,7 @@ export const useCardanoStaking = (): CardanoStaking => {
                 // Deserialization failed in Ed25519KeyHash because: Invalid cbor: expected tuple 'hash length' of length 28 but got length Len(0).
                 const actionAvailability: ActionAvailability = {
                     status: false,
-                    reason: err instanceof CoinSelectionError ? err.code : err.message,
+                    reason: err.message,
                 };
                 setDelegatingAvailable(actionAvailability);
                 seWithdrawingAvailable(actionAvailability);
@@ -190,23 +188,22 @@ export const useCardanoStaking = (): CardanoStaking => {
 
     const signAndPushTransaction = useCallback(
         async (action: 'delegate' | 'withdrawal') => {
-            const composeRes = prepareTxPlan(action);
+            const composeRes = await prepareTxPlan(action);
             if (!composeRes) return;
 
-            const { trezorUtils } = await loadCardanoLib();
-            const { txPlan, certificates, withdrawals, changeAddress } = composeRes;
+            const { txPlan, certificates, withdrawals } = composeRes;
 
-            if (!txPlan || txPlan.type !== 'final') return;
+            if (!txPlan || txPlan.type === 'nonfinal') return;
+            if (txPlan.type === 'error') throw new Error(txPlan.error);
 
-            const res = await trezorConnect.cardanoSignTransaction({
+            const res = await cardanoSignTransaction({
                 signingMode: PROTO.CardanoTxSigningMode.ORDINARY_TRANSACTION,
                 device,
                 useEmptyPassphrase: device?.useEmptyPassphrase,
-                inputs: trezorUtils.transformToTrezorInputs(txPlan.inputs, account.utxo ?? []),
-                outputs: trezorUtils.transformToTrezorOutputs(
-                    txPlan.outputs,
-                    getAddressParameters(account, changeAddress.path),
-                ),
+                inputs: txPlan.inputs,
+                outputs: txPlan.outputs,
+                unsignedTx: txPlan.unsignedTx,
+                testnet: isTestnet(account.symbol),
                 fee: txPlan.fee,
                 protocolMagic: getProtocolMagic(account.symbol),
                 networkId: getNetworkId(account.symbol),
@@ -225,15 +222,8 @@ export const useCardanoStaking = (): CardanoStaking => {
                     }),
                 );
             } else {
-                const signedTx = trezorUtils.signTransaction(
-                    txPlan.tx.body,
-                    res.payload.witnesses,
-                    {
-                        testnet: isTestnet(account.symbol),
-                    },
-                );
                 const sentTx = await trezorConnect.pushTransaction({
-                    tx: signedTx,
+                    tx: res.payload.serializedTx,
                     coin: account.symbol,
                 });
 
@@ -266,15 +256,10 @@ export const useCardanoStaking = (): CardanoStaking => {
         async (action: 'delegate' | 'withdrawal') => {
             setError(undefined);
             setLoading(true);
-            const { CoinSelectionError } = await loadCardanoLib();
-
             try {
                 await signAndPushTransaction(action);
             } catch (error) {
-                if (
-                    error instanceof CoinSelectionError &&
-                    error.code === 'UTXO_BALANCE_INSUFFICIENT'
-                ) {
+                if (error.message === 'UTXO_BALANCE_INSUFFICIENT') {
                     setError('AMOUNT_IS_NOT_ENOUGH');
                     dispatch(
                         notificationsActions.addToast({
@@ -282,7 +267,7 @@ export const useCardanoStaking = (): CardanoStaking => {
                                 action === 'delegate'
                                     ? 'cardano-delegate-error'
                                     : 'cardano-withdrawal-error',
-                            error: error.code,
+                            error: 'UTXO_BALANCE_INSUFFICIENT',
                         }),
                     );
                 } else {
