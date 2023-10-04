@@ -3,6 +3,8 @@
 // allow for...of statements
 /* eslint-disable no-restricted-syntax */
 
+import { trezorUtils } from '@fivebinaries/coin-selection';
+
 import { AbstractMethod } from '../../../core/AbstractMethod';
 import { validateParams, getFirmwareRange } from '../../common/paramsValidator';
 import { getMiscNetwork } from '../../../data/coinInfo';
@@ -71,6 +73,8 @@ export type CardanoSignTransactionParams = {
     additionalWitnessRequests: Path[];
     derivationType: PROTO.CardanoDerivationType;
     includeNetworkId?: boolean;
+    unsignedTx?: { body: string; hash: string };
+    testnet?: boolean;
 };
 
 export default class CardanoSignTransaction extends AbstractMethod<
@@ -146,6 +150,8 @@ export default class CardanoSignTransaction extends AbstractMethod<
             { name: 'additionalWitnessRequests', type: 'array', allowEmpty: true },
             { name: 'derivationType', type: 'number' },
             { name: 'includeNetworkId', type: 'boolean' },
+            { name: 'unsignedTx', type: 'object' },
+            { name: 'testnet', type: 'boolean' },
         ]);
 
         const inputsWithPath = payload.inputs.map(transformInput);
@@ -252,6 +258,8 @@ export default class CardanoSignTransaction extends AbstractMethod<
                     ? payload.derivationType
                     : PROTO.CardanoDerivationType.ICARUS_TREZOR,
             includeNetworkId: payload.includeNetworkId,
+            unsignedTx: 'unsignedTx' in payload ? payload.unsignedTx : undefined,
+            testnet: 'testnet' in payload ? payload.testnet : undefined,
         };
     }
 
@@ -507,9 +515,29 @@ export default class CardanoSignTransaction extends AbstractMethod<
         return { hash: txBodyHashMessage.tx_hash, witnesses, auxiliaryDataSupplement };
     }
 
-    run() {
+    async run() {
         this._ensureFirmwareSupportsParams();
 
-        return this._sign_tx();
+        const result = await this._sign_tx();
+
+        if (!this.params.unsignedTx) return result;
+
+        const { unsignedTx, testnet } = this.params;
+        const { hash, witnesses } = result;
+
+        // TODO this check not in staking?
+        if (hash !== unsignedTx.hash) {
+            throw ERRORS.TypedError(
+                'Runtime',
+                "Constructed transaction doesn't match the hash returned by the device.",
+            );
+        }
+
+        const serializedTx = trezorUtils.signTransaction(unsignedTx.body, witnesses, { testnet });
+
+        return {
+            ...result,
+            serializedTx,
+        };
     }
 }
