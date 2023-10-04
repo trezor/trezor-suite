@@ -16,6 +16,7 @@ export const breakpointMediaQueries = Object.keys(
     (mediaQueries, breakpoint) => ({
         ...mediaQueries,
         [breakpoint]: `@media (min-width: ${breakpointThresholds[breakpoint]}px)`,
+        [`below_${breakpoint}`]: `@media (max-width: ${breakpointThresholds[breakpoint] - 1}px)`,
     }),
     {} as BreakpointMediaQueries,
 );
