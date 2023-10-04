@@ -1,6 +1,7 @@
 import { useArgs } from '@storybook/client-api';
+import { StoryObj } from '@storybook/react';
 
-import { SelectBar as SelectBarComponent } from './SelectBar';
+import { SelectBar as SelectBarComponent, SelectBarProps } from './SelectBar';
 
 const options = [
     { label: 'low', value: 'low' },
@@ -11,30 +12,21 @@ const options = [
 
 export default {
     title: 'Form/SelectBar',
-    argTypes: {
-        option: {
-            control: {
-                options: options.map(option => option.value),
-                type: 'radio',
-            },
-        },
-    },
-    args: { option: 'low', label: 'fee' },
+    args: { selectedOption: 'low', label: 'fee' },
+    component: SelectBarComponent,
 };
 
-export const SelectBar = {
+export const SelectBar: StoryObj<SelectBarProps<string>> = {
     render: ({ ...args }) => {
         // eslint-disable-next-line
-        const [{ option }, updateArgs] = useArgs();
-        const setOption = (option: string) => updateArgs({ option });
+        const [_, updateArgs] = useArgs<SelectBarProps<string>>();
+        const setOption = (selectedOption: string) => updateArgs({ selectedOption });
 
-        return (
-            <SelectBarComponent
-                label={args.label}
-                selectedOption={option}
-                options={options}
-                onChange={setOption}
-            />
-        );
+        return <SelectBarComponent {...args} onChange={setOption} options={options} />;
+    },
+    argTypes: {
+        className: { control: { disable: true } },
+        options: { control: { disable: true } },
+        selectedOption: { control: { disable: true } },
     },
 };
