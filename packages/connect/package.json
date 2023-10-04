@@ -49,6 +49,7 @@
         "prepublish": "yarn tsx ../../scripts/prepublish.js"
     },
     "dependencies": {
+        "@fivebinaries/coin-selection": "2.1.0",
         "@trezor/blockchain-link": "workspace:*",
         "@trezor/blockchain-link-types": "workspace:*",
         "@trezor/connect-analytics": "workspace:*",

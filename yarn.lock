@@ -9009,6 +9009,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/connect@workspace:packages/connect"
   dependencies:
+    "@fivebinaries/coin-selection": 2.1.0
     "@trezor/blockchain-link": "workspace:*"
     "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/connect-analytics": "workspace:*"

@@ -25,6 +25,12 @@ export type {
     PrecomposeResultFinal,
     PrecomposedResult,
 } from './api/composeTransaction';
+export type {
+    PrecomposedTransactionCardano,
+    PrecomposedTransactionErrorCardano,
+    PrecomposedTransactionFinalCardano,
+    PrecomposedTransactionNonFinalCardano,
+} from './api/cardanoComposeTransaction';
 export type { RecoveryDevice } from './api/recoveryDevice';
 export type { AuthenticateDeviceResult } from './api/authenticateDevice';
 export type {
