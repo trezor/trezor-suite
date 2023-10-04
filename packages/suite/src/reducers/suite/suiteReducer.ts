@@ -67,6 +67,7 @@ export interface SuiteSettings {
     isDesktopSuitePromoHidden: boolean;
     debug: DebugModeOptions;
     autodetect: AutodetectSettings;
+    isDeviceAuthenticityCheckDisabled: boolean;
 }
 
 export interface SuiteState {
@@ -107,6 +108,7 @@ const initialState: SuiteState = {
         torOnionLinks: isWeb(),
         isCoinjoinReceiveWarningHidden: false,
         isDesktopSuitePromoHidden: false,
+        isDeviceAuthenticityCheckDisabled: false,
         debug: {
             invityServerEnvironment: undefined,
             showDebugMenu: false,
@@ -217,7 +219,9 @@ const suiteReducer = (state: SuiteState = initialState, action: Action): SuiteSt
             case SUITE.DESKTOP_SUITE_PROMO:
                 draft.settings.isDesktopSuitePromoHidden = action.payload;
                 break;
-
+            case SUITE.DEVICE_AUTHENTICITY_OPT_OUT:
+                draft.settings.isDeviceAuthenticityCheckDisabled = action.payload;
+                break;
             case SUITE.LOCK_UI:
                 changeLock(draft, SUITE.LOCK_TYPE.UI, action.payload);
                 break;
