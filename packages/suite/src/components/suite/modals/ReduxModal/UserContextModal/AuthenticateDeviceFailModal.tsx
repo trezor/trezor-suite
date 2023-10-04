@@ -10,7 +10,7 @@ const StyledModal = styled(Modal)`
 
 export const AuthenticateDeviceFailModal = () => (
     <StyledModal>
-        <SecurityCheckLayout>
+        <SecurityCheckLayout isFailed>
             <SecurityCheckFail />
         </SecurityCheckLayout>
     </StyledModal>

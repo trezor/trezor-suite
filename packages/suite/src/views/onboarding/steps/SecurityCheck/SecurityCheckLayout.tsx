@@ -37,19 +37,21 @@ const Content = styled.div`
 `;
 
 interface SecurityCheckLayoutProps {
+    isFailed: boolean;
     children: React.ReactNode;
 }
 
-export const SecurityCheckLayout = ({ children }: SecurityCheckLayoutProps) => {
+export const SecurityCheckLayout = ({ isFailed, children }: SecurityCheckLayoutProps) => {
     const device = useSelector(selectDevice);
 
     const deviceModelInternal = device?.features?.internal_model;
+    const imageVariant = isFailed ? 'GHOST' : 'LARGE';
 
     return (
         <Wrapper>
             {deviceModelInternal && (
                 <ImageWrapper>
-                    <StyledImage image={`TREZOR_${deviceModelInternal}_LARGE`} />
+                    <StyledImage image={`TREZOR_${deviceModelInternal}_${imageVariant}`} />
                 </ImageWrapper>
             )}
             <Content>{children}</Content>
