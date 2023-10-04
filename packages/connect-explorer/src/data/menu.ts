@@ -488,6 +488,10 @@ export default [
                 url: '/method/changePin',
             },
             {
+                name: 'Reboot to bootloader',
+                url: '/method/rebootToBootloader',
+            },
+            {
                 name: 'Firmware update',
                 url: '/method/firmwareUpdate',
             },
