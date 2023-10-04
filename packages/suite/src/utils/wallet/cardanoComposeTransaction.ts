@@ -1,6 +1,5 @@
 import { types, trezorUtils, CoinSelectionError } from '@fivebinaries/coin-selection';
 
-import type { PrecomposedTransactionCardano } from '@suite-common/wallet-types';
 import {
     Params,
     Response,
@@ -12,10 +11,7 @@ import {
 import type { getAddressParameters } from './cardanoUtils';
 
 import { composeTxPlan } from './cardanoConnectUtils';
-
-type Tx = PrecomposedTransactionCardano & {
-    deposit?: string;
-};
+import { PrecomposedTransactionCardano } from '@suite-common/wallet-types/src/cardanoConnectTypes';
 
 type CardanoComposeTransaction = (
     params: Params<{
@@ -32,7 +28,7 @@ type CardanoComposeTransaction = (
         addressParameters: ReturnType<typeof getAddressParameters>;
         testnet?: boolean;
     }>,
-) => Response<Tx[]>;
+) => Response<PrecomposedTransactionCardano[]>;
 
 export const cardanoComposeTransaction: CardanoComposeTransaction = async ({
     account,
@@ -46,7 +42,7 @@ export const cardanoComposeTransaction: CardanoComposeTransaction = async ({
 }) => {
     await Promise.resolve();
 
-    const payload = feeLevels.map<Tx>(({ feePerUnit }) => {
+    const payload = feeLevels.map<PrecomposedTransactionCardano>(({ feePerUnit }) => {
         try {
             const txPlan = composeTxPlan(
                 account.descriptor,
@@ -90,14 +86,12 @@ export const cardanoComposeTransaction: CardanoComposeTransaction = async ({
                 return {
                     type: 'error',
                     error: 'UTXO_BALANCE_INSUFFICIENT',
-                    errorMessage: { id: 'AMOUNT_IS_NOT_ENOUGH' },
                 };
             }
             if (error instanceof CoinSelectionError && error.code === 'UTXO_VALUE_TOO_SMALL') {
                 return {
                     type: 'error',
                     error: 'UTXO_VALUE_TOO_SMALL',
-                    errorMessage: { id: 'AMOUNT_IS_TOO_LOW' },
                 };
             }
             // generic handling for the rest of CoinSelectionError and other unexpected errors

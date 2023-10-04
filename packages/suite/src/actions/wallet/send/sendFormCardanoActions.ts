@@ -6,6 +6,7 @@ import {
     ComposeActionContext,
     PrecomposedLevelsCardano,
     PrecomposedTransactionFinalCardano,
+    PrecomposedTransactionCardano,
 } from '@suite-common/wallet-types';
 import { selectDevice } from '@suite-common/wallet-core';
 
@@ -70,7 +71,8 @@ export const composeTransaction =
         }
 
         const wrappedResponse: PrecomposedLevelsCardano = {};
-        response.payload.forEach((tx, index) => {
+        response.payload.forEach((t, index) => {
+            const tx: PrecomposedTransactionCardano = t;
             switch (tx.type) {
                 case 'final':
                     // convert from lovelace units to ADA
@@ -89,16 +91,21 @@ export const composeTransaction =
                     );
                     break;
                 case 'error':
-                    if (
-                        tx.error !== 'UTXO_BALANCE_INSUFFICIENT' &&
-                        tx.error !== 'UTXO_VALUE_TOO_SMALL'
-                    ) {
-                        dispatch(
-                            notificationsActions.addToast({
-                                type: 'sign-tx-error',
-                                error: tx.error,
-                            }),
-                        );
+                    switch (tx.error) {
+                        case 'UTXO_BALANCE_INSUFFICIENT':
+                            tx.errorMessage = { id: 'AMOUNT_IS_NOT_ENOUGH' };
+                            break;
+                        case 'UTXO_VALUE_TOO_SMALL':
+                            tx.errorMessage = { id: 'AMOUNT_IS_TOO_LOW' };
+                            break;
+                        default:
+                            dispatch(
+                                notificationsActions.addToast({
+                                    type: 'sign-tx-error',
+                                    error: tx.error,
+                                }),
+                            );
+                            break;
                     }
                     break;
                 // no default
