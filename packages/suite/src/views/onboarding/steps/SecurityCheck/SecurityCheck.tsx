@@ -199,7 +199,7 @@ export const SecurityCheck = () => {
 
     return (
         <StyledCard>
-            <SecurityCheckLayout>
+            <SecurityCheckLayout isFailed={isFailed}>
                 {isFailed ? (
                     <SecurityCheckFail goBack={toggleView} />
                 ) : (
