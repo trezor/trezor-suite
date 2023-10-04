@@ -7,6 +7,7 @@ import { checkDeviceAuthenticityThunk } from '@suite-common/device-authenticity'
 import { selectDevice, selectIsDeviceAuthenticityFulfilled } from '@suite-common/wallet-core';
 import { variables } from '@trezor/components';
 
+import { reportToSentry } from 'src/utils/suite/sentry';
 import { OnboardingButtonCta, OnboardingStepBox } from 'src/components/onboarding';
 import { CollapsibleOnboardingCard } from 'src/components/onboarding/CollapsibleOnboardingCard';
 import { DeviceAuthenticationExplainer, Translation } from 'src/components/suite';
@@ -80,6 +81,7 @@ export const DeviceAuthenticity = () => {
                 ).unwrap();
 
                 if (typeof result === 'string' || result.valid === undefined) {
+                    dispatch(reportToSentry(new Error(`Device authenticity failed: ${result}`)));
                     setIsAborted(true);
                 }
             } catch (error) {
@@ -87,7 +89,7 @@ export const DeviceAuthenticity = () => {
                 if (!error.includes('bootloader is unlocked')) {
                     setIsAborted(true);
                 }
-                console.warn(error);
+                dispatch(reportToSentry(new Error(`Device authenticity error: ${error}`)));
             }
             setIsSubmitted(true);
         };
