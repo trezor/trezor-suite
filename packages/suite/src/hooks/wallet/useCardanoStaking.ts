@@ -20,8 +20,6 @@ import {
     getAddressParameters,
 } from 'src/utils/wallet/cardanoUtils';
 import { AppState } from 'src/types/suite';
-import { cardanoSignTransaction } from 'src/utils/wallet/cardanoSignTransaction';
-import { cardanoComposeTransaction } from 'src/utils/wallet/cardanoComposeTransaction';
 
 const getDeviceAvailability = (
     device: AppState['device']['selectedDevice'],
@@ -126,7 +124,7 @@ export const useCardanoStaking = (): CardanoStaking => {
                       ]
                     : [];
 
-            const response = await cardanoComposeTransaction({
+            const response = await trezorConnect.cardanoComposeTransaction({
                 account: {
                     addresses: account.addresses,
                     descriptor: account.descriptor,
@@ -196,7 +194,7 @@ export const useCardanoStaking = (): CardanoStaking => {
             if (!txPlan || txPlan.type === 'nonfinal') return;
             if (txPlan.type === 'error') throw new Error(txPlan.error);
 
-            const res = await cardanoSignTransaction({
+            const res = await trezorConnect.cardanoSignTransaction({
                 signingMode: PROTO.CardanoTxSigningMode.ORDINARY_TRANSACTION,
                 device,
                 useEmptyPassphrase: device?.useEmptyPassphrase,

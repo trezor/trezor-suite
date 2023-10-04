@@ -21,7 +21,6 @@
     "dependencies": {
         "@ethereumjs/common": "^3.1.2",
         "@ethereumjs/tx": "^4.1.2",
-        "@fivebinaries/coin-selection": "2.1.0",
         "@formatjs/intl": "2.9.0",
         "@hookform/resolvers": "3.1.0",
         "@reduxjs/toolkit": "1.9.5",

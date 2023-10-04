@@ -6,6 +6,7 @@ import {
     AccountAddress,
     AccountTransaction,
     AccountUtxo,
+    PrecomposedTransactionFinalCardano,
 } from '@trezor/connect';
 import { arrayDistinct, bufferUtils } from '@trezor/utils';
 import {
@@ -19,7 +20,6 @@ import {
     CoinFiatRates,
     Discovery,
     PrecomposedTransactionFinal,
-    PrecomposedTransactionFinalCardano,
     ReceiveInfo,
     TxFinalCardano,
 } from '@suite-common/wallet-types';

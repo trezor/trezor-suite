@@ -18,7 +18,6 @@ import {
     getUnusedChangeAddress,
     getAddressParameters,
 } from '../cardanoUtils';
-import { composeTxPlan, getTtl, transformUtxos, prepareCertificates } from '../cardanoConnectUtils';
 import * as fixtures from '../__fixtures__/cardanoUtils';
 
 describe('cardano utils', () => {
@@ -63,29 +62,6 @@ describe('cardano utils', () => {
     // @ts-expect-error params are partial
     expect(isCardanoExternalOutput({ addressParameters: {} }, {})).toBe(false);
 
-    it('composeTxPlan', () => {
-        expect(
-            composeTxPlan(
-                'descriptor',
-                [],
-                [],
-                [
-                    {
-                        type: 0,
-                    },
-                    {
-                        path: 'path',
-                        pool: 'abc',
-                        type: 2,
-                    },
-                ],
-                [{ amount: '10', stakeAddress: 'stkAddr' }],
-                'addr',
-                true,
-            ),
-        ).toBeUndefined();
-    });
-
     fixtures.getChangeAddressParameters.forEach(f => {
         it(`getChangeAddressParameters: ${f.description}`, () => {
             const address = getUnusedChangeAddress(f.account);
@@ -121,18 +97,6 @@ describe('cardano utils', () => {
         });
     });
 
-    fixtures.transformUtxos.forEach(f => {
-        it(`transformUtxos: ${f.description}`, () => {
-            expect(transformUtxos(f.utxo)).toMatchObject(f.result);
-        });
-    });
-
-    fixtures.prepareCertificates.forEach(f => {
-        it(`prepareCertificates: ${f.description}`, () => {
-            expect(prepareCertificates(f.certificates)).toMatchObject(f.result);
-        });
-    });
-
     fixtures.parseAsset.forEach(f => {
         it(`parseAsset: ${f.description}`, () => {
             expect(parseAsset(f.hex)).toMatchObject(f.result);
@@ -159,9 +123,5 @@ describe('cardano utils', () => {
                 getDelegationCertificates(f.stakingPath, f.poolHex, f.shouldRegister),
             ).toMatchObject(f.result);
         });
-    });
-
-    it(`getTTL`, () => {
-        expect(getTtl(true)).toBe(-13254411);
     });
 });
