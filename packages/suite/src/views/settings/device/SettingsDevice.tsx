@@ -24,6 +24,7 @@ import { AutoLock } from './AutoLock';
 import { WipeDevice } from './WipeDevice';
 import { CustomFirmware } from './CustomFirmware';
 import { AuthenticateDevice } from './AuthenticateDevice';
+import { DeviceAuthenticityOptOut } from './DeviceAuthenticityOptOut';
 
 const deviceSettingsUnavailable = (device?: TrezorDevice, transport?: Partial<TransportInfo>) => {
     const noTransportAvailable = transport && !transport.type;
@@ -149,6 +150,7 @@ export const SettingsDevice = () => {
             <SettingsSection title={<Translation id="TR_ADVANCED" />} icon="GHOST">
                 <WipeDevice isDeviceLocked={isDeviceLocked} />
                 <CustomFirmware />
+                {supportsDeviceAuthentication && <DeviceAuthenticityOptOut />}
             </SettingsSection>
         </SettingsLayout>
     );

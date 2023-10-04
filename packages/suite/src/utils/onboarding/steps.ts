@@ -16,9 +16,15 @@ export const isStepUsed = (step: Step, getState: GetState) => {
         return false;
     }
     if (step.id === ID_AUTHENTICATE_DEVICE_STEP) {
-        const { isUnlockedBootloaderAllowed } = state.suite.settings.debug;
+        const {
+            isDeviceAuthenticityCheckDisabled,
+            debug: { isUnlockedBootloaderAllowed },
+        } = state.suite.settings;
         const isBootloaderUnlocked = device?.features?.bootloader_locked === false;
-        return !isUnlockedBootloaderAllowed || !isBootloaderUnlocked;
+        return (
+            !isDeviceAuthenticityCheckDisabled &&
+            (!isUnlockedBootloaderAllowed || !isBootloaderUnlocked)
+        );
     }
     if (!step.path) {
         return true;

@@ -33,6 +33,7 @@ import {
     UnecoCoinjoinModal,
     AuthenticateDeviceModal,
     AuthenticateDeviceFailModal,
+    DeviceAuthenticityOptOutModal,
 } from 'src/components/suite/modals';
 import type { AcquiredDevice } from 'src/types/suite';
 import { openXpubModal, showXpub } from 'src/actions/wallet/publicKeyActions';
@@ -82,6 +83,8 @@ export const UserContextModal = ({
             return <BackgroundGalleryModal onCancel={onCancel} />;
         case 'wipe-device':
             return <WipeDeviceModal onCancel={onCancel} />;
+        case 'device-authenticity-opt-out':
+            return <DeviceAuthenticityOptOutModal onCancel={onCancel} />;
         case 'qr-reader':
             return (
                 <QrScannerModal
