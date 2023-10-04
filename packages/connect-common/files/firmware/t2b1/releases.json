@@ -5,7 +5,7 @@
         "min_bridge_version": [2, 0, 7],
         "min_firmware_version": [2, 6, 1],
         "min_bootloader_version": [2, 1, 1],
-        "bootloader_version": [2, 1, 2],
+        "bootloader_version": [2, 1, 3],
         "url": "firmware/t2b1/trezor-t2b1-2.6.1.bin",
         "url_bitcoinonly": "firmware/t2b1/trezor-t2b1-2.6.1-bitcoinonly.bin",
         "fingerprint": "4e4ff8d532f84a9b69d6f3da3c7c3063c3bc9d65e1b2cba550e6455c8fdeca9c",
