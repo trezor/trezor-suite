@@ -8,8 +8,8 @@ import styled from 'styled-components';
 export const Row = styled.div`
     position: relative;
     display: flex;
-    align-items: flex-start;
     justify-content: center;
+    align-items: center;
 
     & + & {
         padding-top: 12px;
