@@ -100,6 +100,9 @@ export const factory = ({
 
         cardanoSignTransaction: params => call({ ...params, method: 'cardanoSignTransaction' }),
 
+        cardanoComposeTransaction: params =>
+            call({ ...params, method: 'cardanoComposeTransaction' }),
+
         cipherKeyValue: params => call({ ...params, method: 'cipherKeyValue' }),
 
         composeTransaction: params => call({ ...params, method: 'composeTransaction' }),
