@@ -8,14 +8,17 @@ import {
     PrecomposeResultError,
     PrecomposeResultNonFinal,
     PrecomposeResultFinal,
-    CardanoInput,
-    CardanoOutput,
 } from '@trezor/connect';
 import { Network, NetworkSymbol } from '@suite-common/wallet-config';
 import { TranslationKey } from '@suite-common/intl-types';
 
 import { TimestampedRates } from './fiatRates';
 import { Account } from './account';
+import {
+    PrecomposedTransactionErrorCardano,
+    PrecomposedTransactionNonFinalCardano,
+    PrecomposedTransactionFinalCardano,
+} from './cardanoConnectTypes';
 
 // extend errors from @trezor/connect + @trezor/utxo-lib with errors from sendForm actions
 type PrecomposedTransactionErrorExtended =
@@ -26,26 +29,11 @@ type PrecomposedTransactionErrorExtended =
               | 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE'
               | 'AMOUNT_IS_NOT_ENOUGH'
               | 'AMOUNT_IS_TOO_LOW'
-              | 'AMOUNT_IS_LESS_THAN_RESERVE'
-              | 'UTXO_BALANCE_INSUFFICIENT' // TODO
-              | 'UTXO_VALUE_TOO_SMALL'; // TODO
+              | 'AMOUNT_IS_LESS_THAN_RESERVE';
       };
 
-export type PrecomposedTransactionFinalCardano = Omit<
-    PrecomposeResultFinal,
-    'inputs' | 'outputs' | 'outputsPermutation'
-> & {
-    ttl?: number;
-    inputs: CardanoInput[];
-    outputs: CardanoOutput[];
-    unsignedTx: {
-        body: string;
-        hash: string;
-    };
-};
-
-export type PrecomposedTransactionNonFinalCardano = Omit<PrecomposeResultNonFinal, 'inputs'> & {
-    max: string | undefined;
+export type TxNonFinalCardano = PrecomposedTransactionNonFinalCardano & {
+    max?: string;
     feeLimit?: string;
     estimatedFeeLimit?: string;
     token?: TokenInfo;
@@ -99,7 +87,7 @@ type ComposeError = {
 
 export type PrecomposedTransactionError = PrecomposedTransactionErrorExtended & ComposeError;
 
-export type PrecomposedTransactionErrorCardano = PrecomposedTransactionErrorExtended & ComposeError;
+export type TxErrorCardano = PrecomposedTransactionErrorCardano & ComposeError;
 
 export type PrecomposedTransactionNonFinal = PrecomposeResultNonFinal & {
     max: string | undefined;
@@ -119,7 +107,7 @@ type TxFinal = PrecomposeResultFinal & {
 
 // base of PrecomposedTransactionFinal
 export type TxFinalCardano = PrecomposedTransactionFinalCardano & {
-    max: string | undefined;
+    max?: string;
     feeLimit?: string;
     estimatedFeeLimit?: string;
     token?: TokenInfo;
@@ -153,10 +141,7 @@ export type PrecomposedTransaction =
     | PrecomposedTransactionNonFinal
     | PrecomposedTransactionFinal;
 
-export type PrecomposedTransactionCardano =
-    | PrecomposedTransactionErrorCardano
-    | PrecomposedTransactionNonFinalCardano
-    | TxFinalCardano;
+export type PrecomposedTransactionCardano = TxErrorCardano | TxNonFinalCardano | TxFinalCardano;
 
 export type PrecomposedLevels = { [key: string]: PrecomposedTransaction };
 export type PrecomposedLevelsCardano = { [key: string]: PrecomposedTransactionCardano };

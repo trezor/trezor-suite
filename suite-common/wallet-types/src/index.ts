@@ -9,3 +9,9 @@ export * from './sendForm';
 export * from './settings';
 export * from './selectedAccount';
 export * from './transaction';
+
+export type {
+    PrecomposedTransactionFinalCardano,
+    PrecomposedTransactionNonFinalCardano,
+    PrecomposedTransactionErrorCardano,
+} from './cardanoConnectTypes';
