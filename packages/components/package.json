@@ -23,6 +23,7 @@
         "@trezor/dom-utils": "workspace:*",
         "@trezor/env-utils": "workspace:*",
         "@trezor/react-utils": "workspace:*",
+        "@trezor/styles": "workspace:^",
         "@trezor/theme": "workspace:*",
         "@trezor/utils": "workspace:*",
         "date-fns": "^2.30.0",
