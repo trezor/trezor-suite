@@ -14,7 +14,7 @@ export const isOnionUrl = (url: string) => {
     return !!hostname && getIsTorDomain(hostname);
 };
 
-export const getIsTorEnabled = (torStatus: TorStatus) => {
+export const getIsTorEnabled = (torStatus: TorStatus): boolean => {
     switch (torStatus) {
         case TorStatus.Enabled:
         case TorStatus.Misbehaving:
@@ -24,14 +24,12 @@ export const getIsTorEnabled = (torStatus: TorStatus) => {
         case TorStatus.Enabling:
         case TorStatus.Disabling:
         case TorStatus.Disabled:
-            return false;
-
-        default:
+        case TorStatus.Error:
             return false;
     }
 };
 
-export const getIsTorLoading = (torStatus: TorStatus) => {
+export const getIsTorLoading = (torStatus: TorStatus): boolean => {
     switch (torStatus) {
         case TorStatus.Enabling:
         case TorStatus.Disabling:
@@ -39,9 +37,8 @@ export const getIsTorLoading = (torStatus: TorStatus) => {
 
         case TorStatus.Enabled:
         case TorStatus.Disabled:
-            return false;
-
-        default:
+        case TorStatus.Misbehaving:
+        case TorStatus.Error:
             return false;
     }
 };
