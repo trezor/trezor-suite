@@ -1,4 +1,4 @@
-import { PROTO } from '@trezor/connect';
+import TrezorConnect, { PROTO } from '@trezor/connect';
 import { isTestnet, getDerivationType } from '@suite-common/wallet-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
@@ -19,8 +19,6 @@ import {
     transformUserOutputs,
     formatMaxOutputAmount,
 } from 'src/utils/wallet/cardanoUtils';
-import { cardanoComposeTransaction } from 'src/utils/wallet/cardanoComposeTransaction';
-import { cardanoSignTransaction } from 'src/utils/wallet/cardanoSignTransaction';
 
 export const composeTransaction =
     (formValues: FormState, formState: ComposeActionContext) =>
@@ -47,7 +45,7 @@ export const composeTransaction =
 
         const addressParameters = getAddressParameters(account, changeAddress.path);
 
-        const response = await cardanoComposeTransaction({
+        const response = await TrezorConnect.cardanoComposeTransaction({
             feeLevels: predefinedLevels,
             outputs,
             account: {
@@ -136,7 +134,7 @@ export const signTransaction =
 
         if (account.networkType !== 'cardano') return;
 
-        const res = await cardanoSignTransaction({
+        const res = await TrezorConnect.cardanoSignTransaction({
             signingMode: PROTO.CardanoTxSigningMode.ORDINARY_TRANSACTION,
             device: {
                 path: device.path,

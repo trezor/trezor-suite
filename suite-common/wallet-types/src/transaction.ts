@@ -8,17 +8,17 @@ import {
     PrecomposeResultError,
     PrecomposeResultNonFinal,
     PrecomposeResultFinal,
+    PrecomposedTransactionErrorCardano,
+    PrecomposedTransactionNonFinalCardano,
+    PrecomposedTransactionFinalCardano,
 } from '@trezor/connect';
 import { Network, NetworkSymbol } from '@suite-common/wallet-config';
 import { TranslationKey } from '@suite-common/intl-types';
 
 import { TimestampedRates } from './fiatRates';
 import { Account } from './account';
-import {
-    PrecomposedTransactionErrorCardano,
-    PrecomposedTransactionNonFinalCardano,
-    PrecomposedTransactionFinalCardano,
-} from './cardanoConnectTypes';
+
+export type { PrecomposedTransactionFinalCardano } from '@trezor/connect';
 
 // extend errors from @trezor/connect + @trezor/utxo-lib with errors from sendForm actions
 type PrecomposedTransactionErrorExtended =

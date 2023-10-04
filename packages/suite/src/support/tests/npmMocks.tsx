@@ -36,10 +36,4 @@ jest.mock('dropbox', () => {
 // @ts-expect-error
 jest.mock('react-markdown', () => props => <>{props.children}</>);
 
-jest.mock('@fivebinaries/coin-selection', () => ({
-    __esModule: true,
-    default: () => {},
-    coinSelection: () => {},
-}));
-
 export {};
