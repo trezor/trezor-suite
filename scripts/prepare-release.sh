@@ -7,7 +7,7 @@
 # brew install gh
 # gh auth login
 
-MAIN_BRANCH=develop
+MAIN_BRANCH=t2b1/base-develop
 FILEPATH=packages/suite/package.json
 
 echo Calculating versions...
@@ -29,36 +29,25 @@ fi
   BETA_VERSION="$NEXT_VERSION_YEAR.$NEXT_VERSION_MONTH.0"
 
 echo Pulling "$MAIN_BRANCH"...
-git pull origin $MAIN_BRANCH
+git pull trezor-suite-private $MAIN_BRANCH
 
 echo Creating release branch "$RELEASE_MONTH"...
 git switch -c release/"$RELEASE_MONTH" $MAIN_BRANCH
 sed -i '' -E "s/(\"suiteVersion\": \")[^\"]*(\".*)/\1$RELEASE_VERSION\2/" $FILEPATH
 git commit -am "chore(suite): bump Suite version to $RELEASE_VERSION [RELEASE ONLY]"
-git push
+git push trezor-suite-private
 
 echo Creating testing branch "$TEST_UPGRADE_VERSION"...
 git switch -c release/test-"$TEST_UPGRADE_VERSION" $MAIN_BRANCH
 sed -i '' -E "s/(\"suiteVersion\": \")[^\"]*(\".*$)/\1$TEST_UPGRADE_VERSION\2/" $FILEPATH
 git commit -am "chore(suite): set Suite version to $TEST_UPGRADE_VERSION for testing [RELEASE ONLY]"
-git push
+git push trezor-suite-private
 
 echo Creating testing branch "$TEST_DOWNGRADE_VERSION"...
 git switch -c release/test-"$TEST_DOWNGRADE_VERSION" $MAIN_BRANCH
 sed -i '' -E "s/(\"suiteVersion\": \")[^\"]*(\".*$)/\1$TEST_DOWNGRADE_VERSION\2/" $FILEPATH
 git commit -am "chore(suite): set Suite version to $TEST_DOWNGRADE_VERSION for testing [RELEASE ONLY]"
-git push
-
-echo Bumping beta version to "$BETA_VERSION"...
-git switch -c chore/bump-suite-version-"$BETA_VERSION" $MAIN_BRANCH
-sed -i '' -E "s/(\"suiteVersion\": \")[^\"]*(\".*$)/\1$BETA_VERSION\2/" $FILEPATH
-git commit -am "chore(suite): bump beta version to $BETA_VERSION"
-git push
-
-echo Creating pull request...
-if ! OUTPUT=$(gh pr create --repo trezor/trezor-suite --base $MAIN_BRANCH --title "Bump beta version to $BETA_VERSION" --body "Automatically generated PR to bump beta Suite version" --label deployment --web 2>&1); then
-  echo -e "$(tput setaf 3)Pull request not created. Create one manually on GitHub!\n${OUTPUT}$(tput sgr0)"
-fi
+git push trezor-suite-private
 
 echo Switching to $MAIN_BRANCH...
 git switch $MAIN_BRANCH
