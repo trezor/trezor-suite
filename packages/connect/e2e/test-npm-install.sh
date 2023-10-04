@@ -12,6 +12,7 @@ node --version
 mkdir connect-implementation
 cd connect-implementation
 npm init -y
+npm install tslib --save # peer dependency
 npm install @trezor/connect --save
 npm install @trezor/connect-web --save
 
