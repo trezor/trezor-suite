@@ -9365,6 +9365,7 @@ __metadata:
     "@trezor/connect-common": "workspace:*"
     "@trezor/env-utils": "workspace:*"
     copy-webpack-plugin: ^11.0.0
+    es6-promise: ^4.2.8
     html-webpack-plugin: ^5.5.3
     jest: ^26.6.3
     rimraf: ^5.0.1
@@ -10752,9 +10753,9 @@ __metadata:
   linkType: hard
 
 "@types/eventsource@npm:^1.1.2":
-  version: 1.1.9
-  resolution: "@types/eventsource@npm:1.1.9"
-  checksum: 91f15a6219c541cf3050eda3015bfbf0fde6e9e6f17db0391555da6dbb4f855938277d16601e70fd5ddf307323159fe480112bcc86253c2d6d3bd71a8f33e0f5
+  version: 1.1.12
+  resolution: "@types/eventsource@npm:1.1.12"
+  checksum: 19039099c2dc8fb369517b248856ba30dca3c36cf58cb2d62137d7c907db40871c6c4e67b1960ebba2b6f84a6bba7add4c25dc647fefbb4a37cdb7ccfa3b3f15
   languageName: node
   linkType: hard
 
@@ -11349,11 +11350,11 @@ __metadata:
   linkType: hard
 
 "@types/randombytes@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "@types/randombytes@npm:2.0.0"
+  version: 2.0.1
+  resolution: "@types/randombytes@npm:2.0.1"
   dependencies:
     "@types/node": "*"
-  checksum: 630328f00322b795b69c1a25601f74d1a10192868c762e4028ce6c4851e6604c89c0a62681f9d6b6526812036180f5cbcd80104da69b758c5c91030a58fa82c0
+  checksum: 3ff0e1f812cabafe2957d6633f5127119224f8d7c1765ab47a1c1b2427f3375c59356ed47b59e8e08796930cca50b23a8322e9d9420fc56d9614e9a0956cb539
   languageName: node
   linkType: hard
 
@@ -11648,9 +11649,9 @@ __metadata:
   linkType: hard
 
 "@types/urijs@npm:^1.19.6":
-  version: 1.19.19
-  resolution: "@types/urijs@npm:1.19.19"
-  checksum: 2c08d41782149a243b374b28be009ca461f541c440d8d47c9d75b1d3255ff7169b34bb721cf2dd6266c2c44be6b70fc6d67a1abad50c4dae369774042b1facd8
+  version: 1.19.20
+  resolution: "@types/urijs@npm:1.19.20"
+  checksum: 9e2e0e5ba19a27bdb5bdd258518082e555500d7efe957f9b09d68d98d99c472d0efa7616ec6e55262514189d8e22e482175576229cbbcf539a72f1e1c20d1df1
   languageName: node
   linkType: hard
 
@@ -18060,7 +18061,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"es6-promise@npm:^4.2.4":
+"es6-promise@npm:^4.2.4, es6-promise@npm:^4.2.8":
   version: 4.2.8
   resolution: "es6-promise@npm:4.2.8"
   checksum: 95614a88873611cb9165a85d36afa7268af5c03a378b35ca7bda9508e1d4f1f6f19a788d4bc755b3fd37c8ebba40782018e02034564ff24c9d6fa37e959ad57d
@@ -20367,12 +20368,12 @@ __metadata:
   linkType: hard
 
 "follow-redirects@npm:^1.0.0, follow-redirects@npm:^1.14.7, follow-redirects@npm:^1.15.0":
-  version: 1.15.2
-  resolution: "follow-redirects@npm:1.15.2"
+  version: 1.15.3
+  resolution: "follow-redirects@npm:1.15.3"
   peerDependenciesMeta:
     debug:
       optional: true
-  checksum: faa66059b66358ba65c234c2f2a37fcec029dc22775f35d9ad6abac56003268baf41e55f9ee645957b32c7d9f62baf1f0b906e68267276f54ec4b4c597c2b190
+  checksum: 584da22ec5420c837bd096559ebfb8fe69d82512d5585004e36a3b4a6ef6d5905780e0c74508c7b72f907d1fa2b7bd339e613859e9c304d0dc96af2027fd0231
   languageName: node
   linkType: hard
 
