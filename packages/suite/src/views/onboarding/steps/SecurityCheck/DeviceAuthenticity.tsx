@@ -108,7 +108,7 @@ export const DeviceAuthenticity = () => {
     if (isCheckFailed) {
         return (
             <StyledCard>
-                <SecurityCheckLayout>
+                <SecurityCheckLayout isFailed>
                     <SecurityCheckFail />
                 </SecurityCheckLayout>
             </StyledCard>
