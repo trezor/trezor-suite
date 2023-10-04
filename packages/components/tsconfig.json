@@ -16,6 +16,7 @@
         { "path": "../dom-utils" },
         { "path": "../env-utils" },
         { "path": "../react-utils" },
+        { "path": "../styles" },
         { "path": "../theme" },
         { "path": "../utils" }
     ]
