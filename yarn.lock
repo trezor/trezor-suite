@@ -8591,6 +8591,7 @@ __metadata:
     "@trezor/dom-utils": "workspace:*"
     "@trezor/env-utils": "workspace:*"
     "@trezor/react-utils": "workspace:*"
+    "@trezor/styles": "workspace:^"
     "@trezor/theme": "workspace:*"
     "@trezor/utils": "workspace:*"
     "@types/react": "npm:18.0.32"
@@ -9110,7 +9111,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/styles@workspace:*, @trezor/styles@workspace:packages/styles":
+"@trezor/styles@workspace:*, @trezor/styles@workspace:^, @trezor/styles@workspace:packages/styles":
   version: 0.0.0-use.local
   resolution: "@trezor/styles@workspace:packages/styles"
   dependencies:
