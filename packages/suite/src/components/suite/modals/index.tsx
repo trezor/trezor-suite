@@ -39,3 +39,4 @@ export { MoreRoundsNeededModal } from './ReduxModal/UserContextModal/MoreRoundsN
 export { UnecoCoinjoinModal } from './ReduxModal/UserContextModal/UnecoCoinjoinModal';
 export { AuthenticateDeviceModal } from './ReduxModal/UserContextModal/AuthenticateDeviceModal';
 export { AuthenticateDeviceFailModal } from './ReduxModal/UserContextModal/AuthenticateDeviceFailModal';
+export { DeviceAuthenticityOptOutModal } from './ReduxModal/UserContextModal/DeviceAuthenticityOptOutModal';
