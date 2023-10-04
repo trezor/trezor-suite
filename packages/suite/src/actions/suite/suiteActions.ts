@@ -37,6 +37,7 @@ export type SuiteAction =
     | { type: typeof SUITE.ONION_LINKS; payload: boolean }
     | { type: typeof SUITE.COINJOIN_RECEIVE_WARNING; payload: boolean }
     | { type: typeof SUITE.DESKTOP_SUITE_PROMO; payload: boolean }
+    | { type: typeof SUITE.DEVICE_AUTHENTICITY_OPT_OUT; payload: boolean }
     | { type: typeof SUITE.LOCK_UI; payload: boolean }
     | ReturnType<typeof lockDevice>
     | { type: typeof SUITE.LOCK_ROUTER; payload: boolean }
@@ -249,6 +250,15 @@ export const hideDesktopSuitePromo = () => (dispatch: Dispatch) =>
         type: SUITE.DESKTOP_SUITE_PROMO,
         payload: true,
     });
+
+export const deviceAutenticityOptOut = (payload: boolean) => (dispatch: Dispatch) => {
+    dispatch(notificationsActions.addToast({ type: 'settings-applied' }));
+
+    dispatch({
+        type: SUITE.DEVICE_AUTHENTICITY_OPT_OUT,
+        payload,
+    });
+};
 
 /**
  * Called from `suiteMiddleware`

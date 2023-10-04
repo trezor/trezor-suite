@@ -155,7 +155,10 @@ export const SecurityCheck = () => {
     const recovery = useSelector(state => state.recovery);
     const device = useSelector(selectDevice);
     const initialRun = useSelector(state => state.suite.flags.initialRun);
-    const { isUnlockedBootloaderAllowed } = useSelector(state => state.suite.settings.debug);
+    const {
+        isDeviceAuthenticityCheckDisabled,
+        debug: { isUnlockedBootloaderAllowed },
+    } = useSelector(state => state.suite.settings);
     const theme = useTheme();
     const [isFailed, setIsFailed] = useState(false);
     const [isDeviceAuthenticityCheck, setIsDeviceAuthenticityCheck] = useState(false);
@@ -179,6 +182,7 @@ export const SecurityCheck = () => {
     const isDeviceAuthenticationNeeded =
         device?.features?.internal_model === DeviceModelInternal.T2B1 &&
         initialRun &&
+        !isDeviceAuthenticityCheckDisabled &&
         (!isUnlockedBootloaderAllowed || device.features?.bootloader_locked !== false);
     const handleContinueButtonClick = () =>
         isDeviceAuthenticationNeeded ? goToDeviceAuthentication() : goToSuite();

@@ -8,6 +8,7 @@ import {
     CoinmarketLeaveSpend,
     ConfirmAddress,
     ConfirmXpub,
+    DeviceAuthenticityOptOutModal,
     ReviewTransaction,
     ImportTransaction,
     AddAccount,
@@ -82,6 +83,8 @@ export const UserContextModal = ({
             return <BackgroundGallery onCancel={onCancel} />;
         case 'wipe-device':
             return <WipeDevice onCancel={onCancel} />;
+        case 'device-authenticity-opt-out':
+            return <DeviceAuthenticityOptOutModal onCancel={onCancel} />;
         case 'qr-reader':
             return (
                 <QrScanner

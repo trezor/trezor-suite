@@ -29,7 +29,7 @@ const CheckboxText = styled.div`
 
 interface CheckItemProps {
     title: ReactNode;
-    description: ReactNode;
+    description?: ReactNode;
     isChecked: boolean;
     link?: JSX.Element;
     onClick: () => void;
@@ -46,7 +46,7 @@ export const CheckItem = ({
     <StyledCheckbox isChecked={isChecked} onClick={onClick} {...rest}>
         <CheckboxRight>
             <CheckboxTitle>{title}</CheckboxTitle>
-            <CheckboxText>{description}</CheckboxText>
+            {description && <CheckboxText>{description}</CheckboxText>}
             {link && link}
         </CheckboxRight>
     </StyledCheckbox>

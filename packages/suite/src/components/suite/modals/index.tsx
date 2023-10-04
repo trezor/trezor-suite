@@ -37,3 +37,4 @@ export { CoinjoinSuccess } from './CoinjoinSuccess';
 export { MoreRoundsNeeded } from './MoreRoundsNeeded';
 export { AuthenticateDeviceModal } from './AuthenticateDeviceModal';
 export { AuthenticateDeviceFailModal } from './AuthenticateDeviceFailModal';
+export { DeviceAuthenticityOptOutModal } from './DeviceAuthenticityOptOutModal';

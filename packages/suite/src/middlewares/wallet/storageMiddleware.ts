@@ -182,6 +182,7 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 case SUITE.SET_THEME:
                 case SUITE.SET_AUTODETECT:
                 case SUITE.DESKTOP_SUITE_PROMO:
+                case SUITE.DEVICE_AUTHENTICITY_OPT_OUT:
                     api.dispatch(storageActions.saveSuiteSettings());
                     break;
                 case SUITE.COINJOIN_RECEIVE_WARNING: {

@@ -6791,6 +6791,59 @@ export default defineMessages({
         id: 'TR_CHECK_ORIGIN',
         defaultMessage: 'Check device',
     },
+    TR_DEVICE_AUTHENTICITY_OPT_OUT_TITLE: {
+        id: 'TR_DEVICE_AUTHENTICITY_OPT_OUT_TITLE',
+        defaultMessage: 'Disable device check',
+    },
+    TR_DEVICE_AUTHENTICITY_OPT_OUT_TITLE_DISABLED: {
+        id: 'TR_DEVICE_AUTHENTICITY_OPT_OUT_TITLE_DISABLED',
+        defaultMessage: 'Enable device check',
+    },
+    TR_DEVICE_AUTHENTICITY_OPT_OUT_DESCRIPTION: {
+        id: 'TR_DEVICE_AUTHENTICITY_OPT_OUT_DESCRIPTION',
+        defaultMessage:
+            'Device check is a vital security feature that keeps you safe from potentially using a fake or compromised device. We don’t recommend turning it off.',
+    },
+    TR_DEVICE_AUTHENTICITY_OPT_OUT_DESCRIPTION_DISABLED: {
+        id: 'TR_DEVICE_AUTHENTICITY_OPT_OUT_DESCRIPTION_DISABLED',
+        defaultMessage:
+            'Device check is a vital security feature that keeps you safe from potentially using a fake or compromised device. We strongly recommend turning it on.',
+    },
+    TR_DEVICE_AUTHENTICITY_OPT_OUT_BUTTON: {
+        id: 'TR_DEVICE_AUTHENTICITY_OPT_OUT_BUTTON',
+        defaultMessage: 'Turn off',
+    },
+    TR_DEVICE_AUTHENTICITY_OPT_OUT_BUTTON_DISABLED: {
+        id: 'TR_DEVICE_AUTHENTICITY_OPT_OUT_BUTTON_DISABLED',
+        defaultMessage: 'Turn on',
+    },
+    TR_DEVICE_AUTHENTICITY_OPT_OUT_MODAL_HEADING: {
+        id: 'TR_DEVICE_AUTHENTICITY_OPT_OUT_MODAL_HEADING',
+        defaultMessage: 'Essential to understand',
+    },
+    TR_DEVICE_AUTHENTICITY_OPT_OUT_MODAL_BUTTON: {
+        id: 'TR_DEVICE_AUTHENTICITY_OPT_OUT_MODAL_BUTTON',
+        defaultMessage: 'Turn off',
+    },
+    TR_DEVICE_AUTHENTICITY_OPT_OUT_MODAL_CHECKBOX_TITLE: {
+        id: 'TR_DEVICE_AUTHENTICITY_OPT_OUT_MODAL_CHECKBOX_TITLE',
+        defaultMessage: 'I’ve read and understood the above ',
+    },
+    TR_DEVICE_AUTHENTICITY_OPT_OUT_MODAL_DESCRIPTION_1: {
+        id: 'TR_DEVICE_AUTHENTICITY_OPT_OUT_MODAL_DESCRIPTION_1',
+        defaultMessage:
+            "Only turn off the device check if you're fully aware of what you're doing and have clear reasons for doing so. If you're uncertain, contact Trezor Support for assistance.",
+    },
+    TR_DEVICE_AUTHENTICITY_OPT_OUT_MODAL_DESCRIPTION_2: {
+        id: 'TR_DEVICE_AUTHENTICITY_OPT_OUT_MODAL_DESCRIPTION_2',
+        defaultMessage:
+            'Don’t turn off this feature unless your device has successfully passed the check beforehand. Using an unverified device may lead to the loss of your funds.',
+    },
+    TR_DEVICE_AUTHENTICITY_OPT_OUT_MODAL_DESCRIPTION_3: {
+        id: 'TR_DEVICE_AUTHENTICITY_OPT_OUT_MODAL_DESCRIPTION_3',
+        defaultMessage:
+            'Trezor Support will never ask you to turn off the device check. This feature has been designed to ensure your security.',
+    },
     TR_ONBOARDING_COINS_STEP: {
         id: 'TR_ONBOARDING_COINS_STEP',
         defaultMessage: 'Activate coins',
