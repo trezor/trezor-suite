@@ -12,6 +12,10 @@ export const setSentryTag = Sentry.setTag;
 
 export const addSentryBreadcrumb = Sentry.addBreadcrumb;
 
+export const withSentryScope = Sentry.withScope;
+
+export const captureSentryMessage = Sentry.captureMessage;
+
 export const allowSentryReport = (value: boolean) => {
     Sentry.setTag(allowReportTag, value);
 };

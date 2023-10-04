@@ -27,7 +27,13 @@ import {
     PROTOCOL,
 } from 'src/actions/suite/constants';
 import { getSuiteReadyPayload } from 'src/utils/suite/analytics';
-import { addSentryBreadcrumb, setSentryContext, setSentryTag } from 'src/utils/suite/sentry';
+import {
+    addSentryBreadcrumb,
+    setSentryContext,
+    setSentryTag,
+    withSentryScope,
+    captureSentryMessage,
+} from 'src/utils/suite/sentry';
 import { AppState, Action, Dispatch } from 'src/types/suite';
 
 const deviceContextName = 'trezor-device';
@@ -123,10 +129,20 @@ const sentryMiddleware =
                 });
                 break;
             }
-            case deviceAuthenticityActions.result.type:
+            case deviceAuthenticityActions.result.type: {
                 if (action.payload.result.valid) return;
-                setSentryContext('device-authenticity', action.payload.result);
+
+                withSentryScope(scope => {
+                    scope.setLevel('error');
+                    scope.setTag('deviceAuthenticityError', action.payload.result.error);
+                    captureSentryMessage(
+                        `Device authenticity invalid!
+                        ${JSON.stringify(action.payload.result, null, 2)}`,
+                        scope,
+                    );
+                });
                 break;
+            }
             default:
                 break;
         }
