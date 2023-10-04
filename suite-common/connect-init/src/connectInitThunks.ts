@@ -70,6 +70,7 @@ export const connectInitThunk = createThunk(
             'cancelCoinjoinAuthorization',
             'getOwnershipProof',
             'setBusy',
+            'rebootToBootloader',
         ] as const;
 
         wrappedMethods.forEach(key => {

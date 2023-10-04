@@ -6,7 +6,8 @@ import { rebootToBootloader } from '@suite-common/wallet-core';
 import { getFirmwareVersion } from '@trezor/device-utils';
 
 import type { TrezorDevice } from 'src/types/suite';
-import { useDispatch } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
+import { SUITE } from 'src/actions/suite/constants';
 
 export type RebootRequestedMode = 'bootloader' | 'normal';
 export type RebootPhase = 'initial' | 'wait-for-confirm' | 'disconnected' | 'done';
@@ -36,14 +37,19 @@ export const useRebootRequest = (
     });
 
     const dispatch = useDispatch();
+    const { mode, connected } = device || {};
+
+    // todo: similar code in AddWalletButton component
+    const locks = useSelector(state => state.suite.locks);
+    const isLocked = !device || !device.connected || locks.includes(SUITE.LOCK_TYPE.DEVICE);
 
     // Sets current reboot phase based on previous phase, requested mode
     // and current device state.
     useEffect(() => {
-        if (!device?.connected) {
+        if (!connected) {
             // Device not connected, set 'disconnected' in all cases
             if (phase !== 'disconnected') setPhase('disconnected');
-        } else if (device.mode === requestedMode) {
+        } else if (mode === requestedMode) {
             // Requested mode was achieved, set 'done' in all cases
             if (phase !== 'done') setPhase('done');
         } else if (phase === 'disconnected' || phase === 'done') {
@@ -53,6 +59,7 @@ export const useRebootRequest = (
             // If 'automatic' reboot available, send message to device and set 'wait-for-confirm',
             // else do nothing and wait for manual disconnection
             if (method === 'automatic') {
+                if (isLocked) return;
                 setPhase('wait-for-confirm');
                 dispatch(rebootToBootloader())
                     .unwrap()
@@ -65,7 +72,7 @@ export const useRebootRequest = (
                     });
             }
         }
-    }, [device, dispatch, phase, method, requestedMode]);
+    }, [connected, mode, dispatch, phase, method, requestedMode, isLocked]);
 
     return {
         rebootMethod: method,
