@@ -363,7 +363,6 @@ export class BridgeTransport extends AbstractTransport {
             ...restOptions,
             method: 'POST',
             url: `${this.url + endpoint}${options?.params ? `/${options.params}` : ''}`,
-            skipContentTypeHeader: true,
         });
 
         if (!response.success) {
