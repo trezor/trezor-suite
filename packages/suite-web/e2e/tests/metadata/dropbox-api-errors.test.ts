@@ -123,6 +123,50 @@ describe('Dropbox api errors', () => {
         cy.getTestElement('@metadata/input').type('Kvooo{enter}');
     });
 
+    it('Incomplete data returned from provider', () => {
+        cy.task('startEmu', { wipe: true });
+        cy.task('setupEmu', {
+            mnemonic: 'all all all all all all all all all all all all',
+        });
+        cy.task('startBridge');
+        cy.task('metadataStartProvider', 'dropbox');
+        // prepare some initial files
+        cy.task('metadataSetFileContent', {
+            provider: 'dropbox',
+            file: '/apps/trezor/f7acc942eeb83921892a95085e409b3e6b5325db6400ae5d8de523a305291dca.mtdt',
+            content: {
+                version: '1.0.0',
+                accountLabel: 'already existing label',
+                // note: outputLabels and addressLabels are missing. this can happen in 2 situations:
+                // 1] user manually changed the files (very unlikely);
+                // 2] we screwed app data saving or reading
+            },
+            aesKey: 'c785ef250807166bffc141960c525df97647fcc1bca57f6892ca3742ba86ed8d',
+        });
+        cy.prefixedVisit('/', {
+            onBeforeLoad: (win: Window) => {
+                cy.stub(win, 'open').callsFake(stubOpen(win));
+                cy.stub(win, 'fetch').callsFake(rerouteMetadataToMockProvider);
+            },
+        });
+
+        cy.passThroughInitialRun();
+        cy.discoveryShouldFinish();
+
+        cy.getTestElement('@suite/menu/settings').click();
+        cy.getTestElement('@settings/metadata-switch').click({ force: true });
+
+        cy.passThroughInitMetadata('dropbox');
+
+        // just enter some label, this indicates that app did not crash
+        cy.getTestElement('@suite/menu/wallet-index').click();
+        cy.getTestElement("@metadata/accountLabel/m/84'/0'/0'").click({ force: true });
+        cy.getTestElement("@metadata/accountLabel/m/84'/0'/0'/edit-label-button").click({
+            force: true,
+        });
+        cy.getTestElement('@metadata/input').type('label{enter}');
+    });
+
     // todo: add more possible errors
 });
 
