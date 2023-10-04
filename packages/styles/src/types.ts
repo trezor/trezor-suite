@@ -17,8 +17,9 @@ export type Direction = 'ltr' | 'rtl';
 type MediaQuery = string;
 
 type NonZeroBreakpoint = Exclude<Breakpoint, 'xs'>;
+type BelowBreakpoints = `below_${NonZeroBreakpoint}`;
 
-export type BreakpointMediaQueries = Record<NonZeroBreakpoint, MediaQuery>;
+export type BreakpointMediaQueries = Record<NonZeroBreakpoint | BelowBreakpoints, MediaQuery>;
 
 export interface DirectionUtils {
     direction: Direction;

@@ -259,7 +259,6 @@ const SignVerify = () => {
                                     </Tooltip>
                                 }
                                 options={formatOptions}
-                                isInLine={false}
                                 data-test="@sign-verify/format"
                                 {...isElectrumField}
                             />
