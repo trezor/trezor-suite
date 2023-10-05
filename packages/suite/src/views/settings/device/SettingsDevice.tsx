@@ -30,10 +30,8 @@ const deviceSettingsUnavailable = (device?: TrezorDevice, transport?: Partial<Tr
     const noTransportAvailable = transport && !transport.type;
     const wrongDeviceType = device?.type && ['unacquired', 'unreadable'].includes(device.type);
     const wrongDeviceMode =
-        (device?.mode && ['seedless', 'initialize'].includes(device.mode)) ||
-        device?.features?.recovery_mode;
+        (device?.mode && ['seedless'].includes(device.mode)) || device?.features?.recovery_mode;
     const firmwareUpdateRequired = device?.firmware === 'required';
-
     return noTransportAvailable || wrongDeviceType || wrongDeviceMode || firmwareUpdateRequired;
 };
 
@@ -44,6 +42,7 @@ export const SettingsDevice = () => {
     const deviceUnavailable = !device?.features;
     const isDeviceLocked = isLocked();
     const bootloaderMode = device?.mode === 'bootloader';
+    const initializeMode = device?.mode === 'initialize';
     const deviceRemembered = isDeviceRemembered(device) && !device?.connected;
     const deviceModelInternal = device?.features?.internal_model;
     const bitcoinOnlyDevice = isBitcoinOnlyDevice(device);
@@ -103,7 +102,7 @@ export const SettingsDevice = () => {
                 />
             )}
 
-            {!bootloaderMode && (
+            {!bootloaderMode && !initializeMode && (
                 <SettingsSection title={<Translation id="TR_BACKUP" />} icon="NEWSPAPER">
                     {unfinishedBackup ? (
                         <BackupFailed />
@@ -123,7 +122,7 @@ export const SettingsDevice = () => {
                 )}
             </SettingsSection>
 
-            {!bootloaderMode && (
+            {!bootloaderMode && !initializeMode && (
                 <>
                     <SettingsSection
                         title={<Translation id="TR_DEVICE_SECURITY" />}
