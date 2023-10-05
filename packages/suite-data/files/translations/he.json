@@ -117,7 +117,6 @@
   "TR_NO_FIRMWARE_EXPLAINED": "עלייך להתקין קושחה לפני השימוש במכשיר.",
   "TR_ONBOARDING_DEVICE_CHECK_4": "כבר מותקנת קושחה על מכשיר ה-Trezor המחובר. נא להמשיך את ההתקנה רק אם השתמשת במכשיר זה בעבר.",
   "TR_ONBOARDING_NEW_FW_DESCRIPTION": "זמינה גרסת קושחה חדשה. ניתן גם לעדכן את ה-Trezor ישירות מתוך ה-Suite לאחר שסיימת לאתחל את המכשיר.",
-  "TR_ONBOARDING_STEP_FIRMWARE": "קושחה",
   "TR_SETTINGS": "הגדרות",
   "TR_UP_TO_DATE": "עדכנית",
   "TR_WALLET": "חשבונות"
