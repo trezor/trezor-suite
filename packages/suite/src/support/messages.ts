@@ -2176,11 +2176,11 @@ export default defineMessages({
         id: 'TR_YES_CONTINUE',
     },
     TR_SETUP_MY_TREZOR: {
-        defaultMessage: 'Setup my Trezor',
+        defaultMessage: 'Set up my Trezor',
         id: 'TR_SETUP_MY_TREZOR',
     },
     TR_YES_SETUP_MY_TREZOR: {
-        defaultMessage: 'Yes, setup my Trezor',
+        defaultMessage: 'Yes, set up my Trezor',
         id: 'TR_YES_SETUP_MY_TREZOR',
     },
     TR_COPY_TO_CLIPBOARD: {
@@ -2544,7 +2544,7 @@ export default defineMessages({
     },
     TR_FIRMWARE_SUBHEADING_NONE_BITCOIN_ONLY_DEVICE: {
         defaultMessage:
-            'Your device is shipped without any pre-installed firmware. Click below to install the latest Bitcoin-only version.',
+            'Your device is ready to receive the latest firmware in order to be used safely. For Bitcoin enthusiasts, a Bitcoin-only firmware is available.',
         description: 'Main text on firmware page for Bitcoin-only devices without firmware',
         id: 'TR_FIRMWARE_SUBHEADING_NONE_BITCOIN_ONLY_DEVICE',
     },
@@ -2561,7 +2561,7 @@ export default defineMessages({
         id: 'TR_FIRMWARE_SUBHEADING_BITCOIN',
     },
     TR_FIRMWARE_SUBHEADING_UNKNOWN_BITCOIN_ONLY_DEVICE: {
-        defaultMessage: 'Lightweight firmware supporting only Bitcoin operations.',
+        defaultMessage: 'A lightweight firmware supporting Bitcoin-only operations.',
         description: 'Explanation of Bitcoin-only firmware in onboarding for Bitcoin-only devices',
         id: 'TR_FIRMWARE_SUBHEADING_UNKNOWN_BITCOIN_ONLY_DEVICE',
     },
@@ -6678,15 +6678,15 @@ export default defineMessages({
     },
     TR_ONBOARDING_DEVICE_CHECK_1: {
         id: 'TR_ONBOARDING_DEVICE_CHECK_1',
-        defaultMessage: 'The device <strong>security seal</strong> was complete and undamaged.',
+        defaultMessage: 'My <strong>hologram</strong> was intact and untampered with.',
     },
     TR_ONBOARDING_DEVICE_CHECK_2: {
         id: 'TR_ONBOARDING_DEVICE_CHECK_2',
-        defaultMessage: 'My device was bought from the official Trezor Shop or a trusted reseller.',
+        defaultMessage: 'I bought from the official shop or a trusted reseller.',
     },
     TR_ONBOARDING_DEVICE_CHECK_3: {
         id: 'TR_ONBOARDING_DEVICE_CHECK_3',
-        defaultMessage: 'The device package was intact and untampered with.',
+        defaultMessage: 'Package wasn’t tampered with.',
     },
     TR_ONBOARDING_DEVICE_CHECK_4: {
         id: 'TR_ONBOARDING_DEVICE_CHECK_4',
@@ -7285,11 +7285,11 @@ export default defineMessages({
     },
     TR_DEVICE_AUTHENTICITY_SUCCESS: {
         id: 'TR_DEVICE_AUTHENTICITY_SUCCESS',
-        defaultMessage: 'Device authentic',
+        defaultMessage: 'Device is genuine',
     },
     TR_DEVICE_AUTHENTICITY_ERROR: {
         id: 'TR_DEVICE_AUTHENTICITY_ERROR',
-        defaultMessage: 'Device is not authentic',
+        defaultMessage: "Device isn't genuine",
     },
     TR_FEE_ROUNDING_WARNING: {
         id: 'TR_FEE_ROUNDING_WARNING',
