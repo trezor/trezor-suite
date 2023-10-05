@@ -1,5 +1,3 @@
-/* eslint-disable no-eval */
-
 import {
     TAB_CHANGE,
     FIELD_CHANGE,
