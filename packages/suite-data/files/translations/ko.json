@@ -185,7 +185,6 @@
   "TR_APPLICATION": "애플리케이션",
   "TR_ASCII_ONLY": "ASCII 문자만 입력할 수 있습니다.",
   "TR_ASSETS": "코인",
-  "TR_AUTH_CONFIRM_FAILED_DESC": "암호가 틀립니다.",
   "TR_AUTH_CONFIRM_FAILED_RETRY": "재시도",
   "TR_AUTH_CONFIRM_FAILED_TITLE": "잘못된 암호",
   "TR_BACK": "뒤로",
