@@ -1,7 +1,7 @@
 /* eslint-disable no-await-in-loop */
 
 import path from 'path';
-import { chromium, Page } from '@playwright/test';
+import { BrowserContext, chromium, Page } from '@playwright/test';
 
 // Waits and clicks for an array on buttons in serial order.
 export const waitAndClick = async (page: Page, buttons: string[]) => {
@@ -22,7 +22,7 @@ export const log = (...val: string[]) => {
     console.log(`[===]`, ...val);
 };
 
-export const getExtensionPage = async () => {
+const getExtensionPage = async () => {
     const pathToExtension = path.join(
         __dirname,
         '..',
@@ -67,4 +67,43 @@ export const getExtensionPage = async () => {
         url,
         browserContext,
     };
+};
+
+// This functions is a wrapper that provides connect-explorer page depending on
+// env, webextension or browser.
+export const getContexts = async (
+    originalPage: Page,
+    originalUrl: string,
+    isWebExtension: boolean,
+) => {
+    if (!isWebExtension) {
+        return {
+            exploreUrl: originalUrl,
+            explorerPage: originalPage,
+        };
+    }
+    const { page, url, browserContext } = await getExtensionPage();
+
+    return {
+        explorerPage: page,
+        exploreUrl: url,
+        browserContext,
+    };
+};
+
+export const openPopup = (
+    browserContext: BrowserContext | undefined,
+    explorerPage: Page,
+    isWebExtension: boolean,
+): Promise<Page[]> => {
+    const triggerPopup = [];
+
+    if (isWebExtension && browserContext) {
+        triggerPopup.push(browserContext.waitForEvent('page'));
+    } else {
+        triggerPopup.push(explorerPage.waitForEvent('popup'));
+    }
+    triggerPopup.push(explorerPage.click("button[data-test='@submit-button']"));
+
+    return Promise.all(triggerPopup) as Promise<Page[]>;
 };

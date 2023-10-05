@@ -7,7 +7,7 @@ import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 import { fixtures } from './__fixtures__/methods';
 import { buildOverview } from '../support/buildOverview';
 import { ensureDirectoryExists } from '@trezor/node-utils';
-import { getExtensionPage, log } from '../support/helpers';
+import { getContexts, log, openPopup } from '../support/helpers';
 
 const url = `${process.env.URL || 'http://localhost:8088/'}?trust-issues=true`;
 
@@ -16,7 +16,7 @@ const emuScreenshots: Record<string, string> = {};
 let device = {};
 let context: any = null;
 
-const isExtension = process.env.IS_WEBEXTENSION === 'true';
+const isWebExtension = process.env.IS_WEBEXTENSION === 'true';
 
 const screenshotEmu = async (path: string) => {
     const { response } = await TrezorUserEnvLink.send({
@@ -42,10 +42,10 @@ test.afterAll(() => {
     buildOverview({ emuScreenshots });
 });
 
-// TODO: for now those methods are not working in connect-explorer in webextension env so we skip them.
-const methodsUrlToSkipInWebExtension = ['composeTransaction', 'wipeDevice', 'recoverDevice'];
+// Some methods are not allowed in web extension because of isManagementRestricted
+const methodsUrlToSkipInWebExtension = ['wipeDevice', 'recoverDevice'];
 const filteredFixtures = fixtures.filter(f => {
-    if (isExtension && methodsUrlToSkipInWebExtension.includes(f.url)) {
+    if (isWebExtension && methodsUrlToSkipInWebExtension.includes(f.url)) {
         return false;
     }
     return true;
@@ -79,18 +79,12 @@ filteredFixtures.forEach(f => {
 
         const screenshotsPath = await ensureDirectoryExists(`./e2e/screenshots/${f.url}`);
 
-        let extensionPage;
-        let extensionUrl;
-
-        if (isExtension) {
-            const extensionContexts = await getExtensionPage();
-            extensionPage = extensionContexts.page;
-            extensionUrl = extensionContexts.url;
-            context = extensionContexts.browserContext;
-        }
-
-        const explorerPage = extensionPage || page;
-        const exploreUrl = extensionUrl || url;
+        const { explorerPage, exploreUrl, browserContext } = await getContexts(
+            page,
+            url,
+            isWebExtension,
+        );
+        context = browserContext;
 
         await explorerPage.goto(`${exploreUrl}#/method/${f.url}`);
 
