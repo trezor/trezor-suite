@@ -213,8 +213,6 @@ export const selectFee = (data: UiRequestSelectFee['payload']) => {
             } else {
                 customFeeLabel.innerHTML = 'Missing fee';
             }
-        } else if (valueNum.toString() !== value) {
-            customFeeLabel.innerHTML = 'Incorrect fee';
         } else if (valueNum < minFee) {
             customFeeLabel.innerHTML = 'Fee is too low';
         } else if (valueNum > maxFee) {
