@@ -92,9 +92,14 @@ export const verifyAuthenticityProof = async ({
     const rootPubKeyIndex = isCertSignedByRootPubkey.findIndex(valid => !!valid);
     const rootPubKey = rootPubKeys[rootPubKeyIndex];
     const isDebugRootPubKey = debug?.rootPubKeys.includes(rootPubKey);
+    const caCertValidityFrom = caCert.tbsCertificate.validity.from.getTime();
+
+    if (caCertValidityFrom > new Date().getTime()) {
+        throw new Error(`CA validity from ${caCertValidityFrom} cant't be in the future!`);
+    }
+
     if (!rootPubKey) {
-        const configExpired =
-            new Date(config.timestamp).getTime() < caCert.tbsCertificate.validity.from.getTime();
+        const configExpired = new Date(config.timestamp).getTime() < caCertValidityFrom;
         return {
             valid: false,
             configExpired,
@@ -145,9 +150,8 @@ export const verifyAuthenticityProof = async ({
             (!isDebugRootPubKey && !caPubKeys.includes(caPubKey)) ||
             (isDebugRootPubKey && !debug?.caPubKeys.includes(caPubKey))
         ) {
-            const configExpired =
-                new Date(config.timestamp).getTime() <
-                caCert.tbsCertificate.validity.from.getTime();
+            const configExpired = new Date(config.timestamp).getTime() < caCertValidityFrom;
+
             return {
                 valid: false,
                 configExpired,
