@@ -1,6 +1,7 @@
 import { Box, HStack, Text } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { useFormContext } from '@suite-native/forms';
+import { useTranslate } from '@suite-native/intl';
 
 const MAX_DIGITS_DISPLAYED_AS_DOTS = 6;
 
@@ -22,17 +23,26 @@ const enteredDigitsStyle = prepareNativeStyle(utils => ({
 
 export const PinFormProgress = () => {
     const { applyStyle } = useNativeStyles();
+    const { translate } = useTranslate();
     const { watch } = useFormContext();
 
     const pinLength = watch('pin').length;
 
-    if (!pinLength) return <Text variant="titleSmall">Enter PIN</Text>;
+    if (!pinLength)
+        return <Text variant="titleSmall">{translate('moduleConnectDevice.pinScreen.title')}</Text>;
 
     if (pinLength > MAX_DIGITS_DISPLAYED_AS_DOTS)
         return (
-            <Text style={applyStyle(enteredDigitsStyle)} color="textSubdued">
-                Entered <Text variant="highlight">{pinLength}</Text> digits
-            </Text>
+            <Box flexDirection="row" style={applyStyle(enteredDigitsStyle)}>
+                <Text color="textSubdued">
+                    {translate('moduleConnectDevice.pinScreen.entered')}{' '}
+                </Text>
+                <Text variant="highlight">{pinLength}</Text>
+                <Text color="textSubdued">
+                    {' '}
+                    {translate('moduleConnectDevice.pinScreen.digits')}
+                </Text>
+            </Box>
         );
 
     // Create array of digits indexes, so we map them for dots to be displayed.

@@ -90,6 +90,7 @@ export type ConnectDeviceStackParamList = {
     [ConnectDeviceStackRoutes.ConnectDeviceCrossroads]: undefined;
     [ConnectDeviceStackRoutes.ConnectAndUnlockDevice]: undefined;
     [ConnectDeviceStackRoutes.PinMatrix]: undefined;
+    [ConnectDeviceStackRoutes.ConnectingDevice]: undefined;
 };
 
 export type RootStackParamList = {

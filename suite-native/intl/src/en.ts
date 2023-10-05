@@ -9,6 +9,35 @@ export const en = {
             title: 'My portfolio balance',
         },
     },
+    moduleConnectDevice: {
+        connectCrossroadsScreen: {
+            gotMyTrezor: {
+                title: "I've got my Trezor",
+                description: 'Connect to manage your assets',
+                connectButton: 'Connect Trezor',
+            },
+            syncCoins: {
+                title: 'Sync coins without your Trezor',
+                description:
+                    "Track your favorite coins anytime, anywhere, even when your Trezor isn't connected.",
+                syncButton: 'Sync my coins',
+            },
+        },
+        connectAndUnlockScreen: {
+            title: 'Connect & unlock your Trezor',
+        },
+        pinScreen: {
+            title: 'Enter PIN',
+            entered: 'Entered',
+            digits: 'digits',
+            keypadInfo: 'The keypad is displayed on your Trezor',
+            enterPin: 'Enter pin',
+        },
+        connectingDeviceScreen: {
+            title: 'Connecting',
+            hodlOn: 'Hodl on tight',
+        },
+    },
 };
 
 export type Translations = typeof en;

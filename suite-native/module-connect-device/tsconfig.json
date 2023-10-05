@@ -2,8 +2,13 @@
     "extends": "../../tsconfig.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
+        { "path": "../../suite-common/icons" },
+        {
+            "path": "../../suite-common/wallet-core"
+        },
         { "path": "../atoms" },
         { "path": "../forms" },
+        { "path": "../intl" },
         { "path": "../navigation" },
         { "path": "../../packages/styles" },
         { "path": "../../packages/validation" }

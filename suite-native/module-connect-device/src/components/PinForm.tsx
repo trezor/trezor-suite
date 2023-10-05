@@ -2,6 +2,7 @@ import { Form, useForm } from '@suite-native/forms';
 import { Card, HStack, VStack, Box, Text } from '@suite-native/atoms';
 import { yup } from '@trezor/validation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { useTranslate } from '@suite-native/intl';
 
 import { PinMatrixButton } from './PinMatrixButton';
 import { PinFormProgress } from './PinFormProgress';
@@ -32,6 +33,7 @@ const pinProgressWrapperStyle = prepareNativeStyle(utils => ({
 
 export const PinForm = () => {
     const { applyStyle } = useNativeStyles();
+    const { translate } = useTranslate();
     const form = useForm<PinFormValues>({
         validation: pinFormSchema,
 
@@ -43,7 +45,9 @@ export const PinForm = () => {
     return (
         <Form form={form}>
             <VStack spacing="small" alignItems="center">
-                <Text color="textSubdued">The keypad is displayed on your Trezor</Text>
+                <Text color="textSubdued">
+                    {translate('moduleConnectDevice.pinScreen.keypadInfo')}
+                </Text>
                 <Box style={applyStyle(pinProgressWrapperStyle)}>
                     <PinFormProgress />
                 </Box>

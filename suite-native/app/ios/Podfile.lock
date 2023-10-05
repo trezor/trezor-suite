@@ -27,7 +27,7 @@ PODS:
     - ExpoModulesCore
   - ExpoLocalAuthentication (13.4.0):
     - ExpoModulesCore
-  - ExpoLocalization (14.1.1):
+  - ExpoLocalization (14.5.0):
     - ExpoModulesCore
   - ExpoModulesCore (1.2.2):
     - React-Core
@@ -791,7 +791,7 @@ SPEC CHECKSUMS:
   ExpoClipboard: 8a36a8376ab93df9050c14577e9e0fcb805e9114
   ExpoHaptics: 360af6898407ee4e8265d30a1a8fb16491a660eb
   ExpoLocalAuthentication: de5f50fae4fa643a3fc6b404d61a2ab36b5acf20
-  ExpoLocalization: f26cd431ad9ea3533c5b08c4fabd879176a794bb
+  ExpoLocalization: 2d5f47577d67ce991ebdd951edf14fe1db85fa06
   ExpoModulesCore: 79392ab654019ea3aadeae308919c3d9dd97879c
   ExpoRandom: 7ee07d62e7003b74d0536e0495e3a653fe1b2a74
   ExpoSystemUI: 0be5173ee2a7c01e9abc44f56d879a1eaaa16527
@@ -865,4 +865,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: d37876aaf00e7f8309b694188119b139b8452ca1
 
-COCOAPODS: 1.12.0
+COCOAPODS: 1.12.1

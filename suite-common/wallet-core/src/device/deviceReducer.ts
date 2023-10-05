@@ -482,10 +482,12 @@ export const selectIsPendingTransportEvent = (state: DeviceRootState) =>
 
 export const selectDevice = (state: DeviceRootState) => state.device.selectedDevice;
 
+export const selectDeviceState = (state: DeviceRootState) => state.device.selectedDevice?.state;
+
 export const selectDeviceUnavailableCapabilities = (state: DeviceRootState) =>
     state.device.selectedDevice?.unavailableCapabilities;
 
-export const selectDeviceState = (state: DeviceRootState) => {
+export const selectDeviceStatus = (state: DeviceRootState) => {
     const device = selectDevice(state);
     return device && getStatus(device);
 };
