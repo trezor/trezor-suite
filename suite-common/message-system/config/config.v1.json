@@ -1,6 +1,6 @@
 {
     "version": 1,
-    "timestamp": "2023-10-11T00:00:00+00:00",
+    "timestamp": "2023-10-13T00:00:00+00:00",
     "sequence": 43,
     "actions": [
         {
@@ -74,45 +74,6 @@
             "conditions": [
                 {
                     "environment": {
-                        "desktop": ">=23.5.1",
-                        "mobile": "!",
-                        "web": "!"
-                    }
-                }
-            ],
-            "message": {
-                "id": "cjdnfj62-b796-4c67-abcb-ac38c15ae343",
-                "priority": 50,
-                "dismissible": false,
-                "variant": "warning",
-                "category": "context",
-                "content": {
-                    "en-GB": "Coinjoin is in public beta. Your feedback is appreciated",
-                    "en": "Coinjoin is in public beta. Your feedback is appreciated",
-                    "es": "Coinjoin está en fase beta pública. Agradecemos tus comentarios.",
-                    "cs": "Coinjoin je ve veřejné beta verzi. Vaše zpětná vazba je vítána.",
-                    "ru": "Coinjoin находится в стадии публичной бета-версии. Мы будем признательны за ваши отзывы.",
-                    "ja": "Coinjoinはパブリックベータ版です。あなたのフィードバックをお待ちしています。"
-                },
-                "context": { "domain": "accounts.coinjoin" },
-                "cta": {
-                    "action": "external-link",
-                    "link": "https://satoshilabs.typeform.com/coinjoin",
-                    "label": {
-                        "en-GB": "Give Feedback",
-                        "en": "Give Feedback",
-                        "es": "Envía tus comentarios",
-                        "cs": "Ohodnotit",
-                        "ru": "Оставить отзыв",
-                        "ja": "フィードバックをする"
-                    }
-                }
-            }
-        },
-        {
-            "conditions": [
-                {
-                    "environment": {
                         "desktop": ">=23.8.1",
                         "mobile": "!",
                         "web": ">=23.8.1"
@@ -148,9 +109,9 @@
             "conditions": [
                 {
                     "environment": {
-                        "desktop": "<23.8.1",
+                        "desktop": "<23.10.1",
                         "mobile": "!",
-                        "web": "<23.8.1"
+                        "web": "<23.10.1"
                     }
                 }
             ],
