@@ -2246,6 +2246,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@emurgo/cardano-serialization-lib-nodejs@npm:11.0.0":
+  version: 11.0.0
+  resolution: "@emurgo/cardano-serialization-lib-nodejs@npm:11.0.0"
+  checksum: b22b707e83ecd254a9888e24ada14d07fa8d37c749bd49e67b4b9ca13a3a42cc1b5198b1118d751cee94b479d5b7addd15af5d875cb5c91418f69f3a98d5276e
+  languageName: node
+  linkType: hard
+
 "@esbuild-kit/cjs-loader@npm:^2.4.2":
   version: 2.4.2
   resolution: "@esbuild-kit/cjs-loader@npm:2.4.2"
@@ -3240,12 +3247,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fivebinaries/coin-selection@npm:2.1.0":
-  version: 2.1.0
-  resolution: "@fivebinaries/coin-selection@npm:2.1.0"
+"@fivebinaries/coin-selection@npm:2.2.0":
+  version: 2.2.0
+  resolution: "@fivebinaries/coin-selection@npm:2.2.0"
   dependencies:
     "@emurgo/cardano-serialization-lib-browser": ^11.0.0
-  checksum: cc1bba39deeac04648d313d76f434418f24afd8a6f5d3b9c8a3589840937521c50c9013a91fd4fb2e8bfe05b9bd2bf0d57d6fa6b3e457795ad1a389584baa11a
+    "@emurgo/cardano-serialization-lib-nodejs": 11.0.0
+  checksum: 11ebafb4dae5fcd735723f288f1b3f3486e86df8f24b543b3baf52278fe7138d321b8662b4029c8e2e0c39be5bfcacbefbb1e320500221fddc41d9050420496c
   languageName: node
   linkType: hard
 
@@ -9009,7 +9017,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/connect@workspace:packages/connect"
   dependencies:
-    "@fivebinaries/coin-selection": 2.1.0
+    "@fivebinaries/coin-selection": 2.2.0
     "@trezor/blockchain-link": "workspace:*"
     "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/connect-analytics": "workspace:*"
