@@ -22,7 +22,7 @@ module.exports = {
     files: [
         // defaults are https://www.electron.build/configuration/contents.html#files
         'build/**/*',
-        'dist/**/*.js',
+        'dist/**/*.{js,wasm}',
         '!**/{tsconfig}*',
         '!**/*.{md,js.map}',
         '!**/node_modules/**/*.{js.flow,ts}',

@@ -1,12 +1,6 @@
 import { composeTxPlan, getTtl, transformUtxos, prepareCertificates } from '../cardanoUtils';
 import * as fixtures from '../__fixtures__/cardanoUtils';
 
-jest.mock('@fivebinaries/coin-selection', () => ({
-    __esModule: true,
-    default: () => {},
-    coinSelection: () => {},
-}));
-
 describe('cardano utils', () => {
     let dateSpy: any;
     beforeAll(() => {
@@ -18,7 +12,7 @@ describe('cardano utils', () => {
     });
 
     it('composeTxPlan', () => {
-        expect(
+        expect(() =>
             composeTxPlan(
                 'descriptor',
                 [],
@@ -37,7 +31,7 @@ describe('cardano utils', () => {
                 'addr',
                 true,
             ),
-        ).toBeUndefined();
+        ).toThrow('UTxO balance insufficient'); // TODO add real test
     });
 
     fixtures.transformUtxos.forEach(f => {
