@@ -5,6 +5,7 @@ import { success, error, unknownError } from './result';
 import * as ERRORS from '../errors';
 
 import { PROTOCOL_MALFORMED } from '@trezor/protocol';
+import { applyContentTypeHeader } from './applyContentTypeHeader';
 
 export type HttpRequestOptions = {
     body?: Array<any> | Record<string, unknown> | string;
@@ -52,12 +53,11 @@ export async function bridgeApiCall(options: HttpRequestOptions) {
         timeout: options.timeout,
     };
 
-    if (options.skipContentTypeHeader == null || options.skipContentTypeHeader === false) {
-        fetchOptions.headers = {
-            ...fetchOptions.headers,
-            'Content-Type': contentType(options.body == null ? '' : options.body),
-        };
-    }
+    fetchOptions.headers = applyContentTypeHeader({
+        headers: fetchOptions.headers,
+        contentType: contentType(options.body == null ? '' : options.body),
+        skipContentTypeHeader: options.skipContentTypeHeader,
+    });
 
     // Node applications must spoof origin for bridge CORS
     if (_isNode) {
