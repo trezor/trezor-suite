@@ -24,6 +24,10 @@
         "./src/transports/udp": "./src/transports/udp.browser",
         "./src/transports/webusb": "./src/transports/webusb.browser"
     },
+    "react-native": {
+        "__comment__": "Fixes commutation between android device and bridge by always applying content-type header.",
+        "./lib/utils/applyContentTypeHeader": "./lib/utils/applyContentTypeHeader.native.js"
+    },
     "files": [
         "lib/",
         "!**/*.map"
