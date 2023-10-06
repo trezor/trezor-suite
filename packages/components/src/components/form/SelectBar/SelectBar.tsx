@@ -20,14 +20,52 @@ const Label = styled.span`
     text-transform: capitalize;
 `;
 
-const Options = styled.div`
+const getTranslateValue = (index: number) => {
+    const value = index * 100;
+
+    if (!index) {
+        return;
+    }
+
+    return `calc(${value}% + ${index * spacings.xxs}px)`;
+};
+
+const getPuckWidth = (optionsCount: number) =>
+    `calc((100% - 8px - ${(optionsCount - 1) * spacings.xxs}px) / ${optionsCount})`;
+
+const Options = styled.div<{ optionsCount: number; selectedIndex: number }>`
+    position: relative;
     display: grid;
-    grid-auto-columns: 1fr;
+    grid-auto-columns: ${({ optionsCount }) => `minmax(${getPuckWidth(optionsCount)}, 1fr)`};
     grid-auto-flow: column;
     gap: ${spacingsPx.xxs};
     padding: ${spacingsPx.xxs};
     background: ${({ theme }) => theme.backgroundSurfaceElevation0};
     border-radius: ${borders.radii.full};
+
+    ::before {
+        content: '';
+        position: absolute;
+        left: 4px;
+        top: 4px;
+        bottom: 4px;
+        width: ${({ optionsCount }) => getPuckWidth(optionsCount)};
+        padding: ${spacingsPx.xxs} ${spacingsPx.xl};
+        background: ${({ theme }) => theme.backgroundSurfaceElevation1};
+        border-radius: ${borders.radii.full};
+        box-shadow: ${boxShadows.elevation1};
+        transform: ${({ selectedIndex }) => `translateX(${getTranslateValue(selectedIndex)})`};
+        transition: transform 0.175s cubic-bezier(1, 0.02, 0.38, 0.74);
+
+        ${breakpointMediaQueries.below_sm} {
+            left: 4px;
+            right: 4px;
+            top: 4px;
+            width: auto;
+            height: ${({ optionsCount }) => getPuckWidth(optionsCount)};
+            transform: ${({ selectedIndex }) => `translateY(${getTranslateValue(selectedIndex)})`};
+        }
+    }
 
     ${breakpointMediaQueries.below_sm} {
         grid-auto-flow: row;
@@ -36,18 +74,25 @@ const Options = styled.div`
     }
 `;
 
+const WidthMock = styled.span`
+    height: 0;
+    visibility: hidden;
+    ${typography.highlight}
+`;
+
 const Option = styled.div<{ isSelected: boolean; isDisabled: boolean }>`
+    position: relative;
     display: flex;
-    flex: 1;
     justify-content: center;
     align-items: center;
+    flex-direction: column;
+    height: 36px;
     padding: ${spacingsPx.xxs} ${spacingsPx.xl};
-    border-radius: ${borders.radii.full};
     color: ${({ theme }) => theme.textSubdued};
     ${typography.body}
     text-transform: capitalize;
     white-space: nowrap;
-    transition: color 0.1s;
+    transition: color 0.175s;
     cursor: pointer;
 
     :hover {
@@ -58,9 +103,6 @@ const Option = styled.div<{ isSelected: boolean; isDisabled: boolean }>`
     ${({ isSelected }) =>
         isSelected &&
         css`
-            padding: ${spacingsPx.xxs} ${spacings.xl - 1}px;
-            background: ${({ theme }) => theme.backgroundSurfaceElevation1};
-            box-shadow: ${boxShadows.elevation1};
             color: ${({ theme }) => theme.textPrimaryDefault};
             ${typography.highlight}
         `}
@@ -120,11 +162,13 @@ export const SelectBar: <V extends ValueTypes>(props: SelectBarProps<V>) => JSX.
         [selectedOptionIn, onChange],
     );
 
+    const selectedIndex = options.findIndex(option => option.value === selectedOptionIn);
+
     return (
         <Wrapper className={className} {...rest}>
             {label && <Label>{label}</Label>}
 
-            <Options>
+            <Options optionsCount={options.length} selectedIndex={selectedIndex}>
                 {options.map(option => (
                     <Option
                         key={String(option.value)}
@@ -137,7 +181,8 @@ export const SelectBar: <V extends ValueTypes>(props: SelectBarProps<V>) => JSX.
                         }
                         data-test={`select-bar/${String(option.value)}`}
                     >
-                        {option.label}
+                        <span>{option.label}</span>
+                        <WidthMock>{option.label}</WidthMock>
                     </Option>
                 ))}
             </Options>
