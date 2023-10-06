@@ -16,6 +16,42 @@ const instructions = {
         },
     },
     notParsed: {},
+    tokenTransfer: {
+        parsed: {
+            info: {
+                authority: 'ETxHeBBcuw9Yu4dGuP3oXrD12V5RECvmi8ogQ9PkjyVF',
+                destination: '2SyRvfaD5abg8j4cRfHViFXRh5KThuBBEU24RX8Cgrm3',
+                mint: 'So11111111111111111111111111111111111111112',
+                source: 'FRoT98CfAt984ZS9n1rmtw1p9nrTCzCcC6sygivztyZN',
+                tokenAmount: {
+                    amount: '2000000',
+                    decimals: 9,
+                    uiAmount: 0.002,
+                    uiAmountString: '0.002',
+                },
+            },
+            type: 'transferChecked',
+        },
+        program: 'spl-token',
+    },
+    secondTokenTransfer: {
+        parsed: {
+            info: {
+                authority: 'ETxHeBBcuw9Yu4dGuP3oXrD12V5RECvmi8ogQ9PkjyVF',
+                destination: 'H8TGGw7Z85w1wDxcH3aTBAyCoCYsDQZrKUim7fwtKAMs',
+                mint: 'DH1nKg3QZStnVh4bjm8kyWfsRJkiweXcnL4j7Ug3PfYA',
+                source: '2Bwv9hYm3isiJtUJoWSiy46Na612c4xzNszp5NckWofu',
+                tokenAmount: {
+                    amount: '2',
+                    decimals: 1,
+                    uiAmount: 2,
+                    uiAmountString: '2',
+                },
+            },
+            type: 'transferChecked',
+        },
+        program: 'spl-token',
+    },
 };
 
 const parsedTransactions = {
@@ -102,6 +138,42 @@ const parsedTransactions = {
             meta: {
                 fee: 5,
             },
+        },
+    },
+    singleTokenTransfer: {
+        transaction: {
+            meta: {},
+            transaction: {
+                signatures: ['txid1'],
+                message: {
+                    accountKeys: [
+                        { pubkey: { toString: () => 'address1' } },
+                        { pubkey: { toString: () => 'address2' } },
+                    ],
+                    instructions: [instructions.tokenTransfer],
+                },
+            },
+            version: 'legacy',
+            blockTime: 1631753600,
+            slot: 5,
+        },
+    },
+    multiTokenTransfer: {
+        transaction: {
+            meta: {},
+            transaction: {
+                signatures: ['txid1'],
+                message: {
+                    accountKeys: [
+                        { pubkey: { toString: () => 'address1' } },
+                        { pubkey: { toString: () => 'address2' } },
+                    ],
+                    instructions: [instructions.tokenTransfer, instructions.secondTokenTransfer],
+                },
+            },
+            version: 'legacy',
+            blockTime: 1631753600,
+            slot: 5,
         },
     },
 };
@@ -222,6 +294,31 @@ const tokenAccountInfoWithDuplicateTokenAccount = [
     },
 ];
 
+const tokenEffects = {
+    sent: {
+        type: 'sent',
+        standard: 'SPL',
+        from: 'ETxHeBBcuw9Yu4dGuP3oXrD12V5RECvmi8ogQ9PkjyVF',
+        to: 'GrwHUG2U6Nmr2CHjQ2kesKzbjMwvCNytcMAbhQxq1Jyd',
+        contract: '6YuhWADZyAAxAaVKPm1G5N51RvDBXsnWo4SfsJ47wSoK',
+        decimals: 9,
+        name: '6YuhWADZyAAxAaVKPm1G5N51RvDBXsnWo4SfsJ47wSoK',
+        symbol: '6Yu...',
+        amount: '10',
+    },
+    recv: {
+        type: 'recv',
+        standard: 'SPL',
+        from: 'ETxHeBBcuw9Yu4dGuP3oXrD12V5RECvmi8ogQ9PkjyVF',
+        to: 'GrwHUG2U6Nmr2CHjQ2kesKzbjMwvCNytcMAbhQxq1Jyd',
+        contract: '6YuhWADZyAAxAaVKPm1G5N51RvDBXsnWo4SfsJ47wSoK',
+        decimals: 9,
+        name: '6YuhWADZyAAxAaVKPm1G5N51RvDBXsnWo4SfsJ47wSoK',
+        symbol: '6Yu...',
+        amount: '20',
+    },
+};
+
 export const fixtures = {
     extractAccountBalanceDiff: [
         {
@@ -288,6 +385,7 @@ export const fixtures = {
                 },
                 effects: [],
                 accountAddress: 'myAddress',
+                tokenEffects: [],
             },
             expectedOutput: 'failed',
         },
@@ -303,6 +401,7 @@ export const fixtures = {
                 },
                 effects: [effects.negative],
                 accountAddress: effects.negative.address,
+                tokenEffects: [],
             },
             expectedOutput: 'unknown',
         },
@@ -318,6 +417,7 @@ export const fixtures = {
                 },
                 effects: [effects.negative],
                 accountAddress: effects.negative.address,
+                tokenEffects: [],
             },
             expectedOutput: 'unknown',
         },
@@ -336,6 +436,7 @@ export const fixtures = {
                 },
                 effects: [effects.negative],
                 accountAddress: effects.negative.address,
+                tokenEffects: [],
             },
             expectedOutput: 'self',
         },
@@ -346,6 +447,7 @@ export const fixtures = {
                 transaction: parsedTransactions.justWithFee.transaction,
                 effects: [effects.negative],
                 accountAddress: effects.negative.address,
+                tokenEffects: [],
             },
             expectedOutput: 'sent',
         },
@@ -356,6 +458,7 @@ export const fixtures = {
                 transaction: parsedTransactions.justWithFee.transaction,
                 effects: [effects.positive],
                 accountAddress: effects.positive.address,
+                tokenEffects: [],
             },
             expectedOutput: 'recv',
         },
@@ -365,8 +468,29 @@ export const fixtures = {
                 transaction: parsedTransactions.justWithFee.transaction,
                 effects: [effects.positive],
                 accountAddress: 'someOtherAddress',
+                tokenEffects: [],
             },
             expectedOutput: 'unknown',
+        },
+        {
+            description: 'should return "sent" for token transfer',
+            input: {
+                transaction: parsedTransactions.justWithFee.transaction,
+                effects: [effects.negative],
+                accountAddress: 'someOtherAddress',
+                tokenEffects: [tokenEffects.sent],
+            },
+            expectedOutput: 'sent',
+        },
+        {
+            description: 'should return "recv" for token receive',
+            input: {
+                transaction: parsedTransactions.justWithFee.transaction,
+                effects: [],
+                accountAddress: 'someOtherAddress',
+                tokenEffects: [tokenEffects.recv],
+            },
+            expectedOutput: 'recv',
         },
     ],
     getTargets: [
@@ -493,6 +617,68 @@ export const fixtures = {
                     },
                 ],
             },
+        },
+    ],
+    getTokens: [
+        {
+            description: 'should return an empty array if transaction contains no token transfers',
+            input: {
+                transaction: parsedTransactions.basic.transaction,
+                accountAddress: 'someAddress',
+                slotToBlockHeightMapping: {},
+            },
+            expectedOutput: [],
+        },
+        {
+            description: 'parses a single token transfer',
+            input: {
+                transaction: parsedTransactions.singleTokenTransfer.transaction,
+                accountAddress: 'ETxHeBBcuw9Yu4dGuP3oXrD12V5RECvmi8ogQ9PkjyVF',
+            },
+            expectedOutput: [
+                {
+                    type: 'sent',
+                    standard: 'SPL',
+                    from: 'ETxHeBBcuw9Yu4dGuP3oXrD12V5RECvmi8ogQ9PkjyVF',
+                    to: '2SyRvfaD5abg8j4cRfHViFXRh5KThuBBEU24RX8Cgrm3',
+                    contract: 'So11111111111111111111111111111111111111112',
+                    decimals: 9,
+                    name: 'So11111111111111111111111111111111111111112',
+                    symbol: 'So1...',
+                    amount: '2000000',
+                },
+            ],
+        },
+        {
+            description: 'parses multiple token transfers',
+            input: {
+                transaction: parsedTransactions.multiTokenTransfer.transaction,
+                accountAddress: 'ETxHeBBcuw9Yu4dGuP3oXrD12V5RECvmi8ogQ9PkjyVF',
+            },
+            expectedOutput: [
+                {
+                    type: 'sent',
+                    standard: 'SPL',
+                    from: 'ETxHeBBcuw9Yu4dGuP3oXrD12V5RECvmi8ogQ9PkjyVF',
+                    to: '2SyRvfaD5abg8j4cRfHViFXRh5KThuBBEU24RX8Cgrm3',
+                    contract: 'So11111111111111111111111111111111111111112',
+                    decimals: 9,
+                    name: 'So11111111111111111111111111111111111111112',
+                    symbol: 'So1...',
+                    amount: '2000000',
+                },
+                {
+                    type: 'sent',
+                    standard: 'SPL',
+                    from: 'ETxHeBBcuw9Yu4dGuP3oXrD12V5RECvmi8ogQ9PkjyVF',
+                    to: 'H8TGGw7Z85w1wDxcH3aTBAyCoCYsDQZrKUim7fwtKAMs',
+                    contract: 'DH1nKg3QZStnVh4bjm8kyWfsRJkiweXcnL4j7Ug3PfYA',
+                    decimals: 1,
+                    name: 'DH1nKg3QZStnVh4bjm8kyWfsRJkiweXcnL4j7Ug3PfYA',
+                    symbol: 'DH1...',
+                    amount: '2',
+                },
+            ],
         },
     ],
     transformTransaction: [
