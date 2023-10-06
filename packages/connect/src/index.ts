@@ -34,6 +34,10 @@ let _core: Core | null = null;
 let _messageID = 0;
 export const messagePromises: { [key: number]: Deferred<any> } = {};
 
+// TODO: THIS SHOULD NOT BE MERGED.
+// eslint-disable-next-line no-console
+console.log('This is just for a test');
+
 const manifest = (data: Manifest) => {
     _settings = parseConnectSettings({
         ..._settings,
