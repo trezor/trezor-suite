@@ -9,6 +9,7 @@ export type SolanaValidParsedTxWithMeta = ParsedTransactionWithMeta & {
 export type {
     ParsedInstruction,
     ParsedTransactionWithMeta,
+    PartiallyDecodedInstruction,
     AccountInfo,
     ParsedAccountData,
     PublicKey,
