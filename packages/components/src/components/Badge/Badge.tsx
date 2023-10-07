@@ -3,7 +3,7 @@ import styled, { css, DefaultTheme } from 'styled-components';
 import { IconName } from '@suite-common/icons';
 import { Icon } from '@suite-common/icons/src/webComponents';
 import { borders, Color, spacingsPx, typography } from '@trezor/theme';
-import { focusShadowStyle } from '../buttons/buttonStyleUtils';
+import { focusStyleTransition, getFocusShadowStyle } from '../../utils/utils';
 
 const getBackgroundColor = (variant: BadgeVariant | undefined, theme: DefaultTheme) => {
     switch (variant) {
@@ -70,12 +70,13 @@ const Container = styled.button<BadgeContainerProps>`
     border-radius: ${borders.radii.full};
     border: 1px solid transparent;
     background: ${({ variant, theme }) => getBackgroundColor(variant, theme)};
+    transition: ${focusStyleTransition};
 
     :disabled {
         background: ${({ theme }) => theme.backgroundNeutralSubtleOnElevation0};
     }
 
-    ${focusShadowStyle}
+    ${getFocusShadowStyle()}
 
     ${({ onClick }) =>
         onClick &&
