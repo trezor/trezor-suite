@@ -13,7 +13,7 @@ import {
     getVariantStyle,
     IconAlignment,
 } from '../buttonStyleUtils';
-import { getFocusShadowStyle } from '../../../utils/utils';
+import { focusStyleTransition, getFocusShadowStyle } from '../../../utils/utils';
 
 interface ButtonContainerProps {
     variant: ButtonVariant;
@@ -32,7 +32,7 @@ export const ButtonContainer = styled.button<ButtonContainerProps>`
     padding: ${({ size }) => getPadding(size, true)};
     width: ${({ isFullWidth }) => isFullWidth && '100%'};
     border-radius: ${borders.radii.full};
-    transition: border-color 0.1s ease-out, box-shadow 0.1s ease-out, background 0.1s ease-out;
+    transition: ${focusStyleTransition}, background 0.1s ease-out;
     outline: none;
     cursor: pointer;
     border: 1px solid transparent;

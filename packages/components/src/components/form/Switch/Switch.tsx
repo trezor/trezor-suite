@@ -2,7 +2,12 @@ import { ReactNode } from 'react';
 import styled, { css } from 'styled-components';
 import { borders, boxShadows, spacingsPx, typography } from '@trezor/theme';
 import { getWeakRandomId } from '@trezor/utils';
-import { getInputColor, getLabelColor, getFocusShadowStyle } from '../../../utils/utils';
+import {
+    getInputColor,
+    getLabelColor,
+    getFocusShadowStyle,
+    focusStyleTransition,
+} from '../../../utils/utils';
 
 const Wrapper = styled.div<Pick<SwitchProps, 'labelPosition'>>`
     display: flex;
@@ -23,7 +28,7 @@ const Container = styled.div<Pick<SwitchProps, 'isChecked' | 'isDisabled' | 'isA
     background: ${({ isChecked, isDisabled, theme }) =>
         getInputColor(theme, { checked: isChecked, disabled: isDisabled })};
     border-radius: ${borders.radii.sm};
-    transition: background 0.2s ease 0s, border-color 0.1s ease-out, box-shadow 0.1s ease-out;
+    transition: background 0.2s ease 0s, ${focusStyleTransition};
     cursor: ${({ isDisabled }) => !isDisabled && 'pointer'};
     box-sizing: border-box;
     border: 1px solid ${({ theme, isAlert }) => `${isAlert ? theme.borderAlertRed : 'transparent'}`};
