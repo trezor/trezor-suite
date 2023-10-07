@@ -1,6 +1,5 @@
 import { css, DefaultTheme } from 'styled-components';
-import { boxShadows, spacings, spacingsPx } from '@trezor/theme';
-import { MEDIA_QUERY } from '../../config/variables';
+import { spacings, spacingsPx } from '@trezor/theme';
 
 export type ButtonVariant = 'primary' | 'secondary' | 'tertiary' | 'destructive';
 export type ButtonSize = 'large' | 'medium' | 'small';
@@ -101,19 +100,3 @@ export const getVariantStyle = (variant: ButtonVariant) => {
         // no default
     }
 };
-
-export const focusShadowStyle = css`
-    border: 1px solid transparent;
-
-    :focus-visible {
-        border-color: ${({ theme }) => theme.backgroundAlertBlueBold};
-        box-shadow: ${boxShadows.focusedLight};
-        color: ${({ theme }) => theme.BG_GREEN};
-    }
-
-    ${MEDIA_QUERY.DARK_THEME} {
-        :focus-visible {
-            box-shadow: ${boxShadows.focusedDark};
-        }
-    }
-`;

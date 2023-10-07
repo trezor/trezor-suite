@@ -2,9 +2,10 @@ import React from 'react';
 import styled from 'styled-components';
 import { borders, spacingsPx, typography } from '@trezor/theme';
 import { ButtonProps } from '../Button/Button';
-import { ButtonSize, focusShadowStyle, getIconSize, IconAlignment } from '../buttonStyleUtils';
+import { ButtonSize, getIconSize, IconAlignment } from '../buttonStyleUtils';
 import { Icon } from '../../assets/Icon/Icon';
 import { Spinner } from '../../loaders/Spinner/Spinner';
+import { focusStyleTransition, getFocusShadowStyle } from '../../../utils/utils';
 
 const TextButtonContainer = styled.button<{
     size: ButtonSize;
@@ -23,13 +24,12 @@ const TextButtonContainer = styled.button<{
     ${({ size }) => (size === 'small' ? typography.hint : typography.body)};
     white-space: nowrap;
     transition:
-        border-color 0.1s ease-out,
-        box-shadow 0.1s ease-out,
+        ${focusStyleTransition},
         color 0.1s ease-out;
     outline: none;
     cursor: pointer;
 
-    ${focusShadowStyle}
+    ${getFocusShadowStyle()}
 
     path {
         fill: ${({ theme }) => theme.iconPrimaryDefault};
