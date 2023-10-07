@@ -25,6 +25,9 @@ export const SelectBar: StoryObj<SelectBarProps<string>> = {
         return <SelectBarComponent {...args} onChange={setOption} options={options} />;
     },
     argTypes: {
+        label: {
+            type: 'string',
+        },
         className: { control: { disable: true } },
         options: { control: { disable: true } },
         selectedOption: { control: { disable: true } },
