@@ -1,7 +1,8 @@
-import { useState, useEffect, ReactNode, useCallback } from 'react';
+import { useState, useEffect, ReactNode, useCallback, KeyboardEvent } from 'react';
 import styled, { css } from 'styled-components';
 import { breakpointMediaQueries } from '@trezor/styles';
 import { borders, boxShadows, spacings, spacingsPx, typography } from '@trezor/theme';
+import { focusStyleTransition, getFocusShadowStyle } from '../../../utils/utils';
 
 const Wrapper = styled.div`
     display: flex;
@@ -33,7 +34,7 @@ const getTranslateValue = (index: number) => {
 const getPuckWidth = (optionsCount: number) =>
     `calc((100% - 8px - ${(optionsCount - 1) * spacings.xxs}px) / ${optionsCount})`;
 
-const Options = styled.div<{ optionsCount: number; selectedIndex: number }>`
+const Options = styled.div<{ optionsCount: number }>`
     position: relative;
     display: grid;
     grid-auto-columns: ${({ optionsCount }) => `minmax(${getPuckWidth(optionsCount)}, 1fr)`};
@@ -43,34 +44,35 @@ const Options = styled.div<{ optionsCount: number; selectedIndex: number }>`
     background: ${({ theme }) => theme.backgroundSurfaceElevation0};
     border-radius: ${borders.radii.full};
 
-    ::before {
-        content: '';
-        position: absolute;
-        left: 4px;
-        top: 4px;
-        bottom: 4px;
-        width: ${({ optionsCount }) => getPuckWidth(optionsCount)};
-        padding: ${spacingsPx.xxs} ${spacingsPx.xl};
-        background: ${({ theme }) => theme.backgroundSurfaceElevation1};
-        border-radius: ${borders.radii.full};
-        box-shadow: ${boxShadows.elevation1};
-        transform: ${({ selectedIndex }) => `translateX(${getTranslateValue(selectedIndex)})`};
-        transition: transform 0.175s cubic-bezier(1, 0.02, 0.38, 0.74);
-
-        ${breakpointMediaQueries.below_sm} {
-            left: 4px;
-            right: 4px;
-            top: 4px;
-            width: auto;
-            height: ${({ optionsCount }) => getPuckWidth(optionsCount)};
-            transform: ${({ selectedIndex }) => `translateY(${getTranslateValue(selectedIndex)})`};
-        }
-    }
-
     ${breakpointMediaQueries.below_sm} {
         grid-auto-flow: row;
         width: 100%;
         border-radius: ${borders.radii.lg};
+    }
+`;
+
+const Puck = styled.div<{ optionsCount: number; selectedIndex: number }>`
+    position: absolute;
+    left: 4px;
+    top: 4px;
+    bottom: 4px;
+    width: ${({ optionsCount }) => getPuckWidth(optionsCount)};
+    padding: ${spacingsPx.xxs} ${spacingsPx.xl};
+    background: ${({ theme }) => theme.backgroundSurfaceElevation1};
+    border-radius: ${borders.radii.full};
+    box-shadow: ${boxShadows.elevation1};
+    transform: ${({ selectedIndex }) => `translateX(${getTranslateValue(selectedIndex)})`};
+    transition: transform 0.175s cubic-bezier(1, 0.02, 0.38, 0.74), ${focusStyleTransition};
+
+    ${getFocusShadowStyle()}
+
+    ${breakpointMediaQueries.below_sm} {
+        left: 4px;
+        right: 4px;
+        top: 4px;
+        width: auto;
+        height: ${({ optionsCount }) => getPuckWidth(optionsCount)};
+        transform: ${({ selectedIndex }) => `translateY(${getTranslateValue(selectedIndex)})`};
     }
 `;
 
@@ -162,13 +164,48 @@ export const SelectBar: <V extends ValueTypes>(props: SelectBarProps<V>) => JSX.
         [selectedOptionIn, onChange],
     );
 
+    const handleKeyboardNav = (e: KeyboardEvent) => {
+        const selectedOptionIndex = options.findIndex(option => option.value === selectedOptionIn);
+
+        switch (e.key) {
+            case 'ArrowLeft': {
+                const previoutIndex = selectedOptionIndex - 1;
+                if (previoutIndex >= 0) {
+                    setSelected(options[previoutIndex].value);
+                } else {
+                    setSelected(options[options.length - 1].value);
+                }
+
+                break;
+            }
+            case 'ArrowRight': {
+                const previoutIndex = selectedOptionIndex + 1;
+                if (previoutIndex <= options.length - 1) {
+                    setSelected(options[previoutIndex].value);
+                } else {
+                    setSelected(options[0].value);
+                }
+
+                break;
+            }
+            // no default
+        }
+    };
+
     const selectedIndex = options.findIndex(option => option.value === selectedOptionIn);
 
     return (
         <Wrapper className={className} {...rest}>
             {label && <Label>{label}</Label>}
 
-            <Options optionsCount={options.length} selectedIndex={selectedIndex}>
+            <Options optionsCount={options.length}>
+                <Puck
+                    optionsCount={options.length}
+                    selectedIndex={selectedIndex}
+                    tabIndex={0}
+                    onKeyDown={handleKeyboardNav}
+                />
+
                 {options.map(option => (
                     <Option
                         key={String(option.value)}
