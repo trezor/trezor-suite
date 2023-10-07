@@ -26,6 +26,8 @@ export const getLabelColor = (theme: DefaultTheme, { alert, disabled }: LabelCol
     return disabled ? theme.textDisabled : theme.textDefault;
 };
 
+export const focusStyleTransition = 'box-shadow 0.1s ease-out, border-color 0.1s ease-out';
+
 export const getFocusShadowStyle = (selector = ':focus-visible') => css`
     ${selector} {
         border: ${({ theme }) => `1px solid ${theme.backgroundAlertBlueBold}`};
