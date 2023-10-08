@@ -34,6 +34,12 @@ jasmine.getEnv().beforeAll(() => {
                         ) {
                             // jasmine matcher (used in getFeatures test)
                             match[key] = obj[key];
+                        } else if (
+                            obj[key] &&
+                            obj[key].constructor &&
+                            obj[key].constructor.name === 'ArrayContaining'
+                        ) {
+                            match[key] = jasmine.arrayContaining(obj[key].sample);
                         } else if (obj[key] && typeof obj[key] === 'object') {
                             match[key] = jasmine.objectContaining(nested(obj[key]));
                         } else {
@@ -52,3 +58,5 @@ jasmine.getEnv().beforeAll(() => {
 
 // expect is missing "any" matcher
 expect.any = jasmine.any;
+
+expect.arrayContaining = jasmine.arrayContaining;

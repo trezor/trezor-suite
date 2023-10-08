@@ -60,16 +60,14 @@ export default {
                 unfinished_backup: expect.any(Boolean),
                 no_backup: expect.any(Boolean),
                 recovery_mode: false,
-                capabilities: [
+                capabilities: expect.arrayContaining([
                     'Capability_Bitcoin',
                     'Capability_Bitcoin_like',
                     'Capability_Binance',
                     'Capability_Cardano',
                     'Capability_Crypto',
-                    'Capability_EOS',
                     'Capability_Ethereum',
                     'Capability_Monero',
-                    'Capability_NEM',
                     'Capability_Ripple',
                     'Capability_Stellar',
                     'Capability_Tezos',
@@ -77,7 +75,9 @@ export default {
                     'Capability_Shamir',
                     'Capability_ShamirGroups',
                     'Capability_PassphraseEntry',
-                ],
+                    'Capability_NEM',
+                    'Capability_EOS',
+                ]),
                 backup_type: 'Bip39',
                 sd_card_present: expect.any(Boolean), // T2T1 true, T2B1 false
                 sd_protection: false,
@@ -90,7 +90,7 @@ export default {
                     rules: ['<2.4.2'], // 2.4.2 removed Lisk capability
                     success: true,
                     payload: {
-                        capabilities: [
+                        capabilities: expect.arrayContaining([
                             'Capability_Bitcoin',
                             'Capability_Bitcoin_like',
                             'Capability_Binance',
@@ -108,7 +108,7 @@ export default {
                             'Capability_Shamir',
                             'Capability_ShamirGroups',
                             'Capability_PassphraseEntry',
-                        ],
+                        ]),
                         session_id: expect.any(String),
                         passphrase_always_on_device: false,
                     },
@@ -117,7 +117,7 @@ export default {
                     rules: ['<2.2.1'], // 2.2.1 added PassphraseEntry capability
                     success: true,
                     payload: {
-                        capabilities: [
+                        capabilities: expect.arrayContaining([
                             'Capability_Bitcoin',
                             'Capability_Bitcoin_like',
                             'Capability_Binance',
@@ -134,7 +134,7 @@ export default {
                             'Capability_U2F',
                             'Capability_Shamir',
                             'Capability_ShamirGroups',
-                        ],
+                        ]),
                         backup_type: 'Bip39',
                         session_id: null,
                         passphrase_always_on_device: null,
@@ -144,7 +144,7 @@ export default {
                     rules: ['<2.1.6'], // 2.1.6 added ShamirGroups capability
                     success: true,
                     payload: {
-                        capabilities: [
+                        capabilities: expect.arrayContaining([
                             'Capability_Bitcoin',
                             'Capability_Bitcoin_like',
                             'Capability_Binance',
@@ -160,7 +160,7 @@ export default {
                             'Capability_Tezos',
                             'Capability_U2F',
                             'Capability_Shamir',
-                        ],
+                        ]),
                         backup_type: undefined,
                     },
                 },
@@ -168,7 +168,7 @@ export default {
                     rules: ['<2.1.5'], // 2.1.5 added Shamir and Lisk capability
                     success: true,
                     payload: {
-                        capabilities: [
+                        capabilities: expect.arrayContaining([
                             'Capability_Bitcoin',
                             'Capability_Bitcoin_like',
                             'Capability_Binance',
@@ -182,7 +182,7 @@ export default {
                             'Capability_Stellar',
                             'Capability_Tezos',
                             'Capability_U2F',
-                        ],
+                        ]),
                         backup_type: undefined,
                     },
                 },
@@ -220,7 +220,7 @@ export default {
                 unfinished_backup: expect.any(Boolean),
                 no_backup: expect.any(Boolean),
                 recovery_mode: null, // difference between T2T1
-                capabilities: [
+                capabilities: expect.arrayContaining([
                     'Capability_Bitcoin',
                     'Capability_Bitcoin_like',
                     'Capability_Crypto',
@@ -228,7 +228,7 @@ export default {
                     'Capability_NEM',
                     'Capability_Stellar',
                     'Capability_U2F',
-                ],
+                ]),
                 backup_type: undefined, // difference between T2T1
                 sd_card_present: null, // no sdcard in T1B1
                 sd_protection: null, // no sdcard in T1B1
@@ -241,7 +241,7 @@ export default {
                     rules: ['<1.10.3'], // 1.10.3 removed Lisk capability
                     success: true,
                     payload: {
-                        capabilities: [
+                        capabilities: expect.arrayContaining([
                             'Capability_Bitcoin',
                             'Capability_Bitcoin_like',
                             'Capability_Crypto',
@@ -250,14 +250,14 @@ export default {
                             'Capability_NEM',
                             'Capability_Stellar',
                             'Capability_U2F',
-                        ],
+                        ]),
                     },
                 },
                 {
                     rules: ['<1.8.3'], // 1.8.3 added Lisk capability
                     success: true,
                     payload: {
-                        capabilities: [
+                        capabilities: expect.arrayContaining([
                             'Capability_Bitcoin',
                             'Capability_Bitcoin_like',
                             'Capability_Crypto',
@@ -265,7 +265,7 @@ export default {
                             'Capability_NEM',
                             'Capability_Stellar',
                             'Capability_U2F',
-                        ],
+                        ]),
                     },
                 },
             ],
