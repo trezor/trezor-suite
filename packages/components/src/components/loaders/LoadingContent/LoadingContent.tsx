@@ -42,7 +42,7 @@ export const LoadingContent = ({
         <LoadingWrapper>
             <LoaderCell isLoading={isLoading} size={size}>
                 {isLoading ? (
-                    <Spinner size={size} data-test="@loading-content/loader" />
+                    <Spinner size={size} dataTest="@loading-content/loader" />
                 ) : (
                     <Icon
                         icon={isSuccessful ? 'CHECK' : 'CROSS'}

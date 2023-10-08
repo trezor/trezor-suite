@@ -6,6 +6,7 @@ export interface FluidSpinnerProps {
     strokeWidth?: number;
     color?: string;
     className?: string;
+    dataTest?: string;
 }
 
 const Wrapper = styled.div<FluidSpinnerProps>`
@@ -40,8 +41,20 @@ const Wrapper = styled.div<FluidSpinnerProps>`
     }
 `;
 
-export const Spinner = ({ size = 100, strokeWidth = 2, color, className }: FluidSpinnerProps) => (
-    <Wrapper size={size} strokeWidth={strokeWidth} color={color} className={className}>
+export const Spinner = ({
+    size = 100,
+    strokeWidth = 2,
+    color,
+    className,
+    dataTest,
+}: FluidSpinnerProps) => (
+    <Wrapper
+        size={size}
+        strokeWidth={strokeWidth}
+        color={color}
+        className={className}
+        data-test={dataTest}
+    >
         <div />
         <div />
         <div />
