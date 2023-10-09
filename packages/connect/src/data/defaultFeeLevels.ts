@@ -92,7 +92,7 @@ const SOLANA_FEE_INFO: FeeInfoWithLevels = {
     blockTime: -1, // unknown
     defaultFees: [{ label: 'normal', feePerUnit: '5000', blocks: -1 }],
     minFee: 5000,
-    maxFee: 5000,
+    maxFee: 100000000, // arbitrary
     dustLimit: -1, // unknown/unused
 };
 

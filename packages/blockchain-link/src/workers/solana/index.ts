@@ -14,16 +14,18 @@ import { CustomError } from '@trezor/blockchain-link-types/lib/constants/errors'
 import { BaseWorker, ContextType, CONTEXT } from '../baseWorker';
 import { MESSAGES, RESPONSES } from '@trezor/blockchain-link-types/lib/constants';
 import { Connection, Message, PublicKey } from '@solana/web3.js';
-import { transformTokenInfo } from '@trezor/blockchain-link-utils/lib/solana';
 import { solanaUtils } from '@trezor/blockchain-link-utils';
-import { getTokenMetadata } from './tokenUtils';
+
+import {
+    transformTokenInfo,
+    TOKEN_PROGRAM_PUBLIC_KEY,
+} from '@trezor/blockchain-link-utils/lib/solana';
+import { getTokenMetadata, TOKEN_ACCOUNT_LAYOUT } from './tokenUtils';
 
 export type SolanaAPI = Connection;
 
 type Context = ContextType<SolanaAPI>;
 type Request<T> = T & Context;
-
-const TOKEN_PROGRAM_PUBLIC_KEY = new PublicKey('TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA');
 
 const getAllSignatures = async (
     api: SolanaAPI,
@@ -159,7 +161,7 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
     const transactionPage = details === 'txs' ? await getTransactionPage(txIdPage) : undefined;
 
     const tokenInfo = await api.getParsedTokenAccountsByOwner(publicKey, {
-        programId: TOKEN_PROGRAM_PUBLIC_KEY,
+        programId: new PublicKey(TOKEN_PROGRAM_PUBLIC_KEY),
     });
 
     // Fetch token info only if the account owns tokens
@@ -189,6 +191,9 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
               }
             : undefined,
         tokens,
+        misc: {
+            owner: accountInfo.owner.toString(),
+        },
     };
     return {
         type: RESPONSES.GET_ACCOUNT_INFO,
@@ -221,12 +226,13 @@ const estimateFee = async (request: Request<MessageTypes.EstimateFee>) => {
     const api = await request.connect();
 
     const message = request.payload.specific?.data;
+    const isCreatingAccount = request.payload.specific?.isCreatingAccount;
 
     if (message == null) {
         throw new Error('Could not estimate fee for transaction.');
     }
 
-    const result = await api.getFeeForMessage(Message.from(Buffer.from(message)));
+    const result = await api.getFeeForMessage(Message.from(Buffer.from(message, 'hex')));
 
     // The result can be null, for example if the transaction blockhash is invalid.
     // In this case, we should fall back to the default fee.
@@ -234,9 +240,13 @@ const estimateFee = async (request: Request<MessageTypes.EstimateFee>) => {
         throw new Error('Could not estimate fee for transaction.');
     }
 
+    const accountCreationFee = isCreatingAccount
+        ? await api.getMinimumBalanceForRentExemption(TOKEN_ACCOUNT_LAYOUT.span)
+        : 0;
+
     const payload = [
         {
-            feePerUnit: `${result.value}`,
+            feePerUnit: `${result.value + accountCreationFee}`,
         },
     ];
 
