@@ -1,15 +1,16 @@
 import { MouseEvent } from 'react';
 import styled from 'styled-components';
 import { variables, useTheme, Icon, Input } from '@trezor/components';
+import { spacingsPx } from '@trezor/theme';
 
 const StyledInput = styled(Input)`
     input {
-        letter-spacing: 8px;
+        letter-spacing: ${spacingsPx.xs};
         min-width: 256px;
         height: 54px;
         font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
         font-size: ${variables.FONT_SIZE.SMALL};
-        padding: 0 32px 0 20px;
+        padding: 0 ${spacingsPx.md} 0 ${spacingsPx.lg};
         color: ${({ theme }) => theme.TYPE_DARK_GREY};
         background: transparent;
         box-sizing: border-box;
