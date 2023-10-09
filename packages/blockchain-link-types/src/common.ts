@@ -166,6 +166,11 @@ export interface Utxo {
     };
 }
 
+export interface TokenAccount {
+    publicKey: string;
+    balance: string;
+}
+
 export interface TokenInfo {
     type: string; // token type: ERC20...
     contract: string; // token address
