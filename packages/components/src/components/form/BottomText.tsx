@@ -1,4 +1,3 @@
-import React from 'react';
 import styled, { keyframes, useTheme } from 'styled-components';
 import { spacingsPx, typography } from '@trezor/theme';
 import { Icon } from '@suite-common/icons/src/webComponents';
@@ -6,6 +5,7 @@ import { IconName } from '@suite-common/icons';
 
 import { InputState } from '../../support/types';
 import { getInputStateTextColor } from './InputStyles';
+import { ReactNode } from 'react';
 
 export const BOTTOM_TEXT_MIN_HEIGHT = 26; // 1 line of text + top padding
 
@@ -34,7 +34,7 @@ export const Container = styled.div<{ inputState?: InputState }>`
 interface BottomTextProps {
     inputState?: InputState;
     icon?: IconName;
-    children: React.ReactNode;
+    children: ReactNode;
 }
 
 export const BottomText = ({ inputState, icon = 'warningCircle', children }: BottomTextProps) => {

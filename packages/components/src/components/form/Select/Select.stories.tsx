@@ -1,6 +1,7 @@
 import { useArgs } from '@storybook/client-api';
+import { StoryObj } from '@storybook/react';
 
-import { Select as SelectComponent } from './Select';
+import { Select as SelectComponent, SelectProps } from './Select';
 
 const values: any = {
     'None (default)': null,
@@ -40,7 +41,7 @@ export default {
     },
 };
 
-export const Select = {
+export const Select: StoryObj<SelectProps> = {
     render: ({ ...args }) => {
         // eslint-disable-next-line
         const [{ option }, updateArgs] = useArgs();

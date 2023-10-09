@@ -97,7 +97,7 @@ export interface InputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 
     labelRight?: ReactElement;
     innerAddon?: ReactElement;
     /**
-     * @description pass `null` if bottom text can be `undefine`
+     * @description pass `null` if bottom text can be `undefined`
      */
     bottomText?: ReactNode;
     isDisabled?: boolean;
