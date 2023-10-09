@@ -29,8 +29,9 @@ export interface EstimateFeeParams {
         txsize?: number; // btc transaction size
         from?: string; // eth from
         to?: string; // eth to
-        data?: string; // eth tx data
+        data?: string; // eth tx data, sol tx message
         value?: string; // eth tx amount
+        isCreatingAccount?: boolean; // sol account creation
     };
 }
 
