@@ -13,6 +13,7 @@ export interface FormContextValue<TFieldValues extends FieldValues> {
     handleSubmit: UseFormReturn<TFieldValues>['handleSubmit'];
     watch: UseFormReturn<TFieldValues>['watch'];
     formState: UseFormReturn<TFieldValues>['formState'];
+    reset: UseFormReturn<TFieldValues>['reset'];
 }
 
 export const FormContext = createContext<FormContextValue<FieldValues>>(
@@ -30,6 +31,7 @@ export const Form = <TFieldValues extends FieldValues>({
         handleSubmit: form.handleSubmit,
         watch: form.watch,
         formState: form.formState,
+        reset: form.reset,
     };
 
     return (

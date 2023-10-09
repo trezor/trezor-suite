@@ -10,7 +10,7 @@ import { TorStatus } from 'src/types/suite';
 import { isOnionUrl } from 'src/utils/suite/tor';
 import * as modalActions from 'src/actions/suite/modalActions';
 import type { Locale } from 'src/config/suite/languages';
-import type { Dispatch, GetState, TrezorDevice, AppState, TorBootstrap } from 'src/types/suite';
+import type { Dispatch, GetState, AppState, TorBootstrap } from 'src/types/suite';
 import {
     DebugModeOptions,
     AutodetectSettings,
@@ -69,15 +69,6 @@ export const desktopHandshake = (payload: HandshakeElectron): SuiteAction => ({
 });
 
 export const requestAuthConfirm = createAction(SUITE.REQUEST_AUTH_CONFIRM);
-
-export const removeButtonRequests = createAction(
-    deviceActions.addButtonRequest.type,
-    ({ device }: { device: TrezorDevice | null }) => ({
-        payload: {
-            device,
-        },
-    }),
-);
 
 export const setTheme = (
     variant: AppState['suite']['settings']['theme']['variant'],

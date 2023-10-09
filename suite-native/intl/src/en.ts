@@ -22,16 +22,28 @@ export const en = {
                     "Track your favorite coins anytime, anywhere, even when your Trezor isn't connected.",
                 syncButton: 'Sync my coins',
             },
+            noSeedModal: {
+                title: 'No seed on device.',
+                description: 'Please set your device in desktop app first.',
+                button: 'Got it',
+            },
         },
         connectAndUnlockScreen: {
             title: 'Connect & unlock your Trezor',
         },
         pinScreen: {
-            title: 'Enter PIN',
-            entered: 'Entered',
-            digits: 'digits',
-            keypadInfo: 'The keypad is displayed on your Trezor',
-            enterPin: 'Enter pin',
+            form: {
+                title: 'Enter PIN',
+                entered: 'Entered',
+                digits: 'digits',
+                keypadInfo: 'The keypad is displayed on your Trezor',
+                enterPin: 'Enter pin',
+            },
+            wrongPinModal: {
+                title: 'Entered wrong PIN',
+                description: 'Enter up to 50 digits.',
+                button: 'Try again',
+            },
         },
         connectingDeviceScreen: {
             title: 'Connecting',

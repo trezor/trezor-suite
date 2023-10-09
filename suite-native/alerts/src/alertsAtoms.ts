@@ -14,7 +14,7 @@ export type Alert = RequireAllOrNone<
         pictogramVariant: PictogramVariant;
         primaryButtonTitle: string;
         primaryButtonVariant?: ButtonColorScheme;
-        onPressPrimaryButton: () => void;
+        onPressPrimaryButton?: () => void;
         secondaryButtonTitle?: string;
         onPressSecondaryButton?: () => void;
     },

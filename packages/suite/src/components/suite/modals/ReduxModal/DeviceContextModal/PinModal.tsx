@@ -1,8 +1,13 @@
+import { useSelector } from 'react-redux';
+
 import styled from 'styled-components';
+
+import TrezorConnect from '@trezor/connect';
+import { selectDeviceButtonRequests } from '@suite-common/wallet-core';
+
 import { Translation, Modal, ModalProps } from 'src/components/suite';
 import { PinMatrix, PIN_MATRIX_MAX_WIDTH } from 'src/components/suite/PinMatrix';
 import { TrezorDevice } from 'src/types/suite';
-import TrezorConnect from '@trezor/connect';
 
 const StyledModal = styled(Modal)<{ $isExtended: boolean }>`
     width: unset;
@@ -20,9 +25,10 @@ interface PinModalProps extends ModalProps {
 }
 
 export const PinModal = ({ device, ...rest }: PinModalProps) => {
-    const pinRequestType = device.buttonRequests[device.buttonRequests.length - 1];
-    const invalidCounter =
-        device.buttonRequests.filter(r => r.code === 'ui-invalid_pin').length || 0;
+    const buttonRequests = useSelector(selectDeviceButtonRequests);
+
+    const pinRequestType = buttonRequests[buttonRequests.length - 1];
+    const invalidCounter = buttonRequests.filter(r => r.code === 'ui-invalid_pin').length || 0;
 
     if (!device.features) return null;
 
