@@ -6156,7 +6156,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@solana/buffer-layout@npm:^4.0.0":
+"@solana/buffer-layout@npm:^4.0.0, @solana/buffer-layout@npm:^4.0.1":
   version: 4.0.1
   resolution: "@solana/buffer-layout@npm:4.0.1"
   dependencies:
@@ -9271,6 +9271,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/blockchain-link@workspace:packages/blockchain-link"
   dependencies:
+    "@solana/buffer-layout": ^4.0.1
     "@solana/web3.js": ^1.78.4
     "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/blockchain-link-utils": "workspace:*"
@@ -10147,8 +10148,10 @@ __metadata:
     "@formatjs/cli": ^6.1.3
     "@formatjs/intl": 2.9.0
     "@hookform/resolvers": 3.1.0
+    "@mobily/ts-belt": ^3.13.1
     "@reduxjs/toolkit": 1.9.5
     "@sentry/core": ^7.56.0
+    "@solana/buffer-layout": ^4.0.1
     "@solana/web3.js": ^1.78.4
     "@suite-common/analytics": "workspace:*"
     "@suite-common/connect-init": "workspace:*"
@@ -10177,6 +10180,8 @@ __metadata:
     "@testing-library/user-event": 14.4.3
     "@trezor/analytics": "workspace:*"
     "@trezor/blockchain-link": "workspace:*"
+    "@trezor/blockchain-link-types": "workspace:*"
+    "@trezor/blockchain-link-utils": "workspace:*"
     "@trezor/coinjoin": "workspace:*"
     "@trezor/components": "workspace:*"
     "@trezor/connect": "workspace:*"
