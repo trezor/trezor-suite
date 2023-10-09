@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js';
 import { Input, Icon } from '@trezor/components';
 import { QuestionTooltip } from 'src/components/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
-import { getInputState, isInteger } from '@suite-common/wallet-utils';
+import { isInteger } from '@suite-common/wallet-utils';
 import { U_INT_32 } from '@suite-common/wallet-constants';
 import { MAX_LENGTH } from 'src/constants/suite/inputs';
 import { useTranslation } from 'src/hooks/suite';
@@ -40,7 +40,7 @@ export const DestinationTag = ({ close }: DestinationTagProps) => {
 
     return (
         <Input
-            inputState={getInputState(error, inputValue)}
+            inputState={error && 'error'}
             data-test={inputName}
             defaultValue={inputValue}
             maxLength={MAX_LENGTH.XRP_DESTINATION_TAG}

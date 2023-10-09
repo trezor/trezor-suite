@@ -7,7 +7,6 @@ import { Select } from '@trezor/components';
 import { useSendFormContext } from 'src/hooks/wallet';
 import {
     fromFiatCurrency,
-    getInputState,
     getFiatRate,
     findToken,
     isLowAnonymityWarning,
@@ -74,7 +73,7 @@ export const Fiat = ({ output, outputId }: FiatProps) => {
     const errorToDisplay = !error && fiatValue && amountError ? amountError : error;
 
     const isLowAnonymity = isLowAnonymityWarning(outputError);
-    const inputState = isLowAnonymity ? 'warning' : getInputState(errorToDisplay, fiatValue);
+    const inputState = isLowAnonymity ? 'warning' : errorToDisplay && 'error';
     const bottomText = isLowAnonymity ? null : errorToDisplay?.message;
 
     const handleChange = useCallback(

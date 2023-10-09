@@ -8,7 +8,6 @@ import { Translation } from 'src/components/suite';
 import { Account } from 'src/types/wallet';
 import invityAPI from 'src/services/suite/invityAPI';
 import { symbolToInvityApiSymbol } from 'src/utils/wallet/coinmarket/coinmarketUtils';
-import { getInputState } from '@suite-common/wallet-utils';
 
 const Wrapper = styled.div`
     display: flex;
@@ -106,7 +105,7 @@ const ReceiveCryptoSelect = () => {
         return false;
     };
 
-    const { outputs, receiveCryptoSelect } = getValues();
+    const { outputs } = getValues();
     const token = outputs?.[0]?.token;
     const tokenData = account.tokens?.find(t => t.contract === token);
 
@@ -117,10 +116,7 @@ const ReceiveCryptoSelect = () => {
                 name="receiveCryptoSelect"
                 render={({ field: { onChange, value } }) => (
                     <Select
-                        inputState={getInputState(
-                            errors.receiveCryptoSelect,
-                            receiveCryptoSelect?.value,
-                        )}
+                        inputState={errors.receiveCryptoSelect && 'error'}
                         onChange={(selected: any) => {
                             onChange(selected);
                             setAmountLimits(undefined);

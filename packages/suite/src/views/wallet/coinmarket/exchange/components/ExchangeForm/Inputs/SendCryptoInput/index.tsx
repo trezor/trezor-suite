@@ -1,7 +1,6 @@
 import { useEffect, ReactElement } from 'react';
 import styled from 'styled-components';
 import { FieldValues } from 'react-hook-form';
-import { getInputState } from '@suite-common/wallet-utils';
 import { useCoinmarketExchangeFormContext } from 'src/hooks/wallet/useCoinmarketExchangeForm';
 import { NumberInput, NumberInputProps } from 'src/components/suite';
 import SendCryptoSelect from './SendCryptoSelect';
@@ -89,7 +88,7 @@ const SendCryptoInput = () => {
                 setValue('setMaxOutputId', undefined, { shouldDirty: true });
                 composeRequest();
             }}
-            inputState={getInputState(amountError || fiatError, amount)}
+            inputState={(amountError || fiatError) && 'error'}
             name={CRYPTO_INPUT}
             maxLength={MAX_LENGTH.AMOUNT}
             isToken={!!tokenData}

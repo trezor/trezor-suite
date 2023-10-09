@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import { fiatCurrencies } from '@suite-common/suite-config';
 import { Translation, NumberInput } from 'src/components/suite';
 import { MAX_LENGTH } from 'src/constants/suite/inputs';
-import { getInputState } from '@suite-common/wallet-utils';
 import { CoinLogo, Select } from '@trezor/components';
 import { useCoinmarketP2pFormContext } from 'src/hooks/wallet/useCoinmarketP2pForm';
 import { Wrapper } from 'src/views/wallet/coinmarket';
@@ -38,14 +37,12 @@ export const Inputs = () => {
         formState: { errors },
         defaultCurrency,
         p2pInfo,
-        getValues,
     } = useCoinmarketP2pFormContext();
 
     const { translationString } = useTranslation();
 
     const fiatInput = 'fiatInput';
     const currencySelect = 'currencySelect';
-    const fiatInputValue = getValues(fiatInput);
 
     const fiatInputRules = {
         validate: {
@@ -60,7 +57,7 @@ export const Inputs = () => {
                 <NumberInput
                     control={control}
                     rules={fiatInputRules}
-                    inputState={getInputState(errors.fiatInput, fiatInputValue)}
+                    inputState={errors.fiatInput && 'error'}
                     name={fiatInput}
                     maxLength={MAX_LENGTH.AMOUNT}
                     bottomText={errors[fiatInput]?.message || null}

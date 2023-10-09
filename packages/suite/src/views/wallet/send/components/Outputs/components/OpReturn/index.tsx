@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { Translation } from 'src/components/suite';
 import { Textarea, Icon, Tooltip } from '@trezor/components';
-import { getInputState, isHexValid } from '@suite-common/wallet-utils';
+import { isHexValid } from '@suite-common/wallet-utils';
 import { OpenGuideFromTooltip } from 'src/components/guide';
 import { MAX_LENGTH } from 'src/constants/suite/inputs';
 import { useTranslation } from 'src/hooks/suite';
@@ -75,7 +75,7 @@ const OpReturn = ({ outputId }: { outputId: number }) => {
     return (
         <Wrapper>
             <Textarea
-                inputState={getInputState(asciiError, asciiValue)}
+                inputState={asciiError && 'error'}
                 data-test={inputAsciiName}
                 defaultValue={asciiValue}
                 maxLength={MAX_LENGTH.OP_RETURN}
@@ -101,7 +101,7 @@ const OpReturn = ({ outputId }: { outputId: number }) => {
             />
             <Space> = </Space>
             <Textarea
-                inputState={getInputState(hexError, hexValue)}
+                inputState={hexError && 'error'}
                 data-test={inputHexName}
                 defaultValue={hexValue}
                 maxLength={MAX_LENGTH.OP_RETURN}

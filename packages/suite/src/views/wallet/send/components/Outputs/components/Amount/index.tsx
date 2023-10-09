@@ -9,7 +9,6 @@ import {
     formatNetworkAmount,
     hasNetworkFeatures,
     isLowAnonymityWarning,
-    getInputState,
     findToken,
 } from '@suite-common/wallet-utils';
 import { useSendFormContext } from 'src/hooks/wallet';
@@ -159,7 +158,7 @@ export const Amount = ({ output, outputId }: AmountProps) => {
     const withTokens = hasNetworkFeatures(account, 'tokens');
     const symbolToUse = shouldSendInSats ? 'sat' : symbol.toUpperCase();
     const isLowAnonymity = isLowAnonymityWarning(outputError);
-    const inputState = isLowAnonymity ? 'warning' : getInputState(error, amountValue);
+    const inputState = isLowAnonymity ? 'warning' : error && 'error';
     const bottomText = isLowAnonymity ? undefined : error?.message;
 
     const handleInputChange = useCallback(

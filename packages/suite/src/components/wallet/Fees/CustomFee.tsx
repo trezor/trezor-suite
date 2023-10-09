@@ -12,7 +12,7 @@ import {
 import { Note, variables } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 import { NumberInput } from 'src/components/suite/NumberInput';
-import { getInputState, getFeeUnits, isInteger } from '@suite-common/wallet-utils';
+import { getFeeUnits, isInteger } from '@suite-common/wallet-utils';
 import { ETH_DEFAULT_GAS_LIMIT } from '@suite-common/wallet-constants';
 import { FeeInfo } from 'src/types/wallet/sendForm';
 import { FormState } from '@suite-common/wallet-types';
@@ -89,8 +89,6 @@ export const CustomFee = <TFieldValues extends FormState>({
 
     const { maxFee, minFee } = feeInfo;
 
-    const feePerUnitValue = getValues(FEE_PER_UNIT);
-    const feeLimitValue = getValues(FEE_LIMIT);
     const estimatedFeeLimit = getValues('estimatedFeeLimit') || ETH_DEFAULT_GAS_LIMIT;
     const enteredFeeRate = getValues('feePerUnit');
 
@@ -163,7 +161,7 @@ export const CustomFee = <TFieldValues extends FormState>({
                             control={control}
                             label={<Translation id="TR_GAS_LIMIT" />}
                             size="small"
-                            inputState={getInputState(feeLimitError, feeLimitValue)}
+                            inputState={feeLimitError && 'error'}
                             name={FEE_LIMIT}
                             data-test={FEE_LIMIT}
                             onChange={changeFeeLimit}
@@ -184,7 +182,7 @@ export const CustomFee = <TFieldValues extends FormState>({
                         control={control}
                         label={useFeeLimit ? <Translation id="TR_GAS_PRICE" /> : undefined}
                         size="small"
-                        inputState={getInputState(feePerUnitError, feePerUnitValue)}
+                        inputState={feePerUnitError && 'error'}
                         innerAddon={<Units>{getFeeUnits(networkType)}</Units>}
                         name={FEE_PER_UNIT}
                         data-test={FEE_PER_UNIT}

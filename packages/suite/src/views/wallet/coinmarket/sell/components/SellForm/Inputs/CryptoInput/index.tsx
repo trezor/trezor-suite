@@ -5,7 +5,6 @@ import { Select, CoinLogo } from '@trezor/components';
 import { Controller } from 'react-hook-form';
 import { useCoinmarketSellFormContext } from 'src/hooks/wallet/useCoinmarketSellForm';
 import { getEthereumTypeNetworkSymbols } from '@suite-common/wallet-config';
-import { getInputState } from '@suite-common/wallet-utils';
 import { MAX_LENGTH } from 'src/constants/suite/inputs';
 import {
     CRYPTO_CURRENCY_SELECT,
@@ -50,7 +49,6 @@ const CryptoInput = () => {
         control,
         amountLimits,
         onCryptoAmountChange,
-        getValues,
         sellInfo,
         setValue,
         setAmountLimits,
@@ -69,7 +67,6 @@ const CryptoInput = () => {
     };
 
     const { tokens } = account;
-    const cryptoInputValue = getValues(CRYPTO_INPUT);
 
     const cryptoInputRules = {
         validate: {
@@ -91,7 +88,7 @@ const CryptoInput = () => {
             control={control}
             onChange={onCryptoAmountChange}
             defaultValue=""
-            inputState={getInputState(errors.cryptoInput, cryptoInputValue)}
+            inputState={errors.cryptoInput && 'error'}
             name={CRYPTO_INPUT}
             maxLength={MAX_LENGTH.AMOUNT}
             rules={cryptoInputRules}

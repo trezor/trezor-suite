@@ -60,11 +60,7 @@ export const All = {
                     value="Input with warning"
                     dataTest="input-default-warning"
                 />
-                <Input
-                    inputState="success"
-                    value="Input with success"
-                    dataTest="input-default-success"
-                />
+                <Input value="Input with success" dataTest="input-default-success" />
                 <Input isDisabled value="Disabled input" dataTest="input-default-disabled" />
                 <SubHeading>Monospace with button</SubHeading>
                 <Input
@@ -102,7 +98,6 @@ export const All = {
                     }
                 />
                 <Input
-                    inputState="success"
                     value="Input label with success"
                     dataTest="input-success-label"
                     bottomText="bottom text"
@@ -134,7 +129,6 @@ export const All = {
                 <Textarea value="test value" wrapperProps={{ 'data-test': 'textarea-default' }} />
                 <Textarea
                     value="test value"
-                    inputState="success"
                     wrapperProps={{ 'data-test': 'textarea-success' }}
                     label="Top label"
                     bottomText="bottom text"

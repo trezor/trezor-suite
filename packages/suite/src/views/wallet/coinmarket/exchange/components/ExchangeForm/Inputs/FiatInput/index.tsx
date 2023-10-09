@@ -1,6 +1,5 @@
 import styled from 'styled-components';
 
-import { getInputState } from '@suite-common/wallet-utils';
 import { useCoinmarketExchangeFormContext } from 'src/hooks/wallet/useCoinmarketExchangeForm';
 import { NumberInput } from 'src/components/suite';
 import FiatSelect from './FiatSelect';
@@ -22,16 +21,12 @@ const FiatInput = () => {
         formState: { errors },
         updateSendCryptoValue,
         setValue,
-        getValues,
     } = useCoinmarketExchangeFormContext();
 
     const { translationString } = useTranslation();
 
     const amountError = errors.outputs?.[0]?.amount;
     const fiatError = errors.outputs?.[0]?.fiat;
-
-    const { outputs } = getValues();
-    const fiat = outputs?.[0]?.fiat;
 
     const fiatInputRules = {
         validate: {
@@ -52,7 +47,7 @@ const FiatInput = () => {
                     clearErrors(FIAT_INPUT);
                 }
             }}
-            inputState={getInputState(fiatError || amountError, fiat)}
+            inputState={(fiatError || amountError) && 'error'}
             name={FIAT_INPUT}
             maxLength={MAX_LENGTH.AMOUNT}
             rules={fiatInputRules}

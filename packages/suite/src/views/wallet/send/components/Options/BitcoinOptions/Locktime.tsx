@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { Translation } from 'src/components/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { Icon, Input, Switch, variables } from '@trezor/components';
-import { getInputState, isInteger } from '@suite-common/wallet-utils';
+import { isInteger } from '@suite-common/wallet-utils';
 import { MAX_LENGTH } from 'src/constants/suite/inputs';
 import { isFeatureFlagEnabled } from '@suite-common/suite-utils';
 import { useTranslation } from 'src/hooks/suite';
@@ -109,7 +109,7 @@ export const Locktime = ({ close }: LocktimeProps) => {
     return (
         <Wrapper>
             <Input
-                inputState={getInputState(error, inputValue)}
+                inputState={error && 'error'}
                 defaultValue={inputValue}
                 maxLength={MAX_LENGTH.BTC_LOCKTIME}
                 label={

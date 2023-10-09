@@ -13,7 +13,6 @@ import {
     isAddressDeprecated,
     isTaprootAddress,
     isBech32AddressUppercase,
-    getInputState,
 } from '@suite-common/wallet-utils';
 import { MAX_LENGTH } from 'src/constants/suite/inputs';
 import { PROTOCOL_TO_NETWORK } from 'src/constants/suite/protocol';
@@ -74,7 +73,6 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
     const address = watch(inputName);
     const options = getDefaultValue('options', []);
     const broadcastEnabled = options.includes('broadcast');
-    const inputState = getInputState(addressError, addressValue);
 
     const handleQrClick = useCallback(async () => {
         const uri = await dispatch(scanQrRequest());
@@ -202,7 +200,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
 
     return (
         <Input
-            inputState={inputState}
+            inputState={addressError && 'error'}
             innerAddon={
                 metadataEnabled && broadcastEnabled ? (
                     <MetadataLabeling
@@ -229,7 +227,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                 <Text>
                     {outputsCount > 1 && `${recipientId}.`} &nbsp;
                     <Translation id="RECIPIENT_ADDRESS" />
-                    {inputState === 'success' && (
+                    {!addressError && (
                         <Tooltip content={<Translation id="TR_ADDRESS_FORMAT" />}>
                             <Icon icon="CHECK" size={18} color={theme.TYPE_GREEN} />
                         </Tooltip>

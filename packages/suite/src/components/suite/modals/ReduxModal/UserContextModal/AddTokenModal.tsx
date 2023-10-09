@@ -94,11 +94,7 @@ export const AddTokenModal = ({ onCancel }: AddTokenModalProps) => {
         setTokenInfo(undefined);
         setContractAddress(addr);
     };
-    const getInputState = () => {
-        if (error) return 'error';
-        if (contractAddress && !isFetching) return 'success';
-        return undefined;
-    };
+
     const handleAddTokenButtonClick = () => {
         if (tokenInfo) {
             dispatch(addToken(account, tokenInfo));
@@ -140,7 +136,7 @@ export const AddTokenModal = ({ onCancel }: AddTokenModalProps) => {
                     placeholder={translationString('TR_ADD_TOKEN_PLACEHOLDER')}
                     value={contractAddress}
                     bottomText={error || null}
-                    inputState={getInputState()}
+                    inputState={error ? 'error' : undefined}
                     onChange={onChange}
                 />
             </Wrapper>

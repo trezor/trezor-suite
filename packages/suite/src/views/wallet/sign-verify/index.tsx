@@ -10,6 +10,7 @@ import {
     variables,
     SelectBar,
     Tooltip,
+    InputState,
 } from '@trezor/components';
 
 import { WalletLayout, WalletLayoutHeader } from 'src/components/wallet';
@@ -29,7 +30,6 @@ import {
     MAX_LENGTH_MESSAGE,
     MAX_LENGTH_SIGNATURE,
 } from 'src/hooks/wallet/sign-verify/useSignVerifyForm';
-import { getInputState } from '@suite-common/wallet-utils';
 
 const SwitchWrapper = styled.label`
     display: flex;
@@ -151,9 +151,7 @@ const SignVerify = () => {
 
     const signatureProps = {
         label: translationString('TR_SIGNATURE'),
-        inputState: getInputState(formErrors.signature, formValues.signature) as ReturnType<
-            typeof getInputState
-        >,
+        inputState: formErrors.signature && ('error' as InputState),
         bottomText: signatureError,
         'data-test': '@sign-verify/signature',
         innerRef: signatureRef,
@@ -213,7 +211,7 @@ const SignVerify = () => {
                                     <Switch {...hexField} />
                                 </SwitchWrapper>
                             }
-                            inputState={getInputState(formErrors.message, formValues.message)}
+                            inputState={formErrors.message && 'error'}
                             characterCount={{
                                 current: formValues.message?.length,
                                 max: MAX_LENGTH_MESSAGE,
@@ -234,7 +232,7 @@ const SignVerify = () => {
                                 label={<Translation id="TR_ADDRESS" />}
                                 account={selectedAccount.account}
                                 revealedAddresses={revealedAddresses}
-                                inputState={getInputState(formErrors.path, formValues.path)}
+                                inputState={formErrors.path && 'error'}
                                 bottomText={pathError || null}
                                 data-test="@sign-verify/sign-address"
                                 {...pathField}
@@ -244,7 +242,7 @@ const SignVerify = () => {
                                 name="address"
                                 label={<Translation id="TR_ADDRESS" />}
                                 type="text"
-                                inputState={getInputState(formErrors.address, formValues.address)}
+                                inputState={formErrors.address && 'error'}
                                 bottomText={addressError || null}
                                 data-test="@sign-verify/select-address"
                                 {...addressField}

@@ -6,7 +6,7 @@ import { Card, Textarea, Button, Icon, Tooltip, variables } from '@trezor/compon
 import { Translation } from 'src/components/suite';
 import { useDispatch, useTranslation } from 'src/hooks/suite';
 import { pushRawTransaction, sendRaw } from 'src/actions/wallet/sendFormActions';
-import { getInputState, isHexValid } from '@suite-common/wallet-utils';
+import { isHexValid } from '@suite-common/wallet-utils';
 import { Network } from 'src/types/wallet';
 import { OpenGuideFromTooltip } from 'src/components/guide';
 
@@ -55,7 +55,6 @@ const Raw = ({ network }: RawProps) => {
     const inputName = 'rawTx';
     const inputValue = getValues(inputName) || '';
     const error = errors[inputName];
-    const inputState = getInputState(error, inputValue);
     const { ref: inputRef, ...inputField } = register(inputName, {
         required: translationString('RAW_TX_NOT_SET'),
         validate: (value: string) => {
@@ -82,7 +81,7 @@ const Raw = ({ network }: RawProps) => {
         <>
             <StyledCard>
                 <Textarea
-                    inputState={inputState}
+                    inputState={error && 'error'}
                     data-test={inputName}
                     defaultValue={inputValue}
                     bottomText={error?.message || null}
@@ -106,7 +105,7 @@ const Raw = ({ network }: RawProps) => {
                 />
             </StyledCard>
             <ButtonWrapper>
-                <ButtonSend isDisabled={inputState !== 'success'} onClick={send}>
+                <ButtonSend isDisabled={!!error} onClick={send}>
                     <Translation id="SEND_TRANSACTION" />
                 </ButtonSend>
             </ButtonWrapper>

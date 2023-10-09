@@ -199,19 +199,6 @@ export const getFeeLevels = (networkType: Network['networkType'], feeInfo: FeeIn
     return levels;
 };
 
-export const getInputState = (
-    error?: FieldError | Merge<FieldError, FieldErrorsImpl<FieldValues>>,
-    value?: string,
-) => {
-    if (error) {
-        return 'error';
-    }
-
-    if (value && value.length > 0 && !error) {
-        return 'success';
-    }
-};
-
 export const isLowAnonymityWarning = (error?: Merge<FieldError, FieldErrorsImpl<Output>>) =>
     error?.amount?.type === COMPOSE_ERROR_TYPES.ANONYMITY;
 

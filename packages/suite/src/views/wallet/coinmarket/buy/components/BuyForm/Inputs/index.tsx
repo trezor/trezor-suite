@@ -8,7 +8,6 @@ import { getCryptoOptions } from 'src/utils/wallet/coinmarket/buyUtils';
 import { Select, CoinLogo } from '@trezor/components';
 import { buildOption } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { useCoinmarketBuyFormContext } from 'src/hooks/wallet/useCoinmarketBuyForm';
-import { getInputState } from '@suite-common/wallet-utils';
 import { MAX_LENGTH } from 'src/constants/suite/inputs';
 import { Wrapper, Left, Middle, Right, StyledIcon } from 'src/views/wallet/coinmarket';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
@@ -50,8 +49,6 @@ const Inputs = () => {
         buyInfo,
         setAmountLimits,
         defaultCurrency,
-        cryptoInputValue,
-        getValues,
         exchangeCoinInfo,
     } = useCoinmarketBuyFormContext();
     const { shouldSendInSats } = useBitcoinAmountUnit(account.symbol);
@@ -70,8 +67,6 @@ const Inputs = () => {
             trigger([cryptoInput, fiatInput]);
         }
     }, [amountLimits, trigger]);
-
-    const fiatInputValue = getValues(fiatInput);
 
     const fiatInputRules = {
         validate: {
@@ -118,7 +113,7 @@ const Inputs = () => {
                         setValue(cryptoInput, '');
                         clearErrors(cryptoInput);
                     }}
-                    inputState={getInputState(errors.fiatInput, fiatInputValue)}
+                    inputState={errors.fiatInput && 'error'}
                     name={fiatInput}
                     maxLength={MAX_LENGTH.AMOUNT}
                     bottomText={errors[fiatInput]?.message || null}
@@ -160,7 +155,7 @@ const Inputs = () => {
                         setValue(fiatInput, '');
                         clearErrors(fiatInput);
                     }}
-                    inputState={getInputState(errors.cryptoInput, cryptoInputValue)}
+                    inputState={errors.cryptoInput && 'error'}
                     name={cryptoInput}
                     maxLength={MAX_LENGTH.AMOUNT}
                     rules={cryptoInputRules}

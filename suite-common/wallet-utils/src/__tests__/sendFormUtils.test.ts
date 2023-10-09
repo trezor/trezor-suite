@@ -15,7 +15,6 @@ import {
     getExcludedUtxos,
     getExternalComposeOutput,
     getFiatRate,
-    getInputState,
     prepareEthereumTransaction,
     restoreOrigOutputsOrder,
     serializeEthereumTx,
@@ -51,13 +50,6 @@ describe('sendForm utils', () => {
             const result = restoreOrigOutputsOrder(f.outputs, f.origOutputs, 'txid');
             expect(result).toEqual(f.result);
         });
-    });
-
-    it('getInputState', () => {
-        expect(getInputState(undefined, undefined)).toEqual(undefined);
-        expect(getInputState(undefined, '')).toEqual(undefined);
-        expect(getInputState(undefined, 'A')).toEqual('success');
-        expect(getInputState({ type: 'validation' }, '')).toEqual('error');
     });
 
     it('calculateTotal', () => {

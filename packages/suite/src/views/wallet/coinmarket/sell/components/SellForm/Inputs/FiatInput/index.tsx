@@ -4,7 +4,6 @@ import { Select } from '@trezor/components';
 import { buildOption } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { Controller } from 'react-hook-form';
 import { useCoinmarketSellFormContext } from 'src/hooks/wallet/useCoinmarketSellForm';
-import { getInputState } from '@suite-common/wallet-utils';
 import { MAX_LENGTH } from 'src/constants/suite/inputs';
 import { FIAT_CURRENCY_SELECT, FIAT_INPUT } from 'src/types/wallet/coinmarketSellForm';
 import { useTranslation } from 'src/hooks/suite';
@@ -26,7 +25,6 @@ const FiatInput = () => {
 
     const { translationString } = useTranslation();
 
-    const fiatInputValue = getValues(FIAT_INPUT);
     const tokenAddress = getValues('outputs.0.token');
     const tokenData = account.tokens?.find(t => t.contract === tokenAddress);
 
@@ -61,7 +59,7 @@ const FiatInput = () => {
             rules={fiatInputRules}
             onChange={onFiatAmountChange}
             isDisabled={tokenData !== undefined}
-            inputState={getInputState(errors.fiatInput, fiatInputValue)}
+            inputState={errors.fiatInput && 'error'}
             name={FIAT_INPUT}
             maxLength={MAX_LENGTH.AMOUNT}
             bottomText={errors[FIAT_INPUT]?.message || null}
