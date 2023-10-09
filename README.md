@@ -46,6 +46,7 @@ Before you start make sure you have downloaded and installed [NVM](https://githu
 
 -   `git clone git@github.com:trezor/trezor-suite.git`
 -   `git submodule update --init --recursive`
+-   `git lfs install` // Set up Git LFS for your user account. You only need to run this once per user account.
 -   `git lfs pull`
 -   `nvm install`
 -   `yarn`
