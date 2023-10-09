@@ -178,6 +178,7 @@ export interface TokenInfo {
     name?: string; // token name
     symbol?: string; // token symbol
     decimals: number; // token decimals or 0
+    accounts?: TokenAccount[]; // token accounts for solana
     // transfers: number, // total transactions?
 }
 
