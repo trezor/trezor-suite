@@ -4351,6 +4351,14 @@ export default defineMessages({
         defaultMessage:
             'To create additional addresses for a coinjoin account, you must ensure that you have already received bitcoin at the initial address.',
     },
+    RECEIVE_ADDRESS_LIMIT_REACHED: {
+        id: 'RECEIVE_ADDRESS_LIMIT_REACHED',
+        defaultMessage: 'You have reached the maximum limit of 20 fresh unused addresses.',
+    },
+    RECEIVE_ADDRESS_UNAVAILABLE: {
+        id: 'RECEIVE_ADDRESS_UNAVAILABLE',
+        defaultMessage: 'Unavailable',
+    },
     RECEIVE_TABLE_ADDRESS: {
         id: 'RECEIVE_TABLE_ADDRESS',
         defaultMessage: 'Address',
