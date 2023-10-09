@@ -482,7 +482,49 @@ export const selectIsPendingTransportEvent = (state: DeviceRootState) =>
 
 export const selectDevice = (state: DeviceRootState) => state.device.selectedDevice;
 
+export const selectIsDeviceUnlocked = (state: DeviceRootState) =>
+    !!state.device.selectedDevice?.features?.unlocked;
+
 export const selectDeviceState = (state: DeviceRootState) => state.device.selectedDevice?.state;
+
+export const selectDeviceType = (state: DeviceRootState) => state.device.selectedDevice?.type;
+
+export const selectDeviceFeatures = (state: DeviceRootState) =>
+    state.device.selectedDevice?.features;
+
+export const selectHasDeviceRequestedPin = (state: DeviceRootState) => {
+    const features = selectDeviceFeatures(state);
+    return !!features?.pin_protection;
+};
+
+export const selectDeviceButtonRequests = (state: DeviceRootState) =>
+    state.device.selectedDevice?.buttonRequests ?? [];
+
+export const selectDeviceButtonRequestsCodes = (state: DeviceRootState) => {
+    const buttonRequests = selectDeviceButtonRequests(state);
+    return buttonRequests.map(r => r.code);
+};
+
+export const selectDeviceRequestedPin = (state: DeviceRootState) => {
+    const buttonRequestsCodes = selectDeviceButtonRequestsCodes(state);
+    const isDeviceProtectedByPin = selectHasDeviceRequestedPin(state);
+
+    if (!isDeviceProtectedByPin) return false;
+
+    return buttonRequestsCodes?.some(code => code?.startsWith('PinMatrixRequestType')) ?? false;
+};
+
+export const selectIsDeviceInitialized = (state: DeviceRootState) => {
+    const features = selectDeviceFeatures(state);
+    return !!features?.initialized;
+};
+
+export const selectIsDeviceConnectedAndAuthorized = (state: DeviceRootState) => {
+    const deviceState = selectDeviceState(state);
+    const deviceFeatures = selectDeviceFeatures(state);
+
+    return !!deviceState && !!deviceFeatures;
+};
 
 export const selectDeviceUnavailableCapabilities = (state: DeviceRootState) =>
     state.device.selectedDevice?.unavailableCapabilities;

@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
+import { useConnectDevice } from '@suite-native/device';
 import {
     AccountsImportStackRoutes,
     ConnectDeviceStackParamList,
@@ -14,8 +15,13 @@ import {
 } from '@suite-native/navigation';
 import { VStack, Card, Button, Text, Pictogram } from '@suite-native/atoms';
 import { useNativeStyles, prepareNativeStyle } from '@trezor/styles';
-import { selectDeviceState } from '@suite-common/wallet-core';
 import { useTranslate } from '@suite-native/intl';
+import {
+    selectDevice,
+    selectIsDeviceConnectedAndAuthorized,
+    selectIsDeviceInitialized,
+} from '@suite-common/wallet-core';
+import { useAlert } from '@suite-native/alerts';
 
 const cardStyle = prepareNativeStyle<{ flex: 1 | 2 }>((utils, { flex }) => ({
     flex,
@@ -31,20 +37,38 @@ type NavigationProps = StackToStackCompositeNavigationProps<
 >;
 
 export const ConnectDeviceCrossroadsScreen = () => {
-    const navigation = useNavigation<NavigationProps>();
+    useConnectDevice();
     const { applyStyle } = useNativeStyles();
+    const navigation = useNavigation<NavigationProps>();
+    const device = useSelector(selectDevice);
+    const isDeviceInitialized = useSelector(selectIsDeviceInitialized);
+    const isDeviceConnectedAndAuthorized = useSelector(selectIsDeviceConnectedAndAuthorized);
     const { translate } = useTranslate();
-    const deviceState = useSelector(selectDeviceState);
+    const { hideAlert, showAlert } = useAlert();
 
     useEffect(() => {
-        // When we have device state hash, we are sure that device is connected and authorized
-        // TODO make this part of selector
-        if (deviceState) {
+        if (device && !isDeviceInitialized) {
+            showAlert({
+                title: translate('moduleConnectDevice.connectCrossroadsScreen.noSeedModal.title'),
+                description: translate(
+                    'moduleConnectDevice.connectCrossroadsScreen.noSeedModal.description',
+                ),
+                icon: 'warningCircle',
+                pictogramVariant: 'red',
+                primaryButtonTitle: translate(
+                    'moduleConnectDevice.connectCrossroadsScreen.noSeedModal.button',
+                ),
+            });
+        }
+    }, [device, hideAlert, isDeviceInitialized, showAlert, translate]);
+
+    useEffect(() => {
+        if (isDeviceConnectedAndAuthorized) {
             navigation.navigate(RootStackRoutes.ConnectDevice, {
                 screen: ConnectDeviceStackRoutes.ConnectingDevice,
             });
         }
-    }, [deviceState, navigation]);
+    }, [hideAlert, isDeviceConnectedAndAuthorized, navigation]);
 
     const handleSyncMyCoins = () => {
         navigation.navigate(RootStackRoutes.AccountsImport, {

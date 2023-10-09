@@ -7,9 +7,7 @@ import { createDeferred, Deferred } from '@trezor/utils';
 import { DataManager } from '../data/DataManager';
 import { DeviceList } from '../device/DeviceList';
 import { enhancePostMessageWithAnalytics } from '../data/analyticsInfo';
-
 import { ERRORS } from '../constants';
-
 import {
     CORE_EVENT,
     RESPONSE_EVENT,
@@ -34,7 +32,6 @@ import { resolveAfter } from '../utils/promiseUtils';
 import { initLog, enableLog, setLogWriter, LogWriter } from '../utils/debug';
 import { dispose as disposeBackend } from '../backend/BlockchainLink';
 import { InteractionTimeout } from '../utils/interactionTimeout';
-
 import type { DeviceEvents, Device } from '../device/Device';
 import type { ConnectSettings, CommonParams, Device as DeviceTyped } from '../types';
 
@@ -565,7 +562,7 @@ export const onCall = async (message: CoreMessage) => {
             } catch (error) {
                 // catch wrong pin error
                 // PinMatrixAck returns { code: "Failure_PinInvalid", message: "PIN invalid"}
-                if (error.message === 'PIN invalid' && PIN_TRIES < MAX_PIN_TRIES) {
+                if (error.message.includes('PIN invalid') && PIN_TRIES < MAX_PIN_TRIES) {
                     PIN_TRIES++;
                     postMessage(
                         createUiMessage(UI.INVALID_PIN, { device: device.toMessageObject() }),

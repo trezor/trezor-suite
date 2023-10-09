@@ -6,10 +6,13 @@
         {
             "path": "../../suite-common/wallet-core"
         },
+        { "path": "../alerts" },
         { "path": "../atoms" },
+        { "path": "../device" },
         { "path": "../forms" },
         { "path": "../intl" },
         { "path": "../navigation" },
+        { "path": "../../packages/connect" },
         { "path": "../../packages/styles" },
         { "path": "../../packages/validation" }
     ]

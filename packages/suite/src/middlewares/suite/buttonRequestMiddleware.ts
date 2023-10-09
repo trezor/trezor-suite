@@ -5,7 +5,6 @@ import TrezorConnect, { UI } from '@trezor/connect';
 
 import { SUITE } from 'src/actions/suite/constants';
 import { AppState, Action, Dispatch } from 'src/types/suite';
-import { removeButtonRequests } from 'src/actions/suite/suiteActions';
 import { ONBOARDING } from 'src/actions/onboarding/constants';
 
 const buttonRequest =
@@ -86,14 +85,18 @@ const buttonRequest =
             case SUITE.LOCK_DEVICE:
                 if (!action.payload) {
                     api.dispatch(
-                        removeButtonRequests({ device: selectDevice(api.getState()) ?? null }),
+                        deviceActions.removeButtonRequests({
+                            device: selectDevice(api.getState()) ?? null,
+                        }),
                     );
                 }
                 break;
             case ONBOARDING.SET_STEP_ACTIVE:
                 // clear all device's button requests in each step of the onboarding
                 api.dispatch(
-                    removeButtonRequests({ device: selectDevice(api.getState()) ?? null }),
+                    deviceActions.removeButtonRequests({
+                        device: selectDevice(api.getState()) ?? null,
+                    }),
                 );
                 break;
             default:

@@ -1,2 +1,3 @@
-export * from './deviceMiddleware';
-export * from './buttonRequestMiddleware';
+export * from './middlewares/deviceMiddleware';
+export * from './middlewares/buttonRequestMiddleware';
+export * from './hooks/useConnectDevice';
