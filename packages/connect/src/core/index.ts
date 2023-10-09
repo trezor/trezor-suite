@@ -649,7 +649,12 @@ export const onCall = async (message: CoreMessage) => {
                 await resolveAfter(1000).promise;
                 // call Device.run with empty function to fetch new Features
                 // (acquire > Initialize > nothing > release)
-                await device.run(() => Promise.resolve(), { skipFinalReload: true });
+                try {
+                    await device.run(() => Promise.resolve(), { skipFinalReload: true });
+                } catch (err) {
+                    // ignore. on model T, this block of code is probably not needed at all. but I am keeping it here for
+                    // backwards compatibility
+                }
             }
 
             await device.cleanup();
