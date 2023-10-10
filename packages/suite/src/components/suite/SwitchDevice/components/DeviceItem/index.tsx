@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 import { AnimatePresence, motion } from 'framer-motion';
-import styled from 'styled-components';
+import styled, { useTheme } from 'styled-components';
 
 import {
     selectDevice,
@@ -10,7 +10,7 @@ import {
     selectDeviceThunk,
 } from '@suite-common/wallet-core';
 import * as deviceUtils from '@suite-common/suite-utils';
-import { useTheme, variables, Icon, Image, motionAnimation } from '@trezor/components';
+import { variables, Icon, Image, motionAnimation } from '@trezor/components';
 
 import { Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';

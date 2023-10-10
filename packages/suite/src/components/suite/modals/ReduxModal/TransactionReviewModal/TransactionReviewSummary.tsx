@@ -1,8 +1,8 @@
-import styled from 'styled-components';
+import styled, { useTheme } from 'styled-components';
 import BigNumber from 'bignumber.js';
 import { transparentize, darken } from 'polished';
 import { getFeeUnits, formatNetworkAmount, formatAmount } from '@suite-common/wallet-utils';
-import { Icon, useTheme, CoinLogo, variables } from '@trezor/components';
+import { Icon, CoinLogo, variables } from '@trezor/components';
 import { Translation, FormattedCryptoAmount, AccountLabel } from 'src/components/suite';
 import { Account, Network } from 'src/types/wallet';
 import { formatDuration, isFeatureFlagEnabled } from '@suite-common/suite-utils';

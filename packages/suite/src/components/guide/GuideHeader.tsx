@@ -1,11 +1,11 @@
 import { useContext } from 'react';
-import styled, { css } from 'styled-components';
+import styled, { css, useTheme } from 'styled-components';
 import { darken, transparentize } from 'polished';
 import { analytics, EventType } from '@trezor/suite-analytics';
 
 import { close } from 'src/actions/suite/guideActions';
 import { useDispatch } from 'src/hooks/suite';
-import { Icon, variables, useTheme } from '@trezor/components';
+import { Icon, variables } from '@trezor/components';
 import { HeaderBreadcrumb, ContentScrolledContext } from 'src/components/guide';
 
 const HeaderWrapper = styled.div<{ noLabel?: boolean; isScrolled: boolean }>`

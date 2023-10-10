@@ -1,10 +1,9 @@
 import { ReactNode } from 'react';
-import styled from 'styled-components';
+import styled, { useTheme } from 'styled-components';
 import {
     Icon,
     Button,
     Spinner,
-    useTheme,
     SuiteThemeColors,
     variables,
     ButtonProps,

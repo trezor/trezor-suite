@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { useTheme } from 'styled-components';
 
 import {
     toggleRememberDevice,
@@ -6,7 +6,7 @@ import {
     selectDiscoveryByDeviceState,
 } from '@suite-common/wallet-core';
 import { useFormatters } from '@suite-common/formatters';
-import { Switch, Box, Icon, useTheme, variables } from '@trezor/components';
+import { Switch, Box, Icon, variables } from '@trezor/components';
 import { getAllAccounts, getTotalFiatBalance } from '@suite-common/wallet-utils';
 import { analytics, EventType } from '@trezor/suite-analytics';
 

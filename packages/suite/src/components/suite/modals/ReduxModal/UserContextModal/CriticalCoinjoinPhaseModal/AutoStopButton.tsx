@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import styled, { css } from 'styled-components';
-import { Icon, IconType, useTheme, variables } from '@trezor/components';
+import styled, { css, useTheme } from 'styled-components';
+import { Icon, IconType, variables } from '@trezor/components';
 import { TranslationKey } from '@suite-common/intl-types';
 import { Translation } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite/useSelector';

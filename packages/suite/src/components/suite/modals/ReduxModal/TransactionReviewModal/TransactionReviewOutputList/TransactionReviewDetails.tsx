@@ -1,7 +1,7 @@
-import styled from 'styled-components';
+import styled, { useTheme } from 'styled-components';
 
 import { Translation } from 'src/components/suite';
-import { Icon, useTheme, Box, variables } from '@trezor/components';
+import { Icon, Box, variables } from '@trezor/components';
 import { PrecomposedTransactionFinal, TxFinalCardano } from 'src/types/wallet/sendForm';
 
 const TransactionDetailsWrapper = styled.div`

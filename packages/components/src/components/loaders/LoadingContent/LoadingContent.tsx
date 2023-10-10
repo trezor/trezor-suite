@@ -1,6 +1,5 @@
 import { ReactNode } from 'react';
-import styled, { css } from 'styled-components';
-import { useTheme } from '../../../utils';
+import styled, { css, useTheme } from 'styled-components';
 import { Icon } from '../../assets/Icon/Icon';
 import { Spinner } from '../Spinner/Spinner';
 

@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
-import styled from 'styled-components';
-import { Button, Icon, SuiteThemeColors, useTheme, variables } from '@trezor/components';
+import styled, { useTheme } from 'styled-components';
+import { Button, Icon, SuiteThemeColors, variables } from '@trezor/components';
 
 const getBgColor = (variant: BannerProps['variant'], theme: SuiteThemeColors) => {
     switch (variant) {
