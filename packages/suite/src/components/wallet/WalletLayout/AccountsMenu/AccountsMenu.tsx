@@ -1,8 +1,8 @@
 import { useCallback, useState } from 'react';
 
-import styled, { css } from 'styled-components';
+import styled, { css, useTheme } from 'styled-components';
 
-import { H2, variables, useTheme, Icon, LoadingContent } from '@trezor/components';
+import { H2, variables, Icon, LoadingContent } from '@trezor/components';
 import { sortByCoin, getFailedAccounts, accountSearchFn } from '@suite-common/wallet-utils';
 import { selectDevice } from '@suite-common/wallet-core';
 

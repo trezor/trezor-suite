@@ -89,7 +89,6 @@ export const TradeBoxMenu = ({ account }: TradeBoxMenuProps) => {
             overflowRenderer={items => (
                 <StyledDropdown
                     alignMenu="right"
-                    offset={5}
                     isDisabled={false}
                     data-test="@wallet/menu/extra-dropdown"
                     items={[

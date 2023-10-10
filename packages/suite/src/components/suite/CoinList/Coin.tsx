@@ -1,7 +1,7 @@
 import { MouseEvent } from 'react';
 import { transparentize } from 'polished';
-import styled, { css } from 'styled-components';
-import { variables, CoinLogo, Icon, useTheme } from '@trezor/components';
+import styled, { css, useTheme } from 'styled-components';
+import { variables, CoinLogo, Icon } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 import type { ExtendedMessageDescriptor } from 'src/types/suite';
 import type { Network } from 'src/types/wallet';

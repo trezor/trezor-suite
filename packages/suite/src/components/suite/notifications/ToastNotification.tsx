@@ -1,7 +1,6 @@
 import { useLayoutEffect, useRef, useState } from 'react';
-import styled, { css } from 'styled-components';
-
-import { Button, Icon, useTheme, variables } from '@trezor/components';
+import styled, { css, useTheme } from 'styled-components';
+import { Button, Icon, variables } from '@trezor/components';
 import { NotificationRenderer, NotificationViewProps, Translation } from 'src/components/suite';
 import { notificationsActions, NotificationEntry } from '@suite-common/toast-notifications';
 import { useDispatch } from 'src/hooks/suite';

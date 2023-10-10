@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import styled from 'styled-components';
+import styled, { useTheme } from 'styled-components';
 
 import { COMPOSE_ERROR_TYPES } from '@suite-common/wallet-constants';
 import { fetchTransactionsThunk } from '@suite-common/wallet-core';
@@ -8,7 +8,7 @@ import { FormattedCryptoAmount, Translation } from 'src/components/suite';
 import { SETTINGS } from 'src/config/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { Pagination } from 'src/components/wallet';
-import { useTheme, Checkbox, Icon, Switch, variables } from '@trezor/components';
+import { Checkbox, Icon, Switch, variables } from '@trezor/components';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { selectCurrentTargetAnonymity } from 'src/reducers/wallet/coinjoinReducer';

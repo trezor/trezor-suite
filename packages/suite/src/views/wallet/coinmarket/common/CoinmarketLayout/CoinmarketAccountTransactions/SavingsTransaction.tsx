@@ -1,6 +1,6 @@
-import styled from 'styled-components';
+import styled, { useTheme } from 'styled-components';
 
-import { useTheme, variables, Icon } from '@trezor/components';
+import { variables, Icon } from '@trezor/components';
 import {
     Translation,
     HiddenPlaceholder,

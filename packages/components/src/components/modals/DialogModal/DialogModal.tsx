@@ -28,8 +28,8 @@ type PickedModalProps = Pick<
     | 'onCancel'
     | 'isCancelable'
     | 'bottomBarComponents'
-    | 'currentProgressStep'
-    | 'totalProgressSteps'
+    | 'currentProgressBarStep'
+    | 'totalProgressBarSteps'
     | 'className'
     | 'data-test'
 >;

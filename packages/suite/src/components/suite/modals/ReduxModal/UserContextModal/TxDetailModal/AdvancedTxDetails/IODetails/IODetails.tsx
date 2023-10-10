@@ -1,12 +1,12 @@
 import { ReactElement, ReactNode } from 'react';
-import styled, { css } from 'styled-components';
+import styled, { css, useTheme } from 'styled-components';
 
 import { WalletAccountTransaction } from '@suite-common/wallet-types';
 import { formatAmount, formatNetworkAmount, isNftTokenTransfer } from '@suite-common/wallet-utils';
 import { FormattedCryptoAmount, Translation } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { AnonymitySet, TokenTransfer } from '@trezor/blockchain-link';
-import { Icon, useTheme, variables, CollapsibleBox } from '@trezor/components';
+import { Icon, variables, CollapsibleBox } from '@trezor/components';
 import { UtxoAnonymity } from 'src/components/wallet';
 import { IOAddress } from '../../IOAddress';
 import { AnalyzeInBlockbookBanner } from './AnalyzeInBlockbookBanner';

@@ -1,7 +1,7 @@
-import styled from 'styled-components';
+import styled, { useTheme } from 'styled-components';
 
 import * as deviceUtils from '@suite-common/suite-utils';
-import { Icon, variables, useTheme, SuiteThemeColors } from '@trezor/components';
+import { Icon, variables, SuiteThemeColors } from '@trezor/components';
 
 import { TrezorDevice } from 'src/types/suite';
 import { Translation } from 'src/components/suite/Translation';

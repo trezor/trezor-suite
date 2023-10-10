@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import styled from 'styled-components';
+import styled, { useTheme } from 'styled-components';
 import { BuyProviderInfo, BuyTradeQuoteRequest } from 'invity-api';
 
 import invityAPI from 'src/services/suite/invityAPI';
@@ -11,7 +11,7 @@ import {
     saveQuotes,
     saveTransactionDetailId,
 } from 'src/actions/wallet/coinmarketBuyActions';
-import { useTheme, variables, Icon, Button } from '@trezor/components';
+import { variables, Icon, Button } from '@trezor/components';
 import { CoinmarketPaymentType, CoinmarketProviderInfo } from 'src/views/wallet/coinmarket/common';
 import { Account } from 'src/types/wallet';
 import {

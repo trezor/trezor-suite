@@ -1,6 +1,6 @@
 import { ReactNode, HTMLAttributes } from 'react';
-import styled from 'styled-components';
-import { Icon, useTheme, variables } from '@trezor/components';
+import styled, { useTheme } from 'styled-components';
+import { Icon, variables } from '@trezor/components';
 
 const Header = styled.div`
     display: flex;

@@ -1,9 +1,8 @@
 import { ReactNode } from 'react';
-import styled from 'styled-components';
+import styled, { useTheme } from 'styled-components';
 import { Icon } from '../../assets/Icon/Icon';
 import { Tooltip } from '../../Tooltip/Tooltip';
 import { Button, ButtonProps } from '../Button/Button';
-import { useTheme } from '../../../utils';
 
 const StyledButton = styled(Button)`
     position: relative;
