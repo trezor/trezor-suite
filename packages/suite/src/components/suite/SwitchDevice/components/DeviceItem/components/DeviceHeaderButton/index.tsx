@@ -1,7 +1,7 @@
-import styled from 'styled-components';
+import styled, { useTheme } from 'styled-components';
 
 import * as deviceUtils from '@suite-common/suite-utils';
-import { useTheme, Icon } from '@trezor/components';
+import { Icon } from '@trezor/components';
 
 import { Translation } from 'src/components/suite';
 import NotificationCard from 'src/components/suite/NotificationCard'; // on purpose to avoid hacky sc overriding

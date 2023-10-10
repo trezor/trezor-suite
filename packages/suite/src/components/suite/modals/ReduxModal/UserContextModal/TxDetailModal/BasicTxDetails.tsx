@@ -1,5 +1,5 @@
-import styled from 'styled-components';
-import { Icon, useTheme, variables, CoinLogo, H3 } from '@trezor/components';
+import styled, { useTheme } from 'styled-components';
+import { Icon, variables, CoinLogo, H3 } from '@trezor/components';
 import { Translation, FormattedDateWithBullet } from 'src/components/suite';
 import { WalletAccountTransaction, Network } from 'src/types/wallet';
 import {
@@ -264,8 +264,8 @@ export const BasicTxDetails = ({
                         </Title>
 
                         <Value>
-                            {/* tx.feeRate was added in @trezor/blockchain-link 2.1.5 meaning that users 
-                            might have locally saved old transactions without this field. since we 
+                            {/* tx.feeRate was added in @trezor/blockchain-link 2.1.5 meaning that users
+                            might have locally saved old transactions without this field. since we
                             cant reliably migrate this data, we are keeping old way of displaying feeRate in place */}
                             {`${tx?.feeRate ? tx.feeRate : getFeeRate(tx)} ${getFeeUnits(
                                 'bitcoin',

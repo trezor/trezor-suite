@@ -1,8 +1,8 @@
 import { useMemo } from 'react';
-import styled from 'styled-components';
+import styled, { useTheme } from 'styled-components';
 
 import { selectHasAccountTransactions } from '@suite-common/wallet-core';
-import { Card, useTheme } from '@trezor/components';
+import { Card } from '@trezor/components';
 import { useSelector } from 'src/hooks/suite';
 import { selectHasAnonymitySetError } from 'src/reducers/wallet/coinjoinReducer';
 import { BalancePrivacyBreakdown } from './BalancePrivacyBreakdown/BalancePrivacyBreakdown';

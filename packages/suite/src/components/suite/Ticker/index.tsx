@@ -1,6 +1,6 @@
-import styled from 'styled-components';
+import styled, { useTheme } from 'styled-components';
 import { differenceInMinutes } from 'date-fns';
-import { Tooltip, useTheme, variables, Icon } from '@trezor/components';
+import { Tooltip, variables, Icon } from '@trezor/components';
 import { FiatValue, Translation, NoRatesTooltip } from 'src/components/suite';
 import { FormattedRelativeTime } from 'react-intl';
 import { useSelector } from 'src/hooks/suite';

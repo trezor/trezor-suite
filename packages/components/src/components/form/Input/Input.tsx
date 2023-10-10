@@ -79,9 +79,9 @@ const Label = styled.label<{ $size: InputSize; isDisabled?: boolean }>`
     pointer-events: none;
 
     /* move up when input is focused OR has a placeholder OR has value  */
-    ${StyledInput}:focus + &, 
+    ${StyledInput}:focus + &,
     /*Linting error because of a complex interpolation*/
-    ${/* sc-selector */ StyledInput}:not(:placeholder-shown) + &, 
+    ${/* sc-selector */ StyledInput}:not(:placeholder-shown) + &,
     ${/* sc-selector */ StyledInput}:not([placeholder=""]):placeholder-shown + & {
         transform: translate(0px, -10px) scale(0.75);
     }

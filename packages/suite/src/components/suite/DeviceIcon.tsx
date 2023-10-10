@@ -1,4 +1,5 @@
-import { Icon, useTheme } from '@trezor/components';
+import { useTheme } from 'styled-components';
+import { Icon } from '@trezor/components';
 import { TrezorDevice } from 'src/types/suite';
 
 interface DeviceIconProps {

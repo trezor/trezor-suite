@@ -7,8 +7,6 @@ export * as types from './support/types';
 export * from './support/ThemeProvider';
 export * from './support/types';
 
-export * from './utils/hooks';
-
 export * from './components/buttons/Button/Button';
 export * from './components/buttons/IconButton/IconButton';
 export * from './components/buttons/TextButton/TextButton';

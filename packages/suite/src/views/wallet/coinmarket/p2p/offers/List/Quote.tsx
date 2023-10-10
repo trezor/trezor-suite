@@ -1,10 +1,10 @@
 import { FormattedNumber } from 'react-intl';
-import styled from 'styled-components';
+import styled, { useTheme } from 'styled-components';
 import BigNumber from 'bignumber.js';
 
 import { useFormatters } from '@suite-common/formatters';
 import { Translation } from 'src/components/suite';
-import { Button, H3, Icon, Tooltip, useTheme, variables } from '@trezor/components';
+import { Button, H3, Icon, Tooltip, variables } from '@trezor/components';
 import regional from 'src/constants/wallet/coinmarket/regional';
 import { useCoinmarketP2pOffersContext } from 'src/hooks/wallet/useCoinmarketP2pOffers';
 import { CoinmarketFiatAmount, CoinmarketProviderInfo } from 'src/views/wallet/coinmarket/common';

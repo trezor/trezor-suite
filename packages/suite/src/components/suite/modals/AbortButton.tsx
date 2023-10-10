@@ -1,6 +1,6 @@
-import styled, { css } from 'styled-components';
+import styled, { css, useTheme } from 'styled-components';
 
-import { Icon, useTheme, variables } from '@trezor/components';
+import { Icon, variables } from '@trezor/components';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
 import { Translation } from '..';

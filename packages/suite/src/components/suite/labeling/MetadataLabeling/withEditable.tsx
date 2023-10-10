@@ -7,8 +7,8 @@ import {
     FunctionComponent,
     PropsWithChildren,
 } from 'react';
-import styled, { css } from 'styled-components';
-import { Icon, useTheme, KEYBOARD_CODE } from '@trezor/components';
+import styled, { css, useTheme } from 'styled-components';
+import { Icon, KEYBOARD_CODE } from '@trezor/components';
 
 import { moveCaretToEndOfContentEditable } from '@trezor/dom-utils';
 

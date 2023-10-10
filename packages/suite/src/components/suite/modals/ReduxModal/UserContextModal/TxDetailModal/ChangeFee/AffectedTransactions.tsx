@@ -1,6 +1,6 @@
-import styled from 'styled-components';
+import styled, { useTheme } from 'styled-components';
 import BigNumber from 'bignumber.js';
-import { Icon, Button, useTheme, variables } from '@trezor/components';
+import { Icon, Button, variables } from '@trezor/components';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { FormattedCryptoAmount, Sign, Translation, FormattedDate } from 'src/components/suite';
 import { useRbfContext } from 'src/hooks/wallet/useRbfForm';

@@ -1,8 +1,8 @@
-import styled from 'styled-components';
+import styled, { useTheme } from 'styled-components';
 
 import { getConnectedDeviceStatus } from '@suite-common/suite-utils';
 import { TREZOR_SUPPORT_URL } from '@trezor/urls';
-import { Icon, Tooltip, variables, useTheme } from '@trezor/components';
+import { Icon, Tooltip, variables } from '@trezor/components';
 import { selectDevice } from '@suite-common/wallet-core';
 
 import { useOnboarding, useSelector } from 'src/hooks/suite';

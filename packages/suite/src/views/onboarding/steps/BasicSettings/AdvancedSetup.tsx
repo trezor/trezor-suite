@@ -1,7 +1,7 @@
 import { useState, ReactNode } from 'react';
-import styled from 'styled-components';
+import styled, { useTheme } from 'styled-components';
 import { Translation } from 'src/components/suite';
-import { Icon, useTheme } from '@trezor/components';
+import { Icon } from '@trezor/components';
 import { useSelector } from 'src/hooks/suite';
 import { isDesktop, isWeb } from '@trezor/env-utils';
 import { TorSection } from './TorSection';

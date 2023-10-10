@@ -1,6 +1,6 @@
-import styled from 'styled-components';
+import styled, { useTheme } from 'styled-components';
 import { WalletAccountTransaction } from 'src/types/wallet';
-import { Icon, useTheme, IconProps } from '@trezor/components';
+import { Icon, IconProps } from '@trezor/components';
 import { getTxIcon } from '@suite-common/wallet-utils';
 
 const IconsWrapper = styled.div<{ isJoint: boolean }>`

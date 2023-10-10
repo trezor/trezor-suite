@@ -1,5 +1,5 @@
-import styled, { css } from 'styled-components';
-import { Spinner, Icon, Tooltip, useTheme, variables } from '@trezor/components';
+import styled, { css, useTheme } from 'styled-components';
+import { Spinner, Icon, Tooltip, variables } from '@trezor/components';
 import { Translation } from 'src/components/suite/Translation';
 import { CountdownTimer } from 'src/components/suite/CountdownTimer';
 import { useSelector } from 'src/hooks/suite/useSelector';

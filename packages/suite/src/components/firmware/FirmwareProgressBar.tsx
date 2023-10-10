@@ -1,6 +1,6 @@
 import { useEffect, useState, ReactNode } from 'react';
-import { Icon, Progress, variables, useTheme } from '@trezor/components';
-import styled from 'styled-components';
+import { Icon, Progress, variables } from '@trezor/components';
+import styled, { useTheme } from 'styled-components';
 
 const Wrapper = styled.div`
     display: flex;

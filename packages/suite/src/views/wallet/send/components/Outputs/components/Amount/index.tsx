@@ -1,8 +1,8 @@
 import { useCallback } from 'react';
 import BigNumber from 'bignumber.js';
-import styled from 'styled-components';
+import styled, { useTheme } from 'styled-components';
 
-import { Icon, Switch, Warning, variables, useTheme } from '@trezor/components';
+import { Icon, Switch, Warning, variables } from '@trezor/components';
 import { FiatValue, Translation, NumberInput, HiddenPlaceholder } from 'src/components/suite';
 import {
     amountToSatoshi,
