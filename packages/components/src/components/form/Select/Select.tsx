@@ -11,13 +11,12 @@ import ReactSelect, {
     SelectInstance,
     GroupHeadingProps,
 } from 'react-select';
-import styled, { css, DefaultTheme } from 'styled-components';
+import styled, { css, DefaultTheme, useTheme } from 'styled-components';
 import { darken } from 'polished';
 import { borders } from '@trezor/theme';
 
 import { NEUE_FONT_SIZE, FONT_WEIGHT, FONT_SIZE, Z_INDEX } from '../../../config/variables';
 import { animations } from '../../../config';
-import { useTheme } from '../../../utils';
 import { InputSize, InputState } from '../../../support/types';
 import {
     Label,

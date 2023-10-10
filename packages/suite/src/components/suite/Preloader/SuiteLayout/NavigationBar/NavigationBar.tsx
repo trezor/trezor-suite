@@ -1,8 +1,8 @@
 import { useMemo, useState } from 'react';
-import styled from 'styled-components';
+import styled, { useTheme } from 'styled-components';
 
 import { useLayoutSize, useSelector } from 'src/hooks/suite';
-import { Icon, useTheme, variables } from '@trezor/components';
+import { Icon, variables } from '@trezor/components';
 import { CoinjoinStatusBar } from './CoinjoinStatusBar';
 import { DeviceSelector } from './DeviceSelector/DeviceSelector';
 import { MainNavigation } from './MainNavigation';
