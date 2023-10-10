@@ -98,6 +98,7 @@ export const redactDevice = (device: DeepPartial<TrezorDevice> | undefined) => {
             ? {
                   ...device.features,
                   device_id: REDACTED_REPLACEMENT,
+                  session_id: device.features.session_id ? REDACTED_REPLACEMENT : undefined,
                   label: device.features.label ? REDACTED_REPLACEMENT : undefined,
               }
             : undefined,

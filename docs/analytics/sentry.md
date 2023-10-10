@@ -99,7 +99,7 @@ Browser (User Agent), System and HW specifications, Suite version, instance id s
       safety_checks: Strict,
       sd_card_present: False,
       sd_protection: False,
-      session_id: None,
+      session_id: [redacted],
       unfinished_backup: False,
       unlocked: True,
       vendor: trezor.io,
