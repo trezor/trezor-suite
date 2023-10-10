@@ -1,5 +1,5 @@
 import { useState, ChangeEvent, MouseEventHandler } from 'react';
-import styled from 'styled-components';
+import styled, { useTheme } from 'styled-components';
 import { Translation, AccountLabeling, FormattedCryptoAmount } from 'src/components/suite';
 import {
     Button,
@@ -9,7 +9,6 @@ import {
     SelectBar,
     Tooltip,
     Truncate,
-    useTheme,
     variables,
 } from '@trezor/components';
 import { useCoinmarketExchangeOffersContext } from 'src/hooks/wallet/useCoinmarketExchangeOffers';

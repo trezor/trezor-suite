@@ -1,10 +1,10 @@
 import { ReactNode } from 'react';
-import styled from 'styled-components';
+import styled, { useTheme } from 'styled-components';
 import { darken } from 'polished';
 import { analytics, EventType } from '@trezor/suite-analytics';
 import { resolveStaticPath } from '@suite-common/suite-utils';
 
-import { Icon, variables, useTheme } from '@trezor/components';
+import { Icon, variables } from '@trezor/components';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { openNode } from 'src/actions/suite/guideActions';
 import { GuideNode as GuideNodeType } from '@suite-common/suite-types';

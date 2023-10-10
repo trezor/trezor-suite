@@ -8,8 +8,8 @@ import {
     ChangeEvent,
     KeyboardEvent,
 } from 'react';
-import styled, { css } from 'styled-components';
-import { Input, Icon, useTheme, Tooltip, KEYBOARD_CODE } from '@trezor/components';
+import styled, { css, useTheme } from 'styled-components';
+import { Input, Icon, Tooltip, KEYBOARD_CODE } from '@trezor/components';
 import { useDispatch } from 'src/hooks/suite';
 import { useTranslation } from 'src/hooks/suite/useTranslation';
 import { notificationsActions } from '@suite-common/toast-notifications';

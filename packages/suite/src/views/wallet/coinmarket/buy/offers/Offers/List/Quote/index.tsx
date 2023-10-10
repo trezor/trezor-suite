@@ -1,6 +1,6 @@
-import styled from 'styled-components';
+import styled, { useTheme } from 'styled-components';
 
-import { useTheme, Button, variables, Icon, H2 } from '@trezor/components';
+import { Button, variables, Icon, H2 } from '@trezor/components';
 import {
     CoinmarketCryptoAmount,
     CoinmarketFiatAmount,

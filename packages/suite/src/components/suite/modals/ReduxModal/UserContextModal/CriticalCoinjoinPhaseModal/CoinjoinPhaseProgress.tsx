@@ -1,6 +1,6 @@
-import styled from 'styled-components';
+import styled, { useTheme } from 'styled-components';
 import { CoinjoinSession, SessionPhase } from 'src/types/wallet/coinjoin';
-import { Spinner, Icon, useTheme, variables } from '@trezor/components';
+import { Spinner, Icon, variables } from '@trezor/components';
 import { SESSION_PHASE_MESSAGES } from 'src/constants/suite/coinjoin';
 import { Translation } from 'src/components/suite/Translation';
 import { CountdownTimer } from 'src/components/suite/CountdownTimer';

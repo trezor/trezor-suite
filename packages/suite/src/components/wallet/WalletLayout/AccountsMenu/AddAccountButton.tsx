@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-
 import { Translation } from 'src/components/suite';
 import { TrezorDevice } from 'src/types/suite';
 import { useDiscovery, useDispatch } from 'src/hooks/suite';
