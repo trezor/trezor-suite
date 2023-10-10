@@ -2,7 +2,8 @@ import styled, { css, DefaultTheme } from 'styled-components';
 import { borders, typography } from '@trezor/theme';
 
 import { FONT_WEIGHT, FONT_SIZE } from '../../config/variables';
-import { InputState, InputSize } from '../../support/types';
+
+import { InputState, InputSize } from './inputTypes';
 
 export const INPUT_HEIGHTS: Record<InputSize, number> = {
     small: 36,

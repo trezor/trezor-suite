@@ -2,7 +2,6 @@ import styled from 'styled-components';
 import { useState, Ref, ReactNode, HTMLAttributes, TextareaHTMLAttributes } from 'react';
 
 import { FONT_SIZE } from '../../../config/variables';
-import { InputState } from '../../../support/types';
 import {
     Label,
     LabelLeft,
@@ -12,6 +11,7 @@ import {
     LabelHoverAddon,
 } from '../InputStyles';
 import { BottomText } from '../BottomText';
+import { InputState } from '../inputTypes';
 
 const Wrapper = styled.div`
     width: 100%;

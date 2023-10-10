@@ -3,9 +3,9 @@ import { spacingsPx, typography } from '@trezor/theme';
 import { Icon } from '@suite-common/icons/src/webComponents';
 import { IconName } from '@suite-common/icons';
 
-import { InputState } from '../../support/types';
 import { getInputStateTextColor } from './InputStyles';
 import { ReactNode } from 'react';
+import { InputState } from './inputTypes';
 
 export const BOTTOM_TEXT_MIN_HEIGHT = 26; // 1 line of text + top padding
 

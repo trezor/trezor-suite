@@ -1,8 +1,7 @@
 import styled from 'styled-components';
 
-import { Flag } from './Flag';
+import { Flag, FlagType } from './Flag';
 import { FLAGS } from './flags';
-import { FlagType } from '../../../support/types';
 
 const Wrapper = styled.div`
     display: grid;

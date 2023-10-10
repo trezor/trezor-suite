@@ -7,8 +7,7 @@ import { transparentize } from 'polished';
 import { borders, boxShadows, spacings, spacingsPx, typography } from '@trezor/theme';
 
 import * as variables from '../../config/variables';
-import { Icon } from '../assets/Icon/Icon';
-import { IconType } from '../../support/types';
+import { Icon, IconType } from '../assets/Icon/Icon';
 
 type Cursor = 'inherit' | 'pointer' | 'help' | 'default' | 'not-allowed';
 

@@ -3,7 +3,6 @@ import styled, { useTheme } from 'styled-components';
 import { useMeasure } from 'react-use';
 import { spacingsPx, spacings, typography } from '@trezor/theme';
 
-import { InputState, InputSize } from '../../../support/types';
 import { motionEasingStrings } from '../../../config/motion';
 import { Icon } from '../../assets/Icon/Icon';
 import {
@@ -16,6 +15,7 @@ import {
     INPUT_BORDER_WIDTH,
 } from '../InputStyles';
 import { BOTTOM_TEXT_MIN_HEIGHT, BottomText } from '../BottomText';
+import { InputState, InputSize } from '../inputTypes';
 
 const Wrapper = styled.div<Pick<InputProps, 'width'> & { withBottomPadding: boolean }>`
     display: inline-flex;
