@@ -1,7 +1,7 @@
 import { useState, forwardRef, useRef, Ref, ReactNode } from 'react';
-import styled from 'styled-components';
+import styled, { useTheme } from 'styled-components';
 import { Translation } from 'src/components/suite';
-import { useTheme, Icon, variables } from '@trezor/components';
+import { Icon, variables } from '@trezor/components';
 import { Account } from 'src/types/wallet';
 import { AnimationWrapper } from './AnimationWrapper';
 

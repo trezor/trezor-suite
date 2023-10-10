@@ -1,7 +1,6 @@
 import { useMemo, Ref, forwardRef, ReactNode, HTMLAttributes } from 'react';
-import styled from 'styled-components';
-
-import { useTheme, Icon, IconProps, variables, Spinner, Tooltip } from '@trezor/components';
+import styled, { useTheme } from 'styled-components';
+import { Icon, IconProps, variables, Spinner, Tooltip } from '@trezor/components';
 import { FADE_IN } from '@trezor/components/src/config/animations';
 
 import { HoverAnimation } from 'src/components/suite';

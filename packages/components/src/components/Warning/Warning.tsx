@@ -1,9 +1,8 @@
 import { ReactNode } from 'react';
-import styled from 'styled-components';
+import styled, { useTheme } from 'styled-components';
 import { transparentize } from 'polished';
 
 import { Icon } from '../assets/Icon/Icon';
-import { useTheme } from '../../utils';
 import { variables } from '../../config';
 
 type Variant = 'learn' | 'info' | 'warning' | 'critical';

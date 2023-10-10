@@ -1,8 +1,7 @@
+import { useTheme } from 'styled-components';
 import { FormattedDate } from 'react-intl';
 
 import { differenceInMonths } from 'date-fns';
-
-import { useTheme } from '@trezor/components';
 import { GraphRange } from 'src/types/wallet/graph';
 
 const getFormattedDate = (range: GraphRange, date: Date) => {

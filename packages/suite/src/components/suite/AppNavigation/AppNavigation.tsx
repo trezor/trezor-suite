@@ -1,10 +1,10 @@
 import { useRef, useLayoutEffect, useState, ReactNode } from 'react';
-import styled, { css } from 'styled-components';
+
+import styled, { css, useTheme } from 'styled-components';
 
 import {
     variables,
     IconProps,
-    useTheme,
     Button,
     Icon,
     Dropdown,

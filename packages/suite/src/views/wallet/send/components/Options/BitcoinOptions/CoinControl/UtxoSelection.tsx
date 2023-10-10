@@ -1,10 +1,10 @@
 import { MouseEventHandler } from 'react';
 
-import styled, { css } from 'styled-components';
+import styled, { css, useTheme } from 'styled-components';
 import { darken } from 'polished';
 
 import { formatNetworkAmount, isSameUtxo } from '@suite-common/wallet-utils';
-import { useTheme, Checkbox, Spinner, Tooltip, variables } from '@trezor/components';
+import { Checkbox, Spinner, Tooltip, variables } from '@trezor/components';
 import type { AccountUtxo } from '@trezor/connect';
 
 import { openModal } from 'src/actions/suite/modalActions';

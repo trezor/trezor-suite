@@ -1,7 +1,6 @@
 import { MouseEvent } from 'react';
-import styled from 'styled-components';
-
-import { variables, useTheme, Icon, Input } from '@trezor/components';
+import styled, { useTheme } from 'styled-components';
+import { variables, Icon, Input } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
 
 const StyledInput = styled(Input)`

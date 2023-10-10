@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { useTheme } from 'styled-components';
 import { SellProviderInfo } from 'invity-api';
 
 import { useWatchSellTrade } from 'src/hooks/wallet/useCoinmarket';
@@ -9,7 +9,7 @@ import {
     saveTransactionId,
     setIsFromRedirect,
 } from 'src/actions/wallet/coinmarketSellActions';
-import { useTheme, variables, Icon, Button } from '@trezor/components';
+import { variables, Icon, Button } from '@trezor/components';
 import { CoinmarketPaymentType, CoinmarketProviderInfo } from 'src/views/wallet/coinmarket/common';
 import { Account } from 'src/types/wallet';
 import {

@@ -1,6 +1,6 @@
 import { ReactNode, Fragment } from 'react';
-import styled, { css } from 'styled-components';
-import { Icon, variables, useTheme } from '@trezor/components';
+import styled, { css, useTheme } from 'styled-components';
+import { Icon, variables } from '@trezor/components';
 
 const ProgressBarWrapper = styled.div`
     display: flex;
