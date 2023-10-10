@@ -28,6 +28,7 @@
         { "path": "../formatters" },
         { "path": "../forms" },
         { "path": "../graph" },
+        { "path": "../intl" },
         { "path": "../module-settings" },
         { "path": "../navigation" },
         { "path": "../qr-code" },

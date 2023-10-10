@@ -65,7 +65,11 @@ export const OnboardingScreen = ({
                 resizeMode="cover"
                 style={applyStyle(imageContainerStyle)}
             />
-            <Screen isScrollable={isScrollable} backgroundColor="transparent">
+            <Screen
+                isScrollable={isScrollable}
+                backgroundColor="transparent"
+                isHeaderDisplayed={false}
+            >
                 <Box
                     alignItems="center"
                     flex={1}

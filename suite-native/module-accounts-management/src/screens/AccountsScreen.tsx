@@ -3,7 +3,6 @@ import { useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 
 import {
-    AccountsImportStackRoutes,
     RootStackParamList,
     RootStackRoutes,
     Screen,
@@ -11,27 +10,8 @@ import {
 } from '@suite-native/navigation';
 import { AccountsList, SearchableAccountsListScreenHeader } from '@suite-native/accounts';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
-import { IconButton } from '@suite-native/atoms';
 
-const AddAccountButton = () => {
-    const navigation =
-        useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes.AccountsImport>>();
-
-    const navigateToImportScreen = () => {
-        navigation.navigate(RootStackRoutes.AccountsImport, {
-            screen: AccountsImportStackRoutes.SelectNetwork,
-        });
-    };
-
-    return (
-        <IconButton
-            iconName="plus"
-            onPress={navigateToImportScreen}
-            colorScheme="tertiaryElevation0"
-            size="medium"
-        />
-    );
-};
+import { AddAccountButton } from '../components/AddAccountsButton';
 
 export const AccountsScreen = () => {
     const navigation =
@@ -52,7 +32,7 @@ export const AccountsScreen = () => {
 
     return (
         <Screen
-            header={
+            subheader={
                 <SearchableAccountsListScreenHeader
                     title="My assets"
                     onSearchInputChange={handleFilterChange}

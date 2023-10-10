@@ -4,6 +4,8 @@ import { ImageBackground } from 'react-native';
 import { Screen } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles, NativeStyleObject } from '@trezor/styles';
 
+import { ConnectDeviceScreenHeader } from './ConnectDeviceScreenHeader';
+
 type ConnectDeviceScreenProps = {
     children: ReactNode;
     style?: NativeStyleObject;
@@ -17,7 +19,13 @@ export const ConnectDeviceBackground = ({ children, style }: ConnectDeviceScreen
     const { applyStyle } = useNativeStyles();
 
     return (
-        <Screen customHorizontalPadding={0} customVerticalPadding={0} hasBottomInset={false}>
+        <Screen
+            customHeader={<ConnectDeviceScreenHeader />}
+            customHorizontalPadding={0}
+            customVerticalPadding={0}
+            hasBottomInset={false}
+            isScrollable={false}
+        >
             <ImageBackground
                 source={require('../assets/connectDeviceScreenBackground.png')}
                 resizeMode="stretch"

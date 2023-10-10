@@ -20,7 +20,7 @@ import { isAddressValid } from '@suite-common/wallet-utils';
 import { useAlert } from '@suite-native/alerts';
 
 import { XpubImportSection } from '../components/XpubImportSection';
-import { AccountImportHeader } from '../components/AccountImportHeader';
+import { AccountImportSubHeader } from '../components/AccountImportSubHeader';
 import { DevXpub } from '../components/DevXpub';
 import { SelectableNetworkItem } from '../components/SelectableNetworkItem';
 import { XpubHint } from '../components/XpubHint';
@@ -138,7 +138,7 @@ export const XpubScanScreen = ({
 
     return (
         <Screen
-            header={<AccountImportHeader activeStep={2} />}
+            subheader={<AccountImportSubHeader />}
             footer={<XpubHint networkType={networkType} handleOpen={handleOpenHint} />}
             extraKeyboardAvoidingViewHeight={EXTRA_KEYBOARD_AVOIDING_VIEW_HEIGHT}
         >

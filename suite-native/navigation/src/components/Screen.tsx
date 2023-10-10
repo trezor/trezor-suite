@@ -9,17 +9,19 @@ import { BottomTabBarHeightContext } from '@react-navigation/bottom-tabs';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Color, nativeSpacings } from '@trezor/theme';
-import { Box, Divider } from '@suite-native/atoms';
 import { selectIsAnyBannerMessageActive } from '@suite-common/message-system';
+import { Box } from '@suite-native/atoms';
 
-import { ScreenContent } from './ScreenContent';
+import { ScreenContentWrapper } from './ScreenContentWrapper';
+import { ScreenHeader } from './ScreenHeader';
 
 type ScreenProps = {
     children: ReactNode;
-    header?: ReactNode;
     footer?: ReactNode;
-    hasDivider?: boolean;
+    subheader?: ReactNode;
+    customHeader?: ReactNode;
     hasStatusBar?: boolean;
+    isHeaderDisplayed?: boolean;
     isScrollable?: boolean;
     backgroundColor?: Color;
     customVerticalPadding?: number;
@@ -67,23 +69,39 @@ const screenContainerStyle = prepareNativeStyle<{
     }),
 );
 
-const screenHeaderStyle = prepareNativeStyle<{
+const screenContentBaseStyle = prepareNativeStyle<{
     insets: EdgeInsets;
     customHorizontalPadding: number;
-}>((utils, { insets, customHorizontalPadding }) => ({
-    paddingLeft: Math.max(insets.left, customHorizontalPadding),
-    paddingRight: Math.max(insets.right, customHorizontalPadding),
-    paddingTop: utils.spacings.large,
-    paddingBottom: utils.spacings.extraLarge,
-}));
+    customVerticalPadding: number;
+    isScrollable: boolean;
+}>((_, { customHorizontalPadding, customVerticalPadding, insets, isScrollable }) => {
+    const { left, right } = insets;
+
+    return {
+        flexGrow: 1,
+        paddingTop: customVerticalPadding,
+        paddingLeft: Math.max(left, customHorizontalPadding),
+        paddingRight: Math.max(right, customHorizontalPadding),
+
+        extend: {
+            // Scrollable screen takes the whole height of the screen. This padding is needed to
+            // prevent the content being "sticked" to the bottom navbar.
+            condition: isScrollable,
+            style: {
+                paddingBottom: customVerticalPadding,
+            },
+        },
+    };
+});
 
 export const Screen = ({
     children,
-    header,
     footer,
-    hasDivider = false,
+    subheader,
+    customHeader,
     isScrollable = true,
     hasStatusBar = true,
+    isHeaderDisplayed = true,
     backgroundColor = 'backgroundSurfaceElevation0',
     customVerticalPadding = nativeSpacings.small,
     customHorizontalPadding = nativeSpacings.small,
@@ -128,34 +146,24 @@ export const Screen = ({
                 translucent={false}
                 backgroundColor={backgroundCSSColor}
             />
-            {header && (
-                <>
-                    <View
-                        style={[
-                            applyStyle(screenHeaderStyle, {
-                                insets,
-                                customHorizontalPadding,
-                            }),
-                        ]}
-                    >
-                        {header}
-                    </View>
-                    {hasDivider && (
-                        <Box marginTop="small">
-                            <Divider />
-                        </Box>
-                    )}
-                </>
-            )}
-            <ScreenContent
-                footer={footer}
+            {customHeader || (isHeaderDisplayed && <ScreenHeader hasBottomPadding={!subheader} />)}
+            <ScreenContentWrapper
                 isScrollable={isScrollable}
-                customVerticalPadding={customVerticalPadding}
-                customHorizontalPadding={customHorizontalPadding}
                 extraKeyboardAvoidingViewHeight={extraKeyboardAvoidingViewHeight}
             >
-                {children}
-            </ScreenContent>
+                {subheader}
+                <Box
+                    style={applyStyle(screenContentBaseStyle, {
+                        insets,
+                        customHorizontalPadding,
+                        customVerticalPadding,
+                        isScrollable,
+                    })}
+                >
+                    {children}
+                </Box>
+            </ScreenContentWrapper>
+            {footer}
         </View>
     );
 };

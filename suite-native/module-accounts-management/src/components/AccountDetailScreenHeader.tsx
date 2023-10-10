@@ -5,7 +5,7 @@ import {
     AccountsStackParamList,
     RootStackParamList,
     RootStackRoutes,
-    ScreenHeader,
+    ScreenSubHeader,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 
@@ -33,8 +33,8 @@ export const AccountDetailScreenHeader = ({
     };
 
     return (
-        <ScreenHeader
-            hasGoBackIcon
+        <ScreenSubHeader
+            content={accountLabel}
             rightIcon={
                 <IconButton
                     colorScheme="tertiaryElevation0"
@@ -43,8 +43,6 @@ export const AccountDetailScreenHeader = ({
                     onPress={handleSettingsNavigation}
                 />
             }
-            titleVariant="body"
-            content={accountLabel}
         />
     );
 };

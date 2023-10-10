@@ -116,7 +116,7 @@ export const AnalyticsConsentScreen = () => {
     };
 
     return (
-        <Screen isScrollable>
+        <Screen isHeaderDisplayed={false}>
             <Box
                 alignItems="center"
                 flex={1}

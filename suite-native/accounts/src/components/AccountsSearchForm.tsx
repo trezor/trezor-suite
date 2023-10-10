@@ -9,15 +9,10 @@ type AccountsSearchFormProps = {
     onInputChange: (value: string) => void;
 };
 
-export const SEARCH_FORM_HEIGHT = 48;
 export const SEARCH_INPUT_ANIMATION_DURATION = 100;
 export const SEARCH_INPUT_ANIMATION_DELAY = 100;
 const MAX_SEARCH_VALUE_LENGTH = 30;
 const KEYBOARD_INACTIVITY_TIMEOUT = 200;
-
-const searchFormContainerStyle = prepareNativeStyle(() => ({
-    height: SEARCH_FORM_HEIGHT,
-}));
 
 const searchFormInputStyle = prepareNativeStyle(() => ({
     flex: 1,
@@ -50,7 +45,6 @@ export const AccountsSearchForm = ({ onPressCancel, onInputChange }: AccountsSea
                 SEARCH_INPUT_ANIMATION_DELAY,
             )}
             exiting={FadeOut.duration(SEARCH_INPUT_ANIMATION_DURATION)}
-            style={applyStyle(searchFormContainerStyle)}
         >
             <HStack marginHorizontal="medium" spacing="medium" justifyContent="space-between">
                 <Animated.View

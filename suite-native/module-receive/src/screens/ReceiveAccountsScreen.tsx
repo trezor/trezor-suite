@@ -28,7 +28,7 @@ export const ReceiveAccountsScreen = () => {
 
     return (
         <Screen
-            header={
+            subheader={
                 <SearchableAccountsListScreenHeader
                     title="Receive to"
                     onSearchInputChange={handleFilterChange}

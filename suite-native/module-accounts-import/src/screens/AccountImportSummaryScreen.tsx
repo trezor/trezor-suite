@@ -6,7 +6,7 @@ import {
     AccountsImportStackParamList,
 } from '@suite-native/navigation';
 
-import { AccountImportHeader } from '../components/AccountImportHeader';
+import { AccountImportSubHeader } from '../components/AccountImportSubHeader';
 import { AccountImportSummary } from '../components/AccountImportSummary';
 
 export const AccountImportSummaryScreen = ({
@@ -19,7 +19,7 @@ export const AccountImportSummaryScreen = ({
     const { accountInfo, networkSymbol } = route.params;
 
     return (
-        <Screen header={<AccountImportHeader activeStep={3} />}>
+        <Screen subheader={<AccountImportSubHeader />}>
             <AccountImportSummary accountInfo={accountInfo} networkSymbol={networkSymbol} />
         </Screen>
     );

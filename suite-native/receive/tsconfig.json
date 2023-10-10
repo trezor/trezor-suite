@@ -17,6 +17,7 @@
         { "path": "../atoms" },
         { "path": "../ethereum-tokens" },
         { "path": "../formatters" },
+        { "path": "../intl" },
         { "path": "../link" },
         { "path": "../navigation" },
         { "path": "../qr-code" },

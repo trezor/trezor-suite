@@ -9,7 +9,7 @@ import {
     StackProps,
     DevUtilsStackParamList,
     DevUtilsStackRoutes,
-    ScreenHeader,
+    ScreenSubHeader,
 } from '@suite-native/navigation';
 import { clearStorage } from '@suite-native/storage';
 
@@ -24,7 +24,7 @@ export const DevUtilsScreen = ({
     const shouldShowFeatureFlags = isDevelopOrDebugEnv();
 
     return (
-        <Screen header={<ScreenHeader content="DEV utils" hasGoBackIcon />}>
+        <Screen subheader={<ScreenSubHeader content="DEV utils" />}>
             <Card>
                 <VStack spacing="medium">
                     {!isDebugEnv() && <BuildInfo />}

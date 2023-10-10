@@ -7,7 +7,7 @@ import {
     RootStackParamList,
     RootStackRoutes,
     Screen,
-    ScreenHeader,
+    ScreenSubHeader,
     StackProps,
 } from '@suite-native/navigation';
 import {
@@ -61,7 +61,7 @@ export const TransactionDetailScreen = ({
     const isTokenTransaction = !!tokenTransfer;
 
     return (
-        <Screen customHorizontalPadding={utils.spacings.small} header={<ScreenHeader />}>
+        <Screen customHorizontalPadding={utils.spacings.small} subheader={<ScreenSubHeader />}>
             <VStack spacing="large">
                 <TransactionDetailHeader
                     transaction={transaction}
