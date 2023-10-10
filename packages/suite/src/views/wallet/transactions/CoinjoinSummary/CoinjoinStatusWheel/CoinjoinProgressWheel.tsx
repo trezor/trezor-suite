@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
-import styled, { css, DefaultTheme } from 'styled-components';
-import { animations, Tooltip } from '@trezor/components';
+import styled, { css, DefaultTheme, keyframes } from 'styled-components';
+import { Tooltip } from '@trezor/components';
 import {
     CoinjoinProgressContent,
     Container as ProgressContentContainer,
@@ -23,6 +23,18 @@ import {
     coinjoinSessionAutostop,
 } from 'src/actions/wallet/coinjoinAccountActions';
 
+export const DELAYED_SPIN = keyframes`
+    0% {
+        transform: rotate(0deg);
+    }
+    50% {
+        transform: rotate(360deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+`;
+
 const getOutlineSvg = (theme: DefaultTheme) =>
     `url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='100' ry='100' stroke='${theme.TYPE_LIGHT_GREY.replace(
         /#/g,
@@ -37,7 +49,7 @@ const ProgressIndicator = styled.div`
     background: conic-gradient(#ffffff00 20deg, #cccccc);
     border-radius: 50%;
     font-size: 15px;
-    animation: ${animations.DELAYED_SPIN} 2.3s cubic-bezier(0.34, 0.45, 0.17, 0.87) infinite;
+    animation: ${DELAYED_SPIN} 2.3s cubic-bezier(0.34, 0.45, 0.17, 0.87) infinite;
 `;
 
 const Wheel = styled.div<{
@@ -91,14 +103,14 @@ const Wheel = styled.div<{
                 }
             }
         `}
-        
+
     ${({ hasDottedOutline }) =>
         hasDottedOutline &&
         css`
             opacity: 0.3;
             background: ${({ theme }) => getOutlineSvg(theme)};
             cursor: not-allowed;
-        `}      
+        `}
 
     ${({ isStartable, isPaused, hasCriticalError, theme }) =>
         (isStartable || isPaused) &&
