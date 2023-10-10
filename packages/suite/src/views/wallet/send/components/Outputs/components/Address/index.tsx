@@ -1,8 +1,8 @@
 import { useCallback, useState } from 'react';
-import styled from 'styled-components';
 import { checkAddressChecksum, toChecksumAddress } from 'web3-utils';
+import styled, { useTheme } from 'styled-components';
 import { capitalizeFirstLetter } from '@trezor/utils';
-import { Input, useTheme, Icon, Button, Tooltip } from '@trezor/components';
+import { Input, Icon, Button, Tooltip } from '@trezor/components';
 import { AddressLabeling, Translation, MetadataLabeling } from 'src/components/suite';
 import { scanQrRequest } from 'src/actions/wallet/sendFormActions';
 import { useDevice, useDispatch, useTranslation } from 'src/hooks/suite';

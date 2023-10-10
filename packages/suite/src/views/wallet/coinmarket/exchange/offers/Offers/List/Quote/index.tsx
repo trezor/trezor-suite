@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js';
-import styled from 'styled-components';
+import styled, { useTheme } from 'styled-components';
 
-import { Button, variables, Icon, useTheme, H2 } from '@trezor/components';
+import { Button, variables, Icon, H2 } from '@trezor/components';
 import { FormattedCryptoAmount, QuestionTooltip, Translation } from 'src/components/suite';
 import { useFormatters } from '@suite-common/formatters';
 import { ExchangeTrade } from 'invity-api';

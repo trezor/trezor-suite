@@ -1,5 +1,5 @@
-import styled from 'styled-components';
-import { Icon, useTheme, variables, CoinLogo, H3 } from '@trezor/components';
+import styled, { useTheme } from 'styled-components';
+import { Icon, variables, CoinLogo, H3 } from '@trezor/components';
 import { Translation, FormattedDateWithBullet } from 'src/components/suite';
 import { WalletAccountTransaction, Network } from 'src/types/wallet';
 import {

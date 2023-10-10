@@ -1,6 +1,6 @@
-import { Button, Card, CardProps, Icon, IconProps, useTheme, variables } from '@trezor/components';
+import { Button, Card, CardProps, Icon, IconProps, variables } from '@trezor/components';
 import { ReactNode } from 'react';
-import styled from 'styled-components';
+import styled, { useTheme } from 'styled-components';
 
 const Wrapper = styled.div`
     display: flex;

@@ -1,15 +1,10 @@
 import { useState } from 'react';
 
 import { AnimatePresence, motion } from 'framer-motion';
-import styled from 'styled-components';
-import {
-    useTheme,
-    variables,
-    Icon,
-    Image,
-    motionAnimation,
-    DeviceAnimation,
-} from '@trezor/components';
+import styled, { useTheme } from 'styled-components';
+import { variables, Icon, Image, motionAnimation, DeviceAnimation } from '@trezor/components';
+import { DeviceModelInternal } from '@trezor/connect';
+import * as deviceUtils from '@suite-common/suite-utils';
 
 import {
     selectDevice,
@@ -29,8 +24,6 @@ import { DeviceHeaderButton } from './DeviceHeaderButton';
 
 import type { TrezorDevice, AcquiredDevice, ForegroundAppProps } from 'src/types/suite';
 import type { getBackgroundRoute } from 'src/utils/suite/router';
-import { DeviceModelInternal } from '@trezor/connect';
-import * as deviceUtils from '@suite-common/suite-utils';
 
 const DeviceWrapper = styled.div`
     display: flex;

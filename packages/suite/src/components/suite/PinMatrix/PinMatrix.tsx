@@ -1,10 +1,8 @@
 import { useState, useEffect } from 'react';
-import styled from 'styled-components';
-
-import { variables, useTheme } from '@trezor/components';
+import styled, { useTheme } from 'styled-components';
 import { DeviceModelInternal } from '@trezor/connect';
 import { HELP_CENTER_PIN_URL } from '@trezor/urls';
-
+import { variables } from '@trezor/components';
 import { DeviceMatrixExplanation, Translation, TrezorLink } from 'src/components/suite';
 import { TrezorDevice } from 'src/types/suite';
 import { onPinSubmit } from 'src/actions/suite/modalActions';
