@@ -104,8 +104,7 @@ const initConnectRelease = () => {
     // Check if branch exists and if so, delete it.
     const branchExists = exec('git', ['branch', '--list', branchName]).toString().trim();
     if (branchExists) {
-        console.log(`Deleting branch ${branchName} to create a fresh one.`);
-        exec('git', ['branch', '-D', branchName]);
+        throw new Error(`Branch ${branchName} already exists, delete it and call script again.`);
     }
 
     exec('git', ['checkout', '-b', branchName]);
