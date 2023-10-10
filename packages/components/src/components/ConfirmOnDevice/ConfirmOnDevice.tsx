@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
-import styled, { css } from 'styled-components';
+import styled, { css, keyframes } from 'styled-components';
 import { Image } from '../Image/Image';
-import { variables, animations } from '../../config';
+import { variables } from '../../config';
 import { Icon } from '../assets/Icon/Icon';
 import { DeviceModelInternal } from '@trezor/connect';
 import { DeviceAnimation } from '../animations/DeviceAnimation';
@@ -10,6 +10,26 @@ enum AnimationDirection {
     Up,
     Down,
 }
+
+export const SLIDE_UP = keyframes`
+    0% {
+        transform: translateY(150%);
+    }
+    100% {
+        transform: translateY(0%);
+    }
+`;
+
+export const SLIDE_DOWN = keyframes`
+    0% {
+        transform: translateY(0%);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(150%);
+        opacity: 0;
+    }
+`;
 
 const Wrapper = styled.div<{ animation?: AnimationDirection }>`
     display: flex;
@@ -24,13 +44,13 @@ const Wrapper = styled.div<{ animation?: AnimationDirection }>`
     ${({ animation }) =>
         animation === AnimationDirection.Up &&
         css`
-            animation: ${animations.SLIDE_UP} 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            animation: ${SLIDE_UP} 0.6s cubic-bezier(0.16, 1, 0.3, 1);
         `}
 
     ${({ animation }) =>
         animation === AnimationDirection.Down &&
         css`
-            animation: ${animations.SLIDE_DOWN} 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            animation: ${SLIDE_DOWN} 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         `}
 `;
 
