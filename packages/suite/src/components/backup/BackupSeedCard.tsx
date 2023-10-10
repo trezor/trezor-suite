@@ -1,7 +1,7 @@
 import { ReactNode, SyntheticEvent } from 'react';
-import styled from 'styled-components';
+import styled, { useTheme } from 'styled-components';
 import { darken } from 'polished';
-import { Icon, IconProps, variables, useTheme, Checkbox } from '@trezor/components';
+import { Icon, IconProps, variables, Checkbox } from '@trezor/components';
 
 const StyledCheckbox = styled(Checkbox)`
     position: absolute;

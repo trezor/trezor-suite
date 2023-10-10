@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import styled from 'styled-components';
-import { variables, Icon, useTheme } from '@trezor/components';
+import styled, { useTheme } from 'styled-components';
+import { variables, Icon } from '@trezor/components';
 import { HELP_CENTER_ZERO_VALUE_ATTACKS } from '@trezor/urls';
 import { getIsZeroValuePhishing } from '@suite-common/suite-utils';
 import {

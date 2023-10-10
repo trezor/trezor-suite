@@ -1,6 +1,6 @@
 import { useMemo, Fragment } from 'react';
-import styled, { css } from 'styled-components';
-import { variables, useTheme, Icon, Card } from '@trezor/components';
+import styled, { css, useTheme } from 'styled-components';
+import { variables, Icon, Card } from '@trezor/components';
 import { FiatValue, FormattedCryptoAmount, TrezorLink } from 'src/components/suite';
 import { Account } from 'src/types/wallet';
 import { useSelector } from 'src/hooks/suite';

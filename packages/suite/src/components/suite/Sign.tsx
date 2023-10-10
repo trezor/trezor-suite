@@ -1,5 +1,4 @@
-import styled from 'styled-components';
-import { useTheme } from '@trezor/components';
+import styled, { useTheme } from 'styled-components';
 import { SignValue } from '@suite-common/suite-types';
 import { isSignValuePositive } from '@suite-common/formatters';
 

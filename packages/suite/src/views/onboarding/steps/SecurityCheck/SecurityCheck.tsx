@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
-import styled from 'styled-components';
+import styled, { useTheme } from 'styled-components';
 
 import { getConnectedDeviceStatus } from '@suite-common/suite-utils';
 import { selectDevice } from '@suite-common/wallet-core';
-import { Icon, Tooltip, variables, useTheme, H1 } from '@trezor/components';
+import { Icon, Tooltip, variables, H1 } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/connect';
 
 import { goto } from 'src/actions/suite/routerActions';

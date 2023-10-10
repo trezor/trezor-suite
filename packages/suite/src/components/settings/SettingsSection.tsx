@@ -1,6 +1,6 @@
 import { ReactNode, ReactElement } from 'react';
-import styled from 'styled-components';
-import { Card, variables, P, Icon, types, useTheme } from '@trezor/components';
+import styled, { useTheme } from 'styled-components';
+import { Card, variables, P, Icon, types } from '@trezor/components';
 
 const Wrapper = styled.div`
     margin-bottom: 40px;

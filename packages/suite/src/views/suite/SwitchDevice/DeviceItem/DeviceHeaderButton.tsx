@@ -1,7 +1,7 @@
-import styled from 'styled-components';
+import styled, { useTheme } from 'styled-components';
 
 import * as deviceUtils from '@suite-common/suite-utils';
-import { useTheme, Icon } from '@trezor/components';
+import { Icon } from '@trezor/components';
 
 import { NotificationCard, Translation } from 'src/components/suite';
 import { TrezorDevice } from 'src/types/suite';
