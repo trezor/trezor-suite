@@ -52,6 +52,7 @@ describe('logsUtils', () => {
                 features: {
                     ...device.features,
                     device_id: REDACTED_REPLACEMENT,
+                    session_id: REDACTED_REPLACEMENT,
                     label: REDACTED_REPLACEMENT,
                 },
             });
