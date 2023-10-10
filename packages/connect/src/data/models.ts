@@ -8,10 +8,13 @@ export const models = {
         colors: {},
     },
     T2B1: {
-        name: 'Trezor Model R',
+        name: 'Trezor Safe 3',
         colors: {
-            '0': 'Black',
-            '1': 'White',
+            '1': 'Cosmic Black',
+            '2': 'Stellar Silver',
+            '3': 'Solar Gold',
+            '4': 'Galactic Rose',
+            '5': 'Bitcoin Orange',
         },
     },
 };
