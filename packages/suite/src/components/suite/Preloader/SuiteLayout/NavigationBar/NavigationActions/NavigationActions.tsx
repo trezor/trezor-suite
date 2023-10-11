@@ -16,12 +16,12 @@ import { useGuide } from 'src/hooks/guide/useGuide';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { selectTorState } from 'src/reducers/suite/suiteReducer';
 
-import { ActionItem } from './components/ActionItem';
-import { NavTor } from './components/NavTor';
-import { NavEarlyAccess } from './components/NavEarlyAccess';
-import { NavNotifications } from './components/NavNotifications';
-import { NavSettings } from './components/NavSettings';
-import { NavBackends } from './components/NavBackends';
+import { ActionItem } from './ActionItem';
+import { NavTor } from './NavTor';
+import { NavEarlyAccess } from './NavEarlyAccess';
+import { NavNotifications } from './NavNotifications';
+import { NavSettings } from './NavSettings';
+import { NavBackends } from './NavBackends';
 
 const Wrapper = styled.div`
     display: flex;

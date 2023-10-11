@@ -14,7 +14,7 @@ import { TREZOR_URL, SUITE_URL } from '@trezor/urls';
 import { resolveStaticPath } from '@suite-common/suite-utils';
 import { GuideButton, GuidePanel } from 'src/components/guide';
 import { useGuide } from 'src/hooks/guide';
-import { NavSettings } from 'src/components/suite/NavigationBar/components/NavigationActions/components/NavSettings';
+import { NavSettings } from 'src/components/suite/Preloader/SuiteLayout/NavigationBar/NavigationActions/NavSettings';
 
 const Wrapper = styled.div`
     display: flex;

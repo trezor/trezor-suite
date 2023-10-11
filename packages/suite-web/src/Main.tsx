@@ -7,8 +7,7 @@ import { initStore } from 'src/reducers/store';
 import { preloadStore } from 'src/support/suite/preloadStore';
 import { SENTRY_CONFIG } from '@suite-common/sentry';
 
-import Preloader from 'src/components/suite/Preloader';
-import { Metadata, ToastContainer } from 'src/components/suite';
+import { Metadata, Preloader, ToastContainer } from 'src/components/suite';
 import { ConnectedIntlProvider } from 'src/support/suite/ConnectedIntlProvider';
 import Resize from 'src/support/suite/Resize';
 import Protocol from 'src/support/suite/Protocol';

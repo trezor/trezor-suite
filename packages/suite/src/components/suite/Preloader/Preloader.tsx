@@ -1,9 +1,5 @@
 import { useEffect } from 'react';
 
-import { SuiteLayout } from 'src/components/suite';
-import InitialLoading from './components/InitialLoading';
-import DatabaseUpgradeModal from './components/DatabaseUpgradeModal';
-import PrerequisiteScreen from './components/PrerequisiteScreen';
 import { useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
 import { Onboarding } from 'src/views/onboarding';
 import { getPrerequisites } from 'src/utils/suite/prerequisites';
@@ -11,6 +7,10 @@ import { ErrorPage } from 'src/views/suite/ErrorPage';
 import { useGuideKeyboard } from 'src/hooks/guide';
 import { init } from 'src/actions/suite/initAction';
 import type { AppState } from 'src/types/suite';
+import { SuiteLayout } from './SuiteLayout/SuiteLayout';
+import { InitialLoading } from './InitialLoading';
+import { DatabaseUpgradeModal } from './DatabaseUpgradeModal';
+import { PrerequisiteScreen } from './PrerequisiteScreen';
 
 const getFullscreenApp = (route: AppState['router']['route']) => {
     switch (route?.app) {
@@ -27,7 +27,7 @@ interface PreloaderProps {
 
 // Preloader is a top level wrapper used in _app.tsx.
 // Decides which content should be displayed basing on route and prerequisites.
-const Preloader = ({ children }: PreloaderProps) => {
+export const Preloader = ({ children }: PreloaderProps) => {
     const lifecycle = useSelector(state => state.suite.lifecycle);
     const transport = useSelector(state => state.suite.transport);
     const router = useSelector(state => state.router);
@@ -82,5 +82,3 @@ const Preloader = ({ children }: PreloaderProps) => {
     // everything is set.
     return <SuiteLayout>{children}</SuiteLayout>;
 };
-
-export default Preloader;

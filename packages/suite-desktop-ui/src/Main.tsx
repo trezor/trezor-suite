@@ -13,7 +13,7 @@ import TrezorConnect from '@trezor/connect';
 import { initStore } from 'src/reducers/store';
 import { preloadStore } from 'src/support/suite/preloadStore';
 import { Metadata } from 'src/components/suite/Metadata';
-import Preloader from 'src/components/suite/Preloader';
+import { Preloader } from 'src/components/suite';
 import { ToastContainer } from 'src/components/suite/ToastContainer';
 import { ConnectedIntlProvider } from 'src/support/suite/ConnectedIntlProvider';
 import Resize from 'src/support/suite/Resize';

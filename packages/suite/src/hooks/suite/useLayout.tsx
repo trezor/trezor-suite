@@ -1,5 +1,8 @@
 import { useEffect, useContext, ComponentType } from 'react';
-import { LayoutContext, SideMenuProps } from 'src/components/suite/SuiteLayout/LayoutContext';
+import {
+    LayoutContext,
+    SideMenuProps,
+} from 'src/components/suite/Preloader/SuiteLayout/LayoutContext';
 
 export const useLayout = (
     title?: string,

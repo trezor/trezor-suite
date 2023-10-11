@@ -3,10 +3,10 @@ import styled from 'styled-components';
 
 import { useLayoutSize, useSelector } from 'src/hooks/suite';
 import { Icon, useTheme, variables } from '@trezor/components';
-import { DeviceSelector } from './components/DeviceSelector';
-import { MainNavigation } from './components/MainNavigation';
-import { NavigationActions } from './components/NavigationActions';
-import { CoinjoinStatusBar } from '../CoinjoinStatusBar';
+import { DeviceSelector } from './DeviceSelector/DeviceSelector';
+import { MainNavigation } from './MainNavigation';
+import { NavigationActions } from './NavigationActions/NavigationActions';
+import { CoinjoinStatusBar } from './CoinjoinStatusBar/CoinjoinStatusBar';
 
 const Wrapper = styled.div`
     display: flex;
