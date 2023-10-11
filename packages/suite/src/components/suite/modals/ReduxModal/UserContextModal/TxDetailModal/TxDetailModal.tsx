@@ -49,7 +49,7 @@ const SectionActions = styled.div`
 
 const SectionTitle = styled.div`
     color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
-    font-size: ${variables.NEUE_FONT_SIZE.NORMAL};
+    font-size: ${variables.FONT_SIZE.NORMAL};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
 `;
 

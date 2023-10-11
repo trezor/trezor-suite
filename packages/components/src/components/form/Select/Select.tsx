@@ -15,7 +15,7 @@ import styled, { css, DefaultTheme, useTheme } from 'styled-components';
 import { darken } from 'polished';
 import { borders } from '@trezor/theme';
 
-import { NEUE_FONT_SIZE, FONT_WEIGHT, FONT_SIZE, Z_INDEX } from '../../../config/variables';
+import { FONT_WEIGHT, FONT_SIZE, Z_INDEX } from '../../../config/variables';
 import { animations } from '../../../config';
 import { InputSize, InputState } from '../../../support/types';
 import {
@@ -50,7 +50,7 @@ const selectStyle = (
         margin: 0,
         padding: '0 8px',
         color: isClean ? theme.TYPE_LIGHT_GREY : theme.TYPE_DARK_GREY,
-        fontSize: NEUE_FONT_SIZE.SMALL,
+        fontSize: FONT_SIZE.SMALL,
         fontWeight: FONT_WEIGHT.MEDIUM,
         borderStyle: 'none',
         justifyContent: isClean ? 'flex-end' : 'flex-start',
@@ -145,7 +145,7 @@ const selectStyle = (
     }),
     groupHeading: base => ({
         ...base,
-        fontSize: NEUE_FONT_SIZE.TINY,
+        fontSize: FONT_SIZE.TINY,
         textTransform: 'initial',
         margin: 0,
         padding: 8,
@@ -164,7 +164,7 @@ const selectStyle = (
         background: isFocused ? theme.BG_WHITE_ALT_HOVER : theme.BG_WHITE_ALT,
         borderRadius: 5,
         padding: 8,
-        fontSize: NEUE_FONT_SIZE.SMALL,
+        fontSize: FONT_SIZE.SMALL,
         fontWeight: FONT_WEIGHT.MEDIUM,
         '&:hover': {
             cursor: 'pointer',
@@ -177,7 +177,7 @@ const selectStyle = (
         ...base,
         width: hideTextCursor ? 2 : 'auto',
         margin: hideTextCursor ? 0 : 2,
-        fontSize: NEUE_FONT_SIZE.SMALL,
+        fontSize: FONT_SIZE.SMALL,
         fontWeight: FONT_WEIGHT.MEDIUM,
         padding: '2px 6px',
         color: hideTextCursor ? 'transparent' : theme.TYPE_DARK_GREY,
@@ -188,7 +188,7 @@ const selectStyle = (
     placeholder: base => ({
         ...base,
         fontWeight: FONT_WEIGHT.MEDIUM,
-        fontSize: NEUE_FONT_SIZE.SMALL,
+        fontSize: FONT_SIZE.SMALL,
         padding: '0 6px',
         position: 'absolute',
     }),
