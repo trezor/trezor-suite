@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components';
 
-import { NEUE_FONT_SIZE, FONT_WEIGHT, FONT_SIZE } from '../../../config/variables';
+import { FONT_WEIGHT, FONT_SIZE } from '../../../config/variables';
 
 export interface HeadingProps {
     textAlign?: 'left' | 'center' | 'right' | 'justify';
@@ -38,7 +38,7 @@ const baseStyles = css`
 
 const H1 = styled.h1<HeadingProps>`
     ${baseStyles};
-    font-size: ${NEUE_FONT_SIZE.H1};
+    font-size: ${FONT_SIZE.H2};
     line-height: 34px;
     font-weight: normal;
 `;

@@ -63,7 +63,7 @@ const Left = styled.div`
 
 const TokenBalance = styled.div`
     padding: 0px 6px;
-    font-size: ${variables.NEUE_FONT_SIZE.TINY};
+    font-size: ${variables.FONT_SIZE.TINY};
     color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
 `;
 
