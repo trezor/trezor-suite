@@ -104,8 +104,30 @@ describe('Dropbox api errors', () => {
 
         cy.passThroughInitMetadata('dropbox');
 
-        cy.getTestElement('@suite/menu/wallet-index').click();
+        // this request is not retried
+        cy.task('metadataSetNextResponse', {
+            provider: 'dropbox',
+            status: 200,
+            body: {
+                name: {
+                    given_name: 'dog',
+                    surname: 'cat',
+                    familiar_name: 'kitty-dog',
+                    display_name: 'dog-cat',
+                    abbreviated_name: 'DC',
+                },
+                email: 'some@mail.com',
+                email_verified: true,
+                profile_photo_url: 'foo',
+                disabled: false,
+                country: 'CZ',
+                locale: 'en',
+                referral_link: 'foo',
+                is_paired: false,
+            },
+        });
 
+        // this one is -> simulate rate limitted scenario
         cy.task('metadataSetNextResponse', {
             provider: 'dropbox',
             status: 429,
@@ -114,6 +136,7 @@ describe('Dropbox api errors', () => {
                 'Content-Type': 'text/plain; charset=utf-8',
             },
         });
+        cy.getTestElement('@suite/menu/wallet-index').click();
 
         cy.getTestElement("@metadata/accountLabel/m/84'/0'/0'").click({ force: true });
         cy.getTestElement("@metadata/accountLabel/m/84'/0'/0'/edit-label-button").click({
@@ -133,7 +156,7 @@ describe('Dropbox api errors', () => {
         // prepare some initial files
         cy.task('metadataSetFileContent', {
             provider: 'dropbox',
-            file: '/apps/trezor/f7acc942eeb83921892a95085e409b3e6b5325db6400ae5d8de523a305291dca.mtdt',
+            file: '/f7acc942eeb83921892a95085e409b3e6b5325db6400ae5d8de523a305291dca.mtdt',
             content: {
                 version: '1.0.0',
                 accountLabel: 'already existing label',
@@ -160,6 +183,8 @@ describe('Dropbox api errors', () => {
 
         // just enter some label, this indicates that app did not crash
         cy.getTestElement('@suite/menu/wallet-index').click();
+
+        cy.hoverTestElement("@metadata/accountLabel/m/84'/0'/0'/hover-container");
         cy.getTestElement("@metadata/accountLabel/m/84'/0'/0'").click({ force: true });
         cy.getTestElement("@metadata/accountLabel/m/84'/0'/0'/edit-label-button").click({
             force: true,
