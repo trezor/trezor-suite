@@ -1,7 +1,7 @@
 import styled, { css, DefaultTheme } from 'styled-components';
 import { borders, typography } from '@trezor/theme';
 
-import { FONT_WEIGHT, NEUE_FONT_SIZE } from '../../config/variables';
+import { FONT_WEIGHT, FONT_SIZE } from '../../config/variables';
 import { InputState, InputSize } from '../../support/types';
 
 export const INPUT_HEIGHTS: Record<InputSize, number> = {
@@ -94,7 +94,7 @@ export const Label = styled.div`
 
 export const LabelLeft = styled.label`
     margin-bottom: 8px;
-    font-size: ${NEUE_FONT_SIZE.SMALL};
+    font-size: ${FONT_SIZE.SMALL};
     font-weight: ${FONT_WEIGHT.MEDIUM};
     color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
 `;
