@@ -9,7 +9,7 @@ import { Icon } from '../assets/Icon/Icon';
 import { H1 } from '../typography/Heading/Heading';
 import { variables } from '../../config';
 import { IconType } from '../../support/types';
-import { Progress } from '../loaders/Progress/Progress';
+import { ProgressBar } from '../loaders/ProgressBar/ProgressBar';
 
 const CLOSE_ICON_SIDE = 26;
 const CLOSE_ICON_PADDING = 16;
@@ -300,7 +300,7 @@ const Modal = ({
                 )}
 
                 {showProgressBar && (
-                    <Progress value={currentProgressBarStep} max={totalProgressBarSteps} />
+                    <ProgressBar value={currentProgressBarStep} max={totalProgressBarSteps} />
                 )}
 
                 <Body>

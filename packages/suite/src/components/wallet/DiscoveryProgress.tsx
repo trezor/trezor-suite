@@ -1,9 +1,9 @@
 import styled from 'styled-components';
 
 import { useDiscovery } from 'src/hooks/suite';
-import { Progress, variables } from '@trezor/components';
+import { ProgressBar, variables } from '@trezor/components';
 
-const StyledProgress = styled(Progress)`
+const StyledProgressBar = styled(ProgressBar)`
     height: 0;
     z-index: ${variables.Z_INDEX.DISCOVERY_PROGRESS};
 `;
@@ -13,6 +13,6 @@ export const DiscoveryProgress = () => {
 
     if (!discovery || !isDiscoveryRunning) return null;
     return (
-        <StyledProgress value={calculateProgress()} data-test="@wallet/discovery-progress-bar" />
+        <StyledProgressBar value={calculateProgress()} data-test="@wallet/discovery-progress-bar" />
     );
 };
