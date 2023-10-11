@@ -2,7 +2,7 @@ import { ReactNode } from 'react';
 import styled from 'styled-components';
 
 const Container = styled.div<{
-    progress: number;
+    value: number;
     size: number;
     color?: string;
     backgroundColor?: string;
@@ -13,14 +13,14 @@ const Container = styled.div<{
     width: ${({ size }) => `${size}px`};
     height: ${({ size }) => `${size}px`};
     border-radius: 50%;
-    background: ${({ theme, progress, color, backgroundColor }) =>
-        `conic-gradient(${color || theme.BG_GREEN} ${3.6 * progress}deg, ${
+    background: ${({ theme, value, color, backgroundColor }) =>
+        `conic-gradient(${color || theme.BG_GREEN} ${3.6 * value}deg, ${
             backgroundColor || theme.STROKE_GREY
         } 0)`};
 `;
 
 export interface ProgressPieProps {
-    progress: number;
+    value: number;
     size?: number;
     color?: string;
     backgroundColor?: string;
