@@ -20,13 +20,18 @@ const Component = ({ ...args }) => {
 export const Textarea: StoryObj<TextareaProps> = {
     render: Component,
     args: {
-        defaultValue: 'Textarea',
         label: 'Label',
         rows: 5,
         maxLength: 500,
         characterCount: true,
     },
     argTypes: {
+        label: {
+            control: 'text',
+        },
+        placeholder: {
+            control: 'text',
+        },
         rows: {
             control: {
                 min: 1,
@@ -36,19 +41,16 @@ export const Textarea: StoryObj<TextareaProps> = {
             },
         },
         labelHoverAddon: {
-            control: false,
+            control: 'text',
         },
         labelRight: {
-            control: false,
-        },
-        innerRef: {
-            control: false,
-        },
-        wrapperProps: {
-            control: false,
+            control: 'text',
         },
         bottomText: {
             control: 'text',
+        },
+        innerRef: {
+            control: false,
         },
         value: {
             control: false,

@@ -3,19 +3,11 @@ import styled, { useTheme } from 'styled-components';
 import { useMeasure } from 'react-use';
 import { spacingsPx, spacings, typography } from '@trezor/theme';
 
-import { motionEasingStrings } from '../../../config/motion';
 import { Icon } from '../../assets/Icon/Icon';
-import {
-    Label as TopLabel,
-    RightLabel,
-    baseInputStyle,
-    INPUT_HEIGHTS,
-    LabelHoverAddon,
-    BaseInputProps,
-    INPUT_BORDER_WIDTH,
-} from '../InputStyles';
+import { baseInputStyle, INPUT_HEIGHTS, BaseInputProps, Label } from '../InputStyles';
 import { BOTTOM_TEXT_MIN_HEIGHT, BottomText } from '../BottomText';
 import { InputState, InputSize } from '../inputTypes';
+import { TopAddons } from '../TopAddons';
 
 const Wrapper = styled.div<Pick<InputProps, 'width'> & { withBottomPadding: boolean }>`
     display: inline-flex;
@@ -65,26 +57,6 @@ const InputAddon = styled.div<{ align: innerAddonAlignment; size: InputSize }>`
     left: ${({ align, size }) => align === 'left' && getInputAddonPadding(size)};
     display: flex;
     align-items: center;
-`;
-
-const Label = styled.label<{ $size: InputSize; isDisabled?: boolean }>`
-    position: absolute;
-    left: calc(${spacingsPx.md} + ${INPUT_BORDER_WIDTH}px);
-    color: ${({ theme, isDisabled }) => (isDisabled ? theme.textDisabled : theme.textSubdued)};
-    ${typography.body};
-    line-height: ${({ $size }) => `${INPUT_HEIGHTS[$size as InputSize]}px`};
-    transition: transform 0.12s ${motionEasingStrings.enter},
-        font-size 0.12s ${motionEasingStrings.enter};
-    transform-origin: 0;
-    pointer-events: none;
-
-    /* move up when input is focused OR has a placeholder OR has value  */
-    ${StyledInput}:focus + &,
-    /*Linting error because of a complex interpolation*/
-    ${/* sc-selector */ StyledInput}:not(:placeholder-shown) + &,
-    ${/* sc-selector */ StyledInput}:not([placeholder=""]):placeholder-shown + & {
-        transform: translate(0px, -10px) scale(0.75);
-    }
 `;
 
 type innerAddonAlignment = 'left' | 'right';
@@ -144,8 +116,6 @@ const Input = ({
     const [measureLeftAddon, { width: leftAddonWidth }] = useMeasure<HTMLDivElement>();
     const [measureRightAddon, { width: rightAddonWidth }] = useMeasure<HTMLDivElement>();
 
-    const isWithTopLabel = labelHoverAddon || labelRight;
-
     return (
         <Wrapper
             onMouseEnter={() => setIsHovered(true)}
@@ -153,12 +123,7 @@ const Input = ({
             withBottomPadding={bottomText === null}
             data-test={dataTest}
         >
-            {isWithTopLabel && (
-                <TopLabel>
-                    <LabelHoverAddon isVisible={isHovered}>{labelHoverAddon}</LabelHoverAddon>
-                    {labelRight && <RightLabel>{labelRight}</RightLabel>}
-                </TopLabel>
-            )}
+            <TopAddons isHovered={isHovered} hoverAddon={labelHoverAddon} addonRight={labelRight} />
 
             <InputWrapper>
                 {innerAddon && innerAddonAlign === 'left' && (

@@ -220,7 +220,6 @@ const SignVerify = () => {
                             }}
                             bottomText={messageError || null}
                             rows={4}
-                            maxRows={4}
                             data-test="@sign-verify/message"
                             innerRef={messageRef}
                             {...messageField}
@@ -300,7 +299,6 @@ const SignVerify = () => {
                                     max: MAX_LENGTH_SIGNATURE,
                                 }}
                                 rows={4}
-                                maxRows={4}
                                 {...signatureProps}
                             />
                         )}
