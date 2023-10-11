@@ -19,11 +19,8 @@ import {
     selectSessionProgressByAccountKey,
     selectRoundsDurationInHours,
 } from 'src/reducers/wallet/coinjoinReducer';
-
-import { CountdownTimer } from './CountdownTimer';
-import { WalletLabeling } from './labeling';
+import { CountdownTimer, Translation, WalletLabeling } from 'src/components/suite';
 import { ProgressPie } from './ProgressPie';
-import { Translation } from './Translation';
 
 const SPACING = 6;
 

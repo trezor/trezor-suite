@@ -19,7 +19,7 @@ const Container = styled.div<{
         } 0)`};
 `;
 
-interface ProgressPieInterface {
+interface ProgressPieProps {
     progress: number;
     size?: number;
     color?: string;
@@ -28,7 +28,7 @@ interface ProgressPieInterface {
     className?: string;
 }
 
-export const ProgressPie = ({ size = 16, children, ...props }: ProgressPieInterface) => (
+export const ProgressPie = ({ size = 16, children, ...props }: ProgressPieProps) => (
     <Container size={size} {...props}>
         {children}
     </Container>

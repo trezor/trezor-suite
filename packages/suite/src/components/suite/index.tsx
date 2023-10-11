@@ -51,14 +51,14 @@ import TooltipSymbol from './TooltipSymbol';
 import StatusLight from './StatusLight';
 import { AmountUnitSwitchWrapper } from './AmountUnitSwitchWrapper';
 import { renderToast } from './ToastNotification';
-import { SuiteLayout } from './SuiteLayout';
 import { TorLoader } from './TorLoader';
-import { CoinjoinStatusBar } from './CoinjoinStatusBar';
 import { CountdownTimer } from './CountdownTimer';
 import { NumberInput, NumberInputProps } from './NumberInput';
 import { QrCode } from './QrCode';
 import { CoinBalance } from './CoinBalance';
 import { DeviceAuthenticationExplainer } from './DeviceAuthenticationExplainer';
+import { HoverAnimation } from './HoverAnimation';
+import { Preloader } from './Preloader/Preloader';
 
 export {
     AccountLabel,
@@ -68,7 +68,6 @@ export {
     DeviceInvalidModeLayout,
     PrerequisitesGuide,
     WelcomeLayout,
-    SuiteLayout,
     CardWithHeader as Card,
     NotificationCard,
     PinInput,
@@ -119,12 +118,13 @@ export {
     AmountUnitSwitchWrapper,
     renderToast,
     TorLoader,
-    CoinjoinStatusBar,
     CountdownTimer,
     NumberInput,
     DeviceButton,
     QrCode,
     CoinBalance,
     DeviceAuthenticationExplainer,
+    HoverAnimation,
+    Preloader,
 };
 export type { ModalProps, NumberInputProps };

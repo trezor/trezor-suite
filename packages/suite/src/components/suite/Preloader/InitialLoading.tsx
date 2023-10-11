@@ -1,16 +1,17 @@
 import { useEffect, useState } from 'react';
-import { Loading } from 'src/components/suite';
 import styled from 'styled-components';
+
+import { Loading } from 'src/components/suite';
 
 const StyledLoading = styled(props => <Loading {...props} />)`
     height: 100%;
 `;
 
-type InitialLoadingProps = {
+interface InitialLoadingProps {
     timeout: number;
-};
+}
 
-const InitialLoading = ({ timeout }: InitialLoadingProps) => {
+export const InitialLoading = ({ timeout }: InitialLoadingProps) => {
     const [tooLong, setTooLong] = useState(false);
 
     useEffect(() => {
@@ -30,5 +31,3 @@ const InitialLoading = ({ timeout }: InitialLoadingProps) => {
 
     return <StyledLoading />;
 };
-
-export default InitialLoading;

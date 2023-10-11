@@ -3,7 +3,7 @@ import * as envUtils from '@trezor/env-utils';
 import { configureStore } from 'src/support/tests/configureStore';
 import { renderWithProviders, findByTestId } from 'src/support/tests/hooksHelper';
 
-import Preloader from '..';
+import { Preloader } from '../Preloader';
 
 // react-svg will not work
 jest.mock('react-svg', () => ({ ReactSVG: () => 'SVG' }));

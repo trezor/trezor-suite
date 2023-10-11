@@ -11,11 +11,11 @@ import {
     MOBILE_HORIZONTAL_PADDINGS,
 } from 'src/constants/suite/layout';
 import { DiscoveryProgress } from 'src/components/wallet';
-import { NavigationBar } from '../NavigationBar';
+import { NavigationBar } from './NavigationBar/NavigationBar';
 import { useLayoutSize, useSelector, useDevice } from 'src/hooks/suite';
 import { useGuide } from 'src/hooks/guide';
 import { ModalContextProvider } from 'src/support/suite/ModalContext';
-import { ModalSwitcher } from '../modals/ModalSwitcher/ModalSwitcher';
+import { ModalSwitcher } from '../../modals/ModalSwitcher/ModalSwitcher';
 import { LayoutContext, LayoutContextPayload } from './LayoutContext';
 import { useResetScroll } from './useResetScroll';
 import { useAnchorRemoving } from './useAnchorRemoving';
