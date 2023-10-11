@@ -36,6 +36,7 @@ export * from './components/assets/CoinLogo/CoinLogo';
 export * from './components/assets/TrezorLogo/TrezorLogo';
 export * from './components/loaders/Spinner/Spinner';
 export * from './components/loaders/Progress/Progress';
+export * from './components/loaders/ProgressPie/ProgressPie';
 export * from './components/loaders/LoadingContent/LoadingContent';
 export * from './components/Tooltip/Tooltip';
 export * from './components/Timerange/Timerange';

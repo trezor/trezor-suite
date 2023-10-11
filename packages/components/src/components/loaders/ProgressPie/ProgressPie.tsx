@@ -19,7 +19,7 @@ const Container = styled.div<{
         } 0)`};
 `;
 
-interface ProgressPieProps {
+export interface ProgressPieProps {
     progress: number;
     size?: number;
     color?: string;
