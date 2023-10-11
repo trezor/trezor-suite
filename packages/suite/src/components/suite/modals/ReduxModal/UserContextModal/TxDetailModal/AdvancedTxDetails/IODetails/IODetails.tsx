@@ -53,7 +53,7 @@ const StyledCollapsibleBox = styled(CollapsibleBox)`
 
     ${CollapsibleBox.Heading} {
         color: ${({ theme }) => theme.TYPE_DARK_GREY};
-        font-size: ${variables.NEUE_FONT_SIZE.NORMAL};
+        font-size: ${variables.FONT_SIZE.NORMAL};
     }
 
     ${CollapsibleBox.Content} {
@@ -75,7 +75,7 @@ const RowGrid = styled(Grid)`
 
 const GridItem = styled.div<{ isAccountOwned?: boolean }>`
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    font-size: ${variables.NEUE_FONT_SIZE.TINY};
+    font-size: ${variables.FONT_SIZE.TINY};
     color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     max-width: 290px;
 
@@ -101,7 +101,7 @@ const RowGridItem = styled(GridItem)`
 
 const GridGroupHeading = styled.div`
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    font-size: ${variables.NEUE_FONT_SIZE.SMALL};
+    font-size: ${variables.FONT_SIZE.SMALL};
     color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     margin-bottom: 10px;
 `;
