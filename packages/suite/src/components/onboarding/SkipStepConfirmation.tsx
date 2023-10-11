@@ -10,7 +10,7 @@ const Wrapper = styled.div`
     display: flex;
     width: 100%;
     color: ${({ theme }) => theme.TYPE_DARK_GREY};
-    font-size: ${variables.NEUE_FONT_SIZE.NORMAL};
+    font-size: ${variables.FONT_SIZE.NORMAL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     padding: 16px 0;
 `;
