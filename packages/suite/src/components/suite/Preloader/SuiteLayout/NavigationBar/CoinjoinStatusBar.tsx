@@ -6,7 +6,7 @@ import {
     selectAccountByKey,
     selectDeviceThunk,
 } from '@suite-common/wallet-core';
-import { variables } from '@trezor/components';
+import { ProgressPie, variables } from '@trezor/components';
 import { WalletParams } from '@suite-common/wallet-types';
 
 import { useDispatch } from 'src/hooks/suite';
@@ -20,7 +20,6 @@ import {
     selectRoundsDurationInHours,
 } from 'src/reducers/wallet/coinjoinReducer';
 import { CountdownTimer, Translation, WalletLabeling } from 'src/components/suite';
-import { ProgressPie } from './ProgressPie';
 
 const SPACING = 6;
 
