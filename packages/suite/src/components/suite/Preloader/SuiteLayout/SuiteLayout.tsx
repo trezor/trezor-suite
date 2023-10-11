@@ -1,4 +1,4 @@
-import { useState, ReactNode } from 'react';
+import { useEffect, useRef, useState, ReactNode } from 'react';
 import styled from 'styled-components';
 
 import { variables } from '@trezor/components';
@@ -11,15 +11,14 @@ import {
     MOBILE_HORIZONTAL_PADDINGS,
 } from 'src/constants/suite/layout';
 import { DiscoveryProgress } from 'src/components/wallet';
-import { NavigationBar } from './NavigationBar/NavigationBar';
-import { useLayoutSize, useSelector, useDevice } from 'src/hooks/suite';
+import { onAnchorChange } from 'src/actions/suite/routerActions';
+import { useLayoutSize, useSelector, useDevice, useDispatch } from 'src/hooks/suite';
 import { useGuide } from 'src/hooks/guide';
 import { LayoutContext, LayoutContextPayload } from 'src/support/suite/LayoutContext';
 import { ModalContextProvider } from 'src/support/suite/ModalContext';
 import { ModalSwitcher } from '../../modals/ModalSwitcher/ModalSwitcher';
-import { useResetScroll } from './useResetScroll';
-import { useAnchorRemoving } from './useAnchorRemoving';
 import { MenuSecondary } from './MenuSecondary';
+import { NavigationBar } from './NavigationBar/NavigationBar';
 
 const Wrapper = styled.div`
     display: flex;
@@ -97,12 +96,39 @@ export const SuiteLayout = ({ children }: SuiteLayoutProps) => {
     const url = useSelector(state => state.router.url);
     const anchor = useSelector(state => state.router.anchor);
     const initialRun = useSelector(state => state.suite.flags.initialRun);
+    const dispatch = useDispatch();
 
     const { isMobileLayout, layoutSize } = useLayoutSize();
     const { isGuideOpen, isModalOpen } = useGuide();
     const { device } = useDevice();
 
     const [{ title, SideMenu, TopMenu }, setLayoutPayload] = useState<LayoutContextPayload>({});
+
+    const wrapperRef = useRef<HTMLDivElement>(null);
+    const appWrapperRef = useRef<HTMLDivElement>(null);
+
+    // Reset scroll position on url change.
+    // note: if you want to remove anchor highlight on scroll. It has to be added here
+    useEffect(() => {
+        const { current } = appWrapperRef;
+
+        if (!current) return;
+
+        current.scrollTop = 0; // reset scroll position on url change
+    }, [url]);
+
+    // Remove anchor highlight on click.
+    useEffect(() => {
+        // to assure propagation of click, which removes anchor highlight, work reliably
+        // click listener has to be added on react container
+        const parent = wrapperRef.current?.parentElement;
+        const removeAnchor = () => anchor && dispatch(onAnchorChange());
+
+        if (parent && anchor) {
+            parent.addEventListener('click', removeAnchor);
+            return () => parent.removeEventListener('click', removeAnchor);
+        }
+    }, [anchor, dispatch]);
 
     // There are three layout configurations WRT the guide and menu:
     // - On XLARGE viewports menu, body and guide are displayed in three columns.
@@ -118,9 +144,6 @@ export const SuiteLayout = ({ children }: SuiteLayoutProps) => {
     const isNavigationBarVisible = device?.mode === 'normal' && !initialRun;
 
     const isGuideFullHeight = isMobileLayout || isModalOpen;
-
-    const wrapperRef = useAnchorRemoving(anchor);
-    const appWrapperRef = useResetScroll(url);
 
     return (
         <Wrapper ref={wrapperRef}>
