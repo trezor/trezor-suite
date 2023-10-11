@@ -19,7 +19,7 @@ const StepWrapper = styled.div<{ active: boolean }>`
     align-items: center;
     align-self: center;
     color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
-    font-size: ${variables.NEUE_FONT_SIZE.NORMAL};
+    font-size: ${variables.FONT_SIZE.NORMAL};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
 
     @media all and (max-width: ${variables.SCREEN_SIZE.LG}) {
@@ -63,7 +63,7 @@ const Label = styled.div`
     margin: 10px 0 0 0;
     display: block;
     color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
-    font-size: ${variables.NEUE_FONT_SIZE.TINY};
+    font-size: ${variables.FONT_SIZE.TINY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 
     @media (max-width: ${variables.SCREEN_SIZE.SM}) {

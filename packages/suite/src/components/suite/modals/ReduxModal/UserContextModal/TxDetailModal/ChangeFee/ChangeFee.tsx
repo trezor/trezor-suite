@@ -52,7 +52,7 @@ const RateWrapper = styled.div`
 
 const Rate = styled.div`
     margin: 1px 20px 0 0;
-    font-size: ${variables.NEUE_FONT_SIZE.SMALL};
+    font-size: ${variables.FONT_SIZE.SMALL};
     color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
 `;
 
@@ -67,12 +67,12 @@ const Amount = styled.div`
 `;
 
 const StyledCryptoAmount = styled.div`
-    font-size: ${variables.NEUE_FONT_SIZE.NORMAL};
+    font-size: ${variables.FONT_SIZE.NORMAL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
 const StyledFiatValue = styled.div`
-    font-size: ${variables.NEUE_FONT_SIZE.SMALL};
+    font-size: ${variables.FONT_SIZE.SMALL};
     color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
 `;
 
@@ -87,7 +87,7 @@ const FinalizeWarning = styled(Card)`
     justify-content: center;
     color: ${({ theme }) => theme.TYPE_DARK_GREY};
     background: ${({ theme }) => theme.BG_GREY};
-    font-size: ${variables.NEUE_FONT_SIZE.SMALL};
+    font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 

@@ -53,7 +53,7 @@ const Grid = styled.div<{ showRbfCols?: boolean }>`
     border-top: 1px solid ${({ theme }) => theme.STROKE_GREY};
     grid-gap: 12px;
     grid-template-columns: 105px minmax(0, 2.5fr) 90px minmax(0, 2.5fr); /* title value title value */
-    font-size: ${variables.NEUE_FONT_SIZE.SMALL};
+    font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     padding: 28px 6px 10px 6px;
     text-align: left;
@@ -135,8 +135,7 @@ const ConfirmationStatus = styled.div<{ confirmed: boolean; tiny?: boolean }>`
     color: ${({ confirmed, theme }) => (confirmed ? theme.TYPE_GREEN : theme.TYPE_ORANGE)};
     font-weight: ${({ tiny }) =>
         tiny ? variables.FONT_WEIGHT.MEDIUM : variables.FONT_WEIGHT.DEMI_BOLD};
-    font-size: ${({ tiny }) =>
-        tiny ? variables.NEUE_FONT_SIZE.TINY : variables.NEUE_FONT_SIZE.SMALL};
+    font-size: ${({ tiny }) => (tiny ? variables.FONT_SIZE.TINY : variables.FONT_SIZE.SMALL)};
 `;
 
 const Circle = styled.div`
