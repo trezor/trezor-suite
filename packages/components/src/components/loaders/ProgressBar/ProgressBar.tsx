@@ -22,7 +22,7 @@ const Value = styled.div.attrs<ValueProps>(({ $max, $value }) => ({
     transition: width 0.5s;
 `;
 
-type ProgressProps = {
+type ProgressBarProps = {
     max?: number;
     value: number;
     isRed?: boolean;
@@ -30,10 +30,10 @@ type ProgressProps = {
 
 // HTML progress element is not used because styling is browser-dependent (no consistent way to override styles
 // from parent component, no straightforward way to add width transition in Firefox)
-export const Progress = ({ max = 100, value, isRed = false, ...props }: ProgressProps) => (
+export const ProgressBar = ({ max = 100, value, isRed = false, ...props }: ProgressBarProps) => (
     <Wrapper {...props}>
         <Value $max={max} $value={value} isRed={isRed} />
     </Wrapper>
 );
 
-Progress.Value = Value;
+ProgressBar.Value = Value;

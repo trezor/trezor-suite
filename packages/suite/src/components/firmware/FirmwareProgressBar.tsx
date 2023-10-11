@@ -1,5 +1,5 @@
 import { useEffect, useState, ReactNode } from 'react';
-import { Icon, Progress, variables, useTheme } from '@trezor/components';
+import { Icon, ProgressBar, variables, useTheme } from '@trezor/components';
 import styled from 'styled-components';
 
 const Wrapper = styled.div`
@@ -18,14 +18,14 @@ const Label = styled.div`
     margin-right: 20px;
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
-const StyledProgress = styled(Progress)`
+const StyledProgressBar = styled(ProgressBar)`
     display: flex;
     margin-right: 20px;
     border-radius: 5px;
     background: ${({ theme }) => theme.STROKE_GREY_ALT};
     flex: 1;
 
-    ${Progress.Value} {
+    ${ProgressBar.Value} {
         height: 3px;
         position: relative;
         border-radius: 5px;
@@ -91,7 +91,7 @@ export const FirmwareProgressBar = ({
     return (
         <Wrapper>
             <Label>{label}</Label>
-            <StyledProgress value={progressValue} />
+            <StyledProgressBar value={progressValue} />
             <Percentage>
                 {progress < 100 ? (
                     `${fakeProgressDuration ? storedProgress : progress} %`

@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import styled, { useTheme } from 'styled-components';
 
-import { H3, Icon, LottieAnimation, Progress, variables } from '@trezor/components';
+import { H3, Icon, LottieAnimation, ProgressBar, variables } from '@trezor/components';
 import { localizeNumber } from '@suite-common/wallet-utils';
 import { Card, Translation } from 'src/components/suite';
 import { useCoinjoinAccountLoadingProgress } from 'src/hooks/coinjoin';
@@ -30,11 +30,11 @@ const Subheader = styled.div`
     }
 `;
 
-const DiscoveryProgress = styled(Progress)`
+const DiscoveryProgress = styled(ProgressBar)`
     max-width: 440px;
     margin: 18px 0 28px;
 
-    ${Progress.Value} {
+    ${ProgressBar.Value} {
         transition: width 30s cubic-bezier(0.3, 1, 0.3, 1);
     }
 `;
