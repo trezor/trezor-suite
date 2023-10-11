@@ -1,15 +1,8 @@
 import { useEffect, ReactNode } from 'react';
-import styled from 'styled-components';
+import styled, { useTheme } from 'styled-components';
 
 import { notificationsActions } from '@suite-common/toast-notifications';
-import {
-    Button,
-    ConfirmOnDevice,
-    ModalProps,
-    Tooltip,
-    useTheme,
-    variables,
-} from '@trezor/components';
+import { Button, ConfirmOnDevice, ModalProps, Tooltip, variables } from '@trezor/components';
 import { copyToClipboard } from '@trezor/dom-utils';
 import { selectDevice } from '@suite-common/wallet-core';
 import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';

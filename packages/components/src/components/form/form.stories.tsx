@@ -131,38 +131,27 @@ export const All = {
             <StoryColumn minWidth={300} maxWidth={400}>
                 <Heading>Textarea</Heading>
                 <SubHeading>Default</SubHeading>
-                <Textarea value="test value" wrapperProps={{ 'data-test': 'textarea-default' }} />
+                <Textarea value="test value" />
                 <Textarea
                     value="test value"
                     inputState="success"
-                    wrapperProps={{ 'data-test': 'textarea-success' }}
                     label="Top label"
                     bottomText="bottom text"
                 />
                 <Textarea
                     value="test value"
                     inputState="warning"
-                    wrapperProps={{ 'data-test': 'textarea-warning' }}
                     label="Top label"
                     bottomText="bottom text"
                 />
                 <Textarea
                     value="test value"
                     inputState="error"
-                    wrapperProps={{ 'data-test': 'textarea-error' }}
                     label="Top label"
                     bottomText="bottom text"
                 />
-                <Textarea
-                    wrapperProps={{ 'data-test': 'textarea-label' }}
-                    label="Top label"
-                    bottomText="bottom text"
-                />
-                <Textarea
-                    value="test value"
-                    disabled
-                    wrapperProps={{ 'data-test': 'textarea-disabled' }}
-                />
+                <Textarea label="Top label" bottomText="bottom text" />
+                <Textarea value="test value" disabled />
             </StoryColumn>
             <StoryColumn maxWidth={200}>
                 <Heading>Switch</Heading>
