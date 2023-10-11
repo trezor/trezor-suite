@@ -19,7 +19,6 @@ import { FONT_WEIGHT, FONT_SIZE, Z_INDEX } from '../../../config/variables';
 import { animations } from '../../../config';
 
 import {
-    Label,
     LabelLeft,
     INPUT_HEIGHTS,
     INPUT_BORDER_WIDTH,
@@ -209,6 +208,14 @@ const Wrapper = styled.div<Pick<SelectProps, 'isClean'>>`
             flex-direction: column;
             justify-content: flex-start;
         `}
+`;
+
+const Label = styled.div`
+    display: flex;
+    justify-content: end;
+    align-items: flex-end;
+    min-height: 30px;
+    padding-bottom: 6px;
 `;
 
 // Prevent closing the menu when scrolling through options.
