@@ -1,17 +1,12 @@
 import styled from 'styled-components';
-import { useState, Ref, ReactNode, HTMLAttributes, TextareaHTMLAttributes } from 'react';
+import { useState, Ref, ReactNode, TextareaHTMLAttributes } from 'react';
+import { spacingsPx } from '@trezor/theme';
 
-import { FONT_SIZE } from '../../../config/variables';
-import {
-    Label,
-    LabelLeft,
-    LabelRight,
-    RightLabel,
-    baseInputStyle,
-    LabelHoverAddon,
-} from '../InputStyles';
-import { BottomText } from '../BottomText';
 import { InputState } from '../inputTypes';
+import { baseInputStyle, InputWrapper, Label, getInputStateBgColor } from '../InputStyles';
+import { BottomText } from '../BottomText';
+import { TopAddons } from '../TopAddons';
+import { CharacterCount } from './CharacterCount';
 
 const Wrapper = styled.div`
     width: 100%;
@@ -21,21 +16,37 @@ const Wrapper = styled.div`
     justify-content: flex-start;
 `;
 
-const StyledTextarea = styled.textarea<Pick<TextareaProps, 'inputState' | 'width'>>`
+const TextareaWrapper = styled(InputWrapper)`
+    ${baseInputStyle}
+    padding: ${spacingsPx.xl} 0 ${spacingsPx.md};
+
+    :focus-within {
+        border-color: ${({ theme }) => theme.borderOnElevation0};
+    }
+
+    /* overwrites :read-only:not(:disabled) since it's always true for div */
+    ${({ disabled, theme, inputState }) =>
+        !disabled &&
+        `
+        :read-only:not(:disabled) {
+            background-color: ${getInputStateBgColor(inputState, theme)};
+            color: ${theme.textDefault};
+        }
+    `}
+`;
+
+const StyledTextarea = styled.textarea<Pick<TextareaProps, 'inputState'>>`
     ${baseInputStyle}
 
-    width: ${({ width }) => (width ? `${width}px` : '100%')};
-    padding: 14px 16px;
+    width: 100%;
+    padding: 0 ${spacingsPx.md} 0;
+    border: none;
     resize: none;
     white-space: pre-wrap;
 `;
 
-const CharacterCount = styled.div`
-    position: absolute;
-    bottom: 35px;
-    right: 15px;
-    font-size: ${FONT_SIZE.TINY};
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+const TextareaLabel = styled(Label)`
+    top: ${spacingsPx.md};
 `;
 
 export interface TextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
@@ -44,14 +55,14 @@ export interface TextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElemen
     labelHoverAddon?: ReactNode;
     labelRight?: ReactNode;
     innerRef?: Ref<HTMLTextAreaElement>;
+    /**
+     * @description pass `null` if bottom text can be `undefined`
+     */
     bottomText?: ReactNode;
-    width?: number;
     inputState?: InputState;
-    maxRows?: number;
-    wrapperProps?: HTMLAttributes<HTMLDivElement> & { 'data-test'?: string };
-    noError?: boolean;
     value?: string;
     characterCount?: boolean | { current: number; max: number };
+    'data-test'?: string;
 }
 
 export const Textarea = ({
@@ -64,67 +75,46 @@ export const Textarea = ({
     label,
     inputState,
     bottomText,
-    wrapperProps,
-    width,
+    placeholder,
     rows = 5,
     labelRight,
     characterCount,
-    children,
+    'data-test': dataTest,
     ...rest
 }: TextareaProps) => {
     const [isHovered, setIsHovered] = useState(false);
 
-    const getCharacterCount = () => {
-        // controlled component
-        if (characterCount === true && value !== undefined && maxLength !== undefined) {
-            return `${value.length} / ${maxLength}`;
-        }
-        // uncontrolled component
-        if (typeof characterCount === 'object') {
-            return `${characterCount.current} / ${characterCount.max}`;
-        }
-    };
-
-    const formattedCharacterCount = getCharacterCount();
-    const isWithLabel = label || labelHoverAddon || labelRight;
-
     return (
         <Wrapper
             className={className}
-            {...wrapperProps}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
+            data-test={dataTest}
         >
-            {isWithLabel && (
-                <Label>
-                    <LabelLeft>{label}</LabelLeft>
-                    <LabelRight>
-                        {labelHoverAddon && (
-                            <LabelHoverAddon isVisible={isHovered}>
-                                {labelHoverAddon}
-                            </LabelHoverAddon>
-                        )}
-                        {labelRight && <RightLabel>{labelRight}</RightLabel>}
-                    </LabelRight>
-                </Label>
-            )}
+            <TopAddons isHovered={isHovered} hoverAddon={labelHoverAddon} addonRight={labelRight} />
 
-            <StyledTextarea
-                spellCheck={false}
-                autoCorrect="off"
-                autoCapitalize="off"
-                maxLength={maxLength}
-                disabled={isDisabled}
-                width={width}
-                inputState={inputState}
-                rows={rows}
-                ref={innerRef}
-                {...rest}
-            />
+            <TextareaWrapper inputState={inputState} disabled={isDisabled}>
+                <StyledTextarea
+                    spellCheck={false}
+                    autoCorrect="off"
+                    autoCapitalize="off"
+                    maxLength={maxLength}
+                    disabled={isDisabled}
+                    inputState={inputState}
+                    rows={rows}
+                    placeholder={placeholder || ''} // needed for uncontrolled inputs
+                    ref={innerRef}
+                    {...rest}
+                />
 
-            {formattedCharacterCount && <CharacterCount>{formattedCharacterCount}</CharacterCount>}
+                <CharacterCount
+                    characterCount={characterCount}
+                    maxLength={maxLength}
+                    value={value}
+                />
 
-            {children}
+                {label && <TextareaLabel isDisabled={isDisabled}>{label}</TextareaLabel>}
+            </TextareaWrapper>
 
             {bottomText && <BottomText inputState={inputState}>{bottomText}</BottomText>}
         </Wrapper>
