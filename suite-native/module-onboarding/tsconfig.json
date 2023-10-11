@@ -9,6 +9,7 @@
         { "path": "../analytics" },
         { "path": "../atoms" },
         { "path": "../feature-flags" },
+        { "path": "../intl" },
         { "path": "../link" },
         { "path": "../module-settings" },
         { "path": "../navigation" },

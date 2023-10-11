@@ -9,6 +9,7 @@
         {
             "path": "../../suite-common/wallet-types"
         },
+        { "path": "../intl" },
         { "path": "../storage" },
         { "path": "../../packages/env-utils" },
         { "path": "../../packages/styles" },

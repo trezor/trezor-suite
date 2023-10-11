@@ -1,63 +1,48 @@
-import { useDispatch, useSelector } from 'react-redux';
-
 import { useRoute } from '@react-navigation/native';
+import { RequireAllOrNone } from 'type-fest';
 
-import { Box, Button, Stack, Text } from '@suite-native/atoms';
-import { Link } from '@suite-native/link';
+import { Button, Stack } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { OnboardingStackRoutes } from '@suite-native/navigation';
-import { setIsOnboardingFinished } from '@suite-native/module-settings';
-import { selectHasUserAllowedTracking } from '@suite-common/analytics';
-import { analytics, EventType } from '@suite-native/analytics';
 
-const wrapperStyle = prepareNativeStyle(() => ({
-    width: '90%',
+const wrapperStyle = prepareNativeStyle(utils => ({
+    width: '100%',
+    paddingHorizontal: utils.spacings.medium,
+    marginBottom: 28,
 }));
 
 type OnboardingFooterProps = {
+    nextButtonTitle?: string;
     redirectTarget: () => void;
-    isLastStep?: boolean;
-};
+} & RequireAllOrNone<
+    { backButtonTitle?: string; onBack?: () => void },
+    'backButtonTitle' | 'onBack'
+>;
 
-const reportAnalyticsOnboardingCompleted = (isTrackingAllowed: boolean) => {
-    // For users who have not allowed tracking, enable analytics just for reporting
-    // the OnboardingCompleted event and then disable it again.
-    if (!isTrackingAllowed) analytics.enable();
-    analytics.report({
-        type: EventType.OnboardingCompleted,
-        payload: { analyticsPermission: isTrackingAllowed },
-    });
-    if (!isTrackingAllowed) analytics.disable();
-};
-
-export const OnboardingFooter = ({ redirectTarget, isLastStep = false }: OnboardingFooterProps) => {
+export const OnboardingFooter = ({
+    backButtonTitle,
+    nextButtonTitle,
+    redirectTarget,
+    onBack,
+}: OnboardingFooterProps) => {
     const { applyStyle } = useNativeStyles();
     const route = useRoute();
-    const dispatch = useDispatch();
-    const userHasAllowedTracking = useSelector(selectHasUserAllowedTracking);
 
     const buttonTitle = route.name === OnboardingStackRoutes.Welcome ? 'Get started' : 'Next';
-    const handlePress = () => {
-        if (isLastStep) {
-            dispatch(setIsOnboardingFinished());
-            reportAnalyticsOnboardingCompleted(userHasAllowedTracking);
-        }
-        redirectTarget();
-    };
-
     return (
-        <Stack spacing="large" style={applyStyle(wrapperStyle)}>
-            <Box flexDirection="row" alignItems="center" justifyContent="center">
-                <Text variant="hint" textAlign="center">
-                    Don’t have a Trezor? <Link href="https://trezor.io/" label="Get one here." />
-                </Text>
-            </Box>
-            <Button
-                size="large"
-                data-testID={`@onboarding/${route.name}/nextBtn`}
-                onPress={handlePress}
-            >
-                {buttonTitle}
+        <Stack spacing="medium" style={applyStyle(wrapperStyle)}>
+            {onBack && (
+                <Button
+                    colorScheme="tertiaryElevation0"
+                    data-testID={`@onboarding/${route.name}/backBtn`}
+                    onPress={onBack}
+                >
+                    {backButtonTitle ?? 'Back'}
+                </Button>
+            )}
+
+            <Button data-testID={`@onboarding/${route.name}/nextBtn`} onPress={redirectTarget}>
+                {nextButtonTitle ?? buttonTitle}
             </Button>
         </Stack>
     );

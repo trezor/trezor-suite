@@ -5,6 +5,7 @@ import { CSSColor } from './types';
 
 export const colorVariants = {
     standard: {
+        transparent: '#00000000',
         backgroundSurfaceElevationNegative: '#eeeeeeff',
         backgroundSurfaceElevation0: '#f6f6f6ff',
         backgroundSurfaceElevation1: '#ffffffff',
@@ -34,6 +35,7 @@ export const colorVariants = {
         backgroundAlertBlueBold: '#0078acff',
         backgroundAlertBlueSubtleOnElevation0: '#d5e9f1ff',
         backgroundAlertBlueSubtleOnElevation1: '#f0f7faff',
+        backGroundOnboardingCard: '#FFFFFFBD',
         textDefault: '#171717ff',
         textDefaultInverse: '#ffffffff',
         textSubdued: '#616161ff',
@@ -58,6 +60,8 @@ export const colorVariants = {
         iconAlertRed: '#ac3939ff',
         iconAlertYellow: '#c28c00ff',
         iconAlertBlue: '#00597fff',
+        gradientNeutralBottomFadeSurfaceElevation1Start: '#FFFFFF33',
+        gradientNeutralBottomFadeSurfaceElevation1End: '#FFFFFF',
         borderFocus: '#e2e2e2ff',
         borderDashed: '#cbcbcbff',
         borderOnElevation0: '#e2e2e2ff',
@@ -65,8 +69,10 @@ export const colorVariants = {
         borderInverse: '#ffffffff',
         borderSecondary: '#00854dff',
         borderAlertRed: '#cd4949ff',
+        borderSubtleInverted: '#ffffff99',
     },
     dark: {
+        transparent: '#00000000',
         backgroundSurfaceElevationNegative: '#000000ff',
         backgroundSurfaceElevation0: '#0a0a0aff',
         backgroundSurfaceElevation1: '#161716ff',
@@ -96,6 +102,7 @@ export const colorVariants = {
         backgroundAlertBlueBold: '#1a6e92ff',
         backgroundAlertBlueSubtleOnElevation0: '#071d27ff',
         backgroundAlertBlueSubtleOnElevation1: '#092734ff',
+        backGroundOnboardingCard: '#000000BD',
         textDefault: '#ffffffff',
         textDefaultInverse: '#ffffffff',
         textSubdued: '#a2a4a3ff',
@@ -120,6 +127,8 @@ export const colorVariants = {
         iconAlertRed: '#c66262ff',
         iconAlertYellow: '#c29729ff',
         iconAlertBlue: '#2290bfff',
+        gradientNeutralBottomFadeSurfaceElevation1Start: '#00000033',
+        gradientNeutralBottomFadeSurfaceElevation1End: '#000000',
         borderFocus: '#242524ff',
         borderDashed: '#242524ff',
         borderOnElevation0: '#1c1e1cff',
@@ -127,6 +136,7 @@ export const colorVariants = {
         borderInverse: '#ffffffff',
         borderSecondary: '#2fbc81ff',
         borderAlertRed: '#ac3e3eff',
+        borderSubtleInverted: '#00000099',
     },
 } as const;
 export type Color = keyof typeof colorVariants.standard;

@@ -22,7 +22,7 @@ export enum OnboardingStackRoutes {
     TrackBalances = 'TrackBalances',
     AboutReceiveCoinsFeature = 'AboutReceiveCoinsFeature',
     AnalyticsConsent = 'AnalyticsConsent',
-    GetStarted = 'GetStarted',
+    ConnectTrezor = 'ConnectTrezor',
 }
 
 export enum AccountsImportStackRoutes {

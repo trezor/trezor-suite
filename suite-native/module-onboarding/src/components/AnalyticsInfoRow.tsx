@@ -19,7 +19,7 @@ const iconWrapper = prepareNativeStyle(utils => ({
 
 const rowContentStyle = prepareNativeStyle(_ => ({
     marginLeft: 12,
-    maxWidth: '80%',
+    marginRight: 48,
 }));
 
 export const AnalyticsInfoRow = ({ iconName, title, description }: AnalyticsInfoRowProps) => {
