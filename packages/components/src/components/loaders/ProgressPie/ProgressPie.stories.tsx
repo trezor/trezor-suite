@@ -7,7 +7,7 @@ export default {
 
 export const ProgressPie = {
     args: {
-        progress: 21,
+        value: 21,
     },
     argTypes: {
         backgroundColor: { control: 'color' },
