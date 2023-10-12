@@ -5,3 +5,5 @@ export type SolanaValidParsedTxWithMeta = ParsedTransactionWithMeta & {
     transaction: Required<ParsedTransactionWithMeta['transaction']>;
     blockTime: Required<NonNullable<ParsedTransactionWithMeta['blockTime']>>;
 };
+
+export type { ParsedInstruction, ParsedTransactionWithMeta } from '@solana/web3.js';
