@@ -1,9 +1,10 @@
-import { AppState } from 'src/types/suite';
+import styled from 'styled-components';
+
 import { variables, P } from '@trezor/components';
+import { AppState } from 'src/types/suite';
 import { Translation } from 'src/components/suite';
 import { getSeenAndUnseenNotifications } from 'src/utils/suite/notification';
-import styled from 'styled-components';
-import NotificationList from '../NotificationList';
+import { NotificationList } from './NotificationList/NotificationList';
 
 const SectionHeadline = styled.div`
     margin-top: 14px;
@@ -33,7 +34,7 @@ const EmptyDescriptionP = styled(P)`
 interface NotificationGroupProps {
     notifications: AppState['notifications'];
 }
-const NotificationGroup = (props: NotificationGroupProps) => {
+export const NotificationGroup = (props: NotificationGroupProps) => {
     const { seenNotifications, unseenNotifications } = getSeenAndUnseenNotifications(
         props.notifications,
     );
@@ -79,5 +80,3 @@ const NotificationGroup = (props: NotificationGroupProps) => {
         </>
     );
 };
-
-export default NotificationGroup;

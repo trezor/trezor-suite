@@ -1,12 +1,13 @@
 import { useRef, useCallback, useState } from 'react';
 import styled from 'styled-components';
-import { analytics, EventType } from '@trezor/suite-analytics';
 
-import { Translation, Notifications } from 'src/components/suite';
+import { analytics, EventType } from '@trezor/suite-analytics';
 import { Dropdown, DropdownRef, variables } from '@trezor/components';
+import { notificationsActions } from '@suite-common/toast-notifications';
+
+import { Notifications, Translation } from 'src/components/suite';
 import { ActionItem } from './ActionItem';
 import { useDispatch } from 'src/hooks/suite';
-import { notificationsActions } from '@suite-common/toast-notifications';
 
 const Wrapper = styled.div`
     margin-left: 0;

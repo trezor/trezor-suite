@@ -2,12 +2,11 @@ import { acquireDevice, selectDeviceThunk } from '@suite-common/wallet-core';
 import { DEVICE } from '@trezor/connect';
 
 import { useDispatch } from 'src/hooks/suite';
-
-import type { NotificationViewProps, NotificationRendererProps } from '../types';
+import { NotificationRendererProps, NotificationViewProps } from 'src/components/suite';
 
 type ActionRendererProps = NotificationViewProps & NotificationRendererProps;
 
-const ActionRenderer = ({ render: View, ...props }: ActionRendererProps) => {
+export const ActionRenderer = ({ render: View, ...props }: ActionRendererProps) => {
     const dispatch = useDispatch();
 
     const { type, seen, device } = props.notification;
@@ -31,5 +30,3 @@ const ActionRenderer = ({ render: View, ...props }: ActionRendererProps) => {
 
     return <View {...props} action={!seen ? action : undefined} />;
 };
-
-export default ActionRenderer;

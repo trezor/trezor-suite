@@ -17,12 +17,15 @@ import {
     getConfirmations,
 } from '@suite-common/wallet-utils';
 
-import { AccountLabeling, HiddenPlaceholder } from 'src/components/suite';
+import {
+    AccountLabeling,
+    HiddenPlaceholder,
+    NotificationRendererProps,
+    NotificationViewProps,
+} from 'src/components/suite';
 import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { getTxAnchor } from 'src/utils/suite/anchor';
-
-import type { NotificationRendererProps, NotificationViewProps } from '../types';
 
 const StyledHiddenPlaceholder = styled(HiddenPlaceholder)`
     font-variant-numeric: tabular-nums;
@@ -31,7 +34,7 @@ const StyledHiddenPlaceholder = styled(HiddenPlaceholder)`
 type TransactionRendererProps = NotificationViewProps &
     NotificationRendererProps<'tx-sent' | 'tx-received' | 'tx-confirmed'>;
 
-const TransactionRenderer = ({ render: View, ...props }: TransactionRendererProps) => {
+export const TransactionRenderer = ({ render: View, ...props }: TransactionRendererProps) => {
     const accounts = useSelector(selectAccounts);
     const transactions = useSelector(selectTransactions);
     const blockchain = useSelector(selectBlockchainState);
@@ -83,5 +86,3 @@ const TransactionRenderer = ({ render: View, ...props }: TransactionRendererProp
         />
     );
 };
-
-export default TransactionRenderer;

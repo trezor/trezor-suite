@@ -1,15 +1,16 @@
-import styled from 'styled-components';
 import { useRouteMatch } from 'react-router-dom';
+import styled from 'styled-components';
+
+import { CoinLogo } from '@trezor/components';
+import { capitalizeFirstLetter } from '@trezor/utils';
+
 import { fillSendForm, resetProtocol } from 'src/actions/suite/protocolActions';
 import { Translation } from 'src/components/suite';
-import { CoinLogo } from '@trezor/components';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { capitalizeFirstLetter } from '@trezor/utils';
 import { PROTOCOL_TO_NETWORK } from 'src/constants/suite/protocol';
-import ConditionalActionRenderer from './ConditionalActionRenderer';
-
-import type { NotificationRendererProps } from '../types';
+import type { NotificationRendererProps } from 'src/components/suite';
 import type { Network } from 'src/types/wallet';
+import { ConditionalActionRenderer } from './ConditionalActionRenderer';
 
 const Row = styled.span`
     display: flex;

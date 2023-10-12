@@ -1,12 +1,14 @@
 import styled from 'styled-components';
+
+import type { NotificationEntry } from '@suite-common/toast-notifications';
+import { Button, Icon, P, ButtonProps, IconProps } from '@trezor/components';
 import { Translation, FormattedDateWithBullet } from 'src/components/suite';
 import { getNotificationIcon } from 'src/utils/suite/notification';
-import { Button, Icon, P } from '@trezor/components';
 import { useLayoutSize } from 'src/hooks/suite';
-import type { NotificationViewProps } from 'src/components/suite/NotificationRenderer';
+import type { ExtendedMessageDescriptor, ToastNotificationVariant } from 'src/types/suite';
 
 const TextP = styled(P)<{ $seen?: boolean }>`
-    opacity: ${props => (props.$seen ? 0.7 : 1)};
+    opacity: ${({ $seen }) => ($seen ? 0.7 : 1)};
 `;
 
 const DateP = styled(TextP)`
@@ -38,10 +40,24 @@ const ActionButton = styled(Button)`
 
 const SeenWrapper = styled.span<{ $seen?: boolean }>`
     margin-bottom: '4px';
-    opacity: ${props => (props.$seen ? 0.7 : 1)};
+    opacity: ${({ $seen }) => ($seen ? 0.7 : 1)};
 `;
 
-const NotificationView = ({
+export interface NotificationViewProps {
+    notification: NotificationEntry;
+    variant: ToastNotificationVariant;
+    icon?: IconProps['icon'] | JSX.Element;
+    message: ExtendedMessageDescriptor['id'];
+    messageValues: ExtendedMessageDescriptor['values'];
+    action?: {
+        onClick: () => void;
+        label: ExtendedMessageDescriptor['id'];
+        position?: 'bottom' | 'right';
+        variant?: ButtonProps['variant'];
+    };
+}
+
+export const NotificationView = ({
     message,
     messageValues,
     action,
@@ -84,5 +100,3 @@ const NotificationView = ({
         </Item>
     );
 };
-
-export default NotificationView;

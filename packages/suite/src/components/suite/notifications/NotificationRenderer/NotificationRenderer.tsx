@@ -1,14 +1,14 @@
-import { DEVICE } from '@trezor/connect';
+import type { ComponentType } from 'react';
+
+import type { NotificationEntry } from '@suite-common/toast-notifications';
 import { deviceActions } from '@suite-common/wallet-core';
+import { DEVICE } from '@trezor/connect';
 
+import { NotificationViewProps } from 'src/components/suite';
 import type { ExtendedMessageDescriptor } from 'src/types/suite';
-
-import ActionRenderer from './renderers/ActionRenderer';
-import TransactionRenderer from './renderers/TransactionRenderer';
-import { CoinProtocolRenderer } from './renderers/UriSchemeRenderers';
-import type { NotificationViewProps, NotificationRendererProps } from './types';
-
-export type { NotificationViewProps };
+import { ActionRenderer } from './ActionRenderer';
+import { TransactionRenderer } from './TransactionRenderer';
+import { CoinProtocolRenderer } from './CoinProtocolRenderer';
 
 const simple = (
     View: NotificationRendererProps['render'],
@@ -52,7 +52,14 @@ const info = (
     icon?: NotificationViewProps['icon'],
 ) => simple(View, notification, 'info', messageId, values, icon);
 
-const NotificationRenderer = ({ notification, render }: NotificationRendererProps) => {
+export type NotificationRendererProps<
+    T extends NotificationEntry['type'] = NotificationEntry['type'],
+> = {
+    render: ComponentType<{ onCancel?: () => void } & NotificationViewProps>;
+    notification: Extract<NotificationEntry, { type: T }>;
+};
+
+export const NotificationRenderer = ({ notification, render }: NotificationRendererProps) => {
     switch (notification.type) {
         case 'acquire-error':
             return error(render, notification, 'TOAST_ACQUIRE_ERROR');
@@ -232,5 +239,3 @@ const NotificationRenderer = ({ notification, render }: NotificationRendererProp
             return info(render, notification, 'TR_404_DESCRIPTION');
     }
 };
-
-export default NotificationRenderer;
