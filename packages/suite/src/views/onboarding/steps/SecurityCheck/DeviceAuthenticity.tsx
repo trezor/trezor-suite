@@ -99,7 +99,14 @@ export const DeviceAuthenticity = () => {
         const buttonText = isCheckSuccessful ? 'TR_CONTINUE' : 'TR_START_CHECK';
 
         return (
-            <OnboardingButtonCta onClick={handleClick}>
+            <OnboardingButtonCta
+                onClick={handleClick}
+                data-test={
+                    isCheckSuccessful
+                        ? '@authenticity-check/continue-button'
+                        : `@authenticity-check/start-button`
+                }
+            >
                 <Translation id={buttonText} />
             </OnboardingButtonCta>
         );
