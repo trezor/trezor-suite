@@ -11,9 +11,16 @@ export const passThroughInitialRun = () => {
     cy.getTestElement('@analytics/continue-button', { timeout: 40000 })
         .click()
         .getTestElement('@onboarding/exit-app-button')
-        .click()
-        .getTestElement('@suite/loading')
-        .should('not.exist');
+        .click();
+};
+
+export const passThroughAuthenticityCheck = () => {
+    // enable debug mode to allow debug keys for authenticity check
+    cy.enableDebugMode();
+
+    cy.getTestElement('@authenticity-check/start-button').click();
+    cy.task('pressYes');
+    cy.getTestElement('@authenticity-check/continue-button').click();
 };
 
 export const passThroughBackup = () => {
@@ -65,6 +72,12 @@ export const passThroughSetPin = () => {
     cy.task('inputEmu', '1');
     cy.task('pressYes');
     cy.getTestElement('@onboarding/pin/continue-button').click();
+};
+
+export const enableDebugMode = () => {
+    cy.window().then(window => {
+        window.store.dispatch({ type: '@suite/set-debug-mode', payload: { showDebugMenu: true } });
+    });
 };
 
 export const toggleDebugModeInSettings = () => {

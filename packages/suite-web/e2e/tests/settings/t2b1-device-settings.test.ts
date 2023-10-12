@@ -43,6 +43,7 @@ describe('T2B1 - Device settings', () => {
         // navigate to device settings page
         cy.prefixedVisit('/settings/device');
         cy.passThroughInitialRun();
+        cy.passThroughAuthenticityCheck();
 
         //
         // Test execution
@@ -98,6 +99,7 @@ describe('T2B1 - Device settings', () => {
         // navigate to device settings page
         cy.prefixedVisit('/settings/device');
         cy.passThroughInitialRun();
+        cy.passThroughAuthenticityCheck();
 
         cy.getTestElement('@settings/device/check-seed-button').should('be.disabled');
         cy.getTestElement('@settings/device/failed-backup-row').should('not.exist');
@@ -112,6 +114,7 @@ describe('T2B1 - Device settings', () => {
         // navigate to device settings page
         cy.prefixedVisit('/settings/device');
         cy.passThroughInitialRun();
+        cy.passThroughAuthenticityCheck();
 
         cy.getTestElement('@settings/device/open-wipe-modal-button').click();
         cy.getTestElement('@wipe/checkbox-1').click();
