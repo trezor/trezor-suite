@@ -1148,7 +1148,6 @@ export const setMax = [
     {
         description: 'SOL',
         store: {
-            ...DEFAULT_STORE,
             send: {
                 drafts: getDraft({
                     setMaxOutputId: 0,
