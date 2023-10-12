@@ -1,4 +1,5 @@
 import type { Response, AccountInfo, Transaction } from '@trezor/blockchain-link-types';
+import type { SolanaValidParsedTxWithMeta } from '@trezor/blockchain-link-types/lib/solana';
 import type * as MessageTypes from '@trezor/blockchain-link-types/lib/messages';
 import { CustomError } from '@trezor/blockchain-link-types/lib/constants/errors';
 import { BaseWorker, ContextType, CONTEXT } from '../baseWorker';
@@ -62,6 +63,9 @@ const fetchTransactionPage = async (
     return confirmedTxsChunks.flat().filter((tx): tx is ParsedTransactionWithMeta => !!tx);
 };
 
+const isValidTransaction = (tx: ParsedTransactionWithMeta): tx is SolanaValidParsedTxWithMeta =>
+    !!(tx && tx.meta && tx.transaction && tx.blockTime);
+
 const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => {
     const { payload } = request;
     const { details = 'basic' } = payload;
@@ -109,6 +113,7 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
         );
 
         return transactionsPage
+            .filter(isValidTransaction)
             .map(tx =>
                 solanaUtils.transformTransaction(tx, payload.descriptor, slotToBlockHeightMapping),
             )
