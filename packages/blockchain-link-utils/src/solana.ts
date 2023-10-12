@@ -3,13 +3,13 @@ import BigNumber from 'bignumber.js';
 import { Target, Transaction } from '@trezor/blockchain-link-types/lib';
 
 // First step in parsing a tx, is getting Solana effects on accounts that were in the transaction, from this effects we later parse the other tx properties.
-export function extractAccountBalanceDiff(
+export const extractAccountBalanceDiff = (
     transaction: ParsedTransactionWithMeta,
     address: string,
 ): {
     preBalance: BigNumber;
     postBalance: BigNumber;
-} | null {
+} | null => {
     const pubKeyIndex = transaction.transaction.message.accountKeys.findIndex(
         ak => ak.pubkey.toString() === address,
     );
@@ -22,15 +22,17 @@ export function extractAccountBalanceDiff(
         preBalance: new BigNumber(transaction.meta?.preBalances[pubKeyIndex] ?? 0),
         postBalance: new BigNumber(transaction.meta?.postBalances[pubKeyIndex] ?? 0),
     };
-}
+};
 
 type TransactionEffect = {
     address: string;
     amount: BigNumber;
 };
 
-export function getTransactionEffects(transaction: ParsedTransactionWithMeta): TransactionEffect[] {
-    return transaction.transaction.message.accountKeys
+export const getTransactionEffects = (
+    transaction: ParsedTransactionWithMeta,
+): TransactionEffect[] =>
+    transaction.transaction.message.accountKeys
         .map(ak => {
             const targetAddress = ak.pubkey.toString();
             const balanceDiff = extractAccountBalanceDiff(transaction, targetAddress);
@@ -45,14 +47,13 @@ export function getTransactionEffects(transaction: ParsedTransactionWithMeta): T
         })
         .filter((effect): effect is TransactionEffect => !!effect)
         .filter(({ amount }) => !amount.isZero()); // filter out zero effects
-}
 
-export function getTargets(
+export const getTargets = (
     effects: TransactionEffect[],
     txType: Transaction['type'],
     accountAddress: string,
-): Transaction['targets'] {
-    return effects
+): Transaction['targets'] =>
+    effects
         .filter(effect => {
             // for 'self` transaction there is only one effect
             if (txType === 'self') {
@@ -75,7 +76,6 @@ export function getTargets(
             };
             return target;
         });
-}
 
 export const getTxType = (
     transaction: ParsedTransactionWithMeta,
@@ -127,11 +127,11 @@ export const getTxType = (
     return 'unknown';
 };
 
-export function getDetails(
+export const getDetails = (
     transaction: ParsedTransactionWithMeta,
     effects: TransactionEffect[],
     accountAddress: string,
-): Transaction['details'] {
+): Transaction['details'] => {
     const senders = effects.filter(({ amount }) => amount.isNegative());
     const receivers = effects.filter(({ amount }) => amount.isPositive());
 
@@ -155,12 +155,12 @@ export function getDetails(
         vin: senders.map((sender, i) => getVin(sender, i)),
         vout: receivers.map((receiver, i) => getVin(receiver, i)),
     };
-}
+};
 
-export function getAmount(
+export const getAmount = (
     accountEffect: TransactionEffect | undefined,
     txType: Transaction['type'],
-) {
+): string => {
     if (!accountEffect) {
         return '0';
     }
@@ -168,7 +168,7 @@ export function getAmount(
         return accountEffect.amount?.abs().toString();
     }
     return accountEffect.amount.toString();
-}
+};
 
 export const transformTransaction = (
     tx: ParsedTransactionWithMeta,
