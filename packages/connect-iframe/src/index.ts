@@ -38,9 +38,10 @@ let _core: Core | undefined;
 
 // custom log
 const _log = initLog('IFrame');
-// `connectWebLog` does not log in original console, used just as proxy to shared logger
-// that's why it is not enabled.
-const connectWebLog = initLog('@trezor/connect-web', false);
+// `logWriterProxy` is used here to pass to shared logger worker logs from
+// environments that do not have access to it, like connect-web, webextension.
+// It does not log anything in this environment, just used as proxy.
+const logWriterProxy = logWriterFactory();
 
 let _popupMessagePort: (MessagePort | BroadcastChannel) | undefined;
 
@@ -61,12 +62,7 @@ const handleMessage = (event: PostMessageEvent) => {
     };
 
     if (data.type === IFRAME.LOG && data.payload.prefix === '@trezor/connect-web') {
-        const { level, prefix, message } = data.payload;
-        if (Array.isArray(message)) {
-            connectWebLog.addMessage(level, prefix, ...message);
-        } else {
-            connectWebLog.addMessage(level, message);
-        }
+        logWriterProxy.add(data.payload);
         return;
     }
 
