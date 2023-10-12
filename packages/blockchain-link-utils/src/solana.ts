@@ -1,6 +1,7 @@
 import { ParsedInstruction, ParsedTransactionWithMeta } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
 import { Target, Transaction } from '@trezor/blockchain-link-types/lib';
+import { SolanaValidParsedTxWithMeta } from '@trezor/blockchain-link-types/lib/solana';
 
 // First step in parsing a tx, is getting Solana effects on accounts that were in the transaction, from this effects we later parse the other tx properties.
 export const extractAccountBalanceDiff = (
@@ -171,14 +172,10 @@ export const getAmount = (
 };
 
 export const transformTransaction = (
-    tx: ParsedTransactionWithMeta,
+    tx: SolanaValidParsedTxWithMeta,
     accountAddress: string,
     slotToBlockHeightMapping: Record<number, number | null>,
-): Transaction | null => {
-    if (!tx || !tx.meta || !tx.transaction || !tx.blockTime) {
-        return null;
-    }
-
+): Transaction => {
     const effects = getTransactionEffects(tx);
 
     const type = getTxType(tx, effects, accountAddress);
