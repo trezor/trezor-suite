@@ -1,10 +1,11 @@
-import { useSelector } from 'src/hooks/suite';
-import { Icon, useTheme, variables } from '@trezor/components';
 import { useState } from 'react';
 import styled from 'styled-components';
-import NotificationGroup from './components/NotificationGroup';
+
+import { Icon, useTheme, variables } from '@trezor/components';
+import { useSelector } from 'src/hooks/suite';
 import { Translation } from 'src/components/suite';
 import { SETTINGS } from 'src/config/suite';
+import { NotificationGroup } from './NotificationGroup/NotificationGroup';
 
 const Wrapper = styled.div`
     width: 100%;
@@ -58,7 +59,7 @@ interface NotificationsProps {
     onCancel?: () => void;
 }
 
-const Notifications = (props: NotificationsProps) => {
+export const Notifications = (props: NotificationsProps) => {
     const notifications = useSelector(state => state.notifications);
     const [selectedTab, setSelectedTab] = useState<'important' | 'all'>('important');
     const theme = useTheme();
@@ -114,5 +115,3 @@ const Notifications = (props: NotificationsProps) => {
         </Wrapper>
     );
 };
-
-export default Notifications;

@@ -26,12 +26,10 @@ import { FormattedCryptoAmount } from './FormattedCryptoAmount';
 import { FormattedNftAmount } from './FormattedNftAmount';
 import { Sign } from './Sign';
 import { AddAccountButton } from './AddAccountButton';
-import { ToastContainer } from './ToastContainer';
 import TrezorLink from './TrezorLink';
 import { ReadMoreLink } from './ReadMoreLink';
 import { Modal, ModalProps } from './modals/Modal/Modal';
 import { SkeletonRectangle, SkeletonCircle } from './Skeleton';
-import Notifications from './Notifications';
 import { FormattedDate } from './FormattedDate';
 import { FormattedDateWithBullet } from './FormattedDateWithBullet';
 import { Metadata } from './Metadata';
@@ -48,7 +46,6 @@ import { CloseButton } from './CloseButton';
 import TooltipSymbol from './TooltipSymbol';
 import StatusLight from './StatusLight';
 import { AmountUnitSwitchWrapper } from './AmountUnitSwitchWrapper';
-import { renderToast } from './ToastNotification';
 import { TorLoader } from './TorLoader';
 import { CountdownTimer } from './CountdownTimer';
 import { NumberInput, NumberInputProps } from './NumberInput';
@@ -92,12 +89,10 @@ export {
     Sign,
     AddAccountButton,
     ReadMoreLink,
-    ToastContainer,
     TrezorLink,
     Modal,
     SkeletonRectangle,
     SkeletonCircle,
-    Notifications,
     FormattedDate,
     FormattedDateWithBullet,
     Metadata,
@@ -113,7 +108,6 @@ export {
     TooltipSymbol,
     StatusLight,
     AmountUnitSwitchWrapper,
-    renderToast,
     TorLoader,
     CountdownTimer,
     NumberInput,
@@ -125,4 +119,5 @@ export {
     Preloader,
     PinMatrix,
 };
+export * from './notifications';
 export type { ModalProps, NumberInputProps };

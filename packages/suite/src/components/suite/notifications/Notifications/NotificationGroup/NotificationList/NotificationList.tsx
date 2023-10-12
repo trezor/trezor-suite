@@ -1,6 +1,7 @@
 import styled from 'styled-components';
-import NotificationRenderer from 'src/components/suite/NotificationRenderer';
-import NotificationView from '../NotificationView';
+
+import { NotificationRenderer } from 'src/components/suite';
+import { NotificationView } from './NotificationView';
 import type { AppState } from 'src/types/suite';
 
 const Wrapper = styled.div`
@@ -14,12 +15,10 @@ interface NotificationListProps {
     notifications: AppState['notifications'];
 }
 
-const NotificationList = ({ notifications }: NotificationListProps) => (
+export const NotificationList = ({ notifications }: NotificationListProps) => (
     <Wrapper>
         {notifications.map(n => (
             <NotificationRenderer key={n.id} notification={n} render={NotificationView} />
         ))}
     </Wrapper>
 );
-
-export default NotificationList;

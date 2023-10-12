@@ -1,13 +1,11 @@
 import { useLayoutEffect, useRef, useState } from 'react';
 import styled, { css } from 'styled-components';
+
 import { Button, Icon, useTheme, variables } from '@trezor/components';
-import { Translation } from 'src/components/suite';
+import { NotificationRenderer, NotificationViewProps, Translation } from 'src/components/suite';
 import { notificationsActions, NotificationEntry } from '@suite-common/toast-notifications';
 import { useDispatch } from 'src/hooks/suite';
-import { getNotificationIcon, getVariantColor } from 'src/utils/suite//notification';
-import NotificationRenderer, {
-    NotificationViewProps,
-} from 'src/components/suite/NotificationRenderer';
+import { getNotificationIcon, getVariantColor } from 'src/utils/suite/notification';
 
 const Wrapper = styled.div<Pick<NotificationViewProps, 'variant'> & { isTall: boolean }>`
     display: flex;
@@ -50,6 +48,11 @@ const StyledCancelIcon = styled(Icon)`
     margin-left: 18px;
 `;
 
+interface ToastNotificationProps extends NotificationViewProps {
+    cancelable?: boolean;
+    onCancel?: () => void;
+}
+
 const ToastNotification = ({
     icon,
     message,
@@ -59,7 +62,7 @@ const ToastNotification = ({
     cancelable = true,
     onCancel,
     notification: { type, id },
-}: NotificationViewProps) => {
+}: ToastNotificationProps) => {
     const [isTall, setIsTall] = useState(false);
     const theme = useTheme();
     const dispatch = useDispatch();
