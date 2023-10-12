@@ -5,9 +5,7 @@ import { CheckItem } from './CheckItem';
 import { PrerequisitesGuide } from './PrerequisitesGuide';
 import { WelcomeLayout } from './WelcomeLayout';
 import { CardWithHeader } from './CardWithHeader';
-import NotificationCard from './NotificationCard';
-import PinInput from './PinInput';
-import NoRatesTooltip from './NoRatesTooltip';
+import { NotificationCard } from './NotificationCard';
 import { WordInput } from './WordInput';
 import { WordInputAdvanced } from './WordInputAdvanced';
 import { Loading } from './Loading';
@@ -21,7 +19,7 @@ import { DeviceInvalidModeLayout } from './DeviceInvalidModeLayout';
 import { AppNavigationPanel } from './AppNavigationPanel';
 import { AppNavigationTooltip } from './AppNavigationTooltip';
 import { AppNavigation } from './AppNavigation';
-import Ticker from './Ticker';
+import { Ticker } from './Ticker/Ticker';
 import { Translation } from './Translation';
 import { AccountLabeling, AddressLabeling, WalletLabeling, MetadataLabeling } from './labeling';
 import { FormattedCryptoAmount } from './FormattedCryptoAmount';
@@ -59,6 +57,7 @@ import { CoinBalance } from './CoinBalance';
 import { DeviceAuthenticationExplainer } from './DeviceAuthenticationExplainer';
 import { HoverAnimation } from './HoverAnimation';
 import { Preloader } from './Preloader/Preloader';
+import { PinMatrix } from './PinMatrix/PinMatrix';
 
 export {
     AccountLabel,
@@ -70,9 +69,7 @@ export {
     WelcomeLayout,
     CardWithHeader as Card,
     NotificationCard,
-    PinInput,
     FiatValue,
-    NoRatesTooltip,
     Translation,
     WordInput,
     WordInputAdvanced,
@@ -126,5 +123,6 @@ export {
     DeviceAuthenticationExplainer,
     HoverAnimation,
     Preloader,
+    PinMatrix,
 };
 export type { ModalProps, NumberInputProps };

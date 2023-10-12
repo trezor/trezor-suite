@@ -1,9 +1,11 @@
 import styled from 'styled-components';
 import { differenceInMinutes } from 'date-fns';
-import { Tooltip, useTheme, variables, Icon } from '@trezor/components';
-import { FiatValue, Translation, NoRatesTooltip } from 'src/components/suite';
 import { FormattedRelativeTime } from 'react-intl';
+
+import { Tooltip, useTheme, variables, Icon } from '@trezor/components';
+import { FiatValue, Translation } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
+import { NoRatesTooltip } from './NoRatesTooltip';
 
 const FiatRateWrapper = styled.span`
     display: flex;
@@ -21,7 +23,7 @@ interface TickerProps {
     symbol: string;
     tooltipPos?: 'top' | 'bottom';
 }
-const Ticker = ({ symbol, tooltipPos = 'top' }: TickerProps) => {
+export const Ticker = ({ symbol, tooltipPos = 'top' }: TickerProps) => {
     const rates = useSelector(state => state.wallet.fiat.coins.find(r => r.symbol === symbol));
     const localCurrency = useSelector(state => state.wallet.settings.localCurrency);
     const theme = useTheme();
@@ -72,5 +74,3 @@ const Ticker = ({ symbol, tooltipPos = 'top' }: TickerProps) => {
         </FiatValue>
     );
 };
-
-export default Ticker;

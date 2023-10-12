@@ -4,8 +4,7 @@ import styled from 'styled-components';
 
 import { selectDevice } from '@suite-common/wallet-core';
 
-import { Translation, PrerequisitesGuide } from 'src/components/suite';
-import { PinMatrix } from 'src/components/suite/PinMatrix';
+import { PinMatrix, PrerequisitesGuide, Translation } from 'src/components/suite';
 import { PrerequisiteType } from 'src/types/suite';
 import { useOnboarding, useSelector } from 'src/hooks/suite';
 import { OnboardingStepBox } from 'src/components/onboarding';
