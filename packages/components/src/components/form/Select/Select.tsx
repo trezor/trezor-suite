@@ -1,16 +1,5 @@
-import { useCallback, useEffect, useRef, useState, ReactNode, KeyboardEvent } from 'react';
-import ReactSelect, {
-    components as ReactSelectComponents,
-    Props as ReactSelectProps,
-    Options,
-    GroupBase,
-    OptionsOrGroups,
-    StylesConfig,
-    ControlProps,
-    OptionProps,
-    SelectInstance,
-    GroupHeadingProps,
-} from 'react-select';
+import { useCallback, useRef, ReactNode } from 'react';
+import ReactSelect, { Props as ReactSelectProps, StylesConfig, SelectInstance } from 'react-select';
 import styled, { css, DefaultTheme, useTheme } from 'styled-components';
 import { darken } from 'polished';
 import { borders, zIndices } from '@trezor/theme';
@@ -26,8 +15,10 @@ import {
     getInputStateBorderColor,
 } from '../InputStyles';
 import { BottomText } from '../BottomText';
-import { MODAL_CONTENT_ID } from '../../modals/Modal/Modal';
 import { InputState, InputSize } from '../inputTypes';
+import { Control, GroupHeading, Option } from './customComponents';
+import { useOnKeyDown } from './useOnKeyDown';
+import { useDetectPortalTarget } from './useDetectPortalTarget';
 
 const reactSelectClassNamePrefix = 'react-select';
 
@@ -222,11 +213,7 @@ const Label = styled.div`
 const closeMenuOnScroll = (e: Event) =>
     !(e.target as Element)?.className?.startsWith(reactSelectClassNamePrefix);
 
-type Option = any;
-
-/** Custom Type Guards to check if options are grouped or not */
-const isOptionGrouped = (x: OptionsOrGroups<Option, GroupBase<Option>>): x is GroupBase<Option>[] =>
-    (x as readonly GroupBase<Option>[])[0]?.options !== undefined;
+export type Option = any;
 
 interface CommonProps extends Omit<ReactSelectProps<Option>, 'onChange'> {
     withDropdownIndicator?: boolean;
@@ -271,160 +258,11 @@ export const Select = ({
     'data-test': dataTest,
     ...props
 }: SelectProps) => {
-    const [menuPortalTarget, setMenuPortalTarget] = useState<HTMLElement | null>(null);
     const selectRef = useRef<SelectInstance<Option, boolean>>(null);
-    const lastKeyPressTimestamp = useRef(0);
-    const searchedTerm = useRef('');
+
     const theme = useTheme();
-
-    const findOption = useCallback((options: Options<Option>, query: string) => {
-        let foundOption;
-        let lowestIndexOfFirstOccurrence = Infinity;
-
-        for (let i = 0; i < options.length; i++) {
-            const indexOfFirstOccurrence = (options[i].label || '')
-                .toLowerCase()
-                .indexOf(query.toLowerCase());
-
-            if (
-                indexOfFirstOccurrence >= 0 &&
-                indexOfFirstOccurrence < lowestIndexOfFirstOccurrence
-            ) {
-                lowestIndexOfFirstOccurrence = indexOfFirstOccurrence;
-                foundOption = options[i];
-            }
-        }
-
-        return foundOption;
-    }, []);
-
-    const scrollToOption = useCallback((option: Option) => {
-        if (selectRef.current) {
-            // As per https://github.com/JedWatson/react-select/issues/3648
-            selectRef.current.scrollToFocusedOptionOnUpdate = true;
-            selectRef.current.setState({
-                focusedValue: null,
-                focusedOption: option,
-            });
-        }
-    }, []);
-
-    const onKeyDown = useCallback(
-        async (event: KeyboardEvent) => {
-            if (!useKeyPressScroll || !selectRef.current) {
-                return;
-            }
-
-            const charValue = event.key;
-
-            const currentTimestamp = new Date().getTime();
-            const timeSincePreviousKeyPress = currentTimestamp - lastKeyPressTimestamp.current;
-
-            lastKeyPressTimestamp.current = currentTimestamp;
-
-            if (timeSincePreviousKeyPress > 800) {
-                searchedTerm.current = charValue;
-            } else {
-                searchedTerm.current += charValue;
-            }
-
-            const { options } = selectRef.current.props;
-
-            if (options && options.length > 1) {
-                let optionsToSearchThrough: Options<Option> = [];
-
-                if (isOptionGrouped(options)) {
-                    options.forEach(o => {
-                        optionsToSearchThrough = optionsToSearchThrough.concat(o.options);
-                    });
-                } else {
-                    optionsToSearchThrough = options as Options<Option>;
-                }
-
-                const optionToFocusOn = findOption(optionsToSearchThrough, searchedTerm.current);
-
-                const lastOption = optionsToSearchThrough[optionsToSearchThrough.length - 1];
-
-                if (optionToFocusOn && lastOption) {
-                    /*
-                        The reason why I want to scroll to the last option first is, that I want the focused item to
-                        appear on the top of the list - I achieve that behavior by scrolling "from bottom-to-top".
-                        The default scrolling behavior is "from top-to-bottom". In that case the focused option appears at the bottom
-                        of options list, which is not a great UX.
-                    */
-
-                    await scrollToOption(lastOption);
-
-                    scrollToOption(optionToFocusOn);
-                }
-            }
-        },
-        [findOption, scrollToOption, useKeyPressScroll],
-    );
-
-    // Check if the select is within a modal. If so, render it inside a portal so that it can overflow the modal.
-    // The inputRef is deeply nested so we iterate with while loop until wee reach the parentElement or max depth.
-    // The depth has a limit so that it does not iterate over the entire DOM.
-    // The depth limit has a buffer of 2 iterations in case the select is wrapped. (Minimum depth is 4.)
-    useEffect(() => {
-        let parent = selectRef.current?.inputRef?.parentElement;
-        let count = 0;
-        while (parent) {
-            if (parent.id === MODAL_CONTENT_ID) {
-                setMenuPortalTarget(document.body);
-                break;
-            }
-            if (count > 5) {
-                break;
-            }
-            parent = parent.parentElement;
-            count++;
-        }
-    }, []);
-
-    const Control = useCallback(
-        (controlProps: ControlProps<Option>) => (
-            <ReactSelectComponents.Control
-                {...controlProps}
-                innerProps={
-                    dataTest
-                        ? ({
-                              ...controlProps.innerProps,
-                              'data-test': `${dataTest}/input`,
-                          } as ControlProps<Option>['innerProps'])
-                        : controlProps.innerProps
-                }
-            />
-        ),
-        [dataTest],
-    );
-
-    const Option = useCallback(
-        (optionProps: OptionProps<Option, boolean>) => (
-            <ReactSelectComponents.Option
-                {...optionProps}
-                innerProps={
-                    {
-                        ...optionProps.innerProps,
-                        'data-test': `${dataTest}/option/${
-                            typeof optionProps.data.value === 'string'
-                                ? optionProps.data.value
-                                : optionProps.label
-                        }`,
-                    } as OptionProps<Option, boolean>['innerProps']
-                }
-            />
-        ),
-        [dataTest],
-    );
-
-    const GroupHeading = useCallback(
-        (groupHeadingProps: GroupHeadingProps<Option>) =>
-            groupHeadingProps?.data?.label ? (
-                <ReactSelectComponents.GroupHeading {...groupHeadingProps} />
-            ) : null,
-        [],
-    );
+    const onKeyDown = useOnKeyDown(selectRef, useKeyPressScroll);
+    const menuPortalTarget = useDetectPortalTarget(selectRef);
 
     const handleOnChange = useCallback<Required<ReactSelectProps>['onChange']>(
         (value, { action }) => {
@@ -470,7 +308,12 @@ export const Select = ({
                 isSearchable={isSearchable}
                 menuIsOpen={menuIsOpen}
                 {...props}
-                components={{ Control, Option, GroupHeading, ...components }}
+                components={{
+                    Control: controlProps => <Control {...controlProps} dataTest={dataTest} />,
+                    Option: optionProps => <Option {...optionProps} dataTest={dataTest} />,
+                    GroupHeading,
+                    ...components,
+                }}
             />
 
             {!noError && <BottomText inputState={inputState}>{bottomText}</BottomText>}
