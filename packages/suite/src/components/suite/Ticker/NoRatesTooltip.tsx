@@ -19,7 +19,7 @@ interface NoRatesTooltipProps extends Partial<typeof Tooltip> {
     className?: string;
 }
 
-const NoRatesTooltip = ({
+export const NoRatesTooltip = ({
     customText,
     iconOnly,
     customTooltip,
@@ -32,5 +32,3 @@ const NoRatesTooltip = ({
         />
     </NoRatesMessage>
 );
-
-export default NoRatesTooltip;

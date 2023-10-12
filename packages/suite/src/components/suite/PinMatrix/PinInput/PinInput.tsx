@@ -1,9 +1,10 @@
 import { useState, useEffect, useCallback } from 'react';
 import styled, { css } from 'styled-components';
+
 import { Button, PinButton, KEYBOARD_CODE } from '@trezor/components';
-import InputPin from './components/InputPin';
 import { Translation } from 'src/components/suite';
 import { MAX_LENGTH } from 'src/constants/suite/inputs';
+import { InputPin } from './InputPin';
 
 const Wrapper = styled.div`
     display: flex;
@@ -48,7 +49,7 @@ interface PinInputProps {
     onPinSubmit: (pin: string) => void;
 }
 
-const PinInput = ({ isSubmitting, onPinSubmit }: PinInputProps) => {
+export const PinInput = ({ isSubmitting, onPinSubmit }: PinInputProps) => {
     const [pin, setPin] = useState('');
 
     const onPinBackspace = useCallback(() => {
@@ -215,5 +216,3 @@ const PinInput = ({ isSubmitting, onPinSubmit }: PinInputProps) => {
         </Wrapper>
     );
 };
-
-export default PinInput;

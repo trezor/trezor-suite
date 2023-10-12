@@ -5,8 +5,8 @@ import styled from 'styled-components';
 import TrezorConnect from '@trezor/connect';
 import { selectDeviceButtonRequests } from '@suite-common/wallet-core';
 
-import { Translation, Modal, ModalProps } from 'src/components/suite';
-import { PinMatrix, PIN_MATRIX_MAX_WIDTH } from 'src/components/suite/PinMatrix';
+import { PinMatrix, Modal, Translation, ModalProps } from 'src/components/suite';
+import { PIN_MATRIX_MAX_WIDTH } from 'src/components/suite/PinMatrix/PinMatrix';
 import { TrezorDevice } from 'src/types/suite';
 
 const StyledModal = styled(Modal)<{ $isExtended: boolean }>`

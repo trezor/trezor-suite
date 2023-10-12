@@ -2,8 +2,7 @@ import { useEffect, useState } from 'react';
 
 import { selectDevice } from '@suite-common/wallet-core';
 
-import { Translation } from 'src/components/suite';
-import { PinMatrix } from 'src/components/suite/PinMatrix';
+import { PinMatrix, Translation } from 'src/components/suite';
 import {
     OnboardingButtonCta,
     OnboardingButtonSkip,

@@ -1,5 +1,6 @@
 import { MouseEvent } from 'react';
 import styled from 'styled-components';
+
 import { variables, useTheme, Icon, Input } from '@trezor/components';
 
 const StyledInput = styled(Input)`
@@ -19,7 +20,7 @@ interface InputPinProps {
     onDeleteClick: (event?: MouseEvent<any>) => void;
 }
 
-const InputPin = ({ value, onDeleteClick }: InputPinProps) => {
+export const InputPin = ({ value, onDeleteClick }: InputPinProps) => {
     const theme = useTheme();
 
     return (
@@ -38,5 +39,3 @@ const InputPin = ({ value, onDeleteClick }: InputPinProps) => {
         />
     );
 };
-
-export default InputPin;
