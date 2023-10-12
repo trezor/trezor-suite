@@ -455,7 +455,7 @@ export const IODetails = ({ tx }: IODetailsProps) => {
     return (
         <Wrapper>
             {/* solana is not supported by blockbook */}
-            {network?.networkType !== 'solana' && <AnalyzeInBlockbookBanner txid={tx.txid} />}
+            <AnalyzeInBlockbookBanner txid={tx.txid} />
             <IOSectionColumn tx={tx} inputs={tx.details.vin} outputs={tx.details.vout} />
         </Wrapper>
     );
