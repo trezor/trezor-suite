@@ -150,6 +150,9 @@ const setAffectedValues = (state: MethodState, field: any) => {
             const affectedField = root.find(f => f.name === af);
             if (affectedField) {
                 affectedField.value = values[index];
+                if (state.name === 'composeTransaction') {
+                    affectedField.value = values;
+                }
             }
         });
     } else if (field.affect && typeof field.affect === 'string' && field.value) {
