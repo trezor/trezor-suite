@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 import {
     selectDevice,
@@ -6,7 +6,7 @@ import {
     selectAccountByKey,
     selectDeviceThunk,
 } from '@suite-common/wallet-core';
-import { Button, variables } from '@trezor/components';
+import { variables } from '@trezor/components';
 import { WalletParams } from '@suite-common/wallet-types';
 
 import { useDispatch } from 'src/hooks/suite';
@@ -27,7 +27,13 @@ import { Translation } from './Translation';
 
 const SPACING = 6;
 
-const Container = styled.div`
+const ViewText = styled.div`
+    margin-left: auto;
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    transition: transform 0.15s ease-in-out;
+`;
+
+const Container = styled.div<{ isClickable: boolean }>`
     display: flex;
     align-items: center;
     height: 28px;
@@ -36,6 +42,19 @@ const Container = styled.div`
     border-bottom: 1px solid ${({ theme }) => theme.STROKE_LIGHT_GREY};
     font-size: ${variables.FONT_SIZE.TINY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    transition: background 0.15s;
+    ${({ isClickable, theme }) =>
+        isClickable &&
+        css`
+            cursor: pointer;
+            &:hover {
+                background: ${theme.BG_WHITE_ALT_HOVER};
+                ${ViewText} {
+                    text-decoration: underline;
+                    transform: translateX(-4px);
+                }
+            }
+        `}
 `;
 
 const StyledProgressPie = styled(ProgressPie)`
@@ -52,11 +71,6 @@ const Note = styled.span`
 
 const Separator = styled.span`
     margin: 0 ${SPACING / 2}px;
-`;
-
-const ViewButton = styled(Button)`
-    height: 20px;
-    margin-left: auto;
 `;
 
 interface CoinjoinStatusBarProps {
@@ -128,9 +142,13 @@ export const CoinjoinStatusBar = ({ accountKey, session, isSingle }: CoinjoinSta
 
     const isOnAccountPage =
         symbolParam === symbol && indexParam === index && accountTypeParam === accountType;
+    const isStatusBarClickable = (isOnSelectedDevice && !isOnAccountPage) || !isOnSelectedDevice;
 
     return (
-        <Container>
+        <Container
+            onClick={isStatusBarClickable ? handleViewAccount : undefined}
+            isClickable={isStatusBarClickable}
+        >
             <StyledProgressPie progress={sessionProgress} />
 
             <StatusText>
@@ -170,10 +188,10 @@ export const CoinjoinStatusBar = ({ accountKey, session, isSingle }: CoinjoinSta
                 </Note>
             )}
 
-            {((isOnSelectedDevice && !isOnAccountPage) || !isOnSelectedDevice) && (
-                <ViewButton variant="tertiary" onClick={handleViewAccount}>
+            {isStatusBarClickable && (
+                <ViewText>
                     <Translation id="TR_VIEW" />
-                </ViewButton>
+                </ViewText>
             )}
         </Container>
     );
