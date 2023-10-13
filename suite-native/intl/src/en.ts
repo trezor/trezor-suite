@@ -8,6 +8,17 @@ export const en = {
         graph: {
             title: 'My portfolio balance',
         },
+        placeholder: {
+            title: "We haven't discovered any coins in your wallet.",
+            subtitle: 'Get started by receiving coins',
+            receive: 'Receive',
+        },
+    },
+    assets: {
+        dashboard: {
+            viewAllAssets: 'View all assets',
+            discoveryProgress: { loading: 'Loading...', stillWorking: 'Still working...' },
+        },
     },
     moduleConnectDevice: {
         connectCrossroadsScreen: {

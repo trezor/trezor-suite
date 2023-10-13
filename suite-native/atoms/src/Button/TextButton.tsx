@@ -7,33 +7,63 @@ import Animated, {
 } from 'react-native-reanimated';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { Color } from '@trezor/theme';
 
 import { ButtonIcon, ButtonProps, ButtonSize, buttonToTextSizeMap } from './Button';
 import { BUTTON_PRESS_ANIMATION_DURATION } from './useButtonPressAnimatedStyle';
 import { HStack } from '../Stack';
 
-type TextButtonProps = Omit<ButtonProps, 'colorScheme'>;
+export type TextButtonVariant = 'primary' | 'tertiary';
+
+type TextButtonProps = Omit<ButtonProps, 'colorScheme'> & {
+    isUnderlined?: boolean;
+    variant?: TextButtonVariant;
+};
+
+const variantToColorsMap = {
+    primary: {
+        color: 'textPrimaryDefault',
+        pressedColor: 'textPrimaryPressed',
+    },
+    tertiary: {
+        color: 'textOnTertiary',
+        pressedColor: 'textSubdued',
+    },
+} as const satisfies Record<TextButtonVariant, { color: Color; pressedColor: Color }>;
 
 const buttonContainerStyle = prepareNativeStyle(() => ({
     alignItems: 'center',
 }));
 
-const textStyle = prepareNativeStyle((utils, { buttonSize }: { buttonSize: ButtonSize }) => ({
-    ...utils.typography[buttonToTextSizeMap[buttonSize]],
-}));
+const textStyle = prepareNativeStyle(
+    (utils, { buttonSize, isUnderlined }: { buttonSize: ButtonSize; isUnderlined: boolean }) => ({
+        ...utils.typography[buttonToTextSizeMap[buttonSize]],
+        extend: {
+            condition: isUnderlined,
+            style: {
+                textDecorationLine: 'underline',
+            },
+        },
+    }),
+);
 
 export const TextButton = ({
     iconLeft,
     iconRight,
     style,
     children,
+    variant = 'primary',
     size = 'medium',
     isDisabled = false,
+    isUnderlined = false,
     ...pressableProps
 }: TextButtonProps) => {
     const { applyStyle, utils } = useNativeStyles();
     const textPressedColorValue = useSharedValue(0);
-    const animatedColor = useSharedValue(utils.colors.textPrimaryDefault);
+
+    const { color, pressedColor } = variantToColorsMap[variant];
+
+    const animatedColor = useSharedValue(utils.colors[color]);
 
     const animatedTextStyle = useAnimatedStyle(
         () => ({
@@ -46,7 +76,7 @@ export const TextButton = ({
         animatedColor.value = interpolateColor(
             textPressedColorValue.value,
             [0, 1],
-            [utils.colors.textPrimaryPressed, utils.colors.textPrimaryDefault],
+            [utils.colors[pressedColor], utils.colors[color]],
         );
     };
 
@@ -80,7 +110,7 @@ export const TextButton = ({
                 {iconLeft && icon}
                 <Animated.Text
                     style={[
-                        applyStyle(textStyle, { buttonSize: size, isDisabled }),
+                        applyStyle(textStyle, { buttonSize: size, isUnderlined }),
                         animatedTextStyle,
                     ]}
                 >

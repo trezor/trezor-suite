@@ -6,6 +6,8 @@ import { useSetAtom } from 'jotai';
 import { useGraphForAllAccounts, Graph, TimeSwitch } from '@suite-native/graph';
 import { selectFiatCurrency } from '@suite-native/module-settings';
 import { VStack } from '@suite-native/atoms';
+import { selectIsDeviceDiscoveryActive } from '@suite-common/wallet-core';
+import { selectIsPortfolioEmpty } from '@suite-native/assets';
 
 import {
     PortfolioGraphHeader,
@@ -15,6 +17,8 @@ import {
 
 export const PortfolioGraph = () => {
     const fiatCurrency = useSelector(selectFiatCurrency);
+    const isDiscoveryActive = useSelector(selectIsDeviceDiscoveryActive);
+    const isPortfolioEmpty = useSelector(selectIsPortfolioEmpty);
     const { graphPoints, error, isLoading, refetch, onSelectTimeFrame, timeframe } =
         useGraphForAllAccounts({
             fiatCurrency: fiatCurrency.label,
@@ -34,10 +38,11 @@ export const PortfolioGraph = () => {
 
     useEffect(setInitialSelectedPoints, [setInitialSelectedPoints]);
 
+    if (isPortfolioEmpty && isDiscoveryActive) return null;
+
     return (
         <VStack spacing="large">
             <PortfolioGraphHeader />
-
             <Graph
                 points={graphPoints}
                 loading={isLoading}

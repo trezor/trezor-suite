@@ -24,6 +24,9 @@ import {
     ButtonSize,
     TextButton,
     NumPadButton,
+    TextButtonVariant,
+    Card,
+    ListItemSkeleton,
 } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Screen, ScreenHeader } from '@suite-native/navigation';
@@ -76,6 +79,7 @@ export const DemoScreen = () => {
         'dangerElevation0',
     ] satisfies ButtonColorScheme[];
 
+    const textButtonVariants = ['primary', 'tertiary'] satisfies TextButtonVariant[];
     const badgeVariants = ['neutral', 'green', 'red', 'bold'] satisfies BadgeVariant[];
 
     const handleRadioPress = (value: string | number) => {
@@ -175,13 +179,25 @@ export const DemoScreen = () => {
                 </VStack>
                 <VStack>
                     <Text variant="titleSmall">TextButton:</Text>
-                    <HStack flexDirection="row" justifyContent="space-around" alignItems="center">
-                        {buttonSizes.map(buttonSize => (
-                            <TextButton key={buttonSize} iconLeft="trezorT" size={buttonSize}>
-                                {buttonSize}
-                            </TextButton>
-                        ))}
-                    </HStack>
+                    {textButtonVariants.map(variant => (
+                        <HStack
+                            key="variant"
+                            flexDirection="row"
+                            justifyContent="space-around"
+                            alignItems="center"
+                        >
+                            {buttonSizes.map(buttonSize => (
+                                <TextButton
+                                    variant={variant}
+                                    key={buttonSize}
+                                    iconLeft="trezorT"
+                                    size={buttonSize}
+                                >
+                                    {buttonSize}
+                                </TextButton>
+                            ))}
+                        </HStack>
+                    ))}
                 </VStack>
                 <Divider />
                 <Divider />
@@ -363,6 +379,12 @@ export const DemoScreen = () => {
                             ))}
                         </HStack>
                     </Box>
+                    <VStack marginTop="medium">
+                        <Text variant="titleMedium">Skeleton</Text>
+                        <Card>
+                            <ListItemSkeleton />
+                        </Card>
+                    </VStack>
                     <CoinsSettings />
                 </Box>
             </VStack>
