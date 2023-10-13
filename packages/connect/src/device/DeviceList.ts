@@ -61,6 +61,8 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> {
 
     penalizedDevices: { [deviceID: string]: number } = {};
 
+    transportFirstEventPromise: Promise<void> | undefined;
+
     constructor() {
         super();
 
@@ -319,7 +321,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> {
     }
 
     async waitForTransportFirstEvent() {
-        await new Promise<void>(resolve => {
+        this.transportFirstEventPromise = new Promise<void>(resolve => {
             const handler = () => {
                 this.removeListener(TRANSPORT.START, handler);
                 this.removeListener(TRANSPORT.ERROR, handler);
@@ -328,6 +330,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> {
             this.on(TRANSPORT.START, handler);
             this.on(TRANSPORT.ERROR, handler);
         });
+        await this.transportFirstEventPromise;
     }
 
     private async _createAndSaveDevice(descriptor: Descriptor) {
