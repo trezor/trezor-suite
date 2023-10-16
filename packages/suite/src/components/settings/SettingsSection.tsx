@@ -1,6 +1,6 @@
 import { ReactNode, ReactElement } from 'react';
 import styled, { useTheme } from 'styled-components';
-import { Card, variables, P, Icon, types } from '@trezor/components';
+import { Card, variables, P, Icon, IconType } from '@trezor/components';
 
 const Wrapper = styled.div`
     margin-bottom: 40px;
@@ -31,7 +31,7 @@ const Description = styled(P)`
 interface SettingsSectionProps {
     customHeader?: ReactNode;
     title?: string | ReactElement;
-    icon?: types.IconType;
+    icon?: IconType;
     description?: string | ReactElement;
     children?: ReactNode;
 }
