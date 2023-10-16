@@ -9,6 +9,7 @@ import { formatDuration, isFeatureFlagEnabled } from '@suite-common/suite-utils'
 import { PrecomposedTransactionFinal, TxFinalCardano } from 'src/types/wallet/sendForm';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { selectLabelingDataForSelectedAccount } from 'src/reducers/suite/metadataReducer';
+import { mediaQueries } from '@trezor/styles';
 
 const Wrapper = styled.div`
     padding: 20px 15px 12px;
@@ -133,7 +134,7 @@ const TxDetailsButton = styled.button<{ detailsOpen: boolean }>`
         detailsOpen && darken(theme.HOVER_DARKEN_FILTER, theme.STROKE_LIGHT_GREY)};
     cursor: pointer;
 
-    ${variables.MEDIA_QUERY.DARK_THEME} {
+    ${mediaQueries.dark_theme} {
         background: ${({ theme, detailsOpen }) =>
             detailsOpen
                 ? darken(theme.HOVER_DARKEN_FILTER, theme.STROKE_LIGHT_GREY)
