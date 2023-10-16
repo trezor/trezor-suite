@@ -17,7 +17,7 @@ import { borders } from '@trezor/theme';
 
 import { FONT_WEIGHT, FONT_SIZE, Z_INDEX } from '../../../config/variables';
 import { animations } from '../../../config';
-import { InputSize, InputState } from '../../../support/types';
+
 import {
     Label,
     LabelLeft,
@@ -28,6 +28,7 @@ import {
 } from '../InputStyles';
 import { BottomText } from '../BottomText';
 import { MODAL_CONTENT_ID } from '../../modals/Modal/Modal';
+import { InputState, InputSize } from '../inputTypes';
 
 const reactSelectClassNamePrefix = 'react-select';
 

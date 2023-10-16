@@ -3,6 +3,22 @@
 
 import { colorVariants } from '@trezor/theme';
 
+type LightThemeProps = typeof THEME.light;
+type DarkThemeProps = typeof THEME.dark;
+
+// extracts values for common props (eg. NEUE_BG_GREEN: "#00854D" | "#e3ede0")
+type CommonThemeProps = {
+    [K in keyof LightThemeProps & keyof DarkThemeProps]: LightThemeProps[K] | DarkThemeProps[K];
+};
+
+type PropsOnlyInLightTheme = Omit<LightThemeProps, keyof DarkThemeProps>;
+type PropsOnlyInDarkTheme = Omit<DarkThemeProps, keyof LightThemeProps>;
+
+// all common theme props and their values are nicely listed, props that are specific to given theme are marked optional
+export type SuiteThemeColors = CommonThemeProps &
+    Partial<PropsOnlyInDarkTheme> &
+    Partial<PropsOnlyInLightTheme>;
+
 export const THEME = {
     light: {
         THEME: 'light',
