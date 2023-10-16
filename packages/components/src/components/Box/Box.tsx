@@ -1,10 +1,9 @@
 import { ReactNode, HTMLAttributes } from 'react';
 import styled, { css } from 'styled-components';
-import { InputState } from '../../support/types';
 import { getInputStateBorderColor } from '../form/InputStyles';
 
 export interface BoxProps extends HTMLAttributes<HTMLDivElement> {
-    state?: InputState;
+    state?: 'success' | 'warning' | 'error';
     children: ReactNode;
 }
 

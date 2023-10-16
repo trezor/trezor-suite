@@ -2,7 +2,8 @@ import { ReactNode, MouseEvent } from 'react';
 import styled, { css, useTheme } from 'styled-components';
 import { Icon, IconProps } from '../../assets/Icon/Icon';
 import { FONT_SIZE } from '../../../config/variables';
-import { ParagraphSize } from '../../../support/types';
+
+export type LinkSize = 'normal' | 'small' | 'tiny';
 
 const A_SIZES = {
     normal: FONT_SIZE.NORMAL,
@@ -51,7 +52,7 @@ interface LinkProps {
     href?: string;
     to?: any;
     target?: string;
-    size?: ParagraphSize;
+    size?: LinkSize;
     onClick?: (event: MouseEvent<any>) => void;
     children?: ReactNode;
     className?: string;

@@ -1,7 +1,7 @@
 // import original module declarations
 import 'styled-components';
 import { Colors } from '@trezor/theme';
-import { SuiteThemeColors } from './src/support/types';
+import { SuiteThemeColors } from './src/config/colors';
 
 declare module 'styled-components' {
     export interface DefaultTheme extends SuiteThemeColors, Colors {}

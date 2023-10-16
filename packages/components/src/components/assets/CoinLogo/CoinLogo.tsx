@@ -2,7 +2,8 @@ import { ImgHTMLAttributes } from 'react';
 import { ReactSVG } from 'react-svg';
 import styled from 'styled-components';
 import { COINS } from './coins';
-import { CoinType } from '../../../support/types';
+
+export type CoinType = keyof typeof COINS;
 
 const SvgWrapper = styled.div<Omit<CoinLogoProps, 'symbol'>>`
     display: inline-block;
