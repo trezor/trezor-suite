@@ -11,3 +11,16 @@ export const TYPES = {
 } as const;
 
 export type NetworkType = keyof typeof TYPES;
+
+export const MODULES = [
+    'binance',
+    'cardano',
+    'eos',
+    'ethereum',
+    'nem',
+    'ripple',
+    'stellar',
+    'tezos',
+] as const;
+
+export type ModuleName = (typeof MODULES)[number];
