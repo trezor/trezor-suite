@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { CoinLogo, variables, types } from '../../../index';
+import { CoinLogo, CoinType, variables } from '../../../index';
 import { StoryColumn } from '../../../support/Story';
 
 const CoinName = styled.div`
@@ -30,7 +30,7 @@ export const All = {
     render: () => (
         <StoryColumn minWidth={700}>
             <WrapperIcons>
-                {variables.COINS.map((coin: types.CoinType) => (
+                {variables.COINS.map((coin: CoinType) => (
                     <Icon>
                         <CoinName>{coin}</CoinName>
                         <CoinLogo symbol={coin} data-test={`coin-${coin}`} size={64} />
