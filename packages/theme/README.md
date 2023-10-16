@@ -15,13 +15,12 @@ If you want to update fonts, place new fonts to `./fonts` folder in this package
 
 To regenerate color schemas follow these steps:
 
-1. replace `designColors.json` with new color theme exported from Figma.
-2. Run `yarn generate-colors` - This command flattens the color scheme object and adds TypeScript typing. Result can be found in file `./src/colors.ts`
-3. You can use your added colors 🎉.
+Colors can be found in file `./src/colors.ts`
 
-    ```tsx
+usage:
+`tsx
     <Text color="newlyDefinedColorVariant" />
-    ```
+    `
 
 ### Older themes
 
