@@ -451,7 +451,7 @@ connect-web:
   only:
     <<: *run_everything_rules
 
-connect-web mv2:
+.connect-web mv2:
   stage: integration testing
   variables:
     COMPOSE_PROJECT_NAME: $CI_JOB_ID
@@ -466,5 +466,15 @@ connect-web mv2:
   after_script:
     - docker-compose down
     - docker network prune -f
+
+connect-web mv2:
+  extends: .connect-web mv2
   only:
     <<: *run_everything_rules
+  when: always
+
+connect-web mv2 manual:
+  extends: .connect-web mv2
+  except:
+    <<: *run_everything_rules
+  when: manual
