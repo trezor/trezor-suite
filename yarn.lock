@@ -9525,6 +9525,7 @@ __metadata:
     "@trezor/env-utils": "workspace:*"
     "@trezor/ipc-proxy": "workspace:*"
     "@trezor/react-utils": "workspace:*"
+    "@trezor/styles": "workspace:*"
     "@trezor/suite-analytics": "workspace:*"
     "@trezor/suite-data": "workspace:*"
     "@trezor/suite-desktop-api": "workspace:*"
