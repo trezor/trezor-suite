@@ -2,8 +2,9 @@ import styled, { keyframes, css, useTheme } from 'styled-components';
 
 import { Ref, forwardRef, SVGAttributes } from 'react';
 import { ReactSVG } from 'react-svg';
-import { IconType } from '../../../support/types';
 import { ICONS } from './icons';
+
+export type IconType = keyof typeof ICONS;
 
 // TODO: make animation of icons better
 const rotate180up = keyframes`

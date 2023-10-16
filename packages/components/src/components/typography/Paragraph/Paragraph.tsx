@@ -1,7 +1,8 @@
 import { ReactNode, HTMLAttributes } from 'react';
 import styled, { css } from 'styled-components';
 import { variables } from '../../../config';
-import { ParagraphSize } from '../../../support/types';
+
+export type ParagraphSize = 'normal' | 'small' | 'tiny';
 
 const getLineHeight = (size: PProps['size']) => {
     switch (size) {

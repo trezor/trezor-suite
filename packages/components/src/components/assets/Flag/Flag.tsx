@@ -1,5 +1,7 @@
 import styled from 'styled-components';
-import { FlagType } from '../../../support/types';
+import { FLAGS } from './flags';
+
+export type FlagType = keyof typeof FLAGS;
 
 const Wrapper = styled.div`
     display: flex;

@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Icon, variables, types } from '../../../index';
+import { Icon, variables, IconType } from '../../../index';
 import { storiesOf } from '@storybook/react';
 
 const Wrapper = styled.div`
@@ -30,7 +30,7 @@ storiesOf('Assets/Icons', module).add(
     'All',
     () => (
         <Wrapper>
-            {variables.ICONS.map((icon: types.IconType) => (
+            {variables.ICONS.map((icon: IconType) => (
                 <IconWrapper>
                     <IconText>{icon}</IconText>
                     <Icon icon={icon} data-test={`icon-${icon.toLowerCase().replace('_', '-')}`} />
