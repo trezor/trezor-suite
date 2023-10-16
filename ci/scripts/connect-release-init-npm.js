@@ -102,7 +102,7 @@ const initConnectRelease = () => {
     const branchName = `npm-release/connect-${version}`;
 
     // Check if branch exists and if so, delete it.
-    const branchExists = exec('git', ['branch', '--list', branchName]).toString().trim();
+    const branchExists = exec('git', ['branch', '--list', branchName]).stdout;
     if (branchExists) {
         throw new Error(`Branch ${branchName} already exists, delete it and call script again.`);
     }
