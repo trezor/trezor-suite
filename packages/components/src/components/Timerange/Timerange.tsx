@@ -1,6 +1,7 @@
 import { useState, ReactNode } from 'react';
 import { DateRange } from 'react-date-range';
 import styled, { css } from 'styled-components';
+import { mediaQueries } from '@trezor/styles';
 
 import type { Locale } from 'date-fns';
 
@@ -419,7 +420,7 @@ const StyledTimerange = styled.div`
     background: ${({ theme }) => theme.BG_WHITE};
     border-radius: 12px;
 
-    ${variables.MEDIA_QUERY.DARK_THEME} {
+    ${mediaQueries.dark_theme} {
         border: 1px solid ${({ theme }) => theme.STROKE_LIGHT_GREY};
     }
 `;

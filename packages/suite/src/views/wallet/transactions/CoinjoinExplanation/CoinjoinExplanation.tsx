@@ -4,6 +4,7 @@ import { Button, Icon, variables } from '@trezor/components';
 import { HELP_CENTER_COINJOIN_URL } from '@trezor/urls';
 import { Translation, TrezorLink } from 'src/components/suite';
 import { CoinjoinProcessStep, CoinjoinProcessStepProps } from './CoinjoinProcessStep';
+import { mediaQueries } from '@trezor/styles';
 
 const Container = styled.div`
     padding: 20px 20px 16px;
@@ -57,7 +58,7 @@ const StyledButton = styled(Button)`
         background: ${({ theme }) => darken(theme.HOVER_DARKEN_FILTER, '#d9d9d9')};
     }
 
-    ${variables.MEDIA_QUERY.DARK_THEME} {
+    ${mediaQueries.dark_theme} {
         background: ${({ theme }) => theme.BG_WHITE};
 
         :hover,
