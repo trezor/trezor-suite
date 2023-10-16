@@ -1,11 +1,9 @@
-import { colors, THEME, intermediaryTheme } from './config/colors';
+import { colors, THEME, intermediaryTheme, SuiteThemeColors } from './config/colors';
 
 export * as variables from './config/variables';
 export * as animations from './config/animations';
 export { motionAnimation, motionEasing } from './config/motion';
-export * as types from './support/types';
 export * from './support/ThemeProvider';
-export * from './support/types';
 
 export * from './components/buttons/Button/Button';
 export * from './components/buttons/IconButton/IconButton';
@@ -56,4 +54,4 @@ export * from './components/Note/Note';
 
 export * from './constants/keyboardEvents';
 
-export { colors, THEME, intermediaryTheme };
+export { colors, THEME, intermediaryTheme, type SuiteThemeColors };

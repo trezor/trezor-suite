@@ -1,6 +1,5 @@
 import { createContext } from 'react';
-import { THEME } from '../config/colors';
-import { SuiteThemeColors } from './types';
+import { SuiteThemeColors, THEME } from '../config/colors';
 
 const ThemeContext = createContext<SuiteThemeColors>(THEME.light);
 

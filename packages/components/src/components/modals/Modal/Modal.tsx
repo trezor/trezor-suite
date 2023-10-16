@@ -4,8 +4,7 @@ import styled, { css, useTheme } from 'styled-components';
 import { useEvent } from 'react-use';
 import { borders, boxShadows, spacings, spacingsPx, typography } from '@trezor/theme';
 
-import { Icon } from '../../assets/Icon/Icon';
-import { IconType } from '../../../support/types';
+import { Icon, IconType } from '../../assets/Icon/Icon';
 import { Stepper } from '../../loaders/Stepper/Stepper';
 
 const CLOSE_ICON_SIZE = spacings.xxl;
