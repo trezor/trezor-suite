@@ -3,7 +3,7 @@ import { useIntl } from 'react-intl';
 import styled from 'styled-components';
 
 import { getCheckBackupUrl } from '@suite-common/suite-utils';
-import { Button, H2, P, Image, variables } from '@trezor/components';
+import { Button, H2, P, Image } from '@trezor/components';
 import { pickByDeviceModel } from '@trezor/device-utils';
 import TrezorConnect, { DeviceModelInternal } from '@trezor/connect';
 
@@ -39,7 +39,6 @@ const StepsContainer = styled.div`
 `;
 
 const StyledP = styled(P)`
-    font-size: ${variables.FONT_SIZE.SMALL};
     color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
 `;
 
@@ -142,7 +141,7 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
             case 'initial':
                 return (
                     <>
-                        <LeftAlignedP>
+                        <LeftAlignedP type="hint">
                             <Translation id={seedBackupLengthMessage} />
                         </LeftAlignedP>
 
@@ -217,7 +216,7 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
                 return modal.context !== '@modal/context-none' ? (
                     <>
                         {device.features.capabilities.includes('Capability_PassphraseEntry') && (
-                            <LeftAlignedP>
+                            <LeftAlignedP type="hint">
                                 <Translation id="TR_ENTER_SEED_WORDS_ON_DEVICE" />
                             </LeftAlignedP>
                         )}
@@ -233,7 +232,7 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
                         <H2 data-test="@recovery/success-title">
                             <Translation id="TR_SEED_CHECK_SUCCESS_TITLE" />
                         </H2>
-                        <StyledP>
+                        <StyledP type="hint">
                             <Translation id="TR_SEED_CHECK_SUCCESS_DESC" />
                         </StyledP>
                     </VerticalCenter>
@@ -243,7 +242,7 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
                         <H2>
                             <Translation id="TR_SEED_CHECK_FAIL_TITLE" />
                         </H2>
-                        <StyledP>
+                        <StyledP type="hint">
                             <Translation
                                 id="TR_RECOVERY_ERROR"
                                 values={{ error: recovery.error }}

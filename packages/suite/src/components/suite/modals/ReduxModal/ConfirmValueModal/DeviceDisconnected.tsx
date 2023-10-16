@@ -39,13 +39,13 @@ interface DeviceDisconnectedProps {
 export const DeviceDisconnected = ({ label, ...rest }: DeviceDisconnectedProps) => (
     <Wrapper {...rest}>
         <ContentCol>
-            <P size="small">
+            <P type="hint">
                 <Translation
                     id="TR_DEVICE_LABEL_IS_NOT_CONNECTED"
                     values={{ deviceLabel: label }}
                 />
             </P>
-            <P size="tiny">
+            <P type="label">
                 <Translation id="TR_PLEASE_CONNECT_YOUR_DEVICE" />
             </P>
         </ContentCol>

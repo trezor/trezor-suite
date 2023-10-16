@@ -56,7 +56,7 @@ export const SettingsSection = ({
                     </Title>
                 )}
                 {description && !customHeader && (
-                    <Description size="tiny">{description}</Description>
+                    <Description type="label">{description}</Description>
                 )}
             </Header>
 

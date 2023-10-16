@@ -45,7 +45,7 @@ export const EnableNetwork = ({
                     variant="small"
                     heading={
                         <>
-                            <P size="tiny" weight="bold">
+                            <P type="label">
                                 <Translation id="TR_TESTNET_COINS" />
                             </P>
                             <TooltipSymbol

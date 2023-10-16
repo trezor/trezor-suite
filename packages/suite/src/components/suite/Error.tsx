@@ -43,6 +43,7 @@ const StyledButton = styled(Button)`
 
 const GenericMessage = styled(P)`
     margin-bottom: 10px;
+    text-align: center;
 `;
 
 const ErrorMessage = styled.span`
@@ -60,7 +61,7 @@ type ErrorProps = {
 export const Error = ({ error }: ErrorProps) => (
     <Wrapper>
         <H1>Error occurred</H1>
-        <GenericMessage textAlign="center">It appears something is broken.</GenericMessage>
+        <GenericMessage>It appears something is broken.</GenericMessage>
         <ErrorMessage>{error}</ErrorMessage>
         <Separator />
         <Buttons>

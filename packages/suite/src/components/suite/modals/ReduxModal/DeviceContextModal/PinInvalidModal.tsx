@@ -26,7 +26,7 @@ export const PinInvalidModal = ({ device, ...rest }: PinInvalidModalProps) => (
     >
         <DeviceConfirmImage device={device} />
         <Divider />
-        <P size="small">
+        <P type="hint">
             <Translation id="TR_RETRYING_DOT_DOT" />
         </P>
     </StyledModal>
