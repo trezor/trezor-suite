@@ -4,9 +4,9 @@ import { notificationsActions } from '@suite-common/toast-notifications';
 import TrezorConnect, { AccountInfo, BundleProgress, UI } from '@trezor/connect';
 import { TrezorDevice } from '@suite-common/suite-types';
 import { getDerivationType, isTrezorConnectBackendType } from '@suite-common/wallet-utils';
-import { Account, Discovery, DiscoveryItem, PartialDiscovery } from '@suite-common/wallet-types';
+import { Discovery, DiscoveryItem, PartialDiscovery } from '@suite-common/wallet-types';
 import { settingsCommonConfig } from '@suite-common/suite-config';
-import { networksCompatibility } from '@suite-common/wallet-config';
+import { networksCompatibility, NetworkSymbol } from '@suite-common/wallet-config';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { versionUtils } from '@trezor/utils';
 
@@ -26,9 +26,12 @@ import { selectDevice, selectDevices, selectDiscoveryForDevice } from '../device
 
 type ProgressEvent = BundleProgress<AccountInfo | null>['payload'];
 
-const LIMIT = 10;
+export const LIMIT = 10;
 
-const filterUnavailableNetworks = (enabledNetworks: Account['symbol'][], device?: TrezorDevice) =>
+export const filterUnavailableNetworks = (
+    enabledNetworks: NetworkSymbol[],
+    device?: TrezorDevice,
+) =>
     networksCompatibility.filter(n => {
         const firmwareVersion = getFirmwareVersion(device);
         const internalModel = device?.features?.internal_model;
