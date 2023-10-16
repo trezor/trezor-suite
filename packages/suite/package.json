@@ -66,6 +66,7 @@
         "@trezor/suite-data": "workspace:*",
         "@trezor/suite-desktop-api": "workspace:*",
         "@trezor/suite-storage": "workspace:*",
+        "@trezor/styles": "workspace:*",
         "@trezor/theme": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@trezor/urls": "workspace:*",
