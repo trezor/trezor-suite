@@ -1,3 +1,5 @@
+import { HELP_CENTER_DEVICE_AUTHENTICATION } from '@trezor/urls';
+
 import { openModal } from 'src/actions/suite/modalActions';
 import { Translation } from 'src/components/suite';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from 'src/components/suite/Settings';
@@ -13,6 +15,7 @@ export const AuthenticateDevice = () => {
             <TextColumn
                 title={<Translation id="TR_CHECK_DEVICE_ORIGIN_TITLE" />}
                 description={<Translation id="TR_CHECK_DEVICE_ORIGIN_DESCRIPTION" />}
+                buttonLink={HELP_CENTER_DEVICE_AUTHENTICATION}
             />
             <ActionColumn>
                 <ActionButton variant="secondary" onClick={handleClick}>
