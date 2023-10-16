@@ -57,7 +57,7 @@ export const HELP_CENTER_ZERO_VALUE_ATTACKS =
     'https://trezor.io/support/a/address-poisoning-attacks';
 export const HELP_CENTER_LABELING = 'https://trezor.io/learn/a/labels-in-trezor-suite-app';
 export const HELP_CENTER_DEVICE_AUTHENTICATION =
-    'https://blog.trezor.io/introducing-an-added-element-of-security-for-your-trezor-safe-3-193474ad48be';
+    'https://trezor.io/learn/a/trezor-safe-3-authentication-check';
 
 export const INVITY_URL = 'https://invity.io/';
 export const INVITY_SCHEDULE_OF_FEES = 'https://blog.invity.io/schedule-of-fees';
