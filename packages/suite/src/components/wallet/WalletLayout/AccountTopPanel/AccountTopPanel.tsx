@@ -50,7 +50,7 @@ const AccountTopPanelSkeleton = ({ animate, account, symbol }: AccountTopPanelSk
         <Stack alignItems="center">
             {symbol ? <CoinLogo size={24} symbol={symbol} /> : <SkeletonCircle size="24px" />}
 
-            <Balance noMargin>
+            <Balance>
                 <SkeletonRectangle width="160px" height="32px" animate={animate} />
             </Balance>
         </Stack>
@@ -94,7 +94,7 @@ export const AccountTopPanel = () => {
             <AmountUnitSwitchWrapper symbol={symbol}>
                 <CoinLogo size={24} symbol={symbol} />
 
-                <Balance noMargin>
+                <Balance>
                     <FormattedCryptoAmount value={formattedBalance} symbol={symbol} />
                 </Balance>
 
@@ -104,7 +104,7 @@ export const AccountTopPanel = () => {
                     showApproximationIndicator
                 >
                     {({ value }) =>
-                        value ? <FiatBalanceWrapper noMargin>{value}</FiatBalanceWrapper> : null
+                        value ? <FiatBalanceWrapper>{value}</FiatBalanceWrapper> : null
                     }
                 </FiatValue>
             </AmountUnitSwitchWrapper>

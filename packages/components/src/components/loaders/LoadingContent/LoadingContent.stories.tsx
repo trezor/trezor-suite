@@ -7,7 +7,7 @@ export default {
 export const LoadingContent = {
     render: ({ ...args }) => (
         <LoadingContentComponent {...args}>
-            <H1 noMargin>$1337</H1>
+            <H1>$1337</H1>
         </LoadingContentComponent>
     ),
     args: {

@@ -186,7 +186,7 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
                             description={<Translation id="TR_DRY_RUN_CHECK_ITEM_DESCRIPTION" />}
                             isChecked={understood}
                             link={
-                                <TrezorLink icon="EXTERNAL_LINK" size="tiny" href={learnMoreUrl}>
+                                <TrezorLink icon="EXTERNAL_LINK" type="label" href={learnMoreUrl}>
                                     <Translation id="TR_LEARN_MORE" />
                                 </TrezorLink>
                             }

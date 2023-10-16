@@ -124,7 +124,7 @@ export const FirmwareOffer = ({
                                 />
 
                                 <StyledLink
-                                    size="small"
+                                    type="hint"
                                     variant="nostyle"
                                     icon="EXTERNAL_LINK"
                                     href={parsedChangelog.notes || changelogUrl}

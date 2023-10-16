@@ -153,7 +153,7 @@ export const AccountsMenu = ({ isMenuInline }: AccountsMenuProps) => {
             <Wrapper isInline={isMenuInline}>
                 <Scroll isInline={isMenuInline}>
                     <MenuHeader isInline={isMenuInline}>
-                        <Heading noMargin isInline={isMenuInline}>
+                        <Heading isInline={isMenuInline}>
                             <Translation id="TR_MY_ACCOUNTS" />
                         </Heading>
                         {!isMenuInline && <AccountSearchBox isMobile={isMenuInline} />}
@@ -277,7 +277,7 @@ export const AccountsMenu = ({ isMenuInline }: AccountsMenuProps) => {
                         }}
                     >
                         <Row>
-                            <Heading noMargin isInline={isMenuInline}>
+                            <Heading isInline={isMenuInline}>
                                 <Translation id="TR_MY_ACCOUNTS" />
                             </Heading>
                             <Icon
@@ -320,7 +320,7 @@ export const AccountsMenu = ({ isMenuInline }: AccountsMenuProps) => {
             <Scroll>
                 <MenuHeader>
                     <Row>
-                        <Heading noMargin>
+                        <Heading>
                             <LoadingContent isLoading={isDiscoveryRunning}>
                                 <Translation id="TR_MY_ACCOUNTS" />
                             </LoadingContent>
