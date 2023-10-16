@@ -1,9 +1,10 @@
 import { ReactNode } from 'react';
 import styled from 'styled-components';
-import { Tooltip, variables } from '@trezor/components';
+import { Tooltip } from '@trezor/components';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { NetworkSymbol } from 'src/types/wallet';
 import { Translation } from './Translation';
+import { mediaQueries } from '@trezor/styles';
 
 const Container = styled.div`
     position: relative;
@@ -15,8 +16,7 @@ const Container = styled.div`
     border-radius: 6px;
     transition: background 0.1s ease-in;
     cursor: pointer;
-
-    ${variables.MEDIA_QUERY.HOVER} {
+    ${mediaQueries.hover} {
         :hover {
             background: ${({ theme }) => theme.BG_GREY};
         }

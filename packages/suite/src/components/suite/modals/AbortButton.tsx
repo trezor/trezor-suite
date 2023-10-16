@@ -4,6 +4,7 @@ import { Icon, variables } from '@trezor/components';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
 import { Translation } from '..';
+import { mediaQueries } from '@trezor/styles';
 
 const collapsedStyle = css`
     width: 32px;
@@ -48,7 +49,7 @@ const AbortContainer = styled.div`
 
     /* Linting error because of a complex interpolation */
 
-    ${/* sc-selector */ variables.MEDIA_QUERY.HOVER} {
+    ${/* sc-selector */ mediaQueries.hover} {
         ${/* sc-block */ collapsedStyle}
         :hover {
             ${/* sc-block */ expandedStyle}
