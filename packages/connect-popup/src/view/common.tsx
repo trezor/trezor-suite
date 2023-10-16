@@ -122,9 +122,12 @@ export const initMessageChannel = async (
         ]);
 
     const iframe = getIframeElement();
-    if (!iframe) {
+    // Webextension doesn't have iframe element defined here since there is not `window.opener` reference
+    // so they only relay on receiving `POPUP.HANDSHAKE` message from iframe to make sure it is available.
+    if (!iframe && settings.env !== 'webextension') {
         throw ERRORS.TypedError('Popup_ConnectionMissing');
     }
+
     // iframe requested communication via BroadcastChannel.
     if (broadcastId) {
         try {
@@ -152,12 +155,18 @@ export const initMessageChannel = async (
         }
     }
 
+    // Depending on some settings of user's browser BroadcastChannel might be unavailable
+    // in those cases we use MessageChannel as fallback communication.
     // create MessageChannel and assign message listener
     const channel = new MessageChannel();
     channel.port1.onmessage = handler;
 
     // create handshake loader
     const iframeHandshake = handshakeLoader(channel.port1);
+
+    if (!iframe) {
+        throw ERRORS.TypedError('Popup_ConnectionMissing');
+    }
 
     // send POPUP.HANDSHAKE to iframe with assigned MessagePort
     iframe.postMessage(handshakeMessage, window.location.origin, [channel.port2]);
@@ -191,7 +200,7 @@ export const postMessageToParent = (message: CoreMessage) => {
         // post message to parent and wait for POPUP.INIT message
         window.opener.postMessage(message, '*');
     } else {
-        // webextensions doesn't have "window.opener" reference and expect this message in "content-script" above popup [see: ./src/plugins/webextension/trezor-content-script.js]
+        // webextensions doesn't have "window.opener" reference and expect this message in "content-script" above popup [see: packages/connect-web/src/webextension/trezor-content-script.js]
         // future communication channel with webextension iframe will be "ChromePort"
 
         // and electron (electron which uses connect hosted outside)
