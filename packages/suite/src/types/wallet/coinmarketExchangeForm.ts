@@ -52,4 +52,5 @@ export interface ExchangeFormContextValues extends UseFormReturn<ExchangeFormSta
     formState: ReactHookFormState<ExchangeFormState>;
     handleClearFormButtonClick: () => void;
     isDraft: boolean;
+    tokensFiatValue?: Record<string, number>;
 }

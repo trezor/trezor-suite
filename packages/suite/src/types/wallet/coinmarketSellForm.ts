@@ -58,4 +58,5 @@ export type SellFormContextValues = UseFormReturn<SellFormState> & {
     handleClearFormButtonClick: () => void;
     formState: ReactHookFormState<FormState>;
     isDraft: boolean;
+    tokensFiatValue?: Record<string, number>;
 };
