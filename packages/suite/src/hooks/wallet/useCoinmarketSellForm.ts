@@ -36,6 +36,7 @@ import {
 } from 'src/types/wallet/coinmarketSellForm';
 import {
     getComposeAddressPlaceholder,
+    getTokensFiatValue,
     mapTestnetSymbol,
 } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { getAmountLimits, processQuotes } from 'src/utils/wallet/coinmarket/sellUtils';
@@ -65,11 +66,13 @@ const useSellState = (
     const coinFees = fees[account.symbol];
     const levels = getFeeLevels(account.networkType, coinFees);
     const feeInfo = { ...coinFees, levels };
+    const tokensFiatValue: Awaited<ReturnType<typeof getTokensFiatValue>> = {};
 
     return {
         account,
         network,
         feeInfo,
+        tokensFiatValue,
         formValues: defaultFormValues,
     };
 };
@@ -122,10 +125,16 @@ export const useCoinmarketSellForm = ({
     const initState = useSellState(selectedAccount, fees, !!state, defaultValues);
 
     useEffect(() => {
-        const setStateAsync = async (initState: ReturnType<typeof useSellState>) => {
+        const setStateAsync = async (initState: NonNullable<ReturnType<typeof useSellState>>) => {
             const address = await getComposeAddressPlaceholder(account, network, device, accounts);
-            if (initState?.formValues && address) {
+            if (initState.formValues && address) {
                 initState.formValues.outputs[0].address = address;
+
+                initState.tokensFiatValue = await getTokensFiatValue(
+                    account,
+                    sellInfo?.supportedCryptoCurrencies || new Set(),
+                );
+
                 setState(initState);
             }
         };
@@ -133,7 +142,7 @@ export const useCoinmarketSellForm = ({
         if (!state && initState) {
             setStateAsync(initState);
         }
-    }, [state, initState, account, network, device, accounts]);
+    }, [state, initState, account, network, device, accounts, sellInfo?.supportedCryptoCurrencies]);
 
     const methods = useForm<SellFormState>({
         mode: 'onChange',
@@ -370,6 +379,7 @@ export const useCoinmarketSellForm = ({
         handleClearFormButtonClick,
         formState,
         isDraft,
+        tokensFiatValue: state?.tokensFiatValue,
     };
 };
 

@@ -35,7 +35,10 @@ import {
     FIAT_CURRENCY,
     UseCoinmarketExchangeFormProps,
 } from 'src/types/wallet/coinmarketExchangeForm';
-import { getComposeAddressPlaceholder } from 'src/utils/wallet/coinmarket/coinmarketUtils';
+import {
+    getComposeAddressPlaceholder,
+    getTokensFiatValue,
+} from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { getAmountLimits, splitToQuoteCategories } from 'src/utils/wallet/coinmarket/exchangeUtils';
 import { useFormDraft } from 'src/hooks/wallet/useFormDraft';
 import { useCoinmarketNavigation } from 'src/hooks/wallet/useCoinmarketNavigation';
@@ -63,11 +66,13 @@ const useExchangeState = (
     const coinFees = fees[account.symbol];
     const levels = getFeeLevels(account.networkType, coinFees);
     const feeInfo = { ...coinFees, levels };
+    const tokensFiatValue: Awaited<ReturnType<typeof getTokensFiatValue>> = {};
 
     return {
         account,
         network,
         feeInfo,
+        tokensFiatValue,
         formValues: defaultFormValues,
     };
 };
@@ -116,10 +121,18 @@ export const useCoinmarketExchangeForm = ({
     // throttle initial state calculation
     const initState = useExchangeState(selectedAccount, fees, !!state, defaultValues);
     useEffect(() => {
-        const setStateAsync = async (initState: ReturnType<typeof useExchangeState>) => {
+        const setStateAsync = async (
+            initState: NonNullable<ReturnType<typeof useExchangeState>>,
+        ) => {
             const address = await getComposeAddressPlaceholder(account, network, device, accounts);
             if (initState?.formValues && address) {
                 initState.formValues.outputs[0].address = address;
+
+                initState.tokensFiatValue = await getTokensFiatValue(
+                    account,
+                    exchangeInfo?.sellSymbols || new Set(),
+                );
+
                 setState(initState);
             }
         };
@@ -127,7 +140,7 @@ export const useCoinmarketExchangeForm = ({
         if (!state && initState) {
             setStateAsync(initState);
         }
-    }, [state, initState, account, network, device, accounts]);
+    }, [state, initState, account, network, device, accounts, exchangeInfo?.sellSymbols]);
 
     const methods = useForm({
         mode: 'onChange',
@@ -371,6 +384,7 @@ export const useCoinmarketExchangeForm = ({
         formState,
         handleClearFormButtonClick,
         isDraft,
+        tokensFiatValue: state?.tokensFiatValue,
     };
 };
 

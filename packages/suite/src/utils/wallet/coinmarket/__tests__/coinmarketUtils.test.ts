@@ -8,7 +8,7 @@ import {
     getSendCryptoOptions,
     getTagAndInfoNote,
 } from '../coinmarketUtils';
-import { accountBtc, accountEth } from '../__fixtures__/coinmarketUtils';
+import { accountBtc, accountEth, tokensFiatValue } from '../__fixtures__/coinmarketUtils';
 
 describe('coinmarket utils', () => {
     it('buildOption', () => {
@@ -67,10 +67,45 @@ describe('coinmarket utils', () => {
             {
                 value: 'USDT20',
                 label: 'USDT20',
+                token: {
+                    type: 'ERC20',
+                    contract: '0x1234123412341234123412341234123412341234',
+                    symbol: 'usdt',
+                    decimals: 18,
+                },
             },
             {
                 label: 'USDC',
                 value: 'USDC',
+                token: {
+                    type: 'ERC20',
+                    contract: '0x1234123412341234123412341234123412341235',
+                    symbol: 'usdc',
+                    decimals: 18,
+                },
+            },
+        ]);
+
+        expect(
+            getSendCryptoOptions(
+                accountEth as Account,
+                new Set(['eth', 'usdt20', 'usdc', 'dai']),
+                tokensFiatValue,
+            ),
+        ).toStrictEqual([
+            {
+                value: 'ETH',
+                label: 'ETH',
+            },
+            {
+                label: 'USDC',
+                value: 'USDC',
+                token: {
+                    type: 'ERC20',
+                    contract: '0x1234123412341234123412341234123412341235',
+                    symbol: 'usdc',
+                    decimals: 18,
+                },
             },
         ]);
     });
