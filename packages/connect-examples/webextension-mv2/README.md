@@ -6,8 +6,13 @@ Tested in Chrome and Firefox
 
 ## Install
 
--   `cd packages/connect-examples/`
--   `node update-webextensions.js`
+Run the commands below in order to get the MV2 and MV3 webextension ready to be loaded in the browser.
+
+-   `yarn`
+-   `yarn build:libs`
+-   `yarn workspace @trezor/connect-web build:webextension`
+-   `yarn workspace @trezor/connect-web build:inline`
+-   `node packages/connect-examples/update-webextensions.js`
 
 ## Browsers
 
