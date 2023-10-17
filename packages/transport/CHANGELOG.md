@@ -1,3 +1,8 @@
+# 1.1.17
+
+-   fix: content type header applied for native (#9594) (c84270e13)
+-   fix: use type header with the bridge API (#9590) (b8bb2dfe6)
+
 # 1.1.16
 
 -   feat(transport): udp support (65e617195)
