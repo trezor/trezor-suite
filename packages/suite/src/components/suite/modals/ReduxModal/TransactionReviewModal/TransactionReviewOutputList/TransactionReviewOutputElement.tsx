@@ -6,10 +6,11 @@ import { FiatValue, FormattedCryptoAmount, Translation } from 'src/components/su
 import { Network, Account, NetworkSymbol } from 'src/types/wallet';
 import { TokenInfo } from '@trezor/connect';
 import { amountToSatoshi } from '@suite-common/wallet-utils';
+import { DeviceDisplay } from 'src/components/suite/DeviceDisplay';
+import { TransactionReviewStepIndicatorProps } from './TransactionReviewStepIndicator';
 
 const OutputWrapper = styled.div`
     display: flex;
-    padding: 0 20px 0 0;
     margin-top: 32px;
 
     &:first-child {
@@ -37,7 +38,6 @@ const OutputValue = styled.div`
 const OutputLeft = styled.div`
     display: flex;
     width: 30px;
-    justify-content: center;
     flex-direction: column;
 `;
 
@@ -131,17 +131,19 @@ export type OutputElementLine = {
     label: ReactNode;
     value: string;
     plainValue?: boolean;
+    confirmLabel?: ReactNode;
 };
 
 export type TransactionReviewOutputElementProps = {
     indicator?: JSX.Element;
     lines: OutputElementLine[];
     cryptoSymbol?: NetworkSymbol;
-    fiatSymbol: Network['symbol'];
+    fiatSymbol?: Network['symbol'];
     hasExpansion?: boolean;
     fiatVisible?: boolean;
     token?: TokenInfo;
-    account: Account;
+    account?: Account;
+    state?: TransactionReviewStepIndicatorProps['state'];
 };
 
 export const TransactionReviewOutputElement = forwardRef<
@@ -158,11 +160,13 @@ export const TransactionReviewOutputElement = forwardRef<
             hasExpansion = false,
             fiatVisible = false,
             account,
+            state,
         },
         ref,
     ) => {
-        const { tokens, networkType } = account;
-        const cardanoFingerprint = getFingerprint(tokens, token?.symbol);
+        const network = account?.networkType;
+        const cardanoFingerprint = getFingerprint(account?.tokens, token?.symbol);
+        const isActive = state === 'active';
 
         return (
             <OutputWrapper ref={ref}>
@@ -179,44 +183,73 @@ export const TransactionReviewOutputElement = forwardRef<
                     {lines.map(line => (
                         <OutputRightLine key={line.id}>
                             <OutputHeadline>
-                                <Truncate>{line.label}</Truncate>
+                                <Truncate>
+                                    {isActive &&
+                                    (line.id === 'address' || line.id === 'regular_legacy')
+                                        ? line.confirmLabel
+                                        : line.label}
+                                </Truncate>
                             </OutputHeadline>
                             <OutputValue>
                                 <TruncateWrapper condition={hasExpansion}>
-                                    <OutputValueWrapper>
-                                        {line.plainValue ? (
-                                            line.value
-                                        ) : (
-                                            <FormattedCryptoAmount
-                                                disableHiddenPlaceholder
-                                                value={line.value}
-                                                symbol={
-                                                    // TX fee is so far always paid in network native coin
-                                                    line.id !== 'fee' && token
-                                                        ? token.symbol
-                                                        : cryptoSymbol
-                                                }
-                                            />
-                                        )}
-                                    </OutputValueWrapper>
+                                    {isActive &&
+                                    (line.id === 'address' || line.id === 'regular_legacy') ? (
+                                        <DeviceDisplay
+                                            address={line.value}
+                                            network={network}
+                                            valueDataTest={valueDataTest}
+                                        />
+                                    ) : (
+                                        <OutputValueWrapper>
+                                            {line.plainValue ? (
+                                                line.value
+                                            ) : (
+                                                <FormattedCryptoAmount
+                                                    disableHiddenPlaceholder
+                                                    value={line.value}
+                                                    symbol={
+                                                        // TX fee is so far always paid in network native coin
+                                                        line.id !== 'fee' && token
+                                                            ? token.symbol
+                                                            : cryptoSymbol
+                                                    }
+                                                />
+                                            )}
+                                        </OutputValueWrapper>
+                                    )}
                                     {/* temporary solution until fiat value for ERC20 tokens will be fixed  */}
                                     {fiatVisible && !(line.id !== 'fee' && token) && (
                                         <>
-                                            <DotSeparatorWrapper>
-                                                <DotSeparator />
-                                            </DotSeparatorWrapper>
                                             <OutputValueWrapper>
-                                                <FiatValue
-                                                    disableHiddenPlaceholder
-                                                    amount={line.value}
-                                                    symbol={fiatSymbol}
-                                                />
+                                                {line.plainValue ? (
+                                                    line.value
+                                                ) : (
+                                                    <FormattedCryptoAmount
+                                                        disableHiddenPlaceholder
+                                                        value={line.value}
+                                                        symbol={cryptoSymbol}
+                                                    />
+                                                )}
                                             </OutputValueWrapper>
+                                            {fiatVisible && fiatSymbol && (
+                                                <>
+                                                    <DotSeparatorWrapper>
+                                                        <DotSeparator />
+                                                    </DotSeparatorWrapper>
+                                                    <OutputValueWrapper>
+                                                        <FiatValue
+                                                            disableHiddenPlaceholder
+                                                            amount={line.value}
+                                                            symbol={fiatSymbol}
+                                                        />
+                                                    </OutputValueWrapper>
+                                                </>
+                                            )}
                                         </>
                                     )}
                                 </TruncateWrapper>
                             </OutputValue>
-                            {networkType === 'cardano' && cardanoFingerprint && (
+                            {network === 'cardano' && cardanoFingerprint && (
                                 <CardanoTrezorAmountWrapper>
                                     <OutputHeadline>
                                         <Translation id="TR_CARDANO_FINGERPRINT_HEADLINE" />
@@ -224,7 +257,7 @@ export const TransactionReviewOutputElement = forwardRef<
                                     <OutputValue>{cardanoFingerprint}</OutputValue>
                                 </CardanoTrezorAmountWrapper>
                             )}
-                            {networkType === 'cardano' && token && token.decimals !== 0 && (
+                            {network === 'cardano' && token && token.decimals !== 0 && (
                                 <CardanoTrezorAmountWrapper>
                                     <OutputHeadline>
                                         <Translation id="TR_CARDANO_TREZOR_AMOUNT_HEADLINE" />

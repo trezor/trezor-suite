@@ -13,22 +13,27 @@ import {
 import { copyToClipboard } from '@trezor/dom-utils';
 import { selectDevice } from '@suite-common/wallet-core';
 import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
-import { QrCode, QRCODE_PADDING, QRCODE_SIZE } from 'src/components/suite/QrCode';
+import { QrCode } from 'src/components/suite/QrCode';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { Translation, Modal } from 'src/components/suite';
 import { MODAL } from 'src/actions/suite/constants';
 import { ThunkAction } from 'src/types/suite';
 import { DeviceDisconnected } from './DeviceDisconnected';
+import { TransactionReviewStepIndicator } from '../TransactionReviewModal/TransactionReviewOutputList/TransactionReviewStepIndicator';
+import { TransactionReviewOutputElement } from '../TransactionReviewModal/TransactionReviewOutputList/TransactionReviewOutputElement';
+import { Account } from '@suite-common/wallet-types';
 
 const Wrapper = styled.div`
     display: flex;
+    flex-direction: column;
+    gap: 21px;
 `;
 
 const Content = styled.div`
     display: flex;
     gap: 21px;
 
-    @media (max-width: ${SCREEN_SIZE.MD}) {
+    ${variables.SCREEN_QUERY.BELOW_TABLET} {
         flex-direction: column;
     }
 `;
@@ -38,20 +43,11 @@ const Right = styled.div`
     flex-direction: column;
     justify-content: space-between;
     height: 100%;
-`;
+    width: 300px;
 
-const Value = styled.div`
-    font-size: ${variables.FONT_SIZE.NORMAL};
-    color: ${({ theme }) => theme.TYPE_DARK_GREY};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    font-variant-numeric: tabular-nums slashed-zero;
-    width: 100%;
-    background: ${({ theme }) => theme.BG_LIGHT_GREY};
-    border: 1px solid ${({ theme }) => theme.STROKE_GREY};
-    border-radius: 8px;
-    word-break: break-all;
-    padding: 10px;
-    max-width: calc(${QRCODE_SIZE}px + ${QRCODE_PADDING * 2}px);
+    ${variables.SCREEN_QUERY.BELOW_TABLET} {
+        width: 100%;
+    }
 `;
 
 const StyledQrCode = styled(QrCode)`
@@ -59,7 +55,6 @@ const StyledQrCode = styled(QrCode)`
     background: ${({ theme }) => theme.BG_GREY};
     padding: 32px;
     max-height: 100%;
-    margin-right: 21px;
     width: 300px;
 `;
 
@@ -77,11 +72,8 @@ const StyledModal = styled(Modal)`
     }
 `;
 
-const StyledDeviceDisconnected = styled(DeviceDisconnected)`
-    max-width: calc(${QRCODE_SIZE}px + ${QRCODE_PADDING * 2}px);
-`;
-
 export interface ConfirmValueModalProps extends Pick<ModalProps, 'onCancel' | 'heading'> {
+    account: Account;
     copyButtonText: ReactNode;
     copyButtonDataTest?: string;
     isConfirmed?: boolean;
@@ -91,6 +83,7 @@ export interface ConfirmValueModalProps extends Pick<ModalProps, 'onCancel' | 'h
 }
 
 export const ConfirmValueModal = ({
+    account,
     copyButtonText,
     copyButtonDataTest,
     heading,
@@ -109,6 +102,16 @@ export const ConfirmValueModal = ({
     const canConfirmOnDevice = !!(device?.connected && device?.available);
     const addressConfirmed = isConfirmed || !canConfirmOnDevice;
     const isCancelable = isActionAbortable || addressConfirmed;
+    const state = addressConfirmed ? 'success' : 'active';
+    const outputLines = [
+        {
+            id: 'address',
+            label: <Translation id="TR_RECEIVE_ADDRESS" />,
+            value,
+            plainValue: true,
+            confirmLabel: <Translation id="TR_RECEIVE_ADDRESS_MATCH" />,
+        },
+    ];
 
     const copy = () => {
         const result = copyToClipboard(value);

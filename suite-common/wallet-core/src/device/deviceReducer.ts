@@ -583,6 +583,8 @@ export const selectIsDeviceConnectedAndAuthorized = (state: DeviceRootState) => 
 
     return isDeviceAuthorized && !!deviceFeatures;
 };
+export const selectDeviceInternalModel = (state: DeviceRootState) =>
+    state.device.selectedDevice?.features?.internal_model;
 
 export const selectDeviceByState = (state: DeviceRootState, deviceState: string) =>
     selectDevices(state).find(d => d.state === deviceState);

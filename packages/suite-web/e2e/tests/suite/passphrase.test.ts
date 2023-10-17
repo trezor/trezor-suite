@@ -118,7 +118,17 @@ describe('Passphrase', () => {
         cy.getTestElement('@wallet/menu/wallet-receive').click({ timeout: 10000 });
         // click reveal address
         cy.getTestElement('@wallet/receive/reveal-address-button').click();
-        cy.getTestElement('@modal/confirm-address/address-field').should('contain', abcAddr);
+        cy.getTestElement('@modal/confirm-address/address-field')
+            .find('[data-test*="chunk"]')
+            .then(chunks => {
+                let fullAddress = '';
+                // @ts-expect-error
+                chunks.each((i, el) => {
+                    fullAddress += Cypress.$(el).text();
+                });
+                return fullAddress;
+            })
+            .should('contain', abcAddr);
         cy.task('pressYes');
         cy.getTestElement('@metadata/copy-address-button').should('exist');
         // close modal
@@ -159,8 +169,17 @@ describe('Passphrase', () => {
         cy.getTestElement('@wallet/receive/used-address/0').should('not.exist');
         cy.getTestElement('@wallet/receive/reveal-address-button').should('not.be.disabled');
         cy.getTestElement('@wallet/receive/reveal-address-button').click();
-
-        cy.getTestElement('@modal/confirm-address/address-field').should('contain', defAddr);
+        cy.getTestElement('@modal/confirm-address/address-field')
+            .find('[data-test*="chunk"]')
+            .then(chunks => {
+                let fullAddress = '';
+                // @ts-expect-error
+                chunks.each((i, el) => {
+                    fullAddress += Cypress.$(el).text();
+                });
+                return fullAddress;
+            })
+            .should('contain', defAddr);
         cy.task('pressYes');
         cy.getTestElement('@metadata/copy-address-button').should('exist');
         // close modal
@@ -180,7 +199,17 @@ describe('Passphrase', () => {
         cy.getTestElement('@wallet/receive/reveal-address-button').click();
 
         // should display confirm passphrase modal
-        cy.getTestElement('@modal/confirm-address/address-field').should('contain', abcAddr);
+        cy.getTestElement('@modal/confirm-address/address-field')
+            .find('[data-test*="chunk"]')
+            .then(chunks => {
+                let fullAddress = '';
+                // @ts-expect-error
+                chunks.each((i, el) => {
+                    fullAddress += Cypress.$(el).text();
+                });
+                return fullAddress;
+            })
+            .should('contain', abcAddr);
         cy.task('pressYes');
     });
 });
