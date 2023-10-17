@@ -160,8 +160,9 @@ export const ethereumNetworkInfoFromDefinition = (
     shortcut: definition.symbol,
     support: {
         connect: true,
-        trezor1: '1.6.2',
-        trezor2: '2.0.7',
+        T1B1: '1.6.2',
+        T2T1: '2.0.7',
+        T2B1: '2.6.1',
     },
     blockchainLink: undefined,
 });

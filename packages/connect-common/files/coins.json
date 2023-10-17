@@ -45,10 +45,11 @@
             "signed_message_header": "Bitcoin Signed Message:\n",
             "slip44": 0,
             "support": {
+                "T1B1": "1.5.2",
+                "T2B1": "2.6.1",
+                "T2T1": "2.0.5",
                 "connect": true,
-                "suite": true,
-                "trezor1": "1.5.2",
-                "trezor2": "2.0.5"
+                "suite": true
             },
             "taproot": true,
             "timestamp": false,
@@ -92,10 +93,11 @@
             "signed_message_header": "Bitcoin Signed Message:\n",
             "slip44": 1,
             "support": {
+                "T1B1": "1.8.2",
+                "T2B1": "2.6.1",
+                "T2T1": "2.1.1",
                 "connect": true,
-                "suite": true,
-                "trezor1": "1.8.2",
-                "trezor2": "2.1.1"
+                "suite": true
             },
             "taproot": true,
             "timestamp": false,
@@ -142,10 +144,11 @@
             "signed_message_header": "Bitcoin Signed Message:\n",
             "slip44": 1,
             "support": {
+                "T1B1": "1.5.2",
+                "T2B1": "2.6.1",
+                "T2T1": "2.0.5",
                 "connect": true,
-                "suite": true,
-                "trezor1": "1.5.2",
-                "trezor2": "2.0.5"
+                "suite": true
             },
             "taproot": true,
             "timestamp": false,
@@ -189,10 +192,11 @@
             "signed_message_header": "Actinium Signed Message:\n",
             "slip44": 228,
             "support": {
+                "T1B1": "1.7.2",
+                "T2B1": "2.6.1",
+                "T2T1": "2.0.10",
                 "connect": true,
-                "suite": false,
-                "trezor1": "1.7.2",
-                "trezor2": "2.0.10"
+                "suite": false
             },
             "taproot": false,
             "timestamp": false,
@@ -236,10 +240,11 @@
             "signed_message_header": "DarkCoin Signed Message:\n",
             "slip44": 4242,
             "support": {
+                "T1B1": "1.7.3",
+                "T2B1": "2.6.1",
+                "T2T1": "2.0.11",
                 "connect": true,
-                "suite": false,
-                "trezor1": "1.7.3",
-                "trezor2": "2.0.11"
+                "suite": false
             },
             "taproot": false,
             "timestamp": false,
@@ -292,10 +297,11 @@
             "signed_message_header": "Bitcoin Signed Message:\n",
             "slip44": 145,
             "support": {
+                "T1B1": "1.6.2",
+                "T2B1": "2.6.1",
+                "T2T1": "2.0.7",
                 "connect": true,
-                "suite": true,
-                "trezor1": "1.6.2",
-                "trezor2": "2.0.7"
+                "suite": true
             },
             "taproot": false,
             "timestamp": false,
@@ -339,10 +345,11 @@
             "signed_message_header": "Bitcoin Signed Message:\n",
             "slip44": 1,
             "support": {
+                "T1B1": "1.6.2",
+                "T2B1": "2.6.1",
+                "T2T1": "2.0.7",
                 "connect": true,
-                "suite": false,
-                "trezor1": "1.6.2",
-                "trezor2": "2.0.7"
+                "suite": false
             },
             "taproot": false,
             "timestamp": false,
@@ -395,10 +402,11 @@
             "signed_message_header": "Bitcoin Gold Signed Message:\n",
             "slip44": 156,
             "support": {
+                "T1B1": "1.6.2",
+                "T2B1": false,
+                "T2T1": "2.0.7",
                 "connect": true,
-                "suite": true,
-                "trezor1": "1.6.2",
-                "trezor2": "2.0.7"
+                "suite": true
             },
             "taproot": false,
             "timestamp": false,
@@ -445,10 +453,11 @@
             "signed_message_header": "Bitcoin Gold Signed Message:\n",
             "slip44": 1,
             "support": {
+                "T1B1": "1.7.1",
+                "T2B1": false,
+                "T2T1": "2.0.8",
                 "connect": true,
-                "suite": false,
-                "trezor1": "1.7.1",
-                "trezor2": "2.0.8"
+                "suite": false
             },
             "taproot": false,
             "timestamp": false,
@@ -492,10 +501,11 @@
             "signed_message_header": "BitcoinPrivate Signed Message:\n",
             "slip44": 183,
             "support": {
+                "T1B1": "1.6.2",
+                "T2B1": "2.6.1",
+                "T2T1": "2.0.7",
                 "connect": true,
-                "suite": false,
-                "trezor1": "1.6.2",
-                "trezor2": "2.0.7"
+                "suite": false
             },
             "taproot": false,
             "timestamp": false,
@@ -539,10 +549,11 @@
             "signed_message_header": "BitCore Signed Message:\n",
             "slip44": 160,
             "support": {
+                "T1B1": "1.7.1",
+                "T2B1": "2.6.1",
+                "T2T1": "2.0.8",
                 "connect": true,
-                "suite": false,
-                "trezor1": "1.7.1",
-                "trezor2": "2.0.8"
+                "suite": false
             },
             "taproot": false,
             "timestamp": false,
@@ -595,10 +606,11 @@
             "signed_message_header": "DarkCoin Signed Message:\n",
             "slip44": 5,
             "support": {
+                "T1B1": "1.5.2",
+                "T2B1": false,
+                "T2T1": "2.0.5",
                 "connect": true,
-                "suite": true,
-                "trezor1": "1.5.2",
-                "trezor2": "2.0.5"
+                "suite": true
             },
             "taproot": false,
             "timestamp": false,
@@ -642,10 +654,11 @@
             "signed_message_header": "DarkCoin Signed Message:\n",
             "slip44": 1,
             "support": {
+                "T1B1": "1.6.2",
+                "T2B1": false,
+                "T2T1": "2.0.8",
                 "connect": true,
-                "suite": false,
-                "trezor1": "1.6.2",
-                "trezor2": "2.0.8"
+                "suite": false
             },
             "taproot": false,
             "timestamp": false,
@@ -689,10 +702,11 @@
             "signed_message_header": "Decred Signed Message:\n",
             "slip44": 42,
             "support": {
+                "T1B1": "1.6.2",
+                "T2B1": false,
+                "T2T1": "2.0.8",
                 "connect": true,
-                "suite": false,
-                "trezor1": "1.6.2",
-                "trezor2": "2.0.8"
+                "suite": false
             },
             "taproot": false,
             "timestamp": false,
@@ -736,10 +750,11 @@
             "signed_message_header": "Decred Signed Message:\n",
             "slip44": 1,
             "support": {
+                "T1B1": "1.6.2",
+                "T2B1": false,
+                "T2T1": "2.0.8",
                 "connect": true,
-                "suite": false,
-                "trezor1": "1.6.2",
-                "trezor2": "2.0.8"
+                "suite": false
             },
             "taproot": false,
             "timestamp": false,
@@ -786,10 +801,11 @@
             "signed_message_header": "DigiByte Signed Message:\n",
             "slip44": 20,
             "support": {
+                "T1B1": "1.6.3",
+                "T2B1": false,
+                "T2T1": "2.0.7",
                 "connect": true,
-                "suite": true,
-                "trezor1": "1.6.3",
-                "trezor2": "2.0.7"
+                "suite": true
             },
             "taproot": false,
             "timestamp": false,
@@ -842,10 +858,11 @@
             "signed_message_header": "Dogecoin Signed Message:\n",
             "slip44": 3,
             "support": {
+                "T1B1": "1.5.2",
+                "T2B1": "2.6.1",
+                "T2T1": "2.0.5",
                 "connect": true,
-                "suite": true,
-                "trezor1": "1.5.2",
-                "trezor2": "2.0.5"
+                "suite": true
             },
             "taproot": false,
             "timestamp": false,
@@ -889,10 +906,11 @@
             "signed_message_header": "Feathercoin Signed Message:\n",
             "slip44": 8,
             "support": {
+                "T1B1": "1.7.1",
+                "T2B1": "2.6.1",
+                "T2T1": "2.0.8",
                 "connect": true,
-                "suite": false,
-                "trezor1": "1.7.1",
-                "trezor2": "2.0.8"
+                "suite": false
             },
             "taproot": false,
             "timestamp": false,
@@ -939,10 +957,11 @@
             "signed_message_header": "Zcoin Signed Message:\n",
             "slip44": 136,
             "support": {
+                "T1B1": "1.6.2",
+                "T2B1": "2.6.1",
+                "T2T1": "2.0.7",
                 "connect": true,
-                "suite": false,
-                "trezor1": "1.6.2",
-                "trezor2": "2.0.7"
+                "suite": false
             },
             "taproot": false,
             "timestamp": false,
@@ -989,10 +1008,11 @@
             "signed_message_header": "Zcoin Signed Message:\n",
             "slip44": 1,
             "support": {
+                "T1B1": "1.6.2",
+                "T2B1": "2.6.1",
+                "T2T1": "2.0.7",
                 "connect": true,
-                "suite": false,
-                "trezor1": "1.6.2",
-                "trezor2": "2.0.7"
+                "suite": false
             },
             "taproot": false,
             "timestamp": false,
@@ -1036,10 +1056,11 @@
             "signed_message_header": "Florincoin Signed Message:\n",
             "slip44": 216,
             "support": {
+                "T1B1": "1.7.2",
+                "T2B1": "2.6.1",
+                "T2T1": "2.0.11",
                 "connect": true,
-                "suite": false,
-                "trezor1": "1.7.2",
-                "trezor2": "2.0.11"
+                "suite": false
             },
             "taproot": false,
             "timestamp": false,
@@ -1089,10 +1110,11 @@
             "signed_message_header": "FujiCoin Signed Message:\n",
             "slip44": 75,
             "support": {
+                "T1B1": "1.6.1",
+                "T2B1": "2.6.1",
+                "T2T1": "2.0.5",
                 "connect": true,
-                "suite": false,
-                "trezor1": "1.6.1",
-                "trezor2": "2.0.5"
+                "suite": false
             },
             "taproot": true,
             "timestamp": false,
@@ -1136,10 +1158,11 @@
             "signed_message_header": "Komodo Signed Message:\n",
             "slip44": 141,
             "support": {
+                "T1B1": "1.8.0",
+                "T2B1": "2.6.1",
+                "T2T1": "2.0.11",
                 "connect": true,
-                "suite": false,
-                "trezor1": "1.8.0",
-                "trezor2": "2.0.11"
+                "suite": false
             },
             "taproot": false,
             "timestamp": false,
@@ -1183,10 +1206,11 @@
             "signed_message_header": "Koto Signed Message:\n",
             "slip44": 510,
             "support": {
+                "T1B1": "1.7.1",
+                "T2B1": "2.6.1",
+                "T2T1": "2.0.8",
                 "connect": true,
-                "suite": false,
-                "trezor1": "1.7.1",
-                "trezor2": "2.0.8"
+                "suite": false
             },
             "taproot": false,
             "timestamp": false,
@@ -1239,10 +1263,11 @@
             "signed_message_header": "Litecoin Signed Message:\n",
             "slip44": 2,
             "support": {
+                "T1B1": "1.5.2",
+                "T2B1": "2.6.1",
+                "T2T1": "2.0.5",
                 "connect": true,
-                "suite": true,
-                "trezor1": "1.5.2",
-                "trezor2": "2.0.5"
+                "suite": true
             },
             "taproot": false,
             "timestamp": false,
@@ -1286,10 +1311,11 @@
             "signed_message_header": "Litecoin Signed Message:\n",
             "slip44": 1,
             "support": {
+                "T1B1": "1.6.2",
+                "T2B1": "2.6.1",
+                "T2T1": "2.0.7",
                 "connect": true,
-                "suite": false,
-                "trezor1": "1.6.2",
-                "trezor2": "2.0.7"
+                "suite": false
             },
             "taproot": false,
             "timestamp": false,
@@ -1336,10 +1362,11 @@
             "signed_message_header": "Monacoin Signed Message:\n",
             "slip44": 22,
             "support": {
+                "T1B1": "1.6.0",
+                "T2B1": "2.6.1",
+                "T2T1": "2.0.5",
                 "connect": true,
-                "suite": false,
-                "trezor1": "1.6.0",
-                "trezor2": "2.0.5"
+                "suite": false
             },
             "taproot": false,
             "timestamp": false,
@@ -1386,10 +1413,11 @@
             "signed_message_header": "Namecoin Signed Message:\n",
             "slip44": 7,
             "support": {
+                "T1B1": "1.5.2",
+                "T2B1": false,
+                "T2T1": "2.0.5",
                 "connect": true,
-                "suite": true,
-                "trezor1": "1.5.2",
-                "trezor2": "2.0.5"
+                "suite": true
             },
             "taproot": false,
             "timestamp": false,
@@ -1436,10 +1464,11 @@
             "signed_message_header": "Peercoin Signed Message:\n",
             "slip44": 6,
             "support": {
+                "T1B1": "1.8.4",
+                "T2B1": "2.6.1",
+                "T2T1": "2.1.9",
                 "connect": true,
-                "suite": false,
-                "trezor1": "1.8.4",
-                "trezor2": "2.1.9"
+                "suite": false
             },
             "taproot": false,
             "timestamp": true,
@@ -1486,10 +1515,11 @@
             "signed_message_header": "Peercoin Signed Message:\n",
             "slip44": 1,
             "support": {
+                "T1B1": "1.8.4",
+                "T2B1": "2.6.1",
+                "T2T1": "2.1.9",
                 "connect": true,
-                "suite": false,
-                "trezor1": "1.8.4",
-                "trezor2": "2.1.9"
+                "suite": false
             },
             "taproot": false,
             "timestamp": true,
@@ -1533,10 +1563,11 @@
             "signed_message_header": "Primecoin Signed Message:\n",
             "slip44": 24,
             "support": {
+                "T1B1": "1.8.0",
+                "T2B1": "2.6.1",
+                "T2T1": "2.0.11",
                 "connect": true,
-                "suite": false,
-                "trezor1": "1.8.0",
-                "trezor2": "2.0.11"
+                "suite": false
             },
             "taproot": false,
             "timestamp": false,
@@ -1583,10 +1614,11 @@
             "signed_message_header": "Raven Signed Message:\n",
             "slip44": 175,
             "support": {
+                "T1B1": "1.7.2",
+                "T2B1": "2.6.1",
+                "T2T1": "2.0.10",
                 "connect": true,
-                "suite": false,
-                "trezor1": "1.7.2",
-                "trezor2": "2.0.10"
+                "suite": false
             },
             "taproot": false,
             "timestamp": false,
@@ -1633,10 +1665,11 @@
             "signed_message_header": "Rito Signed Message:\n",
             "slip44": 19169,
             "support": {
+                "T1B1": "1.8.2",
+                "T2B1": "2.6.1",
+                "T2T1": "2.1.1",
                 "connect": true,
-                "suite": false,
-                "trezor1": "1.8.2",
-                "trezor2": "2.1.1"
+                "suite": false
             },
             "taproot": false,
             "timestamp": false,
@@ -1683,10 +1716,11 @@
             "signed_message_header": "DarkCoin Signed Message:\n",
             "slip44": 199,
             "support": {
+                "T1B1": "1.8.0",
+                "T2B1": "2.6.1",
+                "T2T1": "2.0.11",
                 "connect": true,
-                "suite": false,
-                "trezor1": "1.8.0",
-                "trezor2": "2.0.11"
+                "suite": false
             },
             "taproot": false,
             "timestamp": false,
@@ -1736,10 +1770,11 @@
             "signed_message_header": "Syscoin Signed Message:\n",
             "slip44": 57,
             "support": {
+                "T1B1": "1.8.4",
+                "T2B1": "2.6.1",
+                "T2T1": "2.1.8",
                 "connect": true,
-                "suite": false,
-                "trezor1": "1.8.4",
-                "trezor2": "2.1.8"
+                "suite": false
             },
             "taproot": false,
             "timestamp": false,
@@ -1786,10 +1821,11 @@
             "signed_message_header": "Unobtanium Signed Message:\n",
             "slip44": 92,
             "support": {
+                "T1B1": "1.8.4",
+                "T2B1": "2.6.1",
+                "T2T1": "2.1.6",
                 "connect": true,
-                "suite": false,
-                "trezor1": "1.8.4",
-                "trezor2": "2.1.6"
+                "suite": false
             },
             "taproot": false,
             "timestamp": false,
@@ -1833,10 +1869,11 @@
             "signed_message_header": "Name: Dogecoin Dark\n",
             "slip44": 77,
             "support": {
+                "T1B1": "1.9.3",
+                "T2B1": "2.6.1",
+                "T2T1": "2.3.3",
                 "connect": true,
-                "suite": false,
-                "trezor1": "1.9.3",
-                "trezor2": "2.3.3"
+                "suite": false
             },
             "taproot": false,
             "timestamp": true,
@@ -1889,10 +1926,11 @@
             "signed_message_header": "Vertcoin Signed Message:\n",
             "slip44": 28,
             "support": {
+                "T1B1": "1.6.1",
+                "T2B1": false,
+                "T2T1": "2.0.5",
                 "connect": true,
-                "suite": true,
-                "trezor1": "1.6.1",
-                "trezor2": "2.0.5"
+                "suite": true
             },
             "taproot": false,
             "timestamp": false,
@@ -1939,10 +1977,11 @@
             "signed_message_header": "Viacoin Signed Message:\n",
             "slip44": 14,
             "support": {
+                "T1B1": "1.6.2",
+                "T2B1": "2.6.1",
+                "T2T1": "2.0.7",
                 "connect": true,
-                "suite": false,
-                "trezor1": "1.6.2",
-                "trezor2": "2.0.7"
+                "suite": false
             },
             "taproot": false,
             "timestamp": false,
@@ -1986,10 +2025,11 @@
             "signed_message_header": "DarkNet Signed Message:\n",
             "slip44": 428,
             "support": {
+                "T1B1": "1.8.4",
+                "T2B1": "2.6.1",
+                "T2T1": "2.1.7",
                 "connect": true,
-                "suite": false,
-                "trezor1": "1.8.4",
-                "trezor2": "2.1.7"
+                "suite": false
             },
             "taproot": false,
             "timestamp": false,
@@ -2042,10 +2082,11 @@
             "signed_message_header": "Zcash Signed Message:\n",
             "slip44": 133,
             "support": {
+                "T1B1": "1.8.1",
+                "T2B1": "2.6.1",
+                "T2T1": "2.1.1",
                 "connect": true,
-                "suite": true,
-                "trezor1": "1.8.1",
-                "trezor2": "2.1.1"
+                "suite": true
             },
             "taproot": false,
             "timestamp": false,
@@ -2089,10 +2130,11 @@
             "signed_message_header": "Zcash Signed Message:\n",
             "slip44": 1,
             "support": {
+                "T1B1": "1.8.1",
+                "T2B1": "2.6.1",
+                "T2T1": "2.1.1",
                 "connect": true,
-                "suite": false,
-                "trezor1": "1.8.1",
-                "trezor2": "2.1.1"
+                "suite": false
             },
             "taproot": false,
             "timestamp": false,
@@ -2139,10 +2181,11 @@
             "signed_message_header": "BitCoin Rhodium Signed Message:\n",
             "slip44": 10291,
             "support": {
+                "T1B1": "1.8.2",
+                "T2B1": "2.6.1",
+                "T2T1": "2.1.1",
                 "connect": true,
-                "suite": false,
-                "trezor1": "1.8.2",
-                "trezor2": "2.1.1"
+                "suite": false
             },
             "taproot": false,
             "timestamp": false,
@@ -2167,10 +2210,11 @@
             "shortcut": "ADA",
             "slip44": 1815,
             "support": {
+                "T1B1": false,
+                "T2B1": "2.6.1",
+                "T2T1": "2.0.8",
                 "connect": true,
-                "suite": false,
-                "trezor1": false,
-                "trezor2": "2.0.8"
+                "suite": false
             }
         },
         {
@@ -2182,10 +2226,11 @@
             "shortcut": "BNB",
             "slip44": 714,
             "support": {
+                "T1B1": false,
+                "T2B1": "2.6.1",
+                "T2T1": "2.1.5",
                 "connect": true,
-                "suite": false,
-                "trezor1": false,
-                "trezor2": "2.1.5"
+                "suite": false
             }
         },
         {
@@ -2197,10 +2242,11 @@
             "shortcut": "EOS",
             "slip44": 194,
             "support": {
+                "T1B1": false,
+                "T2B1": false,
+                "T2T1": "2.1.1",
                 "connect": true,
-                "suite": false,
-                "trezor1": false,
-                "trezor2": "2.1.1"
+                "suite": false
             }
         },
         {
@@ -2215,10 +2261,11 @@
             "shortcut": "tADA",
             "slip44": 1815,
             "support": {
+                "T1B1": false,
+                "T2B1": "2.6.1",
+                "T2T1": "2.0.8",
                 "connect": true,
-                "suite": false,
-                "trezor1": false,
-                "trezor2": "2.0.8"
+                "suite": false
             }
         },
         {
@@ -2233,10 +2280,11 @@
             "shortcut": "tXRP",
             "slip44": 1,
             "support": {
+                "T1B1": false,
+                "T2B1": "2.6.1",
+                "T2T1": "2.0.8",
                 "connect": true,
-                "suite": true,
-                "trezor1": false,
-                "trezor2": "2.0.8"
+                "suite": true
             }
         },
         {
@@ -2248,10 +2296,11 @@
             "shortcut": "XLM",
             "slip44": 148,
             "support": {
+                "T1B1": "1.7.1",
+                "T2B1": "2.6.1",
+                "T2T1": "2.0.8",
                 "connect": true,
-                "suite": false,
-                "trezor1": "1.7.1",
-                "trezor2": "2.0.8"
+                "suite": false
             }
         },
         {
@@ -2266,10 +2315,11 @@
             "shortcut": "XRP",
             "slip44": 144,
             "support": {
+                "T1B1": false,
+                "T2B1": "2.6.1",
+                "T2T1": "2.0.8",
                 "connect": true,
-                "suite": true,
-                "trezor1": false,
-                "trezor2": "2.0.8"
+                "suite": true
             }
         },
         {
@@ -2281,10 +2331,11 @@
             "shortcut": "XTZ",
             "slip44": 1729,
             "support": {
+                "T1B1": false,
+                "T2B1": "2.6.1",
+                "T2T1": "2.0.8",
                 "connect": true,
-                "suite": false,
-                "trezor1": false,
-                "trezor2": "2.0.8"
+                "suite": false
             }
         }
     ],
@@ -2298,10 +2349,11 @@
             "namespace": "nem",
             "shortcut": "XEM",
             "support": {
+                "T1B1": "1.6.2",
+                "T2B1": false,
+                "T2T1": "2.0.7",
                 "connect": true,
-                "suite": false,
-                "trezor1": "1.6.2",
-                "trezor2": "2.0.7"
+                "suite": false
             },
             "ticker": "XEM"
         },
@@ -2319,10 +2371,11 @@
             "networks": [104],
             "shortcut": "DIM",
             "support": {
+                "T1B1": "1.6.2",
+                "T2B1": "2.6.1",
+                "T2T1": "2.0.7",
                 "connect": true,
-                "suite": false,
-                "trezor1": "1.6.2",
-                "trezor2": "2.0.7"
+                "suite": false
             },
             "ticker": "DIM"
         },
@@ -2336,10 +2389,11 @@
             "networks": [104],
             "shortcut": "DIMTOK",
             "support": {
+                "T1B1": "1.6.2",
+                "T2B1": "2.6.1",
+                "T2T1": "2.0.7",
                 "connect": true,
-                "suite": false,
-                "trezor1": "1.6.2",
-                "trezor2": "2.0.7"
+                "suite": false
             },
             "ticker": "DIMTOK"
         },
@@ -2353,10 +2407,11 @@
             "networks": [104],
             "shortcut": "BREEZE",
             "support": {
+                "T1B1": "1.6.2",
+                "T2B1": "2.6.1",
+                "T2T1": "2.0.7",
                 "connect": true,
-                "suite": false,
-                "trezor1": "1.6.2",
-                "trezor2": "2.0.7"
+                "suite": false
             },
             "ticker": "BREEZE"
         },
@@ -2370,10 +2425,11 @@
             "networks": [104],
             "shortcut": "PAC:HRT",
             "support": {
+                "T1B1": "1.6.2",
+                "T2B1": "2.6.1",
+                "T2T1": "2.0.7",
                 "connect": true,
-                "suite": false,
-                "trezor1": "1.6.2",
-                "trezor2": "2.0.7"
+                "suite": false
             },
             "ticker": "PAC:HRT"
         },
@@ -2391,10 +2447,11 @@
             "networks": [104],
             "shortcut": "PAC:CHS",
             "support": {
+                "T1B1": "1.6.2",
+                "T2B1": "2.6.1",
+                "T2T1": "2.0.7",
                 "connect": true,
-                "suite": false,
-                "trezor1": "1.6.2",
-                "trezor2": "2.0.7"
+                "suite": false
             },
             "ticker": "PAC:CHS"
         }

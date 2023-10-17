@@ -20,6 +20,12 @@ import type { FirmwareRange } from '../types';
 export type Payload<M> = Extract<CallMethodPayload, { method: M }> & { override?: boolean };
 export type MethodReturnType<M extends CallMethodPayload['method']> = CallMethodResponse<M>;
 
+export const DEFAULT_FIRMWARE_RANGE: FirmwareRange = {
+    T1B1: { min: '1.0.0', max: '0' },
+    T2T1: { min: '2.0.0', max: '0' },
+    T2B1: { min: '2.6.1', max: '0' },
+};
+
 export abstract class AbstractMethod<Name extends CallMethodPayload['method'], Params = undefined> {
     responseID: number;
 
@@ -131,10 +137,7 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
             }
         });
         // default values for all methods
-        this.firmwareRange = {
-            '1': { min: '1.0.0', max: '0' },
-            '2': { min: '2.0.0', max: '0' },
-        };
+        this.firmwareRange = DEFAULT_FIRMWARE_RANGE;
         this.requiredPermissions = [];
         this.useDevice = true;
         this.useDeviceState = true;
@@ -253,9 +256,7 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
         }
         const { device } = this;
         if (!device.features) return;
-        const version = device.getVersion();
-        const model = version[0] as 1 | 2;
-        const range = this.firmwareRange[model];
+        const range = this.firmwareRange[device.features.internal_model];
 
         if (device.firmwareStatus === 'none') {
             return UI.FIRMWARE_NOT_INSTALLED;
@@ -264,14 +265,15 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
             return UI.FIRMWARE_NOT_SUPPORTED;
         }
 
+        const version = device.getVersion().join('.');
         if (
             device.firmwareStatus === 'required' ||
-            !versionUtils.isNewerOrEqual(version.join('.'), range.min)
+            !versionUtils.isNewerOrEqual(version, range.min)
         ) {
             return UI.FIRMWARE_OLD;
         }
 
-        if (range.max !== '0' && versionUtils.isNewer(version.join('.'), range.max)) {
+        if (range.max !== '0' && versionUtils.isNewer(version, range.max)) {
             if (isUsingPopup) {
                 // wait for popup handshake
                 await this.getPopupPromise().promise;

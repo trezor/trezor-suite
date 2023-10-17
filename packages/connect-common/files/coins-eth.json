@@ -12,8 +12,9 @@
         "support": {
             "connect": true,
             "suite": true,
-            "trezor1": "1.6.2",
-            "trezor2": "2.0.7"
+            "T1B1": "1.6.2",
+            "T2T1": "2.0.7",
+            "T2B1": "2.6.1"
         },
         "url": "https://ethereum.org"
     },
@@ -31,8 +32,9 @@
         "support": {
             "connect": true,
             "suite": false,
-            "trezor1": "1.11.2",
-            "trezor2": "2.5.2"
+            "T1B1": "1.11.2",
+            "T2T1": "2.5.2",
+            "T2B1": "2.6.1"
         },
         "url": "https://sepolia.otterscan.io"
     },
@@ -49,8 +51,9 @@
         "support": {
             "connect": true,
             "suite": false,
-            "trezor1": "1.11.2",
-            "trezor2": "2.5.2"
+            "T1B1": "1.11.2",
+            "T2T1": "2.5.2",
+            "T2B1": "2.6.1"
         },
         "url": "https://goerli.net/#about"
     },
@@ -67,8 +70,9 @@
         "support": {
             "connect": true,
             "suite": true,
-            "trezor1": "1.6.2",
-            "trezor2": "2.0.7"
+            "T1B1": "1.6.2",
+            "T2T1": "2.0.7",
+            "T2B1": "2.6.1"
         },
         "url": "https://ethereumclassic.org"
     }

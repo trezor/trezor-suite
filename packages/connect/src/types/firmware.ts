@@ -1,9 +1,13 @@
 export interface FirmwareRange {
-    '1': {
+    T1B1: {
         min: string;
         max: string;
     };
-    '2': {
+    T2T1: {
+        min: string;
+        max: string;
+    };
+    T2B1: {
         min: string;
         max: string;
     };
