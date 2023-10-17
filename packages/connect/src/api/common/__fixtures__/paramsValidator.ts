@@ -463,4 +463,13 @@ export const getFirmwareRange = [
             T2B1: { min: '2.6.1', max: '0' },
         },
     },
+    {
+        description: 'method available only for T2B1, defined by config',
+        params: ['authenticateDevice', undefined, DEFAULT_RANGE],
+        result: {
+            T1B1: { min: '0', max: '0' },
+            T2T1: { min: '0', max: '0' },
+            T2B1: { min: '2.6.1', max: '0' },
+        },
+    },
 ];
