@@ -41,7 +41,7 @@ export const resetReducer = (): BackupAction => ({
 });
 
 export const backupDevice =
-    (params: CommonParams = {}) =>
+    (params: CommonParams = {}, skipSuccessToast?: boolean) =>
     async (dispatch: Dispatch, getState: GetState) => {
         const device = selectDevice(getState());
         if (!device) {
@@ -78,7 +78,9 @@ export const backupDevice =
                 },
             });
         } else {
-            dispatch(notificationsActions.addToast({ type: 'backup-success' }));
+            if (!skipSuccessToast) {
+                dispatch(notificationsActions.addToast({ type: 'backup-success' }));
+            }
             dispatch({
                 type: BACKUP.SET_STATUS,
                 payload: 'finished',

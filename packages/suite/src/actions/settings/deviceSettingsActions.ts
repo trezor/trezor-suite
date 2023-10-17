@@ -30,7 +30,7 @@ export const applySettings =
     };
 
 export const changePin =
-    (params: Parameters<typeof TrezorConnect.changePin>[0] = {}) =>
+    (params: Parameters<typeof TrezorConnect.changePin>[0] = {}, skipSuccessToast?: boolean) =>
     async (dispatch: Dispatch, getState: GetState) => {
         const device = selectDevice(getState());
 
@@ -43,7 +43,9 @@ export const changePin =
             ...params,
         });
         if (result.success) {
-            dispatch(notificationsActions.addToast({ type: 'pin-changed' }));
+            if (!skipSuccessToast) {
+                dispatch(notificationsActions.addToast({ type: 'pin-changed' }));
+            }
         } else if (result.payload.code === 'Failure_PinMismatch') {
             dispatch(modalActions.openModal({ type: 'pin-mismatch' }));
         } else if (result.payload.error.includes('string overflow')) {

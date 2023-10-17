@@ -25,12 +25,13 @@ const SetPinStep = () => {
 
     const { goToNextStep, showPinMatrix, updateAnalytics } = useOnboarding();
 
+    const setPinAndSkipSuccessToast = () => dispatch(changePin({}, true));
     const onTryAgain = () => {
         setStatus('initial');
-        dispatch(changePin({}));
+        setPinAndSkipSuccessToast();
     };
     const setPin = () => {
-        dispatch(changePin());
+        setPinAndSkipSuccessToast();
         updateAnalytics({ pin: 'create' });
     };
     const skipPin = () => {

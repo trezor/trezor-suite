@@ -5,12 +5,12 @@ import { notificationsActions } from '@suite-common/toast-notifications';
 import { ACTION_PREFIX, deviceAuthenticityActions } from './deviceAuthenticityActions';
 
 export const checkDeviceAuthenticityThunk = createThunk<
-    { allowDebugKeys: boolean },
+    { allowDebugKeys: boolean; skipSuccessToast?: boolean },
     string | AuthenticateDeviceResult
 >(
     `${ACTION_PREFIX}/checkDeviceAuthenticity`,
     async (
-        { allowDebugKeys },
+        { allowDebugKeys, skipSuccessToast },
         { dispatch, getState, extra, rejectWithValue, fulfillWithValue },
     ) => {
         const {
@@ -52,7 +52,7 @@ export const checkDeviceAuthenticityThunk = createThunk<
                 }),
             );
             console.warn(result.payload.error);
-        } else {
+        } else if (!skipSuccessToast) {
             dispatch(notificationsActions.addToast({ type: 'device-authenticity-success' }));
         }
 
