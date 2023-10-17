@@ -32,6 +32,7 @@ import {
 } from '@trezor/urls';
 
 import { toFiatCurrency } from './fiatConverterUtils';
+import { localizeNumber } from './localizeNumber';
 
 export const isEthereumAccountSymbol = (symbol: NetworkSymbol) => symbol === 'eth';
 
@@ -295,6 +296,7 @@ export const formatNetworkAmount = (
     symbol: NetworkSymbol,
     withSymbol = false,
     isSatoshis?: boolean,
+    locale?: string,
 ) => {
     const decimals = getAccountDecimals(symbol);
 
@@ -306,7 +308,7 @@ export const formatNetworkAmount = (
         let formattedSymbol = symbol?.toUpperCase();
 
         if (isSatoshis) {
-            formattedAmount = amount;
+            formattedAmount = localizeNumber(amount, locale);
             formattedSymbol = symbol === 'btc' ? 'sat' : `sat ${symbol?.toUpperCase()}`;
         }
 

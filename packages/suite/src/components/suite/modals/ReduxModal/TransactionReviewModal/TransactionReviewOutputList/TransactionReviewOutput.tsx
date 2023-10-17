@@ -39,7 +39,7 @@ export const TransactionReviewOutput = (props: TransactionReviewOutputProps) => 
         outputLabel = <Translation id="TR_CONTRACT" />;
     }
     if (type === 'address') {
-        outputLabel = <Translation id="TR_ADDRESS" />;
+        outputLabel = <Translation id="TR_RECIPIENT_ADDRESS" />;
     }
     if (type === 'amount') {
         outputLabel = <Translation id="TR_AMOUNT_SENT" />;
@@ -87,7 +87,7 @@ export const TransactionReviewOutput = (props: TransactionReviewOutputProps) => 
         outputLines = [
             {
                 id: 'decrease-address',
-                label: <Translation id="TR_ADDRESS" />,
+                label: <Translation id="TR_RECIPIENT_ADDRESS" />,
                 value: props.label,
                 plainValue: true,
             },
@@ -137,6 +137,7 @@ export const TransactionReviewOutput = (props: TransactionReviewOutputProps) => 
                 id: 'address',
                 label: outputLabel,
                 value: outputValue,
+                confirmLabel: <Translation id="TR_RECIPIENT_ADDRESS_MATCH" />,
                 plainValue: true,
             },
         ];
@@ -149,6 +150,15 @@ export const TransactionReviewOutput = (props: TransactionReviewOutputProps) => 
                 plainValue: true,
             },
         ];
+    } else if (type === 'amount') {
+        outputLines = [
+            {
+                id: 'amount',
+                label: outputLabel,
+                value: outputValue,
+            },
+        ];
+        fiatVisible = false;
     } else {
         outputLines = [
             {
@@ -167,6 +177,7 @@ export const TransactionReviewOutput = (props: TransactionReviewOutputProps) => 
             indicator={<TransactionReviewStepIndicator state={state} size={16} />}
             lines={outputLines}
             token={token}
+            state={state}
             cryptoSymbol={outputSymbol as NetworkSymbol}
             fiatSymbol={symbol}
             hasExpansion={hasExpansion}

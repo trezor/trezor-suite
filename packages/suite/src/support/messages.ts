@@ -142,10 +142,22 @@ export default defineMessages({
         defaultMessage: 'Contract',
         id: 'TR_CONTRACT',
     },
-    TR_ADDRESS: {
-        defaultMessage: 'Address',
-        description: 'Used as label for receive/send address input',
-        id: 'TR_ADDRESS',
+    TR_RECIPIENT_ADDRESS: {
+        defaultMessage: 'Recipient address',
+        description: 'Used as label for send address input',
+        id: 'TR_RECIPIENT_ADDRESS',
+    },
+    TR_RECIPIENT_ADDRESS_MATCH: {
+        defaultMessage: 'Recipient address match?',
+        id: 'TR_RECIPIENT_ADDRESS_MATCH',
+    },
+    TR_RECEIVE_ADDRESS_MATCH: {
+        defaultMessage: 'Receive address match?',
+        id: 'TR_RECEIVE_ADDRESS_MATCH',
+    },
+    TR_RECEIVE_ADDRESS: {
+        defaultMessage: 'Receive address',
+        id: 'TR_RECEIVE_ADDRESS',
     },
     TR_ADDRESSES_FRESH: {
         id: 'TR_ADDRESSES_FRESH',
@@ -1982,7 +1994,7 @@ export default defineMessages({
     },
     TR_ADDRESS_DISPLAY_DESCRIPTION: {
         defaultMessage:
-            'Show address in list: bc1wetes...v54d8d or chunks: bc1w etes ... v54d 8d. Right now compatible only with Trezor Safe 3.',
+            'Show address in list: bc1wetes...v54d8d or chunks: bc1w etes ... v54d 8d. Currently compatible with Trezor Safe 3.',
         id: 'TR_ADDRESS_DISPLAY_DESCRIPTION',
     },
     TR_ORIGINAL_ADDRESS: {
@@ -5164,6 +5176,10 @@ export default defineMessages({
     TR_CONFIRM_ON_TREZOR: {
         id: 'TR_CONFIRM_ON_TREZOR',
         defaultMessage: 'Confirm on Trezor',
+    },
+    TR_CONFIRM_ON_DEVICE: {
+        id: 'TR_CONFIRM_ON_DEVICE',
+        defaultMessage: 'Confirm on device before scanning',
     },
     TR_MY_ASSETS: {
         id: 'TR_MY_ASSETS',
