@@ -23,6 +23,7 @@ type Params = {
         | ({ type: 'eip1559' } & EthereumTransactionEIP1559);
     network?: EthereumNetworkInfo;
     definitions?: EthereumDefinitions;
+    chunkify: boolean;
 };
 
 // const strip: <T>(value: T) => T = value => {
@@ -56,6 +57,7 @@ export default class EthereumSignTransaction extends AbstractMethod<
         validateParams(payload, [
             { name: 'path', required: true },
             { name: 'transaction', required: true },
+            { name: 'chunkify', type: 'boolean' },
         ]);
 
         const path = validatePath(payload.path, 3);
@@ -112,6 +114,7 @@ export default class EthereumSignTransaction extends AbstractMethod<
                 ...strip(tx), // strip '0x' from values
             },
             network,
+            chunkify: typeof payload.chunkify === 'boolean' ? payload.chunkify : false,
         };
     }
 
@@ -142,7 +145,7 @@ export default class EthereumSignTransaction extends AbstractMethod<
     }
 
     run() {
-        const { tx, definitions } = this.params;
+        const { tx, definitions, chunkify } = this.params;
 
         return tx.type === 'eip1559'
             ? helper.ethereumSignTxEIP1559(
@@ -155,6 +158,7 @@ export default class EthereumSignTransaction extends AbstractMethod<
                   tx.maxPriorityFeePerGas,
                   tx.nonce,
                   tx.chainId,
+                  chunkify,
                   tx.data,
                   tx.accessList,
                   definitions,
@@ -168,6 +172,7 @@ export default class EthereumSignTransaction extends AbstractMethod<
                   tx.gasPrice,
                   tx.nonce,
                   tx.chainId,
+                  chunkify,
                   tx.data,
                   tx.txType,
                   definitions,

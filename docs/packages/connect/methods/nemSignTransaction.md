@@ -15,6 +15,7 @@ const result = await TrezorConnect.nemSignTransaction(params);
 
 -   `path` - _required_ `string | Array<number>`
 -   `transaction` - _required_ `Object` type of [NEMTransaction](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/nem/index.ts)
+-   `chunkify` — _optional_ `boolean` determines if recipient address will be displayed in chunks of 4 characters. Default is set to `false`
 
 ### Example
 

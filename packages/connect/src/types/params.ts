@@ -61,6 +61,7 @@ export interface GetAddress {
     path: DerivationPath;
     address?: string;
     showOnTrezor?: boolean;
+    chunkify?: boolean;
 }
 
 export interface Address {
@@ -74,6 +75,7 @@ export interface GetPublicKey {
     path: DerivationPath;
     showOnTrezor?: boolean;
     suppressBackupWarning?: boolean;
+    chunkify?: boolean;
 }
 
 export interface PublicKey {

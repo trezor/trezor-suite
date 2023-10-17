@@ -42,6 +42,7 @@ export default class StellarGetAddress extends AbstractMethod<'stellarGetAddress
                 { name: 'path', required: true },
                 { name: 'address', type: 'string' },
                 { name: 'showOnTrezor', type: 'boolean' },
+                { name: 'chunkify', type: 'boolean' },
             ]);
 
             const path = validatePath(batch.path, 3);
@@ -49,6 +50,7 @@ export default class StellarGetAddress extends AbstractMethod<'stellarGetAddress
                 address_n: path,
                 address: batch.address,
                 show_display: typeof batch.showOnTrezor === 'boolean' ? batch.showOnTrezor : true,
+                chunkify: typeof batch.chunkify === 'boolean' ? batch.chunkify : false,
             };
         });
 
@@ -120,11 +122,12 @@ export default class StellarGetAddress extends AbstractMethod<'stellarGetAddress
         return uiResp.payload;
     }
 
-    async _call({ address_n, show_display }: Params) {
+    async _call({ address_n, show_display, chunkify }: Params) {
         const cmd = this.device.getCommands();
         const response = await cmd.typedCall('StellarGetAddress', 'StellarAddress', {
             address_n,
             show_display,
+            chunkify,
         });
         return response.message;
     }

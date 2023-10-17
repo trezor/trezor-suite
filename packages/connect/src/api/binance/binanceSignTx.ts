@@ -98,6 +98,7 @@ export const signTx = async (
     typedCall: TypedCall,
     address_n: number[],
     tx: BinancePreparedTransaction,
+    chunkify?: boolean,
 ) => {
     const { account_number, chain_id, memo, sequence, source, messages } = tx;
     const msg_count = messages.length;
@@ -110,6 +111,7 @@ export const signTx = async (
         memo,
         sequence,
         source,
+        chunkify,
     });
     return processTxRequest(typedCall, messages, 0);
 };

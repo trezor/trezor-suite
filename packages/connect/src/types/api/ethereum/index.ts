@@ -44,6 +44,7 @@ export interface EthereumTransactionEIP1559 {
 export interface EthereumSignTransaction {
     path: DerivationPath;
     transaction: EthereumTransaction | EthereumTransactionEIP1559;
+    chunkify?: boolean;
 }
 
 export interface EthereumSignedTx {

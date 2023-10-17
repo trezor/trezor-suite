@@ -71,6 +71,7 @@ export type CardanoSignTransactionParams = {
     additionalWitnessRequests: Path[];
     derivationType: PROTO.CardanoDerivationType;
     includeNetworkId?: boolean;
+    chunkify?: boolean;
 };
 
 export default class CardanoSignTransaction extends AbstractMethod<
@@ -146,6 +147,7 @@ export default class CardanoSignTransaction extends AbstractMethod<
             { name: 'additionalWitnessRequests', type: 'array', allowEmpty: true },
             { name: 'derivationType', type: 'number' },
             { name: 'includeNetworkId', type: 'boolean' },
+            { name: 'chunkify', type: 'boolean' },
         ]);
 
         const inputsWithPath = payload.inputs.map(transformInput);
@@ -252,6 +254,7 @@ export default class CardanoSignTransaction extends AbstractMethod<
                     ? payload.derivationType
                     : PROTO.CardanoDerivationType.ICARUS_TREZOR,
             includeNetworkId: payload.includeNetworkId,
+            chunkify: typeof payload.chunkify === 'boolean' ? payload.chunkify : false,
         };
     }
 
@@ -389,6 +392,7 @@ export default class CardanoSignTransaction extends AbstractMethod<
             reference_inputs_count: this.params.referenceInputs.length,
             derivation_type: this.params.derivationType,
             include_network_id: this.params.includeNetworkId,
+            chunkify: this.params.chunkify,
         };
 
         // init

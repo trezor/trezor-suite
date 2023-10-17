@@ -398,12 +398,14 @@ export const signTx = async (
     chain_id: string,
     header: PROTO.EosTxHeader,
     actions: PROTO.EosTxActionAck[],
+    chunkify: boolean,
 ) => {
     const response = await typedCall('EosSignTx', 'EosTxActionRequest', {
         address_n,
         chain_id,
         header,
         num_actions: actions.length,
+        chunkify,
     });
     return processTxRequest(typedCall, response.message, actions, 0);
 };

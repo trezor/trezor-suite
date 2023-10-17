@@ -11,6 +11,7 @@ import type { BinancePreparedTransaction } from '../types/api/binance';
 type Params = {
     path: number[];
     transaction: BinancePreparedTransaction;
+    chunkify?: boolean;
 };
 
 export default class BinanceSignTransaction extends AbstractMethod<
@@ -26,6 +27,7 @@ export default class BinanceSignTransaction extends AbstractMethod<
         validateParams(payload, [
             { name: 'path', type: 'string', required: true },
             { name: 'transaction', required: true },
+            { name: 'chunkify', type: 'boolean' },
         ]);
 
         const path = validatePath(payload.path, 3);
@@ -34,6 +36,7 @@ export default class BinanceSignTransaction extends AbstractMethod<
         this.params = {
             path,
             transaction,
+            chunkify: typeof payload.chunkify === 'boolean' ? payload.chunkify : false,
         };
     }
 
@@ -46,6 +49,7 @@ export default class BinanceSignTransaction extends AbstractMethod<
             this.device.getCommands().typedCall.bind(this.device.getCommands()),
             this.params.path,
             this.params.transaction,
+            this.params.chunkify,
         );
     }
 }

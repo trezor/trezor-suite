@@ -15,6 +15,7 @@ const result = await TrezorConnect.tezosGetPublicKey(params);
 
 -   `path` — _required_ `string | Array<number>` minimum length is `3`. [read more](../path.md)
 -   `showOnTrezor` — _optional_ `boolean` determines if public key will be displayed on device.
+-   `chunkify` — _optional_ `boolean` determines if address will be displayed in chunks of 4 characters. Default is set to `false`
 
 #### Exporting bundle of public keys
 

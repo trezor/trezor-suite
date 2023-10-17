@@ -12,6 +12,7 @@ type Params = {
     chain_id: string;
     header: PROTO.EosTxHeader;
     ack: PROTO.EosTxActionAck[];
+    chunkify: boolean;
 };
 
 export default class EosSignTransaction extends AbstractMethod<'eosSignTransaction', Params> {
@@ -24,6 +25,7 @@ export default class EosSignTransaction extends AbstractMethod<'eosSignTransacti
         validateParams(payload, [
             { name: 'path', required: true },
             { name: 'transaction', required: true },
+            { name: 'chunkify', type: 'boolean' },
         ]);
 
         const path = validatePath(payload.path, 3);
@@ -34,6 +36,7 @@ export default class EosSignTransaction extends AbstractMethod<'eosSignTransacti
             chain_id,
             header,
             ack,
+            chunkify: typeof payload.chunkify === 'boolean' ? payload.chunkify : false,
         };
     }
 
@@ -48,6 +51,7 @@ export default class EosSignTransaction extends AbstractMethod<'eosSignTransacti
             this.params.chain_id,
             this.params.header,
             this.params.ack,
+            this.params.chunkify,
         );
 
         return {

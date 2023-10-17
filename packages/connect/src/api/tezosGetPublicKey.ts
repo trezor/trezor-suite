@@ -36,12 +36,14 @@ export default class TezosGetPublicKey extends AbstractMethod<
             validateParams(batch, [
                 { name: 'path', required: true },
                 { name: 'showOnTrezor', type: 'boolean' },
+                { name: 'chunkify', type: 'boolean' },
             ]);
 
             const path = validatePath(batch.path, 3);
             return {
                 address_n: path,
                 show_display: typeof batch.showOnTrezor === 'boolean' ? batch.showOnTrezor : true,
+                chunkify: typeof batch.chunkify === 'boolean' ? batch.chunkify : false,
             };
         });
     }

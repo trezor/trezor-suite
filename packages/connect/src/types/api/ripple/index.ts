@@ -17,6 +17,7 @@ export interface RippleTransaction {
 export interface RippleSignTransaction {
     path: DerivationPath;
     transaction: RippleTransaction;
+    chunkify?: boolean;
 }
 
 export interface RippleSignedTx {

@@ -15,6 +15,7 @@ const result = await TrezorConnect.rippleSignTransaction(params);
 
 -   `path` — _required_ `string | Array<number>` minimum length is `3`. [read more](../path.md)
 -   `transaction` - _required_ `Object` type of [RippleTransaction](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/ripple/index.ts)
+-   `chunkify` — _optional_ `boolean` determines if recipient address will be displayed in chunks of 4 characters. Default is set to `false`
 
 ### Example
 
