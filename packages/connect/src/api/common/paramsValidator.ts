@@ -105,30 +105,29 @@ export const getFirmwareRange = (
     const current: FirmwareRange = JSON.parse(JSON.stringify(currentRange));
     // set minimum required firmware from coins.json (coinInfo)
     if (coinInfo) {
-        if (!coinInfo.support || typeof coinInfo.support.trezor1 !== 'string') {
-            current['1'].min = '0';
+        if (!coinInfo.support || typeof coinInfo.support.T1B1 !== 'string') {
+            current.T1B1.min = '0';
         } else if (
-            current['1'].min !== '0' &&
-            versionUtils.isNewer(coinInfo.support.trezor1, current['1'].min)
+            current.T1B1.min !== '0' &&
+            versionUtils.isNewer(coinInfo.support.T1B1, current.T1B1.min)
         ) {
-            current['1'].min = coinInfo.support.trezor1;
+            current.T1B1.min = coinInfo.support.T1B1;
         }
 
-        if (!coinInfo.support || typeof coinInfo.support.trezor2 !== 'string') {
-            current['2'].min = '0';
+        if (!coinInfo.support || typeof coinInfo.support.T2T1 !== 'string') {
+            current.T2T1.min = '0';
         } else if (
-            current['2'].min !== '0' &&
-            versionUtils.isNewer(coinInfo.support.trezor2, current['2'].min)
+            current.T2T1.min !== '0' &&
+            versionUtils.isNewer(coinInfo.support.T2T1, current.T2T1.min)
         ) {
-            current['2'].min = coinInfo.support.trezor2;
+            current.T2T1.min = coinInfo.support.T2T1;
         }
     }
 
     const coinType = coinInfo ? coinInfo.type : null;
     const shortcut = coinInfo ? coinInfo.shortcut.toLowerCase() : null;
     // find firmware range in config.json
-    const { supportedFirmware } = config;
-    const ranges = supportedFirmware
+    const ranges = config.supportedFirmware
         .filter(rule => {
             // check if rule applies to requested method
             if (rule.methods) {
@@ -166,37 +165,37 @@ export const getFirmwareRange = (
         // NOTE:
         // 0 may be confusing. means: no-support for "min" and unlimited support for "max"
         if (min) {
-            const [t1, t2] = min;
+            const { T1B1, T2T1 } = min;
             if (
-                t1 === '0' ||
-                current['1'].min === '0' ||
-                !versionUtils.isNewerOrEqual(current['1'].min, t1)
+                T1B1 === '0' ||
+                current.T1B1.min === '0' ||
+                !versionUtils.isNewerOrEqual(current.T1B1.min, T1B1)
             ) {
-                current['1'].min = t1;
+                current.T1B1.min = T1B1;
             }
             if (
-                t2 === '0' ||
-                current['2'].min === '0' ||
-                !versionUtils.isNewerOrEqual(current['2'].min, t2)
+                T2T1 === '0' ||
+                current.T2T1.min === '0' ||
+                !versionUtils.isNewerOrEqual(current.T2T1.min, T2T1)
             ) {
-                current['2'].min = t2;
+                current.T2T1.min = T2T1;
             }
         }
         if (max) {
-            const [t1, t2] = max as [string, string];
+            const { T1B1, T2T1 } = max;
             if (
-                t1 === '0' ||
-                current['1'].max === '0' ||
-                !versionUtils.isNewerOrEqual(current['1'].max, t1)
+                T1B1 === '0' ||
+                current.T1B1.max === '0' ||
+                !versionUtils.isNewerOrEqual(current.T1B1.max, T1B1)
             ) {
-                current['1'].max = t1;
+                current.T1B1.max = T1B1;
             }
             if (
-                t2 === '0' ||
-                current['2'].max === '0' ||
-                !versionUtils.isNewerOrEqual(current['2'].max, t2)
+                T2T1 === '0' ||
+                current.T2T1.max === '0' ||
+                !versionUtils.isNewerOrEqual(current.T2T1.max, T2T1)
             ) {
-                current['2'].max = t2;
+                current.T2T1.max = T2T1;
             }
         }
     });

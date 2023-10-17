@@ -94,7 +94,7 @@ export const config = {
         {
             coin: ['xrp', 'txrp'],
             methods: ['getAccountInfo'],
-            min: ['0', '2.1.0'],
+            min: { T1B1: '0', T2T1: '2.1.0' },
             max: undefined, // NOTE: max field is not used anywhere at the moment, it is here for type compatibility
             comment: [
                 "Since firmware 2.1.0 there is a new protobuf field 'destination_tag' in RippleSignTx",
@@ -102,70 +102,70 @@ export const config = {
         },
         {
             coin: ['bnb'],
-            min: ['1.9.0', '2.3.0'],
+            min: { T1B1: '1.9.0', T2T1: '2.3.0' },
             comment: [
                 'There were protobuf backwards incompatible changes with introduction of 1.9.0/2.3.0 firmwares',
             ],
         },
         {
             coin: ['eth', 'tsep', 'tgor'],
-            min: ['1.8.0', '2.1.0'],
+            min: { T1B1: '1.8.0', T2T1: '2.1.0' },
             comment: ['There were protobuf backwards incompatible changes.'],
         },
         {
             methods: ['rippleGetAddress', 'rippleSignTransaction'],
-            min: ['0', '2.1.0'],
+            min: { T1B1: '0', T2T1: '2.1.0' },
             comment: [
                 "Since firmware 2.1.0 there is a new protobuf field 'destination_tag' in RippleSignTx",
             ],
         },
         {
             methods: ['cardanoGetAddress', 'cardanoGetPublicKey'],
-            min: ['0', '2.3.2'],
+            min: { T1B1: '0', T2T1: '2.3.2' },
             comment: ['Shelley fork support since firmware 2.3.2'],
         },
         {
             methods: ['cardanoSignTransaction'],
-            min: ['0', '2.4.2'],
+            min: { T1B1: '0', T2T1: '2.4.2' },
             comment: ['Non-streamed signing no longer supported'],
         },
         {
             methods: ['cardanoGetNativeScriptHash'],
-            min: ['0', '2.4.3'],
+            min: { T1B1: '0', T2T1: '2.4.3' },
             comment: ['Cardano GetNativeScriptHash call added in 2.4.3'],
         },
         {
             methods: ['tezosSignTransaction'],
-            min: ['0', '2.1.8'],
+            min: { T1B1: '0', T2T1: '2.1.8' },
             comment: [
                 'Since 2.1.8 there are new protobuf fields in tezos transaction (Babylon fork)',
             ],
         },
         {
             methods: ['stellarSignTransaction'],
-            min: ['1.9.0', '2.3.0'],
+            min: { T1B1: '1.9.0', T2T1: '2.3.0' },
             comment: [
                 'There were protobuf backwards incompatible changes with introduction of 1.9.0/2.3.0 firmwares',
             ],
         },
         {
             capabilities: ['replaceTransaction', 'amountUnit'],
-            min: ['1.9.4', '2.3.5'],
+            min: { T1B1: '1.9.4', T2T1: '2.3.5' },
             comment: ['new sign tx process since 1.9.4/2.3.5'],
         },
         {
             capabilities: ['decreaseOutput'],
-            min: ['1.10.0', '2.4.0'],
+            min: { T1B1: '1.10.0', T2T1: '2.4.0' },
             comment: ['allow reduce output in RBF transaction since 1.10.0/2.4.0'],
         },
         {
             capabilities: ['eip1559'],
-            min: ['1.10.4', '2.4.2'],
+            min: { T1B1: '1.10.4', T2T1: '2.4.2' },
             comment: ['new eth transaction pricing mechanism (EIP1559) since 1.10.4/2.4.2'],
         },
         {
             capabilities: ['taproot', 'signMessageNoScriptType'],
-            min: ['1.10.4', '2.4.3'],
+            min: { T1B1: '1.10.4', T2T1: '2.4.3' },
             comment: [
                 'new btc accounts taproot since 1.10.4/2.4.3 (BTC + TEST only)',
                 'SignMessage with no_script_type support',
@@ -174,17 +174,17 @@ export const config = {
         {
             coin: ['dcr', 'tdcr'],
             methods: ['signTransaction'],
-            min: ['1.10.1', '2.4.0'],
+            min: { T1B1: '1.10.1', T2T1: '2.4.0' },
             comment: [''],
         },
         {
             methods: ['ethereumSignTypedData'],
-            min: ['1.10.5', '2.4.3'],
+            min: { T1B1: '1.10.5', T2T1: '2.4.3' },
             comment: ['EIP-712 typed signing support added in 1.10.5/2.4.3'],
         },
         {
             capabilities: ['eip712-domain-only'],
-            min: ['1.10.6', '2.4.4'],
+            min: { T1B1: '1.10.6', T2T1: '2.4.4' },
             comment: ['EIP-712 domain-only signing, when primaryType=EIP712Domain'],
         },
         {
@@ -197,11 +197,11 @@ export const config = {
                 'setBusy',
                 'unlockPath',
             ],
-            min: ['1.12.1', '2.5.3'],
+            min: { T1B1: '1.12.1', T2T1: '2.5.3' },
         },
         {
             methods: ['showDeviceTutorial'],
-            min: ['0', '2.6.1'],
+            min: { T1B1: '0', T2T1: '0', T2B1: '2.6.1' },
             comment: ['Only on T2B1'],
         },
     ],

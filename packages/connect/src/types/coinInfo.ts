@@ -2,8 +2,9 @@ import { FeeLevel } from './fees';
 
 export interface CoinSupport {
     connect: boolean;
-    trezor1: string;
-    trezor2: string;
+    T1B1: string;
+    T2T1: string;
+    T2B1: string;
 }
 
 // copy-paste from '@trezor/utxo-lib' module

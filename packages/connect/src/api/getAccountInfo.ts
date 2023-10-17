@@ -1,6 +1,6 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/GetAccountInfo.js
 
-import { AbstractMethod, MethodReturnType } from '../core/AbstractMethod';
+import { AbstractMethod, MethodReturnType, DEFAULT_FIRMWARE_RANGE } from '../core/AbstractMethod';
 import { Discovery } from './common/Discovery';
 import { validateParams, getFirmwareRange } from './common/paramsValidator';
 import { validatePath, getSerializedPath } from '../utils/pathUtils';
@@ -192,15 +192,15 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
             return super.checkFirmwareRange(isUsingPopup);
         }
         // for trusted mode check each batch and return error with invalid bundle indexes
-        const defaultRange = {
-            1: { min: '1.0.0', max: '0' },
-            2: { min: '2.0.0', max: '0' },
-        };
         // find invalid ranges
         const invalid = [];
         for (let i = 0; i < this.params.length; i++) {
             // set FW range for current batch
-            this.firmwareRange = getFirmwareRange(this.name, this.params[i].coinInfo, defaultRange);
+            this.firmwareRange = getFirmwareRange(
+                this.name,
+                this.params[i].coinInfo,
+                DEFAULT_FIRMWARE_RANGE,
+            );
             const exception = await super.checkFirmwareRange(false);
             if (exception) {
                 invalid.push({

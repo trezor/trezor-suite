@@ -38,13 +38,12 @@ export const parseCapabilities = (features?: Features): PROTO.Capability[] => {
     return features.capabilities;
 };
 
-// TODO: support type
 export const getUnavailableCapabilities = (features: Features, coins: CoinInfo[]) => {
     const { capabilities } = features;
     const list: UnavailableCapabilities = {};
     if (!capabilities) return list;
     const fw = [features.major_version, features.minor_version, features.patch_version];
-    const key = `trezor${features.major_version}` as 'trezor1' | 'trezor2';
+    const key = features.internal_model;
 
     // 1. check if firmware version is supported by CoinInfo.support
     const supported = coins.filter(info => {
@@ -96,8 +95,8 @@ export const getUnavailableCapabilities = (features: Features, coins: CoinInfo[]
     // 4. check if firmware version is in range of capabilities in "config.supportedFirmware"
     config.supportedFirmware.forEach(s => {
         if (!s.capabilities) return;
-        const min = s.min ? s.min[fw[0] - 1] : null;
-        const max = s.max ? s.max[fw[0] - 1] : null;
+        const min = s.min ? s.min[key] : null;
+        const max = s.max ? s.max[key] : null;
         if (min && (min === '0' || versionUtils.isNewer(min, fw.join('.')))) {
             const value = min === '0' ? 'no-support' : 'update-required';
             s.capabilities.forEach(m => {

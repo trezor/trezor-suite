@@ -166,6 +166,7 @@ describe('utils/deviceFeaturesUtils', () => {
                 signMessageNoScriptType: 'update-required',
             });
         });
+
         it('getUnavailable 1', done => {
             jest.resetModules();
 
@@ -174,7 +175,7 @@ describe('utils/deviceFeaturesUtils', () => {
                 config: {
                     supportedFirmware: [
                         {
-                            min: ['0', '2.99.99'],
+                            min: { T1B1: '0', T2T1: '2.99.99' },
                             capabilities: ['newCapabilityOrFeature'],
                         },
                     ],
@@ -198,7 +199,7 @@ describe('utils/deviceFeaturesUtils', () => {
                 config: {
                     supportedFirmware: [
                         {
-                            min: ['0', '0'],
+                            min: { T1B1: '0', T2T1: '0' },
                             capabilities: ['newCapabilityOrFeature'],
                         },
                     ],
