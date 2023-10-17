@@ -110,14 +110,6 @@ export const getUnavailableCapabilities = (features: Features, coins: CoinInfo[]
         }
     });
 
-    // Bitcoin Gold, Dash, DigiByte, NameCoin, Vertcoin support dropped for new devices
-    if (![DeviceModelInternal.T1B1, DeviceModelInternal.T2T1].includes(features.internal_model)) {
-        const unsupportedCoins = ['btg', 'dash', 'dgb', 'nmc', 'vtc'];
-        unsupportedCoins.forEach(coin => {
-            list[coin] = 'no-support';
-        });
-    }
-
     return list;
 };
 
