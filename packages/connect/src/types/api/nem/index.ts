@@ -112,4 +112,5 @@ export type NEMTransaction = NEMRegularTransaction | NEMMultisigTransaction;
 export interface NEMSignTransaction {
     path: DerivationPath;
     transaction: NEMTransaction;
+    chunkify?: boolean;
 }

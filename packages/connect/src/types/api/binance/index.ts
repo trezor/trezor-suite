@@ -36,4 +36,5 @@ export interface BinancePreparedTransaction extends BinanceSDKTransaction {
 export interface BinanceSignTransaction {
     path: DerivationPath;
     transaction: BinanceSDKTransaction;
+    chunkify?: boolean;
 }

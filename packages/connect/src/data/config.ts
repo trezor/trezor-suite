@@ -217,5 +217,12 @@ export const config = {
             // TODO solana (vl/connect): set proper version
             min: { T1B1: '0', T2T1: '2.7.0', T2B1: '2.7.0' },
         },
+        {
+            capabilities: ['chunkify'],
+            min: { T1B1: '0', T2T1: '2.6.3', T2B1: '2.6.3' },
+            comment: [
+                "Since firmware 2.6.3 there is a new protobuf field 'chunkify' in almost all getAddress and signTx methods",
+            ],
+        },
     ],
 };

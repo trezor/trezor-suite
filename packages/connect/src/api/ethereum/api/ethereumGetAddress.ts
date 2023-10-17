@@ -47,6 +47,7 @@ export default class EthereumGetAddress extends AbstractMethod<'ethereumGetAddre
                 { name: 'path', required: true },
                 { name: 'address', type: 'string' },
                 { name: 'showOnTrezor', type: 'boolean' },
+                { name: 'chunkify', type: 'boolean' },
             ]);
 
             const path = validatePath(batch.path, 3);
@@ -58,6 +59,7 @@ export default class EthereumGetAddress extends AbstractMethod<'ethereumGetAddre
                 show_display: typeof batch.showOnTrezor === 'boolean' ? batch.showOnTrezor : true,
                 address: batch.address,
                 network,
+                chunkify: typeof batch.chunkify === 'boolean' ? batch.chunkify : false,
             };
         });
 
@@ -153,12 +155,13 @@ export default class EthereumGetAddress extends AbstractMethod<'ethereumGetAddre
         return uiResp.payload;
     }
 
-    _call({ address_n, show_display, encoded_network }: Params) {
+    _call({ address_n, show_display, encoded_network, chunkify }: Params) {
         const cmd = this.device.getCommands();
         return cmd.ethereumGetAddress({
             address_n,
             show_display,
             encoded_network,
+            chunkify,
         });
     }
 

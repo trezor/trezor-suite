@@ -69,6 +69,7 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
             { name: 'amountUnit', type: ['number', 'string'] },
             { name: 'unlockPath', type: 'object' },
             { name: 'serialize', type: 'boolean' },
+            { name: 'chunkify', type: 'boolean' },
         ]);
 
         if (payload.unlockPath) {
@@ -138,6 +139,7 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
                 amount_unit: payload.amountUnit,
                 serialize: payload.serialize,
                 coinjoin_request: payload.coinjoinRequest,
+                chunkify: typeof payload.chunkify === 'boolean' ? payload.chunkify : false,
             },
             coinInfo,
             push: typeof payload.push === 'boolean' ? payload.push : false,

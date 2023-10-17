@@ -37,6 +37,7 @@ const result = await TrezorConnect.signTransaction(params);
     > show amounts in BTC, mBTC, uBTC, sat
 -   `unlockPath` - _optional_ [PROTO.UnlockPath](https://github.com/trezor/trezor-suite/blob/develop/packages/transport/src/types/messages.ts), the result of [TrezorConnect.unlockPath](./unlockPath.md) method.
 -   `serialize` - _optional_ `boolean`, default `true` serialize the full transaction, as opposed to only outputting the signatures
+-   `chunkify` — _optional_ `boolean` determines if recipient address will be displayed in chunks of 4 characters. Default is set to `false`
 
 ### Example
 

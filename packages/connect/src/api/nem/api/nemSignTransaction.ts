@@ -20,11 +20,12 @@ export default class NEMSignTransaction extends AbstractMethod<
         validateParams(payload, [
             { name: 'path', required: true },
             { name: 'transaction', required: true },
+            { name: 'chunkify', type: 'boolean' },
         ]);
 
         const path = validatePath(payload.path, 3);
         // incoming data should be in nem-sdk format
-        this.params = helper.createTx(payload.transaction, path);
+        this.params = helper.createTx(payload.transaction, path, payload.chunkify);
     }
 
     get info() {

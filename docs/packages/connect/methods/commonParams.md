@@ -21,3 +21,4 @@ All common parameters are optional.
     -   Wallet calls `cardanoGetPublicKey`.
     -   At this moment user will be prompted to enter passhprase again.
 -   `override` - _optional_ `boolean` Interrupt previous call, if any.
+-   `chunkify` — _optional_ `boolean` determines if address will be displayed in chunks of 4 characters. Default is set to `false`

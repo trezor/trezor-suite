@@ -43,6 +43,7 @@ export default class NEMGetAddress extends AbstractMethod<'nemGetAddress', Param
                 { name: 'address', type: 'string' },
                 { name: 'network', type: 'number' },
                 { name: 'showOnTrezor', type: 'boolean' },
+                { name: 'chunkify', type: 'boolean' },
             ]);
 
             const path = validatePath(batch.path, 3);
@@ -51,6 +52,7 @@ export default class NEMGetAddress extends AbstractMethod<'nemGetAddress', Param
                 network: batch.network || MAINNET,
                 show_display: typeof batch.showOnTrezor === 'boolean' ? batch.showOnTrezor : true,
                 address: batch.address,
+                chunkify: typeof batch.chunkify === 'boolean' ? batch.chunkify : false,
             };
         });
 
@@ -136,12 +138,13 @@ export default class NEMGetAddress extends AbstractMethod<'nemGetAddress', Param
         return uiResp.payload;
     }
 
-    async _call({ address_n, network, show_display }: Params) {
+    async _call({ address_n, network, show_display, chunkify }: Params) {
         const cmd = this.device.getCommands();
         const response = await cmd.typedCall('NEMGetAddress', 'NEMAddress', {
             address_n,
             network,
             show_display,
+            chunkify,
         });
         return response.message;
     }

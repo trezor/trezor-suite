@@ -51,6 +51,7 @@ export default class CardanoGetAddress extends AbstractMethod<'cardanoGetAddress
                 { name: 'derivationType', type: 'number' },
                 { name: 'address', type: 'string' },
                 { name: 'showOnTrezor', type: 'boolean' },
+                { name: 'chunkify', type: 'boolean' },
             ]);
 
             validateAddressParameters(batch.addressParameters);
@@ -65,6 +66,7 @@ export default class CardanoGetAddress extends AbstractMethod<'cardanoGetAddress
                         ? batch.derivationType
                         : PROTO.CardanoDerivationType.ICARUS_TREZOR,
                 show_display: typeof batch.showOnTrezor === 'boolean' ? batch.showOnTrezor : true,
+                chunkify: typeof batch.chunkify === 'boolean' ? batch.chunkify : false,
             };
         });
 
@@ -144,6 +146,7 @@ export default class CardanoGetAddress extends AbstractMethod<'cardanoGetAddress
         network_id,
         derivation_type,
         show_display,
+        chunkify,
     }: Params) {
         const cmd = this.device.getCommands();
         const response = await cmd.typedCall('CardanoGetAddress', 'CardanoAddress', {
@@ -152,6 +155,7 @@ export default class CardanoGetAddress extends AbstractMethod<'cardanoGetAddress
             network_id,
             derivation_type,
             show_display,
+            chunkify,
         });
         return response.message;
     }

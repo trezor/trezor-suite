@@ -29,6 +29,7 @@ import {
     COINMARKET_SAVINGS,
     COINMARKET_COMMON,
 } from '../constants';
+import { AddressDisplayOptions, selectAddressDisplay } from 'src/reducers/suite/suiteReducer';
 
 export type CoinmarketCommonAction =
     | {
@@ -67,6 +68,8 @@ export const verifyAddress =
         path = path ?? accountAddress.path;
         if (!path || !address) return;
 
+        const addressDisplay = selectAddressDisplay(getState());
+
         const { useEmptyPassphrase, connected, available } = device;
 
         // Show warning when device is not connected
@@ -86,6 +89,7 @@ export const verifyAddress =
             path,
             useEmptyPassphrase,
             coin: account.symbol,
+            chunkify: addressDisplay === AddressDisplayOptions.CHUNKED,
         };
 
         let response;
@@ -101,6 +105,7 @@ export const verifyAddress =
                     protocolMagic: getProtocolMagic(account.symbol),
                     networkId: getNetworkId(account.symbol),
                     derivationType: getDerivationType(account.accountType),
+                    chunkify: addressDisplay === AddressDisplayOptions.CHUNKED,
                 });
                 break;
             case 'ripple':

@@ -23,11 +23,12 @@ export default class RippleSignTransaction extends AbstractMethod<
         validateParams(payload, [
             { name: 'path', required: true },
             { name: 'transaction', required: true },
+            { name: 'chunkify', type: 'boolean' },
         ]);
 
         const path = validatePath(payload.path, 5);
         // incoming data should be in ripple-sdk format
-        const { transaction } = payload;
+        const { transaction, chunkify } = payload;
 
         validateParams(transaction, [
             { name: 'fee', type: 'uint' },
@@ -54,6 +55,7 @@ export default class RippleSignTransaction extends AbstractMethod<
                 destination: transaction.payment.destination,
                 destination_tag: transaction.payment.destinationTag,
             },
+            chunkify: typeof chunkify === 'boolean' ? chunkify : false,
         };
     }
 

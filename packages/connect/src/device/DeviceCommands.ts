@@ -264,7 +264,7 @@ export class DeviceCommands {
     }
 
     async getAddress(
-        { address_n, show_display, multisig, script_type }: Messages.GetAddress,
+        { address_n, show_display, multisig, script_type, chunkify }: Messages.GetAddress,
         coinInfo: BitcoinNetworkInfo,
     ) {
         if (!script_type) {
@@ -287,6 +287,7 @@ export class DeviceCommands {
             show_display,
             multisig,
             script_type: script_type || 'SPENDADDRESS',
+            chunkify,
         });
 
         return {
@@ -300,11 +301,13 @@ export class DeviceCommands {
         address_n,
         show_display,
         encoded_network,
+        chunkify,
     }: Messages.EthereumGetAddress) {
         const response = await this.typedCall('EthereumGetAddress', 'EthereumAddress', {
             address_n,
             show_display,
             encoded_network,
+            chunkify,
         });
         return {
             path: address_n,

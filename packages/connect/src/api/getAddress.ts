@@ -44,6 +44,7 @@ export default class GetAddress extends AbstractMethod<'getAddress', Params[]> {
                 { name: 'multisig', type: 'object' },
                 { name: 'scriptType', type: 'string' },
                 { name: 'unlockPath', type: 'object' },
+                { name: 'chunkify', type: 'boolean' },
             ]);
 
             if (batch.unlockPath) {
@@ -83,6 +84,7 @@ export default class GetAddress extends AbstractMethod<'getAddress', Params[]> {
                 script_type: batch.scriptType,
                 coinInfo,
                 unlockPath: batch.unlockPath,
+                chunkify: typeof batch.chunkify === 'boolean' ? batch.chunkify : false,
             };
         });
 
@@ -158,7 +160,15 @@ export default class GetAddress extends AbstractMethod<'getAddress', Params[]> {
         return uiResp.payload;
     }
 
-    async _call({ address_n, show_display, multisig, script_type, coinInfo, unlockPath }: Params) {
+    async _call({
+        address_n,
+        show_display,
+        multisig,
+        script_type,
+        coinInfo,
+        unlockPath,
+        chunkify,
+    }: Params) {
         const cmd = this.device.getCommands();
         if (unlockPath) {
             await cmd.unlockPath(unlockPath);
@@ -169,6 +179,7 @@ export default class GetAddress extends AbstractMethod<'getAddress', Params[]> {
                 show_display,
                 multisig,
                 script_type,
+                chunkify,
             },
             coinInfo,
         );
