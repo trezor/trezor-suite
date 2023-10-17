@@ -139,4 +139,5 @@ export interface EosSDKTransaction {
 export interface EosSignTransaction {
     path: DerivationPath;
     transaction: EosSDKTransaction;
+    chunkify?: boolean;
 }

@@ -26,6 +26,7 @@ export interface CardanoGetAddress {
     address?: string;
     showOnTrezor?: boolean;
     derivationType?: PROTO.CardanoDerivationType;
+    chunkify?: boolean;
 }
 
 export interface CardanoAddress {
@@ -216,6 +217,7 @@ export interface CardanoSignTransaction {
     signingMode: PROTO.CardanoTxSigningMode;
     derivationType?: PROTO.CardanoDerivationType;
     includeNetworkId?: boolean;
+    chunkify?: boolean;
 }
 
 export interface CardanoSignedTxWitness {

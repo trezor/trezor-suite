@@ -49,6 +49,7 @@ import { CryptoAmountLimits } from 'src/types/wallet/coinmarketCommonTypes';
 import { useCoinmarketExchangeFormDefaultValues } from './useCoinmarketExchangeFormDefaultValues';
 import { useCompose } from './form/useCompose';
 import { useFees } from './form/useFees';
+import { AddressDisplayOptions, selectAddressDisplay } from 'src/reducers/suite/suiteReducer';
 
 export const ExchangeFormContext = createContext<ExchangeFormContextValues | null>(null);
 ExchangeFormContext.displayName = 'CoinmarketExchangeContext';
@@ -91,6 +92,7 @@ export const useCoinmarketExchangeForm = ({
     const localCurrency = useSelector(state => state.wallet.settings.localCurrency);
     const fees = useSelector(state => state.wallet.fees);
     const dispatch = useDispatch();
+    const addressDisplay = useSelector(selectAddressDisplay);
 
     const { account, network } = selectedAccount;
     const { navigateToExchangeOffers } = useCoinmarketNavigation(account);
@@ -120,11 +122,20 @@ export const useCoinmarketExchangeForm = ({
 
     // throttle initial state calculation
     const initState = useExchangeState(selectedAccount, fees, !!state, defaultValues);
+
+    const chunkify = addressDisplay === AddressDisplayOptions.CHUNKED;
+
     useEffect(() => {
         const setStateAsync = async (
             initState: NonNullable<ReturnType<typeof useExchangeState>>,
         ) => {
-            const address = await getComposeAddressPlaceholder(account, network, device, accounts);
+            const address = await getComposeAddressPlaceholder(
+                account,
+                network,
+                device,
+                accounts,
+                chunkify,
+            );
             if (initState?.formValues && address) {
                 initState.formValues.outputs[0].address = address;
 
@@ -140,7 +151,7 @@ export const useCoinmarketExchangeForm = ({
         if (!state && initState) {
             setStateAsync(initState);
         }
-    }, [state, initState, account, network, device, accounts, exchangeInfo?.sellSymbols]);
+    }, [state, initState, account, network, device, accounts, chunkify, exchangeInfo?.sellSymbols]);
 
     const methods = useForm({
         mode: 'onChange',

@@ -20,6 +20,7 @@ const result = await TrezorConnect.getAddress(params);
 -   `multisig` - _optional_ [MultisigRedeemScriptType](https://github.com/trezor/trezor-suite/blob/develop/packages/transport/src/types/messages.ts), redeem script information (multisig addresses only)
 -   `scriptType` - _optional_ [InputScriptType](https://github.com/trezor/trezor-suite/blob/develop/packages/transport/src/types/messages.ts), address script type
 -   `unlockPath` - _optional_ [PROTO.UnlockPath](https://github.com/trezor/trezor-suite/blob/develop/packages/transport/src/types/messages.ts), the result of [TrezorConnect.unlockPath](./unlockPath.md) method.
+-   `chunkify` — _optional_ `boolean` determines if address will be displayed in chunks of 4 characters. Default is set to `false`
 
 #### Exporting bundle of addresses
 

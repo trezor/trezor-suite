@@ -13,6 +13,7 @@ const result = await TrezorConnect.binanceSignTransaction(params);
 
 -   `path` — _required_ `string | Array<number>` minimum length is `5`. [read more](../path.md)
 -   `transaction` - _required_ `Object` type of [BinanceSDKTransaction](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/binance/index.ts)
+-   `chunkify` — _optional_ `boolean` determines if recipient address will be displayed in chunks of 4 characters. Default is set to `false`
 
 ### Transfer example
 

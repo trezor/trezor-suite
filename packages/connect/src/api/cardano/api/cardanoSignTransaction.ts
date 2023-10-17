@@ -75,6 +75,7 @@ export type CardanoSignTransactionParams = {
     includeNetworkId?: boolean;
     unsignedTx?: { body: string; hash: string };
     testnet?: boolean;
+    chunkify?: boolean;
 };
 
 export default class CardanoSignTransaction extends AbstractMethod<
@@ -152,6 +153,7 @@ export default class CardanoSignTransaction extends AbstractMethod<
             { name: 'includeNetworkId', type: 'boolean' },
             { name: 'unsignedTx', type: 'object' },
             { name: 'testnet', type: 'boolean' },
+            { name: 'chunkify', type: 'boolean' },
         ]);
 
         const inputsWithPath = payload.inputs.map(transformInput);
@@ -260,6 +262,7 @@ export default class CardanoSignTransaction extends AbstractMethod<
             includeNetworkId: payload.includeNetworkId,
             unsignedTx: 'unsignedTx' in payload ? payload.unsignedTx : undefined,
             testnet: 'testnet' in payload ? payload.testnet : undefined,
+            chunkify: typeof payload.chunkify === 'boolean' ? payload.chunkify : false,
         };
     }
 
@@ -397,6 +400,7 @@ export default class CardanoSignTransaction extends AbstractMethod<
             reference_inputs_count: this.params.referenceInputs.length,
             derivation_type: this.params.derivationType,
             include_network_id: this.params.includeNetworkId,
+            chunkify: this.params.chunkify,
         };
 
         // init

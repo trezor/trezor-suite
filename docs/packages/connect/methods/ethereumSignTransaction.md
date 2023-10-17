@@ -15,6 +15,7 @@ const result = await TrezorConnect.ethereumSignTransaction(params);
 
 -   `path` — _required_ `string | Array<number>` minimum length is `3`. [read more](../path.md)
 -   `transaction` - _required_ `Object` type of [`EthereumTransactionEIP1559`](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/ethereum/index.ts)`|`[`EthereumSignTransaction`](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/ethereum/index.ts) "0x" prefix for each field is optional
+-   `chunkify` — _optional_ `boolean` determines if recipient address will be displayed in chunks of 4 characters. Default is set to `false`
 
 ### Examples
 

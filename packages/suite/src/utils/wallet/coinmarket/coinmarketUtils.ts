@@ -135,6 +135,7 @@ export const getComposeAddressPlaceholder = async (
     network: Network,
     device?: TrezorDevice,
     accounts?: Account[],
+    chunkify?: boolean,
 ) => {
     // the address is later replaced by the address of the sell
     // as a precaution, use user's own address as a placeholder
@@ -167,6 +168,7 @@ export const getComposeAddressPlaceholder = async (
                     path: `${legacy.bip43Path.replace('i', '0')}/0/0`,
                     useEmptyPassphrase: device.useEmptyPassphrase,
                     showOnTrezor: false,
+                    chunkify,
                 });
                 if (result.success) {
                     return result.payload.address;

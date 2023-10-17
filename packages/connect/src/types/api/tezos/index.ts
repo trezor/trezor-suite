@@ -63,4 +63,5 @@ export interface TezosSignTransaction {
     path: DerivationPath;
     branch: string;
     operation: TezosOperation;
+    chunkify?: boolean;
 }

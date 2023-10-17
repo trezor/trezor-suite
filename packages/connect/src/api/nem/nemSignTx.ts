@@ -116,9 +116,10 @@ const supplyChangeMessage = (tx: $T.NEMSupplyChangeTransaction): PROTO.NEMMosaic
     delta: tx.delta,
 });
 
-export const createTx = (tx: $T.NEMTransaction, address_n: number[]) => {
+export const createTx = (tx: $T.NEMTransaction, address_n: number[], chunkify?: boolean) => {
     let transaction = tx;
     const message: PROTO.NEMSignTx = {
+        chunkify: typeof chunkify === 'boolean' ? chunkify : false,
         transaction: getCommon(tx, address_n),
         transfer: undefined,
         importance_transfer: undefined,

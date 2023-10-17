@@ -20,6 +20,7 @@ const result = await TrezorConnect.cardanoGetAddress(params);
 -   `networkId` - _required_ `Integer` 1 for Mainnet, 0 for Testnet
 -   `showOnTrezor` — _optional_ `boolean` determines if address will be displayed on device. Default is set to `true`
 -   `derivationType` — _optional_ `CardanoDerivationType` enum. determines used derivation type. Default is set to ICARUS_TREZOR=2
+-   `chunkify` — _optional_ `boolean` determines if address will be displayed in chunks of 4 characters. Default is set to `false`
 
 #### Exporting bundle of addresses
 

@@ -60,6 +60,7 @@ export interface TransactionOptions {
     amount_unit?: PROTO.AmountUnit;
     serialize?: boolean;
     coinjoin_request?: PROTO.CoinJoinRequest;
+    chunkify?: boolean;
 }
 
 export interface SignTransaction {
@@ -86,6 +87,7 @@ export interface SignTransaction {
     unlockPath?: PROTO.UnlockPath;
     serialize?: boolean;
     coinjoinRequest?: PROTO.CoinJoinRequest;
+    chunkify?: boolean;
 }
 
 export type SignedTransaction = {

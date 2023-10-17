@@ -6,6 +6,7 @@ import type { Dispatch, GetState, TrezorDevice } from 'src/types/suite';
 import type { Account } from 'src/types/wallet';
 
 import { SIGN_VERIFY } from './constants';
+import { AddressDisplayOptions, selectAddressDisplay } from 'src/reducers/suite/suiteReducer';
 
 export type SignVerifyAction =
     | { type: typeof SIGN_VERIFY.SIGN_SUCCESS; signSignature: string }
@@ -16,6 +17,7 @@ type StateParams = {
     account: Account;
     coin: Account['symbol'];
     useEmptyPassphrase: boolean;
+    chunkify?: boolean;
 };
 
 const getStateParams = (getState: GetState): Promise<StateParams> => {
@@ -25,6 +27,7 @@ const getStateParams = (getState: GetState): Promise<StateParams> => {
         },
     } = getState();
     const device = selectDevice(getState());
+    const addressDisplay = selectAddressDisplay(getState());
 
     return !device || !device.connected || !device.available || !account
         ? Promise.reject(new Error('Device not found'))
@@ -33,18 +36,20 @@ const getStateParams = (getState: GetState): Promise<StateParams> => {
               account,
               useEmptyPassphrase: device.useEmptyPassphrase,
               coin: account.symbol,
+              chunkify: addressDisplay === AddressDisplayOptions.CHUNKED,
           });
 };
 
 const showAddressByNetwork =
     (_: Dispatch, address: string, path: string) =>
-    ({ account, device, coin, useEmptyPassphrase }: StateParams) => {
+    ({ account, device, coin, useEmptyPassphrase, chunkify }: StateParams) => {
         const params = {
             device,
             address,
             path,
             coin,
             useEmptyPassphrase,
+            chunkify,
         };
         switch (account.networkType) {
             case 'bitcoin':

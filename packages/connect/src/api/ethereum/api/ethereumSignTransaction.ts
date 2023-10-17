@@ -20,6 +20,7 @@ type Params = {
     path: number[];
     network?: EthereumNetworkInfo;
     definitions?: EthereumDefinitions;
+    chunkify: boolean;
 } & (
     | {
           type: 'legacy';
@@ -52,10 +53,12 @@ export default class EthereumSignTransaction extends AbstractMethod<
         validateParams(payload, [
             { name: 'path', required: true },
             { name: 'transaction', required: true },
+            { name: 'chunkify', type: 'boolean' },
         ]);
 
         const path = validatePath(payload.path, 3);
         const network = getEthereumNetwork(path);
+        const chunkify = typeof payload.chunkify === 'boolean' ? payload.chunkify : false;
 
         // incoming transaction should be in EthereumTx format
         // https://github.com/ethereumjs/ethereumjs-tx
@@ -83,7 +86,7 @@ export default class EthereumSignTransaction extends AbstractMethod<
                 { name: 'chainId', type: 'number', required: true },
             ]);
 
-            this.params = { path, network, type: 'eip1559', tx: strip(tx) };
+            this.params = { path, network, type: 'eip1559', tx: strip(tx), chunkify };
         } else {
             validateParams(tx, [
                 { name: 'to', type: 'string', required: true },
@@ -96,7 +99,7 @@ export default class EthereumSignTransaction extends AbstractMethod<
                 { name: 'txType', type: 'number' },
             ]);
 
-            this.params = { path, network, type: 'legacy', tx: strip(tx) };
+            this.params = { path, network, type: 'legacy', tx: strip(tx), chunkify };
         }
 
         // Since FW 2.4.3+ chainId will be required
@@ -134,7 +137,7 @@ export default class EthereumSignTransaction extends AbstractMethod<
     }
 
     async run() {
-        const { type, tx, definitions } = this.params;
+        const { type, tx, definitions, chunkify } = this.params;
 
         const signature =
             type === 'eip1559'
@@ -148,6 +151,7 @@ export default class EthereumSignTransaction extends AbstractMethod<
                       tx.maxPriorityFeePerGas,
                       tx.nonce,
                       tx.chainId,
+                      chunkify,
                       tx.data,
                       tx.accessList,
                       definitions,
@@ -161,6 +165,7 @@ export default class EthereumSignTransaction extends AbstractMethod<
                       tx.gasPrice,
                       tx.nonce,
                       tx.chainId,
+                      chunkify,
                       tx.data,
                       tx.txType,
                       definitions,

@@ -93,6 +93,7 @@ export const ethereumSignTx = async (
     gas_price: string,
     nonce: string,
     chain_id: number,
+    chunkify: boolean,
     data?: string,
     tx_type?: number,
     definitions?: EthereumDefinitions,
@@ -110,6 +111,7 @@ export const ethereumSignTx = async (
         to,
         value: stripLeadingZeroes(value),
         definitions,
+        chunkify,
     };
 
     if (length !== 0) {
@@ -143,6 +145,7 @@ export const ethereumSignTxEIP1559 = async (
     max_priority_fee: string,
     nonce: string,
     chain_id: number,
+    chunkify: boolean,
     data?: string,
     access_list?: EthereumAccessList[],
     definitions?: EthereumDefinitions,
@@ -167,6 +170,7 @@ export const ethereumSignTxEIP1559 = async (
             storage_keys: a.storageKeys,
         })),
         definitions,
+        chunkify,
     };
 
     const response = await typedCall('EthereumSignTxEIP1559', 'EthereumTxRequest', message);

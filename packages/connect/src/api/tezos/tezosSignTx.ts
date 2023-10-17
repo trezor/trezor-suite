@@ -68,10 +68,16 @@ const publicKey2buffer = (publicKey: string) => {
     }
 };
 
-export const createTx = (address_n: number[], branch: string, operation: TezosOperation) => {
+export const createTx = (
+    address_n: number[],
+    branch: string,
+    operation: TezosOperation,
+    chunkify?: boolean,
+) => {
     let message: PROTO.TezosSignTx = {
         address_n,
         branch: bs58checkDecode(PREFIX.B, branch),
+        chunkify: typeof chunkify === 'boolean' ? chunkify : false,
     };
 
     // reveal public key

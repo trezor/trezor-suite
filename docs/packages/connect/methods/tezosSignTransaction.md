@@ -16,6 +16,7 @@ const result = await TrezorConnect.tezosSignTransaction(params);
 -   `path` - _required_ `string | Array<number>`
 -   `branch` - _required_ `string`
 -   `operation` - _required_ `Object` type of [TezosOperation](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/tezos/index.ts)
+-   `chunkify` — _optional_ `boolean` determines if recipient address will be displayed in chunks of 4 characters. Default is set to `false`
 
 ### Example
 
