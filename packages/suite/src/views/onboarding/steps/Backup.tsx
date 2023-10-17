@@ -50,7 +50,7 @@ export const BackupStep = () => {
                             data-test="@backup/start-button"
                             onClick={() => {
                                 dispatch(updateAnalytics({ backup: 'create' }));
-                                dispatch(backupDevice());
+                                dispatch(backupDevice({}, true));
                             }}
                             isDisabled={!canContinue(backup.userConfirmed, locks)}
                         >

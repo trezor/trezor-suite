@@ -77,6 +77,7 @@ export const DeviceAuthenticity = () => {
                 const result = await dispatch(
                     checkDeviceAuthenticityThunk({
                         allowDebugKeys: isDebugModeActive,
+                        skipSuccessToast: true,
                     }),
                 ).unwrap();
 
