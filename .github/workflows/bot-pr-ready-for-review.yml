@@ -1,0 +1,72 @@
+name: "[Bot] set PR status To be reviewed"
+
+on:
+  pull_request:
+    types:
+      - ready_for_review
+jobs:
+  pr_set_status:
+    name: Move PR to To be reviewed
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate token
+        id: generate_token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.TSPM_APP_ID }}
+          private-key: ${{ secrets.TSPM_APP_SECRET }}
+
+      - name: Find ID of the Pull Request
+        id: find-pr-id
+        uses: actions/github-script@v6
+        env:
+          GITHUB_TOKEN: ${{ secrets.TREZOR_BOT_TOKEN }}
+        with:
+          result-encoding: string
+          script: |
+            // GraphQL query to find the project card associated with the current PR
+            const findPRQuery = `query FindProjectCard($repoOwner: String!, $repoName: String!, $prNumber: Int!) {
+                repository(owner: $repoOwner, name: $repoName) {
+                  pullRequest(number: $prNumber) {
+                      id
+                  }
+                }
+              }
+            `;
+
+            const findPRResponse = await github.graphql(findPRQuery, {
+              repoOwner: context.repo.owner,
+              repoName: context.repo.repo,
+              prNumber: context.issue.number
+            });
+
+            const itemId = findPRResponse.repository.pullRequest.id;
+
+            console.log("itemId: " + itemId)
+            return itemId;
+            
+
+      - name: Update PR status
+        uses: actions/github-script@v6
+        env:
+          GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
+          PR_ID: ${{ steps.find-pr-id.outputs.result }}
+        with:
+          script: |
+            // GraphQL mutation to update the custom field "Status" of the project card
+            const updateItemFieldMutation = `mutation UpdateItemCustomField($projectId: ID!,$itemId: ID!, $fieldId: ID!, $value: ProjectV2FieldValue!) {
+                updateProjectV2ItemFieldValue(input: {projectId: $projectId,itemId: $itemId, fieldId: $fieldId, value: $value}) {
+                    clientMutationId
+                }
+              }
+            `;
+
+
+            await github.graphql(updateItemFieldMutation, {
+              projectId: "PVT_kwDOAD9FD84AB-s-", // Suite Pull Requests
+              itemId: process.env.PR_ID,
+              fieldId: "PVTSSF_lADOAD9FD84AB-s-zgBJWdk", // Status
+              value: {
+                  singleSelectOptionId: "49f430a3"  // To be reviewed
+                  }
+            });
