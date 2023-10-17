@@ -19,7 +19,7 @@ describe('firmware/calculateFirmwareHash', () => {
         });
     });
 
-    // T2T1 results from https://github.com/trezor/trezor-firmware/blob/master/core/tests/test_trezor.utils.py
+    // T2T1 results from https://github.com/trezor/trezor-firmware/blob/main/core/tests/test_trezor.utils.py
     it('T2T1 with challenge', () => {
         expect(calculateFirmwareHash(2, bin, Buffer.from('0123456789abcdef'))).toStrictEqual({
             hash: 'a0934098a680db076ddf7ee22745f119d8fda4601048f05fdb66a64eddc0cfed',

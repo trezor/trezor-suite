@@ -96,7 +96,7 @@ suite web snapshots:
     CYPRESS_SNAPSHOT: 1
     CYPRESS_updateSnapshots: 1
 
-# Tests against latest trezor-firmware master
+# Tests against latest trezor-firmware main
 suite web 2-master:
   extends: .suite web base
   only:

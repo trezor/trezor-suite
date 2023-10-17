@@ -13,7 +13,7 @@ export default {
             'offer caution gift cross surge pretty orange during eye soldier popular holiday mention east eight office fashion ill parrot vault rent devote earth cousin',
     },
     tests: [
-        // https://github.com/trezor/trezor-firmware/blob/master/tests/device_tests/binance/test_get_address.py
+        // https://github.com/trezor/trezor-firmware/blob/main/tests/device_tests/binance/test_get_address.py
         {
             description: 'binanceGetAddress m/44h/714h/0h/0/0 ',
             params: {
@@ -24,7 +24,7 @@ export default {
             },
             legacyResults,
         },
-        // https://github.com/trezor/trezor-firmware/blob/master/tests/device_tests/binance/test_get_address.py
+        // https://github.com/trezor/trezor-firmware/blob/main/tests/device_tests/binance/test_get_address.py
         {
             description: 'binanceGetAddress m/44h/714h/0h/0/1',
             params: {

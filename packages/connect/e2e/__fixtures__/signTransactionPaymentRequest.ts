@@ -1,4 +1,4 @@
-// fixtures: https://github.com/trezor/trezor-firmware/blob/master/tests/device_tests/bitcoin/test_signtx_payreq.py
+// fixtures: https://github.com/trezor/trezor-firmware/blob/main/tests/device_tests/bitcoin/test_signtx_payreq.py
 
 const { ADDRESS_N, TX_CACHE } = global.TestUtils;
 

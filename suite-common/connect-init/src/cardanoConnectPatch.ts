@@ -35,7 +35,7 @@ const blacklist: ConnectKey[] = [
 export const cardanoConnectPatch = (getEnabledNetworks: () => string[]) => {
     // Pass additional parameter `useCardanoDerivation` to Trezor Connect methods
     // in order to enable cardano derivation on a device
-    // https://github.com/trezor/trezor-firmware/blob/master/core/src/apps/cardano/README.md#seed-derivation-schemes
+    // https://github.com/trezor/trezor-firmware/blob/main/core/src/apps/cardano/README.md#seed-derivation-schemes
     Object.keys(TrezorConnect)
         .filter(k => !blacklist.includes(k as ConnectKey))
         .forEach(key => {

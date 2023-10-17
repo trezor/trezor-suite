@@ -205,7 +205,7 @@ At the end of the process the user will be asked to reconnect the device in norm
 
 ##### WebUSB
 
-Support for the WebUSB came pretty late for T1B1 (bootloader [1.6.0](https://github.com/trezor/trezor-firmware/blob/master/legacy/bootloader/CHANGELOG.md#160-september-2018) bundled with FW [1.7.1](https://github.com/trezor/trezor-firmware/blob/master/legacy/firmware/CHANGELOG.md#170-september-2018)). Currently shipped devices won't support WebUSB out of-the-box and user won't be able to pair such device. In this case user needs to install Trezor Bridge. After finishing fw upgrade WebUSB support will be available.
+Support for the WebUSB came pretty late for T1B1 (bootloader [1.6.0](https://github.com/trezor/trezor-firmware/blob/main/legacy/bootloader/CHANGELOG.md#160-september-2018) bundled with FW [1.7.1](https://github.com/trezor/trezor-firmware/blob/main/legacy/firmware/CHANGELOG.md#170-september-2018)). Currently shipped devices won't support WebUSB out of-the-box and user won't be able to pair such device. In this case user needs to install Trezor Bridge. After finishing fw upgrade WebUSB support will be available.
 
 #### Caveats
 

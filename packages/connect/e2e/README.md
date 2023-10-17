@@ -30,7 +30,7 @@ Backend connection will be omitted in case of providing `refTxs` so even coins w
 
 To reduce network traffic `Github Actions CI` is using **cached** (offline) mode and whitelisted `GitLab CI` is using **default** (online) mode.
 
-Cached transactions are stored in `./tests/__txcache__` directory in the same structure as in [trezor-firmware](https://github.com/trezor/trezor-firmware/tree/master/tests/txcache) repository.
+Cached transactions are stored in `./tests/__txcache__` directory in the same structure as in [trezor-firmware](https://github.com/trezor/trezor-firmware/tree/main/tests/txcache) repository.
 
 Cached transactions are provided to test fixtures via [TX_CACHE](./__txcache__/index.js) utility.
 
