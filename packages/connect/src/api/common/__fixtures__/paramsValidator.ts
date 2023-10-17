@@ -208,7 +208,7 @@ export const getFirmwareRange = [
         result: {
             T1B1: { min: '0', max: '0' },
             T2T1: { min: '0', max: '0' },
-            T2B1: { min: '2.6.1', max: '0' },
+            T2B1: { min: '0', max: '0' },
         },
     },
     {
@@ -216,7 +216,11 @@ export const getFirmwareRange = [
         config: EMPTY_CONFIG,
         params: [
             'signTransaction',
-            { support: { T1B1: null, T2T1: '2.1.0' }, shortcut: 'btc', type: 'bitcoin' },
+            {
+                support: { T1B1: null, T2T1: '2.1.0', T2B1: '2.6.1' },
+                shortcut: 'btc',
+                type: 'bitcoin',
+            },
             DEFAULT_RANGE,
         ],
         result: {
@@ -230,13 +234,13 @@ export const getFirmwareRange = [
         config: EMPTY_CONFIG,
         params: [
             'signTransaction',
-            { support: { T1B1: '1.6.2', T2B1: null }, shortcut: 'btc', type: 'bitcoin' },
+            { support: { T1B1: '1.6.2' }, shortcut: 'btc', type: 'bitcoin' },
             DEFAULT_RANGE,
         ],
         result: {
             T1B1: { min: '1.6.2', max: '0' },
             T2T1: { min: '0', max: '0' },
-            T2B1: { min: '2.6.1', max: '0' },
+            T2B1: { min: '0', max: '0' },
         },
     },
     {
@@ -375,7 +379,11 @@ export const getFirmwareRange = [
         },
         params: [
             'signTransaction',
-            { support: { T1B1: '1.10.0', T2T1: '2.4.0' }, shortcut: 'btc', type: 'bitcoin' },
+            {
+                support: { T1B1: '1.10.0', T2T1: '2.4.0', T2B1: '2.6.1' },
+                shortcut: 'btc',
+                type: 'bitcoin',
+            },
             DEFAULT_RANGE,
         ],
         result: {
@@ -420,7 +428,11 @@ export const getFirmwareRange = [
         description: 'xrp + getAccountInfo: coinInfo range IS replaced by config.json range',
         params: [
             'getAccountInfo',
-            { support: { T1B1: '1.0.1', T2T1: '2.0.1' }, shortcut: 'xrp', type: 'ripple' },
+            {
+                support: { T1B1: '1.0.1', T2T1: '2.0.1', T2B1: '2.6.1' },
+                shortcut: 'xrp',
+                type: 'ripple',
+            },
             DEFAULT_RANGE,
         ],
         result: {
@@ -438,7 +450,11 @@ export const getFirmwareRange = [
         description: 'eip1559: coinInfo range is replaced by config.json range',
         params: [
             'eip1559',
-            { support: { T1B1: '1.6.2', T2T1: '2.1.0' }, shortcut: 'eth', type: 'ethereum' },
+            {
+                support: { T1B1: '1.6.2', T2T1: '2.1.0', T2B1: '2.6.1' },
+                shortcut: 'eth',
+                type: 'ethereum',
+            },
             DEFAULT_RANGE,
         ],
         result: {
