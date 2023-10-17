@@ -134,6 +134,12 @@ const Method = () => {
 
     return (
         <MethodContent>
+            <button onClick={() => {
+                console.log('render');
+                window.TrezorConnect.renderWebUSBButton()
+            }}>render </button>
+            <div className="trezor-webusb-button" />
+
             {fields.map(field => getField(field, { method, docs, actions }))}
             <Row>
                 <Button onClick={onSubmit} data-test="@submit-button">

@@ -70,7 +70,7 @@ export const parseConnectSettings = (
 
     // hotfix webusb + chrome:72, allow webextensions, allow cases when host origin and iframe origin are same
     if (!hostOriginMatchesIframeOrigin && settings.env !== 'webextension') {
-        disableWebUsb = true;
+        // disableWebUsb = true;
     }
 
     if (disableWebUsb) {

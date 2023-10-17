@@ -252,6 +252,16 @@ const uiResponse = (response: UiResponseEvent) => {
 };
 
 const renderWebUSBButton = (className?: string) => {
+    // if (!iframe?.instance) {
+    //     return;
+    // }
+    // iframe.instance.width = '400px';
+    // iframe.instance.height = '200px';
+    // iframe.instance.style.position = 'absolute';
+    // iframe.instance.style.display = 'visibile';
+    // iframe.instance.style.border = '0px';
+    // iframe.instance.style.width = '400px';
+    // iframe.instance.style.height = '200px';
     webUSBButton(className, _settings.webusbSrc);
 };
 

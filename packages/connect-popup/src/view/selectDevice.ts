@@ -53,6 +53,7 @@ const initWebUsbButton = (showLoader: boolean) => {
 };
 
 export const selectDevice = (payload: UiRequestSelectDevice['payload']) => {
+    console.log('select device payuload', payload);
     if (!payload) return;
     if (!payload.devices || !Array.isArray(payload.devices) || payload.devices.length === 0) {
         // No device connected

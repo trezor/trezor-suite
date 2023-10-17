@@ -23,6 +23,7 @@ const dev: webpack.Configuration = {
             hmr: true,
             static: [
                 path.join(__dirname, '../build'),
+                path.join(__dirname, '../../connect-web/build'),
                 path.join(__dirname, '../../connect-popup/build'),
                 path.join(__dirname, '../../connect-iframe/build'),
             ],

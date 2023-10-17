@@ -404,7 +404,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> {
 
     async enumerate() {
         const res = await this.transport.enumerate().promise;
-
+        console.log('devicelist enumerate res', res);
         if (!res.success) {
             return;
         }

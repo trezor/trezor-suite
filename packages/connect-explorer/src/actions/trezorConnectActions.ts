@@ -62,6 +62,7 @@ export const init =
                 email: 'info@trezor.io',
                 appUrl: '@trezor/suite',
             },
+            transport: ['WebUsbTransport'],
             ...options,
         };
 
