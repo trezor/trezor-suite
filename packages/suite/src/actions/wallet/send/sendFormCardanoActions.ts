@@ -20,7 +20,6 @@ import {
 import { selectDevice } from '@suite-common/wallet-core';
 
 import { Dispatch, GetState } from 'src/types/suite';
-import { AddressDisplayOptions, selectAddressDisplay } from 'src/reducers/suite/suiteReducer';
 
 export const composeTransaction =
     (formValues: FormState, formState: ComposeActionContext) =>
@@ -136,8 +135,7 @@ export const signTransaction =
 
         if (account.networkType !== 'cardano') return;
 
-        const addressDisplay = selectAddressDisplay(getState());
-
+        // todo: add chunkify once we allow it for Cardano
         const res = await TrezorConnect.cardanoSignTransaction({
             signingMode: PROTO.CardanoTxSigningMode.ORDINARY_TRANSACTION,
             device: {
@@ -155,7 +153,6 @@ export const signTransaction =
             fee: transactionInfo.fee,
             ttl: transactionInfo.ttl?.toString(),
             derivationType: getDerivationType(account.accountType),
-            chunkify: addressDisplay === AddressDisplayOptions.CHUNKED,
         });
 
         if (!res.success) {

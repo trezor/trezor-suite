@@ -6,7 +6,7 @@ import type { Dispatch, GetState, TrezorDevice } from 'src/types/suite';
 import type { Account } from 'src/types/wallet';
 
 import { SIGN_VERIFY } from './constants';
-import { AddressDisplayOptions, selectAddressDisplay } from 'src/reducers/suite/suiteReducer';
+import { AddressDisplayOptions, selectAddressDisplayType } from 'src/reducers/suite/suiteReducer';
 
 export type SignVerifyAction =
     | { type: typeof SIGN_VERIFY.SIGN_SUCCESS; signSignature: string }
@@ -27,7 +27,7 @@ const getStateParams = (getState: GetState): Promise<StateParams> => {
         },
     } = getState();
     const device = selectDevice(getState());
-    const addressDisplay = selectAddressDisplay(getState());
+    const addressDisplayType = selectAddressDisplayType(getState());
 
     return !device || !device.connected || !device.available || !account
         ? Promise.reject(new Error('Device not found'))
@@ -36,7 +36,7 @@ const getStateParams = (getState: GetState): Promise<StateParams> => {
               account,
               useEmptyPassphrase: device.useEmptyPassphrase,
               coin: account.symbol,
-              chunkify: addressDisplay === AddressDisplayOptions.CHUNKED,
+              chunkify: addressDisplayType === AddressDisplayOptions.CHUNKED,
           });
 };
 

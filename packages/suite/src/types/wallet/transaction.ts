@@ -2,13 +2,6 @@ import { TokenInfo } from '@trezor/connect';
 
 export type ReviewOutput =
     | {
-          type: 'regular_legacy';
-          label: string;
-          value: string;
-          value2?: undefined;
-          token?: TokenInfo;
-      }
-    | {
           type:
               | 'opreturn'
               | 'data'
@@ -19,7 +12,8 @@ export type ReviewOutput =
               | 'address'
               | 'amount'
               | 'gas'
-              | 'contract';
+              | 'contract'
+              | 'regular_legacy';
           label?: string;
           value: string;
           value2?: string;

@@ -15,6 +15,7 @@ export const ConfirmXpubModal = (
 
     return (
         <ConfirmValueModal
+            account={account}
             heading={
                 accountLabel ? (
                     <Translation id="TR_XPUB_MODAL_TITLE_METADATA" values={{ accountLabel }} />

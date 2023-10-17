@@ -459,7 +459,11 @@ export const createImportedDeviceThunk = createThunk(
 export const confirmAddressOnDeviceThunk = createThunk(
     `${MODULE_PREFIX}/confirmAddressOnDeviceThunk`,
     async (
-        { accountKey, addressPath }: { accountKey: AccountKey; addressPath: string },
+        {
+            accountKey,
+            addressPath,
+            chunkify,
+        }: { accountKey: AccountKey; addressPath: string; chunkify: boolean },
         { getState },
     ) => {
         const device = selectDevice(getState());
@@ -477,7 +481,7 @@ export const confirmAddressOnDeviceThunk = createThunk(
             unlockPath: account.unlockPath,
             useEmptyPassphrase: device.useEmptyPassphrase,
             coin: account.symbol,
-            chunkify: true,
+            chunkify,
         };
 
         let response;
@@ -498,6 +502,7 @@ export const confirmAddressOnDeviceThunk = createThunk(
                     protocolMagic: getProtocolMagic(account.symbol),
                     networkId: getNetworkId(account.symbol),
                     derivationType: getDerivationType(account.accountType),
+                    chunkify: false,
                 });
                 break;
             case 'ripple':

@@ -119,8 +119,7 @@ const constructOldFlow = ({
                 // each output will include certain amount of ADA (cardano token outputs require ADA)
                 outputs.push({
                     type: 'regular_legacy',
-                    label: o.address,
-                    value: o.amount,
+                    value: o.address,
                 });
 
                 // if the output also includes a token then we need to render another row with the token
@@ -139,9 +138,7 @@ const constructOldFlow = ({
             if (typeof o.address === 'string') {
                 outputs.push({
                     type: 'regular_legacy',
-                    label: o.address,
-                    value: o.amount.toString(),
-                    token: precomposedTx.token,
+                    value: o.address,
                 });
             } else if (o.script_type === 'PAYTOOPRETURN') {
                 outputs.push({
@@ -223,8 +220,7 @@ const constructNewFlow = ({
                 // each output will include certain amount of ADA (cardano token outputs require ADA)
                 outputs.push({
                     type: 'regular_legacy',
-                    label: o.address,
-                    value: o.amount,
+                    value: o.address,
                 });
 
                 // if the output also includes a token then we need to render another row with the token

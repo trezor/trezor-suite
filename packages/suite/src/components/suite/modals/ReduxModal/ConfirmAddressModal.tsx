@@ -23,6 +23,7 @@ export const ConfirmAddressModal = ({ addressPath, value, ...props }: ConfirmAdd
 
     return (
         <ConfirmValueModal
+            account={account}
             heading={
                 <Translation
                     id="TR_ADDRESS_MODAL_TITLE"

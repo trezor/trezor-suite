@@ -5,6 +5,7 @@ import { confirmAddressOnDeviceThunk, selectDevice } from '@suite-common/wallet-
 import { RECEIVE } from 'src/actions/wallet/constants';
 import * as modalActions from 'src/actions/suite/modalActions';
 import { GetState, Dispatch } from 'src/types/suite';
+import { AddressDisplayOptions, selectAddressDisplayType } from 'src/reducers/suite/suiteReducer';
 
 export type ReceiveAction =
     | { type: typeof RECEIVE.DISPOSE }
@@ -47,6 +48,9 @@ export const showAddress =
             addressPath: path,
         };
 
+        const addressDisplayType = selectAddressDisplayType(getState());
+        const chunkify = addressDisplayType === AddressDisplayOptions.CHUNKED;
+
         // Show warning when device is not connected
         if (!device.connected || !device.available) {
             dispatch(
@@ -61,7 +65,7 @@ export const showAddress =
         dispatch(modalActions.preserve());
 
         const response = await dispatch(
-            confirmAddressOnDeviceThunk({ accountKey: account.key, addressPath: path }),
+            confirmAddressOnDeviceThunk({ accountKey: account.key, addressPath: path, chunkify }),
         ).unwrap();
 
         if (response.success) {

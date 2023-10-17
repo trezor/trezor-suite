@@ -308,9 +308,9 @@ export type SuiteAnalyticsEvent =
           };
       }
     | {
-          type: EventType.SettingsGeneralAddressDisplay;
+          type: EventType.SettingsGeneralAddressDisplayType;
           payload: {
-              addressDisplay: 'original' | 'chunked';
+              addressDisplayType: 'original' | 'chunked';
           };
       }
     | {
