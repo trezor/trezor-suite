@@ -1,4 +1,4 @@
-// https://github.com/trezor/trezor-firmware/blob/master/tests/device_tests/bitcoin/test_getownershipproof.py
+// https://github.com/trezor/trezor-firmware/blob/main/tests/device_tests/bitcoin/test_getownershipproof.py
 
 const legacyResults = [
     {

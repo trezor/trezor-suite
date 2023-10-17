@@ -9,7 +9,7 @@ export const GITHUB_API_REPO_URL = `https://api.github.com/repos/${GITHUB_REPO_I
 export const GITHUB_ROADMAP_URL = 'https://github.com/orgs/trezor/projects/28?fullscreen=true';
 export const GITHUB_FW_COMMIT_URL = 'https://github.com/trezor/trezor-firmware/commit/';
 export const GITHUB_FW_CHANGELOG_URL =
-    'https://github.com/trezor/trezor-firmware/blob/master/core/CHANGELOG.md';
+    'https://github.com/trezor/trezor-firmware/blob/main/core/CHANGELOG.md';
 export const GITHUB_FW_BINARIES_URL =
     'https://github.com/trezor/webwallet-data/tree/master/firmware';
 export const GITHUB_BRIDGE_CHANGELOG_URL =

@@ -1,6 +1,6 @@
 const { ADDRESS_N, TX_CACHE } = global.TestUtils;
 
-// vectors from https://github.com/trezor/trezor-firmware/blob/master/tests/device_tests/test_msg_signtx.py
+// vectors from https://github.com/trezor/trezor-firmware/blob/main/tests/device_tests/test_msg_signtx.py
 
 const outputs = [];
 const total = 255;

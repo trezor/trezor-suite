@@ -1,6 +1,6 @@
 const { ADDRESS_N, TX_CACHE } = global.TestUtils;
 
-// fixtures: https://github.com/trezor/trezor-firmware/blob/master/tests/device_tests/test_multisig.py
+// fixtures: https://github.com/trezor/trezor-firmware/blob/main/tests/device_tests/test_multisig.py
 
 const PUBKEYS_15 = [];
 for (let i = 0; i < 15; i++) {

@@ -1,4 +1,4 @@
-// https://github.com/trezor/trezor-firmware/blob/master/tests/device_tests/eos/test_get_public_key.py
+// https://github.com/trezor/trezor-firmware/blob/main/tests/device_tests/eos/test_get_public_key.py
 
 const legacyResults = [
     {
