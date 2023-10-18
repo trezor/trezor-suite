@@ -9865,6 +9865,20 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@trezor/react-native-usb@workspace:*, @trezor/react-native-usb@workspace:packages/react-native-usb":
+  version: 0.0.0-use.local
+  resolution: "@trezor/react-native-usb@workspace:packages/react-native-usb"
+  dependencies:
+    "@types/react": ^18.0.25
+    expo-module-scripts: ^3.0.11
+    expo-modules-core: ^1.5.7
+  peerDependencies:
+    expo: "*"
+    react: "*"
+    react-native: "*"
+  languageName: unknown
+  linkType: soft
+
 "@trezor/react-utils@workspace:*, @trezor/react-utils@workspace:packages/react-utils":
   version: 0.0.0-use.local
   resolution: "@trezor/react-utils@workspace:packages/react-utils"
@@ -10430,6 +10444,7 @@ __metadata:
   dependencies:
     "@trezor/protobuf": "workspace:*"
     "@trezor/protocol": "workspace:*"
+    "@trezor/react-native-usb": "workspace:*"
     "@trezor/trezor-user-env-link": "workspace:*"
     "@trezor/utils": "workspace:*"
     "@types/bytebuffer": ^5.0.44
@@ -31618,20 +31633,6 @@ __metadata:
   checksum: dfcad65978bb2e06a81b6f6262fad0699fa48e720ac2e521e983da4f6fb7747435f6a15df08b9d57559299272d0ffa674b4f0a55482f8b37905ee1e96f51b46a
   languageName: node
   linkType: hard
-
-"react-native-usb@workspace:packages/react-native-usb":
-  version: 0.0.0-use.local
-  resolution: "react-native-usb@workspace:packages/react-native-usb"
-  dependencies:
-    "@types/react": ^18.0.25
-    expo-module-scripts: ^3.0.11
-    expo-modules-core: ^1.5.7
-  peerDependencies:
-    expo: "*"
-    react: "*"
-    react-native: "*"
-  languageName: unknown
-  linkType: soft
 
 "react-native@npm:0.71.8":
   version: 0.71.8

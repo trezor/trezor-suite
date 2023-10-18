@@ -32,3 +32,6 @@ export { SessionsBackground } from './sessions/background';
 export { SessionsClient } from './sessions/client';
 
 export { UdpTransport } from './transports/udp';
+
+// react-native only
+export { NativeUsbTransport } from './transports/nativeUsb';

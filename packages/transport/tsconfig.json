@@ -9,6 +9,7 @@
         { "path": "../protobuf" },
         { "path": "../protocol" },
         { "path": "../utils" },
+        { "path": "../react-native-usb" },
         { "path": "../trezor-user-env-link" }
     ]
 }
