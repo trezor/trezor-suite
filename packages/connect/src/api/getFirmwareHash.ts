@@ -17,11 +17,7 @@ export default class GetFirmwareHash extends AbstractMethod<
 
         validateParams(payload, [{ name: 'challenge', type: 'string' }]);
 
-        this.firmwareRange = getFirmwareRange(this.name, null, {
-            T1B1: { min: '1.11.1', max: '0' },
-            T2T1: { min: '2.5.1', max: '0' },
-            T2B1: { min: '2.6.1', max: '0' },
-        });
+        this.firmwareRange = getFirmwareRange(this.name, null, this.firmwareRange);
 
         this.params = {
             challenge: payload.challenge,

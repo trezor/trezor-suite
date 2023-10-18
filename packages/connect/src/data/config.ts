@@ -204,5 +204,13 @@ export const config = {
             min: { T1B1: '0', T2T1: '0', T2B1: '2.6.1' },
             comment: ['Only on T2B1'],
         },
+        {
+            methods: ['rebootToBootloader'],
+            min: { T1B1: '1.11.0', T2T1: '2.6.0' },
+        },
+        {
+            methods: ['getFirmwareHash'],
+            min: { T1B1: '1.11.1', T2T1: '2.5.1' },
+        },
     ],
 };

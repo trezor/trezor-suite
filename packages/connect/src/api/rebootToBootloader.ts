@@ -13,11 +13,7 @@ export default class RebootToBootloader extends AbstractMethod<'rebootToBootload
         this.keepSession = false;
         this.requiredPermissions = ['management'];
         this.useDeviceState = false;
-        this.firmwareRange = getFirmwareRange(this.name, null, {
-            T1B1: { min: '1.10.0', max: '0' },
-            T2T1: { min: '2.6.0', max: '0' },
-            T2B1: { min: '2.6.1', max: '0' },
-        });
+        this.firmwareRange = getFirmwareRange(this.name, null, this.firmwareRange);
     }
 
     get info() {
