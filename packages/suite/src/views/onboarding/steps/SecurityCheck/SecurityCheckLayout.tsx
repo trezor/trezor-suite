@@ -40,7 +40,7 @@ const Content = styled.div`
 `;
 
 interface SecurityCheckLayoutProps {
-    isFailed: boolean;
+    isFailed?: boolean;
     children: React.ReactNode;
 }
 
