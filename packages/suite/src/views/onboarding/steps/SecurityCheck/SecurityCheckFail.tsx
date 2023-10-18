@@ -64,28 +64,33 @@ interface SecurityCheckFailProps {
     goBack?: () => void;
 }
 
-export const SecurityCheckFail = ({ goBack }: SecurityCheckFailProps) => (
-    <SecurityCheckLayout isFailed>
-        <TopSection>
-            <StyledH1>
-                <Translation id="TR_DEVICE_COMPROMISED_HEADING" />
-            </StyledH1>
-            <Text>
-                <Translation id="TR_DEVICE_COMPROMISED_TEXT" />
-            </Text>
-        </TopSection>
-        <SecurityChecklist items={checklistItems} />
-        <Buttons>
-            {goBack && (
-                <SecurityCheckButton variant="secondary" onClick={goBack}>
-                    <Translation id="TR_BACK" />
-                </SecurityCheckButton>
-            )}
-            <StyledTrezorLink variant="nostyle" href={supportChatUrl}>
-                <StyledSecurityCheckButton>
-                    <Translation id="TR_CONTACT_TREZOR_SUPPORT" />
-                </StyledSecurityCheckButton>
-            </StyledTrezorLink>
-        </Buttons>
-    </SecurityCheckLayout>
-);
+export const SecurityCheckFail = ({ goBack }: SecurityCheckFailProps) => {
+    const heading = goBack ? 'TR_DEVICE_COMPROMISED_HEADING_SOFT' : 'TR_DEVICE_COMPROMISED_HEADING';
+    const text = goBack ? 'TR_DEVICE_COMPROMISED_TEXT_SOFT' : 'TR_DEVICE_COMPROMISED_TEXT';
+
+    return (
+        <SecurityCheckLayout isFailed>
+            <TopSection>
+                <StyledH1>
+                    <Translation id={heading} />
+                </StyledH1>
+                <Text>
+                    <Translation id={text} />
+                </Text>
+            </TopSection>
+            <SecurityChecklist items={checklistItems} />
+            <Buttons>
+                {goBack && (
+                    <SecurityCheckButton variant="secondary" onClick={goBack}>
+                        <Translation id="TR_BACK" />
+                    </SecurityCheckButton>
+                )}
+                <StyledTrezorLink variant="nostyle" href={supportChatUrl}>
+                    <StyledSecurityCheckButton>
+                        <Translation id="TR_CONTACT_TREZOR_SUPPORT" />
+                    </StyledSecurityCheckButton>
+                </StyledTrezorLink>
+            </Buttons>
+        </SecurityCheckLayout>
+    );
+};

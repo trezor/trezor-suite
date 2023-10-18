@@ -6707,6 +6707,15 @@ export default defineMessages({
         defaultMessage:
             "Contact Trezor Support to figure out what's going on with your device and what to do next.",
     },
+    TR_DEVICE_COMPROMISED_HEADING_SOFT: {
+        id: 'TR_PLAY_IT_SAFE',
+        defaultMessage: "Let's play it safe",
+    },
+    TR_DEVICE_COMPROMISED_TEXT_SOFT: {
+        id: 'TR_DEVICE_COMPROMISED_TEXT_SOFT',
+        defaultMessage:
+            'We want to be sure that your device is in tip-top shape before you start using it. Reach out to Trezor Support to find out what to do next.',
+    },
     TR_DISCONNECT_DEVICE: {
         id: 'TR_DISCONNECT_DEVICE',
         defaultMessage: 'Disconnect your device from your laptop or computer.',
