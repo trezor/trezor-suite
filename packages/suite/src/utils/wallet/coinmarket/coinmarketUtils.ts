@@ -4,12 +4,10 @@ import TrezorConnect, { TokenInfo } from '@trezor/connect';
 import regional from 'src/constants/wallet/coinmarket/regional';
 import { TrezorDevice } from 'src/types/suite';
 
-const suiteToInvitySymbols = [
-    {
-        suiteSymbol: 'usdt',
-        invitySymbol: 'usdt20',
-    },
-];
+const suiteToInvitySymbols: {
+    suiteSymbol: string;
+    invitySymbol: string;
+}[] = [];
 
 export const buildOption = (currency: string) => ({
     value: currency,
