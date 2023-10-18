@@ -38,6 +38,7 @@ export { default as ethereumSignTransaction } from './ethereumSignTransaction';
 export { default as ethereumSignTypedData } from './ethereumSignTypedData';
 export { default as ethereumVerifyMessage } from './ethereumVerifyMessage';
 export { default as firmwareUpdate } from './firmwareUpdate';
+export { default as getAccountDescriptor } from './getAccountDescriptor';
 export { default as getAccountInfo } from './getAccountInfo';
 export { default as getAddress } from './getAddress';
 export { default as getCoinInfo } from './getCoinInfo';
