@@ -12,6 +12,7 @@ import { BottomSheetHeader } from './BottomSheetHeader';
 
 export type BottomSheetProps = {
     isVisible: boolean;
+    isCloseDisplayed?: boolean;
     onClose: (isVisible: boolean) => void;
     children: ReactNode;
     title?: string;
@@ -39,6 +40,7 @@ const sheetWithOverlayStyle = prepareNativeStyle(_ => ({
 
 export const BottomSheet = ({
     isVisible,
+    isCloseDisplayed = true,
     onClose,
     title,
     subtitle,
@@ -100,6 +102,7 @@ export const BottomSheet = ({
                         <BottomSheetHeader
                             title={title}
                             subtitle={subtitle}
+                            isCloseDisplayed={isCloseDisplayed}
                             onCloseSheet={closeSheetAnimated}
                         />
                         <ScrollView
