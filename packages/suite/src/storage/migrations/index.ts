@@ -682,4 +682,22 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
             return updatedMetadata;
         });
     }
+
+    if (oldVersion < 40) {
+        // device.metadata.status does not exist anymore. this information is derivable from
+        // device.metadata[key]
+        // and
+        // metadata.error[deviceState]
+        await updateAll(transaction, 'devices', device => {
+            if (
+                // @ts-expect-error
+                device.metadata.status
+            ) {
+                // @ts-expect-error
+                delete device.metadata.status;
+            }
+
+            return device;
+        });
+    }
 };
