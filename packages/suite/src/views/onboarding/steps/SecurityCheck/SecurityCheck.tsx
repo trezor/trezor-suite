@@ -203,59 +203,57 @@ export const SecurityCheck = () => {
 
     return (
         <StyledCard>
-            <SecurityCheckLayout isFailed={isFailed}>
-                {isFailed ? (
-                    <SecurityCheckFail goBack={toggleView} />
-                ) : (
-                    <>
-                        <Content>
-                            <DeviceNameSection>
-                                <Text>
-                                    <Translation id="TR_YOU_HAVE_CONNECTED" />
-                                </Text>
-                                <DeviceName>{device?.name}</DeviceName>
-                                <OnboardingButtonSkip onClick={toggleView}>
-                                    <Translation id="TR_CONNECTED_DIFFERENT_DEVICE" />
-                                </OnboardingButtonSkip>
-                            </DeviceNameSection>
-                            <StyledH1>
-                                <Translation id={headingText} />
-                            </StyledH1>
-                            <SecurityChecklist items={checklistItems} />
-                        </Content>
-                        <Buttons>
-                            <StyledSecurityCheckButton variant="secondary" onClick={toggleView}>
-                                <Translation id={secondaryButtonText} />
+            {isFailed ? (
+                <SecurityCheckFail goBack={toggleView} />
+            ) : (
+                <SecurityCheckLayout>
+                    <Content>
+                        <DeviceNameSection>
+                            <Text>
+                                <Translation id="TR_YOU_HAVE_CONNECTED" />
+                            </Text>
+                            <DeviceName>{device?.name}</DeviceName>
+                            <OnboardingButtonSkip onClick={toggleView}>
+                                <Translation id="TR_CONNECTED_DIFFERENT_DEVICE" />
+                            </OnboardingButtonSkip>
+                        </DeviceNameSection>
+                        <StyledH1>
+                            <Translation id={headingText} />
+                        </StyledH1>
+                        <SecurityChecklist items={checklistItems} />
+                    </Content>
+                    <Buttons>
+                        <StyledSecurityCheckButton variant="secondary" onClick={toggleView}>
+                            <Translation id={secondaryButtonText} />
+                        </StyledSecurityCheckButton>
+                        {initialized ? (
+                            <StyledSecurityCheckButton
+                                data-test="@onboarding/exit-app-button"
+                                onClick={handleContinueButtonClick}
+                            >
+                                <Translation id="TR_YES_CONTINUE" />
                             </StyledSecurityCheckButton>
-                            {initialized ? (
-                                <StyledSecurityCheckButton
-                                    data-test="@onboarding/exit-app-button"
-                                    onClick={handleContinueButtonClick}
-                                >
-                                    <Translation id="TR_YES_CONTINUE" />
-                                </StyledSecurityCheckButton>
-                            ) : (
-                                <SecurityCheckButtonWithSecondLine
-                                    onClick={handleSetupButtonClick}
-                                    data-test="@analytics/continue-button"
-                                >
-                                    <Translation id={primaryButtonTopText} />
-                                    <TimeEstimateWrapper>
-                                        <IconWrapper>
-                                            <Icon
-                                                size={12}
-                                                icon="CLOCK_ACTIVE"
-                                                color={theme.TYPE_WHITE}
-                                            />
-                                        </IconWrapper>
-                                        <Translation id="TR_TAKES_N_MINUTES" values={{ n: '5' }} />
-                                    </TimeEstimateWrapper>
-                                </SecurityCheckButtonWithSecondLine>
-                            )}
-                        </Buttons>
-                    </>
-                )}
-            </SecurityCheckLayout>
+                        ) : (
+                            <SecurityCheckButtonWithSecondLine
+                                onClick={handleSetupButtonClick}
+                                data-test="@analytics/continue-button"
+                            >
+                                <Translation id={primaryButtonTopText} />
+                                <TimeEstimateWrapper>
+                                    <IconWrapper>
+                                        <Icon
+                                            size={12}
+                                            icon="CLOCK_ACTIVE"
+                                            color={theme.TYPE_WHITE}
+                                        />
+                                    </IconWrapper>
+                                    <Translation id="TR_TAKES_N_MINUTES" values={{ n: '5' }} />
+                                </TimeEstimateWrapper>
+                            </SecurityCheckButtonWithSecondLine>
+                        )}
+                    </Buttons>
+                </SecurityCheckLayout>
+            )}
         </StyledCard>
     );
 };

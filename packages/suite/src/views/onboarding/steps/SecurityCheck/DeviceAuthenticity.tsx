@@ -13,7 +13,6 @@ import { CollapsibleOnboardingCard } from 'src/components/onboarding/Collapsible
 import { DeviceAuthenticationExplainer, Translation } from 'src/components/suite';
 import { useOnboarding, useSelector } from 'src/hooks/suite';
 import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
-import { SecurityCheckLayout } from './SecurityCheckLayout';
 import { SecurityCheckFail } from './SecurityCheckFail';
 
 const StyledCard = styled(CollapsibleOnboardingCard)`
@@ -116,9 +115,7 @@ export const DeviceAuthenticity = () => {
     if (isCheckFailed) {
         return (
             <StyledCard>
-                <SecurityCheckLayout isFailed>
-                    <SecurityCheckFail />
-                </SecurityCheckLayout>
+                <SecurityCheckFail />
             </StyledCard>
         );
     }

@@ -6,6 +6,7 @@ import { TREZOR_SUPPORT_URL } from '@trezor/urls';
 import { Translation, TrezorLink } from 'src/components/suite';
 import { SecurityChecklist } from './SecurityChecklist';
 import { SecurityCheckButton } from './SecurityCheckButton';
+import { SecurityCheckLayout } from './SecurityCheckLayout';
 
 const TopSection = styled.div`
     border-bottom: 1px solid ${({ theme }) => theme.STROKE_GREY};
@@ -64,7 +65,7 @@ interface SecurityCheckFailProps {
 }
 
 export const SecurityCheckFail = ({ goBack }: SecurityCheckFailProps) => (
-    <>
+    <SecurityCheckLayout isFailed>
         <TopSection>
             <StyledH1>
                 <Translation id="TR_DEVICE_COMPROMISED_HEADING" />
@@ -86,5 +87,5 @@ export const SecurityCheckFail = ({ goBack }: SecurityCheckFailProps) => (
                 </StyledSecurityCheckButton>
             </StyledTrezorLink>
         </Buttons>
-    </>
+    </SecurityCheckLayout>
 );
