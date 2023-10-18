@@ -1,0 +1,9 @@
+{
+  "platforms": ["ios", "android"],
+  "ios": {
+    "modules": ["ReactNativeUsbModule"]
+  },
+  "android": {
+    "modules": ["io.trezor.rnusb.ReactNativeUsbModule"]
+  }
+}
