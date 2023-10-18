@@ -1,9 +1,9 @@
 import React, { forwardRef, useEffect, useState } from 'react';
 import styled, { css, keyframes, useTheme } from 'styled-components';
-import { borders, boxShadows, spacings, spacingsPx, typography, zIndices } from '@trezor/theme';
-import { animations } from '../../config';
+import { borders, spacings, spacingsPx, typography } from '@trezor/theme';
 import { Icon, IconProps } from '../assets/Icon/Icon';
 import type { Coords } from './getAdjustedCoords';
+import { menuStyle } from './menuStyle';
 
 const addonAnimation = keyframes`
     from {
@@ -41,21 +41,7 @@ const AddonContainer = styled.div<{ isFocused?: boolean }>`
 
 const Container = styled.ul<Pick<MenuProps, 'coords' | 'alignMenu'>>`
     position: fixed;
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-    padding: ${spacingsPx.sm};
-    min-width: 140px;
-    border-radius: ${borders.radii.md};
-    background: ${({ theme }) => theme.backgroundSurfaceElevation1};
-    box-shadow: ${boxShadows.elevation3};
-    z-index: ${zIndices.modal};
-    animation: ${animations.DROPDOWN_MENU} 0.15s ease-in-out;
-    list-style-type: none;
-    overflow: hidden;
-    /* when theme changes from light to dark */
-    transition: background 0.3s;
-    ${typography.hint}
+    ${menuStyle};
 
     ${({ coords }) =>
         coords &&
