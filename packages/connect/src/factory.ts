@@ -122,6 +122,8 @@ export const factory = ({
 
         ethereumVerifyMessage: params => call({ ...params, method: 'ethereumVerifyMessage' }),
 
+        getAccountDescriptor: params => call({ ...params, method: 'getAccountDescriptor' }),
+
         getAccountInfo: params => call({ ...params, method: 'getAccountInfo' }),
 
         getAddress: params =>
