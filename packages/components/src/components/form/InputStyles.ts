@@ -70,7 +70,8 @@ export const baseInputStyle = css<BaseInputProps>`
         color: ${({ theme }) => theme.textDisabled};
     }
 
-    :focus {
+    :focus,
+    :focus-within {
         border-color: ${({ theme }) => theme.borderOnElevation0};
     }
 
