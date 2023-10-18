@@ -7,6 +7,7 @@ import { getNetwork } from '@suite-common/wallet-utils';
 import { selectEthereumAccountsTokensWithFiatRates } from '@suite-native/ethereum-tokens';
 import { FiatRatesRootState } from '@suite-native/fiat-rates';
 import { SettingsSliceRootState } from '@suite-native/module-settings';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 
 /**
  * Returns true if account label, network name or account included token contains filter value as a substring.
@@ -69,3 +70,22 @@ export const selectFilteredAccountsGroupedByNetwork = memoizeWithArgs(
     // This selector is used only in one search component, so cache size equal to 1 is enough.
     { size: 1 },
 );
+
+export const selectIsAccountAlreadyDiscovered = (
+    state: AccountsRootState,
+    {
+        networkSymbol,
+        path,
+        deviceState,
+    }: { networkSymbol: NetworkSymbol; path: string; deviceState: string },
+) =>
+    pipe(
+        state,
+        selectAccounts,
+        A.any(
+            account =>
+                account.symbol === networkSymbol &&
+                account.path === path &&
+                account.deviceState === deviceState,
+        ),
+    );

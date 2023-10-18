@@ -1,7 +1,7 @@
 import { deviceActions, selectDevice, discoveryActions } from '@suite-common/wallet-core';
 import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 
-import { createAndStartDiscoveryThunk } from './discoveryThunks';
+import { startDescriptorPreloadedDiscoveryThunk } from './discoveryThunks';
 
 export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
     (action, { dispatch, next, getState }) => {
@@ -14,7 +14,7 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
         // On successful authorization, create discovery instance and run.
         if (deviceActions.authDevice.match(action) && device) {
             dispatch(
-                createAndStartDiscoveryThunk({
+                startDescriptorPreloadedDiscoveryThunk({
                     deviceState: action.payload.state,
                     device,
                 }),
