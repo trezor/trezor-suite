@@ -608,6 +608,44 @@ export const getAccountInfo = async (api: TrezorConnect) => {
     }
 };
 
+export const getAccountDescriptor = async (api: TrezorConnect) => {
+    const account = await api.getAccountDescriptor({
+        coin: 'btc',
+        path: 'm/44',
+        derivationType: 2,
+        suppressBackupWarning: true,
+    });
+    if (account.success) {
+        const { payload } = account;
+        payload.descriptor.toLowerCase();
+        payload.path.toLowerCase();
+        payload.legacyXpub?.toLowerCase();
+    }
+
+    const bundle = await api.getAccountDescriptor({
+        bundle: [
+            {
+                coin: 'btc',
+                path: 'm/44',
+            },
+        ],
+    });
+
+    if (bundle.success) {
+        bundle.payload.forEach(item => {
+            if (item) {
+                item.descriptor.toLowerCase();
+            }
+        });
+    }
+
+    // @ts-expect-error missing "coin" param
+    api.getAccountDescriptor({ path: 'm/44' });
+
+    // @ts-expect-error missing "path" param
+    api.getAccountDescriptor({ coin: 'btc' });
+};
+
 export const signMessage = async (api: TrezorConnect) => {
     const sign = await api.signMessage({ path: 'm/44', coin: 'btc', message: 'foo' });
     if (sign.success) {

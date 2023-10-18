@@ -381,7 +381,7 @@ connect-popup-webextension manual:
           [
             "applySettings,applyFlags,getFeatures,getFirmwareHash,checkFirmwareAuthenticity",
             "signTransaction",
-            "getAccountInfo,getAddress,getPublicKey,signMessage,verifyMessage,composeTransaction,getOwnershipId,getOwnershipProof",
+            "getAccountInfo,getAccountDescriptor,getAddress,getPublicKey,signMessage,verifyMessage,composeTransaction,getOwnershipId,getOwnershipProof",
             "stellarGetAddress,stellarSignTransaction",
             "cardanoGetAddress,cardanoGetNativeScriptHash,cardanoGetPublicKey,cardanoSignTransaction",
             "eosGetPublicKey,eosSignTransaction",
@@ -425,7 +425,7 @@ connect T2B1:
         TESTS_INCLUDED_METHODS: [
             "applySettings,applyFlags,getFirmwareHash", # getFeatures (capabilies)
             # "signTransaction", (unsupported chain in fixtures)
-            "getAccountInfo,getPublicKey,signMessage,verifyMessage,composeTransaction,getOwnershipId,getOwnershipProof", # getAddress (unsuppported chain in fixtures)
+            "getAccountInfo,getAccountDescriptor,getPublicKey,signMessage,verifyMessage,composeTransaction,getOwnershipId,getOwnershipProof", # getAddress (unsuppported chain in fixtures)
             "stellarGetAddress,stellarSignTransaction",
             "cardanoGetAddress,cardanoGetNativeScriptHash,cardanoGetPublicKey,cardanoSignTransaction",
             # eos not supported
