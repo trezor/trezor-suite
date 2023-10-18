@@ -32,6 +32,7 @@ import GoogleProvider from 'src/services/suite/metadata/GoogleProvider';
 import FileSystemProvider from 'src/services/suite/metadata/FileSystemProvider';
 import {
     selectLabelableEntities,
+    selectMetadata,
     selectSelectedProviderForLabels,
 } from 'src/reducers/suite/metadataReducer';
 
@@ -469,6 +470,10 @@ export const fetchAndSaveMetadata =
     };
 
 export const fetchAndSaveMetadataForAllDevices = () => (dispatch: Dispatch, getState: GetState) => {
+    const metadata = selectMetadata(getState());
+    if (!metadata.enabled) {
+        return;
+    }
     const devices = selectDevices(getState());
     devices.forEach(device => {
         if (!device.state || !device.metadata[METADATA.ENCRYPTION_VERSION]) return;
