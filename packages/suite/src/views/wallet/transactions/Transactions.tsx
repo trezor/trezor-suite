@@ -10,6 +10,7 @@ import { TransactionList } from './TransactionList/TransactionList';
 import { TransactionSummary } from './components/TransactionSummary';
 import { CoinjoinExplanation } from './CoinjoinExplanation/CoinjoinExplanation';
 import { CoinjoinSummary } from './CoinjoinSummary/CoinjoinSummary';
+import { TradeBox } from './TradeBox/TradeBox';
 
 interface LayoutProps {
     selectedAccount: AppState['wallet']['selectedAccount'];
@@ -72,6 +73,8 @@ export const Transactions = () => {
         return (
             <Layout selectedAccount={selectedAccount}>
                 {account.networkType !== 'ripple' && <TransactionSummary account={account} />}
+
+                <TradeBox account={account} />
 
                 <TransactionList
                     account={account}

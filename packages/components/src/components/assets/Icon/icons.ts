@@ -106,6 +106,8 @@ export const ICONS = {
     TOR_MINIMAL: require('../../../images/icons/tor_minimal.svg'),
     TOR: require('../../../images/icons/tor.svg'),
     TRANSFER: require('../../../images/icons/transfer.svg'),
+    TREND_DOWN: require('../../../images/icons/trend_down.svg'),
+    TREND_UP: require('../../../images/icons/trend_up.svg'),
     TREZOR_LOGO: require('../../../images/icons/trezor_logo.svg'),
     UP: require('../../../images/icons/up.svg'),
     USERS: require('../../../images/icons/users.svg'),

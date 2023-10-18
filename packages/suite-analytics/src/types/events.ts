@@ -163,6 +163,13 @@ export type SuiteAnalyticsEvent =
           };
       }
     | {
+          type: EventType.AccountsTradeboxButton;
+          payload: {
+              symbol: string;
+              type: 'exchange' | 'buy' | 'sell' | 'spend';
+          };
+      }
+    | {
           type: EventType.TransactionCreated;
           payload: {
               action: 'sent' | 'copied' | 'downloaded' | 'replaced';
