@@ -239,6 +239,18 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                     }
                     break;
                 }
+                // au, this hurts, I need to call saveDevice manually. saved device should be updated automatically
+                // anytime any of its properties change
+                case METADATA.SET_DEVICE_METADATA: {
+                    const device = selectDeviceByState(api.getState(), action.payload.deviceState);
+                    if (isDeviceRemembered(device) && device) {
+                        storageActions.saveDevice({
+                            ...device,
+                            metadata: action.payload.metadata,
+                        });
+                    }
+                    break;
+                }
                 case FORM_DRAFT.STORE_DRAFT: {
                     const device = selectDevice(api.getState());
                     // save drafts for remembered device
