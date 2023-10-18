@@ -60,6 +60,11 @@ export const en = {
             title: 'Connecting',
             hodlOn: 'Hodl on tight',
         },
+        unacquiredDeviceModal: {
+            title: 'We found your connected device in incorrect state.',
+            description: 'Please reconnect your device or ...',
+            button: 'Steal session',
+        },
     },
 };
 

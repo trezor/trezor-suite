@@ -8205,6 +8205,7 @@ __metadata:
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-native/alerts": "workspace:*"
+    "@suite-native/intl": "workspace:*"
     "@suite-native/navigation": "workspace:*"
     "@trezor/connect": "workspace:*"
     react: 18.2.0
@@ -9958,6 +9959,7 @@ __metadata:
     "@suite-native/atoms": "workspace:*"
     "@suite-native/biometrics": "workspace:*"
     "@suite-native/config": "workspace:*"
+    "@suite-native/device": "workspace:*"
     "@suite-native/feature-flags": "workspace:*"
     "@suite-native/fiat-rates": "workspace:*"
     "@suite-native/intl": "workspace:*"
