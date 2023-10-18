@@ -102,10 +102,11 @@ describe('coinmarket/buy utils', () => {
             getCryptoOptions(
                 'eth',
                 'ethereum',
-                new Set(['eth', 'usdt20', 'usdc', 'dai', 'gusd', 'other']),
+                new Set(['eth', 'usdt20', 'usdt', 'usdc', 'dai', 'gusd', 'other']),
                 [
                     { ticker: 'ETH', category: 'Popular', name: 'Ethereum' },
                     { ticker: 'USDT20', category: 'Ethereum ERC20 tokens', name: 'Tether' },
+                    { ticker: 'USDT', category: 'Ethereum ERC20 tokens', name: 'Tether' },
                     { ticker: 'USDC', category: 'Ethereum ERC20 tokens', name: 'Usdc' },
                     { ticker: 'DAI', category: 'Ethereum ERC20 tokens', name: 'Dai' },
                     { ticker: 'GUSD', category: 'Ethereum ERC20 tokens', name: 'GUsd' },
@@ -118,7 +119,7 @@ describe('coinmarket/buy utils', () => {
                 label: 'ETH',
             },
             {
-                value: 'USDT20',
+                value: 'USDT',
                 label: 'USDT',
             },
             {
