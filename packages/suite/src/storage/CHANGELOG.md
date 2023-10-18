@@ -1,5 +1,9 @@
 # Storage changelog
 
+## 40
+
+-   `device.metadata.status` does not exist anymore. this information is derivable from `device.metadata[key]` and `metadata.error[deviceState]`
+
 ## 39
 
 -   `metadata.provider` replaced with array of `metadata.providers`
