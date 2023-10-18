@@ -91,10 +91,10 @@ export const useCoinmarketP2pForm = ({
             currency: formValues.currencySelect.value.toUpperCase(),
             country: formValues.countrySelect.value,
         };
-        saveQuotesRequest(request);
+        dispatch(saveQuotesRequest(request));
 
         const response = await invityAPI.getP2pQuotes(request);
-        saveQuotes(response?.quotes || []);
+        dispatch(saveQuotes(response?.quotes || []));
 
         navigateToP2pOffers();
     };
