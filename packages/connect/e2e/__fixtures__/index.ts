@@ -19,6 +19,7 @@ import ethereumSignTransactionEip155 from './ethereumSignTransactionEip155';
 import ethereumSignTransactionEip1559 from './ethereumSignTransactionEip1559';
 import ethereumSignTypedData from './ethereumSignTypedData';
 import ethereumVerifyMessage from './ethereumVerifyMessage';
+import getAccountDescriptor from './getAccountDescriptor';
 import getAccountInfo from './getAccountInfo';
 import getAddress from './getAddress';
 import getAddressMultisig from './getAddressMultisig';
@@ -112,6 +113,7 @@ let fixtures = [
     ethereumSignTransactionEip1559,
     ethereumSignTypedData,
     ethereumVerifyMessage,
+    getAccountDescriptor,
     getAccountInfo,
     getAddress,
     getAddressMultisig,

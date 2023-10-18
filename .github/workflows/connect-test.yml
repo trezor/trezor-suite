@@ -65,7 +65,7 @@ jobs:
     uses: ./.github/workflows/connect-test-params.yml
     with:
       test-pattern: methods
-      methods: "getAccountInfo,getAddress,getPublicKey,signMessage,verifyMessage,composeTransaction,getOwnershipId,getOwnershipProof"
+      methods: "getAccountInfo,getAccountDescriptor,getAddress,getPublicKey,signMessage,verifyMessage,composeTransaction,getOwnershipId,getOwnershipProof"
 
   stellar:
     needs: [build]
