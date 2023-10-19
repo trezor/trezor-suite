@@ -20,6 +20,7 @@ const parsedTransactions = {
             },
             version: 'legacy',
             blockTime: 1631753600,
+            slot: 5,
         },
     },
     withoutMeta: {
@@ -338,6 +339,7 @@ export const fixtures = {
             input: {
                 transaction: null,
                 accountAddress: 'myAddress',
+                slotToBlockHeightMapping: {},
             },
             expectedOutput: null,
         },
@@ -351,6 +353,7 @@ export const fixtures = {
                     blockTime: 1631753600,
                 },
                 accountAddress: 'myAddress',
+                slotToBlockHeightMapping: {},
             },
             expectedOutput: null,
         },
@@ -362,6 +365,7 @@ export const fixtures = {
                     blockTime: 1631753600,
                 },
                 accountAddress: 'myAddress',
+                slotToBlockHeightMapping: {},
             },
             expectedOutput: null,
         },
@@ -375,6 +379,7 @@ export const fixtures = {
                     },
                 },
                 accountAddress: 'myAddress',
+                slotToBlockHeightMapping: {},
             },
             expectedOutput: null,
         },
@@ -383,11 +388,13 @@ export const fixtures = {
             input: {
                 transaction: parsedTransactions.basic.transaction,
                 accountAddress: effects.negative.address,
+                slotToBlockHeightMapping: { 5: 20 },
             },
             expectedOutput: {
                 type: 'sent',
                 txid: 'txid1',
                 blockTime: 1631753600,
+                blockHeight: 20,
                 amount: '-20',
                 fee: '10',
                 targets: [

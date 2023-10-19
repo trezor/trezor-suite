@@ -78,8 +78,26 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
 
     const transactionsPage = await fetchTransactionPage(request);
 
+    const uniqueTransactionSlots = Array.from(new Set(transactionsPage.map(tx => tx.slot)));
+
+    const slotToBlockHeightMapping = (
+        await Promise.all(
+            uniqueTransactionSlots.map(async slot => {
+                const { blockHeight } = await api.getParsedBlock(slot, {
+                    maxSupportedTransactionVersion: 0,
+                });
+                return blockHeight;
+            }),
+        )
+    ).reduce(
+        (acc, curr, i) => ({ ...acc, [uniqueTransactionSlots[i]]: curr }),
+        {} as Record<number, number | null>,
+    );
+
     const transactions = transactionsPage
-        .map(tx => solanaUtils.transformTransaction(tx, payload.descriptor))
+        .map(tx =>
+            solanaUtils.transformTransaction(tx, payload.descriptor, slotToBlockHeightMapping),
+        )
         .filter((tx): tx is Transaction => !!tx);
 
     const account: AccountInfo = {
