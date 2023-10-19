@@ -59,16 +59,21 @@ const connect = (draft: BlockchainState, info: BlockchainInfo) => {
 
     const isHttp = isHttpProtocol(info.url); // can use dynamic backend url settings
 
+    // solana rpc nodes do not have explorer, so we cannot use backend as explorer
+    const isBackendAlsoExplorer = network.networkType !== 'solana';
+
+    const useBackendAsExplorer = isHttp && isBackendAlsoExplorer;
+
     draft[network.symbol] = {
         url: info.url,
         explorer: {
             tx: `${
-                isHttp
+                useBackendAsExplorer
                     ? info.url + getBlockExplorerUrlSuffix(network.explorer.tx)
                     : network.explorer.tx
             }`,
             account: `${
-                isHttp
+                useBackendAsExplorer
                     ? info.url + getBlockExplorerUrlSuffix(network.explorer.account)
                     : network.explorer.account
             }`,

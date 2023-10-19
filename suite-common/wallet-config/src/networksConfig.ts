@@ -427,9 +427,9 @@ export const networks = {
         testnet: false,
         // features: ['tokens', 'staking'],
         explorer: {
-            tx: '', // TODO(vl): add explorer links
-            account: '',
-            address: '',
+            tx: 'https://explorer.solana.com/tx/',
+            account: 'https://explorer.solana.com/address/',
+            address: 'https://explorer.solana.com/address/',
         },
         support: {
             [DeviceModelInternal.T2T1]: '2.4.3', // TODO(vl): revisit, for now just anything above 2.0.0
