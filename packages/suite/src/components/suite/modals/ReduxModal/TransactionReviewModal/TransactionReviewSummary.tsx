@@ -287,6 +287,7 @@ export const TransactionReviewSummary = ({
                         {network.networkType === 'bitcoin' && <Translation id="TR_FEE_RATE" />}
                         {network.networkType === 'ethereum' && <Translation id="TR_GAS_PRICE" />}
                         {network.networkType === 'ripple' && <Translation id="TR_TX_FEE" />}
+                        {network.networkType === 'solana' && <Translation id="TR_TX_FEE" />}
                     </ReviewRbfLeftDetailsLineLeft>
 
                     <ReviewRbfLeftDetailsLineRight color={theme.TYPE_DARK_GREY}>
