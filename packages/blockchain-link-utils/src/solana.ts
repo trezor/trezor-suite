@@ -1,5 +1,4 @@
 import { A, D, F, pipe } from '@mobily/ts-belt';
-import type { AccountInfo, ParsedAccountData, PublicKey } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
 
 import { Target, Transaction } from '@trezor/blockchain-link-types/lib';
@@ -8,6 +7,9 @@ import type {
     ParsedTransactionWithMeta,
     SolanaValidParsedTxWithMeta,
     TokenDetailByMint,
+    AccountInfo,
+    ParsedAccountData,
+    PublicKey,
 } from '@trezor/blockchain-link-types/lib/solana';
 import type { TokenInfo } from '@trezor/blockchain-link-types/lib';
 

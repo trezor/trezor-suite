@@ -6188,29 +6188,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@solana/web3.js@npm:^1.78.5":
-  version: 1.78.5
-  resolution: "@solana/web3.js@npm:1.78.5"
-  dependencies:
-    "@babel/runtime": ^7.22.6
-    "@noble/curves": ^1.0.0
-    "@noble/hashes": ^1.3.1
-    "@solana/buffer-layout": ^4.0.0
-    agentkeepalive: ^4.3.0
-    bigint-buffer: ^1.1.5
-    bn.js: ^5.2.1
-    borsh: ^0.7.0
-    bs58: ^4.0.1
-    buffer: 6.0.3
-    fast-stable-stringify: ^1.0.0
-    jayson: ^4.1.0
-    node-fetch: ^2.6.12
-    rpc-websockets: ^7.5.1
-    superstruct: ^0.14.2
-  checksum: 66fe4ddcc073d0c539e23a2aae3ba23c081a11f5ebc8216dd18e0c6770f20e419c635a50529faa59baeec9722cd521a3502abc7cdf3b3d5f31b32066e0415c24
-  languageName: node
-  linkType: hard
-
 "@storybook/addon-actions@npm:^7.2.3":
   version: 7.2.3
   resolution: "@storybook/addon-actions@npm:7.2.3"
@@ -9279,7 +9256,6 @@ __metadata:
   resolution: "@trezor/blockchain-link-utils@workspace:packages/blockchain-link-utils"
   dependencies:
     "@mobily/ts-belt": ^3.13.1
-    "@solana/web3.js": ^1.78.5
     "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
