@@ -1,4 +1,4 @@
-import { useMemo, ReactPortal } from 'react';
+import { ReactPortal } from 'react';
 import { createPortal } from 'react-dom';
 import { Modal, ModalProps, Icon, colors } from '@trezor/components';
 import { useGuide } from 'src/hooks/guide';
@@ -7,7 +7,7 @@ import { useModalTarget } from 'src/support/suite/ModalContext';
 import { ModalEnvironment } from '../ModalEnvironment';
 
 export const DefaultRenderer = ({
-    headerComponents = [],
+    headerComponent,
     isCancelable,
     onCancel,
     ...rest
@@ -16,19 +16,6 @@ export const DefaultRenderer = ({
     const { isMobileLayout } = useLayoutSize();
     const modalTarget = useModalTarget();
 
-    const GuideButton = useMemo(
-        () => (
-            <Icon
-                key="guide-button"
-                icon="LIGHTBULB"
-                size={20}
-                hoverColor={colors.TYPE_ORANGE}
-                onClick={openGuide}
-            />
-        ),
-        [openGuide],
-    );
-
     if (!modalTarget) return null;
 
     const modal = (
@@ -36,7 +23,19 @@ export const DefaultRenderer = ({
             <Modal
                 isCancelable={isCancelable}
                 onCancel={onCancel}
-                headerComponents={[...(isMobileLayout ? [GuideButton] : []), ...headerComponents]}
+                headerComponent={
+                    <>
+                        {isMobileLayout && (
+                            <Icon
+                                icon="LIGHTBULB"
+                                size={20}
+                                hoverColor={colors.TYPE_ORANGE}
+                                onClick={openGuide}
+                            />
+                        )}
+                        {headerComponent}
+                    </>
+                }
                 {...rest}
             />
         </ModalEnvironment>

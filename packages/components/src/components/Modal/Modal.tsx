@@ -185,7 +185,7 @@ interface ModalProps {
     onClick?: (e: MouseEvent<HTMLDivElement>) => void;
     totalProgressBarSteps?: number;
     currentProgressBarStep?: number;
-    headerComponents?: Array<ReactNode>;
+    headerComponent?: ReactNode;
     className?: string;
     'data-test'?: string;
 }
@@ -205,7 +205,7 @@ const Modal = ({
     onCancel,
     totalProgressBarSteps,
     currentProgressBarStep,
-    headerComponents,
+    headerComponent,
     className,
     'data-test': dataTest = '@modal',
 }: ModalProps) => {
@@ -223,7 +223,7 @@ const Modal = ({
     const showProgressBar =
         totalProgressBarSteps !== undefined && currentProgressBarStep !== undefined;
 
-    const showHeaderActions = !!headerComponents?.length || isCancelable;
+    const showHeaderActions = !!headerComponent || isCancelable;
 
     if (isCancelable && escPressed) {
         onCancel?.();
@@ -282,7 +282,7 @@ const Modal = ({
 
                         {showHeaderActions && (
                             <HeaderComponentsContainer ref={measureComponentsRef}>
-                                {headerComponents}
+                                {headerComponent}
 
                                 {isCancelable && (
                                     <CloseIcon

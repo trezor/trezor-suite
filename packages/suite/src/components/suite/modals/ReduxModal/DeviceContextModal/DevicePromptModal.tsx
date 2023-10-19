@@ -25,7 +25,7 @@ const StyledTrezorModal = styled(TrezorModal)`
     }
 
     ${Modal.Body} {
-        margin-top: ${({ headerComponents }) => !headerComponents?.length && '60px'};
+        margin-top: ${({ headerComponent }) => !headerComponent && '60px'};
         padding: 24px;
     }
 `;
@@ -53,7 +53,7 @@ const DevicePromptModalRenderer = ({
     const { device } = useDevice();
     const modalTarget = useModalTarget();
 
-    // duplicated because headerComponents should receive undefined if isAbortable === false
+    // duplicated because headerComponent should receive undefined if isAbortable === false
     const isActionAbortable = useSelector(selectIsActionAbortable) || isAbortable;
 
     const intl = useIntl();
@@ -79,11 +79,7 @@ const DevicePromptModalRenderer = ({
                         />
                     )
                 }
-                headerComponents={
-                    isActionAbortable
-                        ? [<AbortButton key="abort-button" onAbort={onAbort} />]
-                        : undefined
-                }
+                headerComponent={isActionAbortable ? <AbortButton onAbort={onAbort} /> : undefined}
                 {...rest}
             />
         </ModalEnvironment>
