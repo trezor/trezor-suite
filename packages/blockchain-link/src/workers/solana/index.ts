@@ -4,7 +4,8 @@ import type * as MessageTypes from '@trezor/blockchain-link-types/lib/messages';
 import { CustomError } from '@trezor/blockchain-link-types/lib/constants/errors';
 import { BaseWorker, ContextType, CONTEXT } from '../baseWorker';
 import { MESSAGES, RESPONSES } from '@trezor/blockchain-link-types/lib/constants';
-import { Connection, ParsedTransactionWithMeta, PublicKey } from '@solana/web3.js';
+import type { ParsedTransactionWithMeta } from '@trezor/blockchain-link-types/lib/solana';
+import { Connection, PublicKey } from '@solana/web3.js';
 import { solanaUtils } from '@trezor/blockchain-link-utils';
 
 export type SolanaAPI = Connection;
