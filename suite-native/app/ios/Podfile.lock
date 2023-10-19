@@ -25,6 +25,8 @@ PODS:
     - ExpoModulesCore
   - ExpoHaptics (12.4.0):
     - ExpoModulesCore
+  - ExpoLinearGradient (12.5.0):
+    - ExpoModulesCore
   - ExpoLocalAuthentication (13.4.0):
     - ExpoModulesCore
   - ExpoLocalization (14.5.0):
@@ -547,6 +549,7 @@ DEPENDENCIES:
   - ExpoBrightness (from `../../../node_modules/expo-brightness/ios`)
   - ExpoClipboard (from `../../../node_modules/expo-clipboard/ios`)
   - ExpoHaptics (from `../../../node_modules/expo-haptics/ios`)
+  - ExpoLinearGradient (from `../../../../../node_modules/expo-linear-gradient/ios`)
   - ExpoLocalAuthentication (from `../../../node_modules/expo-local-authentication/ios`)
   - ExpoLocalization (from `../../../node_modules/expo-localization/ios`)
   - ExpoModulesCore (from `../../../node_modules/expo-modules-core`)
@@ -672,6 +675,8 @@ EXTERNAL SOURCES:
     :path: "../../../node_modules/expo-clipboard/ios"
   ExpoHaptics:
     :path: "../../../node_modules/expo-haptics/ios"
+  ExpoLinearGradient:
+    :path: "../../../../../node_modules/expo-linear-gradient/ios"
   ExpoLocalAuthentication:
     :path: "../../../node_modules/expo-local-authentication/ios"
   ExpoLocalization:
@@ -790,6 +795,7 @@ SPEC CHECKSUMS:
   ExpoBrightness: 13a6108d77641ad310b7873438a0260f9eedfe5c
   ExpoClipboard: 8a36a8376ab93df9050c14577e9e0fcb805e9114
   ExpoHaptics: 360af6898407ee4e8265d30a1a8fb16491a660eb
+  ExpoLinearGradient: 5d18293f89c063036121281175c4653d6a7c34a2
   ExpoLocalAuthentication: de5f50fae4fa643a3fc6b404d61a2ab36b5acf20
   ExpoLocalization: 2d5f47577d67ce991ebdd951edf14fe1db85fa06
   ExpoModulesCore: 79392ab654019ea3aadeae308919c3d9dd97879c
@@ -865,4 +871,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: d37876aaf00e7f8309b694188119b139b8452ca1
 
-COCOAPODS: 1.12.1
+COCOAPODS: 1.13.0

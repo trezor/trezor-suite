@@ -12,16 +12,26 @@ type StepsProgressBarProps = {
 const progressBarWrapperStyle = prepareNativeStyle(utils => ({
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingTop: utils.spacings.small,
+    paddingVertical: utils.spacings.small,
+    paddingHorizontal: utils.spacings.small,
+    gap: utils.spacings.extraSmall,
+    borderRadius: 10,
+    borderWidth: utils.borders.widths.small,
+    alignItems: 'center',
+    height: 20,
+    borderColor: utils.colors.borderOnElevation0,
+    backgroundColor: utils.colors.backgroundSurfaceElevation1,
 }));
 
 const progressBarItemStyle = prepareNativeStyle<{ isActive: boolean }>((utils, { isActive }) => ({
-    width: 24,
-    height: 2,
-    marginRight: utils.spacings.extraSmall,
+    width: isActive ? 8 : 4,
+    height: 4,
     borderRadius: utils.borders.radii.small / 4,
     borderWidth: utils.borders.widths.medium,
     borderColor: isActive
+        ? utils.colors.backgroundPrimaryDefault
+        : utils.colors.backgroundNeutralSubdued,
+    backgroundColor: isActive
         ? utils.colors.backgroundPrimaryDefault
         : utils.colors.backgroundNeutralSubdued,
 }));

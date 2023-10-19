@@ -1,17 +1,21 @@
 import { useNavigation } from '@react-navigation/native';
 
+import { useIsUsbDeviceConnectFeatureEnabled } from '@suite-native/feature-flags';
 import {
     OnboardingStackParamList,
     OnboardingStackRoutes,
     StackNavigationProps,
 } from '@suite-native/navigation';
 import { Box } from '@suite-native/atoms';
+import { useTranslate } from '@suite-native/intl';
 
 import { OnboardingFooter } from '../components/OnboardingFooter';
 import { OnboardingScreen } from '../components/OnboardingScreen';
 import { CoinsSvg } from '../components/CoinsSvg';
 
-export const FeatureReceiveScreen = () => {
+const FeatureReceiveScreenWithDevice = () => {
+    const { translate } = useTranslate();
+
     const navigation =
         useNavigation<
             StackNavigationProps<
@@ -20,20 +24,65 @@ export const FeatureReceiveScreen = () => {
             >
         >();
 
-    const handleRedirect = () => {
-        navigation.navigate(OnboardingStackRoutes.AnalyticsConsent);
-    };
-
     return (
         <OnboardingScreen
-            title="Receive coins"
-            subtitle="Generate addresses and QR codes to receive crypto."
+            title={translate('moduleOnboarding.featureReceiveScreen.usb.title')}
+            subtitle={translate('moduleOnboarding.featureReceiveScreen.usb.subtitle')}
             activeStep={2}
+            footer={
+                <OnboardingFooter
+                    redirectTarget={() => navigation.navigate(OnboardingStackRoutes.TrackBalances)}
+                    onBack={navigation.goBack}
+                    backButtonTitle={translate('generic.buttons.back')}
+                    nextButtonTitle={translate('generic.buttons.next')}
+                />
+            }
         >
             <Box alignItems="center" flex={1} justifyContent="center">
                 <CoinsSvg />
             </Box>
-            <OnboardingFooter redirectTarget={handleRedirect} />
         </OnboardingScreen>
+    );
+};
+
+const FeatureReceiveScreenNoDevice = () => {
+    const { translate } = useTranslate();
+
+    const navigation =
+        useNavigation<
+            StackNavigationProps<
+                OnboardingStackParamList,
+                OnboardingStackRoutes.AboutReceiveCoinsFeature
+            >
+        >();
+
+    return (
+        <OnboardingScreen
+            title={translate('moduleOnboarding.featureReceiveScreen.noUsb.title')}
+            subtitle={translate('moduleOnboarding.featureReceiveScreen.noUsb.subtitle')}
+            activeStep={2}
+            footer={
+                <OnboardingFooter
+                    redirectTarget={() =>
+                        navigation.navigate(OnboardingStackRoutes.AnalyticsConsent)
+                    }
+                    onBack={navigation.goBack}
+                    backButtonTitle={translate('generic.buttons.back')}
+                    nextButtonTitle={translate('generic.buttons.continue')}
+                />
+            }
+        >
+            <CoinsSvg />
+        </OnboardingScreen>
+    );
+};
+
+export const FeatureReceiveScreen = () => {
+    const { isUsbDeviceConnectFeatureEnabled } = useIsUsbDeviceConnectFeatureEnabled();
+
+    return isUsbDeviceConnectFeatureEnabled ? (
+        <FeatureReceiveScreenWithDevice />
+    ) : (
+        <FeatureReceiveScreenNoDevice />
     );
 };

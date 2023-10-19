@@ -4,6 +4,15 @@
 // 3. Always wrap keys per module/screen/feature for example: module.graph.legend
 
 export const en = {
+    generic: {
+        header: '<green>Trezor Suite</green> <grey>Lite</grey>',
+        buttons: {
+            back: 'Back',
+            confirm: 'Confirm',
+            continue: 'Continue',
+            next: 'Next',
+        },
+    },
     moduleHome: {
         graph: {
             title: 'My portfolio balance',
@@ -64,6 +73,62 @@ export const en = {
             title: 'We found your connected device in incorrect state.',
             description: 'Please reconnect your device or ...',
             button: 'Steal session',
+        },
+    },
+    moduleOnboarding: {
+        welcomeScreen: {
+            welcome: 'Welcome to ',
+            subtitle: 'Securely track, manage & receive crypto on the go ',
+            trezorLink: 'Don’t have a Trezor? <trezorLink>Get one here.</trezorLink>',
+
+            nextButton: 'Get started',
+        },
+        connectTrezorScreen: {
+            title: 'Connect',
+            subtitle:
+                'Manage your portfolio with your Trezor hardware wallet connected directly to your mobile device.',
+        },
+        featureReceiveScreen: {
+            noUsb: {
+                title: 'Receive coins',
+                subtitle: 'Generate addresses and QR codes to receive crypto on the go.',
+            },
+            usb: {
+                title: 'Receive',
+                subtitle:
+                    'Generate and verify addresses directly on your Trezor to get paid and receive crypto on the go.',
+            },
+        },
+        trackBalancesScreen: {
+            noUsb: {
+                title: 'Track balances',
+                subtitle:
+                    'Easily sync your coin addresses and keep up with the crypto on your hardware wallet without exposing your private data.',
+            },
+            usb: {
+                title: 'Track balances',
+                subtitle:
+                    'Keep up with your favorite coins even without your Trezor connected. Simply sync and track your crypto from anywhere.',
+            },
+        },
+        analyticsConsentScreen: {
+            title: 'Help us help you',
+            subtitle:
+                'We’re all about making the best, most user-friendly app for you. You can help us achieve this.',
+            bulletPoints: {
+                privacy: {
+                    title: 'Your data is safe',
+                    description:
+                        "Rest assured, we're all about respecting your privacy — no sensitive stuff like your balances, transactions, or profile specifics.",
+                },
+                dataCollection: {
+                    title: 'What we collect',
+                    description:
+                        'We gather info on app performance, user interaction, and technical issues to create a better user experience for you.',
+                },
+            },
+            helpSwitchTitle: 'Help us anonymously',
+            learnMore: 'Learn more about our <securityLink>security protocols</securityLink>',
         },
     },
 };

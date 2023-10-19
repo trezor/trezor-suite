@@ -63,8 +63,8 @@ export type OnboardingStackParamList = {
     [OnboardingStackRoutes.Welcome]: undefined;
     [OnboardingStackRoutes.AboutReceiveCoinsFeature]: undefined;
     [OnboardingStackRoutes.TrackBalances]: undefined;
-    [OnboardingStackRoutes.GetStarted]: undefined;
     [OnboardingStackRoutes.AnalyticsConsent]: undefined;
+    [OnboardingStackRoutes.ConnectTrezor]: undefined;
 };
 
 export type AccountsImportStackParamList = {
