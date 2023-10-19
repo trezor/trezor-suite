@@ -27,6 +27,7 @@ const DEFAULT_CAPABILITIES_TT: PROTO.Capability[] = [
     'Capability_Stellar',
     'Capability_Tezos',
     'Capability_U2F',
+    'Capability_Solana',
 ];
 
 export const parseCapabilities = (features?: Features): PROTO.Capability[] => {

@@ -56,6 +56,7 @@ describe('utils/deviceFeaturesUtils', () => {
             'Capability_Stellar',
             'Capability_Tezos',
             'Capability_U2F',
+            'Capability_Solana',
         ]);
 
         expect(
@@ -78,6 +79,7 @@ describe('utils/deviceFeaturesUtils', () => {
             'Capability_Stellar',
             'Capability_Tezos',
             'Capability_U2F',
+            'Capability_Solana',
         ]);
 
         // bitcoin only
@@ -121,7 +123,6 @@ describe('utils/deviceFeaturesUtils', () => {
         it('getUnavailableCapabilities capabilities 3', () => {
             jest.resetModules();
             const coins = getAllNetworks();
-
             // default Capabilities T1B1
             // @ts-expect-error incomplete features
 
@@ -139,6 +140,7 @@ describe('utils/deviceFeaturesUtils', () => {
                 xtz: 'no-support',
                 xvg: 'update-required',
                 zcr: 'update-required',
+                sol: 'no-support',
                 replaceTransaction: 'update-required',
                 amountUnit: 'update-required',
                 decreaseOutput: 'update-required',
@@ -162,6 +164,7 @@ describe('utils/deviceFeaturesUtils', () => {
                 taproot: 'update-required',
                 tsep: 'update-required',
                 tgor: 'update-required',
+                sol: 'update-required',
                 coinjoin: 'update-required',
                 signMessageNoScriptType: 'update-required',
             });
