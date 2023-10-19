@@ -1,5 +1,7 @@
 import { TokenDetailByMint } from '@trezor/blockchain-link-types/lib/solana';
 
+const WSOL_MINT = 'So11111111111111111111111111111111111111112';
+
 // https://github.com/viaprotocol/tokenlists
 // Aggregated token list with tokens listed on multiple exchanges
 const solanaTokenListUrl =
@@ -20,6 +22,9 @@ export const getTokenMetadata = async (): Promise<TokenDetailByMint> => {
         }),
         {} as TokenDetailByMint,
     );
+
+    // Explicitly set Wrapped SOL symbol to WSOL instead of the official 'SOL' which leads to confusion in UI
+    tokenMap[WSOL_MINT].symbol = 'WSOL';
 
     return tokenMap;
 };
