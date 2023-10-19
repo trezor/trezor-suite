@@ -442,4 +442,17 @@ export const fixtures = {
             },
         },
     ],
+    getTokenNameAndSymbol: [
+        {
+            description: 'parses non-whitelist token data from mint',
+            input: {
+                mint: 'AQoKYV7tYpTrFZN6P5oUufbQKAUr9mNYGe1TTJC5wajM',
+                map: {},
+            },
+            expectedOutput: {
+                name: 'AQoKYV7tYpTrFZN6P5oUufbQKAUr9mNYGe1TTJC5wajM',
+                symbol: 'AQo...',
+            },
+        },
+    ],
 };
