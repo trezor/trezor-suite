@@ -18,7 +18,7 @@ const CheckboxRight = styled.div`
     text-align: left;
 `;
 
-const CheckboxTitle = styled.p`
+const CheckboxTitle = styled.div`
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
