@@ -1,5 +1,4 @@
 import TrezorConnect, { FeeLevel, TokenInfo } from '@trezor/connect';
-import { Transaction, SystemProgram, PublicKey } from '@solana/web3.js';
 import {
     FormState,
     PrecomposedTransactionFinal,
@@ -15,9 +14,9 @@ import {
     calculateTotal,
     formatAmount,
     getExternalComposeOutput,
-    getLamportsFromSol,
 } from '@suite-common/wallet-utils';
 import BigNumber from 'bignumber.js';
+import { getPubKeyFromAddress, buildTransferTransaction } from 'src/utils/wallet/solanaUtils';
 
 const calculate = (
     availableBalance: string,
@@ -93,20 +92,15 @@ export const composeTransaction =
         // Since all the values don't have to be filled in the form at the time of this function call, we use dummy values
         // for the estimation, since these values don't affect the final fee.
         // The real transaction is constructed in `signTransaction`, this one is used solely for fee estimation and is never submitted.
-        const transactionMessage = new Transaction({
-            blockhash,
-            lastValidBlockHeight: 50,
-            feePayer: new PublicKey(account.descriptor),
-        })
-            .add(
-                SystemProgram.transfer({
-                    fromPubkey: new PublicKey(account.descriptor),
-                    // If the address field is not filled in, we use the account's own address as a placeholder value
-                    toPubkey: new PublicKey(formValues.outputs[0].address || account.descriptor),
-                    lamports: getLamportsFromSol(formValues.outputs[0].amount || '0'),
-                }),
+        const transactionMessage = (
+            await buildTransferTransaction(
+                account.descriptor,
+                formValues.outputs[0].address || account.descriptor,
+                formValues.outputs[0].amount || '0',
+                blockhash,
+                50,
             )
-            .compileMessage();
+        ).compileMessage();
 
         const estimatedFee = await TrezorConnect.blockchainEstimateFee({
             coin: account.symbol,
@@ -178,7 +172,7 @@ export const signTransaction =
             return;
 
         const { account, network } = selectedAccount;
-        if (account.networkType !== 'solana' || !network.chainId) return;
+        if (account.networkType !== 'solana') return;
 
         const blockhash = getState().wallet.blockchain.sol.blockHash;
 
@@ -187,17 +181,14 @@ export const signTransaction =
         // For more information see: https://docs.solana.com/cluster/synchronization
         const lastValidBlockHeight = 50;
 
-        const tx = new Transaction({
+        const tx = await buildTransferTransaction(
+            account.descriptor,
+            formValues.outputs[0].address,
+            formValues.outputs[0].amount,
             blockhash,
             lastValidBlockHeight,
-            feePayer: new PublicKey(account.descriptor),
-        }).add(
-            SystemProgram.transfer({
-                fromPubkey: new PublicKey(account.descriptor),
-                toPubkey: new PublicKey(formValues.outputs[0].address),
-                lamports: getLamportsFromSol(formValues.outputs[0].amount),
-            }),
         );
+
         const serializedTx = tx.serializeMessage().toString('hex');
 
         const signature = await TrezorConnect.solanaSignTransaction({
@@ -222,10 +213,9 @@ export const signTransaction =
             return;
         }
 
-        tx.addSignature(
-            new PublicKey(account.descriptor),
-            Buffer.from(signature.payload.signature, 'hex'),
-        );
+        const signerPubKey = await getPubKeyFromAddress(account.descriptor);
+        tx.addSignature(signerPubKey, Buffer.from(signature.payload.signature, 'hex'));
+
         const signedTx = tx.serialize().toString('hex');
 
         return signedTx;
