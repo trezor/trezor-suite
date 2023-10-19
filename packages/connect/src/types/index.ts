@@ -14,6 +14,7 @@ export * from './api/bitcoin';
 export * from './api/eos';
 export * from './api/ripple';
 export * from './api/ethereum';
+export * from './api/solana';
 export * from './api/stellar';
 export * from './api/tezos';
 
