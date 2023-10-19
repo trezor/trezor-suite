@@ -10,7 +10,7 @@ export const config = {
         { origin: 'file://', priority: 2 },
         { origin: 'trezor.io', priority: 0 },
         { origin: 'sldev.cz', priority: 0 },
-        { origin: 'localhost', priority: 0 },
+        // { origin: 'localhost', priority: 0 },
         { origin: 'trezoriovpjcahpzkrewelclulmszwbqpzmzgub37gbcjlvluxtruqad.onion', priority: 0 },
     ],
     management: [{ origin: 'trezor.io' }, { origin: 'sldev.cz' }, { origin: 'localhost' }],

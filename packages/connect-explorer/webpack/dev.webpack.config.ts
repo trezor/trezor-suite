@@ -1,5 +1,6 @@
 import webpack from 'webpack';
 import path from 'path';
+import fs from 'fs';
 import { merge } from 'webpack-merge';
 import { WebpackPluginServe } from 'webpack-plugin-serve';
 
@@ -20,9 +21,18 @@ const dev: webpack.Configuration = {
     plugins: [
         new WebpackPluginServe({
             port: 8088,
+            https: {
+                key: fs.readFileSync(
+                    path.join(__dirname, '../../connect-web/webpack/connect_dev.key'),
+                ),
+                cert: fs.readFileSync(
+                    path.join(__dirname, '../../connect-web/webpack/connect_dev.crt'),
+                ),
+            },
             hmr: true,
             static: [
                 path.join(__dirname, '../build'),
+                path.join(__dirname, '../../connect-web/build'),
                 path.join(__dirname, '../../connect-popup/build'),
                 path.join(__dirname, '../../connect-iframe/build'),
             ],

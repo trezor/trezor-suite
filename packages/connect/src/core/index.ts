@@ -483,7 +483,7 @@ export const onCall = async (message: CoreMessage) => {
 
             // check and request permissions [read, write...]
             method.checkPermissions();
-            if (!trustedHost && method.requiredPermissions.length > 0) {
+            if (trustedHost && method.requiredPermissions.length > 0) {
                 // show permissions in UI
                 const permitted = await method.requestPermissions();
                 if (!permitted) {
