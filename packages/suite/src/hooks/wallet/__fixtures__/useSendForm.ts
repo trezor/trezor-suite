@@ -110,6 +110,23 @@ export const XRP_ACCOUNT = {
     network: { networkType: 'ripple', symbol: 'xrp', decimals: 6 },
 };
 
+export const SOL_ACCOUNT = {
+    status: 'loaded',
+    account: {
+        symbol: 'sol',
+        networkType: 'solana',
+        descriptor: 'ETxHeBBcuw9Yu4dGuP3oXrD12V5RECvmi8ogQ9PkjyVF',
+        deviceState: 'deviceState',
+        key: '0xdB09b793984B862C430b64B9ed53AcF867cC041F-eth-deviceState',
+        balance: '10000000000', // 10 SOL
+        availableBalance: '10000000000', // 10 SOL
+        misc: {},
+        history: {},
+        tokens: [],
+    },
+    network: { networkType: 'solana', symbol: 'sol', decimals: 9, chainId: 1399811149 },
+};
+
 const DEVICE = testMocks.getSuiteDevice({
     state: 'deviceState',
     connected: true,
@@ -145,6 +162,13 @@ const DEFAULT_FEES = {
         blockTime: 1,
         levels: [{ label: 'normal', feePerUnit: '12', blocks: -1 }],
     },
+    sol: {
+        minFee: 5000,
+        maxFee: 5000,
+        blockHeight: 1,
+        blockTime: 1,
+        levels: [{ label: 'normal', feePerUnit: '5000', blocks: -1 }],
+    },
 };
 
 // - default selectedAccount needs to be explicitly passed from test. merging default with custom will override custom
@@ -163,7 +187,12 @@ export const getRootReducer = (selectedAccount = BTC_ACCOUNT, fees = DEFAULT_FEE
         wallet: combineReducers({
             send: sendFormReducer,
             accounts: createReducer(
-                [BTC_ACCOUNT.account, ETH_ACCOUNT.account, XRP_ACCOUNT.account],
+                [
+                    BTC_ACCOUNT.account,
+                    ETH_ACCOUNT.account,
+                    XRP_ACCOUNT.account,
+                    SOL_ACCOUNT.account,
+                ],
                 () => ({}),
             ),
             selectedAccount: createReducer(selectedAccount, () => ({})),
@@ -183,6 +212,7 @@ export const getRootReducer = (selectedAccount = BTC_ACCOUNT, fees = DEFAULT_FEE
                     btc: {},
                     eth: {},
                     xrp: {},
+                    sol: {},
                 },
                 () => ({}),
             ),
@@ -1107,6 +1137,31 @@ export const setMax = [
             },
             formValues: {
                 outputs: [{ amount: '99.999988', fiat: '100.00' }],
+            },
+        },
+    },
+    {
+        description: 'SOL',
+        store: {
+            send: {
+                drafts: getDraft({
+                    setMaxOutputId: 0,
+                }),
+            },
+            selectedAccount: SOL_ACCOUNT,
+        },
+        finalResult: {
+            estimateFeeCalls: 1,
+            composedLevels: {
+                normal: {
+                    type: 'final',
+                    fee: '5000',
+                    totalSpent: '10000000000',
+                },
+                custom: undefined,
+            },
+            formValues: {
+                outputs: [{ amount: '9.999995' }],
             },
         },
     },
