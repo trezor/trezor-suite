@@ -250,4 +250,31 @@ export const fixtures = {
             expectedOutput: [],
         },
     ],
+    getAmount: [
+        {
+            description: 'should return "0" if accountEffect is undefined',
+            input: {
+                accountEffect: undefined,
+                txType: 'recv',
+            },
+            expectedOutput: '0',
+        },
+        {
+            description:
+                'should return the absolute amount as a string for "self" transaction type',
+            input: {
+                accountEffect: effects.negative,
+                txType: 'self',
+            },
+            expectedOutput: effects.negative.amount.abs().toString(),
+        },
+        {
+            description: 'should return the amount as a string for other transaction types',
+            input: {
+                accountEffect: effects.positive,
+                txType: 'unknown',
+            },
+            expectedOutput: effects.positive.amount.toString(),
+        },
+    ],
 };
