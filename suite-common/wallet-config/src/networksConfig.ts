@@ -422,7 +422,7 @@ export const networks = {
     sol: {
         name: 'Solana',
         networkType: 'solana',
-        bip43Path: "m/44'/501'/i'/0'", // TODO(vl): accounts and paths
+        bip43Path: "m/44'/501'/i'/0'",
         decimals: 9,
         testnet: false,
         // features: ['tokens', 'staking'],
@@ -435,9 +435,7 @@ export const networks = {
             [DeviceModelInternal.T2T1]: '2.4.3', // TODO(vl): revisit, for now just anything above 2.0.0
         },
         customBackends: ['solana'],
-        accountTypes: {
-            // TODO(vl): accounts and paths
-        },
+        accountTypes: {},
     },
 } as const;
 
